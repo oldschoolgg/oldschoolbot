@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "canvas": "^2.0.0-alpha.12",
+    "cheerio": "^1.0.0-rc.2",
+    "crystalmethlabs": "^1.0.0",
+    "discord.js": "discordjs/discord.js",
+    "he": "^1.1.1",
+    "klasa": "github:dirigeants/klasa#8b7a8f56b9571982334f5f3ce4cb28887224cbd1",
+    "markovchain": "^1.0.2",
+    "moment": "^2.21.0",
+    "osrs-wrapper": "^1.0.4",
+    "rethinkdbdash": "^2.3.31",
+    "rss-parser": "^3.1.1",
+    "snekfetch": "^3.6.4",
+    "twit": "^2.2.9"
+  },
+  "devDependencies": {
+    "eslint-config-klasa": "github:dirigeants/klasa-lint"
+  }
+}
