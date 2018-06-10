@@ -18,6 +18,11 @@ Please lint your code with the projects' [ESLint](https://eslint.org/) config.
 
 Contributors are listed in this file, and given a Contributor role in the support server. If you have more questions, send me a message on discord.
 
+### Contributors
+
+  - [[gc](https://github.com/gc/oldschoolbot)] everything
+  - [[Ciaran](https://github.com/ciaranlangton)] gathering quest information
+
 ## Notes
 
 1. Old School Bot uses Klasa, a discord bot framework, if you have questions as to how Klasa works, or are interested in making your own Klasa bot, you can join their [support server here](https://discord.gg/FpEFSyY).
