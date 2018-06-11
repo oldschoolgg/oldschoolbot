@@ -1,3 +1,4 @@
+// TODO: move diary requirement objects into /resources, and finish this up
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
 
