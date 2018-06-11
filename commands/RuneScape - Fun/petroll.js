@@ -56,7 +56,7 @@ module.exports = class extends Command {
 
 		for (let i = 0; i < amount; i++) {
 			for (const pet in this.pets) {
-				if (this.client.roll(this.pets[pet])) pets.push(pet);
+				if (this.roll(this.pets[pet])) pets.push(pet);
 			}
 		}
 
