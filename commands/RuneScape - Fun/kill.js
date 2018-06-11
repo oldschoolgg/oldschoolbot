@@ -19,8 +19,8 @@ module.exports = class extends Command {
 				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Corp beasts at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(5000)) loot.push('<:Pet_dark_core:324127377347313674>');
-					if (this.client.roll(585)) {
+					if (roll(5000)) loot.push('<:Pet_dark_core:324127377347313674>');
+					if (roll(585)) {
 						const randomRoll = Math.floor(Math.random() * 8);
 						if (randomRoll < 1) loot.push('<:Elysian_sigil:399999422295048223>');
 						else if (randomRoll < 4) loot.push('<:Spectral_sigil:399999422299373568>');
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 				if (quantity > 300) return msg.send('I can only do a maximum of 300 Barrows Chests at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(17)) loot.push(BARROWS_ITEMS[Math.floor(Math.random() * BARROWS_ITEMS.length)]);
+					if (roll(17)) loot.push(BARROWS_ITEMS[Math.floor(Math.random() * BARROWS_ITEMS.length)]);
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -46,12 +46,12 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Sara kills at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(254)) loot.push('<:Saradomins_light:403052160977338378>');
-					if (this.client.roll(127)) loot.push('<:Saradomin_sword:403052160822280192>');
-					if (this.client.roll(508)) loot.push('<:Armadyl_crossbow:403052160931069952>');
-					if (this.client.roll(508)) loot.push('<:Saradomin_hilt:403051383214833667>');
-					if (this.client.roll(5000)) loot.push('<:Pet_zilyana:324127378248957952>');
-					if (this.client.roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
+					if (roll(254)) loot.push('<:Saradomins_light:403052160977338378>');
+					if (roll(127)) loot.push('<:Saradomin_sword:403052160822280192>');
+					if (roll(508)) loot.push('<:Armadyl_crossbow:403052160931069952>');
+					if (roll(508)) loot.push('<:Saradomin_hilt:403051383214833667>');
+					if (roll(5000)) loot.push('<:Pet_zilyana:324127378248957952>');
+					if (roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -65,10 +65,10 @@ module.exports = class extends Command {
 				];
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(128)) loot.push(ZULRAH_UNIQUE[Math.floor(Math.random() * ZULRAH_UNIQUE.length)]);
-					if (this.client.roll(5000)) loot.push('<:Pet_snakeling:324127377816944642>');
-					if (this.client.roll(3000)) loot.push('<:Jar_of_swamp:403059673588170776>');
-					if (this.client.roll(3277)) { loot.push(Math.random() < 0.5 ? '<:Magma_mutagen:403059676733898753>' : '<:Tanzanite_mutagen:403059676306079746>'); }
+					if (roll(128)) loot.push(ZULRAH_UNIQUE[Math.floor(Math.random() * ZULRAH_UNIQUE.length)]);
+					if (roll(5000)) loot.push('<:Pet_snakeling:324127377816944642>');
+					if (roll(3000)) loot.push('<:Jar_of_swamp:403059673588170776>');
+					if (roll(3277)) { loot.push(Math.random() < 0.5 ? '<:Magma_mutagen:403059676733898753>' : '<:Tanzanite_mutagen:403059676306079746>'); }
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -76,12 +76,12 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Vorkath kills at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(1000)) loot.push('<:Dragonbone_necklace:403378090740547595>');
-					if (this.client.roll(3000)) loot.push('<:Jar_of_decay:403378091008851968>');
-					if (this.client.roll(3000)) loot.push('<:Vorki:400713309252222977>');
-					if (this.client.roll(5000)) loot.push('<:Draconic_visage:403378090979491840>');
-					if (this.client.roll(5000)) loot.push('<:Skeletal_visage:403378091071766539>');
-					if (this.client.roll(50)) loot.push('<:Vorkaths_head:403378091046469632>');
+					if (roll(1000)) loot.push('<:Dragonbone_necklace:403378090740547595>');
+					if (roll(3000)) loot.push('<:Jar_of_decay:403378091008851968>');
+					if (roll(3000)) loot.push('<:Vorki:400713309252222977>');
+					if (roll(5000)) loot.push('<:Draconic_visage:403378090979491840>');
+					if (roll(5000)) loot.push('<:Skeletal_visage:403378091071766539>');
+					if (roll(50)) loot.push('<:Vorkaths_head:403378091046469632>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -96,9 +96,9 @@ module.exports = class extends Command {
 				];
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(128)) loot.push(CERB_CRYSTALS[Math.floor(Math.random() * CERB_CRYSTALS.length)]);
-					if (this.client.roll(2000)) loot.push('<:Jar_of_souls:403383744771391490>');
-					if (this.client.roll(3000)) loot.push('<:Hellpuppy:324127376185491458>');
+					if (roll(128)) loot.push(CERB_CRYSTALS[Math.floor(Math.random() * CERB_CRYSTALS.length)]);
+					if (roll(2000)) loot.push('<:Jar_of_souls:403383744771391490>');
+					if (roll(3000)) loot.push('<:Hellpuppy:324127376185491458>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -108,10 +108,10 @@ module.exports = class extends Command {
 				if (quantity > 5000) return msg.send('I can only do a maximum of 5000 Abyssal Demon kills at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(6000)) loot.push('<:Abyssal_demon_head:403386370707423232>');
-					if (this.client.roll(512)) loot.push('<:Abyssal_whip:403386370686582804>');
-					if (this.client.roll(32768)) loot.push('<:Abyssal_dagger:403386370388918273>');
-					if (this.client.roll(1200)) loot.push('<:Clue_scroll:365003979840552960>');
+					if (roll(6000)) loot.push('<:Abyssal_demon_head:403386370707423232>');
+					if (roll(512)) loot.push('<:Abyssal_whip:403386370686582804>');
+					if (roll(32768)) loot.push('<:Abyssal_dagger:403386370388918273>');
+					if (roll(1200)) loot.push('<:Clue_scroll:365003979840552960>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -120,12 +120,12 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Demonic Gorilla's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(300)) loot.push('<:Zenyte_shard:405245077972320256>');
-					if (this.client.roll(500)) loot.push('<:Ballista_limbs:405245077280129025>');
-					if (this.client.roll(500)) loot.push('<:Ballista_spring:405245077590507531>');
-					if (this.client.roll(750)) loot.push('<:Light_frame:405245077808742400>');
-					if (this.client.roll(1500)) loot.push('<:Heavy_frame:405245077754216448>');
-					if (this.client.roll(1500)) loot.push('<:Monkey_tail:405245077670068225>');
+					if (roll(300)) loot.push('<:Zenyte_shard:405245077972320256>');
+					if (roll(500)) loot.push('<:Ballista_limbs:405245077280129025>');
+					if (roll(500)) loot.push('<:Ballista_spring:405245077590507531>');
+					if (roll(750)) loot.push('<:Light_frame:405245077808742400>');
+					if (roll(1500)) loot.push('<:Heavy_frame:405245077754216448>');
+					if (roll(1500)) loot.push('<:Monkey_tail:405245077670068225>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -134,12 +134,12 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Kalphite Queen's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(3000)) loot.push('<:Kalphite_princess_2nd_form:324127376915300352>');
-					if (this.client.roll(2000)) loot.push('<:Jar_of_sand:405249792839647232>');
-					if (this.client.roll(128)) loot.push('<:Kq_head:405249792567148545>');
-					if (this.client.roll(100)) loot.push('<:Clue_scroll:365003979840552960>');
-					if (this.client.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.client.roll(128)) loot.push('<:Dragon_chainbody:405250171719647232>');
+					if (roll(3000)) loot.push('<:Kalphite_princess_2nd_form:324127376915300352>');
+					if (roll(2000)) loot.push('<:Jar_of_sand:405249792839647232>');
+					if (roll(128)) loot.push('<:Kq_head:405249792567148545>');
+					if (roll(100)) loot.push('<:Clue_scroll:365003979840552960>');
+					if (roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
+					if (roll(128)) loot.push('<:Dragon_chainbody:405250171719647232>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -149,13 +149,13 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 K'ril Tsutsaroth's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(508)) loot.push('<:Staff_of_the_dead:405251862695116801>');
-					if (this.client.roll(406)) loot.push('<:Rune_sword:405251862674014209>');
-					if (this.client.roll(128)) loot.push('<:Zamorakian_spear:405251862883729418>');
-					if (this.client.roll(128)) loot.push('<:Steam_battlestaff:405251862451716097>');
-					if (this.client.roll(508)) loot.push('<:Zamorak_hilt:405251862489595905>');
-					if (this.client.roll(5000)) loot.push('<:Pet_kril_tsutsaroth:324127377527406594>');
-					if (this.client.roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
+					if (roll(508)) loot.push('<:Staff_of_the_dead:405251862695116801>');
+					if (roll(406)) loot.push('<:Rune_sword:405251862674014209>');
+					if (roll(128)) loot.push('<:Zamorakian_spear:405251862883729418>');
+					if (roll(128)) loot.push('<:Steam_battlestaff:405251862451716097>');
+					if (roll(508)) loot.push('<:Zamorak_hilt:405251862489595905>');
+					if (roll(5000)) loot.push('<:Pet_kril_tsutsaroth:324127377527406594>');
+					if (roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -169,11 +169,11 @@ module.exports = class extends Command {
 				];
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(128)) loot.push(ARMADYL_ARMOR[Math.floor(Math.random() * ARMADYL_ARMOR.length)]);
-					if (this.client.roll(508)) loot.push('<:Armadyl_hilt:405262588503523328>');
-					if (this.client.roll(5000)) loot.push('<:Pet_kreearra:324127377305239555>');
-					if (this.client.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
-					if (this.client.roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
+					if (roll(128)) loot.push(ARMADYL_ARMOR[Math.floor(Math.random() * ARMADYL_ARMOR.length)]);
+					if (roll(508)) loot.push('<:Armadyl_hilt:405262588503523328>');
+					if (roll(5000)) loot.push('<:Pet_kreearra:324127377305239555>');
+					if (roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
+					if (roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -183,8 +183,8 @@ module.exports = class extends Command {
 				if (quantity > 1000) return msg.send("I can only kill 1000 Lizardman Shaman's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(5000)) loot.push('<:Dragon_warhammer:405998717154623488>');
-					if (this.client.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
+					if (roll(5000)) loot.push('<:Dragon_warhammer:405998717154623488>');
+					if (roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -192,10 +192,10 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Callisto's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(2000)) loot.push('<:Callisto_cub:324127376273440768>');
-					if (this.client.roll(512)) loot.push('<:Tyrannical_ring:406000288290570260>');
-					if (this.client.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.client.roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
+					if (roll(2000)) loot.push('<:Callisto_cub:324127376273440768>');
+					if (roll(512)) loot.push('<:Tyrannical_ring:406000288290570260>');
+					if (roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
+					if (roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -203,12 +203,12 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Vet'ions at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(5000)) loot.push('<:Skeleton_champion_scroll:406002360742182913>');
-					if (this.client.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
-					if (this.client.roll(2000)) loot.push('<:Vetion_jr:324127378999738369>');
-					if (this.client.roll(512)) loot.push('<:Ring_of_the_gods:406002360947703808>');
-					if (this.client.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.client.roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
+					if (roll(5000)) loot.push('<:Skeleton_champion_scroll:406002360742182913>');
+					if (roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
+					if (roll(2000)) loot.push('<:Vetion_jr:324127378999738369>');
+					if (roll(512)) loot.push('<:Ring_of_the_gods:406002360947703808>');
+					if (roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
+					if (roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -216,11 +216,11 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only kill 100 Venenatis at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
-					if (this.client.roll(2000)) loot.push('<:Venenatis_spiderling:324127379092144129>');
-					if (this.client.roll(512)) loot.push('<:Treasonous_ring:406008615728578561>');
-					if (this.client.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.client.roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
+					if (roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
+					if (roll(2000)) loot.push('<:Venenatis_spiderling:324127379092144129>');
+					if (roll(512)) loot.push('<:Treasonous_ring:406008615728578561>');
+					if (roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
+					if (roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -229,11 +229,11 @@ module.exports = class extends Command {
 				if (quantity > 1000) return msg.send('I can only kill 500 Skeletal Wyverns at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(10000)) loot.push('<:Draconic_visage:403378090979491840>');
-					if (this.client.roll(350)) loot.push('<:Clue_scroll:365003979840552960>');
-					if (this.client.roll(512)) loot.push('<:Dragon_plateskirt:409987345245405205>');
-					if (this.client.roll(512)) loot.push('<:Dragon_platelegs:409987344830169089>');
-					if (this.client.roll(512)) loot.push('<:Granite_legs:409987344704208909>');
+					if (roll(10000)) loot.push('<:Draconic_visage:403378090979491840>');
+					if (roll(350)) loot.push('<:Clue_scroll:365003979840552960>');
+					if (roll(512)) loot.push('<:Dragon_plateskirt:409987345245405205>');
+					if (roll(512)) loot.push('<:Dragon_platelegs:409987344830169089>');
+					if (roll(512)) loot.push('<:Granite_legs:409987344704208909>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -244,13 +244,13 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only kill 500 Grotesque Guardians at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(5000)) loot.push('<:Jar_of_stone:409989715928809473>');
-					if (this.client.roll(3000)) loot.push('<:Noon:379595337234382848>');
-					if (this.client.roll(1000)) loot.push('<:Black_tourmaline_core:409989716063289354>');
-					if (this.client.roll(230)) loot.push('<:Clue_scroll:365003979840552960>');
-					if (this.client.roll(500)) loot.push('<:Granite_gloves:409989716134592512>');
-					if (this.client.roll(500)) loot.push('<:Granite_hammer:409989716134592532>');
-					if (this.client.roll(750)) loot.push('<:Granite_ring:409989716151369729>');
+					if (roll(5000)) loot.push('<:Jar_of_stone:409989715928809473>');
+					if (roll(3000)) loot.push('<:Noon:379595337234382848>');
+					if (roll(1000)) loot.push('<:Black_tourmaline_core:409989716063289354>');
+					if (roll(230)) loot.push('<:Clue_scroll:365003979840552960>');
+					if (roll(500)) loot.push('<:Granite_gloves:409989716134592512>');
+					if (roll(500)) loot.push('<:Granite_hammer:409989716134592532>');
+					if (roll(750)) loot.push('<:Granite_ring:409989716151369729>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -259,12 +259,12 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only kill 100 King Black Dragons at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(1500)) loot.push('<:Dragon_pickaxe:406000287841779716>');
-					if (this.client.roll(128)) loot.push('<:Dragon_med_helm:409997161145565185>');
-					if (this.client.roll(128)) loot.push('<:Kbd_heads:409997161393160192>');
-					if (this.client.roll(450)) loot.push('<:Clue_scroll:365003979840552960>');
-					if (this.client.roll(3000)) loot.push('<:Prince_black_dragon:324127378538364928>');
-					if (this.client.roll(5000)) loot.push('<:Draconic_visage:403378090979491840>');
+					if (roll(1500)) loot.push('<:Dragon_pickaxe:406000287841779716>');
+					if (roll(128)) loot.push('<:Dragon_med_helm:409997161145565185>');
+					if (roll(128)) loot.push('<:Kbd_heads:409997161393160192>');
+					if (roll(450)) loot.push('<:Clue_scroll:365003979840552960>');
+					if (roll(3000)) loot.push('<:Prince_black_dragon:324127378538364928>');
+					if (roll(5000)) loot.push('<:Draconic_visage:403378090979491840>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -275,7 +275,7 @@ module.exports = class extends Command {
 				const loot = [];
 				let sired = 0;
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(100)) sired++;
+					if (roll(100)) sired++;
 				}
 				for (let i = 0; i < sired; i++) {
 					const sire_roll = this.randInt(128);
@@ -306,13 +306,13 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Thermonuclear smoke devil's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(3000)) loot.push('<:Pet_smoke_devil:324127377493852162>');
-					if (this.client.roll(500)) loot.push('<:Clue_scroll:365003979840552960>');
-					if (this.client.roll(128)) loot.push('<:Crystal_key:412845362261524480>');
-					if (this.client.roll(2000)) loot.push('<:Dragon_chainbody:405250171719647232>');
-					if (this.client.roll(350)) loot.push('<:Occult_necklace:412845632089358336>');
-					if (this.client.roll(512)) loot.push('<:Smoke_battlestaff:412845709575061506>');
-					if (this.client.roll(129)) loot.push('<:Ancient_staff:412845709453426689>');
+					if (roll(3000)) loot.push('<:Pet_smoke_devil:324127377493852162>');
+					if (roll(500)) loot.push('<:Clue_scroll:365003979840552960>');
+					if (roll(128)) loot.push('<:Crystal_key:412845362261524480>');
+					if (roll(2000)) loot.push('<:Dragon_chainbody:405250171719647232>');
+					if (roll(350)) loot.push('<:Occult_necklace:412845632089358336>');
+					if (roll(512)) loot.push('<:Smoke_battlestaff:412845709575061506>');
+					if (roll(129)) loot.push('<:Ancient_staff:412845709453426689>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -321,8 +321,8 @@ module.exports = class extends Command {
 				if (quantity > 5000) return msg.send("I can only kill 5000 Giant Mole's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(3000)) loot.push('<:Baby_mole:324127375858204672>');
-					if (this.client.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
+					if (roll(3000)) loot.push('<:Baby_mole:324127375858204672>');
+					if (roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -330,11 +330,11 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only kill 100 Skotizo at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(1000)) loot.push('<:Uncut_onyx:403059676402679808>');
-					if (this.client.roll(65)) loot.push('<:Skotos:324127378890817546>');
-					if (this.client.roll(100)) loot.push('<:Shield_left_half:417703739349139466>');
-					if (this.client.roll(25)) loot.push('<:Dark_claw:417703739218984960> ');
-					if (this.client.roll(2500)) loot.push('<:Jar_of_darkness:417703738858536972>');
+					if (roll(1000)) loot.push('<:Uncut_onyx:403059676402679808>');
+					if (roll(65)) loot.push('<:Skotos:324127378890817546>');
+					if (roll(100)) loot.push('<:Shield_left_half:417703739349139466>');
+					if (roll(25)) loot.push('<:Dark_claw:417703739218984960> ');
+					if (roll(2500)) loot.push('<:Jar_of_darkness:417703738858536972>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -342,9 +342,9 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only kill 100 Scorpia at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(2000)) loot.push('<:Scorpias_offspring:324127378773377024>');
-					if (this.client.roll(256)) loot.push('<:Odium_shard_3:417705570921873419>');
-					if (this.client.roll(256)) loot.push('<:Malediction_shard_3:417705571173531658>');
+					if (roll(2000)) loot.push('<:Scorpias_offspring:324127378773377024>');
+					if (roll(256)) loot.push('<:Odium_shard_3:417705570921873419>');
+					if (roll(256)) loot.push('<:Malediction_shard_3:417705571173531658>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -353,10 +353,10 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send('I can only kill 500 Chaos Elementals at a time!');
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(128)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.client.roll(256)) loot.push('<:Dragon_pickaxe:406000287841779716>');
-					if (this.client.roll(200)) loot.push('<:Clue_scroll:365003979840552960>');
-					if (this.client.roll(300)) loot.push('<:Pet_chaos_elemental:324127377070227456>');
+					if (roll(128)) loot.push('<:Dragon_2h_sword:405250171593818112>');
+					if (roll(256)) loot.push('<:Dragon_pickaxe:406000287841779716>');
+					if (roll(200)) loot.push('<:Clue_scroll:365003979840552960>');
+					if (roll(300)) loot.push('<:Pet_chaos_elemental:324127377070227456>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -365,39 +365,39 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Wintertodt's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(5000)) {
+					if (roll(5000)) {
 						loot.push('<:Phoenix:324127378223792129>');
 						continue;
 					}
-					if (this.client.roll(10000)) {
+					if (roll(10000)) {
 						loot.push('<:Dragon_axe:405265921309933588>');
 						continue;
 					}
-					if (this.client.roll(1000)) {
+					if (roll(1000)) {
 						loot.push('<:Tome_of_fire_empty:405265922287468544>');
 						continue;
 					}
-					if (this.client.roll(150)) {
+					if (roll(150)) {
 						loot.push('<:Pyromancer_garb:405265922199257088>');
 						continue;
 					}
-					if (this.client.roll(150)) {
+					if (roll(150)) {
 						loot.push('<:Pyromancer_hood:405265921872232448>');
 						continue;
 					}
-					if (this.client.roll(150)) {
+					if (roll(150)) {
 						loot.push('<:Pyromancer_boots:405265921603534848>');
 						continue;
 					}
-					if (this.client.roll(150)) {
+					if (roll(150)) {
 						loot.push('<:Pyromancer_robe:405265921553334283>');
 						continue;
 					}
-					if (this.client.roll(150)) {
+					if (roll(150)) {
 						loot.push('<:Warm_gloves:405265922396258334>');
 						continue;
 					}
-					if (this.client.roll(150)) {
+					if (roll(150)) {
 						loot.push('<:Bruma_torch:421038270823006218>');
 						continue;
 					}
@@ -408,31 +408,31 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Kraken's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(3000)) {
+					if (roll(3000)) {
 						loot.push('<:Pet_kraken:324127377477206016>');
 						continue;
 					}
-					if (this.client.roll(512)) {
+					if (roll(512)) {
 						loot.push('<:Trident_of_the_seas:421042619913863198>');
 						continue;
 					}
-					if (this.client.roll(1000)) {
+					if (roll(1000)) {
 						loot.push('<:Jar_of_dirt:421042619473199106>');
 						continue;
 					}
-					if (this.client.roll(128)) {
+					if (roll(128)) {
 						loot.push('<:Magic_seed_5:421042620022915084>');
 						continue;
 					}
-					if (this.client.roll(128)) {
+					if (roll(128)) {
 						loot.push('<:Dragonstone_ring:421042619754217472>');
 						continue;
 					}
-					if (this.client.roll(300)) {
+					if (roll(300)) {
 						loot.push('<:Kraken_tentacle:421042619859337216>');
 						continue;
 					}
-					if (this.client.roll(500)) {
+					if (roll(500)) {
 						loot.push('<:Clue_scroll:365003979840552960>');
 						continue;
 					}
@@ -443,10 +443,10 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Obor's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(118)) loot.push('<:Hill_giant_club:421045456194240523>');
-					if (this.client.roll(400)) loot.push('<:Long_bone:421045456391634945> ');
-					if (this.client.roll(5000)) loot.push('<:Curved_bone:421045456387309568>');
-					if (this.client.roll(5000)) loot.push('<:Hill_giant_club:421045456194240523>');
+					if (roll(118)) loot.push('<:Hill_giant_club:421045456194240523>');
+					if (roll(400)) loot.push('<:Long_bone:421045456391634945> ');
+					if (roll(5000)) loot.push('<:Curved_bone:421045456387309568>');
+					if (roll(5000)) loot.push('<:Hill_giant_club:421045456194240523>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -454,31 +454,31 @@ module.exports = class extends Command {
 				if (quantity > 500) return msg.send("I can only kill 500 Dagannoth Rex's at a time!");
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
-					if (this.client.roll(5000)) {
+					if (roll(5000)) {
 						loot.push('<:Pet_dagannoth_rex:324127377091330049>');
 						continue;
 					}
-					if (this.client.roll(750)) {
+					if (roll(750)) {
 						loot.push('<:Clue_scroll:365003979840552960>');
 						continue;
 					}
-					if (this.client.roll(128)) {
+					if (roll(128)) {
 						loot.push('<:Dragon_axe:405265921309933588>');
 						continue;
 					}
-					if (this.client.roll(128)) {
+					if (roll(128)) {
 						loot.push('<:Warrior_ring:421046902050783263>');
 						continue;
 					}
-					if (this.client.roll(128)) {
+					if (roll(128)) {
 						loot.push('<:Ring_of_life:421046902092595215>');
 						continue;
 					}
-					if (this.client.roll(128)) {
+					if (roll(128)) {
 						loot.push('<:Berserker_ring:421046901773697035>');
 						continue;
 					}
-					if (this.client.roll(128)) {
+					if (roll(128)) {
 						loot.push('<:Air_talisman:421047764248690688>');
 						continue;
 					}
@@ -497,8 +497,8 @@ module.exports = class extends Command {
 		if (quantity <= 100) {
 			const loot = [];
 			for (let i = 0; i < quantity; i++) {
-				if (this.client.roll(25)) {
-					if (this.client.roll(65)) loot.push('<:Olmlet:324127376873357316>');
+				if (roll(25)) {
+					if (roll(65)) loot.push('<:Olmlet:324127376873357316>');
 					const number = (Math.random() * 100).toFixed(2);
 					switch (true) {
 						case number < 23.81:
@@ -593,8 +593,8 @@ module.exports = class extends Command {
 				Olmlet: 0
 			};
 			for (let i = 0; i < quantity; i++) {
-				if (this.client.roll(25)) {
-					if (this.client.roll(65)) loot.Olmlet++;
+				if (roll(25)) {
+					if (roll(65)) loot.Olmlet++;
 					const number = (Math.random() * 100).toFixed(2);
 					switch (true) {
 						case number < 23.81:
@@ -663,11 +663,11 @@ module.exports = class extends Command {
 		if (quantity <= 250) {
 			const loot = [];
 			for (let i = 0; i < quantity; i++) {
-				if (this.client.roll(128)) loot.push(BANDOS_ARMOR[Math.floor(Math.random() * BANDOS_ARMOR.length)]);
-				if (this.client.roll(508)) loot.push('<:Bandos_hilt:403047909072830464>');
-				if (this.client.roll(5000)) loot.push('<:Pet_general_graardor:324127377376673792>');
-				if (this.client.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
-				if (this.client.roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
+				if (roll(128)) loot.push(BANDOS_ARMOR[Math.floor(Math.random() * BANDOS_ARMOR.length)]);
+				if (roll(508)) loot.push('<:Bandos_hilt:403047909072830464>');
+				if (roll(5000)) loot.push('<:Pet_general_graardor:324127377376673792>');
+				if (roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
+				if (roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
 			}
 			return loot.length > 0 ? loot.join(' ') : 'You got nothing.';
 		} else {
@@ -694,14 +694,14 @@ module.exports = class extends Command {
 			};
 
 			for (let i = 0; i < quantity; i++) {
-				if (this.client.roll(128)) {
+				if (roll(128)) {
 					const ITEM = ['Bandos_tassets', 'Bandos_boots', 'Bandos_chestplate'][Math.floor(Math.random() * 3)];
 					loot[ITEM]++;
 				}
-				if (this.client.roll(508)) loot.Bandos_hilt++;
-				if (this.client.roll(5000)) loot.Pet_general_graardor++;
-				if (this.client.roll(5000)) loot.Curved_bone++;
-				if (this.client.roll(86)) loot.Godsword_Shard++;
+				if (roll(508)) loot.Bandos_hilt++;
+				if (roll(5000)) loot.Pet_general_graardor++;
+				if (roll(5000)) loot.Curved_bone++;
+				if (roll(86)) loot.Godsword_Shard++;
 			}
 
 			for (var key in loot) {
