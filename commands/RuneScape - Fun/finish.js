@@ -21,14 +21,14 @@ module.exports = class extends Command {
 				const lootMSG = [];
 				while (loot.length < 4) {
 					kc++;
-					if (roll(5000)) {
+					if (this.roll(5000)) {
 						if (!loot.includes('PET')) {
 							loot.push('PET');
 							petKC = kc;
 							lootMSG.push(`**Pet:** ${petKC.toLocaleString()} KC <:Pet_dark_core:324127377347313674>`);
 						} else { duplicates.push('<:Pet_dark_core:324127377347313674>'); }
 					}
-					if (roll(585)) {
+					if (this.roll(585)) {
 						const randomRoll = Math.floor(Math.random() * 8);
 						if (randomRoll < 1) {
 							if (!loot.includes('ELY')) {
@@ -60,7 +60,7 @@ ${lootMSG.join('\n')}
 			case 'BARROWS': {
 				while (loot.length < 24) {
 					kc++;
-					if (roll(17)) {
+					if (this.roll(17)) {
 						const drop = BARROWS_ITEMS[Math.floor(Math.random() * BARROWS_ITEMS.length)];
 						if (loot.includes(drop)) {
 							duplicates++;
@@ -78,8 +78,8 @@ ${lootMSG.join('\n')}
 				const lootTrack = [];
 				while (loot.length < 16) {
 					kc++;
-					if (!roll(25)) continue;
-					if (!lootTrack.includes('PET') && roll(65)) {
+					if (!this.roll(25)) continue;
+					if (!lootTrack.includes('PET') && this.roll(65)) {
 						lootTrack.push('PET');
 						loot.push(`**Olmlet:** ${kc} KC <:Olmlet:324127376873357316>`);
 					} else { duplicates.push('<:Olmlet:324127376873357316>'); }
@@ -184,11 +184,11 @@ ${lootMSG.join('\n')}
 				const lootMSG = [];
 				while (loot.length !== 8) {
 					kc++;
-					if (!loot.includes('PET') && roll(5000)) {
+					if (!loot.includes('PET') && this.roll(5000)) {
 						loot.push('PET');
 						lootMSG.push(`**Bandos Pet:** ${kc.toLocaleString()} KC <:Pet_general_graardor:324127377376673792>`);
 					}
-					if (roll(128)) {
+					if (this.roll(128)) {
 						const randomRoll = Math.floor(Math.random() * 3) + 1;
 						if (!loot.includes('TAS') && randomRoll === 1) {
 							loot.push('TAS');
@@ -203,11 +203,11 @@ ${lootMSG.join('\n')}
 							lootMSG.push(`**Bandos Boots:** ${kc.toLocaleString()} KC <:Bandos_boots:403046849415610368>`);
 						}
 					}
-					if (!loot.includes('BH') && roll(508)) {
+					if (!loot.includes('BH') && this.roll(508)) {
 						loot.push('BH');
 						lootMSG.push(`**Bandos Hilt:** ${kc.toLocaleString()} KC <:Bandos_hilt:403047909072830464>`);
 					}
-					if (roll(86)) {
+					if (this.roll(86)) {
 						const randomRoll = Math.floor(Math.random() * 3) + 1;
 						if (!loot.includes('GS1') && randomRoll === 1) {
 							loot.push('GS1');
@@ -235,10 +235,6 @@ ${lootMSG.join('\n')}
 	}
 
 };
-
-function roll(max) {
-	if (Math.floor(Math.random() * max + 1) === 1) return true;
-}
 
 const BARROWS_ITEMS = [
 	'<:Veracs_plateskirt:403038865130127361>',

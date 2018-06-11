@@ -192,7 +192,7 @@ module.exports = class extends Command {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
-			if (this.client.roll(dropChance)) hasPet = true;
+			if (this.roll(dropChance)) hasPet = true;
 			amountOfRolls++;
 		}
 		return amountOfRolls.toLocaleString();
@@ -202,7 +202,7 @@ module.exports = class extends Command {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
-			if (this.client.roll(dropChance)) hasPet = true;
+			if (this.roll(dropChance)) hasPet = true;
 			amountOfRolls++;
 		}
 		return amountOfRolls;

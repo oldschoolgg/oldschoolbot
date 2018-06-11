@@ -11,7 +11,7 @@ module.exports = class extends Command {
 		let DKC = 0;
 		let defenders = 0;
 		while (defenders < 7) {
-			if (this.client.roll(50)) {
+			if (this.roll(50)) {
 				defenders++;
 				KC++;
 				continue;
@@ -19,7 +19,7 @@ module.exports = class extends Command {
 			KC++;
 		}
 		while (defenders < 8) {
-			if (this.client.roll(100)) {
+			if (this.roll(100)) {
 				defenders++;
 				DKC++;
 				continue;
