@@ -1124,6 +1124,8 @@ It took you **${kc.toLocaleString()}** kills to finish Adamant Dragons <:Adamant
 
 ${lootMSG.join('\n')}`);
 			}
+			case 'RUNEDRAG':
+			case 'RUNEDRAGON':
 			case 'RUNEDRAGONS': {
 				const lootMSG = [];
 				while (loot.length !== 3) {
@@ -1136,7 +1138,7 @@ ${lootMSG.join('\n')}`);
 						loot.push('DML');
 						lootMSG.push(`**Dragon Metal Lump:** ${kc.toLocaleString()} KC <:Dragon_metal_lump:456178708777140244>`);
 					}
-					if (!loot.includes('DL') && roll(8000)) {
+					if (!loot.includes('DL') && roll(800)) {
 						loot.push('DL');
 						lootMSG.push(`**Dragon Limbs:** ${kc.toLocaleString()} KC <:Dragon_limbs:456178390928588800>`);
 					}
