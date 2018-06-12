@@ -91,19 +91,19 @@ ${lootMSG.join('\n')} \n\nYou also received **${mc.toLocaleString()}** Mole Claw
 						if (!loot.includes('SPET') && roll(5000)) {
 							loot.push('SPET');
 							supLoot.push('SPET');
-							lootMSG.push(`**Pet Dagannoth Supreme:** ${supKC.toLocaleString()} Supreme KC <supreme pet emote>`);
+							lootMSG.push(`**Pet Dagannoth Supreme:** ${supKC.toLocaleString()} Supreme KC <:Pet_dagannoth_supreme:324127377066164245>`);
 						}
 						if (roll(64)) {
 							const randomRoll = Math.floor(Math.random() * 2) + 1;
 							if (!loot.includes('SC') && randomRoll === 1) {
 								loot.push('SC');
 								supLoot.push('SC');
-								lootMSG.push(`**Seercull:** ${supKC.toLocaleString()} Supreme KC <seercull emote>`);
+								lootMSG.push(`**Seercull:** ${supKC.toLocaleString()} Supreme KC <:Seercull:456174387633324042>`);
 							}
 							if (!loot.includes('AR') && randomRoll === 2) {
 								loot.push('AR');
 								supLoot.push('AR');
-								lootMSG.push(`**Archers Ring:** ${supKC.toLocaleString()} Supreme KC <archers ring emote>`);
+								lootMSG.push(`**Archers Ring:** ${supKC.toLocaleString()} Supreme KC <:Archers_ring:456174721676083210>`);
 							}
 						}
 						if (!loot.includes('DA') && roll(128)) {
@@ -147,19 +147,19 @@ ${lootMSG.join('\n')} \n\nYou also received **${mc.toLocaleString()}** Mole Claw
 						if (!loot.includes('PPET') && roll(5000)) {
 							loot.push('PPET');
 							primeLoot.push('PPET');
-							lootMSG.push(`**Pet Dagannoth Prime:** ${primeKC.toLocaleString()} Prime KC <Prime pet emote>`);
+							lootMSG.push(`**Pet Dagannoth Prime:** ${primeKC.toLocaleString()} Prime KC <:Pet_dagannoth_prime:324127376877289474>`);
 						}
 						if (roll(64)) {
 							const randomRoll = Math.floor(Math.random() * 2) + 1;
 							if (!loot.includes('MB') && randomRoll === 1) {
 								loot.push('MB');
 								primeLoot.push('MB');
-								lootMSG.push(`**Mud Battlestaff:** ${primeKC.toLocaleString()} Prime KC <mud battlestaff emote>`);
+								lootMSG.push(`**Mud Battlestaff:** ${primeKC.toLocaleString()} Prime KC <:Mud_battlestaff:456175019345838083>`);
 							}
 							if (!loot.includes('SR') && randomRoll === 2) {
 								loot.push('SR');
 								primeLoot.push('SR');
-								lootMSG.push(`**Seers Ring:** ${primeKC.toLocaleString()} Prime KC <seers ring emote>`);
+								lootMSG.push(`**Seers Ring:** ${primeKC.toLocaleString()} Prime KC <:Seers_ring:456175344723034122>`);
 							}
 						}
 						if (!loot.includes('DA') && roll(128)) {
@@ -215,17 +215,17 @@ ${lootMSG.join('\n')}
 					kc++;
 					if (!loot.includes('PET') && roll(5000)) {
 						loot.push('PET');
-						lootMSG.push(`**Pet Dagannoth Supreme:** ${kc.toLocaleString()} KC <supreme pet emote>`);
+						lootMSG.push(`**Pet Dagannoth Supreme:** ${kc.toLocaleString()} KC <:Pet_dagannoth_supreme:324127377066164245>`);
 					}
 					if (roll(64)) {
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
 						if (!loot.includes('SC') && randomRoll === 1) {
 							loot.push('SC');
-							lootMSG.push(`**Seercull:** ${kc.toLocaleString()} KC <seercull emote>`);
+							lootMSG.push(`**Seercull:** ${kc.toLocaleString()} KC <:Seercull:456174387633324042>`);
 						}
 						if (!loot.includes('AR') && randomRoll === 2) {
 							loot.push('AR');
-							lootMSG.push(`**Archers Ring:** ${kc.toLocaleString()} KC <archers ring emote>`);
+							lootMSG.push(`**Archers Ring:** ${kc.toLocaleString()} KC <:Archers_ring:456174721676083210>`);
 						}
 					}
 					if (!loot.includes('DA') && roll(128)) {
@@ -234,7 +234,7 @@ ${lootMSG.join('\n')}
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Dagannoth Supreme <dag supreme emote>
+It took you **${kc.toLocaleString()}** kills to finish Dagannoth Supreme <:Pet_dagannoth_supreme:324127377066164245>
 
 ${lootMSG.join('\n')}
     `);
@@ -246,17 +246,17 @@ ${lootMSG.join('\n')}
 					kc++;
 					if (!loot.includes('PET') && roll(5000)) {
 						loot.push('PET');
-						lootMSG.push(`**Pet Dagannoth Prime:** ${kc.toLocaleString()} KC <prime pet emote>`);
+						lootMSG.push(`**Pet Dagannoth Prime:** ${kc.toLocaleString()} KC <:Pet_dagannoth_prime:324127376877289474>`);
 					}
 					if (roll(64)) {
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
 						if (!loot.includes('MB') && randomRoll === 1) {
 							loot.push('MB');
-							lootMSG.push(`**Mud Battlestaff:** ${kc.toLocaleString()} KC <mud battlestaff emote>`);
+							lootMSG.push(`**Mud Battlestaff:** ${kc.toLocaleString()} KC <:Mud_battlestaff:456175019345838083>`);
 						}
 						if (!loot.includes('SR') && randomRoll === 2) {
 							loot.push('SR');
-							lootMSG.push(`**Seers Ring:** ${kc.toLocaleString()} KC <seers ring emote>`);
+							lootMSG.push(`**Seers Ring:** ${kc.toLocaleString()} KC <:Seers_ring:456175344723034122>`);
 						}
 					}
 					if (!loot.includes('DA') && roll(128)) {
@@ -265,7 +265,7 @@ ${lootMSG.join('\n')}
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Dagannoth Prime <dag prime discord emote>
+It took you **${kc.toLocaleString()}** kills to finish Dagannoth Prime <:Pet_dagannoth_prime:324127376877289474>
 
 ${lootMSG.join('\n')}
     `);
@@ -974,7 +974,7 @@ ${lootMSG.join('\n')} \n\nYou also received **${vh.toLocaleString()}** Vorkath H
 					}
 				}
 				return msg.send(`
-You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish Bryophyta! <Bryophyta's essence emote>
+You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish Bryophyta! <:Bryophytas_essence:455835859799769108>
 		`);
 			}
 			case 'SHAMANS':
@@ -991,11 +991,11 @@ You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish 
 					}
 					if (!loot.includes('XT') && roll(250)) {
 						loot.push('XT');
-						lootMSG.push(`**Xeric's Talisman:** ${kc.toLocaleString()} KC <xerics talisman emote>`);
+						lootMSG.push(`**Xeric's Talisman:** ${kc.toLocaleString()} KC <:Xerics_talisman_inert:456176488669249539>`);
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Lizardman Shamans <Lizardman emote>
+It took you **${kc.toLocaleString()}** kills to finish Lizardman Shamans <:Lizardman_shaman:456176702167449612>
 
 ${lootMSG.join('\n')}
     `);
@@ -1051,7 +1051,7 @@ ${lootMSG.join('\n')}
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Demonic Gorillas <Demonic Gorillas emote>
+It took you **${kc.toLocaleString()}** kills to finish Demonic Gorillas <:Demonic_gorilla:456176858178912266>
 
 ${lootMSG.join('\n')}
     `);
@@ -1099,7 +1099,7 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!
 					}
 					if (!loot.includes('DFH') && roll(32768)) {
 						loot.push('DFH');
-						lootMSG.push(`**Dragon Full Helm:** ${kc.toLocaleString()} KC from a Mithril Dragon <dragon full helm emote>`);
+						lootMSG.push(`**Dragon Full Helm:** ${kc.toLocaleString()} KC from a Mithril Dragon <:Lizardman_shaman:456176702167449612>`);
 					}
 					if (roll(64)) {
 						ap++;
@@ -1108,12 +1108,12 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!
 						cb++;
 						if (!loot.includes('DFH') && roll(250)) {
 							loot.push('DFH');
-							lootMSG.push(`**Dragon Full Helm:** ${kc.toLocaleString()} KC from Chewed Bone #${cb.toLocaleString()} <DFH emote>`);
+							lootMSG.push(`**Dragon Full Helm:** ${kc.toLocaleString()} KC from Chewed Bone #${cb.toLocaleString()} <:Dragon_full_helm:456177009639424020>`);
 						}
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Mithril Dragons <mithril drag emote>
+It took you **${kc.toLocaleString()}** kills to finish Mithril Dragons <:Mithril_dragon:456177739339399168>
 
 ${lootMSG.join('\n')}\n\nYou also received **${ap.toLocaleString()}** Ancient Pages and **${cb.toLocaleString()}** Chewed Bones!
 		`);
@@ -1128,15 +1128,15 @@ ${lootMSG.join('\n')}\n\nYou also received **${ap.toLocaleString()}** Ancient Pa
 					}
 					if (!loot.includes('DMS') && roll(5000)) {
 						loot.push('DMS');
-						lootMSG.push(`**Dragon Metal Slice:** ${kc.toLocaleString()} KC <dragon metal slice emote>`);
+						lootMSG.push(`**Dragon Metal Slice:** ${kc.toLocaleString()} KC <:Dragon_metal_slice:456178390991634432>`);
 					}
 					if (!loot.includes('DL') && roll(1000)) {
 						loot.push('DL');
-						lootMSG.push(`**Dragon Limbs:** ${kc.toLocaleString()} KC <dragon limbs emote>`);
+						lootMSG.push(`**Dragon Limbs:** ${kc.toLocaleString()} KC <:Dragon_limbs:456178390928588800>`);
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Adamant Dragons <adamant drag emote>
+It took you **${kc.toLocaleString()}** kills to finish Adamant Dragons <:Adamant_dragon:456178397941334016>
 
 ${lootMSG.join('\n')}
     `);
@@ -1151,15 +1151,15 @@ ${lootMSG.join('\n')}
 					}
 					if (!loot.includes('DML') && roll(5000)) {
 						loot.push('DML');
-						lootMSG.push(`**Dragon Metal Lump:** ${kc.toLocaleString()} KC <dragon metal lump emote>`);
+						lootMSG.push(`**Dragon Metal Lump:** ${kc.toLocaleString()} KC <:Dragon_metal_lump:456178708777140244>`);
 					}
 					if (!loot.includes('DL') && roll(8000)) {
 						loot.push('DL');
-						lootMSG.push(`**Dragon Limbs:** ${kc.toLocaleString()} KC <dragon limbs emote>`);
+						lootMSG.push(`**Dragon Limbs:** ${kc.toLocaleString()} KC <:Dragon_limbs:456178390928588800>`);
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Rune Dragons <rune dragon discord emote>
+It took you **${kc.toLocaleString()}** kills to finish Rune Dragons <:Rune_dragon:456178949483921430>
 
 ${lootMSG.join('\n')}
     `);
@@ -1255,20 +1255,20 @@ ${lootMSG.join('\n')}
 						const randomRoll = Math.floor(Math.random() * 3) + 1;
 						if (!loot.includes('FD') && randomRoll === 1) {
 							loot.push('FD');
-							lootMSG.push(`**Fedora:** ${kc.toLocaleString()} KC <Fedora emote>`);
+							lootMSG.push(`**Fedora:** ${kc.toLocaleString()} KC <:Fedora:456179157303427092>`);
 						}
 						if (!loot.includes('OS2') && randomRoll === 2) {
 							loot.push('OS2');
-							lootMSG.push(`**Odium Shard 2:** ${kc.toLocaleString()} KC <:Odium Shard 2 Emote>`);
+							lootMSG.push(`**Odium Shard 2:** ${kc.toLocaleString()} KC <:Odium_shard_2:456179354339377182>`);
 						}
 						if (!loot.includes('MS2') && randomRoll === 3) {
 							loot.push('MS2');
-							lootMSG.push(`**Malediction Shard 2:** ${kc.toLocaleString()} KC <Malediction Shard 2 Emote>`);
+							lootMSG.push(`**Malediction Shard 2:** ${kc.toLocaleString()} KC <:Malediction_shard_2:456180315002765348>`);
 						}
 					}
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Crazy Archaeologist <Crazy Arch emote>
+It took you **${kc.toLocaleString()}** kills to finish Crazy Archaeologist <:Crazy_archaeologist:456180487287996419>
 
 ${lootMSG.join('\n')}
     `);
@@ -1311,11 +1311,11 @@ ${lootMSG.join('\n')}
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
 						if (!loot.includes('OS1') && randomRoll === 1) {
 							loot.push('OS1');
-							lootMSG.push(`**Odium Shard 1:** ${kc.toLocaleString()} KC <Odium Shard 1 emote>`);
+							lootMSG.push(`**Odium Shard 1:** ${kc.toLocaleString()} KC <:Odium_shard_2:456180667412381708>`);
 						}
 						if (!loot.includes('MS1') && randomRoll === 2) {
 							loot.push('MS1');
-							lootMSG.push(`**Malediction Shard 1:** ${kc.toLocaleString()} KC <Malediction Shard 1 emote>`);
+							lootMSG.push(`**Malediction Shard 1:** ${kc.toLocaleString()} KC <:Malediction_shard_1:456180792851300352>`);
 						}
 					}
 				}
