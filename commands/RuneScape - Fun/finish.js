@@ -25,14 +25,12 @@ module.exports = class extends Command {
 				while (loot.length !== 1) {
 					kc++;
 					mc++;
-					ms = ms + Math.floor(Math.random() * 2) + 1;
+					ms += Math.floor(Math.random() * 2) + 1;
 					if (!loot.includes('PET') && roll(3000)) {
 						loot.push('PET');
 						lootMSG.push(`**Baby Mole:** ${kc.toLocaleString()} KC <:Baby_mole:324127375858204672>`);
 					}
-					if (rollX(5, 64)) {
-						yl++;
-					}
+					if (rollX(5, 64)) yl++;
 				}
 				yl *= 100;
 				return msg.send(`
@@ -725,10 +723,8 @@ ${lootMSG.join('\n')}
 							lootMSG.push(`**Uncut Onyx:** ${kc.toLocaleString()} KC <:Uncut_onyx:403059676402679808>`);
 						}
 					}
-					if (rollX(5, 128)) {
 					// This drop rate isn't confirmed, but estimated rate from https://tinyurl.com/yaugejo2
-						zs += 500;
-					}
+					if (rollX(5, 128)) zs += 500;
 				}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Zulrah <:Pet_snakeling:324127377816944642>
@@ -1090,10 +1086,10 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!
     `);
 			}
 			case 'MITHRILDRAGONS': {
-				let ap = 0;
 				// ancient page count
-				let cb = 0;
+				let ap = 0;
 				// chewed bones count
+				let cb = 0;
 				const lootMSG = [];
 				while (loot.length !== 2) {
 					kc++;
@@ -1376,8 +1372,8 @@ ${lootMSG.join('\n')}\n\nYou also received **${gd.toLocaleString()}** Granite Du
 			case 'ABBYSIRE':
 			case 'SIRE': {
 				let uns = 0;
-				let bpc = 0;
 				// Bludgeon Piece Count (0-2)
+				let bpc = 0;
 				const lootMSG = [];
 				while (loot.length !== 8) {
 					kc++;
@@ -1432,34 +1428,34 @@ ${lootMSG.join('\n')}\n\nYou also received **${gd.toLocaleString()}** Granite Du
 							}
 							if (bpc === 1) {
 								bpc++;
-								let FORCE = false;
+								let force = false;
 								if (loot.includes('BC')) {
 									const bludgRoll = Math.floor(Math.random() * 2) + 1;
 									if (bludgRoll === 1) {
 										loot.push('BA');
 										lootMSG.push(`**Bludgeon Axon:** ${kc.toLocaleString()} KC <:Bludgeon_axon:412841187259711488>`);
-										FORCE = true;
+										force = true;
 									}
 									if (bludgRoll === 2) {
 										loot.push('BS');
 										lootMSG.push(`**Bludgeon Spine:** ${kc.toLocaleString()} KC <:Bludgeon_spine:412841187284877312>`);
-										FORCE = true;
+										force = true;
 									}
 								}
-								if (loot.includes('BS') && FORCE === false) {
+								if (loot.includes('BS') && force === false) {
 									const bludgRoll = Math.floor(Math.random() * 2) + 1;
 									if (bludgRoll === 1) {
 										loot.push('BA');
 										lootMSG.push(`**Bludgeon Axon:** ${kc.toLocaleString()} KC <:Bludgeon_axon:412841187259711488>`);
-										FORCE = true;
+										force = true;
 									}
 									if (bludgRoll === 2) {
 										loot.push('BC');
 										lootMSG.push(`**Bludgeon Claw:** ${kc.toLocaleString()} KC <:Bludgeon_claw:412841187184214027>`);
-										FORCE = true;
+										force = true;
 									}
 								}
-								if (loot.includes('BA') && FORCE === false) {
+								if (loot.includes('BA') && force === false) {
 									const bludgRoll = Math.floor(Math.random() * 2) + 1;
 									if (bludgRoll === 1) {
 										loot.push('BS');
