@@ -4,7 +4,7 @@ class roll extends Extendable {
 
 	constructor(...args) {
 		super(...args, {
-			appliesTo: ['Command'],
+			appliesTo: ['Command', 'Monitor', 'Finalizer'],
 			enabled: true,
 			klasa: true
 		});
