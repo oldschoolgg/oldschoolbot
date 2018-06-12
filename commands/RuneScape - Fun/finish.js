@@ -36,8 +36,7 @@ module.exports = class extends Command {
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Giant Mole <:Baby_mole:324127375858204672>
 
-${lootMSG.join('\n')} \n\nYou also received **${mc.toLocaleString()}** Mole Claws, **${ms.toLocaleString()}** Mole Skins, and **${yl.toLocaleString()}** Yew Logs!
-		`);
+${lootMSG.join('\n')} \n\nYou also received **${mc.toLocaleString()}** Mole Claws, **${ms.toLocaleString()}** Mole Skins, and **${yl.toLocaleString()}** Yew Logs!`);
 			}
 			case 'KBD':
 			case 'KINGBLACKDRAGON': {
@@ -69,10 +68,9 @@ ${lootMSG.join('\n')} \n\nYou also received **${mc.toLocaleString()}** Mole Claw
 					}
 				}
 				return msg.send(`
-					It took you **${kc.toLocaleString()}** kills to finish King Black Dragon <:Kbd_heads:409997161393160192>
+It took you **${kc.toLocaleString()}** kills to finish King Black Dragon <:Kbd_heads:409997161393160192>
 
-					${lootMSG.join('\n')}
-					`);
+${lootMSG.join('\n')}`);
 			}
 			case 'DKS':
 			case 'DAGANNOTHKINGS':
@@ -174,8 +172,7 @@ ${lootMSG.join('\n')} \n\nYou also received **${mc.toLocaleString()}** Mole Claw
 				return msg.send(`
 It took you **${rexKC.toLocaleString()}** Rex kills, **${supKC.toLocaleString()}** Supreme kills, **${primeKC.toLocaleString()}** Prime kills to finish the Dagannoth Kings
 
-${lootMSG.join('\n')}
-		`);
+${lootMSG.join('\n')}`);
 			}
 			case 'REX':
 			case 'DAGANNOTHREX': {
@@ -205,8 +202,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Dagannoth Rex <:Pet_dagannoth_rex:324127377091330049>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'SUPREME':
 			case 'DAGANNOTHSUPREME': {
@@ -236,8 +232,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Dagannoth Supreme <:Pet_dagannoth_supreme:324127377066164245>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'PRIME':
 			case 'DAGANNOTHPRIME': {
@@ -326,8 +321,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Kalphite Queen <:Kalphite_princess_2nd_form:324127376915300352>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'BANDOS': {
 				const lootMSG = [];
@@ -406,8 +400,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Bandos <:General_Graardor:437553427468255234>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'ARMA':
 			case 'ARMADYL':
@@ -489,8 +482,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Armadyl <:Pet_kreearra:324127377305239555>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'ZAMORAK':
 			case 'KRIL':
@@ -563,8 +555,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Zamorak <:Pet_kril_tsutsaroth:324127377527406594>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'SARA':
 			case 'SARADOMIN':
@@ -635,8 +626,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Saradomin <:Pet_zilyana:324127378248957952>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'CORP': {
 				let elyKC, arcKC, specKC, petKC;
@@ -676,8 +666,7 @@ It took you **${kc.toLocaleString()}** kills to finish Corporeal Beast <:Corpore
 
 ${lootMSG.join('\n')}
 
-**Duplicates:** ${duplicates.length > 0 ? duplicates.slice(0, 10).join(' ') : 'None!'}
-  `);
+**Duplicates:** ${duplicates.length > 0 ? duplicates.slice(0, 10).join(' ') : 'None!'}`);
 			}
 			case 'ZULRAH': {
 				const lootMSG = [];
@@ -729,8 +718,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Zulrah <:Pet_snakeling:324127377816944642>
 
-${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Scales!
-		`);
+${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Scales!`);
 			}
 			case 'WINTERTODT':
 			case 'TODT':
@@ -790,8 +778,7 @@ ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Sca
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Wintertodt <:Phoenix:324127378223792129>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'RAIDS':
 			case 'OLM':
@@ -950,8 +937,9 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Vorkath <:Vorki:400713309252222977>
 
-${lootMSG.join('\n')} \n\nYou also received **${vh.toLocaleString()}** Vorkath Heads!
-		`);
+${lootMSG.join('\n')}
+
+You also received **${vh.toLocaleString()}** Vorkath Heads!`);
 			}
 			case 'OBOR':
 			case 'HILLGIANTBOSS': {
@@ -975,7 +963,7 @@ ${lootMSG.join('\n')} \n\nYou also received **${vh.toLocaleString()}** Vorkath H
 				}
 				return msg.send(`
 You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish Bryophyta! <:Bryophytas_essence:455835859799769108>
-		`);
+`);
 			}
 			case 'SHAMANS':
 			case 'LIZARDMANSHAMANS':
@@ -997,8 +985,7 @@ You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish 
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Lizardman Shamans <:Lizardman_shaman:456176702167449612>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'GORILLAS':
 			case 'DGS':
@@ -1053,8 +1040,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Demonic Gorillas <:Demonic_gorilla:456176858178912266>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'SKOTIZO': {
 				const lootMSG = [];
@@ -1082,8 +1068,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Skotizo <:Skotos:324127378890817546>
 
-${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!
-    `);
+${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`);
 			}
 			case 'MITHRILDRAGONS': {
 				// ancient page count
@@ -1115,8 +1100,7 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Mithril Dragons <:Mithril_dragon:456177739339399168>
 
-${lootMSG.join('\n')}\n\nYou also received **${ap.toLocaleString()}** Ancient Pages and **${cb.toLocaleString()}** Chewed Bones!
-		`);
+${lootMSG.join('\n')}\n\nYou also received **${ap.toLocaleString()}** Ancient Pages and **${cb.toLocaleString()}** Chewed Bones!`);
 			}
 			case 'ADAMANTDRAGONS': {
 				const lootMSG = [];
@@ -1138,8 +1122,7 @@ ${lootMSG.join('\n')}\n\nYou also received **${ap.toLocaleString()}** Ancient Pa
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Adamant Dragons <:Adamant_dragon:456178397941334016>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'RUNEDRAGONS': {
 				const lootMSG = [];
@@ -1161,8 +1144,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Rune Dragons <:Rune_dragon:456178949483921430>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'VETION': {
 				const lootMSG = [];
@@ -1188,8 +1170,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Vet'ion <:Vetion_jr:324127378999738369>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'VENENATIS': {
 				const lootMSG = [];
@@ -1215,8 +1196,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Venenatis <:Venenatis_spiderling:324127379092144129>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'CALLISTO': {
 				const lootMSG = [];
@@ -1242,8 +1222,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Callisto <:Callisto_cub:324127376273440768>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'CRAZYARCHAEOLOGIST':
 			case 'CRAZYARCH':
@@ -1270,8 +1249,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Crazy Archaeologist <:Crazy_archaeologist:456180487287996419>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'SCORPIA': {
 				const lootMSG = [];
@@ -1296,8 +1274,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Scorpia <:Scorpias_offspring:324127378773377024>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'CHAOSFANATIC': {
 				const lootMSG = [];
@@ -1322,8 +1299,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Chaos Fanatic <:Pet_chaos_elemental:324127377070227456>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'GROTESQUEGUARDIANS':
 			case 'GG':
@@ -1365,8 +1341,9 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish the Grotesque Guardians <:Noon:379595337234382848>
 
-${lootMSG.join('\n')}\n\nYou also received **${gd.toLocaleString()}** Granite Dust!
-		`);
+${lootMSG.join('\n')}
+
+You also received **${gd.toLocaleString()}** Granite Dust!`);
 			}
 			case 'ABYSSALSIRE':
 			case 'ABBYSIRE':
@@ -1487,10 +1464,11 @@ ${lootMSG.join('\n')}\n\nYou also received **${gd.toLocaleString()}** Granite Du
 					}
 				}
 				return msg.send(`
-				It took you **${kc.toLocaleString()}** kills to finish Abyssal Sire <:Abyssal_orphan:324127375774449664>
+It took you **${kc.toLocaleString()}** kills to finish Abyssal Sire <:Abyssal_orphan:324127375774449664>
 
-				${lootMSG.join('\n')}\n\nYou also received **${uns.toLocaleString()}** Unsireds!
-				`);
+${lootMSG.join('\n')}
+
+You also received **${uns.toLocaleString()}** Unsireds!`);
 			}
 			case 'KRAKEN': {
 				const lootMSG = [];
@@ -1516,8 +1494,7 @@ ${lootMSG.join('\n')}\n\nYou also received **${gd.toLocaleString()}** Granite Du
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Kraken <:Pet_kraken:324127377477206016>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'CERBERUS':
 			case 'CERB': {
@@ -1555,8 +1532,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Cerberus <:Hellpuppy:324127376185491458>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'THERMY':
 			case 'THERMONUCLEARSMOKEDEVIL':
@@ -1585,8 +1561,7 @@ ${lootMSG.join('\n')}
 				return msg.send(`
 It took you **${kc.toLocaleString()}** kills to finish Thermonuclear Smoke Devil <:Pet_smoke_devil:324127377493852162>
 
-${lootMSG.join('\n')}
-    `);
+${lootMSG.join('\n')}`);
 			}
 			case 'BARROWS': {
 				while (loot.length < 24) {
