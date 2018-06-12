@@ -670,7 +670,7 @@ ${lootMSG.join('\n')}
 			}
 			case 'ZULRAH': {
 				const lootMSG = [];
-				let zs;
+				let zs = 0;
 				while (loot.length !== 8) {
 					kc++;
 					zs += Math.floor(((Math.random() * 2) + 1) * 100);
@@ -682,7 +682,7 @@ ${lootMSG.join('\n')}
 						loot.push('JS');
 						lootMSG.push(`**Jar of swamp:** ${kc.toLocaleString()} KC <:Jar_of_swamp:403059673588170776>`);
 					}
-					if (roll(3, 277)) {
+					if (roll(3277)) {
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
 						if (!loot.includes('TM') && randomRoll === 1) {
 							loot.push('TM');
@@ -1084,7 +1084,7 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`)
 					}
 					if (!loot.includes('DFH') && roll(32768)) {
 						loot.push('DFH');
-						lootMSG.push(`**Dragon Full Helm:** ${kc.toLocaleString()} KC from a Mithril Dragon <:Lizardman_shaman:456176702167449612>`);
+						lootMSG.push(`**Dragon Full Helm:** ${kc.toLocaleString()} KC from a Mithril Dragon <:Dragon_full_helm:456177009639424020>`);
 					}
 					if (roll(64)) {
 						ap++;
