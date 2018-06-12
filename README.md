@@ -22,6 +22,7 @@ Contributors are listed in this file, and given a Contributor role in the suppor
 
   - [[gc](https://github.com/gc/oldschoolbot)] everything
   - [[Ciaran](https://github.com/ciaranlangton)] gathering quest information
+  - [[Devin](https://github.com/devin8)] adding lots of bosses and monsters to +finish command
 
 ## Notes
 
