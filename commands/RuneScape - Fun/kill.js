@@ -183,6 +183,8 @@ module.exports = class extends Command {
 				for (let i = 0; i < quantity; i++) {
 					if (this.roll(5000)) loot.push('<:Dragon_warhammer:405998717154623488>');
 					if (this.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
+					if (this.roll(400)) loot.push('<:Long_bone:421045456391634945>');
+					if (this.roll(250)) loot.push('<:Xerics_talisman_inert:456176488669249539>');
 				}
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
@@ -442,7 +444,7 @@ module.exports = class extends Command {
 				const loot = [];
 				for (let i = 0; i < quantity; i++) {
 					if (this.roll(118)) loot.push('<:Hill_giant_club:421045456194240523>');
-					if (this.roll(400)) loot.push('<:Long_bone:421045456391634945> ');
+					if (this.roll(400)) loot.push('<:Long_bone:421045456391634945>');
 					if (this.roll(5000)) loot.push('<:Curved_bone:421045456387309568>');
 					if (this.roll(5000)) loot.push('<:Hill_giant_club:421045456194240523>');
 				}
