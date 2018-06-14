@@ -34,4 +34,4 @@ class Cerberus extends Monster {
 
 }
 
-module.exports.Cerberus = Cerberus;
+module.exports = Cerberus;
