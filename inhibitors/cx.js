@@ -3,9 +3,6 @@ const { Inhibitor } = require('klasa');
 module.exports = class extends Inhibitor {
 
 	async run(msg) {
-		if (msg.author.id !== '157797566833098752') {
-			throw '<:OSRSBot:363583286192111616> Old School Bot is currently under maintenance, please try again in 5-10 minutes!';
-		}
 		if (msg.guild && msg.guild.id === '189457265730781185') return !allowed.includes(msg.author.id);
 		else return false;
 	}
