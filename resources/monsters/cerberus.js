@@ -11,10 +11,7 @@ const cerberus = {
 	},
 	randomCrystal() {
 		const keys = Object.keys(this.drops.crystals[0]);
-		console.log(keys);
 		const randomKey = keys[Math.floor(Math.random() * keys.length)];
-		console.log(keys);
-		console.log(this.drops.crystals[0][randomKey]);
 		return this.drops.crystals[0][randomKey];
 	},
 	kill(quantity) {
@@ -24,7 +21,6 @@ const cerberus = {
 			if (this.roll(2000)) loot.push(this.drops.jarOfSouls);
 			if (this.roll(3000)) loot.push(this.drops.hellpuppy);
 		}
-		console.log(loot);
 		return loot.join(' ');
 	},
 	roll(max) {
