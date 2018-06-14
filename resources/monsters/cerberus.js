@@ -26,6 +26,9 @@ const cerberus = {
 		}
 		console.log(loot);
 		return loot.join(' ');
+	},
+	roll(max) {
+		return Math.floor((Math.random() * max) + 1) === 1;
 	}
 };
 
