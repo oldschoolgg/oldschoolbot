@@ -86,7 +86,7 @@ module.exports = class extends Command {
 			case 'CERB':
 			case 'CERBERUS': {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Cerberus kills at a time!');
-				const cerb = require('../../resources/bosses/cerberus');
+				const cerb = require('../../resources/monsters/cerberus');
 				const loot = cerb.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
