@@ -1,4 +1,4 @@
-const { Command, version: klasaVersion } = require('klasa');
+const { Command, version: klasaVersion, Duration } = require('klasa');
 const { version: discordVersion } = require('discord.js');
 const moment = require('moment');
 const { MessageEmbed } = require('discord.js');
@@ -14,7 +14,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const duration = moment.duration(this.client.uptime).format(' D [days], H [hrs], m [mins], s [secs]');
+		const duration = Duration.toNow(Date.now() - (process.uptime() * 1000));
 		const g = {
 			tiny: 0,
 			small: 0,
