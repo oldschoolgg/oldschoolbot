@@ -5,7 +5,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			runIn: ['text'],
-			permLevel: 0,
+			permissionLevel: 0,
 			description: 'Set your RuneScape Username, used for other commands.',
 			usage: '[rsn:str{1,12}]'
 		});

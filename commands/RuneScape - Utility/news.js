@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 const Parser = require('rss-parser');
 const parser = new Parser();
 module.exports = class extends Command {
@@ -13,7 +14,7 @@ module.exports = class extends Command {
 	async run(msg) {
 		const feed = await parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true');
 		const news = feed.items[0];
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setTitle(news.title)
 			.setDescription(news.contentSnippet)
 			.setColor(52224)

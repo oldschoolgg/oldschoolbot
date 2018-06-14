@@ -8,7 +8,7 @@ module.exports = class extends Command {
 			description: 'Enables/disables HCIM Death Tweets from @HCIM Deaths on Twitter.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permLevel: 6
+			permissionLevel: 6
 		});
 	}
 

@@ -1,6 +1,7 @@
 const { Command } = require('klasa');
 const snekfetch = require('snekfetch');
 const cheerio = require('cheerio');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -29,7 +30,7 @@ module.exports = class extends Command {
 					info[i] = $(this).text();
 				});
 			info.shift();
-			const embed = new this.client.methods.Embed()
+			const embed = new MessageEmbed()
 				.setColor(7981338)
 				.setThumbnail('https://i.imgur.com/56i6oyn.png')
 				.setFooter(`Old School RuneScape World ${worldNumber}`, 'https://i.imgur.com/fVakfwp.png')

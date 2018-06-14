@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
 const snekfetch = require('snekfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -33,7 +34,7 @@ module.exports = class extends Command {
 				return streams;
 			});
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(8311585)
 			.setFooter('RuneScape Streamers', 'https://i.imgur.com/OQwQ8z0.jpg');
 

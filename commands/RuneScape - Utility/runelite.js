@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -11,7 +12,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setTitle('<:RuneLite:418690749719117834> RuneLite')
 			.setColor(16098851)
 			.setThumbnail('https://runelite.net/img/logo.png')

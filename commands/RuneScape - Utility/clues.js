@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -33,7 +34,7 @@ module.exports = class extends Command {
 			clues[prop].score = clues[prop].score !== -1 ? clues[prop].score.toLocaleString() : 0;
 		}
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setAuthor(username)
 			.setColor(52224)
 			.setThumbnail('https://i.imgur.com/azW3cSB.png')

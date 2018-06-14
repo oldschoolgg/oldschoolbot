@@ -1,6 +1,7 @@
 const { Command } = require('klasa');
 const snekfetch = require('snekfetch');
 const base = 'http://oldschoolrunescape.wikia.com';
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -28,7 +29,7 @@ module.exports = class extends Command {
 				throw "I couldn't find anything with that query!";
 			});
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(52224)
 			.setThumbnail(item.thumbnail)
 			.setURL(base + item.url)

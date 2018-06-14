@@ -1,6 +1,7 @@
 // NOTE: This command is being re-written in ./diarytest.js
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -348,7 +349,7 @@ module.exports = class extends Command {
 		const Varrock = Diaries[8].join(', ');
 		const Western = Diaries[9].join(', ');
 		const Wilderness = Diaries[10].join(', ');
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(11132490)
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)

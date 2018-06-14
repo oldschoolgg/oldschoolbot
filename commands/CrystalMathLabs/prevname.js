@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
 const snekfetch = require('snekfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -20,12 +21,12 @@ module.exports = class extends Command {
 			.catch(() => { throw this.client.cmlDown; });
 
 		if (result.text.replace(/\s/g, '') === '-1') {
-			const embed = new this.client.methods.Embed()
+			const embed = new MessageEmbed()
 				.setColor(8311585)
 				.setDescription(`<:CrystalMathLabs:364657225249062912> Couldn't find any previous usernames for ${username}.`);
 			return msg.send({ embed });
 		} else {
-			const embed = new this.client.methods.Embed()
+			const embed = new MessageEmbed()
 				.setColor(8311585)
 				.setDescription(`The previous name for ${username} was: **${result.text}**`);
 			return msg.send({ embed });

@@ -1,6 +1,7 @@
 const { Command, version: klasaVersion } = require('klasa');
 const { version: discordVersion } = require('discord.js');
 const moment = require('moment');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -8,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			guarded: true,
 			description: 'Displays more advanced statistics about the bot.',
-			permLevel: 10
+			permissionLevel: 10
 		});
 	}
 
@@ -65,7 +66,7 @@ Created by ${this.client.application.owner.username}
 [Invite Link](${this.client.invite})
 `;
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(14981973)
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.addField('Memory Usage', `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\n`, true)

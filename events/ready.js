@@ -1,6 +1,6 @@
 const { Event } = require('klasa');
 const he = require('he');
-
+const { MessageEmbed } = require('discord.js');
 const ALL_TWITTERS = [
 	'1894180640',
 	'184349515',
@@ -122,7 +122,7 @@ module.exports = class extends Event {
 		});
 	}
 	sendToDiscordChannels(tweet) {
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setDescription(`\n ${he.decode(tweet.description)}`)
 			.setColor(1942002)
 			.setThumbnail(tweet.thumbnail)
