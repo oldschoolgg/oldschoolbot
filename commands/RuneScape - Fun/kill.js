@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+import Cerberus from '../../resources/monsters/Cerberus';
 
 module.exports = class extends Command {
 
@@ -86,7 +87,7 @@ module.exports = class extends Command {
 			case 'CERB':
 			case 'CERBERUS': {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Cerberus kills at a time!');
-				const { Cerberus } = require('../../resources/monsters/Cerberus');
+
 
 				const loot = Cerberus.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
