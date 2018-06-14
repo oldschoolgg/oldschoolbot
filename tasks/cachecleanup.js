@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-const { Task } = require('../index');
+const { Task } = require('klasa');
 const { util: { binaryToID } } = require('discord.js');
 
 // THRESHOLD equals to 30 minutes in milliseconds:
