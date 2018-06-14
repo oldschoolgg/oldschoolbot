@@ -177,6 +177,7 @@ module.exports = class extends Command {
 			}
 			case 'LIZARDMANSHAMAN':
 			case 'LIZARDMAN':
+			case 'SHAMANS':
 			case 'SHAMAN': {
 				if (quantity > 1000) return msg.send("I can only kill 1000 Lizardman Shaman's at a time!");
 				const loot = [];
