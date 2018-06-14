@@ -11,9 +11,9 @@ class Cerberus extends Monster {
 	kill(quantity) {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
-			if (this.client.roll(128)) loot.push(this.randomCrystal());
-			if (this.client.roll(2000)) loot.push(this.drops.jarOfSouls);
-			if (this.client.roll(3000)) loot.push(this.drops.hellpuppy);
+			if (this.roll(128)) loot.push(this.randomCrystal());
+			if (this.roll(2000)) loot.push(this.drops.jarOfSouls);
+			if (this.roll(3000)) loot.push(this.drops.hellpuppy);
 		}
 		return loot.join(' ');
 	}
