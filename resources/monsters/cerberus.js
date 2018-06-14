@@ -1,4 +1,4 @@
-import Monster from './Monster';
+const Monster = require('./Monster');
 
 class Cerberus extends Monster {
 
@@ -34,4 +34,4 @@ class Cerberus extends Monster {
 
 }
 
-export default Cerberus;
+module.exports = Cerberus;
