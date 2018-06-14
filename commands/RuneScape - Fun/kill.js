@@ -131,39 +131,21 @@ module.exports = class extends Command {
 			}
 			case 'CALLISTO': {
 				if (quantity > 500) return msg.send("I can only kill 500 Callisto's at a time!");
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(2000)) loot.push('<:Callisto_cub:324127376273440768>');
-					if (this.roll(512)) loot.push('<:Tyrannical_ring:406000288290570260>');
-					if (this.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const callisto = require('../../resources/monsters/callisto');
+				const loot = callisto.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
-			case 'VETION': {
+			case 'vetion': {
 				if (quantity > 500) return msg.send("I can only kill 500 Vet'ions at a time!");
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(5000)) loot.push('<:Skeleton_champion_scroll:406002360742182913>');
-					if (this.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
-					if (this.roll(2000)) loot.push('<:Vetion_jr:324127378999738369>');
-					if (this.roll(512)) loot.push('<:Ring_of_the_gods:406002360947703808>');
-					if (this.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const callisto = require('../../resources/monsters/vetion');
+				const loot = vetion.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'VENENATIS': {
 				if (quantity > 500) return msg.send('I can only kill 100 Venenatis at a time!');
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
-					if (this.roll(2000)) loot.push('<:Venenatis_spiderling:324127379092144129>');
-					if (this.roll(512)) loot.push('<:Treasonous_ring:406008615728578561>');
-					if (this.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.roll(171)) loot.push('<:Dragon_pickaxe:406000287841779716>');
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const venenatis = require('../../resources/monsters/venenatis');
+				const loot = venenatis.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'WYVERN':
 			case 'WYVERNS': {
