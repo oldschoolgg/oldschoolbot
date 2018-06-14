@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const cerb = require('../../resources/monsters/Cerberus.js');
+const cerb = require('../../resources/monsters/Cerberus');
 
 module.exports = class extends Command {
 
