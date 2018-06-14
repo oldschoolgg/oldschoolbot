@@ -37,7 +37,25 @@ module.exports = {
 		woodcutting: '<:SkillWoodcutting:395812233130803202>',
 		hunter: '<:SkillHunter:395812233147318272>',
 		cml: '<:CrystalMathLabs:364657225249062912>',
-		clock: '<:ehpclock:352323705210142721>'
+		clock: '<:ehpclock:352323705210142721>',
+		raids: {
+			dexterousPrayerScroll: '<:Dexterous_prayer_scroll:403018312562376725>',
+			arcanePrayerScroll: '<:Arcane_prayer_scroll:403018312906309632>',
+			dragonSword: '<:Dragon_sword:403018313078145025>',
+			dragonHarpoon: '<:Dragon_harpoon:403018313115893767>',
+			dragonThrownaxe: '<:Dragon_thrownaxe:403018313187328010>',
+			twistedBuckler: '<:Twisted_buckler:403018312625291265>',
+			dragonHunterCrossbow: '<:Dragon_hunter_crossbow:403018313107636224>',
+			dinhsBulwark: '<:Dinhs_bulwark:403018312960835595>',
+			ancestralHat: '<:Ancestral_hat:403018312482684938>',
+			ancestralRobeTop: '<:Ancestral_robe_top:403018312818229248>',
+			ancestralRobeBottom: '<:Ancestral_robe_bottom:403018312734343168>',
+			dragonClaws: '<:Dragon_claws:403018313124282368>',
+			elderMaul: '<:Elder_maul:403018312247803906>',
+			kodaiInsignia: '<:Kodai_insignia:403018312264712193>',
+			twistedBow: '<:Twisted_bow:403018312402862081>',
+			olmlet: '<:Olmlet:324127376873357316>'
+		}
 	},
 	streamers: [
 		'oldschoolrs',

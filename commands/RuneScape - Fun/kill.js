@@ -86,19 +86,9 @@ module.exports = class extends Command {
 			case 'CERB':
 			case 'CERBERUS': {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Cerberus kills at a time!');
-				const CERB_CRYSTALS = [
-					'<:Smouldering_stone:403380366657978400>',
-					'<:Eternal_crystal:403380366808973312>',
-					'<:Pegasian_crystal:403380366611578891>',
-					'<:Primordial_crystal:403380366888665088>'
-				];
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(128)) loot.push(CERB_CRYSTALS[Math.floor(Math.random() * CERB_CRYSTALS.length)]);
-					if (this.roll(2000)) loot.push('<:Jar_of_souls:403383744771391490>');
-					if (this.roll(3000)) loot.push('<:Hellpuppy:324127376185491458>');
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const cerb = require('../../resources/bosses/cerberus');
+				const loot = cerb.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'ABYSSALDEMON':
 			case 'ABBYDEMON':
@@ -494,6 +484,7 @@ module.exports = class extends Command {
 	randInt(max) {
 		return Math.floor(Math.random() * max + 1);
 	}
+
 	Raids(quantity) {
 		if (quantity <= 100) {
 			const loot = [];
