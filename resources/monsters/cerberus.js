@@ -13,9 +13,9 @@ cerberus.drops = {
 };
 
 cerberus.randomCrystal = function randomCrystal() {
-	const keys = Object.keys(this.drops.crystals);
+	const keys = Object.keys(this.drops.crystals[0]);
 	const randomKey = keys[Math.floor(Math.random() * keys.length)];
-	return this.drops.crystals[randomKey];
+	return this.drops.crystals[0][randomKey];
 };
 
 cerberus.kill = function kill(quantity) {
