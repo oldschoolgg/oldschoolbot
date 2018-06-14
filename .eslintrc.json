@@ -1,3 +1,6 @@
 {
-	"extends": "klasa"
+	"extends": "klasa",
+	"parserOptions": {
+		"sourceType": "module"
+}
 }
