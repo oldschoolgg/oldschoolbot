@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -6,7 +7,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Returns a random message from someone in the channel.',
 			cooldown: 10,
-			botPerms: ['READ_MESSAGE_HISTORY']
+			requiredPermissions: ['READ_MESSAGE_HISTORY']
 		});
 	}
 
@@ -23,7 +24,7 @@ module.exports = class extends Command {
 			if (message.author.bot) continue;
 			if (message.content.replace(/\W/g, '').replace(/[0-9]/g, '').length < 20) continue;
 
-			const embed = new this.client.methods.Embed()
+			const embed = new MessageEmbed()
 				.setDescription(message.content)
 				.setAuthor(message.author.username, message.author.avatarURL());
 			return msg.send({ embed });

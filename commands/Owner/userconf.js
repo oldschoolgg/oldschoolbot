@@ -3,7 +3,7 @@ const { Command } = require('klasa');
 module.exports = class extends Command {
 
 	constructor(...args) {
-		super(...args, { permLevel: 10 });
+		super(...args, { permissionLevel: 10 });
 	}
 
 	run(msg) {

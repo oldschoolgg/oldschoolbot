@@ -1,6 +1,7 @@
 const { Command } = require('klasa');
 const Crystalmethlabs = require('crystalmethlabs');
 const osrs = new Crystalmethlabs('osrs');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -33,7 +34,7 @@ module.exports = class extends Command {
 			}
 		}
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(3120895)
 			.setFooter(`CrystalMathLabs / ${type} / ${timePeriod}`, 'https://i.imgur.com/k12Kmhg.png')
 			.setDescription(username)

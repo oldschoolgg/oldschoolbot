@@ -6,7 +6,7 @@ module.exports = class extends Command {
 		super(...args, {
 			guarded: true,
 			description: 'Generates documentation in different formats.',
-			permLevel: 10,
+			permissionLevel: 10,
 			usage: '<html|markdown|plaintext|json>',
 			subcommands: true
 		});

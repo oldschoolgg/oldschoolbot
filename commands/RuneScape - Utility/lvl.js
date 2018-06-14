@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -26,14 +27,14 @@ module.exports = class extends Command {
 			.catch(() => { throw this.client.notFound; });
 
 		if (level < 99) {
-			const embed = new this.client.methods.Embed()
+			const embed = new MessageEmbed()
 				.setColor(8311585)
 				.setDescription(
 					`**${username}**'s ${skill} level is **${level}** and is **${this.xpLeft(level, xp)}** XP away from level **${level + 1}**`
 				);
 			return msg.send({ embed });
 		} else {
-			const embed = new this.client.methods.Embed()
+			const embed = new MessageEmbed()
 				.setColor(8311585)
 				.setDescription(
 					`**${username}**'s ${skill} level is **${level}** and is **${(200000000 - xp).toLocaleString()}** XP away from **200m**`

@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -14,7 +15,7 @@ module.exports = class extends Command {
 		const item = this.client.configs.prices[name.replace(/\W/g, '').toUpperCase()];
 		if (!item) return msg.send(`Couldn't find that item.`);
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setTitle(item.name)
 			.setColor(52224)
 			.setThumbnail(`http://services.runescape.com/m=itemdb_oldschool/1521457324813_obj_big.gif?id=${item.ID}`)

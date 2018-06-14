@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
 const snekfetch = require('snekfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -19,7 +20,7 @@ module.exports = class extends Command {
 			.then(async res => await this.cmlErrorCheck(msg, res) || parseInt(res.text.split(',')[1].split('.')[0]).toLocaleString())
 			.catch(() => { throw this.client.cmlDown; });
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(3120895)
 			.setDescription(`**${username}**'s Time to 200m All is **${time}** hours.`);
 

@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
 const snekfetch = require('snekfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -20,7 +21,7 @@ module.exports = class extends Command {
 			.then(async res => await this.cmlErrorCheck(msg, res) || res.text)
 			.catch(() => { throw this.client.cmlDown; });
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(3120895)
 			.setDescription(`**${username}** was last updated **${parseInt(time / 60)}** minutes ago.`);
 		return msg.send({ embed });

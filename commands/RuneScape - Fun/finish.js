@@ -605,21 +605,21 @@ ${lootMSG.join('\n')}`);
 					// Minion Loot
 					if (!loot.includes('SS') && roll(5400)) {
 						loot.push('SS');
-						lootMSG.push(`***Saradomin Sword:*** ${kc.toLocaleString()} KC <:Saradomin_sword:403052160822280192>`);
+						lootMSG.push(`**Saradomin Sword:** ${kc.toLocaleString()} KC <:Saradomin_sword:403052160822280192>`);
 					}
 					if (roll(508)) {
 						const randomRoll = Math.floor(Math.random() * 3) + 1;
 						if (!loot.includes('GS1') && randomRoll === 1) {
 							loot.push('GS1');
-							lootMSG.push(`***Godsword Shard 1:*** ${kc.toLocaleString()} KC <:Godsword_shard_1:403049018764165121>`);
+							lootMSG.push(`**Godsword Shard 1:** ${kc.toLocaleString()} KC <:Godsword_shard_1:403049018764165121>`);
 						}
 						if (!loot.includes('GS2') && randomRoll === 2) {
 							loot.push('GS2');
-							lootMSG.push(`***Godsword Shard 2:*** ${kc.toLocaleString()} KC <:Godsword_shard_2:403049019015954462>`);
+							lootMSG.push(`**Godsword Shard 2:** ${kc.toLocaleString()} KC <:Godsword_shard_2:403049019015954462>`);
 						}
 						if (!loot.includes('GS3') && randomRoll === 3) {
 							loot.push('GS3');
-							lootMSG.push(`***Godsword Shard 3:*** ${kc.toLocaleString()} KC <:Godsword_shard_3:403049019040858112>`);
+							lootMSG.push(`**Godsword Shard 3:** ${kc.toLocaleString()} KC <:Godsword_shard_3:403049019040858112>`);
 						}
 					}
 				}

@@ -16,7 +16,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Get yourself a Fake Ely! +fakeely username kc',
 			cooldown: 3,
-			botPerms: ['ATTACH_FILES'],
+			requiredPermissions: ['ATTACH_FILES'],
 			usage: '<kc:int{1,99999999999999999}> <username:str> [...]',
 			usageDelim: ' '
 		});

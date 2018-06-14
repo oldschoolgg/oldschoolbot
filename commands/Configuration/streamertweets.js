@@ -8,7 +8,7 @@ module.exports = class extends Command {
 			description: 'Enables/disables the Streamer Tweets function which sends tweets from OSRS Streamers.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permLevel: 6
+			permissionLevel: 6
 		});
 	}
 

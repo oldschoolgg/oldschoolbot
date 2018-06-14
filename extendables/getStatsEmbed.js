@@ -1,4 +1,5 @@
 const { Extendable } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 
 class getStatsEmbed extends Extendable {
 
@@ -12,7 +13,7 @@ class getStatsEmbed extends Extendable {
 
 	async extend(username, color, { Skills }, key = 'level') {
 		const { emoji } = this.client;
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(color)
 			.setAuthor(username)
 			.addField(

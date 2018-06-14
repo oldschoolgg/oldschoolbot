@@ -1,5 +1,6 @@
 const { Command, Timestamp } = require('klasa');
 const snekfetch = require('snekfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -19,7 +20,7 @@ module.exports = class extends Command {
 
 		const creationDate = this.timestamp.display(body.created_at);
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(6570406)
 			.setThumbnail(body.logo)
 			.setAuthor(body.display_name, 'https://i.imgur.com/OQwQ8z0.jpg', body.url)

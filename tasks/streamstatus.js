@@ -1,6 +1,7 @@
 const { Task } = require('klasa');
 const snekfetch = require('snekfetch');
 const moment = require('moment');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Task {
 
@@ -14,7 +15,7 @@ module.exports = class extends Task {
 					const liveTime = moment(streams.streams[i].created_at);
 					if (moment().diff(liveTime, 'seconds') <= 630) {
 						const streamer = streams.streams[i];
-						const embed = new this.client.methods.Embed()
+						const embed = new MessageEmbed()
 							.setColor(6570406)
 							.setTitle(streamer.channel.status)
 							.setURL(streamer.channel.url)

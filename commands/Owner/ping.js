@@ -6,7 +6,7 @@ module.exports = class extends Command {
 		super(...args, {
 			guarded: true,
 			description: msg => msg.language.get('COMMAND_PING_DESCRIPTION'),
-			permLevel: 10
+			permissionLevel: 10
 		});
 	}
 

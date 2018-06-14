@@ -1,6 +1,7 @@
 // TODO: move diary requirement objects into /resources, and finish this up
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -10,7 +11,7 @@ module.exports = class extends Command {
 			aliases: ['d'],
 			description: 'Check which diaries your account has the required stats to complete',
 			usage: '[user:user|username:str]',
-			permLevel: 10
+			permissionLevel: 10
 		});
 	}
 
@@ -33,7 +34,7 @@ module.exports = class extends Command {
 		const Varrock = this.canCompleteInDiary(Skills, VarrockDiary);
 		const Western = this.canCompleteInDiary(Skills, WesternDiary);
 		const Wilderness = this.canCompleteInDiary(Skills, WildyDiary);
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(11132490)
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)

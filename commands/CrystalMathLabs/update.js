@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
 const snekfetch = require('snekfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -30,7 +31,7 @@ module.exports = class extends Command {
 			})
 			.catch(() => { throw this.client.cmlDown; });
 
-		const embed = new this.client.methods.Embed()
+		const embed = new MessageEmbed()
 			.setColor(3120895)
 			.setDescription(update);
 

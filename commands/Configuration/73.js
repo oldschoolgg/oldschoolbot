@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			description: "Enables/disables, reacts with 😂 everytime somebody says '73'.",
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permLevel: 6
+			permissionLevel: 6
 		});
 	}
 
