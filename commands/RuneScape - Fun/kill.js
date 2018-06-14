@@ -55,20 +55,9 @@ module.exports = class extends Command {
 			}
 			case 'ZULRAH': {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Zulrah kills at a time!');
-				const ZULRAH_UNIQUE = [
-					'<:Uncut_onyx:403059676402679808>',
-					'<:Magic_fang:403059673563004928>',
-					'<:Serpentine_visage:403059676016672769>',
-					'<:Tanzanite_fang:403059675979055105>'
-				];
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(128)) loot.push(ZULRAH_UNIQUE[Math.floor(Math.random() * ZULRAH_UNIQUE.length)]);
-					if (this.roll(5000)) loot.push('<:Pet_snakeling:324127377816944642>');
-					if (this.roll(3000)) loot.push('<:Jar_of_swamp:403059673588170776>');
-					if (this.roll(3277)) { loot.push(Math.random() < 0.5 ? '<:Magma_mutagen:403059676733898753>' : '<:Tanzanite_mutagen:403059676306079746>'); }
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const zulrah = require('../../resources/monsters/zulrah');
+				const loot = zulrah.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'VORKATH': {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Vorkath kills at a time!');
