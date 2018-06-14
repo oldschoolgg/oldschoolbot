@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 const { triviaQuestions } = require('../../resources/triviaQuestions.json');
 
-
 module.exports = class extends Command {
 
 	constructor(...args) {
