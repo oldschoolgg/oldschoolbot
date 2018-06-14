@@ -6,4 +6,4 @@ class Monster {
 
 }
 
-module.exports = Monster;
+module.exports.Monster = Monster;
