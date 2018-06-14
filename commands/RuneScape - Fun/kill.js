@@ -96,21 +96,21 @@ module.exports = class extends Command {
 				if (quantity > 5000) return msg.send('I can only do a maximum of 5000 Abyssal Demon kills at a time!');
 				const abbyDemon = require('../../resources/monsters/abbyDemon');
 				const loot = abbyDemon.kill(quantity);
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'DEMONICGORILLA':
 			case 'DEMONICGORILLAS': {
 				if (quantity > 500) return msg.send("I can only kill 500 Demonic Gorilla's at a time!");
 				const demonicGorilla = require('../../resources/monsters/demonicGorilla');
 				const loot = demonicGorilla.kill(quantity);
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'KQ':
 			case 'KALPHITEQUEEN': {
 				if (quantity > 500) return msg.send("I can only kill 500 Kalphite Queen's at a time!");
 				const kalphiteQueen = require('../../resources/monsters/kalphiteQueen');
 				const loot = kalphiteQueen.kill(quantity);
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'ZAMORAK':
 			case 'KRIL':
