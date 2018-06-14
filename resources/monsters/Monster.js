@@ -6,4 +6,4 @@ class Monster {
 
 }
 
-module.exports = Monster;
+export default Monster;
