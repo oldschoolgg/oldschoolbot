@@ -1,6 +1,6 @@
 const Monster = require('./Monster');
 
-class Cerberus extends Monster {
+class Cerberus {
 
 	randomCrystal() {
 		const keys = Object.keys(this.drops.crystals);
