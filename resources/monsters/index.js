@@ -1,1 +1,1 @@
-module.exports = { Cerberus: require('./Cerberus') };
+module.exports = { cerberus: require('./cerberus') };
