@@ -61,16 +61,9 @@ module.exports = class extends Command {
 			}
 			case 'VORKATH': {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Vorkath kills at a time!');
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(1000)) loot.push('<:Dragonbone_necklace:403378090740547595>');
-					if (this.roll(3000)) loot.push('<:Jar_of_decay:403378091008851968>');
-					if (this.roll(3000)) loot.push('<:Vorki:400713309252222977>');
-					if (this.roll(5000)) loot.push('<:Draconic_visage:403378090979491840>');
-					if (this.roll(5000)) loot.push('<:Skeletal_visage:403378091071766539>');
-					if (this.roll(50)) loot.push('<:Vorkaths_head:403378091046469632>');
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const zulrah = require('../../resources/monsters/zulrah');
+				const loot = zulrah.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'CERB':
 			case 'CERBERUS': {
@@ -105,17 +98,9 @@ module.exports = class extends Command {
 			case 'KRIL':
 			case 'ZAMMY': {
 				if (quantity > 500) return msg.send("I can only kill 500 K'ril Tsutsaroth's at a time!");
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(508)) loot.push('<:Staff_of_the_dead:405251862695116801>');
-					if (this.roll(406)) loot.push('<:Rune_sword:405251862674014209>');
-					if (this.roll(128)) loot.push('<:Zamorakian_spear:405251862883729418>');
-					if (this.roll(128)) loot.push('<:Steam_battlestaff:405251862451716097>');
-					if (this.roll(508)) loot.push('<:Zamorak_hilt:405251862489595905>');
-					if (this.roll(5000)) loot.push('<:Pet_kril_tsutsaroth:324127377527406594>');
-					if (this.roll(86)) loot.push(GODSWORD_SHARDS[Math.floor(Math.random() * GODSWORD_SHARDS.length)]);
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const zamorak = require('../../resources/monsters/zamorak');
+				const loot = zamorak.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'KREE':
 			case 'ARMA': {
