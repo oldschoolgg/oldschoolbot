@@ -1,4 +1,4 @@
-const cerberus = {
+const zulrah = {
 	drops: {
 		uniques: [{
 			uncutOnyx: '<:Uncut_onyx:403059676402679808>',
@@ -38,4 +38,4 @@ const cerberus = {
 	}
 };
 
-module.exports = cerberus;
+module.exports = zulrah;
