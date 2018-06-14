@@ -94,41 +94,22 @@ module.exports = class extends Command {
 			case 'ABBYDEMON':
 			case 'ABBY': {
 				if (quantity > 5000) return msg.send('I can only do a maximum of 5000 Abyssal Demon kills at a time!');
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(6000)) loot.push('<:Abyssal_demon_head:403386370707423232>');
-					if (this.roll(512)) loot.push('<:Abyssal_whip:403386370686582804>');
-					if (this.roll(32768)) loot.push('<:Abyssal_dagger:403386370388918273>');
-					if (this.roll(1200)) loot.push('<:Clue_scroll:365003979840552960>');
-				}
+				const abbyDemon = require('../../resources/monsters/abbyDemon');
+				const loot = abbyDemon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
 			case 'DEMONICGORILLA':
 			case 'DEMONICGORILLAS': {
 				if (quantity > 500) return msg.send("I can only kill 500 Demonic Gorilla's at a time!");
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(300)) loot.push('<:Zenyte_shard:405245077972320256>');
-					if (this.roll(500)) loot.push('<:Ballista_limbs:405245077280129025>');
-					if (this.roll(500)) loot.push('<:Ballista_spring:405245077590507531>');
-					if (this.roll(750)) loot.push('<:Light_frame:405245077808742400>');
-					if (this.roll(1500)) loot.push('<:Heavy_frame:405245077754216448>');
-					if (this.roll(1500)) loot.push('<:Monkey_tail:405245077670068225>');
-				}
+				const demonicGorilla = require('../../resources/monsters/demonicGorilla');
+				const loot = demonicGorilla.kill(quantity);
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
 			case 'KQ':
 			case 'KALPHITEQUEEN': {
 				if (quantity > 500) return msg.send("I can only kill 500 Kalphite Queen's at a time!");
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(3000)) loot.push('<:Kalphite_princess_2nd_form:324127376915300352>');
-					if (this.roll(2000)) loot.push('<:Jar_of_sand:405249792839647232>');
-					if (this.roll(128)) loot.push('<:Kq_head:405249792567148545>');
-					if (this.roll(100)) loot.push('<:Clue_scroll:365003979840552960>');
-					if (this.roll(256)) loot.push('<:Dragon_2h_sword:405250171593818112>');
-					if (this.roll(128)) loot.push('<:Dragon_chainbody:405250171719647232>');
-				}
+				const kalphiteQueen = require('../../resources/monsters/kalphiteQueen');
+				const loot = kalphiteQueen.kill(quantity);
 				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
 			}
 			case 'ZAMORAK':
