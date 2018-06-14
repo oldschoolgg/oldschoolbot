@@ -1,4 +1,4 @@
-const abbyDemon = {
+const zamorak = {
 	drops: {
 		shards: ['<:Godsword_shard_3:403049019040858112>',
 			'<:Godsword_shard_2:403049019015954462>',
@@ -28,4 +28,4 @@ const abbyDemon = {
 	}
 };
 
-module.exports = abbyDemon;
+module.exports = zamorak;
