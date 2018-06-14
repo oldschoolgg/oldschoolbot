@@ -125,14 +125,9 @@ module.exports = class extends Command {
 			case 'SHAMANS':
 			case 'SHAMAN': {
 				if (quantity > 1000) return msg.send("I can only kill 1000 Lizardman Shaman's at a time!");
-				const loot = [];
-				for (let i = 0; i < quantity; i++) {
-					if (this.roll(5000)) loot.push('<:Dragon_warhammer:405998717154623488>');
-					if (this.roll(5000)) loot.push('<:Curved_bone:405264444256681985>');
-					if (this.roll(400)) loot.push('<:Long_bone:421045456391634945>');
-					if (this.roll(250)) loot.push('<:Xerics_talisman_inert:456176488669249539>');
-				}
-				return msg.send(loot.length > 0 ? loot.join(' ') : 'You got nothing.');
+				const lizardmanShaman = require('../../resources/monsters/lizardmanShaman');
+				const loot = lizardmanShaman.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'CALLISTO': {
 				if (quantity > 500) return msg.send("I can only kill 500 Callisto's at a time!");
