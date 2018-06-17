@@ -29,7 +29,7 @@ const zulrah = {
 			if (this.roll(128)) loot.push(this.randomUnique());
 			if (this.roll(5000)) loot.push(this.drops.pet);
 			if (this.roll(3000)) loot.push(this.drops.jarOfSwamp);
-			if (this.roll(3277)) loot.push(this.drops.randomMutagen());
+			if (this.roll(3277)) loot.push(this.randomMutagen());
 		}
 		return loot.join(' ');
 	},
