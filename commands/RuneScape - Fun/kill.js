@@ -61,8 +61,8 @@ module.exports = class extends Command {
 			}
 			case 'VORKATH': {
 				if (quantity > 500) return msg.send('I can only do a maximum of 500 Vorkath kills at a time!');
-				const zulrah = require('../../resources/monsters/zulrah');
-				const loot = zulrah.kill(quantity);
+				const vorkath = require('../../resources/monsters/vorkath');
+				const loot = vorkath.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'CERB':
