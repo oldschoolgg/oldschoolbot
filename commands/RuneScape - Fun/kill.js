@@ -135,9 +135,9 @@ module.exports = class extends Command {
 				const loot = callisto.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
-			case 'vetion': {
+			case 'VETION': {
 				if (quantity > 500) return msg.send("I can only kill 500 Vet'ions at a time!");
-				const callisto = require('../../resources/monsters/vetion');
+				const vetion = require('../../resources/monsters/vetion');
 				const loot = vetion.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
