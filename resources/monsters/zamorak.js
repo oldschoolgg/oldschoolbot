@@ -5,10 +5,10 @@ const zamorak = {
 			'<:Godsword_shard_1:403049018764165121>'],
 		pet: '<:Pet_kril_tsutsaroth:324127377527406594>',
 		staffOfTheDead: '<:Staff_of_the_dead:405251862695116801>',
-		runeSword: '<:Abyssal_whip:403386370686582804>',
-		zamorakianSpear: '<:Abyssal_dagger:403386370388918273>',
-		steamBattlestaff: '<:Clue_scroll:365003979840552960>',
-		zamorakHilt: '<:Pet_kril_tsutsaroth:324127377527406594>'
+		runeSword: '<:Rune_sword:405251862674014209>',
+		zamorakianSpear: '<:Zamorakian_spear:405251862883729418>',
+		steamBattlestaff: '<:Steam_battlestaff:405251862451716097>',
+		zamorakHilt: '<:Zamorak_hilt:405251862489595905>'
 	},
 	kill(quantity) {
 		const loot = [];
