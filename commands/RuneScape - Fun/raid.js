@@ -24,7 +24,6 @@ class RaidsUtil {
 	static raid(points) {
 		const chances = RaidsUtil.calculateChance(points);
 		const loot = RaidsUtil.rollLoot(chances);
-		console.log(loot);
 		return RaidsUtil.formatReply(points, chances, loot);
 	}
 
