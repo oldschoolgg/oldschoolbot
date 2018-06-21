@@ -34,7 +34,7 @@ const raids = {
 		elderMaul: 47000000,
 		kodaiInsignia: 105000000,
 		twistedBow: 1000000000,
-		olmlet: 0
+		pet: 0
 	},
 	kill(quantity) {
 		if (quantity <= 100) {
@@ -119,14 +119,14 @@ const raids = {
 			elderMaul: 0,
 			kodaiInsignia: 0,
 			twistedBow: 0,
-			olmlet: 0
+			pet: 0
 		};
 		const displayLoot = [];
 		let totalValue = 0;
 
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(25)) {
-				if (this.roll(65)) loot.olmlet++;
+				if (this.roll(65)) loot.pet++;
 				const number = (Math.random() * 100).toFixed(2);
 				switch (true) {
 					case number < 23.81:
