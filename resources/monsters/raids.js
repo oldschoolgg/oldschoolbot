@@ -18,6 +18,7 @@ const raids = {
 		kodaiInsignia: '<:Kodai_insignia:403018312264712193>',
 		twistedBow: '<:Twisted_bow:403018312402862081>'
 	},
+	// The GP value of the items
 	priceMap: {
 		dexterousPrayerScroll: 75000000,
 		arcanePrayerScroll: 10000000,
