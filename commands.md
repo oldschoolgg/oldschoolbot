@@ -1,46 +1,6 @@
 # ![Old School Bot](https://cdn.discordapp.com/avatars/303730326692429825/616f167fd3b0cc08c9fad505629cbc7d.png?size=32) Old School Bot  
 
 # Commands
-## CrystalMathLabs / 11 Commands
-| Command Name | Aliases  | Description              |
-|--------------|----------|--------------------------|
-| +200all |  | Shows the Time to 200m all of an account |
-| +ehp |  | Shows the EHP stats of an account |
-| +lastcheck |  | Checks when a CML Account was last updated. |
-| +prevname |  | Checks what the previous name of a player was. |
-| +ranks |  | Shows the ranks of an account |
-| +track |  | Tracks gains on an account. |
-| +records |  | CML Records for an account, in a period of day, week or month. |
-| +ttm |  | Shows the Time to Max of an account |
-| +update |  | Update a CML profile. |
-| +current |  | Shows the current records. |
-| +gains |  | Shows the ranks of an account |
-## Configuration / 10 Commands
-| Command Name | Aliases  | Description              |
-|--------------|----------|--------------------------|
-| +autoupdate |  | Automatically update your connected (+setrsn) account on CML every hour. |
-| +73 |  | Enables/disables, reacts with 😂 everytime somebody says '73'. |
-| +cmd |  | Enable and Disable certain bot commands in your guild. Admins only. |
-| +prefix |  | Change the command prefix the bot uses in your server. |
-| +setrsn |  | Set your RuneScape Username, used for other commands. |
-| +streamertweets |  | Enables/disables the Streamer Tweets function which sends tweets from OSRS Streamers. |
-| +twitchnotifications | tn | Enables/disables the Twitch Notifications function which sends tweets from OSRS Streamers. |
-| +tweets |  | Enables/disables the JMod Tweets function which sends tweets from OSRS JMods. |
-| +hcimdeaths |  | Enables/disables HCIM Death Tweets from @HCIM Deaths on Twitter. |
-| +petmessages |  | Enables/disables Pet Messages, which rolls a chance at a pet on every message in a channel. |
-## Utility / 10 Commands
-| Command Name | Aliases  | Description              |
-|--------------|----------|--------------------------|
-| +followage |  | Shows the followage of a given user from a given twitch channel. |
-| +github |  | Temporary poll. |
-| +invite |  | Sends the invite link for the bot. |
-| +help | commands | Get a list of commands for the bot. |
-| +server |  | Get information on a mentioned user. |
-| +support |  | Displays the Support Server invite link. |
-| +twitch |  | Returns information on a Twitch.tv Account |
-| +user |  | Get information on a mentioned user. |
-| +wp |  | Finds a Wikipedia Article by title. |
-| +info |  | Displays information about the bot. |
 ## RuneScape - Fun / 17 Commands
 | Command Name | Aliases  | Description              |
 |--------------|----------|--------------------------|
@@ -89,6 +49,46 @@
 | +xpto99 |  | Shows how much XP you have left until 99 in all skills. |
 | +wiki | w | Search the OSRS Wikipedia for an article. |
 | +xp |  | Shows your XP in all skills. |
+## CrystalMathLabs / 11 Commands
+| Command Name | Aliases  | Description              |
+|--------------|----------|--------------------------|
+| +200all |  | Shows the Time to 200m all of an account |
+| +ehp |  | Shows the EHP stats of an account |
+| +lastcheck |  | Checks when a CML Account was last updated. |
+| +prevname |  | Checks what the previous name of a player was. |
+| +ranks |  | Shows the ranks of an account |
+| +track |  | Tracks gains on an account. |
+| +records |  | CML Records for an account, in a period of day, week or month. |
+| +ttm |  | Shows the Time to Max of an account |
+| +update |  | Update a CML profile. |
+| +current |  | Shows the current records. |
+| +gains |  | Shows the ranks of an account |
+## Configuration / 10 Commands
+| Command Name | Aliases  | Description              |
+|--------------|----------|--------------------------|
+| +autoupdate |  | Automatically update your connected (+setrsn) account on CML every hour. |
+| +73 |  | Enables/disables, reacts with 😂 everytime somebody says '73'. |
+| +cmd |  | Enable and Disable certain bot commands in your guild. Admins only. |
+| +prefix |  | Change the command prefix the bot uses in your server. |
+| +setrsn |  | Set your RuneScape Username, used for other commands. |
+| +streamertweets |  | Enables/disables the Streamer Tweets function which sends tweets from OSRS Streamers. |
+| +twitchnotifications | tn | Enables/disables the Twitch Notifications function which sends tweets from OSRS Streamers. |
+| +tweets |  | Enables/disables the JMod Tweets function which sends tweets from OSRS JMods. |
+| +hcimdeaths |  | Enables/disables HCIM Death Tweets from @HCIM Deaths on Twitter. |
+| +petmessages |  | Enables/disables Pet Messages, which rolls a chance at a pet on every message in a channel. |
+## Utility / 10 Commands
+| Command Name | Aliases  | Description              |
+|--------------|----------|--------------------------|
+| +followage |  | Shows the followage of a given user from a given twitch channel. |
+| +github |  | Temporary poll. |
+| +invite |  | Sends the invite link for the bot. |
+| +help | commands | Get a list of commands for the bot. |
+| +server |  | Get information on a mentioned user. |
+| +support |  | Displays the Support Server invite link. |
+| +twitch |  | Returns information on a Twitch.tv Account |
+| +user |  | Get information on a mentioned user. |
+| +wp |  | Finds a Wikipedia Article by title. |
+| +info |  | Displays information about the bot. |
 ## Fun / 5 Commands
 | Command Name | Aliases  | Description              |
 |--------------|----------|--------------------------|
