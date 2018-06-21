@@ -10,10 +10,12 @@ const demonicGorilla = {
 	kill(quantity) {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
-			if (this.roll(6000)) loot.push(this.drops.abyssalDemonHead);
-			if (this.roll(512)) loot.push(this.drops.abyssalWhip);
-			if (this.roll(32768)) loot.push(this.drops.abyssalDagger);
-			if (this.roll(1200)) loot.push(this.drops.clueScroll);
+			if (this.roll(300)) loot.push(this.drops.zenyteShard);
+			if (this.roll(500)) loot.push(this.drops.ballistaLimbs);
+			if (this.roll(500)) loot.push(this.drops.ballistaSpring);
+			if (this.roll(750)) loot.push(this.drops.lightFrame);
+			if (this.roll(1500)) loot.push(this.drops.heavyFrame);
+			if (this.roll(1500)) loot.push(this.drops.monkeyTail);
 		}
 		return loot.join(' ');
 	},
