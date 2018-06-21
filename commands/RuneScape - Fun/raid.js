@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const { emoji } = require('../../.config');
+const RaidsEmojis = require('../../resources/monsters/raids').drops;
 
 module.exports = class extends Command {
 
@@ -66,13 +66,13 @@ class RaidsUtil {
 		];
 
 		chances.forEach((chance, i) => {
-			const drop = loot[i] ? `${loot[i].name} ${emoji.raids[loot[i].shortName]}` : 'You no lucky';
+			const drop = loot[i] ? `${loot[i].name} ${RaidsEmojis[loot[i].shortName]}` : 'You no lucky';
 			const prefix = chances.length > 1 ? `Roll ${i + 1}:` : '';
 			const dropChance = Math.round(chance * 100);
 			reply.push(`${prefix} ${dropChance}% chance for a drop - ${drop}`);
 
 			if (loot[i] && loot[i].olmlet) {
-				reply.push(`${emoji.raids.olmlet}`);
+				reply.push(`${RaidsEmojis.pet}`);
 			}
 		});
 
