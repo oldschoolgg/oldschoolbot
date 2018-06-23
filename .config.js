@@ -90,11 +90,11 @@ module.exports = {
 		'gunschilli',
 		'skillspecs',
 		'hey_jase',
-		'ItsKosmik',
-		'PeeJay',
-		'Mal3610',
-		'Mynetworkisdown',
-		'EllisOSRS',
-		'Tolsdork'
+		'itskosmik',
+		'peejay',
+		'mal3610',
+		'mynetworkisdown',
+		'ellisosrs',
+		'tolsdork'
 	]
 };
