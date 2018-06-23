@@ -7,8 +7,10 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 1,
 			description: 'Roll on the raids drop table based on the number of points specified',
-			usage: '<points:int{1}>',
-			usageDelim: ' '
+
+			// Allow rolls to 1,710,000 points, which is the value that all 3
+			// loot rolls cap at 80% chance for a drop
+			usage: '<points:int{1,1710000}>'
 		});
 	}
 
@@ -67,9 +69,9 @@ class RaidsUtil {
 
 		chances.forEach((chance, i) => {
 			const drop = loot[i] ? `${loot[i].name} ${RaidsEmojis[loot[i].shortName]}` : 'You no lucky';
-			const prefix = chances.length > 1 ? `Roll ${i + 1}:` : '';
+			const prefix = chances.length > 1 ? `Roll ${i + 1}: ` : '';
 			const dropChance = Math.round(chance * 100);
-			reply.push(`${prefix} ${dropChance}% chance for a drop - ${drop}`);
+			reply.push(`${prefix}${dropChance}% chance for a drop - ${drop}`);
 
 			if (loot[i] && loot[i].olmlet) {
 				reply.push(`${RaidsEmojis.pet}`);
