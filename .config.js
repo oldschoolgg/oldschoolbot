@@ -89,6 +89,12 @@ module.exports = {
 		'bikers',
 		'gunschilli',
 		'skillspecs',
-		'hey_jase'
+		'hey_jase',
+		'ItsKosmik',
+		'PeeJay',
+		'Mal3610',
+		'Mynetworkisdown',
+		'EllisOSRS',
+		'Tolsdork'
 	]
 };
