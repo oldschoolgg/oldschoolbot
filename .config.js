@@ -88,6 +88,7 @@ module.exports = {
 		'btcs',
 		'bikers',
 		'gunschilli',
-		'skillspecs'
+		'skillspecs',
+		'hey_jase'
 	]
 };
