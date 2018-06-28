@@ -8,8 +8,7 @@ module.exports = class extends Command {
 
 	async run(msg) {
 		return msg.send(`
-Add me to your server with this link:
-<https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=281600>`);
+Add me to your server with this link: <http://bit.ly/2lDw8e7>`);
 	}
 
 };
