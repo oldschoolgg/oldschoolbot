@@ -13,10 +13,10 @@ const grotesqueGuardians = {
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(5000)) loot.push(this.drops.jarOfStone);
 			if (this.roll(3000)) loot.push(this.drops.pet);
-			if (this.roll(1000)) loot.push(this.drops.blackTourmalineCore);
-			if (this.roll(750)) loot.push(this.drops.graniteRing);
-			if (this.roll(500)) loot.push(this.drops.graniteGloves);
-			if (this.roll(500)) loot.push(this.drops.graniteHammer);
+			if (this.roll(500)) loot.push(this.drops.blackTourmalineCore);
+			if (this.roll(375)) loot.push(this.drops.graniteRing);
+			if (this.roll(250)) loot.push(this.drops.graniteGloves);
+			if (this.roll(250)) loot.push(this.drops.graniteHammer);
 			if (this.roll(230)) loot.push(this.drops.clueScroll);
 		}
 		return loot.join(' ');
