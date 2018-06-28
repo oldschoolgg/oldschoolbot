@@ -11,13 +11,15 @@ module.exports = class extends Command {
 
 	async run(msg) {
 		return msg.send(`
-Old School Bot is a Discord Bot based upon Old School RuneScape.
+Old School Bot is an open-source Discord Bot based on Old School RuneScape.
 
- - Support server: <https://discordapp.com/invite/WJWmAuJ>
+	- Github/Code: <https://github.com/gc/oldschoolbot/> ⭐
 
- - Old School Bot uses Klasa, a Discord Bot framework.
+	- Old School Bot uses Klasa, a Discord Bot framework.
 
- - If you have any other enquiries, join the support server!
+	- If you have any other enquiries, join the support server!
+
+	- Support Server: https://discord.gg/ypZbV7c
 `);
 	}
 
