@@ -3,7 +3,7 @@ const { Command } = require('klasa');
 module.exports = class extends Command {
 
 	constructor(...args) {
-		super(...args, { description: 'Temporary poll.' });
+		super(...args, { description: 'Shows the Github link.' });
 	}
 
 	async run(msg) {
