@@ -2,7 +2,7 @@
   "dependencies": {
     "canvas": "^2.0.0-alpha.12",
     "cheerio": "^1.0.0-rc.2",
-    "crystalmethlabs": "^1.0.0",
+    "crystalmethlabs": "github:gc/crystalmethlabs",
     "discord.js": "discordjs/discord.js",
     "he": "^1.1.1",
     "klasa": "github:dirigeants/klasa",

@@ -175,9 +175,9 @@ cryptiles@3.x.x:
   dependencies:
     boom "5.x.x"
 
-crystalmethlabs@^1.0.0:
+"crystalmethlabs@github:gc/crystalmethlabs":
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/crystalmethlabs/-/crystalmethlabs-1.0.0.tgz#eaa3831fd2be33e180f34ee7c8421c655f0ae942"
+  resolved "https://codeload.github.com/gc/crystalmethlabs/tar.gz/2181d135cf2ea494b9f3d72871ae9fd95508f4d9"
   dependencies:
     got "^8.3.0"
 
@@ -575,9 +575,9 @@ keyv@3.0.0:
   dependencies:
     json-buffer "3.0.0"
 
-"klasa@github:dirigeants/klasa#8b7a8f56b9571982334f5f3ce4cb28887224cbd1":
+"klasa@github:dirigeants/klasa":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/8b7a8f56b9571982334f5f3ce4cb28887224cbd1"
+  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/ffeebc53431d97cb15ca0b331e30aca4f29b8a04"
   dependencies:
     fs-nextra "^0.3.2"
 

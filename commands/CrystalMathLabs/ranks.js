@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		const { emoji } = this.client;
 
 		const { err, stats } = await osrs.stats(username);
-		if (err) return this.cmlErrorCheck(msg, err);
+		if (err) return msg.send(err);
 
 		for (const skill in stats) {
 			if (stats[skill].rank !== undefined) stats[skill].rank = stats[skill].rank.toLocaleString();
