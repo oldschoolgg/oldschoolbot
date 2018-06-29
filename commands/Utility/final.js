@@ -13,7 +13,8 @@ module.exports = class extends Command {
 	async run(msg) {
 		const timeUntil = moment(new Date(1529778600 * 1000)).format('HH [hours] [and] mm [minutes]');
 		return msg.send(`
-**Permadeath Stage:** ${timeUntil}
+**The Permadeath Stage starts in ${timeUntil}.**
+
 **Stream:** <http://www.twitch.tv/oldschoolrs>
 **Seasonals:** Immediately after the tournament finishes
 **Total Prize:** $32,000
