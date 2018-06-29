@@ -11,9 +11,11 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const timeUntil = moment(new Date(1529778600 * 1000)).format('HH [hours] [and] mm [minutes]');
+		const time = new Date(1530383400 * 1000);
+		const now = new Date();
+		const difference = time - now;
 		return msg.send(`
-**The Permadeath Stage starts in ${timeUntil}.**
+**The Permadeath Stage starts in ${Math.floor((difference / 1000) / 60 / 60)} hours.**
 
 **Stream:** <http://www.twitch.tv/oldschoolrs>
 **Seasonals:** Immediately after the tournament finishes
