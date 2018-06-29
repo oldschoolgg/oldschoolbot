@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		username = username.join(' ');
 
 		const { err, stats } = await osrs.track(username, this.client.timePeriods[timePeriod]);
-		if (err) return msg.send(err);
+		if (err) return this.cmlErrorCheck(msg, err);
 
 		if (type === 'xpGained') {
 			for (const skill in stats) {

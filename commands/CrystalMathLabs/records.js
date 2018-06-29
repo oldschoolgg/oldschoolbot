@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		username = username.join(' ');
 
 		const { err, records } = await osrs.recordsOfPlayer(username);
-		if (err) return msg.send(err);
+		if (err) return this.cmlErrorCheck(msg, err);
 
 		for (const skill in records) {
 			records[skill][timePeriod] = records[skill][timePeriod].toLocaleString();

@@ -19,7 +19,7 @@ module.exports = class extends Command {
 
 	async run(msg, [skill, timePeriod, ...username]) {
 		const { err, stats } = await osrs.track(username, this.client.timePeriods[timePeriod]);
-		if (err) return msg.send(err);
+		if (err) return this.cmlErrorCheck(msg, err);
 
 		username = username.join(' ');
 
