@@ -11,7 +11,13 @@ class cmlErrorCheck extends Extendable {
 	}
 
 	async extend(msg, res) {
-		switch (res.text.replace(/\s/g, '')) {
+		let text;
+		if (!res.text) {
+			text = res;
+		} else {
+			text = res.text.replace(/\s/g, '');
+		}
+		switch (text) {
 			case '-1':
 			case 'User not in database':
 				throw 'That user does not exist in the CrystalMathLabs database. Have you tried using +update?';
