@@ -22,7 +22,7 @@ module.exports = class extends Command {
 	}
 
 	getOsbPlayerCount() {
-		return get('https://rsbuddy.com/stats.json').then(res => res.body.ingame);
+		return get('https://rsbuddy.com/stats.json').then(res => res.body.inGame);
 	}
 
 	getRunelitePlayerCount() {
@@ -39,8 +39,8 @@ module.exports = class extends Command {
 		return msg.send(`
 There are ${total.toLocaleString()} players ingame!
 
-**RuneLite:** ${runelite} clients open
-**OSBuddy:** ${osb} clients open
+**RuneLite:** ${runelite.toLocaleString()} clients open
+**OSBuddy:** ${osb.toLocaleString()} clients open
 `);
 	}
 
