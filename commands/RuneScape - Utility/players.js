@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const { get } = require('snekfetch');
 
 module.exports = class extends Command {
 
@@ -10,15 +10,38 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg) {
-		const playerCount = await snekfetch.get('http://oldschool.runescape.com/slu').then(
+	getPlayerCount() {
+		return get('http://oldschool.runescape.com/slu').then(
 			res =>
 				res.body
 					.toString()
 					.split("<p class='player-count'>")[1]
 					.split('</p>')[0]
+					.replace(/\D/g, '')
 		);
-		return msg.send(playerCount);
+	}
+
+	getOsbPlayerCount() {
+		return get('https://rsbuddy.com/stats.json').then(res => res.body.ingame);
+	}
+
+	getRunelitePlayerCount() {
+		return get('https://api.runelite.net/runelite-1.4.5/session/count').then(res => res.body.toString());
+	}
+
+	async run(msg) {
+		const [
+			total,
+			osb,
+			runelite
+		] = await Promise.all([this.getPlayerCount(), this.getOsbPlayerCount(), this.getRunelitePlayerCount()]);
+
+		return msg.send(`
+There are ${total.toLocaleString()} players ingame!
+
+**RuneLite:** ${runelite} clients open
+**OSBuddy:** ${osb} clients open
+`);
 	}
 
 };
