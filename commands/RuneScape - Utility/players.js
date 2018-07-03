@@ -39,7 +39,7 @@ module.exports = class extends Command {
 		return msg.send(`
 There are ${total.toLocaleString()} players ingame!
 
-**RuneLite:** ${runelite.toLocaleString()} clients open
+**RuneLite:** ${parseInt(runelite).toLocaleString()} clients open
 **OSBuddy:** ${osb.toLocaleString()} clients open
 `);
 	}
