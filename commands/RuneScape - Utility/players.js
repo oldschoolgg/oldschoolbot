@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		] = await Promise.all([this.getPlayerCount(), this.getOsbPlayerCount(), this.getRunelitePlayerCount()]);
 
 		return msg.send(`
-There are ${total.toLocaleString()} players ingame!
+There are ${parseInt(total).toLocaleString()} players ingame!
 
 **RuneLite:** ${parseInt(runelite).toLocaleString()} clients open
 **OSBuddy:** ${osb.toLocaleString()} clients open
