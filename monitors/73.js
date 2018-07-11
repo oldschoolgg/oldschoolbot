@@ -7,9 +7,10 @@ module.exports = class extends Monitor {
 	}
 
 	async run(msg) {
-		if (!msg.content.includes(' 73') || !msg.guild) return;
-		if (!msg.guild.configs.joyReactions) return;
-		msg.react('😂').catch(() => null);
+		if (!msg.guild || !msg.guild.configs.joyReactions) return;
+		if (msg.content.includes(' 73') || msg.content === '73') {
+			msg.react('😂').catch(() => null);
+		}
 	}
 
 	async init() {
