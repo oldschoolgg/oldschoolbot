@@ -9,31 +9,30 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 5,
 			description: 'Returns information on a OSRS World.',
-			usage: '<worldNumber:int>'
+			usage: '<world:int>'
 		});
 	}
 
-	async run(msg, [worldNumber]) {
-		if (!(worldNumber > 0 && worldNumber < 95) || (worldNumber < 113 && worldNumber > 99)) return msg.send('Invalid world number.');
-
-		worldNumber += 300;
-		const worldSelector = `#slu-world-${worldNumber}`;
-
+	async run(msg, [world]) {
+		const worldSelector = `#slu-world-${world > 200 ? world : world + 300}`;
 		const info = [];
-		snekfetch.get('http://oldschool.runescape.com/slu').then(r => {
-			const $ = cheerio.load(r.text);
-			const i = $(worldSelector)
+		snekfetch.get('http://oldschool.runescape.com/slu').then(res => {
+			const worlds = cheerio.load(res.text);
+			worlds(worldSelector)
 				.parent()
 				.parent()
 				.children()
 				.each(function (i, elem) {
-					info[i] = $(this).text();
+					info[i] = worlds(this).text();
 				});
 			info.shift();
+
+			if (!info[0]) return msg.send("That's an invalid world!");
+
 			const embed = new MessageEmbed()
 				.setColor(7981338)
 				.setThumbnail('https://i.imgur.com/56i6oyn.png')
-				.setFooter(`Old School RuneScape World ${worldNumber}`, 'https://i.imgur.com/fVakfwp.png')
+				.setFooter(`Old School RuneScape World ${world}`, 'https://i.imgur.com/fVakfwp.png')
 				.addField('Access', info[2], true)
 				.addField('Location', info[1], true)
 				.addField('Players', info[0].split(' ')[0], true)
