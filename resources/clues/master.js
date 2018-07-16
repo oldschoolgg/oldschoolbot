@@ -21,7 +21,7 @@ const elite = {
 		samuraiArmor: [
 			'<:Samurai_boots:468289924622450689>',
 			'<:Samurai_gloves:468289924282580993>',
-			'<:Samurai_greaves:468289924836229130',
+			'<:Samurai_greaves:468289924836229130>',
 			'<:Samurai_kasa:468289924735565828>',
 			'<:Samurai_shirt:468289924630839327>'
 		],
