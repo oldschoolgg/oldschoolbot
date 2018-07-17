@@ -10,8 +10,7 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['d'],
 			description: 'Check which diaries your account has the required stats to complete',
-			usage: '[user:user|username:str]',
-			permissionLevel: 10
+			usage: '[user:user|username:str]'
 		});
 	}
 
