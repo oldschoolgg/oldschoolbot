@@ -1,20 +1,20 @@
 const { Command } = require('klasa');
+const master = require('../../resources/clues/master');
+const medium = require('../../resources/clues/medium');
 
 module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Random Mod Ash gif.',
+			description: 'Simulate rare drops from clue scrolls',
 			usage: '<easy|medium|elite|master> <quantity:int>',
 			usageDelim: ' '
 		});
 	}
 
 	async run(msg, [tier, quantity]) {
-		if (tier !== 'master') return msg.send('Only Master Clue scrolls are available at the moment!');
-		if (quantity > 100) return msg.send('I can only do 100 Master Clues at a time!');
-		const master = require('../../resources/clues/master');
-		const loot = master.open(quantity);
+		if (quantity > 100) return msg.send('I can only do 100 Clues at a time!');
+		const loot = [tier].open(quantity);
 		return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 	}
 
