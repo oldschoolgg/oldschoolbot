@@ -46,6 +46,7 @@ new OldSchoolBot({
 	messageCacheLifetime: 60,
 	messageSweepInterval: 60,
 	prefix: '+',
+	shardCount: 'auto',
 	providers: { default: 'rethinkdb' },
 	pieceDefaults: { commands: { deletable: true } },
 	readyMessage: client => `[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
