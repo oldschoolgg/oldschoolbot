@@ -1,6 +1,8 @@
 const { Event } = require('klasa');
 const he = require('he');
 const { MessageEmbed } = require('discord.js');
+const DBL = require('dblapi.js');
+
 const ALL_TWITTERS = [
 	'1894180640',
 	'184349515',
@@ -144,6 +146,14 @@ module.exports = class extends Event {
 			}*/
 			guild.channels.get(guild.configs[key]).send({ embed });
 			return null;
+		});
+	}
+
+	async init() {
+		const dbl = new DBL(this.client.dblToken, { webhookPort: 8000, webhookAuth: this.client.dblAuth });
+		dbl.webhook.on('vote', async vote => {
+			const user = await this.client.users.fetch(vote.user);
+			this.client.voteLogs.send(`${user} just voted for Old School Bot! Thank you <:Smiley:420283725469974529>`);
 		});
 	}
 
