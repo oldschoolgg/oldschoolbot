@@ -1,6 +1,12 @@
 module.exports = {
 	token: ``,
+	dblToken: ``,
+	dblAuth: ``,
 	guildLogs: {
+		id: '',
+		token: ''
+	},
+	voteLogs: {
 		id: '',
 		token: ''
 	},

@@ -1,6 +1,6 @@
 const { Client } = require('klasa');
 const Discord = require('discord.js');
-const { token, emoji, streamers, guildLogs, twitchClientID, twitterApp } = require('./config');
+const { token, emoji, streamers, guildLogs, voteLogs, twitchClientID, twitterApp, dblToken, dblAuth } = require('./config');
 
 class OldSchoolBot extends Client {
 
@@ -9,7 +9,10 @@ class OldSchoolBot extends Client {
 		this.emoji = emoji;
 		this.streamers = streamers;
 		this.guildLogs = new Discord.WebhookClient(guildLogs.id, guildLogs.token);
+		this.voteLogs = new Discord.WebhookClient(voteLogs.id, voteLogs.token);
 		this.twitchClientID = twitchClientID;
+		this.dblToken = dblToken;
+		this.dblAuth = dblAuth;
 		this.timePeriods = {
 			day: 86400,
 			week: 604800,

@@ -3,6 +3,7 @@
     "canvas": "^2.0.0-alpha.12",
     "cheerio": "^1.0.0-rc.2",
     "crystalmethlabs": "github:gc/crystalmethlabs",
+    "dblapi.js": "^2.1.0",
     "discord.js": "github:bdistin/discord.js#i-s",
     "he": "^1.1.1",
     "klasa": "github:dirigeants/klasa",
