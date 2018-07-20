@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const { get } = require('snekfetch');
 
 module.exports = class extends Command {
 
@@ -12,7 +12,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [search, index = 1]) {
-		const { body } = await snekfetch.get(`http://api.urbandictionary.com/v0/define?term=${encodeURIComponent(search)}`);
+		const { body } = await get(`http://api.urbandictionary.com/v0/define?term=${encodeURIComponent(search)}`);
 
 		const definition = this.getDefinition(search, body, --index);
 		return msg.sendMessage(definition);
@@ -30,7 +30,6 @@ module.exports = class extends Command {
 			`\n**Example:**\n${result.example}`,
 			`\n**${result.thumbs_up}** 👍 | **${result.thumbs_down}** 👎`,
 			`\n*By ${result.author}*`,
-			`\n**Tags**: ${body.tags.join(', ')}`,
 			`<${result.permalink}>`
 		].join('\n');
 	}
