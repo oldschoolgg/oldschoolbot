@@ -1,6 +1,7 @@
 const { Event } = require('klasa');
 const he = require('he');
 const { MessageEmbed } = require('discord.js');
+const Twit = require('twit');
 const DBL = require('dblapi.js');
 
 const ALL_TWITTERS = [
@@ -99,7 +100,9 @@ module.exports = class extends Event {
 		super(...args, { once: true });
 	}
 	run() {
-		const Twit = require('twit');
+		const dbl = new DBL(this.client.dblToken, { webhookPort: 8000, webhookAuth: this.client.dblAuth });
+		dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
+
 		const twitter = new Twit(this.client.twitterApp);
 
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
@@ -125,6 +128,7 @@ module.exports = class extends Event {
 			}
 		});
 	}
+
 	sendToDiscordChannels(tweet) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${he.decode(tweet.description)}`)
@@ -147,13 +151,6 @@ module.exports = class extends Event {
 			guild.channels.get(guild.configs[key]).send({ embed });
 			return null;
 		});
-	}
-
-	async init() {
-		const dbl = new DBL(this.client.dblToken, { webhookPort: 8000, webhookAuth: this.client.dblAuth });
-		console.log(dbl);
-		dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
-		console.log(this.client.tasks.get('vote'));
 	}
 
 };
