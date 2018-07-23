@@ -4,16 +4,31 @@ const { MessageEmbed } = require('discord.js');
 module.exports = class extends Command {
 
 	constructor(...args) {
-		super(...args, { description: 'Simulates Dicing from Runescape.' });
+		super(...args, {
+			description: 'Simulates dice rolls from Runescape.',
+			usage: '[amount:int]'
+		});
 	}
 
-	async run(msg) {
+	async run(msg, [amount]) {
+		const roll = Math.floor(Math.random() * 100) + 1;
+		const gp = msg.author.configs.GP;
 		const embed = new MessageEmbed()
 			.setColor(39168)
 			.setThumbnail('https://i.imgur.com/sySQkSX.png')
-			.setTitle('Dice Roll')
-			.setDescription(`You rolled [**${Math.floor(Math.random() * 100) + 1}**]() on the percentile dice.`);
-
+			.setTitle('Dice Roll');
+		if (!amount) {
+			embed.setDescription(`You rolled [**${roll}**]() on the percentile dice.`);
+		} else {
+			if (amount > gp) throw "You don't have enough GP.";
+			if (roll >= 55) {
+				embed.setDescription(`You rolled [**${roll}**]() on the percentile dice, and you won ${amount * 2} GP!`);
+				msg.author.configs.update('GP', gp + (amount * 2));
+			} else {
+				embed.setDescription(`You rolled [**${roll}**]() on the percentile dice, and you lost ${amount * 2} GP.`);
+				msg.author.configs.update('GP', gp - (amount * 2));
+			}
+		}
 		return msg.send({ embed });
 	}
 
