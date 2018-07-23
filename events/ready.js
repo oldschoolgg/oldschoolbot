@@ -151,7 +151,9 @@ module.exports = class extends Event {
 
 	async init() {
 		const dbl = new DBL(this.client.dblToken, { webhookPort: 8000, webhookAuth: this.client.dblAuth });
-		dbl.webhook.on('vote', async vote => this.client.tasks.get('vote').run(vote));
+		console.log(dbl);
+		dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
+		console.log(this.client.tasks.get('vote'));
 	}
 
 };
