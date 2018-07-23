@@ -22,11 +22,11 @@ module.exports = class extends Command {
 		} else {
 			if (amount > gp) throw "You don't have enough GP.";
 			if (roll >= 55) {
-				embed.setDescription(`You rolled [**${roll}**]() on the percentile dice, and you won ${amount * 2} GP!`);
-				msg.author.configs.update('GP', gp + (amount * 2));
+				embed.setDescription(`You rolled [**${roll}**]() on the percentile dice, and you won ${amount} GP!`);
+				msg.author.configs.update('GP', gp + amount);
 			} else {
-				embed.setDescription(`You rolled [**${roll}**]() on the percentile dice, and you lost ${amount * 2} GP.`);
-				msg.author.configs.update('GP', gp - (amount * 2));
+				embed.setDescription(`You rolled [**${roll}**]() on the percentile dice, and you lost ${amount} GP.`);
+				msg.author.configs.update('GP', gp - amount);
 			}
 		}
 		return msg.send({ embed });
