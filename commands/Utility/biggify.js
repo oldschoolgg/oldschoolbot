@@ -17,7 +17,7 @@ module.exports = class extends Command {
 			const chunkHeight = img.bitmap.height / 4;
 			for (let i = 0; i <= 3; i++) {
 				const tempImg = img.clone().crop(0, chunkHeight * i, 400, chunkHeight);
-				this.sleep(500);
+				this.sleep(1000);
 				tempImg.getBuffer('image/png', (err, buffer) => {
 					if (err) throw err;
 					return msg.send(new MessageAttachment(buffer, 'image.png'));
