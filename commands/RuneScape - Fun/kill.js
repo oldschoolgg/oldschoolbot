@@ -72,7 +72,9 @@ module.exports = class extends Command {
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'DEMONICGORILLA':
-			case 'DEMONICGORILLAS': {
+			case 'DEMONICGORILLAS':
+			case 'DG':
+			case 'GORILLAS': {
 				if (quantity > 500) return msg.send("I can only kill 500 Demonic Gorilla's at a time!");
 				const demonicGorilla = require('../../resources/monsters/demonicGorilla');
 				const loot = demonicGorilla.kill(quantity);
