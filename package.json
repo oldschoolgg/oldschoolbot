@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "canvas": "^2.0.0-alpha.12",
+    "canvas": "github:Automattic/node-canvas#92b192447e9b9ae98da0f801e4e34afdd1dc1ef8",
     "cheerio": "^1.0.0-rc.2",
     "crystalmethlabs": "github:gc/crystalmethlabs",
     "dblapi.js": "^2.1.0",
