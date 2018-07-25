@@ -19,7 +19,7 @@ module.exports = class extends Command {
 				const tempImg = img.clone().crop(0, chunkHeight * i, 400, chunkHeight);
 				tempImg.getBuffer('image/png', (err, buffer) => {
 					if (err) throw err;
-					this.sleep(200);
+					this.sleep(400);
 					return msg.send(new MessageAttachment(buffer, 'image.png'));
 				});
 			}
