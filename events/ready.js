@@ -44,7 +44,8 @@ const ALL_TWITTERS = [
 	'797859891373371392',
 	'824932930787094528',
 	'803844588100325376',
-	'1634264438'
+	'1634264438',
+	'1008655742428221440'
 ];
 
 const JMOD_TWITTERS = [
@@ -70,7 +71,8 @@ const JMOD_TWITTERS = [
 	791939828774338560,
 	786858980400390144,
 	924968824381702144,
-	824932930787094528
+	824932930787094528,
+	1008655742428221440
 ];
 
 const STREAMER_TWITTERS = [
@@ -100,7 +102,10 @@ module.exports = class extends Event {
 		super(...args, { once: true });
 	}
 	run() {
-		const dbl = new DBL(this.client.dblToken, { webhookPort: 8000, webhookAuth: this.client.dblAuth });
+		const dbl = new DBL(this.client.dblToken, {
+			webhookPort: 8000,
+			webhookAuth: this.client.dblAuth
+		});
 		dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
 
 		const twitter = new Twit(this.client.twitterApp);
@@ -108,14 +113,23 @@ module.exports = class extends Event {
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
 
 		stream.on('tweet', tweet => {
-			if (tweet.retweeted || tweet.retweeted_status || tweet.in_reply_to_status_id || tweet.in_reply_to_user_id || tweet.delete) return;
+			if (
+				tweet.retweeted ||
+        tweet.retweeted_status ||
+        tweet.in_reply_to_status_id ||
+        tweet.in_reply_to_user_id ||
+        tweet.delete
+			) { return; }
 			if (tweet.extended_tweet) {
 				this.sendToDiscordChannels({
 					description: tweet.extended_tweet.full_text,
 					thumbnail: tweet.user.profile_image_url_https,
 					author: tweet.user.name,
 					id: tweet.user.id,
-					image: (tweet.extended_tweet.entities.media && tweet.extended_tweet.entities.media[0].media_url_https) || null
+					image:
+            (tweet.extended_tweet.entities.media &&
+              tweet.extended_tweet.entities.media[0].media_url_https) ||
+            null
 				});
 			} else {
 				this.sendToDiscordChannels({
@@ -123,7 +137,9 @@ module.exports = class extends Event {
 					thumbnail: tweet.user.profile_image_url_https,
 					author: tweet.user.name,
 					id: tweet.user.id,
-					image: (tweet.entities.media && tweet.entities.media[0].media_url_https) || null
+					image:
+            (tweet.entities.media && tweet.entities.media[0].media_url_https) ||
+            null
 				});
 			}
 		});
@@ -141,16 +157,18 @@ module.exports = class extends Event {
 		if (JMOD_TWITTERS.includes(tweet.id)) key = 'tweetchannel';
 		else if (STREAMER_TWITTERS.includes(tweet.id)) key = 'streamertweets';
 		else if (HCIM_DEATHS.includes(tweet.id)) key = 'hcimdeaths';
-		this.client.guilds.filter(guild => guild.configs[key]).forEach(async guild => {
-			/*
+		this.client.guilds
+			.filter(guild => guild.configs[key])
+			.forEach(async guild => {
+				/*
 			const channel = await guild.channels.get(guild.configs[key]);
 			if (!channel) return guild.configs.reset(key);
 			if (!channel.permissionsFor(this.client.user).has(['EMBED_LINKS', 'SEND_MESSAGES'])) {
 				return guild.configs.reset(key);
 			}*/
-			guild.channels.get(guild.configs[key]).send({ embed });
-			return null;
-		});
+				guild.channels.get(guild.configs[key]).send({ embed });
+				return null;
+			});
 	}
 
 };
