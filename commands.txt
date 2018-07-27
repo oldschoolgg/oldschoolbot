@@ -40,12 +40,13 @@ Fun / 5 Commands
 +urban              : Searches the Urban Dictionary library for a definition to the search term.
 
 
-RuneScape - Fun / 16 Commands
+RuneScape - Fun / 17 Commands
 
 +ash                : Random Mod Ash gif.
 +b2bpet             : Rolls a singular pet until you get it twice in a row.
++casket             : Simulate rare drops from clue scrolls
 +defender           : See how long it takes you to get a Dragon Defender.
-+dice               : Simulates Dicing from Runescape.
++dice               : Simulates dice rolls from Runescape.
 +duel               : Simulates dueling another player.
 +fakeely            : Get yourself a Fake Ely! +fakeely username kc
 +fakepm             : Fake a private message from someone.
@@ -89,15 +90,21 @@ RuneScape - Utility / 25 Commands
 +xpto99             : Shows how much XP you have left until 99 in all skills.
 
 
-Utility / 10 Commands
+Utility / 16 Commands
 
++bank               : Shows how much virtual GP you have
++biggify            : Makes a big version of an image
++emotes             : Shows all the emote servers that the bot uses.
 +followage          : Shows the followage of a given user from a given twitch channel.
-+github             : Temporary poll.
++github             : Shows the Github link.
 +help               : Get a list of commands for the bot.
 +info               : Displays information about the bot.
 +invite             : Sends the invite link for the bot.
++leaderboard        : Shows the people with the most virtual GP.
++pay                : Send virtual GP to people (not real GP).
 +server             : Get information on a mentioned user.
 +support            : Displays the Support Server invite link.
 +twitch             : Returns information on a Twitch.tv Account
 +user               : Get information on a mentioned user.
++vote               : Displays the voting link for the bot.
 +wp                 : Finds a Wikipedia Article by title.
