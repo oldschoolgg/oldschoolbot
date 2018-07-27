@@ -5,7 +5,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Send virtual GP to people (not real GP).',
-			usage: '<user:user> <amount:int{1,2147483647}>'
+			usage: '<user:user> <amount:int{1,2147483647}>',
+			usageDelim: ' '
 		});
 	}
 
