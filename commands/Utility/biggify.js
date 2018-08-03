@@ -1,6 +1,5 @@
-const { Command, util: { sleep } } = require('klasa');
-const { MessageAttachment } = require('discord.js');
-const Jimp = require('jimp');
+const { Command } = require('klasa');
+const jimp = require('jimp');
 
 module.exports = class extends Command {
 
@@ -10,15 +9,15 @@ module.exports = class extends Command {
 
 	async run(msg) {
 		const { url } = await this.checkChatForImage(msg);
-		const img = await Jimp.read(url);
-		img.resize(400, Jimp.AUTO);
+		const img = await jimp.read(url);
+		img.resize(400, jimp.AUTO);
 		const chunkHeight = img.bitmap.height / 4;
 		for (let i = 0; i <= 3; i++) {
 			const tempImg = img.clone().crop(0, chunkHeight * i, 400, chunkHeight);
-			await sleep(100);
-			tempImg.getBuffer('image/png', (err, buffer) => {
-				if (err) throw err;
-				return msg.send(new MessageAttachment(buffer, 'image.png'));
+			await new Promise((resolve, reject) => {
+				tempImg.getBuffer('image/png', (err, buffer) => err ?
+					reject(err) :
+					resolve(msg.channel.sendFile(buffer, 'image.png')));
 			});
 		}
 	}
