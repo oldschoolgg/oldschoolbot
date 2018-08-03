@@ -1,6 +1,6 @@
 const { Command, util: { sleep } } = require('klasa');
-const Jimp = require('jimp');
 const { MessageAttachment } = require('discord.js');
+const Jimp = require('jimp');
 
 module.exports = class extends Command {
 
@@ -15,7 +15,7 @@ module.exports = class extends Command {
 			const chunkHeight = img.bitmap.height / 4;
 			for (let i = 0; i <= 3; i++) {
 				const tempImg = img.clone().crop(0, chunkHeight * i, 400, chunkHeight);
-				await sleep(300);
+				await sleep(100);
 				tempImg.getBuffer('image/png', (err, buffer) => {
 					if (err) throw err;
 					return msg.send(new MessageAttachment(buffer, 'image.png'));
