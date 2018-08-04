@@ -6,7 +6,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Simulates dice rolls from Runescape.',
-			usage: '[amount:int]'
+			usage: '[amount:int{1,2147483647}]'
 		});
 	}
 
