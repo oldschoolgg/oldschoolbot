@@ -26,7 +26,7 @@ module.exports = class extends Command {
 	}
 
 	getRunelitePlayerCount() {
-		return get('https://api.runelite.net/runelite-1.4.9/session/count').then(res => res.body.toString());
+		return get('https://api.runelite.net/runelite-1.4.10.2/session/count').then(res => res.body.toString());
 	}
 
 	async run(msg) {
