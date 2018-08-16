@@ -133,6 +133,10 @@ module.exports = class extends Command {
 			case 'VORKI':
 			case 'VORKATH':
 				return msg.send(`You had to slay the almighty Vorkath ${this.petRoll(3000)} times to get the Vorki Pet **Back-to-Back (2 in a row)!** <:Vorki:400713309252222977>`);
+			case 'LILZIK':
+			case 'RAIDS2':
+			case 'ZIK':
+				return msg.send(`You had to complete the Theatre of Blood ${this.petRoll(650)} times to get the Lil' Zik pet **Back-to-Back (2 in a row)!** <:Lil_zik:479460344423776266>`);
 			default:
 				return msg.send("Invalid pet name. Skilling pets aren't available for this command.");
 		}
