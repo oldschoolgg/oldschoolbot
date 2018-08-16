@@ -14,7 +14,7 @@ module.exports = class extends Command {
 
 	async run(msg) {
 		const { stringList, streams } = await snekfetch
-			.get(`https://api.twitch.tv/helix/streams?game_id=2083&&type=live&first=4`, { headers: { 'Client-ID': this.client.twitchClientID } })
+			.get(`https://api.twitch.tv/helix/streams?game_id=459931&&type=live&first=4`, { headers: { 'Client-ID': this.client.twitchClientID } })
 			.then(res => {
 				const { data } = JSON.parse(res.text);
 				return {
