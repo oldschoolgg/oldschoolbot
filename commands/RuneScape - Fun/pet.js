@@ -48,11 +48,11 @@ module.exports = class extends Command {
 			case 'SQUIRREL':
 			case 'GIANTSQUIRREL':
 			case 'AGILITY': {
-				drop = this.skillpetRoll(32730);
+				drop = this.skillpetRoll(31965);
 				xp = (drop * 570).toLocaleString();
 				const hours = Math.round(drop * 45 / 3600);
 				amount = drop.toLocaleString();
-				return msg.send(`You had to run around the Seers' Village Rooftops ${amount} times to get the Giant Squirrel Pet! <:Giant_squirrel:324127376432824320> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:ehpclock:352323705210142721> ${hours} Hours of your time wasted!`);
+				return msg.send(`You had to run around the Ardougne Rooftops ${amount} times to get the Giant Squirrel Pet! <:Giant_squirrel:324127376432824320> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:ehpclock:352323705210142721> ${hours} Hours of your time wasted!`);
 			}
 			case 'HERON':
 			case 'FISHING':
