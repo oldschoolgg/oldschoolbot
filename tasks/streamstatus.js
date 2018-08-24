@@ -35,8 +35,7 @@ module.exports = class extends Task {
 						});
 					}
 				}
-				return this.client.user.setActivity('+github');
-				// return this.client.user.setActivity(streams.streams[0].channel.display_name, { url: streams.streams[0].channel.url, type: 1 });
+				return this.client.user.setActivity(streams.streams[0].channel.display_name, { url: streams.streams[0].channel.url, type: 1 });
 			});
 	}
 
