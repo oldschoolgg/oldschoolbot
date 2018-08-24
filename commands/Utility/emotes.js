@@ -28,4 +28,5 @@ https://discord.gg/hBAySb3
 https://discord.gg/9DtWEXH
 https://discord.gg/8GR2fZM
 https://discord.gg/j7s22Mc
-https://discord.gg/JWGsNRy`;
+https://discord.gg/JWGsNRy
+https://discord.gg/z43EwKm`;
