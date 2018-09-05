@@ -101,6 +101,7 @@ module.exports = {
 		'mal3610',
 		'mynetworkisdown',
 		'ellisosrs',
-		'tolsdork'
+		'tolsdork',
+		'lake'
 	]
 };
