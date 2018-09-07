@@ -26,6 +26,14 @@ module.exports = class extends Command {
 				const loot = raids.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
+			case 'RAIDS2':
+			case 'THEATREOFBLOOD':
+			case 'TOB': {
+				if (quantity > 10000) return msg.send("I can only do a maximum of 10,000 Theatres of Blood at a time! I'm not Woox!");
+				const raids = require('../../resources/monsters/tob');
+				const loot = raids.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
 			case 'BARROWS': {
 				if (quantity > 300) return msg.send('I can only do a maximum of 300 Barrows Chests at a time!');
 				const barrows = require('../../resources/monsters/barrows');
