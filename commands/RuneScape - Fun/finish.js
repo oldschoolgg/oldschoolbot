@@ -1,3 +1,4 @@
+/* eslint-disable */
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
@@ -16,6 +17,12 @@ module.exports = class extends Command {
 		let duplicates = [];
 
 		switch (BossName.replace(/\W/g, '').toUpperCase()) {
+			case 'RAIDS2':
+			case 'THEATREOFBLOOD':
+			case 'TOB': {
+				const raids = require('../../resources/monsters/tob');
+				return msg.send(raids.finish());
+			}
 			case 'MOLE':
 			case 'GIANTMOLE': {
 				const lootMSG = [];
