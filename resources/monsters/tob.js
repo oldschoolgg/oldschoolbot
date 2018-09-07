@@ -112,6 +112,66 @@ const tob = {
 		displayLoot.push(`**Total Hours**: ${(quantity * 0.25).toLocaleString()}`);
 		return displayLoot.join('\n');
 	},
+	finish() {
+		const { drops } = this;
+		let kc = 0;
+		const loot = [];
+		const lootTrack = [];
+		while (loot.length < 8) {
+			kc++;
+			if (!lootTrack.includes(drops.pet) && this.roll(650)) {
+				lootTrack.push(drops.pet);
+				loot.push(`**Lil' Zik:** ${kc} KC ${drops.pet}`);
+			}
+			if (!this.roll(40)) continue;
+			const number = parseInt((Math.random() * 20) + 1);
+			switch (true) {
+				case number === 1:
+					if (!lootTrack.includes(drops.scytheOfVitur)) {
+						loot.push(`**Scythe of Vitur:** ${kc} KC ${drops.scytheOfVitur}`);
+						lootTrack.push(drops.scytheOfVitur);
+					}
+					break;
+				case number <= 3:
+					if (!lootTrack.includes(drops.sanguinestiStaff)) {
+						loot.push(`**Sanguinesti Staff:** ${kc} KC ${drops.sanguinestiStaff}`);
+						lootTrack.push(drops.sanguinestiStaff);
+					}
+					break;
+				case number <= 5:
+					if (!lootTrack.includes(drops.ghraziRapier)) {
+						loot.push(`**Ghrazi Rapier:** ${kc} KC ${drops.ghraziRapier}`);
+						lootTrack.push(drops.ghraziRapier);
+					}
+					break;
+				case number <= 7:
+					if (!lootTrack.includes(drops.justiciarFaceguard)) {
+						loot.push(`**Justiciar Faceguard:** ${kc} KC ${drops.justiciarFaceguard}`);
+						lootTrack.push(drops.justiciarFaceguard);
+					}
+					break;
+				case number <= 9:
+					if (!lootTrack.includes(drops.justiciarLegguards)) {
+						loot.push(`**Justiciar Legguards:** ${kc} KC ${drops.justiciarLegguards}`);
+						lootTrack.push(drops.justiciarLegguards);
+					}
+					break;
+				case number <= 11:
+					if (!lootTrack.includes(drops.justiciarChestguard)) {
+						loot.push(`**Justiciar Chestguard** ${kc} KC ${drops.justiciarChestguard}`);
+						lootTrack.push(drops.justiciarChestguard);
+					}
+					break;
+				default:
+					if (!lootTrack.includes(drops.avernicDefenderHilt)) {
+						loot.push(`**Avernic Defender Hilt** ${kc} KC ${drops.avernicDefenderHilt}`);
+						lootTrack.push(drops.avernicDefenderHilt);
+					}
+					break;
+			}
+		}
+		return loot.join('\n');
+	},
 	roll(max) {
 		return Math.floor((Math.random() * max) + 1) === 1;
 	}
