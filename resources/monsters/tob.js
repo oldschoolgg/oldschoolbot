@@ -108,8 +108,8 @@ const tob = {
 			totalValue += this.priceMap[key] * loot[key];
 		}
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
-		displayLoot.push(`**GP/HR** ${(totalValue / (quantity * 0.25)).toLocaleString()} GP`);
-		displayLoot.push(`**Total Hours**: ${(quantity * 0.25).toLocaleString()}`);
+		displayLoot.push(`**GP/HR** ${(totalValue / (quantity * 25 / 60)).toLocaleString()} GP`);
+		displayLoot.push(`**Total Hours**: ${(quantity * 25 / 60).toLocaleString()}`);
 		return displayLoot.join('\n');
 	},
 	finish() {
