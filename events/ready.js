@@ -170,7 +170,8 @@ module.exports = class extends Event {
 			if (!channel.permissionsFor(this.client.user).has(['EMBED_LINKS', 'SEND_MESSAGES'])) {
 				return guild.configs.reset(key);
 			}*/
-				guild.channels.get(guild.configs[key]).send({ embed });
+				const channel = guild.channels.get(guild.configs[key]);
+				if (channel) channel.send({ embed });
 				return null;
 			});
 	}
