@@ -25,9 +25,12 @@ module.exports = class extends Command {
 const servers = `
 [Old School RuneScape](https://discord.gg/gbfNeqd)
 Official Old School server
+
 [IronScape](https://discord.gg/aGb6rms)
 Community for ironmen
+
 [We Do Raids](https://discord.gg/gREZC7f)
 Raiding community
+
 [RuneLite](https://discord.gg/SB8edn6)
 Official RuneLite client server`;
