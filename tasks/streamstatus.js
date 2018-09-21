@@ -23,16 +23,13 @@ module.exports = class extends Task {
 							.setAuthor(`${streamer.channel.display_name} is now Live on Twitch!`, null, streamer.channel.url)
 							.setImage(`${streamer.preview.medium}?osrsbot=${Math.random() * 1000}`);
 
-						this.client.guilds.filter(guild => guild.configs.twitchnotifs).forEach(guild => {
-							// if (!this.client.channels.get(guild.configs.twitchnotifs)) return guild.configs.reset('twitchnotifs');
-							if (!guild.configs.streamers.includes(streamer.channel.display_name.toLowerCase())) return null;
-
-							this.client.channels
-								.get(guild.configs.twitchnotifs)
-								.send({ embed });
-
-							return null;
-						});
+						this.client.guilds.filter(guild => guild.configs.twitchnotifs)
+							.forEach(guild => {
+								if (!guild.configs.streamers.includes(streamer.channel.display_name.toLowerCase())) return null;
+								const channel = this.client.channels.get(guild.configs.twitchnotifs);
+								if (channel) channel.send({ embed });
+								return null;
+							});
 					}
 				}
 				return this.client.user.setActivity(streams.streams[0].channel.display_name, { url: streams.streams[0].channel.url, type: 1 });
