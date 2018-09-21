@@ -32,5 +32,11 @@ Community for ironmen
 [We Do Raids](https://discord.gg/gREZC7f)
 Raiding community
 
+[Skilling Methods](https://discord.gg/e2effBN)
+Show/discuss different skill training methods
+
+[Gear](https://discord.gg/7KZHZ38)
+Show/discuss different gear setups for PVM
+
 [RuneLite](https://discord.gg/SB8edn6)
 Official RuneLite client server`;
