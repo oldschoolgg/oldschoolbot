@@ -81,9 +81,6 @@ module.exports = class MemorySweeper extends Task {
 				channel.lastMessageID = null;
 				lastMessages++;
 			}
-			if (channel.type === 'voice') {
-				this.client.channels.delete(channel.id);
-			}
 		}
 
 		/* DISABLED
