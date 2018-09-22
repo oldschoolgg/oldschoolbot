@@ -64,6 +64,12 @@ module.exports = class MemorySweeper extends Task {
 				guild.members.delete(id);
 			}
 
+			for (const channel of guild.channels.values()) {
+				if (channel.type !== 'voice') continue;
+				guild.channels.delete(channel.id);
+				this.client.channels.delete(channel.id);
+			}
+
 			// Clear emojis
 			emojis += guild.emojis.size;
 			guild.emojis.clear();
@@ -74,6 +80,9 @@ module.exports = class MemorySweeper extends Task {
 			if (channel.lastMessageID) {
 				channel.lastMessageID = null;
 				lastMessages++;
+			}
+			if (channel.type === 'voice') {
+				this.client.channels.delete(channel.id);
 			}
 		}
 
