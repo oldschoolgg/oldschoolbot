@@ -20,7 +20,7 @@ module.exports = class extends Task {
 			bonuses += ' <:OSRSBot:363583286192111616>';
 		}
 
-		this.client.voteLogs.send(`${bonuses} ${user} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`);
+		this.client.voteLogs.send(`${bonuses} ${_user} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`);
 		_user.configs.update('GP', _user.configs.GP + amount);
 	}
 
