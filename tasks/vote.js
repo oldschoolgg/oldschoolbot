@@ -2,21 +2,26 @@ const { Task } = require('klasa');
 
 module.exports = class extends Task {
 
-	async run(vote) {
-		const user = await this.client.users.fetch(vote.user);
-		const isInGuild = this.client.guilds.get('342983479501389826').members.has(vote.user);
+	async run({ user, isWeekend }) {
+		const _user = await this.client.users.fetch(user);
+		const member = await this.client.guilds.get('342983479501389826')
+			.members.fetch(user).catch(() => null);
+
 		let amount = Math.floor(Math.random() * 5000000) + 500000;
 		let bonuses = '';
-		if (vote.isWeekend) {
+
+		if (isWeekend) {
 			amount *= 2;
 			bonuses += '<:MoneyBag:493286312854683654>';
 		}
-		if (isInGuild) {
+
+		if (member) {
 			amount *= 1.5;
 			bonuses += ' <:OSRSBot:363583286192111616>';
 		}
+
 		this.client.voteLogs.send(`${bonuses} ${user} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`);
-		user.configs.update('GP', user.configs.GP + amount);
+		_user.configs.update('GP', _user.configs.GP + amount);
 	}
 
 };
