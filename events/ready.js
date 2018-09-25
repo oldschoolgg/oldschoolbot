@@ -163,15 +163,9 @@ module.exports = class extends Event {
 		else if (HCIM_DEATHS.includes(tweet.id)) key = 'hcimdeaths';
 		this.client.guilds
 			.filter(guild => guild.configs[key])
-			.forEach(async guild => {
-				/*
-			const channel = await guild.channels.get(guild.configs[key]);
-			if (!channel) return guild.configs.reset(key);
-			if (!channel.permissionsFor(this.client.user).has(['EMBED_LINKS', 'SEND_MESSAGES'])) {
-				return guild.configs.reset(key);
-			}*/
+			.map(guild => {
 				const channel = guild.channels.get(guild.configs[key]);
-				if (channel) channel.send({ embed });
+				if (channel) channel.send({ embed }).catch(() => null);
 				return null;
 			});
 	}
