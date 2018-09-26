@@ -163,10 +163,9 @@ module.exports = class extends Event {
 		else if (HCIM_DEATHS.includes(tweet.id)) key = 'hcimdeaths';
 		this.client.guilds
 			.filter(guild => guild.configs[key])
-			.map(guild => {
+			.map((guild) => {
 				const channel = guild.channels.get(guild.configs[key]);
 				if (channel) channel.send({ embed }).catch(() => null);
-				return null;
 			});
 	}
 
