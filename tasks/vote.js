@@ -19,8 +19,8 @@ module.exports = class extends Task {
 			amount *= 1.5;
 			bonuses += ' <:OSRSBot:363583286192111616>';
 		}
-		this.client.channels.get('469523207691436042')
-		// this.client.voteLogs
+
+		this.client.voteLogs
 			.send(`${bonuses} ${_user} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`);
 		_user.configs.update('GP', _user.configs.GP + amount);
 	}
