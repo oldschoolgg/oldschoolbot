@@ -2,7 +2,7 @@ const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 const { Canvas } = require('canvas-constructor');
 const fs = require('fs');
-const BG = fs.readFileSync('./resources/ayiza2.jpg');
+const BG = fs.readFileSync('./resources/ayiza.jpg');
 
 module.exports = class extends Command {
 
