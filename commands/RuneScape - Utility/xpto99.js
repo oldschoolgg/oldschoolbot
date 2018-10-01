@@ -19,14 +19,22 @@ module.exports = class extends Command {
 			.then(res => res)
 			.catch(() => { throw this.client.notFound; });
 
+		let totalXP = 0;
 		for (const skill in player.Skills) {
-			if (player.Skills[skill].xp !== undefined) {
-				if (skill === 'Overall' && player.Skills.Overall.xp > 299791913) player.Skills.Overall.xp = 299791913;
-				if (player.Skills[skill].xp > 13034431 && skill !== 'Overall') player.Skills[skill].xp = 13034431;
-				if (player.Skills[skill].xp < 13034432 && skill !== 'Overall') { player.Skills[skill].xp = parseInt(13034431 - player.Skills[skill].xp).toLocaleString(); }
+			const { xp } = player.Skills[skill];
+			if (!xp) continue;
+			if (skill !== 'Overall') {
+				totalXP += xp;
+				if (xp > 13034431) {
+					player.Skills[skill].xp = 13034431;
+				}
+
+				if (xp < 13034432) {
+					player.Skills[skill].xp = parseInt(13034431 - xp).toLocaleString();
+				}
 			}
 		}
-		player.Skills.Overall.xp = parseInt(299791913 - player.Skills.Overall.xp).toLocaleString();
+		player.Skills.Overall.xp = parseInt(299791913 - totalXP).toLocaleString();
 		const embed = await this.getStatsEmbed(username, 7981338, player, 'xp');
 		return msg.send({ embed });
 	}
