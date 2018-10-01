@@ -11,7 +11,7 @@ class getStatsEmbed extends Extendable {
 		});
 	}
 
-	async extend(username, color, { Skills }, key = 'level') {
+	async extend(username, color, { Skills }, key = 'level', showExtra = true) {
 		const { emoji } = this.client;
 		const embed = new MessageEmbed()
 			.setColor(color)
@@ -54,14 +54,18 @@ ${emoji.woodcutting} ${Skills.Woodcutting[key]}
 ${emoji.farming} ${Skills.Farming[key]}
 ${emoji.total} ${Skills.Overall[key]}`,
 				true
-			)
-			.addField(
-				`${emoji.total} Overall`,
-				`**Rank:** ${Skills.Overall.rank.toLocaleString()}\n**Level:** ${Skills.Overall.level}\n**XP:** ${Skills.Overall.xp.toLocaleString()}`,
-				true
-			)
-			.addField(`Other`, `**Combat Level:** ${await this.combatLevel(Skills)}`, true)
-			.addField('\u200b', '\u200b', true);
+			);
+
+		if (showExtra) {
+			embed
+				.addField(
+					`${emoji.total} Overall`,
+					`**Rank:** ${Skills.Overall.rank.toLocaleString()}\n**Level:** ${Skills.Overall.level}\n**XP:** ${Skills.Overall.xp.toLocaleString()}`,
+					true
+				)
+				.addField(`Other`, `**Combat Level:** ${await this.combatLevel(Skills)}`, true)
+				.addField('\u200b', '\u200b', true);
+		}
 		return embed;
 	}
 
