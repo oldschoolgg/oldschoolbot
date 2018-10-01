@@ -15,7 +15,7 @@ module.exports = class extends Command {
 		username = this.getUsername(username, msg);
 
 		const player = await osrs.hiscores
-			.getPlayer(username, 'Normal')
+			.getPlayer(username, 'hardcore')
 			.then(stats => stats)
 			.catch(() => { throw this.client.notFound; });
 
