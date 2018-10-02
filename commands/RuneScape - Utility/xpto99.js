@@ -24,14 +24,10 @@ module.exports = class extends Command {
 			const { xp } = player.Skills[skill];
 			if (!xp) continue;
 			if (skill !== 'Overall') {
-				totalXP += xp;
-				if (xp > 13034431) {
-					player.Skills[skill].xp = 13034431;
-				}
-
-				if (xp < 13034432) {
-					player.Skills[skill].xp = parseInt(13034431 - xp).toLocaleString();
-				}
+				const clampedXP = Math.min(xp, 13034431);
+				const remainingXP = 13034431 - clampedXP;
+				totalXP += clampedXP;
+				player.Skills[skill].xp = remainingXP.toLocaleString();
 			}
 		}
 		player.Skills.Overall.xp = parseInt(299791913 - totalXP).toLocaleString();
