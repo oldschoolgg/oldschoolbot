@@ -33,7 +33,7 @@ module.exports = class extends Command {
 			.setURL(fullurl)
 			.setTitle(title)
 			.setDescription(extract)
-			.setFooter('[Old School RuneScape Wiki](https://oldschool.runescape.wiki)', 'https://i.imgur.com/GMs5my3.png');
+			.setFooter('Old School RuneScape Wiki - https://oldschool.runescape.wiki', 'https://i.imgur.com/GMs5my3.png');
 		return msg.send({ embed });
 	}
 
