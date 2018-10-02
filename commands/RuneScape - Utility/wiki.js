@@ -20,7 +20,7 @@ module.exports = class extends Command {
 			return msg.send('https://oldschool.runescape.wiki');
 		}
 
-		const { title, extract, thumbnail, fullurl } = await snekfetch
+		const { title, extract, original, fullurl } = await snekfetch
 			.get(getURL(query))
 			.then(res => res.body.query.pages[0])
 			.catch(() => {
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(52224)
-			.setThumbnail(thumbnail && thumbnail.source)
+			.setThumbnail(original && original.source)
 			.setURL(fullurl)
 			.setTitle(title)
 			.setDescription(extract)
