@@ -105,6 +105,7 @@ module.exports = class extends Event {
 	constructor(...args) {
 		super(...args, { once: true });
 	}
+
 	run() {
 		const dbl = new DBL(this.client.dblToken, {
 			webhookPort: 8000,
@@ -149,18 +150,18 @@ module.exports = class extends Event {
 		});
 	}
 
-	sendToDiscordChannels(tweet) {
+	sendToDiscordChannels({ id, image, author, thumbnail, description }) {
 		const embed = new MessageEmbed()
-			.setDescription(`\n ${he.decode(tweet.description)}`)
+			.setDescription(`\n ${he.decode(description)}`)
 			.setColor(1942002)
-			.setThumbnail(tweet.thumbnail)
-			.setAuthor(he.decode(tweet.author))
-			.setImage(tweet.image);
+			.setThumbnail(thumbnail)
+			.setAuthor(he.decode(author))
+			.setImage(image);
 
 		let key;
-		if (JMOD_TWITTERS.includes(tweet.id)) key = 'tweetchannel';
-		else if (STREAMER_TWITTERS.includes(tweet.id)) key = 'streamertweets';
-		else if (HCIM_DEATHS.includes(tweet.id)) key = 'hcimdeaths';
+		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
+		else if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
+		else if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
 		this.client.guilds
 			.filter(guild => guild.configs[key])
 			.map((guild) => {
