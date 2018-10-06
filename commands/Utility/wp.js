@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const { get } = require('snekfetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -13,8 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [query]) {
-		const article = await snekfetch
-			.get(`https://en.wikipedia.org/api/rest_v1/page/summary/${query}`)
+		const article = await get(`https://en.wikipedia.org/api/rest_v1/page/summary/${query}`)
 			.then(res => res.body)
 			.catch(() => {
 				throw "I couldn't find a wikipedia article with that title!";
