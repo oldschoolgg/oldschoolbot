@@ -46,6 +46,7 @@ module.exports = class extends Command {
 	async run(msg, [quantity, ...BossName]) {
 		switch (BossName.join('').toUpperCase()) {
 			case 'CORP': {
+				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Corp beasts at a time!');
 				const loot = corp.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}

@@ -10,7 +10,7 @@ module.exports = class extends Monitor {
 		if (this.roll(100000) && msg.guild.configs.petchannel === msg.channel.id) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
 			return msg.send(`${msg.author} is extremely lucky and just got this pet: ${pet}`);
-		} else { return null; }
+		}
 	}
 
 	async init() {
