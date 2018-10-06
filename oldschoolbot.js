@@ -50,7 +50,7 @@ new OldSchoolBot({
 	messageCacheLifetime: 60,
 	messageSweepInterval: 60,
 	prefix: '+',
-	shardCount: 'auto',
+	shardCount: '3',
 	disableEveryone: true,
 	providers: { default: 'rethinkdb' },
 	pieceDefaults: { commands: { deletable: true } },

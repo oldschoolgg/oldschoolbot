@@ -13,24 +13,23 @@ module.exports = class extends Task {
 				const streams = JSON.parse(res.text);
 				for (let i = 0; i < streams.streams.length; i++) {
 					const liveTime = moment(streams.streams[i].created_at);
-					if (moment().diff(liveTime, 'seconds') <= 630) {
-						const streamer = streams.streams[i];
-						const embed = new MessageEmbed()
-							.setColor(6570406)
-							.setTitle(streamer.channel.status)
-							.setURL(streamer.channel.url)
-							.setThumbnail(streamer.channel.logo)
-							.setAuthor(`${streamer.channel.display_name} is now Live on Twitch!`, null, streamer.channel.url)
-							.setImage(`${streamer.preview.medium}?osrsbot=${Math.random() * 1000}`);
+					if (moment().diff(liveTime, 'seconds') > 630) continue;
+					const { channel, preview } = streams.streams[i];
 
-						this.client.guilds.filter(guild => guild.configs.twitchnotifs)
-							.forEach(guild => {
-								if (!guild.configs.streamers.includes(streamer.channel.display_name.toLowerCase())) return null;
-								const channel = this.client.channels.get(guild.configs.twitchnotifs);
-								if (channel) channel.send({ embed });
-								return null;
-							});
-					}
+					const embed = new MessageEmbed()
+						.setColor(6570406)
+						.setTitle(channel.status)
+						.setURL(channel.url)
+						.setThumbnail(channel.logo)
+						.setAuthor(`${channel.display_name} is now Live on Twitch!`, null, channel.url)
+						.setImage(`${preview.medium}?osrsbot=${Math.random() * 1000}`);
+
+					this.client.guilds
+						.filter(guild => guild.configs.twitchnotifs && guild.configs.streamers.includes(channel.display_name.toLowerCase()))
+						.forEach(guild => {
+							const _channel = this.client.channels.get(guild.configs.twitchnotifs);
+							if (_channel) _channel.send({ embed });
+						});
 				}
 				return this.client.user.setActivity(streams.streams[0].channel.display_name, { url: streams.streams[0].channel.url, type: 1 });
 			});

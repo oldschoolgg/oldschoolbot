@@ -58,17 +58,6 @@ module.exports = class MemorySweeper extends Task {
 			}
 		}
 
-		/*
-		DISABLED
-		// Per-User sweeper
-		for (const user of this.client.users.values()) {
-			if (user.lastMessageID && user.lastMessageID > OLD_SNOWFLAKE) continue;
-			this.client.users.delete(user.id);
-			this.client.gateways.users.cache.delete(user.id);
-			users++;
-		}
-		*/
-
 		// Emit a log
 		this.client.emit('verbose',
 			`${this.header} ${

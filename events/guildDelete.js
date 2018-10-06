@@ -2,9 +2,9 @@ const { Event } = require('klasa');
 
 module.exports = class extends Event {
 
-	run(guild) {
+	run({ name, memberCount }) {
 		this.client.guildLogs
-			.send(`\`${guild.name}\` with \`${guild.memberCount.toLocaleString()}\` Members removed.`);
+			.send(`\`${name}\` with \`${memberCount.toLocaleString()}\` Members removed.`);
 	}
 
 };
