@@ -15,6 +15,7 @@ const corp = {
 		}
 	},
 	kill(quantity) {
+		if (quantity > 5000) throw 'I can only kill a maximum of 5000 Corp beasts at a time!';
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(5000)) loot.push(this.drops.pet);
