@@ -1,6 +1,6 @@
 const { Client } = require('klasa');
-const Discord = require('discord.js');
-const { token, emoji, streamers, guildLogs, voteLogs, twitchClientID, twitterApp, dblToken, dblAuth } = require('./config');
+const { WebhookClient } = require('discord.js');
+const { token, emoji, streamers, guildLogs, voteLogs, errorLogs, twitchClientID, twitterApp, dblToken, dblAuth } = require('./config');
 
 class OldSchoolBot extends Client {
 
@@ -8,8 +8,9 @@ class OldSchoolBot extends Client {
 		super(options);
 		this.emoji = emoji;
 		this.streamers = streamers;
-		this.guildLogs = new Discord.WebhookClient(guildLogs.id, guildLogs.token);
-		this.voteLogs = new Discord.WebhookClient(voteLogs.id, voteLogs.token);
+		this.guildLogs = new WebhookClient(guildLogs.id, guildLogs.token);
+		this.errorLogs = new WebhookClient(errorLogs.id, errorLogs.token);
+		this.voteLogs = new WebhookClient(voteLogs.id, voteLogs.token);
 		this.twitchClientID = twitchClientID;
 		this.dblToken = dblToken;
 		this.dblAuth = dblAuth;
