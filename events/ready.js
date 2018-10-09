@@ -107,11 +107,11 @@ module.exports = class extends Event {
 	}
 
 	run() {
-		const dbl = new DBL(this.client.dblToken, {
+		this.client.dbl = new DBL(this.client.dblToken, {
 			webhookPort: 8000,
 			webhookAuth: this.client.dblAuth
 		});
-		dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
+		this.client.dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
 
 		const twitter = new Twit(this.client.twitterApp);
 
