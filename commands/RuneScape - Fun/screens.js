@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		const userImage = new Image();
 		userImage.src = image;
 
-		ctx.drawImage(userImage, 0, 84, 137, 107);
+		ctx.drawImage(userImage, -50, 84, 180, 107);
 		ctx.drawImage(userImage, 144, 84, 180, 100);
 		ctx.drawImage(userImage, 331, 85, 184, 102);
 		ctx.drawImage(userImage, 520, 84, 180, 107);
