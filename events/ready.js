@@ -125,6 +125,7 @@ module.exports = class extends Event {
         tweet.in_reply_to_user_id ||
         tweet.delete
 			) { return; }
+
 			if (tweet.extended_tweet) {
 				this.sendToDiscordChannels({
 					description: tweet.extended_tweet.full_text,
@@ -134,7 +135,8 @@ module.exports = class extends Event {
 					image:
             (tweet.extended_tweet.entities.media &&
               tweet.extended_tweet.entities.media[0].media_url_https) ||
-            null
+            null,
+					url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
 				});
 			} else {
 				this.sendToDiscordChannels({
@@ -144,13 +146,14 @@ module.exports = class extends Event {
 					id: tweet.user.id,
 					image:
             (tweet.entities.media && tweet.entities.media[0].media_url_https) ||
-            null
+            null,
+					url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
 				});
 			}
 		});
 	}
 
-	sendToDiscordChannels({ id, image, author, thumbnail, description }) {
+	sendToDiscordChannels({ id, image, author, thumbnail, description, url }) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${he.decode(description)}`)
 			.setColor(1942002)
@@ -166,7 +169,7 @@ module.exports = class extends Event {
 			.filter(guild => guild.configs[key])
 			.map((guild) => {
 				const channel = guild.channels.get(guild.configs[key]);
-				if (channel) channel.send({ embed }).catch(() => null);
+				if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
 			});
 	}
 
