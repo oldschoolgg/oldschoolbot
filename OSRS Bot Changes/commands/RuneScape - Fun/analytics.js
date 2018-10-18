@@ -23,29 +23,18 @@ module.exports = class extends Command {
 			.then(player => player)
 			.catch(() => { throw this.client.notFound; });
 		const minMaxSkill = Object.keys(Skills).map(skill => Skills[skill]).sort((a, b) => a.xp - b.xp);
-		const lowHighRank = Object.keys(Skills).map(skill => Skills[skill]).sort((a, b) => a.rank - b.rank);
-		// const highestRanked = this.getUnrankedRank(lowHighRank)[0];
-		// const lowestRankedRank = this.getUnrankedRank(lowHighRank)[1];
-		// const lowestRankedLevel = this.getUnrankedRank(lowHighRank)[2];
+		const lowestSkillXp = this.getLowestSkillXp(Skills, minMaxSkill);
+		const highestSkill = this.getSkillNames(Skills, minMaxSkill)[0];
+		const lowestSkill = this.getSkillNames(Skills, minMaxSkill)[1];
+		const highestRankName = this.getHighestLowestRank(Skills)[0];
+		const highestRankRank = this.getHighestLowestRank(Skills)[1];
+		const highestRankLevel = this.getHighestLowestRank(Skills)[2];
+		const lowestRankName = this.getHighestLowestRank(Skills)[3];
+		const lowestRankRank = this.getHighestLowestRank(Skills)[4];
+		const lowestRankLevel = this.getHighestLowestRank(Skills)[5];
 		const combatPref = this.getCombatPref(Skills);
 		const skillPref = this.getSkillPref(Skills);
 		const showExtra = true;
-		console.log(minMaxSkill);
-		console.log(lowHighRank);
-		console.log(combatPref);
-		console.log(skillPref);
-		console.log(emoji.firemaking);
-		console.log(emoji.agility);
-		console.log(emoji['12']);
-		console.log(emoji[Skills[minMaxSkill[0]]]);
-		// console.log(emoji.minMaxSkill[0]);
-		// console.log(minMaxSkill[0].emote);
-		console.log(`**Highest Stat:** ${minMaxSkill[minMaxSkill.length - 2].level} | ${minMaxSkill[minMaxSkill.length - 2].xp.toLocaleString()}`);
-		console.log(`**Lowest Stat:** ${minMaxSkill[0].level} | ${minMaxSkill[0].xp.toLocaleString()}`);
-		console.log(`**Highest Ranked Stat:** ${lowHighRank[0].rank.toLocaleString()} | ${lowHighRank[0].level}`);
-		console.log(`**Lowest Ranked Stat:** ${lowHighRank[lowHighRank.length - 1].rank.toLocaleString()} | ${lowHighRank[lowHighRank.length - 1].level}`);
-		console.log(`**Average Level:** ${this.getAverageLvl(Skills)}`);
-		console.log(`**Average XP:** ${this.getAverageXP(Skills).toLocaleString().split('.')[0]}`);
 		const embed = new MessageEmbed()
 			.setColor(7981338)
 			.setAuthor(username)
@@ -60,10 +49,10 @@ module.exports = class extends Command {
 			)
 			.addField(
 				'\u200b',
-				`**Highest Stat:** ${minMaxSkill[minMaxSkill.length - 2].level} | ${minMaxSkill[minMaxSkill.length - 2].xp.toLocaleString()}
-**Lowest Stat:** ${minMaxSkill[0].level} | ${minMaxSkill[0].xp.toLocaleString()}
-**Highest Ranked Stat:** ${lowHighRank[0].rank.toLocaleString()} | ${lowHighRank[0].level}
-**Lowest Ranked Stat:** ${lowHighRank[lowHighRank.length - 1].rank.toLocaleString()} | ${lowHighRank[lowHighRank.length - 1].level}
+				`**Highest Stat:** ${emoji[highestSkill]} ${minMaxSkill[minMaxSkill.length - 2].level} | ${minMaxSkill[minMaxSkill.length - 2].xp.toLocaleString()}
+**Lowest Stat:** ${emoji[lowestSkill]} ${minMaxSkill[0].level} | ${lowestSkillXp}
+**Highest Ranked Stat:** ${emoji[highestRankName]} ${highestRankRank} | ${highestRankLevel}
+**Lowest Ranked Stat:** ${emoji[lowestRankName]} ${lowestRankRank} | ${lowestRankLevel}
 **Average Level:** ${this.getAverageLvl(Skills)}
 **Average Stat XP:** ${this.getAverageXP(Skills).toLocaleString().split('.')[0]}`,
 				true
@@ -82,23 +71,59 @@ Your Skilling Type is a **${skillPref}**.`,
 		return msg.send({ embed });
 	}
 
-	// getUnrankedRank(lowHighRank) {
-	// 	let highestRank = lowHighRank[0].rank.toLocaleString();
-	// 	let lowestRank = lowHighRank[lowHighRank.length - 1].rank.toLocaleString();
-	// 	let lowestLevel = lowHighRank[lowHighRank.length - 1].level;
-	// 	const highest = 0;
-	// 	if (highestRank === '-1') {
-	// 		lowestRank = 'Unranked';
-	// 		lowestLevel = lowHighRank[0].level;
-	// 		for (let i = 1; i < lowHighRank.length - 1; i++) {
-	// 			if (highestRank === '-1') {
-	// 				continue;
-	// 			}
-	// 			highestRank = lowHighRank[i].rank.toLocaleString();
-	// 		}
-	// 	}
-	// 	return [highest, lowestRank, lowestLevel];
-	// }
+	getLowestSkillXp(Skills, minMaxSkill) {
+		let lowestSkillXp = minMaxSkill[0].xp.toLocaleString();
+		if (lowestSkillXp === '-1') {
+			lowestSkillXp = '0';
+		}
+		return lowestSkillXp;
+	}
+
+	getHighestLowestRank(Skills) {
+		const lowHighRank = Object.keys(Skills).map(skill => Skills[skill]).sort((a, b) => a.rank - b.rank);
+		// fixes unranked issues
+		let unrankedCatch = 0;
+		while (lowHighRank[0].rank.toLocaleString() === '-1' && unrankedCatch < 25) {
+			lowHighRank.push(lowHighRank.shift());
+			unrankedCatch++;
+		}
+		let highestRankName = 'Error';
+		const highestRankRank = lowHighRank[0].rank.toLocaleString();
+		const highestRankLevel = lowHighRank[0].level;
+		let lowestRankName = 'Error';
+		let lowestRankRank = lowHighRank[lowHighRank.length - 1].rank.toLocaleString();
+		const lowestRankLevel = lowHighRank[lowHighRank.length - 1].level;
+		if (lowestRankRank === '-1') {
+			lowestRankRank = 'Unranked';
+		}
+		for (let i = 0; i < 24; i++) {
+			const skillOrder = Object.keys(Skills).map(skill => Skills[skill]);
+			if (skillOrder[i].rank === lowHighRank[0].rank) {
+				highestRankName = SKILL_NAMES[i];
+			}
+			if (skillOrder[i].rank === lowHighRank[lowHighRank.length - 1].rank) {
+				lowestRankName = SKILL_NAMES[i];
+			}
+			continue;
+		}
+		return [highestRankName, highestRankRank, highestRankLevel, lowestRankName, lowestRankRank, lowestRankLevel];
+	}
+
+	getSkillNames(Skills, minMaxSkill) {
+		let highestSkill = 'Error';
+		let lowestSkill = 'Error';
+		for (let i = 0; i < 24; i++) {
+			const skillOrder = Object.keys(Skills).map(skill => Skills[skill]);
+			if (skillOrder[i].xp === minMaxSkill[minMaxSkill.length - 2].xp) {
+				highestSkill = SKILL_NAMES[i];
+			}
+			if (skillOrder[i].xp === minMaxSkill[0].xp) {
+				lowestSkill = SKILL_NAMES[i];
+			}
+			continue;
+		}
+		return [highestSkill, lowestSkill];
+	}
 
 	getAverageLvl(Skills) {
 		const averageLvl = cml.convertXPtoLVL(this.getAverageXP(Skills), 126);
@@ -153,3 +178,30 @@ Your Skilling Type is a **${skillPref}**.`,
 	}
 
 };
+
+const SKILL_NAMES = [
+	'total',
+	'attack',
+	'defence',
+	'strength',
+	'hitpoints',
+	'ranged',
+	'prayer',
+	'magic',
+	'cooking',
+	'woodcutting',
+	'fletching',
+	'fishing',
+	'firemaking',
+	'crafting',
+	'smithing',
+	'mining',
+	'herblore',
+	'agility',
+	'thieving',
+	'slayer',
+	'farming',
+	'runecraft',
+	'hunter',
+	'construction'
+];
