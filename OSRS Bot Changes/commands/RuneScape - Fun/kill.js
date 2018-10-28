@@ -149,7 +149,7 @@ module.exports = class extends Command {
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'VENENATIS': {
-				if (quantity > 500) return msg.send('I can only kill 100 Venenatis at a time!');
+				if (quantity > 500) return msg.send('I can only kill 500 Venenatis at a time!');
 				const venenatis = require('../../resources/monsters/venenatis');
 				const loot = venenatis.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
@@ -157,9 +157,17 @@ module.exports = class extends Command {
 			case 'SKELETALWYVERN':
 			case 'SKELETALWYVERNS':
 			case 'WYVERNS': {
-				if (quantity > 1000) return msg.send('I can only kill 500 Skeletal Wyverns at a time!');
+				if (quantity > 1000) return msg.send('I can only kill 1000 Skeletal Wyverns at a time!');
 				const wyvern = require('../../resources/monsters/wyvern');
 				const loot = wyvern.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+			case 'ANCIENTWYVERN':
+			case 'ANCIENTWYVERNS':
+			case 'FOSSILISLANDWYVERNS': {
+				if (quantity > 1000) return msg.send('I can only kill 1000 Ancient Wyverns at a time!');
+				const ancientWyvern = require('../../resources/monsters/ancientWyvern');
+				const loot = ancientWyvern.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'GROTESQUEGUARDIANS':
@@ -173,7 +181,7 @@ module.exports = class extends Command {
 			}
 			case 'KBD':
 			case 'KINGBLACKDRAGON': {
-				if (quantity > 500) return msg.send('I can only kill 100 King Black Dragons at a time!');
+				if (quantity > 500) return msg.send('I can only kill 500 King Black Dragons at a time!');
 				const kingBlackDragon = require('../../resources/monsters/kingBlackDragon');
 				const loot = kingBlackDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
@@ -201,13 +209,13 @@ module.exports = class extends Command {
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'SKOTIZO': {
-				if (quantity > 500) return msg.send('I can only kill 100 Skotizo at a time!');
+				if (quantity > 500) return msg.send('I can only kill 500 Skotizo at a time!');
 				const skotizo = require('../../resources/monsters/skotizo');
 				const loot = skotizo.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'SCORPIA': {
-				if (quantity > 500) return msg.send('I can only kill 100 Scorpia at a time!');
+				if (quantity > 500) return msg.send('I can only kill 500 Scorpia at a time!');
 				const scorpia = require('../../resources/monsters/scorpia');
 				const loot = scorpia.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
