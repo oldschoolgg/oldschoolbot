@@ -8,6 +8,7 @@ Boss/Monster Name			      : Arguments (NOT CASE SENSENTIVE AND CAN HAVE SPACES)
 
 Abyssal Sire				        : ABYSSALSIRE, ABBYSIRE, SIRE
 Adamant Dragon			       	: ADAMANTDRAGONS, ADAMANTDRAGS, ADDYDRAGONS, ADDYDRAGS
+Ancient Wyvern              : ANCIENTWYVERN, ANCIENTWVYERNS, FOSSILISLANDWYVERNS
 Barrows				             	: BARROWS
 Bryophyta			            	: BRYOPHYTA, MOSSGIANTBOSS
 Callisto			              : CALLISTO
