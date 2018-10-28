@@ -1086,6 +1086,32 @@ It took you **${kc.toLocaleString()}** kills to finish Skotizo <:Skotos:32412737
 
 ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`);
 			}
+			case 'ANCIENTWYVERN':
+			case 'ANCIENTWYVERNS':
+			case 'FOSSILISLANDWYVERNS': {
+				const lootMSG = [];
+				let unidFoss = 0;
+				while (loot.length !== 3) {
+					kc++;
+					if (!loot.includes('WV') && roll(10000)) {
+						loot.push('WV');
+						lootMSG.push(`**Wyvern Visage:** ${kc.toLocaleString()} KC <wyvern visage>`);
+					}
+					if (!loot.includes('GLS') && roll(600)) {
+						loot.push('GLS');
+						lootMSG.push(`**Granite Longsword:** ${kc.toLocaleString()} KC <granite longsword>`);
+					}
+					if (!loot.includes('GB') && roll(600)) {
+						loot.push('GB');
+						lootMSG.push(`**Granite Boots:** ${kc.toLocaleString()} KC <granite boots>`);
+					}
+					if (rollX(12, 175)) unidFoss++;
+				}
+				return msg.send(`
+It took you **${kc.toLocaleString()}** kills to finish Ancient Wyverns <ancient wyverns>
+
+${lootMSG.join('\n')}\n\nYou also received **${unidFoss.toLocaleString()}** Unidentified Fossils!`);
+			}	
 			case 'MITHRILDRAGONS':
 			case 'MITHRILDRAGS':
 			case 'MITHDRAGONS':
