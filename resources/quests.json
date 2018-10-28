@@ -93,6 +93,97 @@
 		],
 		"freeToPlay": 0
 	},
+		"TALEOFTHERIGHTEOUS": {
+			"thumbnail": "https://oldschool.runescape.wiki/f/current/5/5e/20180419141011%21Tale_of_the_Righteous.png",
+			"url": "https://oldschool.runescape.wiki/w/Tale_of_the_Righteous",
+			"name": "Tale of the Righteous",
+			"questType": "Normal",
+			"length": "Medium",
+			"difficulty": "Novice",
+			"description": "Over a thousand years ago, King Shayzien VII ordered an expedition to Mount Quidamortem. The expedition never returned and it was assumed that all members perished in the field. However, a recent discovery suggests this may not have been the case. Phileas Rimor is the descendant of the expedition leader and he is desperate to discover the truth. Join him and delve into a conspiracy a thousand years in the making in 'Tale of the Righteous'.",
+			"startPoint": "Speak to [Phileas Rimor](https://oldschool.runescape.wiki/w/Phileas_Rimor) in his house north of the [Shayzien House](https://oldschool.runescape.wiki/w/Shayzien_House) bank.",
+			"rewards": [
+			 "1 [Quest point](https://oldschool.runescape.wiki/w/Quest_points)",
+			 "8,000 [coins](https://oldschool.runescape.wiki/w/Coins)",
+			 "[Shayzien favour certificate](https://oldschool.runescape.wiki/w/Shayzien_favour_certificate). Reading it grants 10% Shayzien favour. It is suggested to abstain from doing so if you are progressing towards locking the favour of other houses.",
+			 "A page for [Kharedst's memoirs](https://oldschool.runescape.wiki/w/Kharedst%27s_memoirs), '[History and hearsay](https://oldschool.runescape.wiki/w/History_and_hearsay).' It teleports players to the [Graveyard of Heroes](https://oldschool.runescape.wiki/w/Graveyard_of_Heroes).",
+			 "Ability to fight the [Corrupt Lizardman](https://oldschool.runescape.wiki/w/Corrupt_Lizardman) in the [Nightmare Zone](https://oldschool.runescape.wiki/w/Nightmare_Zone).",
+			 "3 [Xerician Fabric](https://oldschool.runescape.wiki/w/Nightmare_Zone) (dropped by [Corrupted Lizardman](https://oldschool.runescape.wiki/w/Corrupt_Lizardman))"
+		 ],
+			"requirements": ["16 [Strength](https://oldschool.runescape.wiki/w/Strength)","10 [Mining](https://oldschool.runescape.wiki/w/Mining)","[Client of Kourend](https://oldschool.runescape.wiki/w/Client_of_Kourend)","20% [Shayzien House](https://oldschool.runescape.wiki/w/Shayzien_House) [favour](https://oldschool.runescape.wiki/w/Great_Kourend#Favour_system)"],
+			"trivia": [
+				"Prior to the release of the quest, the prison in the [Tower of Magic](https://oldschool.runescape.wiki/w/Tower_of_Magic) that players access during the quest had a different appearance, with the strange device in the centre having a coffin instead.",
+				"When Pagida asks the player if they would like to hear about the [Tower of Magic](https://oldschool.runescape.wiki/w/Tower_of_Magic), players will respond saying 'Well it's either this or buying rubbish at the Grand Exchange, fire away.'",
+				"However, [Ironmen](https://oldschool.runescape.wiki/w/Ironman_Mode) players will reply 'Well it's either that or running around telling everyone I'm an Ironman'. This is a reference to the stereotype that Ironman players have an inexplicable need to tell any player they meet that they are an Ironman.",
+				"In the prison, examining the skeleton in the western cell will result in the message 'Must have been a Hardcore Ironman'.",
+				"In the prison, examining the Strange Bells in the south-eastern corner will result in the message 'For whom?'. This is a reference to the phrase 'for whom the bell tolls', from a poem by the English poet [John Donne](https://en.wikipedia.org/wiki/John_Donne).",
+				"When reading the note you find by the skeleton in the Tower of Magic, it says, 'Lizards on the mountain. Do not trust the King. The altar is a lie.' This is a possible reference to the 2007 video game [Portal](https://en.wikipedia.org/wiki/Portal_(video_game)), where famously, the cake is a lie."
+			],
+			"freeToPlay": 0
+		},
+		"MAKINGFRIENDSWITHMYARM": {
+			"thumbnail": "https://oldschool.runescape.wiki/f/current/2/27/20180906170800%21Making_Friends_with_My_Arm.png",
+			"url": "https://oldschool.runescape.wiki/w/Making_Friends_with_My_Arm",
+			"name": "Making Friends with My Arm",
+			"questType": "Normal",
+			"length": "Medium",
+			"difficulty": "Master",
+			"description": "My Arm, the troll from My Arm's Big Adventure, must embark on another journey of discovery. This time, you'll be escorting him to Weiss, a newly discovered troll town in the far north of the world, so he can share his wisdom *cough* with the inhabitants, in exchange for learning about their inventions. Life's journeys can take us to some strange places, but My Arm is about to face the greatest adventure of all - true love. Plus, they'd like him to kill the Wise Old Man of Draynor Village, which doesn't sound like a clever move. Can you help My Arm get a grip on the situation and woo the fair Snowflake over the objections of her father, Mother? Or will My Arm be left to a loveless life of loneliness?",
+			"startPoint": "Talk to [Burntmeat](https://oldschool.runescape.wiki/w/Burntmeat) in the [Troll Stronghold's](https://oldschool.runescape.wiki/w/Troll_Stronghold_(location)) kitchen.",
+			"rewards": [
+			 "2 [Quest points](https://oldschool.runescape.wiki/w/Quest_points)",
+			 "2,000 [Construction](https://oldschool.runescape.wiki/w/Construction) experience",
+			 "5,000 [Firemaking](https://oldschool.runescape.wiki/w/Firemaking) experience",
+			 "10,000 [Mining](https://oldschool.runescape.wiki/w/Mining) experience",
+			 "10,000 [Agility](https://oldschool.runescape.wiki/w/Agility) experience",
+			 "Access to the [Salt Mines](https://oldschool.runescape.wiki/w/Salt_Mine)",
+			 "Ability to build [fire pits](https://oldschool.runescape.wiki/w/Fire_pit)",
+			 "A new [disease](https://oldschool.runescape.wiki/w/Disease_(Farming)-free [herb patch](https://oldschool.runescape.wiki/w/Herb_patch) in [Weiss](https://oldschool.runescape.wiki/w/Weiss) (requires building the [fire pit](https://oldschool.runescape.wiki/w/Fire_pit) before use)",
+			 "Ability to direct a teleport room portal to Troll Stronghold with a combination of salt"
+		 ],
+			"requirements": [
+				"[My Arm's Big Adventure](https://oldschool.runescape.wiki/w/My_Arm%27s_Big_Adventure)",
+				"[Swan Song](https://oldschool.runescape.wiki/w/Swan_Song)",
+				"[Cold War](https://oldschool.runescape.wiki/w/Cold_War)",
+				"[Romeo & Juliet](https://oldschool.runescape.wiki/w/Romeo_%26_Juliet)",
+				"72 [Mining](https://oldschool.runescape.wiki/w/Mining)",
+				"68 [Agility](https://oldschool.runescape.wiki/w/Agility)",
+				"66 [Firemaking](https://oldschool.runescape.wiki/w/Firemaking)",
+				"35 [Construction](https://oldschool.runescape.wiki/w/Construction)"
+			],
+			"trivia": [
+				"While speaking to the [Apothecary](https://oldschool.runescape.wiki/w/Apothecary), and having the required [cadava berry](https://oldschool.runescape.wiki/w/Cadava_berry) before he asks you for it, he will tell you 'That's very clever. I hope you've got a real feeling of pride and satisfaction from that.' This is a reference to controversy and backlash that arose from game developer [Electronic Arts](https://en.wikipedia.org/wiki/Electronic_Arts) implementing a micro-transaction system within the video game [Star Wars Battlefront II](https://en.wikipedia.org/wiki/Star_Wars_Battlefront_II).",
+				"After killing [Don't Know What](https://oldschool.runescape.wiki/w/Don%27t_Know_What), [Squirrel](https://oldschool.runescape.wiki/w/Squirrel_(troll)) runs to [Mother](https://oldschool.runescape.wiki/w/Mother), declaring 'OLD MAN IN THE DUNGEON!' which is a reference to [Harry Potter and the Philosopher's Stone](https://en.wikipedia.org/wiki/Harry_Potter_and_the_Philosopher%27s_Stone) when a troll is released in the school and Professor Quirrell (notice the name similarity) bursts into the Great Hall yelling, 'TROLL IN THE DUNGEON!'",
+				"The ancient dance of love [My Arm](https://oldschool.runescape.wiki/w/My_Arm) and [Snowflake](https://oldschool.runescape.wiki/w/Snowflake) perform is a reference to how two players circle around one another when they follow each other."
+			],
+			"freeToPlay": 0
+		},
+		"TASTEOFHOPE": {
+			"thumbnail": "https://oldschool.runescape.wiki/f/current/0/0d/20180904201219%21A_Taste_of_Hope.png",
+			"url": "https://oldschool.runescape.wiki/w/A_Taste_of_Hope",
+			"name": "A Taste of Hope",
+			"questType": "Normal",
+			"length": "Long",
+			"difficulty": "Experienced",
+			"description": "For many years, the Myreque have fought back against the reign of the Drakans. To many, they act as a glimmer of hope in an otherwise miserable existence. In recent times, the Myreque have been beset by disaster, with numerous members meeting a gruesome end at the hands of Vanstrom Klause, the brutal henchman of the Drakans. However, while the Myreque may be in their darkest hour, hope still remains. Thanks to a recent discovery in the laboratories deep beneath Meiyerditch, the Myreque may have finally found a way to take the fight to the vampyres.",
+			"startPoint": "Speak to [Garth](https://oldschool.runescape.wiki/w/Garth_(Theatre_of_Blood)) by the entrance to the [Theatre of Blood](https://oldschool.runescape.wiki/w/Theatre_of_Blood)",
+			"rewards": ["1 [Quest point](https://oldschool.runescape.wiki/w/Quest_points)", "[Ivandis flail](https://oldschool.runescape.wiki/w/Ivandis_flail) - A weapon that can damage the [vyrewatch](https://oldschool.runescape.wiki/w/Vyrewatch)", "[Drakan's medallion](https://oldschool.runescape.wiki/w/Drakan%27s_medallion) - An amulet that can teleport players to the [Theatre of Blood](https://oldschool.runescape.wiki/w/Theatre_of_Blood)", "[Tome of experience](https://oldschool.runescape.wiki/w/Tome_of_experience_(A_Taste_of_Hope)), granting 2,500 experience to any three skills of the player's choosing (level 35 or over). Can be the same skill."],
+			"requirements": [
+				"[Darkness of Hallowvale](https://oldschool.runescape.wiki/w/Darkness_of_Hallowvale)",
+				"48 [Crafting](https://oldschool.runescape.wiki/w/Crafting)",
+				"45 [Agility](https://oldschool.runescape.wiki/w/Agility)",
+				"40 [Attack](https://oldschool.runescape.wiki/w/Attack)",
+				"40 [Herblore](https://oldschool.runescape.wiki/w/Herblore)",
+				"38 [Slayer](https://oldschool.runescape.wiki/w/Slayer)"
+			],
+			"trivia": [
+				"The title of the quest is a reference to [a book](https://runescape.wiki/w/A_Taste_of_Hope) obtained during the [RuneScape 3](https://runescape.wiki/w/RuneScape_3?rdfrom=%2F%2Foldschool.runescape.wiki%2Fw%2FRuneScape_3%3Fredirect%3Dno) quest: The [Lord of Vampyrium](https://runescape.wiki/w/The_Lord_of_Vampyrium), the sixth installment in the Myreque questline. The book is [Lord Drakan's](https://oldschool.runescape.wiki/w/Lord_Lowerniel_Vergidiyad_Drakan) description of the eight vampyre houses and their blood preferences described in a way of a wine connoisseur.",
+				"This is the first quest that is a continuation of a RuneScape 3 quest, where a continuation already exists. In RuneScape 3 the fourth installment of the Myreque questline is [Legacy of Seergaze](https://runescape.wiki/w/Legacy_of_Seergaze).",
+				"During the fight with Ranis at [Ver Sinhaza](https://oldschool.runescape.wiki/w/Ver_Sinhaza), [Old Man Ral](https://oldschool.runescape.wiki/w/Old_Man_Ral) can be seen on the north side of the crowd of Meiyerditch citizens, near the noticeboard.",
+				"The instanced area in which players fight Ranis can be seen just north of the [Cosmic entity's plane](https://oldschool.runescape.wiki/w/Cosmic_entity%27s_plane) via the use of an [oculus orb](https://oldschool.runescape.wiki/w/Oculus_orb)."
+			],
+			"freeToPlay": 0
+		},
 	"ANIMALMAGNETISM": {
 		"thumbnail": "https://oldschool.runescape.wiki/f/current/3/3c/300px-20170326061337%21Animal_Magnetism_5.png",
 		"url": "https://oldschool.runescape.wiki/w/Animal_Magnetism",
@@ -729,6 +820,64 @@
 			"When speaking to Duke Horacio during 'The Lost Tribe' quest Sigmund mentions to him that you are the same adventurer who defeated Elvarg."
 		],
 		"freeToPlay": 1
+	},
+	"DRAGONSLAYERII": {
+		"thumbnail": "https://oldschool.runescape.wiki/f/current/d/d6/20180104172946%21Dragon_Slayer_II.png",
+		"url": "https://oldschool.runescape.wiki/w/Dragon_Slayer_II",
+		"name": "Dragon Slayer II",
+		"questType": "Normal",
+		"length": "Very Long",
+		"difficulty": "Grandmaster",
+		"description": "30 years prior to the fateful day a mighty adventurer awakened Elvarg from her slumber, Crandor was a thriving and very much alive island, with a great tradition of mages and adventurers. The history of Crandor is a bold one, enough so that many a Crandorian earned the right to be part of the Champions' Guild! The Crandor we know today is very different from that of the past and there are so many questions that remain unanswered - your chance to uncover the secrets of the past starts with Dragon Slayer II.",
+		"startPoint": " Speak to [Alec Kincade](https://oldschool.runescape.wiki/w/Alec_Kincade) outside the [Myths' Guild](https://oldschool.runescape.wiki/w/Myths%27_Guild).",
+		"rewards": [
+			"5 Quest points",
+			"25,000 Smithing XP",
+			"18,000 Mining XP",
+			"15,000 Agility XP",
+			"15,000 Thieving XP",
+			"Ability to speak to cats without the Catspeak amulet.",
+			"Access to the [Myth's Guild](https://oldschool.runescape.wiki/w/Myths%27_Guild).",
+			"Ability to make Super antifire potions by speaking to Primula.",
+			"4x 25,000 experience in Magic, Ranged, Strength, Attack, Defence, or Hitpoints by speaking to Ellen.",
+			"Access to Fountain of Uhld.",
+			"Access to the Pool of Dreams where players can refight Galvek or rewatch cutscenes from the quest.",
+			"Access to the wrath altar.",
+			"Access to adamant and rune dragons in the Lithkren Vault.",
+			"Access to a stronger version of [Vorkath](https://oldschool.runescape.wiki/w/Vorkath) on Ungael.",
+			"Ability to reforge the dragon platebody and kiteshield.",
+			"Ability to have a rune dragon as a Treasure Room guardian.",
+			"Ability to create an Ava's assembler by bringing Vorkath's head, 75 Mithril Arrows, and 4,999 gp (or Ava's Accumulator) to Ava in Draynor Manor."
+		],
+		"requirements": [
+		  "200 [Quest points](https://oldschool.runescape.wiki/w/Quest_points)",
+		  "[Legends' Quest](https://oldschool.runescape.wiki/w/Legends%27_Quest)",
+		  "[Dream Mentor](https://oldschool.runescape.wiki/w/Dream_Mentor)",
+		  "[A Tail of Two Cats](https://oldschool.runescape.wiki/w/A_Tail_of_Two_Cats)",
+		  "[Animal Magnetism](https://oldschool.runescape.wiki/w/Animal_Magnetism)",
+		  "[Ghosts Ahoy](https://oldschool.runescape.wiki/w/Ghosts_Ahoy)",
+		  "[Bone Voyage](https://oldschool.runescape.wiki/w/Bone_Voyage)",
+		  "[Client of Kourend](https://oldschool.runescape.wiki/w/Client_of_Kourend)",
+		  "75 Magic",
+		  "70 Smithing",
+		  "68 Mining",
+		  "62 Crafting",
+		  "60 Agility(higher recommended)",
+		  "60 Thieving (higher recommended)",
+		  "50 Construction",
+		  "50 Hitpoints",
+		  "Started the [Firemaking part of Barbarian Training](https://oldschool.runescape.wiki/w/Barbarian_Training)"
+		],
+		"trivia": [
+			"A [log in screen competition](https://oldschool.runescape.wiki/w/Update:Dragon_Slayer_II_Competitions) was held around 2 weeks before release to use a player-made log in screen to commemorate release of the quest. The winner of the competition, Runezilla, was awarded an 'exclusive Old School goodiebag!'.",
+			"The first player to complete the quest on the day of release was Rambo The 3 in a time of 2 hours and 55 minutes.",
+			"When telling [Juna](https://oldschool.runescape.wiki/w/Juna) a story about the quest, the player says '... so I slew the dragon which killed the dragonkin as well. Not everyone survived the fight though.' to which she responds 'The dragonkin once brought this world to the brink of ruin. It is good you stopped them from doing so again.'",
+			"The dialogue in Bob's memory of Robert the Strong confronting the Dragonkin: 'Now it begins' 'No, now it ends' is a reference to the Tower of Joy battle scene in the television show [Game of Thrones](https://en.wikipedia.org/wiki/Game_of_Thrones).",
+			"The spawn that appears in the Crandor laboratory, along with Vorkath's zombified spawn, are a reference to [Facehuggers](https://en.wikipedia.org/wiki/Alien_(creature_in_Alien_franchise)#Facehugger) from the movie [Alien](https://en.wikipedia.org/wiki/Alien_(film)).",
+			"When [Amelia](https://oldschool.runescape.wiki/w/Amelia) tells the player that the Shayzien Crypts are overrun by the undead, the player says 'I ain't afraid of no ghosts'. This is a reference to the film [Ghostbusters](https://en.wikipedia.org/wiki/Ghostbusters).",
+			"If players use a spade on Bob's grave after completing the quest, a message will appear in the chatbox stating 'You would desecrate Bob's grave? You monster!'"
+		],
+		"freeToPlay": 0
 	},
 	"DREAMMENTOR": {
 		"thumbnail": "https://oldschool.runescape.wiki/f/current/2/29/250px-20160614142204%21Lunar_Isle.png",
@@ -2275,6 +2424,34 @@
 		"requirements": ["None"],
 		"trivia": ["None"],
 		"freeToPlay": 1
+	},
+	"QUEENOFTHIEVES": {
+		"thumbnail": "https://oldschool.runescape.wiki/f/current/c/cd/20171109165152%21The_Queen_of_Thieves.png",
+		"url": "https://oldschool.runescape.wiki/w/The_Queen_of_Thieves",
+		"name": "The Queen of Thieves",
+		"questType": "Normal",
+		"length": "Short",
+		"difficulty": "Novice",
+		"description": "The gangs of Kourend have recently been uniting under a mysterious figure called the Queen of Thieves, somewhere in Port Piscarilius. This novice quest tasks the player with infiltrating the gangs of Kourend in order to find the Queen of Thieves.",
+		"startPoint": "Speak to [Tomas Lawry](https://oldschool.runescape.wiki/w/Tomas_Lawry) outside the [Piscarilius House](https://oldschool.runescape.wiki/w/Piscarilius_House) bank.",
+		"rewards": [
+			"1 [Quest point](https://oldschool.runescape.wiki/w/Quest_points)",
+			"2,000 [Thieving](https://oldschool.runescape.wiki/w/Thieving) experience",
+			"2,000 [coins](https://oldschool.runescape.wiki/w/coins)",
+			"Access to [The Warrens](https://oldschool.runescape.wiki/w/The_Warrens)",
+			"[Piscarilius favour certificate](https://oldschool.runescape.wiki/w/Piscarilius_favour_certificate). Reading it grants 10% Piscarilius favour. It is suggested to abstain from doing so if you are progressing towards locking the favour of other houses.",
+			"A page for [Kharedst's memoirs](https://oldschool.runescape.wiki/w/Kharedst%27s_memoirs), ['The fisher's flute.'](https://oldschool.runescape.wiki/w/The_fisher%27s_flute) It teleports players to the centre of the Piscarilius House."
+		],
+		"requirements": [
+			"20 [Thieving](https://oldschool.runescape.wiki/w/Thieving)",
+			"[Client of Kourend](https://oldschool.runescape.wiki/w/Client_of_Kourend)",
+			"20% [Piscarilius House](https://oldschool.runescape.wiki/w/Piscarilius_House) [favour](https://oldschool.runescape.wiki/w/Great_Kourend#Favour_system)"
+		],
+		"trivia": [
+			"If players already have a stew in their inventory upon talking to Robert O'Reilly, both will mention how convenient it is that the player has it. This is likely a reference to players who look up quest guides beforehand.",
+			"When killing Conrad King, there is a chance he will say the line, 'I'm coming Elizabeth!', which is a reference to the television comedy [Sanford and Son](https://en.wikipedia.org/wiki/Sanford_and_Son). In the series, the show's namesake, Fred Sanford, routinely feigns illness and shouts a line similar to that of Conrad King. (It is also possible for Conrad King to merely shout 'Here I go!')"
+		],
+		"freeToPlay": 0
 	},
 	"WISHLIST": {
 		"thumbnail": "https://oldschool.runescape.wiki/f/current/1/1c/300px-20170212201605%21Rag_and_Bone_Man.png",
