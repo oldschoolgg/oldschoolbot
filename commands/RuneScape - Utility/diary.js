@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			aliases: ['d'],
-			description: 'Check which diaries your account has the required stats to complete',
+			description: 'Check which diaries your account has the required stats to complete (BOLD = boostable)',
 			usage: '[user:user|username:str]'
 		});
 	}
@@ -40,6 +40,8 @@ module.exports = class extends Command {
 
 	check(skills, diary) {
 		const levelMap = ['Easy', 'Medium', 'Hard', 'Elite'];
+		const levelMapBoost = ['**Easy**', '**Medium**', '**Hard**', '**Elite**'];
+		let boostVar = 0;
 		const canComplete = [];
 		for (let i = 0; i < 4; i++) {
 			for (const req of Object.keys(diary)) {
@@ -47,7 +49,15 @@ module.exports = class extends Command {
 					const statLevel = skills[req].level;
 					const levelRequirement = diary[req][i];
 					if (levelRequirement === 0) continue;
-					if (statLevel < levelRequirement) break;
+					if (statLevel >= levelRequirement) continue;
+					if (statLevel < (levelRequirement - diary[req][i + 4])) {
+						break;
+					} else {
+						boostVar = 1;
+						continue;
+					}
+				} else if (boostVar === 1) {
+					canComplete.push(levelMapBoost[i]);
 				} else {
 					canComplete.push(levelMap[i]);
 				}
