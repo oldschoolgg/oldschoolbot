@@ -1,0 +1,51 @@
+Old School Bot
+
+Boss/Monster Arguments for +kill & +finish
+
+39 Bosses/Monsters
+
+Boss/Monster Name			      : Arguments (NOT CASE SENSENTIVE AND CAN HAVE SPACES)
+
+Abyssal Sire				        : ABYSSALSIRE, ABBYSIRE, SIRE
+Adamant Dragon			       	: ADAMANTDRAGONS, ADAMANTDRAGS, ADDYDRAGONS, ADDYDRAGS
+Barrows				             	: BARROWS
+Bryophyta			            	: BRYOPHYTA, MOSSGIANTBOSS
+Callisto			              : CALLISTO
+Cerberus			            	: CERBERUS, CERB
+Chambers of Xeric		       	: CHAMBERSOFXERIC, COX, RAIDS, RAIDS1, OLM
+Chaos Elemental			      	: CHAOSELEMENTAL, CHAOSELE
+Chaos Fanatic				        : CHAOSFANATIC
+Commander Zilyana		       	: COMMANDERZILYANA, ZILYANA, ZILY, SARADOMIN, SARA
+Corporeal Beast			      	: CORPOREALBEAST, CORPBEAST, CORP
+Crazy Archaeologist	      	: CRAZYARCHAEOLOGIST, CRAZYARCH
+Dagannoth Kings			      	: DAGANNOTHKINGS, DAGKINGS, DKS
+Dagannoth Prime				      : DAGANNOTHPRIME, PRIME
+Dagannoth Rex				        : DAGANNOTHREX, REX
+Dagannoth Supreme		       	: DAGANNOTHSUPREME, SUPREME
+Demonic Gorilla			      	: DEMONICGORILLA, DEMONICGORILLAS, DEMONICS, GORILLAS, DGS
+General Graardor		      	: GENERALGRAARDOR, GRAARDOR, BANDOS
+Giant Mole				          : GIANTMOLE, MOLE
+Grotesque Guardians		      : GROTESQUEGUARDIANS, GGS, DUSK, DAWN
+K'ril Tsutsaroth			      : KRILTSUTSAROTH, KRIL, ZAMORAK, ZAMMY
+Kalphite Queen			       	: KALPHITEQUEEN, KQ
+King Black Dragon		       	: KINGBLACKDRAGON, KBD
+Kraken					            : KRAKEN
+Kree'arra				            : KREEARRA, KREE, ARMADYL, ARMA
+Lizardman Shaman			      : LIZARDMANSHAMAN, LIZARDMANSHAMANS, LIZARDMEN, SHAMANS
+Mithril Dragon				      : MITHRILDRAGONS, MITHRILDRAGS, MITHDRAGONS, MITHDRAGS
+Obor					              : OBOR, HILLGIANTBOSS
+Rune Dragon				          : RUNEDRAGONS, RUNEDRAGS
+Scorpia					            : SCORPIA
+Skotizo					            : SKOTIZO
+Theatre of Blood		      	: THEATREOFBLOOD, TOB, RAIDS2
+Thermonuclear Smoke Devil		: THERMONUCLEARSMOKEDEVIL, THERMY
+Venenatis				            : VENENATIS
+Vet'ion				             	: VETION
+Vorkath				             	: VORKATH
+Wintertodt				          : WINTERTODT, WINTERTOAD, TODT, WT
+Zulrah				             	: ZULRAH
+
+Boss/Monster Arguments for +kill ONLY
+
+Skeletal Wyvern				      : SKELETALWYVERN, SKELETALWYVERNS, WYVERNS
+Abyssal Demon			        	: ABYSSALDEMON, ABYSSALDEMONS, ABBYDEMONS, ABBYDEMON

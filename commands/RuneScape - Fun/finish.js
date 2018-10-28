@@ -330,7 +330,9 @@ It took you **${kc.toLocaleString()}** kills to finish Kalphite Queen <:Kalphite
 
 ${lootMSG.join('\n')}`);
 			}
-			case 'BANDOS': {
+			case 'BANDOS':
+			case 'GENERALGRAARDOR':
+			case 'GRAARDOR': {
 				const lootMSG = [];
 				while (loot.length !== 8) {
 					kc++;
@@ -491,9 +493,10 @@ It took you **${kc.toLocaleString()}** kills to finish Armadyl <:Pet_kreearra:32
 
 ${lootMSG.join('\n')}`);
 			}
+			case 'ZAMMY':
 			case 'ZAMORAK':
 			case 'KRIL':
-			case 'ZAMMY': {
+			case 'KRILTSUTSAROTH': {
 				const lootMSG = [];
 				while (loot.length !== 8) {
 					kc++;
@@ -567,7 +570,8 @@ ${lootMSG.join('\n')}`);
 			case 'SARA':
 			case 'SARADOMIN':
 			case 'ZILY':
-			case 'ZILYANA': {
+			case 'ZILYANA':
+			case 'COMMANDERZILYANA': {
 				const lootMSG = [];
 				while (loot.length !== 8) {
 					kc++;
@@ -635,7 +639,9 @@ It took you **${kc.toLocaleString()}** kills to finish Saradomin <:Pet_zilyana:3
 
 ${lootMSG.join('\n')}`);
 			}
-			case 'CORP': {
+			case 'CORP':
+			case 'CORPOREALBEAST':
+			case 'CORPBEAST': {
 				let elyKC, arcKC, specKC, petKC;
 				const lootMSG = [];
 				while (loot.length < 4) {
@@ -728,6 +734,7 @@ It took you **${kc.toLocaleString()}** kills to finish Zulrah <:Pet_snakeling:32
 ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Scales!`);
 			}
 			case 'WINTERTODT':
+			case 'WINTERTOAD':
 			case 'TODT':
 			case 'WT': {
 				const lootMSG = [];
@@ -789,6 +796,9 @@ ${lootMSG.join('\n')}`);
 			}
 			case 'RAIDS':
 			case 'OLM':
+			case 'RAIDS1':
+			case 'COX':
+			case 'CHAMBERSOFXERIC':
 				const lootTrack = [];
 				while (loot.length < 16) {
 					kc++;
@@ -975,8 +985,7 @@ You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish 
 			case 'SHAMANS':
 			case 'LIZARDMANSHAMANS':
 			case 'LIZARDMANSHAMAN':
-			case 'LIZARDMAN':
-			case 'SHAMAN': 	{
+			case 'LIZARDMEN':	{
 				const lootMSG = [];
 				while (loot.length !== 2) {
 					kc++;
@@ -997,8 +1006,8 @@ ${lootMSG.join('\n')}`);
 			case 'GORILLAS':
 			case 'DGS':
 			case 'DEMONICGORILLAS':
-			case 'DG':
-			case 'DEMONICGORILLA': {
+			case 'DEMONICGORILLA':
+			case 'DEMONICS': {
 				const lootMSG = [];
 				while (loot.length !== 9) {
 					kc++;
@@ -1028,19 +1037,19 @@ ${lootMSG.join('\n')}`);
 					if (roll(300)) {
 						if (!loot.includes('ZS4') && loot.includes('ZS3')) {
 							loot.push('ZS4');
-							lootMSG.push(`**Zenyte Shard (4):** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
+							lootMSG.push(`**Zenyte Shard #4:** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
 						}
 						if (!loot.includes('ZS3') && loot.includes('ZS2')) {
 							loot.push('ZS3');
-							lootMSG.push(`**Zenyte Shard (3):** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
+							lootMSG.push(`**Zenyte Shard #3:** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
 						}
 						if (!loot.includes('ZS2') && loot.includes('ZS1')) {
 							loot.push('ZS2');
-							lootMSG.push(`**Zenyte Shard (2):** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
+							lootMSG.push(`**Zenyte Shard #2:** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
 						}
 						if (!loot.includes('ZS1')) {
 							loot.push('ZS1');
-							lootMSG.push(`**Zenyte Shard (1):** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
+							lootMSG.push(`**Zenyte Shard #1:** ${kc.toLocaleString()} KC <:Zenyte_shard:405245077972320256>`);
 						}
 					}
 				}
@@ -1077,7 +1086,36 @@ It took you **${kc.toLocaleString()}** kills to finish Skotizo <:Skotos:32412737
 
 ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`);
 			}
-			case 'MITHRILDRAGONS': {
+			case 'ANCIENTWYVERN':
+			case 'ANCIENTWYVERNS':
+			case 'FOSSILISLANDWYVERNS': {
+				const lootMSG = [];
+				let unidFoss = 0;
+				while (loot.length !== 3) {
+					kc++;
+					if (!loot.includes('WV') && roll(10000)) {
+						loot.push('WV');
+						lootMSG.push(`**Wyvern Visage:** ${kc.toLocaleString()} KC <wyvern visage>`);
+					}
+					if (!loot.includes('GLS') && roll(600)) {
+						loot.push('GLS');
+						lootMSG.push(`**Granite Longsword:** ${kc.toLocaleString()} KC <granite longsword>`);
+					}
+					if (!loot.includes('GB') && roll(600)) {
+						loot.push('GB');
+						lootMSG.push(`**Granite Boots:** ${kc.toLocaleString()} KC <granite boots>`);
+					}
+					if (rollX(12, 175)) unidFoss++;
+				}
+				return msg.send(`
+It took you **${kc.toLocaleString()}** kills to finish Ancient Wyverns <ancient wyverns>
+
+${lootMSG.join('\n')}\n\nYou also received **${unidFoss.toLocaleString()}** Unidentified Fossils!`);
+			}
+			case 'MITHRILDRAGONS':
+			case 'MITHRILDRAGS':
+			case 'MITHDRAGONS':
+			case 'MITHDRAGS': {
 				// ancient page count
 				let ap = 0;
 				// chewed bones count
@@ -1109,7 +1147,10 @@ It took you **${kc.toLocaleString()}** kills to finish Mithril Dragons <:Mithril
 
 ${lootMSG.join('\n')}\n\nYou also received **${ap.toLocaleString()}** Ancient Pages and **${cb.toLocaleString()}** Chewed Bones!`);
 			}
-			case 'ADAMANTDRAGONS': {
+			case 'ADAMANTDRAGONS':
+			case 'ADAMANTDRAGS':
+			case 'ADDYDRAGONS':
+			case 'ADDYDRAGS': {
 				const lootMSG = [];
 				while (loot.length !== 3) {
 					kc++;
@@ -1131,8 +1172,7 @@ It took you **${kc.toLocaleString()}** kills to finish Adamant Dragons <:Adamant
 
 ${lootMSG.join('\n')}`);
 			}
-			case 'RUNEDRAG':
-			case 'RUNEDRAGON':
+			case 'RUNEDRAGS':
 			case 'RUNEDRAGONS': {
 				const lootMSG = [];
 				while (loot.length !== 3) {
@@ -1234,8 +1274,7 @@ It took you **${kc.toLocaleString()}** kills to finish Callisto <:Callisto_cub:3
 ${lootMSG.join('\n')}`);
 			}
 			case 'CRAZYARCHAEOLOGIST':
-			case 'CRAZYARCH':
-			case 'CA': {
+			case 'CRAZYARCH': {
 				const lootMSG = [];
 				while (loot.length !== 3) {
 					kc++;
@@ -1311,7 +1350,7 @@ It took you **${kc.toLocaleString()}** kills to finish Chaos Fanatic <:Pet_chaos
 ${lootMSG.join('\n')}`);
 			}
 			case 'GROTESQUEGUARDIANS':
-			case 'GG':
+			case 'GGS':
 			case 'DUSK':
 			case 'DAWN': {
 				const lootMSG = [];
@@ -1544,9 +1583,7 @@ It took you **${kc.toLocaleString()}** kills to finish Cerberus <:Hellpuppy:3241
 ${lootMSG.join('\n')}`);
 			}
 			case 'THERMY':
-			case 'THERMONUCLEARSMOKEDEVIL':
-			case 'TSD':
-			case 'TNSD': {
+			case 'THERMONUCLEARSMOKEDEVIL': {
 				const lootMSG = [];
 				while (loot.length !== 4) {
 					kc++;
