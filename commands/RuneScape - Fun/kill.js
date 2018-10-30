@@ -1,5 +1,6 @@
 /* eslint-disable */
 const { Command } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -349,7 +350,10 @@ module.exports = class extends Command {
 			}
 
 			default:
-				return msg.send("I don't have that boss yet.");
+				const embed = new MessageEmbed()
+					.setColor(14981973)
+					.addField(`I don't have that boss, you can find the list of bosses`, `[here.](https://raw.githubusercontent.com/gc/oldschoolbot/master/killfinish_arguments.txt)`, true)
+				return msg.send({ embed });
 		}
 	}
 
