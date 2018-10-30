@@ -2,12 +2,13 @@ Old School Bot
 
 Boss/Monster Arguments for +kill & +finish
 
-40 Bosses/Monsters
+41 Bosses/Monsters
 
 Boss/Monster Name			      : Arguments (NOT CASE SENSENTIVE AND CAN HAVE SPACES)
 
 Abyssal Sire				        : ABYSSALSIRE, ABBYSIRE, SIRE
 Adamant Dragon			       	: ADAMANTDRAGONS, ADAMANTDRAGS, ADDYDRAGONS, ADDYDRAGS
+Ancient Wyvern              : ANCIENTWYVERN, ANCIENTWYVERNS, FOSSILISLANDWYVERNS
 Barrows				             	: BARROWS
 Bryophyta			            	: BRYOPHYTA, MOSSGIANTBOSS
 Callisto			              : CALLISTO
