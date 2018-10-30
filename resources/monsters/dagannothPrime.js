@@ -4,7 +4,7 @@ const dagannothPrime = {
 		clueScroll: '<:Clue_scroll:365003979840552960>',
 		dragonAxe: '<:Dragon_axe:405265921309933588>',
 		seersRing: '<:Seers_ring:456175344723034122>',
-		farseerHelm: '<:farseer helm',
+		farseerHelm: '<:Farseer_helm:506330718348247042>',
 		mudBattlestaff: '<:Mud_battlestaff:456175019345838083>',
 		airTalisman: '<:Air_talisman:421047764248690688>'
 	},
