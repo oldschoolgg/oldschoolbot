@@ -47,10 +47,10 @@ module.exports = class extends Command {
 			for (const req of Object.keys(diary)) {
 				if (req !== 'Construction') {
 					const statLevel = skills[req].level;
-					const levelRequirement = diary[req][i];
+					const levelRequirement = diary[req].statReq[i];
 					if (levelRequirement === 0) continue;
 					if (statLevel >= levelRequirement) continue;
-					if (statLevel < (levelRequirement - diary[req][i + 4])) {
+					if (statLevel < (levelRequirement - diary[req].boost[i])) {
 						break;
 					} else {
 						boostVar = 1;
