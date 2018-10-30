@@ -2,7 +2,7 @@ const mithrilDragon = {
 	drops: {
 		draconicVisage: '<:Draconic_visage:403378090979491840>',
 		dragonFullHelm: '<:Dragon_full_helm:456177009639424020>',
-		chewedBones: 'chewedbones',
+		chewedBones: '<:Chewed_bones:506330718356504586>',
 		clueScroll: '<:Clue_scroll:365003979840552960>'
 	},
 	kill(quantity) {
