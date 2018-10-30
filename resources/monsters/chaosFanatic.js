@@ -1,7 +1,7 @@
 const chaosFanatic = {
 	drops: {
 		pet: '<:Pet_chaos_elemental:324127377070227456>',
-		odiumShard1: '<:Odium_shard_2:456180667412381708>',
+		odiumShard1: '<:Odium_shard_1:506330718616551424>',
 		maledictionShard1: '<:Malediction_shard_1:456180792851300352>',
 		clueScroll: '<:Clue_scroll:365003979840552960>'
 	},
