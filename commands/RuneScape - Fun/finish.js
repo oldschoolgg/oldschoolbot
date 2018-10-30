@@ -1,5 +1,6 @@
 /* eslint-disable */
 const { Command } = require('klasa');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -1095,20 +1096,20 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`)
 					kc++;
 					if (!loot.includes('WV') && roll(10000)) {
 						loot.push('WV');
-						lootMSG.push(`**Wyvern Visage:** ${kc.toLocaleString()} KC <wyvern visage>`);
+						lootMSG.push(`**Wyvern Visage:** ${kc.toLocaleString()} KC <:Wyvern_visage:506330718641586185>`);
 					}
 					if (!loot.includes('GLS') && roll(600)) {
 						loot.push('GLS');
-						lootMSG.push(`**Granite Longsword:** ${kc.toLocaleString()} KC <granite longsword>`);
+						lootMSG.push(`**Granite Longsword:** ${kc.toLocaleString()} KC <:Granite_longsword:506330718473945088>`);
 					}
 					if (!loot.includes('GB') && roll(600)) {
 						loot.push('GB');
-						lootMSG.push(`**Granite Boots:** ${kc.toLocaleString()} KC <granite boots>`);
+						lootMSG.push(`**Granite Boots:** ${kc.toLocaleString()} KC <:Granite_boots:506330718516019230>`);
 					}
 					if (rollX(12, 175)) unidFoss++;
 				}
 				return msg.send(`
-It took you **${kc.toLocaleString()}** kills to finish Ancient Wyverns <ancient wyverns>
+It took you **${kc.toLocaleString()}** kills to finish Ancient Wyverns <:Ancient_Wyvern:506330720558383124>
 
 ${lootMSG.join('\n')}\n\nYou also received **${unidFoss.toLocaleString()}** Unidentified Fossils!`);
 			}
@@ -1336,7 +1337,7 @@ ${lootMSG.join('\n')}`);
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
 						if (!loot.includes('OS1') && randomRoll === 1) {
 							loot.push('OS1');
-							lootMSG.push(`**Odium Shard 1:** ${kc.toLocaleString()} KC <:Odium_shard_2:456180667412381708>`);
+							lootMSG.push(`**Odium Shard 1:** ${kc.toLocaleString()} KC <:Odium_shard_1:506330718616551424>`);
 						}
 						if (!loot.includes('MS1') && randomRoll === 2) {
 							loot.push('MS1');
@@ -1626,8 +1627,11 @@ ${lootMSG.join('\n')}`);
 				);
 			}
 			default:
-				return msg.send("I don't have that boss yet.");
-		}
+				const embed = new MessageEmbed()
+					.setColor(14981973)
+					.addField(`I don't have that boss, you can find the list of bosses`, `[here.](https://raw.githubusercontent.com/gc/oldschoolbot/master/killfinish_arguments.txt)`, true)
+				return msg.send({ embed });
+			}
 	}
 
 };
