@@ -19,7 +19,6 @@ module.exports = class extends Command {
 			.setDescription('You can view the Command List in one of these formats:')
 			.addField('Table Format', `[commands.md](https://github.com/gc/oldschoolbot/blob/master/commands.md)`, true)
 			.addField('Plain Text', `[commands.txt](https://raw.githubusercontent.com/gc/oldschoolbot/master/commands.txt)`, true)
-			.addField('+kill/+finish', `[killfinish.txt](https://raw.githubusercontent.com/gc/oldschoolbot/master/killfinish_arguments.txt)`, true)
 			.setFooter(this.client.user.username, this.client.user.displayAvatarURL());
 
 		return msg.send({ embed });
