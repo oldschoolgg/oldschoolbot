@@ -4,7 +4,7 @@ const dagannothSupreme = {
 		clueScroll: '<:Clue_scroll:365003979840552960>',
 		dragonAxe: '<:Dragon_axe:405265921309933588>',
 		archersRing: '<:Archers_ring:456174721676083210>',
-		archersHelm: 'archers helm',
+		archersHelm: '<:Archer_helm:506330718209835019>',
 		seercull: '<:Seercull:456174387633324042>',
 		airTalisman: '<:Air_talisman:421047764248690688>'
 	},
