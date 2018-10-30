@@ -1,9 +1,8 @@
 const ancientWyvern = {
 	drops: {
-		draconicVisage: '<:Draconic_visage:403378090979491840>',
-		dragonPlateskirt: '<:Dragon_plateskirt:409987345245405205>',
-		dragonPlatelegs: '<:Dragon_platelegs:409987344830169089>',
-		graniteLegs: '<:Granite_legs:409987344704208909>'
+		wyvernVisage: '<:Wyvern_visage:506330718641586185>',
+		graniteBoots: '<:Granite_boots:506330718516019230>',
+		graniteLongsword: '<:Granite_longsword:506330718473945088>'
 	},
 	kill(quantity) {
 		const loot = [];
