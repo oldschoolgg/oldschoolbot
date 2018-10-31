@@ -65,6 +65,7 @@ RuneScape - Utility / 25 Commands
 
 +clients            : Shows all the clients you can play OSRS on.
 +clues              : Shows the Clue Highscores of an account.
++analytics          : Shows analytics about your account.
 +combat             : Shows your Combat level.
 +diary              : Check which diaries your account has the required stats to complete
 +dmm                : Shows the stats of a DMM account.
