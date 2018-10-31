@@ -11,19 +11,33 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [RSN]) {
-		if (!RSN) return msg.send(`Your current RSN is: \`${msg.author.configs.RSN}\``);
-		RSN = RSN.toLowerCase();
-		if (!RSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) throw 'Invalid username';
-
-		if (msg.author.configs.RSN === RSN) throw `Your RSN is already set to \`${msg.author.configs.RSN}\``;
-		if (msg.author.configs.RSN !== null) {
-			const previousRSN = msg.author.configs.RSN;
-			await msg.author.configs.update('RSN', RSN, msg.author);
-			return msg.send(`Changed your RSN from \`${previousRSN}\` to \`${msg.author.configs.RSN}\``);
+	async run(msg, [newRSN]) {
+		const { RSN } = msg.author.configs;
+		if (!newRSN && RSN) {
+			return msg.send(`Your current RSN is: \`${msg.author.configs.RSN}\``);
 		}
-		await msg.author.configs.update('RSN', RSN, msg.author);
-		return msg.send(`Your RSN has been set to: \`${msg.author.configs.RSN}\`.`);
+
+		if (!newRSN && !RSN) {
+			return msg.send(`You don't have an RSN set. You can set one like this: ` +
+			`\`${msg.guild.prefix}setrsn <username>\``);
+		}
+
+		newRSN = newRSN.toLowerCase();
+		if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
+			throw 'Invalid username';
+		}
+
+		if (RSN === newRSN) {
+			throw `Your RSN is already set to \`${RSN}\``;
+		}
+
+		if (RSN !== null) {
+			await msg.author.configs.update('RSN', newRSN, msg.author);
+			return msg.send(`Changed your RSN from \`${RSN}\` to \`${newRSN}\``);
+		}
+
+		await msg.author.configs.update('RSN', newRSN, msg.author);
+		return msg.send(`Your RSN has been set to: \`${newRSN}\`.`);
 	}
 
 	async init() {
