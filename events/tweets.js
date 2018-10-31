@@ -1,8 +1,7 @@
 const { Event } = require('klasa');
-const he = require('he');
 const { MessageEmbed } = require('discord.js');
+const he = require('he');
 const Twit = require('twit');
-const DBL = require('dblapi.js');
 
 const ALL_TWITTERS = [
 	'1894180640',
@@ -103,74 +102,59 @@ const HCIM_DEATHS = [797859891373371392];
 module.exports = class extends Event {
 
 	constructor(...args) {
-		super(...args, { once: true });
+		super(...args, { once: true, event: 'klasaReady' });
 	}
 
 	run() {
-		this.client.dbl = new DBL(this.client.dblToken, {
-			webhookPort: 8000,
-			webhookAuth: this.client.dblAuth
-		});
-		this.client.dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
-
 		const twitter = new Twit(this.client.twitterApp);
 
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
 
-		stream.on('tweet', tweet => {
-			if (
-				tweet.retweeted ||
-        tweet.retweeted_status ||
-        tweet.in_reply_to_status_id ||
-        tweet.in_reply_to_user_id ||
-        tweet.delete
-			) { return; }
-
-			if (tweet.extended_tweet) {
-				this.sendToDiscordChannels({
-					description: tweet.extended_tweet.full_text,
-					thumbnail: tweet.user.profile_image_url_https,
-					author: tweet.user.name,
-					id: tweet.user.id,
-					image:
-            (tweet.extended_tweet.entities.media &&
-              tweet.extended_tweet.entities.media[0].media_url_https) ||
-            null,
-					url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-				});
-			} else {
-				this.sendToDiscordChannels({
-					description: tweet.text,
-					thumbnail: tweet.user.profile_image_url_https,
-					author: tweet.user.name,
-					id: tweet.user.id,
-					image:
-            (tweet.entities.media && tweet.entities.media[0].media_url_https) ||
-            null,
-					url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-				});
-			}
-		});
+		stream.on('tweet', this.handleTweet.bind(this));
 	}
 
-	sendToDiscordChannels({ id, image, author, thumbnail, description, url }) {
+	handleTweet(tweet) {
+		if (
+			tweet.retweeted ||
+			tweet.retweeted_status ||
+			tweet.in_reply_to_status_id ||
+			tweet.in_reply_to_user_id ||
+			tweet.delete
+		) {
+			return;
+		}
+
+		const _tweet = tweet.extended_tweet ? tweet.extended_tweet : tweet;
+
+		const formattedTweet = {
+			text: he.decode(tweet.extended_tweet ? tweet.extended_tweet.full_text : tweet.text),
+			url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`,
+			name: he.decode(tweet.user.name),
+			avatar: tweet.user.profile_image_url_https,
+			image: (_tweet.entities.media && _tweet.entities.media[0].media_url_https) || null,
+			id: tweet.user.id
+		};
+
+		this.sendTweet(formattedTweet);
+	}
+
+	sendTweet({ text, url, name, avatar, image, id }) {
 		const embed = new MessageEmbed()
-			.setDescription(`\n ${he.decode(description)}`)
+			.setDescription(`\n ${text}`)
 			.setColor(1942002)
-			.setThumbnail(thumbnail)
-			.setAuthor(he.decode(author))
+			.setThumbnail(avatar)
+			.setAuthor(name)
 			.setImage(image);
 
 		let key;
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
-		else if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
-		else if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
-		this.client.guilds
-			.filter(guild => guild.configs[key])
-			.map((guild) => {
-				const channel = guild.channels.get(guild.configs[key]);
-				if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
-			});
+		if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
+		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
+
+		this.client.guilds.filter(guild => guild.configs[key]).map(guild => {
+			const channel = guild.channels.get(guild.configs[key]);
+			if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
+		});
 	}
 
 };
