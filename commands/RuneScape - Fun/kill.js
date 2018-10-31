@@ -71,7 +71,7 @@ module.exports = class extends Command {
 			case 'BRUTALBLACKDRAGON':
 			case 'BBD':
 			case 'BRUTALBLACK': {
-				if (quantity > 300) return msg.send('I can only kill a maximum of 300 Brutal Black Dragons at a time!');
+				if (quantity > 100) return msg.send('I can only kill a maximum of 100 Brutal Black Dragons at a time!');
 				const loot = brutalBlackDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
