@@ -351,6 +351,9 @@ module.exports = class extends Command {
 				const loot = bryophyta.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
+
+			default:
+				return msg.send("I don't have that monster!");
 		}
 	}
 };
