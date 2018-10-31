@@ -13,12 +13,14 @@ const zulrah = require('../../resources/monsters/zulrah');
 const cerberus = require('../../resources/monsters/cerberus');
 const demonicGorilla = require('../../resources/monsters/demonicGorilla');
 const abbyDemon = require('../../resources/monsters/abbyDemon');
+const kurask = require('../../resources/monsters/kurask');
 const kalphiteQueen = require('../../resources/monsters/kalphiteQueen');
 const zamorak = require('../../resources/monsters/zamorak');
 const armadyl = require('../../resources/monsters/armadyl');
 const lizardmanShaman = require('../../resources/monsters/lizardmanShaman');
 const callisto = require('../../resources/monsters/callisto');
 const vetion = require('../../resources/monsters/vetion');
+const brutalBlackDragon = require('../../resources/monsters/brutalBlackDragon');
 const venenatis = require('../../resources/monsters/venenatis');
 const wyvern = require('../../resources/monsters/wyvern');
 const ancientWyvern = require('../../resources/monsters/ancientWyvern');
@@ -59,6 +61,18 @@ module.exports = class extends Command {
 			case 'CORPBEAST': {
 				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Corp beasts at a time!');
 				const loot = corp.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+			case 'KURASK': {
+				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Kurasks at a time!');
+				const loot = kurask.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+			case 'BRUTALBLACKDRAGON':
+			case 'BBD':
+			case 'BRUTALBLACK': {
+				if (quantity > 300) return msg.send('I can only kill a maximum of 300 Brutal Black Dragons at a time!');
+				const loot = brutalBlackDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'RAIDS':
