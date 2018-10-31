@@ -41,6 +41,8 @@ module.exports = class extends Command {
 			lowestRankLevel
 		] = this.getHighestLowestRank(Skills);
 
+		const [averageVirtualLvl, averageLvl] = this.getAverageLvl(Skills);
+
 		const combatPref = this.getCombatPref(Skills);
 		const skillPref = this.getSkillPref(Skills);
 
@@ -64,7 +66,8 @@ module.exports = class extends Command {
 **Lowest Stat:** ${emoji[lowestSkill]} ${minMaxSkill[0].level} | ${lowestSkillXp}  XP
 **Highest Ranked Stat:** ${emoji[highestRankName]} ${highestRankRank} | lvl ${highestRankLevel}
 **Lowest Ranked Stat:** ${emoji[lowestRankName]} ${lowestRankRank} | lvl ${lowestRankLevel}
-**Average Level:** ${this.getAverageLvl(Skills)}
+**Average Level:** ${averageLvl}
+**Average Virtual Level:** ${averageVirtualLvl}
 **Average Stat XP:** ${
 	this.getAverageXP(Skills)
 		.toLocaleString()
@@ -139,8 +142,9 @@ Your Skilling Type is a **${skillPref}**.`,
 	}
 
 	getAverageLvl(Skills) {
-		const averageLvl = cml.convertXPtoLVL(this.getAverageXP(Skills), 126);
-		return averageLvl;
+		const averageVirtualLvl = cml.convertXPtoLVL(this.getAverageXP(Skills), 126);
+		const averageLvl = cml.convertXPtoLVL(this.getAverageXP(Skills));
+		return [averageVirtualLvl, averageLvl];
 	}
 
 	getAverageXP(Skills) {
