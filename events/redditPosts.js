@@ -2,8 +2,6 @@ const { Event } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const Snooper = require('reddit-snooper');
 
-const { jmodRedditAccounts } = this.client;
-
 module.exports = class extends Event {
 
 	constructor(...args) {
@@ -11,6 +9,7 @@ module.exports = class extends Event {
 	}
 
 	run() {
+		const { jmodRedditAccounts } = this.client;
 		const snooper = new Snooper({
 			/* eslint-disable camelcase */
 			automatic_retries: true,
