@@ -1,6 +1,18 @@
 const { Client } = require('klasa');
 const { WebhookClient } = require('discord.js');
-const { token, emoji, streamers, guildLogs, voteLogs, errorLogs, twitchClientID, twitterApp, dblToken, dblAuth } = require('./config');
+const {
+	token,
+	emoji,
+	streamers,
+	guildLogs,
+	voteLogs,
+	errorLogs,
+	twitchClientID,
+	twitterApp,
+	dblToken,
+	dblAuth,
+	jmodRedditAccounts
+} = require('./config');
 
 class OldSchoolBot extends Client {
 
@@ -14,6 +26,7 @@ class OldSchoolBot extends Client {
 		this.twitchClientID = twitchClientID;
 		this.dblToken = dblToken;
 		this.dblAuth = dblAuth;
+		this.jmodRedditAccounts = jmodRedditAccounts;
 		this.timePeriods = {
 			day: 86400,
 			week: 604800,
@@ -26,7 +39,7 @@ class OldSchoolBot extends Client {
 	}
 
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 
 }
