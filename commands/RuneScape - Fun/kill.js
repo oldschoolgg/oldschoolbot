@@ -36,6 +36,7 @@ const kraken = require('../../resources/monsters/kraken');
 const obor = require('../../resources/monsters/obor');
 const dagannothSupreme = require('../../resources/monsters/dagannothSupreme');
 const dagannothRex = require('../../resources/monsters/dagannothRex');
+const lavaDragon = require('../../resources/monsters/lavaDragon');
 const dagannothPrime = require('../../resources/monsters/dagannothPrime');
 const chaosFanatic = require('../../resources/monsters/chaosFanatic');
 const crazyArchaeologist = require('../../resources/monsters/crazyArchaeologist');
@@ -66,6 +67,12 @@ module.exports = class extends Command {
 			case 'KURASK': {
 				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Kurasks at a time!');
 				const loot = kurask.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+			case 'LAVADRAGON':
+			case 'LAVADRAG': {
+				if (quantity > 200) return msg.send('I can only kill a maximum of 200 Lava Dragons at a time!');
+				const loot = lavaDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'BRUTALBLACKDRAGON':
