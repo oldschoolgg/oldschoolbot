@@ -29,6 +29,7 @@
 |--------------|----------|--------------------------|
 | +clients |  | Shows all the clients you can play OSRS on. |
 | +clues |  | Shows the Clue Highscores of an account. |
+| +analytics |  | Shows analytics and statistics about your account. |
 | +combat | cb | Shows your Combat level. |
 | +diary | d | Check which diaries your account has the required stats to complete |
 | +dmm |  | Shows the stats of a DMM account. |
