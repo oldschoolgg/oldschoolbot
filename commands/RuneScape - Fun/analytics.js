@@ -62,8 +62,8 @@ module.exports = class extends Command {
 					minMaxSkill.length - 2
 				].xp.toLocaleString()} XP
 **Lowest Stat:** ${emoji[lowestSkill]} ${minMaxSkill[0].level} | ${lowestSkillXp}  XP
-**Highest Ranked Stat:** ${emoji[highestRankName]} ${highestRankRank} | ${highestRankLevel}  XP
-**Lowest Ranked Stat:** ${emoji[lowestRankName]} ${lowestRankRank} | ${lowestRankLevel}  XP
+**Highest Ranked Stat:** ${emoji[highestRankName]} ${highestRankRank} | lvl ${highestRankLevel}
+**Lowest Ranked Stat:** ${emoji[lowestRankName]} ${lowestRankRank} | lvl ${lowestRankLevel}
 **Average Level:** ${this.getAverageLvl(Skills)}
 **Average Stat XP:** ${
 	this.getAverageXP(Skills)
