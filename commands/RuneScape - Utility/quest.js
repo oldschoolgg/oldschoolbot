@@ -18,12 +18,15 @@ module.exports = class extends Command {
 
 		if (quests[quest]) {
 			return msg.send(this.questInfo(quests[quest]));
-		} else if (alternativeNameMap[quest]) {
-			return msg.send(this.questInfo(quests[alternativeNameMap[quest]]));
-		} else {
-			return msg.send("I don't have that quest, sorry!");
 		}
+
+		if (alternativeNameMap[quest]) {
+			return msg.send(this.questInfo(quests[alternativeNameMap[quest]]));
+		}
+
+		return msg.send("I don't have that quest, sorry!");
 	}
+
 	questInfo(quest) {
 		return new MessageEmbed()
 			.setTitle(quest.name)
