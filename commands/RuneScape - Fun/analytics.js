@@ -21,20 +21,29 @@ module.exports = class extends Command {
 		const { Skills } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
 			.then(player => player)
-			.catch(() => { throw this.client.notFound; });
-		const minMaxSkill = Object.keys(Skills).map(skill => Skills[skill]).sort((a, b) => a.xp - b.xp);
+			.catch(() => {
+				throw this.client.notFound;
+			});
+
+		const minMaxSkill = Object.keys(Skills)
+			.map(skill => Skills[skill])
+			.sort((a, b) => a.xp - b.xp);
+
 		const lowestSkillXp = this.getLowestSkillXp(Skills, minMaxSkill);
-		const highestSkill = this.getSkillNames(Skills, minMaxSkill)[0];
-		const lowestSkill = this.getSkillNames(Skills, minMaxSkill)[1];
-		const highestRankName = this.getHighestLowestRank(Skills)[0];
-		const highestRankRank = this.getHighestLowestRank(Skills)[1];
-		const highestRankLevel = this.getHighestLowestRank(Skills)[2];
-		const lowestRankName = this.getHighestLowestRank(Skills)[3];
-		const lowestRankRank = this.getHighestLowestRank(Skills)[4];
-		const lowestRankLevel = this.getHighestLowestRank(Skills)[5];
+		const [highestSkill, lowestSkill] = this.getSkillNames(Skills, minMaxSkill);
+
+		const [
+			highestRankName,
+			highestRankRank,
+			highestRankLevel,
+			lowestRankName,
+			lowestRankRank,
+			lowestRankLevel
+		] = this.getHighestLowestRank(Skills);
+
 		const combatPref = this.getCombatPref(Skills);
 		const skillPref = this.getSkillPref(Skills);
-		const showExtra = true;
+
 		const embed = new MessageEmbed()
 			.setColor(7981338)
 			.setAuthor(username)
@@ -49,25 +58,27 @@ module.exports = class extends Command {
 			)
 			.addField(
 				'\u200b',
-				`**Highest Stat:** ${emoji[highestSkill]} ${minMaxSkill[minMaxSkill.length - 2].level} | ${minMaxSkill[minMaxSkill.length - 2].xp.toLocaleString()}
-**Lowest Stat:** ${emoji[lowestSkill]} ${minMaxSkill[0].level} | ${lowestSkillXp}
-**Highest Ranked Stat:** ${emoji[highestRankName]} ${highestRankRank} | ${highestRankLevel}
-**Lowest Ranked Stat:** ${emoji[lowestRankName]} ${lowestRankRank} | ${lowestRankLevel}
+				`**Highest Stat:** ${emoji[highestSkill]} ${minMaxSkill[minMaxSkill.length - 2].level} | ${minMaxSkill[
+					minMaxSkill.length - 2
+				].xp.toLocaleString()} XP
+**Lowest Stat:** ${emoji[lowestSkill]} ${minMaxSkill[0].level} | ${lowestSkillXp}  XP
+**Highest Ranked Stat:** ${emoji[highestRankName]} ${highestRankRank} | ${highestRankLevel}  XP
+**Lowest Ranked Stat:** ${emoji[lowestRankName]} ${lowestRankRank} | ${lowestRankLevel}  XP
 **Average Level:** ${this.getAverageLvl(Skills)}
-**Average Stat XP:** ${this.getAverageXP(Skills).toLocaleString().split('.')[0]}`,
+**Average Stat XP:** ${
+	this.getAverageXP(Skills)
+		.toLocaleString()
+		.split('.')[0]
+}`,
 				true
 			);
-		if (showExtra) {
-			embed
-				.addField(
-					'\u200b',
-					`Your Combat Class is a **${combatPref}**.
-Your Skilling Type is a **${skillPref}**.`,
-					true
-				);
-			return msg.send({ embed });
-		}
 
+		embed.addField(
+			'\u200b',
+			`Your Combat Class is a **${combatPref}**.
+Your Skilling Type is a **${skillPref}**.`,
+			true
+		);
 		return msg.send({ embed });
 	}
 
@@ -80,7 +91,9 @@ Your Skilling Type is a **${skillPref}**.`,
 	}
 
 	getHighestLowestRank(Skills) {
-		const lowHighRank = Object.keys(Skills).map(skill => Skills[skill]).sort((a, b) => a.rank - b.rank);
+		const lowHighRank = Object.keys(Skills)
+			.map(skill => Skills[skill])
+			.sort((a, b) => a.rank - b.rank);
 		// fixes unranked issues
 		let unrankedCatch = 0;
 		while (lowHighRank[0].rank.toLocaleString() === '-1' && unrankedCatch < 25) {
@@ -140,8 +153,9 @@ Your Skilling Type is a **${skillPref}**.`,
 		const range = 0.325 * (Math.floor(Skills.Ranged.level / 2) + Skills.Ranged.level);
 		const mage = 0.325 * (Math.floor(Skills.Magic.level / 2) + Skills.Magic.level);
 		const combatMax = Math.max(melee, range, mage);
-		const skillerCheck = Skills.Attack.level + Skills.Strength.level + Skills.Defence.level + Skills.Ranged.level + Skills.Magic.level;
-		let combatPref = 'Meleer';
+		const skillerCheck =
+			Skills.Attack.level + Skills.Strength.level + Skills.Defence.level + Skills.Ranged.level + Skills.Magic.level;
+		let combatPref = 'Warrior';
 		if (combatMax === range) {
 			combatPref = 'Ranger';
 		}
@@ -155,11 +169,37 @@ Your Skilling Type is a **${skillPref}**.`,
 	}
 
 	getSkillPref(Skills) {
-		const fighter = { class: 'Fighter', avgXP: (Skills.Attack.xp + Skills.Strength.xp + Skills.Defence.xp + Skills.Ranged.xp + Skills.Magic.xp + Skills.Hitpoints.xp + Skills.Prayer.xp) / 7 };
+		const fighter = {
+			class: 'Fighter',
+			avgXP:
+				(Skills.Attack.xp +
+					Skills.Strength.xp +
+					Skills.Defence.xp +
+					Skills.Ranged.xp +
+					Skills.Magic.xp +
+					Skills.Hitpoints.xp +
+					Skills.Prayer.xp) /
+				7
+		};
 		const gatherer = { class: 'Gatherer', avgXP: (Skills.Woodcutting.xp + Skills.Fishing.xp + Skills.Mining.xp) / 3 };
-		const artisan = { class: 'Artisan', avgXP: (Skills.Smithing.xp + Skills.Crafting.xp + Skills.Fletching.xp + Skills.Construction.xp + Skills.Firemaking.xp) / 5 };
-		const naturalist = { class: 'Naturalist', avgXP: (Skills.Cooking.xp + Skills.Herblore.xp + Skills.Runecrafting.xp + Skills.Farming.xp) / 4 };
-		const survivalist = { class: 'Survivalist', avgXP: (Skills.Agility.xp + Skills.Thieving.xp + Skills.Hunter.xp + Skills.Slayer.xp) / 4 };
+		const artisan = {
+			class: 'Artisan',
+			avgXP:
+				(Skills.Smithing.xp +
+					Skills.Crafting.xp +
+					Skills.Fletching.xp +
+					Skills.Construction.xp +
+					Skills.Firemaking.xp) /
+				5
+		};
+		const naturalist = {
+			class: 'Naturalist',
+			avgXP: (Skills.Cooking.xp + Skills.Herblore.xp + Skills.Runecrafting.xp + Skills.Farming.xp) / 4
+		};
+		const survivalist = {
+			class: 'Survivalist',
+			avgXP: (Skills.Agility.xp + Skills.Thieving.xp + Skills.Hunter.xp + Skills.Slayer.xp) / 4
+		};
 		const skillMax = Math.max(fighter.avgXP, gatherer.avgXP, artisan.avgXP, naturalist.avgXP, survivalist.avgXP);
 		let skillPref = fighter.class;
 		if (skillMax === gatherer.avgXP) {
