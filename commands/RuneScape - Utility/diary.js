@@ -20,27 +20,29 @@ module.exports = class extends Command {
 		const { Skills } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
 			.then(player => player)
-			.catch(() => { throw this.client.notFound; });
+			.catch(() => {
+				throw this.client.notFound;
+			});
 
 		const embed = new MessageEmbed()
 			.setColor(11132490)
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)
-			.addField(
-				'Diary', Object.keys(diaryReqs).join('\n'),
-				true
-			)
+			.addField('Diary', Object.keys(diaryReqs).join('\n'), true)
 			.addField(
 				'You can complete:',
-				Object.keys(diaryReqs).map(diary => this.check(Skills, diaryReqs[diary])).join('\n'),
+				Object.keys(diaryReqs)
+					.map(diary => this.check(Skills, diaryReqs[diary]))
+					.join('\n'),
 				true
-			);
+			)
+			.setFooter('*Boostable');
 		return msg.send({ embed });
 	}
 
 	check(skills, diary) {
 		const levelMap = ['Easy', 'Medium', 'Hard', 'Elite'];
-		const levelMapBoost = ['**Easy**', '**Medium**', '**Hard**', '**Elite**'];
+		const levelMapBoost = ['Easy*', 'Medium*', 'Hard*', 'Elite*'];
 		let boostVar = 0;
 		const canComplete = [];
 		for (let i = 0; i < 4; i++) {
@@ -50,7 +52,7 @@ module.exports = class extends Command {
 					const levelRequirement = diary[req].statReq[i];
 					if (levelRequirement === 0) continue;
 					if (statLevel >= levelRequirement) continue;
-					if (statLevel < (levelRequirement - diary[req].boost[i])) {
+					if (statLevel < levelRequirement - diary[req].boost[i]) {
 						break;
 					} else {
 						boostVar = 1;
