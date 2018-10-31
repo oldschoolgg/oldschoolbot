@@ -1,4 +1,4 @@
-[![Discord](https://i.imgur.com/AWqUL0x.png)](https://discord.io/osrs) [![Discord](https://i.imgur.com/OcOyprP.png)](https://bot.discord.io/osrs)
+[![Discord](https://i.imgur.com/AWqUL0x.png)](https://discord.gg/WJWmAuJ) [![Discord](https://i.imgur.com/OcOyprP.png)](https://discordapp.com/oauth2/authorize?client_id=303730326692429825&scope=bot&permissions=281600&response_type=code&redirect_url=https://github.com/gc/oldschoolbot/blob/master/commands.md)
 
 # ![Logo](https://i.imgur.com/Szr6sk7.png) Old School Bot
 
@@ -20,16 +20,16 @@ Contributors are listed in this file, and given a Contributor role in the suppor
 
 ### Contributors
 
-  - [[gc](https://github.com/gc/oldschoolbot)] everything
-  - [[Ciaran](https://github.com/ciaranlangton)] gathering quest information
-  - [[Devin](https://github.com/devin8)] adding lots of bosses and monsters to +finish command
-  - [[ms813](https://github.com/ms813)] adding the "raids" command
+- [[gc](https://github.com/gc/oldschoolbot)] everything
+- [[Ciaran](https://github.com/ciaranlangton)] gathering quest information
+- [[Devin](https://github.com/devin8)] adding lots of bosses and monsters to +finish command
+- [[ms813](https://github.com/ms813)] adding the "raids" command
 
 ## Notes
 
-1. Old School Bot uses Klasa, a discord bot framework, if you have questions as to how Klasa works, or are interested in making your own Klasa bot, you can join their [support server here](https://discord.gg/FpEFSyY).
+1.  Old School Bot uses Klasa, a discord bot framework, if you have questions as to how Klasa works, or are interested in making your own Klasa bot, you can join their [support server here](https://discord.gg/FpEFSyY).
 
-2. The trivia questions/answers are not public in this repository, to prevent people from cheating. However, you can still submit some to be added by adding them to [this file](https://github.com/gc/oldschoolbot/blob/master/resources/triviaQuestionsFormat.json), where I'll merge your additions into the real file, and then remove them from the sample file. Alternatively, you can manually send them to me to be added. There are currently 260 trivia questions.
+2.  The trivia questions/answers are not public in this repository, to prevent people from cheating. However, you can still submit some to be added by adding them to [this file](https://github.com/gc/oldschoolbot/blob/master/resources/triviaQuestionsFormat.json), where I'll merge your additions into the real file, and then remove them from the sample file. Alternatively, you can manually send them to me to be added. There are currently 260 trivia questions.
 
 ## Self Hosting
 
