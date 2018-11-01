@@ -1,6 +1,4 @@
-/* eslint-disable */
 const { Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
 const corp = require('../../resources/monsters/corp');
 const raids = require('../../resources/monsters/raids');
 const barrows = require('../../resources/monsters/barrows');
@@ -46,6 +44,7 @@ const runeDragon = require('../../resources/monsters/runeDragon');
 const bryophyta = require('../../resources/monsters/bryophyta');
 
 module.exports = class extends Command {
+
 	constructor(...args) {
 		super(...args, {
 			cooldown: 1,
@@ -54,7 +53,7 @@ module.exports = class extends Command {
 			usageDelim: ' '
 		});
 	}
-
+	/* eslint-disable complexity */
 	async run(msg, [quantity, ...BossName]) {
 		switch (BossName.join('').toUpperCase()) {
 			case 'CORP':
@@ -320,12 +319,10 @@ module.exports = class extends Command {
 					quantityRex = quantity / 3;
 					quantityPrime = quantity / 3;
 				}
-				const loot =
-					dagannothRex.kill(quantityRex) +
-					' ' +
-					dagannothSupreme.kill(quantitySupreme) +
-					' ' +
-					dagannothPrime.kill(quantityPrime);
+				const rexLoot = dagannothRex.kill(quantityRex);
+				const supremeLoot = dagannothSupreme.kill(quantitySupreme);
+				const primeLoot = dagannothPrime.kill(quantityPrime);
+				const loot = rexLoot.concat(supremeLoot.concat(primeLoot));
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'CHAOSFANATIC': {
@@ -377,4 +374,5 @@ module.exports = class extends Command {
 				return msg.send("I don't have that monster!");
 		}
 	}
+
 };
