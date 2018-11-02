@@ -13,7 +13,7 @@ module.exports = class extends Event {
 		const snooper = new Snooper({
 			/* eslint-disable camelcase */
 			automatic_retries: true,
-			api_requests_per_minute: 30
+			api_requests_per_minute: 10
 			/* eslint-enable camelcase */
 		});
 		const jmodAccounts = Object.keys(jmodRedditAccounts);
