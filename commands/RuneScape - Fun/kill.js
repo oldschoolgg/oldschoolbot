@@ -63,12 +63,15 @@ module.exports = class extends Command {
 				const loot = corp.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
-			case 'KURASK': {
+			case 'KURASK':
+			case 'KURASKS': {
 				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Kurasks at a time!');
 				const loot = kurask.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'LAVADRAGON':
+			case 'LAVADRAGONS':
+			case 'LAVADRAGS':
 			case 'LAVADRAG': {
 				if (quantity > 200) return msg.send('I can only kill a maximum of 200 Lava Dragons at a time!');
 				const loot = lavaDragon.kill(quantity);
@@ -76,7 +79,9 @@ module.exports = class extends Command {
 			}
 			case 'BRUTALBLACKDRAGON':
 			case 'BBD':
-			case 'BRUTALBLACK': {
+			case 'BRUTALBLACKDRAGONS':
+			case 'BRUTALBLACKDRAGS':
+			case 'BRUTALBLACKS': {
 				if (quantity > 100) return msg.send('I can only kill a maximum of 100 Brutal Black Dragons at a time!');
 				const loot = brutalBlackDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
@@ -116,7 +121,7 @@ module.exports = class extends Command {
 			case 'ZILY':
 			case 'ZILYANA':
 			case 'COMMANDERZILYANA': {
-				if (quantity > 500) return msg.send('I can only do a maximum of 500 Sara kills at a time!');
+				if (quantity > 100000) return msg.send('I can only do a maximum of 100,000 Sara kills at a time!');
 				const loot = saradomin.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -163,7 +168,7 @@ module.exports = class extends Command {
 			case 'ZAMORAK':
 			case 'KRIL':
 			case 'KRILTSUTSAROTH': {
-				if (quantity > 500) return msg.send("I can only kill 500 K'ril Tsutsaroth's at a time!");
+				if (quantity > 100000) return msg.send("I can only kill 100,000 K'ril Tsutsaroth's at a time!");
 				const loot = zamorak.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -171,7 +176,7 @@ module.exports = class extends Command {
 			case 'ARMADYL':
 			case 'KREE':
 			case 'KREEARRA': {
-				if (quantity > 500) return msg.send("I can only kill 500 Kree'arra's at a time!");
+				if (quantity > 100000) return msg.send("I can only kill 100,000 Kree'arra's at a time!");
 				const loot = armadyl.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
