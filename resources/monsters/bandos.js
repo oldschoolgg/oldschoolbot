@@ -24,17 +24,18 @@ const bandos = {
 		pet: 'Pet',
 		curvedBone: 'Curved Bone'
 	},
+	// prices as of 11/1/2018
 	priceMap: {
-		bandosChestplate: 15000000,
-		bandosTassets: 26000000,
-		bandosBoots: 200000,
+		bandosChestplate: 19700000,
+		bandosTassets: 31200000,
+		bandosBoots: 220000,
 		godswordShard: 150000,
-		bandosHilt: 8000000,
+		bandosHilt: 9200000,
 		pet: 0,
 		curvedBone: 0
 	},
 	kill(quantity) {
-		if (quantity <= 250) {
+		if (quantity <= 500) {
 			return this.smallKill(quantity);
 		} else {
 			return this.bigKill(quantity);
