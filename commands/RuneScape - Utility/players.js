@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
-const { get } = require('snekfetch');
+const { parseTable } = require('../../resources/util');
+const fetch = require('node-fetch');
 
 module.exports = class extends Command {
 
@@ -10,15 +11,38 @@ module.exports = class extends Command {
 		});
 	}
 
+	toNum(str) {
+		return parseInt(str.replace(/\D/g, ''));
+	}
+
 	async run(msg) {
-		const playerCount = await get('http://oldschool.runescape.com/slu').then(
-			res =>
-				res.body
-					.toString()
-					.split("<p class='player-count'>")[1]
-					.split('</p>')[0]
-		);
-		return msg.send(playerCount);
+		let worlds = await fetch('http://oldschool.runescape.com/slu')
+			.then(res => res.text())
+			.then(parseTable);
+
+		let totalPlayers = 0;
+		worlds = worlds.filter(world => world.players.includes('players'))
+			.map(world => {
+				if (!world.players.includes('players')) console.log(world.players);
+				const players = this.toNum(world.players);
+				totalPlayers += this.toNum(world.players);
+				return {
+					...world,
+					number: this.toNum(world.name),
+					players
+				};
+			})
+			.sort((a, b) => b.players - a.players);
+
+		const average = parseInt(totalPlayers / worlds.length);
+		const highest = worlds[0];
+
+		return msg.send(`
+**Total players on OSRS**: ${totalPlayers.toLocaleString()}
+
+**Average per world:** ${average}
+**Highest world:** World ${highest.number} with ${highest.players} players
+`);
 	}
 
 };
