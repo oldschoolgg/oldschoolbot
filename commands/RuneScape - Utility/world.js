@@ -1,6 +1,6 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
-const cheerio = require('cheerio');
+const fetch = require('node-fetch');
+const { parseTable } = require('../../resources/util');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -13,32 +13,29 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [world]) {
-		const worldSelector = `#slu-world-${world > 200 ? world : world + 300}`;
-		const info = [];
-		snekfetch.get('http://oldschool.runescape.com/slu').then(res => {
-			const worlds = cheerio.load(res.text);
-			worlds(worldSelector)
-				.parent()
-				.parent()
-				.children()
-				.each(function (i, elem) {
-					info[i] = worlds(this).text();
-				});
-			info.shift();
+	async run(msg, [worldNumber]) {
+		const worlds = await fetch('http://oldschool.runescape.com/slu')
+			.then(res => res.text())
+			.then(parseTable);
 
-			if (!info[0]) return msg.send("That's an invalid world!");
-
-			const embed = new MessageEmbed()
-				.setColor(7981338)
-				.setThumbnail('https://i.imgur.com/56i6oyn.png')
-				.setFooter(`Old School RuneScape World ${world}`, 'https://i.imgur.com/fVakfwp.png')
-				.addField('Access', info[2], true)
-				.addField('Location', info[1], true)
-				.addField('Players', info[0].split(' ')[0], true)
-				.addField('Activity', info[3], true);
-			return msg.send({ embed });
+		const world = worlds.find(__world => {
+			const _world = parseInt(__world.name.replace(/\D/g, ''));
+			return _world === worldNumber || _world + 300 === worldNumber;
 		});
+
+		world.number = world.name.replace(/\D/g, '');
+
+		if (!world) return msg.send("That's an invalid world!");
+
+		const embed = new MessageEmbed()
+			.setColor(7981338)
+			.setThumbnail('https://i.imgur.com/56i6oyn.png')
+			.setFooter(`Old School RuneScape World ${world.number}`, 'https://i.imgur.com/fVakfwp.png')
+			.addField('Access', world.type, true)
+			.addField('Location', world.country, true)
+			.addField('Players', world.players, true)
+			.addField('Activity', world.activity, true);
+		return msg.send({ embed });
 	}
 
 };
