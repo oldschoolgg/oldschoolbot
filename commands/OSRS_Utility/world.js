@@ -35,6 +35,7 @@ module.exports = class extends Command {
 			.addField('Location', world.country, true)
 			.addField('Players', world.players, true)
 			.addField('Activity', world.activity, true);
+
 		return msg.send({ embed });
 	}
 
