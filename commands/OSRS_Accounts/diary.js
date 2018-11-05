@@ -28,7 +28,7 @@ module.exports = class extends Command {
 			.setColor(11132490)
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)
-			.addField('Diary', Object.keys(diaryReqs).join('\n'), true)
+			.addField('Diary', Object.keys(diaryReqs).map(key => titles[key]).join('\n'), true)
 			.addField(
 				'You can complete:',
 				Object.keys(diaryReqs)
@@ -42,7 +42,6 @@ module.exports = class extends Command {
 
 	check(skills, diary) {
 		const levelMap = ['Easy', 'Medium', 'Hard', 'Elite'];
-		const levelMapBoost = ['Easy*', 'Medium*', 'Hard*', 'Elite*'];
 		let boostVar = 0;
 		const canComplete = [];
 		for (let i = 0; i < 4; i++) {
@@ -59,7 +58,7 @@ module.exports = class extends Command {
 						continue;
 					}
 				} else if (boostVar === 1) {
-					canComplete.push(levelMapBoost[i]);
+					canComplete.push(`${levelMap[i]}*`);
 				} else {
 					canComplete.push(levelMap[i]);
 				}
@@ -68,4 +67,18 @@ module.exports = class extends Command {
 		return canComplete.length ? canComplete.join(', ') : '-';
 	}
 
+};
+
+const titles = {
+	Ardougne: '[Ardougne](https://oldschool.runescape.wiki/w/Ardougne_Diary)',
+	Desert: '[Desert](https://oldschool.runescape.wiki/w/Desert_Diary)',
+	Karamja: '[Karamja](https://oldschool.runescape.wiki/w/Karamja_Diary)',
+	'Lumbridge/Draynor': '[Lumbridge/Draynor](https://oldschool.runescape.wiki/w/Lumbridge_%26_Draynor_Diary)',
+	Morytania: '[Morytania](https://oldschool.runescape.wiki/w/Morytania_Diary)',
+	Varrock: '[Varrock](https://oldschool.runescape.wiki/w/Varrock_Diary)',
+	'Western Prov.': '[Western Prov.](https://oldschool.runescape.wiki/w/Western_Provinces_Diary)',
+	Wilderness: '[Wilderness](https://oldschool.runescape.wiki/w/Wilderness_Diary)',
+	Falador: '[Falador](https://oldschool.runescape.wiki/w/Falador_Diary)',
+	Fremennik: '[Fremennik](https://oldschool.runescape.wiki/w/Fremennik_Diary)',
+	Kandarin: '[Kandarin](https://oldschool.runescape.wiki/w/Kandarin_Diary)'
 };
