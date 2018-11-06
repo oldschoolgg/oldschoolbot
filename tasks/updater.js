@@ -1,22 +1,21 @@
-const { Task } = require('klasa');
-const snekfetch = require('snekfetch');
-const delay = time => new Promise(res => setTimeout(() => res(), time));
+const { Task, util: { sleep, chunk } } = require('klasa');
+const fetch = require('node-fetch');
 
 module.exports = class extends Task {
 
 	async run() {
-		const userArray = [];
+		const rsnList = this.client.gateways.users.cache
+			.filter(config => config.autoupdate)
+			.map(config => config.RSN);
 
-		this.client.gateways.users.cache.filter(config => config.autoupdate).forEach(config => {
-			userArray.push(`{"type": "update", "player": "${config.RSN}"}`);
+		const userArray = chunk(rsnList, 8);
+
+		userArray.forEach(async list => {
+			const multiQuery = list.map(rsn => `{"type": "update", "player": "${rsn}"}`).join(',');
+			fetch(`https://crystalmathlabs.com/tracker/api.php?multiquery=[${multiQuery}]`);
+			// Wait 5 seconds between each request
+			await sleep(300);
 		});
-
-		for (let i = 0; i < userArray.length / 5; i++) {
-			const usernames = userArray.slice(i, i + 5).join(', ');
-			snekfetch.get(`https://crystalmathlabs.com/tracker/api.php?multiquery=[${usernames}]`)
-				.catch(() => null);
-			await delay(100);
-		}
 	}
 
 };
