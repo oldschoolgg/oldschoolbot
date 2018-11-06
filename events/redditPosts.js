@@ -5,7 +5,7 @@ const Snooper = require('reddit-snooper');
 module.exports = class extends Event {
 
 	constructor(...args) {
-		super(...args, { once: true, event: 'klasaReady' });
+		super(...args, { once: true, event: 'klasaReady', enabled: false });
 	}
 
 	run() {
