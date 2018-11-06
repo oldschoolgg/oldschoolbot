@@ -13,7 +13,7 @@ module.exports = class extends Task {
 
 		userArray.forEach(async list => {
 			const multiQuery = list.map(rsn => `{"type":"update","player": "${rsn}"}`).join(',');
-			fetch(`https://crystalmathlabs.com/tracker/api.php?multiquery=[${multiQuery}]`);
+			await fetch(`https://crystalmathlabs.com/tracker/api.php?multiquery=[${multiQuery}]`);
 			// Wait 5 seconds between each request
 			await sleep(300);
 		});
