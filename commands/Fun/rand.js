@@ -5,7 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			cooldown: 2,
+			cooldown: 3,
 			description: 'Returns a random reddit post on a given subreddit.',
 			usage: '<subreddit:str>'
 		});
@@ -16,13 +16,21 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [subreddit]) {
-		const { kind, data } = await fetch(`https://www.reddit.com/r/${subreddit}/.json?limit=50`)
+		const { kind, data } = await fetch(`https://www.reddit.com/r/${subreddit}/.json?limit=30`)
 			.then(res => res.json())
 			.catch(this.error);
 
 		if (!kind || !data) this.error();
 
-		const post = data.children[Math.floor(Math.random() * data.children.length)].data;
+		let post;
+		for (let i = 0; i < 10; i++) {
+			const _post = data.children[Math.floor(Math.random() * data.children.length)];
+			if (_post.data && _post.data.url) {
+				post = _post.data;
+				break;
+			}
+			if (i === 10) throw "Couldn't find any posts, try again!";
+		}
 
 		if (post.over_18 && !msg.channel.nsfw) {
 			throw 'I cant post a NSFW image in this channel unless you mark it as NSFW!';
