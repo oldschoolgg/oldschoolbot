@@ -16,13 +16,13 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [subreddit]) {
-		const listing = await fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
+		const { kind, data } = await fetch(`https://www.reddit.com/r/${subreddit}/.json?limit=50`)
 			.then(res => res.json())
 			.catch(this.error);
 
-		if (!listing[0]) this.error();
+		if (!kind || !data) this.error();
 
-		const post = listing[0].data.children[0].data;
+		const post = data.children[Math.floor(Math.random() * data.children)];
 
 		if (post.over_18 && !msg.channel.nsfw) {
 			throw 'I cant post a NSFW image in this channel unless you mark it as NSFW!';
