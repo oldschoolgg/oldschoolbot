@@ -16,10 +16,11 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [subreddit]) {
-		const { data, error } = await fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
-			.then(res => res.json());
+		const [{ data }] = await fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
+			.then(res => res.json())
+			.catch(this.error);
 
-		if (!data || error) this.error();
+		if (!data) this.error();
 
 		const randomPost = data.children[0].data;
 
