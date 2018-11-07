@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		if (!kind || !data) this.error();
 
-		const post = data.children[Math.floor(Math.random() * data.children)].data;
+		const post = data.children[Math.floor(Math.random() * data.children.length)].data;
 
 		if (post.over_18 && !msg.channel.nsfw) {
 			throw 'I cant post a NSFW image in this channel unless you mark it as NSFW!';
