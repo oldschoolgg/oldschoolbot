@@ -16,19 +16,19 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [subreddit]) {
-		const [{ data }] = await fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
+		const listing = await fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
 			.then(res => res.json())
 			.catch(this.error);
 
-		if (!data) this.error();
+		if (!listing[0]) this.error();
 
-		const randomPost = data.children[0].data;
+		const post = listing[0].data.children[0].data;
 
-		if (randomPost.over_18 && !msg.channel.nsfw) {
+		if (post.over_18 && !msg.channel.nsfw) {
 			throw 'I cant post a NSFW image in this channel unless you mark it as NSFW!';
 		}
 
-		return msg.send(randomPost.url);
+		return msg.send(post.url);
 	}
 
 };
