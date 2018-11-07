@@ -20,17 +20,9 @@ module.exports = class extends Command {
 			.then(res => res.json())
 			.catch(this.error);
 
-		if (!kind || !data) this.error();
+		if (!kind || !data || data.children.length === 0) this.error();
 
-		let post;
-		for (let i = 0; i < 10; i++) {
-			const _post = data.children[Math.floor(Math.random() * data.children.length)];
-			if (_post.data && _post.data.url) {
-				post = _post.data;
-				break;
-			}
-			if (i === 10) throw "Couldn't find any posts, try again!";
-		}
+		const post = data.children[Math.floor(Math.random() * data.children.length)].data;
 
 		if (post.over_18 && !msg.channel.nsfw) {
 			throw 'I cant post a NSFW image in this channel unless you mark it as NSFW!';
