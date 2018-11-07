@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 
 module.exports = class extends Command {
 
@@ -9,23 +9,25 @@ module.exports = class extends Command {
 			description: 'Returns a random reddit post on a given subreddit.',
 			usage: '<subreddit:str>'
 		});
-		this.errorMessage = `There was an error. Reddit may be down, or the subreddit doesnt exist.`;
+	}
+
+	error() {
+		throw `There was an error. Reddit may be down, or the subreddit doesnt exist.`;
 	}
 
 	async run(msg, [subreddit]) {
-		const { data } = await snekfetch
-			.get(`https://www.reddit.com/r/${subreddit}/random.json`)
-			.then(res => {
-				if (res.body.error) throw this.errorMessage;
-				return res.body[0].data.children[0];
-			})
-			.catch(() => { throw this.errorMessage; });
+		const { data, error } = await fetch(`https://www.reddit.com/r/${subreddit}/random.json`)
+			.then(res => res.json());
 
-		if (data.over_18 && !msg.channel.nsfw) {
+		if (!data || error) this.error();
+
+		const randomPost = data.children[0];
+
+		if (randomPost.over_18 && !msg.channel.nsfw) {
 			throw 'I cant post a NSFW image in this channel unless you mark it as NSFW!';
 		}
 
-		return msg.send(data.url);
+		return msg.send(randomPost.url);
 	}
 
 };
