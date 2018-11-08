@@ -12,7 +12,7 @@
     "markovchain": "^1.0.2",
     "moment": "^2.21.0",
     "node-fetch": "^2.2.0",
-    "osrs-wrapper": "^1.0.4",
+    "osrs-wrapper": "github:gc/Osrs-Wrapper",
     "reddit-snooper": "^1.0.1",
     "rethinkdbdash": "^2.3.31",
     "rss-parser": "^3.1.1",
