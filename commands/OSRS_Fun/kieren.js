@@ -8,7 +8,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Shows Mod Kieren holding a piece of paper holding a message.',
+			description: 'Shows Mod Kieren holding a piece of paper with a message.',
 			cooldown: 3,
 			botPerms: ['ATTACH_FILES'],
 			usage: '<message:str>'
