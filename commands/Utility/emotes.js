@@ -23,10 +23,10 @@ module.exports = class extends Command {
 };
 
 const servers = `
-https://discord.gg/SB8edn6
-https://discord.gg/hBAySb3
-https://discord.gg/9DtWEXH
-https://discord.gg/8GR2fZM
-https://discord.gg/j7s22Mc
-https://discord.gg/JWGsNRy
-https://discord.gg/z43EwKm`;
+https://discord.gg/Tc3cdbc
+https://discord.gg/qrEmgZU
+https://discord.gg/qBF9XFG
+https://discord.gg/PW5WuRS
+https://discord.gg/JdZAQqA
+https://discord.gg/6C5T3Xh
+https://discord.gg/nfzkxFZ`;
