@@ -45,5 +45,6 @@ const youtubers = [
 	'[MiKa 279](https://www.youtube.com/user/MrBacar23)',
 	'[Sparc Mac](https://www.youtube.com/user/ggggllo)',
 	'[ThirdAgeFilm/Soup](https://www.youtube.com/user/ThirdAgeFilm)',
-	'[Dicerz](https://www.youtube.com/channel/UCkzdUb4x8IGQuYIT3zudefA)'
+	'[Dicerz](https://www.youtube.com/channel/UCkzdUb4x8IGQuYIT3zudefA)',
+	'[Small Arms](https://www.youtube.com/channel/UCZbyOTmSxMv8EFvnG1UKsUQ)'
 ];
