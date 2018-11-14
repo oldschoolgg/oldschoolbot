@@ -12,12 +12,15 @@ module.exports = class extends Command {
                 '<attack|defence|strength|hitpoints|ranged|prayer|' +
                 'magic|cooking|woodcutting|fletching|fishing|firemaking|' +
                 'crafting|smithing|mining|herblore|agility|thieving|slayer|' +
-                'farming|runecrafting|hunter|construction> <username:str> [...]',
-			usageDelim: ' '
+                'farming|runecrafting|hunter|construction> [username:str] [...]',
+			usageDelim: ' ',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [skill, ...username]) {
+		if (!username) username = this.getUsername(username, msg);
+
 		username = username.join(' ');
 		skill = skill.charAt(0).toUpperCase() + skill.slice(1);
 

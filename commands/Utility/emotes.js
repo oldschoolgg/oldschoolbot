@@ -6,7 +6,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['emoteservers'],
-			description: 'Shows all the emote servers that the bot uses.'
+			description: 'Shows all the emote servers that the bot uses.',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

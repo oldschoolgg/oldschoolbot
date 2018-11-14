@@ -8,7 +8,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: [],
 			description: 'Shows the stats of a UIM account.',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 	async run(msg, [username]) {

@@ -6,7 +6,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['servers', 'communities', 'community'],
-			description: 'Shows some community servers related to OSRS..'
+			description: 'Shows some community servers related to OSRS.',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

@@ -11,7 +11,8 @@ module.exports = class extends Command {
 			cooldown: 3,
 			aliases: ['w'],
 			description: 'Search the OSRS Wikipedia for an article.',
-			usage: '[query:str]'
+			usage: '[query:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

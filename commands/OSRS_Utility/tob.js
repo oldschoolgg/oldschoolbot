@@ -13,14 +13,18 @@ module.exports = class extends Command {
 	async run(msg) {
 		const body = await snekfetch.get('https://www.runescape.com/oldschool/TOB/records')
 			.then(res => res.body.toString());
+
 		const regex = /(&nbsp;|<([^>]+)>)/ig;
+
 		const numericalRecords = body
 			.split("<div class='c-image-plate__content'>")[1]
 			.split('</div>')[0]
 			.split('</br>');
+
 		const result = numericalRecords.map(record => record.replace('<h2>', '**')
 			.replace('</h2>', '**')
 			.replace(regex, '').replace(/(^[ \t]*\n)/gm, ''));
+
 		return msg.send(result);
 	}
 

@@ -9,7 +9,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['lms', 'bh'],
 			description: 'Shows the BH & LMS scores of an account.',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

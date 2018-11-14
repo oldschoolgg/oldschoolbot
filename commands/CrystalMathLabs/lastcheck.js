@@ -9,7 +9,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: [],
 			description: 'Checks when a CML Account was last updated.',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

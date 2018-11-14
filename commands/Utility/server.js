@@ -4,7 +4,10 @@ const { MessageEmbed } = require('discord.js');
 module.exports = class extends Command {
 
 	constructor(...args) {
-		super(...args, { description: 'Get information on a mentioned user.' });
+		super(...args, {
+			description: 'Get information on a mentioned user.',
+			requiredPermissions: ['EMBED_LINKS']
+		});
 		this.timestamp = new Timestamp('d MMMM YYYY');
 	}
 

@@ -7,7 +7,8 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 3,
 			aliases: ['rl'],
-			description: 'Shows information on RuneLite'
+			description: 'Shows information on RuneLite',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
@@ -27,6 +28,7 @@ https://runelite.net/`)
 			.addField('Lightweight & fast', 'No lag, little memory usage', true)
 			.addField('Many Features', 'https://runelite.net/features', true)
 			.setFooter('*Use of any 3rd party client is not endorsed by Jagex, use at your own risk, use +clients to see others');
+
 		return msg.send({ embed });
 	}
 

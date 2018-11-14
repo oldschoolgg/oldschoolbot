@@ -6,7 +6,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Shows the links for some OSRS youtubers.',
-			aliases: ['yt']
+			aliases: ['yt'],
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
