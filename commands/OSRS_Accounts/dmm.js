@@ -7,7 +7,8 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows the stats of a DMM account.',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 	async run(msg, [username]) {

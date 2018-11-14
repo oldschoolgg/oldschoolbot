@@ -7,7 +7,8 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows how much XP you have left until 99 in all skills.',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

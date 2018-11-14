@@ -8,7 +8,8 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Checks what the previous name of a player was.',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

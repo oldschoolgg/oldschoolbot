@@ -9,7 +9,8 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 5,
 			description: 'Returns information on a OSRS World.',
-			usage: '<world:int>'
+			usage: '<world:int>',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

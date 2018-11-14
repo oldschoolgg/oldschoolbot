@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			description: 'Enables/disables the Twitch Notifications function which sends tweets from OSRS Streamers.',
 			runIn: ['text'],
 			usage: '<list|enable|disable|add|remove> [streamer_name:str]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

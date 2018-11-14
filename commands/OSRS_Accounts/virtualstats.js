@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['vs'],
 			description: 'Shows the virtual stats of a OSRS account',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 	async run(msg, [username]) {

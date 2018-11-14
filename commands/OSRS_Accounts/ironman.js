@@ -8,7 +8,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['iron', 'im'],
 			description: 'Shows the stats of an Ironman account.',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 	async run(msg, [username]) {

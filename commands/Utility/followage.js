@@ -9,7 +9,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			description: 'Shows the followage of a given user from a given twitch channel.',
 			usage: '<name:str> <channel:str>',
-			usageDelim: ' '
+			usageDelim: ' ',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

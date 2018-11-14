@@ -9,7 +9,8 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 3,
 			description: 'Shows the ranks of an account',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

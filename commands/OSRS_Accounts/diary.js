@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['d'],
 			description: 'Check which diaries your account has the required stats to complete (BOLD = boostable)',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

@@ -12,7 +12,8 @@ module.exports = class extends Command {
                     'cooking|woodcutting|fletching|fishing|firemaking|crafting|smithing|' +
                     'mining|herblore|agility|thieving|slayer|farming|runecrafting|hunter|' +
                     'construction|ehp> <day|week|month> [count:int{1,20}]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

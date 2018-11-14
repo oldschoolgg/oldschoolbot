@@ -11,7 +11,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['a'],
 			description: 'Shows analytics of the stats of a OSRS account',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

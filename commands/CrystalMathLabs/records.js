@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			description: 'CML Records for an account, in a period of day, week or month.',
 			usage: '<day|week|month> <username:str> [...]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 

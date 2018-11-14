@@ -8,7 +8,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['s'],
 			description: 'Shows the stats of a OSRS account',
-			usage: '[user:user|username:str]'
+			usage: '[user:user|username:str]',
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 	async run(msg, [username]) {
