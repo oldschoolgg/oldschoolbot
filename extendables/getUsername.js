@@ -11,7 +11,7 @@ class getUsername extends Extendable {
 	}
 
 	extend(username, msg) {
-		const prefix = msg.guild ? msg.guild.settings.prefix : '+';
+		const prefix = msg.guild ? msg.guild.configs.prefix : '+';
 		if (!username && !msg.author.configs.RSN) {
 			throw `Please specify a username, or set one with \`${prefix}setrsn <username>\``;
 		}
