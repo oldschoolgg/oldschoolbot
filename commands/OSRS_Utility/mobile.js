@@ -3,9 +3,7 @@ const { Command } = require('klasa');
 module.exports = class extends Command {
 
 	constructor(...args) {
-		super(...args, {
-			description: 'Shows the link for the official OSRS mobile app.'
-		});
+		super(...args, { description: 'Shows the link for the official OSRS mobile app.' });
 	}
 
 	async run(msg) {

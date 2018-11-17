@@ -20,7 +20,7 @@ module.exports = class extends Command {
 			.setURL('https://runelite.net/')
 			.setDescription(`RuneLite is a free, open source and lightweight client for Old School RuneScape.
 
-The biggest benefit of RuneLite is that it is open-source, this means that: it is safer because anyone can see the code, anyone around the world can contribute new features to it, and improve the code.
+The biggest benefit of RuneLite is that it is open-source, so: it is safer because anyone can see the code, anyone around the world can contribute new features to it, and improve the code.
 
 https://runelite.net/`)
 			.addField('Free', '100% Free for all', true)

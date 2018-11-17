@@ -21,23 +21,21 @@ module.exports = class extends Command {
 		const { Skills } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
 			.then(player => player)
-			.catch(() => {
-				throw this.client.notFound;
-			});
+			.catch(() => { throw this.client.notFound; });
+
+		const diaryNames = Object.keys(diaryReqs).map(key => titles[key]).join('\n');
+		const canComplete = Object.keys(diaryReqs)
+			.map(diary => this.check(Skills, diaryReqs[diary]))
+			.join('\n');
 
 		const embed = new MessageEmbed()
 			.setColor(11132490)
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)
-			.addField('Diary', Object.keys(diaryReqs).map(key => titles[key]).join('\n'), true)
-			.addField(
-				'You can complete:',
-				Object.keys(diaryReqs)
-					.map(diary => this.check(Skills, diaryReqs[diary]))
-					.join('\n'),
-				true
-			)
+			.addField('Diary', diaryNames, true)
+			.addField('You can complete:', canComplete,	true)
 			.setFooter('*Boostable');
+
 		return msg.send({ embed });
 	}
 

@@ -15,14 +15,16 @@ module.exports = class extends Command {
 		const item = this.client.configs.prices[name.replace(/\W/g, '').toUpperCase()];
 		if (!item) return msg.send(`Couldn't find that item.`);
 
+		const { overall, store, buy, sell, ID } = item;
+
 		const embed = new MessageEmbed()
 			.setTitle(item.name)
 			.setColor(52224)
-			.setThumbnail(`http://services.runescape.com/m=itemdb_oldschool/1521457324813_obj_big.gif?id=${item.ID}`)
-			.addField('Overall Price', `${item.overall.toLocaleString()} gp`, true)
-			.addField('Store Price', `${item.store.toLocaleString()} gp`, true)
-			.addField('Buy Price', `${item.buy.toLocaleString()} gp`, true)
-			.addField('Sell Price', `${item.sell.toLocaleString()} gp`, true)
+			.setThumbnail(`http://services.runescape.com/m=itemdb_oldschool/1521457324813_obj_big.gif?id=${ID}`)
+			.addField('Overall Price', `${overall.toLocaleString()} gp`, true)
+			.addField('Store Price', `${store.toLocaleString()} gp`, true)
+			.addField('Buy Price', `${buy.toLocaleString()} gp`, true)
+			.addField('Sell Price', `${sell.toLocaleString()} gp`, true)
 			.setFooter('OSBuddy API');
 		return msg.send({ embed });
 	}

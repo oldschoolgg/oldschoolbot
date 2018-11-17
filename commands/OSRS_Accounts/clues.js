@@ -31,20 +31,25 @@ module.exports = class extends Command {
 		};
 
 		for (const prop in clues) {
-			clues[prop].rank = clues[prop].rank !== -1 ? clues[prop].rank.toLocaleString() : 0;
-			clues[prop].score = clues[prop].score !== -1 ? clues[prop].score.toLocaleString() : 0;
+			clues[prop].rank = clues[prop].rank !== -1 ?
+				clues[prop].rank.toLocaleString() : 0;
+
+			clues[prop].score = clues[prop].score !== -1 ?
+				clues[prop].score.toLocaleString() : 0;
 		}
+
+		const { easy, medium, hard, elite, master, overall } = clues;
 
 		const embed = new MessageEmbed()
 			.setAuthor(username)
 			.setColor(52224)
 			.setThumbnail('https://i.imgur.com/azW3cSB.png')
-			.addField('Easy', `**Rank:** ${clues.easy.rank}\n**Score:** ${clues.easy.score}\n`, true)
-			.addField('Medium', `**Rank:** ${clues.medium.rank}\n**Score:** ${clues.medium.score}\n`, true)
-			.addField('Hard', `**Rank:** ${clues.hard.rank}\n**Score:** ${clues.hard.score}\n`, true)
-			.addField('Elite', `**Rank:** ${clues.elite.rank}\n**Score:** ${clues.elite.score}\n`, true)
-			.addField('Master', `**Rank:** ${clues.master.rank}\n**Score:** ${clues.master.score}\n`, true)
-			.addField('Overall', `**Rank:** ${clues.overall.rank}\n**Score:** ${clues.overall.score}\n`, true);
+			.addField('Easy', `**Rank:** ${easy.rank}\n**Score:** ${easy.score}\n`, true)
+			.addField('Medium', `**Rank:** ${medium.rank}\n**Score:** ${medium.score}\n`, true)
+			.addField('Hard', `**Rank:** ${hard.rank}\n**Score:** ${hard.score}\n`, true)
+			.addField('Elite', `**Rank:** ${elite.rank}\n**Score:** ${elite.score}\n`, true)
+			.addField('Master', `**Rank:** ${master.rank}\n**Score:** ${master.score}\n`, true)
+			.addField('Overall', `**Rank:** ${overall.rank}\n**Score:** ${overall.score}\n`, true);
 
 		return msg.send({ embed });
 	}

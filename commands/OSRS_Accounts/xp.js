@@ -21,7 +21,9 @@ module.exports = class extends Command {
 			.catch(() => { throw this.client.notFound; });
 
 		for (const skill in player.Skills) {
-			if (player.Skills[skill].xp !== undefined) player.Skills[skill].xp = player.Skills[skill].xp.toLocaleString();
+			if (player.Skills[skill].xp !== undefined) {
+				player.Skills[skill].xp = player.Skills[skill].xp.toLocaleString();
+			}
 		}
 
 		const embed = await this.getStatsEmbed(username, 7981338, player, 'xp');

@@ -3,9 +3,7 @@ const { Command } = require('klasa');
 module.exports = class extends Command {
 
 	constructor(...args) {
-		super(...args, {
-			description: 'Shows all the clients you can play OSRS on.'
-		});
+		super(...args, { description: 'Shows all the clients you can play OSRS on.' });
 	}
 
 	async run(msg) {

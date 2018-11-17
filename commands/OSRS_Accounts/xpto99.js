@@ -31,6 +31,7 @@ module.exports = class extends Command {
 				player.Skills[skill].xp = remainingXP.toLocaleString();
 			}
 		}
+
 		player.Skills.Overall.xp = parseInt(299791913 - totalXP).toLocaleString();
 		const embed = await this.getStatsEmbed(username, 7981338, player, 'xp', false);
 		return msg.send({ embed });
