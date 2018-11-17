@@ -30,7 +30,7 @@ module.exports = class extends Command {
 	}
 
 	differenceDays(first, second) {
-		return Math.floor(second - first) / (1000 * 60 * 60 * 24);
+		return Math.floor((second - first) / (1000 * 60 * 60 * 24));
 	}
 
 };
