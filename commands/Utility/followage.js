@@ -10,6 +10,7 @@ module.exports = class extends Command {
 			usage: '<user:str> <channel:str>',
 			usageDelim: ' '
 		});
+		this.error = `That user isn't following that channel, or it is banned, or doesn't exist at all.`;
 	}
 
 	async run(msg, [user, channel]) {
@@ -18,9 +19,11 @@ module.exports = class extends Command {
 
 		const body = await fetch(url)
 			.then(response => response.json())
-			.catch(() => { throw `${user} isn't following ${channel}, or it is banned, or doesn't exist at all.`; });
+			.catch(() => { throw this.error; });
 
 		const days = this.differenceDays(new Date(body.created_at), new Date());
+
+		if (!body.channel) throw this.error;
 
 		const embed = new MessageEmbed()
 			.setColor(6570406)
