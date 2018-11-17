@@ -2,8 +2,6 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
-const query = new URLSearchParams([['client_id', this.client.twitchClientID]]);
-
 module.exports = class extends Command {
 
 	constructor(...args) {
@@ -16,7 +14,7 @@ module.exports = class extends Command {
 
 	async run(msg, [user, channel]) {
 		const url = new URL(`https://api.twitch.tv/kraken/users/${encodeURIComponent(user)}/follows/channels/${channel}`);
-		url.search = query;
+		url.search = new URLSearchParams([['client_id', this.client.twitchClientID]]);
 
 		const body = await fetch(url)
 			.then(response => response.json())
