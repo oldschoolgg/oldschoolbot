@@ -7,18 +7,22 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 3,
 			description: 'Shows the creation date/avg playtime of your account. See: https://i.imgur.com/PPviStZ.png',
-			usage: '<playtime:int{1,10000}> <arrival:int{1,10000}>',
+			usage: '[playtime:int{1,10000}] <arrival:int{1,10000}>',
 			usageDelim: ' '
 		});
 	}
 
 	async run(msg, [playtime, arrival]) {
-		const creationDate = moment()
+		if (!playtime) return msg.send('You can use this command like this: https://i.imgur.com/PPviStZ.png');
+
+		const date = moment()
 			.subtract(arrival, 'd')
 			.format('MMMM Do YYYY');
-		const average = (playtime * 24 / arrival).toFixed(2);
+
+		const avg = (playtime * 24 / arrival).toFixed(2);
+
 		return msg.send(`
-  Your account was made on: ${creationDate}, and you've played an average of ${average} Hours per day.`);
+  Your account was made on: ${date}, and you've played an average of ${avg} Hours per day.`);
 	}
 
 };

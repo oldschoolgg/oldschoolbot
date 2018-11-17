@@ -14,6 +14,7 @@ module.exports = class extends Command {
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
+
 	async run(msg, [username]) {
 		username = this.getUsername(username, msg);
 
@@ -29,7 +30,9 @@ module.exports = class extends Command {
 			overall += lvl;
 			player.Skills[skill].level = lvl;
 		}
+
 		player.Skills.Overall.level = overall;
+
 		const embed = await this.getStatsEmbed(username, 7981338, player);
 		return msg.send({ embed });
 	}
