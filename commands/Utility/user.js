@@ -15,7 +15,7 @@ module.exports = class extends Command {
 	async run(msg, [member]) {
 		if (!member) member = await msg.guild.members.fetch(msg.author.id);
 		const { user, joinedTimestamp } = member;
-
+		const commandsUsed = user.configs.totalCommandsUsed && user.configs.totalCommandsUsed.toLocaleString() || 0;
 		const embed = new MessageEmbed()
 			.setColor(16098851)
 			.setThumbnail(member.user.displayAvatarURL())
