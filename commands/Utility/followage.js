@@ -2,35 +2,37 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
+const query = new URLSearchParams([['client_id', this.client.twitchClientID]]);
+
 module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			cooldown: 2,
 			description: 'Shows the followage of a given user from a given twitch channel.',
 			usage: '<user:str> <channel:str>',
-			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS']
+			usageDelim: ' '
 		});
 	}
 
 	async run(msg, [user, channel]) {
-		const [days, logo] = await fetch(this.url(user, channel))
-			.then(({ body }) => [this.differenceInDays(new Date(body.created_at), new Date()), body.channel.logo])
-			.catch(() => {
-				throw `${user} isn't following ${channel}, or it is banned, or doesn't exist at all.`;
-			});
+		const url = new URL(`https://api.twitch.tv/kraken/users/${encodeURIComponent(user)}/follows/channels/${channel}`);
+		url.search = query;
+
+		const body = await fetch(url)
+			.then(response => response.json())
+			.catch(() => { throw `${user} isn't following ${channel}, or it is banned, or doesn't exist at all.`; });
+
+		const days = this.differenceDays(new Date(body.created_at), new Date());
 
 		const embed = new MessageEmbed()
 			.setColor(6570406)
-			.setAuthor(`${user} has been following ${channel} for ${days} days.`, logo);
+			.setAuthor(`${user} has been following ${channel} for ${days} days.`, body.channel.logo);
 
-		return msg.send({ embed });
+		return msg.send(embed);
 	}
 
-	url(user, channel) {
-		return `https://api.twitch.tv/kraken/users/${user}/follows/channels/${channel}` +
-		`?client_id=${this.client.twitchClientID}`;
+	differenceDays(first, second) {
+		return (second - first) / (1000 * 60 * 60 * 24);
 	}
 
 };
