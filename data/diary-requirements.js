@@ -1,4 +1,4 @@
-/* Assumes you cannot use spicy stews until Hard Diaries unless 30 crafting*/
+/* Assumes you cannot use spicy stews until Hard Diaries unless 30 crafting */
 /* Assumes you cannot use crystal saw until Hard Diaries */
 
 module.exports = {
