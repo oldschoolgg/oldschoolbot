@@ -12,7 +12,7 @@ const {
 	dblToken,
 	dblAuth,
 	jmodRedditAccounts
-} = require('./config');
+} = require('../config');
 
 class OldSchoolBot extends Client {
 
@@ -39,7 +39,7 @@ class OldSchoolBot extends Client {
 	}
 
 	roll(max) {
-		return Math.floor(Math.random() * max + 1) === 1;
+		return Math.floor((Math.random() * max) + 1) === 1;
 	}
 
 }
