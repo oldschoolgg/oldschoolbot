@@ -8,7 +8,7 @@ module.exports = class extends Monitor {
 
 	async run(msg) {
 		if (!msg.guild || !msg.guild.configs.joyReactions) return;
-		if (msg.content.includes(' 73') || msg.content === '73') {
+		if (msg.cleanContent().replace(/<a?:.*?:[0-9]+>/g, '').includes('73')) {
 			msg.react('😂').catch(() => null);
 		}
 	}
