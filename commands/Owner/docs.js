@@ -23,13 +23,16 @@ module.exports = class extends Command {
 		const stopwatch = new Stopwatch();
 		const commands = {};
 		const commandNames = Array.from(this.client.commands.keys());
+
 		await Promise.all(
-			this.client.commands.filter(command => !command.permissionLevel || (command.permissionLevel && command.permissionLevel < 9)).map(command => {
-				if (!commands.hasOwnProperty(command.category)) commands[command.category] = {};
-				if (!commands[command.category].hasOwnProperty(command.subCategory)) commands[command.category][command.subCategory] = [];
-				const description = typeof command.description === 'function' ? command.description(msg) : command.description;
-				return commands[command.category][command.subCategory].push({ name: command.name, aliases: command.aliases, description });
-			})
+			this.client.commands
+				.filter(cmd => !cmd.permissionLevel || (cmd.permissionLevel && cmd.permissionLevel < 9))
+				.map(cmd => {
+					if (!commands.hasOwnProperty(cmd.category)) commands[cmd.category] = {};
+					if (!commands[cmd.category].hasOwnProperty(cmd.subCategory)) commands[cmd.category][cmd.subCategory] = [];
+					const description = typeof cmd.description === 'function' ? cmd.description(msg) : cmd.description;
+					return commands[cmd.category][cmd.subCategory].push({ name: cmd.name, aliases: cmd.aliases, description });
+				})
 		);
 
 		const categories = Object.keys(commands);
@@ -41,8 +44,8 @@ module.exports = class extends Command {
 		const [commands, categories,, stopwatch] = await this.buildCommands('markdown', msg);
 		const markdown = [];
 
-		markdown.push(`# ![${this.username}](${this.avatar(32)}) ${this.username}  `);
-		markdown.push(`[Invite Link](${this.invite}) / [Support Server](${this.client.supportGuild})<br><br>`);
+		markdown.push(`# ![${this.username}](${this.avatar(32)}) ${this.username}`);
+		markdown.push(`[Invite Link](${this.invite}) / [Support Server](${this.client.supportGuild})`);
 		markdown.push(this.client.description);
 		markdown.push(`# Commands`);
 
