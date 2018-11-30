@@ -10,15 +10,11 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		if (!msg.author.configs.RSN) throw 'You must have an RSN set to Autoupdate. Use `+setrsn <username>`';
-		await msg.author.configs.update('autoupdate', !msg.author.configs.autoupdate, msg.author);
-		return msg.send(`Turned Auto Updating for your account ${msg.author.configs.autoupdate ? '**on**.' : '**off**.'}`);
-	}
-
-	async init() {
-		if (!this.client.gateways.users.schema.has('autoupdate')) {
-			await this.client.gateways.users.schema.add('autoupdate', { type: 'boolean' });
+		if (!msg.author.settings.get('RSN')) {
+			throw 'You must have an RSN set to Autoupdate. Use `+setrsn <username>`';
 		}
+		await msg.author.settings.update('autoupdate', !msg.author.settings.get('autoupdate'));
+		return msg.send(`Turned Auto Updating for your account ${msg.author.settings.get('autoupdate') ? '**on**.' : '**off**.'}`);
 	}
 
 };

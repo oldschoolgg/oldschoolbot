@@ -2,40 +2,35 @@ const { Client } = require('klasa');
 const { WebhookClient } = require('discord.js');
 const {
 	token,
-	emoji,
-	streamers,
-	guildLogs,
-	voteLogs,
-	errorLogs,
-	twitchClientID,
-	twitterApp,
-	dblToken,
-	dblAuth,
-	jmodRedditAccounts
+	clientOptions,
+	clientProperties
 } = require('../config');
+
+require('../config/Schemas');
 
 class OldSchoolBot extends Client {
 
 	constructor(options) {
 		super(options);
-		this.emoji = emoji;
-		this.streamers = streamers;
-		this.guildLogs = new WebhookClient(guildLogs.id, guildLogs.token);
-		this.errorLogs = new WebhookClient(errorLogs.id, errorLogs.token);
-		this.voteLogs = new WebhookClient(voteLogs.id, voteLogs.token);
-		this.twitchClientID = twitchClientID;
-		this.dblToken = dblToken;
-		this.dblAuth = dblAuth;
-		this.jmodRedditAccounts = jmodRedditAccounts;
-		this.timePeriods = {
-			day: 86400,
-			week: 604800,
-			month: 2628000,
-			year: 525667 * 60
-		};
-		this.notFound = `There was an error in fetching stats for that account. The account might not exist, or is banned.`;
-		this.cmlDown = `The CrystalMathLabs API is currently disabled. Please try again in 5 minutes.`;
-		this.twitterApp = twitterApp;
+		for (const prop in clientProperties) {
+			this[prop] = clientProperties[prop];
+		}
+	 	// this.emoji = emoji;
+		// this.streamers = streamers;
+		// this.guildLogs = new WebhookClient(guildLogs.id, guildLogs.token);
+		// this.voteLogs = new WebhookClient(voteLogs.id, voteLogs.token);
+		// this.twitchClientID = twitchClientID;
+		// this.dblToken = dbl.token;
+		// this.dblAuth = dbl.auth;
+		// this.jmodRedditAccounts = jmodRedditAccounts;
+		// this.timePeriods = {
+		//	day: 86400,
+		//	week: 604800,
+		//	month: 2628000,
+		//	year: 525667 * 60
+		// };
+		// this.cmlDown = `The CrystalMathLabs API is currently disabled. Please try again in 5 minutes.`;
+		// this.twitterApp = twitterApp;
 	}
 
 	roll(max) {
@@ -44,28 +39,4 @@ class OldSchoolBot extends Client {
 
 }
 
-new OldSchoolBot({
-	fetchAllMembers: false,
-	disabledEvents: [
-		'RELATIONSHIP_REMOVE',
-		'RELATIONSHIP_ADD',
-		'TYPING_START',
-		'USER_NOTE_UPDATE',
-		'CHANNEL_PINS_UPDATE',
-		'GUILD_MEMBERS_CHUNK',
-		'PRESENCE_UPDATE',
-		'USER_SETTINGS_UPDATE',
-		'MESSAGE_REACTION_REMOVE_ALL',
-		'MESSAGE_REACTION_REMOVE',
-		'MESSAGE_REACTION_ADD'
-	],
-	messageCacheMaxSize: 5,
-	messageCacheLifetime: 60,
-	messageSweepInterval: 60,
-	prefix: '+',
-	shardCount: 'auto',
-	disableEveryone: true,
-	providers: { default: 'rethinkdb' },
-	pieceDefaults: { commands: { deletable: true } },
-	readyMessage: client => `[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
-}).login(token);
+new OldSchoolBot(clientOptions).login(token);

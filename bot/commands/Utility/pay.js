@@ -11,7 +11,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [user, amount]) {
-		const { GP } = msg.author.configs;
+		const GP = msg.author.settings.get('GP');
 		if (GP < amount) throw `You don't have enough GP.`;
 		if (user.id === msg.author.id) throw `You can't send money to yourself.`;
 		if (user.bot) throw `You can't send money to a bot.`;

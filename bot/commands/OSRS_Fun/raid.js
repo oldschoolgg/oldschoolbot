@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const RaidsEmojis = require('../../resources/monsters/raids').drops;
+const RaidsEmojis = require('../../../data/monsters/raids').drops;
 
 module.exports = class extends Command {
 
@@ -188,4 +188,3 @@ const LootChance = {
 	totalWeight: LootTable.length,
 	olmlet: 1 / 65
 };
-

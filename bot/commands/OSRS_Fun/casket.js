@@ -1,7 +1,7 @@
 const { Command } = require('klasa');
 const clues = {
-	master: require('../../resources/clues/master'),
-	medium: require('../../resources/clues/medium')
+	master: require('../../../data/clues/master'),
+	medium: require('../../../data/clues/medium')
 };
 
 module.exports = class extends Command {

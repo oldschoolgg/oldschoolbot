@@ -12,8 +12,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [prefix]) {
-		if (!prefix) return msg.send(`The current prefix for your guild is: \`${msg.guild.configs.prefix}\``);
-		await msg.guild.configs.update('prefix', prefix, msg.guild);
+		if (!prefix) return msg.send(`The current prefix for your guild is: \`${msg.guild.settings.get('prefix')}\``);
+		await msg.guild.settings.update('prefix', prefix);
 		return msg.send(`Changed Command Prefix for ${msg.guild.name} to ${prefix}`);
 	}
 

@@ -14,25 +14,20 @@ module.exports = class extends Command {
 	}
 
 	async enable(msg) {
-		if (msg.guild.configs.tweetchannel === msg.channel.id) throw `JMod Tweets are already enabled in this channel.`;
-		if (msg.guild.configs.tweetchannel !== null) {
-			await msg.guild.configs.update('tweetchannel', msg.channel, msg.guild);
+		const tweetChannel = msg.guild.settings.get('tweetchannel');
+		if (tweetChannel === msg.channel.id) throw `JMod Tweets are already enabled in this channel.`;
+		if (tweetChannel) {
+			await msg.guild.settings.update('tweetchannel', msg.channel);
 			return msg.send(`JMod Tweets are already enabled in another channel, but I've switched them to use this channel.`);
 		}
-		await msg.guild.configs.update('tweetchannel', msg.channel, msg.guild);
+		await msg.guild.settings.update('tweetchannel', msg.channel);
 		return msg.send(`Enabled JMod Tweets in this channel.`);
 	}
 
 	async disable(msg) {
-		if (msg.guild.configs.tweetchannel === null) throw 'JMod Tweets are already disabled.';
-		await msg.guild.configs.reset('tweetchannel');
+		if (!msg.guild.settings.get('tweetchannel')) throw 'JMod Tweets are already disabled.';
+		await msg.guild.settings.reset('tweetchannel');
 		return msg.send(`Disabled JMod Tweets in this channel.`);
-	}
-
-	async init() {
-		if (!this.client.gateways.guilds.schema.has('tweetchannel')) {
-			await this.client.gateways.guilds.schema.add('tweetchannel', { type: 'textchannel' });
-		}
 	}
 
 };

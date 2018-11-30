@@ -4,7 +4,7 @@ const { createCanvas, Image } = require('canvas');
 const fs = require('fs');
 const fetch = require('node-fetch');
 
-const bg = fs.readFileSync('./resources/qaBackground.png');
+const bg = fs.readFileSync('./resources/images/qa-background.png');
 const canvas = createCanvas(900, 506);
 const ctx = canvas.getContext('2d');
 
@@ -19,7 +19,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const { url } = await this.checkChatForImage(msg);
+		const { url } = await msg.channel.fetchImage();
 
 		const image = await fetch(url).then(result => result.buffer());
 

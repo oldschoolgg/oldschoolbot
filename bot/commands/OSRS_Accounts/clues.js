@@ -18,7 +18,6 @@ module.exports = class extends Command {
 
 		const { Minigames } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
-			.then(player => player)
 			.catch(() => { throw this.client.notFound; });
 
 		const clues = {

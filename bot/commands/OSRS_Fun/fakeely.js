@@ -2,13 +2,13 @@ const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, Image, registerFont } = require('canvas');
 const fs = require('fs');
-const bg = fs.readFileSync('./resources/bg.png');
+const bg = fs.readFileSync('./resources/images/chat-bg.png');
 const canvas = createCanvas(399, 100);
 const ctx = canvas.getContext('2d');
 
 ctx.font = '16px OSRSFont';
 
-registerFont('./resources/OSRSFont.ttf', { family: 'Regular' });
+registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
 module.exports = class extends Command {
 

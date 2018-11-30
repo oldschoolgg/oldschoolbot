@@ -1,16 +1,16 @@
-const { Extendable } = require('klasa');
+const { Extendable, Command } = require('klasa');
 
 class cleanString extends Extendable {
 
 	constructor(...args) {
 		super(...args, {
-			appliesTo: ['Command'],
+			appliesTo: [Command],
 			enabled: true,
 			klasa: true
 		});
 	}
 
-	extend(string, uppercase = false) {
+	cleanString(string, uppercase = false) {
 		const clean = string.replace(/\W/g, '');
 		return uppercase ? clean.toUpperCase() : clean;
 	}

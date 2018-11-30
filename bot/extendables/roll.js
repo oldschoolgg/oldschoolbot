@@ -1,16 +1,16 @@
-const { Extendable } = require('klasa');
+const { Extendable, Command, Monitor, Finalizer } = require('klasa');
 
 class roll extends Extendable {
 
 	constructor(...args) {
 		super(...args, {
-			appliesTo: ['Command', 'Monitor', 'Finalizer'],
+			appliesTo: [Command, Monitor, Finalizer],
 			enabled: true,
 			klasa: true
 		});
 	}
 
-	extend(max) {
+	roll(max) {
 		return Math.floor((Math.random() * max) + 1) === 1;
 	}
 

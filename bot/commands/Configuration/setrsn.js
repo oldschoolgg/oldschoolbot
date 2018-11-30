@@ -11,14 +11,14 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [newRSN]) {
-		const { RSN } = msg.author.configs;
+		const RSN = msg.author.settings.get('RSN');
 		if (!newRSN && RSN) {
-			return msg.send(`Your current RSN is: \`${msg.author.configs.RSN}\``);
+			return msg.send(`Your current RSN is: \`${msg.author.settings.get('RSN')}\``);
 		}
 
 		if (!newRSN && !RSN) {
 			return msg.send(`You don't have an RSN set. You can set one like this: ` +
-			`\`${msg.guild.prefix}setrsn <username>\``);
+			`\`${msg.guild.settings.get('prefix')}setrsn <username>\``);
 		}
 
 		newRSN = newRSN.toLowerCase();
@@ -31,18 +31,12 @@ module.exports = class extends Command {
 		}
 
 		if (RSN !== null) {
-			await msg.author.configs.update('RSN', newRSN, msg.author);
+			await msg.author.settings.update('RSN', newRSN);
 			return msg.send(`Changed your RSN from \`${RSN}\` to \`${newRSN}\``);
 		}
 
-		await msg.author.configs.update('RSN', newRSN, msg.author);
+		await msg.author.settings.update('RSN', newRSN);
 		return msg.send(`Your RSN has been set to: \`${newRSN}\`.`);
-	}
-
-	async init() {
-		if (!this.client.gateways.users.schema.has('RSN')) {
-			await this.client.gateways.users.schema.add('RSN', { type: 'string' });
-		}
 	}
 
 };
