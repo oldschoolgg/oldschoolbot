@@ -1,6 +1,6 @@
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
-const quests = require('../../resources/quests.json');
+const quests = require('../../../data/quests');
 
 module.exports = class extends Command {
 

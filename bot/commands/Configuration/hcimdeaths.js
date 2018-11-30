@@ -14,25 +14,23 @@ module.exports = class extends Command {
 	}
 
 	async enable(msg) {
-		if (msg.guild.configs.hcimdeaths === msg.channel.id) throw `HCIM Death Tweets are already enabled in this channel.`;
-		if (msg.guild.configs.hcimdeaths !== null) {
-			await msg.guild.configs.update('hcimdeaths', msg.channel, msg.guild);
+		if (msg.guild.settings.hcimdeaths === msg.channel.id) {
+			throw `HCIM Death Tweets are already enabled in this channel.`;
+		}
+		if (msg.guild.settings.hcimdeaths) {
+			await msg.guild.settings.update('hcimdeaths', msg.channel);
 			return msg.send(`HCIM Death Tweets are already enabled in another channel, but I've switched them to use this channel.`);
 		}
-		await msg.guild.configs.update('hcimdeaths', msg.channel, msg.guild);
+		await msg.guild.settings.update('hcimdeaths', msg.channel);
 		return msg.send(`Enabled HCIM Death Tweets in this channel.`);
 	}
 
 	async disable(msg) {
-		if (msg.guild.configs.hcimdeaths === null) throw "HCIM Death Tweets aren't enabled, so you can't disable them.";
-		await msg.guild.configs.reset('hcimdeaths');
-		return msg.send(`Disabled HCIM Death Tweets in this channel.`);
-	}
-
-	async init() {
-		if (!this.client.gateways.guilds.schema.has('autoupdate')) {
-			await this.client.gateways.guilds.schema.add('autoupdate', { type: 'textchannel' });
+		if (!msg.guild.settings.hcimdeaths) {
+			throw "HCIM Death Tweets aren't enabled, so you can't disable them.";
 		}
+		await msg.guild.settings.reset('hcimdeaths');
+		return msg.send(`Disabled HCIM Death Tweets in this channel.`);
 	}
 
 };

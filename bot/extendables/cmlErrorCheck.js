@@ -1,16 +1,16 @@
-const { Extendable } = require('klasa');
+const { Extendable, Command } = require('klasa');
 
 class cmlErrorCheck extends Extendable {
 
 	constructor(...args) {
 		super(...args, {
-			appliesTo: ['Command'],
+			appliesTo: [Command],
 			enabled: true,
 			klasa: true
 		});
 	}
 
-	async extend(msg, res) {
+	async cmlErrorCheck(msg, res) {
 		switch (res.text.replace(/\s/g, '')) {
 			case '-1':
 				throw 'That user does not exist in the CrystalMathLabs database. Have you tried using +update?';

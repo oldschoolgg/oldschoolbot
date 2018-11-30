@@ -1,17 +1,17 @@
-const { Extendable } = require('klasa');
+const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 class getStatsEmbed extends Extendable {
 
 	constructor(...args) {
 		super(...args, {
-			appliesTo: ['Command'],
+			appliesTo: [Command],
 			enabled: true,
 			klasa: true
 		});
 	}
 
-	async extend(username, color, { Skills }, key = 'level', showExtra = true) {
+	async getStatsEmbed(username, color, { Skills }, key = 'level', showExtra = true) {
 		const { emoji } = this.client;
 		const embed = new MessageEmbed()
 			.setColor(color)

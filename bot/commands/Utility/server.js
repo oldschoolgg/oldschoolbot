@@ -17,9 +17,9 @@ module.exports = class extends Command {
 			.setThumbnail(guild.iconURL())
 			.setAuthor(guild.name)
 			.addField('Total Members', guild.memberCount || 'Not Set', true)
-			.addField('Total Commands Used', guild.configs.totalCommandsUsed, true)
+			.addField('Total Commands Used', guild.settings.get('totalCommandsUsed'), true)
 			.addField('Server Creation Date', this.timestamp.display(guild.createdAt), true)
-			.addField('Bot Prefix', guild.configs.prefix, true);
+			.addField('Bot Prefix', guild.settings.get('prefix'), true);
 
 		return msg.send({ embed });
 	}

@@ -1,7 +1,7 @@
 const { Command } = require('klasa');
 const MarkovChain = require('markovchain');
 const fs = require('fs');
-const markovSample = fs.readFileSync('./resources/markovSample.txt').toString('utf-8');
+const markovSample = fs.readFileSync('./resources/markov-sample.txt').toString('utf-8');
 
 module.exports = class extends Command {
 

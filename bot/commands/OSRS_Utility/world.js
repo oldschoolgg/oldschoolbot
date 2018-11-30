@@ -1,6 +1,6 @@
 const { Command } = require('klasa');
 const fetch = require('node-fetch');
-const { parseTable } = require('../../resources/util');
+const { parseTable } = require('../../../config/util');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {

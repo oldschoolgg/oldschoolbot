@@ -47,10 +47,10 @@ module.exports = class extends Command {
 		const guildStats = `
 • Tiny: ${g.tiny}
 • Small: ${g.small}
-• Average: ${g.average}
 • Large: ${g.large}
 • Massive: ${g.massive}
 
+• Average: ${g.average} Member Count
 • Total Guilds: ${this.client.guilds.size}
 • Bot Farms: ${g.botfarms}`;
 

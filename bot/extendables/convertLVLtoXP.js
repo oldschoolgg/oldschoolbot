@@ -1,16 +1,16 @@
-const { Extendable } = require('klasa');
+const { Extendable, Command } = require('klasa');
 
 class convertLVLtoXP extends Extendable {
 
 	constructor(...args) {
 		super(...args, {
-			appliesTo: ['Command'],
+			appliesTo: [Command],
 			enabled: true,
 			klasa: true
 		});
 	}
 
-	extend(lvl) {
+	convertLVLtoXP(lvl) {
 		let points = 0;
 
 		for (let i = 1; i < lvl; i++) {

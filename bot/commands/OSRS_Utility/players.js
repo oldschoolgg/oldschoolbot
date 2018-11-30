@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const { parseTable } = require('../../resources/util');
+const { parseTable } = require('../../../config/util');
 const fetch = require('node-fetch');
 
 module.exports = class extends Command {

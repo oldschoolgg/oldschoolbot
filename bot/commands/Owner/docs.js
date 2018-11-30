@@ -24,16 +24,19 @@ module.exports = class extends Command {
 		const commands = {};
 		const commandNames = Array.from(this.client.commands.keys());
 		await Promise.all(
-			this.client.commands.filter(command => !command.permissionLevel || (command.permissionLevel && command.permissionLevel < 9)).map(command => {
-				if (!commands.hasOwnProperty(command.category)) commands[command.category] = {};
-				if (!commands[command.category].hasOwnProperty(command.subCategory)) commands[command.category][command.subCategory] = [];
-				const description = typeof command.description === 'function' ? command.description(msg) : command.description;
-				return commands[command.category][command.subCategory].push({ name: command.name, aliases: command.aliases, description });
-			})
+			this.client.commands
+				.filter(command => !command.permissionLevel || (command.permissionLevel && command.permissionLevel < 9))
+				.map(command => {
+					if (!commands.hasOwnProperty(command.category)) commands[command.category] = {};
+					if (!commands[command.category].hasOwnProperty(command.subCategory)) commands[command.category][command.subCategory] = [];
+					const description = typeof command.description === 'function' ? command.description(msg.language) : command.description;
+					return commands[command.category][command.subCategory].push({ name: command.name, aliases: command.aliases, description });
+				})
 		);
 
 		const categories = Object.keys(commands);
 		const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
+		// TODO use object instead
 		return [commands, categories, longest, stopwatch];
 	}
 
@@ -64,7 +67,7 @@ module.exports = class extends Command {
 		}
 
 		const mdBuffer = Buffer.from(markdown.join('\n'));
-		const duration = `Generated in ${stopwatch.stop().friendlyDuration}`;
+		const duration = `Generated in ${stopwatch.stop()}`;
 		return msg.channel.sendFile(mdBuffer, 'commands.md', duration);
 	}
 
@@ -75,7 +78,8 @@ module.exports = class extends Command {
 		const page = [header];
 		for (let cat = 0; cat < categories.length; cat++) {
 			page.push(`<div class="category">`);
-			page.push(`<h2>${categories[cat]} / ${commands[categories[cat]].General.length} Commands</h2>`);
+			const category = commands[categories[cat]].General;
+			if (category) page.push(`<h2>${categories[cat]} / ${category.length} Commands</h2>`);
 
 			const subCategories = Object.keys(commands[categories[cat]]);
 
@@ -95,7 +99,7 @@ module.exports = class extends Command {
 			page.push(`</div>`);
 		}
 		const htmlBuffer = Buffer.from(page.join('\n'));
-		const duration = `Generated in ${stopwatch.stop().friendlyDuration}`;
+		const duration = `Generated in ${stopwatch.stop()}`;
 		return msg.channel.sendFile(htmlBuffer, 'index.html', duration);
 	}
 
@@ -124,7 +128,7 @@ module.exports = class extends Command {
 		}
 
 		const ptBuffer = Buffer.from(plaintext.join('\n'));
-		const duration = `Generated in ${stopwatch.stop().friendlyDuration}`;
+		const duration = `Generated in ${stopwatch.stop()}`;
 		return msg.channel.sendFile(ptBuffer, 'commands.txt', duration);
 	}
 
@@ -142,7 +146,7 @@ module.exports = class extends Command {
 			longestCommandName: longest
 		};
 		const jsonBuffer = Buffer.from(JSON.stringify({ categories: commands, meta }));
-		const duration = `Generated in ${stopwatch.stop().friendlyDuration}`;
+		const duration = `Generated in ${stopwatch.stop()}`;
 		return msg.channel.sendFile(jsonBuffer, 'commands.json', duration);
 	}
 

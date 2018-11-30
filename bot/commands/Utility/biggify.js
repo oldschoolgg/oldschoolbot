@@ -8,7 +8,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const { url } = await this.checkChatForImage(msg);
+		const { url } = await msg.channel.fetchImage();
 		const img = await jimp.read(url);
 		img.resize(400, jimp.AUTO);
 		const chunkHeight = img.bitmap.height / 4;

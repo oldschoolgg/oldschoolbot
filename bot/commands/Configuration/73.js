@@ -14,18 +14,23 @@ module.exports = class extends Command {
 	}
 
 	async enable(msg) {
-		if (msg.guild.configs.joyReactions === msg.channel.id) throw `😂 Reactions are already enabled in this channel.`;
-		if (msg.guild.configs.joyReactions !== null) {
-			await msg.guild.configs.update('joyReactions', msg.channel, msg.guild);
+		const joyReactions = msg.guild.settings.get('joyReactions');
+		if (joyReactions === msg.channel.id) {
+			throw `😂 Reactions are already enabled in this channel.`;
+		}
+		if (joyReactions) {
+			await msg.guild.settings.update('joyReactions', msg.channel);
 			return msg.send(`😂 Reactions are already enabled in another channel, but I've switched them to use this channel.`);
 		}
-		await msg.guild.configs.update('joyReactions', msg.channel, msg.guild);
+		await msg.guild.settings.update('joyReactions', msg.channel);
 		return msg.send(`Enabled 😂 Reactions in this channel.`);
 	}
 
 	async disable(msg) {
-		if (msg.guild.configs.joyReactions === null) throw "😂 Reactions aren't enabled, so you can't disable them.";
-		await msg.guild.configs.reset('joyReactions');
+		if (!msg.guild.settings.get('joyReactions')) {
+			throw "😂 Reactions aren't enabled, so you can't disable them.";
+		}
+		await msg.guild.settings.reset('joyReactions');
 		return msg.send(`Disabled 😂 Reactions in this channel.`);
 	}
 

@@ -1,7 +1,7 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
 const { MessageEmbed } = require('discord.js');
-const diaryReqs = require('../../resources/diaryReqs');
+const requirements = require('../../../data/diary-requirements');
 
 module.exports = class extends Command {
 
@@ -23,9 +23,9 @@ module.exports = class extends Command {
 			.then(player => player)
 			.catch(() => { throw this.client.notFound; });
 
-		const diaryNames = Object.keys(diaryReqs).map(key => titles[key]).join('\n');
-		const canComplete = Object.keys(diaryReqs)
-			.map(diary => this.check(Skills, diaryReqs[diary]))
+		const diaryNames = Object.keys(requirements).map(key => titles[key]).join('\n');
+		const canComplete = Object.keys(requirements)
+			.map(diary => this.check(Skills, requirements[diary]))
 			.join('\n');
 
 		const embed = new MessageEmbed()
