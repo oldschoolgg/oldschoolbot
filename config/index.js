@@ -37,7 +37,7 @@ module.exports = {
 		/* Klasa Options */
 		createPiecesFolders: false,
 		prefix: '+',
-		providers: { default: 'json' },
+		providers: { default: 'rethinkdb' },
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
 		readyMessage: client => `[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
