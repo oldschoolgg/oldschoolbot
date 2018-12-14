@@ -25,9 +25,9 @@ module.exports = class extends Task {
 						.setImage(`${preview.medium}?osrsbot=${Math.random() * 1000}`);
 
 					this.client.guilds
-						.filter(guild => guild.configs.twitchnotifs && guild.configs.streamers.includes(channel.display_name.toLowerCase()))
+						.filter(guild => guild.settings.get('twitchnotifs') && guild.settiings.get('streamers').includes(channel.display_name.toLowerCase()))
 						.forEach(guild => {
-							const _channel = this.client.channels.get(guild.configs.twitchnotifs);
+							const _channel = this.client.channels.get(guild.settings.get('twitchnotifs'));
 							if (_channel) _channel.send({ embed });
 						});
 				}

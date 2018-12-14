@@ -56,10 +56,11 @@ ${post.data.selftext ? `\`\`\`${post.data.selftext}\`\`\`` : ''}
 	}
 
 	sendEmbed(embed) {
-		this.client.guilds.filter(guild => guild.configs.jmodComments).map(guild => {
-			const channel = guild.channels.get(guild.configs.jmodComments);
-			if (channel) channel.send(embed).catch(() => null);
-		});
+		this.client.guilds.filter(guild => guild.settings.get('jmodComments'))
+			.map(guild => {
+				const channel = guild.channels.get(guild.settings.get('jmodComments'));
+				if (channel) channel.send(embed).catch(() => null);
+			});
 	}
 
 };

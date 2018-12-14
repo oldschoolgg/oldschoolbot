@@ -6,16 +6,11 @@ module.exports = class extends Monitor {
 		super(...args, { ignoreOthers: false });
 	}
 
+	/* eslint-disable consistent-return */
 	async run(msg) {
-		if (this.roll(100000) && msg.guild.configs.petchannel === msg.channel.id) {
+		if (this.roll(100000) && msg.guild.settings.get('petchannel') === msg.channel.id) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
 			return msg.send(`${msg.author} is extremely lucky and just got this pet: ${pet}`);
-		}
-	}
-
-	async init() {
-		if (!this.client.gateways.guilds.schema.has('petchannel')) {
-			await this.client.gateways.guilds.schema.add('petchannel', { type: 'textchannel' });
 		}
 	}
 

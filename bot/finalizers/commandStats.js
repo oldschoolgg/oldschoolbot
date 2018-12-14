@@ -8,11 +8,11 @@ module.exports = class extends Finalizer {
 
 	async run(msg) {
 		const { name } = msg.command;
-		const { commandStats } = this.client.configs;
+		const commandStats = this.client.settings.get('commandStats');
 
 		if (!commandStats[name]) commandStats[name] = 1;
 		else commandStats[name]++;
-		this.client.configs.update('commandStats', { ...commandStats });
+		this.client.settings.update('commandStats', { ...commandStats });
 	}
 
 };
