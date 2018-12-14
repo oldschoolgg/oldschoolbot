@@ -1,6 +1,6 @@
 # Klasa
 bwd/provider/
-config.js
+/config/private.js
 resources/triviaQuestions.json
 
 npm-debug.log*
