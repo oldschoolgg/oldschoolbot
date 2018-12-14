@@ -1,4 +1,9 @@
 const { Command, Stopwatch } = require('klasa');
+const { createHash } = require('crypto');
+
+// The permssion levels of commands must be *lower* than this number to be
+// shown in the docs.
+const permissionLevel = 9;
 
 module.exports = class extends Command {
 
@@ -19,43 +24,60 @@ module.exports = class extends Command {
 		this.invite = this.client.invite;
 	}
 
-	async buildCommands(type, msg) {
+	finish(data, stopwatch, format) {
+		const buffer = Buffer.from(data);
+		const hash = this.hash(data);
+		const duration = `Generated in ${stopwatch.stop()}`;
+		return this.msg.channel.sendFile(buffer, `commands.${hash}.${format}`, duration);
+	}
+
+	async buildCommands(type, msg, normalize = false) {
+		this.msg = msg;
 		const stopwatch = new Stopwatch();
-		const commands = {};
+		let categories;
+		const commands = normalize ? [] : {};
+		if (normalize) categories = [];
 		const commandNames = Array.from(this.client.commands.keys());
 		await Promise.all(
 			this.client.commands
-				.filter(command => !command.permissionLevel || (command.permissionLevel && command.permissionLevel < 9))
-				.map(command => {
-					if (!commands.hasOwnProperty(command.category)) commands[command.category] = {};
-					if (!commands[command.category].hasOwnProperty(command.subCategory)) commands[command.category][command.subCategory] = [];
-					const description = typeof command.description === 'function' ? command.description(msg.language) : command.description;
-					return commands[command.category][command.subCategory].push({ name: command.name, aliases: command.aliases, description });
+				.filter(cmd => !cmd.permissionLevel || (cmd.permissionLevel && cmd.permissionLevel < permissionLevel))
+				.map(cmd => {
+					if (normalize) {
+						if (!categories.includes(cmd.category)) categories.push(cmd.category);
+						return commands.push(cmd);
+					}
+
+					if (!commands.hasOwnProperty(cmd.category)) commands[cmd.category] = {};
+					if (!commands[cmd.category].hasOwnProperty(cmd.subCategory)) {
+						commands[cmd.category][cmd.subCategory] = [];
+					}
+					const description = typeof cmd.description === 'function' ?
+						cmd.description(msg.language) : cmd.description || 'No description.';
+
+					return commands[cmd.category][cmd.subCategory]
+						.push({ name: cmd.name, aliases: cmd.aliases, description });
 				})
 		);
-
-		const categories = Object.keys(commands);
+		if (!normalize) categories = Object.keys(commands);
 		const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
-		// TODO use object instead
-		return [commands, categories, longest, stopwatch];
+		return { commands, categories, longest, stopwatch };
 	}
 
 	async markdown(msg) {
-		const [commands, categories,, stopwatch] = await this.buildCommands('markdown', msg);
+		const { commands, categories, stopwatch } = await this.buildCommands('markdown', msg);
 		const markdown = [];
-
-		markdown.push(`# ![${this.username}](${this.avatar(32)}) ${this.username}  `);
-		markdown.push(`[Invite Link](${this.invite}) / [Support Server](${this.client.supportGuild})<br><br>`);
-		markdown.push(this.client.description);
-		markdown.push(`# Commands`);
+		console.log(categories);
+		markdown.push(`# ![${this.username}](${this.avatar(32)}) ${this.username}`);
+		markdown.push(`[Invite Link](${this.invite})`);
+		markdown.push(`# Commands\n`);
 
 		for (let cat = 0; cat < categories.length; cat++) {
 			const categoryName = categories[cat];
 			const subCategories = Object.keys(commands[categories[cat]]);
-			markdown.push(`## ${categoryName} / ${commands[categories[cat]].General.length} Commands`);
+			if (commands[categories[cat]].General) markdown.push(`\n## ${categoryName} / ${commands[categories[cat]].General.length} Commands`);
 
 			for (let subCat = 0; subCat < subCategories.length; subCat++) {
-				if (subCategories.length > 1) markdown.push(`### ${subCategories[subCat]}`);
+				if (subCategories.length > 1) markdown.push(`\n### ${subCategories[subCat]}`);
 				markdown.push(`| Command Name | Aliases  | Description              |`);
 				markdown.push(`|--------------|----------|--------------------------|`);
 				markdown.push(
@@ -66,57 +88,55 @@ module.exports = class extends Command {
 			}
 		}
 
-		const mdBuffer = Buffer.from(markdown.join('\n'));
-		const duration = `Generated in ${stopwatch.stop()}`;
-		return msg.channel.sendFile(mdBuffer, 'commands.md', duration);
+		this.finish(markdown.join('\n'), stopwatch, 'md');
 	}
 
 	async html(msg) {
-		const [commands, categories,, stopwatch] = await this.buildCommands('html', msg);
+		const { commands, categories, stopwatch } = await this.buildCommands('html', msg);
+		const esc = this.escapeHtml;
 
-		const header = `<div id="header"><img src='${this.avatar(128)}'/><h1>${this.username}</h1></div>`;
-		const page = [header];
+		let html = `<div id="header"><img src="${this.avatar(128)}" /><h1>${esc(this.username)}</h1></div>`;
 		for (let cat = 0; cat < categories.length; cat++) {
-			page.push(`<div class="category">`);
+			html += `<div class="category">`;
 			const category = commands[categories[cat]].General;
-			if (category) page.push(`<h2>${categories[cat]} / ${category.length} Commands</h2>`);
+			if (category) {
+				html += `<h2 class="category-header">${esc(categories[cat])} / ${category.length} Commands</h2>`;
+			}
 
 			const subCategories = Object.keys(commands[categories[cat]]);
 
 			for (let subCat = 0; subCat < subCategories.length; subCat++) {
-				page.push(`<div class="subcategory">`);
-				if (subCategories.length > 1) page.push(`<h3>${subCategories[subCat]}</h3>`);
-				page.push(`<table>`);
-				page.push(`<tr><th>Command Name</th><th>Aliases</th><th>Description</th></tr>`);
-				page.push(
-					`${commands[categories[cat]][subCategories[subCat]]
-						.map(cmd => `<tr><td>${this.prefix + cmd.name}</td><td>${cmd.aliases.join(', ')}</td><td>${cmd.description}</td></tr>`)
-						.join('\n')}`
-				);
-				page.push(`</table>`);
-				page.push(`</div>`);
+				html += `<div class="subcategory">`;
+				if (subCategories.length > 1) html += `<h3 class="subcategory-header">${esc(subCategories[subCat])}</h3>`;
+				html += `<table class="category-table">`;
+				html += `<thead><tr><th>Command</th><th>Aliases</th><th>Description</th></tr></thead>`;
+				html += `<tbody>`;
+				html += `${commands[categories[cat]][subCategories[subCat]]
+					.map(cmd => `<tr><td data-label="Command">${esc(this.prefix + cmd.name)}</td>` +
+					`<td data-label="Aliases">${esc(cmd.aliases.join(', '))}</td>` +
+					`<td data-label="Description">${esc(cmd.description)}</td></tr>`)
+					.join('')}`
+				;
+				html += `</tbody></table></div>`;
 			}
-			page.push(`</div>`);
+			html += `</div>`;
 		}
-		const htmlBuffer = Buffer.from(page.join('\n'));
-		const duration = `Generated in ${stopwatch.stop()}`;
-		return msg.channel.sendFile(htmlBuffer, 'index.html', duration);
+
+		this.finish(html, stopwatch, 'html');
 	}
 
 	async plaintext(msg) {
-		const [commands, categories, longest, stopwatch] = await this.buildCommands('plaintext', msg);
+		const { commands, categories, longest, stopwatch } = await this.buildCommands('plaintext', msg);
 		const plaintext = [];
 
 		plaintext.push(`${this.username}\n`);
 		plaintext.push(`Invite Link: ${this.invite}\n`);
-		plaintext.push(`Support Server: ${this.client.supportGuild}\n`);
-		plaintext.push(`${this.client.description}\n`);
 		plaintext.push(`Commands\n`);
 
 		for (let cat = 0; cat < categories.length; cat++) {
 			const categoryName = categories[cat];
 			const subCategories = Object.keys(commands[categories[cat]]);
-			plaintext.push(`${categoryName} / ${commands[categories[cat]].General.length} Commands\n`);
+			if (commands[categories[cat]].General) plaintext.push(`${categoryName} / ${commands[categories[cat]].General.length} Commands\n`);
 
 			for (let subCat = 0; subCat < subCategories.length; subCat++) {
 				if (subCategories.length > 1) plaintext.push(`${subCategories[subCat]}\n`);
@@ -127,27 +147,37 @@ module.exports = class extends Command {
 			}
 		}
 
-		const ptBuffer = Buffer.from(plaintext.join('\n'));
-		const duration = `Generated in ${stopwatch.stop()}`;
-		return msg.channel.sendFile(ptBuffer, 'commands.txt', duration);
+		this.finish(plaintext.join('\n'), stopwatch, 'txt');
 	}
 
 	async json(msg) {
-		const [commands, categories, longest, stopwatch] = await this.buildCommands('json', msg);
+		const { commands, categories, stopwatch } = await this.buildCommands('json', msg, true);
 
 		const meta = {
 			username: this.username,
-			description: this.client.description,
 			avatar: this.avatar(128),
 			prefix: this.prefix,
 			invite: this.invite,
-			support: this.client.supportGuild,
-			categories,
-			longestCommandName: longest
+			categories
 		};
-		const jsonBuffer = Buffer.from(JSON.stringify({ categories: commands, meta }));
-		const duration = `Generated in ${stopwatch.stop()}`;
-		return msg.channel.sendFile(jsonBuffer, 'commands.json', duration);
+
+		this.finish(JSON.stringify({ commands, meta }), stopwatch, 'json');
+	}
+
+	hash(data) {
+		return createHash('sha1').update(data).digest('base64').substr(0, 8);
+	}
+
+	escapeHtml(text) {
+		const map = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#039;'
+		};
+
+		return text.replace(/[&<>"']/g, (char) => map[char]);
 	}
 
 };

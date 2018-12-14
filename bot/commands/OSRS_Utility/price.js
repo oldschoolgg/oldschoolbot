@@ -12,7 +12,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [name]) {
-		const item = this.client.configs.prices[name.replace(/\W/g, '').toUpperCase()];
+		const items = this.client.settings.get('prices');
+		const item = items[name.replace(/\W/g, '').toUpperCase()];
 		if (!item) return msg.send(`Couldn't find that item.`);
 
 		const { overall, store, buy, sell, ID } = item;

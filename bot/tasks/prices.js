@@ -22,7 +22,7 @@ module.exports = class extends Task {
 			};
 		}
 
-		this.client.configs.update('prices', prices);
+		this.client.settings.update('prices', prices);
 	}
 
 };

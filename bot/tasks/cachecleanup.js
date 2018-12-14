@@ -1,25 +1,6 @@
-const { Task, Colors } = require('klasa');
+const { Task } = require('klasa');
 
-// THRESHOLD equals to 30 minutes in milliseconds:
-//     - 1000 milliseconds = 1 second
-//     - 60 seconds        = 1 minute
-//     - 30 minutes
-
-module.exports = class MemorySweeper extends Task {
-
-	constructor(...args) {
-		super(...args);
-
-		// The colors to stylise the console's logs
-		this.colors = {
-			red: new Colors({ text: 'lightred' }),
-			yellow: new Colors({ text: 'lightyellow' }),
-			green: new Colors({ text: 'green' })
-		};
-
-		// The header with the console colors
-		this.header = new Colors({ text: 'lightblue' }).format('[CACHE CLEANUP]');
-	}
+module.exports = class extends Task {
 
 	async run() {
 		let presences = 0, guildMembers = 0, emojis = 0, lastMessages = 0;
@@ -59,22 +40,9 @@ module.exports = class MemorySweeper extends Task {
 		}
 
 		// Emit a log
-		this.client.emit('verbose',
-			`${this.header} ${
-				this.setColor(presences)} [Presence]s | ${
-				this.setColor(guildMembers)} [GuildMember]s | ${
-				this.setColor(emojis)} [Emoji]s | ${
-				this.setColor(lastMessages)} [Last Message]s.`);
+		this.client.emit('verbose', `Cleared ${presences} [Presence]s | ` +
+		`${guildMembers} [GuildMember]s | ${emojis} [Emoji]s | ${lastMessages} [Last Message]s.`);
 	}
 
-	setColor(number) {
-		const text = String(number).padStart(5, ' ');
-		// Light Red color
-		if (number > 1000) return this.colors.red.format(text);
-		// Light Yellow color
-		if (number > 100) return this.colors.yellow.format(text);
-		// Green color
-		return this.colors.green.format(text);
-	}
 
 };
