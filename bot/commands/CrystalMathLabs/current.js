@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const fetch = require('node-fetch');
+const snekfetch = require('snekfetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
