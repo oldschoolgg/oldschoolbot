@@ -25,7 +25,7 @@ module.exports = class extends Task {
 		this.client.channels.get(this.client.voteLogs).send(
 			`${bonuses} ${_user} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`
 		);
-		_user.settings.update('GP', _user.configs.GP + amount);
+		_user.settings.update('GP', _user.settings.get('GP') + amount);
 	}
 
 };
