@@ -8,12 +8,13 @@ module.exports = class extends Event {
 	}
 
 	run() {
-		this.client.dbl = new DBL(this.client.dblToken, {
+		this.client.dbl = new DBL(this.client.dbl.token, {
 			webhookPort: 8000,
-			webhookAuth: this.client.dblAuth
+			webhookAuth: this.client.dbl.auth
 		});
 
-		this.client.dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
+		this.client.dbl.webhook
+			.on('vote', vote => this.client.tasks.get('vote').run(vote));
 	}
 
 };
