@@ -1,14 +1,22 @@
 const emoji = require('./skill-emoji');
 const streamers = require('../data/osrs-streamers');
-const { token, twitchClientID, twitterApp } = require('./private.js');
+const { token, twitchClientID, twitterApp, dbl } = require('./private.js');
 
 module.exports = {
 	token,
 	clientProperties: {
 		streamers,
 		guildLogs: '346212633583681536',
+		voteLogs: '469523207691436042',
 		twitchClientID,
 		emoji,
+		timePeriods: {
+			day: 86400,
+			week: 604800,
+			month: 2628000,
+			year: 525667 * 60
+		},
+		dbl,
 		twitterApp,
 		cmlDown: `The CrystalMathLabs API is currently disabled. Please try again in 5 minutes.`,
 		notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`
