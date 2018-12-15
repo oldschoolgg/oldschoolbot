@@ -45,6 +45,7 @@ module.exports = {
 		/* Klasa Options */
 		createPiecesFolders: false,
 		prefix: '+',
+		disabledCorePieces: ['conf', 'userconf'],
 		providers: { default: 'rethinkdb' },
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
