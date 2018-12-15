@@ -1,6 +1,7 @@
 /* eslint-disable */
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
+const tob = require('../../../data/monsters/tob');
 
 module.exports = class extends Command {
 
@@ -21,8 +22,7 @@ module.exports = class extends Command {
 			case 'RAIDS2':
 			case 'THEATREOFBLOOD':
 			case 'TOB': {
-				const raids = require('../../resources/monsters/tob');
-				return msg.send(raids.finish());
+				return msg.send(tob.finish());
 			}
 			case 'MOLE':
 			case 'GIANTMOLE': {
