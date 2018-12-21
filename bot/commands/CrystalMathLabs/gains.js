@@ -27,11 +27,13 @@ module.exports = class extends Command {
 		username = username.join(' ');
 
 		const { err, stats } = await osrs.track(username, this.client.timePeriods[timePeriod]);
-		if (err) return msg.send(err);
+		if (err) return msg.send(err.length > 1 ? err : 'An unexpected error occured, please try again');
 
 		if (type === 'xpGained') {
 			for (const skill in stats) {
-				if (stats[skill].xpGained !== undefined) stats[skill].xpGained = stats[skill].xpGained.toLocaleString();
+				if (stats[skill].xpGained !== undefined) {
+					stats[skill].xpGained = stats[skill].xpGained.toLocaleString();
+				}
 			}
 		}
 
@@ -79,8 +81,10 @@ ${emoji.total} ${stats.overall[type]}`,
 				true
 			)
 			.addField(`${emoji.total} Overall`, stats.overall[type], true);
+
 		return msg.send({ embed });
 	}
+
 	convertXPtoLVL(xp, cap) {
 		if (cap === undefined) cap = 99;
 		let points = 0;
