@@ -1,9 +1,16 @@
+// Thanks to https://github.com/kyranet
 const { Task } = require('klasa');
+const { util: { binaryToID } } = require('discord.js');
+
+const THRESHOLD = 1000 * 60 * 30;
+const EPOCH = 1420070400000;
+const EMPTY = '0000100000000000000000';
 
 module.exports = class extends Task {
 
 	async run() {
-		let presences = 0, guildMembers = 0, emojis = 0, lastMessages = 0;
+		const OLD_SNOWFLAKE = binaryToID(((Date.now() - THRESHOLD) - EPOCH).toString(2).padStart(42, '0') + EMPTY);
+		let presences = 0, guildMembers = 0, emojis = 0, lastMessages = 0, users = 0;
 
 		// Per-Guild sweeper
 		for (const guild of this.client.guilds.values()) {
@@ -26,6 +33,14 @@ module.exports = class extends Task {
 				guild.members.delete(id);
 			}
 
+			// Per-User sweeper
+			for (const user of this.client.users.values()) {
+				if (user.settings.get('RSN')) continue;
+				if (user.lastMessageID && user.lastMessageID > OLD_SNOWFLAKE) continue;
+				this.client.users.delete(user.id);
+				users++;
+			}
+
 			// Completely delete all voice channels, delete lastMessageID of channels
 			for (const channel of guild.channels.values()) {
 				if (channel.type === 'voice') {
@@ -40,7 +55,7 @@ module.exports = class extends Task {
 		}
 
 		// Emit a log
-		this.client.emit('verbose', `Cleared ${presences} [Presence]s | ` +
+		this.client.emit('verbose', `Cleared ${users} [Users]s | ${presences} [Presence]s | ` +
 		`${guildMembers} [GuildMember]s | ${emojis} [Emoji]s | ${lastMessages} [Last Message]s.`);
 	}
 
