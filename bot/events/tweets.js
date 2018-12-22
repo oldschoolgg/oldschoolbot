@@ -100,7 +100,7 @@ const HCIM_DEATHS = [797859891373371392];
 module.exports = class extends Event {
 
 	constructor(...args) {
-		super(...args, { once: true, event: 'klasaReady', enabled: false });
+		super(...args, { once: true, event: 'klasaReady', enabled: true });
 	}
 
 	run() {
