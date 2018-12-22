@@ -4,7 +4,7 @@ const DBL = require('dblapi.js');
 module.exports = class extends Event {
 
 	constructor(...args) {
-		super(...args, { once: true, event: 'klasaReady', enabled: true });
+		super(...args, { once: true, event: 'klasaReady', enabled: false });
 	}
 
 	run() {
