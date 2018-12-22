@@ -4,7 +4,6 @@ const fetch = require('node-fetch');
 module.exports = class extends Task {
 
 	async run() {
-		return;
 		const rsnList = this.client.gateways.users.cache
 			.filter(config => config.autoupdate)
 			.map(config => config.RSN);
