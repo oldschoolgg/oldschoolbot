@@ -3,7 +3,7 @@ const { Monitor } = require('klasa');
 module.exports = class extends Monitor {
 
 	constructor(...args) {
-		super(...args, { ignoreOthers: false });
+		super(...args, { ignoreOthers: false, enabled: false });
 	}
 
 	/* eslint-disable consistent-return */
