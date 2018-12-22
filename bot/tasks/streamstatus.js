@@ -6,7 +6,6 @@ const { MessageEmbed } = require('discord.js');
 module.exports = class extends Task {
 
 	async run() {
-		return;
 		snekfetch
 			.get(`https://api.twitch.tv/kraken/streams?channel=${this.client.streamers.join(',')}`)
 			.query('client_id', this.client.twitchClientID)

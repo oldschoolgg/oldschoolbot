@@ -4,7 +4,6 @@ const snekfetch = require('snekfetch');
 module.exports = class extends Task {
 
 	async run() {
-		return;
 		const summary = await snekfetch
 			.get(`https://rsbuddy.com/exchange/summary.json`)
 			.then(res => res.body);
