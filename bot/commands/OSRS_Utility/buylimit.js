@@ -17,7 +17,6 @@ module.exports = class extends Command {
 
 	async run(msg, [query]) {
 		const res = items.filter(i => this.cleanString(i.name).includes(this.cleanString(query)))
-			.map(i => `${i.name} has a limit of ${i.limit}`)
 			.slice(0, 10);
 
 
