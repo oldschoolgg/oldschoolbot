@@ -26,9 +26,9 @@ module.exports = class extends Command {
 
 	finish(data, stopwatch, format) {
 		const buffer = Buffer.from(data);
-		const hash = this.hash(data);
+		const hash = createHash('sha1').update(data).digest('base64').substr(0, 7);
 		const duration = `Generated in ${stopwatch.stop()}`;
-		return this.msg.channel.sendFile(buffer, `commands.${hash}.${format}`, duration);
+		return this.msg.channel.sendFile(buffer, `commands_${hash}.${format}`, duration);
 	}
 
 	async buildCommands(type, msg, normalize = false) {
@@ -40,7 +40,8 @@ module.exports = class extends Command {
 		const commandNames = Array.from(this.client.commands.keys());
 		await Promise.all(
 			this.client.commands
-				.filter(cmd => !cmd.permissionLevel || (cmd.permissionLevel && cmd.permissionLevel < permissionLevel))
+				.filter(cmd => !cmd.permissionLevel || (cmd.permissionLevel &&
+					cmd.permissionLevel < permissionLevel))
 				.map(cmd => {
 					if (normalize) {
 						if (!categories.includes(cmd.category)) categories.push(cmd.category);
@@ -66,7 +67,7 @@ module.exports = class extends Command {
 	async markdown(msg) {
 		const { commands, categories, stopwatch } = await this.buildCommands('markdown', msg);
 		const markdown = [];
-		console.log(categories);
+
 		markdown.push(`# ![${this.username}](${this.avatar(32)}) ${this.username}`);
 		markdown.push(`[Invite Link](${this.invite})`);
 		markdown.push(`# Commands\n`);
@@ -95,7 +96,13 @@ module.exports = class extends Command {
 		const { commands, categories, stopwatch } = await this.buildCommands('html', msg);
 		const esc = this.escapeHtml;
 
-		let html = `<div id="header"><img src="${this.avatar(128)}" /><h1>${esc(this.username)}</h1></div>`;
+		let html = `<!DOCTYPE html><html>
+<head><title>${this.username}</title></head>
+<body>
+<div id="header">
+<img alt="${esc(this.username)}" src="${this.avatar(128)}" />
+<h1>${esc(this.username)}</h1>
+</div>`;
 		for (let cat = 0; cat < categories.length; cat++) {
 			html += `<div class="category">`;
 			const category = commands[categories[cat]].General;
@@ -109,19 +116,21 @@ module.exports = class extends Command {
 				html += `<div class="subcategory">`;
 				if (subCategories.length > 1) html += `<h3 class="subcategory-header">${esc(subCategories[subCat])}</h3>`;
 				html += `<table class="category-table">`;
-				html += `<thead><tr><th>Command</th><th>Aliases</th><th>Description</th></tr></thead>`;
+				html += `<thead>
+<tr><th>Command</th><th>Aliases</th><th>Description</th></tr>
+</thead>`;
 				html += `<tbody>`;
 				html += `${commands[categories[cat]][subCategories[subCat]]
-					.map(cmd => `<tr><td data-label="Command">${esc(this.prefix + cmd.name)}</td>` +
-					`<td data-label="Aliases">${esc(cmd.aliases.join(', '))}</td>` +
-					`<td data-label="Description">${esc(cmd.description)}</td></tr>`)
-					.join('')}`
+					.map(cmd => `<tr><td>${esc(this.prefix + cmd.name)}</td>` +
+					`<td>${esc(cmd.aliases.join(', '))}</td>` +
+					`<td>${esc(cmd.description)}</td></tr>`)
+					.join('\n')}`
 				;
 				html += `</tbody></table></div>`;
 			}
 			html += `</div>`;
 		}
-
+		html += '</body></html>';
 		this.finish(html, stopwatch, 'html');
 	}
 
@@ -162,10 +171,6 @@ module.exports = class extends Command {
 		};
 
 		this.finish(JSON.stringify({ commands, meta }), stopwatch, 'json');
-	}
-
-	hash(data) {
-		return createHash('sha1').update(data).digest('base64').substr(0, 8);
 	}
 
 	escapeHtml(text) {
