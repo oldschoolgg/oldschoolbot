@@ -23,12 +23,15 @@ module.exports = class extends Command {
 
 		if (res.length === 0) throw "Couldn't find any items!";
 
+		const names = res.map(i => `[${i.name}](https://oldschool.runescape.wiki/w/${i.name})`).join('\n');
+		const limits = res.map(i => `${i.limit}`).join('\n');
+
 		const embed = new MessageEmbed()
 			.setColor(11132490)
 			.setThumbnail('https://i.imgur.com/8DJaki0.png')
 			.setTitle('Buy Limits')
-			.addField('Item', res.map(i => `[${i.name}](https://oldschool.runescape.wiki/w/${i.name})\n`), true)
-			.addField('Limit', res.map(i => `${i.limit}\n`), true);
+			.addField('Item', names, true)
+			.addField('Limit', limits, true);
 
 		return msg.send({ embed });
 	}
