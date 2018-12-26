@@ -1,10 +1,12 @@
 {
   "dependencies": {
+    "@discordjs/uws": "^11.149.1",
     "canvas": "github:Automattic/node-canvas#92b192447e9b9ae98da0f801e4e34afdd1dc1ef8",
     "canvas-constructor": "^1.1.2",
     "crystalmethlabs": "github:gc/crystalmethlabs",
     "dblapi.js": "^2.1.0",
     "discord.js": "github:bdistin/discord.js#i-s",
+    "erlpack": "github:discordapp/erlpack",
     "he": "^1.1.1",
     "jimp": "^0.2.28",
     "klasa": "github:dirigeants/klasa#master",
@@ -16,7 +18,8 @@
     "rethinkdbdash": "^2.3.31",
     "rss-parser": "^3.1.1",
     "snekfetch": "^3.6.4",
-    "twit": "^2.2.9"
+    "twit": "^2.2.9",
+    "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
     "eslint-config-klasa": "github:dirigeants/klasa-lint",
