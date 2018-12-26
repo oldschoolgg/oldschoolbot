@@ -16,7 +16,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [query]) {
-		const res = items.filter(i => this.cleanString(i.name).includes(this.cleanString(query)))
+		const res = items.filter(i => this.cleanString(i.name, true).includes(this.cleanString(query, true)))
 			.slice(0, 10);
 
 
