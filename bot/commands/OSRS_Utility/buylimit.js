@@ -10,7 +10,7 @@ module.exports = class extends Command {
 			cooldown: 3,
 			aliases: ['limit'],
 			description: 'Check the buy limit of an item.',
-			usage: '<query:str{3,15}>',
+			usage: '<query:str{3,35}>',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
