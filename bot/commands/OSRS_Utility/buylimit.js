@@ -22,7 +22,9 @@ module.exports = class extends Command {
 
 		if (res.length === 0) throw "Couldn't find any items!";
 
-		const names = res.map(i => `[${i.name}](https://oldschool.runescape.wiki/w/${i.name})`).join('\n');
+		const names = res
+			.map(i => `[${i.name}](https://oldschool.runescape.wiki/w/${encodeURIComponent(i.name)})`)
+			.join('\n');
 		const limits = res.map(i => `${i.limit}`).join('\n');
 
 		const embed = new MessageEmbed()
