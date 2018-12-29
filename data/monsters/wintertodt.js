@@ -12,16 +12,17 @@ const wintertodt = {
 	},
 	kill(quantity) {
 		const loot = [];
+		// droprates are based on 500 pts
 		for (let i = 0; i < quantity; i++) {
-			if (this.roll(5000)) loot.push(this.drops.pet);
-			if (this.roll(10000)) loot.push(this.drops.dragonAxe);
-			if (this.roll(1000)) loot.push(this.drops.tomeOfFire);
-			if (this.roll(150)) loot.push(this.drops.pyromancerGarb);
-			if (this.roll(150)) loot.push(this.drops.pyromancerHood);
-			if (this.roll(150)) loot.push(this.drops.pyromancerBoots);
-			if (this.roll(150)) loot.push(this.drops.pyromancerRobe);
-			if (this.roll(150)) loot.push(this.drops.warmGloves);
-			if (this.roll(150)) loot.push(this.drops.brumaTorch);
+			if (this.roll(2500)) loot.push(this.drops.pet);
+			if (this.roll(5000)) loot.push(this.drops.dragonAxe);
+			if (this.roll(500)) loot.push(this.drops.tomeOfFire);
+			if (this.roll(75)) loot.push(this.drops.pyromancerGarb);
+			if (this.roll(75)) loot.push(this.drops.pyromancerHood);
+			if (this.roll(75)) loot.push(this.drops.pyromancerBoots);
+			if (this.roll(75)) loot.push(this.drops.pyromancerRobe);
+			if (this.roll(75)) loot.push(this.drops.warmGloves);
+			if (this.roll(75)) loot.push(this.drops.brumaTorch);
 		}
 		return loot.join(' ');
 	},
