@@ -33,7 +33,7 @@ module.exports = {
 		},
 		Cooking: {
 			statReq: [0, 0, 53, 91],
-			boost: [0, 0, 5, 5]
+			boost: [0, 0, 5, 6]
 		},
 		Woodcutting: {
 			statReq: [0, 36, 50, 0],
@@ -127,7 +127,7 @@ module.exports = {
 		},
 		Cooking: {
 			statReq: [0, 0, 0, 85],
-			boost: [0, 0, 0, 5]
+			boost: [0, 0, 0, 6]
 		},
 		Woodcutting: {
 			statReq: [0, 35, 55, 0],
@@ -409,7 +409,7 @@ module.exports = {
 		},
 		Cooking: {
 			statReq: [0, 43, 30, 80],
-			boost: [0, 5, 0, 5]
+			boost: [0, 5, 0, 6]
 		},
 		Woodcutting: {
 			statReq: [0, 36, 60, 55],
@@ -785,7 +785,7 @@ module.exports = {
 		},
 		Cooking: {
 			statReq: [0, 0, 0, 95],
-			boost: [0, 0, 0, 5]
+			boost: [0, 0, 0, 6]
 		},
 		Woodcutting: {
 			statReq: [0, 0, 60, 0],
@@ -973,7 +973,7 @@ module.exports = {
 		},
 		Cooking: {
 			statReq: [0, 0, 0, 90],
-			boost: [0, 0, 0, 5]
+			boost: [0, 0, 0, 6]
 		},
 		Woodcutting: {
 			statReq: [0, 61, 0, 75],
