@@ -27,7 +27,7 @@ const servers = `
 [Old School RuneScape](https://discord.gg/gbfNeqd)
 Official Old School server
 
-[IronScape](https://discord.gg/aGb6rms)
+[IronScape](https://discord.gg/dpKvnbb)
 Community for ironmen
 
 [We Do Raids](https://discord.gg/gREZC7f)
