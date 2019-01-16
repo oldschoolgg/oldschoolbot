@@ -14,13 +14,9 @@ module.exports = class extends Command {
 	}
 
 	async enable(msg) {
-		if (msg.guild.settings.get('petchannel') === msg.channel.id) throw `Pet Messages are already enabled in this channel.`;
-		if (msg.guild.settings.get('petchannel') !== null) {
-			await msg.guild.settings.update('petchannel', msg.channel, msg.guild);
-			return msg.send(`Pet Messages are already enabled in another channel, but I've switched them to use this channel.`);
-		}
+		if (msg.guild.settings.get('petchannel')) throw `Pet Messages are already enabled.`;
 		await msg.guild.settings.update('petchannel', msg.channel, msg.guild);
-		return msg.send(`Enabled Pet Messages in this channel.`);
+		return msg.send(`Enabled Pet Messages in this server.`);
 	}
 
 	async disable(msg) {
