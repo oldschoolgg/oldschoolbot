@@ -1,4 +1,5 @@
 const { Monitor } = require('klasa');
+const pets = require('../../data/pets');
 
 module.exports = class extends Monitor {
 
@@ -8,20 +9,31 @@ module.exports = class extends Monitor {
 
 	/* eslint-disable consistent-return */
 	async run(msg) {
-		if (this.roll(100000) && msg.guild.settings.get('petchannel') === msg.channel.id) {
-			const pet = pets[Math.floor(Math.random() * pets.length)];
-			return msg.send(`${msg.author} is extremely lucky and just got this pet: ${pet}`);
+		if (!msg.guild.settings.get('petchannel')) return;
+		if (!msg.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) return;
+
+		if (!roll(5)) return;
+		if (!this.client.dbl || !this.client.dbl.hasVoted) return;
+		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 1 : 5)) return;
+
+		const pet = pets[Math.floor(Math.random() * pets.length)];
+		if (roll(pet.chance)) {
+			const userPets = msg.author.settings.get('pets');
+			if (!userPets[pet.id]) userPets[pet.id] = 1;
+			else userPets[pet.id]++;
+
+			msg.author.settings.update('pets', { ...userPets });
+			if (userPets[pet.id] > 1) {
+				return msg.channel.send(`${msg.author} has a funny feeling like they would have been followed.`);
+			} else {
+				msg.channel.send(`${msg.author} just got the **${pet.name}** pet! ${pet.emoji}
+Type \`${msg.guild.settings.get('prefix')}mypets\` to see your pets.`);
+			}
 		}
 	}
 
 };
 
-const pets = [
-	'<:Rocky:324127378647285771>',
-	'<:Rock_golem:324127378429313026>',
-	'<:Rift_guardian_fire:324127378588827648>',
-	'<:Heron:324127376516841483>',
-	'<:Giant_squirrel:324127376432824320>',
-	'<:Beaver:324127375761604611>',
-	'<:Baby_chinchompa_red:324127375539306497>'
-];
+function roll(max) {
+	return Math.floor((Math.random() * max) + 1) === 1;
+}
