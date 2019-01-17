@@ -32,22 +32,22 @@ module.exports = class extends Command {
 
 	numberFormatter(exp) {
 		if (exp.includes('k')) {
-			exp = exp.replace('k', '* 1000');
+			exp = exp.replace('k', '000');
 		}
 		if (exp.includes('K')) {
-			exp = exp.replace('K', '* 1000');
+			exp = exp.replace('K', '000');
 		}
 		if (exp.includes('m')) {
-			exp = exp.replace('m', '* 1000000');
+			exp = exp.replace('m', '000000');
 		}
 		if (exp.includes('M')) {
-			exp = exp.replace('M', '* 1000000');
+			exp = exp.replace('M', '000000');
 		}
 		if (exp.includes('b')) {
-			exp = exp.replace('b', '* 1000000000');
+			exp = exp.replace('b', '000000000');
 		}
 		if (exp.includes('B')) {
-			exp = exp.replace('B', '* 1000000000');
+			exp = exp.replace('B', '000000000');
 		}
 		return exp;
 	}
