@@ -566,6 +566,100 @@ module.exports = {
 			boost: [0, 0, 0, 0]
 		}
 	},
+	'Kourend & Kebos': {
+		Attack: {
+			statReq: [0, 0, 0, 0],
+			boost: [0, 0, 0, 0]
+		},
+		Defence: {
+			statReq: [0, 0, 40, 0],
+			boost: [0, 0, 0, 0]
+		},
+		Strength:	{
+			statReq: [0, 16, 0, 0],
+			boost: [0, 0, 0, 0]
+		},
+		Hitpoints: {
+			statReq: [0, 0, 0, 0],
+			boost: [0, 0, 0, 0]
+		},
+		Ranged: {
+			statReq: [0, 0, 0, 0],
+			boost: [0, 0, 0, 0]
+		},
+		Prayer: {
+			statReq: [0, 0, 0, 0],
+			boost: [0, 0, 0, 0]
+		},
+		Magic: {
+			statReq: [0, 0, 66, 90],
+			boost: [0, 0, 1, 9]
+		},
+		Cooking: {
+			statReq: [0, 0, 0, 84],
+			boost: [0, 0, 0, 5]
+		},
+		Woodcutting: {
+			statReq: [0, 50, 60, 90],
+			boost: [0, 2, 5, 5]
+		},
+		Fletching: {
+			statReq: [0, 0, 0, 40],
+			boost: [0, 0, 0, 5]
+		},
+		Fishing: {
+			statReq: [20, 43, 0, 82],
+			boost: [5, 0, 0, 5]
+		},
+		Firemaking: {
+			statReq: [0, 50, 49, 0],
+			boost: [0, 0, 0, 0]
+		},
+		Crafting: {
+			statReq: [0, 31, 61, 38],
+			boost: [0, 0, 0, 0]
+		},
+		Smithing: {
+			statReq: [0, 0, 70, 0],
+			boost: [0, 0, 5, 0]
+		},
+		Mining: {
+			statReq: [15, 42, 65, 38],
+			boost: [2, 2, 5, 0]
+		},
+		Herblore: {
+			statReq: [12, 0, 31, 0],
+			boost: [4, 0, 5, 0]
+		},
+		Agility: {
+			statReq: [0, 49, 32, 0],
+			boost: [0, 5, 5, 0]
+		},
+		Thieving: {
+			statReq: [25, 20, 49, 0],
+			boost: [1, 0, 0, 0]
+		},
+		Slayer: {
+			statReq: [0, 0, 62, 95],
+			boost: [0, 0, 5, 5]
+		},
+		Farming: {
+			statReq: [0, 45, 74, 85],
+			boost: [0, 3, 5, 5]
+		},
+		Runecrafting: {
+			statReq: [0, 0, 0, 77],
+			boost: [0, 0, 0, 5]
+		},
+		Hunter: {
+			statReq: [0, 53, 0, 0],
+			boost: [0, 3, 0, 0]
+		},
+		Construction: {
+			statReq: [25, 0, 0, 0],
+			boost: [0, 0, 0, 0]
+		}
+	},
 	'Lumbridge/Draynor': {
 		Attack: {
 			statReq: [0, 0, 15, 40],
