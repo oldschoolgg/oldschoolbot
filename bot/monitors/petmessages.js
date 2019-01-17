@@ -14,7 +14,7 @@ module.exports = class extends Monitor {
 
 		if (!roll(5)) return;
 		if (!this.client.dbl || !this.client.dbl.hasVoted) return;
-		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 1 : 5)) return;
+		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 2 : 5)) return;
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
 		if (roll(pet.chance)) {
