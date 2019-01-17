@@ -188,6 +188,10 @@ module.exports = class extends Command {
 			case 'RAIDS2':
 			case 'ZIK':
 				return msg.send(`You had to complete the Theatre of Blood ${this.petRoll(650)} times to get the Lil' Zik pet! <:Lil_zik:479460344423776266>`);
+			case 'LILZIK':
+			case 'RAIDS2':
+			case 'ZIK':
+				return msg.send(`You had to complete the Theatre of Blood ${this.petRoll(650)} times to get the Lil' Zik pet! <:Lil_zik:479460344423776266>`);
 			default:
 				return msg.send('Did you spell the pet name correctly? Try again!');
 		}
