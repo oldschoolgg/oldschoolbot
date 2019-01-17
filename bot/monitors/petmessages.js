@@ -5,19 +5,25 @@ module.exports = class extends Monitor {
 
 	constructor(...args) {
 		super(...args, { ignoreOthers: false, enabled: true });
+		this.__memberCache = {};
 	}
-
+	// if (Date.now() - member.joinedTimestamp >= 60000) {
 	/* eslint-disable consistent-return */
 	async run(msg) {
 		if (!msg.guild.settings.get('petchannel')) return;
 		if (!msg.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) return;
+
+		// If they sent a message in this server in the past 1.5 mins, return.
+		const lastMessage = this.__memberCache[`${msg.author.id}.${msg.guild.id}`] || 1;
+		if ((Date.now() - lastMessage) < 80000) return;
+		this.__memberCache[`${msg.author.id}.${msg.guild.id}`] = Date.now();
 
 		if (!roll(10)) return;
 		if (!this.client.dbl || !this.client.dbl.hasVoted) return;
 		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 3 : 10)) return;
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
-		if (roll(Math.max(pet.chance, 1000))) {
+		if (roll(Math.max(pet.chance, 900))) {
 			const userPets = msg.author.settings.get('pets');
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
