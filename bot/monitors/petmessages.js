@@ -24,11 +24,14 @@ module.exports = class extends Monitor {
 
 			msg.author.settings.update('pets', { ...userPets });
 			if (userPets[pet.id] > 1) {
-				return msg.channel.send(`${msg.author} has a funny feeling like they would have been followed.`);
+				msg.channel.send(`${msg.author} has a funny feeling like they would have been followed.`);
 			} else {
 				msg.channel.send(`${msg.author} just got the **${pet.name}** pet! ${pet.emoji}
 Type \`${msg.guild.settings.get('prefix')}mypets\` to see your pets.`);
 			}
+
+			this.client.channels.get('469523207691436042')
+				.send(`Someone just got the **${pet.name}** pet! ${pet.emoji}`);
 		}
 	}
 
