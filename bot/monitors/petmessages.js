@@ -12,12 +12,12 @@ module.exports = class extends Monitor {
 		if (!msg.guild.settings.get('petchannel')) return;
 		if (!msg.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) return;
 
-		if (!roll(5)) return;
+		if (!roll(6)) return;
 		if (!this.client.dbl || !this.client.dbl.hasVoted) return;
-		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 2 : 5)) return;
+		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 2 : 8)) return;
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
-		if (roll(pet.chance)) {
+		if (roll(Math.max(pet.chance, 1000))) {
 			const userPets = msg.author.settings.get('pets');
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
