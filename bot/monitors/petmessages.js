@@ -7,7 +7,7 @@ module.exports = class extends Monitor {
 		super(...args, { ignoreOthers: false, enabled: true });
 		this.__memberCache = {};
 	}
-	// if (Date.now() - member.joinedTimestamp >= 60000) {
+
 	/* eslint-disable consistent-return */
 	async run(msg) {
 		if (!msg.guild.settings.get('petchannel')) return;
