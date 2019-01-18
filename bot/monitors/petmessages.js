@@ -18,9 +18,9 @@ module.exports = class extends Monitor {
 		if ((Date.now() - lastMessage) < 80000) return;
 		this.__memberCache[`${msg.author.id}.${msg.guild.id}`] = Date.now();
 
-		if (!roll(10)) return;
+		if (!roll(8)) return;
 		if (!this.client.dbl || !this.client.dbl.hasVoted) return;
-		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 3 : 10)) return;
+		if (!roll(this.client.dbl.hasVoted(msg.author.id) ? 2 : 6)) return;
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
 		if (roll(Math.max(pet.chance, 900))) {
