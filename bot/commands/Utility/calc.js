@@ -16,7 +16,7 @@ module.exports = class extends Command {
 		try {
 			ans = eval(expressionFixed);
 		} catch (error) {
-			return msg.send('Please input a valid calculation.');
+			return msg.send('Please input a valid expression (e.g. +calc 100M / 5).');
 		}
 
 		const ansFixed = this.abbreviateNumber(ans);
