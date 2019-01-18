@@ -4,7 +4,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			permissionLevel: 6,
+			permissionLevel: 7,
 			runIn: ['text'],
 			description: 'Change the command prefix the bot uses in your server.',
 			usage: '[prefix:str{1,3}]'

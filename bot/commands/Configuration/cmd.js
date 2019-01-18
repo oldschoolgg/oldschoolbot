@@ -10,7 +10,7 @@ module.exports = class extends Command {
 			description: 'Enable and Disable certain bot commands in your guild. Admins only.',
 			usage: '<enable|disable> <command:cmd>',
 			usageDelim: ' ',
-			permissionLevel: 6
+			permissionLevel: 7
 		});
 	}
 

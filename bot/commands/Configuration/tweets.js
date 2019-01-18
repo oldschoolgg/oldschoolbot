@@ -8,7 +8,7 @@ module.exports = class extends Command {
 			description: 'Enables/disables the JMod Tweets function which sends tweets from OSRS JMods.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permissionLevel: 6,
+			permissionLevel: 7,
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
