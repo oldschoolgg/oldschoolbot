@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			description: 'Enables/disables Pet Messages, which rolls a chance at a pet on every message in a channel.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permissionLevel: 6
+			permissionLevel: 7
 		});
 	}
 

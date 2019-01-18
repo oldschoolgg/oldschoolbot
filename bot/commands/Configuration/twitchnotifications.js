@@ -4,7 +4,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			permissionLevel: 6,
+			permissionLevel: 7,
 			subcommands: true,
 			aliases: ['tn'],
 			description: 'Enables/disables the Twitch Notifications function which sends tweets from OSRS Streamers.',
