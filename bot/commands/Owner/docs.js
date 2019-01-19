@@ -97,12 +97,13 @@ module.exports = class extends Command {
 		const esc = this.escapeHtml;
 
 		let html = `<!DOCTYPE html><html>
-<head><title>${this.username}</title></head>
+<head><title>${this.username}</title><link rel="stylesheet" href="../assets/style.css" type="text/css"></head>
 <body>
 <div id="header">
-<img alt="${esc(this.username)}" src="${this.avatar(128)}" />
 <h1>${esc(this.username)}</h1>
-</div>`;
+</div>
+<div class="commands">
+`;
 		for (let cat = 0; cat < categories.length; cat++) {
 			html += `<div class="category">`;
 			const category = commands[categories[cat]].General;
@@ -130,7 +131,7 @@ module.exports = class extends Command {
 			}
 			html += `</div>`;
 		}
-		html += '</body></html>';
+		html += '</div></body></html>';
 		this.finish(html, stopwatch, 'html');
 	}
 
