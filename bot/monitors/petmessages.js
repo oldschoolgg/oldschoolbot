@@ -19,8 +19,8 @@ module.exports = class extends Monitor {
 		this.__memberCache[`${msg.author.id}.${msg.guild.id}`] = Date.now();
 
 		if (!roll(2)) return;
-		if (!this.client.dbl || !this.client.dbl.hasVoted) return;
-		const hasVoted = await this.client.dbl.hasVoted(msg.author.id);
+		// if (!this.client.dbl || !this.client.dbl.hasVoted) return;
+		const hasVoted = false;// await this.client.dbl.hasVoted(msg.author.id);
 		if (!roll(hasVoted ? 1 : 2)) return;
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
