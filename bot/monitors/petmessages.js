@@ -10,6 +10,7 @@ module.exports = class extends Monitor {
 
 	/* eslint-disable consistent-return */
 	async run(msg) {
+		if (!msg.guild) return;
 		if (!msg.guild.settings.get('petchannel')) return;
 		if (!msg.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) return;
 
