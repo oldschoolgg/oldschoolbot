@@ -26,7 +26,7 @@ module.exports = class extends Monitor {
 		const pet = pets[Math.floor(Math.random() * pets.length)];
 		console.log(`User rolled a 1 in ${3 * (hasVoted ? 1 : 3)} chance
 		and is now rolling a 1 in ${pet.chance} chance for the ${pet.name} pet.`);
-		if (roll(Math.max(Math.min(pet.chance, 1000000), 900))) {
+		if (roll(Math.max(Math.min(pet.chance, 250000), 900))) {
 			const userPets = msg.author.settings.get('pets');
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
