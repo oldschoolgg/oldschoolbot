@@ -79,5 +79,6 @@ const titles = {
 	Wilderness: '[Wilderness](https://oldschool.runescape.wiki/w/Wilderness_Diary)',
 	Falador: '[Falador](https://oldschool.runescape.wiki/w/Falador_Diary)',
 	Fremennik: '[Fremennik](https://oldschool.runescape.wiki/w/Fremennik_Diary)',
+	'Kourend & Kebos': '[Kourend/Kebos](https://oldschool.runescape.wiki/w/Kourend_%26_Kebos_Diary)',
 	Kandarin: '[Kandarin](https://oldschool.runescape.wiki/w/Kandarin_Diary)'
 };
