@@ -1,4 +1,5 @@
 const { Task } = require('klasa');
+const pets = require('../../data/pets');
 
 module.exports = class extends Task {
 
@@ -22,12 +23,30 @@ module.exports = class extends Task {
 			bonuses += ' <:OSRSBot:363583286192111616>';
 		}
 
-		this.client.channels.get(this.client.voteLogs).send(
-			`${bonuses} ${_user.username} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`
-		);
-		_user.send(`${bonuses} Thank you for voting for Old School Bot! You received ${amount.toLocaleString()} GP.`)
-			.catch(() => null);
+		let chStr = `${bonuses} ${_user.username} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`;
+		let dmStr = `${bonuses} Thank you for voting for Old School Bot! You received ${amount.toLocaleString()} GP.`;
+
+		for (let i = 0; i < pets.length; i++) {
+			const pet = pets[i];
+			if (roll(Math.min(pet.chance, 100000))) {
+				const userPets = _user.settings.get('pets');
+				if (!userPets[pet.id]) userPets[pet.id] = 1;
+				else userPets[pet.id]++;
+
+				_user.settings.update('pets', { ...userPets });
+
+				chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
+				dmStr += `\nYou also received the **${pet.name}** pet! ${pet.emoji}`;
+			}
+		}
+
+		this.client.channels.get(this.client.voteLogs).send(chStr);
+		_user.send(dmStr).catch(() => null);
 		_user.settings.update('GP', _user.settings.get('GP') + amount);
 	}
 
 };
+
+function roll(max) {
+	return Math.floor((Math.random() * max) + 1) === 1;
+}
