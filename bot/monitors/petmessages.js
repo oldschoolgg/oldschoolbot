@@ -19,15 +19,10 @@ module.exports = class extends Monitor {
 		if ((Date.now() - lastMessage) < 80000) return;
 		this.__memberCache[`${msg.author.id}.${msg.guild.id}`] = Date.now();
 
-		if (!roll(2)) return;
-		// if (!this.client.dbl || !this.client.dbl.hasVoted) return;
-		const hasVoted = false;// await this.client.dbl.hasVoted(msg.author.id);
-		if (!roll(hasVoted ? 1 : 2)) return;
+		if (!roll(3)) return;
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
-		console.log(`User rolled a 1 in ${3 * (hasVoted ? 1 : 3)} chance
-		and is now rolling a 1 in ${pet.chance} chance for the ${pet.name} pet.`);
-		if (roll(Math.max(Math.min(pet.chance, 250000), 900))) {
+		if (roll(Math.max(Math.min(pet.chance, 250000), 1000))) {
 			const userPets = msg.author.settings.get('pets');
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
