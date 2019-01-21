@@ -12,7 +12,12 @@ module.exports = class extends Command {
 
 	async run(msg) {
 		const userPets = msg.author.settings.get('pets');
-		if (Object.keys(userPets).length === 0) throw 'You have no pets yet.';
+		if (Object.keys(userPets).length === 0) {
+			throw `You have no pets yet.
+You can get pets in 2 ways:
+1. Talking in a guild which has petmessages enabled (\`+petmessages enable\`)
+2. Voting, when you vote you get 1 roll at *every* pet. (\`+vote\`)`;
+		}
 
 		const formatted = [];
 		Object
