@@ -19,8 +19,6 @@ module.exports = class extends Monitor {
 		if ((Date.now() - lastMessage) < 80000) return;
 		this.__memberCache[`${msg.author.id}.${msg.guild.id}`] = Date.now();
 
-		if (!roll(3)) return;
-
 		const pet = pets[Math.floor(Math.random() * pets.length)];
 		if (roll(Math.max(Math.min(pet.chance, 250000), 1000))) {
 			const userPets = msg.author.settings.get('pets');
