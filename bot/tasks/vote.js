@@ -26,18 +26,17 @@ module.exports = class extends Task {
 		let chStr = `${bonuses} ${_user.username} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`;
 		let dmStr = `${bonuses} Thank you for voting for Old School Bot! You received ${amount.toLocaleString()} GP.`;
 
-		for (let i = 0; i < pets.length; i++) {
-			const pet = pets[i];
-			if (roll(Math.min(pet.chance, 500))) {
-				const userPets = _user.settings.get('pets');
-				if (!userPets[pet.id]) userPets[pet.id] = 1;
-				else userPets[pet.id]++;
+		if (roll(10)) {
+			if (!isWeekend && !roll(5)) return;
+			const pet = pet[Math.floor(Math.random() * pet.length)];
+			const userPets = _user.settings.get('pets');
+			if (!userPets[pet.id]) userPets[pet.id] = 1;
+			else userPets[pet.id]++;
 
-				_user.settings.update('pets', { ...userPets });
+			_user.settings.update('pets', { ...userPets });
 
-				chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
-				dmStr += `\nYou also received the **${pet.name}** pet! ${pet.emoji}`;
-			}
+			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
+			dmStr += `\nYou also received the **${pet.name}** pet! ${pet.emoji}`;
 		}
 
 		this.client.channels.get(this.client.voteLogs).send(chStr);
