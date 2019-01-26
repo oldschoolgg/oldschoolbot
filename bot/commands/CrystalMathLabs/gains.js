@@ -21,7 +21,7 @@ module.exports = class extends Command {
 		};
 	}
 
-	async run(msg, [type, timePeriod, ...username]) {
+	async run(msg, [type, timePeriod, username]) {
 		const { emoji } = this.client;
 		type = this.types[type];
 		username = this.getUsername(username, msg);
