@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows the ranks of an account',
-			usage: '<ehp|ranks|xp|levels> <day|week|month|year> <username:str> [...]',
+			usage: '<ehp|ranks|xp|levels> <day|week|month|year> [username:...str]',
 			usageDelim: ' ',
 			requiredPermissions: ['EMBED_LINKS']
 		});
@@ -24,7 +24,7 @@ module.exports = class extends Command {
 	async run(msg, [type, timePeriod, ...username]) {
 		const { emoji } = this.client;
 		type = this.types[type];
-		username = username.join(' ');
+		username = this.getUsername(username, msg);
 
 		const { err, stats } = await osrs.track(username, this.client.timePeriods[timePeriod]);
 		if (err) return msg.send(err.length > 1 ? err : 'An unexpected error occured, please try again');
