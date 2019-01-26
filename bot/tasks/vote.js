@@ -28,7 +28,7 @@ module.exports = class extends Task {
 
 		for (let i = 0; i < pets.length; i++) {
 			const pet = pets[i];
-			if (roll(Math.min(pet.chance, 100000))) {
+			if (roll(Math.min(pet.chance, 1000))) {
 				const userPets = _user.settings.get('pets');
 				if (!userPets[pet.id]) userPets[pet.id] = 1;
 				else userPets[pet.id]++;
