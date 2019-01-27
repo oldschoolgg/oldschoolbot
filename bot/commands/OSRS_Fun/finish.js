@@ -810,85 +810,67 @@ ${lootMSG.join('\n')}`);
 					} else { duplicates.push('<:Olmlet:324127376873357316>'); }
 					const number = (Math.random() * 100).toFixed(2);
 					switch (true) {
-						case number < 23.81:
+						case number < 29:
 							if (!lootTrack.includes('DEX')) {
 								loot.push(`**Dexterous Prayer Scroll:** ${kc} KC <:Dexterous_prayer_scroll:403018312562376725>`);
 								lootTrack.push('DEX');
 							} else { duplicates.push('<:Dexterous_prayer_scroll:403018312562376725>'); }
 							break;
-						case number < 47.61:
+						case number < 58:
 							if (!lootTrack.includes('ARC')) {
 								loot.push(`**Arcane Prayer Scroll:** ${kc} KC <:Arcane_prayer_scroll:403018312906309632>`);
 								lootTrack.push('ARC');
 							} else { duplicates.push('<:Arcane_prayer_scroll:403018312906309632>'); }
 							break;
-						case number < 53.56:
-							if (!lootTrack.includes('DSW')) {
-								loot.push(`**Dragon Sword:** ${kc} KC <:Dragon_sword:403018313078145025>`);
-								lootTrack.push('DSW');
-							} else { duplicates.push('<:Dragon_sword:403018313078145025>'); }
-							break;
-						case number < 59.51:
-							if (!lootTrack.includes('DH')) {
-								loot.push(`**Dragon Harpoon:** ${kc} KC <:Dragon_harpoon:403018313115893767>`);
-								lootTrack.push('DH');
-							} else { duplicates.push('<:Dragon_harpoon:403018313115893767>'); }
-							break;
-						case number < 65.46:
-							if (!lootTrack.includes('DTA')) {
-								loot.push(`**Dragon Thrownaxe:** ${kc} KC <:Dragon_thrownaxe:403018313187328010>`);
-								lootTrack.push('DTA');
-							} else { duplicates.push('<:Dragon_thrownaxe:403018313187328010>'); }
-							break;
-						case number < 70.22:
+						case number < 63.8:
 							if (!lootTrack.includes('TB')) {
 								loot.push(`**Twisted Buckler:** ${kc} KC <:Twisted_buckler:403018312625291265>`);
 								lootTrack.push('TB');
 							} else { duplicates.push('<:Twisted_buckler:403018312625291265>'); }
 							break;
-						case number < 74.98:
+						case number < 69.6:
 							if (!lootTrack.includes('DHC')) {
 								loot.push(`**Dragon Hunter Crossbow:** ${kc} KC <:Dragon_hunter_crossbow:403018313107636224>`);
 								lootTrack.push('DHC');
 							} else { duplicates.push('<:Twisted_buckler:403018312625291265>'); }
 							break;
-						case number < 78.55:
+						case number < 73.95:
 							if (!lootTrack.includes('DB')) {
 								loot.push(`**Dinhs Bulwark:** ${kc} KC <:Dinhs_bulwark:403018312960835595>`);
 								lootTrack.push('DB');
 							} else { duplicates.push('<:Dinhs_bulwark:403018312960835595>'); }
 							break;
-						case number < 82.12:
+						case number < 78.3:
 							if (!lootTrack.includes('AH')) {
 								loot.push(`**Ancestral hat:** ${kc} KC <:Ancestral_hat:403018312482684938>`);
 								lootTrack.push('AH');
 							} else { duplicates.push('<:Ancestral_hat:403018312482684938>'); }
 							break;
-						case number < 85.69:
+						case number < 82.65:
 							if (!lootTrack.includes('ART')) {
 								loot.push(`**Ancestral robe top:** ${kc} KC <:Ancestral_robe_top:403018312818229248>`);
 								lootTrack.push('ART');
 							} else { duplicates.push('<:Ancestral_robe_top:403018312818229248>'); }
 							break;
-						case number < 89.26:
+						case number < 87:
 							if (!lootTrack.includes('ARB')) {
 								loot.push(`**Ancestral robe bottom:** ${kc} KC <:Ancestral_robe_bottom:403018312734343168>`);
 								lootTrack.push('ARB');
 							} else { duplicates.push('<:Ancestral_robe_bottom:403018312734343168>'); }
 							break;
-						case number < 92.83:
+						case number < 91.35:
 							if (!lootTrack.includes('DC')) {
 								loot.push(`**Dragon claws:** ${kc} KC <:Dragon_claws:403018313124282368>`);
 								lootTrack.push('DC');
 							} else { duplicates.push('<:Dragon_claws:403018313124282368>'); }
 							break;
-						case number < 95.21:
+						case number < 94.25:
 							if (!lootTrack.includes('EM')) {
 								loot.push(`**Elder maul:** ${kc} KC <:Elder_maul:403018312247803906>`);
 								lootTrack.push('EM');
 							} else { duplicates.push('<:Elder_maul:403018312247803906>'); }
 							break;
-						case number < 97.58:
+						case number < 97.15:
 							if (!lootTrack.includes('KI')) {
 								loot.push(`**Kodai insignia:** ${kc} KC <:Kodai_insignia:403018312264712193>`);
 								lootTrack.push('KI');

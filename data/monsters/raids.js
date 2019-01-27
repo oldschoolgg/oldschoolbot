@@ -4,9 +4,6 @@ const raids = {
 		curvedBone: '<:Curved_bone:405264444256681985>',
 		dexterousPrayerScroll: '<:Dexterous_prayer_scroll:403018312562376725>',
 		arcanePrayerScroll: '<:Arcane_prayer_scroll:403018312906309632>',
-		dragonSword: '<:Dragon_sword:403018313078145025>',
-		dragonHarpoon: '<:Dragon_harpoon:403018313115893767>',
-		dragonThrownaxe: '<:Dragon_thrownaxe:403018313187328010>',
 		twistedBuckler: '<:Twisted_buckler:403018312625291265>',
 		dragonHunterCrossbow: '<:Dragon_hunter_crossbow:403018313107636224>',
 		dinhsBulwark: '<:Dinhs_bulwark:403018312960835595>',
@@ -22,9 +19,6 @@ const raids = {
 	priceMap: {
 		dexterousPrayerScroll: 81452329,
 		arcanePrayerScroll: 8969516,
-		dragonSword: 819189,
-		dragonHarpoon: 5918333,
-		dragonThrownaxe: 353200,
 		twistedBuckler: 9735055,
 		dragonHunterCrossbow: 119002779,
 		dinhsBulwark: 8696916,
@@ -51,46 +45,37 @@ const raids = {
 				if (this.roll(65)) loot.push(this.drops.pet);
 				const number = (Math.random() * 100).toFixed(2);
 				switch (true) {
-					case number < 23.81:
+					case number < 29:
 						loot.push(this.drops.dexterousPrayerScroll);
 						break;
-					case number < 47.61:
+					case number < 58:
 						loot.push(this.drops.arcanePrayerScroll);
 						break;
-					case number < 53.56:
-						loot.push(this.drops.dragonSword);
-						break;
-					case number < 59.51:
-						loot.push(this.drops.dragonHarpoon);
-						break;
-					case number < 65.46:
-						loot.push(this.drops.dragonThrownaxe);
-						break;
-					case number < 70.22:
+					case number < 63.8:
 						loot.push(this.drops.twistedBuckler);
 						break;
-					case number < 74.98:
+					case number < 69.6:
 						loot.push(this.drops.dragonHunterCrossbow);
 						break;
-					case number < 78.55:
+					case number < 73.95:
 						loot.push(this.drops.dinhsBulwark);
 						break;
-					case number < 82.12:
+					case number < 78.3:
 						loot.push(this.drops.ancestralHat);
 						break;
-					case number < 85.69:
+					case number < 82.65:
 						loot.push(this.drops.ancestralRobeTop);
 						break;
-					case number < 89.26:
+					case number < 87:
 						loot.push(this.drops.ancestralRobeBottom);
 						break;
-					case number < 92.83:
+					case number < 91.35:
 						loot.push(this.drops.dragonClaws);
 						break;
-					case number < 95.21:
+					case number < 94.25:
 						loot.push(this.drops.elderMaul);
 						break;
-					case number < 97.58:
+					case number < 97.15:
 						loot.push(this.drops.kodaiInsignia);
 						break;
 					case number < 100:
@@ -107,9 +92,6 @@ const raids = {
 		const loot = {
 			dexterousPrayerScroll: 0,
 			arcanePrayerScroll: 0,
-			dragonSword: 0,
-			dragonHarpoon: 0,
-			dragonThrownaxe: 0,
 			twistedBuckler: 0,
 			dragonHunterCrossbow: 0,
 			dinhsBulwark: 0,
@@ -130,46 +112,37 @@ const raids = {
 				if (this.roll(65)) loot.pet++;
 				const number = (Math.random() * 100).toFixed(2);
 				switch (true) {
-					case number < 23.81:
+					case number < 29:
 						loot.dexterousPrayerScroll++;
 						break;
-					case number < 47.61:
+					case number < 58:
 						loot.arcanePrayerScroll++;
 						break;
-					case number < 53.56:
-						loot.dragonSword++;
-						break;
-					case number < 59.51:
-						loot.dragonHarpoon++;
-						break;
-					case number < 65.46:
-						loot.dragonThrownaxe++;
-						break;
-					case number < 70.22:
+					case number < 63.8:
 						loot.twistedBuckler++;
 						break;
-					case number < 74.98:
+					case number < 69.6:
 						loot.dragonHunterCrossbow++;
 						break;
-					case number < 78.55:
+					case number < 73.95:
 						loot.dinhsBulwark++;
 						break;
-					case number < 82.12:
+					case number < 78.3:
 						loot.ancestralHat++;
 						break;
-					case number < 85.69:
+					case number < 82.65:
 						loot.ancestralRobeTop++;
 						break;
-					case number < 89.26:
+					case number < 87:
 						loot.ancestralRobeBottom++;
 						break;
-					case number < 92.83:
+					case number < 91.35:
 						loot.dragonClaws++;
 						break;
-					case number < 95.21:
+					case number < 94.25:
 						loot.elderMaul++;
 						break;
-					case number < 97.58:
+					case number < 97.15:
 						loot.kodaiInsignia++;
 						break;
 					case number < 100:
