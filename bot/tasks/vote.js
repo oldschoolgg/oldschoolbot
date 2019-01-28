@@ -26,7 +26,7 @@ module.exports = class extends Task {
 		let chStr = `${bonuses} ${_user.username} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`;
 		let dmStr = `${bonuses} Thank you for voting for Old School Bot! You received ${amount.toLocaleString()} GP.`;
 
-		if (roll(10)) {
+		if (roll(5)) {
 			if (!isWeekend && !roll(5)) return;
 			const pet = pet[Math.floor(Math.random() * pet.length)];
 			const userPets = _user.settings.get('pets');
