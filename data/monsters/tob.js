@@ -12,13 +12,13 @@ const tob = {
 	// The GP value of the items
 	priceMap: {
 		pet: 0,
-		scytheOfVitur: 497731251,
-		sanguinestiStaff: 181861388,
-		justiciarLegguards: 32752486,
-		justiciarFaceguard: 40747460,
+		scytheOfVitur: 1327759559,
+		sanguinestiStaff: 146818892,
+		justiciarLegguards: 38483808,
+		justiciarFaceguard: 47495600,
 		ghraziRapier: 398134289,
-		justiciarChestguard: 32933593,
-		avernicDefenderHilt: 108223053
+		justiciarChestguard: 29514249,
+		avernicDefenderHilt: 125330357
 	},
 	kill(quantity) {
 		if (quantity <= 100) {

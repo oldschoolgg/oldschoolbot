@@ -99,21 +99,6 @@ const UniqueDropWeights = [
 		weighting: 20
 	},
 	{
-		name: 'Dragon sword',
-		shortName: 'dragonSword',
-		weighting: 5
-	},
-	{
-		name: 'Dragon harpoon',
-		shortName: 'dragonHarpoon',
-		weighting: 5
-	},
-	{
-		name: 'Dragon thrownaxes',
-		shortName: 'dragonThrownaxe',
-		weighting: 5
-	},
-	{
 		name: 'Twisted buckler',
 		shortName: 'twistedBuckler',
 		weighting: 4
