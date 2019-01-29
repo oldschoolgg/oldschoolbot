@@ -29,7 +29,7 @@ module.exports = class extends Monitor {
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(`${msg.author} has a funny feeling like they would have been followed.`);
 			} else {
-				msg.channel.send(`${msg.author} just got the **${pet.name}** pet! ${pet.emoji}
+				msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
 Type \`${msg.guild.settings.get('prefix')}mypets\` to see your pets.`);
 			}
 
