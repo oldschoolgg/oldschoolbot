@@ -801,7 +801,7 @@ ${lootMSG.join('\n')}`);
 			case 'COX':
 			case 'CHAMBERSOFXERIC':
 				const lootTrack = [];
-				while (loot.length < 16) {
+				while (loot.length < 13) {
 					kc++;
 					if (!roll(25)) continue;
 					if (!lootTrack.includes('PET') && roll(65)) {
