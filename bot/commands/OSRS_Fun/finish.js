@@ -1782,7 +1782,7 @@ ${lootMSG.join('\n')}`);
 						lootMSG.push('**Ikkle Hydra:** ${kc.toLocaleString()} KC <:Ikkle_hydra:534941897228156948>');
 					}
 				}
-				return msg.send(${lootMSG.join('\n')});
+				return msg.send(lootMSG.join('\n'));
 			}
 			default:
 				return msg.send("I don't have that monster!");
