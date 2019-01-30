@@ -12,7 +12,7 @@ class getStatsEmbed extends Extendable {
 		});
 	}
 
-	async getStatsEmbed(color, { Petrolls }, showExtra = true) {
+	async getAllpetsEmbed(color, { Petrolls }, showExtra = true) {
 		const embed = new MessageEmbed()
 			.setColor(color)
 			.addField(
