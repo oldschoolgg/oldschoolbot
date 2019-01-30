@@ -1,6 +1,6 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
-const pets = require('../data/pets');
+const pets = require('../../data/pets');
 
 class getStatsEmbed extends Extendable {
 
