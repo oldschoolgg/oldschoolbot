@@ -1610,179 +1610,182 @@ ${lootMSG.join('\n')}`);
 			}
 			case 'ALLPETS':
 			case 'ALLPET': {
-				const lootMSG = [];
-				while (lootMSG.length < 42) {
+				const petRolls = {};
+				while (loot.length < 42) {
 					kc++;
 					if (!loot.includes('CHIN_PET') && roll(95898)) {
 						loot.push('CHIN_PET');
-						lootMSG.push('**Baby Chinchompa:** ${kc.toLocaleString()} Red Chincompas <:Baby_chinchompa_red:324127375539306497>');
+						petRolls.CHIN_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('MOLE_PET') && roll(3000)) {
 						loot.push('MOLE_PET');
-						lootMSG.push('**Baby Mole:** ${kc.toLocaleString()} KC <:Baby_mole:324127375858204672>');
+						petRolls.MOLE_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('WC_PET') && roll(69846)) {
 						loot.push('WC_PET');
-						lootMSG.push('**Beaver:** ${kc.toLocaleString()} Magic Logs <:Beaver:324127375761604611>');
+						petRolls.WC_PET = kc.toLocaleString();
 					}
-					if (!loot.includes('BLOODHOUND') && roll(1000)) {
-						loot.push('BLOODHOUND');
-						lootMSG.push('**Bloodhound:** ${kc.toLocaleString()} Master Clues <:Bloodhound:324127375602483212>');
+					if (!loot.includes('BLOODHOUND_PET') && roll(1000)) {
+						loot.push('BLOODHOUND_PET');
+						petRolls.BLOODHOUND_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('CALLISTO_PET') && roll(2000)) {
 						loot.push('CALLISTO_PET');
-						lootMSG.push('**Callisto Cub:** ${kc.toLocaleString()} KC <:Callisto_cub:324127376273440768>');
+						petRolls.CALLISTO_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('AGILITY_PET') && roll(31965)) {
 						loot.push('AGILITY_PET');
-						lootMSG.push('**Giant Squirrel:** ${kc.toLocaleString()} Ardougne Laps <:Giant_squirrel:324127376432824320>');
+						petRolls.AGILITY_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('FISHING_PET') && roll(136108)) {
 						loot.push('FISHING_PET');
-						lootMSG.push('**Heron:** ${kc.toLocaleString()} Monkfish <:Heron:324127376516841483>');
+						petRolls.FISHING_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('KQ_PET') && roll(3000)) {
 						loot.push('KQ_PET');
-						lootMSG.push('**Kalphite Princess:** ${kc.toLocaleString()} KC <:Kalphite_princess_2nd_form:324127376915300352>');
+						petRolls.KQ_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('GARGOYLE_PET') && roll(3000)) {
 						loot.push('GARGOYLE_PET');
-						lootMSG.push('**Noon:** ${kc.toLocaleString()} KC <:Noon:379595337234382848>');
+						petRolls.GARGOYLE_PET = kc.toLocaleString();
 					}
-					if (!loot.includes('OLMLET') && roll(3000)) {
-						loot.push('OLMLET');
-						lootMSG.push('**Olmlet:** ${kc.toLocaleString()} Raids <:Olmlet:324127376873357316>');
+					if (!loot.includes('OLM_PET') && roll(3000)) {
+						loot.push('OLM_PET');
+						petRolls.OLM_PET = kc.toLocaleString();
 					}
-					if (!loot.includes('CHAOS_ELEMENTAL_PET') && roll(300)) {
-						loot.push('CHAOS_ELEMENTAL_PET');
-						lootMSG.push('**Chaos Elemental Jr:** ${kc.toLocaleString()} KC <:Pet_chaos_elemental:324127377070227456>');
+					if (!loot.includes('CHAOS_ELE_PET') && roll(300)) {
+						loot.push('CHAOS_ELE_PET');
+						petRolls.CHAOS_ELE_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('DAGANNOTH_PRIME_PET') && roll(5000)) {
 						loot.push('DAGANNOTH_PRIME_PET');
-						lootMSG.push('**Pet Dagannoth Prime:** ${kc.toLocaleString()} KC <:Pet_dagannoth_prime:324127376877289474>');
+						petRolls.DAGANNOTH_PRIME_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('DAGANNOTH_REX_PET') && roll(5000)) {
 						loot.push('DAGANNOTH_REX_PET');
-						lootMSG.push('**Pet Dagannoth Rex:** ${kc.toLocaleString()} KC <:Pet_dagannoth_rex:324127377091330049>');
+						petRolls.DAGANNOTH_REX_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('DAGANNOTH_SUPREME_PET') && roll(5000)) {
 						loot.push('DAGANNOTH_SUPREME_PET');
-						lootMSG.push('**Pet Dagannoth Supreme:** ${kc.toLocaleString()} KC <:Pet_dagannoth_supreme:324127377066164245>');
+						petRolls.DAGANNOTH_SUPREME_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('CORP_PET') && roll(5000)) {
 						loot.push('CORP_PET');
-						lootMSG.push('**Dark Core:** ${kc.toLocaleString()} KC <:Pet_dark_core:324127377347313674>');
+						petRolls.CORP_PET = kc.toLocaleString();
 					}
-					if (!loot.includes('BANDOS_PET') && roll(5000)) {
-						loot.push('BANDOS_PET');
-						lootMSG.push('**General Graardor Jr:** ${kc.toLocaleString()} KC <:Pet_general_graardor:324127377376673792>');
+					if (!loot.includes('GRAARDOR_PET') && roll(5000)) {
+						loot.push('GRAARDOR_PET');
+						petRolls.GRAARDOR_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('KRAKEN_PET') && roll(3000)) {
 						loot.push('KRAKEN_PET');
-						lootMSG.push('**Kraken:** ${kc.toLocaleString()} KC <:Pet_kraken:324127377477206016>');
+						petRolls.KRAKEN_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('KREE_PET') && roll(5000)) {
 						loot.push('KREE_PET');
-						lootMSG.push('**Kree\'arra Jr:** ${kc.toLocaleString()} KC <:Pet_kreearra:324127377305239555>');
+						petRolls.KREE_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('KRIL_PET') && roll(5000)) {
 						loot.push('KRIL_PET');
-						lootMSG.push('**K\'ril Tsutsaroth Jr:** ${kc.toLocaleString()} KC <:Pet_kril_tsutsaroth:324127377527406594>');
+						petRolls.KRIL_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('PENANCE_PET') && roll(1000)) {
 						loot.push('PENANCE_PET');
-						lootMSG.push('**Pet Penance Queen:** ${kc.toLocaleString()} KC <:Pet_penance_queen:324127377649303553>');
+						petRolls.PENANCE_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('THERMY_PET') && roll(3000)) {
 						loot.push('THERMY_PET');
-						lootMSG.push('**Pet Smoke Devil:** ${kc.toLocaleString()} KC <:Pet_smoke_devil:324127377493852162>');
+						petRolls.THERMY_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('ZULRAH_PET') && roll(4000)) {
 						loot.push('ZULRAH_PET');
-						lootMSG.push('**Snakeling:** ${kc.toLocaleString()} KC <:Pet_snakeling:324127377816944642>');
+						petRolls.ZULRAH_PET = kc.toLocaleString();
 					}
-					if (!loot.includes('ZILYANA_PET') && roll(5000)) {
-						loot.push('ZILYANA_PET');
-						lootMSG.push('**Zilyana Jr:** ${kc.toLocaleString()} KC <:Pet_zilyana:324127378248957952>');
+					if (!loot.includes('ZILY_PET') && roll(5000)) {
+						loot.push('ZILY_PET');
+						petRolls.ZILY_PET = kc.toLocaleString();
 					}
-					if (!loot.includes('FIREMAKING_PET') && roll(5000)) {
-						loot.push('FIREMAKING_PET');
-						lootMSG.push('**Phoenix:** ${kc.toLocaleString()} KC <:Phoenix:324127378223792129>');
+					if (!loot.includes('PHOENIX_PET') && roll(5000)) {
+						loot.push('PHOENIX_PET');
+						petRolls.PHOENIX_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('KBD_PET') && roll(3000)) {
 						loot.push('KBD_PET');
-						lootMSG.push('**Prince Black Dragon:** ${kc.toLocaleString()} KC <:Prince_black_dragon:324127378538364928>');
+						petRolls.KBD_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('RC_PET') && roll(1793283)) {
 						loot.push('RC_PET');
-						lootMSG.push('**Rift Guardian:** ${kc.toLocaleString()} Nature Runes <:Rift_guardian_fire:324127378588827648>');
+						petRolls.RC_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('MINING_PET') && roll(244725)) {
 						loot.push('MINING_PET');
-						lootMSG.push('**Rock Golem:** ${kc.toLocaleString()} Paydirt <:Rock_golem:324127378429313026>');
+						petRolls.MINING_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('THIEVING_PET') && roll(254736)) {
 						loot.push('THIEVING_PET');
-						lootMSG.push('**Rocky:** ${kc.toLocaleString()} Ardougne Knights <:Rocky:324127378647285771>');
+						petRolls.THIEVING_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('SCORPIA_PET') && roll(2000)) {
 						loot.push('SCORPIA_PET');
-						lootMSG.push('**Scorpia\'s Offering:** ${kc.toLocaleString()} KC <:Scorpias_offspring:324127378773377024>');
+						petRolls.SCORPIA_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('SKOTIZO_PET') && roll(65)) {
 						loot.push('SKOTIZO_PET');
-						lootMSG.push('**Skotos:** ${kc.toLocaleString()} KC <:Skotos:324127378890817546>');
+						petRolls.SKOTIZO_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('FARMING_PET') && roll(6893)) {
 						loot.push('FARMING_PET');
-						lootMSG.push('**Tangleroot:** ${kc.toLocaleString()} Magic Trees <:Tangleroot:324127378978635778>');
+						petRolls.FARMING_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('JAD_PET') && roll(200)) {
 						loot.push('JAD_PET');
-						lootMSG.push('**Tzrek-Jad:** ${kc.toLocaleString()} KC <:Tzrekjad:324127379188613121>');
+						petRolls.JAD_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('VENENATIS_PET') && roll(2000)) {
 						loot.push('VENENATIS_PET');
-						lootMSG.push('**Venenatis Spiderling:** ${kc.toLocaleString()} KC <:Venenatis_spiderling:324127379092144129>');
+						petRolls.VENENATIS_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('VETION_PET') && roll(2000)) {
 						loot.push('VETION_PET');
-						lootMSG.push('**Vetion Jr:** ${kc.toLocaleString()} KC <:Vetion_jr:324127378999738369>');
+						petRolls.VETION_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('SIRE_PET') && roll(2560)) {
 						loot.push('SIRE_PET');
-						lootMSG.push('**Abyssal Orphan:** ${kc.toLocaleString()} KC <:Abyssal_orphan:324127375774449664>');
+						petRolls.SIRE_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('CERBERUS_PET') && roll(3000)) {
 						loot.push('CERBERUS_PET');
-						lootMSG.push('**Hellpuppy:** ${kc.toLocaleString()} KC <:Hellpuppy:324127376185491458>');
+						petRolls.CERBERUS_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('CHOMPY_PET') && roll(500)) {
 						loot.push('CHOMPY_PET');
-						lootMSG.push('**Chompy Chick:** ${kc.toLocaleString()} KC <:Chompy_chick:346196885859598337>');
+						petRolls.CHOMPY_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('INFERNO_PET') && roll(100)) {
 						loot.push('INFERNO_PET');
-						lootMSG.push('**Jal-nib-rek:** ${kc.toLocaleString()} KC <:Jalnibrek:346196886119514113>');
+						petRolls.INFERNO_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('HERBI_PET') && roll(6500)) {
 						loot.push('HERBI_PET');
-						lootMSG.push('**Herbi:** ${kc.toLocaleString()} KC <:Herbi:357773175318249472>');
+						petRolls.HERBI_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('VORKATH_PET') && roll(3000)) {
 						loot.push('VORKATH_PET');
-						lootMSG.push('**Vorki:** ${kc.toLocaleString()} KC <:Vorki:400713309252222977>');
+						petRolls.VORKATH_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('VERZIK_PET') && roll(650)) {
 						loot.push('VERZIK_PET');
-						lootMSG.push('**Lil Zik:** ${kc.toLocaleString()} KC <:Lil_zik:479460344423776266>');
+						petRolls.VERZIK_PET = kc.toLocaleString();
 					}
 					if (!loot.includes('HYDRA_PET') && roll(3000)) {
 						loot.push('HYDRA_PET');
-						lootMSG.push('**Ikkle Hydra:** ${kc.toLocaleString()} KC <:Ikkle_hydra:534941897228156948>');
+						petRolls.HYDRA_PET = kc.toLocaleString();
 					}
 				}
-				return msg.send(lootMSG.join('\n'));
+				
+				const embedPets = await this.getAllpetsEmbed(7981338, petRolls);
+
+				return msg.send({ embedPets });
 			}
 			default:
 				return msg.send("I don't have that monster!");
