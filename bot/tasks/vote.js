@@ -26,7 +26,7 @@ module.exports = class extends Task {
 		let chStr = `${bonuses} ${_user.username} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`;
 		let dmStr = `${bonuses} Thank you for voting for Old School Bot! You received ${amount.toLocaleString()} GP.`;
 
-		if (roll(7)) {
+		if (roll(8)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
 			const userPets = _user.settings.get('pets');
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
