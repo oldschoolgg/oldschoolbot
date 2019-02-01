@@ -48,6 +48,7 @@ const ALL_TWITTERS = [
 	'1088015657982152706', // JagexTide
 	'1008655742428221440', // JagexMunro
 	'1001866988803772416', // JagexGambit
+	'1090608917560901632', // JagexNasty
 	/* HCIM Deaths */
 	'797859891373371392' // HCIM_Deaths
 ];
