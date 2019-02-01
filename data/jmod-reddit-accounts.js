@@ -1,13 +1,11 @@
 /* eslint-disable camelcase */
 module.exports = {
-	JagexStone: 'Mod Stone',
+	modghost: 'Mod Ghost',
+	JagexJD: 'Mod JD',
 	Jagex_Wolf: 'Mod Wolf',
 	Mod_Kieren: 'Mod Kieren',
 	JagexAtlas: 'Mod Atlas',
-	modghost: 'Mod Ghost',
-	JagexJD: 'Mod JD',
 	JagexGambit: 'Mod Gambit',
-	JagexAyiza: 'Mod Ayiza',
 	ModMatK: 'Mod MatK',
 	JagexSween: 'Mod Sween',
 	jagexbruno: 'Mod Bruno',
