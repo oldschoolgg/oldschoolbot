@@ -13,5 +13,13 @@ module.exports = {
 	jagexroq: 'Mod Roq',
 	mod_west: 'Mod West',
 	mod_ed: 'Mod Ed',
-	mod_ry: 'Mod Ry'
+	mod_ry: 'Mod Ry',
+	JagexAsh: 'Mod Ash',
+	Mod_Curse: 'Mod Curse',
+	JagexGee: 'Mod Gee',
+	JagexLenny: 'Mod Lenny',
+	JagexLottie: 'Mod Lottie',
+	JagexMaz: 'Mod Maz',
+	JagexMunro: 'Mod Munro',
+	Jagex_Weath: 'Mod Weath'
 };
