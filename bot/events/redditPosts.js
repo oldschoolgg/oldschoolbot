@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const SnooStorm = require('snoostorm');
 const Snoowrap = require('snoowrap');
 
-const { redditApp } = require('../../config/');
+const { redditApp } = require('../../config/private');
 const jmodRedditAccounts = require('../../data/jmod-reddit-accounts');
 
 module.exports = class extends Event {
