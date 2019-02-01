@@ -5,11 +5,11 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			subcommands: true,
-			enabled: false,
+			enabled: true,
 			description: 'Enables/disables the function which sends comments/posts from Jmods on reddit.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permissionLevel: 10
+			permissionLevel: 7
 		});
 	}
 
