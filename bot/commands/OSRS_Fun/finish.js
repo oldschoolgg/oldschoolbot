@@ -2,6 +2,7 @@
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const tob = require('../../../data/monsters/tob');
+const raids = require('../../../data/monsters/raids');
 
 module.exports = class extends Command {
 
@@ -800,92 +801,26 @@ ${lootMSG.join('\n')}`);
 			case 'RAIDS1':
 			case 'COX':
 			case 'CHAMBERSOFXERIC':
-				const lootTrack = [];
-				while (loot.length < 13) {
+				const theDrops = new Map();
+				let dropRecieved;
+				while (theDrops.size < 13) {
 					kc++;
 					if (!roll(25)) continue;
-					if (!lootTrack.includes('PET') && roll(65)) {
-						lootTrack.push('PET');
-						loot.push(`**Olmlet:** ${kc} KC <:Olmlet:324127376873357316>`);
-					} else { duplicates.push('<:Olmlet:324127376873357316>'); }
-					const number = (Math.random() * 100).toFixed(2);
-					switch (true) {
-						case number < 29:
-							if (!lootTrack.includes('DEX')) {
-								loot.push(`**Dexterous Prayer Scroll:** ${kc} KC <:Dexterous_prayer_scroll:403018312562376725>`);
-								lootTrack.push('DEX');
-							} else { duplicates.push('<:Dexterous_prayer_scroll:403018312562376725>'); }
-							break;
-						case number < 58:
-							if (!lootTrack.includes('ARC')) {
-								loot.push(`**Arcane Prayer Scroll:** ${kc} KC <:Arcane_prayer_scroll:403018312906309632>`);
-								lootTrack.push('ARC');
-							} else { duplicates.push('<:Arcane_prayer_scroll:403018312906309632>'); }
-							break;
-						case number < 63.8:
-							if (!lootTrack.includes('TB')) {
-								loot.push(`**Twisted Buckler:** ${kc} KC <:Twisted_buckler:403018312625291265>`);
-								lootTrack.push('TB');
-							} else { duplicates.push('<:Twisted_buckler:403018312625291265>'); }
-							break;
-						case number < 69.6:
-							if (!lootTrack.includes('DHC')) {
-								loot.push(`**Dragon Hunter Crossbow:** ${kc} KC <:Dragon_hunter_crossbow:403018313107636224>`);
-								lootTrack.push('DHC');
-							} else { duplicates.push('<:Twisted_buckler:403018312625291265>'); }
-							break;
-						case number < 73.95:
-							if (!lootTrack.includes('DB')) {
-								loot.push(`**Dinhs Bulwark:** ${kc} KC <:Dinhs_bulwark:403018312960835595>`);
-								lootTrack.push('DB');
-							} else { duplicates.push('<:Dinhs_bulwark:403018312960835595>'); }
-							break;
-						case number < 78.3:
-							if (!lootTrack.includes('AH')) {
-								loot.push(`**Ancestral hat:** ${kc} KC <:Ancestral_hat:403018312482684938>`);
-								lootTrack.push('AH');
-							} else { duplicates.push('<:Ancestral_hat:403018312482684938>'); }
-							break;
-						case number < 82.65:
-							if (!lootTrack.includes('ART')) {
-								loot.push(`**Ancestral robe top:** ${kc} KC <:Ancestral_robe_top:403018312818229248>`);
-								lootTrack.push('ART');
-							} else { duplicates.push('<:Ancestral_robe_top:403018312818229248>'); }
-							break;
-						case number < 87:
-							if (!lootTrack.includes('ARB')) {
-								loot.push(`**Ancestral robe bottom:** ${kc} KC <:Ancestral_robe_bottom:403018312734343168>`);
-								lootTrack.push('ARB');
-							} else { duplicates.push('<:Ancestral_robe_bottom:403018312734343168>'); }
-							break;
-						case number < 91.35:
-							if (!lootTrack.includes('DC')) {
-								loot.push(`**Dragon claws:** ${kc} KC <:Dragon_claws:403018313124282368>`);
-								lootTrack.push('DC');
-							} else { duplicates.push('<:Dragon_claws:403018313124282368>'); }
-							break;
-						case number < 94.25:
-							if (!lootTrack.includes('EM')) {
-								loot.push(`**Elder maul:** ${kc} KC <:Elder_maul:403018312247803906>`);
-								lootTrack.push('EM');
-							} else { duplicates.push('<:Elder_maul:403018312247803906>'); }
-							break;
-						case number < 97.15:
-							if (!lootTrack.includes('KI')) {
-								loot.push(`**Kodai insignia:** ${kc} KC <:Kodai_insignia:403018312264712193>`);
-								lootTrack.push('KI');
-							} else { duplicates.push('<:Kodai_insignia:403018312264712193>'); }
-							break;
-						case number < 100:
-							if (!lootTrack.includes('TBO')) {
-								loot.push(`**Twisted bow:** ${kc} KC <:Twisted_bow:403018312402862081>`);
-								lootTrack.push('TBO');
-							} else { duplicates.push('<:Twisted_bow:403018312402862081>'); }
-							break;
-						default:
-							break;
-					}
+					if ( roll(65)) {
+						if(!theDrops.has(raids.drops.pet.shortName)){
+							theDrops.set(raids.drops.pet.shortName, { theKC: `**${raids.drops.pet.name}:** ${kc} KC ${raids.drops.pet.emoji}`, dup: 0 });
+						}	else 	{ theDrops.get(raids.drops.pet.shortName).dup++; }
+					} 
+					
+					dropRecieved = raids.determineItem();
+					if (!theDrops.has(dropRecieved.shortName)){
+						theDrops.set(dropRecieved.shortName, { theKC: `**${dropRecieved.name}** ${kc} KC ${dropRecieved.emoji}`, dup: 0 });
+					} else 	{ theDrops.get(dropRecieved.shortName).dup++; }
 				}
+				function joinLootDups(value, key, map) {
+					loot.push(`${value.theKC} ${value.dup} duplicates`);
+				}
+				theDrops.forEach(joinLootDups);
 				return msg.send(loot.join('\n'));
 				// end of chambers of xeric finish command
 			case 'VORKATH': {
