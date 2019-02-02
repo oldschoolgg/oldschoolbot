@@ -1,35 +1,88 @@
 const raids = {
 	drops: {
-		pet: '<:Olmlet:324127376873357316>',
-		curvedBone: '<:Curved_bone:405264444256681985>',
-		dexterousPrayerScroll: '<:Dexterous_prayer_scroll:403018312562376725>',
-		arcanePrayerScroll: '<:Arcane_prayer_scroll:403018312906309632>',
-		twistedBuckler: '<:Twisted_buckler:403018312625291265>',
-		dragonHunterCrossbow: '<:Dragon_hunter_crossbow:403018313107636224>',
-		dinhsBulwark: '<:Dinhs_bulwark:403018312960835595>',
-		ancestralHat: '<:Ancestral_hat:403018312482684938>',
-		ancestralRobeTop: '<:Ancestral_robe_top:403018312818229248>',
-		ancestralRobeBottom: '<:Ancestral_robe_bottom:403018312734343168>',
-		dragonClaws: '<:Dragon_claws:403018313124282368>',
-		elderMaul: '<:Elder_maul:403018312247803906>',
-		kodaiInsignia: '<:Kodai_insignia:403018312264712193>',
-		twistedBow: '<:Twisted_bow:403018312402862081>'
-	},
-	// The GP value of the items
-	priceMap: {
-		dexterousPrayerScroll: 73226692,
-		arcanePrayerScroll: 6770427,
-		twistedBuckler: 9288722,
-		dragonHunterCrossbow: 134238602,
-		dinhsBulwark: 5585172,
-		ancestralHat: 13733419,
-		ancestralRobeTop: 74390259,
-		ancestralRobeBottom: 64315708,
-		dragonClaws: 69463283,
-		elderMaul: 21071168,
-		kodaiInsignia: 68577639,
-		twistedBow: 1155434145,
-		pet: 0
+		pet:
+			{ 	emoji: '<:Olmlet:324127376873357316>',
+				name: 'Olmlet',
+				price: 0,
+				shortName: 'pet',
+				weighting: 0 },
+		curvedBone:
+			{	emoji: '<:Curved_bone:405264444256681985>',
+				name: 'Curved Bone',
+				price: 0,
+				shortName: 'curvedBone' },
+		dexterousPrayerScroll:
+			{ 	emoji: '<:Dexterous_prayer_scroll:403018312562376725>',
+				name: 'Decxterous Prayer Scroll',
+				price: 71009490,
+				shortName: 'dexterousPrayerScroll',
+				weighting: 20 },
+		arcanePrayerScroll:
+			{	emoji: '<:Arcane_prayer_scroll:403018312906309632>',
+				name: 'Arcane Prayer Scroll',
+				price: 6444816,
+				shortName: 'arcanePrayerScroll',
+				weighting: 20 },
+		twistedBuckler:
+			{	emoji: '<:Twisted_buckler:403018312625291265>',
+				name: 'Twisted Buckler',
+				price: 9603882,
+				shortName: 'twistedBuckler',
+				weighting: 4 },
+		dragonHunterCrossbow:
+			{	emoji: '<:Dragon_hunter_crossbow:403018313107636224>',
+				name: 'Dragon Hunter Crossbow',
+				price: 131785171,
+				shortName: 'dragonHunterCrossbow',
+				weighting: 4 },
+		dinhsBulwark:
+			{	emoji: '<:Dinhs_bulwark:403018312960835595>',
+				name: 'Dinhs Bulwark',
+				price: 5998828,
+				shortName: 'dinhsBulwark',
+				weighting: 3 },
+		ancestralHat:
+			{	emoji: '<:Ancestral_hat:403018312482684938>',
+				name: 'Ancestral Hat',
+				price: 14341857,
+				shortName: 'ancestralHat',
+				weighting: 3 },
+		ancestralRobeTop:
+			{	emoji: '<:Ancestral_robe_top:403018312818229248>',
+				name: 'Ancestral Robe Top',
+				price: 73315016,
+				shortName: 'ancestralRobeTop',
+				weighting: 3 },
+		ancestralRobeBottom:
+			{	emoji: '<:Ancestral_robe_bottom:403018312734343168>',
+				name: 'Ancestral Robe Bottom',
+				price: 63293227,
+				shortName: 'ancestralRobeBottom',
+				weighting: 3 },
+		dragonClaws:
+			{	emoji: '<:Dragon_claws:403018313124282368>',
+				name: 'Dragon Claws',
+				price: 68950625,
+				shortName: 'dragonClaws',
+				weighting: 3 },
+		elderMaul:
+			{	emoji: '<:Elder_maul:403018312247803906>',
+				name: 'Elder Maul',
+				price: 22262379,
+				shortName: 'elderMaul',
+				weighting: 2 },
+		kodaiInsignia:
+			{	emoji: '<:Kodai_insignia:403018312264712193>',
+				name: 'Kodai Insignia',
+				price: 68244811,
+				shortName: 'kodaiInsignia',
+				weighting: 2 },
+		twistedBow:
+			{	emoji: '<:Twisted_bow:403018312402862081>',
+				name: 'Twisted Bow',
+				price: 1176227720,
+				shortName: 'twistedBow',
+				weighting: 2 }
 	},
 	kill(quantity) {
 		if (quantity <= 100) {
@@ -42,48 +95,8 @@ const raids = {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(25)) {
-				if (this.roll(65)) loot.push(this.drops.pet);
-				const number = (Math.random() * 100).toFixed(2);
-				switch (true) {
-					case number < 29:
-						loot.push(this.drops.dexterousPrayerScroll);
-						break;
-					case number < 58:
-						loot.push(this.drops.arcanePrayerScroll);
-						break;
-					case number < 63.8:
-						loot.push(this.drops.twistedBuckler);
-						break;
-					case number < 69.6:
-						loot.push(this.drops.dragonHunterCrossbow);
-						break;
-					case number < 73.95:
-						loot.push(this.drops.dinhsBulwark);
-						break;
-					case number < 78.3:
-						loot.push(this.drops.ancestralHat);
-						break;
-					case number < 82.65:
-						loot.push(this.drops.ancestralRobeTop);
-						break;
-					case number < 87:
-						loot.push(this.drops.ancestralRobeBottom);
-						break;
-					case number < 91.35:
-						loot.push(this.drops.dragonClaws);
-						break;
-					case number < 94.25:
-						loot.push(this.drops.elderMaul);
-						break;
-					case number < 97.15:
-						loot.push(this.drops.kodaiInsignia);
-						break;
-					case number < 100:
-						loot.push(this.drops.twistedBow);
-						break;
-					default:
-						break;
-				}
+				if (this.roll(65)) loot.push(this.drops.pet.emoji);
+				loot.push(this.determineItem().emoji);
 			}
 		}
 		return loot.join(' ');
@@ -110,52 +123,12 @@ const raids = {
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(25)) {
 				if (this.roll(65)) loot.pet++;
-				const number = (Math.random() * 100).toFixed(2);
-				switch (true) {
-					case number < 29:
-						loot.dexterousPrayerScroll++;
-						break;
-					case number < 58:
-						loot.arcanePrayerScroll++;
-						break;
-					case number < 63.8:
-						loot.twistedBuckler++;
-						break;
-					case number < 69.6:
-						loot.dragonHunterCrossbow++;
-						break;
-					case number < 73.95:
-						loot.dinhsBulwark++;
-						break;
-					case number < 78.3:
-						loot.ancestralHat++;
-						break;
-					case number < 82.65:
-						loot.ancestralRobeTop++;
-						break;
-					case number < 87:
-						loot.ancestralRobeBottom++;
-						break;
-					case number < 91.35:
-						loot.dragonClaws++;
-						break;
-					case number < 94.25:
-						loot.elderMaul++;
-						break;
-					case number < 97.15:
-						loot.kodaiInsignia++;
-						break;
-					case number < 100:
-						loot.twistedBow++;
-						break;
-					default:
-						break;
-				}
+				loot[this.determineItem().shortName]++;
 			}
 		}
 		for (const key in loot) {
-			displayLoot.push(`**${this.drops[key]}**: ${loot[key].toLocaleString()} `);
-			totalValue += this.priceMap[key] * loot[key];
+			displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].toLocaleString()} `);
+			totalValue += this.drops[key].price * loot[key];
 		}
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
 		displayLoot.push(`**GP/HR (30-Min Solo Raids):** ${(totalValue / (quantity / 2)).toLocaleString()} GP`);
@@ -164,6 +137,36 @@ const raids = {
 	},
 	roll(max) {
 		return Math.floor((Math.random() * max) + 1) === 1;
+	},
+	determineItem() {
+		const number = (Math.random() * 69);
+		switch (true) {
+			case number <= 20:
+				return this.drops.dexterousPrayerScroll;
+			case number <= 40:
+				return this.drops.arcanePrayerScroll;
+			case number <= 44:
+				return this.drops.twistedBuckler;
+			case number <= 48:
+				return this.drops.dragonHunterCrossbow;
+			case number <= 51:
+				return this.drops.dinhsBulwark;
+			case number <= 54:
+				return this.drops.ancestralHat;
+			case number <= 57:
+				return this.drops.ancestralRobeTop;
+			case number <= 60:
+				return this.drops.ancestralRobeBottom;
+			case number <= 63:
+				return this.drops.dragonClaws;
+			case number <= 65:
+				return this.drops.elderMaul;
+			case number <= 67:
+				return this.drops.kodaiInsignia;
+			case number <= 69:
+				return this.drops.twistedBow;
+		}
+		return 'eslint :rage:';
 	}
 };
 
