@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const RaidsEmojis = require('../../../data/monsters/raids').drops;
+const RaidsItems = require('../../../data/monsters/raids').drops;
 
 module.exports = class extends Command {
 
@@ -19,7 +19,6 @@ module.exports = class extends Command {
 	}
 
 };
-
 
 class RaidsUtil {
 
@@ -57,7 +56,7 @@ class RaidsUtil {
 
 	static pickFromTable() {
 		const rnd = Math.floor(Math.random() * LootChance.totalWeight);
-		return UniqueDropWeights.find(i => i.shortName === LootTable[rnd]);
+		return Object.values(RaidsItems).find(i => i.shortName === LootTable[rnd]);
 	}
 
 	static formatReply(points, chances, loot) {
@@ -68,13 +67,13 @@ class RaidsUtil {
 		];
 
 		chances.forEach((chance, i) => {
-			const drop = loot[i] ? `${loot[i].name} ${RaidsEmojis[loot[i].shortName]}` : 'You no lucky';
+			const drop = loot[i] ? `${loot[i].name} ${RaidsItems[loot[i].shortName].emoji}` : 'You no lucky';
 			const prefix = chances.length > 1 ? `Roll ${i + 1}: ` : '';
 			const dropChance = Math.round(chance * 100);
 			reply.push(`${prefix}${dropChance}% chance for a drop - ${drop}`);
 
 			if (loot[i] && loot[i].olmlet) {
-				reply.push(`${RaidsEmojis.pet}`);
+				reply.push(`${RaidsItems.pet.emoji}`);
 			}
 		});
 
@@ -87,69 +86,6 @@ class RaidsUtil {
 
 }
 
-const UniqueDropWeights = [
-	{
-		name: 'Dexterous prayer scroll',
-		shortName: 'dexterousPrayerScroll',
-		weighting: 20
-	},
-	{
-		name: 'Arcane prayer scroll',
-		shortName: 'arcanePrayerScroll',
-		weighting: 20
-	},
-	{
-		name: 'Twisted buckler',
-		shortName: 'twistedBuckler',
-		weighting: 4
-	},
-	{
-		name: 'Dragon hunter crossbow',
-		shortName: 'dragonHunterCrossbow',
-		weighting: 4
-	},
-	{
-		name: 'Dinh\'s bulwark',
-		shortName: 'dinhsBulwark',
-		weighting: 3
-	},
-	{
-		name: 'Ancestral hat',
-		shortName: 'ancestralHat',
-		weighting: 3
-	},
-	{
-		name: 'Ancestral robe top',
-		shortName: 'ancestralRobeTop',
-		weighting: 3
-	},
-	{
-		name: 'Ancestral robe bottom',
-		shortName: 'ancestralRobeBottom',
-		weighting: 3
-	},
-	{
-		name: 'Dragon claws',
-		shortName: 'dragonClaws',
-		weighting: 3
-	},
-	{
-		name: 'Elder maul',
-		shortName: 'elderMaul',
-		weighting: 2
-	},
-	{
-		name: 'Kodai insignia',
-		shortName: 'kodaiInsignia',
-		weighting: 2
-	},
-	{
-		name: 'Twisted bow',
-		shortName: 'twistedBow',
-		weighting: 2
-	}
-];
-
 const LootTable = ((lootWeights) => {
 	const table = [];
 	lootWeights.forEach(item => {
@@ -158,8 +94,7 @@ const LootTable = ((lootWeights) => {
 		}
 	});
 	return table;
-})(UniqueDropWeights);
-
+})(Object.values(RaidsItems));
 
 const LootChance = {
 	// 1% per 7125 points
