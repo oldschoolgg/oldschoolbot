@@ -96,14 +96,7 @@ module.exports = class extends Command {
 		const { commands, categories, stopwatch } = await this.buildCommands('html', msg);
 		const esc = this.escapeHtml;
 
-		let html = `<!DOCTYPE html><html>
-<head><title>${this.username}</title><link rel="stylesheet" href="../assets/style.css" type="text/css"></head>
-<body>
-<div id="header">
-<h1>${esc(this.username)}</h1>
-</div>
-<div class="commands">
-`;
+		let html = `<div class="commands">`;
 		for (let cat = 0; cat < categories.length; cat++) {
 			html += `<div class="category">`;
 			const category = commands[categories[cat]].General;
@@ -118,12 +111,11 @@ module.exports = class extends Command {
 				if (subCategories.length > 1) html += `<h3 class="subcategory-header">${esc(subCategories[subCat])}</h3>`;
 				html += `<table class="category-table">`;
 				html += `<thead>
-<tr><th>Command</th><th>Aliases</th><th>Description</th></tr>
+<tr><th>Command</th><th>Description</th></tr>
 </thead>`;
 				html += `<tbody>`;
 				html += `${commands[categories[cat]][subCategories[subCat]]
 					.map(cmd => `<tr><td>${esc(this.prefix + cmd.name)}</td>` +
-					`<td>${esc(cmd.aliases.join(', '))}</td>` +
 					`<td>${esc(cmd.description)}</td></tr>`)
 					.join('\n')}`
 				;
@@ -131,7 +123,7 @@ module.exports = class extends Command {
 			}
 			html += `</div>`;
 		}
-		html += '</div></body></html>';
+		html += '</div>';
 		this.finish(html, stopwatch, 'html');
 	}
 
