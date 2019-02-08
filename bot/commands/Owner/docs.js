@@ -5,6 +5,16 @@ const { createHash } = require('crypto');
 // shown in the docs.
 const permissionLevel = 9;
 
+const sort = [
+	'OSRS_Accounts',
+	'OSRS_Fun',
+	'OSRS_Utility',
+	'Configuration',
+	'CrystalMathLabs',
+	'Fun',
+	'Utility'
+];
+
 module.exports = class extends Command {
 
 	constructor(...args) {
@@ -59,7 +69,7 @@ module.exports = class extends Command {
 						.push({ name: cmd.name, aliases: cmd.aliases, description });
 				})
 		);
-		if (!normalize) categories = Object.keys(commands);
+		if (!normalize) categories = Object.keys(commands).sort((a, b) => sort.indexOf(a) - sort.indexOf(b));
 		const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
 		return { commands, categories, longest, stopwatch };
 	}
@@ -101,7 +111,7 @@ module.exports = class extends Command {
 			html += `<div class="category">`;
 			const category = commands[categories[cat]].General;
 			if (category) {
-				html += `<h2 class="category-header">${esc(categories[cat])} / ${category.length} Commands</h2>`;
+				html += `<h2 class="category-header">${esc(categories[cat])}</h2>`;
 			}
 
 			const subCategories = Object.keys(commands[categories[cat]]);
@@ -131,9 +141,14 @@ module.exports = class extends Command {
 		const { commands, categories, longest, stopwatch } = await this.buildCommands('plaintext', msg);
 		const plaintext = [];
 
-		plaintext.push(`${this.username}\n`);
-		plaintext.push(`Invite Link: ${this.invite}\n`);
-		plaintext.push(`Commands\n`);
+		plaintext.push(`
+Old School Bot Commands
+
+Invite: https://invite.oldschool.gg/
+Support: https://support.oldschool.gg/
+Github/Source Code: https://github.oldschool.gg/
+
+`);
 
 		for (let cat = 0; cat < categories.length; cat++) {
 			const categoryName = categories[cat];
