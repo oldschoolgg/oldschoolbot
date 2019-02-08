@@ -7,7 +7,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		return msg.send(`<:OSRSBot:363583286192111616> Old School Bot is now open-source! <https://github.com/gc/oldschoolbot>`);
+		return msg.send(`<:OSRSBot:363583286192111616> Old School Bot is now open-source! <https://github.oldschool.gg/>`);
 	}
 
 };
