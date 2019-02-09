@@ -39,5 +39,5 @@ Show/discuss different skill training methods
 [Gear](https://discord.gg/7KZHZ38)
 Show/discuss different gear setups for PVM
 
-[RuneLite](https://discord.gg/SB8edn6)
+[RuneLite](https://discord.gg/mePCs8U)
 Official RuneLite client server`;
