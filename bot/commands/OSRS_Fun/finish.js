@@ -3,6 +3,7 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const tob = require('../../../data/monsters/tob');
 const raids = require('../../../data/monsters/raids');
+const pets = require('../../../data/pets');
 
 module.exports = class extends Command {
 
@@ -810,8 +811,8 @@ ${lootMSG.join('\n')}`);
 						if(!theDrops.has(raids.drops.pet.shortName)){
 							theDrops.set(raids.drops.pet.shortName, { theKC: `**${raids.drops.pet.name}:** ${kc} KC ${raids.drops.pet.emoji}`, dup: 0 });
 						}	else 	{ theDrops.get(raids.drops.pet.shortName).dup++; }
-					} 
-					
+					}
+
 					dropRecieved = raids.determineItem();
 					if (!theDrops.has(dropRecieved.shortName)){
 						theDrops.set(dropRecieved.shortName, { theKC: `**${dropRecieved.name}** ${kc} KC ${dropRecieved.emoji}`, dup: 0 });
@@ -1545,7 +1546,7 @@ ${lootMSG.join('\n')}`);
 			}
 			case 'ALLPETS':
 			case 'ALLPET': {
-				const petsRecieved = [];		
+				const petsRecieved = [];
 				pets.forEach(function(pet){
 					let kcpet = 1;
 					while(!roll(pet.chance)){
