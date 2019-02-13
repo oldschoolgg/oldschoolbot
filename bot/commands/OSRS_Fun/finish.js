@@ -1545,11 +1545,12 @@ ${lootMSG.join('\n')}`);
 				);
 			}
 			case 'ALLPETS':
+			case 'PETS':
 			case 'ALLPET': {
 				const petsRecieved = [];
 				pets.forEach(function(pet){
 					let kcpet = 1;
-					while(!roll(pet.chance)){
+					while (!roll(pet.chance)) {
 						kcpet++;
 					}
 					petsRecieved.push(kcpet.toLocaleString());
