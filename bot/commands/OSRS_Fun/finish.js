@@ -1608,9 +1608,22 @@ ${lootMSG.join('\n')}`);
 					`It took you ${kc.toLocaleString()} Barrows Chests to get all the Barrows Pieces. You also got ${duplicates} duplicate items.`
 				);
 			}
+			case 'ALLPETS':
+			case 'ALLPET': {
+				const petsRecieved = [];		
+				pets.forEach(function(pet){
+					let kcpet = 1;
+					while(!roll(pet.chance)){
+						kcpet++;
+					}
+					petsRecieved.push(kcpet.toLocaleString());
+				});
+				const embedPets = await this.getAllpetsEmbed(7981338, [petsRecieved]);
+				return msg.send(embedPets);
+			}
 			default:
 				return msg.send("I don't have that monster!");
-			}
+		}
 	}
 
 };
