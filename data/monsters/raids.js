@@ -1,88 +1,102 @@
 const raids = {
 	drops: {
-		pet:
-			{ 	emoji: '<:Olmlet:324127376873357316>',
-				name: 'Olmlet',
-				price: 0,
-				shortName: 'pet',
-				weighting: 0 },
-		curvedBone:
-			{	emoji: '<:Curved_bone:405264444256681985>',
-				name: 'Curved Bone',
-				price: 0,
-				shortName: 'curvedBone' },
-		dexterousPrayerScroll:
-			{ 	emoji: '<:Dexterous_prayer_scroll:403018312562376725>',
-				name: 'Decxterous Prayer Scroll',
-				price: 71009490,
-				shortName: 'dexterousPrayerScroll',
-				weighting: 20 },
-		arcanePrayerScroll:
-			{	emoji: '<:Arcane_prayer_scroll:403018312906309632>',
-				name: 'Arcane Prayer Scroll',
-				price: 6444816,
-				shortName: 'arcanePrayerScroll',
-				weighting: 20 },
-		twistedBuckler:
-			{	emoji: '<:Twisted_buckler:403018312625291265>',
-				name: 'Twisted Buckler',
-				price: 9603882,
-				shortName: 'twistedBuckler',
-				weighting: 4 },
-		dragonHunterCrossbow:
-			{	emoji: '<:Dragon_hunter_crossbow:403018313107636224>',
-				name: 'Dragon Hunter Crossbow',
-				price: 131785171,
-				shortName: 'dragonHunterCrossbow',
-				weighting: 4 },
-		dinhsBulwark:
-			{	emoji: '<:Dinhs_bulwark:403018312960835595>',
-				name: 'Dinhs Bulwark',
-				price: 5998828,
-				shortName: 'dinhsBulwark',
-				weighting: 3 },
-		ancestralHat:
-			{	emoji: '<:Ancestral_hat:403018312482684938>',
-				name: 'Ancestral Hat',
-				price: 14341857,
-				shortName: 'ancestralHat',
-				weighting: 3 },
-		ancestralRobeTop:
-			{	emoji: '<:Ancestral_robe_top:403018312818229248>',
-				name: 'Ancestral Robe Top',
-				price: 73315016,
-				shortName: 'ancestralRobeTop',
-				weighting: 3 },
-		ancestralRobeBottom:
-			{	emoji: '<:Ancestral_robe_bottom:403018312734343168>',
-				name: 'Ancestral Robe Bottom',
-				price: 63293227,
-				shortName: 'ancestralRobeBottom',
-				weighting: 3 },
-		dragonClaws:
-			{	emoji: '<:Dragon_claws:403018313124282368>',
-				name: 'Dragon Claws',
-				price: 68950625,
-				shortName: 'dragonClaws',
-				weighting: 3 },
-		elderMaul:
-			{	emoji: '<:Elder_maul:403018312247803906>',
-				name: 'Elder Maul',
-				price: 22262379,
-				shortName: 'elderMaul',
-				weighting: 2 },
-		kodaiInsignia:
-			{	emoji: '<:Kodai_insignia:403018312264712193>',
-				name: 'Kodai Insignia',
-				price: 68244811,
-				shortName: 'kodaiInsignia',
-				weighting: 2 },
-		twistedBow:
-			{	emoji: '<:Twisted_bow:403018312402862081>',
-				name: 'Twisted Bow',
-				price: 1176227720,
-				shortName: 'twistedBow',
-				weighting: 2 }
+		pet: {
+			emoji: '<:Olmlet:324127376873357316>',
+			name: 'Olmlet',
+			price: 0,
+			shortName: 'pet',
+			weighting: 0
+		},
+		curvedBone: {
+			emoji: '<:Curved_bone:405264444256681985>',
+			name: 'Curved Bone',
+			price: 0,
+			shortName: 'curvedBone'
+		},
+		dexterousPrayerScroll: {
+			emoji: '<:Dexterous_prayer_scroll:403018312562376725>',
+			name: 'Decxterous Prayer Scroll',
+			price: 71009490,
+			shortName: 'dexterousPrayerScroll',
+			weighting: 20
+		},
+		arcanePrayerScroll: {
+			emoji: '<:Arcane_prayer_scroll:403018312906309632>',
+			name: 'Arcane Prayer Scroll',
+			price: 6444816,
+			shortName: 'arcanePrayerScroll',
+			weighting: 20
+		},
+		twistedBuckler: {
+			emoji: '<:Twisted_buckler:403018312625291265>',
+			name: 'Twisted Buckler',
+			price: 9603882,
+			shortName: 'twistedBuckler',
+			weighting: 4
+		},
+		dragonHunterCrossbow: {
+			emoji: '<:Dragon_hunter_crossbow:403018313107636224>',
+			name: 'Dragon Hunter Crossbow',
+			price: 131785171,
+			shortName: 'dragonHunterCrossbow',
+			weighting: 4
+		},
+		dinhsBulwark: {
+			emoji: '<:Dinhs_bulwark:403018312960835595>',
+			name: 'Dinhs Bulwark',
+			price: 5998828,
+			shortName: 'dinhsBulwark',
+			weighting: 3
+		},
+		ancestralHat: {
+			emoji: '<:Ancestral_hat:403018312482684938>',
+			name: 'Ancestral Hat',
+			price: 14341857,
+			shortName: 'ancestralHat',
+			weighting: 3
+		},
+		ancestralRobeTop: {
+			emoji: '<:Ancestral_robe_top:403018312818229248>',
+			name: 'Ancestral Robe Top',
+			price: 73315016,
+			shortName: 'ancestralRobeTop',
+			weighting: 3
+		},
+		ancestralRobeBottom: {
+			emoji: '<:Ancestral_robe_bottom:403018312734343168>',
+			name: 'Ancestral Robe Bottom',
+			price: 63293227,
+			shortName: 'ancestralRobeBottom',
+			weighting: 3
+		},
+		dragonClaws: {
+			emoji: '<:Dragon_claws:403018313124282368>',
+			name: 'Dragon Claws',
+			price: 68950625,
+			shortName: 'dragonClaws',
+			weighting: 3
+		},
+		elderMaul: {
+			emoji: '<:Elder_maul:403018312247803906>',
+			name: 'Elder Maul',
+			price: 22262379,
+			shortName: 'elderMaul',
+			weighting: 2
+		},
+		kodaiInsignia: {
+			emoji: '<:Kodai_insignia:403018312264712193>',
+			name: 'Kodai Insignia',
+			price: 68244811,
+			shortName: 'kodaiInsignia',
+			weighting: 2
+		},
+		twistedBow: {
+			emoji: '<:Twisted_bow:403018312402862081>',
+			name: 'Twisted Bow',
+			price: 1176227720,
+			shortName: 'twistedBow',
+			weighting: 2
+		}
 	},
 	kill(quantity) {
 		if (quantity <= 100) {
@@ -131,15 +145,20 @@ const raids = {
 			totalValue += this.drops[key].price * loot[key];
 		}
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
-		displayLoot.push(`**GP/HR (30-Min Solo Raids):** ${(totalValue / (quantity / 2)).toLocaleString()} GP`);
+		displayLoot.push(
+			`**GP/HR (30-Min Solo Raids):** ${(
+				totalValue /
+				(quantity / 2)
+			).toLocaleString()} GP`
+		);
 		displayLoot.push(`**Total Hours**: ${(quantity / 2).toLocaleString()}`);
 		return displayLoot.join('\n');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	},
 	determineItem() {
-		const number = (Math.random() * 69);
+		const number = Math.random() * 69;
 		switch (true) {
 			case number <= 20:
 				return this.drops.dexterousPrayerScroll;
@@ -166,7 +185,6 @@ const raids = {
 			case number <= 69:
 				return this.drops.twistedBow;
 		}
-		return 'eslint :rage:';
 	}
 };
 
