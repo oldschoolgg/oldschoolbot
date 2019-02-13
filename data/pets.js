@@ -26,7 +26,7 @@ module.exports = [
 	{
 		id: 4,
 		emoji: '<:Bloodhound:324127375602483212>',
-		chance: 3000,
+		chance: 1000,
 		name: 'Bloodhound',
 		type: 'SPECIAL',
 		altNames: ['BLOODHOUND']
@@ -130,7 +130,7 @@ module.exports = [
 	{
 		id: 17,
 		emoji: '<:Pet_kraken:324127377477206016>',
-		chance: 5000,
+		chance: 3000,
 		name: 'Kraken',
 		type: 'BOSS',
 		altNames: ['KRAKEN']
