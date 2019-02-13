@@ -1,6 +1,4 @@
-/* eslint-disable */
 const { Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
 const tob = require('../../../data/monsters/tob');
 const raids = require('../../../data/monsters/raids');
 const pets = require('../../../data/pets');
@@ -807,21 +805,19 @@ ${lootMSG.join('\n')}`);
 				while (theDrops.size < 13) {
 					kc++;
 					if (!roll(25)) continue;
-					if ( roll(65)) {
-						if(!theDrops.has(raids.drops.pet.shortName)){
+					if (roll(65)) {
+						if (!theDrops.has(raids.drops.pet.shortName)) {
 							theDrops.set(raids.drops.pet.shortName, { theKC: `**${raids.drops.pet.name}:** ${kc} KC ${raids.drops.pet.emoji}`, dup: 0 });
 						}	else 	{ theDrops.get(raids.drops.pet.shortName).dup++; }
 					}
 
 					dropRecieved = raids.determineItem();
-					if (!theDrops.has(dropRecieved.shortName)){
+					if (!theDrops.has(dropRecieved.shortName)) {
 						theDrops.set(dropRecieved.shortName, { theKC: `**${dropRecieved.name}** ${kc} KC ${dropRecieved.emoji}`, dup: 0 });
 					} else 	{ theDrops.get(dropRecieved.shortName).dup++; }
 				}
-				function joinLootDups(value, key, map) {
-					loot.push(`${value.theKC} ${value.dup} duplicates`);
-				}
-				theDrops.forEach(joinLootDups);
+
+				theDrops.forEach((value, key, map) => loot.push(`${value.theKC} ${value.dup} duplicates`));
 				return msg.send(loot.join('\n'));
 				// end of chambers of xeric finish command
 			case 'VORKATH': {
@@ -1548,14 +1544,14 @@ ${lootMSG.join('\n')}`);
 			case 'PETS':
 			case 'ALLPET': {
 				const petsRecieved = [];
-				pets.forEach(function(pet){
+				pets.forEach((pet) => {
 					let kcpet = 1;
 					while (!roll(pet.chance)) {
 						kcpet++;
 					}
 					petsRecieved.push(kcpet.toLocaleString());
 				});
-				const embedPets = await this.getAllpetsEmbed(7981338, [petsRecieved]);
+				const embedPets = await this.getAllPetsEmbed(7981338, [petsRecieved]);
 				return msg.send(embedPets);
 			}
 			default:
