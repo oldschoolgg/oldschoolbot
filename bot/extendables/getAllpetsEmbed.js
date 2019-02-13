@@ -2,7 +2,7 @@ const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const pets = require('../../data/pets');
 
-class getAllpetsEmbed extends Extendable {
+class getAllPetsEmbed extends Extendable {
 
 	constructor(...args) {
 		super(...args, {
@@ -77,4 +77,4 @@ class getAllpetsEmbed extends Extendable {
 
 }
 
-module.exports = getAllpetsEmbed;
+module.exports = getAllPetsEmbed;
