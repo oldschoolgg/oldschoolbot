@@ -2,6 +2,7 @@ const { Event } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const SnooStorm = require('snoostorm');
 const Snoowrap = require('snoowrap');
+const he = require('he');
 
 const { redditApp } = require('../../config/private');
 const jagexMods = require('../../data/jagexMods');
@@ -13,7 +14,7 @@ module.exports = class extends Event {
 	}
 
 	run() {
-		const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
+		const jmodAccounts = ['Magnaboy']; // jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
 
@@ -26,18 +27,11 @@ module.exports = class extends Event {
 
 		commentStream.on('comment', (comment) => {
 			if (!jmodAccounts.includes(comment.author.name)) return;
-			const embed = new MessageEmbed()
-				.setDescription(
-					`<https://www.reddit.com${comment.permalink}?context=8&depth=9>
-\`\`\`${comment.body.slice(0, 1950)}\`\`\``
-				)
-				.setColor(14981973)
-				.setAuthor(
-					jmodRedditAccounts[comment.author.name],
-					null,
-					`https://www.reddit.com/user/${comment.author.name}`
-				);
-			this.sendEmbed(embed);
+			this.sendEmbed({
+				text: comment.body.slice(0, 1950),
+				url: `https://www.reddit.com${comment.permalink}?context=8&depth=9`,
+				jmod: jagexMods.find(mod => mod.redditUsername === comment.author.name)
+			});
 		});
 
 		const submissionStream = redditClient.SubmissionStream({
@@ -48,25 +42,26 @@ module.exports = class extends Event {
 
 		submissionStream.on('submission', (post) => {
 			if (!jmodAccounts.includes(post.author.name)) return;
-			const embed = new MessageEmbed()
-				.setDescription(
-					`**${post.title}**
-<https://www.reddit.com${post.permalink}>
-
-${post.selftext ? `\`\`\`${post.selftext}\`\`\`` : ''}
-`
-				)
-				.setColor(14981973)
-				.setAuthor(
-					jagexMods.find(mod => mod.redditUsername === post.author.name).formattedName,
-					null,
-					`https://www.reddit.com/user/${post.author.name}`
-				);
-			this.sendEmbed(embed);
+			this.sendEmbed({
+				text: post.selftext,
+				url: `https://www.reddit.com${post.permalink}`,
+				title: post.title,
+				jmod: jagexMods.find(mod => mod.redditUsername === post.author.name)
+			});
 		});
 	}
 
-	sendEmbed(embed) {
+	sendEmbed({ text, url, title, jmod }) {
+		const embed = new MessageEmbed()
+			.setDescription(`${url}\n\n ${he.decode(text)}`)
+			.setColor(1942002)
+			.setAuthor(jmod.formattedName, undefined, `https://www.reddit.com/user/${jmod.redditUsername}`);
+
+		if (title) {
+			embed.setTitle(title);
+			embed.setURL(url);
+		}
+
 		this.client.guilds.filter(guild => guild.settings.get('jmodComments'))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get('jmodComments'));
