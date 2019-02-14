@@ -4,7 +4,7 @@ const SnooStorm = require('snoostorm');
 const Snoowrap = require('snoowrap');
 
 const { redditApp } = require('../../config/private');
-const jmodRedditAccounts = require('../../data/jmod-reddit-accounts');
+const jagexMods = require('../../data/jagexMods');
 
 module.exports = class extends Event {
 
@@ -13,7 +13,7 @@ module.exports = class extends Event {
 	}
 
 	run() {
-		const jmodAccounts = Object.keys(jmodRedditAccounts);
+		const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
 
@@ -58,7 +58,7 @@ ${post.selftext ? `\`\`\`${post.selftext}\`\`\`` : ''}
 				)
 				.setColor(14981973)
 				.setAuthor(
-					jmodRedditAccounts[post.author.name],
+					jagexMods.find(mod => mod.redditUsername === post.author.name).formattedName,
 					null,
 					`https://www.reddit.com/user/${post.author.name}`
 				);

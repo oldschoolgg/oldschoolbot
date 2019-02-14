@@ -9,4 +9,5 @@ Client.defaultGuildSchema
 	.add('streamers', 'string', { array: true, default: [] })
 	.add('streamertweets', 'textchannel', { default: null })
 	.add('tweetchannel', 'textchannel', { default: null })
-	.add('twitchnotifs', 'textchannel', { default: null });
+	.add('twitchnotifs', 'textchannel', { default: null })
+	.add('ashTweetsChannel', 'textchannel', { default: null });

@@ -14,7 +14,6 @@ class OldSchoolBot extends Client {
 		for (const prop in clientProperties) {
 			this[prop] = clientProperties[prop];
 		}
-		// this.jmodRedditAccounts = jmodRedditAccounts;
 	}
 
 	roll(max) {

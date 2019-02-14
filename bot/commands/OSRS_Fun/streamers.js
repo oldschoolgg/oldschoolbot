@@ -17,13 +17,10 @@ module.exports = class extends Command {
 			headers: { 'Client-ID': this.client.twitchClientID }
 		})
 			.then(res => res.json())
-			.then(res => {
-				console.log(res);
-				return [
-					res.data.map(stream => stream.user_id).join('&id='),
-					res.data
-				];
-			}
+			.then(res => [
+				res.data.map(stream => stream.user_id).join('&id='),
+				res.data
+			]
 			);
 
 		const streamers = await fetch(`https://api.twitch.tv/helix/users?id=${stringList}`, {
