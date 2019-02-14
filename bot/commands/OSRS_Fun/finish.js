@@ -1,6 +1,8 @@
 const { Command } = require('klasa');
 const tob = require('../../../data/monsters/tob');
 const raids = require('../../../data/monsters/raids');
+const alchemicalHydra = require('../../../data/monsters/alchemicalHydra');
+const hespori = require('../../../data/monsters/hespori');
 const pets = require('../../../data/pets');
 
 module.exports = class extends Command {
@@ -1539,6 +1541,27 @@ ${lootMSG.join('\n')}`);
 				return msg.send(
 					`It took you ${kc.toLocaleString()} Barrows Chests to get all the Barrows Pieces. You also got ${duplicates} duplicate items.`
 				);
+			}
+			case 'ALCHEMICALHYDRA':
+			case 'ALCHEMICALHYDRAS':
+			case 'AHYDRA':
+			case 'AHYDRAS':
+			case 'HYDRAS':
+			case 'HYDRA':
+			case 'HYDRABOSS': {
+				const [kc, lootMSG, emote] = alchemicalHydra.finish();
+				return msg.send(`
+It took you **${kc}** kills to finish Alchemical Hydra ${emote}
+
+${lootMSG}`);
+			}
+			case 'HESPORIS':
+			case 'HESPORI': {
+				const [kc, lootMSG] = hespori.finish();
+				return msg.send(`
+It took you **${kc}** kills to finish Hespori!
+
+${lootMSG}`);
 			}
 			case 'ALLPETS':
 			case 'PETS':
