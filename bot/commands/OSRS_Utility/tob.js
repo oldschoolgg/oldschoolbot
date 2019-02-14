@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 
 module.exports = class extends Command {
 
@@ -11,8 +11,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const body = await snekfetch.get('https://www.runescape.com/oldschool/TOB/records')
-			.then(res => res.body.toString());
+		const body = await fetch('https://www.runescape.com/oldschool/TOB/records')
+			.then(res => res.text());
 
 		const regex = /(&nbsp;|<([^>]+)>)/ig;
 
@@ -23,6 +23,7 @@ module.exports = class extends Command {
 
 		const result = numericalRecords.map(record => record.replace('<h2>', '**')
 			.replace('</h2>', '**')
+			.replace('Can you beat it?', '')
 			.replace(regex, '').replace(/(^[ \t]*\n)/gm, ''));
 
 		return msg.send(result);

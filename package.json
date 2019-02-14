@@ -17,7 +17,6 @@
     "osrs-wrapper": "github:gc/Osrs-Wrapper",
     "rethinkdbdash": "^2.3.31",
     "rss-parser": "^3.1.1",
-    "snekfetch": "^3.6.4",
     "twit": "^2.2.9",
     "zlib-sync": "^0.1.4",
     "snoostorm": "0.0.5",

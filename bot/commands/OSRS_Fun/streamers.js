@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -8,26 +8,32 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			aliases: ['streams'],
-			description: 'Shows the current top 4 RuneScape streamers on Twitch.'
+			description: 'Shows the current top 5 RuneScape streamers on Twitch.'
 		});
 	}
 
 	async run(msg) {
-		const { stringList, streams } = await snekfetch
-			.get(`https://api.twitch.tv/helix/streams?game_id=459931&&type=live&first=4`, { headers: { 'Client-ID': this.client.twitchClientID } })
+		const [stringList, streams] = await fetch(`https://api.twitch.tv/helix/streams?game_id=459931&&type=live&first=12`, {
+			headers: { 'Client-ID': this.client.twitchClientID }
+		})
+			.then(res => res.json())
 			.then(res => {
-				const { data } = JSON.parse(res.text);
-				return {
-					stringList: data.map(stream => stream.user_id).join('&id='),
-					streams: data
-				};
-			});
+				console.log(res);
+				return [
+					res.data.map(stream => stream.user_id).join('&id='),
+					res.data
+				];
+			}
+			);
 
-		const streamers = await snekfetch
-			.get(`https://api.twitch.tv/helix/users?id=${stringList}`, { headers: { 'Client-ID': this.client.twitchClientID } })
+		const streamers = await fetch(`https://api.twitch.tv/helix/users?id=${stringList}`, {
+			headers: {
+				'Client-ID': this.client.twitchClientID
+			}
+		})
+			.then(res => res.json())
 			.then(res => {
-				const { data } = JSON.parse(res.text);
-				const usernames = data.map(user => user.display_name);
+				const usernames = res.data.map(user => user.display_name);
 				for (let i = 0; i < streams.length; i++) {
 					streams[i].username = usernames[i];
 				}
@@ -35,13 +41,15 @@ module.exports = class extends Command {
 			});
 
 		const embed = new MessageEmbed()
-			.setColor(8311585)
-			.setFooter('RuneScape Streamers', 'https://i.imgur.com/OQwQ8z0.jpg');
+			.setColor(8311585);
 
-		streamers.map(strm => embed.addField(
-			`${strm.username} [${strm.viewer_count} Viewers]`,
-			`${strm.title} \nhttps://www.twitch.tv/${strm.username.toLowerCase()}`
-		));
+		streamers
+			.filter(str => str.username && this.client.streamers.includes(str.username.toLowerCase()))
+			.slice(0, 5)
+			.map(strm => embed.addField(
+				`${strm.username} - ${strm.viewer_count} Viewers`,
+				`${strm.title} \nhttps://www.twitch.tv/${strm.username.toLowerCase()}`
+			));
 
 		return msg.send({ embed });
 	}
