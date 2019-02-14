@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const { get } = require('snekfetch');
+const fetch = require('node-fetch');
 
 module.exports = class extends Command {
 
@@ -13,21 +13,22 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [search, index = 1]) {
-		const { body } = await get(`http://api.urbandictionary.com/v0/define?term=${encodeURIComponent(search)}`);
+		const { list } = await fetch(`http://api.urbandictionary.com/v0/define?term=${encodeURIComponent(search)}`)
+			.then(res => res.json());
 
-		const definition = this.getDefinition(search, body, --index);
+		const definition = this.getDefinition(search, list, --index);
 		return msg.sendMessage(definition);
 	}
 
-	getDefinition(search, body, index) {
-		const result = body.list[index];
+	getDefinition(search, list, index) {
+		const result = list[index];
 		if (!result) throw 'No entry found.';
 
 		const wdef = result.definition.length > 1000 ? `${this.splitText(result.definition, 1000)}...` : result.definition;
 
 		return [
 			`**Word:** ${search}`,
-			`\n**Definition:** ${index + 1} out of ${body.list.length}\n_${wdef}_`,
+			`\n**Definition:** ${index + 1} out of ${list.length}\n_${wdef}_`,
 			`\n**Example:**\n${result.example}`,
 			`\n**${result.thumbs_up}** 👍 | **${result.thumbs_down}** 👎`,
 			`\n*By ${result.author}*`,

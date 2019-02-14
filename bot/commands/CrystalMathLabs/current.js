@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -18,10 +18,9 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [skill, timePeriod, count = 10]) {
-		let body = await snekfetch
-			.get(`https://crystalmathlabs.com/tracker/api.php?type=currenttop&timeperiod=${timePeriod}&skill=${skill}`)
-			.then(async res => await this.cmlErrorCheck(msg, res) || res.text)
-			.catch(() => { throw this.client.cmlDown; });
+		let body = await fetch(`https://crystalmathlabs.com/tracker/api.php?type=currenttop&timeperiod=${timePeriod}&skill=${skill}`)
+			.then(res => res.text())
+			.then(async res => await this.cmlErrorCheck(msg, res) || res);
 
 		const top = [];
 		body = body.split('\n');

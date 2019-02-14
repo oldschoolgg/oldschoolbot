@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -16,10 +16,11 @@ module.exports = class extends Command {
 	async run(msg, [username]) {
 		username = this.getUsername(username, msg);
 
-		const update = await snekfetch
-			.get(`https://www.crystalmathlabs.com/tracker/api.php?type=update&player=${username}`)
-			.then(res => {
-				switch (res.text.replace(/\s/g, '')) {
+		const update = await fetch(`https://www.crystalmathlabs.com/tracker/api.php?type=update&player=${username}`)
+			.then(res => res.text())
+			.then(async res => {
+				await this.cmlErrorCheck(msg, res);
+				switch (res.replace(/\s/g, '')) {
 					case '1':
 						return `Successfully updated **${username}**`;
 					case '5':
@@ -29,8 +30,7 @@ module.exports = class extends Command {
 					default:
 						return `That player doesn't exist, or is banned.`;
 				}
-			})
-			.catch(() => { throw this.client.cmlDown; });
+			});
 
 		const embed = new MessageEmbed()
 			.setColor(3120895)

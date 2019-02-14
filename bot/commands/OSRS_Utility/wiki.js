@@ -1,6 +1,6 @@
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 
 const getURL = (query) => `https://oldschool.runescape.wiki/api.php?action=query&format=json&prop=extracts%7Cpageimages%7Cinfo&iwurl=1&generator=search&formatversion=2&exsentences=5&exintro=1&explaintext=1&piprop=original&inprop=url&gsrsearch=${query}&gsrlimit=1`;
 
@@ -21,9 +21,9 @@ module.exports = class extends Command {
 			return msg.send('https://oldschool.runescape.wiki');
 		}
 
-		const { title, extract, original, fullurl } = await snekfetch
-			.get(getURL(query))
-			.then(res => res.body.query.pages[0])
+		const { title, extract, original, fullurl } = await fetch(getURL(query))
+			.then(res => res.json())
+			.then(res => res.query.pages[0])
 			.catch(() => {
 				throw "I couldn't find anything with that query!";
 			});

@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -16,10 +16,9 @@ module.exports = class extends Command {
 	async run(msg, [username]) {
 		username = this.getUsername(username, msg);
 
-		const time = await snekfetch
-			.get(`http://crystalmathlabs.com/tracker/api.php?type=virtualhiscores&page=timeto200mall&players=${username}`)
-			.then(async res => await this.cmlErrorCheck(msg, res) || parseInt(res.text.split(',')[1].split('.')[0]).toLocaleString())
-			.catch(() => { throw this.client.cmlDown; });
+		const time = await fetch(`http://crystalmathlabs.com/tracker/api.php?type=virtualhiscores&page=timeto200mall&players=${username}`)
+			.then(res => res.text())
+			.then(async res => await this.cmlErrorCheck(msg, res) || parseInt(res.split(',')[1].split('.')[0]).toLocaleString());
 
 		const embed = new MessageEmbed()
 			.setColor(3120895)

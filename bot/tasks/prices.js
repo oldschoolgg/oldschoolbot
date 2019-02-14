@@ -1,12 +1,11 @@
 const { Task } = require('klasa');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 
 module.exports = class extends Task {
 
 	async run() {
-		const summary = await snekfetch
-			.get(`https://rsbuddy.com/exchange/summary.json`)
-			.then(res => res.body);
+		const summary = await fetch(`https://rsbuddy.com/exchange/summary.json`)
+			.then(res => res.json());
 
 		const prices = {};
 
