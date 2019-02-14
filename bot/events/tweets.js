@@ -122,7 +122,6 @@ module.exports = class extends Event {
 	}
 
 	handleTweet(tweet) {
-		console.log('tweet!');
 		// If its a retweet, return.
 		if (
 			tweet.retweeted ||
