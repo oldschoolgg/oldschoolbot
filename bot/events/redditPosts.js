@@ -28,7 +28,7 @@ module.exports = class extends Event {
 			if (!jmodAccounts.includes(comment.author.name)) return;
 			const embed = new MessageEmbed()
 				.setDescription(
-					`<https://www.reddit.com${comment.permalink}>
+					`<https://www.reddit.com${comment.permalink}?context=8&depth=9>
 \`\`\`${comment.body.slice(0, 1950)}\`\`\``
 				)
 				.setColor(14981973)
