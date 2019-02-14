@@ -48,7 +48,7 @@ module.exports = class extends Command {
 			.slice(0, 5)
 			.map(strm => embed.addField(
 				`${strm.username} - ${strm.viewer_count} Viewers`,
-				`${strm.title} \nhttps://www.twitch.tv/${strm.username.toLowerCase()}`
+				`https://www.twitch.tv/${strm.username.toLowerCase()}`
 			));
 
 		return msg.send({ embed });
