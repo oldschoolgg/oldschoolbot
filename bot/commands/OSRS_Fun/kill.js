@@ -42,6 +42,11 @@ const mithrilDragon = require('../../../data/monsters/mithrilDragon');
 const adamantDragon = require('../../../data/monsters/adamantDragon');
 const runeDragon = require('../../../data/monsters/runeDragon');
 const bryophyta = require('../../../data/monsters/bryophyta');
+const alchemicalHydra = require('../../../data/monsters/alchemicalHydra');
+const hydra = require('../../../data/monsters/hydra');
+const drake = require('../../../data/monsters/drake');
+const wyrm = require('../../../data/monsters/wyrm');
+const hespori = require('../../../data/monsters/hespori');
 
 module.exports = class extends Command {
 
@@ -372,6 +377,48 @@ module.exports = class extends Command {
 			case 'MOSSGIANTBOSS': {
 				if (quantity > 500) return msg.send("I can only kill 500 Bryophyta's at a time!");
 				const loot = bryophyta.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+
+			case 'ALCHEMICALHYDRA':
+			case 'ALCHEMICALHYDRAS':
+			case 'AHYDRA':
+			case 'AHYDRAS':
+			case 'HYDRAS':
+			case 'HYDRA':
+			case 'HYDRABOSS': {
+				if (quantity > 100000) return msg.send('I can only kill 100000 Alchemical Hydras at a time!');
+				const loot = alchemicalHydra.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+
+			case 'NORMALHYDRA':
+			case 'NORMALHYDRAS':
+			case 'BABYHYDRA':
+			case 'BABYHYDRAS': {
+				if (quantity > 500) return msg.send('I can only kill 500 Hydras at a time!');
+				const loot = hydra.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+
+			case 'DRAKES':
+			case 'DRAKE': {
+				if (quantity > 500) return msg.send('I can only kill 500 Drakes at a time!');
+				const loot = drake.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+
+			case 'WYRMS':
+			case 'WYRM': {
+				if (quantity > 500) return msg.send('I can only kill 500 Wyrms at a time!');
+				const loot = wyrm.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+
+			case 'HESPORIS':
+			case 'HESPORI': {
+				if (quantity > 100) return msg.send('I can only kill 100 Hesporis at a time!');
+				const loot = hespori.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 
