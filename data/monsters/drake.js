@@ -1,9 +1,9 @@
 const drake = {
 	drops: {
-		drakeTooth: '<Drakes tooth>',
-		drakeClaw: '<Drakes claw>',
-		dragonWeaponry: ['<Dragon knife>',
-			'<Dragon thrownaxe>'],
+		drakeTooth: '<:Drakes_tooth:545977597079715840>',
+		drakeClaw: '<:Drakes_claw:545977596714811393>',
+		dragonWeaponry: ['<:Dragon_knife:545975448446828584>',
+			'<:Dragon_thrownaxe:403018313187328010>'],
 		clueScroll: '<:Clue_scroll:365003979840552960>'
 	},
 	kill(quantity) {
