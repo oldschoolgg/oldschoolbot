@@ -1,9 +1,9 @@
 const wyrm = {
 	drops: {
-		dragonWeaponry: ['<Dragon knife>',
-			'<Dragon thrownaxe>',
-			'<Dragon Sword>',
-			'<Dragon Harpoon>'],
+		dragonWeaponry: ['<:Dragon_knife:545975448446828584>',
+			'<:Dragon_thrownaxe:403018313187328010>',
+			'<:Dragon_sword:403018313078145025>',
+			'<:Dragon_harpoon:403018313115893767>'],
 		clueScroll: '<:Clue_scroll:365003979840552960>'
 	},
 	kill(quantity) {
