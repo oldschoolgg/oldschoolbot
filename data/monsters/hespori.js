@@ -1,8 +1,8 @@
 const hespori = {
 	drops: {
-		pet: '<tangleroot>',
-		bucket: '<Bottomless compost bucket>',
-		seeds: '<White lily seed>'
+		pet: '<:Tangleroot:324127378978635778>',
+		bucket: '<:Bottomless_compost_bucket:545978484078411777>',
+		seeds: 'White lily seeds'
 	},
 	kill(quantity) {
 		const loot = [];
