@@ -132,9 +132,11 @@ module.exports = class extends Event {
 		}
 
 		// If it's a reply, and the author isn't Jagex Ash, return.
-		if ((tweet.in_reply_to_status_id || tweet.in_reply_to_user_id) && (tweet.user.id.toString() !== JAGEX_ASH)) {
+		if ((tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) && (tweet.user.id_str !== JAGEX_ASH)) {
 			return;
 		}
+
+		console.log(tweet);
 
 		const _tweet = tweet.extended_tweet ? tweet.extended_tweet : tweet;
 
@@ -144,8 +146,8 @@ module.exports = class extends Event {
 			name: he.decode(tweet.user.name),
 			avatar: tweet.user.profile_image_url_https,
 			image: (_tweet.entities.media && _tweet.entities.media[0].media_url_https) || null,
-			id: tweet.user.id,
-			isReply: tweet.in_reply_to_status_id || tweet.in_reply_to_user_id
+			id: tweet.user.id_str,
+			isReply: Boolean(tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str)
 		};
 
 		this.sendTweet(formattedTweet);
@@ -163,7 +165,7 @@ module.exports = class extends Event {
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
 		if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
-		if (isReply) key = 'ashTweetsChannel';
+		if (isReply && id === JAGEX_ASH) key = 'ashTweetsChannel';
 		if (!key) return;
 
 		this.client.guilds.filter(guild => guild.settings.get(key))
