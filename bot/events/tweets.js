@@ -132,7 +132,7 @@ module.exports = class extends Event {
 		}
 
 		// If it's a reply, and the author isn't Jagex Ash, return.
-		if ((tweet.in_reply_to_status_id || tweet.in_reply_to_user_id) && (tweet.user.id !== JAGEX_ASH)) {
+		if ((tweet.in_reply_to_status_id || tweet.in_reply_to_user_id) && (tweet.user.id.toString() !== JAGEX_ASH)) {
 			return;
 		}
 
@@ -164,6 +164,7 @@ module.exports = class extends Event {
 		if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
 		if (isReply) key = 'ashTweetsChannel';
+		if (!key) return;
 
 		this.client.guilds.filter(guild => guild.settings.get(key))
 			.map(guild => {
