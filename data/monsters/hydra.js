@@ -1,11 +1,11 @@
 const hydra = {
 	drops: {
-		hydraTail: '<Hydra tail>',
-		ringPieces: ['<Hydras eye>',
-    			'<Hydras fang>',
-    			'<Hydras heart>'],
-		dragonWeaponry: ['<Dragon knife>',
-			'<Dragon thrownaxe>']
+		hydraTail: '<:Hydratail:545976358506070016>',
+		ringPieces: ['<:Hydras_eye:545975448358748211>',
+    			'<:Hydras_fang:545975448580915210>',
+    			'<:Hydras_heart:545975448493096960>'],
+		dragonWeaponry: ['<:Dragon_knife:545975448446828584>',
+			'<:Dragon_thrownaxe:403018313187328010>']
 	},
 	kill(quantity) {
 		const loot = [];
