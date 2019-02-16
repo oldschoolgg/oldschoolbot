@@ -1,6 +1,6 @@
 const tob = {
 	drops: {
-		pet: '<:Lil_zik:455403545424822272>',
+		pet: '<:Lil_zik:479460344423776266>',
 		scytheOfVitur: '<:Scythe_of_vitur_uncharged:455403545294929920>',
 		sanguinestiStaff: '<:Sanguinesti_staff_uncharged:455403545298993162>',
 		justiciarLegguards: '<:Justiciar_legguards:455403545265700874>',
