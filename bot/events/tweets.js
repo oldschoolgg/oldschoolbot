@@ -131,10 +131,14 @@ module.exports = class extends Event {
 			return;
 		}
 
+		console.log(`1 ${tweet.user.name}`);
+
 		// If it's a reply, and the author isn't Jagex Ash, return.
 		if ((tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) && (tweet.user.id_str !== JAGEX_ASH)) {
 			return;
 		}
+
+		console.log(`2 ${tweet.user.name}`);
 
 		const _tweet = tweet.extended_tweet ? tweet.extended_tweet : tweet;
 
@@ -152,6 +156,7 @@ module.exports = class extends Event {
 	}
 
 	sendTweet({ text, url, name, avatar, image, id, isReply }) {
+		console.log({ text, url, name, avatar, image, id, isReply });
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${text}`)
 			.setColor(1942002)
@@ -164,8 +169,9 @@ module.exports = class extends Event {
 		if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
 		if (isReply && id === JAGEX_ASH) key = 'ashTweetsChannel';
-		if (!key) return;
 
+		console.log(key);
+		if (!key) return;
 		this.client.guilds.filter(guild => guild.settings.get(key))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get(key));
