@@ -14,14 +14,14 @@ module.exports = class extends Event {
 	}
 
 	run() {
-		const jmodAccounts = ['Magnaboy']; // jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
+		const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
 
 		/* eslint-disable new-cap */
 		const commentStream = redditClient.CommentStream({
 			subreddit: '2007scape',
-			results: 30,
+			results: 100,
 			pollTime: 10000
 		});
 
@@ -36,7 +36,7 @@ module.exports = class extends Event {
 
 		const submissionStream = redditClient.SubmissionStream({
 			subreddit: '2007scape',
-			results: 10,
+			results: 50,
 			pollTime: 10000
 		});
 
