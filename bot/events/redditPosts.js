@@ -26,7 +26,7 @@ module.exports = class extends Event {
 		});
 
 		commentStream.on('comment', (comment) => {
-			if (!jmodAccounts.includes(comment.author.name)) return;
+			if (!jmodAccounts.includes(comment.author.name.toLowerCase())) return;
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
 				url: `https://www.reddit.com${comment.permalink}?context=8&depth=9`,
@@ -41,7 +41,7 @@ module.exports = class extends Event {
 		});
 
 		submissionStream.on('submission', (post) => {
-			if (!jmodAccounts.includes(post.author.name)) return;
+			if (!jmodAccounts.includes(post.author.name.toLowerCase())) return;
 			this.sendEmbed({
 				text: post.selftext,
 				url: `https://www.reddit.com${post.permalink}`,
