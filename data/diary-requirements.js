@@ -424,7 +424,7 @@ module.exports = {
 			boost: [5, 0, 5, 5]
 		},
 		Firemaking: {
-			statReq: [0, 0, 65, 58],
+			statReq: [0, 0, 65, 85],
 			boost: [0, 0, 5, 5]
 		},
 		Crafting: {
