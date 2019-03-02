@@ -15,7 +15,6 @@ module.exports = class extends Event {
 
 	run() {
 		const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
-
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
 
 		/* eslint-disable new-cap */
@@ -30,7 +29,7 @@ module.exports = class extends Event {
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
 				url: `https://www.reddit.com${comment.permalink}?context=8&depth=9`,
-				jmod: jagexMods.find(mod => mod.redditUsername === comment.author.name)
+				jmod: jagexMods.find(mod => mod.redditUsername.toLowerCase() === comment.author.name.toLowerCase())
 			});
 		});
 
@@ -46,7 +45,7 @@ module.exports = class extends Event {
 				text: post.selftext,
 				url: `https://www.reddit.com${post.permalink}`,
 				title: post.title,
-				jmod: jagexMods.find(mod => mod.redditUsername === post.author.name)
+				jmod: jagexMods.find(mod => mod.redditUsername.toLowerCase() === post.author.name.toLowerCase())
 			});
 		});
 	}
