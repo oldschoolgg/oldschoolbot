@@ -23,7 +23,7 @@ class getAllPetsEmbed extends Extendable {
 				${pets[2].emoji} ${petsRecieved[2]} Magic Logs
 				${pets[3].emoji} ${petsRecieved[3]} Masters
 				${pets[4].emoji} ${petsRecieved[4]} KC
-				${pets[5].emoji} ${petsRecieved[5]} Argougne Laps
+				${pets[5].emoji} ${petsRecieved[5]} Ardougne Laps
 				${pets[6].emoji} ${petsRecieved[6]} Monkfish
 				${pets[7].emoji} ${petsRecieved[7]} KC
 				${pets[8].emoji} ${petsRecieved[8]} KC
