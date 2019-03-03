@@ -14,15 +14,19 @@ module.exports = class extends Command {
 	}
 
 	async enable(msg) {
-		if (msg.guild.settings.get('petchannel')) throw `Pet Messages are already enabled.`;
+		if (msg.guild.settings.get('petchannel')) {
+			msg.sendLocale('PET_MESSAGES_ALREADY_ENABLED');
+		}
 		await msg.guild.settings.update('petchannel', msg.channel, msg.guild);
-		return msg.send(`Enabled Pet Messages in this server.`);
+		return msg.sendLocale('PET_MESSAGES_ENABLED');
 	}
 
 	async disable(msg) {
-		if (msg.guild.settings.get('petchannel') === null) throw "Pet Messages aren't enabled, so you can't disable them.";
+		if (msg.guild.settings.get('petchannel') === null) {
+			msg.sendLocale('PET_MESSAGES_ARENT_ENABLED');
+		}
 		await msg.guild.settings.reset('petchannel');
-		return msg.send(`Disabled Pet Messages in this channel.`);
+		return msg.sendLocale('PET_MESSAGES_DISABLED');
 	}
 
 };

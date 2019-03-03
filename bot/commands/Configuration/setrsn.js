@@ -13,30 +13,29 @@ module.exports = class extends Command {
 	async run(msg, [newRSN]) {
 		const RSN = msg.author.settings.get('RSN');
 		if (!newRSN && RSN) {
-			return msg.send(`Your current RSN is: \`${msg.author.settings.get('RSN')}\``);
+			return msg.sendLocale('RSN_CURRENT', [msg.author.settings.get('RSN')]);
 		}
 
 		if (!newRSN && !RSN) {
-			return msg.send(`You don't have an RSN set. You can set one like this: ` +
-			`\`${msg.guild.settings.get('prefix')}setrsn <username>\``);
+			return msg.sendLocale('RSN_NOT_SET', [msg.guild.settings.get('prefix')]);
 		}
 
 		newRSN = newRSN.toLowerCase();
 		if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
-			throw 'Invalid username';
+			return msg.sendLocale('RSN_INVALID');
 		}
 
 		if (RSN === newRSN) {
-			throw `Your RSN is already set to \`${RSN}\``;
+			return msg.sendLocale('RSN_SET_ALREADY', [RSN]);
 		}
 
 		if (RSN !== null) {
 			await msg.author.settings.update('RSN', newRSN);
-			return msg.send(`Changed your RSN from \`${RSN}\` to \`${newRSN}\``);
+			return msg.sendLocale('RSN_CHANGED', [RSN, newRSN]);
 		}
 
 		await msg.author.settings.update('RSN', newRSN);
-		return msg.send(`Your RSN has been set to: \`${newRSN}\`.`);
+		return msg.sendLocale('SET_TO', [newRSN]);
 	}
 
 };

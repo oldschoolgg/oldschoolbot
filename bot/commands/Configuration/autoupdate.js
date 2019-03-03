@@ -11,10 +11,10 @@ module.exports = class extends Command {
 
 	async run(msg) {
 		if (!msg.author.settings.get('RSN')) {
-			throw 'You must have an RSN set to Autoupdate. Use `+setrsn <username>`';
+			return msg.sendLocale('AUTO_UPDATE_NO_RSN', [msg.guild.settings.get('prefix')]);
 		}
 		await msg.author.settings.update('autoupdate', !msg.author.settings.get('autoupdate'));
-		return msg.send(`Turned Auto Updating for your account ${msg.author.settings.get('autoupdate') ? '**on**.' : '**off**.'}`);
+		return msg.sendLocale('AUTO_UPDATE', [msg.author.settings.get('autoupdate')]);
 	}
 
 };

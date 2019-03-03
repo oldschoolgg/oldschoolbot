@@ -15,19 +15,19 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		const ashTweetsChannel = msg.guild.settings.get('ashTweetsChannel');
-		if (ashTweetsChannel === msg.channel.id) throw `Ash Tweets are already enabled in this channel.`;
+		if (ashTweetsChannel === msg.channel.id) return msg.sendLocale('ASH_TWEETS_ALREADY_ENABLED');
 		if (ashTweetsChannel) {
 			await msg.guild.settings.update('ashTweetsChannel', msg.channel);
-			return msg.send(`Ash Tweets are already enabled in another channel, but I've switched them to use this channel.`);
+			return msg.sendLocale('ASH_TWEETS_ENABLED_OTHER');
 		}
 		await msg.guild.settings.update('ashTweetsChannel', msg.channel);
-		return msg.send(`Enabled Ash Tweets in this channel.`);
+		return msg.sendLocale('ASH_TWEETS_ENABLED');
 	}
 
 	async disable(msg) {
-		if (!msg.guild.settings.get('ashTweetsChannel')) throw 'Ash Tweets are already disabled.';
+		if (!msg.guild.settings.get('ashTweetsChannel')) return msg.sendLocale('ASH_TWEETS_ARENT_ENABLED');
 		await msg.guild.settings.reset('ashTweetsChannel');
-		return msg.send(`Disabled Ash Tweets in this channel.`);
+		return msg.sendLocale(`ASH_TWEETS_DISABLED`);
 	}
 
 };

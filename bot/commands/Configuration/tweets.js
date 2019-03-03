@@ -15,19 +15,19 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		const tweetChannel = msg.guild.settings.get('tweetchannel');
-		if (tweetChannel === msg.channel.id) throw `JMod Tweets are already enabled in this channel.`;
+		if (tweetChannel === msg.channel.id) msg.sendLocale('JMOD_TWEETS_ALREADY_ENABLED');
 		if (tweetChannel) {
 			await msg.guild.settings.update('tweetchannel', msg.channel);
-			return msg.send(`JMod Tweets are already enabled in another channel, but I've switched them to use this channel.`);
+			return msg.sendLocale('JMOD_TWEETS_ENABLED_OTHER');
 		}
 		await msg.guild.settings.update('tweetchannel', msg.channel);
-		return msg.send(`Enabled JMod Tweets in this channel.`);
+		return msg.sendLocale('JMOD_TWEETS_ENABLED');
 	}
 
 	async disable(msg) {
-		if (!msg.guild.settings.get('tweetchannel')) throw 'JMod Tweets are already disabled.';
+		if (!msg.guild.settings.get('tweetchannel')) msg.sendLocale('JMOD_TWEETS_ARENT_ENABLED');
 		await msg.guild.settings.reset('tweetchannel');
-		return msg.send(`Disabled JMod Tweets in this channel.`);
+		return msg.sendLocale('JMOD_TWEETS_DISABLED');
 	}
 
 };

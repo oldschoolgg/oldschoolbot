@@ -15,22 +15,22 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		if (msg.guild.settings.get('jmodComments') === msg.channel.id) {
-			throw `JMod Comments are already enabled in this channel.`;
+			msg.sendLocale('JMOD_COMMENTS_ALREADY_ENABLED');
 		}
 		if (msg.guild.settings.get('jmodComments') !== null) {
 			await msg.guild.settings.update('jmodComments', msg.channel.id, msg.guild);
-			return msg.send(
-				`JMod Comments are already enabled in another channel, but I've switched them to use this channel.`
-			);
+			return msg.sendLocale('JMOD_COMMENTS_ENABLED_OTHER');
 		}
 		await msg.guild.settings.update('jmodComments', msg.channel.id, msg.guild);
-		return msg.send(`Enabled JMod Comments in this channel.`);
+		return msg.sendLocale('JMOD_COMMENTS_ENABLED');
 	}
 
 	async disable(msg) {
-		if (msg.guild.settings.get('jmodComments') === null) throw "JMod Comments aren't enabled, so you can't disable them.";
+		if (msg.guild.settings.get('jmodComments') === null) {
+			msg.sendLocale('JMOD_COMMENTS_ARENT_ENABLED');
+		}
 		await msg.guild.settings.reset('jmodComments');
-		return msg.send(`Disabled JMod Comments in this channel.`);
+		return msg.sendLocale('JMOD_COMMENTS_DISABLED');
 	}
 
 };
