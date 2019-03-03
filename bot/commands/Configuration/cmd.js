@@ -16,16 +16,18 @@ module.exports = class extends Command {
 
 	async enable(msg, [command]) {
 		if (!msg.guild.settings.get('disabledCommands').includes(command.name)) {
-			return msg.send("That command isn't disabled.");
+			return msg.sendLocale('CMD_ISNT_DISABLED');
 		}
 		await msg.guild.settings.update('disabledCommands', command.name, { action: 'remove' });
-		return msg.send(`Successfully enabled the \`${command.name}\` command.`);
+		return msg.sendLocale('CMD_ENABLED', [command.name]);
 	}
 
 	async disable(msg, [command]) {
-		if (msg.guild.settings.get('disabledCommands').includes(command.name)) return msg.send('That command is already disabled.');
+		if (msg.guild.settings.get('disabledCommands').includes(command.name)) {
+			return msg.sendLocale('CMD_ALREADY_DISABLED');
+		}
 		await msg.guild.settings.update('disabledCommands', command.name, { action: 'add' });
-		return msg.send(`Successfully disabled the \`${command.name}\` command.`);
+		return msg.sendLocale('CMD_DISABLED', [command.name]);
 	}
 
 };

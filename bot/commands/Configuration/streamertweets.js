@@ -14,19 +14,23 @@ module.exports = class extends Command {
 	}
 
 	async enable(msg) {
-		if (msg.guild.settings.get('streamertweets') === msg.channel.id) throw `Streamer Tweets are already enabled in this channel.`;
+		if (msg.guild.settings.get('streamertweets') === msg.channel.id) {
+			msg.sendLocale('STREAMER_TWEETS_ALREADY_ENABLED');
+		}
 		if (msg.guild.settings.get('streamertweets') !== null) {
 			await msg.guild.settings.update('streamertweets', msg.channel, msg.guild);
-			return msg.send(`Streamer Tweets are already enabled in another channel, but I've switched them to use this channel.`);
+			return msg.sendLocale('STREAMER_TWEETS_ENABLED_OTHER');
 		}
 		await msg.guild.settings.update('streamertweets', msg.channel, msg.guild);
-		return msg.send(`Enabled Streamer Tweets in this channel.`);
+		return msg.sendLocale('STREAMER_TWEETS_ENABLED');
 	}
 
 	async disable(msg) {
-		if (msg.guild.settings.get('streamertweets') === null) throw "Streamer Tweets aren't enabled, so you can't disable them.";
+		if (msg.guild.settings.get('streamertweets') === null) {
+			msg.sendLocale('STREAMER_TWEETS_ARENT_ENABLED');
+		}
 		await msg.guild.settings.reset('streamertweets');
-		return msg.send(`Disabled Streamer Tweets in this channel.`);
+		return msg.sendLocale('STREAMER_TWEETS_DISABLED');
 	}
 
 };

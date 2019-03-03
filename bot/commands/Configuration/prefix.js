@@ -12,9 +12,9 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [prefix]) {
-		if (!prefix) return msg.send(`The current prefix for your guild is: \`${msg.guild.settings.get('prefix')}\``);
+		if (!prefix) return msg.sendLocale('PREFIX_CURRENT', [msg.guild.settings.get('prefix')]);
 		await msg.guild.settings.update('prefix', prefix);
-		return msg.send(`Changed Command Prefix for ${msg.guild.name} to ${prefix}`);
+		return msg.sendLocale('PREFIX_CHANGED', [msg.guild.name, prefix]);
 	}
 
 };

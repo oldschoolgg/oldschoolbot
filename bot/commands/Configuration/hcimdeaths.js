@@ -14,23 +14,23 @@ module.exports = class extends Command {
 	}
 
 	async enable(msg) {
-		if (msg.guild.settings.hcimdeaths === msg.channel.id) {
-			throw `HCIM Death Tweets are already enabled in this channel.`;
+		if (msg.guild.settings.get('hcimdeaths') === msg.channel.id) {
+			return msg.sendLocale('HCIM_TWEETS_ALREADY_ENABLED');
 		}
-		if (msg.guild.settings.hcimdeaths) {
+		if (msg.guild.settings.get('hcimdeaths')) {
 			await msg.guild.settings.update('hcimdeaths', msg.channel);
-			return msg.send(`HCIM Death Tweets are already enabled in another channel, but I've switched them to use this channel.`);
+			return msg.sendLocale('HCIM_TWEETS_ENABLED_OTHER');
 		}
 		await msg.guild.settings.update('hcimdeaths', msg.channel);
-		return msg.send(`Enabled HCIM Death Tweets in this channel.`);
+		return msg.sendLocale('HCIM_TWEETS_ENABLED');
 	}
 
 	async disable(msg) {
-		if (!msg.guild.settings.hcimdeaths) {
-			throw "HCIM Death Tweets aren't enabled, so you can't disable them.";
+		if (!msg.guild.settings.get('hcimdeaths')) {
+			return msg.sendLocale('HCIM_TWEETS_ARENT_ENABLED');
 		}
 		await msg.guild.settings.reset('hcimdeaths');
-		return msg.send(`Disabled HCIM Death Tweets in this channel.`);
+		return msg.sendLocale('HCIM_TWEETS_DISABLED');
 	}
 
 };
