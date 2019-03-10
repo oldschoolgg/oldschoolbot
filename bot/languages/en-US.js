@@ -10,7 +10,7 @@ module.exports = class extends Language {
 			* Default Klasa Keys
 			*
 			*/
-			DEFAULT: (key) => `${key} has not been localized for en-US yet.`,
+			DEFAULT: (key) => `${key} has not been localized for en-US yet. If you're seeing this, its a bug! Please join the support support and let us know. <http://support.oldschool.gg/>`,
 			DEFAULT_LANGUAGE: 'Default Language',
 			PREFIX_REMINDER: (prefix = `@${this.client.user.tag}`) => `The prefix${Array.isArray(prefix) ?
 				`es for this guild are: ${prefix.map(pre => `\`${pre}\``).join(', ')}` :
