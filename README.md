@@ -6,7 +6,7 @@ Old School Bot is a Discord Bot based on [Old School RuneScape](https://oldschoo
 
 Commands: https://www.oldschool.gg/commands
 
-> Old School Bot is not affiliated with, or endorsed by Jagex.
+> Old School Bot is not affiliated with or endorsed by Jagex. Play Old School RS for free at https://oldschool.runescape.com
 
 ## Suggestions & Bug Reports
 
