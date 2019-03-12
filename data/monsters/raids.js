@@ -15,7 +15,7 @@ const raids = {
 		},
 		dexterousPrayerScroll: {
 			emoji: '<:Dexterous_prayer_scroll:403018312562376725>',
-			name: 'Decxterous Prayer Scroll',
+			name: 'Dexterous Prayer Scroll',
 			price: 71009490,
 			shortName: 'dexterousPrayerScroll',
 			weighting: 20
