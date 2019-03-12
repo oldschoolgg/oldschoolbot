@@ -5,7 +5,7 @@
     "canvas-constructor": "^1.1.2",
     "crystalmethlabs": "github:gc/crystalmethlabs",
     "dblapi.js": "^2.1.0",
-    "discord.js": "github:bdistin/discord.js#i-s",
+    "discord.js": "github:vladfrangu/discOwOd.js#internal-sharding-2.0",
     "erlpack": "github:discordapp/erlpack",
     "he": "^1.1.1",
     "jimp": "^0.2.28",
@@ -17,10 +17,10 @@
     "osrs-wrapper": "github:gc/Osrs-Wrapper",
     "rethinkdbdash": "^2.3.31",
     "rss-parser": "^3.1.1",
-    "twit": "^2.2.9",
-    "zlib-sync": "^0.1.4",
     "snoostorm": "0.0.5",
-    "snoowrap": "^1.15.2"
+    "snoowrap": "^1.15.2",
+    "twit": "^2.2.9",
+    "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
     "eslint-config-klasa": "github:dirigeants/klasa-lint",
