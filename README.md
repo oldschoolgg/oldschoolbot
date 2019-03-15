@@ -22,12 +22,12 @@ Contributors are listed in this file, and given a Contributor role in the suppor
 
 ### Contributors
 
-- [[gc](https://github.com/gc/oldschoolbot)] everything
-- [[Ciaran](https://github.com/ciaranlangton)] gathering quest information
+- [[Ciaran](https://github.com/ciaranlangton)] helping with the quest command
 - [[Devin](https://github.com/devin8)] adding lots of bosses and monsters to +finish command
 - [[ms813](https://github.com/ms813)] adding the "raids" command
 - [[Alexsuperfly](alexsuperfly)] various command improvements
 - [[Umdlye](https://github.com/umdlye)] various fixes and improvements
+- [[Kyra](https://github.com/kyranet)] helping with many things, function for scraping world list
 
 ## Notes
 
