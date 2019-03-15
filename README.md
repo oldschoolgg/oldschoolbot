@@ -1,4 +1,4 @@
-[![Discord](https://i.imgur.com/AWqUL0x.png)](https://support.oldschool.gg/) [![Discord](https://i.imgur.com/OcOyprP.png)](https://invite.oldschool.gg/commands)
+[![Discord](https://i.imgur.com/AWqUL0x.png)](https://support.oldschool.gg/) [![Discord](https://i.imgur.com/OcOyprP.png)](https://www.oldschool.gg/commands)
 
 # ![Logo](https://i.imgur.com/VLvOEwo.png) Old School Bot
 
