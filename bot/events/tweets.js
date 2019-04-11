@@ -135,14 +135,11 @@ module.exports = class extends Event {
 			return;
 		}
 
-		console.log(`1 ${tweet.user.name}`);
-
 		// If it's a reply, and the author isn't Jagex Ash, return.
-		if ((tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) && (tweet.user.id_str !== JAGEX_ASH)) {
+		if ((tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) &&
+			(tweet.user.id_str !== JAGEX_ASH)) {
 			return;
 		}
-
-		console.log(`2 ${tweet.user.name}`);
 
 		const _tweet = tweet.extended_tweet ? tweet.extended_tweet : tweet;
 
@@ -153,19 +150,19 @@ module.exports = class extends Event {
 			avatar: tweet.user.profile_image_url_https,
 			image: (_tweet.entities.media && _tweet.entities.media[0].media_url_https) || null,
 			id: tweet.user.id_str,
-			isReply: Boolean(tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str)
+			isReply: Boolean(tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str),
+			authorURL: `https://twitter.com/${tweet.user.screen_name}/`
 		};
 
 		this.sendTweet(formattedTweet);
 	}
 
-	sendTweet({ text, url, name, avatar, image, id, isReply }) {
-		console.log({ text, url, name, avatar, image, id, isReply });
+	sendTweet({ text, url, name, avatar, image, id, isReply, authorURL }) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${text}`)
 			.setColor(1942002)
 			.setThumbnail(avatar)
-			.setAuthor(name)
+			.setAuthor(name, null, authorURL)
 			.setImage(image);
 
 		let key;
@@ -174,7 +171,6 @@ module.exports = class extends Event {
 		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
 		if (isReply && id === JAGEX_ASH) key = 'ashTweetsChannel';
 
-		console.log(key);
 		if (!key) return;
 		this.client.guilds.filter(guild => guild.settings.get(key))
 			.map(guild => {
