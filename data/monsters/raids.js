@@ -109,7 +109,7 @@ const raids = {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(25)) {
-				if (this.roll(65)) loot.push(this.drops.pet.emoji);
+				if (this.roll(53)) loot.push(this.drops.pet.emoji);
 				loot.push(this.determineItem().emoji);
 			}
 		}
@@ -136,7 +136,7 @@ const raids = {
 
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(25)) {
-				if (this.roll(65)) loot.pet++;
+				if (this.roll(53)) loot.pet++;
 				loot[this.determineItem().shortName]++;
 			}
 		}
