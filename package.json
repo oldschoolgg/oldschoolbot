@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@discordjs/uws": "^11.149.1",
-    "canvas": "github:Automattic/node-canvas#92b192447e9b9ae98da0f801e4e34afdd1dc1ef8",
+    "bufferutil": "^4.0.1",
+    "canvas": "^2.4.1",
     "canvas-constructor": "^1.1.2",
     "crystalmethlabs": "github:gc/crystalmethlabs",
     "dblapi.js": "^2.1.0",
