@@ -16,10 +16,6 @@ class OldSchoolBot extends Client {
 		}
 	}
 
-	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
-	}
-
 }
 
 new OldSchoolBot(clientOptions).login(token);
