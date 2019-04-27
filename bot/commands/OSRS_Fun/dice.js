@@ -35,7 +35,7 @@ module.exports = class extends Command {
 			if (amount > ONE_HUNDRED_MILLION) {
 				this.client.channels
 					.get('469523207691436042')
-					.send(`${msg.author} just ${roll >= 55 ? 'won' : 'lost'} ${amount.toLocaleString()} GP!`);
+					.send(`**${msg.author.username}** just ${roll >= 55 ? 'won' : 'lost'} **${amount.toLocaleString()} GP!** <:RSGP:369349580040437770>`);
 			}
 		}
 		return msg.send({ embed });
