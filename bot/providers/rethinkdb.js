@@ -6,10 +6,11 @@ module.exports = class extends Provider {
 
 	constructor(...args) {
 		super(...args);
-		this.db = rethink(mergeDefault({
+		this.enabled = this.client.production;
+		this.db = this.client.production ? rethink(mergeDefault({
 			db: 'osbot',
 			silent: false
-		}, this.client.options.providers.rethinkdb));
+		}, this.client.options.providers.rethinkdb)) : null;
 	}
 
 	async init() {
@@ -27,6 +28,7 @@ module.exports = class extends Provider {
 	}
 
 	async shutdown() {
+		if (!this.client.production) return;
 		return this.db.getPoolMaster().drain();
 	}
 

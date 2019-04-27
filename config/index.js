@@ -2,6 +2,8 @@ const emoji = require('./skill-emoji');
 const streamers = require('../data/osrs-streamers');
 const { token, twitchClientID, twitterApp, dbl } = require('./private.js');
 
+const production = require('os').platform() === 'linux';
+
 module.exports = {
 	token,
 	clientProperties: {
@@ -19,7 +21,8 @@ module.exports = {
 		dbl,
 		twitterApp,
 		cmlDown: `The CrystalMathLabs API is currently disabled. Please try again in 5 minutes.`,
-		notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`
+		notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`,
+		production
 	},
 	clientOptions: {
 		/* Discord.js Options */
@@ -45,7 +48,7 @@ module.exports = {
 		/* Klasa Options */
 		createPiecesFolders: false,
 		prefix: '+',
-		providers: { default: 'rethinkdb' },
+		providers: { default: production ? 'rethinkdb' : 'json' },
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
 		readyMessage: client => `[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
