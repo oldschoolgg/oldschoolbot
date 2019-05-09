@@ -21,6 +21,7 @@ module.exports = class extends Command {
 			.catch(() => { throw this.client.notFound; });
 
 		const clues = {
+			beginner: Minigames.Clue_Scrolls_Beginner,
 			easy: Minigames.Clue_Scrolls_Easy,
 			medium: Minigames.Clue_Scrolls_Medium,
 			hard: Minigames.Clue_Scrolls_Hard,
@@ -37,12 +38,13 @@ module.exports = class extends Command {
 				clues[prop].score.toLocaleString() : 0;
 		}
 
-		const { easy, medium, hard, elite, master, overall } = clues;
+		const { beginner, easy, medium, hard, elite, master, overall } = clues;
 
 		const embed = new MessageEmbed()
 			.setAuthor(username)
 			.setColor(52224)
 			.setThumbnail('https://i.imgur.com/azW3cSB.png')
+			.addField('Beginner', `**Rank:** ${beginner.rank}\n**Score:** ${beginner.score}\n`, true)
 			.addField('Easy', `**Rank:** ${easy.rank}\n**Score:** ${easy.score}\n`, true)
 			.addField('Medium', `**Rank:** ${medium.rank}\n**Score:** ${medium.score}\n`, true)
 			.addField('Hard', `**Rank:** ${hard.rank}\n**Score:** ${hard.score}\n`, true)
