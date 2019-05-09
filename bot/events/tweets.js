@@ -55,7 +55,9 @@ const ALL_TWITTERS = [
 	'1067444118765412352', // JagexGee
 	'1102924576449880064', // JagexHusky
 	/* HCIM Deaths */
-	'797859891373371392' // HCIM_Deaths
+	'797859891373371392', // HCIM_Deaths
+	/* Hexis */
+	'760605320108310528'
 ];
 
 const JMOD_TWITTERS = [
@@ -110,11 +112,14 @@ const STREAMER_TWITTERS = [
 ];
 
 const HCIM_DEATHS = ['797859891373371392'];
+const HEXIS = ['760605320108310528'];
+const HEXIS_CHANNEL = '575167011068575754';
 
 module.exports = class extends Event {
 
 	constructor(...args) {
-		super(...args, { once: true, event: 'klasaReady', enabled: true });
+		super(...args, { once: true, event: 'klasaReady' });
+		// this.enabled = this.client.production;
 	}
 
 	run() {
@@ -129,7 +134,6 @@ module.exports = class extends Event {
 		// If its a retweet, return.
 		if (
 			tweet.retweeted ||
-			tweet.retweeted_status ||
 			tweet.delete
 		) {
 			return;
@@ -140,6 +144,11 @@ module.exports = class extends Event {
 			(tweet.user.id_str !== JAGEX_ASH)) {
 			return;
 		}
+
+		if (tweet.retweeted_status && !HEXIS.includes(tweet.user.id_str)) {
+			return;
+		}
+
 
 		const _tweet = tweet.extended_tweet ? tweet.extended_tweet : tweet;
 
@@ -169,9 +178,15 @@ module.exports = class extends Event {
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
 		if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
+		if (HEXIS.includes(id)) key = 'hexis';
 		if (isReply && id === JAGEX_ASH) key = 'ashTweetsChannel';
 
 		if (!key) return;
+
+		if (key === 'hexis') {
+			return this.client.channels.get(HEXIS_CHANNEL).send(`<${url}>`, { embed }).catch(() => null);
+		}
+
 		this.client.guilds.filter(guild => guild.settings.get(key))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get(key));
