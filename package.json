@@ -1,5 +1,7 @@
 {
   "dependencies": {
+	"klasa-textchannel-gateway": "github:gc/text-channel-gateway#master",
+    "@kcp/tags": "^1.0.0",
     "bufferutil": "^4.0.1",
     "canvas": "^2.4.1",
     "canvas-constructor": "^1.1.2",
@@ -23,7 +25,7 @@
     "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
-    "eslint-config-klasa": "github:dirigeants/klasa-lint",
-    "eslint": "^5.0.1"
+    "eslint": "^5.0.1",
+    "eslint-config-klasa": "github:dirigeants/klasa-lint"
   }
 }

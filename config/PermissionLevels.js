@@ -2,6 +2,10 @@ const { PermissionLevels } = require('klasa');
 
 module.exports = new PermissionLevels()
 	.add(0, () => true)
+	.add(6,
+		(message) => message.guild && message.member.permissions.has('BAN_MEMBERS'),
+		{ fetch: true }
+	)
 	.add(7,
 		(message) => message.guild && message.member.permissions.has('ADMINISTRATOR'),
 		{ fetch: true }

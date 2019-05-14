@@ -1,6 +1,5 @@
 const { Command } = require('klasa');
 const fetch = require('node-fetch');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -20,11 +19,7 @@ module.exports = class extends Command {
 			.then(res => res.text())
 			.then(async res => await this.cmlErrorCheck(msg, res) || parseInt(res.split(',')[1].split('.')[0]).toLocaleString());
 
-		const embed = new MessageEmbed()
-			.setColor(3120895)
-			.setDescription(`**${username}**'s Time to 200m All is **${time}** hours.`);
-
-		return msg.send({ embed });
+		return msg.sendLocale('TTM_RESULT', [username, time]);
 	}
 
 };

@@ -5,6 +5,9 @@ const {
 	clientProperties
 } = require('../config');
 
+Client.use(require('@kcp/tags'));
+Client.use(require('klasa-textchannel-gateway'));
+
 require('../config/Schemas');
 
 class OldSchoolBot extends Client {
