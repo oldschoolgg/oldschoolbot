@@ -7,6 +7,7 @@ module.exports = class extends Finalizer {
 	}
 
 	async run(msg) {
+		if (!msg.command) return;
 		const { name } = msg.command;
 		const commandStats = this.client.settings.get('commandStats');
 
