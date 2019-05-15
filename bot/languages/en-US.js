@@ -263,7 +263,9 @@ module.exports = class extends Language {
 			TN_NOT_ENABLED_STREAMER: 'Twitch Notifications aren\'t enabled for this streamer, so you cannot remove them.',
 			TN_REMOVE: (name) => `Successfully removed ${name}.`,
 			TN_NOT_ENABLED: 'Twitch Notifications are not enabled in this guild.',
-			TN_NO_STREAMERS: 'You have Twitch Notifications enabled, but no streamers added.'
+			TN_NO_STREAMERS: 'You have Twitch Notifications enabled, but no streamers added.',
+
+			TT200_RESULT: (username, time) => `**${username}**'s Time to 200m All is **${time}** hours.`
 		};
 	}
 
