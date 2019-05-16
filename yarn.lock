@@ -385,9 +385,9 @@ detect-libc@^1.0.2:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
 
-"discord.js@github:bdistin/discord.js#i-s":
+discord.js@discordjs/discord.js:
   version "12.0.0-dev"
-  resolved "https://codeload.github.com/bdistin/discord.js/tar.gz/a6292dc6bf638ee6d9e46a9959f1ebe60f5e4499"
+  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/72dd872fce70754b0f7616f3d31b5616a48c7188"
   dependencies:
     form-data "^2.3.3"
     node-fetch "^2.3.0"
