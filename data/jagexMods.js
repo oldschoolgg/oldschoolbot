@@ -5,7 +5,6 @@ module.exports = [
 	{ redditUsername: 'mod_kieren', formattedName: 'Mod Kieren' },
 	{ redditUsername: 'jagexatlas', formattedName: 'Mod Atlas' },
 	{ redditUsername: 'jagexgambit', formattedName: 'Mod Gambit' },
-	{ redditUsername: 'modmatk', formattedName: 'Mod MatK' },
 	{ redditUsername: 'jagexsween', formattedName: 'Mod Sween' },
 	{ redditUsername: 'jagexbruno', formattedName: 'Mod Bruno' },
 	{ redditUsername: 'mod_archie', formattedName: 'Mod Archie' },

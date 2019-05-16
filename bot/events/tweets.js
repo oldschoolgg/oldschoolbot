@@ -34,7 +34,6 @@ const ALL_TWITTERS = [
 	'2818884683', // JagexArchie
 	'1858363524', // JagexWeath
 	'2279036881', // JagexJohnC
-	'1307366604', // JagexMatK
 	'1205666185', // OldSchoolRS
 	'2800406980', // Jagex_Ghost
 	'1712662364', // JagexAsh
@@ -61,7 +60,6 @@ const ALL_TWITTERS = [
 ];
 
 const JMOD_TWITTERS = [
-	'1307366604',
 	'1205666185',
 	'3362141061',
 	'3870174875',

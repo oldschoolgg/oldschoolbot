@@ -41,7 +41,7 @@ class TagCommand extends Command {
 		}
 		const filtered = message.guild.settings.get('tags').filter(([name]) => name !== tag.toLowerCase());
 		await message.guild.settings.update('tags', filtered, { action: 'overwrite' });
-		return message.send(`Removed the tag \`${tag}\``);
+		return message.send(`Removed the tag \`${tag}\`.`);
 	}
 
 	list(message) {
