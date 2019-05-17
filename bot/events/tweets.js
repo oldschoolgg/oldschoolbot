@@ -121,6 +121,7 @@ module.exports = class extends Event {
 	}
 
 	run() {
+		this.client.tasks.get('streamstatus').run();
 		const twitter = new Twit(this.client.twitterApp);
 
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });

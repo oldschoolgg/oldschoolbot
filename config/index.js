@@ -20,28 +20,28 @@ module.exports = {
 		},
 		dbl,
 		twitterApp,
-		cmlDown: `The CrystalMathLabs API is currently disabled. Please try again in 5 minutes.`,
 		notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`,
 		production
 	},
 	clientOptions: {
 		/* Discord.js Options */
 		fetchAllMembers: false,
-		messageCacheMaxSize: 5,
-		messageCacheLifetime: 60,
-		messageSweepInterval: 60,
+		messageCacheMaxSize: 200,
+		messageCacheLifetime: 120,
+		messageSweepInterval: 120,
 		disabledEvents: [
 			'RELATIONSHIP_REMOVE',
 			'RELATIONSHIP_ADD',
 			'TYPING_START',
 			'USER_NOTE_UPDATE',
 			'CHANNEL_PINS_UPDATE',
-			'GUILD_MEMBERS_CHUNK',
 			'PRESENCE_UPDATE',
 			'USER_SETTINGS_UPDATE',
 			'MESSAGE_REACTION_REMOVE_ALL',
 			'MESSAGE_REACTION_REMOVE',
-			'MESSAGE_REACTION_ADD'
+			'MESSAGE_REACTION_ADD',
+			'VOICE_STATE_UPDATE',
+			'VOICE_SERVER_UPDATE'
 		],
 		disableEveryone: true,
 		shardCount: 'auto',
