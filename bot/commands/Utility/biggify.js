@@ -1,25 +1,17 @@
 const { Command } = require('klasa');
-const jimp = require('jimp');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
 	constructor(...args) {
-		super(...args, { description: 'Makes a big version of an image.' });
+		super(...args, { description: 'This command has been removed.' });
 	}
 
 	async run(msg) {
-		const { url } = await msg.channel.fetchImage();
-		const img = await jimp.read(url);
-		img.resize(400, jimp.AUTO);
-		const chunkHeight = img.bitmap.height / 4;
-		for (let i = 0; i <= 3; i++) {
-			const tempImg = img.clone().crop(0, chunkHeight * i, 400, chunkHeight);
-			await new Promise((resolve, reject) => {
-				tempImg.getBuffer('image/png', (err, buffer) => err ?
-					reject(err) :
-					resolve(msg.channel.sendFile(buffer, 'image.png')));
-			});
-		}
+		const embed = new MessageEmbed()
+			.setDescription(`This command has been removed. If you wish to continue using it, you may add [this bot](https://discordapp.com/oauth2/authorize?client_id=474918935494393876&permissions=66186303&scope=bot).`);
+
+		return msg.send({ embed });
 	}
 
 };
