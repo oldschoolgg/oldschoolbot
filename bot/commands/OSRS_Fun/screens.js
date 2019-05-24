@@ -12,7 +12,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Get yourself a Fake Ely! +fakeely username kc',
+			description: 'Get yourself a Fake Ely!',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES']
 		});

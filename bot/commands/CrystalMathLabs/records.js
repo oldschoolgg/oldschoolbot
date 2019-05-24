@@ -9,18 +9,17 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'CML Records for an account, in a period of day, week or month.',
-			usage: '<day|week|month> <username:str> [...]',
+			usage: '<day|week|month> [username:...rsn]',
 			usageDelim: ' ',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
-	async run(msg, [timePeriod, ...username]) {
+	async run(msg, [timePeriod, username]) {
 		const { emoji } = this.client;
-		username = username.join(' ');
 
 		const { err, records } = await osrs.recordsOfPlayer(username);
-		if (err) return msg.send(err);
+		if (err) throw err;
 
 		for (const skill in records) {
 			records[skill][timePeriod] = records[skill][timePeriod].toLocaleString();

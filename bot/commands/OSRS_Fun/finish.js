@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+
 const tob = require('../../../data/monsters/tob');
 const raids = require('../../../data/monsters/raids');
 const alchemicalHydra = require('../../../data/monsters/alchemicalHydra');

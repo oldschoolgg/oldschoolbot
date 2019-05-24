@@ -9,22 +9,25 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 3,
 			description: 'Shows the ranks of an account',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const { emoji } = this.client;
 
 		const { err, stats } = await osrs.stats(username);
 
-		if (err) return msg.send('There was an unexpected error in fetching your account.');
+		if (err) throw err;
 
 		for (const skill in stats) {
-			if (stats[skill].rank !== undefined) stats[skill].rank = stats[skill].rank.toLocaleString();
+			if (stats[skill].rank !== undefined) {
+				console.log(stats[skill]);
+				stats[skill].rank = stats[skill].rank === 0 ?
+					'Unranked' :
+					stats[skill].rank.toLocaleString();
+			}
 		}
 
 		const embed = new MessageEmbed()

@@ -9,14 +9,12 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 3,
 			description: 'Shows the EHP stats of an account',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const { err, stats } = await osrs.stats(username);
 		if (err) return msg.send(err);
 
@@ -26,10 +24,11 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(3120895)
-			.setFooter('CrystalMathLabs / EHP', 'https://i.imgur.com/k12Kmhg.png')
+			.setFooter('CrystalMathLabs / EHP')
 			.setDescription(username)
 			.addField('Hours', parseInt(stats.ehp.hours).toFixed(2), true)
 			.addField(`Rank`, stats.ehp.rank.toLocaleString(), true);
+
 		return msg.send({ embed });
 	}
 

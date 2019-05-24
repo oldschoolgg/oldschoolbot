@@ -2,6 +2,7 @@ const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, Image, registerFont } = require('canvas');
 const fs = require('fs');
+
 const bg = fs.readFileSync('./resources/images/pm-bg.png');
 const canvas = createCanvas(376, 174);
 const ctx = canvas.getContext('2d');
@@ -17,8 +18,8 @@ module.exports = class extends Command {
 			description: 'Fake a private message from someone.',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
-			usage: '<username:str> <message:str>',
-			usageDelim: ','
+			usage: '[username:rsn] <message:...str>',
+			usageDelim: ' '
 		});
 	}
 

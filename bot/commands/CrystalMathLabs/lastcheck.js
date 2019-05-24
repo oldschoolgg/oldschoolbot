@@ -9,14 +9,12 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: [],
 			description: 'Checks when a CML Account was last updated.',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const time = await fetch(`https://www.crystalmathlabs.com/tracker/api.php?type=lastcheck&player=${username}`)
 			.then(res => res.text())
 			.then(async res => await this.cmlErrorCheck(msg, res) || res);

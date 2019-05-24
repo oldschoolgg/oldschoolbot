@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+
 const clues = {
 	master: require('../../../data/clues/master'),
 	medium: require('../../../data/clues/medium')

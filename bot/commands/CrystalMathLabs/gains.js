@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows the ranks of an account',
-			usage: '<ehp|ranks|xp|levels> <day|week|month|year> [username:...str]',
+			usage: '<ehp|ranks|xp|levels> <day|week|month|year> [username:...rsn]',
 			usageDelim: ' ',
 			requiredPermissions: ['EMBED_LINKS']
 		});
@@ -23,13 +23,12 @@ module.exports = class extends Command {
 
 	async run(msg, [type, timePeriod, username]) {
 		const { emoji } = this.client;
-		type = this.types[type];
-		username = this.getUsername(username, msg);
+		const apiType = this.types[type];
 
 		const { err, stats } = await osrs.track(username, this.client.timePeriods[timePeriod]);
-		if (err) return msg.send(err.length > 1 ? err : 'An unexpected error occured, please try again');
+		if (err) return msg.send(err.length > 1 ? err : 'An unexpected error occured, please try again.');
 
-		if (type === 'xpGained') {
+		if (apiType === 'xpGained') {
 			for (const skill in stats) {
 				if (stats[skill].xpGained !== undefined) {
 					stats[skill].xpGained = stats[skill].xpGained.toLocaleString();
@@ -44,43 +43,43 @@ module.exports = class extends Command {
 			.addField(
 				'\u200b',
 				`
-${emoji.attack} ${stats.attack[type]}
-${emoji.strength} ${stats.strength[type]}
-${emoji.defence} ${stats.defence[type]}
-${emoji.ranged} ${stats.ranged[type]}
-${emoji.prayer} ${stats.prayer[type]}
-${emoji.magic} ${stats.magic[type]}
-${emoji.runecraft} ${stats.runecrafting[type]}
-${emoji.construction} ${stats.construction[type]}`,
+${emoji.attack} ${stats.attack[apiType]}
+${emoji.strength} ${stats.strength[apiType]}
+${emoji.defence} ${stats.defence[apiType]}
+${emoji.ranged} ${stats.ranged[apiType]}
+${emoji.prayer} ${stats.prayer[apiType]}
+${emoji.magic} ${stats.magic[apiType]}
+${emoji.runecraft} ${stats.runecrafting[apiType]}
+${emoji.construction} ${stats.construction[apiType]}`,
 				true
 			)
 			.addField(
 				'\u200b',
 				`
-${emoji.hitpoints} ${stats.hitpoints[type]}
-${emoji.agility} ${stats.agility[type]}
-${emoji.herblore} ${stats.herblore[type]}
-${emoji.thieving} ${stats.thieving[type]}
-${emoji.crafting} ${stats.crafting[type]}
-${emoji.fletching} ${stats.fletching[type]}
-${emoji.slayer} ${stats.slayer[type]}
-${emoji.hunter} ${stats.hunter[type]}`,
+${emoji.hitpoints} ${stats.hitpoints[apiType]}
+${emoji.agility} ${stats.agility[apiType]}
+${emoji.herblore} ${stats.herblore[apiType]}
+${emoji.thieving} ${stats.thieving[apiType]}
+${emoji.crafting} ${stats.crafting[apiType]}
+${emoji.fletching} ${stats.fletching[apiType]}
+${emoji.slayer} ${stats.slayer[apiType]}
+${emoji.hunter} ${stats.hunter[apiType]}`,
 				true
 			)
 			.addField(
 				'\u200b',
 				`
-${emoji.mining} ${stats.mining[type]}
-${emoji.smithing} ${stats.smithing[type]}
-${emoji.fishing} ${stats.fishing[type]}
-${emoji.cooking} ${stats.cooking[type]}
-${emoji.firemaking} ${stats.firemaking[type]}
-${emoji.woodcutting} ${stats.woodcutting[type]}
-${emoji.farming} ${stats.farming[type]}
-${emoji.total} ${stats.overall[type]}`,
+${emoji.mining} ${stats.mining[apiType]}
+${emoji.smithing} ${stats.smithing[apiType]}
+${emoji.fishing} ${stats.fishing[apiType]}
+${emoji.cooking} ${stats.cooking[apiType]}
+${emoji.firemaking} ${stats.firemaking[apiType]}
+${emoji.woodcutting} ${stats.woodcutting[apiType]}
+${emoji.farming} ${stats.farming[apiType]}
+${emoji.total} ${stats.overall[apiType]}`,
 				true
 			)
-			.addField(`${emoji.total} Overall`, stats.overall[type], true);
+			.addField(`${emoji.total} Overall`, type, true);
 
 		return msg.send({ embed });
 	}
