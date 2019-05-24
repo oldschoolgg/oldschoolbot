@@ -8,14 +8,12 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Update a CML profile.',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const update = await fetch(`https://www.crystalmathlabs.com/tracker/api.php?type=update&player=${username}`)
 			.then(res => res.text())
 			.then(async res => {

@@ -13,6 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
+		const prefix = msg.guild.settings.get('prefix');
 		const embed = new MessageEmbed()
 			.setTitle('<:RuneLite:418690749719117834> RuneLite')
 			.setColor(16098851)
@@ -27,7 +28,7 @@ https://runelite.net/`)
 			.addField('Open Source', 'https://github.com/runelite/runelite', true)
 			.addField('Lightweight & fast', 'No lag, little memory usage', true)
 			.addField('Many Features', 'https://runelite.net/features', true)
-			.setFooter('*Use of any 3rd party client is not endorsed by Jagex, use at your own risk, use +clients to see others');
+			.setFooter(`*Use of any 3rd party client is not endorsed by Jagex, use at your own risk, use ${prefix}clients to see others`);
 
 		return msg.send({ embed });
 	}
