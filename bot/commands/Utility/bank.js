@@ -2,6 +2,7 @@ const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, Image, registerFont } = require('canvas');
 const fs = require('fs');
+
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
 const ctx = canvas.getContext('2d');

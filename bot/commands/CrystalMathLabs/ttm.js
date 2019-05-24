@@ -9,14 +9,12 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: [],
 			description: 'Shows the Time to Max of an account',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const ttm = await fetch(`https://crystalmathlabs.com/tracker/api.php?type=ttm&player=${username}`)
 			.then(res => res.text())
 			.then(async res => await this.cmlErrorCheck(msg, res) || res);
