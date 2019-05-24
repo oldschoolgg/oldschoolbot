@@ -1,7 +1,5 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
-const Crystalmethlabs = require('crystalmethlabs');
-const cml = new Crystalmethlabs();
 
 const { convertXPtoLVL } = require('../../../config/util');
 

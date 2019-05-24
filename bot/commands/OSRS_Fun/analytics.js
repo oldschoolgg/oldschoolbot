@@ -1,8 +1,8 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
 const { MessageEmbed } = require('discord.js');
-const Crystalmethlabs = require('crystalmethlabs');
-const cml = new Crystalmethlabs();
+
+const { convertXPtoLVL } = require('../../../config/util');
 
 module.exports = class extends Command {
 
@@ -139,8 +139,8 @@ Your Skilling Type is a **${skillPref}**.`,
 	}
 
 	getAverageLvl(Skills) {
-		const averageVirtualLvl = cml.convertXPtoLVL(this.getAverageXP(Skills), 126);
-		const averageLvl = cml.convertXPtoLVL(this.getAverageXP(Skills));
+		const averageVirtualLvl = convertXPtoLVL(this.getAverageXP(Skills), 126);
+		const averageLvl = convertXPtoLVL(this.getAverageXP(Skills));
 		return [averageVirtualLvl, averageLvl];
 	}
 
