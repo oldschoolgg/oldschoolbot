@@ -10,17 +10,14 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['d'],
 			description: 'Check which diaries your account has the required stats to complete (BOLD = boostable)',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const { Skills } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
-			.then(player => player)
 			.catch(() => { throw this.client.notFound; });
 
 		const diaryNames = Object.keys(requirements).map(key => titles[key]).join('\n');
@@ -34,7 +31,7 @@ module.exports = class extends Command {
 			.setDescription(username)
 			.addField('Diary', diaryNames, true)
 			.addField('You can complete:', canComplete,	true)
-			.setFooter('*Boostable');
+			.setFooter('✶Boostable');
 
 		return msg.send({ embed });
 	}
@@ -57,7 +54,7 @@ module.exports = class extends Command {
 						continue;
 					}
 				} else if (boostVar === 1) {
-					canComplete.push(`${levelMap[i]}*`);
+					canComplete.push(`✶${levelMap[i]}`);
 				} else {
 					canComplete.push(levelMap[i]);
 				}

@@ -11,20 +11,16 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['a'],
 			description: 'Shows analytics of the stats of a OSRS account',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
 		const { emoji } = this.client;
 		const { Skills } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
-			.then(player => player)
-			.catch(() => {
-				throw this.client.notFound;
-			});
+			.catch(() => { throw this.client.notFound; });
 
 		const minMaxSkill = Object.keys(Skills)
 			.map(skill => Skills[skill])

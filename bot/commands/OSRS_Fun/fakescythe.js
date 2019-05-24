@@ -2,6 +2,7 @@ const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, Image, registerFont } = require('canvas');
 const fs = require('fs');
+
 const bg = fs.readFileSync('./resources/images/tob-bg.png');
 const canvas = createCanvas(399, 100);
 const ctx = canvas.getContext('2d');
@@ -17,13 +18,12 @@ module.exports = class extends Command {
 			description: 'Get yourself a Scythe of Vitur!',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
-			usage: '<kc:int{1,99999999999999999}> <username:str> [...]',
+			usage: '[username:rsn] <kc:int{1,999999}>',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg, [kc, ...username]) {
-		username = username.join(' ');
+	async run(msg, [username, kc]) {
 		ctx.fillStyle = '#000000';
 		const BG = new Image();
 		BG.src = bg;

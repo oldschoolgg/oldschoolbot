@@ -8,14 +8,12 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const { Minigames } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
 			.catch(() => { throw this.client.notFound; });

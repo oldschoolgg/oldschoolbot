@@ -9,17 +9,14 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['lms', 'bh'],
 			description: 'Shows the BH & LMS scores of an account.',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
-		const pvp = await osrs.hiscores
+		const { Minigames: pvp } = await osrs.hiscores
 			.getPlayer(username, 'Normal')
-			.then(player => player.Minigames)
 			.catch(() => { throw this.client.notFound; });
 
 		for (const prop in pvp) {

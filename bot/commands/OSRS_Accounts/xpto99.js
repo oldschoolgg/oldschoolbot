@@ -7,17 +7,14 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows how much XP you have left until 99 in all skills.',
-			usage: '[user:user|username:str]',
+			usage: '[username:rsn]',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		username = this.getUsername(username, msg);
-
 		const player = await osrs.hiscores
 			.getPlayer(username, 'Normal')
-			.then(res => res)
 			.catch(() => { throw this.client.notFound; });
 
 		let totalXP = 0;

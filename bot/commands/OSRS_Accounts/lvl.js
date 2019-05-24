@@ -1,6 +1,7 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
-const { MessageEmbed } = require('discord.js');
+
+const { xpLeft } = require('../../../config/util');
 
 module.exports = class extends Command {
 
@@ -12,16 +13,13 @@ module.exports = class extends Command {
                 '<attack|defence|strength|hitpoints|ranged|prayer|' +
                 'magic|cooking|woodcutting|fletching|fishing|firemaking|' +
                 'crafting|smithing|mining|herblore|agility|thieving|slayer|' +
-                'farming|runecrafting|hunter|construction> [username:str] [...]',
+                'farming|runecrafting|hunter|construction> [username:...rsn]',
 			usageDelim: ' ',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
-	async run(msg, [skill, ...username]) {
-		if (!username) username = this.getUsername(username, msg);
-
-		username = username.join(' ');
+	async run(msg, [skill, username]) {
 		skill = skill.charAt(0).toUpperCase() + skill.slice(1);
 
 		const { level, xp } = await osrs.hiscores
@@ -29,26 +27,16 @@ module.exports = class extends Command {
 			.then(player => player.Skills[skill])
 			.catch(() => { throw this.client.notFound; });
 
+		let str = `**${username}**'s ${skill} level is **${level}** and is`;
+
 		if (level < 99) {
-			const embed = new MessageEmbed()
-				.setColor(8311585)
-				.setDescription(
-					`**${username}**'s ${skill} level is **${level}** and is **${this.xpLeft(level, xp)}** XP away from level **${level + 1}**`
-				);
-			return msg.send({ embed });
+			str += ` **${xpLeft(xp)}** XP away from level **${level + 1}**.`;
 		} else {
-			const embed = new MessageEmbed()
-				.setColor(8311585)
-				.setDescription(
-					`**${username}**'s ${skill} level is **${level}** and is **${(200000000 - xp).toLocaleString()}** XP away from **200m**`
-				);
-			return msg.send({ embed });
+			str += ` **${(200000000 - xp).toLocaleString()}** XP away from **200m**.`;
 		}
+
+		return msg.send(str);
 	}
 
-	xpLeft(currentlevel, currentxp) {
-		if (currentlevel === 99) return 0;
-		return (this.convertLVLtoXP(currentlevel + 1) - currentxp).toLocaleString();
-	}
 
 };
