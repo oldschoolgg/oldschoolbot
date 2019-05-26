@@ -1,4 +1,4 @@
-const { Command } = require('klasa');
+const { Command, RichDisplay } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const Parser = require('rss-parser');
 const parser = new Parser();
@@ -13,18 +13,24 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const feed = await parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true');
-		const news = feed.items[0];
+		const [message, feed] = await Promise.all([
+			msg.send('Loading...'),
+			parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true')
+		]);
+		const display = new RichDisplay();
+		display.setFooterPrefix(`Page `);
 
-		const embed = new MessageEmbed()
-			.setTitle(news.title)
-			.setDescription(news.contentSnippet)
-			.setColor(52224)
-			.setThumbnail(news.enclosure.url)
-			.setURL(news.guid)
-			.setFooter(news.categories[0], 'http://i.imgur.com/fVakfwp.png');
+		for (const item of feed.items) {
+			display.addPage(new MessageEmbed()
+				.setTitle(item.title)
+				.setDescription(item.contentSnippet)
+				.setColor(52224)
+				.setThumbnail(item.enclosure.url)
+				.setURL(item.guid));
+		}
 
-		return msg.send({ embed });
+
+		return display.run(message, { jump: false, stop: false });
 	}
 
 };
