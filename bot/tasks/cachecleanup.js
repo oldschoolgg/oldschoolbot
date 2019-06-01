@@ -36,6 +36,7 @@ module.exports = class extends Task {
 			// Per-User sweeper
 			for (const user of this.client.users.values()) {
 				if (user.settings.get('RSN')) continue;
+				if (Object.keys(user.settings.get('pets')).length > 0) continue;
 				if (user.lastMessageID && user.lastMessageID > OLD_SNOWFLAKE) continue;
 				this.client.users.delete(user.id);
 				users++;
