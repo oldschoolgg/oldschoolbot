@@ -1,24 +1,20 @@
-const { Task, util: { sleep, chunk } } = require('klasa');
+const { Task } = require('klasa');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
 module.exports = class extends Task {
 
 	async init() {
-		console.log('1');
 		this.run();
 	}
 
 	async run() {
-		console.log('2');
-		const body = await fetch('http://services.runescape.com/m=poll/oldschool/index.ws')
-			.then(res => res.text());
+		const body = await fetch('http://services.runescape.com/m=poll/oldschool/index.ws').then(res => res.text());
 
-		const test = body
-			.split('">Click here to view results')[0]
-			.split('href="')[9];
+		const test = body.split('">Click here to view results')[0].split('href="')[9];
 
-		let description = cheerio.load(body.split('<div class="previous">')[1].split('<a href="result')[0])
+		let description = cheerio
+			.load(body.split('<div class="previous">')[1].split('<a href="result')[0])
 			.text()
 			.replace('This poll will close', 'This poll closed');
 
@@ -35,28 +31,29 @@ module.exports = class extends Task {
 		const questions = [];
 		polls.map((index, pollElement) => {
 			const obj = {
-				question: pollElement.children.find((el) => el.name === 'b').children[0].data,
+				question: pollElement.children.find(el => el.name === 'b').children[0].data,
 				votes: {}
 			};
 
 			pollElement.children
-				.find((el) => el.name === 'table').children
-				.find(el => el.name === 'tbody').children
-				.filter(el => el.name === 'tr')
+				.find(el => el.name === 'table')
+				.children.find(el => el.name === 'tbody')
+				.children.filter(el => el.name === 'tr')
 				.map(el => {
-					const [type, votes] = el.children.filter(td => td.name === 'td' && td.children[0].data)
-						.map(td =>
-							td.children[0].data
-						);
+					const [type, votes] = el.children
+						.filter(td => td.name === 'td' && td.children[0].data)
+						.map(td => td.children[0].data);
 					obj.votes[type] = votes;
 				});
 
 			questions.push(obj);
 		});
 
-		const { errors } = this.client.settings.update('pollQuestions',
+		const { errors } = this.client.settings.update(
+			'pollQuestions',
 			{ title, description, questions },
-			{ arrayAction: 'overwrite' });
+			{ arrayAction: 'overwrite' }
+		);
 		if (errors) this.client.emit('wtf', errors);
 	}
 

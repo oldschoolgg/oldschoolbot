@@ -23,10 +23,7 @@ module.exports = class extends Command {
 
 		for (const skill in stats) {
 			if (stats[skill].rank !== undefined) {
-				console.log(stats[skill]);
-				stats[skill].rank = stats[skill].rank === 0 ?
-					'Unranked' :
-					stats[skill].rank.toLocaleString();
+				stats[skill].rank = stats[skill].rank === 0 ? 'Unranked' : stats[skill].rank.toLocaleString();
 			}
 		}
 
@@ -75,10 +72,16 @@ ${emoji.total} ${stats.overall.rank}`,
 			)
 			.addField(
 				`${emoji.total} Overall`,
-				`**Rank:** ${stats.overall.rank}\n**Level:** ${stats.overall.level}\n**XP:** ${stats.overall.xp.toLocaleString()}`,
+				`**Rank:** ${stats.overall.rank}\n**Level:** ${
+					stats.overall.level
+				}\n**XP:** ${stats.overall.xp.toLocaleString()}`,
 				true
 			)
-			.addField(`${emoji.clock} EHP`, `**Hours:** ${parseInt(stats.ehp.hours).toFixed(2)}\n**Rank:** ${stats.ehp.rank.toLocaleString()}`, true)
+			.addField(
+				`${emoji.clock} EHP`,
+				`**Hours:** ${parseInt(stats.ehp.hours).toFixed(2)}\n**Rank:** ${stats.ehp.rank.toLocaleString()}`,
+				true
+			)
 			.addField('\u200b', '\u200b', true);
 		return msg.send({ embed });
 	}

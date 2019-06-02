@@ -21,9 +21,9 @@ module.exports = class extends Command {
 			.then(parseTable);
 
 		let totalPlayers = 0;
-		worlds = worlds.filter(world => world.players.includes('players'))
+		worlds = worlds
+			.filter(world => world.players.includes('players'))
 			.map(world => {
-				if (!world.players.includes('players')) console.log(world.players);
 				const players = this.toNum(world.players);
 				totalPlayers += this.toNum(world.players);
 				return {
