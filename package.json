@@ -9,6 +9,7 @@
     "crystalmethlabs": "github:gc/crystalmethlabs",
     "dblapi.js": "^2.1.0",
     "discord.js": "github:bdistin/discord.js#i-s",
+    "erlpack": "github:discordapp/erlpack",
     "he": "^1.1.1",
     "klasa": "github:dirigeants/klasa#master",
     "klasa-dashboard-hooks": "github:dirigeants/klasa-dashboard-hooks#master",
@@ -22,6 +23,7 @@
     "snoostorm": "0.0.5",
     "snoowrap": "^1.15.2",
     "twit": "^2.2.9",
+    "utf-8-validate": "^5.0.2",
     "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
