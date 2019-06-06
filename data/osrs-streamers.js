@@ -57,5 +57,10 @@ module.exports = [
 	'mynetworkisdown',
 	'ellisosrs',
 	'tolsdork',
-	'lake'
+	'lake',
+	'mogtime',
+	'1013dagod',
+	'thekrautx',
+	'foxxi',
+	'flutten'
 ];
