@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { roll } = require('../../../config/util');
 
 module.exports = class extends Command {
 
@@ -15,11 +16,13 @@ module.exports = class extends Command {
 		let xp;
 		let gp;
 		let amount;
-		switch (petName
-			.replace("'", '')
-			.replace(/\s+/g, '')
-			.replace(/\./g, '')
-			.toUpperCase()) {
+		switch (
+			petName
+				.replace("'", '')
+				.replace(/\s+/g, '')
+				.replace(/\./g, '')
+				.toUpperCase()
+		) {
 			case 'CHINCHOMPA':
 			case 'BABYCHINCHOMPA':
 			case 'CHIN':
@@ -27,7 +30,9 @@ module.exports = class extends Command {
 				xp = (drop * 265).toLocaleString();
 				gp = (drop * 1504).toLocaleString();
 				amount = drop.toLocaleString();
-				return msg.send(`You had to catch ${amount} Red Chinchompas to get the Baby Chinchompa Pet! <:Baby_chinchompa_red:324127375539306497> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`);
+				return msg.send(
+					`You had to catch ${amount} Red Chinchompas to get the Baby Chinchompa Pet! <:Baby_chinchompa_red:324127375539306497> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`
+				);
 			case 'GIANTMOLE':
 			case 'MOLE':
 			case 'BABYMOLE':
@@ -38,7 +43,9 @@ module.exports = class extends Command {
 				xp = (drop * 250).toLocaleString();
 				gp = (drop * 1162).toLocaleString();
 				amount = drop.toLocaleString();
-				return msg.send(`You had to cut ${amount} Magic Logs to get the Beaver Pet! <:Beaver:324127375761604611> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`);
+				return msg.send(
+					`You had to cut ${amount} Magic Logs to get the Beaver Pet! <:Beaver:324127375761604611> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`
+				);
 			case 'BLOODHOUND':
 				return msg.send(`You had to complete ${this.petRoll(1000)} Master Clues to get the Bloodhound Pet! <:Bloodhound:324127375602483212>`);
 			case 'CALLISTO':
@@ -50,9 +57,11 @@ module.exports = class extends Command {
 			case 'AGILITY': {
 				drop = this.skillpetRoll(31965);
 				xp = (drop * 570).toLocaleString();
-				const hours = Math.round(drop * 45 / 3600);
+				const hours = Math.round((drop * 45) / 3600);
 				amount = drop.toLocaleString();
-				return msg.send(`You had to run around the Ardougne Rooftops ${amount} times to get the Giant Squirrel Pet! <:Giant_squirrel:324127376432824320> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:ehpclock:352323705210142721> ${hours} Hours of your time wasted!`);
+				return msg.send(
+					`You had to run around the Ardougne Rooftops ${amount} times to get the Giant Squirrel Pet! <:Giant_squirrel:324127376432824320> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:ehpclock:352323705210142721> ${hours} Hours of your time wasted!`
+				);
 			}
 			case 'HERON':
 			case 'FISHING':
@@ -60,7 +69,9 @@ module.exports = class extends Command {
 				xp = (drop * 120).toLocaleString();
 				gp = (drop * 423).toLocaleString();
 				amount = drop.toLocaleString();
-				return msg.send(`You had to catch ${amount} Monkfish to get the Heron Pet! <:Heron:324127376516841483> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`);
+				return msg.send(
+					`You had to catch ${amount} Monkfish to get the Heron Pet! <:Heron:324127376516841483> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`
+				);
 			case 'KALPHITE':
 			case 'KALPHITEPRINCESS':
 			case 'KALPHITEQUEEN':
@@ -142,7 +153,9 @@ module.exports = class extends Command {
 				xp = (drop * 84).toLocaleString();
 				gp = (drop * 100).toLocaleString();
 				amount = drop.toLocaleString();
-				return msg.send(`You had to pickpocket that Ardougne Knight ${amount} times to get the Rocky Pet! <:Rocky:324127378647285771> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`);
+				return msg.send(
+					`You had to pickpocket that Ardougne Knight ${amount} times to get the Rocky Pet! <:Rocky:324127378647285771> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> ${gp} GP`
+				);
 			case 'SCORPIA':
 			case 'SCORPION':
 				return msg.send(`You had to kill Scorpia ${this.petRoll(2000)} times to get the Scorpia's Offspring Pet! <:Scorpias_offspring:324127378773377024>`);
@@ -155,7 +168,9 @@ module.exports = class extends Command {
 				xp = (drop * 13913).toLocaleString();
 				gp = (drop * 210000).toLocaleString();
 				amount = drop.toLocaleString();
-				return msg.send(`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet! <:Tangleroot:324127378978635778> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`);
+				return msg.send(
+					`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet! <:Tangleroot:324127378978635778> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`
+				);
 			case 'JAD':
 				return msg.send(`You had to kill Jad ${this.petRoll(200)} times to get the TzRek-Jad Pet! <:Tzrekjad:324127379188613121>`);
 			case 'SPIDERLING':
@@ -199,7 +214,7 @@ module.exports = class extends Command {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
-			if (this.roll(dropChance)) hasPet = true;
+			if (roll(dropChance)) hasPet = true;
 			amountOfRolls++;
 		}
 		return amountOfRolls.toLocaleString();
@@ -209,7 +224,7 @@ module.exports = class extends Command {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
-			if (this.roll(dropChance)) hasPet = true;
+			if (roll(dropChance)) hasPet = true;
 			amountOfRolls++;
 		}
 		return amountOfRolls;

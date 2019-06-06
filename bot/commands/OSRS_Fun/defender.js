@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { roll } = require('../../../config/util');
 
 module.exports = class extends Command {
 
@@ -11,7 +12,7 @@ module.exports = class extends Command {
 		let DKC = 0;
 		let defenders = 0;
 		while (defenders < 7) {
-			if (this.roll(50)) {
+			if (roll(50)) {
 				defenders++;
 				KC++;
 				continue;
@@ -19,7 +20,7 @@ module.exports = class extends Command {
 			KC++;
 		}
 		while (defenders < 8) {
-			if (this.roll(100)) {
+			if (roll(100)) {
 				defenders++;
 				DKC++;
 				continue;

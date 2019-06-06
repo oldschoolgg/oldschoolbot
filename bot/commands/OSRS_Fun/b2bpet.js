@@ -1,4 +1,6 @@
 const { Command } = require('klasa');
+const { roll } = require('../../../config/util');
+
 module.exports = class extends Command {
 
 	constructor(...args) {
@@ -10,11 +12,13 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [petName]) {
-		switch (petName
-			.replace("'", '')
-			.replace(/\s+/g, '')
-			.replace(/\./g, '')
-			.toUpperCase()) {
+		switch (
+			petName
+				.replace("'", '')
+				.replace(/\s+/g, '')
+				.replace(/\./g, '')
+				.toUpperCase()
+		) {
 			case 'GIANTMOLE':
 			case 'MOLE':
 			case 'BABYMOLE':
@@ -29,7 +33,11 @@ module.exports = class extends Command {
 			case 'KALPHITEPRINCESS':
 			case 'KALPHITEQUEEN':
 			case 'KQ':
-				return msg.send(`You had to kill the Kalphite Queen ${this.petRoll(3000)} times to get the Kalphite Princess Pet **Back-to-Back (2 in a row)!** <:Kalphite_princess_2nd_form:324127376915300352>`);
+				return msg.send(
+					`You had to kill the Kalphite Queen ${this.petRoll(
+						3000
+					)} times to get the Kalphite Princess Pet **Back-to-Back (2 in a row)!** <:Kalphite_princess_2nd_form:324127376915300352>`
+				);
 			case 'GARGOYLE':
 			case 'NOON':
 			case 'DAWN':
@@ -41,24 +49,40 @@ module.exports = class extends Command {
 				return msg.send(`You had to do ${this.petRoll(3000)} Raids to get the Olmlet Pet **Back-to-Back (2 in a row)!** <:Olmlet:324127376873357316>`);
 			case 'CHAOSELEMENTAL':
 			case 'CHAOSELE':
-				return msg.send(`You had to kill the Chaos Elemental ${this.petRoll(300)} times to get the Chaos Elemental Pet **Back-to-Back (2 in a row)!** <:Pet_chaos_elemental:324127377070227456>`);
+				return msg.send(
+					`You had to kill the Chaos Elemental ${this.petRoll(300)} times to get the Chaos Elemental Pet **Back-to-Back (2 in a row)!** <:Pet_chaos_elemental:324127377070227456>`
+				);
 			case 'PRIME':
 			case 'DAGANNOTHPRIME':
-				return msg.send(`You had to kill Dagannoth Prime ${this.petRoll(5000)} times to get the Dagannoth Prime Pet **Back-to-Back (2 in a row)!** <:Pet_dagannoth_prime:324127376877289474>`);
+				return msg.send(
+					`You had to kill Dagannoth Prime ${this.petRoll(5000)} times to get the Dagannoth Prime Pet **Back-to-Back (2 in a row)!** <:Pet_dagannoth_prime:324127376877289474>`
+				);
 			case 'REX':
 			case 'DAGANNOTHREX':
-				return msg.send(`You had to kill Dagannoth Rex ${this.petRoll(5000)} times to get the Dagannoth Rex Pet **Back-to-Back (2 in a row)!** <:Pet_dagannoth_rex:324127377091330049>`);
+				return msg.send(
+					`You had to kill Dagannoth Rex ${this.petRoll(5000)} times to get the Dagannoth Rex Pet **Back-to-Back (2 in a row)!** <:Pet_dagannoth_rex:324127377091330049>`
+				);
 			case 'SUPREME':
 			case 'DAGANNOTHSUPREME':
-				return msg.send(`You had to kill Dagannoth Supreme ${this.petRoll(5000)} times to get the Dagannoth Supreme Pet **Back-to-Back (2 in a row)!** <:Pet_dagannoth_supreme:324127377066164245>`);
+				return msg.send(
+					`You had to kill Dagannoth Supreme ${this.petRoll(
+						5000
+					)} times to get the Dagannoth Supreme Pet **Back-to-Back (2 in a row)!** <:Pet_dagannoth_supreme:324127377066164245>`
+				);
 			case 'DARKCORE':
 			case 'CORE':
 			case 'CORP':
-				return msg.send(`You had to slay the Corporeal Beast ${this.petRoll(5000)} times to get the Dark Core Pet **Back-to-Back (2 in a row)!** <:Pet_dark_core:324127377347313674>`);
+				return msg.send(
+					`You had to slay the Corporeal Beast ${this.petRoll(5000)} times to get the Dark Core Pet **Back-to-Back (2 in a row)!** <:Pet_dark_core:324127377347313674>`
+				);
 			case 'BANDOS':
 			case 'GENERALGRAARDOR':
 			case 'GENERALGRAARDORJR':
-				return msg.send(`You had to kill General Graardor ${this.petRoll(5000)} times to get the General Graardor Jr. Pet **Back-to-Back (2 in a row)!** <:Pet_general_graardor:324127377376673792>`);
+				return msg.send(
+					`You had to kill General Graardor ${this.petRoll(
+						5000
+					)} times to get the General Graardor Jr. Pet **Back-to-Back (2 in a row)!** <:Pet_general_graardor:324127377376673792>`
+				);
 			case 'KRAKEN':
 				return msg.send(`You had to slay the Kraken ${this.petRoll(3000)} times to get the Kraken Pet **Back-to-Back (2 in a row)!** <:Pet_kraken:324127377477206016>`);
 			case 'KREE':
@@ -69,14 +93,20 @@ module.exports = class extends Command {
 			case 'KRIL':
 			case 'ZAMMY':
 			case 'ZAMORAK':
-				return msg.send(`You had to kill K'ril Tsutsaroth ${this.petRoll(5000)} times to get the K'ril Tsutsaroth Pet **Back-to-Back (2 in a row)!** <:Pet_kril_tsutsaroth:324127377527406594>`);
+				return msg.send(
+					`You had to kill K'ril Tsutsaroth ${this.petRoll(5000)} times to get the K'ril Tsutsaroth Pet **Back-to-Back (2 in a row)!** <:Pet_kril_tsutsaroth:324127377527406594>`
+				);
 			case 'PENANCE':
 			case 'PENANCEQUEEN':
 			case 'BA':
-				return msg.send(`You had to do ${this.petRoll(1000)} High Level Gambles to get the Penance Queen Pet **Back-to-Back (2 in a row)!** <:Pet_penance_queen:324127377649303553>`);
+				return msg.send(
+					`You had to do ${this.petRoll(1000)} High Level Gambles to get the Penance Queen Pet **Back-to-Back (2 in a row)!** <:Pet_penance_queen:324127377649303553>`
+				);
 			case 'SMOKEDEVIL':
 			case 'THERMY':
-				return msg.send(`You had to kill ${this.petRoll(3000)} Thermonuclear Smoke Devil's to get the Smoke Devil Pet **Back-to-Back (2 in a row)!** <:Pet_smoke_devil:324127377493852162>`);
+				return msg.send(
+					`You had to kill ${this.petRoll(3000)} Thermonuclear Smoke Devil's to get the Smoke Devil Pet **Back-to-Back (2 in a row)!** <:Pet_smoke_devil:324127377493852162>`
+				);
 			case 'ZULRAH':
 			case 'SNAKELING':
 				return msg.send(`You had to kill Zulrah ${this.petRoll(4000)} times to get the Snakeling Pet **Back-to-Back (2 in a row)!** <:Pet_snakeling:324127377816944642>`);
@@ -91,10 +121,16 @@ module.exports = class extends Command {
 			case 'KBD':
 			case 'PRINCEBLACKDRAGON':
 			case 'KINGBLACKDRAGON':
-				return msg.send(`You had to kill the King Black Dragon ${this.petRoll(3000)} times to get the Prince Black Dragon Pet **Back-to-Back (2 in a row)!** <:Prince_black_dragon:324127378538364928>`);
+				return msg.send(
+					`You had to kill the King Black Dragon ${this.petRoll(
+						3000
+					)} times to get the Prince Black Dragon Pet **Back-to-Back (2 in a row)!** <:Prince_black_dragon:324127378538364928>`
+				);
 			case 'SCORPIA':
 			case 'SCORPION':
-				return msg.send(`You had to kill Scorpia ${this.petRoll(2000)} times to get the Scorpia's Offspring Pet **Back-to-Back (2 in a row)!** <:Scorpias_offspring:324127378773377024>`);
+				return msg.send(
+					`You had to kill Scorpia ${this.petRoll(2000)} times to get the Scorpia's Offspring Pet **Back-to-Back (2 in a row)!** <:Scorpias_offspring:324127378773377024>`
+				);
 			case 'SKOTOS':
 			case 'SKOTIZO':
 				return msg.send(`You had to kill Skotizo ${this.petRoll(65)} times to get the Skotos Pet **Back-to-Back (2 in a row)!** <:Skotos:324127378890817546>`);
@@ -104,20 +140,26 @@ module.exports = class extends Command {
 				const xp = (drop * 13913).toLocaleString();
 				const gp = (drop * 210000).toLocaleString();
 				const amount = drop.toLocaleString();
-				return msg.send(`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet **Back-to-Back (2 in a row)!** <:Tangleroot:324127378978635778> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`);
+				return msg.send(
+					`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet **Back-to-Back (2 in a row)!** <:Tangleroot:324127378978635778> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`
+				);
 			case 'JAD':
 				return msg.send(`You had to kill Jad ${this.petRoll(200)} times to get the TzRek-Jad Pet **Back-to-Back (2 in a row)!** <:Tzrekjad:324127379188613121>`);
 			case 'SPIDERLING':
 			case 'VENNY':
 			case 'VENENATIS':
 			case 'SPIDER':
-				return msg.send(`You had to kill Venenatis ${this.petRoll(2000)} times to get the Venenatis Spiderling Pet **Back-to-Back (2 in a row)!** <:Venenatis_spiderling:324127379092144129>`);
+				return msg.send(
+					`You had to kill Venenatis ${this.petRoll(2000)} times to get the Venenatis Spiderling Pet **Back-to-Back (2 in a row)!** <:Venenatis_spiderling:324127379092144129>`
+				);
 			case 'VETION':
 				return msg.send(`You had to kill Vet'ion ${this.petRoll(2000)} times to get the Vet'ion Jr. Pet **Back-to-Back (2 in a row)!** <:Vetion_jr:324127378999738369>`);
 			case 'SIRE':
 			case 'ABYSSALSIRE':
 			case 'ABYSSALOPRHAN':
-				return msg.send(`You had to kill the Abyssal Sire ${this.petRoll(2560)} times to get the Abyssal orphan Pet **Back-to-Back (2 in a row)!** <:Abyssal_orphan:324127375774449664>`);
+				return msg.send(
+					`You had to kill the Abyssal Sire ${this.petRoll(2560)} times to get the Abyssal orphan Pet **Back-to-Back (2 in a row)!** <:Abyssal_orphan:324127375774449664>`
+				);
 			case 'CERB':
 			case 'CERBERUS':
 			case 'HELLPUPPY':
@@ -145,7 +187,7 @@ module.exports = class extends Command {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
-			if (this.roll(dropChance * dropChance)) hasPet = true;
+			if (roll(dropChance * dropChance)) hasPet = true;
 			amountOfRolls++;
 		}
 		return amountOfRolls.toLocaleString();
@@ -155,7 +197,7 @@ module.exports = class extends Command {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
-			if (this.roll(dropChance * dropChance)) hasPet = true;
+			if (roll(dropChance * dropChance)) hasPet = true;
 			amountOfRolls++;
 		}
 		return amountOfRolls;
