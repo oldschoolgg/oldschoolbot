@@ -9,10 +9,11 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Tracks gains on an account.',
-			usage: '<overall|attack|defence|strength|hitpoints|ranged|' +
-                    'prayer|magic|cooking|woodcutting|fletching|fishing|' +
-                    'firemaking|crafting|smithing|mining|herblore|agility|' +
-                    'thieving|slayer|farming|runecrafting|hunter|construction> <day|week|month|year> <username:str> [...]',
+			usage:
+				'<overall|attack|defence|strength|hitpoints|ranged|' +
+				'prayer|magic|cooking|woodcutting|fletching|fishing|' +
+				'firemaking|crafting|smithing|mining|herblore|agility|' +
+				'thieving|slayer|farming|runecrafting|hunter|construction> <day|week|month|year> (username:...rsn)',
 			usageDelim: ' ',
 			requiredPermissions: ['EMBED_LINKS']
 		});

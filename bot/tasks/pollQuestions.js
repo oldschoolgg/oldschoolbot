@@ -29,6 +29,7 @@ module.exports = class extends Task {
 		const polls = html('.question');
 
 		const questions = [];
+		// eslint-disable-next-line array-callback-return
 		polls.map((index, pollElement) => {
 			const obj = {
 				question: pollElement.children.find(el => el.name === 'b').children[0].data,
@@ -39,6 +40,7 @@ module.exports = class extends Task {
 				.find(el => el.name === 'table')
 				.children.find(el => el.name === 'tbody')
 				.children.filter(el => el.name === 'tr')
+				// eslint-disable-next-line array-callback-return
 				.map(el => {
 					const [type, votes] = el.children
 						.filter(td => td.name === 'td' && td.children[0].data)
