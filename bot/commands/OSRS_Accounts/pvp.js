@@ -9,15 +9,15 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['lms', 'bh'],
 			description: 'Shows the BH & LMS scores of an account.',
-			usage: '[username:rsn]',
+			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		const { Minigames: pvp } = await osrs.hiscores
-			.getPlayer(username, 'Normal')
-			.catch(() => { throw this.client.notFound; });
+		const { Minigames: pvp } = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
+			throw this.client.notFound;
+		});
 
 		for (const prop in pvp) {
 			pvp[prop].rank = pvp[prop].rank !== -1 ? pvp[prop].rank.toLocaleString() : 0;
@@ -38,7 +38,11 @@ module.exports = class extends Command {
 				`**Rank:** ${pvp.Bounty_Hunter_Rogues.rank}\n**Score:** ${pvp.Bounty_Hunter_Rogues.score}`,
 				true
 			)
-			.addField('<:LMS:365046749993107456> Last Man Standing', `**Rank:** ${pvp.LMS.rank}\n**Score:** ${pvp.LMS.score}`, true);
+			.addField(
+				'<:LMS:365046749993107456> Last Man Standing',
+				`**Rank:** ${pvp.LMS.rank}\n**Score:** ${pvp.LMS.score}`,
+				true
+			);
 		return msg.send({ embed });
 	}
 

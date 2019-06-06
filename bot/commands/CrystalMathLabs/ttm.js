@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: [],
 			description: 'Shows the Time to Max of an account',
-			usage: '[username:rsn]',
+			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}

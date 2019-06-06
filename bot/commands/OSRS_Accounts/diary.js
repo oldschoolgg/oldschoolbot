@@ -10,17 +10,19 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['d'],
 			description: 'Check which diaries your account has the required stats to complete (BOLD = boostable)',
-			usage: '[username:rsn]',
+			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		const { Skills } = await osrs.hiscores
-			.getPlayer(username, 'Normal')
-			.catch(() => { throw this.client.notFound; });
+		const { Skills } = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
+			throw this.client.notFound;
+		});
 
-		const diaryNames = Object.keys(requirements).map(key => titles[key]).join('\n');
+		const diaryNames = Object.keys(requirements)
+			.map(key => titles[key])
+			.join('\n');
 		const canComplete = Object.keys(requirements)
 			.map(diary => this.check(Skills, requirements[diary]))
 			.join('\n');
@@ -30,7 +32,7 @@ module.exports = class extends Command {
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)
 			.addField('Diary', diaryNames, true)
-			.addField('You can complete:', canComplete,	true)
+			.addField('You can complete:', canComplete, true)
 			.setFooter('✶Boostable');
 
 		return msg.send({ embed });

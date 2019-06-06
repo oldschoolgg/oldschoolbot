@@ -8,15 +8,15 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
-			usage: '[username:rsn]',
+			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		const { Minigames } = await osrs.hiscores
-			.getPlayer(username, 'Normal')
-			.catch(() => { throw this.client.notFound; });
+		const { Minigames } = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
+			throw this.client.notFound;
+		});
 
 		const clues = {
 			beginner: Minigames.Clue_Scrolls_Beginner,
@@ -29,11 +29,9 @@ module.exports = class extends Command {
 		};
 
 		for (const prop in clues) {
-			clues[prop].rank = clues[prop].rank !== -1 ?
-				clues[prop].rank.toLocaleString() : 0;
+			clues[prop].rank = clues[prop].rank !== -1 ? clues[prop].rank.toLocaleString() : 0;
 
-			clues[prop].score = clues[prop].score !== -1 ?
-				clues[prop].score.toLocaleString() : 0;
+			clues[prop].score = clues[prop].score !== -1 ? clues[prop].score.toLocaleString() : 0;
 		}
 
 		const { beginner, easy, medium, hard, elite, master, overall } = clues;
