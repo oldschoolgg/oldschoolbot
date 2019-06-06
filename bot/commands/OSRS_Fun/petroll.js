@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { roll } = require('../../../config/util');
 
 module.exports = class extends Command {
 
@@ -58,7 +59,7 @@ module.exports = class extends Command {
 
 		for (let i = 0; i < amount; i++) {
 			for (const pet in this.pets) {
-				if (this.roll(this.pets[pet])) pets.push(pet);
+				if (roll(this.pets[pet])) pets.push(pet);
 			}
 		}
 

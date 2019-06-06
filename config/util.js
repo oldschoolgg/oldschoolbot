@@ -1,7 +1,7 @@
 const trRegex = /<table class="server-list">/;
 const whiteSpace = /\s/;
 
-const parseTable = (html) => {
+const parseTable = html => {
 	const result = trRegex.exec(html);
 	if (!result) return null;
 
@@ -15,7 +15,7 @@ const parseTable = (html) => {
 	}));
 };
 
-const extractHTML = (html) => {
+const extractHTML = html => {
 	html = html.trim();
 	const tagName = html.slice(1, html.indexOf(' '));
 	const endOfOpeningTag = html.indexOf('>', tagName.length) + 1;
@@ -54,11 +54,11 @@ const extractHTML = (html) => {
 	};
 };
 
-const convertLVLtoXP = (lvl) => {
+const convertLVLtoXP = lvl => {
 	let points = 0;
 
 	for (let i = 1; i < lvl; i++) {
-		points += Math.floor(i + (300 * Math.pow(2, i / 7)));
+		points += Math.floor(i + 300 * Math.pow(2, i / 7));
 	}
 
 	return Math.floor(points / 4);
@@ -68,7 +68,7 @@ const convertXPtoLVL = (xp, cap = 99) => {
 	let points = 0;
 
 	for (let lvl = 1; lvl <= cap; lvl++) {
-		points += Math.floor(lvl + (300 * Math.pow(2, lvl / 7)));
+		points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
 
 		if (Math.floor(points / 4) >= xp + 1) {
 			return lvl;
@@ -78,12 +78,21 @@ const convertXPtoLVL = (xp, cap = 99) => {
 	return cap;
 };
 
-const xpLeft = (xp) => {
+const xpLeft = xp => {
 	const level = convertXPtoLVL(xp);
 	if (level === 99) return 0;
 	return (convertLVLtoXP(level + 1) - xp).toLocaleString();
 };
 
+function roll(max) {
+	return Math.floor(Math.random() * max + 1) === 1;
+}
+
 module.exports = {
-	extractHTML, parseTable, convertLVLtoXP, xpLeft, convertXPtoLVL
+	extractHTML,
+	parseTable,
+	convertLVLtoXP,
+	xpLeft,
+	convertXPtoLVL,
+	roll
 };
