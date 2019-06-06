@@ -8,13 +8,13 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['cb'],
 			description: 'Shows your Combat level.',
-			usage: '[username:rsn]'
+			usage: '(username:rsn)'
 		});
 	}
 	async run(msg, [username]) {
-		const player = await osrs.hiscores
-			.getPlayer(username, 'Normal')
-			.catch(() => { throw this.client.notFound; });
+		const player = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
+			throw this.client.notFound;
+		});
 
 		const combatLevel = await this.combatLevel(player.Skills);
 

@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows the ranks of an account',
-			usage: '<ehp|ranks|xp|levels> <day|week|month|year> [username:...rsn]',
+			usage: '<ehp|ranks|xp|levels> <day|week|month|year> (username:...rsn)',
 			usageDelim: ' ',
 			requiredPermissions: ['EMBED_LINKS']
 		});

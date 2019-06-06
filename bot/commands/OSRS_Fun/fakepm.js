@@ -18,7 +18,7 @@ module.exports = class extends Command {
 			description: 'Fake a private message from someone.',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
-			usage: '[username:rsn] <message:...str>',
+			usage: '(username:rsn) <message:...str>',
 			usageDelim: ' '
 		});
 	}

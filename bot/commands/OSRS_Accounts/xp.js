@@ -7,15 +7,15 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'Shows your XP in all skills.',
-			usage: '[username:rsn]',
+			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		const player = await osrs.hiscores
-			.getPlayer(username, 'Normal')
-			.catch(() => { throw this.client.notFound; });
+		const player = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
+			throw this.client.notFound;
+		});
 
 		for (const skill in player.Skills) {
 			if (player.Skills[skill].xp !== undefined) {

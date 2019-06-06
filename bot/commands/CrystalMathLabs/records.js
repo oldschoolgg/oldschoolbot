@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 2,
 			description: 'CML Records for an account, in a period of day, week or month.',
-			usage: '<day|week|month> [username:...rsn]',
+			usage: '<day|week|month> (username:...rsn)',
 			usageDelim: ' ',
 			requiredPermissions: ['EMBED_LINKS']
 		});

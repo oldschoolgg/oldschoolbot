@@ -10,15 +10,15 @@ module.exports = class extends Command {
 			cooldown: 2,
 			aliases: ['vs'],
 			description: 'Shows the virtual stats of a OSRS account',
-			usage: '[username:rsn]',
+			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	async run(msg, [username]) {
-		const player = await osrs.hiscores
-			.getPlayer(username, 'Normal')
-			.catch(() => { throw this.client.notFound; });
+		const player = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
+			throw this.client.notFound;
+		});
 
 		let overall = 0;
 		for (const skill in player.Skills) {
