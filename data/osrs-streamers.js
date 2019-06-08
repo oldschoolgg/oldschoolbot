@@ -1,11 +1,11 @@
 module.exports = [
 	'oldschoolrs',
+	'faux',
 	'wooxsolo',
 	'uselessroq',
 	'ayiza',
 	'alfie',
 	'mmorpgrs',
-	'faux',
 	'b0aty',
 	'randalicious',
 	'purespam',
