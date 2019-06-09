@@ -53,7 +53,7 @@ module.exports = class extends Event {
 
 	sendEmbed({ text, url, title, jmod }) {
 		const embed = new MessageEmbed()
-			.setDescription(`${url}\n\n ${he.decode(text)}`)
+			.setDescription(he.decode(text))
 			.setColor(1942002)
 			.setAuthor(jmod.formattedName, undefined, `https://www.reddit.com/user/${jmod.redditUsername}`);
 
@@ -65,7 +65,7 @@ module.exports = class extends Event {
 		this.client.guilds.filter(guild => guild.settings.get('jmodComments'))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get('jmodComments'));
-				if (channel) channel.send(embed);
+				if (channel) channel.send(`<${url}>`, { embed });
 			});
 	}
 
