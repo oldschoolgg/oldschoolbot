@@ -1,6 +1,6 @@
 const emoji = require('./skill-emoji');
 const streamers = require('../data/osrs-streamers');
-const { token, twitchClientID, twitterApp, dbl } = require('./private.js');
+const { token, twitchClientID, twitterApp, dbl, clientSecret, KDHOptions } = require('./private.js');
 
 const production = require('os').platform() === 'linux';
 
@@ -48,6 +48,11 @@ module.exports = {
 		providers: { default: production ? 'rethinkdb' : 'json' },
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
-		readyMessage: client => `[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
+		readyMessage: client =>
+			`[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
+		/* KDH */
+		clientSecret,
+		clientID: '303730326692429825',
+		dashboardHooks: KDHOptions
 	}
 };
