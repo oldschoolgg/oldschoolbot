@@ -13,13 +13,21 @@ module.exports = class extends Command {
 		this.error = `That user isn't following that channel, or it is banned, or doesn't exist at all.`;
 	}
 
+	async init() {
+		if (!this.client.twitchClientID) this.disable();
+	}
+
 	async run(msg, [user, channel]) {
-		const url = new URL(`https://api.twitch.tv/kraken/users/${encodeURIComponent(user)}/follows/channels/${channel}`);
+		const url = new URL(
+			`https://api.twitch.tv/kraken/users/${encodeURIComponent(user)}/follows/channels/${channel}`
+		);
 		url.search = new URLSearchParams([['client_id', this.client.twitchClientID]]);
 
 		const body = await fetch(url)
 			.then(response => response.json())
-			.catch(() => { throw this.error; });
+			.catch(() => {
+				throw this.error;
+			});
 
 		const days = this.differenceDays(new Date(body.created_at), new Date());
 

@@ -120,6 +120,16 @@ module.exports = class extends Event {
 		this.enabled = this.client.production;
 	}
 
+	async init() {
+		if (
+			!this.client.twitterApp ||
+			!this.client.twitterApp.access_token ||
+			!this.client.twitterApp.access_token.length === 0
+		) {
+			this.disable();
+		}
+	}
+
 	run() {
 		this.client.tasks.get('streamstatus').run();
 		const twitter = new Twit(this.client.twitterApp);
@@ -131,23 +141,21 @@ module.exports = class extends Event {
 
 	handleTweet(tweet) {
 		// If its a retweet, return.
-		if (
-			tweet.retweeted ||
-			tweet.delete
-		) {
+		if (tweet.retweeted || tweet.delete) {
 			return;
 		}
 
 		// If it's a reply, and the author isn't Jagex Ash, return.
-		if ((tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) &&
-			(tweet.user.id_str !== JAGEX_ASH)) {
+		if (
+			(tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) &&
+			tweet.user.id_str !== JAGEX_ASH
+		) {
 			return;
 		}
 
 		if (tweet.retweeted_status && !HEXIS.includes(tweet.user.id_str)) {
 			return;
 		}
-
 
 		const _tweet = tweet.extended_tweet ? tweet.extended_tweet : tweet;
 
@@ -183,10 +191,14 @@ module.exports = class extends Event {
 		if (!key) return;
 
 		if (key === 'hexis') {
-			return this.client.channels.get(HEXIS_CHANNEL).send(`<${url}>`, { embed }).catch(() => null);
+			return this.client.channels
+				.get(HEXIS_CHANNEL)
+				.send(`<${url}>`, { embed })
+				.catch(() => null);
 		}
 
-		this.client.guilds.filter(guild => guild.settings.get(key))
+		this.client.guilds
+			.filter(guild => guild.settings.get(key))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get(key));
 				if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
