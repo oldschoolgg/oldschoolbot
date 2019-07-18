@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (!pet) throw "I don't recognize that pet name!";
 
 		const count = pet.finish();
-		const petMessage = pet.formatFinish(count);
+		let petMessage = pet.formatFinish(count);
 
 		const petRecords = this.client.settings.get('petRecords');
 		const lowest = petRecords.lowest[pet.id];
@@ -28,13 +28,13 @@ module.exports = class extends Command {
 		if (!lowest || count < lowest) {
 			petRecords.lowest[pet.id] = count;
 			this.client.settings.update('petRecords', { ...petRecords });
-			// petMessage += `\n\nYou set a new global record for the **luckiest** ${pet.name} pet!`;
-			// if (lowest) petMessage += ` The previous record was ${lowest}.`;
+			petMessage += `\n\nYou set a new global record for the **luckiest** ${pet.name} pet!`;
+			if (lowest) petMessage += ` The previous record was ${lowest}.`;
 		} else if (!highest || count > highest) {
 			petRecords.highest[pet.id] = count;
 			this.client.settings.update('petRecords', { ...petRecords });
-			// petMessage += `\n\nYou set a new global record for the **unluckiest** ${pet.name} pet!`;
-			// if (highest) petMessage += ` The previous record was ${highest}.`;
+			petMessage += `\n\nYou set a new global record for the **unluckiest** ${pet.name} pet!`;
+			if (highest) petMessage += ` The previous record was ${highest}.`;
 		}
 
 		return msg.send(petMessage);

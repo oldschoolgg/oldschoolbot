@@ -13,7 +13,7 @@ const pets = [
 		type: 'SKILL',
 		altNames: ['CHINCHOMPA', 'BABYCHINCHOMPA', 'CHIN'],
 		formatFinish: num =>
-			`You had to catch ${num.toLocaleString()} Red Chinchompas to get the Baby Chinchompa Pet! ` +
+			`You had to catch ${fm(num)} Red Chinchompas to get the Baby Chinchompa Pet! ` +
 			`<:Baby_chinchompa_red:324127375539306497> You also got...\n${xpEmoji} ${fm(
 				num * 265
 			)} XP\n${gpEmoji} ${fm(num * 1318)} GP`
@@ -26,7 +26,7 @@ const pets = [
 		type: 'BOSS',
 		altNames: ['BABYMOLE', 'MOLE', 'GIANTMOLE'],
 		formatFinish: num =>
-			`You had to kill ${num} Giant Moles to get the Baby Mole Pet! <:Baby_mole:324127375858204672>`
+			`You had to kill ${fm(num)} Giant Moles to get the Baby Mole Pet! <:Baby_mole:324127375858204672>`
 	},
 	{
 		id: 3,
@@ -36,10 +36,8 @@ const pets = [
 		type: 'SKILL',
 		altNames: ['BEAVER', 'WC', 'WOODCUTTING'],
 		formatFinish: num =>
-			`You had to cut ${num} Magic Logs to get the Beaver Pet! <:Beaver:324127375761604611> ` +
-			`You also got...\n<:SkillTotal:395812233000517650> ${fm(
-				num * 250
-			)} XP\n<:RSGP:369349580040437770> ${fm(num * 1043)} GP`
+			`You had to cut ${fm(num)} Magic Logs to get the Beaver Pet! <:Beaver:324127375761604611> ` +
+			`You also got...\n${xpEmoji} ${fm(num * 250)} XP\n${gpEmoji} ${fm(num * 1043)} GP`
 	},
 	{
 		id: 4,
@@ -75,7 +73,7 @@ const pets = [
 		formatFinish: num =>
 			`You had to run around the Ardougne Rooftops ${fm(
 				num
-			)} times to get the Giant Squirrel Pet! <:Giant_squirrel:324127376432824320> You also got...\n<:SkillTotal:395812233000517650> ${fm(
+			)} times to get the Giant Squirrel Pet! <:Giant_squirrel:324127376432824320> You also got...\n${xpEmoji} ${fm(
 				num * 570
 			)} XP\n<:ehpclock:352323705210142721> ${Math.round((num * 45) / 3600)} Hours of your time wasted!`
 	},
@@ -89,9 +87,9 @@ const pets = [
 		formatFinish: num =>
 			`You had to catch ${fm(
 				num
-			)} Monkfish to get the Heron Pet! <:Heron:324127376516841483> You also got...\n<:SkillTotal:395812233000517650> ${fm(
+			)} Monkfish to get the Heron Pet! <:Heron:324127376516841483> You also got...\n${xpEmoji} ${fm(
 				num * 120
-			)} XP\n<:RSGP:369349580040437770> ${fm(num * 294)} GP`
+			)} XP\n${gpEmoji} ${fm(num * 294)} GP`
 	},
 	{
 		id: 8,
@@ -311,7 +309,6 @@ const pets = [
 			`You had to craft ${fm(
 				num
 			)} Nature Runes to get the Rift Guardian Pet! <:Rift_guardian_fire:324127378588827648>`
-		// todo
 	},
 	{
 		id: 27,
@@ -333,9 +330,11 @@ const pets = [
 		type: 'SKILL',
 		altNames: ['ROCKY', 'THIEVING', 'RACCOON'],
 		formatFinish: num =>
-			`You had to pickpocket that Ardougne Knight ${num} times to get the Rocky Pet! <:Rocky:324127378647285771> You also got...\n<:SkillTotal:395812233000517650> ${fm(
+			`You had to pickpocket that Ardougne Knight ${fm(
+				num
+			)} times to get the Rocky Pet! <:Rocky:324127378647285771> You also got...\n${xpEmoji} ${fm(
 				num * 84
-			)} XP\n<:RSGP:369349580040437770> ${fm(num * 100)} GP`
+			)} XP\n${gpEmoji} ${fm(num * 100)} GP`
 	},
 	{
 		id: 29,
@@ -369,9 +368,9 @@ const pets = [
 		formatFinish: num =>
 			`You had to harvest ${fm(
 				num
-			)} Magic Trees to get the Tangleroot Pet! <:Tangleroot:324127378978635778> You also got...\n<:SkillTotal:395812233000517650> ${fm(
+			)} Magic Trees to get the Tangleroot Pet! <:Tangleroot:324127378978635778> You also got...\n${xpEmoji} ${fm(
 				num * 13768.3
-			)} XP\n<:RSGP:369349580040437770> -${fm(num * 116894)} GP`
+			)} XP\n${gpEmoji} -${fm(num * 116894)} GP`
 	},
 	{
 		id: 32,
