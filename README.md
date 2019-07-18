@@ -20,14 +20,29 @@ Please lint your code with the projects' [ESLint](https://eslint.org/) config.
 
 Contributors are listed in this file, and given a Contributor role in the support server. If you have more questions, send me a message on discord.
 
+### Setting up the bot to run locally for contributing
+
+1. Clone the repository: `git clone https://github.com/gc/oldschoolbot.git`
+2. Go into the folder, and
+   `npm install`
+3. Make a file called `private.js` in the `/config` folder with this content, filling in your bot token:
+
+```js
+module.exports = {
+	token: `YOUR_BOT_TOKEN_HERE`
+};
+```
+
+4. Run `node bot`
+
 ### Contributors
 
-- [[Ciaran](https://github.com/ciaranlangton)] helping with the quest command
-- [[Devin](https://github.com/devin8)] adding lots of bosses and monsters to +finish command
-- [[ms813](https://github.com/ms813)] adding the "raids" command
-- [[Alexsuperfly](alexsuperfly)] various command improvements
-- [[Umdlye](https://github.com/umdlye)] various fixes and improvements
-- [[Kyra](https://github.com/kyranet)] helping with many things, function for scraping world list
+-   [[Ciaran](https://github.com/ciaranlangton)] helping with the quest command
+-   [[Devin](https://github.com/devin8)] adding lots of bosses and monsters to +finish command
+-   [[ms813](https://github.com/ms813)] adding the "raids" command
+-   [[Alexsuperfly](alexsuperfly)] various command improvements
+-   [[Umdlye](https://github.com/umdlye)] various fixes and improvements
+-   [[Kyra](https://github.com/kyranet)] helping with many things, function for scraping world list
 
 ## Notes
 
