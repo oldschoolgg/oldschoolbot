@@ -222,7 +222,7 @@ const pets = [
 		chance: 5000,
 		name: "K'ril Tsutsaroth Jr.",
 		type: 'BOSS',
-		altNames: ['KRILL', 'ZAMMY', 'ZAMORAK'],
+		altNames: ['KRILL', 'ZAMMY', 'ZAMORAK', 'KRIL', 'ZAM'],
 		formatFinish: num =>
 			`You had to kill K'ril Tsutsaroth ${fm(
 				num
