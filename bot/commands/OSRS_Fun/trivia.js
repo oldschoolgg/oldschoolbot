@@ -1,6 +1,12 @@
 const { Command } = require('klasa');
 
-const { triviaQuestions } = require('../../../resources/trivia-questions');
+let triviaQuestions;
+try {
+	// eslint-disable-next-line prefer-destructuring
+	triviaQuestions = require('../../../resources/trivia-questions').triviaQuestions;
+} catch (err) {
+	console.log('No trivia questions file found. Disabling trivia command.');
+}
 
 module.exports = class extends Command {
 
@@ -11,11 +17,18 @@ module.exports = class extends Command {
 		});
 	}
 
+	async init() {
+		if (!triviaQuestions) this.disable();
+	}
+
 	async run(msg) {
 		const item = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 		await msg.send(item.q);
 		try {
-			const collected = await msg.channel.awaitMessages(answer => item.a.includes(answer.content.toLowerCase()), options);
+			const collected = await msg.channel.awaitMessages(
+				answer => item.a.includes(answer.content.toLowerCase()),
+				options
+			);
 			const winner = collected.first();
 			return msg.channel.send(
 				`<:RSTickBox:381462594734522372> ${winner.author} had the right answer with \`${winner.content}\`!`
