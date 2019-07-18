@@ -88,11 +88,16 @@ function roll(max) {
 	return Math.floor(Math.random() * max + 1) === 1;
 }
 
+function cleanString(str) {
+	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
+}
+
 module.exports = {
 	extractHTML,
 	parseTable,
 	convertLVLtoXP,
 	xpLeft,
 	convertXPtoLVL,
-	roll
+	roll,
+	cleanString
 };
