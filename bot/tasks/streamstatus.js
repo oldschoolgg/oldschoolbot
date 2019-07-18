@@ -5,8 +5,16 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Task {
 
+	async init() {
+		if (!this.client.twitchClientID) this.disable();
+	}
+
 	async run() {
-		fetch(`https://api.twitch.tv/kraken/streams?channel=${this.client.streamers.join(',')}&client_id=${this.client.twitchClientID}`)
+		fetch(
+			`https://api.twitch.tv/kraken/streams?channel=${this.client.streamers.join(',')}&client_id=${
+				this.client.twitchClientID
+			}`
+		)
 			.then(res => res.json())
 			.then(res => {
 				for (let i = 0; i < res.streams.length; i++) {
@@ -23,13 +31,20 @@ module.exports = class extends Task {
 						.setImage(`${preview.medium}?osrsbot=${Math.random() * 1000}`);
 
 					this.client.guilds
-						.filter(guild => guild.settings.get('twitchnotifs') && guild.settings.get('streamers').includes(channel.display_name.toLowerCase()))
+						.filter(
+							guild =>
+								guild.settings.get('twitchnotifs') &&
+								guild.settings.get('streamers').includes(channel.display_name.toLowerCase())
+						)
 						.forEach(guild => {
 							const _channel = this.client.channels.get(guild.settings.get('twitchnotifs'));
 							if (_channel) _channel.send({ embed });
 						});
 				}
-				return this.client.user.setActivity(res.streams[0].channel.display_name, { url: res.streams[0].channel.url, type: 1 });
+				return this.client.user.setActivity(res.streams[0].channel.display_name, {
+					url: res.streams[0].channel.url,
+					type: 1
+				});
 			});
 	}
 

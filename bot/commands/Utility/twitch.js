@@ -13,10 +13,18 @@ module.exports = class extends Command {
 		this.timestamp = new Timestamp('DD-MM-YYYY');
 	}
 
+	async init() {
+		if (!this.client.twitchClientID) this.disable();
+	}
+
 	async run(msg, [twitchName]) {
-		const body = await fetch(`https://api.twitch.tv/kraken/channels/${twitchName}?client_id=${this.client.twitchClientID}`)
+		const body = await fetch(
+			`https://api.twitch.tv/kraken/channels/${twitchName}?client_id=${this.client.twitchClientID}`
+		)
 			.then(res => res.json())
-			.catch(() => { throw 'Unable to find account. Did you spell it correctly?'; });
+			.catch(() => {
+				throw 'Unable to find account. Did you spell it correctly?';
+			});
 
 		const creationDate = this.timestamp.display(body.created_at);
 

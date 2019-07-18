@@ -12,16 +12,19 @@ module.exports = class extends Command {
 		});
 	}
 
+	async init() {
+		if (!this.client.twitchClientID) this.disable();
+	}
+
 	async run(msg) {
-		const [stringList, streams] = await fetch(`https://api.twitch.tv/helix/streams?game_id=459931&&type=live&first=12`, {
-			headers: { 'Client-ID': this.client.twitchClientID }
-		})
+		const [stringList, streams] = await fetch(
+			`https://api.twitch.tv/helix/streams?game_id=459931&&type=live&first=12`,
+			{
+				headers: { 'Client-ID': this.client.twitchClientID }
+			}
+		)
 			.then(res => res.json())
-			.then(res => [
-				res.data.map(stream => stream.user_id).join('&id='),
-				res.data
-			]
-			);
+			.then(res => [res.data.map(stream => stream.user_id).join('&id='), res.data]);
 
 		const streamers = await fetch(`https://api.twitch.tv/helix/users?id=${stringList}`, {
 			headers: {
@@ -37,16 +40,17 @@ module.exports = class extends Command {
 				return streams;
 			});
 
-		const embed = new MessageEmbed()
-			.setColor(8311585);
+		const embed = new MessageEmbed().setColor(8311585);
 
 		streamers
 			.filter(str => str.username && this.client.streamers.includes(str.username.toLowerCase()))
 			.slice(0, 5)
-			.map(strm => embed.addField(
-				`${strm.username} - ${strm.viewer_count} Viewers`,
-				`https://www.twitch.tv/${strm.username.toLowerCase()}`
-			));
+			.map(strm =>
+				embed.addField(
+					`${strm.username} - ${strm.viewer_count} Viewers`,
+					`https://www.twitch.tv/${strm.username.toLowerCase()}`
+				)
+			);
 
 		return msg.send({ embed });
 	}

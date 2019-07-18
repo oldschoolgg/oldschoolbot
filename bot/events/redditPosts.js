@@ -14,6 +14,10 @@ module.exports = class extends Event {
 		this.enabled = this.client.production;
 	}
 
+	async init() {
+		if (!redditApp || !redditApp.password || !redditApp.password.length === 0) this.disable();
+	}
+
 	run() {
 		const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
@@ -25,7 +29,7 @@ module.exports = class extends Event {
 			pollTime: 10000
 		});
 
-		commentStream.on('comment', (comment) => {
+		commentStream.on('comment', comment => {
 			if (!jmodAccounts.includes(comment.author.name.toLowerCase())) return;
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
@@ -40,7 +44,7 @@ module.exports = class extends Event {
 			pollTime: 10000
 		});
 
-		submissionStream.on('submission', (post) => {
+		submissionStream.on('submission', post => {
 			if (!jmodAccounts.includes(post.author.name.toLowerCase())) return;
 			this.sendEmbed({
 				text: post.selftext,
@@ -62,7 +66,8 @@ module.exports = class extends Event {
 			embed.setURL(url);
 		}
 
-		this.client.guilds.filter(guild => guild.settings.get('jmodComments'))
+		this.client.guilds
+			.filter(guild => guild.settings.get('jmodComments'))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get('jmodComments'));
 				if (channel) channel.send(`<${url}>`, { embed });
