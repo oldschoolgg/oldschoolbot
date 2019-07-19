@@ -2,7 +2,6 @@ const { Task } = require('klasa');
 const pets = require('../../data/pets');
 
 module.exports = class extends Task {
-
 	async run({ user, isWeekend }) {
 		const _user = await this.client.users.fetch(user);
 		const member = await this.client.guilds
@@ -20,10 +19,12 @@ module.exports = class extends Task {
 
 		if (member) {
 			amount = Math.floor(amount * 1.5);
-			bonuses += ' <:OSRSBot:363583286192111616>';
+			bonuses += ' <:OSBot:601768469905801226>';
 		}
 
-		let chStr = `${bonuses} ${_user.username} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`;
+		let chStr = `${bonuses} ${
+			_user.username
+		} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`;
 		let dmStr = `${bonuses} Thank you for voting for Old School Bot! You received ${amount.toLocaleString()} GP.`;
 
 		if (roll(8)) {
@@ -42,9 +43,8 @@ module.exports = class extends Task {
 		_user.send(dmStr).catch(() => null);
 		_user.settings.update('GP', _user.settings.get('GP') + amount);
 	}
-
 };
 
 function roll(max) {
-	return Math.floor((Math.random() * max) + 1) === 1;
+	return Math.floor(Math.random() * max + 1) === 1;
 }
