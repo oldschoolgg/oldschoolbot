@@ -92,6 +92,10 @@ function cleanString(str) {
 	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
 }
 
+function fmNum(num) {
+	if (num) return num.toLocaleString();
+}
+
 module.exports = {
 	extractHTML,
 	parseTable,
@@ -99,5 +103,6 @@ module.exports = {
 	xpLeft,
 	convertXPtoLVL,
 	roll,
-	cleanString
+	cleanString,
+	fmNum
 };
