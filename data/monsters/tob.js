@@ -1,24 +1,53 @@
 const tob = {
 	drops: {
-		pet: '<:Lil_zik:479460344423776266>',
-		scytheOfVitur: '<:Scythe_of_vitur_uncharged:455403545294929920>',
-		sanguinestiStaff: '<:Sanguinesti_staff_uncharged:455403545298993162>',
-		justiciarLegguards: '<:Justiciar_legguards:455403545265700874>',
-		justiciarFaceguard: '<:Justiciar_faceguard:455403544971968523>',
-		ghraziRapier: '<:Ghrazi_rapier:455403545093472268>',
-		justiciarChestguard: '<:Justiciar_chestguard:455403544854659093>',
-		avernicDefenderHilt: '<:Avernic_defender_hilt:455403544900534272>'
-	},
-	// The GP value of the items
-	priceMap: {
-		pet: 0,
-		scytheOfVitur: 1327759559,
-		sanguinestiStaff: 146818892,
-		justiciarLegguards: 38483808,
-		justiciarFaceguard: 47495600,
-		ghraziRapier: 398134289,
-		justiciarChestguard: 29514249,
-		avernicDefenderHilt: 125330357
+		pet: {
+			emoji: '<:Lil_zik:479460344423776266>',
+			name: `Lil' Zik`,
+			shortName: 'pet',
+			price: 0
+		},
+		scytheOfVitur: {
+			emoji: '<:Scythe_of_vitur_uncharged:455403545294929920>',
+			name: 'Scythe of Vitur',
+			shortName: 'scytheOfVitur',
+			price: 1133056452
+		},
+		sanguinestiStaff: {
+			emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>',
+			name: 'Sanguinesti Staff',
+			shortName: 'sanguinestiStaff',
+			price: 102979616
+		},
+		ghraziRapier: {
+			emoji: '<:Ghrazi_rapier:455403545093472268>',
+			name: 'Ghrazi Rapier',
+			shortName: 'ghraziRapier',
+			price: 162877526
+		},
+		justiciarFaceguard: {
+			emoji: '<:Justiciar_faceguard:455403544971968523>',
+			name: 'Justiciar Faceguard',
+			shortName: 'justiciarFaceguard',
+			price: 31166928
+		},
+		justiciarChestguard: {
+			emoji: '<:Justiciar_chestguard:455403544854659093>',
+			name: 'Justiciar Chestguard',
+			shortName: 'justiciarChestguard',
+			price: 18787917
+		},
+		justiciarLegguards: {
+			emoji: '<:Justiciar_legguards:455403545265700874>',
+			name: 'Justiciar Legguards',
+			shortName: 'justiciarLegguards',
+			price: 19042774
+		},
+		avernicDefenderHilt: {
+			emoji: '<:Avernic_defender_hilt:455403544900534272>',
+			name: 'Avernic Defender Hilt',
+			shortName: 'avernicDefenderHilt',
+			price: 69393965
+		}
 	},
 	kill(quantity) {
 		if (quantity <= 100) {
@@ -31,32 +60,7 @@ const tob = {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(650)) loot.push(this.drops.pet);
-			if (this.roll(40)) {
-				const number = parseInt((Math.random() * 20) + 1);
-				switch (true) {
-					case number === 1:
-						loot.push(this.drops.scytheOfVitur);
-						break;
-					case number <= 3:
-						loot.push(this.drops.sanguinestiStaff);
-						break;
-					case number <= 5:
-						loot.push(this.drops.ghraziRapier);
-						break;
-					case number <= 7:
-						loot.push(this.drops.justiciarFaceguard);
-						break;
-					case number <= 9:
-						loot.push(this.drops.justiciarLegguards);
-						break;
-					case number <= 11:
-						loot.push(this.drops.justiciarChestguard);
-						break;
-					default:
-						loot.push(this.drops.avernicDefenderHilt);
-						break;
-				}
-			}
+			if (this.roll(9.1)) loot.push(this.determineItem().emoji);
 		}
 		return loot.join(' ');
 	},
@@ -76,40 +80,15 @@ const tob = {
 
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(650)) loot.pet++;
-			if (this.roll(40)) {
-				const number = parseInt((Math.random() * 20) + 1);
-				switch (true) {
-					case number === 1:
-						loot.scytheOfVitur++;
-						break;
-					case number <= 3:
-						loot.sanguinestiStaff++;
-						break;
-					case number <= 5:
-						loot.ghraziRapier++;
-						break;
-					case number <= 7:
-						loot.justiciarFaceguard++;
-						break;
-					case number <= 9:
-						loot.justiciarLegguards++;
-						break;
-					case number <= 11:
-						loot.justiciarChestguard++;
-						break;
-					default:
-						loot.avernicDefenderHilt++;
-						break;
-				}
-			}
+			if (this.roll(9.1)) loot[this.determineItem().shortName]++;
 		}
 		for (const key in loot) {
-			displayLoot.push(`**${this.drops[key]}**: ${loot[key].toLocaleString()} `);
-			totalValue += this.priceMap[key] * loot[key];
+			displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].toLocaleString()} `);
+			totalValue += this.drops[key].price * loot[key];
 		}
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
-		displayLoot.push(`**GP/HR** ${(totalValue / (quantity * 25 / 60)).toLocaleString()} GP`);
-		displayLoot.push(`**Total Hours**: ${(quantity * 25 / 60).toLocaleString()}`);
+		displayLoot.push(`**GP/HR** ${(totalValue / ((quantity * 25) / 60)).toLocaleString()} GP`);
+		displayLoot.push(`**Total Hours**: ${((quantity * 25) / 60).toLocaleString()}`);
 		return displayLoot.join('\n');
 	},
 	finish() {
@@ -121,59 +100,39 @@ const tob = {
 			kc++;
 			if (!lootTrack.includes(drops.pet) && this.roll(650)) {
 				lootTrack.push(drops.pet);
-				loot.push(`**Lil' Zik:** ${kc} KC ${drops.pet}`);
+				loot.push(`**Lil' Zik:** ${kc} KC ${drops.pet.emoji}`);
 			}
-			if (!this.roll(40)) continue;
-			const number = parseInt((Math.random() * 20) + 1);
-			switch (true) {
-				case number === 1:
-					if (!lootTrack.includes(drops.scytheOfVitur)) {
-						loot.push(`**Scythe of Vitur:** ${kc} KC ${drops.scytheOfVitur}`);
-						lootTrack.push(drops.scytheOfVitur);
-					}
-					break;
-				case number <= 3:
-					if (!lootTrack.includes(drops.sanguinestiStaff)) {
-						loot.push(`**Sanguinesti Staff:** ${kc} KC ${drops.sanguinestiStaff}`);
-						lootTrack.push(drops.sanguinestiStaff);
-					}
-					break;
-				case number <= 5:
-					if (!lootTrack.includes(drops.ghraziRapier)) {
-						loot.push(`**Ghrazi Rapier:** ${kc} KC ${drops.ghraziRapier}`);
-						lootTrack.push(drops.ghraziRapier);
-					}
-					break;
-				case number <= 7:
-					if (!lootTrack.includes(drops.justiciarFaceguard)) {
-						loot.push(`**Justiciar Faceguard:** ${kc} KC ${drops.justiciarFaceguard}`);
-						lootTrack.push(drops.justiciarFaceguard);
-					}
-					break;
-				case number <= 9:
-					if (!lootTrack.includes(drops.justiciarLegguards)) {
-						loot.push(`**Justiciar Legguards:** ${kc} KC ${drops.justiciarLegguards}`);
-						lootTrack.push(drops.justiciarLegguards);
-					}
-					break;
-				case number <= 11:
-					if (!lootTrack.includes(drops.justiciarChestguard)) {
-						loot.push(`**Justiciar Chestguard** ${kc} KC ${drops.justiciarChestguard}`);
-						lootTrack.push(drops.justiciarChestguard);
-					}
-					break;
-				default:
-					if (!lootTrack.includes(drops.avernicDefenderHilt)) {
-						loot.push(`**Avernic Defender Hilt** ${kc} KC ${drops.avernicDefenderHilt}`);
-						lootTrack.push(drops.avernicDefenderHilt);
-					}
-					break;
+			if (!this.roll(9.1)) continue;
+			const droppedItem = this.determineItem();
+			if (!lootTrack.includes(droppedItem.shortName)) {
+				loot.push(`**${droppedItem.name}:** ${kc} KC ${droppedItem.emoji}`);
+				lootTrack.push(droppedItem.shortName);
 			}
 		}
 		return loot.join('\n');
 	},
+
+	determineItem() {
+		const number = parseInt(Math.random() * 19 + 1);
+		switch (true) {
+			case number === 1:
+				return this.drops.scytheOfVitur;
+			case number <= 3:
+				return this.drops.sanguinestiStaff;
+			case number <= 5:
+				return this.drops.ghraziRapier;
+			case number <= 7:
+				return this.drops.justiciarFaceguard;
+			case number <= 9:
+				return this.drops.justiciarChestguard;
+			case number <= 11:
+				return this.drops.justiciarLegguards;
+			default:
+				return this.drops.avernicDefenderHilt;
+		}
+	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 
