@@ -18,7 +18,7 @@ module.exports = class extends Command {
 			description: 'Fake a private message from someone.',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
-			usage: '(username:rsn) <message:...str>',
+			usage: '(username:string) <message:...str>',
 			usageDelim: ' '
 		});
 	}
@@ -32,7 +32,6 @@ module.exports = class extends Command {
 		ctx.fillText(`From ${username}: ${message}`, 6, 98);
 		ctx.fillStyle = '#00ffff';
 		ctx.fillText(`From ${username}: ${message}`, 5, 97);
-
 
 		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
 	}
