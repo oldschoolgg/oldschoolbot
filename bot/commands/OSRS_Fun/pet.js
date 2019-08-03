@@ -15,8 +15,8 @@ module.exports = class extends Command {
 	async run(msg, [petName]) {
 		const cleanName = cleanString(petName);
 
-		const pet = pets.find(_pet => _pet.altNames.includes(cleanName));
-		if (!pet) throw "I don't recognize that pet name!";
+		const pet = pets.find(_pet => cleanString(_pet.name) === cleanName || _pet.altNames.includes(cleanName));
+		if (!pet) throw "I don't recognize that pet!";
 
 		const count = pet.finish();
 		let petMessage = pet.formatFinish(count);
