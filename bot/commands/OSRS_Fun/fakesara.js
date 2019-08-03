@@ -18,7 +18,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Fake yourself getting bandos loot!',
+			description: 'Fake yourself getting sara loot!',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) [kc:int{1,999999}]',
@@ -33,9 +33,9 @@ module.exports = class extends Command {
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
 		/* Your completed Theatre of Blood count is: X. */
 
-		ctx.fillText('Your General Graardor kill count is: ', 11, 10);
+		ctx.fillText('Your Commander Zilyana kill count is: ', 11, 10);
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(kc, 12 + ctx.measureText('Your General Graardor kill count is: ').width, 10);
+		ctx.fillText(kc, 12 + ctx.measureText('Your Commander Zilyana kill count is: ').width, 10);
 
 		/* Username found something special: Scythe of vitur (uncharged) */
 		ctx.fillStyle = '#ff0000';
@@ -44,12 +44,12 @@ module.exports = class extends Command {
 		/* Username found something special: Lil' Zik */
 		ctx.fillStyle = '#ff0000';
 		ctx.fillStyle = '#005f00';
-		ctx.fillText(`${username} received a drop: Pet general graardor`, 11, 40);
+		ctx.fillText(`${username} received a drop: Pet zilyana`, 11, 40);
 
 		/* You have a funny feeling like you're being followed. */
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(
-			`${username} received a drop: Bandos ${Math.random() > 0.5 ? 'chestplate' : 'tassets'}`,
+			`${username} received a drop: ${Math.random() > 0.5 ? 'Saradomin hilt' : 'Armadyl crossbow'}`,
 			11,
 			54
 		);
