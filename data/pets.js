@@ -495,6 +495,30 @@ const pets = [
 			`You had to slay the Alchemical Hydra ${fm(
 				num
 			)} times to get the Ikkle hydra pet! <:Ikkle_hydra:534941897228156948>`
+	},
+	{
+		id: 43,
+		emoji: '<:Smolcano:604670895113633802>',
+		chance: 3000,
+		name: 'Smolcano',
+		type: 'BOSS',
+		altNames: ['ZALCANO'],
+		formatFinish: num =>
+			`You had to take down Zalcano ${fm(num)} times to get the Smolcano pet! <:Smolcano:604670895113633802>`
+	},
+	{
+		id: 44,
+		emoji: '<:Youngllef:604670894798798858>',
+		chance: 3000,
+		name: 'Youngllef',
+		type: 'BOSS',
+		altNames: ['GAUNTLET', 'YOUNGLEF'],
+		formatFinish: num =>
+			`You had to complete the Gauntlet ${fm(
+				num
+			)} times to get the Youngllef pet! <:Youngllef:604670894798798858> This took you ${fm(
+				num * 0.15
+			)} hours.`
 	}
 ];
 
