@@ -509,7 +509,7 @@ const pets = [
 	{
 		id: 44,
 		emoji: '<:Youngllef:604670894798798858>',
-		chance: 3000,
+		chance: 1000,
 		name: 'Youngllef',
 		type: 'BOSS',
 		altNames: ['GAUNTLET', 'YOUNGLEF'],
