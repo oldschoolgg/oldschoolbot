@@ -6,6 +6,7 @@ const fs = require('fs');
 const bg = fs.readFileSync('./resources/images/chat-bg.png');
 const canvas = createCanvas(399, 100);
 const ctx = canvas.getContext('2d');
+const { rand } = require('../../../config/util');
 
 ctx.font = '16px OSRSFont';
 
@@ -18,12 +19,12 @@ module.exports = class extends Command {
 			description: 'Get yourself a Fake Ely! +fakeely username kc',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
-			usage: '(username:rsn) <kc:int{1,999999}>',
+			usage: '(username:string) [kc:int{1,999999}]',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg, [username, kc]) {
+	async run(msg, [username, kc = rand(1, 1000)]) {
 		ctx.fillStyle = '#000000';
 		const BG = new Image();
 		BG.src = bg;

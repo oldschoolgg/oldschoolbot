@@ -96,6 +96,10 @@ function fmNum(num) {
 	if (num) return num.toLocaleString();
 }
 
+function rand(min, max) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 module.exports = {
 	extractHTML,
 	parseTable,
@@ -104,5 +108,6 @@ module.exports = {
 	convertXPtoLVL,
 	roll,
 	cleanString,
-	fmNum
+	fmNum,
+	rand
 };

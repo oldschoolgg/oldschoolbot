@@ -12,6 +12,8 @@ ctx.font = '16px OSRSFont';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
+const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
+
 module.exports = class extends Command {
 
 	constructor(...args) {
@@ -30,40 +32,34 @@ module.exports = class extends Command {
 		BG.src = bg;
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
 		/* Your completed Theatre of Blood count is: X. */
-		ctx.fillText('Your completed Theatre of Blood count is: ', 11, 10);
+
+		ctx.fillText('Your General Graardor kill count is: ', 11, 10);
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(kc, 12 + ctx.measureText('Your completed Theatre of Blood count is: ').width, 10);
-		ctx.fillStyle = '#000000';
-		ctx.fillText('.', 12 + ctx.measureText(`Your completed Theatre of Blood count is: ${kc}`).width, 10);
+		ctx.fillText(kc, 12 + ctx.measureText('Your General Graardor kill count is: ').width, 10);
 
 		/* Username found something special: Scythe of vitur (uncharged) */
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(username, 11, 25);
-		ctx.fillStyle = '#000000';
-		ctx.fillText(' found something special: ', 12 + ctx.measureText(username).width, 25);
-		ctx.fillStyle = '#ff0000';
-		ctx.fillText(
-			'Scythe of vitur (uncharged)',
-			12 + ctx.measureText(`${username} found something special: `).width,
-			25
-		);
+		ctx.fillText(`You have a funny feeling like you're being followed.`, 11, 25);
 
 		/* Username found something special: Lil' Zik */
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(username, 11, 54);
-		ctx.fillStyle = '#000000';
-		ctx.fillText(' found something special: ', 12 + ctx.measureText(username).width, 54);
-		ctx.fillStyle = '#ff0000';
-		ctx.fillText("Lil' Zik", 12 + ctx.measureText(`${username} found something special: `).width, 54);
+		ctx.fillStyle = '#005f00';
+		ctx.fillText(`${username} received a drop: Pet general graardor`, 11, 40);
 
 		/* You have a funny feeling like you're being followed. */
-		ctx.fillText(`You have a funny feeling like you're being followed.`, 11, 40);
+		ctx.fillStyle = '#005f00';
+		ctx.fillText(
+			`${username} received a drop: Bandos ${Math.random() > 0.5 ? 'chestplate' : 'tassets'}`,
+			11,
+			54
+		);
 
 		/* Username */
+		const randMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
 		ctx.fillStyle = '#000000';
-		ctx.fillText(`${username}: `, 11, 70);
+		ctx.fillText(`${username}: `, 11, 69);
 		ctx.fillStyle = '#0000ff';
-		ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
+		ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 
 		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
 	}
