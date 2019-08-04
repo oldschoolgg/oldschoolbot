@@ -3,13 +3,14 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
 module.exports = class extends Task {
-
 	async init() {
 		this.run();
 	}
 
 	async run() {
-		const body = await fetch('http://services.runescape.com/m=poll/oldschool/index.ws').then(res => res.text());
+		const body = await fetch('http://services.runescape.com/m=poll/oldschool/index.ws').then(
+			res => res.text()
+		);
 
 		const test = body.split('">Click here to view results')[0].split('href="')[9];
 
@@ -58,5 +59,4 @@ module.exports = class extends Task {
 		);
 		if (errors) this.client.emit('wtf', errors);
 	}
-
 };

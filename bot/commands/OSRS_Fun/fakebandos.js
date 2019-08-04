@@ -15,7 +15,6 @@ registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Fake yourself getting bandos loot!',
@@ -61,7 +60,8 @@ module.exports = class extends Command {
 		ctx.fillStyle = '#0000ff';
 		ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 
-		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
+		return msg.send(
+			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
+		);
 	}
-
 };

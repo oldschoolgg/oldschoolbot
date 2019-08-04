@@ -1,8 +1,10 @@
 const armadyl = {
 	drops: {
-		shards: ['<:Godsword_shard_3:403049019040858112>',
+		shards: [
+			'<:Godsword_shard_3:403049019040858112>',
 			'<:Godsword_shard_2:403049019015954462>',
-			'<:Godsword_shard_1:403049018764165121>'],
+			'<:Godsword_shard_1:403049018764165121>'
+		],
 		armor: [
 			'<:Armadyl_chainskirt:405262588222636042>',
 			'<:Armadyl_helmet:405262588499329024>',
@@ -46,10 +48,12 @@ const armadyl = {
 	smallKill(quantity) {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
-			if (this.roll(128)) loot.push(this.drops.armor[Math.floor(Math.random() * this.drops.armor.length)]);
+			if (this.roll(128))
+				loot.push(this.drops.armor[Math.floor(Math.random() * this.drops.armor.length)]);
 			if (this.roll(508)) loot.push(this.drops.armadylHilt);
 			if (this.roll(5000)) loot.push(this.drops.pet);
-			if (this.roll(86)) loot.push(this.drops.shards[Math.floor(Math.random() * this.drops.shards.length)]);
+			if (this.roll(86))
+				loot.push(this.drops.shards[Math.floor(Math.random() * this.drops.shards.length)]);
 		}
 		return loot.join(' ');
 	},
@@ -68,7 +72,9 @@ const armadyl = {
 
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(128)) {
-				const armorPiece = this.drops.armor[Math.floor(Math.random() * this.drops.armor.length)];
+				const armorPiece = this.drops.armor[
+					Math.floor(Math.random() * this.drops.armor.length)
+				];
 				loot[this.emojiMap[armorPiece]]++;
 			}
 			if (this.roll(508)) loot.armadylHilt++;
@@ -83,11 +89,13 @@ const armadyl = {
 		}
 
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
-		displayLoot.push(`**GP per Kill:** ${Math.round(totalValue / quantity).toLocaleString()} GP`);
+		displayLoot.push(
+			`**GP per Kill:** ${Math.round(totalValue / quantity).toLocaleString()} GP`
+		);
 		return displayLoot.join('\n');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

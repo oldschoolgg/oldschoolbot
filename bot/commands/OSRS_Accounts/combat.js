@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -20,5 +19,4 @@ module.exports = class extends Command {
 
 		return msg.send(`${username}'s Combat Level is **${combatLevel}**.`);
 	}
-
 };

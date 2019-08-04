@@ -9,7 +9,6 @@ try {
 }
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			aliases: ['t'],
@@ -37,7 +36,6 @@ module.exports = class extends Command {
 			return msg.channel.send('<:RSXBox:381462594961014794> Nobody answered correctly.');
 		}
 	}
-
 };
 
 const options = {

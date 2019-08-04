@@ -12,7 +12,6 @@ ctx.font = '16px OSRSFont';
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Fake a private message from someone.',
@@ -33,7 +32,8 @@ module.exports = class extends Command {
 		ctx.fillStyle = '#00ffff';
 		ctx.fillText(`From ${username}: ${message}`, 5, 97);
 
-		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
+		return msg.send(
+			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
+		);
 	}
-
 };

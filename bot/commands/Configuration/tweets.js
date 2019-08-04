@@ -1,11 +1,11 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			subcommands: true,
-			description: 'Enables/disables the JMod Tweets function which sends tweets from OSRS JMods.',
+			description:
+				'Enables/disables the JMod Tweets function which sends tweets from OSRS JMods.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
 			permissionLevel: 7,
@@ -29,5 +29,4 @@ module.exports = class extends Command {
 		await msg.guild.settings.reset('tweetchannel');
 		return msg.sendLocale('JMOD_TWEETS_DISABLED');
 	}
-
 };

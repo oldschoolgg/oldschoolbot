@@ -1,10 +1,11 @@
 const { Inhibitor } = require('klasa');
 
 module.exports = class extends Inhibitor {
-
 	async run(message, command) {
-		const { broke, permission } = await this.client.permissionLevels
-			.run(message, command.permissionLevel);
+		const { broke, permission } = await this.client.permissionLevels.run(
+			message,
+			command.permissionLevel
+		);
 
 		if (!permission) {
 			const isStaff = await message.hasAtLeastPermissionLevel(6);
@@ -16,5 +17,4 @@ module.exports = class extends Inhibitor {
 			throw true;
 		}
 	}
-
 };

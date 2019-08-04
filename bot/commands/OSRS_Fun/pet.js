@@ -3,7 +3,6 @@ const { cleanString } = require('../../../config/util');
 const pets = require('../../../data/pets');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -15,7 +14,9 @@ module.exports = class extends Command {
 	async run(msg, [petName]) {
 		const cleanName = cleanString(petName);
 
-		const pet = pets.find(_pet => cleanString(_pet.name) === cleanName || _pet.altNames.includes(cleanName));
+		const pet = pets.find(
+			_pet => cleanString(_pet.name) === cleanName || _pet.altNames.includes(cleanName)
+		);
 		if (!pet) throw "I don't recognize that pet!";
 
 		const count = pet.finish();
@@ -39,5 +40,4 @@ module.exports = class extends Command {
 
 		return msg.send(petMessage);
 	}
-
 };

@@ -2,12 +2,16 @@ const bandos = {
 	drops: {
 		pet: '<:Pet_general_graardor:324127377376673792>',
 		bandosHilt: '<:Bandos_hilt:403047909072830464>',
-		armor: ['<:Bandos_boots:403046849415610368>',
+		armor: [
+			'<:Bandos_boots:403046849415610368>',
 			'<:Bandos_chestplate:403046849440776202>',
-			'<:Bandos_tassets:403046849465810945>'],
-		shards: ['<:Godsword_shard_3:403049019040858112>',
+			'<:Bandos_tassets:403046849465810945>'
+		],
+		shards: [
+			'<:Godsword_shard_3:403049019040858112>',
 			'<:Godsword_shard_2:403049019015954462>',
-			'<:Godsword_shard_1:403049018764165121>'],
+			'<:Godsword_shard_1:403049018764165121>'
+		],
 		curvedBone: '<:Curved_bone:421045456387309568>'
 	},
 	emojiMap: {
@@ -44,11 +48,13 @@ const bandos = {
 	smallKill(quantity) {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
-			if (this.roll(128)) loot.push(this.drops.armor[Math.floor(Math.random() * this.drops.armor.length)]);
+			if (this.roll(128))
+				loot.push(this.drops.armor[Math.floor(Math.random() * this.drops.armor.length)]);
 			if (this.roll(508)) loot.push(this.drops.bandosHilt);
 			if (this.roll(5000)) loot.push(this.drops.pet);
 			if (this.roll(5000)) loot.push(this.drops.curvedBone);
-			if (this.roll(86)) loot.push(this.drops.shards[Math.floor(Math.random() * this.drops.shards.length)]);
+			if (this.roll(86))
+				loot.push(this.drops.shards[Math.floor(Math.random() * this.drops.shards.length)]);
 		}
 		return loot.join(' ');
 	},
@@ -67,7 +73,9 @@ const bandos = {
 
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(128)) {
-				const armorPiece = this.drops.armor[Math.floor(Math.random() * this.drops.armor.length)];
+				const armorPiece = this.drops.armor[
+					Math.floor(Math.random() * this.drops.armor.length)
+				];
 				loot[this.emojiMap[armorPiece]]++;
 			}
 			if (this.roll(508)) loot.bandosHilt++;
@@ -82,11 +90,13 @@ const bandos = {
 		}
 
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
-		displayLoot.push(`**GP per Kill:** ${Math.round(totalValue / quantity).toLocaleString()} GP`);
+		displayLoot.push(
+			`**GP per Kill:** ${Math.round(totalValue / quantity).toLocaleString()} GP`
+		);
 		return displayLoot.join('\n');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

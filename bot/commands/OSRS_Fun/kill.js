@@ -50,7 +50,6 @@ const wyrm = require('../../../data/monsters/wyrm');
 const hespori = require('../../../data/monsters/hespori');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 1,
@@ -65,13 +64,15 @@ module.exports = class extends Command {
 			case 'CORP':
 			case 'CORPOREALBEAST':
 			case 'CORPBEAST': {
-				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Corp beasts at a time!');
+				if (quantity > 5000)
+					return msg.send('I can only kill a maximum of 5000 Corp beasts at a time!');
 				const loot = corp.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'KURASK':
 			case 'KURASKS': {
-				if (quantity > 5000) return msg.send('I can only kill a maximum of 5000 Kurasks at a time!');
+				if (quantity > 5000)
+					return msg.send('I can only kill a maximum of 5000 Kurasks at a time!');
 				const loot = kurask.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -79,7 +80,8 @@ module.exports = class extends Command {
 			case 'LAVADRAGONS':
 			case 'LAVADRAGS':
 			case 'LAVADRAG': {
-				if (quantity > 200) return msg.send('I can only kill a maximum of 200 Lava Dragons at a time!');
+				if (quantity > 200)
+					return msg.send('I can only kill a maximum of 200 Lava Dragons at a time!');
 				const loot = lavaDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -88,7 +90,10 @@ module.exports = class extends Command {
 			case 'BRUTALBLACKDRAGONS':
 			case 'BRUTALBLACKDRAGS':
 			case 'BRUTALBLACKS': {
-				if (quantity > 100) return msg.send('I can only kill a maximum of 100 Brutal Black Dragons at a time!');
+				if (quantity > 100)
+					return msg.send(
+						'I can only kill a maximum of 100 Brutal Black Dragons at a time!'
+					);
 				const loot = brutalBlackDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -97,7 +102,8 @@ module.exports = class extends Command {
 			case 'RAIDS1':
 			case 'COX':
 			case 'CHAMBERSOFXERIC': {
-				if (quantity > 100000) return msg.send('I can only do a maximum of 100,000 Raids at a time!');
+				if (quantity > 100000)
+					return msg.send('I can only do a maximum of 100,000 Raids at a time!');
 				const loot = raids.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -105,20 +111,24 @@ module.exports = class extends Command {
 			case 'THEATREOFBLOOD':
 			case 'TOB': {
 				if (quantity > 10000) {
-					return msg.send("I can only do a maximum of 10,000 Theatres of Blood at a time! I'm not Woox!");
+					return msg.send(
+						"I can only do a maximum of 10,000 Theatres of Blood at a time! I'm not Woox!"
+					);
 				}
 				const loot = tob.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'BARROWS': {
-				if (quantity > 300) return msg.send('I can only do a maximum of 300 Barrows Chests at a time!');
+				if (quantity > 300)
+					return msg.send('I can only do a maximum of 300 Barrows Chests at a time!');
 				const loot = barrows.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'BANDOS':
 			case 'GENERALGRAARDOR':
 			case 'GRAARDOR': {
-				if (quantity > 100000) return msg.send('I can only do a maximum of 100,000 Bandos kills at a time!');
+				if (quantity > 100000)
+					return msg.send('I can only do a maximum of 100,000 Bandos kills at a time!');
 				const loot = bandos.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -127,23 +137,27 @@ module.exports = class extends Command {
 			case 'ZILY':
 			case 'ZILYANA':
 			case 'COMMANDERZILYANA': {
-				if (quantity > 100000) return msg.send('I can only do a maximum of 100,000 Sara kills at a time!');
+				if (quantity > 100000)
+					return msg.send('I can only do a maximum of 100,000 Sara kills at a time!');
 				const loot = saradomin.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'ZULRAH': {
-				if (quantity > 500) return msg.send('I can only do a maximum of 500 Zulrah kills at a time!');
+				if (quantity > 500)
+					return msg.send('I can only do a maximum of 500 Zulrah kills at a time!');
 				const loot = zulrah.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'VORKATH': {
-				if (quantity > 500) return msg.send('I can only do a maximum of 500 Vorkath kills at a time!');
+				if (quantity > 500)
+					return msg.send('I can only do a maximum of 500 Vorkath kills at a time!');
 				const loot = vorkath.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'CERB':
 			case 'CERBERUS': {
-				if (quantity > 500) return msg.send('I can only do a maximum of 500 Cerberus kills at a time!');
+				if (quantity > 500)
+					return msg.send('I can only do a maximum of 500 Cerberus kills at a time!');
 				const loot = cerberus.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -151,7 +165,10 @@ module.exports = class extends Command {
 			case 'ABYSSALDEMONS':
 			case 'ABBYDEMON':
 			case 'ABBYDEMONS': {
-				if (quantity > 5000) return msg.send('I can only do a maximum of 5000 Abyssal Demon kills at a time!');
+				if (quantity > 5000)
+					return msg.send(
+						'I can only do a maximum of 5000 Abyssal Demon kills at a time!'
+					);
 				const loot = abbyDemon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -160,13 +177,15 @@ module.exports = class extends Command {
 			case 'DEMONICGORILLAS':
 			case 'DEMONICGORILLA':
 			case 'DEMONICS': {
-				if (quantity > 500) return msg.send("I can only kill 500 Demonic Gorilla's at a time!");
+				if (quantity > 500)
+					return msg.send("I can only kill 500 Demonic Gorilla's at a time!");
 				const loot = demonicGorilla.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'KQ':
 			case 'KALPHITEQUEEN': {
-				if (quantity > 500) return msg.send("I can only kill 500 Kalphite Queen's at a time!");
+				if (quantity > 500)
+					return msg.send("I can only kill 500 Kalphite Queen's at a time!");
 				const loot = kalphiteQueen.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -174,7 +193,8 @@ module.exports = class extends Command {
 			case 'ZAMORAK':
 			case 'KRIL':
 			case 'KRILTSUTSAROTH': {
-				if (quantity > 100000) return msg.send("I can only kill 100,000 K'ril Tsutsaroth's at a time!");
+				if (quantity > 100000)
+					return msg.send("I can only kill 100,000 K'ril Tsutsaroth's at a time!");
 				const loot = zamorak.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -182,7 +202,8 @@ module.exports = class extends Command {
 			case 'ARMADYL':
 			case 'KREE':
 			case 'KREEARRA': {
-				if (quantity > 100000) return msg.send("I can only kill 100,000 Kree'arra's at a time!");
+				if (quantity > 100000)
+					return msg.send("I can only kill 100,000 Kree'arra's at a time!");
 				const loot = armadyl.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -190,7 +211,8 @@ module.exports = class extends Command {
 			case 'LIZARDMANSHAMANS':
 			case 'LIZARDMANSHAMAN':
 			case 'LIZARDMEN': {
-				if (quantity > 1000) return msg.send("I can only kill 1000 Lizardman Shaman's at a time!");
+				if (quantity > 1000)
+					return msg.send("I can only kill 1000 Lizardman Shaman's at a time!");
 				const loot = lizardmanShaman.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -212,14 +234,16 @@ module.exports = class extends Command {
 			case 'SKELETALWYVERN':
 			case 'SKELETALWYVERNS':
 			case 'WYVERNS': {
-				if (quantity > 1000) return msg.send('I can only kill 1000 Skeletal Wyverns at a time!');
+				if (quantity > 1000)
+					return msg.send('I can only kill 1000 Skeletal Wyverns at a time!');
 				const loot = wyvern.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'ANCIENTWYVERN':
 			case 'ANCIENTWYVERNS':
 			case 'FOSSILISLANDWYVERNS': {
-				if (quantity > 1000) return msg.send('I can only kill 1000 Ancient Wyverns at a time!');
+				if (quantity > 1000)
+					return msg.send('I can only kill 1000 Ancient Wyverns at a time!');
 				const loot = ancientWyvern.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -227,13 +251,15 @@ module.exports = class extends Command {
 			case 'GGS':
 			case 'DUSK':
 			case 'DAWN': {
-				if (quantity > 500) return msg.send('I can only kill 500 Grotesque Guardians at a time!');
+				if (quantity > 500)
+					return msg.send('I can only kill 500 Grotesque Guardians at a time!');
 				const loot = grotesqueGuardians.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'KBD':
 			case 'KINGBLACKDRAGON': {
-				if (quantity > 500) return msg.send('I can only kill 500 King Black Dragons at a time!');
+				if (quantity > 500)
+					return msg.send('I can only kill 500 King Black Dragons at a time!');
 				const loot = kingBlackDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -246,13 +272,15 @@ module.exports = class extends Command {
 			}
 			case 'THERMY':
 			case 'THERMONUCLEARSMOKEDEVIL': {
-				if (quantity > 500) return msg.send("I can only kill 500 Thermonuclear smoke devil's at a time!");
+				if (quantity > 500)
+					return msg.send("I can only kill 500 Thermonuclear smoke devil's at a time!");
 				const loot = thermy.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'GIANTMOLE':
 			case 'MOLE': {
-				if (quantity > 5000) return msg.send("I can only kill 5000 Giant Mole's at a time!");
+				if (quantity > 5000)
+					return msg.send("I can only kill 5000 Giant Mole's at a time!");
 				const loot = giantMole.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -268,7 +296,8 @@ module.exports = class extends Command {
 			}
 			case 'CHAOSELE':
 			case 'CHAOSELEMENTAL': {
-				if (quantity > 500) return msg.send('I can only kill 500 Chaos Elementals at a time!');
+				if (quantity > 500)
+					return msg.send('I can only kill 500 Chaos Elementals at a time!');
 				const loot = chaosElemental.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -293,19 +322,22 @@ module.exports = class extends Command {
 			}
 			case 'REX':
 			case 'DAGANNOTHREX': {
-				if (quantity > 500) return msg.send("I can only kill 500 Dagannoth Rex's at a time!");
+				if (quantity > 500)
+					return msg.send("I can only kill 500 Dagannoth Rex's at a time!");
 				const loot = dagannothRex.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'SUPREME':
 			case 'DAGANNOTHSUPREME': {
-				if (quantity > 500) return msg.send('I can only kill 500 Dagannoth Supremes at a time!');
+				if (quantity > 500)
+					return msg.send('I can only kill 500 Dagannoth Supremes at a time!');
 				const loot = dagannothSupreme.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'PRIME':
 			case 'DAGANNOTHPRIME': {
-				if (quantity > 500) return msg.send('I can only kill 500 Dagannoth Primes at a time!');
+				if (quantity > 500)
+					return msg.send('I can only kill 500 Dagannoth Primes at a time!');
 				const loot = dagannothPrime.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -316,7 +348,8 @@ module.exports = class extends Command {
 				let quantityRex = 0;
 				let quantitySupreme = 0;
 				let quantityPrime = 0;
-				if (quantity > 1000) return msg.send('I can only kill 1000 Dagannoth Kings at a time!');
+				if (quantity > 1000)
+					return msg.send('I can only kill 1000 Dagannoth Kings at a time!');
 				if (quantity % 3 === 2) {
 					quantitySupreme = Math.floor(quantity / 3) + 1;
 					quantityRex = quantitySupreme;
@@ -337,14 +370,16 @@ module.exports = class extends Command {
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 			case 'CHAOSFANATIC': {
-				if (quantity > 500) return msg.send('I can only kill 500 Chaos Fanatics at a time!');
+				if (quantity > 500)
+					return msg.send('I can only kill 500 Chaos Fanatics at a time!');
 				const loot = chaosFanatic.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 
 			case 'CRAZYARCH':
 			case 'CRAZYARCHAEOLOGIST': {
-				if (quantity > 500) return msg.send('I can only kill 500 Crazy Archaeologists at a time!');
+				if (quantity > 500)
+					return msg.send('I can only kill 500 Crazy Archaeologists at a time!');
 				const loot = crazyArchaeologist.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -353,7 +388,8 @@ module.exports = class extends Command {
 			case 'MITHRILDRAGS':
 			case 'MITHDRAGS':
 			case 'MITHDRAGONS': {
-				if (quantity > 1000) return msg.send('I can only kill 1000 Mithril Dragons at a time!');
+				if (quantity > 1000)
+					return msg.send('I can only kill 1000 Mithril Dragons at a time!');
 				const loot = mithrilDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -362,14 +398,16 @@ module.exports = class extends Command {
 			case 'ADAMANTDRAGS':
 			case 'ADDYDRAGS':
 			case 'ADDYDRAGONS': {
-				if (quantity > 1000) return msg.send('I can only kill 1000 Adamant Dragons at a time!');
+				if (quantity > 1000)
+					return msg.send('I can only kill 1000 Adamant Dragons at a time!');
 				const loot = adamantDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 
 			case 'RUNEDRAGONS':
 			case 'RUNEDRAGS': {
-				if (quantity > 1000) return msg.send('I can only kill 1000 Rune Dragons at a time!');
+				if (quantity > 1000)
+					return msg.send('I can only kill 1000 Rune Dragons at a time!');
 				const loot = runeDragon.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -388,7 +426,8 @@ module.exports = class extends Command {
 			case 'HYDRAS':
 			case 'HYDRA':
 			case 'HYDRABOSS': {
-				if (quantity > 100000) return msg.send('I can only kill 100000 Alchemical Hydras at a time!');
+				if (quantity > 100000)
+					return msg.send('I can only kill 100000 Alchemical Hydras at a time!');
 				const loot = alchemicalHydra.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
@@ -427,5 +466,4 @@ module.exports = class extends Command {
 				return msg.send("I don't have that monster!");
 		}
 	}
-
 };

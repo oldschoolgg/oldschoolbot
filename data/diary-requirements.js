@@ -11,7 +11,7 @@ module.exports = {
 			statReq: [0, 0, 0, 0],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 38, 50, 0],
 			boost: [0, 5, 7, 0]
 		},
@@ -105,7 +105,7 @@ module.exports = {
 			statReq: [0, 0, 40, 0],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 0, 0, 0],
 			boost: [0, 0, 0, 0]
 		},
@@ -199,7 +199,7 @@ module.exports = {
 			statReq: [0, 20, 50, 0],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 37, 0, 0],
 			boost: [10, 0, 0, 0]
 		},
@@ -293,7 +293,7 @@ module.exports = {
 			statReq: [0, 30, 40, 40],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 0, 0, 70],
 			boost: [0, 0, 0, 0]
 		},
@@ -387,7 +387,7 @@ module.exports = {
 			statReq: [0, 0, 70, 40],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 22, 50, 0],
 			boost: [0, 8, 0, 0]
 		},
@@ -481,7 +481,7 @@ module.exports = {
 			statReq: [0, 0, 0, 0],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 0, 50, 0],
 			boost: [0, 0, 12, 0]
 		},
@@ -575,7 +575,7 @@ module.exports = {
 			statReq: [0, 0, 40, 0],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 16, 0, 0],
 			boost: [0, 0, 0, 0]
 		},
@@ -669,7 +669,7 @@ module.exports = {
 			statReq: [0, 0, 0, 65],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 19, 0, 70],
 			boost: [0, 7, 0, 15]
 		},
@@ -763,7 +763,7 @@ module.exports = {
 			statReq: [0, 0, 70, 70],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 10, 10, 76],
 			boost: [0, 6, 6, 16]
 		},
@@ -857,7 +857,7 @@ module.exports = {
 			statReq: [0, 0, 0, 40],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 0, 0, 0],
 			boost: [0, 0, 0, 0]
 		},
@@ -951,7 +951,7 @@ module.exports = {
 			statReq: [0, 0, 0, 42],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 0, 0, 42],
 			boost: [0, 0, 0, 0]
 		},
@@ -1045,7 +1045,7 @@ module.exports = {
 			statReq: [0, 0, 0, 0],
 			boost: [0, 0, 0, 0]
 		},
-		Strength:	{
+		Strength: {
 			statReq: [0, 0, 0, 0],
 			boost: [0, 0, 0, 0]
 		},

@@ -3,7 +3,6 @@ const { roll } = require('../../../config/util');
 const pets = require('../../../data/pets');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Rolls a chance at getting every Pet at once.',
@@ -23,5 +22,4 @@ module.exports = class extends Command {
 		if (received.length === 0) return msg.send("You didn't get any pets!");
 		return msg.send(received.join(' '));
 	}
-
 };

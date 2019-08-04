@@ -1,11 +1,13 @@
 const zulrah = {
 	drops: {
-		uniques: [{
-			uncutOnyx: '<:Uncut_onyx:403059676402679808>',
-			magicFang: '<:Magic_fang:403059673563004928>',
-			serpentineVisage: '<:Serpentine_visage:403059676016672769>',
-			tanzaniteFang: '<:Tanzanite_fang:403059675979055105>'
-		}],
+		uniques: [
+			{
+				uncutOnyx: '<:Uncut_onyx:403059676402679808>',
+				magicFang: '<:Magic_fang:403059673563004928>',
+				serpentineVisage: '<:Serpentine_visage:403059676016672769>',
+				tanzaniteFang: '<:Tanzanite_fang:403059675979055105>'
+			}
+		],
 		mutagens: {
 			magmaMutagen: '<:Magma_mutagen:403059676733898753>',
 			tanzaniteMutagen: '<:Tanzanite_mutagen:403059676306079746>'
@@ -34,7 +36,7 @@ const zulrah = {
 		return loot.join(' ');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

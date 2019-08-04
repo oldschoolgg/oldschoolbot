@@ -1,12 +1,12 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			subcommands: true,
 			enabled: true,
-			description: 'Enables/disables the function which sends comments/posts from Jmods on reddit.',
+			description:
+				'Enables/disables the function which sends comments/posts from Jmods on reddit.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
 			permissionLevel: 7
@@ -32,5 +32,4 @@ module.exports = class extends Command {
 		await msg.guild.settings.reset('jmodComments');
 		return msg.sendLocale('JMOD_COMMENTS_DISABLED');
 	}
-
 };

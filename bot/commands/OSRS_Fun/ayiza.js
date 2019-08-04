@@ -6,7 +6,6 @@ const fs = require('fs');
 const BG = fs.readFileSync('./resources/images/ayiza.jpg');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Shows Mod Ayiza giving a presentation with a message.',
@@ -28,5 +27,4 @@ module.exports = class extends Command {
 
 		return msg.send(new MessageAttachment(Img, `${Math.round(Math.random() * 10000)}.jpg`));
 	}
-
 };

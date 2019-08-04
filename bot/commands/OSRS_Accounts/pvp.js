@@ -3,7 +3,6 @@ const osrs = require('osrs-wrapper');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -45,5 +44,4 @@ module.exports = class extends Command {
 			);
 		return msg.send({ embed });
 	}
-
 };

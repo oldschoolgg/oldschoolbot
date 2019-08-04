@@ -1,11 +1,13 @@
 const cerberus = {
 	drops: {
-		crystals: [{
-			smoulderingStone: '<:Smouldering_stone:403380366657978400>',
-			eternalCrystal: '<:Eternal_crystal:403380366808973312>',
-			pegasianCrystal: '<:Pegasian_crystal:403380366611578891>',
-			primordialCrystal: '<:Primordial_crystal:403380366888665088>'
-		}],
+		crystals: [
+			{
+				smoulderingStone: '<:Smouldering_stone:403380366657978400>',
+				eternalCrystal: '<:Eternal_crystal:403380366808973312>',
+				pegasianCrystal: '<:Pegasian_crystal:403380366611578891>',
+				primordialCrystal: '<:Primordial_crystal:403380366888665088>'
+			}
+		],
 		jarOfSouls: '<:Jar_of_souls:403383744771391490>',
 		hellpuppy: '<:Hellpuppy:324127376185491458>'
 	},
@@ -24,7 +26,7 @@ const cerberus = {
 		return loot.join(' ');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

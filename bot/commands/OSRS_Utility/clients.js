@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, { description: 'Shows all the clients you can play OSRS on.' });
 	}
@@ -17,5 +16,4 @@ and is *not* supported by Jagex. Use at your own risk.**
 <https://runelite.net/>
 `);
 	}
-
 };

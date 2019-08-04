@@ -3,7 +3,6 @@ const osrs = require('osrs-wrapper');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -40,7 +39,11 @@ module.exports = class extends Command {
 			.setAuthor(username)
 			.setColor(52224)
 			.setThumbnail('https://i.imgur.com/azW3cSB.png')
-			.addField('Beginner', `**Rank:** ${beginner.rank}\n**Score:** ${beginner.score}\n`, true)
+			.addField(
+				'Beginner',
+				`**Rank:** ${beginner.rank}\n**Score:** ${beginner.score}\n`,
+				true
+			)
 			.addField('Easy', `**Rank:** ${easy.rank}\n**Score:** ${easy.score}\n`, true)
 			.addField('Medium', `**Rank:** ${medium.rank}\n**Score:** ${medium.score}\n`, true)
 			.addField('Hard', `**Rank:** ${hard.rank}\n**Score:** ${hard.score}\n`, true)
@@ -50,5 +53,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

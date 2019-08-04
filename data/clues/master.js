@@ -87,7 +87,7 @@ const elite = {
 		return loot.join(' ');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	},
 	rand(arr) {
 		return arr[Math.floor(Math.random() * arr.length)];

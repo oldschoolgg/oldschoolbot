@@ -5,7 +5,6 @@ const { extname, basename, sep } = require('path');
 const nodeModules = `${sep}node_modules${sep}`;
 
 module.exports = class extends Task {
-
 	constructor(...args) {
 		super(...args);
 		this.enabled = !this.client.production;
@@ -38,26 +37,20 @@ module.exports = class extends Task {
 		if (this.client._fileChangeWatcher) return;
 
 		this.client._fileChangeWatcher = watch(process.cwd(), {
-			ignored: [
-				'**/node_modules/**/*',
-				'**/bwd/provider/**/*',
-				'**/.git/**/*'
-			],
+			ignored: ['**/node_modules/**/*', '**/bwd/provider/**/*', '**/.git/**/*'],
 			persistent: true,
 			ignoreInitial: true,
 			cwd: process.cwd()
 		});
 
-		const reloadStore = (_path) => {
-			const store = _path.split(sep)
-				.find(dir => this.client.pieceStores.has(dir));
+		const reloadStore = _path => {
+			const store = _path.split(sep).find(dir => this.client.pieceStores.has(dir));
 
 			const name = basename(_path);
 
 			if (!store) return this.run(name, _path);
 
-			const piece = this.client.pieceStores.get(store)
-				.get(name.replace(extname(name), ''));
+			const piece = this.client.pieceStores.get(store).get(name.replace(extname(name), ''));
 
 			return this.run(name, _path, piece);
 		};
@@ -66,5 +59,4 @@ module.exports = class extends Task {
 			this.client._fileChangeWatcher.on(event, reloadStore);
 		}
 	}
-
 };

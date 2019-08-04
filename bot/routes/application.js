@@ -2,7 +2,6 @@ const { Route } = require('klasa-dashboard-hooks');
 const { Duration } = require('klasa');
 
 module.exports = class extends Route {
-
 	constructor(...args) {
 		super(...args, { route: 'application' });
 	}
@@ -21,5 +20,4 @@ module.exports = class extends Route {
 			})
 		);
 	}
-
 };

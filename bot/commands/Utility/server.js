@@ -2,7 +2,6 @@ const { Command, Timestamp } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Get information on a mentioned user.',
@@ -23,5 +22,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

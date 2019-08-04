@@ -3,7 +3,6 @@ const { MessageEmbed } = require('discord.js');
 const quests = require('../../../data/quests');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 3,
@@ -37,9 +36,12 @@ module.exports = class extends Command {
 			.addField('**Length**', quest.length, true)
 			.addField('Requirements', quest.requirements.join('\n'), true)
 			.addField('Rewards', quest.rewards.join('\n'), true)
-			.addField('Trivia', quest.trivia[Math.floor(Math.random() * quest.trivia.length)], true);
+			.addField(
+				'Trivia',
+				quest.trivia[Math.floor(Math.random() * quest.trivia.length)],
+				true
+			);
 	}
-
 };
 
 const alternativeNameMap = {

@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			guarded: true,
@@ -14,5 +13,4 @@ module.exports = class extends Command {
 You can vote for Old School Bot here: <https://discordbots.org/bot/303730326692429825/vote>
 `);
 	}
-
 };

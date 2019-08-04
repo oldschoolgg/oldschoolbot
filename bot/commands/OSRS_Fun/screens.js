@@ -9,7 +9,6 @@ const canvas = createCanvas(900, 506);
 const ctx = canvas.getContext('2d');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Get yourself a Fake Ely!',
@@ -37,7 +36,8 @@ module.exports = class extends Command {
 
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
 
-		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
+		return msg.send(
+			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
+		);
 	}
-
 };

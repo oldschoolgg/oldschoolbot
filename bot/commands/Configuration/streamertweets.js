@@ -1,11 +1,11 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			subcommands: true,
-			description: 'Enables/disables the Streamer Tweets function which sends tweets from OSRS Streamers.',
+			description:
+				'Enables/disables the Streamer Tweets function which sends tweets from OSRS Streamers.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
 			permissionLevel: 7,
@@ -32,5 +32,4 @@ module.exports = class extends Command {
 		await msg.guild.settings.reset('streamertweets');
 		return msg.sendLocale('STREAMER_TWEETS_DISABLED');
 	}
-
 };

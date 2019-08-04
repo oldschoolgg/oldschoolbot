@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -21,7 +20,9 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setTitle(item.name)
 			.setColor(52224)
-			.setThumbnail(`http://services.runescape.com/m=itemdb_oldschool/1521457324813_obj_big.gif?id=${ID}`)
+			.setThumbnail(
+				`http://services.runescape.com/m=itemdb_oldschool/1521457324813_obj_big.gif?id=${ID}`
+			)
 			.addField('Overall Price', `${overall.toLocaleString()} gp`, true)
 			.addField('Store Price', `${store.toLocaleString()} gp`, true)
 			.addField('Buy Price', `${buy.toLocaleString()} gp`, true)
@@ -29,5 +30,4 @@ module.exports = class extends Command {
 			.setFooter('OSBuddy API');
 		return msg.send({ embed });
 	}
-
 };

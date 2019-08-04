@@ -1,13 +1,13 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			permissionLevel: 7,
 			subcommands: true,
 			aliases: ['tn'],
-			description: 'Enables/disables the Twitch Notifications function which sends tweets from OSRS Streamers.',
+			description:
+				'Enables/disables the Twitch Notifications function which sends tweets from OSRS Streamers.',
 			runIn: ['text'],
 			usage: '<list|enable|disable|add|remove> [streamer_name:str]',
 			usageDelim: ' ',
@@ -37,15 +37,18 @@ module.exports = class extends Command {
 
 	async add(msg, [name]) {
 		if (!name) msg.sendLocale('TN_NO_STREAMER', [msg.guild.settings.get('prefix')]);
-		if (!this.client.streamers.includes(name.toLowerCase())) msg.sendLocale('TN_INVALID_STREAMER');
-		if (msg.guild.settings.get('streamers').includes(name.toLowerCase())) msg.sendLocale('TN_ALREADY_ENABLED_STREAMER');
+		if (!this.client.streamers.includes(name.toLowerCase()))
+			msg.sendLocale('TN_INVALID_STREAMER');
+		if (msg.guild.settings.get('streamers').includes(name.toLowerCase()))
+			msg.sendLocale('TN_ALREADY_ENABLED_STREAMER');
 		await msg.guild.settings.update('streamers', name.toLowerCase(), { action: 'add' });
 		return msg.sendLocale('TN_ADDED_STREAMER', [name]);
 	}
 
 	async remove(msg, [name]) {
 		if (!name) msg.sendLocale('TN_NO_STREAMER_REMOVE', [msg.guild.settings.get('prefix')]);
-		if (!this.client.streamers.includes(name.toLowerCase())) msg.sendLocale('TN_INVALID_STREAMER');
+		if (!this.client.streamers.includes(name.toLowerCase()))
+			msg.sendLocale('TN_INVALID_STREAMER');
 		if (!msg.guild.settings.get('streamers').includes(name.toLowerCase())) {
 			msg.sendLocale('TN_NOT_ENABLED_STREAMER');
 		}
@@ -59,6 +62,4 @@ module.exports = class extends Command {
 		if (msg.guild.settings.get('streamers').length === 0) msg.sendLocale('TN_NO_STREAMERS');
 		return msg.sendLocale(msg.guild.settings.get('streamers').join(', '));
 	}
-
-
 };

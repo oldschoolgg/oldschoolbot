@@ -13,7 +13,6 @@ ctx.font = '16px OSRSFont';
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Get yourself a Fake Ely! +fakeely username kc',
@@ -42,7 +41,8 @@ module.exports = class extends Command {
 		ctx.fillStyle = '#0000ff';
 		ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
 
-		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
+		return msg.send(
+			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
+		);
 	}
-
 };

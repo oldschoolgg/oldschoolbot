@@ -114,7 +114,6 @@ const HEXIS = ['760605320108310528'];
 const HEXIS_CHANNEL = '575167011068575754';
 
 module.exports = class extends Event {
-
 	constructor(...args) {
 		super(...args, { once: true, event: 'klasaReady' });
 		this.enabled = this.client.production;
@@ -204,5 +203,4 @@ module.exports = class extends Event {
 				if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
 			});
 	}
-
 };

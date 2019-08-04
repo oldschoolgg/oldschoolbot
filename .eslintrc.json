@@ -1,7 +1,12 @@
 {
-	"extends": "klasa",
+	"extends": ["klasa", "prettier"],
 	"rules": {
 		"no-mixed-operators": "off",
-		"consistent-return": "off"
-	}
+		"consistent-return": "off",
+		"prettier/prettier": "error",
+		"array-callback-return": "off",
+		"id-length": "off",
+		"complexity": "off"
+	},
+	"plugins": ["prettier"]
 }

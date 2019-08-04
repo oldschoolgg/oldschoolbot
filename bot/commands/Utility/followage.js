@@ -3,7 +3,6 @@ const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Shows the followage of a given user from a given twitch channel.',
@@ -19,7 +18,9 @@ module.exports = class extends Command {
 
 	async run(msg, [user, channel]) {
 		const url = new URL(
-			`https://api.twitch.tv/kraken/users/${encodeURIComponent(user)}/follows/channels/${channel}`
+			`https://api.twitch.tv/kraken/users/${encodeURIComponent(
+				user
+			)}/follows/channels/${channel}`
 		);
 		url.search = new URLSearchParams([['client_id', this.client.twitchClientID]]);
 
@@ -35,7 +36,10 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(6570406)
-			.setAuthor(`${user} has been following ${channel} for ${days} days.`, body.channel.logo);
+			.setAuthor(
+				`${user} has been following ${channel} for ${days} days.`,
+				body.channel.logo
+			);
 
 		return msg.send(embed);
 	}
@@ -43,5 +47,4 @@ module.exports = class extends Command {
 	differenceDays(first, second) {
 		return Math.floor((second - first) / (1000 * 60 * 60 * 24));
 	}
-
 };

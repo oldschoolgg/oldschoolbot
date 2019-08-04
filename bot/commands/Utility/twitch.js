@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Returns information on a Twitch.tv Account',
@@ -39,5 +38,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

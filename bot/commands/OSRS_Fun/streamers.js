@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -43,7 +42,9 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed().setColor(8311585);
 
 		streamers
-			.filter(str => str.username && this.client.streamers.includes(str.username.toLowerCase()))
+			.filter(
+				str => str.username && this.client.streamers.includes(str.username.toLowerCase())
+			)
 			.slice(0, 5)
 			.map(strm =>
 				embed.addField(
@@ -54,5 +55,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

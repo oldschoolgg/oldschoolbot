@@ -8,14 +8,12 @@ Client.use(require('klasa-dashboard-hooks'));
 require('../config/Schemas');
 
 class OldSchoolBot extends Client {
-
 	constructor(options) {
 		super(options);
 		for (const prop in clientProperties) {
 			this[prop] = clientProperties[prop];
 		}
 	}
-
 }
 
 new OldSchoolBot(clientOptions).login(token);

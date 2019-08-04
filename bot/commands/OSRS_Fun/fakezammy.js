@@ -15,7 +15,6 @@ registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Fake yourself getting zammy loot!',
@@ -49,7 +48,9 @@ module.exports = class extends Command {
 		/* You have a funny feeling like you're being followed. */
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(
-			`${username} received a drop: ${Math.random() > 0.5 ? 'Zamorak hilt' : 'Staff of the dead'}`,
+			`${username} received a drop: ${
+				Math.random() > 0.5 ? 'Zamorak hilt' : 'Staff of the dead'
+			}`,
 			11,
 			54
 		);
@@ -61,7 +62,8 @@ module.exports = class extends Command {
 		ctx.fillStyle = '#0000ff';
 		ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 
-		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
+		return msg.send(
+			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
+		);
 	}
-
 };

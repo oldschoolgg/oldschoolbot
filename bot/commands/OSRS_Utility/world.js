@@ -4,7 +4,6 @@ const { parseTable } = require('../../../config/util');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 5,
@@ -31,7 +30,10 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(7981338)
 			.setThumbnail('https://i.imgur.com/56i6oyn.png')
-			.setFooter(`Old School RuneScape World ${world.number}`, 'https://i.imgur.com/fVakfwp.png')
+			.setFooter(
+				`Old School RuneScape World ${world.number}`,
+				'https://i.imgur.com/fVakfwp.png'
+			)
 			.addField('Access', world.type, true)
 			.addField('Location', world.country, true)
 			.addField('Players', world.players, true)
@@ -39,5 +41,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

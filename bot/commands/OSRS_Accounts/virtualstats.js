@@ -4,7 +4,6 @@ const osrs = require('osrs-wrapper');
 const { convertXPtoLVL } = require('../../../config/util');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -33,5 +32,4 @@ module.exports = class extends Command {
 		const embed = await this.getStatsEmbed(username, 7981338, player);
 		return msg.send({ embed });
 	}
-
 };

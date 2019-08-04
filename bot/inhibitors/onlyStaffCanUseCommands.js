@@ -1,7 +1,6 @@
 const { Inhibitor } = require('klasa');
 
 module.exports = class extends Inhibitor {
-
 	async run(msg) {
 		if (!msg.guild) return;
 		if (msg.channel.settings.get('onlyStaffCanUseCommands')) {
@@ -9,5 +8,4 @@ module.exports = class extends Inhibitor {
 			if (!hasPerm) throw true;
 		}
 	}
-
 };

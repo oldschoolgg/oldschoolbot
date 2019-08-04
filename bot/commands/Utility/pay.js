@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Send virtual GP to people (not real GP).',
@@ -19,5 +18,4 @@ module.exports = class extends Command {
 		user.settings.update('GP', user.settings.get('GP') + amount);
 		return msg.send(`You sent ${amount.toLocaleString()} GP to ${user}.`);
 	}
-
 };

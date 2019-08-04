@@ -4,7 +4,6 @@ const moment = require('moment');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			guarded: true,
@@ -14,7 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const duration = Duration.toNow(Date.now() - (process.uptime() * 1000));
+		const duration = Duration.toNow(Date.now() - process.uptime() * 1000);
 		const g = {
 			tiny: 0,
 			small: 0,
@@ -34,7 +33,7 @@ module.exports = class extends Command {
 			else if (guild.memberCount < 1000) g.large++;
 			else g.massive++;
 
-			if (guild.members.filter(u => u.user.bot).size / guild.memberCount * 100 > 70) {
+			if ((guild.members.filter(u => u.user.bot).size / guild.memberCount) * 100 > 70) {
 				guild.botfarms++;
 			}
 			g.total += guild.memberCount;
@@ -69,7 +68,11 @@ Created by ${this.client.application.owner.username}
 		const embed = new MessageEmbed()
 			.setColor(14981973)
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.addField('Memory Usage', `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\n`, true)
+			.addField(
+				'Memory Usage',
+				`${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\n`,
+				true
+			)
 			.addField('Uptime', duration, true)
 			.addField('Guilds', guildStats, true)
 			.addField('Other Stats', otherStats, true)
@@ -77,5 +80,4 @@ Created by ${this.client.application.owner.username}
 
 		return msg.send({ embed });
 	}
-
 };

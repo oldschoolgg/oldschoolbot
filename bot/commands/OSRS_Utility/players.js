@@ -3,7 +3,6 @@ const { parseTable } = require('../../../config/util');
 const fetch = require('node-fetch');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 10,
@@ -44,5 +43,4 @@ module.exports = class extends Command {
 **Highest world:** World ${highest.number} with ${highest.players} players
 `);
 	}
-
 };

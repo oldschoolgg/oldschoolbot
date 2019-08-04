@@ -2,10 +2,10 @@ const { Task } = require('klasa');
 const fetch = require('node-fetch');
 
 module.exports = class extends Task {
-
 	async run() {
-		const summary = await fetch(`https://rsbuddy.com/exchange/summary.json`)
-			.then(res => res.json());
+		const summary = await fetch(`https://rsbuddy.com/exchange/summary.json`).then(res =>
+			res.json()
+		);
 
 		const prices = {};
 
@@ -23,5 +23,4 @@ module.exports = class extends Task {
 
 		this.client.settings.update('prices', prices);
 	}
-
 };

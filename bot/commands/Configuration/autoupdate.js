@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			runIn: ['text'],
@@ -16,5 +15,4 @@ module.exports = class extends Command {
 		await msg.author.settings.update('autoupdate', !msg.author.settings.get('autoupdate'));
 		return msg.sendLocale('AUTO_UPDATE', [msg.author.settings.get('autoupdate')]);
 	}
-
 };

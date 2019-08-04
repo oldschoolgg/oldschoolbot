@@ -2,10 +2,10 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
-const getURL = (query) => `https://oldschool.runescape.wiki/api.php?action=query&format=json&prop=extracts%7Cpageimages%7Cinfo&iwurl=1&generator=search&formatversion=2&exsentences=5&exintro=1&explaintext=1&piprop=original&inprop=url&gsrsearch=${query}&gsrlimit=1`;
+const getURL = query =>
+	`https://oldschool.runescape.wiki/api.php?action=query&format=json&prop=extracts%7Cpageimages%7Cinfo&iwurl=1&generator=search&formatversion=2&exsentences=5&exintro=1&explaintext=1&piprop=original&inprop=url&gsrsearch=${query}&gsrlimit=1`;
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 3,
@@ -37,5 +37,4 @@ module.exports = class extends Command {
 			.setFooter('Old School RuneScape Wiki', 'https://i.imgur.com/GMs5my3.png');
 		return msg.send({ embed });
 	}
-
 };

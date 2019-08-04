@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			permissionLevel: 0,
@@ -37,5 +36,4 @@ module.exports = class extends Command {
 		await msg.author.settings.update('RSN', newRSN);
 		return msg.sendLocale('RSN_SET_TO', [newRSN]);
 	}
-
 };

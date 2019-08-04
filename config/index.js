@@ -1,6 +1,13 @@
 const emoji = require('./skill-emoji');
 const streamers = require('../data/osrs-streamers');
-const { token, twitchClientID, twitterApp, dbl, clientSecret, KDHOptions } = require('./private.js');
+const {
+	token,
+	twitchClientID,
+	twitterApp,
+	dbl,
+	clientSecret,
+	KDHOptions
+} = require('./private.js');
 
 const production = require('os').platform() === 'linux';
 

@@ -1,8 +1,10 @@
-const { Command, util: { chunk } } = require('klasa');
+const {
+	Command,
+	util: { chunk }
+} = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Shows the links for some OSRS youtubers.',
@@ -13,7 +15,9 @@ module.exports = class extends Command {
 
 	async run(msg) {
 		const random = youtubers.sort(() => Math.random() - 0.5);
-		const formatted = chunk(random, 5).map(list => list.join(', ')).join('\n');
+		const formatted = chunk(random, 5)
+			.map(list => list.join(', '))
+			.join('\n');
 
 		const embed = new MessageEmbed()
 			.setTitle('Here are some Old School RuneScape youtubers!')
@@ -22,7 +26,6 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };
 
 const youtubers = [
