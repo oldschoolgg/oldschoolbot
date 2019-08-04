@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			subcommands: true,
@@ -32,5 +31,4 @@ module.exports = class extends Command {
 		await msg.guild.settings.reset('hcimdeaths');
 		return msg.sendLocale('HCIM_TWEETS_DISABLED');
 	}
-
 };

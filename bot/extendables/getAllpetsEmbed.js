@@ -3,7 +3,6 @@ const { MessageEmbed } = require('discord.js');
 const pets = require('../../data/pets');
 
 class getAllPetsEmbed extends Extendable {
-
 	constructor(...args) {
 		super(...args, {
 			appliesTo: [Command],
@@ -74,7 +73,6 @@ class getAllPetsEmbed extends Extendable {
 			);
 		return embed;
 	}
-
 }
 
 module.exports = getAllPetsEmbed;

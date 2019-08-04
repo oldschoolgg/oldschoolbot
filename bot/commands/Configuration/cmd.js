@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			runIn: ['text'],
@@ -29,5 +28,4 @@ module.exports = class extends Command {
 		await msg.guild.settings.update('disabledCommands', command.name, { action: 'add' });
 		return msg.sendLocale('CMD_DISABLED', [command.name]);
 	}
-
 };

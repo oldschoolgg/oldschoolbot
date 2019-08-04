@@ -5,7 +5,6 @@ const { MessageEmbed } = require('discord.js');
 const { convertXPtoLVL } = require('../../../config/util');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -18,9 +17,9 @@ module.exports = class extends Command {
 
 	async run(msg, [username]) {
 		const { emoji } = this.client;
-		const { Skills } = await osrs.hiscores
-			.getPlayer(username, 'Normal')
-			.catch(() => { throw this.client.notFound; });
+		const { Skills } = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
+			throw this.client.notFound;
+		});
 
 		const minMaxSkill = Object.keys(Skills)
 			.map(skill => Skills[skill])
@@ -57,19 +56,19 @@ module.exports = class extends Command {
 			)
 			.addField(
 				'\u200b',
-				`**Highest Stat:** ${emoji[highestSkill]} ${minMaxSkill[minMaxSkill.length - 2].level} | ${minMaxSkill[
-					minMaxSkill.length - 2
-				].xp.toLocaleString()} XP
+				`**Highest Stat:** ${emoji[highestSkill]} ${
+					minMaxSkill[minMaxSkill.length - 2].level
+				} | ${minMaxSkill[minMaxSkill.length - 2].xp.toLocaleString()} XP
 **Lowest Stat:** ${emoji[lowestSkill]} ${minMaxSkill[0].level} | ${lowestSkillXp}  XP
 **Highest Ranked Stat:** ${emoji[highestRankName]} ${highestRankRank} | lvl ${highestRankLevel}
 **Lowest Ranked Stat:** ${emoji[lowestRankName]} ${lowestRankRank} | lvl ${lowestRankLevel}
 **Average Level:** ${averageLvl}
 **Average Virtual Level:** ${averageVirtualLvl}
 **Average Stat XP:** ${
-	this.getAverageXP(Skills)
-		.toLocaleString()
-		.split('.')[0]
-}`,
+					this.getAverageXP(Skills)
+						.toLocaleString()
+						.split('.')[0]
+				}`,
 				true
 			);
 
@@ -119,7 +118,14 @@ Your Skilling Type is a **${skillPref}**.`,
 			}
 			continue;
 		}
-		return [highestRankName, highestRankRank, highestRankLevel, lowestRankName, lowestRankRank, lowestRankLevel];
+		return [
+			highestRankName,
+			highestRankRank,
+			highestRankLevel,
+			lowestRankName,
+			lowestRankRank,
+			lowestRankLevel
+		];
 	}
 
 	getSkillNames(Skills, minMaxSkill) {
@@ -155,7 +161,11 @@ Your Skilling Type is a **${skillPref}**.`,
 		const mage = 0.325 * (Math.floor(Skills.Magic.level / 2) + Skills.Magic.level);
 		const combatMax = Math.max(melee, range, mage);
 		const skillerCheck =
-			Skills.Attack.level + Skills.Strength.level + Skills.Defence.level + Skills.Ranged.level + Skills.Magic.level;
+			Skills.Attack.level +
+			Skills.Strength.level +
+			Skills.Defence.level +
+			Skills.Ranged.level +
+			Skills.Magic.level;
 		let combatPref = 'Warrior';
 		if (combatMax === range) {
 			combatPref = 'Ranger';
@@ -182,7 +192,10 @@ Your Skilling Type is a **${skillPref}**.`,
 					Skills.Prayer.xp) /
 				7
 		};
-		const gatherer = { class: 'Gatherer', avgXP: (Skills.Woodcutting.xp + Skills.Fishing.xp + Skills.Mining.xp) / 3 };
+		const gatherer = {
+			class: 'Gatherer',
+			avgXP: (Skills.Woodcutting.xp + Skills.Fishing.xp + Skills.Mining.xp) / 3
+		};
 		const artisan = {
 			class: 'Artisan',
 			avgXP:
@@ -195,13 +208,25 @@ Your Skilling Type is a **${skillPref}**.`,
 		};
 		const naturalist = {
 			class: 'Naturalist',
-			avgXP: (Skills.Cooking.xp + Skills.Herblore.xp + Skills.Runecrafting.xp + Skills.Farming.xp) / 4
+			avgXP:
+				(Skills.Cooking.xp +
+					Skills.Herblore.xp +
+					Skills.Runecrafting.xp +
+					Skills.Farming.xp) /
+				4
 		};
 		const survivalist = {
 			class: 'Survivalist',
-			avgXP: (Skills.Agility.xp + Skills.Thieving.xp + Skills.Hunter.xp + Skills.Slayer.xp) / 4
+			avgXP:
+				(Skills.Agility.xp + Skills.Thieving.xp + Skills.Hunter.xp + Skills.Slayer.xp) / 4
 		};
-		const skillMax = Math.max(fighter.avgXP, gatherer.avgXP, artisan.avgXP, naturalist.avgXP, survivalist.avgXP);
+		const skillMax = Math.max(
+			fighter.avgXP,
+			gatherer.avgXP,
+			artisan.avgXP,
+			naturalist.avgXP,
+			survivalist.avgXP
+		);
 		let skillPref = fighter.class;
 		if (skillMax === gatherer.avgXP) {
 			skillPref = gatherer.class;
@@ -217,7 +242,6 @@ Your Skilling Type is a **${skillPref}**.`,
 		}
 		return skillPref;
 	}
-
 };
 
 const SKILL_NAMES = [

@@ -16,7 +16,6 @@ const sort = [
 ];
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			guarded: true,
@@ -29,14 +28,17 @@ module.exports = class extends Command {
 
 	init() {
 		this.username = this.client.user.username;
-		this.avatar = (size) => this.client.user.avatarURL({ format: 'png', size: size });
+		this.avatar = size => this.client.user.avatarURL({ format: 'png', size: size });
 		this.prefix = this.client.options.prefix;
 		this.invite = this.client.invite;
 	}
 
 	finish(data, stopwatch, format) {
 		const buffer = Buffer.from(data);
-		const hash = createHash('sha1').update(data).digest('base64').substr(0, 7);
+		const hash = createHash('sha1')
+			.update(data)
+			.digest('base64')
+			.substr(0, 7);
 		const duration = `Generated in ${stopwatch.stop()}`;
 		return this.msg.channel.sendFile(buffer, `commands_${hash}.${format}`, duration);
 	}
@@ -50,8 +52,11 @@ module.exports = class extends Command {
 		const commandNames = Array.from(this.client.commands.keys());
 		await Promise.all(
 			this.client.commands
-				.filter(cmd => !cmd.permissionLevel || (cmd.permissionLevel &&
-					cmd.permissionLevel < permissionLevel))
+				.filter(
+					cmd =>
+						!cmd.permissionLevel ||
+						(cmd.permissionLevel && cmd.permissionLevel < permissionLevel)
+				)
 				.map(cmd => {
 					if (normalize) {
 						if (!categories.includes(cmd.category)) categories.push(cmd.category);
@@ -62,14 +67,20 @@ module.exports = class extends Command {
 					if (!commands[cmd.category].hasOwnProperty(cmd.subCategory)) {
 						commands[cmd.category][cmd.subCategory] = [];
 					}
-					const description = typeof cmd.description === 'function' ?
-						cmd.description(msg.language) : cmd.description || 'No description.';
+					const description =
+						typeof cmd.description === 'function'
+							? cmd.description(msg.language)
+							: cmd.description || 'No description.';
 
-					return commands[cmd.category][cmd.subCategory]
-						.push({ name: cmd.name, aliases: cmd.aliases, description });
+					return commands[cmd.category][cmd.subCategory].push({
+						name: cmd.name,
+						aliases: cmd.aliases,
+						description
+					});
 				})
 		);
-		if (!normalize) categories = Object.keys(commands).sort((a, b) => sort.indexOf(a) - sort.indexOf(b));
+		if (!normalize)
+			categories = Object.keys(commands).sort((a, b) => sort.indexOf(a) - sort.indexOf(b));
 		const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
 		return { commands, categories, longest, stopwatch };
 	}
@@ -85,7 +96,10 @@ module.exports = class extends Command {
 		for (let cat = 0; cat < categories.length; cat++) {
 			const categoryName = categories[cat];
 			const subCategories = Object.keys(commands[categories[cat]]);
-			if (commands[categories[cat]].General) markdown.push(`\n## ${categoryName} / ${commands[categories[cat]].General.length} Commands`);
+			if (commands[categories[cat]].General)
+				markdown.push(
+					`\n## ${categoryName} / ${commands[categories[cat]].General.length} Commands`
+				);
 
 			for (let subCat = 0; subCat < subCategories.length; subCat++) {
 				if (subCategories.length > 1) markdown.push(`\n### ${subCategories[subCat]}`);
@@ -93,7 +107,12 @@ module.exports = class extends Command {
 				markdown.push(`|--------------|----------|--------------------------|`);
 				markdown.push(
 					`${commands[categories[cat]][subCategories[subCat]]
-						.map(cmd => `| ${this.prefix + cmd.name} | ${cmd.aliases.join(', ')} | ${cmd.description} |`)
+						.map(
+							cmd =>
+								`| ${this.prefix + cmd.name} | ${cmd.aliases.join(', ')} | ${
+									cmd.description
+								} |`
+						)
 						.join('\n')}`
 				);
 			}
@@ -118,17 +137,20 @@ module.exports = class extends Command {
 
 			for (let subCat = 0; subCat < subCategories.length; subCat++) {
 				html += `<div class="subcategory">`;
-				if (subCategories.length > 1) html += `<h3 class="subcategory-header">${esc(subCategories[subCat])}</h3>`;
+				if (subCategories.length > 1)
+					html += `<h3 class="subcategory-header">${esc(subCategories[subCat])}</h3>`;
 				html += `<table class="category-table">`;
 				html += `<thead>
 <tr><th>Command</th><th>Description</th></tr>
 </thead>`;
 				html += `<tbody>`;
 				html += `${commands[categories[cat]][subCategories[subCat]]
-					.map(cmd => `<tr><td>${esc(this.prefix + cmd.name)}</td>` +
-					`<td>${esc(cmd.description)}</td></tr>`)
-					.join('\n')}`
-				;
+					.map(
+						cmd =>
+							`<tr><td>${esc(this.prefix + cmd.name)}</td>` +
+							`<td>${esc(cmd.description)}</td></tr>`
+					)
+					.join('\n')}`;
 				html += `</tbody></table></div>`;
 			}
 			html += `</div>`;
@@ -138,7 +160,10 @@ module.exports = class extends Command {
 	}
 
 	async plaintext(msg) {
-		const { commands, categories, longest, stopwatch } = await this.buildCommands('plaintext', msg);
+		const { commands, categories, longest, stopwatch } = await this.buildCommands(
+			'plaintext',
+			msg
+		);
 		const plaintext = [];
 
 		plaintext.push(`
@@ -153,12 +178,17 @@ Github/Source Code: https://github.oldschool.gg/
 		for (let cat = 0; cat < categories.length; cat++) {
 			const categoryName = categories[cat];
 			const subCategories = Object.keys(commands[categories[cat]]);
-			if (commands[categories[cat]].General) plaintext.push(`${categoryName} / ${commands[categories[cat]].General.length} Commands\n`);
+			if (commands[categories[cat]].General)
+				plaintext.push(
+					`${categoryName} / ${commands[categories[cat]].General.length} Commands\n`
+				);
 
 			for (let subCat = 0; subCat < subCategories.length; subCat++) {
 				if (subCategories.length > 1) plaintext.push(`${subCategories[subCat]}\n`);
 				plaintext.push(
-					`${commands[categories[cat]][subCategories[subCat]].map(cmd => `${this.prefix + cmd.name.padEnd(longest)}: ${cmd.description}`).join('\n')}`
+					`${commands[categories[cat]][subCategories[subCat]]
+						.map(cmd => `${this.prefix + cmd.name.padEnd(longest)}: ${cmd.description}`)
+						.join('\n')}`
 				);
 				plaintext.push('\n');
 			}
@@ -190,7 +220,6 @@ Github/Source Code: https://github.oldschool.gg/
 			"'": '&#039;'
 		};
 
-		return text.replace(/[&<>"']/g, (char) => map[char]);
+		return text.replace(/[&<>"']/g, char => map[char]);
 	}
-
 };

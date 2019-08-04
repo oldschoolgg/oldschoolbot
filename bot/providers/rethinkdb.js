@@ -1,16 +1,25 @@
 // Copyright (c) 2017-2018 dirigeants. All rights reserved. MIT license.
-const { Provider, util: { mergeDefault, chunk } } = require('klasa');
+const {
+	Provider,
+	util: { mergeDefault, chunk }
+} = require('klasa');
 const rethink = require('rethinkdbdash');
 
 module.exports = class extends Provider {
-
 	constructor(...args) {
 		super(...args);
 		this.enabled = this.client.production;
-		this.db = this.client.production ? rethink(mergeDefault({
-			db: 'osbot',
-			silent: false
-		}, this.client.options.providers.rethinkdb)) : null;
+		this.db = this.client.production
+			? rethink(
+					mergeDefault(
+						{
+							db: 'osbot',
+							silent: false
+						},
+						this.client.options.providers.rethinkdb
+					)
+			  )
+			: null;
 	}
 
 	async init() {
@@ -24,7 +33,7 @@ module.exports = class extends Provider {
 
 	async ping() {
 		const now = Date.now();
-		return await this.db.now() - now;
+		return (await this.db.now()) - now;
 	}
 
 	async shutdown() {
@@ -35,7 +44,10 @@ module.exports = class extends Provider {
 	/* Table methods */
 
 	async hasTable(table) {
-		return this.db.tableList().contains(table).run();
+		return this.db
+			.tableList()
+			.contains(table)
+			.run();
 	}
 
 	async createTable(table) {
@@ -47,7 +59,10 @@ module.exports = class extends Provider {
 	}
 
 	async sync(table) {
-		return this.db.table(table).sync().run();
+		return this.db
+			.table(table)
+			.sync()
+			.run();
 	}
 
 	/* Document methods */
@@ -56,7 +71,13 @@ module.exports = class extends Provider {
 		if (entries.length) {
 			const chunks = chunk(entries, 50000);
 			const output = [];
-			for (const myChunk of chunks) output.push(...await this.db.table(table).getAll(...myChunk).run());
+			for (const myChunk of chunks)
+				output.push(
+					...(await this.db
+						.table(table)
+						.getAll(...myChunk)
+						.run())
+				);
 			return output;
 		}
 		return this.db.table(table).run();
@@ -66,38 +87,70 @@ module.exports = class extends Provider {
 		if (entries.length) {
 			const chunks = chunk(entries, 50000);
 			const output = [];
-			for (const myChunk of chunks) output.push(...await this.db.table(table).getAll(...myChunk)('id').run());
+			for (const myChunk of chunks)
+				output.push(
+					...(await this.db
+						.table(table)
+						.getAll(...myChunk)('id')
+						.run())
+				);
 			return output;
 		}
-		return this.db.table(table)('id').run();
+		return this.db
+			.table(table)('id')
+			.run();
 	}
 
 	async get(table, id) {
-		return this.db.table(table).get(id).run();
+		return this.db
+			.table(table)
+			.get(id)
+			.run();
 	}
 
 	async has(table, id) {
-		return this.db.table(table).get(id).ne(null).run();
+		return this.db
+			.table(table)
+			.get(id)
+			.ne(null)
+			.run();
 	}
 
 	async getRandom(table) {
-		return this.db.table(table).sample(1).run();
+		return this.db
+			.table(table)
+			.sample(1)
+			.run();
 	}
 
 	async create(table, id, value = {}) {
-		return this.db.table(table).insert({ ...this.parseUpdateInput(value), id }).run();
+		return this.db
+			.table(table)
+			.insert({ ...this.parseUpdateInput(value), id })
+			.run();
 	}
 
 	async update(table, id, value = {}) {
-		return this.db.table(table).get(id).update(this.parseUpdateInput(value)).run();
+		return this.db
+			.table(table)
+			.get(id)
+			.update(this.parseUpdateInput(value))
+			.run();
 	}
 
 	async replace(table, id, value = {}) {
-		return this.db.table(table).get(id).replace({ ...this.parseUpdateInput(value), id }).run();
+		return this.db
+			.table(table)
+			.get(id)
+			.replace({ ...this.parseUpdateInput(value), id })
+			.run();
 	}
 
 	async delete(table, id) {
-		return this.db.table(table).get(id).delete().run();
+		return this.db
+			.table(table)
+			.get(id)
+			.delete()
+			.run();
 	}
-
 };

@@ -12,7 +12,6 @@ ctx.font = '14px OSRSFont';
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Shows how much virtual GP you have',
@@ -50,5 +49,4 @@ module.exports = class extends Command {
 		const image = new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
 		return msg.send(image);
 	}
-
 };

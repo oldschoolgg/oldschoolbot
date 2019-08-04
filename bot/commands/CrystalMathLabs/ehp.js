@@ -4,7 +4,6 @@ const osrs = new Crystalmethlabs('osrs');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 3,
@@ -19,7 +18,8 @@ module.exports = class extends Command {
 		if (err) return msg.send(err);
 
 		for (const skill in stats) {
-			if (stats[skill].rank !== undefined) stats[skill].rank = stats[skill].rank.toLocaleString();
+			if (stats[skill].rank !== undefined)
+				stats[skill].rank = stats[skill].rank.toLocaleString();
 		}
 
 		const embed = new MessageEmbed()
@@ -31,5 +31,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

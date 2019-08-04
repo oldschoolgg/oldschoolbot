@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			permissionLevel: 7,
@@ -16,5 +15,4 @@ module.exports = class extends Command {
 		await msg.guild.settings.update('prefix', prefix);
 		return msg.sendLocale('PREFIX_CHANGED', [msg.guild.name, prefix]);
 	}
-
 };

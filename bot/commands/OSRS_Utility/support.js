@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, { description: 'Shows some support links for RuneScape.' });
 	}
@@ -14,5 +13,4 @@ module.exports = class extends Command {
 **Support Guides:** <https://support.runescape.com/hc/en-gb/categories/200835065-Support-Guides-Updates>
 `);
 	}
-
 };

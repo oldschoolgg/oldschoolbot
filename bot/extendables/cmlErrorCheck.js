@@ -1,7 +1,6 @@
 const { Extendable, Command } = require('klasa');
 
 class cmlErrorCheck extends Extendable {
-
 	constructor(...args) {
 		super(...args, {
 			appliesTo: [Command],
@@ -23,7 +22,6 @@ class cmlErrorCheck extends Extendable {
 				return null;
 		}
 	}
-
 }
 
 module.exports = cmlErrorCheck;

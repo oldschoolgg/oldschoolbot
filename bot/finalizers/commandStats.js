@@ -1,7 +1,6 @@
 const { Finalizer } = require('klasa');
 
 module.exports = class extends Finalizer {
-
 	constructor(...args) {
 		super(...args, { enabled: true });
 	}
@@ -15,5 +14,4 @@ module.exports = class extends Finalizer {
 		else commandStats[name]++;
 		this.client.settings.update('commandStats', { ...commandStats });
 	}
-
 };

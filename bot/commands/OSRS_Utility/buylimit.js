@@ -4,7 +4,6 @@ const { MessageEmbed } = require('discord.js');
 const items = require('../../../data/buyLimits.json');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 3,
@@ -16,14 +15,16 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [query]) {
-		const res = items.filter(i => this.cleanString(i.name, true).includes(this.cleanString(query, true)))
+		const res = items
+			.filter(i => this.cleanString(i.name, true).includes(this.cleanString(query, true)))
 			.slice(0, 10);
-
 
 		if (res.length === 0) throw "Couldn't find any items!";
 
 		const names = res
-			.map(i => `[${i.name}](https://oldschool.runescape.wiki/w/${encodeURIComponent(i.name)})`)
+			.map(
+				i => `[${i.name}](https://oldschool.runescape.wiki/w/${encodeURIComponent(i.name)})`
+			)
 			.join('\n');
 		const limits = res.map(i => `${i.limit}`).join('\n');
 
@@ -36,5 +37,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

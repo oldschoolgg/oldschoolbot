@@ -1,7 +1,6 @@
 const { Extendable, Command } = require('klasa');
 
 class combatLevel extends Extendable {
-
 	constructor(...args) {
 		super(...args, {
 			appliesTo: [Command],
@@ -17,7 +16,6 @@ class combatLevel extends Extendable {
 		const mage = 0.325 * (Math.floor(Magic.level / 2) + Magic.level);
 		return Math.floor(base + Math.max(melee, range, mage));
 	}
-
 }
 
 module.exports = combatLevel;

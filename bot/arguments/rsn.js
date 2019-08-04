@@ -3,7 +3,6 @@ const { Argument } = require('klasa');
 const { userOrMember } = require('../../config/constants');
 
 module.exports = class extends Argument {
-
 	async run(arg, possible, msg) {
 		const prefix = msg.guild ? msg.guild.settings.get('prefix') : '+';
 		if (typeof arg === 'undefined') {
@@ -20,5 +19,4 @@ module.exports = class extends Argument {
 		if (arg.length > 12) throw 'Invalid username. Please try again.';
 		return arg.toLowerCase();
 	}
-
 };

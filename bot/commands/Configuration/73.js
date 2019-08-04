@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 5,
@@ -33,6 +32,4 @@ module.exports = class extends Command {
 		await msg.guild.settings.reset('joyReactions');
 		return msg.sendLocale('JOY_REACTIONS_DISABLED');
 	}
-
-
 };

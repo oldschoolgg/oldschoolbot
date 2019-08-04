@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Returns a random message from someone in the channel.',
@@ -15,7 +14,10 @@ module.exports = class extends Command {
 		let messageBank = await msg.channel.messages.fetch({ limit: 100 });
 
 		for (let i = 0; i < 3; i++) {
-			const fetchedMessages = await msg.channel.messages.fetch({ limit: 100, before: messageBank.last().id });
+			const fetchedMessages = await msg.channel.messages.fetch({
+				limit: 100,
+				before: messageBank.last().id
+			});
 			messageBank = messageBank.concat(fetchedMessages);
 		}
 
@@ -31,5 +33,4 @@ module.exports = class extends Command {
 		}
 		return msg.send(`Couldn't find a quote.`);
 	}
-
 };

@@ -8,7 +8,6 @@ const { redditApp } = require('../../config/private');
 const jagexMods = require('../../data/jagexMods');
 
 module.exports = class extends Event {
-
 	constructor(...args) {
 		super(...args, { once: true, event: 'klasaReady' });
 		this.enabled = this.client.production;
@@ -19,7 +18,9 @@ module.exports = class extends Event {
 	}
 
 	run() {
-		const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
+		const jmodAccounts = jagexMods
+			.filter(jmod => jmod.redditUsername)
+			.map(jmod => jmod.redditUsername);
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
 
 		/* eslint-disable new-cap */
@@ -34,7 +35,9 @@ module.exports = class extends Event {
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
 				url: `https://www.reddit.com${comment.permalink}?context=8&depth=9`,
-				jmod: jagexMods.find(mod => mod.redditUsername.toLowerCase() === comment.author.name.toLowerCase())
+				jmod: jagexMods.find(
+					mod => mod.redditUsername.toLowerCase() === comment.author.name.toLowerCase()
+				)
 			});
 		});
 
@@ -50,7 +53,9 @@ module.exports = class extends Event {
 				text: post.selftext,
 				url: `https://www.reddit.com${post.permalink}`,
 				title: post.title,
-				jmod: jagexMods.find(mod => mod.redditUsername.toLowerCase() === post.author.name.toLowerCase())
+				jmod: jagexMods.find(
+					mod => mod.redditUsername.toLowerCase() === post.author.name.toLowerCase()
+				)
 			});
 		});
 	}
@@ -59,7 +64,11 @@ module.exports = class extends Event {
 		const embed = new MessageEmbed()
 			.setDescription(he.decode(text))
 			.setColor(1942002)
-			.setAuthor(jmod.formattedName, undefined, `https://www.reddit.com/user/${jmod.redditUsername}`);
+			.setAuthor(
+				jmod.formattedName,
+				undefined,
+				`https://www.reddit.com/user/${jmod.redditUsername}`
+			);
 
 		if (title) {
 			embed.setTitle(title);
@@ -73,5 +82,4 @@ module.exports = class extends Event {
 				if (channel) channel.send(`<${url}>`, { embed });
 			});
 	}
-
 };

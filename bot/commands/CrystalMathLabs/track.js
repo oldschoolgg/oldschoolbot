@@ -4,7 +4,6 @@ const osrs = new Crystalmethlabs('osrs');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -27,7 +26,10 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(3120895)
-			.setFooter(`CrystalMathLabs / ${skill} / ${timePeriod}`, 'https://i.imgur.com/k12Kmhg.png')
+			.setFooter(
+				`CrystalMathLabs / ${skill} / ${timePeriod}`,
+				'https://i.imgur.com/k12Kmhg.png'
+			)
 			.setDescription(username)
 			.addField('EHP', stats[skill].ehpGained, true)
 			.addField('Levels', stats[skill].levelsGained, true)
@@ -36,5 +38,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };

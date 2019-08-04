@@ -2,7 +2,6 @@ const { Event } = require('klasa');
 const DBL = require('dblapi.js');
 
 module.exports = class extends Event {
-
 	constructor(...args) {
 		super(...args, { once: true, event: 'klasaReady' });
 		this.enabled = this.client.production;
@@ -24,5 +23,4 @@ module.exports = class extends Event {
 
 		this.client.dbl.webhook.on('vote', vote => this.client.tasks.get('vote').run(vote));
 	}
-
 };

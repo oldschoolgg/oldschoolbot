@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -14,7 +13,9 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const update = await fetch(`https://www.crystalmathlabs.com/tracker/api.php?type=update&player=${username}`)
+		const update = await fetch(
+			`https://www.crystalmathlabs.com/tracker/api.php?type=update&player=${username}`
+		)
 			.then(res => res.text())
 			.then(async res => {
 				await this.cmlErrorCheck(msg, res);
@@ -30,11 +31,8 @@ module.exports = class extends Command {
 				}
 			});
 
-		const embed = new MessageEmbed()
-			.setColor(3120895)
-			.setDescription(update);
+		const embed = new MessageEmbed().setColor(3120895).setDescription(update);
 
 		return msg.send({ embed });
 	}
-
 };

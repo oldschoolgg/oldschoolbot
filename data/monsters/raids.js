@@ -146,10 +146,7 @@ const raids = {
 		}
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
 		displayLoot.push(
-			`**GP/HR (30-Min Solo Raids):** ${(
-				totalValue /
-				(quantity / 2)
-			).toLocaleString()} GP`
+			`**GP/HR (30-Min Solo Raids):** ${(totalValue / (quantity / 2)).toLocaleString()} GP`
 		);
 		displayLoot.push(`**Total Hours**: ${(quantity / 2).toLocaleString()}`);
 		return displayLoot.join('\n');

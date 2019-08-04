@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			guarded: true,
@@ -24,5 +23,4 @@ Old School Bot is an open-source Discord Bot based on Old School RuneScape.
 	- Support Server: <https://support.oldschool.gg/>
 `);
 	}
-
 };

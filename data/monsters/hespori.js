@@ -21,7 +21,9 @@ const hespori = {
 			kc++;
 			if (!loot.includes('BCB') && this.roll(35)) {
 				loot.push('BCB');
-				lootMSG.push(`**Bottomless Compost Bucket:** ${kc.toLocaleString()} KC ${this.drops.bucket}`);
+				lootMSG.push(
+					`**Bottomless Compost Bucket:** ${kc.toLocaleString()} KC ${this.drops.bucket}`
+				);
 			}
 			if (!loot.includes('WLS') && this.roll(20)) {
 				loot.push('WLS');
@@ -31,7 +33,7 @@ const hespori = {
 		return [kc, lootMSG.join('\n')];
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

@@ -6,7 +6,6 @@ const clues = {
 };
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Simulate rare drops from clue scrolls',
@@ -21,5 +20,4 @@ module.exports = class extends Command {
 		const loot = clues[tier].open(quantity);
 		return msg.send(loot.length > 0 ? loot : "You didn't get any rares.");
 	}
-
 };

@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const RaidsItems = require('../../../data/monsters/raids').drops;
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 1,
@@ -17,11 +16,9 @@ module.exports = class extends Command {
 	async run(msg, [points]) {
 		return msg.send(RaidsUtil.raid(points));
 	}
-
 };
 
 class RaidsUtil {
-
 	static raid(points) {
 		const chances = RaidsUtil.calculateChance(points);
 		const loot = RaidsUtil.rollLoot(chances);
@@ -67,7 +64,9 @@ class RaidsUtil {
 		];
 
 		chances.forEach((chance, i) => {
-			const drop = loot[i] ? `${loot[i].name} ${RaidsItems[loot[i].shortName].emoji}` : 'You no lucky';
+			const drop = loot[i]
+				? `${loot[i].name} ${RaidsItems[loot[i].shortName].emoji}`
+				: 'You no lucky';
 			const prefix = chances.length > 1 ? `Roll ${i + 1}: ` : '';
 			const dropChance = Math.round(chance * 100);
 			reply.push(`${prefix}${dropChance}% chance for a drop - ${drop}`);
@@ -83,10 +82,9 @@ class RaidsUtil {
 	static rollOlmlet() {
 		return Math.random() < LootChance.olmlet;
 	}
-
 }
 
-const LootTable = ((lootWeights) => {
+const LootTable = (lootWeights => {
 	const table = [];
 	lootWeights.forEach(item => {
 		for (let i = 0; i < item.weighting; i++) {

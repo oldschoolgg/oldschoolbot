@@ -12,7 +12,7 @@ const giantMole = {
 		return loot.join(' ');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

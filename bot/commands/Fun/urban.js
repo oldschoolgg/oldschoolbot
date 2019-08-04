@@ -2,19 +2,20 @@ const { Command } = require('klasa');
 const fetch = require('node-fetch');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			nsfw: true,
-			description: 'Searches the Urban Dictionary library for a definition to the search term.',
+			description:
+				'Searches the Urban Dictionary library for a definition to the search term.',
 			usage: '<search:str> [resultNum:int]',
 			usageDelim: ', '
 		});
 	}
 
 	async run(msg, [search, index = 1]) {
-		const { list } = await fetch(`http://api.urbandictionary.com/v0/define?term=${encodeURIComponent(search)}`)
-			.then(res => res.json());
+		const { list } = await fetch(
+			`http://api.urbandictionary.com/v0/define?term=${encodeURIComponent(search)}`
+		).then(res => res.json());
 
 		const definition = this.getDefinition(search, list, --index);
 		return msg.sendMessage(definition);
@@ -24,7 +25,10 @@ module.exports = class extends Command {
 		const result = list[index];
 		if (!result) throw 'No entry found.';
 
-		const wdef = result.definition.length > 1000 ? `${this.splitText(result.definition, 1000)}...` : result.definition;
+		const wdef =
+			result.definition.length > 1000
+				? `${this.splitText(result.definition, 1000)}...`
+				: result.definition;
 
 		return [
 			`**Word:** ${search}`,
@@ -41,5 +45,4 @@ module.exports = class extends Command {
 		const pos = a === -1 ? length : a;
 		return string.substring(0, pos);
 	}
-
 };

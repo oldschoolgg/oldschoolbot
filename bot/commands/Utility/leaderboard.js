@@ -11,7 +11,6 @@ const pets = require('../../../data/pets');
 const { fmNum } = require('../../../config/util');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Shows the people with the most virtual GP.',
@@ -27,7 +26,8 @@ module.exports = class extends Command {
 				.first(10);
 
 			const leaderboard = users.map(
-				({ username, settings }) => `**${esc(username)}** has ${settings.get('GP').toLocaleString()} GP `
+				({ username, settings }) =>
+					`**${esc(username)}** has ${settings.get('GP').toLocaleString()} GP `
 			);
 
 			return msg.send(leaderboard.join('\n') || 'Nobody has any GP!');
@@ -60,7 +60,9 @@ module.exports = class extends Command {
 		const users = this.client.users
 			.filter(user => Object.keys(user.settings.get('pets')).length > 0)
 			.sort(
-				(a, b) => Object.keys(b.settings.get('pets')).length - Object.keys(a.settings.get('pets')).length
+				(a, b) =>
+					Object.keys(b.settings.get('pets')).length -
+					Object.keys(a.settings.get('pets')).length
 			)
 			.first(10);
 
@@ -71,5 +73,4 @@ module.exports = class extends Command {
 
 		return msg.send(leaderboard.join('\n') || 'Nobody has any pets!');
 	}
-
 };

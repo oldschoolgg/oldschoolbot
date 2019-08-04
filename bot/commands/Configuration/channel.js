@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			runIn: ['text'],
@@ -20,5 +19,4 @@ module.exports = class extends Command {
 			return msg.send(`Channel enabled. Anyone can use commands in this channel now.`);
 		}
 	}
-
 };

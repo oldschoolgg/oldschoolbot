@@ -4,7 +4,6 @@ const osrs = require('osrs-wrapper');
 const { xpLeft } = require('../../../config/util');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -39,5 +38,4 @@ module.exports = class extends Command {
 
 		return msg.send(str);
 	}
-
 };

@@ -1,9 +1,10 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
-		super(...args, { description: 'Shows some information on securing your runescape account.' });
+		super(...args, {
+			description: 'Shows some information on securing your runescape account.'
+		});
 	}
 
 	async run(msg) {
@@ -19,5 +20,4 @@ View the official account security guidelines by Jagex here: <https://www.runesc
 7. Never click on Twitch streams which claim that someone is quitting, or double XP. *They're fake.*
 `);
 	}
-
 };

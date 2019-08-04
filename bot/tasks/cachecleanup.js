@@ -8,7 +8,6 @@ const { SnowflakeUtil } = require('discord.js');
 const THRESHOLD = 1000 * 60 * 30;
 
 module.exports = class MemorySweeper extends Task {
-
 	constructor(...args) {
 		super(...args);
 
@@ -77,9 +76,13 @@ module.exports = class MemorySweeper extends Task {
 		// Emit a log
 		this.client.emit(
 			'verbose',
-			`${this.header} ${this.setColor(presences)} [Presence]s | ${this.setColor(guildMembers)} [GuildMember]s | ${this.setColor(voiceStates)} [VoiceState]s | ${this.setColor(
+			`${this.header} ${this.setColor(presences)} [Presence]s | ${this.setColor(
+				guildMembers
+			)} [GuildMember]s | ${this.setColor(voiceStates)} [VoiceState]s | ${this.setColor(
 				users
-			)} [User]s | ${this.setColor(emojis)} [Emoji]s | ${this.setColor(lastMessages)} [Last Message]s.`
+			)} [User]s | ${this.setColor(emojis)} [Emoji]s | ${this.setColor(
+				lastMessages
+			)} [Last Message]s.`
 		);
 	}
 
@@ -101,5 +104,4 @@ module.exports = class MemorySweeper extends Task {
 		// Green color
 		return this.colors.green.format(text);
 	}
-
 };

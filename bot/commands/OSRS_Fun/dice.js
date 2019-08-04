@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Simulates dice rolls from Runescape.',
@@ -27,10 +26,12 @@ module.exports = class extends Command {
 
 			msg.author.settings.update('GP', roll >= 55 ? gp + amount : gp - amount);
 
-			embed
-				.setDescription(`You rolled [**${roll}**]() on the percentile dice, and you ${roll >= 55 ? 'won' : 'lost'} ${amount} GP.`);
+			embed.setDescription(
+				`You rolled [**${roll}**]() on the percentile dice, and you ${
+					roll >= 55 ? 'won' : 'lost'
+				} ${amount} GP.`
+			);
 		}
 		return msg.send({ embed });
 	}
-
 };

@@ -4,7 +4,6 @@ const osrs = new Crystalmethlabs('osrs');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 3,
@@ -23,7 +22,8 @@ module.exports = class extends Command {
 
 		for (const skill in stats) {
 			if (stats[skill].rank !== undefined) {
-				stats[skill].rank = stats[skill].rank === 0 ? 'Unranked' : stats[skill].rank.toLocaleString();
+				stats[skill].rank =
+					stats[skill].rank === 0 ? 'Unranked' : stats[skill].rank.toLocaleString();
 			}
 		}
 
@@ -79,11 +79,12 @@ ${emoji.total} ${stats.overall.rank}`,
 			)
 			.addField(
 				`${emoji.clock} EHP`,
-				`**Hours:** ${parseInt(stats.ehp.hours).toFixed(2)}\n**Rank:** ${stats.ehp.rank.toLocaleString()}`,
+				`**Hours:** ${parseInt(stats.ehp.hours).toFixed(
+					2
+				)}\n**Rank:** ${stats.ehp.rank.toLocaleString()}`,
 				true
 			)
 			.addField('\u200b', '\u200b', true);
 		return msg.send({ embed });
 	}
-
 };

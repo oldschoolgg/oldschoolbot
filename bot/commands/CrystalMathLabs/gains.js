@@ -4,7 +4,6 @@ const osrs = new Crystalmethlabs('osrs');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
@@ -26,7 +25,10 @@ module.exports = class extends Command {
 		const apiType = this.types[type];
 
 		const { err, stats } = await osrs.track(username, this.client.timePeriods[timePeriod]);
-		if (err) return msg.send(err.length > 1 ? err : 'An unexpected error occured, please try again.');
+		if (err)
+			return msg.send(
+				err.length > 1 ? err : 'An unexpected error occured, please try again.'
+			);
 
 		if (apiType === 'xpGained') {
 			for (const skill in stats) {
@@ -38,7 +40,10 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(3120895)
-			.setFooter(`CrystalMathLabs / ${type} / ${timePeriod}`, 'https://i.imgur.com/k12Kmhg.png')
+			.setFooter(
+				`CrystalMathLabs / ${type} / ${timePeriod}`,
+				'https://i.imgur.com/k12Kmhg.png'
+			)
 			.setDescription(username)
 			.addField(
 				'\u200b',
@@ -93,5 +98,4 @@ ${emoji.total} ${stats.overall[apiType]}`,
 		}
 		return cap;
 	}
-
 };

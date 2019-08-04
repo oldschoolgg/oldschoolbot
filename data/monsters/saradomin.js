@@ -1,8 +1,10 @@
 const saradomin = {
 	drops: {
-		shards: ['<:Godsword_shard_3:403049019040858112>',
+		shards: [
+			'<:Godsword_shard_3:403049019040858112>',
 			'<:Godsword_shard_2:403049019015954462>',
-			'<:Godsword_shard_1:403049018764165121>'],
+			'<:Godsword_shard_1:403049018764165121>'
+		],
 		pet: '<:Pet_zilyana:324127378248957952>',
 		saradominHilt: '<:Saradomin_hilt:403051383214833667>',
 		armadylCrossbow: '<:Armadyl_crossbow:403052160931069952>',
@@ -41,7 +43,8 @@ const saradomin = {
 			if (this.roll(508)) loot.push(this.drops.saradominHilt);
 			if (this.roll(254)) loot.push(this.drops.saradominsLight);
 			if (this.roll(127)) loot.push(this.drops.saradominSword);
-			if (this.roll(86)) loot.push(this.drops.shards[Math.floor(Math.random() * this.drops.shards.length)]);
+			if (this.roll(86))
+				loot.push(this.drops.shards[Math.floor(Math.random() * this.drops.shards.length)]);
 		}
 		return loot.join(' ');
 	},
@@ -72,11 +75,13 @@ const saradomin = {
 		}
 
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
-		displayLoot.push(`**GP per Kill:** ${Math.round(totalValue / quantity).toLocaleString()} GP`);
+		displayLoot.push(
+			`**GP per Kill:** ${Math.round(totalValue / quantity).toLocaleString()} GP`
+		);
 		return displayLoot.join('\n');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			subcommands: true,
@@ -15,7 +14,8 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		const ashTweetsChannel = msg.guild.settings.get('ashTweetsChannel');
-		if (ashTweetsChannel === msg.channel.id) return msg.sendLocale('ASH_TWEETS_ALREADY_ENABLED');
+		if (ashTweetsChannel === msg.channel.id)
+			return msg.sendLocale('ASH_TWEETS_ALREADY_ENABLED');
 		if (ashTweetsChannel) {
 			await msg.guild.settings.update('ashTweetsChannel', msg.channel);
 			return msg.sendLocale('ASH_TWEETS_ENABLED_OTHER');
@@ -25,9 +25,9 @@ module.exports = class extends Command {
 	}
 
 	async disable(msg) {
-		if (!msg.guild.settings.get('ashTweetsChannel')) return msg.sendLocale('ASH_TWEETS_ARENT_ENABLED');
+		if (!msg.guild.settings.get('ashTweetsChannel'))
+			return msg.sendLocale('ASH_TWEETS_ARENT_ENABLED');
 		await msg.guild.settings.reset('ashTweetsChannel');
 		return msg.sendLocale(`ASH_TWEETS_DISABLED`);
 	}
-
 };

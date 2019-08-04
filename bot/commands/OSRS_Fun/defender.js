@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const { roll } = require('../../../config/util');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, { description: 'See how long it takes you to get a Dragon Defender.' });
 	}
@@ -27,7 +26,8 @@ module.exports = class extends Command {
 			}
 			DKC++;
 		}
-		return msg.send(`You had to kill ${KC} Cyclops to get up to a Rune Defender, and then another ${DKC} for the Dragon Defender.`);
+		return msg.send(
+			`You had to kill ${KC} Cyclops to get up to a Rune Defender, and then another ${DKC} for the Dragon Defender.`
+		);
 	}
-
 };

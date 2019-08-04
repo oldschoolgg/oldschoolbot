@@ -1,7 +1,6 @@
 const { Argument } = require('klasa');
 
 module.exports = class extends Argument {
-
 	constructor(...args) {
 		super(...args, { name: '...rsn', aliases: ['...rsn'] });
 	}
@@ -20,5 +19,4 @@ module.exports = class extends Argument {
 		const rest = args.splice(index, args.length - index).join(usageDelim);
 		return this.rsnArg.run(rest, possible, message);
 	}
-
 };

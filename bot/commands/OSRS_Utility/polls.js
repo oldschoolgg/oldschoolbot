@@ -2,7 +2,6 @@ const { Command, RichDisplay } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, { description: 'Shows the link for the OSRS Polls.' });
 	}
@@ -14,19 +13,23 @@ module.exports = class extends Command {
 
 		const { title, description, questions } = this.client.settings.get('pollQuestions');
 
-		display.addPage(new MessageEmbed()
-			.setTitle(title)
-			.setColor(16098851)
-			.setDescription(description));
+		display.addPage(
+			new MessageEmbed()
+				.setTitle(title)
+				.setColor(16098851)
+				.setDescription(description)
+		);
 
 		for (const question of questions) {
-			display.addPage(new MessageEmbed()
-
-				.setColor(16098851)
-				.setDescription(`**${question.question}**\n\n${Object.keys(question.votes).map(key => `**${key}** - ${question.votes[key]}`).join('\n')}`));
+			display.addPage(
+				new MessageEmbed().setColor(16098851).setDescription(
+					`**${question.question}**\n\n${Object.keys(question.votes)
+						.map(key => `**${key}** - ${question.votes[key]}`)
+						.join('\n')}`
+				)
+			);
 		}
 
 		return display.run(message, { jump: false, stop: false });
 	}
-
 };

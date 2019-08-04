@@ -1,6 +1,10 @@
 const abyssalSire = {
 	drops: {
-		bludgeonPieces: ['<:Bludgeon_claw:412841187184214027>', '<:Bludgeon_spine:412841187284877312>', '<:Bludgeon_axon:412841187259711488>'],
+		bludgeonPieces: [
+			'<:Bludgeon_claw:412841187184214027>',
+			'<:Bludgeon_spine:412841187284877312>',
+			'<:Bludgeon_axon:412841187259711488>'
+		],
 		abyssalHead: '<:Abyssal_head:412841187041345538>',
 		pet: '<:Abyssal_orphan:324127375774449664>',
 		abyssalDagger: '<:Abyssal_dagger:403386370388918273>',
@@ -16,7 +20,7 @@ const abyssalSire = {
 		}
 
 		for (let i = 0; i < sired; i++) {
-			const sireRoll = Math.floor((Math.random() * 128) + 1);
+			const sireRoll = Math.floor(Math.random() * 128 + 1);
 			switch (true) {
 				case sireRoll <= 10:
 					loot.push(this.drops.abyssalHead);
@@ -31,7 +35,11 @@ const abyssalSire = {
 					loot.push(this.drops.abyssalWhip);
 					break;
 				case sireRoll <= 115:
-					loot.push(this.drops.bludgeonPieces[Math.floor(Math.random() * this.drops.bludgeonPieces.length)]);
+					loot.push(
+						this.drops.bludgeonPieces[
+							Math.floor(Math.random() * this.drops.bludgeonPieces.length)
+						]
+					);
 					break;
 				case sireRoll <= 128:
 					loot.push(this.drops.jarOfMiasma);
@@ -41,7 +49,7 @@ const abyssalSire = {
 		return loot.join(' ');
 	},
 	roll(max) {
-		return Math.floor((Math.random() * max) + 1) === 1;
+		return Math.floor(Math.random() * max + 1) === 1;
 	}
 };
 

@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, { description: 'Shows the link for the official OSRS mobile app.' });
 	}
@@ -14,5 +13,4 @@ module.exports = class extends Command {
 **App Store:** <https://itunes.apple.com/us/app/old-school-runescape/id1269648762>
 `);
 	}
-
 };

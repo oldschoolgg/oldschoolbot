@@ -1,7 +1,6 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, { description: 'Random Mod Ash gif.' });
 	}
@@ -9,7 +8,6 @@ module.exports = class extends Command {
 	async run(msg) {
 		return msg.send(links[Math.floor(Math.random() * links.length)]);
 	}
-
 };
 
 const links = [

@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			aliases: ['emoteservers'],
@@ -20,7 +19,6 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-
 };
 
 const servers = `

@@ -1,11 +1,11 @@
 const { Command } = require('klasa');
 
 module.exports = class extends Command {
-
 	constructor(...args) {
 		super(...args, {
 			description: 'Shows the rates of getting skilling pets at certain levels.',
-			usage: '<skillLevel:int{1,99}> <hunter|woodcutting|agility|fishing|mining|thieving|farming>',
+			usage:
+				'<skillLevel:int{1,99}> <hunter|woodcutting|agility|fishing|mining|thieving|farming>',
 			usageDelim: ' '
 		});
 	}
@@ -17,11 +17,10 @@ module.exports = class extends Command {
 	rate(obj, lvl) {
 		const rates = [];
 		for (const thing in obj) {
-			rates.push(`**${thing}:** ${(obj[thing] - (lvl * 25)).toLocaleString()}`);
+			rates.push(`**${thing}:** ${(obj[thing] - lvl * 25).toLocaleString()}`);
 		}
 		return rates.join('\n');
 	}
-
 };
 
 const rates = {
@@ -43,7 +42,7 @@ const rates = {
 		'Agility Pyramid': 9901,
 		'Draynor Village Rooftop': 33005,
 		'Varrock Rooftop': 24410,
-		'Seers\' Village': 35205,
+		"Seers' Village": 35205,
 		'East Ardougne Rooftop': 34440
 	},
 	fishing: {
@@ -78,7 +77,6 @@ const rates = {
 		'Silk Stall': 68926,
 		'Hero/Elf Pickpocket': 99175,
 		'Ardougne Knight/Man Pickpocket': 257211
-
 	},
 	farming: {
 		'Magic Tree': 9368,

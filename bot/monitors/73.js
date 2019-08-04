@@ -1,7 +1,6 @@
 const { Monitor } = require('klasa');
 
 module.exports = class extends Monitor {
-
 	constructor(...args) {
 		super(...args, { enabled: true, ignoreOthers: false });
 	}
@@ -12,5 +11,4 @@ module.exports = class extends Monitor {
 			msg.react('😂').catch(() => null);
 		}
 	}
-
 };
