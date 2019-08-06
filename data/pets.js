@@ -127,7 +127,7 @@ const pets = [
 		chance: 3000,
 		name: 'Olmlet',
 		type: 'BOSS',
-		altNames: ['OLMLET', 'RAIDS', 'OLMLET'],
+		altNames: ['OLMLET', 'RAIDS', 'OLMLET', 'OLM'],
 		formatFinish: num =>
 			`You had to do ${fm(num)} Raids to get the Olmlet Pet! <:Olmlet:324127376873357316>`
 	},
@@ -544,6 +544,18 @@ const pets = [
 			)} times to get the Youngllef pet! <:Youngllef:604670894798798858> This took you ${fm(
 				num * 0.15
 			)} hours.`
+	},
+	{
+		id: 45,
+		emoji: '<:Sraracha:608231007803670529>',
+		chance: 3000,
+		name: 'Sraracha',
+		type: 'BOSS',
+		altNames: ['SRARACHA', 'SARACHNIS', 'SARACH'],
+		formatFinish: num =>
+			`You had to kill Sarachnis ${fm(
+				num
+			)} times to get the Sraracha pet! <:Sraracha:608231007803670529>`
 	}
 ];
 
