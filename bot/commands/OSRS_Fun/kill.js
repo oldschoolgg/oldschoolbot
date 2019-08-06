@@ -48,6 +48,7 @@ const hydra = require('../../../data/monsters/hydra');
 const drake = require('../../../data/monsters/drake');
 const wyrm = require('../../../data/monsters/wyrm');
 const hespori = require('../../../data/monsters/hespori');
+const sarachnis = require('../../../data/monsters/sarachnis');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -61,6 +62,15 @@ module.exports = class extends Command {
 	/* eslint-disable complexity */
 	async run(msg, [quantity, ...BossName]) {
 		switch (BossName.join('').toUpperCase()) {
+			case 'SARACHNIS':
+			case 'SARACH':
+			case 'SRARACHA': {
+				if (quantity > 5000) {
+					return msg.send('I can only kill a maximum of 5000 Sarachnis at a time!');
+				}
+				const loot = sarachnis.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
 			case 'CORP':
 			case 'CORPOREALBEAST':
 			case 'CORPBEAST': {
