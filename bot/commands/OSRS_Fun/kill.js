@@ -55,12 +55,12 @@ module.exports = class extends Command {
 		super(...args, {
 			cooldown: 1,
 			description: 'Simulate killing bosses (shows only rare drops).',
-			usage: '<quantity:int{1}> <BossName:str> [...]',
+			usage: '<quantity:int{1}> <BossName:...str>',
 			usageDelim: ' '
 		});
 	}
 	/* eslint-disable complexity */
-	async run(msg, [quantity, ...BossName]) {
+	async run(msg, [quantity, BossName]) {
 		switch (BossName.join('').toUpperCase()) {
 			case 'SARACHNIS':
 			case 'SARACH':
