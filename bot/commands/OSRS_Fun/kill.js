@@ -61,7 +61,7 @@ module.exports = class extends Command {
 	}
 	/* eslint-disable complexity */
 	async run(msg, [quantity, BossName]) {
-		switch (BossName.join('').toUpperCase()) {
+		switch (BossName.toUpperCase()) {
 			case 'SARACHNIS':
 			case 'SARACH':
 			case 'SRARACHA': {
