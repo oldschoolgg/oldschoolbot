@@ -5,7 +5,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
-			description: 'Shows the Theatre of Blood records.'
+			description: 'Shows the Theatre of Blood records.',
+			enabled: false
 		});
 	}
 
