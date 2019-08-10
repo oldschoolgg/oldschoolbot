@@ -24,11 +24,13 @@ module.exports = class extends Event {
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
 
 		/* eslint-disable new-cap */
-		const commentStream = redditClient.CommentStream({
-			subreddit: '2007scape',
-			results: 100,
-			pollTime: 10000
-		});
+		const commentStream = redditClient
+			.CommentStream({
+				subreddit: '2007scape',
+				results: 100,
+				pollTime: 10000
+			})
+			.catch(() => null);
 
 		commentStream.on('comment', comment => {
 			if (!jmodAccounts.includes(comment.author.name.toLowerCase())) return;
@@ -41,11 +43,13 @@ module.exports = class extends Event {
 			});
 		});
 
-		const submissionStream = redditClient.SubmissionStream({
-			subreddit: '2007scape',
-			results: 50,
-			pollTime: 10000
-		});
+		const submissionStream = redditClient
+			.SubmissionStream({
+				subreddit: '2007scape',
+				results: 50,
+				pollTime: 10000
+			})
+			.catch(() => null);
 
 		submissionStream.on('submission', post => {
 			if (!jmodAccounts.includes(post.author.name.toLowerCase())) return;
@@ -79,7 +83,7 @@ module.exports = class extends Event {
 			.filter(guild => guild.settings.get('jmodComments'))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get('jmodComments'));
-				if (channel) channel.send(`<${url}>`, { embed });
+				if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
 			});
 	}
 };
