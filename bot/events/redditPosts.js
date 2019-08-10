@@ -24,13 +24,11 @@ module.exports = class extends Event {
 		const redditClient = new SnooStorm(new Snoowrap(redditApp));
 
 		/* eslint-disable new-cap */
-		const commentStream = redditClient
-			.CommentStream({
-				subreddit: '2007scape',
-				results: 100,
-				pollTime: 10000
-			})
-			.catch(() => null);
+		const commentStream = redditClient.CommentStream({
+			subreddit: '2007scape',
+			results: 100,
+			pollTime: 10000
+		});
 
 		commentStream.on('comment', comment => {
 			if (!jmodAccounts.includes(comment.author.name.toLowerCase())) return;
@@ -43,13 +41,11 @@ module.exports = class extends Event {
 			});
 		});
 
-		const submissionStream = redditClient
-			.SubmissionStream({
-				subreddit: '2007scape',
-				results: 50,
-				pollTime: 10000
-			})
-			.catch(() => null);
+		const submissionStream = redditClient.SubmissionStream({
+			subreddit: '2007scape',
+			results: 50,
+			pollTime: 10000
+		});
 
 		submissionStream.on('submission', post => {
 			if (!jmodAccounts.includes(post.author.name.toLowerCase())) return;
