@@ -49,6 +49,9 @@ module.exports = {
 		],
 		disableEveryone: true,
 		shardCount: 'auto',
+		ws: {
+			guild_subscriptions: false
+		},
 		/* Klasa Options */
 		createPiecesFolders: false,
 		prefix: '+',
