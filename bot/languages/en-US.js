@@ -88,7 +88,7 @@ module.exports = class extends Language {
 			INHIBITOR_DISABLED_GUILD: 'This command has been disabled by an admin in this guild.',
 			INHIBITOR_DISABLED_GLOBAL: 'This command has been globally disabled by the bot owner.',
 			INHIBITOR_MISSING_BOT_PERMS: missing =>
-				`Insufficient permissions, missing: **${missing}**`,
+				`I'm missing these permissions, please give me them so I can function properly <:peepoOSBot:601695641088950282> - **${missing}**`,
 			INHIBITOR_NSFW: 'You can only use NSFW commands in NSFW channels.',
 			INHIBITOR_PERMISSIONS: 'You do not have permission to use this command.',
 			INHIBITOR_REQUIRED_SETTINGS: settings =>
