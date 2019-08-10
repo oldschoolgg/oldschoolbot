@@ -6,8 +6,9 @@ const parser = new Parser();
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
-			cooldown: 5,
-			description: 'Shows the latest OSRS News Post.'
+			cooldown: 30,
+			description: 'Shows the latest OSRS News Posts.',
+			requiredPermissions: ['MANAGE_MESSAGES', 'ADD_REACTIONS', 'READ_MESSAGE_HISTORY']
 		});
 	}
 
