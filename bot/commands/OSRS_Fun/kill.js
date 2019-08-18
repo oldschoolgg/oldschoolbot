@@ -1,5 +1,7 @@
 const { Command } = require('klasa');
 
+const { cleanString } = require('../../../config/util');
+
 const corp = require('../../../data/monsters/corp');
 const raids = require('../../../data/monsters/raids');
 const barrows = require('../../../data/monsters/barrows');
@@ -60,8 +62,8 @@ module.exports = class extends Command {
 		});
 	}
 	/* eslint-disable complexity */
-	async run(msg, [quantity, BossName]) {
-		switch (BossName.toUpperCase()) {
+	async run(msg, [quantity, bossName]) {
+		switch (cleanString(bossName)) {
 			case 'SARACHNIS':
 			case 'SARACH':
 			case 'SRARACHA': {
