@@ -59,7 +59,7 @@ const tob = {
 	smallKill(quantity) {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
-			if (this.roll(650)) loot.push(this.drops.pet);
+			if (this.roll(650)) loot.push(this.drops.pet.emoji);
 			if (this.roll(9.1)) loot.push(this.determineItem().emoji);
 		}
 		return loot.join(' ');
