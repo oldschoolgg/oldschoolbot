@@ -21,7 +21,15 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const item = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
+		if (
+			!msg.channel.__triviaQuestionsDone ||
+			msg.channel.__triviaQuestionsDone.length === triviaQuestions.length
+		) {
+			msg.channel.__triviaQuestionsDone = [];
+		}
+
+		const [item, index] = this.findNewTrivia(msg.channel.__triviaQuestionsDone);
+		msg.channel.__triviaQuestionsDone.push(index);
 		await msg.send(item.q);
 		try {
 			const collected = await msg.channel.awaitMessages(
@@ -34,6 +42,15 @@ module.exports = class extends Command {
 			);
 		} catch (err) {
 			return msg.channel.send('<:RSXBox:381462594961014794> Nobody answered correctly.');
+		}
+	}
+
+	findNewTrivia(_triviaQuestionsDone) {
+		const index = Math.floor(Math.random() * triviaQuestions.length);
+		if (!_triviaQuestionsDone.includes(index)) {
+			return [triviaQuestions[index], index];
+		} else {
+			return this.findNewTrivia(_triviaQuestionsDone);
 		}
 	}
 };
