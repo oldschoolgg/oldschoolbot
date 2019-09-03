@@ -58,6 +58,11 @@ module.exports = class extends Command {
 						(cmd.permissionLevel && cmd.permissionLevel < permissionLevel)
 				)
 				.map(cmd => {
+					const description =
+						typeof cmd.description === 'function'
+							? cmd.description(msg.language)
+							: cmd.description || 'No description.';
+
 					if (normalize) {
 						if (!categories.includes(cmd.category)) categories.push(cmd.category);
 						return commands.push({
@@ -71,10 +76,6 @@ module.exports = class extends Command {
 					if (!commands[cmd.category].hasOwnProperty(cmd.subCategory)) {
 						commands[cmd.category][cmd.subCategory] = [];
 					}
-					const description =
-						typeof cmd.description === 'function'
-							? cmd.description(msg.language)
-							: cmd.description || 'No description.';
 
 					return commands[cmd.category][cmd.subCategory].push({
 						name: cmd.name,
