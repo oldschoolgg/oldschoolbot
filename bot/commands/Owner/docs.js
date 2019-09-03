@@ -203,7 +203,7 @@ Github/Source Code: https://github.oldschool.gg/
 	}
 
 	async json(msg) {
-		const { commands, categories, stopwatch } = await this.buildCommands('json', msg, true);
+		const { commands, categories, stopwatch } = await this.buildCommands('json', msg);
 
 		const meta = {
 			username: this.username,
