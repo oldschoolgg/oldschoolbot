@@ -60,7 +60,11 @@ module.exports = class extends Command {
 				.map(cmd => {
 					if (normalize) {
 						if (!categories.includes(cmd.category)) categories.push(cmd.category);
-						return commands.push(cmd);
+						return commands.push({
+							name: cmd.name,
+							aliases: cmd.aliases,
+							description
+						});
 					}
 
 					if (!commands.hasOwnProperty(cmd.category)) commands[cmd.category] = {};
