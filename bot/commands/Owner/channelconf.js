@@ -7,7 +7,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			runIn: ['text'],
-			permissionLevel: 6,
+			permissionLevel: 10,
 			guarded: true,
 			subcommands: true,
 			description: 'Define per-textchannel settings',
