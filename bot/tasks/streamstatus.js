@@ -16,6 +16,7 @@ module.exports = class extends Task {
 		)
 			.then(res => res.json())
 			.then(res => {
+				if (!res || !res.streams) return;
 				for (let i = 0; i < res.streams.length; i++) {
 					const liveTime = moment(res.streams[i].created_at);
 					if (moment().diff(liveTime, 'seconds') > 630) continue;
