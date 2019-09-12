@@ -12,7 +12,9 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		fetch(`https://www.crystalmathlabs.com/tracker/api.php?type=update&player=${username}`);
+		fetch(
+			`https://crystalmathlabs.com/tracker/update.php?player=${encodeURIComponent(username)}`
+		);
 
 		return msg.send(`Sent a request to update \`${username}\`.`);
 	}
