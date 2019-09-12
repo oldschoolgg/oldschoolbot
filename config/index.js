@@ -55,6 +55,7 @@ module.exports = {
 		/* Klasa Options */
 		createPiecesFolders: false,
 		prefix: '+',
+		commandLogging: true,
 		providers: { default: production ? 'rethinkdb' : 'json' },
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
