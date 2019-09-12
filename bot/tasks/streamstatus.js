@@ -52,6 +52,7 @@ module.exports = class extends Task {
 					url: res.streams[0].channel.url,
 					type: 1
 				});
-			});
+			})
+			.catch(console.error);
 	}
 };
