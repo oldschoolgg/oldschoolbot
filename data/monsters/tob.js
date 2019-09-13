@@ -60,7 +60,7 @@ const tob = {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(650)) loot.push(this.drops.pet.emoji);
-			if (this.roll(9.1)) loot.push(this.determineItem().emoji);
+			if (this.roll(9.1 * 4)) loot.push(this.determineItem().emoji);
 		}
 		return loot.join(' ');
 	},
@@ -80,7 +80,7 @@ const tob = {
 
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(650)) loot.pet++;
-			if (this.roll(9.1)) loot[this.determineItem().shortName]++;
+			if (this.roll(9.1 * 4)) loot[this.determineItem().shortName]++;
 		}
 		for (const key in loot) {
 			displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].toLocaleString()} `);
@@ -102,7 +102,7 @@ const tob = {
 				lootTrack.push(drops.pet);
 				loot.push(`**Lil' Zik:** ${kc} KC ${drops.pet.emoji}`);
 			}
-			if (!this.roll(9.1)) continue;
+			if (!this.roll(9.1 * 4)) continue;
 			const droppedItem = this.determineItem();
 			if (!lootTrack.includes(droppedItem.shortName)) {
 				loot.push(`**${droppedItem.name}:** ${kc} KC ${droppedItem.emoji}`);
