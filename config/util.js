@@ -1,3 +1,7 @@
+const fetch = require('node-fetch');
+
+const { twitchClientID } = require('./private');
+
 const trRegex = /<table class="server-list">/;
 const whiteSpace = /\s/;
 
@@ -100,6 +104,25 @@ function rand(min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+const twitchAPIRequestOptions = {
+	headers: {
+		Accept: 'application/vnd.twitchtv.v5+json',
+		'Client-ID': twitchClientID
+	}
+};
+
+async function resolveTwitchUsersFromNames(names) {
+	return await fetch(
+		`https://api.twitch.tv/kraken/users?login=${names.map(encodeURIComponent).join(',')}`,
+		twitchAPIRequestOptions
+	)
+		.then(response => response.json())
+		.then(res => res.users || [])
+		.catch(err => {
+			throw err;
+		});
+}
+
 module.exports = {
 	extractHTML,
 	parseTable,
@@ -109,5 +132,7 @@ module.exports = {
 	roll,
 	cleanString,
 	fmNum,
-	rand
+	rand,
+	resolveTwitchUsersFromNames,
+	twitchAPIRequestOptions
 };
