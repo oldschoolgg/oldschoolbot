@@ -1,13 +1,6 @@
 const emoji = require('./skill-emoji');
 const streamers = require('../data/osrs-streamers');
-const {
-	token,
-	twitchClientID,
-	twitterApp,
-	dbl,
-	clientSecret,
-	KDHOptions
-} = require('./private.js');
+const { token, twitchClientID, twitterApp } = require('./private.js');
 
 const production = require('os').platform() === 'linux';
 
@@ -25,7 +18,6 @@ module.exports = {
 			month: 2628000,
 			year: 525667 * 60
 		},
-		dbl,
 		twitterApp,
 		notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`,
 		production
@@ -50,6 +42,7 @@ module.exports = {
 		disableEveryone: true,
 		shardCount: 'auto',
 		ws: {
+			// eslint-disable-next-line camelcase
 			guild_subscriptions: false
 		},
 		/* Klasa Options */
@@ -60,10 +53,6 @@ module.exports = {
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
 		readyMessage: client =>
-			`[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
-		/* KDH */
-		clientSecret,
-		clientID: '303730326692429825',
-		dashboardHooks: KDHOptions
+			`[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
 	}
 };

@@ -9,8 +9,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		return msg.send(`
-You can vote for Old School Bot here: <https://discordbots.org/bot/303730326692429825/vote>
-`);
+		return msg.send(
+			`Voting is no longer a thing in Old School Bot, an alternative method of getting fake GP and pets will be coming soon.`
+		);
 	}
 };
