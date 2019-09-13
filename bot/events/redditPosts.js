@@ -41,6 +41,8 @@ module.exports = class extends Event {
 			});
 		});
 
+		commentStream.on('error', () => null);
+
 		const submissionStream = redditClient.SubmissionStream({
 			subreddit: '2007scape',
 			results: 50,
@@ -58,6 +60,8 @@ module.exports = class extends Event {
 				)
 			});
 		});
+
+		submissionStream.on('error', () => null);
 	}
 
 	sendEmbed({ text, url, title, jmod }) {
