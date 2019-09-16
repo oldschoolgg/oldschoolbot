@@ -16,12 +16,4 @@ class OldSchoolBot extends Client {
 	}
 }
 
-process.on('uncaughtException', e => {
-	console.log(e);
-});
-
-process.on('unhandledRejection', e => {
-	console.log(e);
-});
-
 new OldSchoolBot(clientOptions).login(token);

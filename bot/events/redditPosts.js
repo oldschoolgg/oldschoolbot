@@ -1,11 +1,14 @@
 const { Event } = require('klasa');
 const { MessageEmbed } = require('discord.js');
-const SnooStorm = require('snoostorm');
+const { CommentStream, SubmissionStream } = require('snoostorm');
 const Snoowrap = require('snoowrap');
 const he = require('he');
 
 const { redditApp } = require('../../config/private');
 const jagexMods = require('../../data/jagexMods');
+
+const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
+const redditClient = new Snoowrap(redditApp);
 
 module.exports = class extends Event {
 	constructor(...args) {
@@ -14,24 +17,28 @@ module.exports = class extends Event {
 	}
 
 	async init() {
-		if (!redditApp || !redditApp.password || !redditApp.password.length === 0) this.disable();
-	}
-
-	run() {
-		const jmodAccounts = jagexMods
-			.filter(jmod => jmod.redditUsername)
-			.map(jmod => jmod.redditUsername);
-		const redditClient = new SnooStorm(new Snoowrap(redditApp));
-
+		if (!this.client._redditIdCache) {
+			this.client._redditIdCache = new Set();
+		}
+		if (!redditApp || !redditApp.password || !redditApp.password.length === 0) {
+			this.disable();
+			this.client.emit(
+				'log',
+				`Disabling Reddit Posts because there is no reddit credentials.`
+			);
+			return;
+		}
 		/* eslint-disable new-cap */
-		const commentStream = redditClient.CommentStream({
+		this.client.commentStream = new CommentStream(redditClient, {
 			subreddit: '2007scape',
-			results: 100,
-			pollTime: 10000
+			limit: 30,
+			pollTime: 15000
 		});
 
-		commentStream.on('comment', comment => {
+		this.client.commentStream.on('item', comment => {
 			if (!jmodAccounts.includes(comment.author.name.toLowerCase())) return;
+			if (this.client._redditIdCache.has(comment.id)) return;
+			this.client._redditIdCache.add(comment.id);
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
 				url: `https://www.reddit.com${comment.permalink}?context=8&depth=9`,
@@ -41,16 +48,18 @@ module.exports = class extends Event {
 			});
 		});
 
-		commentStream.on('error', () => null);
+		this.client.commentStream.on('error', console.error);
 
-		const submissionStream = redditClient.SubmissionStream({
+		this.client.submissionStream = new SubmissionStream(redditClient, {
 			subreddit: '2007scape',
-			results: 50,
-			pollTime: 10000
+			limit: 50,
+			pollTime: 60000
 		});
 
-		submissionStream.on('submission', post => {
+		this.client.submissionStream.on('item', post => {
 			if (!jmodAccounts.includes(post.author.name.toLowerCase())) return;
+			if (this.client._redditIdCache.has(post.id)) return;
+			this.client._redditIdCache.add(post.id);
 			this.sendEmbed({
 				text: post.selftext,
 				url: `https://www.reddit.com${post.permalink}`,
@@ -61,8 +70,10 @@ module.exports = class extends Event {
 			});
 		});
 
-		submissionStream.on('error', () => null);
+		this.client.submissionStream.on('error', console.error);
 	}
+
+	run() {}
 
 	sendEmbed({ text, url, title, jmod }) {
 		const embed = new MessageEmbed()
