@@ -70,6 +70,14 @@ class getAllPetsEmbed extends Extendable {
 				${pets[40].emoji} ${petsRecieved[40]} Raids
 				${pets[41].emoji} ${petsRecieved[41]} KC`,
 				true
+			)
+			.addField(
+				'\u200b',
+				`
+				${pets[42].emoji} ${petsRecieved[42]} KC
+				${pets[43].emoji} ${petsRecieved[43]} Gauntlets
+				${pets[44].emoji} ${petsRecieved[44]} KC`,
+				true
 			);
 		return embed;
 	}
