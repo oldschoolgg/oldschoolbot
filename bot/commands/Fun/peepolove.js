@@ -1,58 +1,42 @@
 const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
-const { createCanvas, Image } = require('canvas');
+const { Canvas } = require('canvas-constructor');
 const fs = require('fs');
-
+const fetch = require('node-fetch');
 const peepoBody = fs.readFileSync('./resources/images/peepoBody.png');
 const peepoHands = fs.readFileSync('./resources/images/peepoHands.png');
-
-const CANVAS_LENGTH = 512;
-
-const canvas = createCanvas(CANVAS_LENGTH, CANVAS_LENGTH);
-const ctx = canvas.getContext('2d');
 
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Generates a peepoLove image from a given image/avatar.',
 			cooldown: 7,
-			usage: '(image:image)',
+			usage: '<person:user>',
 			requiredPermissions: ['ATTACH_FILES']
 		});
 	}
 
-	async loadImage(buffer) {
-		return new Promise((resolve, reject) => {
-			const img = new Image();
-			img.onload = () => resolve(img);
-			img.onerror = err => reject(err);
-			img.src = buffer;
-		});
+	async parseURL(imageURL) {
+		const imageBuffer = await fetch(imageURL).then(result => result.buffer());
+		return imageBuffer;
 	}
 
-	async drawImage(image, x, y, scale, rotation) {
-		ctx.setTransform(scale, 0, 0, scale, x, y);
-		ctx.rotate(rotation);
-		ctx.drawImage(image, -image.width / 2, -image.height / 2);
-	}
+	async run(msg, [user]) {
+		const userImage = await this.parseURL(user.displayAvatarURL({ size: 512, format: 'png' }));
 
-	async run(msg, [[image]]) {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		const background = await this.loadImage(peepoBody);
-		ctx.drawImage(background, 0, 0, background.width, background.height);
-		const userImage = await this.loadImage(image);
-		ctx.setTransform(0.6, 0, 0, 0.6, userImage.width * 0.4 - 100, 400);
+		const imageBuff = new Canvas(512, 512)
+			.addImage(peepoBody, 0, 0)
+			.rotate(-0.4)
+			.addImage(userImage, -210, 512 - 241, 330, 330, {
+				type: 'round',
+				radius: 330 / 2,
+				restore: true
+			})
+			.rotate(0.4)
+			.addImage(peepoHands, 0, 0)
+			.toBufferAsync();
 
-		ctx.rotate((-23 * Math.PI) / 180);
-
-		ctx.drawImage(userImage, -userImage.width / 2, -userImage.height / 2);
-
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-		const handsImage = await this.loadImage(peepoHands);
-		ctx.drawImage(handsImage, 0, 0, background.width, background.height);
-
-		const finishedImage = new MessageAttachment(canvas.toBuffer(), `peepoLove.png`);
+		const finishedImage = new MessageAttachment(await imageBuff, `peepoLove.png`);
 		return msg.send(finishedImage);
 	}
 };
