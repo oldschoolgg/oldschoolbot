@@ -14,8 +14,8 @@ const ctx = canvas.getContext('2d');
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
-			description: 'Shows how much virtual GP you have',
-			cooldown: 3,
+			description: 'Generates a peepoLove image from a given image/avatar.',
+			cooldown: 7,
 			usage: '(image:image)',
 			requiredPermissions: ['ATTACH_FILES']
 		});
