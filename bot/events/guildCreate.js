@@ -2,7 +2,7 @@ const { Event } = require('klasa');
 
 module.exports = class extends Event {
 	constructor(...args) {
-		super(...args, { once: true, event: 'guildCreate' });
+		super(...args, { once: false, event: 'guildCreate' });
 		this.enabled = this.client.production;
 	}
 
