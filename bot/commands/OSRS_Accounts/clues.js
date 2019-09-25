@@ -1,6 +1,7 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
 const { MessageEmbed } = require('discord.js');
+const { toTitleCase } = require('../../../config/util');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -27,29 +28,19 @@ module.exports = class extends Command {
 			overall: Minigames.Clue_Scrolls_All
 		};
 
-		for (const prop in clues) {
-			clues[prop].rank = clues[prop].rank !== -1 ? clues[prop].rank.toLocaleString() : 0;
-
-			clues[prop].score = clues[prop].score !== -1 ? clues[prop].score.toLocaleString() : 0;
-		}
-
-		const { beginner, easy, medium, hard, elite, master, overall } = clues;
-
 		const embed = new MessageEmbed()
 			.setAuthor(username)
 			.setColor(52224)
-			.setThumbnail('https://i.imgur.com/azW3cSB.png')
-			.addField(
-				'Beginner',
-				`**Rank:** ${beginner.rank}\n**Score:** ${beginner.score}\n`,
+			.setThumbnail('https://i.imgur.com/azW3cSB.png');
+
+		for (const tier of Object.keys(clues)) {
+			console.log([clues[tier].rank, clues[tier].score]);
+			embed.addField(
+				toTitleCase(tier),
+				msg.language.get('CLUE_SCORE_FORMAT', clues[tier].rank, clues[tier].score),
 				true
-			)
-			.addField('Easy', `**Rank:** ${easy.rank}\n**Score:** ${easy.score}\n`, true)
-			.addField('Medium', `**Rank:** ${medium.rank}\n**Score:** ${medium.score}\n`, true)
-			.addField('Hard', `**Rank:** ${hard.rank}\n**Score:** ${hard.score}\n`, true)
-			.addField('Elite', `**Rank:** ${elite.rank}\n**Score:** ${elite.score}\n`, true)
-			.addField('Master', `**Rank:** ${master.rank}\n**Score:** ${master.score}\n`, true)
-			.addField('Overall', `**Rank:** ${overall.rank}\n**Score:** ${overall.score}\n`, true);
+			);
+		}
 
 		return msg.send({ embed });
 	}

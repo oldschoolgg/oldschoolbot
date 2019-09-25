@@ -31,6 +31,6 @@ module.exports = class extends Command {
 				.setAuthor(message.author.username, message.author.avatarURL());
 			return msg.send({ embed });
 		}
-		return msg.send(`Couldn't find a quote.`);
+		return msg.sendLocale('NO_QUOTE');
 	}
 };

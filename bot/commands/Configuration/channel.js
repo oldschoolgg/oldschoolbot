@@ -13,10 +13,10 @@ module.exports = class extends Command {
 	async run(msg, [input]) {
 		if (input === 'disable') {
 			await msg.channel.settings.update('onlyStaffCanUseCommands', true);
-			return msg.send(`Channel disabled. Staff can still use commands in this channel.`);
+			return msg.sendLocale('CHANNEL_DISABLED');
 		} else {
 			await msg.channel.settings.update('onlyStaffCanUseCommands', false);
-			return msg.send(`Channel enabled. Anyone can use commands in this channel now.`);
+			return msg.sendLocale('CHANNEL_ENABLED');
 		}
 	}
 };
