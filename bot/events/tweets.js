@@ -113,7 +113,7 @@ const STREAMER_TWITTERS = [
 
 const HCIM_DEATHS = ['797859891373371392'];
 const HEXIS = ['760605320108310528'];
-const HEXIS_CHANNEL = '575167011068575754';
+const HEXIS_CHANNEL = '626168717004242953';
 
 module.exports = class extends Event {
 	constructor(...args) {
@@ -132,7 +132,6 @@ module.exports = class extends Event {
 	}
 
 	run() {
-		this.client.tasks.get('streamstatus').run();
 		const twitter = new Twit(this.client.twitterApp);
 
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
