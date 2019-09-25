@@ -352,9 +352,35 @@ module.exports = class extends Language {
 			TN_REMOVE: name => `Successfully removed ${name}.`,
 			TN_NOT_ENABLED: 'Twitch Notifications are not enabled in this guild.',
 			TN_NO_STREAMERS: 'You have Twitch Notifications enabled, but no streamers added.',
+			CHANNEL_DISABLED:
+				'Channel disabled. Staff of this server can still use commands in this channel.',
+			CHANNEL_ENABLED: 'Channel enabled. Anyone can use commands in this channel now.',
 
+			/*
+			 * CrystalMathLabs Commands
+			 */
 			TT200_RESULT: (username, time) =>
-				`**${username}**'s Time to 200m All is **${time}** hours.`
+				`**${username}**'s Time to 200m All is **${time}** hours.`,
+
+			/*
+			 * Fun Commands
+			 */
+			NO_PETS: prefix => `You have no pets yet.
+
+You can get pets by talking in a server which has petmessages enabled. (\`${prefix}petmessages enable\`)`,
+			NO_QUOTE: "Couldn't find a quote.",
+			URBAN_NO_ENTRY: 'No entry found',
+			URBAN_RESULT: (search, result, wdef) => `**Word:** ${search}
+**Definition:** _${wdef}_
+**Example:**\n${result.example}
+**${result.thumbs_up}** 👍 | **${result.thumbs_down}** 👎
+*By ${result.author}*
+<${result.permalink}>`,
+			/*
+			 * OSRS Account Commands
+			 */
+			CLUE_SCORE_FORMAT: (rank, score) =>
+				`**Rank:** ${rank.toLocaleString()}\n**Score:** ${score.toLocaleString()}\n`
 		};
 	}
 

@@ -12,15 +12,7 @@ module.exports = class extends Command {
 	async run(msg) {
 		const userPets = msg.author.settings.get('pets');
 		if (Object.keys(userPets).length === 0) {
-			throw `You have no pets yet.
-
-You can get pets in 2 ways:
-1. Talking in a server which has petmessages enabled. (\`+petmessages enable\`)
-2. Voting, when you vote you get a chance at *every* pet. (\`+vote\`)
-
-Want to disable Pet Messages in this server? Type \`${msg.guild.settings.get(
-				'prefix'
-			)}petmessages disable\``;
+			return msg.sendLocale('NO_PETS', [msg.guild.settings.get('prefix')]);
 		}
 
 		const formatted = [];

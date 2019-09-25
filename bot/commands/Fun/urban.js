@@ -17,27 +17,19 @@ module.exports = class extends Command {
 			`http://api.urbandictionary.com/v0/define?term=${encodeURIComponent(search)}`
 		).then(res => res.json());
 
-		const definition = this.getDefinition(search, list, --index);
-		return msg.sendMessage(definition);
+		this.getDefinition(search, list, --index, msg);
 	}
 
-	getDefinition(search, list, index) {
+	getDefinition(search, list, index, msg) {
 		const result = list[index];
-		if (!result) throw 'No entry found.';
+		if (!result) return msg.sendLocale('URBAN_NO_ENTRY');
 
 		const wdef =
 			result.definition.length > 1000
 				? `${this.splitText(result.definition, 1000)}...`
 				: result.definition;
 
-		return [
-			`**Word:** ${search}`,
-			`\n**Definition:** ${index + 1} out of ${list.length}\n_${wdef}_`,
-			`\n**Example:**\n${result.example}`,
-			`\n**${result.thumbs_up}** 👍 | **${result.thumbs_down}** 👎`,
-			`\n*By ${result.author}*`,
-			`<${result.permalink}>`
-		].join('\n');
+		return msg.sendLocale('URBAN_RESULT', [search, result, wdef]);
 	}
 
 	splitText(string, length, endBy = ' ') {
