@@ -18,6 +18,7 @@
 		"klasa-textchannel-gateway": "github:gc/text-channel-gateway#master",
 		"markovchain": "^1.0.2",
 		"moment": "^2.21.0",
+		"mongodb": "^3.3.2",
 		"node-fetch": "^2.6.0",
 		"oldschooljs": "^0.2.9",
 		"osrs-wrapper": "github:gc/Osrs-Wrapper",
