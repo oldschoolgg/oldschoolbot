@@ -23,7 +23,9 @@ module.exports = class extends Command {
 			.toArray();
 
 		if (collectionsForUser.length === 0) {
-			return msg.send(`Create online, shareable collections to show how many items you've collected on your account -  <https://www.oldschool.gg/collections>
+			return msg.send(`You have no collections. You can make one here: <https://www.oldschool.gg/collections>
+
+Collections are online, shareable pages for you to show how many items you've collected on your account -  <https://www.oldschool.gg/collections>
 			
 100% free, no ads, no personal data is collected. No sign up required, just log in with discord.`);
 		}
