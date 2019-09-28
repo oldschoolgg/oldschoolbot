@@ -23,7 +23,6 @@ module.exports = class MemorySweeper extends Task {
 	}
 
 	async run() {
-		this.client.user.setActivity('+collections');
 		const OLD_SNOWFLAKE = SnowflakeUtil.generate(Date.now() - THRESHOLD);
 		let presences = 0,
 			guildMembers = 0,
