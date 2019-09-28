@@ -3,16 +3,25 @@ const fetch = require('node-fetch');
 const moment = require('moment');
 const { MessageEmbed } = require('discord.js');
 
+const { twitchAPIRequestOptions, resolveTwitchUsersFromNames } = require('../../config/util');
+
 module.exports = class extends Task {
 	async init() {
 		if (!this.client.twitchClientID) this.disable();
+		await this.syncIDs();
+	}
+
+	async syncIDs() {
+		this.idList = (await resolveTwitchUsersFromNames(this.client.streamers)).map(u => u._id);
 	}
 
 	async run() {
+		if (!this.idList) await this.syncIDs();
 		fetch(
-			`https://api.twitch.tv/kraken/streams?channel=${this.client.streamers.join(
-				','
-			)}&client_id=${this.client.twitchClientID}`
+			`https://api.twitch.tv/kraken/streams?channel=${this.idList.join(',')}&client_id=${
+				this.client.twitchClientID
+			}`,
+			twitchAPIRequestOptions
 		)
 			.then(res => res.json())
 			.then(res => {
