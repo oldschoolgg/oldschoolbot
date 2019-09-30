@@ -96,10 +96,10 @@ const LootTable = (lootWeights => {
 
 const LootChance = {
 	// 1% per 7125 points
-	perPoint: 0.01 / 7125,
+	perPoint: 0.01 / 8675,
 
 	// 80% chance of an item
-	cap: 0.8,
+	cap: 0.657,
 
 	// max 3 loot rolls per raid
 	maxDrops: 3,
