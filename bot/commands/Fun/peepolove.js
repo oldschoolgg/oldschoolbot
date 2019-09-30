@@ -29,9 +29,12 @@ module.exports = class extends Command {
 			.toBufferAsync();
 
 		const finishedImage = new MessageAttachment(await imageBuff, `peepoLove.png`);
-		return msg.send(
-			`You can now use this command with any images, just upload the image or type the command after someone has sent an image.`,
-			finishedImage
-		);
+
+		let text = '';
+		if (msg.mentions.users.size > 0) {
+			text = `You can now use this command with any images, just upload the image or type the command after someone has sent an image.`;
+		}
+
+		return msg.send(text, finishedImage);
 	}
 };
