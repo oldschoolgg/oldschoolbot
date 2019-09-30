@@ -18,7 +18,7 @@ const ALL_TWITTERS = [
 	'2462052530', // afriendrs
 	'1634264438', // Hey_Jase
 	'1569065179', // monnixxx
-	'3105724056', // Lady_CatherineB
+	'3589736181', // Kacy
 	'2307540361', // Faux_Freedom
 	'2411777869', // Mr_Mammal
 	'3256936132', // Dalek_Cookie
@@ -91,9 +91,9 @@ const JMOD_TWITTERS = [
 ];
 
 const STREAMER_TWITTERS = [
+	'3589736181',
 	'1894180640',
 	'184349515',
-	'3105724056',
 	'2307540361',
 	'557647030',
 	'525302599',
