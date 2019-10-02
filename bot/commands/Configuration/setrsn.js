@@ -28,12 +28,20 @@ module.exports = class extends Command {
 			return msg.sendLocale('RSN_SET_ALREADY', [RSN]);
 		}
 
-		if (RSN !== null) {
-			await msg.author.settings.update('RSN', newRSN);
-			return msg.sendLocale('RSN_CHANGED', [RSN, newRSN]);
+		if (msg.author.settings.get('badges').length > 0) {
+			this.client.tasks.get('badges').run();
 		}
 
-		await msg.author.settings.update('RSN', newRSN);
-		return msg.sendLocale('RSN_SET_TO', [newRSN]);
+		if (RSN !== null) {
+			await msg.author.settings.update('RSN', newRSN);
+			msg.sendLocale('RSN_CHANGED', [RSN, newRSN]);
+		} else {
+			await msg.author.settings.update('RSN', newRSN);
+			msg.sendLocale('RSN_SET_TO', [newRSN]);
+		}
+
+		if (msg.author.settings.get('badges').length > 0) {
+			this.client.tasks.get('badges').run();
+		}
 	}
 };
