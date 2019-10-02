@@ -1,6 +1,6 @@
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
-const OSJS = require('oldschooljs');
+const { Items } = require('oldschooljs');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -13,9 +13,9 @@ module.exports = class extends Command {
 
 	async run(msg, [name]) {
 		const items = this.client.settings.get('prices');
-		const itemName = name.replace(/\W/g, '').toUpperCase()
+		const itemName = name.replace(/\W/g, '').toUpperCase();
 		const item = items[itemName];
-		const osjsItem = OSJS.Items.get(itemName);
+		const osjsItem = Items.get(itemName);
 		if (!item || osjsItem === undefined) return msg.send(`Couldn't find that item.`);
 
 		const { overall, store, buy, sell, ID } = item;
@@ -31,8 +31,8 @@ module.exports = class extends Command {
 			.addField('Buy Price', `${buy.toLocaleString()} gp`, true)
 			.addField('Sell Price', `${sell.toLocaleString()} gp`, true)
 			.addField('Low Alch', `${osjsItem.lowalch.toLocaleString()} gp`, true)
-			.addField('High Alch', `${osjsItem.highalch.toLocaleString()} gp`, true)
-			.setFooter('OSBuddy API');
+			.addField('High Alch', `${osjsItem.highalch.toLocaleString()} gp`, true);
+
 		return msg.send({ embed });
 	}
 };
