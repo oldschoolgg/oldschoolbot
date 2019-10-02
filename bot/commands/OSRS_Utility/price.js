@@ -26,7 +26,7 @@ module.exports = class extends Command {
 			.setTitle(item.name)
 			.setColor(52224)
 			.setThumbnail(
-				`http://services.runescape.com/m=itemdb_oldschool/1521457324813_obj_big.gif?id=${ID}`
+				`https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/cache/item/icon/${ID}.png`
 			)
 			.addField('Overall Price', `${overall.toLocaleString()} gp`, true)
 			.addField('Store Price', `${store.toLocaleString()} gp`, true)
