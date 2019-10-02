@@ -1,6 +1,8 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
+const { toTitleCase } = require('../../config/util');
+
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
 		super(...args, {
@@ -14,7 +16,11 @@ class getStatsEmbed extends Extendable {
 		const { emoji } = this.client;
 		const embed = new MessageEmbed()
 			.setColor(color)
-			.setAuthor(username)
+			.setTitle(
+				`${this.client._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(
+					username
+				)}`
+			)
 			.addField(
 				'\u200b',
 				`
