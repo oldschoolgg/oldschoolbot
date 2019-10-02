@@ -1,8 +1,23 @@
 const { Task } = require('klasa');
 const fetch = require('node-fetch');
+const { Items } = require('oldschooljs');
 
 module.exports = class extends Task {
+	init() {
+		this.run();
+	}
 	async run() {
+		this.syncItems();
+		this.fetchOSBPrices();
+	}
+
+	async syncItems() {
+		this.client.console.debug('Fetching all OSJS items.');
+		Items.fetchAll();
+	}
+
+	async fetchOSBPrices() {
+		this.client.console.debug('Fetching OSB prices.');
 		const summary = await fetch(`https://rsbuddy.com/exchange/summary.json`).then(res =>
 			res.json()
 		);

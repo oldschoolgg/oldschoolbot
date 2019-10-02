@@ -19,9 +19,9 @@
     js-tokens "^4.0.0"
 
 "@discordjs/collection@^0.1.1":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.2.tgz#f3d88dfc0ca62bb4cbf24f80202cdfdfccf9fa4d"
-  integrity sha512-N4lTTbLYb4aiOVqi2xQgkNrzWouCkT1QisAVg/gi1h4rZdw8d5JEuIdqISkG+Zl8BTmyxEb8zXmfsORLGoeDig==
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.3.tgz#af9b1c22ccb2ee5c0cad1e1bd2bc3d82a817b05f"
+  integrity sha512-4ek19SmNcPI92942RkuBrZrBK8hg7nG+ae/skkNNDeOaUG+XvxTPkv/jPZVgXwVPDkU5EFsewsI+0n4dTwFvgA==
 
 "@kcp/tags@^1.0.0":
   version "1.0.0"
@@ -530,10 +530,11 @@ detect-libc@^1.0.2:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
 
-discord.js@discordjs/discord.js:
+"discord.js@github:discordjs/discord.js#e936f071c04557e7349ea193de3a17e1dc963562":
   version "12.0.0-dev"
-  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/ea9e1441905e67e2627a6f5e80a8d989d01376c5"
+  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/e936f071c04557e7349ea193de3a17e1dc963562"
   dependencies:
+    "@discordjs/collection" "^0.1.1"
     abort-controller "^3.0.0"
     form-data "^2.3.3"
     node-fetch "^2.3.0"
@@ -1409,9 +1410,9 @@ keyv@3.0.0:
   dependencies:
     json-buffer "3.0.0"
 
-"klasa-dashboard-hooks@github:dirigeants/klasa-dashboard-hooks#master":
+"klasa-dashboard-hooks@github:dirigeants/klasa-dashboard-hooks#7e556a7ecb91a94fd1b28c9638a43a9e1e2e58ff":
   version "0.0.1-dev"
-  resolved "https://codeload.github.com/dirigeants/klasa-dashboard-hooks/tar.gz/8108210219babd200c01072309ef906f92f8163e"
+  resolved "https://codeload.github.com/dirigeants/klasa-dashboard-hooks/tar.gz/7e556a7ecb91a94fd1b28c9638a43a9e1e2e58ff"
   dependencies:
     node-fetch "^2.6.0"
 
@@ -1419,9 +1420,9 @@ keyv@3.0.0:
   version "0.0.1-dev"
   resolved "https://codeload.github.com/gc/text-channel-gateway/tar.gz/957ce817263a6633ce40b6f9c942f0dac1ec5313"
 
-"klasa@github:dirigeants/klasa#master":
+"klasa@github:dirigeants/klasa#a3c1a02195224284e07ca144ea527b4d6c85cca9":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/06259ba49715230c80b404feef67e19a4f16ba6b"
+  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/a3c1a02195224284e07ca144ea527b4d6c85cca9"
   dependencies:
     fs-nextra "^0.4.5"
 
@@ -1690,10 +1691,10 @@ object.getownpropertydescriptors@^2.0.3:
     define-properties "^1.1.2"
     es-abstract "^1.5.1"
 
-oldschooljs@^0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.2.9.tgz#ce28e4f76b5f08af130824b5183e379f0787a993"
-  integrity sha512-D1eoNKQP6+iKTkbSGMwq8rPBLsmNxYxFfsEzsqnV21AvY/pjXLVG6Y81KCs7+LVg3Un+C/gTTXXTmeR/t6DNdA==
+oldschooljs@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.4.0.tgz#60f11927aa9c103a627ec65933770cb4ee6fdc43"
+  integrity sha512-F+c7xrMIq25FDOywwH4RjZ18lmmxIQ81ADzNNRc3zqiN81uDMBhzAOkwp13RILvFYtwVpuzoJr0lLDbq6eb/PQ==
   dependencies:
     jsdom "^15.1.1"
     node-fetch "^2.6.0"
