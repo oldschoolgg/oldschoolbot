@@ -2,6 +2,8 @@ const { Task } = require('klasa');
 const fetch = require('node-fetch');
 const { Items } = require('oldschooljs');
 
+const { cleanString } = require('../../config/util');
+
 module.exports = class extends Task {
 	init() {
 		this.run();
@@ -26,7 +28,7 @@ module.exports = class extends Task {
 
 		for (const ID in summary) {
 			const { name } = summary[ID];
-			prices[name.replace(/\W/g, '').toUpperCase()] = prices[ID] = {
+			prices[cleanString(name)] = prices[ID] = {
 				ID,
 				name,
 				buy: summary[ID].buy_average,
