@@ -2,6 +2,8 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const { Items } = require('oldschooljs');
 
+const { cleanString } = require('../../../config/util');
+
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -13,7 +15,7 @@ module.exports = class extends Command {
 
 	async run(msg, [name]) {
 		const items = this.client.settings.get('prices');
-		const itemName = name.replace(/\W/g, '').toUpperCase();
+		const itemName = cleanString(name);
 		const item = items[itemName];
 		const osjsItem = Items.get(itemName);
 		if (!item || osjsItem === undefined) return msg.send(`Couldn't find that item.`);
