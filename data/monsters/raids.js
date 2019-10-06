@@ -129,20 +129,34 @@ const raids = {
 			elderMaul: 0,
 			kodaiInsignia: 0,
 			twistedBow: 0,
-			pet: 0
+			pet: {
+				amount: 0,
+				items: ''
+			}
 		};
 		const displayLoot = [];
 		let totalValue = 0;
+		let itemReceived;
 
 		for (let i = 0; i < quantity; i++) {
 			if (this.roll(25)) {
-				if (this.roll(53)) loot.pet++;
-				loot[this.determineItem().shortName]++;
+				itemReceived = this.determineItem();
+				if (this.roll(65)) {
+					loot.pet.amount++;
+					if (loot.pet.amount > 1) { loot.pet.items += ` ${itemReceived.emoji}`; }
+					else { loot.pet.items += `with ${itemReceived.emoji}`; }
+				}
+				loot[itemReceived.shortName]++;
 			}
 		}
 		for (const key in loot) {
-			displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].toLocaleString()} `);
-			totalValue += this.drops[key].price * loot[key];
+			if (key === 'pet') {
+				displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].amount.toLocaleString()} ${loot[key].items}`);
+				totalValue += this.drops[key].price * loot[key].amount;
+			} else {
+				displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].toLocaleString()} `);
+				totalValue += this.drops[key].price * loot[key];
+			}
 		}
 		displayLoot.push(`\n**Total Value:** ${totalValue.toLocaleString()} GP`);
 		displayLoot.push(
