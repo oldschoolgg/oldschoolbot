@@ -1,7 +1,7 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
-const { toTitleCase } = require('../../config/util');
+const { toTitleCase, cbLevelFromPlayer } = require('../../config/util');
 
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
@@ -77,7 +77,7 @@ ${emoji.total} ${Skills.Overall[key]}`,
 					`**Rank:** ${Skills.Overall.rank.toLocaleString()}
 **Level:** ${Skills.Overall.level}
 **XP:** ${Skills.Overall.xp.toLocaleString()}
-**Combat Level:** ${await this.combatLevel(Skills)}`,
+**Combat Level:** ${cbLevelFromPlayer(Skills)}`,
 					true
 				)
 				.addField(

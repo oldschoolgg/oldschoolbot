@@ -1,6 +1,8 @@
 const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
 
+const { cbLevelFromPlayer } = require('../../../config/util');
+
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -15,7 +17,7 @@ module.exports = class extends Command {
 			throw this.client.notFound;
 		});
 
-		const combatLevel = await this.combatLevel(player.Skills);
+		const combatLevel = await cbLevelFromPlayer(player.Skills);
 
 		return msg.send(`${username}'s Combat Level is **${combatLevel}**.`);
 	}

@@ -2,7 +2,6 @@ const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 const { createCanvas, Image } = require('canvas');
 const fs = require('fs');
-const fetch = require('node-fetch');
 
 const bg = fs.readFileSync('./resources/images/qa-background.png');
 const canvas = createCanvas(900, 506);
