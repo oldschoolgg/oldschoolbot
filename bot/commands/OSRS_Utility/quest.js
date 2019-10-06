@@ -1,6 +1,8 @@
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
+
 const quests = require('../../../data/quests');
+const { cleanString } = require('../../../config/util');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -13,7 +15,7 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [questName]) {
-		const quest = this.cleanString(questName, true);
+		const quest = cleanString(questName);
 
 		if (quests[quest]) {
 			return msg.send(this.questInfo(quests[quest]));
