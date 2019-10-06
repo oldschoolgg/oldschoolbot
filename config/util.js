@@ -140,6 +140,7 @@ function cbLevelFromPlayer({ Defence, Strength, Attack, Ranged, Magic, Prayer, H
 }
 
 function cmlErrorCheck(res) {
+	console.log(res);
 	switch (res.replace(/\s/g, '')) {
 		case '-1':
 			throw 'That user does not exist in the CrystalMathLabs database. Have you tried using +update?';
