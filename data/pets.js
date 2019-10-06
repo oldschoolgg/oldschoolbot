@@ -1,4 +1,5 @@
 const { roll } = require('../config/util');
+const raids = require('../data/monsters/raids');
 
 const xpEmoji = '<:SkillTotal:395812233000517650>';
 const gpEmoji = '<:RSGP:369349580040437770>';
@@ -129,7 +130,11 @@ const pets = [
 		type: 'BOSS',
 		altNames: ['OLMLET', 'RAIDS', 'OLMLET', 'OLM'],
 		formatFinish: num =>
-			`You had to do ${fm(num)} Raids to get the Olmlet Pet! <:Olmlet:324127376873357316>`
+			`You had to do ${fm(
+				num
+			)} Raids to get the Olmlet Pet! <:Olmlet:324127376873357316> it came with a ${
+				raids.determineItem().emoji
+			}`
 	},
 	{
 		id: 11,
