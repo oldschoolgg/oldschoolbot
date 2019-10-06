@@ -2,6 +2,7 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 const items = require('../../../data/buyLimits.json');
+const { cleanString } = require('../../../config/util');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -16,7 +17,7 @@ module.exports = class extends Command {
 
 	async run(msg, [query]) {
 		const res = items
-			.filter(i => this.cleanString(i.name, true).includes(this.cleanString(query, true)))
+			.filter(i => cleanString(i.name).includes(this.cleanString(query, true)))
 			.slice(0, 10);
 
 		if (res.length === 0) throw "Couldn't find any items!";
