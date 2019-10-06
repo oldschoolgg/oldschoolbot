@@ -13,20 +13,17 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Get yourself a Fake Ely!',
 			cooldown: 3,
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: ['ATTACH_FILES'],
+			usage: '<image:image>'
 		});
 	}
 
-	async run(msg) {
-		const { url } = await msg.channel.fetchImage();
-
-		const image = await fetch(url).then(result => result.buffer());
-
+	async run(msg, [[imageBuffer]]) {
 		const BG = new Image();
 		BG.src = bg;
 
 		const userImage = new Image();
-		userImage.src = image;
+		userImage.src = imageBuffer;
 
 		ctx.drawImage(userImage, -50, 84, 180, 107);
 		ctx.drawImage(userImage, 144, 84, 180, 100);
