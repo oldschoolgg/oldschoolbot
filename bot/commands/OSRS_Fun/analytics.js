@@ -2,7 +2,7 @@ const { Command } = require('klasa');
 const osrs = require('osrs-wrapper');
 const { MessageEmbed } = require('discord.js');
 
-const { convertXPtoLVL } = require('../../../config/util');
+const { convertXPtoLVL, cbLevelFromPlayer } = require('../../../config/util');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 **Rank:** ${Skills.Overall.rank.toLocaleString()}
 **Level:** ${Skills.Overall.level}
 **XP:** ${Skills.Overall.xp.toLocaleString()}
-**Combat Level:** ${await this.combatLevel(Skills)}`,
+**Combat Level:** ${cbLevelFromPlayer(Skills)}`,
 				true
 			)
 			.addField(
