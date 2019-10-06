@@ -2,6 +2,8 @@ const { Command } = require('klasa');
 const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
+const { cmlErrorCheck } = require('../../../config/util');
+
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -22,7 +24,7 @@ module.exports = class extends Command {
 			`https://crystalmathlabs.com/tracker/api.php?type=currenttop&timeperiod=${timePeriod}&skill=${skill}`
 		)
 			.then(res => res.text())
-			.then(async res => (await this.cmlErrorCheck(msg, res)) || res);
+			.then(async res => cmlErrorCheck(res) || res);
 
 		const top = [];
 		body = body.split('\n');

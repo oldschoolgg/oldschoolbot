@@ -2,6 +2,8 @@ const { Command } = require('klasa');
 const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
+const { cmlErrorCheck } = require('../../../config/util');
+
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -16,15 +18,14 @@ module.exports = class extends Command {
 	async run(msg, [username]) {
 		const time = await fetch(
 			`https://www.crystalmathlabs.com/tracker/api.php?type=lastcheck&player=${username}`
-		)
-			.then(res => res.text())
-			.then(async res => (await this.cmlErrorCheck(msg, res)) || res);
+		).then(res => res.text());
 
 		const embed = new MessageEmbed()
 			.setColor(3120895)
 			.setDescription(
 				`**${username}** was last updated **${parseInt(time / 60)}** minutes ago.`
 			);
+
 		return msg.send({ embed });
 	}
 };

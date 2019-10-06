@@ -21,7 +21,6 @@ module.exports = class extends Command {
 				`<:CrystalMathLabs:364657225249062912> Couldn't find any previous usernames for ${username}.`
 			);
 		} else {
-			await this.cmlErrorCheck(msg, result);
 			return msg.send(`The previous name for ${username} was: **${result}**`);
 		}
 	}

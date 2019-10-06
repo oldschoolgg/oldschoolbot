@@ -1,6 +1,8 @@
 const { Command } = require('klasa');
 const fetch = require('node-fetch');
 
+const { cmlErrorCheck } = require('../../../config/util');
+
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -18,8 +20,7 @@ module.exports = class extends Command {
 			.then(res => res.text())
 			.then(
 				async res =>
-					(await this.cmlErrorCheck(msg, res)) ||
-					parseInt(res.split(',')[1].split('.')[0]).toLocaleString()
+					cmlErrorCheck(res) || parseInt(res.split(',')[1].split('.')[0]).toLocaleString()
 			);
 
 		return msg.sendLocale('TT200_RESULT', [username, time]);
