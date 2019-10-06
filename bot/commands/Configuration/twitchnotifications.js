@@ -17,7 +17,7 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		if (msg.guild.settings.get('twitchnotifs') === msg.channel.id) {
-			msg.sendLocale('TN_ALREADY_ENABLED');
+			return msg.sendLocale('TN_ALREADY_ENABLED');
 		}
 		if (msg.guild.settings.get('twitchnotifs') !== null) {
 			await msg.guild.settings.update('twitchnotifs', msg.channel, msg.guild);
@@ -36,21 +36,27 @@ module.exports = class extends Command {
 	}
 
 	async add(msg, [name]) {
-		if (!name) msg.sendLocale('TN_NO_STREAMER', [msg.guild.settings.get('prefix')]);
-		if (!this.client.streamers.includes(name.toLowerCase()))
-			msg.sendLocale('TN_INVALID_STREAMER');
-		if (msg.guild.settings.get('streamers').includes(name.toLowerCase()))
-			msg.sendLocale('TN_ALREADY_ENABLED_STREAMER');
+		if (!name) {
+			return msg.sendLocale('TN_NO_STREAMER', [msg.guild.settings.get('prefix')]);
+		}
+		if (!this.client.streamers.includes(name.toLowerCase())) {
+			return msg.sendLocale('TN_INVALID_STREAMER');
+		}
+		if (msg.guild.settings.get('streamers').includes(name.toLowerCase())) {
+			return msg.sendLocale('TN_ALREADY_ENABLED_STREAMER');
+		}
 		await msg.guild.settings.update('streamers', name.toLowerCase(), { action: 'add' });
 		return msg.sendLocale('TN_ADDED_STREAMER', [name]);
 	}
 
 	async remove(msg, [name]) {
-		if (!name) msg.sendLocale('TN_NO_STREAMER_REMOVE', [msg.guild.settings.get('prefix')]);
+		if (!name) {
+			return msg.sendLocale('TN_NO_STREAMER_REMOVE', [msg.guild.settings.get('prefix')]);
+		}
 		if (!this.client.streamers.includes(name.toLowerCase()))
-			msg.sendLocale('TN_INVALID_STREAMER');
+			return msg.sendLocale('TN_INVALID_STREAMER');
 		if (!msg.guild.settings.get('streamers').includes(name.toLowerCase())) {
-			msg.sendLocale('TN_NOT_ENABLED_STREAMER');
+			return msg.sendLocale('TN_NOT_ENABLED_STREAMER');
 		}
 
 		await msg.guild.settings.update('streamers', name.toLowerCase(), { action: 'remove' });
@@ -58,8 +64,12 @@ module.exports = class extends Command {
 	}
 
 	async list(msg) {
-		if (msg.guild.settings.get('twitchnotifs') === null) msg.sendLocale('TN_NOT_ENABLED');
-		if (msg.guild.settings.get('streamers').length === 0) msg.sendLocale('TN_NO_STREAMERS');
+		if (msg.guild.settings.get('twitchnotifs') === null) {
+			return msg.sendLocale('TN_NOT_ENABLED');
+		}
+		if (msg.guild.settings.get('streamers').length === 0) {
+			return msg.sendLocale('TN_NO_STREAMERS');
+		}
 		return msg.sendLocale(msg.guild.settings.get('streamers').join(', '));
 	}
 };
