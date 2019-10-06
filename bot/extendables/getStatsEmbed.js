@@ -12,7 +12,7 @@ class getStatsEmbed extends Extendable {
 		});
 	}
 
-	async getStatsEmbed(username, color, { Skills }, key = 'level', showExtra = true) {
+	async getStatsEmbed(username, color, { Skills, Minigames }, key = 'level', showExtra = true) {
 		const { emoji } = this.client;
 		const embed = new MessageEmbed()
 			.setColor(color)
@@ -62,16 +62,37 @@ ${emoji.total} ${Skills.Overall[key]}`,
 			);
 
 		if (showExtra) {
+			const clues = {
+				Beginner: Minigames.Clue_Scrolls_Beginner,
+				Easy: Minigames.Clue_Scrolls_Easy,
+				Medium: Minigames.Clue_Scrolls_Medium,
+				Hard: Minigames.Clue_Scrolls_Hard,
+				Elite: Minigames.Clue_Scrolls_Elite,
+				Master: Minigames.Clue_Scrolls_Master
+			};
+
 			embed
 				.addField(
 					`${emoji.total} Overall`,
-					`**Rank:** ${Skills.Overall.rank.toLocaleString()}\n**Level:** ${
-						Skills.Overall.level
-					}\n**XP:** ${Skills.Overall.xp.toLocaleString()}`,
+					`**Rank:** ${Skills.Overall.rank.toLocaleString()}
+**Level:** ${Skills.Overall.level}
+**XP:** ${Skills.Overall.xp.toLocaleString()}
+**Combat Level:** ${await this.combatLevel(Skills)}`,
 					true
 				)
-				.addField(`Other`, `**Combat Level:** ${await this.combatLevel(Skills)}`, true)
-				.addField('\u200b', '\u200b', true);
+				.addField(
+					`<:minigame_icon:630400565070921761> Minigame Scores`,
+					`**BH:** ${Minigames.Bounty_Hunter.score}
+**BH-Rogue:** ${Minigames.Bounty_Hunter_Rogues.score}
+**LMS:** ${Minigames.LMS.score}
+`,
+					true
+				)
+				.addField(
+					'<:Clue_scroll:365003979840552960> Clue Scores',
+					Object.keys(clues).map(tier => `**${tier}:** ${clues[tier].score}`),
+					true
+				);
 		}
 		return embed;
 	}
