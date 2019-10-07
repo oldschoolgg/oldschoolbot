@@ -1,7 +1,17 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
+const { constants } = require('oldschooljs');
 
 const { toTitleCase } = require('../../config/util');
+
+const hiscoreURLs = {
+	normal: 'hiscore_oldschool',
+	ironman: 'hiscore_oldschool_ironman',
+	ultimate: 'hiscore_oldschool_ultimate',
+	hardcore: 'hiscore_oldschool_hardcore_ironman',
+	deadman: 'hiscore_oldschool_deadman',
+	seasonal: 'hiscore_oldschool_seasonal'
+};
 
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
@@ -15,13 +25,18 @@ class getStatsEmbed extends Extendable {
 	getStatsEmbed(
 		username,
 		color,
-		{ clues, minigames, skills, combatLevel },
+		{ clues, minigames, skills, combatLevel, type },
 		key = 'level',
 		showExtra = true
 	) {
 		const { emoji } = this.client;
 
-		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
+		const skillCell = skill =>
+			`[${emoji[skill]}](https://secure.runescape.com/m=${
+				hiscoreURLs[type]
+			}/overall.ws?table=${constants.SKILLS.indexOf(skill)}&user=${encodeURIComponent(
+				username
+			)}) ${skills[skill][key].toLocaleString()}`;
 
 		const embed = new MessageEmbed()
 			.setColor(color)
