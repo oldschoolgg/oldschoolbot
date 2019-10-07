@@ -1,6 +1,7 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
+const { Hiscores } = require('oldschooljs');
 const { MessageEmbed } = require('discord.js');
+
 const { toTitleCase } = require('../../../config/util');
 
 module.exports = class extends Command {
@@ -14,19 +15,9 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const { Minigames } = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
-			throw this.client.notFound;
+		const { clues } = await Hiscores.fetch(username).catch(err => {
+			throw err.message;
 		});
-
-		const clues = {
-			beginner: Minigames.Clue_Scrolls_Beginner,
-			easy: Minigames.Clue_Scrolls_Easy,
-			medium: Minigames.Clue_Scrolls_Medium,
-			hard: Minigames.Clue_Scrolls_Hard,
-			elite: Minigames.Clue_Scrolls_Elite,
-			master: Minigames.Clue_Scrolls_Master,
-			overall: Minigames.Clue_Scrolls_All
-		};
 
 		const embed = new MessageEmbed()
 			.setAuthor(username)
@@ -34,7 +25,6 @@ module.exports = class extends Command {
 			.setThumbnail('https://i.imgur.com/azW3cSB.png');
 
 		for (const tier of Object.keys(clues)) {
-			console.log([clues[tier].rank, clues[tier].score]);
 			embed.addField(
 				toTitleCase(tier),
 				msg.language.get('CLUE_SCORE_FORMAT', clues[tier].rank, clues[tier].score),
