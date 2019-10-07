@@ -200,7 +200,7 @@ module.exports = class extends Command {
 				const gp = (drop * 210000).toLocaleString();
 				const amount = drop.toLocaleString();
 				return msg.send(
-					`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet **Back-to-Back (2 in a row)!** <:Tangleroot:324127378978635778> You also got...\n<:SkillTotal:395812233000517650> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`
+					`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet **Back-to-Back (2 in a row)!** <:Tangleroot:324127378978635778> You also got...\n<:xp:630911040510623745> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`
 				);
 			case 'JAD':
 				return msg.send(
