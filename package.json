@@ -19,7 +19,7 @@
 		"moment": "^2.21.0",
 		"mongodb": "^3.3.2",
 		"node-fetch": "^2.6.0",
-		"oldschooljs": "^0.4.2",
+		"oldschooljs": "^0.4.3",
 		"osrs-wrapper": "github:gc/Osrs-Wrapper",
 		"rethinkdbdash": "^2.3.31",
 		"rss-parser": "^3.1.1",
