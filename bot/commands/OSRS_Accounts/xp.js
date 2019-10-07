@@ -22,7 +22,7 @@ module.exports = class extends Command {
 			}
 		}
 
-		const embed = await this.getStatsEmbed(username, 7981338, player, 'xp', false);
+		const embed = this.getStatsEmbed(username, 7981338, player, 'xp', false);
 
 		return msg.send({ embed });
 	}
