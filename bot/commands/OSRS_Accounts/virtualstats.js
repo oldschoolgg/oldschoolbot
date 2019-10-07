@@ -29,7 +29,7 @@ module.exports = class extends Command {
 
 		player.skills.overall.level = overall;
 
-		const embed = await this.getStatsEmbed(username, 7981338, player, 'level', false);
+		const embed = this.getStatsEmbed(username, 7981338, player, 'level', false);
 		return msg.send({ embed });
 	}
 };

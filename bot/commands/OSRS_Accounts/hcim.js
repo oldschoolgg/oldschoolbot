@@ -16,7 +16,7 @@ module.exports = class extends Command {
 			throw err.message;
 		});
 
-		const embed = await this.getStatsEmbed(username, 11995146, player);
+		const embed = this.getStatsEmbed(username, 11995146, player);
 
 		return msg.send({ embed });
 	}

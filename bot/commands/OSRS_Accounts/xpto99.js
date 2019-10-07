@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		}
 
 		player.skills.overall.xp = parseInt(299791913 - totalXP).toLocaleString();
-		const embed = await this.getStatsEmbed(username, 7981338, player, 'xp', false);
+		const embed = this.getStatsEmbed(username, 7981338, player, 'xp', false);
 		return msg.send({ embed });
 	}
 };
