@@ -13,6 +13,7 @@ module.exports = {
 	fishing: '<:SkillFishing:395812232929345567>',
 	hitpoints: '<:SkillHitpoints:395812232941928459>',
 	total: '<:SkillTotal:395812233000517650>',
+	overall: '<:SkillTotal:395812233000517650>',
 	magic: '<:SkillMagic:395812233021751296>',
 	crafting: '<:SkillCrafting:395812233030008842>',
 	agility: '<:SkillAgility:395812233055305740>',

@@ -12,7 +12,7 @@ class getStatsEmbed extends Extendable {
 		});
 	}
 
-	async getStatsEmbed(
+	getStatsEmbed(
 		username,
 		color,
 		{ clues, minigames, skills, combatLevel },
@@ -20,6 +20,9 @@ class getStatsEmbed extends Extendable {
 		showExtra = true
 	) {
 		const { emoji } = this.client;
+
+		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
+
 		const embed = new MessageEmbed()
 			.setColor(color)
 			.setTitle(
@@ -29,41 +32,44 @@ class getStatsEmbed extends Extendable {
 			)
 			.addField(
 				'\u200b',
-				`
-${emoji.attack} ${skills.attack[key].toLocaleString()}
-${emoji.strength} ${skills.strength[key].toLocaleString()}
-${emoji.defence} ${skills.defence[key].toLocaleString()}
-${emoji.ranged} ${skills.ranged[key].toLocaleString()}
-${emoji.prayer} ${skills.prayer[key].toLocaleString()}
-${emoji.magic} ${skills.magic[key].toLocaleString()}
-${emoji.runecraft} ${skills.runecrafting[key].toLocaleString()}
-${emoji.construction} ${skills.construction[key].toLocaleString()}`,
+				[
+					'attack',
+					'strength',
+					'defence',
+					'ranged',
+					'prayer',
+					'magic',
+					'runecraft',
+					'construction'
+				].map(skillCell),
 				true
 			)
 			.addField(
 				'\u200b',
-				`
-${emoji.hitpoints} ${skills.hitpoints[key].toLocaleString()}
-${emoji.agility} ${skills.agility[key].toLocaleString()}
-${emoji.herblore} ${skills.herblore[key].toLocaleString()}
-${emoji.thieving} ${skills.thieving[key].toLocaleString()}
-${emoji.crafting} ${skills.crafting[key].toLocaleString()}
-${emoji.fletching} ${skills.fletching[key].toLocaleString()}
-${emoji.slayer} ${skills.slayer[key].toLocaleString()}
-${emoji.hunter} ${skills.hunter[key].toLocaleString()}`,
+				[
+					'hitpoints',
+					'agility',
+					'herblore',
+					'thieving',
+					'crafting',
+					'fletching',
+					'slayer',
+					'hunter'
+				].map(skillCell),
 				true
 			)
 			.addField(
 				'\u200b',
-				`
-${emoji.mining} ${skills.mining[key].toLocaleString()}
-${emoji.smithing} ${skills.smithing[key].toLocaleString()}
-${emoji.fishing} ${skills.fishing[key].toLocaleString()}
-${emoji.cooking} ${skills.cooking[key].toLocaleString()}
-${emoji.firemaking} ${skills.firemaking[key].toLocaleString()}
-${emoji.woodcutting} ${skills.woodcutting[key].toLocaleString()}
-${emoji.farming} ${skills.farming[key].toLocaleString()}
-${emoji.total} ${skills.overall[key].toLocaleString()}`,
+				[
+					'mining',
+					'smithing',
+					'fishing',
+					'cooking',
+					'firemaking',
+					'woodcutting',
+					'farming',
+					'overall'
+				].map(skillCell),
 				true
 			);
 
