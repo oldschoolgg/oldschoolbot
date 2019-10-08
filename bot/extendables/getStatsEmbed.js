@@ -28,8 +28,7 @@ class getStatsEmbed extends Extendable {
 			)}&user=${encodeURIComponent(username)}`;
 		}
 
-		const skillCell = skill =>
-			`[${emoji[skill]}](${generateURL(skill)})${skills[skill][key].toLocaleString()}`;
+		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
 
 		const embed = new MessageEmbed()
 			.setColor(color)
