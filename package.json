@@ -10,7 +10,7 @@
 		"cheerio": "^1.0.0-rc.3",
 		"chokidar": "^3.0.2",
 		"crystalmethlabs": "github:gc/crystalmethlabs",
-		"discord.js": "github:bdistin/discord.js#i-s",
+		"discord.js": "discordjs/discord.js",
 		"erlpack": "^0.1.2",
 		"he": "^1.2.0",
 		"klasa": "github:dirigeants/klasa#b73c3fd8d7d5cff4001f4da221637f1704f74087",
