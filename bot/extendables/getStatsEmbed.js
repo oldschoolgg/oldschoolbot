@@ -4,15 +4,6 @@ const { constants } = require('oldschooljs');
 
 const { toTitleCase } = require('../../config/util');
 
-const hiscoreURLs = {
-	normal: 'hiscore_oldschool',
-	ironman: 'hiscore_oldschool_ironman',
-	ultimate: 'hiscore_oldschool_ultimate',
-	hardcore: 'hiscore_oldschool_hardcore_ironman',
-	deadman: 'hiscore_oldschool_deadman',
-	seasonal: 'hiscore_oldschool_seasonal'
-};
-
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
 		super(...args, {
@@ -31,12 +22,14 @@ class getStatsEmbed extends Extendable {
 	) {
 		const { emoji } = this.client;
 
+		function generateURL(skill) {
+			return `http://secure.runescape.com/m=hiscore_oldschool/overall.ws?table=${constants.SKILLS.indexOf(
+				skill
+			)}&user=${encodeURIComponent(username)}`;
+		}
+
 		const skillCell = skill =>
-			`[${emoji[skill]}](https://secure.runescape.com/m=${
-				hiscoreURLs[type]
-			}/overall.ws?table=${constants.SKILLS.indexOf(skill)}&user=${encodeURIComponent(
-				username
-			)}) ${skills[skill][key].toLocaleString()}`;
+			`[${emoji[skill]}](${generateURL(skill)})${skills[skill][key].toLocaleString()}`;
 
 		const embed = new MessageEmbed()
 			.setColor(color)
@@ -110,7 +103,10 @@ class getStatsEmbed extends Extendable {
 					'<:Clue_scroll:365003979840552960> Clue Scores',
 					Object.keys(clues)
 						.slice(1)
-						.map(tier => `**${tier}:** ${clues[tier].score.toLocaleString()}`),
+						.map(
+							tier =>
+								`**${toTitleCase(tier)}:** ${clues[tier].score.toLocaleString()}`
+						),
 					true
 				);
 		}
