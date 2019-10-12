@@ -16,6 +16,10 @@ module.exports = class extends Command {
 			return msg.send(err.message);
 		});
 
+		if (msg.guild && this.client.settings.usernameCache[msg.guild.id]) {
+			this.client.tasks.get('levelChecker').checkPlayers([player]);
+		}
+
 		const embed = this.getStatsEmbed(username, 7981338, player);
 
 		return msg.send({ embed });
