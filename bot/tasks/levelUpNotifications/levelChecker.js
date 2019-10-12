@@ -9,21 +9,14 @@ const emoji = require('../../../config/skill-emoji');
 
 module.exports = class extends Task {
 	async announce(username, message) {
-		this.client.channels.get('469523207691436042').send(message);
+		this.client.channels.get('357422607982919680').send(message);
 	}
 
-	async run() {
+	async checkPlayers(players) {
 		const lastPlayerStats = this.client.settings.get('lastPlayerStats');
 		const newPlayerStats = {};
-		const usernameMap = this.client.settings.get('usernameCache');
 
-		const allNames = flatten(Object.values(usernameMap));
-
-		const fetchedPlayers = (await Promise.all(
-			allNames.map(name => limit(() => Hiscores.fetch(name).catch(() => null)))
-		)).filter(Boolean);
-
-		for (const player of fetchedPlayers) {
+		for (const player of players) {
 			const { skills, username } = player;
 			const oldPlayer = lastPlayerStats[username];
 
@@ -58,5 +51,17 @@ module.exports = class extends Task {
 		}
 
 		this.client.settings.update('lastPlayerStats', newPlayerStats);
+	}
+
+	async run() {
+		const usernameMap = this.client.settings.get('usernameCache');
+
+		const allNames = flatten(Object.values(usernameMap));
+
+		const fetchedPlayers = (await Promise.all(
+			allNames.map(name => limit(() => Hiscores.fetch(name).catch(() => null)))
+		)).filter(Boolean);
+
+		this.checkPlayers(fetchedPlayers);
 	}
 };
