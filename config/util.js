@@ -140,7 +140,6 @@ function cbLevelFromPlayer({ Defence, Strength, Attack, Ranged, Magic, Prayer, H
 }
 
 function cmlErrorCheck(res) {
-	console.log(res);
 	switch (res.replace(/\s/g, '')) {
 		case '-1':
 			throw 'That user does not exist in the CrystalMathLabs database. Have you tried using +update?';
@@ -152,6 +151,12 @@ function cmlErrorCheck(res) {
 		default:
 			return null;
 	}
+}
+
+function flatten(arr) {
+	return arr.reduce((flat, toFlatten) => {
+		return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+	}, []);
 }
 
 module.exports = {
@@ -168,5 +173,6 @@ module.exports = {
 	twitchAPIRequestOptions,
 	toTitleCase,
 	cbLevelFromPlayer,
-	cmlErrorCheck
+	cmlErrorCheck,
+	flatten
 };
