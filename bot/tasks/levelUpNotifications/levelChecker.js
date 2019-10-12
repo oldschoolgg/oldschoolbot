@@ -1,5 +1,8 @@
 const { Task } = require('klasa');
 const { Hiscores } = require('oldschooljs');
+const pLimit = require('p-limit');
+
+const limit = pLimit(5);
 
 const { flatten, toTitleCase: tCase } = require('../../../config/util');
 const emoji = require('..//../../config/skill-emoji');
@@ -17,7 +20,7 @@ module.exports = class extends Task {
 		const allNames = flatten(Object.values(usernameMap));
 
 		const fetchedPlayers = (await Promise.all(
-			allNames.map(name => Hiscores.fetch(name).catch(() => null))
+			allNames.map(name => limit(() => Hiscores.fetch(name).catch(() => null)))
 		)).filter(Boolean);
 
 		for (const player of fetchedPlayers) {
