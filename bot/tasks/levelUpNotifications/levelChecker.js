@@ -5,11 +5,11 @@ const pLimit = require('p-limit');
 const limit = pLimit(10);
 
 const { flatten, toTitleCase: tCase } = require('../../../config/util');
-const emoji = require('..//../../config/skill-emoji');
+const emoji = require('../../../config/skill-emoji');
 
 module.exports = class extends Task {
 	async announce(username, message) {
-		this.client.channels.get('357422607982919680').send(message);
+		this.client.channels.get('469523207691436042').send(message);
 	}
 
 	async run() {
