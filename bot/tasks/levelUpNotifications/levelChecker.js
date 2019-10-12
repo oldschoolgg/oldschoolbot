@@ -2,7 +2,7 @@ const { Task } = require('klasa');
 const { Hiscores } = require('oldschooljs');
 const pLimit = require('p-limit');
 
-const limit = pLimit(5);
+const limit = pLimit(10);
 
 const { flatten, toTitleCase: tCase } = require('../../../config/util');
 const emoji = require('..//../../config/skill-emoji');
