@@ -15,7 +15,7 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		if (msg.guild.settings.get('streamertweets') === msg.channel.id) {
-			msg.sendLocale('STREAMER_TWEETS_ALREADY_ENABLED');
+			return msg.sendLocale('STREAMER_TWEETS_ALREADY_ENABLED');
 		}
 		if (msg.guild.settings.get('streamertweets') !== null) {
 			await msg.guild.settings.update('streamertweets', msg.channel, msg.guild);
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 
 	async disable(msg) {
 		if (msg.guild.settings.get('streamertweets') === null) {
-			msg.sendLocale('STREAMER_TWEETS_ARENT_ENABLED');
+			return msg.sendLocale('STREAMER_TWEETS_ARENT_ENABLED');
 		}
 		await msg.guild.settings.reset('streamertweets');
 		return msg.sendLocale('STREAMER_TWEETS_DISABLED');
