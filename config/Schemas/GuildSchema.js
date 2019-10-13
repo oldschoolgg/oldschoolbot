@@ -11,4 +11,4 @@ Client.defaultGuildSchema
 	.add('tweetchannel', 'textchannel', { default: null })
 	.add('twitchnotifs', 'textchannel', { default: null })
 	.add('ashTweetsChannel', 'textchannel', { default: null })
-	.add('levelUpMessages', 'boolean', { default: false });
+	.add('levelUpMessages', 'textchannel', { default: null });
