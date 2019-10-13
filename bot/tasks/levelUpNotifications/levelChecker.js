@@ -14,6 +14,7 @@ module.exports = class extends Task {
 			// If the cached usernames for this guild doesnt include this username, continue;
 			if (!usernames.includes(username)) continue;
 			const guild = this.client.guilds.get(guildID);
+			if (!guild) continue;
 			const channel = this.client.channels.get(guild.settings.get('levelUpMessages'));
 			if (!channel) continue;
 			channel.send(message);
@@ -64,7 +65,7 @@ module.exports = class extends Task {
 	async run() {
 		const usernameMap = this.client.settings.get('usernameCache');
 
-		const allNames = flatten(Object.values(usernameMap));
+		const allNames = [...new Set(flatten(Object.values(usernameMap)))];
 
 		const fetchedPlayers = (await Promise.all(
 			allNames.map(name => limit(() => Hiscores.fetch(name).catch(() => null)))
