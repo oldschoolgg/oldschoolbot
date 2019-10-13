@@ -55,7 +55,6 @@ module.exports = class MemorySweeper extends Task {
 			for (const [id, member] of guild.members) {
 				if (this.shouldCacheUser(member.user)) continue;
 				if (member === me) continue;
-				if (member.voice.channelID) continue;
 				if (member.lastMessageID && member.lastMessageID > this.OLD_SNOWFLAKE) continue;
 				guildMembers++;
 				voiceStates++;
