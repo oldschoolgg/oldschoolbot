@@ -6,8 +6,8 @@ module.exports = class extends Task {
 		const usernameMap = {};
 		for (const guild of guildsWith.values()) {
 			usernameMap[guild.id] = [];
-			const fetchedMembers = await guild.members.fetch({ limit: 5000 });
-			for (const member of fetchedMembers.values()) {
+			await guild.members.fetch({ limit: 5000 });
+			for (const member of guild.members.values()) {
 				if (!member.user) continue;
 				if (!member.user.settings) continue;
 				const RSN = member.user.settings.get('RSN');
