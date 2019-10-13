@@ -15,7 +15,7 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		const tweetChannel = msg.guild.settings.get('tweetchannel');
-		if (tweetChannel === msg.channel.id) msg.sendLocale('JMOD_TWEETS_ALREADY_ENABLED');
+		if (tweetChannel === msg.channel.id) return msg.sendLocale('JMOD_TWEETS_ALREADY_ENABLED');
 		if (tweetChannel) {
 			await msg.guild.settings.update('tweetchannel', msg.channel);
 			return msg.sendLocale('JMOD_TWEETS_ENABLED_OTHER');
@@ -25,7 +25,9 @@ module.exports = class extends Command {
 	}
 
 	async disable(msg) {
-		if (!msg.guild.settings.get('tweetchannel')) msg.sendLocale('JMOD_TWEETS_ARENT_ENABLED');
+		if (!msg.guild.settings.get('tweetchannel')) {
+			return msg.sendLocale('JMOD_TWEETS_ARENT_ENABLED');
+		}
 		await msg.guild.settings.reset('tweetchannel');
 		return msg.sendLocale('JMOD_TWEETS_DISABLED');
 	}

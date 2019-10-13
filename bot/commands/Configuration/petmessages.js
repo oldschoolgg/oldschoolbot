@@ -15,7 +15,7 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		if (msg.guild.settings.get('petchannel')) {
-			msg.sendLocale('PET_MESSAGES_ALREADY_ENABLED');
+			return msg.sendLocale('PET_MESSAGES_ALREADY_ENABLED');
 		}
 		await msg.guild.settings.update('petchannel', msg.channel, msg.guild);
 		return msg.sendLocale('PET_MESSAGES_ENABLED');
@@ -23,7 +23,7 @@ module.exports = class extends Command {
 
 	async disable(msg) {
 		if (msg.guild.settings.get('petchannel') === null) {
-			msg.sendLocale('PET_MESSAGES_ARENT_ENABLED');
+			return msg.sendLocale('PET_MESSAGES_ARENT_ENABLED');
 		}
 		await msg.guild.settings.reset('petchannel');
 		return msg.sendLocale('PET_MESSAGES_DISABLED');
