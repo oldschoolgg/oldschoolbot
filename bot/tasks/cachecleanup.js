@@ -20,10 +20,20 @@ module.exports = class MemorySweeper extends Task {
 
 		// The header with the console colors
 		this.header = new Colors({ text: 'lightblue' }).format('[CACHE CLEANUP]');
+		this.OLD_SNOWFLAKE = SnowflakeUtil.generate(Date.now() - THRESHOLD);
+	}
+
+	shouldCacheUser(user) {
+		if (
+			user.settings.get('RSN') ||
+			user.settings.get('badges').length > 0 ||
+			Object.keys(user.settings.get('pets')).length > 0
+		)
+			return true;
+		if (user.lastMessageID && user.lastMessageID > this.OLD_SNOWFLAKE) return true;
 	}
 
 	async run() {
-		const OLD_SNOWFLAKE = SnowflakeUtil.generate(Date.now() - THRESHOLD);
 		let presences = 0,
 			guildMembers = 0,
 			voiceStates = 0,
@@ -43,9 +53,10 @@ module.exports = class MemorySweeper extends Task {
 			// Clear members that haven't send a message in the last 30 minutes
 			const { me } = guild;
 			for (const [id, member] of guild.members) {
+				if (this.shouldCacheUser(member.user)) continue;
 				if (member === me) continue;
 				if (member.voice.channelID) continue;
-				if (member.lastMessageID && member.lastMessageID > OLD_SNOWFLAKE) continue;
+				if (member.lastMessageID && member.lastMessageID > this.OLD_SNOWFLAKE) continue;
 				guildMembers++;
 				voiceStates++;
 				guild.voiceStates.delete(id);
@@ -66,10 +77,7 @@ module.exports = class MemorySweeper extends Task {
 
 		// Per-User sweeper
 		for (const user of this.client.users.values()) {
-			if (user.settings.get('RSN')) continue;
-			if (Object.keys(user.settings.get('pets')).length > 0) continue;
-			if (user.settings.get('badges').length > 0) continue;
-			if (user.lastMessageID && user.lastMessageID > OLD_SNOWFLAKE) continue;
+			if (this.shouldCacheUser(user)) continue;
 			this.client.users.delete(user.id);
 			users++;
 		}
