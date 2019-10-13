@@ -9,7 +9,15 @@ const emoji = require('../../../config/skill-emoji');
 
 module.exports = class extends Task {
 	async announce(username, message) {
-		this.client.channels.get('357422607982919680').send(message);
+		const usernameMap = this.client.settings.get('usernameCache');
+		for (const [guildID, usernames] of Object.entries(usernameMap)) {
+			// If the cached usernames for this guild doesnt include this username, continue;
+			if (!usernames.includes(username)) continue;
+			const guild = this.client.guilds.get(guildID);
+			const channel = this.client.channels.get(guild.settings.get('levelUpMessages'));
+			if (!channel) continue;
+			channel.send(message);
+		}
 	}
 
 	async checkPlayers(players) {
