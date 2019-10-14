@@ -55,7 +55,7 @@ module.exports = class extends Command {
 
 		const rawUserSettings = await this.client.providers
 			.get(this.client.options.providers.default)
-			.table('users')
+			.db.table('users')
 			.filter(user => user.hasFields('GP') || user.hasFields('pets'))
 			.run();
 
