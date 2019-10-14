@@ -51,6 +51,7 @@ const drake = require('../../../data/monsters/drake');
 const wyrm = require('../../../data/monsters/wyrm');
 const hespori = require('../../../data/monsters/hespori');
 const sarachnis = require('../../../data/monsters/sarachnis');
+const basKnight = require('../../../data/monsters/basKnight');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -471,6 +472,16 @@ module.exports = class extends Command {
 			case 'HESPORI': {
 				if (quantity > 100) return msg.send('I can only kill 100 Hesporis at a time!');
 				const loot = hespori.kill(quantity);
+				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
+			}
+
+			case 'BASKNIGHT':
+			case 'BASILISKKNIGHT':
+			case 'BASILISK': {
+				if (quantity > 100) {
+					return msg.send('I can only kill 100 Basilik Knights at a time!');
+				}
+				const loot = basKnight.kill(quantity);
 				return msg.send(loot.length > 0 ? loot : 'You got nothing.');
 			}
 
