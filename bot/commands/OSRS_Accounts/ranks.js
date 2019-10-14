@@ -13,7 +13,7 @@ module.exports = class extends Command {
 
 	async run(msg, [username]) {
 		const player = await Hiscores.fetch(username).catch(err => {
-			throw err;
+			throw err.message;
 		});
 
 		const embed = this.getStatsEmbed(username, 7981338, player, 'rank', false);
