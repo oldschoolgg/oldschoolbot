@@ -36,7 +36,7 @@ module.exports = class extends Command {
 
 			return display.run(message, { jump: false, stop: false });
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	}
 };
