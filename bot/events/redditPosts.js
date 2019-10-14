@@ -53,7 +53,7 @@ module.exports = class extends Event {
 
 		this.client.submissionStream = new SubmissionStream(redditClient, {
 			subreddit: '2007scape',
-			limit: 50,
+			limit: 20,
 			pollTime: 60000
 		});
 
