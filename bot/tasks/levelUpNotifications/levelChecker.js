@@ -48,6 +48,8 @@ module.exports = class extends Task {
 					);
 				}
 
+				if (skillData.level > 99) return;
+
 				if (skillData.level > oldLevel) {
 					this.announce(
 						username,
@@ -68,7 +70,9 @@ module.exports = class extends Task {
 		const allNames = [...new Set(flatten(Object.values(usernameMap)))];
 
 		const fetchedPlayers = (await Promise.all(
-			allNames.map(name => limit(() => Hiscores.fetch(name).catch(() => null)))
+			allNames.map(name =>
+				limit(() => Hiscores.fetch(name, { virtualLevels: true }).catch(() => null))
+			)
 		)).filter(Boolean);
 
 		this.checkPlayers(fetchedPlayers);
