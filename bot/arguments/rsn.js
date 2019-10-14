@@ -6,7 +6,7 @@ module.exports = class extends Argument {
 	async run(arg, possible, msg) {
 		const prefix = msg.guild ? msg.guild.settings.get('prefix') : '+';
 		if (typeof arg === 'undefined') {
-			await msg.author.settings.sync(true);
+			if (!msg.author.settings.get('RSN')) await msg.author.settings.sync(true);
 			const player = msg.author.settings.get('RSN');
 			if (player) return player;
 			throw `Please specify a username, or set one with \`${prefix}setrsn <username>\``;
