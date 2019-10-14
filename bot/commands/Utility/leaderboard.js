@@ -68,8 +68,6 @@ module.exports = class extends Command {
 					.map(this.resolveEntries)
 			);
 
-			console.log(users);
-
 			const leaderboard = users.map(
 				({ user, GP }) => `**${user}** has ${GP.toLocaleString()} GP `
 			);
