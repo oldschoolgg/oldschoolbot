@@ -53,11 +53,12 @@ module.exports = class extends Command {
 			return msg.send(embed);
 		}
 
-		const rawUserSettings = (await this.client.providers
+		const rawUserSettings = await this.client.providers
 			.get(this.client.options.providers.default)
-			.getAll('users')).filter(u => u.pets || u.GP);
+			.table('users')
+			.filter(user => user.hasFields('GP') || user.hasFields('pets'))
+			.run();
 
-		console.log(rawUserSettings);
 		if (board === 'gp') {
 			const users = await Promise.all(
 				rawUserSettings
