@@ -477,7 +477,8 @@ module.exports = class extends Command {
 
 			case 'BASKNIGHT':
 			case 'BASILISKKNIGHT':
-			case 'BASILISK': {
+			case 'BASILISK':
+			case 'BASILISKS': {
 				if (quantity > 100) {
 					return msg.send('I can only kill 100 Basilik Knights at a time!');
 				}
