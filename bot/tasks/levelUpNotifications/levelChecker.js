@@ -48,8 +48,6 @@ module.exports = class extends Task {
 					);
 				}
 
-				if (skillData.level > 99) return;
-
 				if (skillData.level > oldLevel) {
 					this.announce(
 						username,
