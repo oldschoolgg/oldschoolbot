@@ -13,7 +13,7 @@ module.exports = class extends Command {
 	}
 	async run(msg, [username]) {
 		const player = await Hiscores.fetch(username).catch(err => {
-			return msg.send(err.message);
+			throw err.message;
 		});
 
 		if (msg.guild && this.client.settings.usernameCache[msg.guild.id]) {
