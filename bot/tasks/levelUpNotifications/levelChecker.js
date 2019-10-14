@@ -23,13 +23,12 @@ module.exports = class extends Task {
 
 	async checkPlayers(players) {
 		const lastPlayerStats = this.client.settings.get('lastPlayerStats');
-		const newPlayerStats = {};
 
 		for (const player of players) {
 			const { skills, username } = player;
 			const oldPlayer = lastPlayerStats[username];
 
-			newPlayerStats[username] = player;
+			lastPlayerStats[username] = player;
 
 			if (!oldPlayer) {
 				continue;
@@ -59,7 +58,7 @@ module.exports = class extends Task {
 			}
 		}
 
-		this.client.settings.update('lastPlayerStats', newPlayerStats);
+		this.client.settings.update('lastPlayerStats', lastPlayerStats);
 	}
 
 	async run() {
