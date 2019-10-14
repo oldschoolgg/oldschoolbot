@@ -15,19 +15,9 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const player = await Hiscores.fetch(username).catch(err => {
+		const player = await Hiscores.fetch(username, { virtualLevels: true }).catch(err => {
 			throw err.message;
 		});
-
-		let overall = 0;
-		for (const skill in player.skills) {
-			if (skill === 'overall') continue;
-			const lvl = convertXPtoLVL(player.skills[skill].xp, 126);
-			overall += lvl;
-			player.skills[skill].level = lvl;
-		}
-
-		player.skills.overall.level = overall;
 
 		const embed = this.getStatsEmbed(username, 7981338, player, 'level', false);
 		return msg.send({ embed });
