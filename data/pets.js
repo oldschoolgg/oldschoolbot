@@ -1,7 +1,7 @@
 const { roll } = require('../config/util');
 const raids = require('../data/monsters/raids');
 
-const xpEmoji = '<:SkillTotal:395812233000517650>';
+const xpEmoji = '<:xp:630911040510623745>';
 const gpEmoji = '<:RSGP:369349580040437770>';
 const fm = num => num.toLocaleString();
 
