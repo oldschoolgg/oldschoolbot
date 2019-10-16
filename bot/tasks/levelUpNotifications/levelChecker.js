@@ -28,7 +28,7 @@ module.exports = class extends Task {
 			const { skills, username } = player;
 			const oldPlayer = lastPlayerStats[username];
 
-			if (player.skills.overall.level <= oldPlayer.skills.overall.level) {
+			if (oldPlayer && player.skills.overall.level <= oldPlayer.skills.overall.level) {
 				continue;
 			}
 
