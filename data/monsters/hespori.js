@@ -15,7 +15,7 @@ const hespori = {
 		const lootMSG = [];
 		const loot = [];
 		let kc = 0;
-		while (loot.length !== 2) {
+		while (loot.length < 1) {
 			kc++;
 			if (!loot.includes('BCB') && this.roll(35)) {
 				loot.push('BCB');
