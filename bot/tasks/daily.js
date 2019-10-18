@@ -5,7 +5,6 @@ const { roll } = require('../../config/util');
 
 module.exports = class extends Task {
 	async run(user, triviaCorrect) {
-		console.log(triviaCorrect);
 		const member = await this.client.guilds
 			.get('342983479501389826')
 			.members.fetch(user)
@@ -50,7 +49,7 @@ module.exports = class extends Task {
 			dmStr += `\nYou also received the **${pet.name}** pet! ${pet.emoji}`;
 		}
 
-		this.client.channels.get('357422607982919680').send(chStr);
+		this.client.channels.get('469523207691436042').send(chStr);
 		user.send(dmStr).catch(() => null);
 		user.settings.update('GP', user.settings.get('GP') + amount);
 	}
