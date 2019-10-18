@@ -6,7 +6,7 @@ const { cleanString } = require('../../config/util');
 
 module.exports = class extends Task {
 	init() {
-		this.run();
+		if (this.client.production) this.run();
 	}
 	async run() {
 		this.syncItems();
