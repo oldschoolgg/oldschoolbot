@@ -6,4 +6,5 @@ Client.defaultUserSchema
 	.add('autoupdate', 'boolean', { default: false })
 	.add('RSN', 'string', { min: 1, max: 12, default: null })
 	.add('pets', 'any', { default: {} })
-	.add('badges', 'integer', { array: true, default: [] });
+	.add('badges', 'integer', { array: true, default: [] })
+	.add('lastDailyTimestamp', 'integer', { default: 1 });

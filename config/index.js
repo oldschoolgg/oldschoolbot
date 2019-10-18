@@ -40,7 +40,7 @@ module.exports = {
 			'VOICE_SERVER_UPDATE'
 		],
 		disableEveryone: true,
-		shardCount: 'auto',
+		shards: 'auto',
 		ws: {
 			// eslint-disable-next-line camelcase
 			guild_subscriptions: false
