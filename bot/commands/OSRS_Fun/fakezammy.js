@@ -30,22 +30,17 @@ module.exports = class extends Command {
 		const BG = new Image();
 		BG.src = bg;
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
-		/* Your completed Theatre of Blood count is: X. */
 
 		ctx.fillText("Your K'ril Tsutsaroth kill count is: ", 11, 10);
 		ctx.fillStyle = '#ff0000';
 		ctx.fillText(kc, 12 + ctx.measureText("Your K'ril Tsutsaroth kill count is: ").width, 10);
 
-		/* Username found something special: Scythe of vitur (uncharged) */
 		ctx.fillStyle = '#ff0000';
 		ctx.fillText(`You have a funny feeling like you're being followed.`, 11, 25);
 
-		/* Username found something special: Lil' Zik */
-		ctx.fillStyle = '#ff0000';
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(`${username} received a drop: Pet k'ril tsutsaroth`, 11, 40);
 
-		/* You have a funny feeling like you're being followed. */
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(
 			`${username} received a drop: ${
