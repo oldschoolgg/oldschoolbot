@@ -137,7 +137,7 @@ function killWorkerFunction(quantity, bossName) {
 			return loot.length > 0 ? loot : 'You got nothing.';
 		}
 		case 'ZULRAH': {
-			if (quantity > 100000000) {
+			if (quantity > 20000) {
 				return 'I can only do a maximum of 10000 Zulrah kills at a time!';
 			}
 			const loot = zulrah.kill(quantity);
