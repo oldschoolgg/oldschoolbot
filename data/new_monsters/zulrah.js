@@ -1,7 +1,6 @@
 const { roll, rand } = require('../../config/util');
-// const generateBankImage = require('./generateBankImage');
-const Items = require('./commonLoot');
-const LootTable = require('./LootTable');
+const Items = require('./utils/commonLoot');
+const LootTable = require('./utils/LootTable');
 
 const drops = {
 	uniques: [6571, 12932, 12927, 12922],
@@ -18,11 +17,11 @@ const NormalTable = new LootTable()
 	/* Armour & Weapons */
 	.add(Items.dragonMedHelm, 2)
 	.add(Items.dragonHalberd, 2)
+	.add(Items.battlestaff, 10, 10)
 	/* Runes */
 	.add(Items.pureEssence, 12, 200)
 	.add(Items.chaosRune, 12, 500)
 	.add(Items.deathRune, 12, 300)
-	.add(Items.pureEssence, 10, 1500)
 	/* Herbs */
 	.add(Items.snapdragon, 2, 10)
 	.add(Items.dwarfWeed, 2, 30)
@@ -31,11 +30,13 @@ const NormalTable = new LootTable()
 	/* Materials */
 	.add(Items.snakeskin, 11, 35)
 	.add(Items.runiteOre, 11, 2)
+	.add(Items.pureEssence, 10, 1500)
 	.add(Items.flax, 10, 1000)
 	.add(Items.yewLogs, 10, 35)
-	.add(Items.mahoganyLogs, 8, 50)
+	.add(Items.adamantiteBar, 8, 20)
 	.add(Items.coal, 8, 200)
-	.add(Items.dragonstoneBoltTips, 8, 12)
+	.add(Items.dragonBones, 8, 12)
+	.add(Items.mahoganyLogs, 8, 50)
 	/* Seeds */
 	.add(Items.palmTreeSeed, 6)
 	.add(Items.papayaTreeSeed, 6, 3)
@@ -49,13 +50,12 @@ const NormalTable = new LootTable()
 	/* Other */
 	.add(Items.zulAndraTeleport, 15, 4)
 	.add(Items.mantaRay, 35, 12)
-	.add(Items.battlestaff, 10, 10)
 	.add(Items.antidote24, 9, 10)
-	.add(Items.dragonBones, 8, 12)
-	.add(Items.adamantiteBar, 8, 20)
+	.add(Items.dragonstoneBoltTips, 8, 12)
 	.add(Items.grapes, 6, 250)
-	.add(drops.scales, 5, 500)
-	.add(Items.swampTar, 5, 1000);
+	.add(Items.grapes, 6, 250)
+	.add(Items.coconut, 5, 20)
+	.add(drops.scales, 5, 500);
 
 const zulrah = {
 	kill(quantity) {

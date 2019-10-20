@@ -535,20 +535,6 @@ detect-libc@^1.0.2:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
 
-"discord.js@github:bdistin/discord.js#i-s":
-  version "12.0.0-dev"
-  resolved "https://codeload.github.com/bdistin/discord.js/tar.gz/5344a290657050ac4d6caa81af6474bfb2c79256"
-  dependencies:
-    "@discordjs/collection" "^0.1.1"
-    abort-controller "^3.0.0"
-    form-data "^2.3.3"
-    node-fetch "^2.3.0"
-    pako "^1.0.8"
-    prism-media "^1.0.0"
-    setimmediate "^1.0.5"
-    tweetnacl "^1.0.1"
-    ws "^6.1.3"
-
 discord.js@vladfrangu/discOwOd.js#sharding-cleanup:
   version "12.0.0-dev"
   resolved "https://codeload.github.com/vladfrangu/discOwOd.js/tar.gz/15b75f36a976493b1da34297fc73948f714be807"
@@ -1441,12 +1427,6 @@ keyv@3.0.0:
   dependencies:
     json-buffer "3.0.0"
 
-"klasa-dashboard-hooks@https://github.com/dirigeants/klasa-dashboard-hooks/":
-  version "0.0.1-dev"
-  resolved "https://github.com/dirigeants/klasa-dashboard-hooks/#8108210219babd200c01072309ef906f92f8163e"
-  dependencies:
-    node-fetch "^2.6.0"
-
 "klasa-textchannel-gateway@github:gc/text-channel-gateway#master":
   version "0.0.1-dev"
   resolved "https://codeload.github.com/gc/text-channel-gateway/tar.gz/957ce817263a6633ce40b6f9c942f0dac1ec5313"
@@ -1729,10 +1709,10 @@ object.getownpropertydescriptors@^2.0.3:
     define-properties "^1.1.2"
     es-abstract "^1.5.1"
 
-oldschooljs@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.5.0.tgz#52479795d078a07485e052a85bf4e0f55b78ff88"
-  integrity sha512-LmqBCKm0D3BJXAhu5wt3FBsNLF/m7kB4CzRF2TOZpenH9am7MXIQTL3wD1JJpGwCqDIX2I5r1iBvPfV8iboEzA==
+oldschooljs@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.5.1.tgz#bf5f8b2ec7d92ec337799dbc10ef69ce9768942f"
+  integrity sha512-xqbrLt/f/jb1yvtsneCcXqsxWj4GbjyrORADJB63Y9cIChvT8q9wUA6Gi/mdaCeVBNvQc/FmJk2hVA/2ggr+4Q==
   dependencies:
     jsdom "^15.1.1"
     node-fetch "^2.6.0"
@@ -1822,7 +1802,7 @@ p-try@^2.0.0:
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
 
-pako@^1.0.10, pako@^1.0.8:
+pako@^1.0.10:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
   integrity sha512-0DTvPVU3ed8+HNXOu5Bs+o//Mbdj9VNQMUOe9oKCwh8l0GNwpTDMKCWbRjgtD291AWnkAgkqA/LOnQS8AmS1tw==
@@ -2670,13 +2650,6 @@ ws@^3.3.1:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
-
-ws@^6.1.3:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-6.2.1.tgz#442fdf0a47ed64f59b6a5d8ff130f4748ed524fb"
-  integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
-  dependencies:
-    async-limiter "~1.0.0"
 
 ws@^7.0.0, ws@^7.1.1:
   version "7.1.2"
