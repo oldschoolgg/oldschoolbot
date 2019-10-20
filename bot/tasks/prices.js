@@ -5,17 +5,18 @@ const { Items } = require('oldschooljs');
 const { cleanString } = require('../../config/util');
 
 module.exports = class extends Task {
-	init() {
-		if (this.client.production) this.run();
-	}
 	async run() {
-		this.syncItems();
-		this.fetchOSBPrices();
+		if (this.client.production) {
+			this.syncItems();
+			this.fetchOSBPrices();
+		} else {
+			console.log('Not syncing items/OBS prices in development mode.');
+		}
 	}
 
 	async syncItems() {
 		this.client.console.debug('Fetching all OSJS items.');
-		Items.fetchAll();
+		await Items.fetchAll();
 	}
 
 	async fetchOSBPrices() {
@@ -38,6 +39,6 @@ module.exports = class extends Task {
 			};
 		}
 
-		this.client.settings.update('prices', prices);
+		await this.client.settings.update('prices', prices);
 	}
 };
