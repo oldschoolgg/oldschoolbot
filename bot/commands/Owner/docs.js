@@ -108,16 +108,11 @@ module.exports = class extends Command {
 
 			for (let subCat = 0; subCat < subCategories.length; subCat++) {
 				if (subCategories.length > 1) markdown.push(`\n### ${subCategories[subCat]}`);
-				markdown.push(`| Command Name | Aliases  | Description              |`);
-				markdown.push(`|--------------|----------|--------------------------|`);
+				markdown.push(`| Command Name | Description              | Example |`);
+				markdown.push(`|--------------|--------------------------|---------|`);
 				markdown.push(
 					`${commands[categories[cat]][subCategories[subCat]]
-						.map(
-							cmd =>
-								`| ${this.prefix + cmd.name} | ${cmd.aliases.join(', ')} | ${
-									cmd.description
-								} |`
-						)
+						.map(cmd => `| ${this.prefix + cmd.name} | ${cmd.description} | TODO |`)
 						.join('\n')}`
 				);
 			}
