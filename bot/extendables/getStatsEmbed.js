@@ -1,7 +1,8 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
+const { constants } = require('oldschooljs');
 
-const { toTitleCase, cbLevelFromPlayer } = require('../../config/util');
+const { toTitleCase } = require('../../config/util');
 
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
@@ -12,8 +13,23 @@ class getStatsEmbed extends Extendable {
 		});
 	}
 
-	async getStatsEmbed(username, color, { Skills, Minigames }, key = 'level', showExtra = true) {
+	getStatsEmbed(
+		username,
+		color,
+		{ clues, minigames, skills, combatLevel, type },
+		key = 'level',
+		showExtra = true
+	) {
 		const { emoji } = this.client;
+
+		function generateURL(skill) {
+			return `http://secure.runescape.com/m=hiscore_oldschool/overall.ws?table=${constants.SKILLS.indexOf(
+				skill
+			)}&user=${encodeURIComponent(username)}`;
+		}
+
+		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
+
 		const embed = new MessageEmbed()
 			.setColor(color)
 			.setTitle(
@@ -23,74 +39,73 @@ class getStatsEmbed extends Extendable {
 			)
 			.addField(
 				'\u200b',
-				`
-${emoji.attack} ${Skills.Attack[key]}
-${emoji.strength} ${Skills.Strength[key]}
-${emoji.defence} ${Skills.Defence[key]}
-${emoji.ranged} ${Skills.Ranged[key]}
-${emoji.prayer} ${Skills.Prayer[key]}
-${emoji.magic} ${Skills.Magic[key]}
-${emoji.runecraft} ${Skills.Runecrafting[key]}
-${emoji.construction} ${Skills.Construction[key]}`,
+				[
+					'attack',
+					'strength',
+					'defence',
+					'ranged',
+					'prayer',
+					'magic',
+					'runecraft',
+					'construction'
+				].map(skillCell),
 				true
 			)
 			.addField(
 				'\u200b',
-				`
-${emoji.hitpoints} ${Skills.Hitpoints[key]}
-${emoji.agility} ${Skills.Agility[key]}
-${emoji.herblore} ${Skills.Herblore[key]}
-${emoji.thieving} ${Skills.Thieving[key]}
-${emoji.crafting} ${Skills.Crafting[key]}
-${emoji.fletching} ${Skills.Fletching[key]}
-${emoji.slayer} ${Skills.Slayer[key]}
-${emoji.hunter} ${Skills.Hunter[key]}`,
+				[
+					'hitpoints',
+					'agility',
+					'herblore',
+					'thieving',
+					'crafting',
+					'fletching',
+					'slayer',
+					'hunter'
+				].map(skillCell),
 				true
 			)
 			.addField(
 				'\u200b',
-				`
-${emoji.mining} ${Skills.Mining[key]}
-${emoji.smithing} ${Skills.Smithing[key]}
-${emoji.fishing} ${Skills.Fishing[key]}
-${emoji.cooking} ${Skills.Cooking[key]}
-${emoji.firemaking} ${Skills.Firemaking[key]}
-${emoji.woodcutting} ${Skills.Woodcutting[key]}
-${emoji.farming} ${Skills.Farming[key]}
-${emoji.total} ${Skills.Overall[key]}`,
+				[
+					'mining',
+					'smithing',
+					'fishing',
+					'cooking',
+					'firemaking',
+					'woodcutting',
+					'farming',
+					'overall'
+				].map(skillCell),
 				true
 			);
 
 		if (showExtra) {
-			const clues = {
-				Beginner: Minigames.Clue_Scrolls_Beginner,
-				Easy: Minigames.Clue_Scrolls_Easy,
-				Medium: Minigames.Clue_Scrolls_Medium,
-				Hard: Minigames.Clue_Scrolls_Hard,
-				Elite: Minigames.Clue_Scrolls_Elite,
-				Master: Minigames.Clue_Scrolls_Master
-			};
-
 			embed
 				.addField(
 					`${emoji.total} Overall`,
-					`**Rank:** ${Skills.Overall.rank.toLocaleString()}
-**Level:** ${Skills.Overall.level}
-**XP:** ${Skills.Overall.xp.toLocaleString()}
-**Combat Level:** ${cbLevelFromPlayer(Skills)}`,
+					`**Rank:** ${skills.overall.rank.toLocaleString()}
+**Level:** ${skills.overall.level}
+**XP:** ${skills.overall.xp.toLocaleString()}
+**Combat Level:** ${combatLevel}`,
 					true
 				)
 				.addField(
 					`<:minigame_icon:630400565070921761> Minigame Scores`,
-					`**BH:** ${Minigames.Bounty_Hunter.score}
-**BH-Rogue:** ${Minigames.Bounty_Hunter_Rogues.score}
-**LMS:** ${Minigames.LMS.score}
+					`**BH:** ${minigames.bountyHunter.score.toLocaleString()}
+**BH-Rogue:** ${minigames.bountyHunterRogue.score.toLocaleString()}
+**LMS:** ${minigames.LMS.score.toLocaleString()}
 `,
 					true
 				)
 				.addField(
 					'<:Clue_scroll:365003979840552960> Clue Scores',
-					Object.keys(clues).map(tier => `**${tier}:** ${clues[tier].score}`),
+					Object.keys(clues)
+						.slice(1)
+						.map(
+							tier =>
+								`**${toTitleCase(tier)}:** ${clues[tier].score.toLocaleString()}`
+						),
 					true
 				);
 		}

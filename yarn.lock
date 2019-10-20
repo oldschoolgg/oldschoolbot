@@ -535,9 +535,9 @@ detect-libc@^1.0.2:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
 
-"discord.js@github:discordjs/discord.js#e936f071c04557e7349ea193de3a17e1dc963562":
+"discord.js@github:bdistin/discord.js#i-s":
   version "12.0.0-dev"
-  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/e936f071c04557e7349ea193de3a17e1dc963562"
+  resolved "https://codeload.github.com/bdistin/discord.js/tar.gz/5344a290657050ac4d6caa81af6474bfb2c79256"
   dependencies:
     "@discordjs/collection" "^0.1.1"
     abort-controller "^3.0.0"
@@ -548,6 +548,20 @@ detect-libc@^1.0.2:
     setimmediate "^1.0.5"
     tweetnacl "^1.0.1"
     ws "^6.1.3"
+
+discord.js@vladfrangu/discOwOd.js#sharding-cleanup:
+  version "12.0.0-dev"
+  resolved "https://codeload.github.com/vladfrangu/discOwOd.js/tar.gz/15b75f36a976493b1da34297fc73948f714be807"
+  dependencies:
+    "@discordjs/collection" "^0.1.1"
+    abort-controller "^3.0.0"
+    form-data "^2.3.3"
+    node-fetch "^2.3.0"
+    pako "^1.0.10"
+    prism-media "^1.0.0"
+    setimmediate "^1.0.5"
+    tweetnacl "^1.0.1"
+    ws "^7.1.1"
 
 doctrine@^3.0.0:
   version "3.0.0"
@@ -1427,9 +1441,9 @@ keyv@3.0.0:
   dependencies:
     json-buffer "3.0.0"
 
-"klasa-dashboard-hooks@github:dirigeants/klasa-dashboard-hooks#7e556a7ecb91a94fd1b28c9638a43a9e1e2e58ff":
+"klasa-dashboard-hooks@https://github.com/dirigeants/klasa-dashboard-hooks/":
   version "0.0.1-dev"
-  resolved "https://codeload.github.com/dirigeants/klasa-dashboard-hooks/tar.gz/7e556a7ecb91a94fd1b28c9638a43a9e1e2e58ff"
+  resolved "https://github.com/dirigeants/klasa-dashboard-hooks/#8108210219babd200c01072309ef906f92f8163e"
   dependencies:
     node-fetch "^2.6.0"
 
@@ -1477,6 +1491,11 @@ markovchain@^1.0.2:
   integrity sha1-WLOGQ/tgk81bYkVbex57v+VtflM=
   dependencies:
     pick-one-by-weight "~1.0.0"
+
+memory-pager@^1.0.2:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/memory-pager/-/memory-pager-1.5.0.tgz#d8751655d22d384682741c972f2c3d6dfa3e66b5"
+  integrity sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg==
 
 mime-db@1.40.0:
   version "1.40.0"
@@ -1549,14 +1568,16 @@ moment@^2.21.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mongodb@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.3.2.tgz#ff086b5f552cf07e24ce098694210f3d42d668b2"
-  integrity sha512-fqJt3iywelk4yKu/lfwQg163Bjpo5zDKhXiohycvon4iQHbrfflSAz9AIlRE6496Pm/dQKQK5bMigdVo2s6gBg==
+mongodb@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.3.3.tgz#509cad2225a1c56c65a331ed73a0d5d4ed5cbe67"
+  integrity sha512-MdRnoOjstmnrKJsK8PY0PjP6fyF/SBS4R8coxmhsfEU7tQ46/J6j+aSHF2n4c2/H8B+Hc/Klbfp8vggZfI0mmA==
   dependencies:
     bson "^1.1.1"
     require_optional "^1.0.1"
     safe-buffer "^5.1.2"
+  optionalDependencies:
+    saslprep "^1.0.0"
 
 ms@^2.1.1:
   version "2.1.2"
@@ -1708,10 +1729,10 @@ object.getownpropertydescriptors@^2.0.3:
     define-properties "^1.1.2"
     es-abstract "^1.5.1"
 
-oldschooljs@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.4.0.tgz#60f11927aa9c103a627ec65933770cb4ee6fdc43"
-  integrity sha512-F+c7xrMIq25FDOywwH4RjZ18lmmxIQ81ADzNNRc3zqiN81uDMBhzAOkwp13RILvFYtwVpuzoJr0lLDbq6eb/PQ==
+oldschooljs@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.5.0.tgz#52479795d078a07485e052a85bf4e0f55b78ff88"
+  integrity sha512-LmqBCKm0D3BJXAhu5wt3FBsNLF/m7kB4CzRF2TOZpenH9am7MXIQTL3wD1JJpGwCqDIX2I5r1iBvPfV8iboEzA==
   dependencies:
     jsdom "^15.1.1"
     node-fetch "^2.6.0"
@@ -1782,6 +1803,13 @@ p-is-promise@^1.1.0:
   resolved "https://registry.yarnpkg.com/p-is-promise/-/p-is-promise-1.1.0.tgz#9c9456989e9f6588017b0434d56097675c3da05e"
   integrity sha1-nJRWmJ6fZYgBewQ01WCXZ1w9oF4=
 
+p-limit@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.2.1.tgz#aa07a788cc3151c939b5131f63570f0dd2009537"
+  integrity sha512-85Tk+90UCVWvbDavCLKPOLC9vvY8OwEX/RtKF+/1OADJMVlFfEHOiMTPVyxg7mk/dKa+ipdHm0OUkTvCpMTuwg==
+  dependencies:
+    p-try "^2.0.0"
+
 p-timeout@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-2.0.1.tgz#d8dd1979595d2dc0139e1fe46b8b646cb3cdf038"
@@ -1789,7 +1817,12 @@ p-timeout@^2.0.1:
   dependencies:
     p-finally "^1.0.0"
 
-pako@^1.0.8:
+p-try@^2.0.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
+  integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
+
+pako@^1.0.10, pako@^1.0.8:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
   integrity sha512-0DTvPVU3ed8+HNXOu5Bs+o//Mbdj9VNQMUOe9oKCwh8l0GNwpTDMKCWbRjgtD291AWnkAgkqA/LOnQS8AmS1tw==
@@ -2113,6 +2146,13 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+saslprep@^1.0.0:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/saslprep/-/saslprep-1.0.3.tgz#4c02f946b56cf54297e347ba1093e7acac4cf226"
+  integrity sha512-/MY/PEMbk2SuY5sScONwhUDsV2p77Znkb/q3nSVstq/yQzYJOH/Azh29p9oJLsl3LnQwSvZDKagDGBsBwSooag==
+  dependencies:
+    sparse-bitfield "^3.0.3"
+
 sax@>=0.6.0, sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
@@ -2212,6 +2252,13 @@ source-map@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
+
+sparse-bitfield@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/sparse-bitfield/-/sparse-bitfield-3.0.3.tgz#ff4ae6e68656056ba4b3e792ab3334d38273ca11"
+  integrity sha1-/0rm5oZWBWuks+eSqzM004JzyhE=
+  dependencies:
+    memory-pager "^1.0.2"
 
 sprintf-js@~1.0.2:
   version "1.0.3"
@@ -2631,7 +2678,7 @@ ws@^6.1.3:
   dependencies:
     async-limiter "~1.0.0"
 
-ws@^7.0.0:
+ws@^7.0.0, ws@^7.1.1:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.1.2.tgz#c672d1629de8bb27a9699eb599be47aeeedd8f73"
   integrity sha512-gftXq3XI81cJCgkUiAVixA0raD9IVmXqsylCrjRygw4+UOOGzPoxnQ6r/CnVL9i+mDncJo94tSkyrtuuQVBmrg==

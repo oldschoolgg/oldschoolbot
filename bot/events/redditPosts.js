@@ -8,7 +8,6 @@ const { redditApp } = require('../../config/private');
 const jagexMods = require('../../data/jagexMods');
 
 const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
-const redditClient = new Snoowrap(redditApp);
 
 module.exports = class extends Event {
 	constructor(...args) {
@@ -20,6 +19,8 @@ module.exports = class extends Event {
 		if (!this.client._redditIdCache) {
 			this.client._redditIdCache = new Set();
 		}
+		const redditClient = new Snoowrap(redditApp);
+
 		if (!redditApp || !redditApp.password || !redditApp.password.length === 0) {
 			this.disable();
 			this.client.emit(
@@ -52,7 +53,7 @@ module.exports = class extends Event {
 
 		this.client.submissionStream = new SubmissionStream(redditClient, {
 			subreddit: '2007scape',
-			limit: 50,
+			limit: 20,
 			pollTime: 60000
 		});
 
