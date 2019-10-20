@@ -9,7 +9,10 @@ module.exports = class extends Event {
 	}
 
 	async run() {
-		const client = await MongoClient.connect(dbUrl, { useNewUrlParser: true }).catch(err => {
+		const client = await MongoClient.connect(dbUrl, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true
+		}).catch(err => {
 			throw err;
 		});
 
