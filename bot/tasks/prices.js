@@ -6,12 +6,8 @@ const { cleanString } = require('../../config/util');
 
 module.exports = class extends Task {
 	async run() {
-		if (this.client.production) {
-			this.syncItems();
-			this.fetchOSBPrices();
-		} else {
-			console.log('Not syncing items/OBS prices in development mode.');
-		}
+		this.syncItems();
+		this.fetchOSBPrices();
 	}
 
 	async syncItems() {

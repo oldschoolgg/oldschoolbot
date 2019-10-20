@@ -3,13 +3,8 @@ const { spawn, Thread, Worker } = require('threads');
 
 module.exports = class extends Task {
 	async init() {
-		if (!this.client.production) {
-			if (!this.client.__hasFetchedPrices) {
-				await this.client.tasks.get('prices').syncItems();
-				await this.client.tasks.get('prices').fetchOSBPrices();
-				this.client.__hasFetchedPrices = true;
-			}
-		}
+		await this.client.tasks.get('prices').syncItems();
+		await this.client.tasks.get('prices').fetchOSBPrices();
 
 		this.run();
 	}
