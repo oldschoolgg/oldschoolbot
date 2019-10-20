@@ -25,8 +25,9 @@ module.exports = class extends Command {
 	}
 
 	async disable(msg) {
-		if (!msg.guild.settings.get('ashTweetsChannel'))
+		if (!msg.guild.settings.get('ashTweetsChannel')) {
 			return msg.sendLocale('ASH_TWEETS_ARENT_ENABLED');
+		}
 		await msg.guild.settings.reset('ashTweetsChannel');
 		return msg.sendLocale(`ASH_TWEETS_DISABLED`);
 	}

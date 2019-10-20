@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
+const { Hiscores } = require('oldschooljs');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -12,11 +12,15 @@ module.exports = class extends Command {
 		});
 	}
 	async run(msg, [username]) {
-		const player = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
-			throw this.client.notFound;
+		const player = await Hiscores.fetch(username).catch(err => {
+			throw err.message;
 		});
 
-		const embed = await this.getStatsEmbed(username, 7981338, player);
+		if (msg.guild && this.client.settings.usernameCache[msg.guild.id]) {
+			this.client.tasks.get('levelChecker').checkPlayers([player]);
+		}
+
+		const embed = this.getStatsEmbed(username, 7981338, player);
 
 		return msg.send({ embed });
 	}

@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
+const { Hiscores } = require('oldschooljs');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -12,24 +12,24 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const player = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
-			throw this.client.notFound;
+		const player = await Hiscores.fetch(username).catch(err => {
+			throw err.message;
 		});
 
 		let totalXP = 0;
-		for (const skill in player.Skills) {
-			const { xp } = player.Skills[skill];
+		for (const skill in player.skills) {
+			const { xp } = player.skills[skill];
 			if (!xp) continue;
-			if (skill !== 'Overall') {
+			if (skill !== 'overall') {
 				const clampedXP = Math.min(xp, 13034431);
 				const remainingXP = 13034431 - clampedXP;
 				totalXP += clampedXP;
-				player.Skills[skill].xp = remainingXP.toLocaleString();
+				player.skills[skill].xp = remainingXP.toLocaleString();
 			}
 		}
 
-		player.Skills.Overall.xp = parseInt(299791913 - totalXP).toLocaleString();
-		const embed = await this.getStatsEmbed(username, 7981338, player, 'xp', false);
+		player.skills.overall.xp = parseInt(299791913 - totalXP).toLocaleString();
+		const embed = this.getStatsEmbed(username, 7981338, player, 'xp', false);
 		return msg.send({ embed });
 	}
 };

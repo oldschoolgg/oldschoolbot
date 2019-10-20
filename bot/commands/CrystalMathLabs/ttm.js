@@ -1,6 +1,5 @@
 const { Command } = require('klasa');
 const fetch = require('node-fetch');
-const { MessageEmbed } = require('discord.js');
 
 const { cmlErrorCheck } = require('../../../config/util');
 
@@ -20,12 +19,8 @@ module.exports = class extends Command {
 			`https://crystalmathlabs.com/tracker/api.php?type=ttm&player=${username}`
 		)
 			.then(res => res.text())
-			.then(async res => cmlErrorCheck(msg, res) || res);
+			.then(res => cmlErrorCheck(res) || res);
 
-		const embed = new MessageEmbed()
-			.setColor(3120895)
-			.setDescription(`**${username}**'s Time to Max is **${ttm}** hours.`);
-
-		return msg.send({ embed });
+		return msg.send(`**${username}**'s Time to Max is **${ttm}** hours.`);
 	}
 };

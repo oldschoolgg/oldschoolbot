@@ -153,6 +153,12 @@ function cmlErrorCheck(res) {
 	}
 }
 
+function flatten(arr) {
+	return arr.reduce((flat, toFlatten) => {
+		return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+	}, []);
+}
+
 module.exports = {
 	extractHTML,
 	parseTable,
@@ -167,5 +173,6 @@ module.exports = {
 	twitchAPIRequestOptions,
 	toTitleCase,
 	cbLevelFromPlayer,
-	cmlErrorCheck
+	cmlErrorCheck,
+	flatten
 };

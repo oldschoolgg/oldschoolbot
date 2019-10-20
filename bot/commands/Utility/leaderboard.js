@@ -7,7 +7,7 @@ const {
 } = require('discord.js');
 const { MessageEmbed } = require('discord.js');
 
-const pets = require('../../../data/pets');
+const petData = require('../../../data/pets');
 const { fmNum } = require('../../../config/util');
 
 module.exports = class extends Command {
@@ -16,23 +16,19 @@ module.exports = class extends Command {
 			description: 'Shows the people with the most virtual GP.',
 			usage: '[pets|gp|petrecords]'
 		});
+
+		this.resolveEntries = this.resolveEntries.bind(this);
+	}
+
+	async resolveEntries(settingsEntry) {
+		const user = await this.client.users.fetch(settingsEntry.id);
+		return {
+			...settingsEntry,
+			user: user ? user.username : 'Unknown'
+		};
 	}
 
 	async run(msg, [board = 'gp']) {
-		if (board === 'gp') {
-			const users = this.client.users
-				.filter(user => user.settings.get('GP') > 0)
-				.sort((a, b) => b.settings.get('GP') - a.settings.get('GP'))
-				.first(10);
-
-			const leaderboard = users.map(
-				({ username, settings }) =>
-					`**${esc(username)}** has ${settings.get('GP').toLocaleString()} GP `
-			);
-
-			return msg.send(leaderboard.join('\n') || 'Nobody has any GP!');
-		}
-
 		if (board === 'petrecords') {
 			const { petRecords } = this.client.settings;
 
@@ -42,11 +38,11 @@ module.exports = class extends Command {
 			);
 
 			const columns = [];
-			for (const pet of pets) {
+			for (const pet of petData) {
 				columns.push(
 					`${pet.emoji} ${fmNum(petRecords.lowest[pet.id]) || '0'} - ${fmNum(
 						petRecords.highest[pet.id]
-					) || '0'}`
+					) || '?'}`
 				);
 			}
 
@@ -57,18 +53,38 @@ module.exports = class extends Command {
 			return msg.send(embed);
 		}
 
-		const users = this.client.users
-			.filter(user => Object.keys(user.settings.get('pets')).length > 0)
-			.sort(
-				(a, b) =>
-					Object.keys(b.settings.get('pets')).length -
-					Object.keys(a.settings.get('pets')).length
-			)
-			.first(10);
+		const rawUserSettings = await this.client.providers
+			.get(this.client.options.providers.default)
+			.db.table('users')
+			.filter(user => user.hasFields('GP') || user.hasFields('pets'))
+			.run();
+
+		if (board === 'gp') {
+			const users = await Promise.all(
+				rawUserSettings
+					.filter(u => u.GP)
+					.sort((a, b) => b.GP - a.GP)
+					.slice(0, 10)
+					.map(this.resolveEntries)
+			);
+
+			const leaderboard = users.map(
+				({ user, GP }) => `**${user}** has ${GP.toLocaleString()} GP `
+			);
+
+			return msg.send(leaderboard.join('\n') || 'Nobody has any GP!');
+		}
+
+		const users = await Promise.all(
+			rawUserSettings
+				.filter(u => u.pets)
+				.sort((a, b) => Object.keys(b.pets).length - Object.keys(a.pets).length)
+				.slice(0, 10)
+				.map(this.resolveEntries)
+		);
 
 		const leaderboard = users.map(
-			({ username, settings }) =>
-				`**${esc(username)}** has ${Object.keys(settings.get('pets')).length} pets `
+			({ user, pets }) => `**${user}** has ${Object.keys(pets).length} pets `
 		);
 
 		return msg.send(leaderboard.join('\n') || 'Nobody has any pets!');

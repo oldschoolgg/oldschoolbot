@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
+const { Hiscores } = require('oldschooljs');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -12,11 +12,11 @@ module.exports = class extends Command {
 		});
 	}
 	async run(msg, [username]) {
-		const player = await osrs.hiscores.getPlayer(username, 'hardcore').catch(() => {
-			throw this.client.notFound;
+		const player = await Hiscores.fetch(username, { type: 'hardcore' }).catch(err => {
+			throw err.message;
 		});
 
-		const embed = await this.getStatsEmbed(username, 11995146, player);
+		const embed = this.getStatsEmbed(username, 11995146, player);
 
 		return msg.send({ embed });
 	}

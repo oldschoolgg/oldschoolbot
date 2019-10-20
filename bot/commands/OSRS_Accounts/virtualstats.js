@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
+const { Hiscores } = require('oldschooljs');
 
 const { convertXPtoLVL } = require('../../../config/util');
 
@@ -15,21 +15,11 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const player = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
-			throw this.client.notFound;
+		const player = await Hiscores.fetch(username, { virtualLevels: true }).catch(err => {
+			throw err.message;
 		});
 
-		let overall = 0;
-		for (const skill in player.Skills) {
-			if (skill === 'Overall') continue;
-			const lvl = convertXPtoLVL(player.Skills[skill].xp, 126);
-			overall += lvl;
-			player.Skills[skill].level = lvl;
-		}
-
-		player.Skills.Overall.level = overall;
-
-		const embed = await this.getStatsEmbed(username, 7981338, player);
+		const embed = this.getStatsEmbed(username, 7981338, player, 'level', false);
 		return msg.send({ embed });
 	}
 };

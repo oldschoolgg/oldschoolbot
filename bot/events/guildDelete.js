@@ -9,6 +9,10 @@ module.exports = class extends Event {
 	run({ name, memberCount }) {
 		this.client.channels
 			.get(this.client.guildLogs)
-			.send(`\`${name}\` with \`${memberCount.toLocaleString()}\` Members removed.`);
+			.send(
+				`\`${name}\` with \`${
+					memberCount ? memberCount.toLocaleString() : '?'
+				}\` Members removed.`
+			);
 	}
 };

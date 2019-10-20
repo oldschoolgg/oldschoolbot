@@ -1,9 +1,10 @@
 const { Task } = require('klasa');
+
 const pets = require('../../data/pets');
+const { roll } = require('../../config/util');
 
 module.exports = class extends Task {
-	async run({ user, isWeekend }) {
-		const _user = await this.client.users.fetch(user);
+	async run(user, triviaCorrect) {
 		const member = await this.client.guilds
 			.get('342983479501389826')
 			.members.fetch(user)
@@ -12,7 +13,8 @@ module.exports = class extends Task {
 		let amount = Math.floor(Math.random() * 5000000) + 500000;
 		let bonuses = '';
 
-		if (isWeekend) {
+		const currentDate = new Date();
+		if (currentDate.getDay() === 6 || currentDate.getDay() === 0) {
 			amount *= 2;
 			bonuses += '<:MoneyBag:493286312854683654>';
 		}
@@ -22,29 +24,33 @@ module.exports = class extends Task {
 			bonuses += ' <:OSBot:601768469905801226>';
 		}
 
-		let chStr = `${bonuses} ${
-			_user.username
-		} just voted for Old School Bot and received ${amount.toLocaleString()} GP! Thank you <:Smiley:420283725469974529>`;
-		let dmStr = `${bonuses} Thank you for voting for Old School Bot! You received ${amount.toLocaleString()} GP.`;
+		if (roll(10000)) {
+			amount += 1000000000;
+		}
 
-		if (roll(8)) {
+		if (!triviaCorrect) {
+			amount = Math.floor(amount * 0.2);
+		}
+
+		let chStr = `${bonuses} ${
+			user.username
+		} just got their daily and received ${amount.toLocaleString()} GP! <:Smiley:420283725469974529>`;
+		let dmStr = `${bonuses} You received ${amount.toLocaleString()} GP.`;
+
+		if (triviaCorrect && roll(8)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
-			const userPets = _user.settings.get('pets');
+			const userPets = user.settings.get('pets');
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
 
-			_user.settings.update('pets', { ...userPets });
+			user.settings.update('pets', { ...userPets });
 
 			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
 			dmStr += `\nYou also received the **${pet.name}** pet! ${pet.emoji}`;
 		}
 
-		this.client.channels.get(this.client.voteLogs).send(chStr);
-		_user.send(dmStr).catch(() => null);
-		_user.settings.update('GP', _user.settings.get('GP') + amount);
+		this.client.channels.get('469523207691436042').send(chStr);
+		user.send(dmStr).catch(() => null);
+		user.settings.update('GP', user.settings.get('GP') + amount);
 	}
 };
-
-function roll(max) {
-	return Math.floor(Math.random() * max + 1) === 1;
-}

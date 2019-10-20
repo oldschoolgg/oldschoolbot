@@ -40,7 +40,7 @@ module.exports = {
 			'VOICE_SERVER_UPDATE'
 		],
 		disableEveryone: true,
-		shardCount: 'auto',
+		shards: 'auto',
 		ws: {
 			// eslint-disable-next-line camelcase
 			guild_subscriptions: false
@@ -48,7 +48,6 @@ module.exports = {
 		/* Klasa Options */
 		createPiecesFolders: false,
 		prefix: '+',
-		commandLogging: true,
 		providers: { default: production ? 'rethinkdb' : 'json' },
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },

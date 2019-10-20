@@ -1035,22 +1035,22 @@ ${lootMSG.join('\n')}`);
 			case 'COX':
 			case 'CHAMBERSOFXERIC':
 				const theDrops = new Map();
-				let dropRecieved;
 				while (theDrops.size < 13) {
 					kc++;
 					if (!roll(25)) continue;
+					const dropRecieved = raids.determineItem();
 					if (roll(65)) {
 						if (!theDrops.has(raids.drops.pet.shortName)) {
 							theDrops.set(raids.drops.pet.shortName, {
-								theKC: `**${raids.drops.pet.name}:** ${kc} KC ${raids.drops.pet.emoji}`,
+								theKC: `**${raids.drops.pet.name}:** ${kc} KC ${raids.drops.pet.emoji} with ${dropRecieved.emoji}`,
 								dup: 0
 							});
 						} else {
+							theDrops.get(raids.drops.pet.shortName).theKC += ` ${dropRecieved.emoji}`;
 							theDrops.get(raids.drops.pet.shortName).dup++;
 						}
 					}
 
-					dropRecieved = raids.determineItem();
 					if (!theDrops.has(dropRecieved.shortName)) {
 						theDrops.set(dropRecieved.shortName, {
 							theKC: `**${dropRecieved.name}** ${kc} KC ${dropRecieved.emoji}`,

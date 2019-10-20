@@ -4,19 +4,19 @@ const { Hiscores } = require('oldschooljs');
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
-			cooldown: 2,
-			aliases: ['iron', 'im'],
-			description: 'Shows the stats of an Ironman account.',
+			cooldown: 3,
+			description: 'Shows the ranks of an account',
 			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
+
 	async run(msg, [username]) {
-		const player = await Hiscores.fetch(username, { type: 'ironman' }).catch(err => {
+		const player = await Hiscores.fetch(username).catch(err => {
 			throw err.message;
 		});
 
-		const embed = this.getStatsEmbed(username, 5460819, player);
+		const embed = this.getStatsEmbed(username, 7981338, player, 'rank', false);
 
 		return msg.send({ embed });
 	}

@@ -15,7 +15,7 @@ module.exports = class extends Command {
 
 	async enable(msg) {
 		if (msg.guild.settings.get('jmodComments') === msg.channel.id) {
-			msg.sendLocale('JMOD_COMMENTS_ALREADY_ENABLED');
+			return msg.sendLocale('JMOD_COMMENTS_ALREADY_ENABLED');
 		}
 		if (msg.guild.settings.get('jmodComments') !== null) {
 			await msg.guild.settings.update('jmodComments', msg.channel.id, msg.guild);
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 
 	async disable(msg) {
 		if (msg.guild.settings.get('jmodComments') === null) {
-			msg.sendLocale('JMOD_COMMENTS_ARENT_ENABLED');
+			return msg.sendLocale('JMOD_COMMENTS_ARENT_ENABLED');
 		}
 		await msg.guild.settings.reset('jmodComments');
 		return msg.sendLocale('JMOD_COMMENTS_DISABLED');
