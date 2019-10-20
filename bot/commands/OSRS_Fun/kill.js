@@ -1,6 +1,8 @@
 const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 
+const generateBankImage = require('../../../data/new_monsters/utils/generateBankImage');
+
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -14,6 +16,6 @@ module.exports = class extends Command {
 		if (!this.client.killWorkerThread) return;
 		const result = await this.client.killWorkerThread(quantity, bossName);
 		if (typeof result === 'string') return msg.send(result);
-		return msg.send(new MessageAttachment(Buffer.from(result), 'osbot.png'));
+		return msg.send(new MessageAttachment(Buffer.from(generateBankImage(result)), 'osbot.png'));
 	}
 };
