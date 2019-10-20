@@ -11,7 +11,7 @@ module.exports = class extends Task {
 			}
 		}
 
-		await this.run();
+		this.run();
 	}
 	async run() {
 		if (this.client.killWorkerThread) {
