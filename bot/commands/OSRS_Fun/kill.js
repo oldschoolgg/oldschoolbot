@@ -14,6 +14,6 @@ module.exports = class extends Command {
 		if (!this.client.killWorkerThread) return;
 		const result = await this.client.killWorkerThread(quantity, bossName);
 		if (typeof result === 'string') return msg.send(result);
-		msg.send(new MessageAttachment(Buffer.from(result), 'osbot.png'));
+		return msg.send(new MessageAttachment(Buffer.from(result), 'osbot.png'));
 	}
 };
