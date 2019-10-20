@@ -2,7 +2,6 @@ const {
 	util: { chunk }
 } = require('klasa');
 const { Items } = require('oldschooljs');
-const { MessageAttachment } = require('discord.js');
 const { createCanvas, Image, registerFont } = require('canvas');
 const fs = require('fs');
 
@@ -72,7 +71,6 @@ function generateBankImageFromLoot(itemLoot) {
 			const { id, quantity } = chunkedLoot[i][x];
 			const item = items.find(_i => _i.id === parseInt(id));
 			if (!item) {
-				console.log(id);
 				continue;
 			}
 			const xLoc = Math.floor(spacer + x * ((CANVAS_WIDTH - 40) / 8) + distanceFromSide);
@@ -128,7 +126,6 @@ function generateBankImageFromLoot(itemLoot) {
 	}
 
 	const test = canvas.toBuffer();
-	console.log(test);
 	return test;
 }
 

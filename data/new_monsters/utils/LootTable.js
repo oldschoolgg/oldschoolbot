@@ -1,4 +1,4 @@
-const { rand } = require('../../config/util');
+const { rand } = require('../../../config/util');
 
 module.exports = class LootTable {
 	constructor(limit) {

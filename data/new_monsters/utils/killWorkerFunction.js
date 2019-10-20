@@ -1,61 +1,60 @@
 const { expose } = require('threads');
 
-const { cleanString } = require('../../config/util');
+const { cleanString } = require('../../../config/util');
 const generateBankImage = require('./generateBankImage');
 
-const zulrah = require('../new_monsters/zulrah');
+const zulrah = require('../zulrah');
 
-const corp = require('../monsters/corp');
-const raids = require('../monsters/raids');
-const barrows = require('../monsters/barrows');
-const tob = require('../monsters/tob');
-const vorkath = require('../monsters/vorkath');
-const grotesqueGuardians = require('../monsters/grotesqueGuardians');
-const bandos = require('../monsters/bandos');
-const saradomin = require('../monsters/saradomin');
-const cerberus = require('../monsters/cerberus');
-const demonicGorilla = require('../monsters/demonicGorilla');
-const abbyDemon = require('../monsters/abbyDemon');
-const kurask = require('../monsters/kurask');
-const kalphiteQueen = require('../monsters/kalphiteQueen');
-const zamorak = require('../monsters/zamorak');
-const armadyl = require('../monsters/armadyl');
-const lizardmanShaman = require('../monsters/lizardmanShaman');
-const callisto = require('../monsters/callisto');
-const vetion = require('../monsters/vetion');
-const brutalBlackDragon = require('../monsters/brutalBlackDragon');
-const venenatis = require('../monsters/venenatis');
-const wyvern = require('../monsters/wyvern');
-const ancientWyvern = require('../monsters/ancientWyvern');
-const kingBlackDragon = require('../monsters/kingBlackDragon');
-const abyssalSire = require('../monsters/abyssalSire');
-const thermy = require('../monsters/thermy');
-const giantMole = require('../monsters/giantMole');
-const skotizo = require('../monsters/skotizo');
-const scorpia = require('../monsters/scorpia');
-const chaosElemental = require('../monsters/chaosElemental');
-const wintertodt = require('../monsters/wintertodt');
-const kraken = require('../monsters/kraken');
-const obor = require('../monsters/obor');
-const dagannothSupreme = require('../monsters/dagannothSupreme');
-const dagannothRex = require('../monsters/dagannothRex');
-const lavaDragon = require('../monsters/lavaDragon');
-const dagannothPrime = require('../monsters/dagannothPrime');
-const chaosFanatic = require('../monsters/chaosFanatic');
-const crazyArchaeologist = require('../monsters/crazyArchaeologist');
-const mithrilDragon = require('../monsters/mithrilDragon');
-const adamantDragon = require('../monsters/adamantDragon');
-const runeDragon = require('../monsters/runeDragon');
-const bryophyta = require('../monsters/bryophyta');
-const alchemicalHydra = require('../monsters/alchemicalHydra');
-const hydra = require('../monsters/hydra');
-const drake = require('../monsters/drake');
-const wyrm = require('../monsters/wyrm');
-const hespori = require('../monsters/hespori');
-const sarachnis = require('../monsters/sarachnis');
+const corp = require('../../monsters/corp');
+const raids = require('../../monsters/raids');
+const barrows = require('../../monsters/barrows');
+const tob = require('../../monsters/tob');
+const vorkath = require('../../monsters/vorkath');
+const grotesqueGuardians = require('../../monsters/grotesqueGuardians');
+const bandos = require('../../monsters/bandos');
+const saradomin = require('../../monsters/saradomin');
+const cerberus = require('../../monsters/cerberus');
+const demonicGorilla = require('../../monsters/demonicGorilla');
+const abbyDemon = require('../../monsters/abbyDemon');
+const kurask = require('../../monsters/kurask');
+const kalphiteQueen = require('../../monsters/kalphiteQueen');
+const zamorak = require('../../monsters/zamorak');
+const armadyl = require('../../monsters/armadyl');
+const lizardmanShaman = require('../../monsters/lizardmanShaman');
+const callisto = require('../../monsters/callisto');
+const vetion = require('../../monsters/vetion');
+const brutalBlackDragon = require('../../monsters/brutalBlackDragon');
+const venenatis = require('../../monsters/venenatis');
+const wyvern = require('../../monsters/wyvern');
+const ancientWyvern = require('../../monsters/ancientWyvern');
+const kingBlackDragon = require('../../monsters/kingBlackDragon');
+const abyssalSire = require('../../monsters/abyssalSire');
+const thermy = require('../../monsters/thermy');
+const giantMole = require('../../monsters/giantMole');
+const skotizo = require('../../monsters/skotizo');
+const scorpia = require('../../monsters/scorpia');
+const chaosElemental = require('../../monsters/chaosElemental');
+const wintertodt = require('../../monsters/wintertodt');
+const kraken = require('../../monsters/kraken');
+const obor = require('../../monsters/obor');
+const dagannothSupreme = require('../../monsters/dagannothSupreme');
+const dagannothRex = require('../../monsters/dagannothRex');
+const lavaDragon = require('../../monsters/lavaDragon');
+const dagannothPrime = require('../../monsters/dagannothPrime');
+const chaosFanatic = require('../../monsters/chaosFanatic');
+const crazyArchaeologist = require('../../monsters/crazyArchaeologist');
+const mithrilDragon = require('../../monsters/mithrilDragon');
+const adamantDragon = require('../../monsters/adamantDragon');
+const runeDragon = require('../../monsters/runeDragon');
+const bryophyta = require('../../monsters/bryophyta');
+const alchemicalHydra = require('../../monsters/alchemicalHydra');
+const hydra = require('../../monsters/hydra');
+const drake = require('../../monsters/drake');
+const wyrm = require('../../monsters/wyrm');
+const hespori = require('../../monsters/hespori');
+const sarachnis = require('../../monsters/sarachnis');
 
-function killWorkerFunction(msg, quantity, bossName) {
-	console.log(msg.send, quantity, bossName);
+function killWorkerFunction(quantity, bossName) {
 	switch (cleanString(bossName)) {
 		case 'SARACHNIS':
 		case 'SARACH':
@@ -139,7 +138,7 @@ function killWorkerFunction(msg, quantity, bossName) {
 			return loot.length > 0 ? loot : 'You got nothing.';
 		}
 		case 'ZULRAH': {
-			if (quantity > 10000) {
+			if (quantity > 100000000) {
 				return 'I can only do a maximum of 10000 Zulrah kills at a time!';
 			}
 			const loot = zulrah.kill(quantity);

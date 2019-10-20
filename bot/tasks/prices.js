@@ -5,11 +5,6 @@ const { Items } = require('oldschooljs');
 const { cleanString } = require('../../config/util');
 
 module.exports = class extends Task {
-	async init() {
-		await this.run();
-		await this.client.tasks.get('spawnWorkerThread').run();
-	}
-
 	async run() {
 		if (this.client.production) {
 			this.syncItems();
