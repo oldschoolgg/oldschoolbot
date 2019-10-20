@@ -18,7 +18,6 @@
 		"moment": "^2.21.0",
 		"mongodb": "^3.3.3",
 		"node-fetch": "^2.6.0",
-		"erlpack": "^0.1.2",
 		"oldschooljs": "^0.5.1",
 		"osrs-wrapper": "github:gc/Osrs-Wrapper",
 		"p-limit": "^2.2.1",

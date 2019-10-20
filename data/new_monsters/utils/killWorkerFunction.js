@@ -1,7 +1,6 @@
 const { expose } = require('threads');
 
 const { cleanString } = require('../../../config/util');
-const generateBankImage = require('./generateBankImage');
 
 const zulrah = require('../zulrah');
 
@@ -143,7 +142,7 @@ function killWorkerFunction(quantity, bossName) {
 			}
 			const loot = zulrah.kill(quantity);
 			if (!loot) return 'You got nothing';
-			return generateBankImage(loot);
+			return loot;
 		}
 		case 'VORKATH': {
 			if (quantity > 500) return 'I can only do a maximum of 500 Vorkath kills at a time!';
