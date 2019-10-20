@@ -17,9 +17,16 @@ module.exports = class extends Task {
 		if (this.client.killWorkerThread) {
 			Thread.terminate(this.client.killWorkerThread);
 		}
-		this.client.killWorkerThread = await spawn(
-			new Worker('../../data/new_monsters/utils/killWorkerFunction')
-		).catch(console.error);
+		try {
+			this.client.killWorkerThread = await spawn(
+				new Worker('../../data/new_monsters/utils/killWorkerFunction')
+			).catch(console.error);
+			Thread.events(this.client.killWorkerThread).subscribe(event =>
+				console.log('Thread event:', event)
+			);
+		} catch (err) {
+			console.error(err);
+		}
 
 		const terminateCb = async () => {
 			Thread.terminate(this.client.killWorkerThread);
