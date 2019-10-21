@@ -23,7 +23,9 @@ module.exports = class extends Command {
 	async run(msg) {
 		const coins = msg.author.settings.get('GP');
 		if (coins === 0) {
-			throw 'You have no GP yet <:Sad:421822898316115969> You can get some GP by voting for the bot at <https://discordbots.org/bot/303730326692429825/vote>';
+			throw `You have no GP yet <:Sad:421822898316115969> You can get some GP by using the ${msg.guild.settings.get(
+				'prefix'
+			)}daily command.`;
 		}
 
 		const BG = new Image();
