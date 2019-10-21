@@ -11,13 +11,16 @@ module.exports = class extends Command {
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
+
 	async run(msg, [username]) {
 		const player = await Hiscores.fetch(username).catch(err => {
 			throw err.message;
 		});
 
 		if (msg.guild && this.client.settings.usernameCache[msg.guild.id]) {
-			this.client.tasks.get('levelChecker').checkPlayers([player]);
+			Hiscores.fetch(username, { virtualLevels: true }).then(vPlayer => {
+				this.client.tasks.get('levelChecker').checkPlayers([vPlayer]);
+			});
 		}
 
 		const embed = this.getStatsEmbed(username, 7981338, player);
