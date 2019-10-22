@@ -72,7 +72,11 @@ module.exports = class extends Task {
 
 		const fetchedPlayers = (await Promise.all(
 			allNames.map(name =>
-				limit(() => Hiscores.fetch(name, { virtualLevels: true }).catch(() => null))
+				limit(() =>
+					Hiscores.fetch(name, { virtualLevels: true }).catch(() =>
+						console.error(`[LVL-UP] Failed to fetch ${name}`)
+					)
+				)
 			)
 		)).filter(Boolean);
 
