@@ -75,14 +75,6 @@ function toTitleCase(str) {
 	return splitStr.join(' ');
 }
 
-function cbLevelFromPlayer({ Defence, Strength, Attack, Ranged, Magic, Prayer, Hitpoints }) {
-	const base = 0.25 * (Defence.level + Hitpoints.level + Math.floor(Prayer.level / 2));
-	const melee = 0.325 * (Attack.level + Strength.level);
-	const range = 0.325 * (Math.floor(Ranged.level / 2) + Ranged.level);
-	const mage = 0.325 * (Math.floor(Magic.level / 2) + Magic.level);
-	return Math.floor(base + Math.max(melee, range, mage));
-}
-
 function cmlErrorCheck(res) {
 	switch (res.replace(/\s/g, '')) {
 		case '-1':
@@ -114,7 +106,6 @@ module.exports = {
 	resolveTwitchUsersFromNames,
 	twitchAPIRequestOptions,
 	toTitleCase,
-	cbLevelFromPlayer,
 	cmlErrorCheck,
 	flatten
 };
