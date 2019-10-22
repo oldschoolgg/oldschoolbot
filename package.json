@@ -19,7 +19,6 @@
 		"mongodb": "^3.3.3",
 		"node-fetch": "^2.6.0",
 		"oldschooljs": "^0.5.1",
-		"osrs-wrapper": "github:gc/Osrs-Wrapper",
 		"p-limit": "^2.2.1",
 		"rethinkdbdash": "^2.3.31",
 		"rss-parser": "^3.1.1",
