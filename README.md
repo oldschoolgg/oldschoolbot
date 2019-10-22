@@ -2,7 +2,7 @@
 
 # ![Logo](https://i.imgur.com/VLvOEwo.png) Old School Bot
 
-Old School Bot is a Discord Bot based on [Old School RuneScape](https://oldschool.runescape.com/). For a full list of commands, type `+help`.
+Old School Bot is a Discord Bot based on [Old School RuneScape](https://oldschool.runescape.com/)
 
 Commands: https://www.oldschool.gg/commands
 
