@@ -17,7 +17,7 @@ module.exports = class extends Command {
 
 	async run(msg, [query]) {
 		const res = items
-			.filter(i => cleanString(i.name).includes(cleanString(query, true)))
+			.filter(i => cleanString(i.name).includes(cleanString(query)))
 			.slice(0, 10);
 
 		if (res.length === 0) throw "Couldn't find any items!";
