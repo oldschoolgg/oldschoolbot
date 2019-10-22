@@ -1,6 +1,7 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
+const { Hiscores } = require('oldschooljs');
 const { MessageEmbed } = require('discord.js');
+
 const requirements = require('../../../data/diary-requirements');
 
 module.exports = class extends Command {
@@ -16,15 +17,16 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const { Skills } = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
-			throw this.client.notFound;
+		const { skills } = await Hiscores.fetch(username).catch(err => {
+			throw err.message;
 		});
 
 		const diaryNames = Object.keys(requirements)
 			.map(key => titles[key])
 			.join('\n');
+
 		const canComplete = Object.keys(requirements)
-			.map(diary => this.check(Skills, requirements[diary]))
+			.map(diary => this.check(skills, requirements[diary]))
 			.join('\n');
 
 		const embed = new MessageEmbed()
@@ -44,7 +46,7 @@ module.exports = class extends Command {
 		const canComplete = [];
 		for (let i = 0; i < 4; i++) {
 			for (const req of Object.keys(diary)) {
-				if (req !== 'Construction') {
+				if (req !== 'construction') {
 					const statLevel = skills[req].level;
 					const levelRequirement = diary[req].statReq[i];
 					if (levelRequirement === 0) continue;
