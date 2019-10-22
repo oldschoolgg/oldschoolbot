@@ -1,6 +1,5 @@
 const { Command } = require('klasa');
-const fetch = require('node-fetch');
-const { parseTable } = require('../../../config/util');
+const { Worlds } = require('oldschooljs');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -14,17 +13,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [worldNumber]) {
-		const worlds = await fetch('http://oldschool.runescape.com/slu')
-			.then(res => res.text())
-			.then(parseTable);
-
-		const world = worlds.find(__world => {
-			const _world = parseInt(__world.name.replace(/\D/g, ''));
-			return _world === worldNumber || _world + 300 === worldNumber;
-		});
-
-		world.number = world.name.replace(/\D/g, '');
-
+		const world = await Worlds.fetch(worldNumber);
+		console.log(world);
 		if (!world) return msg.send("That's an invalid world!");
 
 		const embed = new MessageEmbed()
@@ -34,8 +24,8 @@ module.exports = class extends Command {
 				`Old School RuneScape World ${world.number}`,
 				'https://i.imgur.com/fVakfwp.png'
 			)
-			.addField('Access', world.type, true)
-			.addField('Location', world.country, true)
+			.addField('Access', world.members ? 'Members' : 'Free to Play', true)
+			.addField('Location', world.location, true)
 			.addField('Players', world.players, true)
 			.addField('Activity', world.activity, true);
 
