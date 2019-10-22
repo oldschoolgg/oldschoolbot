@@ -1,8 +1,6 @@
 const { Command } = require('klasa');
 const { Hiscores } = require('oldschooljs');
 
-const { convertXPtoLVL } = require('../../../config/util');
-
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {

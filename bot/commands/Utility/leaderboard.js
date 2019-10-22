@@ -2,9 +2,6 @@ const {
 	Command,
 	util: { chunk }
 } = require('klasa');
-const {
-	util: { escapeMarkdown: esc }
-} = require('discord.js');
 const { MessageEmbed } = require('discord.js');
 
 const petData = require('../../../data/pets');

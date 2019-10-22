@@ -1,5 +1,6 @@
 const { Command } = require('klasa');
-const { roll } = require('../../../config/util');
+
+const { roll, cleanString } = require('../../../config/util');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -11,13 +12,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [petName]) {
-		switch (
-			petName
-				.replace("'", '')
-				.replace(/\s+/g, '')
-				.replace(/\./g, '')
-				.toUpperCase()
-		) {
+		const cleanName = cleanString(petName);
+		switch (cleanName) {
 			case 'GIANTMOLE':
 			case 'MOLE':
 			case 'BABYMOLE':

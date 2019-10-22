@@ -31,7 +31,7 @@ module.exports = class extends Command {
 		const BG = new Image();
 		BG.src = bg;
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
-		let formattedNumber = coins;
+		let formattedNumber;
 		let color = '#FFFF00';
 		if (coins > 9999999) {
 			formattedNumber = `${Math.floor(coins / 1000000)}M`;
