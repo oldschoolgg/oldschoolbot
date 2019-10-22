@@ -22,12 +22,6 @@ class getStatsEmbed extends Extendable {
 	) {
 		const { emoji } = this.client;
 
-		function generateURL(skill) {
-			return `http://secure.runescape.com/m=hiscore_oldschool/overall.ws?table=${constants.SKILLS.indexOf(
-				skill
-			)}&user=${encodeURIComponent(username)}`;
-		}
-
 		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
 
 		const embed = new MessageEmbed()

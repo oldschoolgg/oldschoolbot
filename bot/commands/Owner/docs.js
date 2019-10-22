@@ -35,12 +35,9 @@ module.exports = class extends Command {
 
 	finish(data, stopwatch, format) {
 		const buffer = Buffer.from(data);
-		const hash = createHash('sha1')
-			.update(data)
-			.digest('base64')
-			.substr(0, 7);
+
 		const duration = `Generated in ${stopwatch.stop()}`;
-		return this.msg.channel.sendFile(buffer, `commands_${hash}.${format}`, duration);
+		return this.msg.channel.sendFile(buffer, `commands.${format}`, duration);
 	}
 
 	async buildCommands(type, msg, normalize = false) {

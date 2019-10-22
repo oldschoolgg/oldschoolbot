@@ -153,7 +153,7 @@ const alchemicalHydra = {
 					RP++;
 					LOCK = true;
 				}
-				if (!loot.includes('HF') && LOCK === false) {
+				if (!loot.includes('HF') && !LOCK) {
 					loot.push('HF');
 					lootMSG.push(
 						`**Hydra's fang:** ${kc.toLocaleString()} KC ${this.drops.ringPieces[1]}`
@@ -161,7 +161,7 @@ const alchemicalHydra = {
 					RP++;
 					LOCK = true;
 				}
-				if (!loot.includes('HH') && LOCK === false) {
+				if (!loot.includes('HH') && !LOCK) {
 					loot.push('HH');
 					lootMSG.push(
 						`**Hydra's heart:** ${kc.toLocaleString()} KC ${this.drops.ringPieces[2]}`

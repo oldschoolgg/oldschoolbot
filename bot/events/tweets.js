@@ -126,11 +126,7 @@ module.exports = class extends Event {
 	}
 
 	async init() {
-		if (
-			!this.client.twitterApp ||
-			!this.client.twitterApp.access_token ||
-			!this.client.twitterApp.access_token.length === 0
-		) {
+		if (!this.client.twitterApp || !this.client.twitterApp.access_token) {
 			this.disable();
 		}
 	}

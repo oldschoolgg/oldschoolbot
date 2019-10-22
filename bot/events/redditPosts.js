@@ -21,7 +21,7 @@ module.exports = class extends Event {
 		}
 		const redditClient = new Snoowrap(redditApp);
 
-		if (!redditApp || !redditApp.password || !redditApp.password.length === 0) {
+		if (!redditApp || !redditApp.password) {
 			this.disable();
 			this.client.emit(
 				'log',
