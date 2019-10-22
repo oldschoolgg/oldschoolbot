@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
+const { Hiscores } = require('oldschooljs');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -14,8 +14,8 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const { Minigames: pvp } = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
-			throw this.client.notFound;
+		const { minigames: pvp } = await Hiscores.fetch(username).catch(err => {
+			throw err.message;
 		});
 
 		for (const prop in pvp) {
@@ -29,12 +29,12 @@ module.exports = class extends Command {
 			.setThumbnail('https://i.imgur.com/8hPO17o.png')
 			.addField(
 				'<:BH_Hunter:365046748022046723> Bounty Hunter - Hunter',
-				`**Rank:** ${pvp.Bounty_Hunter.rank}\n**Score:** ${pvp.Bounty_Hunter.score}`,
+				`**Rank:** ${pvp.bountyHunter.rank}\n**Score:** ${pvp.bountyHunter.score}`,
 				true
 			)
 			.addField(
 				'<:BH_Rogue:365046748495740928> Bounty Hunter - Rogue',
-				`**Rank:** ${pvp.Bounty_Hunter_Rogues.rank}\n**Score:** ${pvp.Bounty_Hunter_Rogues.score}`,
+				`**Rank:** ${pvp.bountyHunterRogue.rank}\n**Score:** ${pvp.bountyHunterRogue.score}`,
 				true
 			)
 			.addField(
