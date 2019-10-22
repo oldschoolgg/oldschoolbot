@@ -1,6 +1,5 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
-const { constants } = require('oldschooljs');
 
 const { toTitleCase } = require('../../config/util');
 

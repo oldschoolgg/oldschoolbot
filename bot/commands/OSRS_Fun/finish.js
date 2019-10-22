@@ -368,7 +368,7 @@ ${lootMSG.join('\n')}
     `);
 			}
 			case 'KQ':
-			case 'KalphiteQueen': {
+			case 'KALPHITEQUEEN': {
 				const lootMSG = [];
 				while (loot.length !== 5) {
 					kc++;
@@ -1046,7 +1046,9 @@ ${lootMSG.join('\n')}`);
 								dup: 0
 							});
 						} else {
-							theDrops.get(raids.drops.pet.shortName).theKC += ` ${dropRecieved.emoji}`;
+							theDrops.get(
+								raids.drops.pet.shortName
+							).theKC += ` ${dropRecieved.emoji}`;
 							theDrops.get(raids.drops.pet.shortName).dup++;
 						}
 					}

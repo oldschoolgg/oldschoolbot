@@ -1,7 +1,5 @@
 const { Command } = require('klasa');
-const osrs = require('osrs-wrapper');
-
-const { cbLevelFromPlayer } = require('../../../config/util');
+const { Hiscores } = require('oldschooljs');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -13,12 +11,10 @@ module.exports = class extends Command {
 		});
 	}
 	async run(msg, [username]) {
-		const player = await osrs.hiscores.getPlayer(username, 'Normal').catch(() => {
-			throw this.client.notFound;
+		const player = await Hiscores.fetch(username).catch(err => {
+			throw err.message;
 		});
 
-		const combatLevel = await cbLevelFromPlayer(player.Skills);
-
-		return msg.send(`${username}'s Combat Level is **${combatLevel}**.`);
+		return msg.send(`${username}'s Combat Level is **${player.combatLevel}**.`);
 	}
 };
