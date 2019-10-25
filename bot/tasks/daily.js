@@ -29,7 +29,7 @@ module.exports = class extends Task {
 		}
 
 		if (!triviaCorrect) {
-			amount = Math.floor(amount * 0.2);
+			amount = Math.floor(amount * 0.5);
 		}
 
 		let chStr = `${bonuses} ${
