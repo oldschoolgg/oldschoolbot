@@ -29,6 +29,14 @@ module.exports = class extends Task {
 
 			lastPlayerStats[username] = player;
 
+			if (oldPlayer && player.skills.overall.level <= oldPlayer.skills.overall.level) {
+				if (username === 'mgby') {
+					console.log(`Old player: ${JSON.stringify(oldPlayer, null, 4)}`);
+					console.log(`New player: ${JSON.stringify(player, null, 4)}`);
+				}
+				continue;
+			}
+
 			if (!oldPlayer) {
 				continue;
 			}
