@@ -3,6 +3,8 @@ const { Command } = require('klasa');
 const { triviaQuestions } = require('../../../resources/trivia-questions');
 const oneDay = 1000 * 60 * 60 * 24;
 
+const easyTrivia = triviaQuestions.slice(0, 30);
+
 const options = {
 	max: 1,
 	time: 10000,
@@ -29,7 +31,7 @@ module.exports = class extends Command {
 		if (difference >= oneDay) {
 			await msg.author.settings.update('lastDailyTimestamp', currentDate);
 
-			const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
+			const trivia = easyTrivia[Math.floor(Math.random() * easyTrivia.length)];
 
 			await msg.channel.send(`**Daily Trivia:** ${trivia.q}`);
 			try {
@@ -45,7 +47,7 @@ module.exports = class extends Command {
 			} catch (err) {
 				await this.client.tasks.get('daily').run(msg.author, false);
 				msg.channel.send(
-					`You didn't answer correctly, and only received 20% of your normal amount of GP.`
+					`You didn't answer correctly, and only received 50% of your normal amount of GP.`
 				);
 			}
 			this.cache.delete(msg.author.id);
