@@ -21,16 +21,11 @@ module.exports = class extends Task {
 		}
 	}
 
-	async checkPlayers(players, silent) {
+	async checkPlayers(players) {
 		const lastPlayerStats = this.client.settings.get('lastPlayerStats');
-
 		for (const player of players) {
 			const { skills, username } = player;
 			const oldPlayer = lastPlayerStats[username];
-
-			if (oldPlayer && player.skills.overall.level <= oldPlayer.skills.overall.level) {
-				continue;
-			}
 
 			lastPlayerStats[username] = player;
 
@@ -41,7 +36,7 @@ module.exports = class extends Task {
 			for (const [skillName, skillData] of Object.entries(skills)) {
 				const oldLevel = oldPlayer.skills[skillName].level;
 
-				if (skillName === 'overall' && !silent) {
+				if (skillName === 'overall') {
 					// If their new overall level isnt 2277, or the old level was already 2277, continue;
 					if (skillData.level !== 2277 || oldLevel === 2277) continue;
 
@@ -51,7 +46,7 @@ module.exports = class extends Task {
 					);
 				}
 
-				if (skillData.level > oldLevel && !silent) {
+				if (skillData.level > oldLevel) {
 					this.announce(
 						username,
 						`${tCase(username)}'s ${tCase(skillName)} level is now ${
@@ -65,7 +60,7 @@ module.exports = class extends Task {
 		this.client.settings.update('lastPlayerStats', lastPlayerStats);
 	}
 
-	async run(silent = false) {
+	async run() {
 		const usernameMap = this.client.settings.get('usernameCache');
 
 		const allNames = [...new Set(flatten(Object.values(usernameMap)))];
@@ -80,6 +75,6 @@ module.exports = class extends Task {
 			)
 		)).filter(Boolean);
 
-		this.checkPlayers(fetchedPlayers, silent);
+		this.checkPlayers(fetchedPlayers);
 	}
 };
