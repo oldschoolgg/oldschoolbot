@@ -3,6 +3,7 @@ const { expose } = require('threads');
 const { cleanString } = require('../../../config/util');
 
 const zulrah = require('../zulrah');
+const gauntlet = require('../gauntlet');
 
 const corp = require('../../monsters/corp');
 const raids = require('../../monsters/raids');
@@ -429,6 +430,19 @@ function killWorkerFunction(quantity, bossName) {
 		case 'HESPORI': {
 			if (quantity > 100) return 'I can only kill 100 Hesporis at a time!';
 			const loot = hespori.kill(quantity);
+			return loot.length > 0 ? loot : 'You got nothing.';
+		}
+
+		case 'GAUNTLET': {
+			if (quantity > 500) return 'I can only kill 500 Gauntlets at a time!';
+			const loot = gauntlet.kill(quantity);
+			return loot.length > 0 ? loot : 'You got nothing.';
+		}
+
+		case 'CORRUPTEDGAUNTLET':
+		case 'CG': {
+			if (quantity > 500) return 'I can only kill 500 Gauntlets at a time!';
+			const loot = gauntlet.kill(quantity, true);
 			return loot.length > 0 ? loot : 'You got nothing.';
 		}
 
