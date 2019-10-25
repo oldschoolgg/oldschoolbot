@@ -12,7 +12,7 @@
 		"crystalmethlabs": "github:gc/crystalmethlabs",
 		"discord.js": "vladfrangu/discOwOd.js#sharding-cleanup",
 		"he": "^1.2.0",
-		"klasa": "github:dirigeants/klasa#b73c3fd8d7d5cff4001f4da221637f1704f74087",
+		"klasa": "github:dirigeants/klasa#master",
 		"klasa-textchannel-gateway": "github:gc/text-channel-gateway#master",
 		"markovchain": "^1.0.2",
 		"moment": "^2.21.0",
@@ -37,7 +37,7 @@
 		"eslint-plugin-prettier": "^3.1.0",
 		"prettier": "^1.18.2"
 	},
-	"engines" : {
-		"node" : ">=12.0"
+	"engines": {
+		"node": ">=12.0"
 	}
 }
