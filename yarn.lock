@@ -547,7 +547,7 @@ detect-libc@^1.0.2:
 
 discord.js@vladfrangu/discOwOd.js#sharding-cleanup:
   version "12.0.0-dev"
-  resolved "https://codeload.github.com/vladfrangu/discOwOd.js/tar.gz/15b75f36a976493b1da34297fc73948f714be807"
+  resolved "https://codeload.github.com/vladfrangu/discOwOd.js/tar.gz/355f5a8819057240810d88adb428ef8c8b9bf053"
   dependencies:
     "@discordjs/collection" "^0.1.1"
     abort-controller "^3.0.0"
@@ -1428,9 +1428,9 @@ keyv@3.0.0:
   version "0.0.1-dev"
   resolved "https://codeload.github.com/gc/text-channel-gateway/tar.gz/957ce817263a6633ce40b6f9c942f0dac1ec5313"
 
-"klasa@github:dirigeants/klasa#b73c3fd8d7d5cff4001f4da221637f1704f74087":
+"klasa@github:dirigeants/klasa#master":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/b73c3fd8d7d5cff4001f4da221637f1704f74087"
+  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/0e9174cab0df7d28f3a7b8ca78b6344fef2611c9"
   dependencies:
     fs-nextra "^0.4.5"
 
@@ -1763,13 +1763,6 @@ osenv@^0.1.4:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
 
-"osrs-wrapper@github:gc/Osrs-Wrapper":
-  version "1.0.5"
-  resolved "https://codeload.github.com/gc/Osrs-Wrapper/tar.gz/db679dbc03cbd926442b926692bac75a1faac24c"
-  dependencies:
-    request "^2.79.0"
-    request-promise "^4.1.1"
-
 p-cancelable@^0.4.0:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/p-cancelable/-/p-cancelable-0.4.1.tgz#35f363d67d52081c8d9585e37bcceb7e0bbcb2a0"
@@ -1803,11 +1796,6 @@ p-try@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
-
-pako@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
-  integrity sha512-0DTvPVU3ed8+HNXOu5Bs+o//Mbdj9VNQMUOe9oKCwh8l0GNwpTDMKCWbRjgtD291AWnkAgkqA/LOnQS8AmS1tw==
 
 parent-module@^1.0.0:
   version "1.0.1"
@@ -2001,7 +1989,7 @@ request-promise-native@^1.0.7:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request-promise@^4.1.1, request-promise@^4.2.2:
+request-promise@^4.2.2:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/request-promise/-/request-promise-4.2.4.tgz#1c5ed0d71441e38ad58c7ce4ea4ea5b06d54b310"
   integrity sha512-8wgMrvE546PzbR5WbYxUQogUnUDfM0S7QIFZMID+J73vdFARkFy+HElj4T+MWYhpXwlLp0EQ8Zoj8xUA0he4Vg==
@@ -2011,7 +1999,7 @@ request-promise@^4.1.1, request-promise@^4.2.2:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.68.0, request@^2.79.0, request@^2.87.0, request@^2.88.0:
+request@^2.68.0, request@^2.87.0, request@^2.88.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==
@@ -2653,7 +2641,7 @@ ws@^3.3.1:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^7.0.0, ws@^7.1.1:
+ws@^7.0.0, ws@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.2.0.tgz#422eda8c02a4b5dba7744ba66eebbd84bcef0ec7"
   integrity sha512-+SqNqFbwTm/0DC18KYzIsMTnEWpLwJsiasW/O17la4iDRRIO9uaHbvKiAS3AHgTiuuWerK/brj4O6MYZkei9xg==
