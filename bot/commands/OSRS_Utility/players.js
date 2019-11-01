@@ -1,6 +1,5 @@
 const { Command } = require('klasa');
-const { parseTable } = require('../../../config/util');
-const fetch = require('node-fetch');
+const { Worlds } = require('oldschooljs');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -10,36 +9,18 @@ module.exports = class extends Command {
 		});
 	}
 
-	toNum(str) {
-		return parseInt(str.replace(/\D/g, ''));
-	}
-
 	async run(msg) {
-		let worlds = await fetch('http://oldschool.runescape.com/slu')
-			.then(res => res.text())
-			.then(parseTable);
+		await Worlds.fetch();
 
-		let totalPlayers = 0;
-		worlds = worlds
-			.filter(world => world.players.includes('players'))
-			.map(world => {
-				const players = this.toNum(world.players);
-				totalPlayers += this.toNum(world.players);
-				return {
-					...world,
-					number: this.toNum(world.name),
-					players
-				};
-			})
-			.sort((a, b) => b.players - a.players);
-
-		const average = parseInt(totalPlayers / worlds.length);
-		const highest = worlds[0];
+		const sortedWorlds = Worlds.sort((a, b) => b.players - a.players);
+		const totalCount = Worlds.reduce((acc, curr) => acc + curr.players, 0);
+		const average = totalCount / Worlds.size;
+		const highest = sortedWorlds.first();
 
 		return msg.send(`
-**Total players on OSRS**: ${totalPlayers.toLocaleString()}
+**Total players on OSRS**: ${totalCount.toLocaleString()}
 
-**Average per world:** ${average}
+**Average per world:** ${parseInt(average)}
 **Highest world:** World ${highest.number} with ${highest.players} players
 `);
 	}
