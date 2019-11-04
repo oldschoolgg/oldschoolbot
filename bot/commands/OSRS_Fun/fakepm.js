@@ -18,7 +18,7 @@ module.exports = class extends Command {
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) <message:...str>',
-			usageDelim: ' '
+			usageDelim: ','
 		});
 	}
 
