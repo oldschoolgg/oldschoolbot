@@ -21,7 +21,7 @@ module.exports = class extends Command {
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) [kc:int{1,999999}]',
-			usageDelim: ' '
+			usageDelim: ','
 		});
 	}
 
