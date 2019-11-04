@@ -20,6 +20,30 @@ module.exports = class extends Command {
 		});
 	}
 
+	generateImage(amount) {
+		const BG = new Image();
+		BG.src = bg;
+		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
+		let formattedNumber;
+		let color = '#FFFF00';
+		if (amount > 9999999) {
+			formattedNumber = `${Math.floor(amount / 1000000)}M`;
+			color = '#00FF80';
+		} else if (amount > 99999) {
+			formattedNumber = `${Math.floor(amount / 1000)}K`;
+			color = '#FFFFFF';
+		} else {
+			formattedNumber = amount.toString();
+		}
+
+		ctx.fillStyle = '#000000';
+		ctx.fillText(formattedNumber.split('0').join('O'), 10, 15);
+		ctx.fillStyle = color;
+		ctx.fillText(formattedNumber.split('0').join('O'), 9, 14);
+
+		return new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
+	}
+
 	async run(msg) {
 		const coins = msg.author.settings.get('GP');
 		if (coins === 0) {
@@ -28,27 +52,6 @@ module.exports = class extends Command {
 			)}daily command.`;
 		}
 
-		const BG = new Image();
-		BG.src = bg;
-		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
-		let formattedNumber;
-		let color = '#FFFF00';
-		if (coins > 9999999) {
-			formattedNumber = `${Math.floor(coins / 1000000)}M`;
-			color = '#00FF80';
-		} else if (coins > 99999) {
-			formattedNumber = `${Math.floor(coins / 1000)}K`;
-			color = '#FFFFFF';
-		} else {
-			formattedNumber = coins.toString();
-		}
-
-		ctx.fillStyle = '#000000';
-		ctx.fillText(formattedNumber.split('0').join('O'), 10, 15);
-		ctx.fillStyle = color;
-		ctx.fillText(formattedNumber.split('0').join('O'), 9, 14);
-
-		const image = new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
-		return msg.send(image);
+		return msg.send(this.generateImage(coins));
 	}
 };
