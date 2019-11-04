@@ -92,11 +92,11 @@ module.exports = class extends Command {
 		} else if (roll(300)) {
 			await sleep(2000);
 			await duelMsg.edit(
-				`Oops... looks like ${user.username}'s forgot to check their whip, it just ran out of charges and broke...`
+				`Oops... looks like ${msg.author.username} forgot to check their whip, it just ran out of charges and broke...`
 			);
 			await sleep(1000);
-			loser = msg.author;
-			winner = user;
+			loser = user;
+			winner = msg.author;
 		}
 
 		await sleep(2000);
