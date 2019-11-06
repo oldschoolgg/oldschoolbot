@@ -91,11 +91,13 @@ module.exports = class extends Command {
 
 		for (const page of chunk(users, 10)) {
 			display.addPage(
-				new MessageEmbed().setDescription(
-					page
-						.map(({ user, GP }) => `**${user}** has ${GP.toLocaleString()} GP `)
-						.join('\n')
-				)
+				new MessageEmbed()
+					.setTitle('GP Leaderboard')
+					.setDescription(
+						page
+							.map(({ user, GP }) => `**${user}** has ${GP.toLocaleString()} GP `)
+							.join('\n')
+					)
 			);
 		}
 
@@ -106,9 +108,15 @@ module.exports = class extends Command {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 		const rawUserSettings = await this.fetchRawUserSettings();
 
+		const onlyForGuild = msg.flagArgs.server;
+
 		const users = await Promise.all(
 			rawUserSettings
-				.filter(u => u.pets)
+				.filter(u => {
+					if (!u.pets) return false;
+					if (onlyForGuild && !msg.guild.members.has(u.id)) return false;
+					return true;
+				})
 				.sort((a, b) => Object.keys(b.pets).length - Object.keys(a.pets).length)
 				.slice(0, 1000)
 				.map(this.resolveEntries)
@@ -119,13 +127,16 @@ module.exports = class extends Command {
 
 		for (const page of chunk(users, 10)) {
 			display.addPage(
-				new MessageEmbed().setDescription(
-					page
-						.map(
-							({ user, pets }) => `**${user}** has ${Object.keys(pets).length} pets `
-						)
-						.join('\n')
-				)
+				new MessageEmbed()
+					.setTitle('Pets Leaderboard')
+					.setDescription(
+						page
+							.map(
+								({ user, pets }) =>
+									`**${user}** has ${Object.keys(pets).length} pets `
+							)
+							.join('\n')
+					)
 			);
 		}
 
