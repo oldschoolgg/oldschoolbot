@@ -35,6 +35,7 @@ module.exports = class extends Command {
 			);
 		}
 
+		return;
 		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
 
 		if (this.cache.has(msg.guild.id)) return;
