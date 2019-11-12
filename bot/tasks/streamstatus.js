@@ -58,10 +58,7 @@ module.exports = class extends Task {
 							if (_channel) _channel.send({ embed });
 						});
 				}
-				return this.client.user.setActivity(res.streams[0].channel.display_name, {
-					url: res.streams[0].channel.url,
-					type: 1
-				});
+				this.client.user.setActivity('+collections');
 			})
 			.catch(console.error);
 	}
