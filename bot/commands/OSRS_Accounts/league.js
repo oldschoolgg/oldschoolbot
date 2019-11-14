@@ -5,8 +5,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
-			aliases: ['seasonal', 'sdmm'],
-			description: 'Shows the stats of a Seasonal Deadman account.',
+			aliases: ['league', 'leagues', 'l'],
+			description: 'Shows the stats of a Seasonal leagues account.',
 			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']
 		});
@@ -16,8 +16,9 @@ module.exports = class extends Command {
 			throw err.message;
 		});
 
-		const embed = this.getStatsEmbed(username, 11995146, player);
+		const embed = this.getStatsEmbed(username, 7981338, player);
 
+		embed.setFooter(`Twisted League`);
 		return msg.send({ embed });
 	}
 };
