@@ -6,8 +6,7 @@ const ZWS = '​'.repeat(20);
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
-			description: 'Shows the link for the official OSRS map.',
-			aliases: ['tl', 'twistedleagues', 'league']
+			aliases: ['li']
 		});
 	}
 
@@ -36,7 +35,7 @@ module.exports = class extends Command {
 				`
 <:Casket:365003978678730772> [Rewards](https://oldschool.runescape.wiki/w/Twisted_League#Rewards)
 
-<:xp:630911040510623745> [Hiscores](https://secure.runescape.com/m=hiscore_oldschool_leagues/overall.ws)
+<:xp:630911040510623745> [Hiscores](https://secure.runescape.com/m=hiscore_oldschool_seasonal/overall.ws)
 
 <:league_info:644484480936968192> [Guide](https://oldschool.runescape.wiki/w/Twisted_League/Guide)`,
 				true

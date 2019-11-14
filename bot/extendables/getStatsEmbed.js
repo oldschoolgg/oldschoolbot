@@ -15,7 +15,7 @@ class getStatsEmbed extends Extendable {
 	getStatsEmbed(
 		username,
 		color,
-		{ clues, minigames, skills, combatLevel, type },
+		{ clues, minigames, skills, combatLevel },
 		key = 'level',
 		showExtra = true
 	) {
