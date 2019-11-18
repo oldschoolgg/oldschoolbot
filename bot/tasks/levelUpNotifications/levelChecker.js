@@ -27,19 +27,15 @@ module.exports = class extends Task {
 			const { skills, username } = player;
 			const oldPlayer = lastPlayerStats[username];
 
-			lastPlayerStats[username] = player;
-
-			if (oldPlayer && player.skills.overall.level <= oldPlayer.skills.overall.level) {
-				if (username === 'mgby') {
-					console.log(`Old player: ${JSON.stringify(oldPlayer, null, 4)}`);
-					console.log(`New player: ${JSON.stringify(player, null, 4)}`);
-				}
-				continue;
-			}
-
 			if (!oldPlayer) {
 				continue;
 			}
+
+			if (skills.overall.xp < oldPlayer.skills.overall.xp) {
+				continue;
+			}
+
+			lastPlayerStats[username] = player;
 
 			for (const [skillName, skillData] of Object.entries(skills)) {
 				const oldLevel = oldPlayer.skills[skillName].level;
