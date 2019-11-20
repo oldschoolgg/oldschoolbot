@@ -1,20 +1,20 @@
 const { Command } = require('klasa');
 
 const { triviaQuestions } = require('../../../resources/trivia-questions');
-const oneDay = 1000 * 60 * 60 * 24;
+const halfDay = 1000 * 60 * 60 * 12;
 
-const easyTrivia = triviaQuestions.slice(0, 30);
+const easyTrivia = triviaQuestions.slice(0, 40);
 
 const options = {
 	max: 1,
-	time: 10000,
+	time: 13000,
 	errors: ['time']
 };
 
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
-			cooldown: 1
+			cooldown: 5
 		});
 		this.cache = new Set();
 	}
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 		const lastVoteDate = msg.author.settings.get('lastDailyTimestamp');
 		const difference = currentDate - lastVoteDate;
 
-		if (difference >= oneDay) {
+		if (difference >= halfDay) {
 			await msg.author.settings.update('lastDailyTimestamp', currentDate);
 
 			const trivia = easyTrivia[Math.floor(Math.random() * easyTrivia.length)];
@@ -42,17 +42,13 @@ module.exports = class extends Command {
 					options
 				);
 				const winner = collected.first();
-				if (winner) await this.client.tasks.get('daily').run(msg.author, true);
-				msg.channel.send(`Correct! You've received your daily reward.`);
+				if (winner) await this.client.tasks.get('daily').run(msg, true);
 			} catch (err) {
-				await this.client.tasks.get('daily').run(msg.author, false);
-				msg.channel.send(
-					`You didn't answer correctly, and only received 50% of your normal amount of GP.`
-				);
+				await this.client.tasks.get('daily').run(msg, false);
 			}
 			this.cache.delete(msg.author.id);
 		} else {
-			const nextVoteDate = lastVoteDate + oneDay;
+			const nextVoteDate = lastVoteDate + halfDay;
 			const timeUntilDate = nextVoteDate - currentDate;
 			this.cache.delete(msg.author.id);
 			return msg.send(

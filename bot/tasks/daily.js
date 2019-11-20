@@ -4,7 +4,8 @@ const pets = require('../../data/pets');
 const { roll } = require('../../config/util');
 
 module.exports = class extends Task {
-	async run(user, triviaCorrect) {
+	async run(msg, triviaCorrect) {
+		const user = msg.author;
 		const member = await this.client.guilds
 			.get('342983479501389826')
 			.members.fetch(user)
@@ -35,9 +36,12 @@ module.exports = class extends Task {
 		let chStr = `${bonuses} ${
 			user.username
 		} just got their daily and received ${amount.toLocaleString()} GP! <:Smiley:420283725469974529>`;
-		let dmStr = `${bonuses} You received ${amount.toLocaleString()} GP.`;
 
-		if (triviaCorrect && roll(8)) {
+		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
+
+		let dmStr = `${bonuses} You answered **${correct}** and received...\n`;
+
+		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
 			const userPets = user.settings.get('pets');
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
@@ -46,11 +50,14 @@ module.exports = class extends Task {
 			user.settings.update('pets', { ...userPets });
 
 			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
-			dmStr += `\nYou also received the **${pet.name}** pet! ${pet.emoji}`;
+			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 		}
 
 		this.client.channels.get('469523207691436042').send(chStr);
-		user.send(dmStr).catch(() => null);
+
+		const gpImage = this.client.commands.get('bank').generateImage(amount);
+
+		msg.send(dmStr, gpImage).catch(() => null);
 		user.settings.update('GP', user.settings.get('GP') + amount);
 	}
 };
