@@ -82,7 +82,7 @@ module.exports = class extends Command {
 					return true;
 				})
 				.sort((a, b) => b.GP - a.GP)
-				.slice(0, 1000)
+				.slice(0, 300)
 				.map(this.resolveEntries)
 		);
 
@@ -118,7 +118,7 @@ module.exports = class extends Command {
 					return true;
 				})
 				.sort((a, b) => Object.keys(b.pets).length - Object.keys(a.pets).length)
-				.slice(0, 1000)
+				.slice(0, 300)
 				.map(this.resolveEntries)
 		);
 
