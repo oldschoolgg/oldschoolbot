@@ -22,5 +22,6 @@ module.exports = [
 	{ redditUsername: 'jagexacorn', formattedName: 'Mod Acorn' },
 	{ redditUsername: 'jagex_weath', formattedName: 'Mod Weath' },
 	{ redditUsername: 'jagextide', formattedName: 'Mod Tide' },
-	{ redditUsername: 'jagexflippy', formattedName: 'Mod Flippy' }
+	{ redditUsername: 'jagexflippy', formattedName: 'Mod Flippy' },
+	{ redditUsername: 'jagexbolton', formattedName: 'Mod Bolton' }
 ];
