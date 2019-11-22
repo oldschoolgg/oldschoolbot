@@ -25,8 +25,12 @@ module.exports = class extends Task {
 			bonuses += ' <:OSBot:601768469905801226>';
 		}
 
-		if (roll(10000)) {
-			amount += 1000000000;
+		if (roll(5000)) {
+			if (roll(2)) {
+				bonuses += ' <:bpaptu:647580762098368523>';
+			} else {
+				amount += 1000000000;
+			}
 		}
 
 		if (!triviaCorrect) {
