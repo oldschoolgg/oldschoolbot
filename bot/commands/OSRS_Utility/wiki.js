@@ -66,9 +66,7 @@ module.exports = class extends Command {
 					});
 				})
 				// Add utm source
-				.then(pages =>
-					pages.map(page => ({ ...page, url: `${page.fullurl}?utm_source=osbot` }))
-				)
+				.then(pages => pages.map(page => ({ ...page, url: page.fullurl })))
 				.catch(() => {
 					throw "I couldn't find anything with that query!";
 				});
