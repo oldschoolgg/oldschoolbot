@@ -4,7 +4,7 @@ const {
 } = require('klasa');
 const { User } = require('discord.js');
 const {
-	Util: { toKMB, fromKMB }
+	Util: { toKMB }
 } = require('oldschooljs');
 
 const { roll } = require('../../../config/util');
@@ -26,6 +26,11 @@ module.exports = class extends Command {
 		this.cache = new Set();
 	}
 
+	async checkBal(user, amount) {
+		await user.settings.sync(true);
+		return user.settings.get('GP') >= amount;
+	}
+
 	async run(msg, [user, amount]) {
 		if (!amount) {
 			return msg.send(
@@ -35,42 +40,43 @@ module.exports = class extends Command {
 			);
 		}
 
-		return;
 		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
 
 		if (this.cache.has(msg.guild.id)) return;
 
-		try {
-			await msg.author.settings.sync(true);
-			await user.settings.sync(true);
-		} catch (err) {
-			return msg.send('Unexpected error.');
+		if (!(await this.checkBal(msg.author, amount))) {
+			return msg.send('You dont have have enough GP to duel that much.');
 		}
-
-		const giverGP = msg.author.settings.get('GP');
-		const takerGP = user.settings.get('GP');
-
-		if (giverGP < amount) return msg.send('You dont have have enough GP to duel that much.');
-		if (takerGP < amount) {
+		if (!(await this.checkBal(user, amount))) {
 			return msg.send('That person doesnt have enough GP to duel that much.');
 		}
+
+		this.cache.add(msg.guild.id);
 
 		const duelMsg = await msg.channel.send(
 			`${user.username}, say \`yes\` if you accept the duel for ${toKMB(amount)} GP.`
 		);
 		try {
-			this.cache.add(msg.guild.id);
 			const collected = await msg.channel.awaitMessages(
 				_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'yes',
 				options
 			);
 			if (!collected || !collected.first()) {
-				throw 'didnt accept';
+				this.cache.delete(msg.guild.id);
+				throw "This shouldn't be possible...";
 			}
 		} catch (err) {
 			this.cache.delete(msg.guild.id);
 			return duelMsg.edit(`The user didn't accept the duel.`);
 		}
+
+		if (!(await this.checkBal(msg.author, amount)) || !(await this.checkBal(user, amount))) {
+			this.cache.delete(msg.guild.id);
+			return msg.send('<:bpaptu:647580762098368523>');
+		}
+
+		await msg.author.settings.update('GP', msg.author.settings.get('GP') - amount);
+		await user.settings.update('GP', user.settings.get('GP') - amount);
 
 		await duelMsg.edit(`${user.username} accepted the duel. You both enter the duel arena...`);
 
@@ -78,7 +84,6 @@ module.exports = class extends Command {
 		await duelMsg.edit(`${user.username} and ${msg.author.username} begin fighting...`);
 
 		let winner;
-		let loser;
 
 		// Rare events which force the winner/loser to a certain side.
 		if (roll(300)) {
@@ -89,37 +94,28 @@ module.exports = class extends Command {
 			await sleep(1000);
 
 			winner = msg.author;
-			loser = user;
 		} else if (roll(300)) {
 			await sleep(2000);
 			await duelMsg.edit(
 				`Oops... looks like ${msg.author.username} forgot to check their whip, it just ran out of charges and broke...`
 			);
 			await sleep(1000);
-			loser = user;
 			winner = msg.author;
 		}
 
 		await sleep(2000);
 		await duelMsg.edit(`The fight is almost over...`);
-
 		await sleep(2000);
-		const [newWinner, newLoser] = Math.random() > 0.5 ? [user, msg.author] : [msg.author, user];
+
 		// If a rare event didn't occur, pick a random winner.
 		if (!winner) {
-			winner = newWinner;
-			loser = newLoser;
+			winner = Math.random() > 0.5 ? user : msg.author;
 		}
 
 		const winningAmount = parseInt(amount * 2);
-		let tax = winningAmount - parseInt(winningAmount * 0.95);
+		const tax = winningAmount - parseInt(winningAmount * 0.95);
 
-		if (winningAmount >= fromKMB('100m')) {
-			tax *= 1.5;
-		}
-
-		await winner.settings.update('GP', winner.settings.get('GP') + (amount - tax));
-		await loser.settings.update('GP', loser.settings.get('GP') - amount);
+		await winner.settings.update('GP', winner.settings.get('GP') + (winningAmount - tax));
 
 		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
 		this.cache.delete(msg.guild.id);
