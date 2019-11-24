@@ -100,7 +100,7 @@ module.exports = class extends Command {
 				`Oops... looks like ${msg.author.username} forgot to check their whip, it just ran out of charges and broke...`
 			);
 			await sleep(1000);
-			winner = msg.author;
+			winner = user;
 		}
 
 		await sleep(2000);
