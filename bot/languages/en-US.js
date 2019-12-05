@@ -303,10 +303,10 @@ module.exports = class extends Language {
 			JMOD_COMMENTS_ARENT_ENABLED: "JMod Comments aren't enabled, so you can't disable them.",
 			JMOD_COMMENTS_DISABLED: 'Disabled JMod Comments in this channel.',
 
-			PET_MESSAGES_ALREADY_ENABLED: `Pet Messages are already enabled in this channel.`,
-			PET_MESSAGES_ENABLED: `Enabled Pet Messages in this channel.`,
+			PET_MESSAGES_ALREADY_ENABLED: `Pet Messages are already enabled in this guild.`,
+			PET_MESSAGES_ENABLED: `Enabled Pet Messages in this guild.`,
 			PET_MESSAGES_ARENT_ENABLED: "Pet Messages aren't enabled, so you can't disable them.",
-			PET_MESSAGES_DISABLED: 'Disabled Pet Messages in this channel.',
+			PET_MESSAGES_DISABLED: 'Disabled Pet Messages in this guild.',
 
 			PREFIX_CURRENT: prefix => `The current prefix for your guild is: \`${prefix}\``,
 			PREFIX_CHANGED: (name, prefix) => `Changed Command Prefix for ${name} to \`${prefix}\``,
