@@ -29,7 +29,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill ${fm(
 				num
-			)} Giant Moles to get the Baby Mole Pet! <:Baby_mole:324127375858204672>`
+			)} Giant Moles to get the Baby Mole Pet! <:Baby_mole:324127375858204672>`,
+		bossKeys: ['giantMole']
 	},
 	{
 		id: 3,
@@ -66,7 +67,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to slay Callisto ${fm(
 				num
-			)} times to get the Callisto Cub Pet! <:Callisto_cub:324127376273440768>`
+			)} times to get the Callisto Cub Pet! <:Callisto_cub:324127376273440768>`,
+		bossKeys: ['callisto']
 	},
 	{
 		id: 6,
@@ -108,7 +110,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill the Kalphite Queen ${fm(
 				num
-			)} times to get the Kalphite Princess Pet! <:Kalphite_princess_2nd_form:324127376915300352>`
+			)} times to get the Kalphite Princess Pet! <:Kalphite_princess_2nd_form:324127376915300352>`,
+		bossKeys: ['kalphiteQueen']
 	},
 	{
 		id: 9,
@@ -120,7 +123,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill ${fm(
 				num
-			)} Grotesque Guardians to get the Noon Pet! <:Noon:379595337234382848>`
+			)} Grotesque Guardians to get the Noon Pet! <:Noon:379595337234382848>`,
+		bossKeys: ['grotesqueGuardians']
 	},
 	{
 		id: 10,
@@ -134,7 +138,8 @@ const pets = [
 				num
 			)} Raids to get the Olmlet Pet! <:Olmlet:324127376873357316> it came with a ${
 				raids.determineItem().emoji
-			}`
+			}`,
+		bossKeys: ['chambersofXeric', 'chambersofXericChallengeMode']
 	},
 	{
 		id: 11,
@@ -146,7 +151,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill the Chaos Elemental ${fm(
 				num
-			)} times to get the Chaos Elemental Pet! <:Pet_chaos_elemental:324127377070227456>`
+			)} times to get the Chaos Elemental Pet! <:Pet_chaos_elemental:324127377070227456>`,
+		bossKeys: ['chaosElemental', 'chaosFanatic']
 	},
 	{
 		id: 12,
@@ -158,7 +164,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Dagannoth Prime ${fm(
 				num
-			)} times to get the Dagannoth Prime Pet! <:Pet_dagannoth_prime:324127376877289474>`
+			)} times to get the Dagannoth Prime Pet! <:Pet_dagannoth_prime:324127376877289474>`,
+		bossKeys: ['dagannothPrime']
 	},
 	{
 		id: 13,
@@ -170,7 +177,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Dagannoth Rex ${fm(
 				num
-			)} times to get the Dagannoth Rex Pet! <:Pet_dagannoth_rex:324127377091330049>`
+			)} times to get the Dagannoth Rex Pet! <:Pet_dagannoth_rex:324127377091330049>`,
+		bossKeys: ['dagannothRex']
 	},
 	{
 		id: 14,
@@ -182,7 +190,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Dagannoth Supreme ${fm(
 				num
-			)} times to get the Dagannoth Supreme Pet! <:Pet_dagannoth_supreme:324127377066164245>`
+			)} times to get the Dagannoth Supreme Pet! <:Pet_dagannoth_supreme:324127377066164245>`,
+		bossKeys: ['dagannothSupreme']
 	},
 	{
 		id: 15,
@@ -194,7 +203,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to slay the Corporeal Beast ${fm(
 				num
-			)} times to get the Dark Core Pet! <:Pet_dark_core:324127377347313674>`
+			)} times to get the Dark Core Pet! <:Pet_dark_core:324127377347313674>`,
+		bossKeys: ['corporealBeast']
 	},
 	{
 		id: 16,
@@ -206,7 +216,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill General Graardor ${fm(
 				num
-			)} times to get the General Graardor Jr. Pet! <:Pet_general_graardor:324127377376673792>`
+			)} times to get the General Graardor Jr. Pet! <:Pet_general_graardor:324127377376673792>`,
+		bossKeys: ['generalGraardor']
 	},
 	{
 		id: 17,
@@ -218,7 +229,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to slay the Kraken ${fm(
 				num
-			)} times to get the Kraken Pet! <:Pet_kraken:324127377477206016>`
+			)} times to get the Kraken Pet! <:Pet_kraken:324127377477206016>`,
+		bossKeys: ['kraken']
 	},
 	{
 		id: 18,
@@ -230,7 +242,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Kree'arra ${fm(
 				num
-			)} times to get the Kree'arra Pet! <:Pet_kreearra:324127377305239555>`
+			)} times to get the Kree'arra Pet! <:Pet_kreearra:324127377305239555>`,
+		bossKeys: ['kreeArra']
 	},
 	{
 		id: 19,
@@ -242,7 +255,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill K'ril Tsutsaroth ${fm(
 				num
-			)} times to get the K'ril Tsutsaroth Pet! <:Pet_kril_tsutsaroth:324127377527406594>`
+			)} times to get the K'ril Tsutsaroth Pet! <:Pet_kril_tsutsaroth:324127377527406594>`,
+		bossKeys: ['krilTsutsaroth']
 	},
 	{
 		id: 20,
@@ -266,7 +280,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill ${fm(
 				num
-			)} Thermonuclear Smoke Devil's to get the Smoke Devil Pet! <:Pet_smoke_devil:324127377493852162>`
+			)} Thermonuclear Smoke Devil's to get the Smoke Devil Pet! <:Pet_smoke_devil:324127377493852162>`,
+		bossKeys: ['thermonuclearSmokeDevil']
 	},
 	{
 		id: 22,
@@ -278,7 +293,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Zulrah ${fm(
 				num
-			)} times to get the Snakeling Pet! <:Pet_snakeling:324127377816944642>`
+			)} times to get the Snakeling Pet! <:Pet_snakeling:324127377816944642>`,
+		bossKeys: ['zulrah']
 	},
 	{
 		id: 23,
@@ -290,7 +306,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Commander Zilyana ${fm(
 				num
-			)} times to get the Zilyana Jr. Pet! <:Pet_zilyana:324127378248957952>`
+			)} times to get the Zilyana Jr. Pet! <:Pet_zilyana:324127378248957952>`,
+		bossKeys: ['commanderZilyana']
 	},
 	{
 		id: 24,
@@ -302,7 +319,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to open ${fm(
 				num
-			)} Wintertodt Supply Crates to get the Phoenix Pet! <:Phoenix:324127378223792129>`
+			)} Wintertodt Supply Crates to get the Phoenix Pet! <:Phoenix:324127378223792129>`,
+		bossKeys: ['wintertodt']
 	},
 	{
 		id: 25,
@@ -314,7 +332,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill the King Black Dragon ${fm(
 				num
-			)} times to get the Prince Black Dragon Pet! <:Prince_black_dragon:324127378538364928>`
+			)} times to get the Prince Black Dragon Pet! <:Prince_black_dragon:324127378538364928>`,
+		bossKeys: ['kingBlackDragon']
 	},
 	{
 		id: 26,
@@ -364,7 +383,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Scorpia ${fm(
 				num
-			)} times to get the Scorpia's Offspring Pet! <:Scorpias_offspring:324127378773377024>`
+			)} times to get the Scorpia's Offspring Pet! <:Scorpias_offspring:324127378773377024>`,
+		bossKeys: ['scorpia']
 	},
 	{
 		id: 30,
@@ -376,7 +396,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Skotizo ${fm(
 				num
-			)} times to get the Skotos Pet! <:Skotos:324127378890817546>`
+			)} times to get the Skotos Pet! <:Skotos:324127378890817546>`,
+		bossKeys: ['skotizo']
 	},
 	{
 		id: 31,
@@ -402,7 +423,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Jad ${fm(
 				num
-			)} times to get the TzRek-Jad Pet! <:Tzrekjad:324127379188613121>`
+			)} times to get the TzRek-Jad Pet! <:Tzrekjad:324127379188613121>`,
+		bossKeys: ['tzTokJad']
 	},
 	{
 		id: 33,
@@ -414,7 +436,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Venenatis ${fm(
 				num
-			)} times to get the Venenatis Spiderling Pet! <:Venenatis_spiderling:324127379092144129>`
+			)} times to get the Venenatis Spiderling Pet! <:Venenatis_spiderling:324127379092144129>`,
+		bossKeys: ['venenatis']
 	},
 	{
 		id: 34,
@@ -426,7 +449,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Vet'ion ${fm(
 				num
-			)} times to get the Vet'ion Jr. Pet! <:Vetion_jr:324127378999738369>`
+			)} times to get the Vet'ion Jr. Pet! <:Vetion_jr:324127378999738369>`,
+		bossKeys: ['vetion']
 	},
 	{
 		id: 35,
@@ -438,7 +462,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill the Abyssal Sire ${fm(
 				num
-			)} times to get the Abyssal orphan Pet! <:Abyssal_orphan:324127375774449664>`
+			)} times to get the Abyssal orphan Pet! <:Abyssal_orphan:324127375774449664>`,
+		bossKeys: ['abyssalSire']
 	},
 	{
 		id: 36,
@@ -450,7 +475,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Cerberus ${fm(
 				num
-			)} times to get the Hellpuppy Pet! <:Hellpuppy:324127376185491458>`
+			)} times to get the Hellpuppy Pet! <:Hellpuppy:324127376185491458>`,
+		bossKeys: ['cerberus']
 	},
 	{
 		id: 37,
@@ -470,11 +496,12 @@ const pets = [
 		chance: 100,
 		name: 'Jal-nib-rek',
 		type: 'BOSS',
-		altNames: ['INFERNO', 'JALNIBREK', 'NIBBLER'],
+		altNames: ['INFERNO', 'JALNIBREK', 'NIBBLER', 'ZUK'],
 		formatFinish: num =>
 			`You had to complete the Inferno ${fm(
 				num
-			)} times to get the Jal-Nib-Rek Pet! <:Jalnibrek:346196886119514113>`
+			)} times to get the Jal-Nib-Rek Pet! <:Jalnibrek:346196886119514113>`,
+		bossKeys: ['tzKalZuk']
 	},
 	{
 		id: 39,
@@ -498,7 +525,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to slay the almighty Vorkath ${fm(
 				num
-			)} times to get the Vorki Pet! <:Vorki:400713309252222977>`
+			)} times to get the Vorki Pet! <:Vorki:400713309252222977>`,
+		bossKeys: ['vorkath']
 	},
 	{
 		id: 41,
@@ -510,7 +538,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to complete the Theatre of Blood ${fm(
 				num
-			)} times to get the Lil' Zik pet! <:Lil_zik:479460344423776266>`
+			)} times to get the Lil' Zik pet! <:Lil_zik:479460344423776266>`,
+		bossKeys: ['theatreofBlood']
 	},
 	{
 		id: 42,
@@ -522,7 +551,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to slay the Alchemical Hydra ${fm(
 				num
-			)} times to get the Ikkle hydra pet! <:Ikkle_hydra:534941897228156948>`
+			)} times to get the Ikkle hydra pet! <:Ikkle_hydra:534941897228156948>`,
+		bossKeys: ['alchemicalHydra']
 	},
 	{
 		id: 43,
@@ -534,7 +564,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to take down Zalcano ${fm(
 				num
-			)} times to get the Smolcano pet! <:Smolcano:604670895113633802>`
+			)} times to get the Smolcano pet! <:Smolcano:604670895113633802>`,
+		bossKeys: ['zalcano']
 	},
 	{
 		id: 44,
@@ -548,7 +579,8 @@ const pets = [
 				num
 			)} times to get the Youngllef pet! <:Youngllef:604670894798798858> This took you ${fm(
 				num * 0.15
-			)} hours.`
+			)} hours.`,
+		bossKeys: ['theGauntlet', 'theCorruptedGauntlet']
 	},
 	{
 		id: 45,
@@ -560,7 +592,8 @@ const pets = [
 		formatFinish: num =>
 			`You had to kill Sarachnis ${fm(
 				num
-			)} times to get the Sraracha pet! <:Sraracha:608231007803670529>`
+			)} times to get the Sraracha pet! <:Sraracha:608231007803670529>`,
+		bossKeys: ['sarachnis']
 	}
 ];
 
