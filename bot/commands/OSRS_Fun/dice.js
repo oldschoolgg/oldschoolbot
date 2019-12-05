@@ -29,7 +29,7 @@ module.exports = class extends Command {
 			if (amount > gp) throw "You don't have enough GP.";
 
 			let amountToAdd = roll >= 55 ? gp + amount : gp - amount;
-			if (roll === 73) amountToAdd += amount * 0.2;
+			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
 			await msg.author.settings.update('GP', amountToAdd);
 
