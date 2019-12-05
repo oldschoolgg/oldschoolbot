@@ -36,7 +36,9 @@ module.exports = class extends Command {
 			embed.setDescription(
 				`You rolled **${roll}** on the percentile dice, and you ${
 					roll >= 55 ? 'won' : 'lost'
-				} ${toKMB(amountToAdd - gp)} GP. ${roll === 73 && '<:bpaptu:647580762098368523>'}`
+				} ${toKMB(amountToAdd - gp)} GP. ${
+					roll === 73 ? '<:bpaptu:647580762098368523>' : ''
+				}`
 			);
 		}
 		return msg.send({ embed });
