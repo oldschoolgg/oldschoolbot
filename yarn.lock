@@ -553,11 +553,10 @@ discord.js@vladfrangu/discOwOd.js#sharding-cleanup:
     abort-controller "^3.0.0"
     form-data "^2.3.3"
     node-fetch "^2.3.0"
-    pako "^1.0.10"
     prism-media "^1.0.0"
     setimmediate "^1.0.5"
     tweetnacl "^1.0.1"
-    ws "^7.1.1"
+    ws "^7.2.0"
 
 doctrine@^3.0.0:
   version "3.0.0"
@@ -1428,7 +1427,7 @@ keyv@3.0.0:
   version "0.0.1-dev"
   resolved "https://codeload.github.com/gc/text-channel-gateway/tar.gz/957ce817263a6633ce40b6f9c942f0dac1ec5313"
 
-"klasa@github:dirigeants/klasa#master":
+"klasa@github:dirigeants/klasa#0e9174cab0df7d28f3a7b8ca78b6344fef2611c9":
   version "0.5.0-dev"
   resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/0e9174cab0df7d28f3a7b8ca78b6344fef2611c9"
   dependencies:
@@ -1711,10 +1710,10 @@ object.getownpropertydescriptors@^2.0.3:
     define-properties "^1.1.2"
     es-abstract "^1.5.1"
 
-oldschooljs@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.5.1.tgz#bf5f8b2ec7d92ec337799dbc10ef69ce9768942f"
-  integrity sha512-xqbrLt/f/jb1yvtsneCcXqsxWj4GbjyrORADJB63Y9cIChvT8q9wUA6Gi/mdaCeVBNvQc/FmJk2hVA/2ggr+4Q==
+oldschooljs@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.5.2.tgz#3804b66b56110b35a69d2f45fafd35b698ac80ed"
+  integrity sha512-KU3+EA8RByGrpKanp3Sdx7i2Tt1r8YkS20xa/vGNh/tl2QdL9V4jhFZJA3OG5tyNReTtrLSluNC7lS1MuUCi8A==
   dependencies:
     jsdom "^15.1.1"
     node-fetch "^2.6.0"
