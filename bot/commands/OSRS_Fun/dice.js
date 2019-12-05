@@ -1,5 +1,8 @@
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
+const {
+	Util: { toKMB }
+} = require('oldschooljs');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -21,15 +24,19 @@ module.exports = class extends Command {
 		if (!amount) {
 			embed.setDescription(`You rolled [**${roll}**]() on the percentile dice.`);
 		} else {
+			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get('GP');
 			if (amount > gp) throw "You don't have enough GP.";
 
-			msg.author.settings.update('GP', roll >= 55 ? gp + amount : gp - amount);
+			let amountToAdd = roll >= 55 ? gp + amount : gp - amount;
+			if (roll === 73) amountToAdd += amount * 0.2;
+
+			await msg.author.settings.update('GP', amountToAdd);
 
 			embed.setDescription(
 				`You rolled [**${roll}**]() on the percentile dice, and you ${
 					roll >= 55 ? 'won' : 'lost'
-				} ${amount} GP.`
+				} ${toKMB(amountToAdd - gp)} GP. ${roll === 73 && '<:bpaptu:647580762098368523>'}`
 			);
 		}
 		return msg.send({ embed });
