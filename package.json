@@ -12,7 +12,7 @@
 		"crystalmethlabs": "github:gc/crystalmethlabs",
 		"discord.js": "vladfrangu/discOwOd.js#sharding-cleanup",
 		"he": "^1.2.0",
-		"klasa": "github:dirigeants/klasa#0e9174cab0df7d28f3a7b8ca78b6344fef2611c9",
+		"klasa": "github:dirigeants/klasa#master",
 		"klasa-textchannel-gateway": "github:gc/text-channel-gateway#master",
 		"markovchain": "^1.0.2",
 		"moment": "^2.21.0",
