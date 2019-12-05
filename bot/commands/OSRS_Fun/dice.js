@@ -34,7 +34,7 @@ module.exports = class extends Command {
 			await msg.author.settings.update('GP', amountToAdd);
 
 			embed.setDescription(
-				`You rolled [**${roll}**]() on the percentile dice, and you ${
+				`You rolled **${roll}** on the percentile dice, and you ${
 					roll >= 55 ? 'won' : 'lost'
 				} ${toKMB(amountToAdd - gp)} GP. ${roll === 73 && '<:bpaptu:647580762098368523>'}`
 			);
