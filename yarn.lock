@@ -28,6 +28,11 @@
   resolved "https://registry.yarnpkg.com/@kcp/tags/-/tags-1.0.0.tgz#d18ad9fc3c26027a2d0a6504b168c127cd34d654"
   integrity sha512-Crjwrtn4g8wNsj2gmtR8Pbw78dER5QOqj1HqI08hInpxZUYOnLtJrKA9OaDHZthpG+JN0Vtvp4oNr8+8N5NiJw==
 
+"@klasa/request-handler@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@klasa/request-handler/-/request-handler-0.0.3.tgz#ed72de611ece3dd99725cb797fc13e07bb05e618"
+  integrity sha512-Z1O+Aa2kW/I4Uos4EZalByveIuQKRfuRx+JCsgsogDBd95N5Ub47AH+LEd5i+uzjnJ6iDHfodpVlaHojJ4Q+ZQ==
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
@@ -1710,10 +1715,10 @@ object.getownpropertydescriptors@^2.0.3:
     define-properties "^1.1.2"
     es-abstract "^1.5.1"
 
-oldschooljs@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.5.2.tgz#3804b66b56110b35a69d2f45fafd35b698ac80ed"
-  integrity sha512-KU3+EA8RByGrpKanp3Sdx7i2Tt1r8YkS20xa/vGNh/tl2QdL9V4jhFZJA3OG5tyNReTtrLSluNC7lS1MuUCi8A==
+oldschooljs@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.5.3.tgz#5cbad9a142c37d7a85109c3712cfcafd830d56bc"
+  integrity sha512-k3bEFqnMdlGY3+Yxs/eVP6poz189hy2wKCVZwcC9+Uzv0lygAl0QmubhpmRQJjoUtC9E7213YaME1FlZtlv0Dg==
   dependencies:
     jsdom "^15.1.1"
     node-fetch "^2.6.0"
