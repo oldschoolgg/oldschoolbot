@@ -34,6 +34,8 @@ module.exports = class MemorySweeper extends Task {
 	}
 
 	async run() {
+		this.client.commands.get('daily').cache.clear();
+
 		let presences = 0,
 			guildMembers = 0,
 			voiceStates = 0,
