@@ -25,6 +25,14 @@ module.exports = class extends Task {
 			bonuses += ' <:OSBot:601768469905801226>';
 		}
 
+		if (roll(73)) {
+			amount = Math.floor(amount * 1.73);
+			bonuses += ' 😂';
+		}
+
+		amount = Math.floor(amount * 2);
+		bonuses += ' <:Santa_hat:526986779195080704>';
+
 		if (roll(5000)) {
 			if (roll(2)) {
 				bonuses += ' <:bpaptu:647580762098368523>';
