@@ -1,4 +1,4 @@
-const { Command } = require('klasa');
+const { Command, Duration } = require('klasa');
 
 const { triviaQuestions } = require('../../../resources/trivia-questions');
 const halfDay = 1000 * 60 * 60 * 12;
@@ -48,14 +48,12 @@ module.exports = class extends Command {
 			}
 			this.cache.delete(msg.author.id);
 		} else {
-			const nextVoteDate = lastVoteDate + halfDay;
-			const timeUntilDate = nextVoteDate - currentDate;
 			this.cache.delete(msg.author.id);
-			return msg.send(
-				`You can claim your next daily in ${(timeUntilDate / 1000 / 60 / 60).toFixed(
-					2
-				)} hours.`
-			);
+
+			const nextVoteDate = lastVoteDate + halfDay;
+			const duration = Duration.toNow(nextVoteDate);
+
+			return msg.send(`You can claim your next daily in ${duration}`);
 		}
 	}
 };
