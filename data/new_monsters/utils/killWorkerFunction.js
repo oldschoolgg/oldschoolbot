@@ -53,6 +53,7 @@ const drake = require('../../monsters/drake');
 const wyrm = require('../../monsters/wyrm');
 const hespori = require('../../monsters/hespori');
 const sarachnis = require('../../monsters/sarachnis');
+const basKnight = require('../../../data/monsters/basKnight');
 
 function killWorkerFunction(quantity, bossName) {
 	switch (cleanString(bossName)) {
@@ -443,6 +444,17 @@ function killWorkerFunction(quantity, bossName) {
 		case 'CG': {
 			if (quantity > 500) return 'I can only kill 500 Gauntlets at a time!';
 			const loot = gauntlet.kill(quantity, true);
+			return loot.length > 0 ? loot : 'You got nothing.';
+		}
+
+		case 'BASKNIGHT':
+		case 'BASILISKKNIGHT':
+		case 'BK':
+		case 'BASILISK': {
+			if (quantity > 100) {
+				return 'I can only kill 300 Basilik Knights at a time!';
+			}
+			const loot = basKnight.kill(quantity);
 			return loot.length > 0 ? loot : 'You got nothing.';
 		}
 
