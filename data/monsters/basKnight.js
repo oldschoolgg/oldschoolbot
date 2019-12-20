@@ -7,7 +7,7 @@ const basKnight = {
 	kill(quantity) {
 		const loot = [];
 		for (let i = 0; i < quantity; i++) {
-			if (this.roll(800)) loot.push(this.drops.jaw);
+			if (this.roll(1000)) loot.push(this.drops.jaw);
 			if (this.roll(5000)) loot.push(this.drops.curvedBone);
 			if (this.roll(400)) loot.push(this.drops.longBone);
 		}
