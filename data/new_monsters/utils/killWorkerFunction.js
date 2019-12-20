@@ -451,7 +451,7 @@ function killWorkerFunction(quantity, bossName) {
 		case 'BASILISKKNIGHT':
 		case 'BK':
 		case 'BASILISK': {
-			if (quantity > 100) {
+			if (quantity > 300) {
 				return 'I can only kill 300 Basilik Knights at a time!';
 			}
 			const loot = basKnight.kill(quantity);
