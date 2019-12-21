@@ -1,6 +1,5 @@
 const { Command, Duration } = require('klasa');
 
-const { roll } = require('../../../config/util');
 const { triviaQuestions } = require('../../../resources/trivia-questions');
 const halfDay = 1000 * 60 * 60 * 12;
 
@@ -21,12 +20,6 @@ module.exports = class extends Command {
 	}
 
 	async run(msg) {
-		const donationMessage = `Old School Bot is in huge need for donations for server costs. Please consider joining the support server (${
-			msg.guild ? msg.guild.settings.prefix : '+'
-		}support) if you're able to help.\n`;
-
-		const shouldShow = roll(3);
-
 		if (this.cache.has(msg.author.id)) return;
 		this.cache.add(msg.author.id);
 
@@ -60,9 +53,7 @@ module.exports = class extends Command {
 			const nextVoteDate = lastVoteDate + halfDay;
 			const duration = Duration.toNow(nextVoteDate);
 
-			return msg.send(
-				`${shouldShow ? donationMessage : ''} You can claim your next daily in ${duration}.`
-			);
+			return msg.send(`You can claim your next daily in ${duration}.`);
 		}
 	}
 };
