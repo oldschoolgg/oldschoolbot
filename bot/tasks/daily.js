@@ -5,6 +5,12 @@ const { roll } = require('../../config/util');
 
 module.exports = class extends Task {
 	async run(msg, triviaCorrect) {
+		const donationMessage = `Old School Bot is in huge need for donations for server costs. Please consider joining the support server (${
+			msg.guild ? msg.guild.settings.prefix : '+'
+		}support) if you're able to help.\n`;
+
+		const shouldShow = roll(2);
+
 		const user = msg.author;
 		const member = await this.client.guilds
 			.get('342983479501389826')
@@ -51,7 +57,9 @@ module.exports = class extends Task {
 
 		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
 
-		let dmStr = `${bonuses} You answered **${correct}** and received...\n`;
+		let dmStr = `${
+			shouldShow ? donationMessage : ''
+		} ${bonuses} You answered **${correct}** and received...\n`;
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
