@@ -8,6 +8,12 @@ const { flatten, toTitleCase: tCase } = require('../../../config/util');
 const emoji = require('../../../config/skill-emoji');
 
 module.exports = class extends Task {
+	constructor(...args) {
+		super(...args, {
+			enabled: false
+		});
+	}
+
 	async announce(username, message) {
 		const usernameMap = this.client.settings.get('usernameCache');
 		for (const [guildID, usernames] of Object.entries(usernameMap)) {
