@@ -1431,6 +1431,7 @@ keyv@3.0.0:
   version "0.5.0-dev"
   resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/0e9174cab0df7d28f3a7b8ca78b6344fef2611c9"
   dependencies:
+    "@klasa/request-handler" "^0.0.3"
     fs-nextra "^0.4.5"
 
 levn@^0.3.0, levn@~0.3.0:
@@ -1710,10 +1711,10 @@ object.getownpropertydescriptors@^2.0.3:
     define-properties "^1.1.2"
     es-abstract "^1.5.1"
 
-oldschooljs@^0.6.6:
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.6.6.tgz#f962ab31af3e03b2d634478987040d65cd8a949f"
-  integrity sha512-mxiv/yB6UU7dNo7mgyftQv4Y3O8+bvlAvN8mfiKVzwtlgFcXapA+rNk74y2V0b6McfZVWQZgLEQ7RVwYa85y2Q==
+oldschooljs@^0.6.8:
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.6.8.tgz#a28fb46999affc33ea8c8bac5caa78c03648347f"
+  integrity sha512-IlLSUKHyfeygCnbApnA0QWK+MfPsLfp9dKa144OrzUqwn++MrXDbfsIFZ+Qq8nPiNmZqgEyUhNQ6THXdCSZj0Q==
   dependencies:
     jsdom "^15.1.1"
     node-fetch "^2.6.0"
