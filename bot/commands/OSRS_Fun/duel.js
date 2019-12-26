@@ -19,7 +19,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Simulates dueling another player.',
-			usage: '<user:user|user:str> [amount:int{10000,2147483647}]',
+			usage: '<user:user|user:str> [amount:int{10000}]',
 			usageDelim: ' ',
 			cooldown: 5
 		});
