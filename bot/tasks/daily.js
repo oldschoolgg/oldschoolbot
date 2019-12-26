@@ -30,9 +30,6 @@ module.exports = class extends Task {
 			bonuses += ' 😂';
 		}
 
-		amount = Math.floor(amount * 10);
-		bonuses += ' <:Santa_hat:526986779195080704>🎄';
-
 		if (roll(5000)) {
 			if (roll(2)) {
 				bonuses += ' <:bpaptu:647580762098368523>';
