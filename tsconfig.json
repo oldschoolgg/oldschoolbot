@@ -1,0 +1,14 @@
+{
+	"extends": "eslint-config-bamboo",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"target": "es2020",
+		"allowJs": true,
+		"checkJs": true,
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true,
+		"types": ["node", "node-fetch", "discord.js", "klasa"]
+	},
+	"include": ["./src/**/*"],
+	"exclude": ["**/node_modules", "**/dist"]
+}
