@@ -3,7 +3,7 @@ const { Command } = require('klasa');
 let triviaQuestions;
 try {
 	// eslint-disable-next-line prefer-destructuring
-	triviaQuestions = require('../../../resources/trivia-questions').triviaQuestions;
+	triviaQuestions = require('../../../resources/trivia-questions.json').triviaQuestions;
 } catch (err) {
 	console.log('No trivia questions file found. Disabling trivia command.');
 }
