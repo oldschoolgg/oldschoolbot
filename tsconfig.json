@@ -4,11 +4,11 @@
 		"outDir": "./dist",
 		"target": "es2020",
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"skipLibCheck": true,
 		"allowSyntheticDefaultImports": true,
 		"types": ["node", "node-fetch", "discord.js", "klasa"]
 	},
 	"include": ["./src/**/*"],
-	"exclude": ["**/node_modules", "**/dist"]
+	"exclude": ["node_modules", "**/dist"]
 }
