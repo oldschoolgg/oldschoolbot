@@ -1,7 +1,9 @@
 # Klasa
 bot/bwd/provider/json/
+src/bwd/provider/json/
 /config/private.js
 resources/trivia-questions.json
+dist/
 
 npm-debug.log*
 

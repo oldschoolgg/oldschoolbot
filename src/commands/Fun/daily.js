@@ -1,6 +1,6 @@
 const { Command, Duration } = require('klasa');
 
-const { triviaQuestions } = require('../../../resources/trivia-questions');
+const { triviaQuestions } = require('../../../../resources/trivia-questions.json');
 const halfDay = 1000 * 60 * 60 * 12;
 
 const easyTrivia = triviaQuestions.slice(0, 40);
