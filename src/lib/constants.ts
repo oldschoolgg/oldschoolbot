@@ -17,7 +17,16 @@ export const enum Emoji {
 	OSBot = '<:OSBot:601768469905801226>',
 	Joy = '😂',
 	Bpaptu = '<:bpaptu:647580762098368523>',
-	Diamond = '💎'
+	Diamond = '💎',
+	Dice = '<:dice:660128887111548957>'
+}
+
+export const enum Image {
+	DiceBag = 'https://i.imgur.com/sySQkSX.png'
+}
+
+export const enum Color {
+	Orange = 16098851
 }
 
 export const SupportServer = '342983479501389826';
