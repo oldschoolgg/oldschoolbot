@@ -16,7 +16,7 @@ export const enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
 	OSBot = '<:OSBot:601768469905801226>',
 	Joy = '😂',
-	Bpaptu = '<:bpaptu:647580762098368523>',
+	Bpaptu = '<:bpaptu:660333438292983818>',
 	Diamond = '💎',
 	Dice = '<:dice:660128887111548957>'
 }

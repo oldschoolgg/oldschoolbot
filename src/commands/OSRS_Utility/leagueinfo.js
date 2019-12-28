@@ -23,11 +23,11 @@ module.exports = class extends Command {
 			)
 			.addField(
 				ZWS,
-				`<:league_logo:644488463416295424> [Blog Post](https://secure.runescape.com/m=news/the-twisted-league?oldschool=1)
+				`<:league_logo:660333438481727498> [Blog Post](https://secure.runescape.com/m=news/the-twisted-league?oldschool=1)
 
-<:league_tasks:644484481054539777>  [Tasks](https://oldschool.runescape.wiki/w/Twisted_League/Tasks)
+<:league_tasks:660333438016028723>  [Tasks](https://oldschool.runescape.wiki/w/Twisted_League/Tasks)
 
-<:league_relic:644484480999882752> [Relics](https://oldschool.runescape.wiki/w/Twisted_League#Relics)`,
+<:league_relic:660333437999382548> [Relics](https://oldschool.runescape.wiki/w/Twisted_League#Relics)`,
 				true
 			)
 			.addField(
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 
 <:xp:630911040510623745> [Hiscores](https://secure.runescape.com/m=hiscore_oldschool_seasonal/overall.ws)
 
-<:league_info:644484480936968192> [Guide](https://oldschool.runescape.wiki/w/Twisted_League/Guide)`,
+<:league_info:660333438003314694> [Guide](https://oldschool.runescape.wiki/w/Twisted_League/Guide)`,
 				true
 			);
 
