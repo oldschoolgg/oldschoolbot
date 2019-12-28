@@ -15,7 +15,7 @@ module.exports = class extends Task {
 			Thread.terminate(this.client.killWorkerThread);
 		}
 		this.client.killWorkerThread = await spawn(
-			new Worker('../../data/new_monsters/utils/killWorkerFunction')
+			new Worker('../../../data/new_monsters/utils/killWorkerFunction')
 		).catch(console.error);
 
 		const terminateCb = async () => {

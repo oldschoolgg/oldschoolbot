@@ -72,7 +72,7 @@ module.exports = class extends Command {
 
 		if (!(await this.checkBal(msg.author, amount)) || !(await this.checkBal(user, amount))) {
 			this.cache.delete(msg.guild.id);
-			return msg.send('<:bpaptu:647580762098368523>');
+			return msg.send('<:bpaptu:660333438292983818>');
 		}
 
 		await msg.author.settings.update('GP', msg.author.settings.get('GP') - amount);
