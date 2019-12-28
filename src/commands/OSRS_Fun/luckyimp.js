@@ -36,7 +36,7 @@ module.exports = class extends Command {
 				display += ' <:swampletics:656224747587108912>';
 			}
 			if (quantity === 73) {
-				display += ' <:bpaptu:647580762098368523>';
+				display += ' <:bpaptu:660333438292983818>';
 			}
 			display += '\n';
 		}
