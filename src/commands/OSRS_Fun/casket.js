@@ -1,4 +1,5 @@
 const { Command } = require('klasa');
+const { MessageAttachment } = require('discord.js');
 const { Clues, Items } = require('oldschooljs');
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
@@ -74,11 +75,8 @@ module.exports = class extends Command {
 
 		if (Object.keys(loot).length === 0) return msg.send(`${opened} and got nothing :(`);
 
-		let display = `${opened} and received...\n`;
-		for (const [itemID, qty] of Object.entries(loot)) {
-			display += `**${Items.get(parseInt(itemID)).name}:** ${qty.toLocaleString()}\n`;
-		}
+		const image = await this.client.tasks.get('bankImage').generateBankImage(loot);
 
-		return msg.sendLarge(display, `loot-from-${quantity}-${tier}-clues.txt`);
+		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 };
