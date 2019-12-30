@@ -56,6 +56,9 @@ export default class extends Command {
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
 		const task = this.client.tasks.get('bankImage');
+
+		// TODO - add 'WTF' error handling, maybe coerce this
+		if (!task || !task.generateBankImage) throw '';
 		const image = await task!.generateBankImage(bank);
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
