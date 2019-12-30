@@ -18,7 +18,8 @@ export const enum Emoji {
 	Joy = '😂',
 	Bpaptu = '<:bpaptu:660333438292983818>',
 	Diamond = '💎',
-	Dice = '<:dice:660128887111548957>'
+	Dice = '<:dice:660128887111548957>',
+	Minion = '<:minion:660517408968146946>'
 }
 
 export const enum Image {
