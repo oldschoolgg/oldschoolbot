@@ -59,6 +59,7 @@ export default class extends Command {
 
 		// TODO - add 'WTF' error handling, maybe coerce this
 		if (!task || !task.generateBankImage) throw '';
+		bank[995] = coins;
 		const image = await task!.generateBankImage(bank);
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}

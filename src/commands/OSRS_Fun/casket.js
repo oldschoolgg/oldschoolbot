@@ -1,6 +1,6 @@
 const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
-const { Clues, Items } = require('oldschooljs');
+const { Clues } = require('oldschooljs');
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
 const uniqueItems = require('../../../data/rareClueItems');
