@@ -4,6 +4,7 @@ src/bwd/provider/json/
 /config/private.js
 resources/trivia-questions.json
 dist/
+icon_cache/
 
 npm-debug.log*
 

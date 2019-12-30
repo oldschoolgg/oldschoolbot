@@ -1,8 +1,6 @@
 const { Command } = require('klasa');
 const { MessageAttachment } = require('discord.js');
 
-const generateBankImage = require('../../../data/new_monsters/utils/generateBankImage');
-
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -19,6 +17,9 @@ module.exports = class extends Command {
 		if (typeof result === 'string') {
 			return msg.send(result);
 		}
-		return msg.send(new MessageAttachment(Buffer.from(generateBankImage(result)), 'osbot.png'));
+
+		const image = await this.client.tasks.get('bankImage').generateBankImage(result);
+
+		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 };
