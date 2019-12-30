@@ -137,15 +137,6 @@ export default class BankImageTask extends Task {
 					item.height
 				);
 
-				/*
-			ctx.strokeRect(
-				xLoc + (32 - item.image.width) / 2,
-				yLoc + (32 - item.image.height) / 2,
-				item.image.width,
-				item.image.height
-			);
-			*/
-
 				const quantityColor = generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
 
@@ -153,7 +144,7 @@ export default class BankImageTask extends Task {
 				for (let t = 0; t < 5; t++) {
 					this.ctx.fillText(
 						formattedQuantity,
-						xLoc + distanceFromSide - 16 + 1,
+						xLoc + distanceFromSide - 18 + 1,
 						yLoc + distanceFromTop - 24 + 1
 					);
 				}
@@ -162,7 +153,7 @@ export default class BankImageTask extends Task {
 				for (let t = 0; t < 5; t++) {
 					this.ctx.fillText(
 						formattedQuantity,
-						xLoc + distanceFromSide - 16,
+						xLoc + distanceFromSide - 18,
 						yLoc + distanceFromTop - 24
 					);
 				}

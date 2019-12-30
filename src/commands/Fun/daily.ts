@@ -5,7 +5,9 @@ import { triviaQuestions } from '../../../resources/trivia-questions.json';
 import { BotCommand } from '../../lib/BotCommand.js';
 import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
 import { roll, rand, formatDuration } from '../../../config/util.js';
-import pets = require('../../../data/pets.js');
+import pets from '../../../data/pets';
+import clueTiers from '../../lib/clueTiers';
+import { randomItemFromArray, addArrayOfItemsToBank } from '../../lib/util.js';
 
 const easyTrivia = triviaQuestions.slice(0, 40);
 
@@ -103,13 +105,21 @@ export default class DailyCommand extends BotCommand {
 			amount = Math.floor(amount * 0.5);
 		}
 
+		await msg.author.settings.sync(true);
+		let bank = msg.author.settings.get('bank');
+		const caskets = this.pickRandomCaskets(triviaCorrect);
+		bank = addArrayOfItemsToBank(bank, caskets);
+		await msg.author.settings.update('bank', bank);
+
 		let chStr = `${bonuses.join('')} ${
 			user.username
 		} just got their daily and received ${amount.toLocaleString()} GP! <:Smiley:420283725469974529>`;
 
 		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
 
+		const pfix = msg.guild ? msg.guild.settings.get('prefix') : '+';
 		let dmStr = `${bonuses.join('')} You answered **${correct}** and received...\n`;
+		dmStr += `\n**${caskets.length} Random Caskets** (open using ${pfix}open easy/medium/etc)`;
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
@@ -131,5 +141,17 @@ export default class DailyCommand extends BotCommand {
 
 		msg.send(dmStr, gpImage).catch(() => null);
 		user.settings.update('GP', user.settings.get('GP') + amount);
+	}
+
+	pickRandomCaskets(triviaCorrect: boolean): number[] {
+		const idArr = clueTiers.map(tier => tier.id);
+		const result = [];
+		const amountToGet = triviaCorrect ? rand(3, 6) : rand(2, 4);
+
+		for (let i = 0; i < amountToGet; i++) {
+			result.push(randomItemFromArray(idArr) as number);
+		}
+
+		return result;
 	}
 }
