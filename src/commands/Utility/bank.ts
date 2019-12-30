@@ -1,10 +1,9 @@
-import { Command, KlasaMessage } from 'klasa';
+import { Command, KlasaMessage, KlasaClient, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
-import { KlasaClient, CommandStore } from 'klasa';
-import { generateHexColorForCashStack } from '../../lib/util';
-import { toKMB } from 'oldschooljs/dist/util';
+
+import { generateHexColorForCashStack, formatItemStackQuantity } from '../../lib/util';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -34,7 +33,7 @@ export default class extends Command {
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
 
 		const color = generateHexColorForCashStack(amount);
-		const formattedNumber = toKMB(amount);
+		const formattedNumber = formatItemStackQuantity(amount);
 
 		ctx.fillStyle = '#000000';
 		ctx.fillText(formattedNumber.split('0').join('O'), 10, 15);
@@ -57,9 +56,7 @@ export default class extends Command {
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
 		const task = this.client.tasks.get('bankImage');
-		if (!task || !task.generateBankImage) throw 'wtf';
-		const image = await task.generateBankImage(bank);
-		if (!image) throw 'wtf no image';
+		const image = await task!.generateBankImage(bank);
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 }
