@@ -69,7 +69,7 @@ export default class DailyCommand extends BotCommand {
 		const user = msg.author;
 		const guild = this.client.guilds.get(SupportServer);
 		if (!guild) return;
-		const member = guild.members.fetch(user).catch(() => null);
+		const member = await guild.members.fetch(user).catch(() => null);
 
 		let amount = rand(500_000, 5_000_000);
 		const bonuses = [];
