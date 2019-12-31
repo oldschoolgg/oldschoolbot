@@ -1,7 +1,9 @@
 import { Clues } from 'oldschooljs';
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
-export default [
+import { ClueTier } from './types';
+
+const tiers: ClueTier[] = [
 	{
 		name: 'Beginner',
 		table: Beginner,
@@ -33,3 +35,5 @@ export default [
 		id: 19836
 	}
 ];
+
+export default tiers;
