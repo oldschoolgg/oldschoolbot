@@ -1,7 +1,6 @@
 import { Command } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
-import * as uniqueItems from '../../../data/rareClueItems';
 import ClueTiers from '../../lib/clueTiers';
 
 import { KlasaClient, CommandStore } from 'klasa';
@@ -46,7 +45,6 @@ export default class extends Command {
 
 		for (const casketResult of lootResult) {
 			for (const item of casketResult) {
-				if (!uniqueItems.has(item.item)) continue;
 				if (!loot[item.item]) loot[item.item] = item.quantity;
 				else loot[item.item] += item.quantity;
 			}
