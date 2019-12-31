@@ -66,7 +66,10 @@ export default class extends Command {
 		if (!task || !task.generateBankImage) throw '';
 
 		if (bankKeys.length < 57) {
-			const image = await task.generateBankImage(bank, 'test');
+			const image = await task.generateBankImage(
+				bank,
+				`${msg.author.username}'s Bank - Page 1 of 1`
+			);
 			return msg.send(new MessageAttachment(image, 'osbot.png'));
 		}
 
@@ -76,7 +79,7 @@ export default class extends Command {
 		if (!bankPage) throw "You don't have any items on that page!";
 		const image = await task.generateBankImage(
 			bankPage,
-			`${msg.author.username}'s Bank - Page ${page}`
+			`${msg.author.username}'s Bank - Page ${page} of ${chunkedObject.length}`
 		);
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
