@@ -75,7 +75,9 @@ module.exports = class extends Command {
 
 		if (Object.keys(loot).length === 0) return msg.send(`${opened} and got nothing :(`);
 
-		const image = await this.client.tasks.get('bankImage').generateBankImage(loot);
+		const image = await this.client.tasks
+			.get('bankImage')
+			.generateBankImage(loot, `Loot from ${quantity} ${clueTier.name} Clues`);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}

@@ -13,6 +13,7 @@ import { Bank } from '../lib/types';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
+registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
 
 const bankImageFile = fs.readFileSync('./resources/images/bank.png');
 
@@ -92,13 +93,33 @@ export default class BankImageTask extends Task {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	async generateBankImage(itemLoot: Bank): Promise<Buffer> {
+	async generateBankImage(itemLoot: Bank, title: string = ''): Promise<Buffer> {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.ctx.fillStyle = '#494034';
 
 		const backgroundImage = await canvasImageFromBuffer(bankImageFile);
 
 		this.ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
+
+		// Draw Bank Title
+
+		this.ctx.textAlign = 'center';
+		this.ctx.font = '16px RuneScape Bold 12';
+
+		for (let i = 0; i < 3; i++) {
+			this.ctx.fillStyle = '#000000';
+			this.ctx.fillText(title, this.canvas.width / 2 + 1, 21 + 1);
+		}
+		for (let i = 0; i < 3; i++) {
+			this.ctx.fillStyle = '#ff981f';
+			this.ctx.fillText(title, this.canvas.width / 2, 21);
+		}
+
+		// Draw Items
+
+		this.ctx.textAlign = 'start';
+		this.ctx.fillStyle = '#494034';
+
+		this.ctx.font = '16px OSRSFontCompact';
 
 		let loot = [];
 
@@ -127,7 +148,7 @@ export default class BankImageTask extends Task {
 				const xLoc = Math.floor(
 					spacer + x * ((this.canvas.width - 40) / 8) + distanceFromSide
 				);
-				const yLoc = Math.floor(itemSize * (i * 1.1) + spacer + distanceFromTop);
+				const yLoc = Math.floor(itemSize * (i * 1.22) + spacer + distanceFromTop);
 
 				this.ctx.drawImage(
 					item,
