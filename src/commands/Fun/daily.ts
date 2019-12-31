@@ -5,7 +5,7 @@ import { triviaQuestions } from '../../../resources/trivia-questions.json';
 import { BotCommand } from '../../lib/BotCommand.js';
 import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
 import { roll, rand, formatDuration } from '../../../config/util.js';
-import pets from '../../../data/pets';
+import * as pets from '../../../data/pets';
 import clueTiers from '../../lib/clueTiers';
 import { randomItemFromArray, addArrayOfItemsToBank } from '../../lib/util.js';
 
