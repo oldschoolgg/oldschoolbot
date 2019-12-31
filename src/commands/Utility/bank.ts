@@ -3,7 +3,8 @@ import { MessageAttachment } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 
-import { generateHexColorForCashStack, formatItemStackQuantity } from '../../lib/util';
+import { generateHexColorForCashStack, formatItemStackQuantity, chunkObject } from '../../lib/util';
+import { Bank } from '../../lib/types';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -23,6 +24,7 @@ export default class extends Command {
 		super(client, store, file, directory, {
 			description: 'Shows how much virtual GP you have',
 			cooldown: 3,
+			usage: '[page:int]',
 			requiredPermissions: ['ATTACH_FILES']
 		});
 	}
@@ -43,12 +45,15 @@ export default class extends Command {
 		return new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
 	}
 
-	async run(msg: KlasaMessage) {
+	// @ts-ignore
+	async run(msg: KlasaMessage, [page = 1]: [number]) {
 		await msg.author.settings.sync(true);
 		const coins = msg.author.settings.get('GP');
-		const bank = msg.author.settings.get('bank');
+		const bank: Bank = msg.author.settings.get('bank');
+		bank[995] = coins;
 
-		const hasItemsInBank = Object.keys(bank).length > 0;
+		const bankKeys = Object.keys(bank);
+		const hasItemsInBank = bankKeys.length > 0;
 
 		if (coins === 0 && !hasItemsInBank) {
 			throw `You have no GP yet <:Sad:421822898316115969> You can get some GP by using the +daily command.`;
@@ -59,8 +64,20 @@ export default class extends Command {
 
 		// TODO - add 'WTF' error handling, maybe coerce this
 		if (!task || !task.generateBankImage) throw '';
-		bank[995] = coins;
-		const image = await task!.generateBankImage(bank);
+
+		if (bankKeys.length < 57) {
+			const image = await task.generateBankImage(bank, 'test');
+			return msg.send(new MessageAttachment(image, 'osbot.png'));
+		}
+
+		const chunkedObject = chunkObject(bank, 56);
+		const bankPage = chunkedObject[page];
+
+		if (!bankPage) throw "You don't have any items on that page!";
+		const image = await task.generateBankImage(
+			bankPage,
+			`${msg.author.username}'s Bank - Page ${page}`
+		);
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 }

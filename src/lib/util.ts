@@ -1,5 +1,6 @@
 import { Image } from 'canvas';
 import { Bank } from './types';
+import { util } from 'klasa';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -82,4 +83,20 @@ export function addArrayOfItemsToBank(bank: Bank, items: number[]) {
 // TODO should this use a generic?
 export function randomItemFromArray(array: unknown[]) {
 	return array[Math.floor(Math.random() * array.length)];
+}
+
+export function chunkObject(obj: { [key: string]: any }, limit: number) {
+	const chunkedObjects = [];
+	for (const chunk of util.chunk(Object.entries(obj), limit)) {
+		chunkedObjects.push(Object.fromEntries(chunk));
+	}
+	return chunkedObjects;
+}
+
+export function toTitleCase(str: string) {
+	let splitStr = str.toLowerCase().split(' ');
+	for (let i = 0; i < splitStr.length; i++) {
+		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+	}
+	return splitStr.join(' ');
 }
