@@ -64,7 +64,10 @@ export default class extends Command {
 
 		// TODO - add 'WTF' error handling, maybe coerce this
 		if (!task || !task.generateBankImage) throw '';
-		const image = await task!.generateBankImage(loot);
+		const image = await task!.generateBankImage(
+			loot,
+			`You opened a ${clueTier.name} clue and received...`
+		);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
