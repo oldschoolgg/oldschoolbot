@@ -8,6 +8,7 @@ import { roll, rand, formatDuration } from '../../../config/util.js';
 import * as pets from '../../../data/pets';
 import clueTiers from '../../lib/clueTiers';
 import { randomItemFromArray, addArrayOfItemsToBank } from '../../lib/util.js';
+import { ClueTier } from '../../lib/types/index.js';
 
 const easyTrivia = triviaQuestions.slice(0, 40);
 
@@ -107,7 +108,7 @@ export default class DailyCommand extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		let bank = msg.author.settings.get('bank');
-		const caskets = this.pickRandomCaskets(triviaCorrect);
+		const [caskets, casketNames] = this.pickRandomCaskets(triviaCorrect);
 		bank = addArrayOfItemsToBank(bank, caskets);
 		await msg.author.settings.update('bank', bank);
 
@@ -117,9 +118,8 @@ export default class DailyCommand extends BotCommand {
 
 		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
 
-		const pfix = msg.guild ? msg.guild.settings.get('prefix') : '+';
 		let dmStr = `${bonuses.join('')} You answered **${correct}** and received...\n`;
-		dmStr += `\n**${caskets.length} Random Caskets** (open using ${pfix}open easy/medium/etc)`;
+		dmStr += `\nThe following clue caskets: ${casketNames.join(', ')}`;
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
@@ -143,15 +143,18 @@ export default class DailyCommand extends BotCommand {
 		user.settings.update('GP', user.settings.get('GP') + amount);
 	}
 
-	pickRandomCaskets(triviaCorrect: boolean): number[] {
-		const idArr = clueTiers.map(tier => tier.id);
+	pickRandomCaskets(triviaCorrect: boolean): [number[], string[]] {
 		const result = [];
 		const amountToGet = triviaCorrect ? rand(3, 6) : rand(2, 4);
 
+		const textResult = [];
+
 		for (let i = 0; i < amountToGet; i++) {
-			result.push(randomItemFromArray(idArr) as number);
+			const tier = randomItemFromArray(clueTiers) as ClueTier;
+			result.push(tier.id);
+			textResult.push(tier.name);
 		}
 
-		return result;
+		return [result, textResult];
 	}
 }
