@@ -19,7 +19,8 @@ export const enum Emoji {
 	Bpaptu = '<:bpaptu:660333438292983818>',
 	Diamond = '💎',
 	Dice = '<:dice:660128887111548957>',
-	Minion = '<:minion:660517408968146946>'
+	Minion = '<:minion:660517408968146946>',
+	Fireworks = '🎆'
 }
 
 export const enum Image {
