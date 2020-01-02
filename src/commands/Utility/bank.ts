@@ -74,7 +74,7 @@ export default class extends Command {
 		}
 
 		const chunkedObject = chunkObject(bank, 56);
-		const bankPage = chunkedObject[page];
+		const bankPage = chunkedObject[page - 1];
 
 		if (!bankPage) throw "You don't have any items on that page!";
 		const image = await task.generateBankImage(
