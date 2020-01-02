@@ -49,8 +49,9 @@ export default class extends Command {
 	async run(msg: KlasaMessage, [page = 1]: [number]) {
 		await msg.author.settings.sync(true);
 		const coins = msg.author.settings.get('GP');
-		const bank: Bank = msg.author.settings.get('bank');
-		bank[995] = coins;
+		const _bank: Bank = msg.author.settings.get('bank');
+
+		const bank = { ..._bank, 995: coins };
 
 		const bankKeys = Object.keys(bank);
 		const hasItemsInBank = bankKeys.length > 0;
