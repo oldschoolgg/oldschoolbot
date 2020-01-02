@@ -106,9 +106,6 @@ export default class DailyCommand extends BotCommand {
 			amount = Math.floor(amount * 0.5);
 		}
 
-		amount = Math.floor(amount * 5);
-		bonuses.push(Emoji.Fireworks);
-
 		await msg.author.settings.sync(true);
 		let bank = msg.author.settings.get('bank');
 		const [caskets, casketNames] = this.pickRandomCaskets(triviaCorrect);
