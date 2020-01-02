@@ -38,8 +38,8 @@ export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove: n
 	let newBank = { ...bank };
 	const currentValue = bank[itemID];
 
-	// If they don't have this item in the bank, just return it..
-	if (!currentValue) return bank;
+	// If they don't have this item in the bank, just return it.
+	if (typeof currentValue === 'undefined') return bank;
 
 	// If they will have 0 or less of this item afterwards, delete it entirely.
 	if (currentValue <= amountToRemove) {
