@@ -19,9 +19,3 @@ export const enum UserSettings {
 export interface Bank {
 	[key: number]: number;
 }
-
-export interface ClueTier {
-	name: string;
-	table: any;
-	id: number;
-}

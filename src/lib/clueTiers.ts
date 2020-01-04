@@ -1,9 +1,7 @@
 import { Clues } from 'oldschooljs';
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
-import { ClueTier } from './types';
-
-const tiers: ClueTier[] = [
+const tiers = [
 	{
 		name: 'Beginner',
 		table: Beginner,
