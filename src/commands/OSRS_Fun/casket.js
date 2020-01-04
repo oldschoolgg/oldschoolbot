@@ -58,17 +58,8 @@ module.exports = class extends Command {
 				_tier => _tier.name
 			).join(', ')}`;
 		}
-		const lootResult = clueTier.table.open(quantity);
+		const loot = clueTier.table.open(quantity);
 
-		const loot = {};
-
-		for (const casketResult of lootResult) {
-			for (const item of casketResult) {
-				if (!uniqueItems.has(item.item)) continue;
-				if (!loot[item.item]) loot[item.item] = item.quantity;
-				else loot[item.item] += item.quantity;
-			}
-		}
 		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${
 			quantity > 1 ? 's' : ''
 		}`;

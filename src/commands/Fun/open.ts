@@ -39,16 +39,7 @@ export default class extends Command {
 
 		let newBank = removeItemFromBank(bank, clueTier.id);
 
-		const lootResult = clueTier.table.open();
-
-		const loot: { [key: number]: number } = {};
-
-		for (const casketResult of lootResult) {
-			for (const item of casketResult) {
-				if (!loot[item.item]) loot[item.item] = item.quantity;
-				else loot[item.item] += item.quantity;
-			}
-		}
+		const loot = clueTier.table.open();
 
 		const opened = `You opened one of your ${clueTier.name} Clue Caskets`;
 

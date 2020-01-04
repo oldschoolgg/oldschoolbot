@@ -8,7 +8,6 @@ import { roll, rand, formatDuration } from '../../../config/util.js';
 import * as pets from '../../../data/pets';
 import clueTiers from '../../lib/clueTiers';
 import { randomItemFromArray, addArrayOfItemsToBank } from '../../lib/util.js';
-import { ClueTier } from '../../lib/types/index.js';
 
 const easyTrivia = triviaQuestions.slice(0, 40);
 
@@ -150,7 +149,7 @@ export default class DailyCommand extends BotCommand {
 		const textResult = [];
 
 		for (let i = 0; i < amountToGet; i++) {
-			const tier = randomItemFromArray(clueTiers) as ClueTier;
+			const tier = randomItemFromArray(clueTiers) as any;
 			result.push(tier.id);
 			textResult.push(tier.name);
 		}
