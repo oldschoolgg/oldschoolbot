@@ -144,7 +144,7 @@ export default class DailyCommand extends BotCommand {
 
 	pickRandomCaskets(triviaCorrect: boolean): [number[], string[]] {
 		const result = [];
-		const amountToGet = triviaCorrect ? rand(3, 6) : rand(2, 4);
+		const amountToGet = triviaCorrect ? rand(2, 4) : 1;
 
 		const textResult = [];
 
