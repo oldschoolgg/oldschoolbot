@@ -3,6 +3,9 @@ import { MessageAttachment } from 'discord.js';
 
 import { toTitleCase } from '../../lib/util';
 
+import * as killWorkerFunction from '../../../data/new_monsters/utils/killWorkerFunction';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
+
 export default class extends Command {
 	public constructor(
 		client: KlasaClient,
@@ -19,9 +22,8 @@ export default class extends Command {
 	}
 
 	async run(msg: KlasaMessage, [quantity, bossName]: [number, string]) {
-		if (!this.client.killWorkerThread) throw '';
-
-		const result = await this.client.killWorkerThread(quantity, bossName);
+		//@ts-ignore
+		const result: ItemBank = await killWorkerFunction(quantity, bossName);
 		if (typeof result === 'string') {
 			return msg.send(result);
 		}
