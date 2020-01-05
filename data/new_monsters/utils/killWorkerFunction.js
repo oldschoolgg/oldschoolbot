@@ -1,4 +1,4 @@
-const { expose } = require('threads');
+const { Monsters } = require('oldschooljs');
 
 const { cleanString } = require('../../../config/util');
 
@@ -30,7 +30,6 @@ const ancientWyvern = require('../../monsters/ancientWyvern');
 const kingBlackDragon = require('../../monsters/kingBlackDragon');
 const abyssalSire = require('../../monsters/abyssalSire');
 const thermy = require('../../monsters/thermy');
-const giantMole = require('../../monsters/giantMole');
 const skotizo = require('../../monsters/skotizo');
 const scorpia = require('../../monsters/scorpia');
 const chaosElemental = require('../../monsters/chaosElemental');
@@ -55,7 +54,7 @@ const hespori = require('../../monsters/hespori');
 const sarachnis = require('../../monsters/sarachnis');
 const basKnight = require('../../../data/monsters/basKnight');
 
-function killWorkerFunction(quantity, bossName) {
+module.exports = function killWorkerFunction(quantity, bossName) {
 	switch (cleanString(bossName)) {
 		case 'SARACHNIS':
 		case 'SARACH':
@@ -261,12 +260,13 @@ function killWorkerFunction(quantity, bossName) {
 			const loot = thermy.kill(quantity);
 			return loot.length > 0 ? loot : 'You got nothing.';
 		}
+
 		case 'GIANTMOLE':
 		case 'MOLE': {
 			if (quantity > 5000) return "I can only kill 5000 Giant Mole's at a time!";
-			const loot = giantMole.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			return Monsters.GiantMole.kill(quantity);
 		}
+
 		case 'SKOTIZO': {
 			if (quantity > 500) return 'I can only kill 500 Skotizo at a time!';
 			const loot = skotizo.kill(quantity);
@@ -461,6 +461,4 @@ function killWorkerFunction(quantity, bossName) {
 		default:
 			return "I don't have that monster!";
 	}
-}
-
-expose(killWorkerFunction);
+};
