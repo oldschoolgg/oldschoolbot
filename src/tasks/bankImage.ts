@@ -1,7 +1,7 @@
 import { Task, util, KlasaClient, TaskStore } from 'klasa';
 import * as fs from 'fs';
 import * as path from 'path';
-import { CanvasRenderingContext2D, createCanvas, Image, registerFont, Canvas } from 'canvas';
+import { createCanvas, Image, registerFont } from 'canvas';
 import fetch from 'node-fetch';
 
 import {
@@ -20,17 +20,11 @@ const bankImageFile = fs.readFileSync('./resources/images/bank.png');
 const CACHE_DIR = './icon_cache';
 
 export default class BankImageTask extends Task {
-	private canvas: Canvas;
-	private ctx: CanvasRenderingContext2D;
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 
 	public constructor(client: KlasaClient, store: TaskStore, file: string[], directory: string) {
 		super(client, store, file, directory, {});
-		this.canvas = createCanvas(488, 331);
-		this.ctx = this.canvas.getContext('2d');
-		this.ctx.font = '16px OSRSFontCompact';
-		this.ctx.imageSmoothingEnabled = false;
 
 		// This tells us simply whether the file exists or not on disk.
 		this.itemIconsList = new Set();
@@ -94,32 +88,37 @@ export default class BankImageTask extends Task {
 	}
 
 	async generateBankImage(itemLoot: Bank, title: string = ''): Promise<Buffer> {
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		const canvas = createCanvas(488, 331);
+		const ctx = canvas.getContext('2d');
+		ctx.font = '16px OSRSFontCompact';
+		ctx.imageSmoothingEnabled = false;
+
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		const backgroundImage = await canvasImageFromBuffer(bankImageFile);
 
-		this.ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
+		ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
 
 		// Draw Bank Title
 
-		this.ctx.textAlign = 'center';
-		this.ctx.font = '16px RuneScape Bold 12';
+		ctx.textAlign = 'center';
+		ctx.font = '16px RuneScape Bold 12';
 
 		for (let i = 0; i < 3; i++) {
-			this.ctx.fillStyle = '#000000';
-			this.ctx.fillText(title, this.canvas.width / 2 + 1, 21 + 1);
+			ctx.fillStyle = '#000000';
+			ctx.fillText(title, canvas.width / 2 + 1, 21 + 1);
 		}
 		for (let i = 0; i < 3; i++) {
-			this.ctx.fillStyle = '#ff981f';
-			this.ctx.fillText(title, this.canvas.width / 2, 21);
+			ctx.fillStyle = '#ff981f';
+			ctx.fillText(title, canvas.width / 2, 21);
 		}
 
 		// Draw Items
 
-		this.ctx.textAlign = 'start';
-		this.ctx.fillStyle = '#494034';
+		ctx.textAlign = 'start';
+		ctx.fillStyle = '#494034';
 
-		this.ctx.font = '16px OSRSFontCompact';
+		ctx.font = '16px OSRSFontCompact';
 
 		let loot = [];
 
@@ -145,12 +144,10 @@ export default class BankImageTask extends Task {
 				const item = await this.getItemImage(id);
 				if (!item) continue;
 
-				const xLoc = Math.floor(
-					spacer + x * ((this.canvas.width - 40) / 8) + distanceFromSide
-				);
+				const xLoc = Math.floor(spacer + x * ((canvas.width - 40) / 8) + distanceFromSide);
 				const yLoc = Math.floor(itemSize * (i * 1.22) + spacer + distanceFromTop);
 
-				this.ctx.drawImage(
+				ctx.drawImage(
 					item,
 					xLoc + (32 - item.width) / 2,
 					yLoc + (32 - item.height) / 2,
@@ -161,18 +158,18 @@ export default class BankImageTask extends Task {
 				const quantityColor = generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
 
-				this.ctx.fillStyle = '#000000';
+				ctx.fillStyle = '#000000';
 				for (let t = 0; t < 5; t++) {
-					this.ctx.fillText(
+					ctx.fillText(
 						formattedQuantity,
 						xLoc + distanceFromSide - 18 + 1,
 						yLoc + distanceFromTop - 24 + 1
 					);
 				}
 
-				this.ctx.fillStyle = quantityColor;
+				ctx.fillStyle = quantityColor;
 				for (let t = 0; t < 5; t++) {
-					this.ctx.fillText(
+					ctx.fillText(
 						formattedQuantity,
 						xLoc + distanceFromSide - 18,
 						yLoc + distanceFromTop - 24
@@ -181,6 +178,6 @@ export default class BankImageTask extends Task {
 			}
 		}
 
-		return this.canvas.toBuffer();
+		return canvas.toBuffer();
 	}
 }
