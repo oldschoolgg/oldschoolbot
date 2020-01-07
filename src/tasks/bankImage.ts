@@ -10,6 +10,7 @@ import {
 	formatItemStackQuantity
 } from '../lib/util';
 import { Bank } from '../lib/types';
+import { toKMB } from 'oldschooljs/dist/util';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -87,7 +88,7 @@ export default class BankImageTask extends Task {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	async generateBankImage(itemLoot: Bank, title: string = ''): Promise<Buffer> {
+	async generateBankImage(itemLoot: Bank, title: string = '', showValue = true): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -99,10 +100,32 @@ export default class BankImageTask extends Task {
 
 		ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
 
+		let loot = [];
+		let totalValue = 0;
+		const prices = this.client.settings!.get('prices');
+
+		for (const [id, lootQuantity] of Object.entries(itemLoot)) {
+			// Draw value
+			if (showValue && prices) {
+				const itemPrice = prices[id];
+				if (itemPrice) {
+					totalValue += itemPrice.overall * lootQuantity;
+				}
+			}
+			loot.push({
+				id: parseInt(id),
+				quantity: lootQuantity
+			});
+		}
+
 		// Draw Bank Title
 
 		ctx.textAlign = 'center';
 		ctx.font = '16px RuneScape Bold 12';
+
+		if (showValue) {
+			title += ` (Value: ${toKMB(totalValue)})`;
+		}
 
 		for (let i = 0; i < 3; i++) {
 			ctx.fillStyle = '#000000';
@@ -113,24 +136,15 @@ export default class BankImageTask extends Task {
 			ctx.fillText(title, canvas.width / 2, 21);
 		}
 
+		loot = loot.filter(item => item.quantity > 0);
+		if (loot.length === 0) throw 'No loot!';
+
 		// Draw Items
 
 		ctx.textAlign = 'start';
 		ctx.fillStyle = '#494034';
 
 		ctx.font = '16px OSRSFontCompact';
-
-		let loot = [];
-
-		for (const [id, lootQuantity] of Object.entries(itemLoot)) {
-			loot.push({
-				id: parseInt(id),
-				quantity: lootQuantity
-			});
-		}
-
-		loot = loot.filter(item => item.quantity > 0);
-		if (loot.length === 0) throw 'No loot!';
 
 		const chunkedLoot = util.chunk(loot, 8);
 		const spacer = 12;

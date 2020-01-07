@@ -8,4 +8,7 @@ Client.defaultUserSchema
 	.add('pets', 'any', { default: {} })
 	.add('badges', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
-	.add('bank', 'any', { default: {} });
+	.add('bank', 'any', { default: {} })
+	.add('minion', folder =>
+		folder.add('name', 'string').add('hasBought', 'boolean', { default: false })
+	);

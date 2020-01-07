@@ -11,4 +11,7 @@ declare module 'klasa' {
 	interface KlasaClient {
 		killWorkerThread(quantity: number, bossName: string): Promise<any>;
 	}
+	interface KlasaMessage {
+		cmdPrefix: string;
+	}
 }

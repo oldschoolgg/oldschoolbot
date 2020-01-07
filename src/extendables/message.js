@@ -15,4 +15,8 @@ module.exports = class extends Extendable {
 
 		return this.channel.sendFile(Buffer.from(content), fileName, messageTooLong);
 	}
+
+	get cmdPrefix() {
+		return this.guild ? this.guild.settings.get('prefix') : '+';
+	}
 };

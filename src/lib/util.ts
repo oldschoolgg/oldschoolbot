@@ -1,6 +1,12 @@
 import { Image } from 'canvas';
 import { Bank } from './types';
 import { util } from 'klasa';
+import { Items } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { ScheduledTask } from 'klasa';
+import { Tasks, Emoji } from './constants';
+import { Util } from 'discord.js';
+import { KlasaUser } from 'klasa';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -99,4 +105,47 @@ export function toTitleCase(str: string) {
 		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
 	}
 	return splitStr.join(' ');
+}
+
+export function cleanString(str: string) {
+	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
+}
+
+export function stringMatches(str: string, str2: string) {
+	return cleanString(str) === cleanString(str2);
+}
+
+export function bankToString(bank: ItemBank, chunkSize?: number) {
+	let display = [];
+	for (const [itemID, qty] of Object.entries(bank)) {
+		const item = Items.get(parseInt(itemID));
+		if (!item) continue;
+		display.push(`**${item.name}:** ${qty.toLocaleString()}`);
+	}
+	return chunkSize ? util.chunk(display, chunkSize) : display;
+}
+
+export function formatDuration(ms: number) {
+	if (ms < 0) ms = -ms;
+	const time = {
+		day: Math.floor(ms / 86400000),
+		hour: Math.floor(ms / 3600000) % 24,
+		minute: Math.floor(ms / 60000) % 60,
+		second: Math.floor(ms / 1000) % 60
+	};
+	return Object.entries(time)
+		.filter(val => val[1] !== 0)
+		.map(([key, val]) => `${val} ${key}${val !== 1 ? 's' : ''}`)
+		.join(', ');
+}
+
+export function activityTaskFilter(task: ScheduledTask) {
+	return ([Tasks.MonsterActivity] as string[]).includes(task.taskName);
+}
+
+export function getMinionName(user: KlasaUser) {
+	const name = user.settings.get('minion.name');
+	return name
+		? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
+		: `${Emoji.Minion} Your minion`;
 }
