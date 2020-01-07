@@ -52,6 +52,9 @@ module.exports = {
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
 		readyMessage: client =>
-			`[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`
+			`[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
+		schedule: {
+			interval: 10000
+		}
 	}
 };

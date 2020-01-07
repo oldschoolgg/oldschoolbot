@@ -1,21 +1,17 @@
-export enum MinionActivity {
-	PVM = 'PVM',
-	SKILLING = 'SKILLING',
-	CLUES = 'CLUES'
-}
-
-export interface Minion {
-	id: number;
-	name: string;
-	activity: MinionActivity | null;
-	lastPaid: number;
-}
-
-export const enum UserSettings {
-	Minions = 'minions',
-	GP = 'GP'
-}
+import { Activity } from '../constants';
 
 export interface Bank {
 	[key: number]: number;
+}
+
+export interface ActivityTaskOptions {
+	type: Activity;
+	userID: string;
+}
+
+export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
+	monsterID: number;
+	channelID: string;
+	quantity: number;
+	duration: number;
 }

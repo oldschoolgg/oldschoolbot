@@ -1,3 +1,5 @@
+import { Monsters } from 'oldschooljs';
+
 export const enum Time {
 	Millisecond = 1,
 	Second = 1000,
@@ -20,7 +22,11 @@ export const enum Emoji {
 	Diamond = '💎',
 	Dice = '<:dice:660128887111548957>',
 	Minion = '<:minion:660517408968146946>',
-	Fireworks = '🎆'
+	Fireworks = '🎆',
+	Tick = '✅',
+	Search = '🔎',
+	FancyLoveheart = '💝',
+	Gift = '🎁'
 }
 
 export const enum Image {
@@ -32,3 +38,34 @@ export const enum Color {
 }
 
 export const SupportServer = '342983479501389826';
+
+export const KillableMonsters = [
+	{
+		id: Monsters.GiantMole.id,
+		name: Monsters.GiantMole.name,
+		aliases: ['mole'],
+		timeToFinish: Time.Minute * 1.5,
+		table: Monsters.GiantMole
+	},
+	{
+		id: Monsters.Zulrah.id,
+		name: Monsters.Zulrah.name,
+		aliases: ['snek'],
+		timeToFinish: Time.Minute * 2,
+		table: Monsters.Zulrah
+	}
+];
+
+export const enum Tasks {
+	MonsterActivity = 'monsterActivity'
+}
+
+export const enum Activity {
+	MonsterKilling = 'MonsterKilling'
+}
+
+export const enum UserSettings {
+	MinionName = 'minion.name',
+	MinionHasBought = 'minion.hasBought',
+	GP = 'GP'
+}
