@@ -4,6 +4,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { KillableMonsters, Tasks, Activity, UserSettings, Emoji, Time } from '../../lib/constants';
 import { stringMatches, formatDuration, activityTaskFilter, getMinionName } from '../../lib/util';
 import { MonsterActivityTaskOptions } from '../../lib/types/index';
+import { rand } from '../../../config/util';
 
 const COST_OF_MINION = 50_000_000;
 
@@ -91,6 +92,10 @@ export default class extends BotCommand {
 	}
 
 	async setname(msg: KlasaMessage, [name]: [string]) {
+		if (!this.hasMinion(msg)) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
 		if (
 			!name ||
 			typeof name !== 'string' ||
@@ -121,7 +126,7 @@ export default class extends BotCommand {
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
-		const duration = monster.timeToFinish * quantity;
+		let duration = monster.timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
 			throw `${getMinionName(
 				msg.author
@@ -132,6 +137,9 @@ export default class extends BotCommand {
 
 		// TODO
 		if (quantity < 1) return;
+
+		const randomAddedDuration = rand(1, 15);
+		duration += (randomAddedDuration * duration) / 100;
 
 		const data: MonsterActivityTaskOptions = {
 			monsterID: monster.id,
