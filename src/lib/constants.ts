@@ -41,6 +41,27 @@ export const SupportServer = '342983479501389826';
 
 export const KillableMonsters = [
 	{
+		id: Monsters.DagannothPrime.id,
+		name: Monsters.DagannothPrime.name,
+		aliases: ['prime'],
+		timeToFinish: Time.Minute * 2,
+		table: Monsters.DagannothPrime
+	},
+	{
+		id: Monsters.DagannothRex.id,
+		name: Monsters.DagannothRex.name,
+		aliases: ['rex'],
+		timeToFinish: Time.Minute * 2,
+		table: Monsters.DagannothRex
+	},
+	{
+		id: Monsters.DagannothSupreme.id,
+		name: Monsters.DagannothSupreme.name,
+		aliases: ['supreme'],
+		timeToFinish: Time.Minute * 2,
+		table: Monsters.DagannothSupreme
+	},
+	{
 		id: Monsters.Cerberus.id,
 		name: Monsters.Cerberus.name,
 		aliases: ['cerb'],
