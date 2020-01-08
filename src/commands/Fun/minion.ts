@@ -111,6 +111,7 @@ export default class extends BotCommand {
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name]: [number, string]) {
+		await msg.author.settings.sync(true);
 		if (this.isBusy(msg)) return this.sendCurrentStatus(msg);
 		if (!this.hasMinion(msg)) {
 			throw hasNoMinion(msg.cmdPrefix);
@@ -138,7 +139,7 @@ export default class extends BotCommand {
 		// TODO
 		if (quantity < 1) return;
 
-		const randomAddedDuration = rand(1, 15);
+		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
 		const data: MonsterActivityTaskOptions = {
