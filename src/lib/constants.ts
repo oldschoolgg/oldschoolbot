@@ -58,7 +58,7 @@ export const KillableMonsters = [
 		id: Monsters.Zulrah.id,
 		name: Monsters.Zulrah.name,
 		aliases: ['snek'],
-		timeToFinish: Time.Minute * 2,
+		timeToFinish: Time.Minute * 2.5,
 		table: Monsters.Zulrah
 	}
 ];
