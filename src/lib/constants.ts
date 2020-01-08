@@ -76,3 +76,12 @@ export const enum UserSettings {
 	MinionHasBought = 'minion.hasBought',
 	GP = 'GP'
 }
+
+export const enum Events {
+	Debug = 'debug',
+	Error = 'error',
+	Log = 'log',
+	Verbose = 'verbose',
+	Warn = 'warn',
+	Wtf = 'wtf'
+}
