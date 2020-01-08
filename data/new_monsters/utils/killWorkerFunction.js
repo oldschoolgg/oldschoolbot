@@ -2,7 +2,6 @@ const { Monsters } = require('oldschooljs');
 
 const { cleanString } = require('../../../config/util');
 
-const zulrah = require('../zulrah');
 const gauntlet = require('../gauntlet');
 
 const corp = require('../../monsters/corp');
@@ -13,7 +12,6 @@ const vorkath = require('../../monsters/vorkath');
 const grotesqueGuardians = require('../../monsters/grotesqueGuardians');
 const bandos = require('../../monsters/bandos');
 const saradomin = require('../../monsters/saradomin');
-const cerberus = require('../../monsters/cerberus');
 const demonicGorilla = require('../../monsters/demonicGorilla');
 const abbyDemon = require('../../monsters/abbyDemon');
 const kurask = require('../../monsters/kurask');
@@ -138,12 +136,10 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 			return loot.length > 0 ? loot : 'You got nothing.';
 		}
 		case 'ZULRAH': {
-			if (quantity > 20000) {
+			if (quantity > 10000) {
 				return 'I can only do a maximum of 10000 Zulrah kills at a time!';
 			}
-			const loot = zulrah.kill(quantity);
-			if (!loot) return 'You got nothing';
-			return loot;
+			return Monsters.Zulrah.kill(quantity);
 		}
 		case 'VORKATH': {
 			if (quantity > 500) return 'I can only do a maximum of 500 Vorkath kills at a time!';
@@ -152,9 +148,8 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 		}
 		case 'CERB':
 		case 'CERBERUS': {
-			if (quantity > 500) return 'I can only do a maximum of 500 Cerberus kills at a time!';
-			const loot = cerberus.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 2000) return 'I can only do a maximum of 2000 Cerberus kills at a time!';
+			return Monsters.Cerberus.kill(quantity);
 		}
 		case 'ABYSSALDEMON':
 		case 'ABYSSALDEMONS':
