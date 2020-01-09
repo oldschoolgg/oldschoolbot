@@ -1,7 +1,7 @@
 const { Monsters } = require('oldschooljs');
 
 const { cleanString } = require('../../../config/util');
-
+const { addBankToBank } = require('../../../src/lib/util');
 const gauntlet = require('../gauntlet');
 
 const corp = require('../../monsters/corp');
@@ -113,9 +113,8 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 			return loot.length > 0 ? loot : 'You got nothing.';
 		}
 		case 'BARROWS': {
-			if (quantity > 300) return 'I can only do a maximum of 300 Barrows Chests at a time!';
-			const loot = barrows.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 500) return 'I can only do a maximum of 500 Barrows Chests at a time!';
+			return Monsters.Barrows.kill(quantity);
 		}
 		case 'BANDOS':
 		case 'GENERALGRAARDOR':
@@ -299,48 +298,31 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 		}
 		case 'REX':
 		case 'DAGANNOTHREX': {
-			if (quantity > 500) return "I can only kill 500 Dagannoth Rex's at a time!";
-			const loot = dagannothRex.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 300) return "I can only kill 300 Dagannoth Rex's at a time!";
+			return Monsters.DagannothRex.kill(quantity);
 		}
 		case 'SUPREME':
 		case 'DAGANNOTHSUPREME': {
-			if (quantity > 500) return 'I can only kill 500 Dagannoth Supremes at a time!';
-			const loot = dagannothSupreme.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 300) return 'I can only kill 300 Dagannoth Supremes at a time!';
+			return Monsters.DagannothSupreme.kill(quantity);
 		}
 		case 'PRIME':
 		case 'DAGANNOTHPRIME': {
-			if (quantity > 500) return 'I can only kill 500 Dagannoth Primes at a time!';
-			const loot = dagannothPrime.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 300) return 'I can only kill 300 Dagannoth Primes at a time!';
+			return Monsters.DagannothPrime.kill(quantity);
 		}
 
 		case 'DAGKINGS':
 		case 'DAGANNOTHKINGS':
 		case 'DKS': {
-			let quantityRex = 0;
-			let quantitySupreme = 0;
-			let quantityPrime = 0;
-			if (quantity > 1000) return 'I can only kill 1000 Dagannoth Kings at a time!';
-			if (quantity % 3 === 2) {
-				quantitySupreme = Math.floor(quantity / 3) + 1;
-				quantityRex = quantitySupreme;
-				quantityPrime = quantityRex - 1;
-			} else if (quantity % 3 === 1) {
-				quantitySupreme = Math.floor(quantity / 3) + 1;
-				quantityRex = quantitySupreme - 1;
-				quantityPrime = quantityRex;
-			} else {
-				quantitySupreme = quantity / 3;
-				quantityRex = quantity / 3;
-				quantityPrime = quantity / 3;
+			if (quantity > 20) return 'I can only kill all the Dagannoth Kings 10 times!';
+			let loot = {};
+			for (let i = 0; i < quantity; i++) {
+				loot = addBankToBank(Monsters.DagannothPrime.kill(), loot);
+				loot = addBankToBank(Monsters.DagannothRex.kill(), loot);
+				loot = addBankToBank(Monsters.DagannothSupreme.kill(), loot);
 			}
-			const rexLoot = dagannothRex.kill(quantityRex);
-			const supremeLoot = dagannothSupreme.kill(quantitySupreme);
-			const primeLoot = dagannothPrime.kill(quantityPrime);
-			const loot = rexLoot.concat(supremeLoot.concat(primeLoot));
-			return loot.length > 0 ? loot : 'You got nothing.';
+			return loot;
 		}
 		case 'CHAOSFANATIC': {
 			if (quantity > 500) return 'I can only kill 500 Chaos Fanatics at a time!';
