@@ -159,7 +159,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
 				monster.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			}, it'll take around ${formatDuration(monster.timeToFinish * quantity)} to finish.`
 		);
 	}
 
