@@ -15,3 +15,11 @@ declare module 'klasa' {
 		cmdPrefix: string;
 	}
 }
+
+declare module 'discord.js' {
+	interface User {
+		addItemsToBank(options: AddItemsToBankOptions): Promise<SettingsUpdateResult>;
+		addArrayOfItemsToCollectionLog(items: number[]): Promise<SettingsUpdateResult>;
+		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
+	}
+}

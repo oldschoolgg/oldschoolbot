@@ -102,7 +102,9 @@ export const enum Activity {
 export const enum UserSettings {
 	MinionName = 'minion.name',
 	MinionHasBought = 'minion.hasBought',
-	GP = 'GP'
+	GP = 'GP',
+	Bank = 'bank',
+	CollectionLog = 'collectionLog'
 }
 
 export const enum Events {

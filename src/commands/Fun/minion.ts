@@ -1,7 +1,15 @@
 import { KlasaClient, CommandStore, KlasaMessage, util } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { KillableMonsters, Tasks, Activity, UserSettings, Emoji, Time } from '../../lib/constants';
+import {
+	KillableMonsters,
+	Tasks,
+	Activity,
+	UserSettings,
+	Emoji,
+	Time,
+	Events
+} from '../../lib/constants';
 import { stringMatches, formatDuration, activityTaskFilter, getMinionName } from '../../lib/util';
 import { MonsterActivityTaskOptions } from '../../lib/types/index';
 import { rand } from '../../../config/util';
@@ -112,7 +120,13 @@ export default class extends BotCommand {
 
 	async kill(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		await msg.author.settings.sync(true);
-		if (this.isBusy(msg)) return this.sendCurrentStatus(msg);
+		if (this.isBusy(msg)) {
+			this.client.emit(
+				Events.Log,
+				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${name}`
+			);
+			return this.sendCurrentStatus(msg);
+		}
 		if (!this.hasMinion(msg)) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}

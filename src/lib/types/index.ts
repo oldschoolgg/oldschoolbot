@@ -15,3 +15,8 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	duration: number;
 }
+
+export interface AddItemsToBankOptions {
+	items: Bank;
+	collectionLog: boolean;
+}
