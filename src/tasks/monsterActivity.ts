@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { KillableMonsters, Events } from '../lib/constants';
-import { MonsterActivityTaskOptions, Bank } from '../lib/types';
-import { addBankToBank, getMinionName } from '../lib/util';
+import { MonsterActivityTaskOptions } from '../lib/types';
+import { getMinionName } from '../lib/util';
 import { TextChannel, MessageAttachment } from 'discord.js';
 
 export default class extends Task {
@@ -21,16 +21,16 @@ export default class extends Task {
 
 		const channel = this.client.channels.get(channelID);
 
-		await user.settings.sync();
-		const newBank: Bank = { ...user.settings.get('bank') };
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const image = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(loot, `Loot From ${quantity} ${monster.name}:`);
 
-		await user.settings.update('bank', addBankToBank(loot, newBank));
-
-		this.client.emit(Events.Log, `User received Minion Loot - ${logInfo}`);
+		this.client.emit(
+			Events.Log,
+			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
+		);
 
 		const str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${monster.name}.`;
 

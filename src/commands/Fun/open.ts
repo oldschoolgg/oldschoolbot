@@ -1,12 +1,9 @@
-import { Command } from 'klasa';
+import { Command, KlasaMessage, KlasaClient, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
 import ClueTiers from '../../lib/clueTiers';
-
-import { KlasaClient, CommandStore } from 'klasa';
-import { KlasaMessage } from 'klasa';
 import { Bank } from '../../lib/types';
-import { addBankToBank, removeItemFromBank } from '../../lib/util';
+import { Events } from '../../lib/constants';
 
 export default class extends Command {
 	public constructor(
@@ -37,19 +34,22 @@ export default class extends Command {
 			throw `You don't have any ${clueTier.name} Caskets to open!`;
 		}
 
-		let newBank = removeItemFromBank(bank, clueTier.id);
+		await msg.author.removeItemFromBank(clueTier.id);
 
 		const loot = clueTier.table.open();
 
 		const opened = `You opened one of your ${clueTier.name} Clue Caskets`;
 
 		if (Object.keys(loot).length === 0) {
-			await msg.author.settings.update('bank', newBank);
 			return msg.send(`${opened} and got nothing :(`);
 		}
-		newBank = addBankToBank(loot, newBank);
 
-		await msg.author.settings.update('bank', newBank);
+		this.client.emit(
+			Events.Log,
+			`${msg.author.username}[${msg.author.id}] opened a ${clueTier.name} casket.`
+		);
+
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 
 		const task = this.client.tasks.get('bankImage');
 

@@ -9,6 +9,7 @@ Client.defaultUserSchema
 	.add('badges', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('bank', 'any', { default: {} })
+	.add('collectionLog', 'integer', { array: true, default: [] })
 	.add('minion', folder =>
 		folder.add('name', 'string').add('hasBought', 'boolean', { default: false })
 	);
