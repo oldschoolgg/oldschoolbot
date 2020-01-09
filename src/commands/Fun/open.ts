@@ -49,7 +49,7 @@ export default class extends Command {
 			`${msg.author.username}[${msg.author.id}] opened a ${clueTier.name} casket.`
 		);
 
-		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
+		await msg.author.addItemsToBank(loot, true);
 
 		const task = this.client.tasks.get('bankImage');
 

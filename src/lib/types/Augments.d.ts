@@ -18,7 +18,7 @@ declare module 'klasa' {
 
 declare module 'discord.js' {
 	interface User {
-		addItemsToBank(options: AddItemsToBankOptions): Promise<SettingsUpdateResult>;
+		addItemsToBank(items: Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addArrayOfItemsToCollectionLog(items: number[]): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
 	}

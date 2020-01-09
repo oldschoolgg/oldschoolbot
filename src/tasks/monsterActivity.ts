@@ -21,7 +21,7 @@ export default class extends Task {
 
 		const channel = this.client.channels.get(channelID);
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await user.addItemsToBank(loot, true);
 
 		const image = await this.client.tasks
 			.get('bankImage')!
