@@ -44,7 +44,7 @@ export const KillableMonsters = [
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
 		aliases: [],
-		timeToFinish: Time.Minute * 2.3,
+		timeToFinish: Time.Minute * 4.15,
 		table: Monsters.Barrows
 	},
 	{
