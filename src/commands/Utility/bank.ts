@@ -5,6 +5,7 @@ import * as fs from 'fs';
 
 import { generateHexColorForCashStack, formatItemStackQuantity, chunkObject } from '../../lib/util';
 import { Bank } from '../../lib/types';
+import { Emoji } from '../../lib/constants';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -63,7 +64,7 @@ export default class extends Command {
 		const hasItemsInBank = bankKeys.length > 0;
 
 		if (coins === 0 && !hasItemsInBank) {
-			throw `You have no GP yet <:Sad:421822898316115969> You can get some GP by using the ${msg.cmdPrefix}daily command.`;
+			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
