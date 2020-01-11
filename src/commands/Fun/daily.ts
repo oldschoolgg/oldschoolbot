@@ -6,8 +6,6 @@ import { BotCommand } from '../../lib/BotCommand.js';
 import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
 import { roll, rand, formatDuration } from '../../../config/util.js';
 import * as pets from '../../../data/pets';
-import clueTiers from '../../lib/clueTiers';
-import { randomItemFromArray, addArrayOfItemsToBank } from '../../lib/util.js';
 
 const easyTrivia = triviaQuestions.slice(0, 40);
 
@@ -73,7 +71,7 @@ export default class DailyCommand extends BotCommand {
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 
-		let amount = rand(500_000, 5_000_000);
+		let amount = rand(1_000_000, 6_000_000);
 		const bonuses = [];
 
 		const currentDate = new Date();
@@ -106,10 +104,6 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		let bank = msg.author.settings.get('bank');
-		const [caskets, casketNames] = this.pickRandomCaskets(triviaCorrect);
-		bank = addArrayOfItemsToBank(bank, caskets);
-		await msg.author.settings.update('bank', bank);
 
 		let chStr = `${bonuses.join('')} ${
 			user.username
@@ -118,7 +112,6 @@ export default class DailyCommand extends BotCommand {
 		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
 
 		let dmStr = `${bonuses.join('')} You answered **${correct}** and received...\n`;
-		dmStr += `\nThe following clue caskets: ${casketNames.join(', ')}`;
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
@@ -140,20 +133,5 @@ export default class DailyCommand extends BotCommand {
 
 		msg.send(dmStr, gpImage).catch(() => null);
 		user.settings.update('GP', user.settings.get('GP') + amount);
-	}
-
-	pickRandomCaskets(triviaCorrect: boolean): [number[], string[]] {
-		const result = [];
-		const amountToGet = triviaCorrect ? rand(2, 4) : 1;
-
-		const textResult = [];
-
-		for (let i = 0; i < amountToGet; i++) {
-			const tier = randomItemFromArray(clueTiers) as any;
-			result.push(tier.id);
-			textResult.push(tier.name);
-		}
-
-		return [result, textResult];
 	}
 }
