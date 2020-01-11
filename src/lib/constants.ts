@@ -1,4 +1,5 @@
 import { Monsters } from 'oldschooljs';
+import { join } from 'path';
 
 export const enum Time {
 	Millisecond = 1,
@@ -115,3 +116,9 @@ export const enum Events {
 	Warn = 'warn',
 	Wtf = 'wtf'
 }
+
+export const Regex = {
+	Yes: /^y|yes?|yeah?$/i
+};
+
+export const rootFolder = join(__dirname, '..', '..', '..');
