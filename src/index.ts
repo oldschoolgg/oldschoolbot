@@ -1,11 +1,11 @@
 import { Client, KlasaClientOptions } from 'klasa';
 
-const { token, clientOptions, clientProperties } = require('../config');
+import { token, clientOptions, clientProperties } from '../config';
 
 Client.use(require('@kcp/tags'));
 Client.use(require('klasa-textchannel-gateway'));
 
-require('../config/Schemas');
+import('../config/Schemas');
 
 class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
