@@ -33,6 +33,7 @@ export default class extends BotCommand {
 	) {
 		super(client, store, file, directory, {
 			altProtection: true,
+			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
 			usage: '[kill|setname|buy] [quantity:int{1}|name:...string] [name:...string]',

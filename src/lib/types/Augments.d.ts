@@ -2,8 +2,12 @@ import { Image } from 'canvas';
 import { Bank } from '.';
 
 declare module 'klasa' {
+	interface KlasaClient {
+		public oneCommandAtATimeCache: Set<string>;
+	}
 	interface Command {
 		altProtection?: boolean;
+		oneAtTime?: boolean;
 	}
 	interface Task {
 		generateBankImage(bank: Bank, title?: string): Promise<Buffer>;
