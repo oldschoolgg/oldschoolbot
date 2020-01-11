@@ -63,7 +63,7 @@ export default class extends Command {
 		const hasItemsInBank = bankKeys.length > 0;
 
 		if (coins === 0 && !hasItemsInBank) {
-			throw `You have no GP yet <:Sad:421822898316115969> You can get some GP by using the +daily command.`;
+			throw `You have no GP yet <:Sad:421822898316115969> You can get some GP by using the ${msg.cmdPrefix}daily command.`;
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
