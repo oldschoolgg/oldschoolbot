@@ -21,6 +21,7 @@ module.exports = class extends Task {
 
 		let log;
 		const reload = this.client.commands.get('reload');
+		if (!reload) return;
 		if (piece) {
 			await reload.run({ sendLocale: () => null, sendMessage: () => null }, [piece]);
 			log = `Reloaded it in ${timer}`;
