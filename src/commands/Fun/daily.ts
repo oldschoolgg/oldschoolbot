@@ -16,22 +16,20 @@ const options = {
 };
 
 export default class DailyCommand extends BotCommand {
-	private cache: Set<string>;
-
 	public constructor(
 		client: KlasaClient,
 		store: CommandStore,
 		file: string[],
 		directory: string
 	) {
-		super(client, store, file, directory, { altProtection: true, cooldown: 5 });
-		this.cache = new Set();
+		super(client, store, file, directory, {
+			altProtection: true,
+			oneAtTime: true,
+			cooldown: 5
+		});
 	}
 
 	async run(msg: KlasaMessage) {
-		if (this.cache.has(msg.author.id)) return;
-		this.cache.add(msg.author.id);
-
 		await msg.author.settings.sync();
 		const currentDate = new Date().getTime();
 		const lastVoteDate = msg.author.settings.get('lastDailyTimestamp');
@@ -55,10 +53,7 @@ export default class DailyCommand extends BotCommand {
 			} catch (err) {
 				await this.reward(msg, false);
 			}
-			this.cache.delete(msg.author.id);
 		} else {
-			this.cache.delete(msg.author.id);
-
 			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
 
 			return msg.send(`You can claim your next daily in ${duration}.`);

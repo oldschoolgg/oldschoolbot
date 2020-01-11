@@ -10,8 +10,15 @@ export abstract class BotCommand extends Command {
 		directory: string,
 		options: BotCommandOptions = {}
 	) {
-		super(client, store, file, directory, util.mergeDefault({ altProtection: false }, options));
+		super(
+			client,
+			store,
+			file,
+			directory,
+			util.mergeDefault({ altProtection: false, oneAtTime: false }, options)
+		);
 		this.altProtection = options.altProtection!;
+		this.oneAtTime = options.oneAtTime!;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -27,4 +34,5 @@ export abstract class BotCommand extends Command {
 
 export interface BotCommandOptions extends CommandOptions {
 	altProtection?: boolean;
+	oneAtTime?: boolean;
 }
