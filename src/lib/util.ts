@@ -86,8 +86,7 @@ export function addArrayOfItemsToBank(bank: Bank, items: number[]) {
 	return newBank;
 }
 
-// TODO should this use a generic?
-export function randomItemFromArray(array: unknown[]) {
+export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -148,4 +147,8 @@ export function getMinionName(user: KlasaUser) {
 	return name
 		? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
 		: `${Emoji.Minion} Your minion`;
+}
+
+export function inlineCodeblock(input: string) {
+	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }

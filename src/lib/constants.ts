@@ -12,7 +12,8 @@ export const enum Time {
 }
 
 export const enum Channel {
-	Notifications = '469523207691436042'
+	Notifications = '469523207691436042',
+	ErrorLogs = '665678499578904596'
 }
 
 export const enum Emoji {
@@ -27,7 +28,9 @@ export const enum Emoji {
 	Tick = '✅',
 	Search = '🔎',
 	FancyLoveheart = '💝',
-	Gift = '🎁'
+	Gift = '🎁',
+	Sad = '<:RSSad:380915244652036097>',
+	Happy = '<:RSHappy:380915244760825857>'
 }
 
 export const enum Image {
