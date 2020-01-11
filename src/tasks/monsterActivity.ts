@@ -50,15 +50,16 @@ export default class extends Task {
 		channel.send(str, new MessageAttachment(image));
 
 		try {
-			const messages = await channel.awaitMessages(mes => mes.author === user, {
-				time: 15000,
-				max: 1
-			});
+			const messages = await channel.awaitMessages(
+				mes => mes.author === user && Regex.Yes.test(mes.content),
+				{
+					time: 20000,
+					max: 1
+				}
+			);
 			const response = messages.first();
-			if (!response || !response.content) throw null;
 
-			const saidYes = Boolean(messages.size) && Regex.Yes.test(response.content);
-			if (saidYes) {
+			if (response) {
 				this.client.commands
 					.get('minion')!
 					.kill(response as KlasaMessage, [quantity, monster.name]);
