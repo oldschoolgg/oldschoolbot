@@ -1,7 +1,7 @@
 import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from "../../lib/BotCommand";
-import { Emoji } from '../../lib/constants.js';
+import { BotCommand } from '../../lib/BotCommand';
+import { Emoji } from '../../lib/constants';
 
 export default class extends BotCommand {
     public constructor(
@@ -22,7 +22,7 @@ export default class extends BotCommand {
         const coins: number = msg.author.settings.get('GP');
         
         if (coins === 0) {
-			throw `You have no GP yet <:Sad:421822898316115969> You can get some GP by using the +daily command.`;
+			throw `You have no GP yet <:Sad:421822898316115969> You can get some GP by using the ${msg.cmdPrefix}daily command.`;
         }
         
         return msg.channel.send(`${Emoji.MoneyBag} You have ${coins.toLocaleString()} GP!`);
