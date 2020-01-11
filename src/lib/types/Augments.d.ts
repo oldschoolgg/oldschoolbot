@@ -8,8 +8,8 @@ declare module 'klasa' {
 	interface Task {
 		generateBankImage(bank: Bank, title?: string): Promise<Buffer>;
 	}
-	interface KlasaClient {
-		killWorkerThread(quantity: number, bossName: string): Promise<any>;
+	interface Command {
+		kill(message: KlasaMessage, [quantity, monster]: [number, string]): Promise<any>;
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;

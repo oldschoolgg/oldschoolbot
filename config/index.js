@@ -1,4 +1,3 @@
-const path = require('path');
 const emoji = require('./skill-emoji');
 const streamers = require('../data/osrs-streamers');
 const { token, twitchClientID, twitterApp } = require('./private.js');
@@ -49,10 +48,9 @@ module.exports = {
 		/* Klasa Options */
 		createPiecesFolders: false,
 		prefix: '+',
-		providers: { 
-            default: production ? 'rethinkdb' : 'json',
-            json: { baseDirectory: path.resolve('bwd', 'providers', 'json') }
-        },
+		providers: {
+			default: production ? 'rethinkdb' : 'json'
+		},
 		permissionLevels: require('./PermissionLevels'),
 		pieceDefaults: { commands: { deletable: true } },
 		readyMessage: client =>

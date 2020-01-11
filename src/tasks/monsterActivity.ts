@@ -1,8 +1,9 @@
 import { Task } from 'klasa';
-import { KillableMonsters, Events } from '../lib/constants';
+import { KillableMonsters, Events, Regex } from '../lib/constants';
 import { MonsterActivityTaskOptions } from '../lib/types';
 import { getMinionName } from '../lib/util';
-import { TextChannel, MessageAttachment } from 'discord.js';
+import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
+import { KlasaMessage } from 'klasa';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -19,8 +20,6 @@ export default class extends Task {
 
 		const loot = monster.table.kill(quantity);
 
-		const channel = this.client.channels.get(channelID);
-
 		await user.addItemsToBank(loot, true);
 
 		const image = await this.client.tasks
@@ -32,14 +31,38 @@ export default class extends Task {
 			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
 		);
 
-		const str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${monster.name}.`;
+		const str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${
+			monster.name
+		}.  ${getMinionName(user)} asks if you'd like them to do another trip of ${quantity} ${
+			monster.name
+		}.`;
 
-		if (!channel) {
-			user.send(str, new MessageAttachment(image));
-		} else {
-			(channel as TextChannel).send(str, new MessageAttachment(image)).catch(() => {
-				user.send(str, new MessageAttachment(image));
-			});
+		let channel = this.client.channels.get(channelID);
+		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
+			channel = await user.createDM();
+			if (!channel) return;
 		}
+
+		if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) {
+			return;
+		}
+
+		channel.send(str, new MessageAttachment(image));
+
+		try {
+			const messages = await channel.awaitMessages(mes => mes.author === user, {
+				time: 15000,
+				max: 1
+			});
+			const response = messages.first();
+			if (!response || !response.content) throw null;
+
+			const saidYes = Boolean(messages.size) && Regex.Yes.test(response.content);
+			if (saidYes) {
+				this.client.commands
+					.get('minion')!
+					.kill(response as KlasaMessage, [quantity, monster.name]);
+			}
+		} catch (_) {}
 	}
 }
