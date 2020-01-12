@@ -49,6 +49,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
 		if (!this.hasMinion(msg)) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
