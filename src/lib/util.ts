@@ -154,3 +154,14 @@ export function getMinionName(user: KlasaUser) {
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
+
+const happyEmojis = [
+	Emoji.Happy,
+	Emoji.PeepoNoob,
+	Emoji.PeepoOSBot,
+	Emoji.PeepoSlayer,
+	Emoji.PeepoRanger,
+	Emoji.FancyLoveheart
+];
+
+export const randomHappyEmoji = () => randomItemFromArray(happyEmojis);

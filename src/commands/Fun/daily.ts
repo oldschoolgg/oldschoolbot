@@ -6,6 +6,7 @@ import { BotCommand } from '../../lib/BotCommand.js';
 import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
 import { roll, rand, formatDuration } from '../../../config/util.js';
 import * as pets from '../../../data/pets';
+import { randomHappyEmoji } from '../../lib/util.js';
 
 const easyTrivia = triviaQuestions.slice(0, 40);
 
@@ -102,7 +103,7 @@ export default class DailyCommand extends BotCommand {
 
 		let chStr = `${bonuses.join('')} ${
 			user.username
-		} just got their daily and received ${amount.toLocaleString()} GP! <:Smiley:420283725469974529>`;
+		} just got their daily and received ${amount.toLocaleString()} GP! ${randomHappyEmoji()}`;
 
 		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
 
