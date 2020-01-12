@@ -83,7 +83,7 @@ export const KillableMonsters = [
 		id: Monsters.GiantMole.id,
 		name: Monsters.GiantMole.name,
 		aliases: ['mole'],
-		timeToFinish: Time.Minute * 1.6,
+		timeToFinish: Time.Second * 1.6,
 		table: Monsters.GiantMole
 	},
 	{
@@ -96,11 +96,13 @@ export const KillableMonsters = [
 ];
 
 export const enum Tasks {
-	MonsterActivity = 'monsterActivity'
+	MonsterActivity = 'monsterActivity',
+	ClueActivity = 'clueActivity'
 }
 
 export const enum Activity {
-	MonsterKilling = 'MonsterKilling'
+	MonsterKilling = 'MonsterKilling',
+	ClueCompletion = 'ClueCompletion'
 }
 
 export const enum UserSettings {

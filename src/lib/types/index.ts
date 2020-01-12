@@ -15,3 +15,10 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	duration: number;
 }
+
+export interface ClueActivityTaskOptions extends ActivityTaskOptions {
+	clueID: number;
+	channelID: string;
+	quantity: number;
+	duration: number;
+}
