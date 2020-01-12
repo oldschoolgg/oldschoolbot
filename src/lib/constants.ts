@@ -91,6 +91,13 @@ export const KillableMonsters = [
 		table: Monsters.GiantMole
 	},
 	{
+		id: Monsters.Vorkath.id,
+		name: Monsters.Vorkath.name,
+		aliases: ['vork'],
+		timeToFinish: Time.Minute * 2.6,
+		table: Monsters.Vorkath
+	},
+	{
 		id: Monsters.Zulrah.id,
 		name: Monsters.Zulrah.name,
 		aliases: ['snek'],
