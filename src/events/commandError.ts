@@ -1,7 +1,7 @@
 import { KlasaMessage, Command, Event, util } from 'klasa';
 import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel } from 'discord.js';
 
-import { rootFolder, Channel } from '../lib/constants';
+import { rootFolder, Channel, Emoji } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
 
 export default class extends Event {
@@ -12,6 +12,8 @@ export default class extends Event {
 
 		if (typeof error === 'string') {
 			return msg.send(error);
+		} else {
+			msg.send(`An unexpected error occurred ${Emoji.Sad}`);
 		}
 
 		await this._sendErrorChannel(msg, command, error);

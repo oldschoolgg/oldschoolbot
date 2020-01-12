@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	runecraft: '<:runecraft:630911040435257364>',
 	firemaking: '<:firemaking:630911040175210518>',
 	thieving: '<:thieving:630910829352452123>',
