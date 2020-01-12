@@ -83,7 +83,7 @@ export const KillableMonsters = [
 		id: Monsters.GiantMole.id,
 		name: Monsters.GiantMole.name,
 		aliases: ['mole'],
-		timeToFinish: Time.Second * 1.6,
+		timeToFinish: Time.Minute * 1.6,
 		table: Monsters.GiantMole
 	},
 	{
