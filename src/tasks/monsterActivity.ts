@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { KillableMonsters, Events, Regex } from '../lib/constants';
 import { MonsterActivityTaskOptions } from '../lib/types';
-import { getMinionName } from '../lib/util';
+import { getMinionName, noOp } from '../lib/util';
 import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
@@ -49,21 +49,20 @@ export default class extends Task {
 
 		channel.send(str, new MessageAttachment(image));
 
-		try {
-			const messages = await channel.awaitMessages(
-				mes => mes.author === user && Regex.Yes.test(mes.content),
-				{
-					time: 20000,
-					max: 1
-				}
-			);
-			const response = messages.first();
+		channel
+			.awaitMessages(mes => mes.author === user && Regex.Yes.test(mes.content), {
+				time: 20000,
+				max: 1
+			})
+			.then(messages => {
+				const response = messages.first();
 
-			if (response) {
-				this.client.commands
-					.get('minion')!
-					.kill(response as KlasaMessage, [quantity, monster.name]);
-			}
-		} catch (_) {}
+				if (response) {
+					this.client.commands
+						.get('minion')!
+						.kill(response as KlasaMessage, [quantity, monster.name]);
+				}
+			})
+			.catch(noOp);
 	}
 }
