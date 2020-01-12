@@ -1,9 +1,9 @@
-import { KlasaClient } from 'klasa';
+import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import emoji from './skill-emoji';
 import streamers from '../data/osrs-streamers';
 import { token, twitchClientID, twitterApp } from './private.js';
-import { KlasaClientOptions } from 'klasa';
+import PermissionLevels from './PermissionLevels';
 
 const production = require('os').platform() === 'linux';
 
@@ -50,7 +50,7 @@ const clientOptions: KlasaClientOptions = {
 	providers: {
 		default: production ? 'rethinkdb' : 'json'
 	},
-	permissionLevels: require('./PermissionLevels'),
+	permissionLevels: PermissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
 	readyMessage: (client: KlasaClient) =>
 		`[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
