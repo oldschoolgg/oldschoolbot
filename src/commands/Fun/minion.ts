@@ -11,10 +11,16 @@ import {
 	Events
 } from '../../lib/constants';
 import { stringMatches, formatDuration, activityTaskFilter, getMinionName } from '../../lib/util';
-import { MonsterActivityTaskOptions } from '../../lib/types/index';
+import { MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../../lib/types/index';
 import { rand } from '../../../config/util';
+import clueTiers from '../../lib/clueTiers';
 
 const COST_OF_MINION = 50_000_000;
+
+const invalidClue = (prefix: string) =>
+	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
+		.map(tier => tier.name)
+		.join(', ')}. For example, \`${prefix}minion clue 1 easy\``;
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${KillableMonsters.map(
@@ -36,7 +42,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[kill|setname|buy] [quantity:int{1}|name:...string] [name:...string]',
+			usage: '[kill|setname|buy|clue] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -119,6 +125,73 @@ export default class extends BotCommand {
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
 	}
 
+	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
+		await msg.author.settings.sync(true);
+		if (this.isBusy(msg)) {
+			this.client.emit(
+				Events.Log,
+				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
+			);
+			return this.sendCurrentStatus(msg);
+		}
+
+		if (!this.hasMinion(msg)) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		if (!tierName) throw invalidClue(msg.cmdPrefix);
+
+		const clueTier = clueTiers.find(tier => stringMatches(tier.name, tierName));
+
+		if (!clueTier) throw invalidClue(msg.cmdPrefix);
+
+		let duration = clueTier.timeToFinish * quantity;
+		if (duration > Time.Minute * 30) {
+			throw `${getMinionName(
+				msg.author
+			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+				clueTier.name
+			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
+		}
+
+		// TODO
+		if (quantity < 1) return;
+
+		const bank = msg.author.settings.get('bank');
+		const numOfScrolls = bank[clueTier.scrollID];
+
+		if (!numOfScrolls || numOfScrolls < quantity) {
+			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
+		}
+
+		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
+
+		const randomAddedDuration = rand(1, 20);
+		duration += (randomAddedDuration * duration) / 100;
+
+		const data: ClueActivityTaskOptions = {
+			clueID: clueTier.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.ClueCompletion
+		};
+
+		this.client.schedule.create(Tasks.ClueActivity, Date.now() + duration, {
+			data,
+			catchUp: true
+		});
+
+		return msg.send(
+			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
+				clueTier.name
+			} clues, it'll take around ${formatDuration(
+				clueTier.timeToFinish * quantity
+			)} to finish.`
+		);
+	}
+
 	async kill(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		await msg.author.settings.sync(true);
 		if (this.isBusy(msg)) {
@@ -190,7 +263,7 @@ export default class extends BotCommand {
 
 	sendCurrentStatus(msg: KlasaMessage) {
 		const currentTask = this.client.schedule.tasks.find(
-			task => task.taskName === Tasks.MonsterActivity && task.data.userID === msg.author.id
+			task => activityTaskFilter(task) && task.data.userID === msg.author.id
 		);
 
 		if (!currentTask) {
@@ -210,6 +283,17 @@ export default class extends BotCommand {
 					`${getMinionName(msg.author)} is currently killing ${
 						currentTask.data.quantity
 					}x ${monster!.name}. Approximately ${duration} remaining.`
+				);
+			}
+
+			case Activity.ClueCompletion: {
+				const data: ClueActivityTaskOptions = currentTask.data;
+				const clueTier = clueTiers.find(tier => tier.id === data.clueID);
+				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
+				return msg.send(
+					`${getMinionName(msg.author)} is currently completing ${
+						currentTask.data.quantity
+					}x ${clueTier!.name} clues. Approximately ${duration} remaining.`
 				);
 			}
 		}
