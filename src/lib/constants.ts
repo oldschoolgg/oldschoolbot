@@ -30,7 +30,11 @@ export const enum Emoji {
 	FancyLoveheart = '💝',
 	Gift = '🎁',
 	Sad = '<:RSSad:380915244652036097>',
-	Happy = '<:RSHappy:380915244760825857>'
+	Happy = '<:RSHappy:380915244760825857>',
+	PeepoOSBot = '<:peepoOSBot:601695641088950282>',
+	PeepoSlayer = '<:peepoSlayer:644411576425775104>',
+	PeepoRanger = '<:peepoRanger:663096705746731089>',
+	PeepoNoob = '<:peepoNoob:660712001500086282>'
 }
 
 export const enum Image {
