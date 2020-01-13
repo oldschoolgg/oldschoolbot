@@ -113,9 +113,9 @@ export default class BankImageTask extends Task {
 
 		if (showValue) {
 			await Promise.all(
-				Object.keys(itemLoot).map(key =>
-					itemFetchLimit(() => this.client.fetchItemPrice(key))
-				)
+				Object.keys(itemLoot)
+					.filter(key => !this.client.settings?.get('prices')[key])
+					.map(key => itemFetchLimit(() => this.client.fetchItemPrice(key)))
 			);
 		}
 
