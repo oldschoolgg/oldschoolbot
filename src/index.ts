@@ -35,7 +35,7 @@ class OldSchoolBot extends Client {
 			return currentItem.price;
 		}
 
-		this.emit(Events.Debug, `Fetching Price of item[${itemID}]`);
+		this.emit(Events.Log, `Fetching Price of item[${itemID}]`);
 		let itemData = await fetch(
 			`https://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemID}`
 		)
