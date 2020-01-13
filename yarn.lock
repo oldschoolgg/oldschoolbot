@@ -1802,10 +1802,10 @@ object.getownpropertydescriptors@^2.0.3:
     define-properties "^1.1.2"
     es-abstract "^1.5.1"
 
-oldschooljs@^0.7.7:
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.7.7.tgz#902dfaaf6276262e1afc63917197792fc719c961"
-  integrity sha512-zBZ+qGLh1uujKkDtMVmgoZjp6Cl1yFAJaer0S+F9nke05siYSAHhJvPnzn7KU6Hkbazro3574a/DIKRhRc0dIg==
+oldschooljs@^0.7.8:
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.7.8.tgz#4dfd87308bacb90754ec55da5f73f80cdcbc02bb"
+  integrity sha512-vxlZ1IigKv2gjHTZBd+oLf5K09u/skBVeL6gJlNI+zojH8li2+44JK32N0f7nG0ZEdOdwOm7adxCTgwkGcTclA==
   dependencies:
     jsdom "^15.2.1"
     node-fetch "^2.6.0"

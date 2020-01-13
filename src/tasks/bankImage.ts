@@ -88,7 +88,12 @@ export default class BankImageTask extends Task {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	async generateBankImage(itemLoot: Bank, title: string = '', showValue = true): Promise<Buffer> {
+	async generateBankImage(
+		itemLoot: Bank,
+		title: string = '',
+		showValue = true,
+		flags: { [key: string]: string }
+	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -107,9 +112,9 @@ export default class BankImageTask extends Task {
 		for (const [id, lootQuantity] of Object.entries(itemLoot)) {
 			// Draw value
 			if (showValue && prices) {
-				const itemPrice = prices[id];
+				const itemPrice = await this.client.fetchItemPrice(id);
 				if (itemPrice) {
-					totalValue += itemPrice.overall * lootQuantity;
+					totalValue += itemPrice * lootQuantity;
 				}
 			}
 			loot.push({
