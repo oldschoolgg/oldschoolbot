@@ -7,7 +7,6 @@ const gauntlet = require('../gauntlet');
 const corp = require('../../monsters/corp');
 const raids = require('../../monsters/raids');
 const tob = require('../../monsters/tob');
-const vorkath = require('../../monsters/vorkath');
 const grotesqueGuardians = require('../../monsters/grotesqueGuardians');
 const bandos = require('../../monsters/bandos');
 const saradomin = require('../../monsters/saradomin');
@@ -138,8 +137,7 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 		}
 		case 'VORKATH': {
 			if (quantity > 500) return 'I can only do a maximum of 500 Vorkath kills at a time!';
-			const loot = vorkath.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			return Monsters.Vorkath.kill(quantity);
 		}
 		case 'CERB':
 		case 'CERBERUS': {
