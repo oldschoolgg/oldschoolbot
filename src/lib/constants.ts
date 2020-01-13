@@ -94,7 +94,7 @@ export const KillableMonsters = [
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: ['vork'],
-		timeToFinish: Time.Minute * 2.6,
+		timeToFinish: Time.Minute * 2.8,
 		table: Monsters.Vorkath
 	},
 	{
