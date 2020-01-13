@@ -1,8 +1,8 @@
-import { Client, KlasaClientOptions, util } from 'klasa';
+import { Client, KlasaClientOptions } from 'klasa';
 import fetch from 'node-fetch';
 
 import { token, clientOptions, clientProperties } from '../config';
-import { Time } from './lib/constants';
+import { Time, Events } from './lib/constants';
 import { Util } from 'oldschooljs';
 
 Client.use(require('@kcp/tags'));
@@ -27,7 +27,7 @@ class OldSchoolBot extends Client {
 			return 1;
 		}
 
-		let currentItems = util.deepClone(this.settings!.get('prices'));
+		let currentItems = this.settings!.get('prices');
 
 		const currentItem = currentItems[itemID];
 
@@ -35,6 +35,7 @@ class OldSchoolBot extends Client {
 			return currentItem.price;
 		}
 
+		this.emit(Events.Debug, `Fetching Price of item[${itemID}]`);
 		let itemData = await fetch(
 			`https://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemID}`
 		)
@@ -49,9 +50,11 @@ class OldSchoolBot extends Client {
 			price = typeof currentPrice === 'string' ? Util.fromKMB(currentPrice) : currentPrice;
 		}
 
-		currentItems[itemID] = { price, fetchedAt: Date.now() };
+		const newItems = { ...currentItems };
 
-		await this.settings!.update('prices', currentItems);
+		newItems[itemID] = { price, fetchedAt: Date.now() };
+
+		await this.settings!.update('prices', newItems);
 
 		return price;
 	}
