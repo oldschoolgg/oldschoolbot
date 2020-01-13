@@ -31,6 +31,7 @@
 		"zlib-sync": "^0.1.5"
 	},
 	"devDependencies": {
+		"@iarna/toml": "^2.2.3",
 		"@types/node": "^13.1.0",
 		"@types/node-fetch": "^2.5.4",
 		"@types/xml2js": "^0.4.5",
