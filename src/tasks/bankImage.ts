@@ -107,11 +107,10 @@ export default class BankImageTask extends Task {
 
 		let loot = [];
 		let totalValue = 0;
-		const prices = this.client.settings!.get('prices');
 
 		for (const [id, lootQuantity] of Object.entries(itemLoot)) {
 			// Draw value
-			if (showValue && prices) {
+			if (showValue) {
 				const itemPrice = await this.client.fetchItemPrice(id);
 				if (itemPrice) {
 					totalValue += itemPrice * lootQuantity;
