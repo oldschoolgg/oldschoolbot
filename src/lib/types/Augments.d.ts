@@ -4,13 +4,19 @@ import { Bank } from '.';
 declare module 'klasa' {
 	interface KlasaClient {
 		public oneCommandAtATimeCache: Set<string>;
+		public fetchItemPrice(itemID: number | string): Promise<number>;
 	}
 	interface Command {
 		altProtection?: boolean;
 		oneAtTime?: boolean;
 	}
 	interface Task {
-		generateBankImage(bank: Bank, title?: string): Promise<Buffer>;
+		generateBankImage(
+			bank: Bank,
+			title?: string,
+			showValue?: boolean,
+			flags?: { [key: string]: string }
+		): Promise<Buffer>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number, string]): Promise<any>;

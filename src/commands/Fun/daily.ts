@@ -50,9 +50,9 @@ export default class DailyCommand extends BotCommand {
 					options
 				);
 				const winner = collected.first();
-				if (winner) await this.reward(msg, true);
+				if (winner) return this.reward(msg, true);
 			} catch (err) {
-				await this.reward(msg, false);
+				return this.reward(msg, false);
 			}
 		} else {
 			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
@@ -127,7 +127,7 @@ export default class DailyCommand extends BotCommand {
 		// @ts-ignore
 		const gpImage = this.client.commands.get('bank').generateImage(amount);
 
-		msg.send(dmStr, gpImage).catch(() => null);
-		user.settings.update('GP', user.settings.get('GP') + amount);
+		await user.settings.update('GP', user.settings.get('GP') + amount);
+		return msg.send(dmStr, gpImage).catch(() => null);
 	}
 }
