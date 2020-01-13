@@ -39,9 +39,5 @@ module.exports = class extends Command {
 		if (msg.author.settings.get('badges').length > 0) {
 			this.client.tasks.get('badges').run();
 		}
-
-		if (msg.guild.settings.get('levelUpMessages')) {
-			this.client.tasks.get('usernameCacher').run();
-		}
 	}
 };
