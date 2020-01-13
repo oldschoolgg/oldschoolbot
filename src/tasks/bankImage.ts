@@ -3,6 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
 import fetch from 'node-fetch';
+import pLimit from 'p-limit';
+
+const itemFetchLimit = pLimit(5);
 
 import {
 	generateHexColorForCashStack,
@@ -107,6 +110,14 @@ export default class BankImageTask extends Task {
 
 		let loot = [];
 		let totalValue = 0;
+
+		if (showValue) {
+			await Promise.all(
+				Object.keys(itemLoot).map(key =>
+					itemFetchLimit(() => this.client.fetchItemPrice(key))
+				)
+			);
+		}
 
 		for (const [id, lootQuantity] of Object.entries(itemLoot)) {
 			// Draw value
