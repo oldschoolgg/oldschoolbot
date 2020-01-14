@@ -20,7 +20,7 @@
 		"moment": "^2.21.0",
 		"mongodb": "^3.3.3",
 		"node-fetch": "^2.6.0",
-		"oldschooljs": "^0.7.8",
+		"oldschooljs": "^0.7.9",
 		"p-limit": "^2.2.1",
 		"rethinkdbdash": "^2.3.31",
 		"rss-parser": "^3.1.1",
@@ -31,7 +31,6 @@
 		"zlib-sync": "^0.1.5"
 	},
 	"devDependencies": {
-		"@iarna/toml": "^2.2.3",
 		"@types/node": "^13.1.0",
 		"@types/node-fetch": "^2.5.4",
 		"@types/xml2js": "^0.4.5",

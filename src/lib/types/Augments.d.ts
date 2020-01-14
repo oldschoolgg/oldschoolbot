@@ -31,5 +31,10 @@ declare module 'discord.js' {
 		addItemsToBank(items: Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addArrayOfItemsToCollectionLog(items: number[]): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
+		incrementMonsterScore(
+			monsterID: number,
+			numberToAdd?: number
+		): Promise<SettingsUpdateResult>;
+		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 	}
 }
