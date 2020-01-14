@@ -17,7 +17,8 @@ export default class extends Command {
 			cooldown: 1,
 			description: 'Simulate killing bosses (shows only rare drops).',
 			usage: '<quantity:int{1}> <BossName:...str>',
-			usageDelim: ' '
+			usageDelim: ' ',
+			requiredPermissions: ['ATTACH_FILES']
 		});
 	}
 
@@ -30,7 +31,12 @@ export default class extends Command {
 
 		const image = await this.client.tasks
 			.get('bankImage')
-			.generateBankImage(result, `Loot from ${quantity} ${toTitleCase(bossName)}`);
+			.generateBankImage(
+				result,
+				`Loot from ${quantity} ${toTitleCase(bossName)}`,
+				true,
+				msg.flagArgs
+			);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
