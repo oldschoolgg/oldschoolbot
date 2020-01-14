@@ -99,7 +99,7 @@ export default class BankImageTask extends Task {
 		itemLoot: Bank,
 		title: string = '',
 		showValue = true,
-		flags: { [key: string]: string | number }
+		flags: { [key: string]: string | number } = {}
 	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
