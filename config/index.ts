@@ -48,7 +48,7 @@ const clientOptions: KlasaClientOptions = {
 	createPiecesFolders: false,
 	prefix: '+',
 	providers: {
-		default: production ? 'rethinkdb' : 'toml'
+		default: production ? 'rethinkdb' : 'json'
 	},
 	permissionLevels: PermissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
