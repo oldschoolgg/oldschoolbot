@@ -10,7 +10,13 @@ import {
 	Time,
 	Events
 } from '../../lib/constants';
-import { stringMatches, formatDuration, activityTaskFilter, getMinionName } from '../../lib/util';
+import {
+	stringMatches,
+	formatDuration,
+	activityTaskFilter,
+	getMinionName,
+	randomItemFromArray
+} from '../../lib/util';
 import { MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../../lib/types/index';
 import { rand } from '../../../config/util';
 import clueTiers from '../../lib/clueTiers';
@@ -30,6 +36,18 @@ const invalidMonster = (prefix: string) =>
 const hasNoMinion = (prefix: string) =>
 	`You don't have a minion yet. You can buy one for 50m by typing \`${prefix}minion buy\`.`;
 
+const patMessages = [
+	'You pat {name} on the head.',
+	'You gently pat {name} on the head, they look back at you happily.',
+	'You pat {name} softly on the head, and thank them for their hard work.',
+	'You pay {name} on the head, they feel happier now.',
+	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
+	'You give {name} head pats, they get comfortable and start feeling asleep.'
+];
+
+const randomPatMessage = (minionName: string) =>
+	randomItemFromArray(patMessages).replace('{name}', minionName);
+
 export default class extends BotCommand {
 	public constructor(
 		client: KlasaClient,
@@ -42,7 +60,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[kill|setname|buy|clue|kc] [quantity:int{1}|name:...string] [name:...string]',
+			usage:
+				'[kill|setname|buy|clue|kc|pat] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -54,6 +73,19 @@ export default class extends BotCommand {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 		return this.sendCurrentStatus(msg);
+	}
+
+	async pat(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
+		if (!this.hasMinion(msg)) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		if (this.isBusy(msg)) {
+			return this.sendCurrentStatus(msg);
+		}
+
+		return msg.send(randomPatMessage(getMinionName(msg.author)));
 	}
 
 	async kc(msg: KlasaMessage) {
