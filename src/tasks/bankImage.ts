@@ -10,10 +10,12 @@ const itemFetchLimit = pLimit(5);
 import {
 	generateHexColorForCashStack,
 	canvasImageFromBuffer,
-	formatItemStackQuantity
+	formatItemStackQuantity,
+	cleanString,
 } from '../lib/util';
 import { Bank } from '../lib/types';
 import { toKMB } from 'oldschooljs/dist/util';
+import { Util, Items } from 'oldschooljs';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -22,6 +24,8 @@ registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
 const bankImageFile = fs.readFileSync('./resources/images/bank.png');
 
 const CACHE_DIR = './icon_cache';
+
+
 
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
@@ -95,7 +99,7 @@ export default class BankImageTask extends Task {
 		itemLoot: Bank,
 		title: string = '',
 		showValue = true,
-		flags: { [key: string]: string }
+		flags: { [key: string]: string | number }
 	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
@@ -121,16 +125,43 @@ export default class BankImageTask extends Task {
 
 		for (const [id, lootQuantity] of Object.entries(itemLoot)) {
 			// Draw value
-			if (showValue) {
-				const itemPrice = await this.client.fetchItemPrice(id);
-				if (itemPrice) {
-					totalValue += itemPrice * lootQuantity;
-				}
+			const itemPrice = await this.client.fetchItemPrice(id);
+			let value = 0;
+			if (itemPrice) {
+				value = itemPrice * lootQuantity;
+				totalValue += value;
 			}
+
 			loot.push({
 				id: parseInt(id),
-				quantity: lootQuantity
+				quantity: lootQuantity,
+				value
 			});
+		}
+
+		// Filtering
+		const searchQuery = flags.search || flags.s
+		if (searchQuery && typeof searchQuery === "string") {
+			loot = loot.filter(item => {
+				const osItem = Items.get(item.id);
+				if (!osItem) return false;
+				return cleanString(osItem.name).includes(cleanString(searchQuery));
+			})
+		}
+
+		loot = loot.filter(item => item.quantity > 0);
+		if (loot.length === 0) throw 'No items found.';
+
+		// Sorting
+		loot = loot.sort((a, b) => b.value - a.value);
+
+		// Paging
+		const page = flags.page;
+		if (typeof page === "number") {
+			const chunked = util.chunk(loot, 56);
+			const pageLoot = chunked[page];
+			if (!pageLoot) throw 'You have no items on this page.';
+			loot = pageLoot;
 		}
 
 		// Draw Bank Title
@@ -151,9 +182,6 @@ export default class BankImageTask extends Task {
 			ctx.fillText(title, canvas.width / 2, 21);
 		}
 
-		loot = loot.filter(item => item.quantity > 0);
-		if (loot.length === 0) throw 'No loot!';
-
 		// Draw Items
 
 		ctx.textAlign = 'start';
@@ -169,7 +197,7 @@ export default class BankImageTask extends Task {
 
 		for (let i = 0; i < chunkedLoot.length; i++) {
 			for (let x = 0; x < chunkedLoot[i].length; x++) {
-				const { id, quantity } = chunkedLoot[i][x];
+				const { id, quantity, value } = chunkedLoot[i][x];
 				const item = await this.getItemImage(id);
 				if (!item) continue;
 
@@ -203,6 +231,33 @@ export default class BankImageTask extends Task {
 						xLoc + distanceFromSide - 18,
 						yLoc + distanceFromTop - 24
 					);
+				}
+
+				if (flags.showvalue || flags.sv) {
+					const formattedValue = Util.toKMB(value);
+					ctx.fillStyle = 'black';
+
+					for (let t = 1; t < 4; t++) {
+						ctx.fillText(
+							formattedValue,
+							xLoc + distanceFromSide - 15 + (t * 0.5),
+							yLoc + distanceFromTop +  (t * 0.5)
+						);
+							ctx.fillText(
+							formattedValue,
+							xLoc + distanceFromSide - 15 - (t * 0.5),
+							yLoc + distanceFromTop - (t * 0.5)
+						);
+					}
+
+					ctx.fillStyle = generateHexColorForCashStack(value);
+					for (let t = 0; t < 5; t++) {
+						ctx.fillText(
+							formattedValue,
+							xLoc + distanceFromSide - 15,
+							yLoc + distanceFromTop
+						);
+					}
 				}
 			}
 		}

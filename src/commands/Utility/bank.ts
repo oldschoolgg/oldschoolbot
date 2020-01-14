@@ -86,9 +86,15 @@ export default class extends Command {
 
 		if (!bankPage) throw "You don't have any items on that page!";
 		const image = await task.generateBankImage(
-			bankPage,
-			`${msg.author.username}'s Bank - Page ${page} of ${chunkedObject.length}`
+			bank,
+			`${msg.author.username}'s Bank - Page ${page} of ${chunkedObject.length}`,
+			true,
+			{
+				...msg.flagArgs,
+				page: page - 1
+			}
 		);
+
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 }
