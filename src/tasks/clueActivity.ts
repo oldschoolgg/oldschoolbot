@@ -27,7 +27,9 @@ export default class extends Task {
 
 		const str = `${user}, ${getMinionName(user)} finished completing ${quantity} ${
 			clueTier.name
-		} clues. ${getMinionName(user)} carefully places the reward caskets in your bank.`;
+		} clues. ${getMinionName(user)} carefully places the reward casket${
+			quantity > 1 ? 's' : ''
+		} in your bank.`;
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
