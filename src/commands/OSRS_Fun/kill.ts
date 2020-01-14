@@ -17,7 +17,8 @@ export default class extends Command {
 			cooldown: 1,
 			description: 'Simulate killing bosses (shows only rare drops).',
 			usage: '<quantity:int{1}> <BossName:...str>',
-			usageDelim: ' '
+			usageDelim: ' ',
+			requiredPermissions: ['ATTACH_FILES']
 		});
 	}
 
