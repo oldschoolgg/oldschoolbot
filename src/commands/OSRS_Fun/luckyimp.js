@@ -20,9 +20,11 @@ module.exports = class extends Command {
 		const loot = {};
 
 		for (let i = 0; i < qty; i++) {
-			const item = LuckyImp.roll();
-			if (!loot[item.item]) loot[item.item] = item.quantity;
-			else loot[item.item] += item.quantity;
+			const items = LuckyImp.roll();
+			for (const item of items) {
+				if (!loot[item.item]) loot[item.item] = item.quantity;
+				else loot[item.item] += item.quantity;
+			}
 		}
 
 		const opened = `You caught ${qty} Lucky Imp${qty > 1 ? 's' : ''}`;
