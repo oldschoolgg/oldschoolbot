@@ -1,5 +1,5 @@
 import { Task } from 'klasa';
-import { KillableMonsters, Events, Regex } from '../lib/constants';
+import { KillableMonsters, Events, Regex, Time } from '../lib/constants';
 import { MonsterActivityTaskOptions } from '../lib/types';
 import { getMinionName, noOp } from '../lib/util';
 import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
@@ -51,7 +51,7 @@ export default class extends Task {
 
 		channel
 			.awaitMessages(mes => mes.author === user && Regex.Yes.test(mes.content), {
-				time: 20000,
+				time: Time.Minute * 2,
 				max: 1
 			})
 			.then(messages => {

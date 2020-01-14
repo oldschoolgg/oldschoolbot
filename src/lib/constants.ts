@@ -136,7 +136,7 @@ export const enum Events {
 }
 
 export const Regex = {
-	Yes: /^y|yes?|yeah?$/i
+	Yes: /^y|yes?|yas?|yeah?$/i
 };
 
 export const rootFolder = join(__dirname, '..', '..', '..');
