@@ -30,7 +30,12 @@ export default class extends Command {
 
 		const image = await this.client.tasks
 			.get('bankImage')
-			.generateBankImage(result, `Loot from ${quantity} ${toTitleCase(bossName)}`);
+			.generateBankImage(
+				result,
+				`Loot from ${quantity} ${toTitleCase(bossName)}`,
+				true,
+				msg.flagArgs
+			);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}

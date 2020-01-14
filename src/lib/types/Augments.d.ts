@@ -15,7 +15,7 @@ declare module 'klasa' {
 			bank: Bank,
 			title?: string,
 			showValue?: boolean,
-			flags?: { [key: string]: string }
+			flags?: { [key: string]: string | number }
 		): Promise<Buffer>;
 	}
 	interface Command {
