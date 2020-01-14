@@ -3,15 +3,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
 import fetch from 'node-fetch';
-import pLimit from 'p-limit';
-
-const itemFetchLimit = pLimit(5);
 
 import {
 	generateHexColorForCashStack,
 	canvasImageFromBuffer,
 	formatItemStackQuantity,
-	cleanString,
+	cleanString
 } from '../lib/util';
 import { Bank } from '../lib/types';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -24,8 +21,6 @@ registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
 const bankImageFile = fs.readFileSync('./resources/images/bank.png');
 
 const CACHE_DIR = './icon_cache';
-
-
 
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
@@ -99,7 +94,7 @@ export default class BankImageTask extends Task {
 		itemLoot: Bank,
 		title: string = '',
 		showValue = true,
-		flags: { [key: string]: string | number }
+		flags: { [key: string]: string | number } = {}
 	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
@@ -115,12 +110,16 @@ export default class BankImageTask extends Task {
 		let loot = [];
 		let totalValue = 0;
 
-		if (showValue) {
-			await Promise.all(
-				Object.keys(itemLoot)
-					.filter(key => !this.client.settings?.get('prices')[key])
-					.map(key => itemFetchLimit(() => this.client.fetchItemPrice(key)))
-			);
+		// If some of the loot has no stored values, try to fetch them.
+		const keys = Object.keys(itemLoot);
+		const filteredKeys = keys.filter(
+			key => typeof this.client.settings?.get('prices')[key] === 'undefined'
+		);
+
+		if (showValue && filteredKeys.length > 0) {
+			for (const key of filteredKeys) {
+				await this.client.fetchItemPrice(key);
+			}
 		}
 
 		for (const [id, lootQuantity] of Object.entries(itemLoot)) {
@@ -140,13 +139,13 @@ export default class BankImageTask extends Task {
 		}
 
 		// Filtering
-		const searchQuery = flags.search || flags.s
-		if (searchQuery && typeof searchQuery === "string") {
+		const searchQuery = flags.search || flags.s;
+		if (searchQuery && typeof searchQuery === 'string') {
 			loot = loot.filter(item => {
 				const osItem = Items.get(item.id);
 				if (!osItem) return false;
 				return cleanString(osItem.name).includes(cleanString(searchQuery));
-			})
+			});
 		}
 
 		loot = loot.filter(item => item.quantity > 0);
@@ -157,7 +156,7 @@ export default class BankImageTask extends Task {
 
 		// Paging
 		const page = flags.page;
-		if (typeof page === "number") {
+		if (typeof page === 'number') {
 			const chunked = util.chunk(loot, 56);
 			const pageLoot = chunked[page];
 			if (!pageLoot) throw 'You have no items on this page.';
@@ -240,13 +239,13 @@ export default class BankImageTask extends Task {
 					for (let t = 1; t < 4; t++) {
 						ctx.fillText(
 							formattedValue,
-							xLoc + distanceFromSide - 15 + (t * 0.5),
-							yLoc + distanceFromTop +  (t * 0.5)
+							xLoc + distanceFromSide - 15 + t * 0.5,
+							yLoc + distanceFromTop + t * 0.5
 						);
-							ctx.fillText(
+						ctx.fillText(
 							formattedValue,
-							xLoc + distanceFromSide - 15 - (t * 0.5),
-							yLoc + distanceFromTop - (t * 0.5)
+							xLoc + distanceFromSide - 15 - t * 0.5,
+							yLoc + distanceFromTop - t * 0.5
 						);
 					}
 

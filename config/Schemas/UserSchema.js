@@ -10,6 +10,8 @@ Client.defaultUserSchema
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLog', 'integer', { array: true, default: [] })
+	.add('monsterScores', 'any', { default: {} })
+	.add('clueScores', 'any', { default: {} })
 	.add('minion', folder =>
 		folder.add('name', 'string').add('hasBought', 'boolean', { default: false })
 	);
