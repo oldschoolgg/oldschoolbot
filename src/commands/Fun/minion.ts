@@ -42,7 +42,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[kill|setname|buy|clue] [quantity:int{1}|name:...string] [name:...string]',
+			usage: '[kill|setname|buy|clue|kc] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -54,6 +54,21 @@ export default class extends BotCommand {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 		return this.sendCurrentStatus(msg);
+	}
+
+	async kc(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
+		if (!this.hasMinion(msg)) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
+
+		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
+		for (const [monID, monKC] of Object.entries(monsterScores)) {
+			const mon = KillableMonsters.find(m => m.id === parseInt(monID));
+			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
+		}
+		return msg.send(res);
 	}
 
 	async buy(msg: KlasaMessage) {
