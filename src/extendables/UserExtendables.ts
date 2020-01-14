@@ -3,7 +3,7 @@ import { User } from 'discord.js';
 
 import { UserSettings, Events } from '../lib/constants';
 import { Bank } from '../lib/types';
-import { addBankToBank, removeItemFromBank } from '../lib/util';
+import { addBankToBank, removeItemFromBank, addItemToBank } from '../lib/util';
 
 export default class extends Extendable {
 	public constructor(
@@ -71,5 +71,35 @@ export default class extends Extendable {
 		);
 
 		return await this.settings.update(UserSettings.CollectionLog, newItems);
+	}
+
+	public async incrementMonsterScore(this: User, monsterID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
+
+		this.client.emit(
+			Events.Log,
+			`${this.username}[${this.id}] had ${amountToAdd} KC added to Monster[${monsterID}]`
+		);
+
+		return await this.settings.update(
+			UserSettings.MonsterScores,
+			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
+		);
+	}
+
+	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const currentClueScores = this.settings.get(UserSettings.ClueScores);
+
+		this.client.emit(
+			Events.Log,
+			`${this.username}[${this.id}] had ${amountToAdd} KC added to Clue[${clueID}]`
+		);
+
+		return await this.settings.update(
+			UserSettings.ClueScores,
+			addItemToBank(currentClueScores, clueID, amountToAdd)
+		);
 	}
 }

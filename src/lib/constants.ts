@@ -121,7 +121,9 @@ export const enum UserSettings {
 	MinionHasBought = 'minion.hasBought',
 	GP = 'GP',
 	Bank = 'bank',
-	CollectionLog = 'collectionLog'
+	CollectionLog = 'collectionLog',
+	MonsterScores = 'monsterScores',
+	ClueScores = 'clueScores'
 }
 
 export const enum Events {
