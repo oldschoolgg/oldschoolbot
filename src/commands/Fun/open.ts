@@ -60,6 +60,8 @@ export default class extends Command {
 			`You opened a ${clueTier.name} clue and received...`
 		);
 
+		msg.author.incrementClueScore(clueTier.id);
+
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 }

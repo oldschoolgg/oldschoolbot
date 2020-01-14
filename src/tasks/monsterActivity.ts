@@ -64,5 +64,7 @@ export default class extends Task {
 				}
 			})
 			.catch(noOp);
+
+		user.incrementMonsterScore(monsterID, quantity);
 	}
 }
