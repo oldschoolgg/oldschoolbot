@@ -1,11 +1,12 @@
-import { Command, KlasaMessage, KlasaClient, CommandStore } from 'klasa';
+import { KlasaMessage, KlasaClient, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
 import ClueTiers from '../../lib/clueTiers';
 import { Bank } from '../../lib/types';
 import { Events } from '../../lib/constants';
+import { BotCommand } from '../../lib/BotCommand';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(
 		client: KlasaClient,
 		store: CommandStore,
@@ -16,7 +17,8 @@ export default class extends Command {
 			cooldown: 1,
 			aliases: ['clue'],
 			usage: '<ClueTier:string>',
-			usageDelim: ' '
+			usageDelim: ' ',
+			oneAtTime: true
 		});
 	}
 

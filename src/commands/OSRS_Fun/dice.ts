@@ -16,7 +16,8 @@ export default class extends BotCommand {
 		super(client, store, file, directory, {
 			description: 'Simulates dice rolls from Runescape.',
 			usage: '[amount:int{1}]',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			oneAtTime: true
 		});
 	}
 

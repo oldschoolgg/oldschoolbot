@@ -15,11 +15,32 @@ export default class extends Extendable {
 		super(client, store, file, directory, { appliesTo: [User] });
 	}
 
+	get sanitizedName(this: User) {
+		return `(${this.username.replace(/[()]/g, '')})[${this.id}]`;
+	}
+
 	public log(this: User, stringLog: string) {
-		this.client.emit(
-			Events.Log,
-			`(${this.username.replace(/[()]/g, '')})[${this.id}] ${stringLog}`
+		this.client.emit(Events.Log, `${this.sanitizedName} ${stringLog}`);
+	}
+
+	public async removeGP(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentGP = this.settings.get(UserSettings.GP);
+		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
+		this.log(
+			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
+				amount}]`
 		);
+		return await this.settings.update(UserSettings.GP, currentGP - amount);
+	}
+
+	public async addGP(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentGP = this.settings.get(UserSettings.GP);
+		this.log(
+			`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`
+		);
+		return await this.settings.update(UserSettings.GP, currentGP + amount);
 	}
 
 	public async addItemsToBank(this: User, items: Bank, collectionLog = false) {
