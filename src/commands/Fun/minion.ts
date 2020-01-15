@@ -40,9 +40,9 @@ const patMessages = [
 	'You pat {name} on the head.',
 	'You gently pat {name} on the head, they look back at you happily.',
 	'You pat {name} softly on the head, and thank them for their hard work.',
-	'You pay {name} on the head, they feel happier now.',
+	'You pat {name} on the head, they feel happier now.',
 	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
-	'You give {name} head pats, they get comfortable and start feeling asleep.'
+	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
 const randomPatMessage = (minionName: string) =>
