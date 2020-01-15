@@ -40,5 +40,8 @@ declare module 'discord.js' {
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		hasItem(monsterID: number, amount: number): Promise<boolean>;
 		log(stringLog: string): void;
+		addGP(amount: number): Promise<SettingsUpdateResult>;
+		removeGP(amount: number): Promise<SettingsUpdateResult>;
+		sanitizedName: string;
 	}
 }
