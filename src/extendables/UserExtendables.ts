@@ -15,6 +15,13 @@ export default class extends Extendable {
 		super(client, store, file, directory, { appliesTo: [User] });
 	}
 
+	public log(this: User, stringLog: string) {
+		this.client.emit(
+			Events.Log,
+			`(${this.username.replace(/[()]/g, '')})[${this.id}] ${stringLog}`
+		);
+	}
+
 	public async addItemsToBank(this: User, items: Bank, collectionLog = false) {
 		await this.settings.sync(true);
 
@@ -26,10 +33,8 @@ export default class extends Extendable {
 			this.addArrayOfItemsToCollectionLog(keys);
 		}
 
-		this.client.emit(
-			Events.Log,
-			`${this.username}[${this.id}] had items added to bank - ${JSON.stringify(items)}`
-		);
+		this.log(`Had items added to bank - ${JSON.stringify(items)}`);
+
 		return await this.settings.update(
 			UserSettings.Bank,
 			addBankToBank(items, { ...this.settings.get(UserSettings.Bank) })
@@ -48,10 +53,7 @@ export default class extends Extendable {
 			throw `${this.username}[${this.id}] doesn't have enough of item[${itemID}] to remove ${amountToRemove}.`;
 		}
 
-		this.client.emit(
-			Events.Log,
-			`${this.username}[${this.id}] had ${amountToRemove} of item[${itemID}] removed from bank.`
-		);
+		this.log(`had Quantity[${amountToRemove}] of ItemID[${itemID}] removed from bank.`);
 
 		return await this.settings.update(
 			UserSettings.Bank,
@@ -63,12 +65,8 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentLog = this.settings.get(UserSettings.CollectionLog);
 		const newItems = items.filter(item => !currentLog.includes(item));
-		this.client.emit(
-			Events.Log,
-			`${this.username}[${
-				this.id
-			}] had following items added to collection log: [${newItems.join(',')}]`
-		);
+
+		this.log(`had following items added to collection log: [${newItems.join(',')}]`);
 
 		return await this.settings.update(UserSettings.CollectionLog, newItems);
 	}
@@ -77,10 +75,7 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
 
-		this.client.emit(
-			Events.Log,
-			`${this.username}[${this.id}] had ${amountToAdd} KC added to Monster[${monsterID}]`
-		);
+		this.log(`had Quantity[${amountToAdd}] KC added to Monster[${monsterID}]`);
 
 		return await this.settings.update(
 			UserSettings.MonsterScores,
@@ -92,14 +87,18 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentClueScores = this.settings.get(UserSettings.ClueScores);
 
-		this.client.emit(
-			Events.Log,
-			`${this.username}[${this.id}] had ${amountToAdd} KC added to Clue[${clueID}]`
-		);
+		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
 
 		return await this.settings.update(
 			UserSettings.ClueScores,
 			addItemToBank(currentClueScores, clueID, amountToAdd)
 		);
+	}
+
+	public async hasItem(this: User, itemID: number, amount = 1) {
+		await this.settings.sync(true);
+
+		const bank = this.settings.get(UserSettings.Bank);
+		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
 	}
 }
