@@ -30,6 +30,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		const osItem = Items.get(itemName);
 		if (!osItem) throw `That item doesnt exist.`;
+		if (!('tradeable' in osItem) || !osItem.tradeable) throw `That item isn't tradeable.`;
 
 		let priceOfItem = await this.client.fetchItemPrice(osItem.id);
 		let totalPrice = priceOfItem * quantity;
@@ -59,7 +60,7 @@ export default class extends BotCommand {
 				throw "This shouldn't be possible...";
 			}
 		} catch (err) {
-			return sellMsg.edit(`Cancelling sale of ${osItem.name}`);
+			return sellMsg.edit(`Cancelling sale of ${quantity}x ${osItem.name}.`);
 		}
 
 		await msg.author.removeItemFromBank(osItem.id, quantity);
