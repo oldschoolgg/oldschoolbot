@@ -11,6 +11,8 @@ const options = {
 	errors: ['time']
 };
 
+const specialUntradeables = [995];
+
 export default class extends BotCommand {
 	public constructor(
 		client: KlasaClient,
@@ -29,7 +31,13 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		const osItem = Items.get(itemName);
 		if (!osItem) throw `That item doesnt exist.`;
-		if (!('tradeable' in osItem) || !osItem.tradeable) throw `That item isn't tradeable.`;
+		if (
+			specialUntradeables.includes(osItem.id) ||
+			!('tradeable' in osItem) ||
+			!osItem.tradeable
+		) {
+			throw `That item isn't tradeable.`;
+		}
 
 		let priceOfItem = await this.client.fetchItemPrice(osItem.id);
 		let totalPrice = priceOfItem * quantity;
