@@ -40,6 +40,8 @@ export default class extends BotCommand {
 			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
 			await msg.author.settings.update('GP', amountToAdd);
+			if (!won) this.client.user?.addGP(amount);
+			else this.client.user?.settings.update('GP', this.client.user.settings.get('GP') - amount)
 
 			embed.setDescription(
 				`You rolled **${roll}** on the percentile dice, and you ${
