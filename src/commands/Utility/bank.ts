@@ -1,11 +1,14 @@
 import { Command, KlasaMessage, KlasaClient, CommandStore } from 'klasa';
-import { MessageAttachment } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 
 import { generateHexColorForCashStack, formatItemStackQuantity, chunkObject } from '../../lib/util';
 import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
+import { Items } from 'oldschooljs';
+import { RichDisplay } from 'klasa';
+import { util } from 'klasa';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -65,6 +68,27 @@ export default class extends Command {
 
 		if (coins === 0 && !hasItemsInBank) {
 			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;
+		}
+
+		if (msg.flagArgs.text) {
+			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
+			const display = new RichDisplay();
+			display.setFooterPrefix(`Page `);
+
+			let textBank = [];
+			for (const [id, qty] of Object.entries(bank)) {
+				textBank.push(`**${Items.get(parseInt(id))!.name}:** ${qty.toLocaleString()}`);
+			}
+
+			for (const page of util.chunk(textBank, 10)) {
+				display.addPage(
+					new MessageEmbed()
+						.setTitle(`${msg.author.username}'s Bank`)
+						.setDescription(page.join('\n'))
+				);
+			}
+
+			return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
