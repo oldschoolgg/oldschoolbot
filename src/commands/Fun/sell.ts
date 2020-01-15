@@ -20,7 +20,6 @@ export default class extends BotCommand {
 	) {
 		super(client, store, file, directory, {
 			cooldown: 1,
-			aliases: ['clue'],
 			usage: '<quantity:int{1}> <itemname:...string>',
 			usageDelim: ' ',
 			oneAtTime: true
