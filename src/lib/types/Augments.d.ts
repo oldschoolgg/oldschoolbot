@@ -1,10 +1,12 @@
 import { Image } from 'canvas';
 import { Bank } from '.';
+import { Settings } from 'klasa';
 
 declare module 'klasa' {
 	interface KlasaClient {
 		public oneCommandAtATimeCache: Set<string>;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
+		public settings: Settings;
 	}
 	interface Command {
 		altProtection?: boolean;
@@ -36,5 +38,7 @@ declare module 'discord.js' {
 			numberToAdd?: number
 		): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
+		hasItem(monsterID: number, amount: number): Promise<boolean>;
+		log(stringLog: string): void;
 	}
 }
