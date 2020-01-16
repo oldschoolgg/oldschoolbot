@@ -24,7 +24,6 @@ export default class DailyCommand extends BotCommand {
 		directory: string
 	) {
 		super(client, store, file, directory, {
-			altProtection: true,
 			oneAtTime: true,
 			cooldown: 5
 		});
@@ -63,6 +62,10 @@ export default class DailyCommand extends BotCommand {
 
 	async reward(msg: KlasaMessage, triviaCorrect: boolean) {
 		const user = msg.author;
+		if (Date.now() - user.createdTimestamp < Time.Month) {
+			user.log(`[NAC-DAILY]`);
+		}
+
 		const guild = this.client.guilds.get(SupportServer);
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
