@@ -1,7 +1,8 @@
 import { KlasaClient, CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { TextChannel } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Events } from '../../lib/constants';
+import { Events, UserSettings, Time, Channel } from '../../lib/constants';
 
 export default class extends BotCommand {
 	public constructor(
@@ -24,6 +25,15 @@ export default class extends BotCommand {
 		if (GP < amount) throw `You don't have enough GP.`;
 		if (user.id === msg.author.id) throw `You can't send money to yourself.`;
 		if (user.bot) throw `You can't send money to a bot.`;
+		if (
+			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) <
+			Time.Minute * 1
+		) {
+			(this.client.channels
+				.get(Channel.ErrorLogs) as TextChannel)
+				?.send(`(${msg.author.sanitizedName})[${msg.author.id}] paid daily to (${user.sanitizedName})[${user.id}]`);
+		}
+
 		await msg.author.removeGP(amount);
 		await user.addGP(amount);
 		this.client.emit(

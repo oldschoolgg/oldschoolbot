@@ -195,7 +195,8 @@ export const enum UserSettings {
 	Bank = 'bank',
 	CollectionLog = 'collectionLog',
 	MonsterScores = 'monsterScores',
-	ClueScores = 'clueScores'
+	ClueScores = 'clueScores',
+	LastDailyTimestamp = 'lastDailyTimestamp'
 }
 
 export const enum Events {
