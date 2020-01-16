@@ -320,7 +320,9 @@ export default class extends BotCommand {
 - Use \`${msg.cmdPrefix}minion setname [name]\` to change your minions' name.
 - You can assign ${getMinionName(msg.author)} to kill monsters for loot using \`${
 				msg.cmdPrefix
-			}minion kill\`.`);
+			}minion kill\`.
+- Do clue scrolls with \`${msg.cmdPrefix}minion clue 1 easy\` (complete 1 easy clue)
+- Pat your minion with \`${msg.cmdPrefix}minion pat\``);
 		}
 		switch (currentTask.data.type) {
 			case Activity.MonsterKilling: {
