@@ -84,7 +84,7 @@ export const KillableMonsters = [
 		id: Monsters.Cerberus.id,
 		name: Monsters.Cerberus.name,
 		aliases: ['cerb'],
-		timeToFinish: Time.Minute * 2.2,
+		timeToFinish: Time.Minute * 2.35,
 		table: Monsters.Cerberus,
 		emoji: '<:Hellpuppy:324127376185491458>'
 	},
@@ -108,7 +108,7 @@ export const KillableMonsters = [
 		id: Monsters.Zulrah.id,
 		name: Monsters.Zulrah.name,
 		aliases: ['snek'],
-		timeToFinish: Time.Minute * 2.6,
+		timeToFinish: Time.Minute * 2.8,
 		table: Monsters.Zulrah,
 		emoji: '<:Pet_snakeling:324127377816944642>'
 	},
@@ -116,7 +116,7 @@ export const KillableMonsters = [
 		id: Monsters.GeneralGraardor.id,
 		name: Monsters.GeneralGraardor.name,
 		aliases: ['graardor', 'bandos', 'general'],
-		timeToFinish: Time.Minute * 4.2,
+		timeToFinish: Time.Minute * 4.8,
 		table: Monsters.GeneralGraardor,
 		emoji: '<:Pet_general_graardor:324127377376673792>'
 	},
@@ -124,7 +124,7 @@ export const KillableMonsters = [
 		id: Monsters.CommanderZilyana.id,
 		name: Monsters.CommanderZilyana.name,
 		aliases: ['sara', 'zily', 'saradomin'],
-		timeToFinish: Time.Minute * 4.2,
+		timeToFinish: Time.Minute * 4.8,
 		table: Monsters.CommanderZilyana,
 		emoji: '<:Pet_zilyana:324127378248957952>'
 	},
@@ -132,7 +132,7 @@ export const KillableMonsters = [
 		id: Monsters.Kreearra.id,
 		name: Monsters.Kreearra.name,
 		aliases: ['arma', 'armadyl', 'kree'],
-		timeToFinish: Time.Minute * 4.2,
+		timeToFinish: Time.Minute * 4.8,
 		table: Monsters.Kreearra,
 		emoji: '<:Pet_kreearra:324127377305239555>'
 	},
@@ -140,9 +140,41 @@ export const KillableMonsters = [
 		id: Monsters.KrilTsutsaroth.id,
 		name: Monsters.KrilTsutsaroth.name,
 		aliases: ['kril', 'zammy', 'zamorak'],
-		timeToFinish: Time.Minute * 4.2,
+		timeToFinish: Time.Minute * 4.8,
 		table: Monsters.KrilTsutsaroth,
 		emoji: '<:Pet_kril_tsutsaroth:324127377527406594>'
+	},
+	{
+		id: Monsters.Man.id,
+		name: Monsters.Man.name,
+		aliases: [],
+		timeToFinish: Time.Second * 4.4,
+		table: Monsters.Man,
+		emoji: '🧍‍♂️'
+	},
+	{
+		id: Monsters.Woman.id,
+		name: Monsters.Woman.name,
+		aliases: ['gril'],
+		timeToFinish: Time.Second * 4.4,
+		table: Monsters.Woman,
+		emoji: '🧍‍♀️'
+	},
+	{
+		id: Monsters.Goblins.id,
+		name: Monsters.Goblins.name,
+		aliases: [],
+		timeToFinish: Time.Second * 4.4,
+		table: Monsters.Goblins,
+		emoji: ''
+	},
+	{
+		id: Monsters.Guard.id,
+		name: Monsters.Guard.name,
+		aliases: [],
+		timeToFinish: Time.Second * 7.4,
+		table: Monsters.Guard,
+		emoji: ''
 	}
 ];
 
