@@ -8,14 +8,10 @@ const corp = require('../../monsters/corp');
 const raids = require('../../monsters/raids');
 const tob = require('../../monsters/tob');
 const grotesqueGuardians = require('../../monsters/grotesqueGuardians');
-const bandos = require('../../monsters/bandos');
-const saradomin = require('../../monsters/saradomin');
 const demonicGorilla = require('../../monsters/demonicGorilla');
 const abbyDemon = require('../../monsters/abbyDemon');
 const kurask = require('../../monsters/kurask');
 const kalphiteQueen = require('../../monsters/kalphiteQueen');
-const zamorak = require('../../monsters/zamorak');
-const armadyl = require('../../monsters/armadyl');
 const lizardmanShaman = require('../../monsters/lizardmanShaman');
 const callisto = require('../../monsters/callisto');
 const vetion = require('../../monsters/vetion');
@@ -114,20 +110,36 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 		case 'BANDOS':
 		case 'GENERALGRAARDOR':
 		case 'GRAARDOR': {
-			if (quantity > 100000)
-				return 'I can only do a maximum of 100,000 Bandos kills at a time!';
-			const loot = bandos.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Bandos at a time!';
+			return Monsters.GeneralGraardor.kill(quantity);
 		}
 		case 'SARA':
 		case 'SARADOMIN':
 		case 'ZILY':
 		case 'ZILYANA':
 		case 'COMMANDERZILYANA': {
-			if (quantity > 100000)
-				return 'I can only do a maximum of 100,000 Sara kills at a time!';
-			const loot = saradomin.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Bandos at a time!';
+			return Monsters.CommanderZilyana.kill(quantity);
+		}
+		case 'MEN':
+		case 'MAN': {
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Men at a time!';
+			return Monsters.Man.kill(quantity);
+		}
+		case 'WOMEN':
+		case 'WOMAN': {
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Women at a time! 😉';
+			return Monsters.Woman.kill(quantity);
+		}
+		case 'GOBLIN':
+		case 'GOBLINS': {
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Goblins at a time!';
+			return Monsters.Goblins.kill(quantity);
+		}
+		case 'GUARD':
+		case 'GUARDS': {
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Guards at a time!';
+			return Monsters.Guard.kill(quantity);
 		}
 		case 'ZULRAH': {
 			if (quantity > 10000) {
@@ -172,17 +184,15 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 		case 'ZAMORAK':
 		case 'KRIL':
 		case 'KRILTSUTSAROTH': {
-			if (quantity > 100000) return "I can only kill 100,000 K'ril Tsutsaroth's at a time!";
-			const loot = zamorak.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Kril at a time!';
+			return Monsters.KrilTsutsaroth.kill(quantity);
 		}
 		case 'ARMA':
 		case 'ARMADYL':
 		case 'KREE':
 		case 'KREEARRA': {
-			if (quantity > 100000) return "I can only kill 100,000 Kree'arra's at a time!";
-			const loot = armadyl.kill(quantity);
-			return loot.length > 0 ? loot : 'You got nothing.';
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Arma at a time!';
+			return Monsters.Kreearra.kill(quantity);
 		}
 		case 'SHAMANS':
 		case 'LIZARDMANSHAMANS':
