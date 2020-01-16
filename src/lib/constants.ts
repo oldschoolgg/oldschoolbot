@@ -111,6 +111,38 @@ export const KillableMonsters = [
 		timeToFinish: Time.Minute * 2.6,
 		table: Monsters.Zulrah,
 		emoji: '<:Pet_snakeling:324127377816944642>'
+	},
+	{
+		id: Monsters.GeneralGraardor.id,
+		name: Monsters.GeneralGraardor.name,
+		aliases: ['graardor', 'bandos', 'general'],
+		timeToFinish: Time.Minute * 4.2,
+		table: Monsters.GeneralGraardor,
+		emoji: '<:Pet_general_graardor:324127377376673792>'
+	},
+	{
+		id: Monsters.CommanderZilyana.id,
+		name: Monsters.CommanderZilyana.name,
+		aliases: ['sara', 'zily', 'saradomin'],
+		timeToFinish: Time.Minute * 4.2,
+		table: Monsters.CommanderZilyana,
+		emoji: '<:Pet_zilyana:324127378248957952>'
+	},
+	{
+		id: Monsters.Kreearra.id,
+		name: Monsters.Kreearra.name,
+		aliases: ['arma', 'armadyl', 'kree'],
+		timeToFinish: Time.Minute * 4.2,
+		table: Monsters.Kreearra,
+		emoji: '<:Pet_kreearra:324127377305239555>'
+	},
+	{
+		id: Monsters.KrilTsutsaroth.id,
+		name: Monsters.KrilTsutsaroth.name,
+		aliases: ['kril', 'zammy', 'zamorak'],
+		timeToFinish: Time.Minute * 4.2,
+		table: Monsters.KrilTsutsaroth,
+		emoji: '<:Pet_kril_tsutsaroth:324127377527406594>'
 	}
 ];
 
