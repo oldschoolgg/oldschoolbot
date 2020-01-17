@@ -7,6 +7,7 @@ import { ScheduledTask } from 'klasa';
 import { Tasks, Emoji } from './constants';
 import { Util } from 'discord.js';
 import { KlasaUser } from 'klasa';
+import killableMonsters from './killableMonsters';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -165,3 +166,9 @@ const happyEmojis = [
 ];
 
 export const randomHappyEmoji = () => randomItemFromArray(happyEmojis);
+
+export function findMonster(str: string) {
+	return killableMonsters.find(
+		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
+	);
+}
