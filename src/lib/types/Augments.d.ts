@@ -7,6 +7,7 @@ declare module 'klasa' {
 		public oneCommandAtATimeCache: Set<string>;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public settings: Settings;
+		public production: boolean;
 	}
 	interface Command {
 		altProtection?: boolean;

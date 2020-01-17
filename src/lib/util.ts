@@ -172,3 +172,37 @@ export function findMonster(str: string) {
 		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
 	);
 }
+
+export function saveCtx(ctx: any) {
+	let props = [
+		'strokeStyle',
+		'fillStyle',
+		'globalAlpha',
+		'lineWidth',
+		'lineCap',
+		'lineJoin',
+		'miterLimit',
+		'lineDashOffset',
+		'shadowOffsetX',
+		'shadowOffsetY',
+		'shadowBlur',
+		'shadowColor',
+		'globalCompositeOperation',
+		'font',
+		'textAlign',
+		'textBaseline',
+		'direction',
+		'imageSmoothingEnabled'
+	];
+	let state: { [key: string]: any } = {};
+	for (const prop of props) {
+		state[prop] = ctx[prop];
+	}
+	return state;
+}
+
+export function restoreCtx(ctx: any, state: any) {
+	for (const prop in state) {
+		ctx[prop] = state[prop];
+	}
+}
