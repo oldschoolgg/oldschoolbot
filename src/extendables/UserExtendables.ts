@@ -4,6 +4,7 @@ import { User } from 'discord.js';
 import { UserSettings, Events } from '../lib/constants';
 import { Bank } from '../lib/types';
 import { addBankToBank, removeItemFromBank, addItemToBank } from '../lib/util';
+import clueTiers from '../lib/clueTiers';
 
 export default class extends Extendable {
 	public constructor(
@@ -52,6 +53,19 @@ export default class extends Extendable {
 			keys.some(itemID => !this.settings.get(UserSettings.CollectionLog).includes(itemID))
 		) {
 			this.addArrayOfItemsToCollectionLog(keys);
+		}
+
+		for (const { scrollID } of clueTiers) {
+			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
+			if (!items[scrollID]) continue;
+			const alreadyHasThisScroll = await this.hasItem(scrollID);
+			if (alreadyHasThisScroll) {
+				// If they already have this scroll in their bank, delete it from the loot.
+				delete items[scrollID];
+			} else {
+				// If they dont have it in their bank, reset the amount to 1 incase they got more than 1 of the clue.
+				items[scrollID] = 1;
+			}
 		}
 
 		this.log(`Had items added to bank - ${JSON.stringify(items)}`);
