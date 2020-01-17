@@ -8,7 +8,9 @@ import {
 	generateHexColorForCashStack,
 	canvasImageFromBuffer,
 	formatItemStackQuantity,
-	cleanString
+	cleanString,
+	saveCtx,
+	restoreCtx
 } from '../lib/util';
 import { Bank } from '../lib/types';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -19,6 +21,7 @@ registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
 
 const bankImageFile = fs.readFileSync('./resources/images/bank.png');
+const bankRepeaterFile = fs.readFileSync('./resources/images/repeating.png');
 
 const CACHE_DIR = './icon_cache';
 
@@ -104,6 +107,7 @@ export default class BankImageTask extends Task {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		const backgroundImage = await canvasImageFromBuffer(bankImageFile);
+		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile)
 
 		ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
 
@@ -194,7 +198,20 @@ export default class BankImageTask extends Task {
 		const distanceFromTop = 32;
 		const distanceFromSide = 16;
 
+
 		for (let i = 0; i < chunkedLoot.length; i++) {
+			if (i > 6) {
+				let state = saveCtx(ctx);
+				let temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
+				canvas.height += itemSize + (i === chunkedLoot.length  ? 0 : spacer);
+
+				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
+				ctx.fillStyle = ptrn;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+				ctx.putImageData(temp, 0, 0);
+				restoreCtx(ctx, state);
+			}
 			for (let x = 0; x < chunkedLoot[i].length; x++) {
 				const { id, quantity, value } = chunkedLoot[i][x];
 				const item = await this.getItemImage(id);
@@ -263,4 +280,5 @@ export default class BankImageTask extends Task {
 
 		return canvas.toBuffer();
 	}
+
 }
