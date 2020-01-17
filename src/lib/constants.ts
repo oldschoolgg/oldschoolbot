@@ -147,7 +147,7 @@ export const KillableMonsters = [
 	{
 		id: Monsters.Man.id,
 		name: Monsters.Man.name,
-		aliases: [],
+		aliases: ['men'],
 		timeToFinish: Time.Second * 4.4,
 		table: Monsters.Man,
 		emoji: '🧍‍♂️'
@@ -155,7 +155,7 @@ export const KillableMonsters = [
 	{
 		id: Monsters.Woman.id,
 		name: Monsters.Woman.name,
-		aliases: ['gril'],
+		aliases: ['gril', 'women'],
 		timeToFinish: Time.Second * 4.4,
 		table: Monsters.Woman,
 		emoji: '🧍‍♀️'
