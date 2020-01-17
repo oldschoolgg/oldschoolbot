@@ -1,6 +1,6 @@
 const { Task } = require('klasa');
 
-const badges = require('../../config/badges');
+const badges = require('../lib/badges');
 
 module.exports = class extends Task {
 	init() {

@@ -22,3 +22,34 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	duration: number;
 }
+
+export interface SettingsEntry {
+	id: string;
+	RSN?: string;
+	GP?: number;
+	autoupdate?: boolean;
+	badges?: string[];
+	bank?: Bank;
+	clueScores?: Bank;
+	monsterScores?: Bank;
+	collectionLog?: number[];
+	pets?: number[];
+	lastDailyTimestamp?: number;
+	totalCommandsUsed?: number;
+	minion?: {
+		name?: string;
+		hasBought: boolean;
+	};
+}
+
+export interface Pet {
+	id: number;
+	emoji: string;
+	chance: number;
+	name: string;
+	type: string;
+	altNames: string[];
+	bossKeys?: string[];
+	finish?(): number;
+	formatFinish(num: number): string;
+}
