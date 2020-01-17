@@ -1,25 +1,19 @@
 import { KlasaClient, CommandStore, KlasaMessage, util } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	KillableMonsters,
-	Tasks,
-	Activity,
-	UserSettings,
-	Emoji,
-	Time,
-	Events
-} from '../../lib/constants';
+import { Tasks, Activity, UserSettings, Emoji, Time, Events } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
 	activityTaskFilter,
 	getMinionName,
-	randomItemFromArray
+	randomItemFromArray,
+	findMonster
 } from '../../lib/util';
 import { MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../../lib/types/index';
 import { rand } from '../../../config/util';
 import clueTiers from '../../lib/clueTiers';
+import killableMonsters from '../../lib/killableMonsters';
 
 const COST_OF_MINION = 50_000_000;
 
@@ -29,9 +23,9 @@ const invalidClue = (prefix: string) =>
 		.join(', ')}. For example, \`${prefix}minion clue 1 easy\``;
 
 const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are: ${KillableMonsters.map(
-		mon => mon.name
-	).join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
+	`That isn't a valid monster, the available monsters are: ${killableMonsters
+		.map(mon => mon.name)
+		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
 
 const hasNoMinion = (prefix: string) =>
 	`You don't have a minion yet. You can buy one for 50m by typing \`${prefix}minion buy\`.`;
@@ -97,7 +91,7 @@ export default class extends BotCommand {
 
 		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
 		for (const [monID, monKC] of Object.entries(monsterScores)) {
-			const mon = KillableMonsters.find(m => m.id === parseInt(monID));
+			const mon = killableMonsters.find(m => m.id === parseInt(monID));
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
 		}
 		return msg.send(res);
@@ -197,7 +191,7 @@ export default class extends BotCommand {
 		if (duration > Time.Minute * 30) {
 			throw `${getMinionName(
 				msg.author
-			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+			)} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				clueTier.name
 			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
 		}
@@ -255,11 +249,7 @@ export default class extends BotCommand {
 
 		if (!name) throw invalidMonster(msg.cmdPrefix);
 
-		const monster = KillableMonsters.find(
-			mon =>
-				stringMatches(mon.name, name) ||
-				mon.aliases.some(alias => stringMatches(alias, name))
-		);
+		const monster = findMonster(name);
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
@@ -327,7 +317,7 @@ export default class extends BotCommand {
 		switch (currentTask.data.type) {
 			case Activity.MonsterKilling: {
 				const data: MonsterActivityTaskOptions = currentTask.data;
-				const monster = KillableMonsters.find(mon => mon.id === data.monsterID);
+				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
 				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
 				return msg.send(
 					`${getMinionName(msg.author)} is currently killing ${

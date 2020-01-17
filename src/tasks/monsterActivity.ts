@@ -1,13 +1,14 @@
-import { Task } from 'klasa';
-import { KillableMonsters, Events, Regex, Time } from '../lib/constants';
+import { Task, KlasaMessage } from 'klasa';
+import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
+
+import { Events, Regex, Time } from '../lib/constants';
 import { MonsterActivityTaskOptions } from '../lib/types';
 import { getMinionName, noOp } from '../lib/util';
-import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import killableMonsters from '../lib/killableMonsters';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
-		const monster = KillableMonsters.find(mon => mon.id === monsterID);
+		const monster = killableMonsters.find(mon => mon.id === monsterID);
 		const user = await this.client.users.fetch(userID);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
