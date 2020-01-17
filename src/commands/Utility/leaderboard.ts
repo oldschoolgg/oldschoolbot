@@ -5,6 +5,7 @@ import { fmNum } from '../../../config/util';
 import { SettingsEntry } from '../../lib/types';
 import badges from '../../lib/badges';
 import { findMonster } from '../../lib/util';
+import pets from '../../lib/pets';
 
 export default class extends Command {
 	public constructor(
@@ -56,7 +57,7 @@ export default class extends Command {
 		);
 
 		const columns = [];
-		for (const pet of petRecords) {
+		for (const pet of pets) {
 			columns.push(
 				`${pet.emoji} ${fmNum(petRecords.lowest[pet.id]) || '0'} - ${fmNum(
 					petRecords.highest[pet.id]
@@ -73,7 +74,7 @@ export default class extends Command {
 
 	async gp(msg: KlasaMessage) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-		const rawUserSettings = await this.fetchRawUserSettings(['GP', 'pets']);
+		const rawUserSettings = await this.fetchRawUserSettings(['GP']);
 
 		const onlyForGuild = msg.flagArgs.server;
 
@@ -84,7 +85,7 @@ export default class extends Command {
 					if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
 					return true;
 				})
-				.sort((a, b) => b.GP ?? 0 - (a.GP ?? 0))
+				.sort((a, b) => (b.GP ?? 0) - (a.GP ?? 0))
 				.slice(0, 300)
 				.map(this.resolveEntries)
 		);
