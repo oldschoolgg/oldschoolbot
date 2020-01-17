@@ -118,7 +118,7 @@ module.exports = function killWorkerFunction(quantity, bossName) {
 		case 'ZILY':
 		case 'ZILYANA':
 		case 'COMMANDERZILYANA': {
-			if (quantity > 5000) return 'I can only do a maximum of 5000 Bandos at a time!';
+			if (quantity > 5000) return 'I can only do a maximum of 5000 Sara at a time!';
 			return Monsters.CommanderZilyana.kill(quantity);
 		}
 		case 'MEN':
