@@ -172,7 +172,7 @@ export default class extends Command {
 					(a, b) => {
 						const aScore = a.monsterScores![monster.id] ?? 0;
 						const bScore = b.monsterScores![monster.id] ?? 0;
-						return aScore - bScore;
+						return bScore - aScore;
 				})
 				.slice(0, 300)
 				.map(this.resolveEntries)
@@ -189,7 +189,7 @@ export default class extends Command {
 						page
 							.map(
 								({ user, monsterScores }) =>
-									`**${user}**: ${monsterScores![monster.id]}`
+									`**${user}**: ${monsterScores![monster.id] ?? 0}`
 							)
 							.join('\n')
 						
