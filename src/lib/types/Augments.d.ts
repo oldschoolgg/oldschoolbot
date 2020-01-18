@@ -25,7 +25,7 @@ declare module 'klasa' {
 		generateCollectionLogImage(
 			collectionLog: number[],
 			title: string = '',
-			flags: { [key: string]: string | number } = {}
+			type: any
 		): Promise<Buffer>;
 	}
 	interface Command {
