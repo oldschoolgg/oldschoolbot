@@ -331,7 +331,7 @@ export default class BankImageTask extends Task {
 		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile);
 		let row = 0;
 
-		for (const [bossName, bossDrops] of Object.entries(bosses)) {
+		for (const [, bossDrops] of Object.entries(bosses)) {
 			let column = 0;
 
 			if (row > 6) {
