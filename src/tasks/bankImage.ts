@@ -337,7 +337,7 @@ export default class BankImageTask extends Task {
 			if (row > 6) {
 				let state = saveCtx(ctx);
 				let temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
-				canvas.height += itemSize + spacer * 2;
+				canvas.height += itemSize + spacer / 2;
 
 				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
 				ctx.fillStyle = ptrn;
@@ -354,12 +354,8 @@ export default class BankImageTask extends Task {
 				const yLoc = Math.floor(itemSize * (row * 1.22) + spacer + distanceFromTop);
 
 				await drawItem(itemID, xLoc, yLoc, collectionLog.includes(itemID));
-				if (column === 11) {
-					column = 0;
-					row++;
-				} else {
-					column++;
-				}
+
+				column++;
 			}
 			row++;
 		}
