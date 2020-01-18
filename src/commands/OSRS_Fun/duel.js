@@ -54,11 +54,11 @@ module.exports = class extends Command {
 		this.cache.add(msg.guild.id);
 
 		const duelMsg = await msg.channel.send(
-			`${user.username}, say \`confirm\` if you accept the duel for ${toKMB(amount)} GP.`
+			`${user.username}, say \`fight\` if you accept the duel for ${toKMB(amount)} GP.`
 		);
 		try {
 			const collected = await msg.channel.awaitMessages(
-				_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'confirm',
+				_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'fight',
 				options
 			);
 			if (!collected || !collected.first()) {
