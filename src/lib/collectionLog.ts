@@ -544,5 +544,10 @@ export const collectionLogTypes = [
 		name: 'Boss',
 		aliases: ['bosses', 'boss'],
 		items: bosses
+	},
+	{
+		name: 'Clue',
+		aliases: ['clues', 'clue'],
+		items: clues
 	}
 ];
