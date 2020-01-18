@@ -206,3 +206,8 @@ export function restoreCtx(ctx: any, state: any) {
 		ctx[prop] = state[prop];
 	}
 }
+
+export function isWeekend() {
+	const currentDate = new Date();
+	return currentDate.getDay() === 6 || currentDate.getDay() === 0;
+}

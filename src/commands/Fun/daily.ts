@@ -6,7 +6,7 @@ import { BotCommand } from '../../lib/BotCommand.js';
 import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
 import { roll, rand, formatDuration } from '../../../config/util.js';
 import * as pets from '../../../data/pets';
-import { randomHappyEmoji } from '../../lib/util.js';
+import { randomHappyEmoji, isWeekend } from '../../lib/util.js';
 
 const easyTrivia = triviaQuestions.slice(0, 40);
 
@@ -73,8 +73,7 @@ export default class DailyCommand extends BotCommand {
 		let amount = rand(1_000_000, 6_000_000);
 		const bonuses = [];
 
-		const currentDate = new Date();
-		if (currentDate.getDay() === 6 || currentDate.getDay() === 0) {
+		if (isWeekend()) {
 			amount *= 2;
 			bonuses.push(Emoji.MoneyBag);
 		}
