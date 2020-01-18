@@ -15,7 +15,6 @@ import {
 	restoreCtx
 } from '../lib/util';
 import { Bank } from '../lib/types';
-import { bosses, collectionLogTypes } from '../lib/collectionLog';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -331,7 +330,7 @@ export default class BankImageTask extends Task {
 		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile);
 		let row = 0;
 
-		for (const items of Object.values(type.items)) {
+		for (const items of Object.values(type.items) as number[][]) {
 			let column = 0;
 
 			if (row > 6) {
@@ -347,7 +346,7 @@ export default class BankImageTask extends Task {
 				restoreCtx(ctx, state);
 			}
 
-			for (const itemID of items.flat()) {
+			for (const itemID of items.flat(Infinity)) {
 				const xLoc = Math.floor(
 					column * 0.7 * ((canvas.width - 40) / 8) + distanceFromSide
 				);
