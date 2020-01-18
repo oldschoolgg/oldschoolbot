@@ -1,6 +1,7 @@
 import { Image } from 'canvas';
 import { Bank } from '.';
 import { Settings } from 'klasa';
+import { FSWatcher } from 'fs';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -8,6 +9,7 @@ declare module 'klasa' {
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public settings: Settings;
 		public production: boolean;
+		public _fileChangeWatcher?: FSWatcher;
 	}
 	interface Command {
 		altProtection?: boolean;
@@ -19,6 +21,11 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number }
+		): Promise<Buffer>;
+		generateCollectionLogImage(
+			collectionLog: number[],
+			title: string = '',
+			flags: { [key: string]: string | number } = {}
 		): Promise<Buffer>;
 	}
 	interface Command {

@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
 import fetch from 'node-fetch';
+import { toKMB } from 'oldschooljs/dist/util';
+import { Util, Items } from 'oldschooljs';
 
 import {
 	generateHexColorForCashStack,
@@ -13,8 +15,7 @@ import {
 	restoreCtx
 } from '../lib/util';
 import { Bank } from '../lib/types';
-import { toKMB } from 'oldschooljs/dist/util';
-import { Util, Items } from 'oldschooljs';
+import { bosses } from '../lib/collectionLog';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -24,6 +25,10 @@ const bankImageFile = fs.readFileSync('./resources/images/bank.png');
 const bankRepeaterFile = fs.readFileSync('./resources/images/repeating.png');
 
 const CACHE_DIR = './icon_cache';
+const spacer = 12;
+const itemSize = 32;
+const distanceFromTop = 32;
+const distanceFromSide = 16;
 
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
@@ -107,7 +112,7 @@ export default class BankImageTask extends Task {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		const backgroundImage = await canvasImageFromBuffer(bankImageFile);
-		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile)
+		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile);
 
 		ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
 
@@ -117,7 +122,7 @@ export default class BankImageTask extends Task {
 		// If some of the loot has no stored values, try to fetch them.
 		const keys = Object.keys(itemLoot);
 		const filteredKeys = keys.filter(
-			key => typeof this.client.settings?.get('prices')[key] === 'undefined'
+			key => typeof this.client.settings.get('prices')[key] === 'undefined'
 		);
 
 		if (showValue && filteredKeys.length > 0) {
@@ -193,17 +198,12 @@ export default class BankImageTask extends Task {
 		ctx.font = '16px OSRSFontCompact';
 
 		const chunkedLoot = util.chunk(loot, 8);
-		const spacer = 12;
-		const itemSize = 32;
-		const distanceFromTop = 32;
-		const distanceFromSide = 16;
-
 
 		for (let i = 0; i < chunkedLoot.length; i++) {
 			if (i > 6) {
 				let state = saveCtx(ctx);
 				let temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
-				canvas.height += itemSize + (i === chunkedLoot.length  ? 0 : spacer);
+				canvas.height += itemSize + (i === chunkedLoot.length ? 0 : spacer);
 
 				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
 				ctx.fillStyle = ptrn;
@@ -281,4 +281,89 @@ export default class BankImageTask extends Task {
 		return canvas.toBuffer();
 	}
 
+	async generateCollectionLogImage(
+		collectionLog: number[],
+		title: string = '',
+		flags: { [key: string]: string | number } = {}
+	): Promise<Buffer> {
+		const canvas = createCanvas(488, 331);
+		const ctx = canvas.getContext('2d');
+		ctx.font = '16px OSRSFontCompact';
+		ctx.imageSmoothingEnabled = false;
+
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		const backgroundImage = await canvasImageFromBuffer(bankImageFile);
+
+		ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
+
+		ctx.textAlign = 'center';
+		ctx.font = '16px RuneScape Bold 12';
+
+		for (let i = 0; i < 3; i++) {
+			ctx.fillStyle = '#000000';
+			ctx.fillText(title, canvas.width / 2 + 1, 21 + 1);
+		}
+		for (let i = 0; i < 3; i++) {
+			ctx.fillStyle = '#ff981f';
+			ctx.fillText(title, canvas.width / 2, 21);
+		}
+
+		// Draw Items
+
+		ctx.textAlign = 'start';
+		ctx.fillStyle = '#494034';
+
+		ctx.font = '16px OSRSFontCompact';
+
+		const drawItem = async (itemID: number, x: number, y: number, hasItem: boolean) => {
+			const item = await this.getItemImage(itemID);
+			if (!item) return;
+
+			if (!hasItem) {
+				ctx.save();
+				ctx.globalAlpha = 0.25;
+			}
+			ctx.drawImage(item, x + (32 - item.width) / 2, y + (32 - item.height) / 2);
+
+			if (!hasItem) ctx.restore();
+		};
+		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile);
+		let row = 0;
+
+		for (const [bossName, bossDrops] of Object.entries(bosses)) {
+			let column = 0;
+
+			if (row > 6) {
+				let state = saveCtx(ctx);
+				let temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
+				canvas.height += itemSize + spacer * 2;
+
+				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
+				ctx.fillStyle = ptrn;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+				ctx.putImageData(temp, 0, 0);
+				restoreCtx(ctx, state);
+			}
+
+			for (const itemID of bossDrops.flat()) {
+				const xLoc = Math.floor(
+					column * 0.7 * ((canvas.width - 40) / 8) + distanceFromSide
+				);
+				const yLoc = Math.floor(itemSize * (row * 1.22) + spacer + distanceFromTop);
+
+				await drawItem(itemID, xLoc, yLoc, collectionLog.includes(itemID));
+				if (column === 11) {
+					column = 0;
+					row++;
+				} else {
+					column++;
+				}
+			}
+			row++;
+		}
+
+		return canvas.toBuffer();
+	}
 }
