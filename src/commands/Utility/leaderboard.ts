@@ -6,6 +6,8 @@ import { SettingsEntry } from '../../lib/types';
 import badges from '../../lib/badges';
 import { findMonster } from '../../lib/util';
 import pets from '../../lib/pets';
+import { bosses } from '../../lib/collectionLog';
+import { UserSettings } from '../../lib/constants';
 
 export default class extends Command {
 	public constructor(
@@ -16,7 +18,7 @@ export default class extends Command {
 	) {
 		super(client, store, file, directory, {
 			description: 'Shows the people with the most virtual GP.',
-			usage: '[pets|gp|petrecords|kc] [name:string]',
+			usage: '[pets|gp|petrecords|kc|cl] [name:string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb']
@@ -192,6 +194,52 @@ export default class extends Command {
 							.map(
 								({ user, monsterScores }) =>
 									`**${user}**: ${monsterScores![monster.id] ?? 0}`
+							)
+							.join('\n')
+						
+					)
+			);
+		}
+
+		return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
+	}
+
+	async cl(msg: KlasaMessage, [name]: [string]) {
+		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
+
+		const items = Object.values(bosses).flat(100);
+		const rawUserSettings = await this.fetchRawUserSettings(['collectionLog']);
+		const onlyForGuild = msg.flagArgs.server;
+
+		const users = await Promise.all(
+			rawUserSettings
+				.filter(u => {
+					if (!u.collectionLog) return false;
+					if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
+					return true;
+				})
+				.sort(
+					(a, b) => {
+						const aScore = a.collectionLog ? a.collectionLog.filter(item => items.includes(item)).length : 0;
+						const bScore = b.collectionLog ? b.collectionLog.filter(item => items.includes(item)).length : 0;
+						return bScore - aScore;
+				})
+				.slice(0, 300)
+				.map(this.resolveEntries)
+		);
+
+		const display = new RichDisplay();
+		display.setFooterPrefix(`Page `);
+
+		for (const page of util.chunk(users, 10)) {
+			display.addPage(
+				new MessageEmbed()
+					.setTitle(`Collection Log Leaderboard`)
+					.setDescription(
+						page
+							.map(
+								({ user, collectionLog }) =>
+									`**${user}**: ${(collectionLog ?? []).filter((item: number) => items.includes(item)).length ?? 0}`
 							)
 							.join('\n')
 						
