@@ -15,7 +15,7 @@ import {
 	restoreCtx
 } from '../lib/util';
 import { Bank } from '../lib/types';
-import { bosses } from '../lib/collectionLog';
+import { bosses, collectionLogTypes } from '../lib/collectionLog';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -284,7 +284,7 @@ export default class BankImageTask extends Task {
 	async generateCollectionLogImage(
 		collectionLog: number[],
 		title: string = '',
-		flags: { [key: string]: string | number } = {}
+		type: any
 	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
@@ -331,13 +331,13 @@ export default class BankImageTask extends Task {
 		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile);
 		let row = 0;
 
-		for (const [, bossDrops] of Object.entries(bosses)) {
+		for (const items of Object.values(type.items)) {
 			let column = 0;
 
 			if (row > 6) {
 				let state = saveCtx(ctx);
 				let temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
-				canvas.height += itemSize + spacer / 2;
+				canvas.height += itemSize + spacer;
 
 				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
 				ctx.fillStyle = ptrn;
@@ -347,7 +347,7 @@ export default class BankImageTask extends Task {
 				restoreCtx(ctx, state);
 			}
 
-			for (const itemID of bossDrops.flat()) {
+			for (const itemID of items.flat()) {
 				const xLoc = Math.floor(
 					column * 0.7 * ((canvas.width - 40) / 8) + distanceFromSide
 				);
