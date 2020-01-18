@@ -8,7 +8,8 @@ import {
 	activityTaskFilter,
 	getMinionName,
 	randomItemFromArray,
-	findMonster
+	findMonster,
+	isWeekend
 } from '../../lib/util';
 import { MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../../lib/types/index';
 import { rand } from '../../../config/util';
@@ -196,9 +197,6 @@ export default class extends BotCommand {
 			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
 		}
 
-		// TODO
-		if (quantity < 1) return;
-
 		const bank = msg.author.settings.get('bank');
 		const numOfScrolls = bank[clueTier.scrollID];
 
@@ -210,6 +208,10 @@ export default class extends BotCommand {
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
+
+		if (isWeekend()) {
+			duration *= 0.9;
+		}
 
 		const data: ClueActivityTaskOptions = {
 			clueID: clueTier.id,
@@ -262,11 +264,12 @@ export default class extends BotCommand {
 			} is ${Math.floor((Time.Minute * 30) / monster.timeToFinish)}.`;
 		}
 
-		// TODO
-		if (quantity < 1) return;
-
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
+
+		if (isWeekend()) {
+			duration *= 0.9;
+		}
 
 		const data: MonsterActivityTaskOptions = {
 			monsterID: monster.id,
