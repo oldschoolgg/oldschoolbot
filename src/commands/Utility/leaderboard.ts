@@ -7,7 +7,6 @@ import badges from '../../lib/badges';
 import { findMonster } from '../../lib/util';
 import pets from '../../lib/pets';
 import { bosses } from '../../lib/collectionLog';
-import { UserSettings } from '../../lib/constants';
 
 export default class extends Command {
 	public constructor(
