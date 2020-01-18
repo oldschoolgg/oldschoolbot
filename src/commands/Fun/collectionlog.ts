@@ -22,8 +22,8 @@ export default class extends BotCommand {
 	}
 
 	async bosses(msg: KlasaMessage) {
-		const items = Object.values(bosses).flat();
-		const log = msg.author.settings.get(UserSettings.CollectionLog);
+		const items = Object.values(bosses).flat(100);
+		const log: number[] = msg.author.settings.get(UserSettings.CollectionLog);
 		const num = items.filter(item => log.includes(item)).length;
 
 		msg.channel.send(
