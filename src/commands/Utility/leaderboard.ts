@@ -4,9 +4,9 @@ import { util, KlasaMessage, Command, KlasaClient, CommandStore, RichDisplay } f
 import { fmNum } from '../../../config/util';
 import { SettingsEntry } from '../../lib/types';
 import badges from '../../lib/badges';
-import { findMonster } from '../../lib/util';
+import { findMonster, stringMatches } from '../../lib/util';
 import pets from '../../lib/pets';
-import { bosses } from '../../lib/collectionLog';
+import {  collectionLogTypes } from '../../lib/collectionLog';
 
 export default class extends Command {
 	public constructor(
@@ -47,7 +47,9 @@ export default class extends Command {
 		return (this.client.providers
 			.get(this.client.options.providers.default as string) as any)
 			.db.table('users')
-			.filter((user: any) => fieldsToHave.some(key => user.hasFields(key)))
+			.filter(function (user: any) {
+				return fieldsToHave.some(test => user.hasFields(test))
+			})
 			.run();
 	}
 
@@ -160,7 +162,6 @@ export default class extends Command {
 		if (!name) throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``
 		const monster = findMonster(name);
 		if (!monster) throw `That's not a valid monster!`;
-
 		const rawUserSettings = await this.fetchRawUserSettings(['monsterScores']);
 		const onlyForGuild = msg.flagArgs.server;
 
@@ -203,11 +204,19 @@ export default class extends Command {
 		return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
 	}
 
-	async cl(msg: KlasaMessage, [name]: [string]) {
+	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 
-		const items = Object.values(bosses).flat(100);
+		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)))
+
+		if (!type) {
+			throw `That's not a valid collection log type. The valid types are: ${collectionLogTypes.map(type => type.name).join(', ')}`
+		}
+
+		const items = Object.values(type.items).flat(100);
+
 		const rawUserSettings = await this.fetchRawUserSettings(['collectionLog']);
+		
 		const onlyForGuild = msg.flagArgs.server;
 
 		const users = await Promise.all(
@@ -233,7 +242,7 @@ export default class extends Command {
 		for (const page of util.chunk(users, 10)) {
 			display.addPage(
 				new MessageEmbed()
-					.setTitle(`Collection Log Leaderboard`)
+					.setTitle(`${type.name} Collection Log Leaderboard`)
 					.setDescription(
 						page
 							.map(
