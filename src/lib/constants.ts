@@ -12,7 +12,8 @@ export const enum Time {
 
 export const enum Channel {
 	Notifications = '469523207691436042',
-	ErrorLogs = '665678499578904596'
+	ErrorLogs = '665678499578904596',
+	Suggestions = '668441710703149074'
 }
 
 export const enum Emoji {
@@ -35,7 +36,9 @@ export const enum Emoji {
 	PeepoRanger = '<:peepoRanger:663096705746731089>',
 	PeepoNoob = '<:peepoNoob:660712001500086282>',
 	XP = '<:xp:630911040510623745>',
-	GP = '<:RSGP:369349580040437770>'
+	GP = '<:RSGP:369349580040437770>',
+	ThumbsUp = '👍',
+	ThumbsDown = '👎'
 }
 
 export const enum Image {
