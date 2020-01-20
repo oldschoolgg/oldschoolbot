@@ -3,7 +3,7 @@ import { Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/constants';
+import { UserSettings, ClientSettings } from '../../lib/constants';
 
 const options = {
 	max: 1,
@@ -74,6 +74,15 @@ export default class extends BotCommand {
 		await msg.author.settings.update(
 			UserSettings.GP,
 			msg.author.settings.get(UserSettings.GP) + totalPrice
+		);
+
+		const itemSellTaxBank = this.client.settings.get(
+			ClientSettings.EconomyStats.ItemSellTaxBank
+		);
+		const dividedAmount = (priceOfItem * quantity * 0.2) / 1_000_000;
+		this.client.settings.update(
+			ClientSettings.EconomyStats.ItemSellTaxBank,
+			itemSellTaxBank + Math.round(dividedAmount * 100) / 100
 		);
 
 		msg.author.log(`sold Quantity[${quantity}] ItemID[${osItem.id}] for ${totalPrice}`);

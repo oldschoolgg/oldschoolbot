@@ -61,16 +61,27 @@ export const enum Activity {
 	ClueCompletion = 'ClueCompletion'
 }
 
-export const enum UserSettings {
-	MinionName = 'minion.name',
-	MinionHasBought = 'minion.hasBought',
-	GP = 'GP',
-	Bank = 'bank',
-	CollectionLog = 'collectionLog',
-	MonsterScores = 'monsterScores',
-	ClueScores = 'clueScores',
-	LastDailyTimestamp = 'lastDailyTimestamp'
-}
+export const UserSettings = {
+	Minion: {
+		Name: 'minion.name',
+		HasBought: 'minion.hasBought'
+	},
+	GP: 'GP',
+	Bank: 'bank',
+	CollectionLog: 'collectionLog',
+	MonsterScores: 'monsterScores',
+	ClueScores: 'clueScores',
+	LastDailyTimestamp: 'lastDailyTimestamp'
+};
+
+export const ClientSettings = {
+	EconomyStats: {
+		DicingBank: 'economyStats.dicingBank',
+		DuelTaxBank: 'economyStats.duelTaxBank',
+		ItemSellTaxBank: 'economyStats.itemSellTaxBank',
+		DailiesAmount: 'economyStats.dailiesAmount'
+	}
+};
 
 export const enum Events {
 	Debug = 'debug',

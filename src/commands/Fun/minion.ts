@@ -139,7 +139,7 @@ export default class extends BotCommand {
 			if (balance < COST_OF_MINION) return;
 
 			await msg.author.settings.update(UserSettings.GP, balance - COST_OF_MINION);
-			await msg.author.settings.update(UserSettings.MinionHasBought, true);
+			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
 
 			await response.edit(
 				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.`
@@ -164,7 +164,7 @@ export default class extends BotCommand {
 			throw 'Please specify a valid name for your minion!';
 		}
 
-		await msg.author.settings.update(UserSettings.MinionName, name);
+		await msg.author.settings.update(UserSettings.Minion.Name, name);
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
 	}
 
@@ -299,7 +299,7 @@ export default class extends BotCommand {
 	}
 
 	hasMinion(msg: KlasaMessage) {
-		return msg.author.settings.get(UserSettings.MinionHasBought);
+		return msg.author.settings.get(UserSettings.Minion.HasBought);
 	}
 
 	sendCurrentStatus(msg: KlasaMessage) {
