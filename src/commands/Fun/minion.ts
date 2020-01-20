@@ -148,6 +148,15 @@ export default class extends BotCommand {
 			return msg.channel.send('Cancelled minion purchase.');
 		}
 	}
+	
+	async bosses(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
+		if (!this.hasMinion(msg)) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+		return msg.send('Monster Name (Amount Killable in An Hour) n\ Barrows (7) \n Dagannoth Prime (14) \n Dagannoth Rex (14) \n Dagannoth Supreme (14) \n Cerberus (12) \n Giant Mole (18) \n Vorkath (10) \n Zulrah (10) \n General Graardor (6) \n Commander Zilyana (6) \n Kree arra (6) \n Kril Tsutsaroth (6) \n Man (409) \n Woman (409) \n Goblins (409) \n Guard (243)');
+	
+	}
 
 	async setname(msg: KlasaMessage, [name]: [string]) {
 		if (!this.hasMinion(msg)) {
