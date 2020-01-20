@@ -148,6 +148,16 @@ export default class extends BotCommand {
 			return msg.channel.send('Cancelled minion purchase.');
 		}
 	}
+	
+	async bosses(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
+		const monster = findMonster(name);
+		if (!this.hasMinion(msg)) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+		return msg.send(`Monster Name (Amount Killable in An Hour) n\ Barrows ${Math.floor((Time.Minute * 30) / monster.name.Barrows.timeToFinish)} \n Dagannoth Prime ${Math.floor((Time.Minute * 30) / monster.name.Prime.timeToFinish)} \n Dagannoth Rex ${Math.floor((Time.Minute * 30) / monster.name.Rex.timeToFinish)} \n Dagannoth Supreme ${Math.floor((Time.Minute * 30) / monster.name.Supreme.timeToFinish)} \n Cerberus ${Math.floor((Time.Minute * 30) / monster.name.Cerberus.timeToFinish)} \n Giant Mole ${Math.floor((Time.Minute * 30) / monster.name.Mole.timeToFinish)} \n Vorkath ${Math.floor((Time.Minute * 30) / monster.name.Vorkath.timeToFinish)} \n Zulrah ${Math.floor((Time.Minute * 30) / monster.name.Zulrah.timeToFinish)} \n General Graardor ${Math.floor((Time.Minute * 30) / monster.name.Graardor.timeToFinish)} \n Commander Zilyana ${Math.floor((Time.Minute * 30) / monster.name.Zilyana.timeToFinish)} \n Kree arra ${Math.floor((Time.Minute * 30) / monster.name.Kree.timeToFinish)} \n Kril Tsutsaroth ${Math.floor((Time.Minute * 30) / monster.name.Kril.timeToFinish)} \n Man ${Math.floor((Time.Minute * 30) / monster.name.Man.timeToFinish)} \n Woman ${Math.floor((Time.Minute * 30) / monster.name.Woman.timeToFinish)} \n Goblins ${Math.floor((Time.Minute * 30) / monster.name.Goblins.timeToFinish)} \n Guard ${Math.floor((Time.Minute * 30) / monster.name.Guard.timeToFinish)}`);
+	
+	}
 
 	async setname(msg: KlasaMessage, [name]: [string]) {
 		if (!this.hasMinion(msg)) {
