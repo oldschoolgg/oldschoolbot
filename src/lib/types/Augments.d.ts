@@ -10,6 +10,7 @@ declare module 'klasa' {
 		public settings: Settings;
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
+		public _badgeCache: Map<string, string>;
 	}
 	interface Command {
 		altProtection?: boolean;

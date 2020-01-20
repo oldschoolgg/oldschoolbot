@@ -1,12 +1,12 @@
-const { Task } = require('klasa');
+import { Task } from 'klasa';
 
-const badges = require('../lib/badges');
+import badges from '../lib/badges';
 
-module.exports = class extends Task {
-	init() {
+export default class extends Task {
+	async init() {
 		this.run();
 	}
-	run() {
+	async run() {
 		this.cacheBadges();
 	}
 
@@ -17,15 +17,11 @@ module.exports = class extends Task {
 		for (const user of usersWithBadges.values()) {
 			const RSN = user.settings.get('RSN');
 			if (!RSN) continue;
-			newCache.set(
-				RSN.toLowerCase(),
-				user.settings
-					.get('badges')
-					.map(badge => badges[badge])
-					.join(' ')
-			);
+			const userBadges = user.settings.get('badges').map((badge: number) => badges[badge]);
+
+			newCache.set(RSN.toLowerCase(), userBadges.join(' '));
 		}
 
 		this.client._badgeCache = newCache;
 	}
-};
+}
