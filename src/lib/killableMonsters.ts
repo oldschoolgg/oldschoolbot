@@ -62,7 +62,7 @@ const killableMonsters = [
 	{
 		id: Monsters.Zulrah.id,
 		name: Monsters.Zulrah.name,
-		aliases: ['snek'],
+		aliases: ['snek', 'zul'],
 		timeToFinish: Time.Minute * 2.8,
 		table: Monsters.Zulrah,
 		emoji: '<:Pet_snakeling:324127377816944642>'
@@ -78,7 +78,7 @@ const killableMonsters = [
 	{
 		id: Monsters.CommanderZilyana.id,
 		name: Monsters.CommanderZilyana.name,
-		aliases: ['sara', 'zily', 'saradomin'],
+		aliases: ['sara', 'zily', 'saradomin', 'zilyana'],
 		timeToFinish: Time.Minute * 4.8,
 		table: Monsters.CommanderZilyana,
 		emoji: '<:Pet_zilyana:324127378248957952>'
