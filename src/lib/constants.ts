@@ -38,7 +38,8 @@ export const enum Emoji {
 	XP = '<:xp:630911040510623745>',
 	GP = '<:RSGP:369349580040437770>',
 	ThumbsUp = '👍',
-	ThumbsDown = '👎'
+	ThumbsDown = '👎',
+	Casket = '<:Casket:365003978678730772>'
 }
 
 export const enum Image {
