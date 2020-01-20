@@ -2,6 +2,8 @@ import { Command, CommandOptions, CommandStore, KlasaMessage, util, KlasaClient 
 
 export abstract class BotCommand extends Command {
 	public altProtection: boolean;
+	public guildOnly: boolean;
+	public oneAtTime: boolean;
 
 	public constructor(
 		client: KlasaClient,
@@ -15,10 +17,11 @@ export abstract class BotCommand extends Command {
 			store,
 			file,
 			directory,
-			util.mergeDefault({ altProtection: false, oneAtTime: false }, options)
+			util.mergeDefault({ altProtection: false, oneAtTime: false, guildOnly: false }, options)
 		);
 		this.altProtection = options.altProtection!;
 		this.oneAtTime = options.oneAtTime!;
+		this.guildOnly = options.guildOnly!;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,4 +38,5 @@ export abstract class BotCommand extends Command {
 export interface BotCommandOptions extends CommandOptions {
 	altProtection?: boolean;
 	oneAtTime?: boolean;
+	guildOnly?: boolean;
 }

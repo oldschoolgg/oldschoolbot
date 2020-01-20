@@ -136,4 +136,10 @@ export default class extends Extendable {
 		const bank = this.settings.get(UserSettings.Bank);
 		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
 	}
+
+	public get badges(this: User) {
+		const username = this.settings.get('RSN');
+		if (!username) return '';
+		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
+	}
 }

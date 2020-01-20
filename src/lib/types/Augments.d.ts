@@ -15,6 +15,7 @@ declare module 'klasa' {
 	interface Command {
 		altProtection?: boolean;
 		oneAtTime?: boolean;
+		guildOnly?: boolean;
 	}
 	interface Task {
 		generateBankImage(
@@ -52,5 +53,6 @@ declare module 'discord.js' {
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		sanitizedName: string;
+		badges: string;
 	}
 }
