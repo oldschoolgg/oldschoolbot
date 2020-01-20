@@ -3,7 +3,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Image, Color, Emoji, Channel } from '../../lib/constants';
+import { Image, Color, Emoji, Channel, ClientSettings } from '../../lib/constants';
 import { rand } from '../../../config/util';
 
 export default class extends BotCommand {
@@ -40,11 +40,13 @@ export default class extends BotCommand {
 			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
 			await msg.author.settings.update('GP', amountToAdd);
-			if (!won) this.client.user?.addGP(amount);
-			else {
-				await this.client.user?.settings.sync(true);
-				this.client.user?.settings.update('GP', this.client.user.settings.get('GP') - amount)
-			}
+
+			const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DicingBank);
+			const dividedAmount = (dicingBank + (won ? -amount : amount)) / 1_000_000;
+			this.client.settings.update(
+				ClientSettings.EconomyStats.DicingBank,
+				dicingBank + Math.round(dividedAmount * 100) / 100
+			);
 
 			embed.setDescription(
 				`You rolled **${roll}** on the percentile dice, and you ${

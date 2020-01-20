@@ -211,3 +211,7 @@ export function isWeekend() {
 	const currentDate = new Date();
 	return currentDate.getDay() === 6 || currentDate.getDay() === 0;
 }
+
+export function sleep(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}

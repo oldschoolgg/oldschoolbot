@@ -3,7 +3,7 @@ import { TextChannel } from 'discord.js';
 
 import { triviaQuestions } from '../../../resources/trivia-questions.json';
 import { BotCommand } from '../../lib/BotCommand.js';
-import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
+import { Time, Emoji, SupportServer, Channel, ClientSettings } from '../../lib/constants.js';
 import { roll, rand, formatDuration } from '../../../config/util.js';
 import * as pets from '../../../data/pets';
 import { randomHappyEmoji, isWeekend } from '../../lib/util.js';
@@ -122,6 +122,13 @@ export default class DailyCommand extends BotCommand {
 			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 		}
+
+		const dailiesAmount = this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount);
+		const dividedAmount = amount / 1_000_000;
+		this.client.settings.update(
+			ClientSettings.EconomyStats.DailiesAmount,
+			dailiesAmount + Math.round(dividedAmount * 100) / 100
+		);
 
 		const channel = this.client.channels.get(Channel.Notifications);
 		if (channel) (channel as TextChannel).send(chStr);
