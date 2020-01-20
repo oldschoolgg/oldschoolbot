@@ -70,6 +70,7 @@ export const UserSettings = {
 	GP: 'GP',
 	Bank: 'bank',
 	CollectionLogBank: 'collectionLogBank',
+	CollectionLog: 'collectionLog',
 	MonsterScores: 'monsterScores',
 	ClueScores: 'clueScores',
 	LastDailyTimestamp: 'lastDailyTimestamp'
