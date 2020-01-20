@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeGP(amount);
-		await user.addGP(amount);
+		await user.removeGP(amount);
 
 		await duelMsg.edit(`${user.username} accepted the duel. You both enter the duel arena...`);
 
