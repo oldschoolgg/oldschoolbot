@@ -3,7 +3,6 @@ import { util, KlasaMessage, Command, KlasaClient, CommandStore, RichDisplay } f
 
 import { fmNum } from '../../../config/util';
 import { SettingsEntry } from '../../lib/types';
-import badges from '../../lib/badges';
 import { findMonster, stringMatches } from '../../lib/util';
 import pets from '../../lib/pets';
 import {  collectionLogTypes } from '../../lib/collectionLog';
@@ -33,13 +32,9 @@ export default class extends Command {
 
 	async resolveEntries(settingsEntry: SettingsEntry) {
 		const user = await this.client.users.fetch(settingsEntry.id);
-		let userBadges = '';
-		if (settingsEntry.badges && settingsEntry.badges.length > 0) {
-			userBadges = settingsEntry.badges.map(badge => badges[badge]).join(' ');
-		}
 		return {
 			...settingsEntry,
-			user: user ? `${userBadges} ${user.username}` : 'Unknown'
+			user: user ? `${user.badges} ${user.username}` : 'Unknown'
 		};
 	}
 
