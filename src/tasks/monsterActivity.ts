@@ -39,13 +39,15 @@ export default class extends Task {
 			monster.name
 		}.`;
 
-		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID]);
+		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
-		str += `\n ${Emoji.Casket} You got clue scrolls in your loot (${clueTiersReceived
-			.map(tier => tier.name)
-			.join(
-				', '
-			)}), you can get your minion to complete them using \`+minion clue 1 easy/medium/etc \``;
+		if (clueTiersReceived.length > 0) {
+			str += `\n ${Emoji.Casket} You got clue scrolls in your loot (${clueTiersReceived
+				.map(tier => tier.name)
+				.join(
+					', '
+				)}), you can get your minion to complete them using \`+minion clue 1 easy/medium/etc \``;
+		}
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
