@@ -35,7 +35,7 @@ class OldSchoolBot extends Client {
 
 		const currentItem = currentItems[itemID];
 
-		if (currentItem && Date.now() - currentItem.fetchedAt < Time.Day * 2) {
+		if (currentItem && Date.now() - currentItem.fetchedAt < Time.Day * 7) {
 			return currentItem.price;
 		}
 
