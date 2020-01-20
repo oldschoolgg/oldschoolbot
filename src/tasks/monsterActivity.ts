@@ -1,10 +1,11 @@
 import { Task, KlasaMessage } from 'klasa';
 import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
 
-import { Events, Time } from '../lib/constants';
+import { Events, Time, Emoji } from '../lib/constants';
 import { MonsterActivityTaskOptions } from '../lib/types';
 import { getMinionName, noOp, saidYes } from '../lib/util';
 import killableMonsters from '../lib/killableMonsters';
+import clueTiers from '../lib/clueTiers';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -32,11 +33,19 @@ export default class extends Task {
 			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
 		);
 
-		const str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${
+		let str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${
 			monster.name
 		}.  ${getMinionName(user)} asks if you'd like them to do another trip of ${quantity} ${
 			monster.name
 		}.`;
+
+		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID]);
+
+		str += `\n ${Emoji.Casket} You got clue scrolls in your loot (${clueTiersReceived
+			.map(tier => tier.name)
+			.join(
+				', '
+			)}), you can get your minion to complete them using \`+minion clue 1 easy/medium/etc \``;
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {

@@ -29,7 +29,7 @@ export default class extends Task {
 			clueTier.name
 		} clues. ${getMinionName(user)} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
-		} in your bank.`;
+		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
