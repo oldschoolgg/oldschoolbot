@@ -70,6 +70,7 @@ export default class extends Task {
 				const response = messages.first();
 
 				if (response) {
+					user.log(` continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
 					this.client.commands
 						.get('minion')!
 						.kill(response as KlasaMessage, [quantity, monster.name]);
