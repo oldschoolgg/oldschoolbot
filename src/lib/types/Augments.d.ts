@@ -41,7 +41,7 @@ declare module 'klasa' {
 declare module 'discord.js' {
 	interface User {
 		addItemsToBank(items: Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
-		addArrayOfItemsToCollectionLog(items: number[]): Promise<SettingsUpdateResult>;
+		addItemsToCollectionLog(items: Bank): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(
 			monsterID: number,
