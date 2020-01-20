@@ -92,8 +92,4 @@ export const enum Events {
 	Wtf = 'wtf'
 }
 
-export const Regex = {
-	Yes: /^y|yes?|yas?|yeah?$/i
-};
-
 export const rootFolder = join(__dirname, '..', '..', '..');
