@@ -68,7 +68,7 @@ export const UserSettings = {
 	},
 	GP: 'GP',
 	Bank: 'bank',
-	CollectionLog: 'collectionLog',
+	CollectionLogBank: 'collectionLogBank',
 	MonsterScores: 'monsterScores',
 	ClueScores: 'clueScores',
 	LastDailyTimestamp: 'lastDailyTimestamp'

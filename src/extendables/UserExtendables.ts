@@ -47,13 +47,7 @@ export default class extends Extendable {
 	public async addItemsToBank(this: User, items: Bank, collectionLog = false) {
 		await this.settings.sync(true);
 
-		const keys = Object.keys(items).map(x => parseInt(x));
-		if (
-			collectionLog &&
-			keys.some(itemID => !this.settings.get(UserSettings.CollectionLog).includes(itemID))
-		) {
-			this.addArrayOfItemsToCollectionLog(keys);
-		}
+		if (collectionLog) this.addItemsToCollectionLog(items);
 
 		for (const { scrollID } of clueTiers) {
 			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
@@ -96,14 +90,15 @@ export default class extends Extendable {
 		);
 	}
 
-	public async addArrayOfItemsToCollectionLog(this: User, items: number[]) {
+	public async addItemsToCollectionLog(this: User, items: number[]) {
 		await this.settings.sync(true);
-		const currentLog = this.settings.get(UserSettings.CollectionLog);
-		const newItems = items.filter(item => !currentLog.includes(item));
 
-		this.log(`had following items added to collection log: [${newItems.join(',')}]`);
+		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
-		return await this.settings.update(UserSettings.CollectionLog, newItems);
+		return await this.settings.update(
+			UserSettings.CollectionLogBank,
+			addBankToBank(items, { ...this.settings.get(UserSettings.CollectionLogBank) })
+		);
 	}
 
 	public async incrementMonsterScore(this: User, monsterID: number, amountToAdd = 1) {
