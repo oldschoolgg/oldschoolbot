@@ -215,3 +215,8 @@ export function isWeekend() {
 export function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export function saidYes(content: string) {
+	const newContent = content.toLowerCase();
+	return newContent === 'y' || newContent === 'yes';
+}

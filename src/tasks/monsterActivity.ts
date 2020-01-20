@@ -1,9 +1,9 @@
 import { Task, KlasaMessage } from 'klasa';
 import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
 
-import { Events, Regex, Time } from '../lib/constants';
+import { Events, Time } from '../lib/constants';
 import { MonsterActivityTaskOptions } from '../lib/types';
-import { getMinionName, noOp } from '../lib/util';
+import { getMinionName, noOp, saidYes } from '../lib/util';
 import killableMonsters from '../lib/killableMonsters';
 
 export default class extends Task {
@@ -51,7 +51,7 @@ export default class extends Task {
 		channel.send(str, new MessageAttachment(image));
 
 		channel
-			.awaitMessages(mes => mes.author === user && Regex.Yes.test(mes.content), {
+			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
 				time: Time.Minute * 2,
 				max: 1
 			})
