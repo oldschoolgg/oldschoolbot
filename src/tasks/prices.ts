@@ -3,7 +3,6 @@ import { Items } from 'oldschooljs';
 
 export default class extends Task {
 	async init() {
-		return;
 		this.run();
 	}
 
