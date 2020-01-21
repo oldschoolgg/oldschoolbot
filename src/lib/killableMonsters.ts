@@ -116,11 +116,11 @@ const killableMonsters = [
 		emoji: '🧍‍♀️'
 	},
 	{
-		id: Monsters.Goblins.id,
-		name: Monsters.Goblins.name,
+		id: Monsters.Goblin.id,
+		name: Monsters.Goblin.name,
 		aliases: ['goblin'],
 		timeToFinish: Time.Second * 4.4,
-		table: Monsters.Goblins,
+		table: Monsters.Goblin,
 		emoji: ''
 	},
 	{

@@ -1,7 +1,7 @@
 import { Image } from 'canvas';
 import { Bank } from './types';
 import { util } from 'klasa';
-import { Items } from 'oldschooljs';
+import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask } from 'klasa';
 import { Tasks, Emoji } from './constants';

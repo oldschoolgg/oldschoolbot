@@ -1,10 +1,8 @@
-import { KlasaMessage, Command, KlasaClient, CommandStore } from 'klasa';
+import { KlasaUser, KlasaMessage, Command, KlasaClient, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { toTitleCase } from '../../lib/util';
-
-import * as killWorkerFunction from '../../../data/new_monsters/utils/killWorkerFunction';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 export default class extends Command {
 	public constructor(
@@ -22,9 +20,24 @@ export default class extends Command {
 		});
 	}
 
+	determineKillLimit(user: KlasaUser) {
+		if (user.id === this.client.owner?.id) {
+			return Infinity;
+		}
+
+		if (user.settings.get('badges').length > 0) {
+			return 1_000_000;
+		}
+
+		return 10_000;
+	}
+
+
 	async run(msg: KlasaMessage, [quantity, bossName]: [number, string]) {
-		//@ts-ignore
-		const result: ItemBank = await killWorkerFunction(quantity, bossName);
+		const result: ItemBank = await this.client.killWorkerThread.queue(async (fn: any) => {
+			return fn.kill({quantity, bossName, limit: this.determineKillLimit(msg.author)});
+		});
+
 		if (typeof result === 'string') {
 			return msg.send(result);
 		}
@@ -33,7 +46,7 @@ export default class extends Command {
 			.get('bankImage')
 			.generateBankImage(
 				result,
-				`Loot from ${quantity} ${toTitleCase(bossName)}`,
+				`Loot from ${quantity.toLocaleString()} ${toTitleCase(bossName)}`,
 				true,
 				msg.flagArgs
 			);
