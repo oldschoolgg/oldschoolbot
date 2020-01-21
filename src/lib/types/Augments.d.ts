@@ -11,6 +11,7 @@ declare module 'klasa' {
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
+		public killWorkerThread?: ArbitraryThreadType;
 	}
 	interface Command {
 		altProtection?: boolean;

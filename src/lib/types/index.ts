@@ -53,3 +53,9 @@ export interface Pet {
 	finish?(): number;
 	formatFinish(num: number): string;
 }
+
+export interface KillWorkerOptions {
+	bossName: string;
+	quantity: number;
+	limit: number;
+}
