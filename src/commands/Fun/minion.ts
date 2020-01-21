@@ -16,7 +16,7 @@ import { rand } from '../../../config/util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
 
-const COST_OF_MINION = 50_000_000;
+const COST_OF_MINION = 5_000_000;
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
