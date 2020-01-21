@@ -3,7 +3,7 @@ const { Command } = require('klasa');
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
-			permissionLevel: 7,
+			permissionLevel: 6,
 			runIn: ['text'],
 			description: 'Change the command prefix the bot uses in your server.',
 			usage: '[prefix:str{1,3}]'

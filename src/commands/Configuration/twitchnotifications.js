@@ -3,7 +3,7 @@ const { Command } = require('klasa');
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
-			permissionLevel: 7,
+			permissionLevel: 6,
 			subcommands: true,
 			aliases: ['tn'],
 			description:

@@ -9,7 +9,7 @@ module.exports = class extends Command {
 				'Enables/disables the function which sends comments/posts from Jmods on reddit.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permissionLevel: 7
+			permissionLevel: 6
 		});
 	}
 

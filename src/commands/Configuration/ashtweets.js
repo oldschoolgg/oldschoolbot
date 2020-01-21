@@ -7,7 +7,7 @@ module.exports = class extends Command {
 			description: 'Receive every tweet from God Ash in your discord channel!.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permissionLevel: 7,
+			permissionLevel: 6,
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}

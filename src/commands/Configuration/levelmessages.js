@@ -10,7 +10,7 @@ module.exports = class extends Command {
 				'Enables/disables the function which sends update notifications for users with RSN set in the server.',
 			runIn: ['text'],
 			usage: '<enable|disable>',
-			permissionLevel: 7
+			permissionLevel: 6
 		});
 	}
 
