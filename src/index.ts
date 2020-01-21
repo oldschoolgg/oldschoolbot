@@ -1,9 +1,9 @@
 import { Client, KlasaClientOptions } from 'klasa';
 import fetch from 'node-fetch';
+import { Util } from 'oldschooljs';
 
 import { token, clientOptions, clientProperties } from '../config';
 import { Time, Events } from './lib/constants';
-import { Util } from 'oldschooljs';
 
 Client.use(require('@kcp/tags'));
 Client.use(require('klasa-textchannel-gateway'));
