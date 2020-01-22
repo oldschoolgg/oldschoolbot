@@ -281,7 +281,7 @@ export default class BankImageTask extends Task {
 	}
 
 	async generateCollectionLogImage(
-		collectionLog: number[],
+		collectionLog: Bank,
 		title: string = '',
 		type: any
 	): Promise<Buffer> {
@@ -315,7 +315,13 @@ export default class BankImageTask extends Task {
 
 		ctx.font = '16px OSRSFontCompact';
 
-		const drawItem = async (itemID: number, x: number, y: number, hasItem: boolean) => {
+		const drawItem = async (
+			itemID: number,
+			x: number,
+			y: number,
+			hasItem: boolean,
+			quantity: number
+		) => {
 			const item = await this.getItemImage(itemID);
 			if (!item) return;
 
@@ -325,6 +331,29 @@ export default class BankImageTask extends Task {
 			}
 			ctx.drawImage(item, x + (32 - item.width) / 2, y + (32 - item.height) / 2);
 
+			/* Draw Quantity */
+			const quantityColor = generateHexColorForCashStack(quantity);
+			const formattedQuantity = formatItemStackQuantity(quantity);
+
+			ctx.fillStyle = '#000000';
+			for (let t = 0; t < 5; t++) {
+				ctx.fillText(
+					formattedQuantity,
+					x + distanceFromSide - 18 + 1,
+					y + distanceFromTop - 24 + 1
+				);
+			}
+
+			ctx.fillStyle = quantityColor;
+			for (let t = 0; t < 5; t++) {
+				ctx.fillText(
+					formattedQuantity,
+					x + distanceFromSide - 18,
+					y + distanceFromTop - 24
+				);
+			}
+
+			/* End Draw Quantity */
 			if (!hasItem) ctx.restore();
 		};
 		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile);
@@ -352,7 +381,13 @@ export default class BankImageTask extends Task {
 				);
 				const yLoc = Math.floor(itemSize * (row * 1.22) + spacer + distanceFromTop);
 
-				await drawItem(itemID, xLoc, yLoc, collectionLog.includes(itemID));
+				await drawItem(
+					itemID,
+					xLoc,
+					yLoc,
+					!!collectionLog[itemID],
+					collectionLog[itemID] || 0
+				);
 
 				column++;
 			}

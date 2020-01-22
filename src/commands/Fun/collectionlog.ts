@@ -33,8 +33,8 @@ export default class extends BotCommand {
 		}
 
 		const items = Object.values(type.items).flat(100);
-		const log: number[] = msg.author.settings.get(UserSettings.CollectionLog);
-		const num = items.filter(item => log.includes(item)).length;
+		const log: number[] = msg.author.settings.get(UserSettings.CollectionLogBank);
+		const num = items.filter(item => !!item[item]).length;
 
 		msg.channel.send(
 			new MessageAttachment(
