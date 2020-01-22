@@ -335,22 +335,24 @@ export default class BankImageTask extends Task {
 			const quantityColor = generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
 
-			ctx.fillStyle = '#000000';
-			for (let t = 0; t < 5; t++) {
-				ctx.fillText(
-					formattedQuantity,
-					x + distanceFromSide - 18 + 1,
-					y + distanceFromTop - 24 + 1
-				);
-			}
+			if (hasItem) {
+				ctx.fillStyle = '#000000';
+				for (let t = 0; t < 5; t++) {
+					ctx.fillText(
+						formattedQuantity,
+						x + distanceFromSide - 18 + 1,
+						y + distanceFromTop - 24 + 1
+					);
+				}
 
-			ctx.fillStyle = quantityColor;
-			for (let t = 0; t < 5; t++) {
-				ctx.fillText(
-					formattedQuantity,
-					x + distanceFromSide - 18,
-					y + distanceFromTop - 24
-				);
+				ctx.fillStyle = quantityColor;
+				for (let t = 0; t < 5; t++) {
+					ctx.fillText(
+						formattedQuantity,
+						x + distanceFromSide - 18,
+						y + distanceFromTop - 24
+					);
+				}
 			}
 
 			/* End Draw Quantity */
