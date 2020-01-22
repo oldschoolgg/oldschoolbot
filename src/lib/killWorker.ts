@@ -50,7 +50,7 @@ expose({
 
 		if (osjsMonster) {
 			if (quantity > limit) {
-				return `Your quantity of kills exceeds your limit of ${limit}!`;
+				return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit to 1 million by nitro boosting in the support server.*`;
 			}
 
 			// @ts-ignore
