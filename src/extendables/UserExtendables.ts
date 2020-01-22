@@ -1,10 +1,17 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
-import { User } from 'discord.js';
+import { User, Util } from 'discord.js';
 
-import { UserSettings, Events } from '../lib/constants';
-import { Bank } from '../lib/types';
-import { addBankToBank, removeItemFromBank, addItemToBank } from '../lib/util';
+import { UserSettings, Events, Activity, Emoji } from '../lib/constants';
+import { Bank, MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../lib/types';
+import {
+	addBankToBank,
+	removeItemFromBank,
+	addItemToBank,
+	activityTaskFilter,
+	formatDuration
+} from '../lib/util';
 import clueTiers from '../lib/clueTiers';
+import killableMonsters from '../lib/killableMonsters';
 
 export default class extends Extendable {
 	public constructor(
@@ -97,7 +104,9 @@ export default class extends Extendable {
 
 		return await this.settings.update(
 			UserSettings.CollectionLogBank,
-			addBankToBank(items, { ...this.settings.get(UserSettings.CollectionLogBank) })
+			addBankToBank(items, {
+				...this.settings.get(UserSettings.CollectionLogBank)
+			})
 		);
 	}
 
@@ -136,5 +145,56 @@ export default class extends Extendable {
 		const username = this.settings.get('RSN');
 		if (!username) return '';
 		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
+	}
+
+	public get minionIsBusy(this: User): boolean {
+		return this.client.schedule.tasks
+			.filter(activityTaskFilter)
+			.some(task => task.data.userID === this.id);
+	}
+
+	public get minionName(this: User): string {
+		const name = this.settings.get('minion.name');
+		return name
+			? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
+			: `${Emoji.Minion} Your minion`;
+	}
+
+	public get hasMinion(this: User) {
+		return this.settings.get(UserSettings.Minion.HasBought);
+	}
+
+	public get minionStatus(this: User) {
+		const currentTask = this.client.schedule.tasks.find(
+			task => activityTaskFilter(task) && task.data.userID === this.id
+		);
+
+		if (!currentTask) {
+			return `${this.minionName} is currently doing nothing.
+
+- Use \`+minion setname [name]\` to change your minions' name.
+- You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
+- Do clue scrolls with \`+minion clue 1 easy\` (complete 1 easy clue)
+- Pat your minion with \`+minion pat\``;
+		}
+		switch (currentTask.data.type) {
+			case Activity.MonsterKilling: {
+				const data: MonsterActivityTaskOptions = currentTask.data;
+				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
+				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
+				return `${this.minionName} is currently killing ${currentTask.data.quantity}x ${
+					monster!.name
+				}. Approximately ${duration} remaining.`;
+			}
+
+			case Activity.ClueCompletion: {
+				const data: ClueActivityTaskOptions = currentTask.data;
+				const clueTier = clueTiers.find(tier => tier.id === data.clueID);
+				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
+				return `${this.minionName} is currently completing ${currentTask.data.quantity}x ${
+					clueTier!.name
+				} clues. Approximately ${duration} remaining.`;
+			}
+		}
 	}
 }
