@@ -90,7 +90,7 @@ export default class extends Extendable {
 		);
 	}
 
-	public async addItemsToCollectionLog(this: User, items: number[]) {
+	public async addItemsToCollectionLog(this: User, items: Bank) {
 		await this.settings.sync(true);
 
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
