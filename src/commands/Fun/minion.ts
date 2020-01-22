@@ -5,7 +5,6 @@ import { Tasks, Activity, UserSettings, Emoji, Time, Events } from '../../lib/co
 import {
 	stringMatches,
 	formatDuration,
-	activityTaskFilter,
 	getMinionName,
 	randomItemFromArray,
 	findMonster,
@@ -64,20 +63,20 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		if (!this.hasMinion(msg)) {
+		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
-		return this.sendCurrentStatus(msg);
+		return msg.send(msg.author.minionStatus);
 	}
 
 	async pat(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		if (!this.hasMinion(msg)) {
+		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 
-		if (this.isBusy(msg)) {
-			return this.sendCurrentStatus(msg);
+		if (msg.author.minionIsBusy) {
+			return msg.send(msg.author.minionStatus);
 		}
 
 		return msg.send(randomPatMessage(getMinionName(msg.author)));
@@ -85,7 +84,7 @@ export default class extends BotCommand {
 
 	async kc(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		if (!this.hasMinion(msg)) {
+		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
@@ -99,7 +98,7 @@ export default class extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage) {
-		if (this.hasMinion(msg)) throw 'You already have a minion!';
+		if (msg.author.hasMinion) throw 'You already have a minion!';
 
 		await msg.author.settings.sync(true);
 		const balance = msg.author.settings.get('GP');
@@ -150,7 +149,7 @@ export default class extends BotCommand {
 	}
 
 	async setname(msg: KlasaMessage, [name]: [string]) {
-		if (!this.hasMinion(msg)) {
+		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 
@@ -170,15 +169,15 @@ export default class extends BotCommand {
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
 		await msg.author.settings.sync(true);
-		if (this.isBusy(msg)) {
+		if (msg.author.minionIsBusy) {
 			this.client.emit(
 				Events.Log,
 				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
 			);
-			return this.sendCurrentStatus(msg);
+			return msg.send(msg.author.minionStatus);
 		}
 
-		if (!this.hasMinion(msg)) {
+		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 
@@ -238,14 +237,14 @@ export default class extends BotCommand {
 
 	async kill(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		await msg.author.settings.sync(true);
-		if (this.isBusy(msg)) {
+		if (msg.author.minionIsBusy) {
 			this.client.emit(
 				Events.Log,
 				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${name}`
 			);
-			return this.sendCurrentStatus(msg);
+			return msg.send(msg.author.minionStatus);
 		}
-		if (!this.hasMinion(msg)) {
+		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 
@@ -290,55 +289,5 @@ export default class extends BotCommand {
 				monster.name
 			}, it'll take around ${formatDuration(monster.timeToFinish * quantity)} to finish.`
 		);
-	}
-
-	isBusy(msg: KlasaMessage) {
-		return this.client.schedule.tasks
-			.filter(activityTaskFilter)
-			.some(task => task.data.userID === msg.author.id);
-	}
-
-	hasMinion(msg: KlasaMessage) {
-		return msg.author.settings.get(UserSettings.Minion.HasBought);
-	}
-
-	sendCurrentStatus(msg: KlasaMessage) {
-		const currentTask = this.client.schedule.tasks.find(
-			task => activityTaskFilter(task) && task.data.userID === msg.author.id
-		);
-
-		if (!currentTask) {
-			return msg.send(`${getMinionName(msg.author)} is currently doing nothing.
-
-- Use \`${msg.cmdPrefix}minion setname [name]\` to change your minions' name.
-- You can assign ${getMinionName(msg.author)} to kill monsters for loot using \`${
-				msg.cmdPrefix
-			}minion kill\`.
-- Do clue scrolls with \`${msg.cmdPrefix}minion clue 1 easy\` (complete 1 easy clue)
-- Pat your minion with \`${msg.cmdPrefix}minion pat\``);
-		}
-		switch (currentTask.data.type) {
-			case Activity.MonsterKilling: {
-				const data: MonsterActivityTaskOptions = currentTask.data;
-				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
-				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
-				return msg.send(
-					`${getMinionName(msg.author)} is currently killing ${
-						currentTask.data.quantity
-					}x ${monster!.name}. Approximately ${duration} remaining.`
-				);
-			}
-
-			case Activity.ClueCompletion: {
-				const data: ClueActivityTaskOptions = currentTask.data;
-				const clueTier = clueTiers.find(tier => tier.id === data.clueID);
-				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
-				return msg.send(
-					`${getMinionName(msg.author)} is currently completing ${
-						currentTask.data.quantity
-					}x ${clueTier!.name} clues. Approximately ${duration} remaining.`
-				);
-			}
-		}
 	}
 }

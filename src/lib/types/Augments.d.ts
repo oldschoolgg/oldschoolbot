@@ -55,5 +55,9 @@ declare module 'discord.js' {
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		sanitizedName: string;
 		badges: string;
+		minionIsBusy: boolean;
+		minionStatus: string;
+		minionName: string;
+		hasMinion: boolean;
 	}
 }
