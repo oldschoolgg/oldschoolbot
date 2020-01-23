@@ -223,8 +223,8 @@ export default class extends Command {
 				})
 				.sort(
 					(a, b) => {
-						const aScore = a.collectionLog ? a.collectionLog.filter(item => items.includes(item)).length : 0;
-						const bScore = b.collectionLog ? b.collectionLog.filter(item => items.includes(item)).length : 0;
+						const aScore = a.collectionLogBank ? Object.entries(a.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(itemID)).length : 0;
+						const bScore = b.collectionLogBank ? Object.entries(b.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(itemID)).length : 0;
 						return bScore - aScore;
 				})
 				.slice(0, 300)

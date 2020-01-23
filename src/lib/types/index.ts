@@ -1,4 +1,5 @@
 import { Activity } from '../constants';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 export interface Bank {
 	[key: number]: number;
@@ -33,6 +34,7 @@ export interface SettingsEntry {
 	clueScores?: Bank;
 	monsterScores?: Bank;
 	collectionLog?: number[];
+	collectionLogBank?: Bank;
 	pets?: number[];
 	lastDailyTimestamp?: number;
 	totalCommandsUsed?: number;
@@ -58,4 +60,12 @@ export interface KillWorkerOptions {
 	bossName: string;
 	quantity: number;
 	limit: number;
+}
+
+export interface KillableMonster extends Monster {
+	table: Monster;
+	timeToFinish: number;
+	emoji: string;
+	wildy: boolean;
+	canBeKilled: boolean;
 }
