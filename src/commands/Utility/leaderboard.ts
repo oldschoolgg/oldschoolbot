@@ -242,7 +242,7 @@ export default class extends Command {
 						page
 							.map(
 								({ user, collectionLogBank = {} }) =>
-									`**${user}**: ${Object.entries(collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(itemID)).length}`
+									`**${user}**: ${Object.entries(collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))).length}`
 							)
 							.join('\n')
 						
