@@ -22,6 +22,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [inputType = 'all']) {
+		await msg.author.settings.sync(true);
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
@@ -34,7 +35,7 @@ export default class extends BotCommand {
 
 		const items = Object.values(type.items).flat(100);
 		const log: number[] = msg.author.settings.get(UserSettings.CollectionLogBank);
-		const num = items.filter(item => !!item[item]).length;
+		const num = items.filter(item => log[item] > 0).length;
 
 		msg.channel.send(
 			new MessageAttachment(
