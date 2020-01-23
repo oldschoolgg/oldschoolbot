@@ -223,8 +223,8 @@ export default class extends Command {
 				})
 				.sort(
 					(a, b) => {
-						const aScore = a.collectionLogBank ? Object.entries(a.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(itemID)).length : -1;
-						const bScore = b.collectionLogBank ? Object.entries(b.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(itemID)).length : -1;
+						const aScore = a.collectionLogBank ? Object.entries(a.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))).length : -1;
+						const bScore = b.collectionLogBank ? Object.entries(b.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))).length : -1;
 						return bScore - aScore;
 				})
 				.slice(0, 300)
@@ -241,8 +241,8 @@ export default class extends Command {
 					.setDescription(
 						page
 							.map(
-								({ user, collectionLog }) =>
-									`**${user}**: ${(collectionLog ?? []).filter((item: number) => items.includes(item)).length ?? 0}`
+								({ user, collectionLogBank = {} }) =>
+									`**${user}**: ${Object.entries(collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(itemID)).length}`
 							)
 							.join('\n')
 						
