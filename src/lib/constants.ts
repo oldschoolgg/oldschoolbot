@@ -16,6 +16,11 @@ export const enum Channel {
 	Suggestions = '668441710703149074'
 }
 
+export const enum Roles {
+	Booster = '665908237152813057',
+	Contributor = '456181501437018112'
+}
+
 export const enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
 	OSBot = '<:OSBot:601768469905801226>',
