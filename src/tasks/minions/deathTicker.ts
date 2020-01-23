@@ -54,8 +54,8 @@ export default class extends Task {
 			// So if the rating is higher, the number is lower = higher chance.
 			deathChance *= 10 - monster.difficultyRating;
 
-			// If its a wildy monster, the chance is doubled
-			if (monster.wildy) deathChance /= 2;
+			// If its a wildy monster, the chance is tripled
+			if (monster.wildy) deathChance /= 3;
 
 			if (!roll(deathChance)) return;
 			const user = await this.client.users.fetch(task.data.userID).catch(() => null);
