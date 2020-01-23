@@ -6,7 +6,7 @@ const { rootFolder } = require('../lib/constants');
 module.exports = class extends Provider {
 	constructor(...args) {
 		super(...args);
-		this.baseDirectory = resolve(rootFolder, 'bwd', 'providers', 'toml');
+		this.baseDirectory = resolve(rootFolder, 'bwd', 'providers', 'json');
 	}
 
 	/**
