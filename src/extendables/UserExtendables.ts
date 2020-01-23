@@ -51,29 +51,40 @@ export default class extends Extendable {
 		return await this.settings.update(UserSettings.GP, currentGP + amount);
 	}
 
-	public async addItemsToBank(this: User, items: Bank, collectionLog = false) {
+	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
 		await this.settings.sync(true);
-
-		if (collectionLog) this.addItemsToCollectionLog(items);
 
 		for (const { scrollID } of clueTiers) {
 			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
-			if (!items[scrollID]) continue;
+			if (!_items[scrollID]) continue;
 			const alreadyHasThisScroll = await this.hasItem(scrollID);
 			if (alreadyHasThisScroll) {
 				// If they already have this scroll in their bank, delete it from the loot.
-				delete items[scrollID];
+				delete _items[scrollID];
 			} else {
 				// If they dont have it in their bank, reset the amount to 1 incase they got more than 1 of the clue.
-				items[scrollID] = 1;
+				_items[scrollID] = 1;
 			}
+		}
+
+		const items = {
+			..._items
+		};
+
+		if (collectionLog) this.addItemsToCollectionLog(items);
+
+		if (items[995]) {
+			await this.addGP(items[995]);
+			delete items[995];
 		}
 
 		this.log(`Had items added to bank - ${JSON.stringify(items)}`);
 
 		return await this.settings.update(
 			UserSettings.Bank,
-			addBankToBank(items, { ...this.settings.get(UserSettings.Bank) })
+			addBankToBank(items, {
+				...this.settings.get(UserSettings.Bank)
+			})
 		);
 	}
 
