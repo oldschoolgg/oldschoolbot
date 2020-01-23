@@ -1,10 +1,10 @@
 import { Task } from 'klasa';
-import { Events } from '../lib/constants';
-import { ClueActivityTaskOptions } from '../lib/types';
-import { getMinionName } from '../lib/util';
+import { Events } from '../../lib/constants';
+import { ClueActivityTaskOptions } from '../../lib/types';
+import { getMinionName } from '../../lib/util';
 import { TextChannel, DMChannel } from 'discord.js';
 
-import clueTiers from '../lib/clueTiers';
+import clueTiers from '../../lib/clueTiers';
 
 export default class extends Task {
 	async run({ clueID, userID, channelID, quantity }: ClueActivityTaskOptions) {
