@@ -16,7 +16,7 @@ export default class extends Command {
 	) {
 		super(client, store, file, directory, {
 			description: 'Shows the people with the most virtual GP.',
-			usage: '[pets|gp|petrecords|kc|cl] [name:string]',
+			usage: '[pets|gp|petrecords|kc|cl] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb']
