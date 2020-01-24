@@ -59,7 +59,7 @@ export default class extends Task {
 
 			if (!roll(deathChance)) return;
 			const user = await this.client.users.fetch(task.data.userID).catch(() => null);
-			const channel = this.client.channels.get(task.data.channelID);
+			const channel = await this.client.channels.fetch(task.data.channelID).catch(() => null);
 			if (channel && channel instanceof TextChannel && user) {
 				user.log(
 					`[MinionDeath] Minion died killing ${task.data.quantity}x ${monster.name} at a chance of 1 in ${deathChance}`
