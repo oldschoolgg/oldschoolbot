@@ -29,7 +29,8 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		const osItem = Items.get(itemName);
+		let re = /’/gi;
+		const osItem = Items.get(itemName.replace(re,"'"));
 		if (!osItem) throw `That item doesnt exist.`;
 		if (
 			specialUntradeables.includes(osItem.id) ||
