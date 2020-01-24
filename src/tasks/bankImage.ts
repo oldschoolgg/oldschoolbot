@@ -320,20 +320,25 @@ export default class BankImageTask extends Task {
 			x: number,
 			y: number,
 			hasItem: boolean,
-			quantity: number
+			quantity: number,
+			completed: boolean
 		) => {
 			const item = await this.getItemImage(itemID);
 			if (!item) return;
+
+			x += (32 - item.width) / 2;
+			y += (32 - item.height) / 2;
 
 			if (!hasItem) {
 				ctx.save();
 				ctx.globalAlpha = 0.25;
 			}
-			ctx.drawImage(item, x + (32 - item.width) / 2, y + (32 - item.height) / 2);
 
 			/* Draw Quantity */
 			const quantityColor = generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
+
+			ctx.drawImage(item, x, y, item.width, item.height);
 
 			if (hasItem) {
 				ctx.fillStyle = '#000000';
@@ -345,7 +350,7 @@ export default class BankImageTask extends Task {
 					);
 				}
 
-				ctx.fillStyle = quantityColor;
+				ctx.fillStyle = completed ? '#55fa6c' : quantityColor;
 				for (let t = 0; t < 5; t++) {
 					ctx.fillText(
 						formattedQuantity,
@@ -377,7 +382,10 @@ export default class BankImageTask extends Task {
 				restoreCtx(ctx, state);
 			}
 
-			for (const itemID of items.flat(Infinity)) {
+			const flatItems = items.flat(Infinity);
+			const completedThisSection = items.every(itemID => !!collectionLog[itemID]);
+
+			for (const itemID of flatItems) {
 				const xLoc = Math.floor(
 					column * 0.7 * ((canvas.width - 40) / 8) + distanceFromSide
 				);
@@ -388,7 +396,8 @@ export default class BankImageTask extends Task {
 					xLoc,
 					yLoc,
 					!!collectionLog[itemID],
-					collectionLog[itemID] || 0
+					collectionLog[itemID] || 0,
+					completedThisSection
 				);
 
 				column++;
