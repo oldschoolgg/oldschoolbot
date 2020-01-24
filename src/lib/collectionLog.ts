@@ -1,3 +1,5 @@
+import { removeDuplicatesFromArray } from './util';
+
 export const bosses = {
 	Zulrah: [12921, 12936, 13201, 13200, 6571, 12927, 12922, 12932],
 	Zammy: [11816, 11824, 11791, 11787, 12652],
@@ -551,7 +553,11 @@ export const collectionLogTypes = [
 	{
 		name: 'Overall',
 		aliases: ['all', 'overall'],
-		items: [...Object.values(bosses), ...Object.values(clues)]
+		items: removeDuplicatesFromArray(
+			[...Object.values(bosses), ...Object.values(clues), ...Object.values(pets)].flat(
+				Infinity
+			)
+		)
 	},
 	{
 		name: 'Boss',
