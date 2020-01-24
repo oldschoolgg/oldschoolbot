@@ -32,7 +32,7 @@ declare module 'klasa' {
 		): Promise<Buffer>;
 	}
 	interface Command {
-		kill(message: KlasaMessage, [quantity, monster]: [number, string]): Promise<any>;
+		kill(message: KlasaMessage, [quantity, monster]: [number|string, string]): Promise<any>;
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
