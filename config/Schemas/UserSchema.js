@@ -15,4 +15,12 @@ Client.defaultUserSchema
 	.add('clueScores', 'any', { default: {} })
 	.add('minion', folder =>
 		folder.add('name', 'string').add('hasBought', 'boolean', { default: false })
+	)
+	.add('stats', folder =>
+		folder
+			.add('deaths', 'integer', { default: 0 })
+			.add('diceWins', 'integer', { default: 0 })
+			.add('diceLosses', 'integer', { default: 0 })
+			.add('duelLosses', 'integer', { default: 0 })
+			.add('duelWins', 'integer', { default: 0 })
 	);

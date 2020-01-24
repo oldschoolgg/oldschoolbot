@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import { Activity, Events } from '../../lib/constants';
+import { Activity, Events, UserSettings } from '../../lib/constants';
 import { randomItemFromArray, roll } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
 import { TextChannel } from 'discord.js';
@@ -64,6 +64,9 @@ export default class extends Task {
 				user.log(
 					`[MinionDeath] Minion died killing ${task.data.quantity}x ${monster.name} at a chance of 1 in ${deathChance}`
 				);
+
+				const deaths = user.settings.get(UserSettings.Stats.Deaths);
+				user.settings.update(UserSettings.Stats.Deaths, deaths + 1);
 
 				// If the monster is in the wilderness, 50/50 chance it was a PK death.
 				if (monster.wildy && roll(2)) {

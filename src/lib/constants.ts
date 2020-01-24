@@ -78,7 +78,18 @@ export const UserSettings = {
 	CollectionLog: 'collectionLog',
 	MonsterScores: 'monsterScores',
 	ClueScores: 'clueScores',
-	LastDailyTimestamp: 'lastDailyTimestamp'
+	LastDailyTimestamp: 'lastDailyTimestamp',
+	Stats: {
+		Deaths: 'stats.deaths',
+		Dice: {
+			Wins: 'stats.diceWins',
+			Losses: 'stats.diceLosses'
+		},
+		Duel: {
+			Wins: 'stats.duelWins',
+			Losses: 'stats.duelLosses'
+		}
+	}
 };
 
 export const ClientSettings = {

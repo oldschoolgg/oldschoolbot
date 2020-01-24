@@ -4,7 +4,7 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { sleep } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { Emoji, ClientSettings } from '../../lib/constants';
+import { Emoji, ClientSettings, UserSettings } from '../../lib/constants';
 
 const options = {
 	max: 1,
@@ -80,7 +80,7 @@ export default class extends BotCommand {
 		await sleep(2000);
 		await duelMsg.edit(`${user.username} and ${msg.author.username} begin fighting...`);
 
-		let winner = Math.random() > 0.5 ? user : msg.author;
+		let [winner, loser] = Math.random() > 0.5 ? [user, msg.author] : [msg.author, user];
 
 		await sleep(2000);
 		await duelMsg.edit(`The fight is almost over...`);
@@ -95,6 +95,12 @@ export default class extends BotCommand {
 			ClientSettings.EconomyStats.DuelTaxBank,
 			dicingBank + Math.round(dividedAmount * 100) / 100
 		);
+
+		const winsOfWinner = winner.settings.get(UserSettings.Stats.Duel.Wins);
+		winner.settings.update(UserSettings.Stats.Duel.Wins, winsOfWinner + 1);
+
+		const lossesOfLoser = loser.settings.get(UserSettings.Stats.Duel.Losses);
+		loser.settings.update(UserSettings.Stats.Duel.Losses, lossesOfLoser + 1);
 
 		await winner.addGP(winningAmount - tax);
 
