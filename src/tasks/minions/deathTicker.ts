@@ -48,7 +48,7 @@ export default class extends Task {
 
 			if (!monster.canBeKilled) return;
 
-			let deathChance = 250;
+			let deathChance = 100;
 
 			// Base chance of death is (200 * (10 - difficulyRating))
 			// So if the rating is higher, the number is lower = higher chance.
