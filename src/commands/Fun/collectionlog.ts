@@ -6,6 +6,8 @@ import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/constants';
 import { stringMatches } from '../../lib/util';
 
+const slicedCollectionLogTypes = collectionLogTypes.slice(1);
+
 export default class extends BotCommand {
 	public constructor(
 		client: KlasaClient,
@@ -23,12 +25,12 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [inputType = 'all']) {
 		await msg.author.settings.sync(true);
-		const type = collectionLogTypes.find(_type =>
+		const type = slicedCollectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
 
 		if (!type) {
-			throw `That's not a valid collection log type. The valid types are: ${collectionLogTypes
+			throw `That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 				.map(type => type.name)
 				.join(', ')}`;
 		}
