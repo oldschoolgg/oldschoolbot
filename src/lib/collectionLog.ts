@@ -20,6 +20,41 @@ export const bosses = {
 	'King Black Dragon': [11920, 1149, 7980, 12653, 11286]
 };
 
+export const pets = {
+	'Skilling Pets': [13320, 13321, 13322, 13323, 20659, 20661, 20663, 20665],
+	space1: [],
+	'Boss Pets': [
+		12653,
+		12652,
+		12651,
+		12650,
+		12649,
+		12646,
+		13178,
+		12647,
+		11995,
+		12816,
+		12921,
+		13181
+	],
+	'Boss Pets 2': [13177, 13179, 21992, 23760, 23757],
+	'Slayer Boss Pets': [
+		12655,
+		12648,
+		12645,
+		12644,
+		12643,
+		21748,
+		13262,
+		13247,
+		21273,
+		22746,
+		23495
+	],
+	space2: [],
+	Other: [19730, 21509, 13071, 12703, 20693, 20851, 13225, 21291, 22473]
+};
+
 export const clues = {
 	'God Pages': [
 		3827,
@@ -527,5 +562,10 @@ export const collectionLogTypes = [
 		name: 'Clue',
 		aliases: ['clues', 'clue'],
 		items: clues
+	},
+	{
+		name: 'Pets',
+		aliases: ['pet', 'pets'],
+		items: pets
 	}
 ];
