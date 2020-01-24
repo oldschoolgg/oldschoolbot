@@ -2,6 +2,7 @@ import { removeDuplicatesFromArray } from './util';
 
 export const bosses = {
 	Zulrah: [12921, 12936, 13201, 13200, 6571, 12927, 12922, 12932],
+	Shards: [11818, 11820, 11822],
 	Zammy: [11816, 11824, 11791, 11787, 12652],
 	Bandos: [11832, 11834, 11836, 12650, 11812],
 	Saradomin: [11814, 11838, 13256, 11785, 12651],
