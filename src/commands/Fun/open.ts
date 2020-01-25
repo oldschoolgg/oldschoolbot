@@ -29,7 +29,8 @@ export default class extends BotCommand {
 			).join(', ')}`;
 		}
 
-		if (msg.author.hasItem(clueTier.id)) {
+		const hasCasket = await msg.author.hasItem(clueTier.id);
+		if (!hasCasket) {
 			throw `You don't have any ${clueTier.name} Caskets to open!`;
 		}
 
