@@ -2,7 +2,6 @@ import { KlasaMessage, KlasaClient, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
 import ClueTiers from '../../lib/clueTiers';
-import { Bank } from '../../lib/types';
 import { Events } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 
@@ -30,9 +29,7 @@ export default class extends BotCommand {
 			).join(', ')}`;
 		}
 
-		await msg.author.settings.sync();
-		const bank: Bank = msg.author.settings.get('bank');
-		if (!bank[clueTier.id]) {
+		if (msg.author.hasItem(clueTier.id)) {
 			throw `You don't have any ${clueTier.name} Caskets to open!`;
 		}
 
