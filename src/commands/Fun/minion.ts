@@ -166,13 +166,12 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
 	}
-
-	async clue(msg: KlasaMessage, [tierName]: [string]) {
+	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
 		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
 			this.client.emit(
 				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${tierName}`
+				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
 			);
 			return msg.send(msg.author.minionStatus);
 		}
@@ -187,15 +186,23 @@ export default class extends BotCommand {
 
 		if (!clueTier) throw invalidClue(msg.cmdPrefix);
 
-		let duration = clueTier.timeToFinish;
+		let duration = clueTier.timeToFinish * quantity;
+		if (duration > Time.Minute * 30) {
+			throw `${getMinionName(
+				msg.author
+			)} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+				clueTier.name
+			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
+		}
+
 		const bank = msg.author.settings.get('bank');
 		const numOfScrolls = bank[clueTier.scrollID];
 
-		if (!numOfScrolls) {
-			throw `You don't have a ${clueTier.name} clue scroll.`;
+		if (!numOfScrolls || numOfScrolls < quantity) {
+			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
 		}
 
-		await msg.author.removeItemFromBank(clueTier.scrollID);
+		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
@@ -208,6 +215,7 @@ export default class extends BotCommand {
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
+			quantity,
 			duration,
 			type: Activity.ClueCompletion
 		};
@@ -218,16 +226,16 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${getMinionName(msg.author)} is now completing a ${
+			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
 				clueTier.name
-			} clue, it'll take around ${formatDuration(
-				clueTier.timeToFinish
+			} clues, it'll take around ${formatDuration(
+				clueTier.timeToFinish * quantity
 			)} to finish.`
 		);
 	}
 
-	async kill(msg: KlasaMessage, [quantity, name]: [number|string, string]) {
-		if( typeof quantity === 'number') {
+	async kill(msg: KlasaMessage, [quantity, name]: [number | string, string]) {
+		if (typeof quantity === 'number') {
 			await msg.author.settings.sync(true);
 			if (msg.author.minionIsBusy) {
 				this.client.emit(
@@ -281,8 +289,7 @@ export default class extends BotCommand {
 					monster.name
 				}, it'll take around ${formatDuration(duration)} to finish.`
 			);
-		}
-		else if( typeof name === 'undefined'){
+		} else if (typeof name === 'undefined') {
 			let monsterName = quantity;
 
 			await msg.author.settings.sync(true);
@@ -303,7 +310,7 @@ export default class extends BotCommand {
 
 			if (!monster) throw invalidMonster(msg.cmdPrefix);
 
-			let numberKilled = Math.floor((Time.Minute * 30) / monster.timeToFinish)
+			let numberKilled = Math.floor((Time.Minute * 30) / monster.timeToFinish);
 			let duration = numberKilled * monster.timeToFinish;
 			const randomAddedDuration = rand(1, 20);
 			duration += (randomAddedDuration * duration) / 100;
