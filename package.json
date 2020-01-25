@@ -2,7 +2,7 @@
 	"scripts": {
 		"lint": "eslint ./ --fix && prettier --check ./ --write",
 		"build": "tsc -p .",
-		"watch": "tsc -p . -w"
+		"start": "concurrently \"tsc -p . -w\" \"node dist/src\""
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
@@ -37,6 +37,7 @@
 		"@types/xml2js": "^0.4.5",
 		"@typescript-eslint/eslint-plugin": "^2.13.0",
 		"@typescript-eslint/parser": "^2.13.0",
+		"concurrently": "^5.0.2",
 		"eslint": "^5.0.1",
 		"eslint-config-bamboo": "^3.0.0",
 		"eslint-config-klasa": "github:dirigeants/klasa-lint",
