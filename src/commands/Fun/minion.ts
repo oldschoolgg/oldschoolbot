@@ -167,12 +167,12 @@ export default class extends BotCommand {
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
 	}
 
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
+	async clue(msg: KlasaMessage, [tierName]: [string]) {
 		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
 			this.client.emit(
 				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
+				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${tierName}`
 			);
 			return msg.send(msg.author.minionStatus);
 		}
@@ -187,23 +187,15 @@ export default class extends BotCommand {
 
 		if (!clueTier) throw invalidClue(msg.cmdPrefix);
 
-		let duration = clueTier.timeToFinish * quantity;
-		if (duration > Time.Minute * 30) {
-			throw `${getMinionName(
-				msg.author
-			)} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
-			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
-		}
-
+		let duration = clueTier.timeToFinish;
 		const bank = msg.author.settings.get('bank');
 		const numOfScrolls = bank[clueTier.scrollID];
 
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
+		if (!numOfScrolls) {
+			throw `You don't have a ${clueTier.name} clue scroll.`;
 		}
 
-		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
+		await msg.author.removeItemFromBank(clueTier.scrollID);
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
@@ -216,7 +208,6 @@ export default class extends BotCommand {
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			quantity,
 			duration,
 			type: Activity.ClueCompletion
 		};
@@ -227,10 +218,10 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
+			`${getMinionName(msg.author)} is now completing a ${
 				clueTier.name
-			} clues, it'll take around ${formatDuration(
-				clueTier.timeToFinish * quantity
+			} clue, it'll take around ${formatDuration(
+				clueTier.timeToFinish
 			)} to finish.`
 		);
 	}
