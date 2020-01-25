@@ -7,29 +7,31 @@ import { TextChannel, DMChannel } from 'discord.js';
 import clueTiers from '../../lib/clueTiers';
 
 export default class extends Task {
-	async run({ clueID, userID, channelID, quantity }: ClueActivityTaskOptions) {
+	async run({ clueID, userID, channelID }: ClueActivityTaskOptions) {
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.users.fetch(userID);
 
-		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
+		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}]`;
 
 		if (!clueTier || !user) {
 			this.client.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
 			return;
 		}
 
-		await user.addItemsToBank({ [clueTier.id]: quantity }, true);
+		await user.addItemsToBank({ [clueTier.id]: 1 }, true);
 
 		this.client.emit(
 			Events.Log,
-			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
+			`${user.username}[${user.id}] received ${clueTier.name} Clue Caskets.`
 		);
 
-		const str = `${user}, ${getMinionName(user)} finished completing ${quantity} ${
+		const str = `${user}, ${getMinionName(user)} finished completing a ${
 			clueTier.name
-		} clues. ${getMinionName(user)} carefully places the reward casket${
-			quantity > 1 ? 's' : ''
-		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
+		} clue. ${
+			getMinionName(user)
+		} carefully places the reward casket in your bank. You can open this casket using \`+open ${
+			clueTier.name
+		}\``;
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
