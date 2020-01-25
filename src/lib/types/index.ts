@@ -21,6 +21,7 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
 	channelID: string;
 	duration: number;
+	quantity: number;
 }
 
 export interface SettingsEntry {
