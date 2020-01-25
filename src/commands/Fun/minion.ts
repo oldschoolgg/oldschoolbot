@@ -226,59 +226,111 @@ export default class extends BotCommand {
 		);
 	}
 
-	async kill(msg: KlasaMessage, [quantity, name]: [number, string]) {
-		await msg.author.settings.sync(true);
-		if (msg.author.minionIsBusy) {
-			this.client.emit(
-				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${name}`
+	async kill(msg: KlasaMessage, [quantity, name]: [number|string, string]) {
+		if( typeof quantity === 'number') {
+			await msg.author.settings.sync(true);
+			if (msg.author.minionIsBusy) {
+				this.client.emit(
+					Events.Log,
+					`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${name}`
+				);
+				return msg.send(msg.author.minionStatus);
+			}
+			if (!msg.author.hasMinion) {
+				throw hasNoMinion(msg.cmdPrefix);
+			}
+
+			if (!name) throw invalidMonster(msg.cmdPrefix);
+
+			const monster = findMonster(name);
+
+			if (!monster) throw invalidMonster(msg.cmdPrefix);
+
+			let duration = monster.timeToFinish * quantity;
+			if (duration > Time.Minute * 30) {
+				throw `${getMinionName(
+					msg.author
+				)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+					monster.name
+				} is ${Math.floor((Time.Minute * 30) / monster.timeToFinish)}.`;
+			}
+
+			const randomAddedDuration = rand(1, 20);
+			duration += (randomAddedDuration * duration) / 100;
+
+			if (isWeekend()) {
+				duration *= 0.9;
+			}
+
+			const data: MonsterActivityTaskOptions = {
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.MonsterKilling
+			};
+
+			this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
+				data,
+				catchUp: true
+			});
+
+			return msg.send(
+				`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
+					monster.name
+				}, it'll take around ${formatDuration(duration)} to finish.`
 			);
-			return msg.send(msg.author.minionStatus);
 		}
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
+		else if( typeof name === 'undefined'){
+			let monsterName = quantity;
+
+			await msg.author.settings.sync(true);
+			if (msg.author.minionIsBusy) {
+				this.client.emit(
+					Events.Log,
+					`${msg.author.username}[${msg.author.id}] [TTK-BUSY]  max number ${monsterName}`
+				);
+				return msg.send(msg.author.minionStatus);
+			}
+			if (!msg.author.hasMinion) {
+				throw hasNoMinion(msg.cmdPrefix);
+			}
+
+			if (!monsterName) throw invalidMonster(msg.cmdPrefix);
+
+			const monster = findMonster(monsterName);
+
+			if (!monster) throw invalidMonster(msg.cmdPrefix);
+
+			let numberKilled = Math.floor((Time.Minute * 30) / monster.timeToFinish)
+			let duration = numberKilled * monster.timeToFinish;
+			const randomAddedDuration = rand(1, 20);
+			duration += (randomAddedDuration * duration) / 100;
+
+			if (isWeekend()) {
+				duration *= 0.9;
+			}
+
+			const data: MonsterActivityTaskOptions = {
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity: numberKilled,
+				duration,
+				type: Activity.MonsterKilling
+			};
+
+			this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
+				data,
+				catchUp: true
+			});
+
+			return msg.send(
+				`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
+					monster.name
+				}, it'll take around ${formatDuration(duration)} to finish.`
+			);
 		}
-
-		if (!name) throw invalidMonster(msg.cmdPrefix);
-
-		const monster = findMonster(name);
-
-		if (!monster) throw invalidMonster(msg.cmdPrefix);
-
-		let duration = monster.timeToFinish * quantity;
-		if (duration > Time.Minute * 30) {
-			throw `${getMinionName(
-				msg.author
-			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
-				monster.name
-			} is ${Math.floor((Time.Minute * 30) / monster.timeToFinish)}.`;
-		}
-
-		const randomAddedDuration = rand(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
-		if (isWeekend()) {
-			duration *= 0.9;
-		}
-
-		const data: MonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling
-		};
-
-		this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
-			data,
-			catchUp: true
-		});
-
-		return msg.send(
-			`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
-				monster.name
-			}, it'll take around ${formatDuration(monster.timeToFinish * quantity)} to finish.`
-		);
 	}
 }
