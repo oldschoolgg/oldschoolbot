@@ -48,14 +48,14 @@ export default class extends Task {
 
 			if (!monster.canBeKilled) return;
 
-			let deathChance = 100;
+			let deathChance = 50;
 
 			// Base chance of death is (200 * (10 - difficulyRating))
 			// So if the rating is higher, the number is lower = higher chance.
 			deathChance *= 10 - monster.difficultyRating;
 
 			// If its a wildy monster, the chance is tripled
-			if (monster.wildy) deathChance /= 3;
+			if (monster.wildy) deathChance /= 8;
 
 			if (!roll(deathChance)) return;
 			const user = await this.client.users.fetch(task.data.userID).catch(() => null);
