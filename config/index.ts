@@ -56,7 +56,8 @@ const clientOptions: KlasaClientOptions = {
 		`[Old School Bot] Ready to serve ${client.guilds.size} guilds and ${client.users.size} users`,
 	schedule: {
 		interval: 10000
-	}
+	},
+	noPrefixDM: true
 };
 
 export { token, clientOptions, clientProperties };
