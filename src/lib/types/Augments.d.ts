@@ -32,7 +32,7 @@ declare module 'klasa' {
 		): Promise<Buffer>;
 	}
 	interface Command {
-		kill(message: KlasaMessage, [quantity, monster]: [number|string, string]): Promise<any>;
+		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
@@ -53,6 +53,7 @@ declare module 'discord.js' {
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
+		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		sanitizedName: string;
 		badges: string;
 		minionIsBusy: boolean;
