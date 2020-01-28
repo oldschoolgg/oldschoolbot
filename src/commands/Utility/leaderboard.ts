@@ -163,7 +163,7 @@ export default class extends Command {
 		const users = await Promise.all(
 			rawUserSettings
 				.filter(u => {
-					if (!u.monsterScores) return false;
+					if (!u.monsterScores || !u.monsterScores[monster.id]) return false;
 					if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
 					return true;
 				})
