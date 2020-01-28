@@ -50,29 +50,30 @@ export default class extends Task {
 
 			let deathChance = 50;
 
-			// Base chance of death is (200 * (10 - difficulyRating))
+			// Base chance of death is (50 * (10 - difficulyRating))
 			// So if the rating is higher, the number is lower = higher chance.
 			deathChance *= 10 - monster.difficultyRating;
 
 			// If its a wildy monster, the chance is tripled
-			if (monster.wildy) deathChance /= 8;
-
+			if (monster.wildy) deathChance /= 7;
 			if (!roll(deathChance)) return;
 			const user = await this.client.users.fetch(task.data.userID).catch(() => null);
 			const channel = await this.client.channels.fetch(task.data.channelID).catch(() => null);
-			if (channel && channel instanceof TextChannel && user) {
+
+			if (user) {
 				user.log(
 					`[MinionDeath] Minion died killing ${task.data.quantity}x ${monster.name} at a chance of 1 in ${deathChance}`
 				);
-
 				const deaths = user.settings.get(UserSettings.Stats.Deaths);
 				user.settings.update(UserSettings.Stats.Deaths, deaths + 1);
 
-				// If the monster is in the wilderness, 50/50 chance it was a PK death.
-				if (monster.wildy && roll(2)) {
-					await channel.send(randomPVPDeathMessage(user.minionName, monster.name));
-				} else {
-					await channel.send(randomDeathMessage(user.minionName, monster.name));
+				if (channel && channel instanceof TextChannel) {
+					// If the monster is in the wilderness, 50/50 chance it was a PK death.
+					if (monster.wildy && roll(2)) {
+						await channel.send(randomPVPDeathMessage(user.minionName, monster.name));
+					} else {
+						await channel.send(randomDeathMessage(user.minionName, monster.name));
+					}
 				}
 			}
 
