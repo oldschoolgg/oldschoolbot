@@ -166,6 +166,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
 	}
+
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
 		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
@@ -220,6 +221,7 @@ export default class extends BotCommand {
 			type: Activity.ClueCompletion
 		};
 
+		msg.author.incrementMinionDailyDuration(duration);
 		this.client.schedule.create(Tasks.ClueActivity, Date.now() + duration, {
 			data,
 			catchUp: true
@@ -279,6 +281,7 @@ export default class extends BotCommand {
 				type: Activity.MonsterKilling
 			};
 
+			msg.author.incrementMinionDailyDuration(duration);
 			this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
 				data,
 				catchUp: true
@@ -328,6 +331,7 @@ export default class extends BotCommand {
 				type: Activity.MonsterKilling
 			};
 
+			msg.author.incrementMinionDailyDuration(duration);
 			this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
 				data,
 				catchUp: true

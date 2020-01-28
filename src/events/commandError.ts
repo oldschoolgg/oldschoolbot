@@ -6,10 +6,6 @@ import { inlineCodeblock } from '../lib/util';
 
 export default class extends Event {
 	public async run(msg: KlasaMessage, command: Command, _: string[], error: string | Error) {
-		if (command.oneAtTime && this.client.oneCommandAtATimeCache.has(msg.author.id)) {
-			this.client.oneCommandAtATimeCache.delete(msg.author.id);
-		}
-
 		if (typeof error === 'string') {
 			return msg.send(error);
 		} else {

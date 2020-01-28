@@ -55,6 +55,7 @@ declare module 'discord.js' {
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
 		skillLevel(skillName: SkillsEnum): number;
+		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		sanitizedName: string;
 		badges: string;
 		minionIsBusy: boolean;

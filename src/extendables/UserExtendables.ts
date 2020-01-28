@@ -1,7 +1,7 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
-import { User, Util } from 'discord.js';
+import { User, Util, TextChannel } from 'discord.js';
 
-import { UserSettings, Events, Activity, Emoji } from '../lib/constants';
+import { UserSettings, Events, Activity, Emoji, Channel, Time } from '../lib/constants';
 import {
 	Bank,
 	MonsterActivityTaskOptions,
@@ -225,5 +225,22 @@ export default class extends Extendable {
 				} clues. Approximately ${duration} remaining.`;
 			}
 		}
+	}
+
+	public async incrementMinionDailyDuration(this: User, duration: number) {
+		await this.settings.sync(true);
+
+		const currentDuration = this.settings.get(UserSettings.Minion.DailyDuration);
+		const newDuration = currentDuration + duration;
+		if (newDuration > Time.Hour * 14) {
+			const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
+
+			this.log(log);
+			(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
+				`${this.sanitizedName} ${log}`
+			);
+		}
+
+		return this.settings.update(UserSettings.Minion.DailyDuration, newDuration);
 	}
 }

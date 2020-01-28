@@ -16,7 +16,5 @@ export default class extends Inhibitor {
 		if (this.client.oneCommandAtATimeCache.has(msg.author.id)) {
 			throw true;
 		}
-
-		this.client.oneCommandAtATimeCache.add(msg.author.id);
 	}
 }

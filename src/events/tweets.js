@@ -3,8 +3,6 @@ const { MessageEmbed } = require('discord.js');
 const he = require('he');
 const Twit = require('twit');
 
-const JAGEX_ASH = '1712662364';
-
 /* eslint-disable no-inline-comments */
 const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
@@ -143,11 +141,8 @@ module.exports = class extends Event {
 			return;
 		}
 
-		// If it's a reply, and the author isn't Jagex Ash, return.
-		if (
-			(tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) &&
-			tweet.user.id_str !== JAGEX_ASH
-		) {
+		// If it's a reply, return.
+		if (tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) {
 			return;
 		}
 
@@ -164,14 +159,13 @@ module.exports = class extends Event {
 			avatar: tweet.user.profile_image_url_https,
 			image: (_tweet.entities.media && _tweet.entities.media[0].media_url_https) || null,
 			id: tweet.user.id_str,
-			isReply: Boolean(tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str),
 			authorURL: `https://twitter.com/${tweet.user.screen_name}/`
 		};
 
 		this.sendTweet(formattedTweet);
 	}
 
-	sendTweet({ text, url, name, avatar, image, id, isReply, authorURL }) {
+	sendTweet({ text, url, name, avatar, image, id, authorURL }) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${text}`)
 			.setColor(1942002)
@@ -184,7 +178,6 @@ module.exports = class extends Event {
 		if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
 		if (HEXIS.includes(id)) key = 'hexis';
-		if (isReply && id === JAGEX_ASH) key = 'ashTweetsChannel';
 
 		if (!key) return;
 
