@@ -7,6 +7,7 @@ export default class extends Task {
 	}
 
 	async run() {
+		return;
 		this.syncItems();
 	}
 

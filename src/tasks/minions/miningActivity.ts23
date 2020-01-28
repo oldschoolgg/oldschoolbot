@@ -1,0 +1,19 @@
+import { Task } from 'klasa';
+import { SkillsEnum, MiningActivityTaskOptions } from '../../lib/types';
+import Skills from '../../lib/skills';
+
+const Mining = Skills.get(SkillsEnum.Mining);
+
+export default class extends Task {
+	async run({ oreID, duration, type, userID }: MiningActivityTaskOptions) {
+		const user = await this.client.users.fetch(userID);
+
+		const ore = Mining!.Ores.find(ore => ore.id === oreID);
+
+		if (!ore) return;
+
+		const durationPerOre = determineTime(ore.xp, user.skillLevel(SkillsEnum.Mining));
+
+		user.addXP(SkillsEnum.Mining, duration / durationPerOre);
+	}
+}

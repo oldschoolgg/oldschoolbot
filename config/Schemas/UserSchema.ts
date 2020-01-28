@@ -1,4 +1,5 @@
-const { Client } = require('klasa');
+import { Client, SchemaFolder } from 'klasa';
+import { SkillsEnum } from '../../src/lib/types';
 
 Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
@@ -13,14 +14,17 @@ Client.defaultUserSchema
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
-	.add('minion', folder =>
+	.add('minion', (folder: SchemaFolder) =>
 		folder.add('name', 'string').add('hasBought', 'boolean', { default: false })
 	)
-	.add('stats', folder =>
+	.add('stats', (folder: SchemaFolder) =>
 		folder
 			.add('deaths', 'integer', { default: 0 })
 			.add('diceWins', 'integer', { default: 0 })
 			.add('diceLosses', 'integer', { default: 0 })
 			.add('duelLosses', 'integer', { default: 0 })
 			.add('duelWins', 'integer', { default: 0 })
+	)
+	.add('skills', (folder: SchemaFolder) =>
+		folder.add(SkillsEnum.Mining, 'integer', { default: 0 })
 	);

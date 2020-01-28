@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { SkillsEnum } from './types';
 
 export const enum Time {
 	Millisecond = 1,
@@ -64,7 +65,8 @@ export const enum Tasks {
 
 export const enum Activity {
 	MonsterKilling = 'MonsterKilling',
-	ClueCompletion = 'ClueCompletion'
+	ClueCompletion = 'ClueCompletion',
+	Mining = 'Mining'
 }
 
 export const UserSettings = {
@@ -79,6 +81,9 @@ export const UserSettings = {
 	MonsterScores: 'monsterScores',
 	ClueScores: 'clueScores',
 	LastDailyTimestamp: 'lastDailyTimestamp',
+	Skills: {
+		Mining: `skills.${SkillsEnum.Mining}`
+	},
 	Stats: {
 		Deaths: 'stats.deaths',
 		Dice: {

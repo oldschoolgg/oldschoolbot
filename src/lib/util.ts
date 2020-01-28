@@ -4,8 +4,8 @@ import { util } from 'klasa';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask } from 'klasa';
-import { Tasks, Emoji } from './constants';
-import { Util } from 'discord.js';
+import { Tasks, Emoji, Events } from './constants';
+import { Util, Client } from 'discord.js';
 import { KlasaUser } from 'klasa';
 import killableMonsters from './killableMonsters';
 
@@ -227,4 +227,30 @@ export function roll(max: number) {
 
 export function removeDuplicatesFromArray(arr: unknown[]) {
 	return [...new Set(arr)];
+}
+
+export function convertXPtoLVL(xp: number, cap = 99) {
+	let points = 0;
+
+	for (let lvl = 1; lvl <= cap; lvl++) {
+		points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
+
+		if (Math.floor(points / 4) >= xp + 1) {
+			return lvl;
+		}
+	}
+
+	return cap;
+}
+
+export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
+	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
+}
+
+export function determineScaledOreTime(xp: number, lvl: number) {
+	const scale = xp / 20;
+	const min = Math.max(1, scale);
+
+	const t = min * Math.min(1, (100 - lvl) / 100 + 0.85);
+	return t * 1000;
 }

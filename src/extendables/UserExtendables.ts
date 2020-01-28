@@ -2,13 +2,19 @@ import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util } from 'discord.js';
 
 import { UserSettings, Events, Activity, Emoji } from '../lib/constants';
-import { Bank, MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../lib/types';
+import {
+	Bank,
+	MonsterActivityTaskOptions,
+	ClueActivityTaskOptions,
+	SkillsEnum
+} from '../lib/types';
 import {
 	addBankToBank,
 	removeItemFromBank,
 	addItemToBank,
 	activityTaskFilter,
-	formatDuration
+	formatDuration,
+	convertXPtoLVL
 } from '../lib/util';
 import clueTiers from '../lib/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
@@ -150,6 +156,18 @@ export default class extends Extendable {
 
 		const bank = this.settings.get(UserSettings.Bank);
 		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
+	}
+
+	public skillLevel(this: User, skillName: SkillsEnum) {
+		return convertXPtoLVL(this.settings.get(`skills.${skillName}`));
+	}
+
+	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
+		await this.settings.sync(true);
+		const currentXP = this.settings.get(`skills.${skillName}`);
+		if (currentXP >= 200_000_000) return;
+		const newXP = Math.min(200_000_000, currentXP + amount);
+		return this.settings.update(`skills.${skillName}`, newXP);
 	}
 
 	public get badges(this: User) {

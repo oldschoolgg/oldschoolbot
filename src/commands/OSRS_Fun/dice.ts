@@ -32,9 +32,9 @@ export default class extends BotCommand {
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
-			if (amount > 2_000_000_000) {
-				throw `You can only stake up to 2bil at a time!`;
-			}
+			//if (amount > 2_000_000_000) {
+			//	throw `You can only stake up to 2bil at a time!`;
+			//}
 
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get('GP');
