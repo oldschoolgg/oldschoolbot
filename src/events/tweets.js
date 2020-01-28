@@ -159,7 +159,6 @@ module.exports = class extends Event {
 			avatar: tweet.user.profile_image_url_https,
 			image: (_tweet.entities.media && _tweet.entities.media[0].media_url_https) || null,
 			id: tweet.user.id_str,
-			isReply: Boolean(tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str),
 			authorURL: `https://twitter.com/${tweet.user.screen_name}/`
 		};
 
