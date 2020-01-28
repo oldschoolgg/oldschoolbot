@@ -4,7 +4,7 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { sleep } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { Emoji, ClientSettings, UserSettings } from '../../lib/constants';
+import { Emoji, ClientSettings, UserSettings, Time } from '../../lib/constants';
 
 const options = {
 	max: 1,
@@ -40,6 +40,11 @@ export default class extends BotCommand {
 					Math.random() * 30 + 1
 				)} HP remaining.`
 			);
+		}
+
+		if (Date.now() - msg.author.createdTimestamp < Time.Month) {
+			throw `You cannot use this command, as your account is too new and/or ` +
+				`looks like it might be an alt account.`;
 		}
 
 		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
