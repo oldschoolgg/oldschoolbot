@@ -76,7 +76,7 @@ export default class extends Monitor {
 
 	customPrefix(msg: KlasaMessage) {
 		const prefix = msg.guild && msg.guild!.settings.get('prefix');
-		if (!prefix) return null;
+		if (!prefix) return this.client.options.prefix;
 		for (const prf of Array.isArray(prefix) ? prefix : [prefix]) {
 			const testingPrefix = this.prefixes.get(prf) || this.generateNewPrefix(prf);
 			if (testingPrefix.regex.test(msg.content)) return testingPrefix;
