@@ -17,7 +17,7 @@ module.exports = class extends Command {
 			throw `I can only catch 10 Lucky Imps at a time!`;
 		}
 
-		const loot = LuckyImp.kill();
+		const loot = LuckyImp.kill(qty);
 
 		const opened = `You caught ${qty} Lucky Imp${qty > 1 ? 's' : ''}`;
 
