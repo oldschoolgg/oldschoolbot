@@ -60,7 +60,8 @@ export const SupportServer = '342983479501389826';
 
 export const enum Tasks {
 	MonsterActivity = 'monsterActivity',
-	ClueActivity = 'clueActivity'
+	ClueActivity = 'clueActivity',
+	MiningActivity = 'miningActivity'
 }
 
 export const enum Activity {

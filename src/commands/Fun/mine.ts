@@ -4,7 +4,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { determineScaledOreTime, stringMatches, formatDuration } from '../../lib/util';
 import Mining from '../../lib/skills/mining';
 import { SkillsEnum, MiningActivityTaskOptions } from '../../lib/types';
-import { Time, Activity } from '../../lib/constants';
+import { Time, Activity, Tasks } from '../../lib/constants';
 
 export default class extends BotCommand {
 	public constructor(
@@ -48,40 +48,39 @@ export default class extends BotCommand {
 		);
 
 		if (quantity === null) {
-			quantity = Time.Minute * 30 / timeToMine
+			quantity = (Time.Minute * 30) / timeToMine;
 		}
 
 		const duration = quantity * timeToMine;
 
-
-
-
-			if (duration > Time.Minute * 30) {
-				throw `${msg.author.minionName} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
-					ore.name
-				} you can mine is ${(Time.Minute * 30 / timeToMine)}.`;
-			}
-
-
-			const data: MiningActivityTaskOptions = {
-				oreID: ore.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Mining
-			};
-
-			this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
-				data,
-				catchUp: true
-			});
-
-			return msg.send(
-				`${msg.author.minionName} is now mining ${quantity}x ${ore.name}, it'll take around ${formatDuration(duration)} to finish.`
-			);
+		if (duration > Time.Minute * 30) {
+			throw `${
+				msg.author.minionName
+			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
+				ore.name
+			} you can mine is ${(Time.Minute * 30) / timeToMine}.`;
 		}
 
-		return msg.send(`Mining ${quantity} of ${ore.name}`);
+		const data: MiningActivityTaskOptions = {
+			oreID: ore.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Mining
+		};
+
+		this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
+			data,
+			catchUp: true
+		});
+
+		return msg.send(
+			`${msg.author.minionName} is now mining ${quantity}x ${
+				ore.name
+			}, it'll take around ${formatDuration(duration)} to finish.`
+		);
+
+		//return msg.send(`Mining ${quantity} of ${ore.name}`);
 	}
 }

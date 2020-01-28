@@ -243,4 +243,6 @@ export default class extends Extendable {
 
 		return this.settings.update(UserSettings.Minion.DailyDuration, newDuration);
 	}
+
+	public async;
 }
