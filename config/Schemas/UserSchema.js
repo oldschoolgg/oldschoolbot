@@ -14,7 +14,10 @@ Client.defaultUserSchema
 	.add('monsterScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
 	.add('minion', folder =>
-		folder.add('name', 'string').add('hasBought', 'boolean', { default: false })
+		folder
+			.add('name', 'string')
+			.add('hasBought', 'boolean', { default: false })
+			.add('dailyDuration', 'integer', { default: 0 })
 	)
 	.add('stats', folder =>
 		folder

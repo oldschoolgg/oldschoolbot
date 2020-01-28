@@ -70,7 +70,8 @@ export const enum Activity {
 export const UserSettings = {
 	Minion: {
 		Name: 'minion.name',
-		HasBought: 'minion.hasBought'
+		HasBought: 'minion.hasBought',
+		DailyDuration: 'minion.dailyDuration'
 	},
 	GP: 'GP',
 	Bank: 'bank',
