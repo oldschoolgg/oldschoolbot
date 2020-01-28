@@ -15,7 +15,8 @@ export default class extends BotCommand {
 			usage: '<user:user> <amount:int{1}>',
 			usageDelim: ' ',
 			oneAtTime: true,
-			cooldown: 5
+			cooldown: 5,
+			altProtection: true
 		});
 	}
 
@@ -29,9 +30,9 @@ export default class extends BotCommand {
 			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) <
 			Time.Minute * 1
 		) {
-			(this.client.channels
-				.get(Channel.ErrorLogs) as TextChannel)
-				?.send(`(${msg.author.sanitizedName})[${msg.author.id}] paid daily to (${user.sanitizedName})[${user.id}]`);
+			(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
+				`(${msg.author.sanitizedName})[${msg.author.id}] paid daily to (${user.sanitizedName})[${user.id}]`
+			);
 		}
 
 		await msg.author.removeGP(amount);
