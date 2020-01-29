@@ -1,12 +1,10 @@
 import { Image } from 'canvas';
 import { Bank } from './types';
-import { util } from 'klasa';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask } from 'klasa';
-import { Tasks, Emoji, Events } from './constants';
-import { Util, Client } from 'discord.js';
-import { KlasaUser } from 'klasa';
+import { ScheduledTask, KlasaUser, util } from 'klasa';
+import { Tasks, Emoji } from './constants';
+import { Util } from 'discord.js';
 import killableMonsters from './killableMonsters';
 
 export function generateHexColorForCashStack(coins: number) {
