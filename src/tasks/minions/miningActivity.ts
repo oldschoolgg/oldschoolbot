@@ -1,10 +1,10 @@
-import { Task } from 'klasa';
-import { SkillsEnum, MiningActivityTaskOptions } from '../../lib/types';
-import Skills from '../../lib/skills';
-import { TextChannel, DMChannel, MessageAttachment } from 'discord.js';
+import { Task, KlasaMessage } from 'klasa';
+import { TextChannel, DMChannel } from 'discord.js';
+
 import { saidYes, noOp } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { KlasaMessage } from 'klasa';
+import { SkillsEnum, MiningActivityTaskOptions } from '../../lib/types';
+import Skills from '../../lib/skills';
 
 const Mining = Skills.get(SkillsEnum.Mining);
 
@@ -16,13 +16,22 @@ export default class extends Task {
 
 		if (!ore) return;
 
-		user.addXP(SkillsEnum.Mining, quantity * ore.xp);
+		const xpReceived = quantity * ore.xp;
 
-		let str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${
-			monster.name
-		}.  ${getMinionName(user)} asks if you'd like them to do another trip of ${quantity} ${
-			monster.name
-		}.`;
+		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		await user.addXP(SkillsEnum.Mining, xpReceived);
+		const newLevel = user.skillLevel(SkillsEnum.Mining);
+		await user.addItemsToBank({ [ore.id]: quantity });
+
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${
+			ore.name
+		}, you also received ${xpReceived.toLocaleString()} XP. ${
+			user.minionName
+		} asks if you'd like them to do another of the same trip..`;
+
+		if (newLevel > currentLevel) {
+			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
+		}
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
@@ -34,7 +43,7 @@ export default class extends Task {
 			return;
 		}
 
-		channel.send(str, new MessageAttachment(image));
+		channel.send(str);
 
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
@@ -45,10 +54,10 @@ export default class extends Task {
 				const response = messages.first();
 
 				if (response) {
-					user.log(` continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+					user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
 					this.client.commands
-						.get('minion')!
-						.kill(response as KlasaMessage, [quantity, monster.name]);
+						.get('mine')!
+						.run(response as KlasaMessage, [quantity, ore.name]);
 				}
 			})
 			.catch(noOp);

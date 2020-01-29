@@ -6,7 +6,8 @@ import {
 	Bank,
 	MonsterActivityTaskOptions,
 	ClueActivityTaskOptions,
-	SkillsEnum
+	SkillsEnum,
+	MiningActivityTaskOptions
 } from '../lib/types';
 import {
 	addBankToBank,
@@ -18,6 +19,7 @@ import {
 } from '../lib/util';
 import clueTiers from '../lib/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
+import Mining from '../lib/skills/mining';
 
 export default class extends Extendable {
 	public constructor(
@@ -224,6 +226,17 @@ export default class extends Extendable {
 					clueTier!.name
 				} clues. Approximately ${duration} remaining.`;
 			}
+
+			case Activity.Mining: {
+				const data: MiningActivityTaskOptions = currentTask.data;
+				const ore = Mining.Ores.find(ore => ore.id === data.oreID);
+				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
+				return `${this.minionName} is currently mining ${currentTask.data.quantity}x ${
+					ore!.name
+				}. Approximately ${duration} remaining. Your ${
+					Emoji.Mining
+				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
+			}
 		}
 	}
 
@@ -243,6 +256,4 @@ export default class extends Extendable {
 
 		return this.settings.update(UserSettings.Minion.DailyDuration, newDuration);
 	}
-
-	public async;
 }

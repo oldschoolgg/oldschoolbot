@@ -249,10 +249,7 @@ export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>)
 	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }
 
-export function determineScaledOreTime(xp: number, lvl: number) {
-	const scale = xp / 20;
-	const min = Math.max(1, scale);
-
-	const t = min * Math.min(1, (100 - lvl) / 100 + 0.85);
-	return t * 1000;
+export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
+	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
+	return Math.floor((t + respawnTime) * 1000);
 }

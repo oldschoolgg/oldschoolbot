@@ -1,4 +1,4 @@
-import { KlasaClient, CommandStore, KlasaMessage, util } from 'klasa';
+import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { determineScaledOreTime, stringMatches, formatDuration } from '../../lib/util';
@@ -27,6 +27,10 @@ export default class extends BotCommand {
 			throw `You dont have a minion`;
 		}
 
+		if (msg.author.minionIsBusy) {
+			return msg.send(msg.author.minionStatus);
+		}
+
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -42,13 +46,20 @@ export default class extends BotCommand {
 			).join(', ')}.`;
 		}
 
+		if (msg.author.skillLevel(SkillsEnum.Mining) < ore.level) {
+			throw `${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
+		}
+
+		// Calculate the time it takes to mine a single ore of this type, at this persons level.
 		const timeToMine = determineScaledOreTime(
 			ore!.xp,
+			ore.respawnTime,
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
+		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = (Time.Minute * 30) / timeToMine;
+			quantity = Math.floor((Time.Minute * 30) / timeToMine);
 		}
 
 		const duration = quantity * timeToMine;
@@ -70,7 +81,7 @@ export default class extends BotCommand {
 			type: Activity.Mining
 		};
 
-		this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
+		this.client.schedule.create(Tasks.MiningActivity, Date.now() + duration, {
 			data,
 			catchUp: true
 		});
