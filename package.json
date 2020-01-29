@@ -21,7 +21,7 @@
 		"mongodb": "^3.3.3",
 		"node-fetch": "^2.6.0",
 		"oldschooljs": "^0.8.5",
-		"p-limit": "^2.2.1",
+		"p-limit": "^2.2.2",
 		"rethinkdbdash": "^2.3.31",
 		"rss-parser": "^3.1.1",
 		"snoostorm": "^1.2.2",
