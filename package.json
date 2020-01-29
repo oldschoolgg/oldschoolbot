@@ -37,7 +37,7 @@
 		"@types/xml2js": "^0.4.5",
 		"@typescript-eslint/eslint-plugin": "^2.13.0",
 		"@typescript-eslint/parser": "^2.18.0",
-		"concurrently": "^5.0.2",
+		"concurrently": "^5.1.0",
 		"eslint": "^6.8.0",
 		"eslint-config-bamboo": "^3.0.0",
 		"eslint-config-klasa": "github:dirigeants/klasa-lint",
