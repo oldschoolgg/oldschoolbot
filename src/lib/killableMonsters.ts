@@ -88,7 +88,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Millisecond * 0.01,
+		timeToFinish: Time.Minute * 2.8,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
