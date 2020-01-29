@@ -69,7 +69,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
 				ore.name
-			} you can mine is ${(Time.Minute * 30) / timeToMine}.`;
+			} you can mine is ${Math.floor((Time.Minute * 30) / timeToMine)}.`;
 		}
 
 		const data: MiningActivityTaskOptions = {
