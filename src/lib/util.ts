@@ -247,3 +247,7 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000);
 }
+
+export function rand(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}

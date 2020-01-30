@@ -1,12 +1,14 @@
 import { Task, KlasaMessage } from 'klasa';
 import { TextChannel, DMChannel } from 'discord.js';
+import { Items } from 'oldschooljs';
 
-import { saidYes, noOp } from '../../lib/util';
+import { saidYes, noOp, rand } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SkillsEnum, MiningActivityTaskOptions } from '../../lib/types';
 import Skills from '../../lib/skills';
 
 const Mining = Skills.get(SkillsEnum.Mining);
+const MiningPet = Items.get('Rock golem');
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID }: MiningActivityTaskOptions) {
@@ -18,10 +20,16 @@ export default class extends Task {
 
 		const xpReceived = quantity * ore.xp;
 
+		const loot = { [ore.id]: quantity };
+
+		if (ore.petChance && rand(1, ore.petChance) < quantity) {
+			loot[MiningPet!.id] = 1;
+		}
+
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 		await user.addXP(SkillsEnum.Mining, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Mining);
-		await user.addItemsToBank({ [ore.id]: quantity });
+		await user.addItemsToBank(loot);
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${
 			ore.name
