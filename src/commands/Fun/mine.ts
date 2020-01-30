@@ -17,7 +17,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int|name:...string> [name:...string]',
+			usage: '<quantity:int{1}|name:...string> [name:...string]',
 			usageDelim: ' '
 		});
 	}
