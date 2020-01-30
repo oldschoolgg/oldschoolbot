@@ -10,7 +10,11 @@ import {
 	findMonster,
 	isWeekend
 } from '../../lib/util';
-import { MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../../lib/types/index';
+import {
+	MonsterActivityTaskOptions,
+	ClueActivityTaskOptions,
+	SkillsEnum
+} from '../../lib/types/index';
 import { rand } from '../../../config/util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
@@ -55,7 +59,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[kill|setname|buy|clue|kc|pat] [quantity:int{1}|name:...string] [name:...string]',
+				'[kill|setname|buy|clue|kc|pat|stats] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -80,6 +84,18 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(randomPatMessage(getMinionName(msg.author)));
+	}
+
+	async stats(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		return msg.send(`${msg.author.minionName}'s Stats:
+
+${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
+`);
 	}
 
 	async kc(msg: KlasaMessage) {
