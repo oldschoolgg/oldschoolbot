@@ -83,7 +83,7 @@ const ores = [
 		xp: 240,
 		id: 21347,
 		name: 'Amethyst',
-		respawnTime: 9
+		respawnTime: 25
 	}
 ];
 
