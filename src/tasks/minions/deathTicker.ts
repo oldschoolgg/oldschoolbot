@@ -41,6 +41,7 @@ export default class extends Task {
 
 		for (const task of currentTasks) {
 			const monster = killableMonsters.find(mon => mon.id === task.data.monsterID);
+			if (task.data.quantity < 2) continue;
 			if (!monster) {
 				this.client.emit(Events.Wtf, `Non-existant monster: ${JSON.stringify(task.data)}`);
 				return;
@@ -48,14 +49,14 @@ export default class extends Task {
 
 			if (!monster.canBeKilled) return;
 
-			let deathChance = 50;
+			let deathChance = 30;
 
 			// Base chance of death is (50 * (10 - difficulyRating))
 			// So if the rating is higher, the number is lower = higher chance.
 			deathChance *= 10 - monster.difficultyRating;
 
-			// If its a wildy monster, the chance is tripled
-			if (monster.wildy) deathChance /= 7;
+			// If its a wildy monster, the chance is 10x higher!
+			if (monster.wildy) deathChance /= 10;
 			if (!roll(deathChance)) return;
 			const user = await this.client.users.fetch(task.data.userID).catch(() => null);
 			const channel = await this.client.channels.fetch(task.data.channelID).catch(() => null);
