@@ -9,7 +9,7 @@ const deathMessages = [
 	"{name} just died while killing {monster}, however they're on their back to continue the trip.",
 	'{name} informs you that they accidentally died while trying to kill {monster}, they apologize profusely and get back on the trip as soon as they can.',
 	'{name} has just died while trying to kill {monster}, however they promise to get back and finish the trip.',
-	'{monster} just sent {minion} to lumbridge, however they return back to the trip.',
+	'{monster} just sent {name} to lumbridge, however they return back to the trip.',
 	'{name} was viciously killed by {monster}, they are scared to return but nevertheless return to finish the finish.',
 	'{name} died to {monster}.',
 	'{name} died to {monster}, and is beat up and tired, but picks up the courage to return to finish the trip.',
