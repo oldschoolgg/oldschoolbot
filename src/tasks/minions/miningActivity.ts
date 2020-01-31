@@ -13,6 +13,7 @@ const MiningPet = Items.get('Rock golem');
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID }: MiningActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
 		const ore = Mining!.Ores.find(ore => ore.id === oreID);
 
@@ -22,11 +23,11 @@ export default class extends Task {
 
 		const loot = { [ore.id]: quantity };
 
-		if (ore.petChance && rand(1, ore.petChance) < quantity) {
+		// Roll for pet at 1.5x chance
+		if (ore.petChance && rand(1, ore.petChance * 1.5) < quantity) {
 			loot[MiningPet!.id] = 1;
 		}
 
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 		await user.addXP(SkillsEnum.Mining, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Mining);
 		await user.addItemsToBank(loot);
