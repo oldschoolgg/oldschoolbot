@@ -251,3 +251,7 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 export function rand(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+	return value !== null && value !== undefined;
+}
