@@ -1,12 +1,10 @@
 import { Image } from 'canvas';
 import { Bank } from './types';
-import { util } from 'klasa';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask } from 'klasa';
+import { ScheduledTask, KlasaUser, util } from 'klasa';
 import { Tasks, Emoji } from './constants';
 import { Util } from 'discord.js';
-import { KlasaUser } from 'klasa';
 import killableMonsters from './killableMonsters';
 
 export function generateHexColorForCashStack(coins: number) {
@@ -142,7 +140,9 @@ export function formatDuration(ms: number) {
 }
 
 export function activityTaskFilter(task: ScheduledTask) {
-	return ([Tasks.MonsterActivity, Tasks.ClueActivity] as string[]).includes(task.taskName);
+	return ([Tasks.MonsterActivity, Tasks.ClueActivity, Tasks.MiningActivity] as string[]).includes(
+		task.taskName
+	);
 }
 
 export function getMinionName(user: KlasaUser) {
@@ -227,4 +227,27 @@ export function roll(max: number) {
 
 export function removeDuplicatesFromArray(arr: unknown[]) {
 	return [...new Set(arr)];
+}
+
+export function convertXPtoLVL(xp: number, cap = 99) {
+	let points = 0;
+
+	for (let lvl = 1; lvl <= cap; lvl++) {
+		points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
+
+		if (Math.floor(points / 4) >= xp + 1) {
+			return lvl;
+		}
+	}
+
+	return cap;
+}
+
+export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
+	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
+	return Math.floor((t + respawnTime) * 1000);
+}
+
+export function rand(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
 }
