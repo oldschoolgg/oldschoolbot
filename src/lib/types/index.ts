@@ -24,6 +24,13 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface MiningActivityTaskOptions extends ActivityTaskOptions {
+	oreID: number;
+	duration: number;
+	channelID: string;
+	quantity: number;
+}
+
 export interface SettingsEntry {
 	id: string;
 	RSN?: string;
@@ -68,4 +75,8 @@ export interface KillableMonster extends Monster {
 	emoji: string;
 	wildy: boolean;
 	canBeKilled: boolean;
+}
+
+export const enum SkillsEnum {
+	Mining = 'mining'
 }

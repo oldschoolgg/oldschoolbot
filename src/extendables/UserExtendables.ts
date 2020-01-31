@@ -1,17 +1,25 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
-import { UserSettings, Events, Activity, Emoji, Time, Channel } from '../lib/constants';
-import { Bank, MonsterActivityTaskOptions, ClueActivityTaskOptions } from '../lib/types';
+import { UserSettings, Events, Activity, Emoji, Channel, Time } from '../lib/constants';
+import {
+	Bank,
+	MonsterActivityTaskOptions,
+	ClueActivityTaskOptions,
+	SkillsEnum,
+	MiningActivityTaskOptions
+} from '../lib/types';
 import {
 	addBankToBank,
 	removeItemFromBank,
 	addItemToBank,
 	activityTaskFilter,
-	formatDuration
+	formatDuration,
+	convertXPtoLVL
 } from '../lib/util';
 import clueTiers from '../lib/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
+import Mining from '../lib/skills/mining';
 
 export default class extends Extendable {
 	public constructor(
@@ -152,6 +160,18 @@ export default class extends Extendable {
 		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
 	}
 
+	public skillLevel(this: User, skillName: SkillsEnum) {
+		return convertXPtoLVL(this.settings.get(`skills.${skillName}`));
+	}
+
+	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
+		await this.settings.sync(true);
+		const currentXP = this.settings.get(`skills.${skillName}`);
+		if (currentXP >= 200_000_000) return;
+		const newXP = Math.min(200_000_000, currentXP + amount);
+		return this.settings.update(`skills.${skillName}`, newXP);
+	}
+
 	public get badges(this: User) {
 		const username = this.settings.get('RSN');
 		if (!username) return '';
@@ -205,6 +225,17 @@ export default class extends Extendable {
 				return `${this.minionName} is currently completing ${currentTask.data.quantity}x ${
 					clueTier!.name
 				} clues. Approximately ${duration} remaining.`;
+			}
+
+			case Activity.Mining: {
+				const data: MiningActivityTaskOptions = currentTask.data;
+				const ore = Mining.Ores.find(ore => ore.id === data.oreID);
+				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
+				return `${this.minionName} is currently mining ${currentTask.data.quantity}x ${
+					ore!.name
+				}. Approximately ${duration} remaining. Your ${
+					Emoji.Mining
+				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
 		}
 	}

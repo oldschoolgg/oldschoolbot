@@ -1,5 +1,5 @@
 import { Image } from 'canvas';
-import { Bank } from '.';
+import { Bank, SkillsEnum } from '.';
 import { Settings } from 'klasa';
 import { FSWatcher } from 'fs';
 
@@ -53,6 +53,8 @@ declare module 'discord.js' {
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
+		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
+		skillLevel(skillName: SkillsEnum): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		sanitizedName: string;
 		badges: string;

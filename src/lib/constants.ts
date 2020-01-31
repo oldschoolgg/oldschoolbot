@@ -1,4 +1,5 @@
 import { join } from 'path';
+import { SkillsEnum } from './types';
 
 export const enum Time {
 	Millisecond = 1,
@@ -44,7 +45,8 @@ export const enum Emoji {
 	GP = '<:RSGP:369349580040437770>',
 	ThumbsUp = '👍',
 	ThumbsDown = '👎',
-	Casket = '<:Casket:365003978678730772>'
+	Casket = '<:Casket:365003978678730772>',
+	Mining = '<:mining:630911040128811010>'
 }
 
 export const enum Image {
@@ -59,12 +61,14 @@ export const SupportServer = '342983479501389826';
 
 export const enum Tasks {
 	MonsterActivity = 'monsterActivity',
-	ClueActivity = 'clueActivity'
+	ClueActivity = 'clueActivity',
+	MiningActivity = 'miningActivity'
 }
 
 export const enum Activity {
 	MonsterKilling = 'MonsterKilling',
-	ClueCompletion = 'ClueCompletion'
+	ClueCompletion = 'ClueCompletion',
+	Mining = 'Mining'
 }
 
 export const UserSettings = {
@@ -80,6 +84,9 @@ export const UserSettings = {
 	MonsterScores: 'monsterScores',
 	ClueScores: 'clueScores',
 	LastDailyTimestamp: 'lastDailyTimestamp',
+	Skills: {
+		Mining: `skills.${SkillsEnum.Mining}`
+	},
 	Stats: {
 		Deaths: 'stats.deaths',
 		Dice: {
