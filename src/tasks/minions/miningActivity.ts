@@ -21,16 +21,8 @@ export default class extends Task {
 
 		const xpReceived = quantity * ore.xp;
 
-		const loot = { [ore.id]: quantity };
-
-		// Roll for pet at 1.5x chance
-		if (ore.petChance && rand(1, ore.petChance * 1.5) < quantity) {
-			loot[MiningPet!.id] = 1;
-		}
-
 		await user.addXP(SkillsEnum.Mining, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Mining);
-		await user.addItemsToBank(loot);
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${
 			ore.name
@@ -41,6 +33,18 @@ export default class extends Task {
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
 		}
+
+		const loot = {
+			[ore.id]: quantity
+		};
+
+		// Roll for pet at 1.5x chance
+		if (ore.petChance && rand(1, ore.petChance * 1.5) < quantity) {
+			loot[MiningPet!.id] = 1;
+			str += `\nYou have a funny feeling you're being followed...`;
+		}
+
+		await user.addItemsToBank(loot);
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
