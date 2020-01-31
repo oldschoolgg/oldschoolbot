@@ -3,11 +3,15 @@ import { util, KlasaMessage, Command, KlasaClient, CommandStore, RichDisplay } f
 
 import { fmNum } from '../../../config/util';
 import { SettingsEntry } from '../../lib/types';
-import { findMonster, stringMatches } from '../../lib/util';
+import { findMonster, stringMatches, noOp } from '../../lib/util';
 import pets from '../../lib/pets';
 import {  collectionLogTypes } from '../../lib/collectionLog';
+import { Time } from '../../lib/constants';
 
 export default class extends Command {
+	public settingEntryCache: SettingsEntry[] = [];
+	public lastCacheUpdate = 0;
+
 	public constructor(
 		client: KlasaClient,
 		store: CommandStore,
@@ -31,21 +35,26 @@ export default class extends Command {
 	}
 
 	async resolveEntries(settingsEntry: SettingsEntry) {
-		const user = await this.client.users.fetch(settingsEntry.id);
+		const user = await this.client.users.fetch(settingsEntry.id).catch(noOp);
+
 		return {
 			...settingsEntry,
 			user: user ? `${user.badges} ${user.username}` : 'Unknown'
 		};
 	}
 
-	async fetchRawUserSettings(fieldsToHave: string[]): Promise<SettingsEntry[]> {
-		return (this.client.providers
+	async fetchRawUserSettings(): Promise<SettingsEntry[]> {
+		if (this.settingEntryCache.length === 0 || Date.now() - this.lastCacheUpdate < Time.Minute * 30) { 
+			const results = await (this.client.providers
 			.get(this.client.options.providers.default as string) as any)
 			.db.table('users')
-			.filter(function (user: any) {
-				return fieldsToHave.some(test => user.hasFields(test))
-			})
 			.run();
+			
+			this.settingEntryCache = results;
+			this.lastCacheUpdate = Date.now()
+		}
+
+		return this.settingEntryCache; 
 	}
 
 	async petrecords(msg: KlasaMessage) {
@@ -72,7 +81,7 @@ export default class extends Command {
 
 	async gp(msg: KlasaMessage) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-		const rawUserSettings = await this.fetchRawUserSettings(['GP']);
+		const rawUserSettings = await this.fetchRawUserSettings();
 
 		const onlyForGuild = msg.flagArgs.server;
 
@@ -111,7 +120,7 @@ export default class extends Command {
 
 	async pets(msg: KlasaMessage) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-		const rawUserSettings = await this.fetchRawUserSettings(['GP', 'pets']);
+		const rawUserSettings = await this.fetchRawUserSettings();
 
 		const onlyForGuild = msg.flagArgs.server;
 
@@ -157,7 +166,7 @@ export default class extends Command {
 		if (!name) throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``
 		const monster = findMonster(name);
 		if (!monster) throw `That's not a valid monster!`;
-		const rawUserSettings = await this.fetchRawUserSettings(['monsterScores']);
+		const rawUserSettings = await this.fetchRawUserSettings();
 		const onlyForGuild = msg.flagArgs.server;
 
 		const users = await Promise.all(
@@ -210,7 +219,7 @@ export default class extends Command {
 
 		const items = Object.values(type.items).flat(100);
 
-		const rawUserSettings = await this.fetchRawUserSettings(['collectionLog']);
+		const rawUserSettings = await this.fetchRawUserSettings();
 		
 		const onlyForGuild = msg.flagArgs.server;
 
