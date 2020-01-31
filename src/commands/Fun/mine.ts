@@ -22,7 +22,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, name]: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
 		}
