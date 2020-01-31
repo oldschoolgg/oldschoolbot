@@ -59,7 +59,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[kill|setname|buy|clue|kc|pat|stats] [quantity:int{1}|name:...string] [name:...string]',
+				'[kill|setname|buy|clue|kc|pat|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -181,6 +181,10 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
+	}
+
+	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
+		this.client.commands.get('mine').run(msg, [quantity, oreName]);
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
