@@ -23,7 +23,7 @@
 		"oldschooljs": "^0.8.5",
 		"p-limit": "^2.2.2",
 		"rethinkdbdash": "^2.3.31",
-		"rss-parser": "^3.1.1",
+		"rss-parser": "^3.7.4",
 		"snoostorm": "^1.2.2",
 		"snoowrap": "^1.19.0",
 		"threads": "^1.0.0",
