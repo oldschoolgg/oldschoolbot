@@ -8,7 +8,7 @@
 		"@kcp/tags": "^1.0.0",
 		"bufferutil": "^4.0.1",
 		"canvas": "^2.6.1",
-		"canvas-constructor": "^1.1.2",
+		"canvas-constructor": "^3.1.0",
 		"cheerio": "^1.0.0-rc.3",
 		"chokidar": "^3.3.1",
 		"crystalmethlabs": "github:gc/crystalmethlabs",
