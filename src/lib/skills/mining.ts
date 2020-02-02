@@ -26,7 +26,7 @@ const ores = [
 	},
 	{
 		level: 15,
-		xp: 55,
+		xp: 48,
 		id: 440,
 		name: 'Iron ore',
 		respawnTime: 0.2,
@@ -68,7 +68,7 @@ const ores = [
 		xp: 80,
 		id: 447,
 		name: 'Mithril ore',
-		respawnTime: 7,
+		respawnTime: 10,
 		petChance: 150_000
 	},
 	{
@@ -76,7 +76,7 @@ const ores = [
 		xp: 95,
 		id: 449,
 		name: 'Adamantite ore',
-		respawnTime: 15,
+		respawnTime: 18,
 		petChance: 60_000
 	},
 	{
@@ -84,16 +84,16 @@ const ores = [
 		xp: 125,
 		id: 451,
 		name: 'Runite ore',
-		respawnTime: 25,
-		petChance: 43_000
+		respawnTime: 50,
+		petChance: 45_000
 	},
 	{
 		level: 92,
 		xp: 240,
 		id: 21347,
 		name: 'Amethyst',
-		respawnTime: 25,
-		petChance: 46_000
+		respawnTime: 40,
+		petChance: 50_000
 	}
 ];
 
