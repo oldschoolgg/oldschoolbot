@@ -58,7 +58,7 @@ module.exports = class extends Task {
 							if (_channel) _channel.send({ embed });
 						});
 				}
-				this.client.user.setActivity('discord.gg/osb');
+				this.client.user.setActivity('discord.gg/ob');
 			})
 			.catch(console.error);
 	}
