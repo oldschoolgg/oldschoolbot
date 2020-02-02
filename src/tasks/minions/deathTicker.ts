@@ -51,7 +51,7 @@ export default class extends Task {
 
 			let deathChance = 30;
 
-			// Base chance of death is (50 * (10 - difficulyRating))
+			// Base chance of death is (30 * (10 - difficulyRating))
 			// So if the rating is higher, the number is lower = higher chance.
 			deathChance *= 10 - monster.difficultyRating;
 
