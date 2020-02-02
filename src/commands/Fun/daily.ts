@@ -84,6 +84,10 @@ export default class DailyCommand extends BotCommand {
 			bonuses.push(Emoji.OSBot);
 		}
 
+		if (msg.author.hasMinion) {
+			amount = amount / 4;
+		}
+
 		if (roll(73)) {
 			amount = Math.floor(amount * 1.73);
 			bonuses.push(Emoji.Joy);
