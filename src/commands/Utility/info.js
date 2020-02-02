@@ -20,7 +20,7 @@ Old School Bot is an open-source Discord Bot based on Old School RuneScape.
 
 	- If you have any other enquiries, join the support server!
 
-	- Support Server: discord.gg/osb
+	- Support Server: discord.gg/ob
 `);
 	}
 };
