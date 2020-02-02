@@ -18,8 +18,7 @@ import {
 import { rand } from '../../../config/util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
-
-const COST_OF_MINION = 50_000_000;
+import { Util } from 'oldschooljs';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -114,17 +113,29 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 	}
 
 	async buy(msg: KlasaMessage) {
+		let cost = 50_000_000;
+		const accountAge = Date.now() - msg.author.createdTimestamp;
+		if (accountAge > Time.Year * 2) {
+			cost = 5_000_000;
+		} else if (accountAge > Time.Year) {
+			cost = 10_000_000;
+		} else if (accountAge > Time.Month * 6) {
+			cost = 35_000_000;
+		}
+
 		if (msg.author.hasMinion) throw 'You already have a minion!';
 
 		await msg.author.settings.sync(true);
 		const balance = msg.author.settings.get('GP');
 
-		if (balance < COST_OF_MINION) {
+		if (balance < cost) {
 			throw "You can't afford to buy a minion! You need 50m";
 		}
 
 		await msg.send(
-			'Are you sure you want to spend 50m on buying a minion? Please say `yes` to confirm.'
+			`Are you sure you want to spend ${Util.toKMB(
+				cost
+			)} on buying a minion? Please say \`yes\` to confirm.`
 		);
 
 		try {
@@ -151,9 +162,9 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 
 			await msg.author.settings.sync(true);
 			const balance = msg.author.settings.get(UserSettings.GP);
-			if (balance < COST_OF_MINION) return;
+			if (balance < cost) return;
 
-			await msg.author.settings.update(UserSettings.GP, balance - COST_OF_MINION);
+			await msg.author.settings.update(UserSettings.GP, balance - cost);
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
 
 			await response.edit(
