@@ -27,7 +27,7 @@ export default class extends Monitor {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (!msg.guild || msg.guild.id !== SupportServer) {
+		if (!msg.guild || msg.guild.id !== SupportServer || Boolean(msg.command)) {
 			return;
 		}
 
@@ -35,6 +35,7 @@ export default class extends Monitor {
 
 		for (const [roleID, chance] of rareRoles) {
 			if (roll(chance)) {
+				if (msg.member?.roles.has(roleID)) continue;
 				msg.member?.roles.add(roleID);
 				msg.react(Emoji.Gift);
 			}
