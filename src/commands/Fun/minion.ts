@@ -31,7 +31,7 @@ const invalidMonster = (prefix: string) =>
 		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
 
 const hasNoMinion = (prefix: string) =>
-	`You don't have a minion yet. You can buy one for 50m by typing \`${prefix}minion buy\`.`;
+	`You don't have a minion yet. You can buy one by typing \`${prefix}minion buy\`.`;
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -129,7 +129,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 		const balance = msg.author.settings.get('GP');
 
 		if (balance < cost) {
-			throw "You can't afford to buy a minion! You need 50m";
+			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
 		}
 
 		await msg.send(
