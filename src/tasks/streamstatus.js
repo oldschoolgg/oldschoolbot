@@ -58,7 +58,7 @@ module.exports = class extends Task {
 							if (_channel) _channel.send({ embed });
 						});
 				}
-				this.client.user.setActivity('support.oldschool.gg');
+				this.client.user.setActivity('discord.gg/osb');
 			})
 			.catch(console.error);
 	}
