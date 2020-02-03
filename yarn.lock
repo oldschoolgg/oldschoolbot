@@ -3099,9 +3099,9 @@ yargs@^13.3.0:
     y18n "^4.0.0"
     yargs-parser "^13.1.1"
 
-zlib-sync@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/zlib-sync/-/zlib-sync-0.1.5.tgz#bc8e39d11ea31f6583b94e1452cb48fe493a160a"
-  integrity sha512-+i+0BAu0fGs9hjImLWGJ6UXCLVj7VS9XBEYRot/pdFbVoUgqV2CFBRdrgsKLjIbbwHVXxHyESLhZcCx3eoFH5w==
+zlib-sync@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/zlib-sync/-/zlib-sync-0.1.6.tgz#9136ba8b66a75485fefe51aa68f9b49a5ae420eb"
+  integrity sha512-B2XGrhlXs/izEks+705vn/aL+nWyPgnS1glyCeH8wgZdOvztRn3ZEdqclj6GoJSeA/iRSqaTlznG2KO1M/GuWg==
   dependencies:
     nan "^2.14.0"
