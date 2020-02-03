@@ -2,7 +2,6 @@ import { expose } from 'threads';
 import Monsters from 'oldschooljs/dist/monsters';
 
 import sarachnis = require('../../data/monsters/sarachnis');
-import corp = require('../../data/monsters/corp');
 import kurask = require('../../data/monsters/kurask');
 import lavaDragon = require('../../data/monsters/lavaDragon');
 import brutalBlackDragon = require('../../data/monsters/brutalBlackDragon');
@@ -65,14 +64,6 @@ expose({
 					return 'I can only kill a maximum of 5000 Sarachnis at a time!';
 				}
 				const loot = sarachnis.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-			case 'CORP':
-			case 'CORPOREALBEAST':
-			case 'CORPBEAST': {
-				if (quantity > 5000)
-					return 'I can only kill a maximum of 5000 Corp beasts at a time!';
-				const loot = corp.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
 			case 'KURASK':
