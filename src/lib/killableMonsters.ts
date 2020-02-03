@@ -281,6 +281,17 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8
+	},
+	{
+		id: Monsters.CorporealBeast.id,
+		name: Monsters.CorporealBeast.name,
+		aliases: Monsters.CorporealBeast.aliases,
+		table: Monsters.CorporealBeast,
+		timeToFinish: Time.Minute * 18,
+		emoji: '<:Pet_dark_core:324127377347313674>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6
 	}
 ];
 
