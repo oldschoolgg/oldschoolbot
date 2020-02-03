@@ -44,7 +44,7 @@ export default class extends Task {
 			str += `\nYou have a funny feeling you're being followed...`;
 		}
 
-		await user.addItemsToBank(loot);
+		await user.addItemsToBank(loot, true);
 
 		let channel = this.client.channels.get(channelID);
 		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
