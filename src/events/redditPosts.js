@@ -42,7 +42,7 @@ module.exports = class extends Event {
 			this.client._redditIdCache.add(comment.id);
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
-				url: `https://www.reddit.com${comment.permalink}?context=8&depth=9`,
+				url: `https://www.reddit.com${comment.permalink}?context=1`,
 				jmod: jagexMods.find(
 					mod => mod.redditUsername.toLowerCase() === comment.author.name.toLowerCase()
 				)
