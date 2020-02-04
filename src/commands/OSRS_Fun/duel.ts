@@ -50,6 +50,7 @@ export default class extends BotCommand {
 		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
 		if (user.id === msg.author.id) throw `You cant duel yourself.`;
 		if (user.bot) throw `You cant duel a bot.`;
+		if (this.client.oneCommandAtATimeCache.has(user.id)) throw `That user is busy right now.`;
 
 		if (!(await this.checkBal(msg.author, amount))) {
 			return msg.send('You dont have have enough GP to duel that much.');
