@@ -51,6 +51,7 @@ export default class extends Extendable {
 	}
 
 	public async addGP(this: User, amount: number) {
+		await this.settings.sync(true);
 		const currentGP = this.settings.get(UserSettings.GP);
 		this.log(
 			`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`
@@ -59,6 +60,7 @@ export default class extends Extendable {
 	}
 
 	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
+		await this.settings.sync(true);
 		for (const { scrollID } of clueTiers) {
 			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
 			if (!_items[scrollID]) continue;
@@ -114,6 +116,7 @@ export default class extends Extendable {
 	}
 
 	public async addItemsToCollectionLog(this: User, items: Bank) {
+		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
 		return await this.settings.update(
