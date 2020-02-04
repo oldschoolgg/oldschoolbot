@@ -24,6 +24,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get('GP');
 		if (GP < amount) throw `You don't have enough GP.`;
+		if (this.client.oneCommandAtATimeCache.has(user.id)) throw `That user is busy right now.`;
 		if (user.id === msg.author.id) throw `You can't send money to yourself.`;
 		if (user.bot) throw `You can't send money to a bot.`;
 		if (
