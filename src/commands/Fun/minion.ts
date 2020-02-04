@@ -72,7 +72,6 @@ export default class extends BotCommand {
 	}
 
 	async pat(msg: KlasaMessage) {
-		await msg.author.settings.sync(true);
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
@@ -85,7 +84,6 @@ export default class extends BotCommand {
 	}
 
 	async stats(msg: KlasaMessage) {
-		await msg.author.settings.sync(true);
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
@@ -97,7 +95,6 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 	}
 
 	async kc(msg: KlasaMessage) {
-		await msg.author.settings.sync(true);
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
