@@ -3,6 +3,12 @@ import { Items } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 
+const options = {
+    max: 1,
+    time: 10000,
+    errors: ['time']
+};
+
 export default class extends BotCommand {
     public constructor(
         client: KlasaClient,
