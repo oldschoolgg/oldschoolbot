@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+import { Monsters, Items } from 'oldschooljs';
 
 import { Time } from './constants';
 import { Bank } from './types';
@@ -15,6 +15,7 @@ interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
+	itemsRequired: (string | number)[];
 }
 
 const killableMonsters: KillableMonster[] = [
@@ -27,7 +28,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 4
+		difficultyRating: 4,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -38,7 +40,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_dagannoth_prime:324127376877289474>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 5
+		difficultyRating: 5,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -49,7 +52,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_dagannoth_rex:324127377091330049>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 5
+		difficultyRating: 5,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -60,7 +64,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_dagannoth_supreme:324127377066164245>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 5
+		difficultyRating: 5,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Cerberus.id,
@@ -71,7 +76,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Hellpuppy:324127376185491458>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 7
+		difficultyRating: 7,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.GiantMole.id,
@@ -82,7 +88,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Baby_mole:324127375858204672>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 3
+		difficultyRating: 3,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Vorkath.id,
@@ -93,7 +100,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 8
+		difficultyRating: 8,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -104,7 +112,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_snakeling:324127377816944642>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 8
+		difficultyRating: 8,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.GeneralGraardor.id,
@@ -115,7 +124,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_general_graardor:324127377376673792>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 7
+		difficultyRating: 7,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -126,7 +136,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_zilyana:324127378248957952>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 7
+		difficultyRating: 7,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -137,7 +148,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_kreearra:324127377305239555>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 7
+		difficultyRating: 7,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -148,7 +160,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_kril_tsutsaroth:324127377527406594>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 7
+		difficultyRating: 7,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Man.id,
@@ -159,7 +172,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '🧍‍♂️',
 		wildy: false,
 		canBeKilled: false,
-		difficultyRating: 0
+		difficultyRating: 0,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Guard.id,
@@ -170,7 +184,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '',
 		wildy: false,
 		canBeKilled: false,
-		difficultyRating: 0
+		difficultyRating: 0,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Woman.id,
@@ -181,7 +196,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '🧍‍♀️',
 		wildy: false,
 		canBeKilled: false,
-		difficultyRating: 0
+		difficultyRating: 0,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -192,7 +208,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '',
 		wildy: false,
 		canBeKilled: false,
-		difficultyRating: 0
+		difficultyRating: 0,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Callisto.id,
@@ -203,7 +220,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 9
+		difficultyRating: 9,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -214,7 +232,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Vetion_jr:324127378999738369>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 8
+		difficultyRating: 8,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -225,7 +244,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 9
+		difficultyRating: 9,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -236,7 +256,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_chaos_elemental:324127377070227456>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 8
+		difficultyRating: 8,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -247,7 +268,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Ancient_staff:412845709453426689>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 6
+		difficultyRating: 6,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -258,7 +280,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Fedora:456179157303427092>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 6
+		difficultyRating: 6,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -269,7 +292,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Prince_black_dragon:324127378538364928>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 6
+		difficultyRating: 6,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -280,7 +304,8 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Scorpias_offspring:324127378773377024>',
 		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 8
+		difficultyRating: 8,
+		itemsRequired: []
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -291,8 +316,14 @@ const killableMonsters: KillableMonster[] = [
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 6
+		difficultyRating: 6,
+		itemsRequired: ['Zamorakian spear']
 	}
-];
+].map(killableMonster => ({
+	...killableMonster,
+	itemsRequired: (killableMonster.itemsRequired as string[]).map(
+		(itemName: string) => Items.get(itemName)!.id
+	)
+}));
 
 export default killableMonsters;
