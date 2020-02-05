@@ -1,6 +1,6 @@
 import { KlasaClient, CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 import { Items } from 'oldschooljs';
-
+import { Events } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 
 const options = {
@@ -8,6 +8,8 @@ const options = {
     time: 10000,
     errors: ['time']
 };
+
+const specialUntradeables = [995];
 
 export default class extends BotCommand {
     public constructor(
@@ -29,7 +31,6 @@ export default class extends BotCommand {
         await msg.author.settings.sync(true);
         let re = /’/gi;
         const osItem = Items.get(itemName.replace(re, "'"));
-        if (this.client.oneCommandAtATimeCache.has(user.id)) throw `That user is busy right now.`;
         if (user.id === msg.author.id) throw `You can't send items to yourself.`;
         if (user.bot) throw `You can't send items to a bot.`;
         if (!osItem) throw `That item doesnt exist.`;
@@ -64,6 +65,7 @@ export default class extends BotCommand {
             return giveMsg.edit(`Cancelling trade of ${quantity}x ${osItem.name}.`);
         }
         await msg.author.removeItemFromBank(osItem.id, quantity);
+        await user.addItemsToBank({ [osItem.id]: quantity }, false);
 
         msg.author.log(`gave Quantity[${quantity}] ItemID[${osItem.id}] to ${user.sanitizedName}`);
 
