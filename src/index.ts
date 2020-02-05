@@ -6,7 +6,6 @@ import { token, clientOptions, clientProperties } from '../config';
 import { Time, Events } from './lib/constants';
 
 Client.use(require('@kcp/tags'));
-Client.use(require('klasa-textchannel-gateway'));
 
 import('../config/Schemas');
 
@@ -22,7 +21,7 @@ class OldSchoolBot extends Client {
 
 	async fetchItemPrice(itemID: number | string) {
 		if (!this.production) {
-			return 73
+			return 73;
 		}
 
 		if (typeof itemID === 'string') itemID = parseInt(itemID);
