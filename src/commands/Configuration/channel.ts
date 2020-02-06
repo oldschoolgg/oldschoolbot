@@ -1,15 +1,10 @@
-import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			runIn: ['text'],
 			permissionLevel: 6,
 			description: 'Disable the bot in a channel.',

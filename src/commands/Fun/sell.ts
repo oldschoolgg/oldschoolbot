@@ -14,13 +14,8 @@ const options = {
 const specialUntradeables = [995];
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 1,
 			usage: '<quantity:int{1}> <itemname:...string>',
 			usageDelim: ' ',
@@ -30,7 +25,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		let re = /’/gi;
-		const osItem = Items.get(itemName.replace(re,"'"));
+		const osItem = Items.get(itemName.replace(re, "'"));
 		if (!osItem) throw `That item doesnt exist.`;
 		if (
 			specialUntradeables.includes(osItem.id) ||

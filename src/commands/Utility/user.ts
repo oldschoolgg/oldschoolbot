@@ -12,7 +12,7 @@ export default class extends Command {
 		file: string[],
 		directory: string
 	) {
-		super(client, store, file, directory, {
+		super(store, file, directory, {
 			description: 'Get information on a mentioned user.',
 			usage: '[Member:member]',
 			requiredPermissions: ['EMBED_LINKS']

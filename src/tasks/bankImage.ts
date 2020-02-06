@@ -33,8 +33,8 @@ export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 
-	public constructor(client: KlasaClient, store: TaskStore, file: string[], directory: string) {
-		super(client, store, file, directory, {});
+	public constructor(store: TaskStore, file: string[], directory: string) {
+		super(store, file, directory, {});
 
 		// This tells us simply whether the file exists or not on disk.
 		this.itemIconsList = new Set();

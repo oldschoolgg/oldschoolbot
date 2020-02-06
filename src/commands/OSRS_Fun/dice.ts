@@ -7,13 +7,8 @@ import { Image, Color, Emoji, Channel, ClientSettings, UserSettings } from '../.
 import { rand } from '../../../config/util';
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Simulates dice rolls from Runescape.',
 			usage: '[amount:int{1}]',
 			requiredPermissions: ['EMBED_LINKS'],

@@ -8,13 +8,8 @@ export default class extends Monitor {
 	mentionOnly: RegExp;
 	prefixFlags: string;
 
-	public constructor(
-		client: KlasaClient,
-		store: MonitorStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, { ignoreOthers: false });
+	public constructor(store: MonitorStore, file: string[], directory: string) {
+		super(store, file, directory, { ignoreOthers: false });
 		this.ignoreEdits = !this.client.options.commandEditing;
 		this.prefixes = new Map();
 		this.prefixMention = new RegExp(`^<@!?303730326692429825>`);

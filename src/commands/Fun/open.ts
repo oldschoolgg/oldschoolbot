@@ -6,13 +6,8 @@ import { Events } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['clue'],
 			usage: '<ClueTier:string>',

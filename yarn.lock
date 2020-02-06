@@ -18,7 +18,7 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@discordjs/collection@^0.1.1":
+"@discordjs/collection@^0.1.1", "@discordjs/collection@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.3.tgz#af9b1c22ccb2ee5c0cad1e1bd2bc3d82a817b05f"
   integrity sha512-4ek19SmNcPI92942RkuBrZrBK8hg7nG+ae/skkNNDeOaUG+XvxTPkv/jPZVgXwVPDkU5EFsewsI+0n4dTwFvgA==
@@ -27,6 +27,38 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@kcp/tags/-/tags-1.0.0.tgz#d18ad9fc3c26027a2d0a6504b168c127cd34d654"
   integrity sha512-Crjwrtn4g8wNsj2gmtR8Pbw78dER5QOqj1HqI08hInpxZUYOnLtJrKA9OaDHZthpG+JN0Vtvp4oNr8+8N5NiJw==
+
+"@klasa/querybuilder@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@klasa/querybuilder/-/querybuilder-0.0.1.tgz#66d2b99cb919933ec0fdc43f697590d9b57d0c82"
+  integrity sha512-DpMlgu9NHvOisRWbG0l1vHFi3f5SFowjKAIYAjl1hk9bn+N1RdpnH126YDoyeK8TsxZwszlLrPpoIS0Uoy4Q0A==
+  dependencies:
+    "@klasa/utils" "^0.0.1"
+
+"@klasa/request-handler@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@klasa/request-handler/-/request-handler-0.0.3.tgz#ed72de611ece3dd99725cb797fc13e07bb05e618"
+  integrity sha512-Z1O+Aa2kW/I4Uos4EZalByveIuQKRfuRx+JCsgsogDBd95N5Ub47AH+LEd5i+uzjnJ6iDHfodpVlaHojJ4Q+ZQ==
+
+"@klasa/settings-gateway@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@klasa/settings-gateway/-/settings-gateway-0.0.9.tgz#c56b97594e32eaa42a6adbab263f6b604430280e"
+  integrity sha512-HnXHPpuOBpwDFDCHBJc9wOKIMcXQqYNA60bwpW7VcyggqPBbP903ctFxUkzKLuaCg+le7XKw/KDS12Nt1gaFRA==
+  dependencies:
+    "@discordjs/collection" "^0.1.3"
+    "@klasa/querybuilder" "^0.0.1"
+    "@klasa/request-handler" "^0.0.3"
+    "@klasa/utils" "^0.0.4"
+
+"@klasa/utils@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@klasa/utils/-/utils-0.0.1.tgz#af20aa4ea24fdd83c41e9afb07f829194dea6363"
+  integrity sha512-UOGHPXnbitN/fHIGODZYv8IVlpojVmMMyRYLlanN41QP+IC9oZfqihT41cBbaFtMbqF0gcw6/5mr2P6NpCV8Mg==
+
+"@klasa/utils@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@klasa/utils/-/utils-0.0.4.tgz#4bf010b09d0f93b39245523ed22a09571d56508c"
+  integrity sha512-9gZSGN/As3sxZumZ9ZwyQ+KcNSenzY8tR1orRakv8HKK0WH0gG7QrsP/1O2TD4uHxUyr8dysCjt73RYPfzuDWQ==
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -1607,9 +1639,9 @@ keyv@3.0.0:
   dependencies:
     json-buffer "3.0.0"
 
-"klasa@github:dirigeants/klasa#0e9174cab0df7d28f3a7b8ca78b6344fef2611c9":
+"klasa@github:dirigeants/klasa#916/head":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/0e9174cab0df7d28f3a7b8ca78b6344fef2611c9"
+  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/271e3954a798658b0c18fda7e2f9194a19b2d0b1"
   dependencies:
     fs-nextra "^0.4.5"
 

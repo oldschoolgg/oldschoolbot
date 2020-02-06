@@ -4,13 +4,8 @@ import { MessageReaction } from 'discord.js';
 import { Emoji } from '../../lib/constants';
 
 export default class extends Command {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 2
 		});
 	}

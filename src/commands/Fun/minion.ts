@@ -47,13 +47,8 @@ const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,

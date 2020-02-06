@@ -5,13 +5,8 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toTitleCase } from '../../lib/util';
 
 export default class extends Command {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 1,
 			description: 'Simulate killing bosses (shows only rare drops).',
 			usage: '<quantity:int{1}> <BossName:...str>',
@@ -32,10 +27,9 @@ export default class extends Command {
 		return 10_000;
 	}
 
-
 	async run(msg: KlasaMessage, [quantity, bossName]: [number, string]) {
 		const result: ItemBank = await this.client.killWorkerThread.queue(async (fn: any) => {
-			return fn.kill({quantity, bossName, limit: this.determineKillLimit(msg.author)});
+			return fn.kill({ quantity, bossName, limit: this.determineKillLimit(msg.author) });
 		});
 
 		if (typeof result === 'string') {

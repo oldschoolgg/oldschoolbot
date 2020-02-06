@@ -22,13 +22,8 @@ import killableMonsters from '../lib/killableMonsters';
 import Mining from '../lib/skills/mining';
 
 export default class extends Extendable {
-	public constructor(
-		client: KlasaClient,
-		store: ExtendableStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, { appliesTo: [User] });
+	public constructor(store: ExtendableStore, file: string[], directory: string) {
+		super(store, file, directory, { appliesTo: [User] });
 	}
 
 	get sanitizedName(this: User) {

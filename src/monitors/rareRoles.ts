@@ -12,13 +12,8 @@ const rareRoles: [string, number][] = [
 ];
 
 export default class extends Monitor {
-	public constructor(
-		client: KlasaClient,
-		store: MonitorStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: MonitorStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			enabled: true,
 			ignoreOthers: false,
 			ignoreBots: true,

@@ -1,15 +1,10 @@
-import { Monitor, KlasaClient, MonitorStore, KlasaMessage } from 'klasa';
+import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
 
 import { SupportServer, Channel, Emoji } from '../lib/constants';
 
 export default class extends Monitor {
-	public constructor(
-		client: KlasaClient,
-		store: MonitorStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, { enabled: true, ignoreOthers: false });
+	public constructor(store: MonitorStore, file: string[], directory: string) {
+		super(store, file, directory, { enabled: true, ignoreOthers: false });
 	}
 
 	async run(msg: KlasaMessage) {

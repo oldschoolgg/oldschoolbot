@@ -23,7 +23,7 @@ const permissionLevels = new PermissionLevels()
 			fetch: true
 		}
 	)
-	.add(9, (message: KlasaMessage) => message.author === message.client.owner, { break: true })
-	.add(10, (message: KlasaMessage) => message.author === message.client.owner);
+	.add(9, (message: KlasaMessage) => message.client.owners.has(message.author), { break: true })
+	.add(10, (message: KlasaMessage) => message.client.owners.has(message.author));
 
 export default permissionLevels;

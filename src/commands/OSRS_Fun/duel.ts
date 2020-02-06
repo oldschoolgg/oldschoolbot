@@ -13,13 +13,8 @@ const options = {
 };
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Simulates dueling another player.',
 			usage: '<user:user|user:str> [amount:int{10000}]',
 			usageDelim: ' ',

@@ -1,4 +1,4 @@
-import { Command, KlasaMessage, KlasaClient, CommandStore } from 'klasa';
+import { Command, KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
@@ -19,13 +19,8 @@ ctx.font = '14px OSRSFont';
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
 export default class extends Command {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Shows how much virtual GP you have',
 			cooldown: 3,
 			usage: '[page:int]',
