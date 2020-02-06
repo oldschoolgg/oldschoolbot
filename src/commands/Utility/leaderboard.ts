@@ -5,7 +5,7 @@ import { fmNum } from '../../../config/util';
 import { SettingsEntry } from '../../lib/types';
 import { findMonster, stringMatches, noOp, notEmpty } from '../../lib/util';
 import pets from '../../lib/pets';
-import {  collectionLogTypes } from '../../lib/collectionLog';
+import { collectionLogTypes } from '../../lib/collectionLog';
 import { Time } from '../../lib/constants';
 
 interface LeaderboardUser extends SettingsEntry {
@@ -18,13 +18,8 @@ export default class extends Command {
 	public lastCacheUpdate = 0;
 	public userCache: Map<string, LeaderboardUser> = new Map();
 
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Shows the people with the most virtual GP.',
 			usage: '[pets|gp|petrecords|kc|cl] [name:...string]',
 			usageDelim: ' ',
@@ -51,24 +46,28 @@ export default class extends Command {
 				user: user ? `${user.badges} ${user.username}` : 'Unknown'
 			};
 
-			this.userCache.set(settingsEntry.id, leaderBoardUser)
+			this.userCache.set(settingsEntry.id, leaderBoardUser);
 		}
 
 		return cachedUser;
 	}
 
 	async fetchRawUserSettings(): Promise<SettingsEntry[]> {
-		if (this.settingEntryCache.length === 0 || Date.now() - this.lastCacheUpdate < Time.Minute * 30) { 
-			const results = await (this.client.providers
-			.get(this.client.options.providers.default as string) as any)
-			.db.table('users')
-			.run();
-			
+		if (
+			this.settingEntryCache.length === 0 ||
+			Date.now() - this.lastCacheUpdate < Time.Minute * 30
+		) {
+			const results = await (this.client.providers.get(
+				this.client.options.providers.default as string
+			) as any).db
+				.table('users')
+				.run();
+
 			this.settingEntryCache = results;
-			this.lastCacheUpdate = Date.now()
+			this.lastCacheUpdate = Date.now();
 		}
 
-		return this.settingEntryCache; 
+		return this.settingEntryCache;
 	}
 
 	async petrecords(msg: KlasaMessage) {
@@ -102,7 +101,7 @@ export default class extends Command {
 				.sort(sort)
 				.slice(0, 300)
 				.map(this.resolveEntries)
-		)
+		);
 
 		return users.filter(notEmpty);
 	}
@@ -112,11 +111,14 @@ export default class extends Command {
 
 		const onlyForGuild = msg.flagArgs.server;
 
-		const users = await this.fetchUsers((u: LeaderboardUser) => {
-					if (!u.GP) return false;
-					if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
-					return true;
-				}, (a: LeaderboardUser, b: LeaderboardUser) => (b.GP ?? 0) - (a.GP ?? 0))
+		const users = await this.fetchUsers(
+			(u: LeaderboardUser) => {
+				if (!u.GP) return false;
+				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
+				return true;
+			},
+			(a: LeaderboardUser, b: LeaderboardUser) => (b.GP ?? 0) - (a.GP ?? 0)
+		);
 
 		const display = new RichDisplay();
 		display.setFooterPrefix(`Page `);
@@ -144,11 +146,16 @@ export default class extends Command {
 
 		const onlyForGuild = msg.flagArgs.server;
 
-	const users = await this.fetchUsers((u: LeaderboardUser) => {
-			if (!u.pets) return false;
-			if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
-			return true;
-		}, (a: LeaderboardUser, b: LeaderboardUser) => 	(b.pets ? Object.keys(b.pets).length : 0) - (a.pets ? Object.keys(a.pets).length : 0))
+		const users = await this.fetchUsers(
+			(u: LeaderboardUser) => {
+				if (!u.pets) return false;
+				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
+				return true;
+			},
+			(a: LeaderboardUser, b: LeaderboardUser) =>
+				(b.pets ? Object.keys(b.pets).length : 0) -
+				(a.pets ? Object.keys(a.pets).length : 0)
+		);
 
 		const display = new RichDisplay();
 		display.setFooterPrefix(`Page `);
@@ -173,22 +180,25 @@ export default class extends Command {
 
 	async kc(msg: KlasaMessage, [name]: [string]) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-		if (!name) throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``
+		if (!name)
+			throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``;
 		const monster = findMonster(name);
 		if (!monster) throw `That's not a valid monster!`;
 
 		const onlyForGuild = msg.flagArgs.server;
 
-		const users = await this.fetchUsers((u: LeaderboardUser) => {
+		const users = await this.fetchUsers(
+			(u: LeaderboardUser) => {
 				if (!u.monsterScores || !u.monsterScores[monster.id]) return false;
 				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
 				return true;
-		}, (a: LeaderboardUser, b: LeaderboardUser) => {
+			},
+			(a: LeaderboardUser, b: LeaderboardUser) => {
 				const aScore = a.monsterScores![monster.id] ?? 0;
 				const bScore = b.monsterScores![monster.id] ?? 0;
 				return bScore - aScore;
-		})
-
+			}
+		);
 
 		const display = new RichDisplay();
 		display.setFooterPrefix(`Page `);
@@ -204,7 +214,6 @@ export default class extends Command {
 									`**${user}**: ${monsterScores![monster.id] ?? 0}`
 							)
 							.join('\n')
-						
 					)
 			);
 		}
@@ -215,25 +224,40 @@ export default class extends Command {
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 
-		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)))
+		const type = collectionLogTypes.find(_type =>
+			_type.aliases.some(name => stringMatches(name, inputType))
+		);
 
 		if (!type) {
-			throw `That's not a valid collection log type. The valid types are: ${collectionLogTypes.map(type => type.name).join(', ')}`
+			throw `That's not a valid collection log type. The valid types are: ${collectionLogTypes
+				.map(type => type.name)
+				.join(', ')}`;
 		}
 
 		const items = Object.values(type.items).flat(100);
 
 		const onlyForGuild = msg.flagArgs.server;
 
-		const users = await this.fetchUsers((u: LeaderboardUser) => {
-			if (!u.collectionLogBank) return false;
-			if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
-			return true;
-		}, (a: LeaderboardUser, b: LeaderboardUser) => {
-			const aScore = a.collectionLogBank ? Object.entries(a.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))).length : -1;
-			const bScore = b.collectionLogBank ? Object.entries(b.collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))).length : -1;
-			return bScore - aScore;
-		})
+		const users = await this.fetchUsers(
+			(u: LeaderboardUser) => {
+				if (!u.collectionLogBank) return false;
+				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
+				return true;
+			},
+			(a: LeaderboardUser, b: LeaderboardUser) => {
+				const aScore = a.collectionLogBank
+					? Object.entries(a.collectionLogBank).filter(
+							([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))
+					  ).length
+					: -1;
+				const bScore = b.collectionLogBank
+					? Object.entries(b.collectionLogBank).filter(
+							([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))
+					  ).length
+					: -1;
+				return bScore - aScore;
+			}
+		);
 
 		const display = new RichDisplay();
 		display.setFooterPrefix(`Page `);
@@ -246,10 +270,14 @@ export default class extends Command {
 						page
 							.map(
 								({ user, collectionLogBank = {} }) =>
-									`**${user}**: ${Object.entries(collectionLogBank).filter(([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))).length}`
+									`**${user}**: ${
+										Object.entries(collectionLogBank).filter(
+											([itemID, qty]) =>
+												qty > 0 && items.includes(parseInt(itemID))
+										).length
+									}`
 							)
 							.join('\n')
-						
 					)
 			);
 		}
