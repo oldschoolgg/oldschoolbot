@@ -1,4 +1,4 @@
-import { Monitor, KlasaClient, MonitorStore, Stopwatch } from 'klasa';
+import { Monitor, MonitorStore, Stopwatch } from 'klasa';
 import { KlasaMessage } from 'klasa';
 import { util } from 'klasa';
 

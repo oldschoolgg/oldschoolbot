@@ -1,4 +1,4 @@
-import { Monitor, KlasaClient, MonitorStore, KlasaMessage } from 'klasa';
+import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
 
 import { SupportServer, Emoji } from '../lib/constants';
 import { roll } from '../lib/util';

@@ -1,4 +1,4 @@
-import { Task, util, KlasaClient, TaskStore } from 'klasa';
+import { Task, util, TaskStore } from 'klasa';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';

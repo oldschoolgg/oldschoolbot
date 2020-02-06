@@ -1643,6 +1643,8 @@ keyv@3.0.0:
   version "0.5.0-dev"
   resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/271e3954a798658b0c18fda7e2f9194a19b2d0b1"
   dependencies:
+    "@klasa/querybuilder" "^0.0.1"
+    "@klasa/settings-gateway" "^0.0.9"
     fs-nextra "^0.4.5"
 
 levn@^0.3.0, levn@~0.3.0:

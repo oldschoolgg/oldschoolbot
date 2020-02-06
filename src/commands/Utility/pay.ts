@@ -1,4 +1,4 @@
-import { KlasaClient, CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 import { TextChannel } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
