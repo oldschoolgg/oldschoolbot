@@ -192,7 +192,9 @@ module.exports = class extends Event {
 			.filter(guild => guild.settings.get(key))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get(key));
-				if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
+				if (channel && channel.postable) {
+					channel.send(`<${url}>`, { embed }).catch(() => null);
+				}
 			});
 	}
 };
