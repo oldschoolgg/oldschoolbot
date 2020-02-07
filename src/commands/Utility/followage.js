@@ -21,9 +21,10 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [userName, channelName]) {
-		const [user, channel] = await resolveTwitchUsersFromNames([userName, channelName]).catch(
-			() => msg.send(this.error)
-		);
+		const [user, channel] = await resolveTwitchUsersFromNames([
+			userName,
+			channelName
+		]).catch(() => msg.send(this.error));
 
 		if (!user || !channel) return msg.send("Either the user or channel doesn't exist.");
 
