@@ -63,7 +63,7 @@ export default class extends Task {
 
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: Time.Minute * 2,
+				time: Time.Minute * 5,
 				max: 1
 			})
 			.then(messages => {
