@@ -291,7 +291,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 
 		// Make sure they have all the required items to kill this monster
 		const bank = msg.author.settings.get(UserSettings.Bank);
-		for (const item of monster.itemsRequired as string[]) {
+		for (const item of monster.itemsRequired as number[]) {
 			if (!bank[item] || bank[item] < 0) {
 				throw `To kill ${
 					monster.name

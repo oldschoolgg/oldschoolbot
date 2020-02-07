@@ -1,6 +1,7 @@
 import { Monitor, MonitorStore, Stopwatch } from 'klasa';
 import { KlasaMessage } from 'klasa';
 import { util } from 'klasa';
+import { GuildSettings } from '../lib/GuildSettings';
 
 export default class extends Monitor {
 	prefixes: Map<any, any>;
@@ -25,8 +26,8 @@ export default class extends Monitor {
 		if (!message.channel.postable) return undefined;
 		if (this.mentionOnly.test(message.content))
 			return message.sendLocale('PREFIX_REMINDER', [
-				message.guild && message.guild.settings.get('prefix').length
-					? message.guild.settings.get('prefix')
+				message.guild && message.guild.settings.get(GuildSettings.Prefix).length
+					? message.guild.settings.get(GuildSettings.Prefix)
 					: undefined
 			]);
 
