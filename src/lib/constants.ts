@@ -79,4 +79,9 @@ export const enum Events {
 	Wtf = 'wtf'
 }
 
+export const enum BadgesEnum {
+	Developer = 0,
+	Booster = 1
+}
+
 export const rootFolder = join(__dirname, '..', '..', '..');

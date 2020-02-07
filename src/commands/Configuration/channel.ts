@@ -8,7 +8,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			runIn: ['text'],
 			permissionLevel: 6,
-			description: 'Disable the bot in a channel.',
 			usage: '<disable|enable>'
 		});
 	}
