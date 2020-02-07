@@ -109,3 +109,8 @@ export interface PetRecords {
 	highest: Bank;
 	lowest: Bank;
 }
+
+export interface JMod {
+	redditUsername: string;
+	formattedName: string;
+}

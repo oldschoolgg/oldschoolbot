@@ -12,6 +12,7 @@ export namespace ClientSettings {
 	export const Prices = T<ItemPriceCache>('prices');
 	export const PollQuestions = T<OSRSPoll>('pollQuestions');
 	export const PetRecords = T<PetRecords>('petRecords');
+	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
 
 	export namespace EconomyStats {
 		export const DicingBank = T<number>('economyStats.dicingBank');

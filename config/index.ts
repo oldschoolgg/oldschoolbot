@@ -1,7 +1,7 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import emoji from './skill-emoji';
-import { token, twitchClientID, twitterApp } from './private.js';
+import { token, twitchClientID } from './private.js';
 import permissionLevels from '../src/lib/config/permissionLevels';
 
 const production = require('os').platform() === 'linux';
@@ -17,7 +17,6 @@ const clientProperties = {
 		month: 2628000,
 		year: 525667 * 60
 	},
-	twitterApp,
 	notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`,
 	production
 };
