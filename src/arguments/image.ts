@@ -1,13 +1,13 @@
-const { Argument } = require('klasa');
-const fetch = require('node-fetch');
+import { Possible, Argument, KlasaMessage } from 'klasa';
+import fetch from 'node-fetch';
 
-module.exports = class extends Argument {
-	async parseURL(imageURL) {
-		const imageBuffer = await fetch(imageURL).then(result => result.buffer());
+export default class extends Argument {
+	async parseURL(imageURL: string) {
+		const imageBuffer = await fetch(imageURL).then((result: any) => result.buffer());
 		return [imageBuffer, imageURL];
 	}
 
-	async run(arg, possible, msg) {
+	async run(arg: string, _: Possible, msg: KlasaMessage) {
 		// If theres nothing provided, search the channel for an image.
 		if (typeof arg === 'undefined') {
 			const messageBank = await msg.channel.messages.fetch({
@@ -22,9 +22,11 @@ module.exports = class extends Argument {
 			}
 		} else {
 			// If they mentioned someone, return their avatar.
+			// @ts-ignore
 			const member = this.constructor.regex.userOrMember.test(arg)
-				? await msg.guild.members
-						.fetch(this.constructor.regex.userOrMember.exec(arg)[1])
+				? await msg
+						// @ts-ignore
+						.guild!.members.fetch(this.constructor.regex.userOrMember.exec(arg)[1])
 						.catch(() => null)
 				: null;
 
@@ -46,4 +48,4 @@ module.exports = class extends Argument {
 			})
 		);
 	}
-};
+}
