@@ -22,7 +22,7 @@ export default class extends BotCommand {
 			if (isDisabled) throw `This channel is already disabled.`;
 
 			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
-				action: 'add'
+				arrayAction: 'add'
 			});
 
 			return msg.sendLocale('CHANNEL_DISABLED');
@@ -30,7 +30,7 @@ export default class extends BotCommand {
 			if (!isDisabled) throw `This channel is already enabled.`;
 
 			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
-				action: 'remove'
+				arrayAction: 'remove'
 			});
 
 			return msg.sendLocale('CHANNEL_ENABLED');
