@@ -10,7 +10,6 @@ Client.defaultUserSchema
 	.add('badges', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('bank', 'any', { default: {} })
-	.add('collectionLog', 'integer', { array: true, default: [] })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
