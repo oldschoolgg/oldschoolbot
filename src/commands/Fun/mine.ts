@@ -1,4 +1,4 @@
-import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { determineScaledOreTime, stringMatches, formatDuration } from '../../lib/util';

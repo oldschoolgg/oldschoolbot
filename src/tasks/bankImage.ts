@@ -15,6 +15,7 @@ import {
 	restoreCtx
 } from '../lib/util';
 import { Bank } from '../lib/types';
+import { ClientSettings } from '../lib/ClientSettings';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -121,7 +122,7 @@ export default class BankImageTask extends Task {
 		// If some of the loot has no stored values, try to fetch them.
 		const keys = Object.keys(itemLoot);
 		const filteredKeys = keys.filter(
-			key => typeof this.client.settings.get('prices')[key] === 'undefined'
+			key => typeof this.client.settings.get(ClientSettings.Prices)[key] === 'undefined'
 		);
 
 		if (showValue && filteredKeys.length > 0) {

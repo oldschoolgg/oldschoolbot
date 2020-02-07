@@ -3,8 +3,8 @@ import { MessageAttachment } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
-import { UserSettings } from '../../lib/constants';
 import { stringMatches } from '../../lib/util';
+import { UserSettings } from '../../lib/UserSettings';
 
 const slicedCollectionLogTypes = collectionLogTypes.slice(1);
 
@@ -31,13 +31,13 @@ export default class extends BotCommand {
 		}
 
 		const items = Object.values(type.items).flat(100);
-		const log: number[] = msg.author.settings.get(UserSettings.CollectionLogBank);
+		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;
 
 		msg.channel.send(
 			new MessageAttachment(
 				await this.client.tasks
-					.get('bankImage')
+					.get('bankImage')!
 					.generateCollectionLogImage(
 						log,
 						`${msg.author.username}'s ${type.name} Collection Log (${num}/${items.length})`,

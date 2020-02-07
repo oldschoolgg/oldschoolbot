@@ -3,6 +3,8 @@ import { Bank, SkillsEnum } from '.';
 import { Settings } from 'klasa';
 import { FSWatcher } from 'fs';
 
+import { CustomGet } from '../UserSettings';
+
 declare module 'klasa' {
 	interface KlasaClient {
 		public oneCommandAtATimeCache: Set<string>;
@@ -26,7 +28,7 @@ declare module 'klasa' {
 			flags?: { [key: string]: string | number }
 		): Promise<Buffer>;
 		generateCollectionLogImage(
-			collectionLog: number[],
+			collectionLog: Bank,
 			title: string = '',
 			type: any
 		): Promise<Buffer>;
@@ -36,6 +38,10 @@ declare module 'klasa' {
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
+	}
+
+	interface SettingsFolder {
+		get<K extends string, S>(key: CustomGet<K, S>): S;
 	}
 }
 

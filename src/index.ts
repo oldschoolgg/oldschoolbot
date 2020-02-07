@@ -4,6 +4,7 @@ import { Util } from 'oldschooljs';
 
 import { token, clientOptions, clientProperties } from '../config';
 import { Time, Events } from './lib/constants';
+import { ClientSettings } from './lib/ClientSettings';
 
 Client.use(require('@kcp/tags'));
 
@@ -30,7 +31,7 @@ class OldSchoolBot extends Client {
 			return 1;
 		}
 
-		let currentItems = this.settings!.get('prices');
+		let currentItems = this.settings!.get(ClientSettings.Prices);
 
 		const currentItem = currentItems[itemID];
 

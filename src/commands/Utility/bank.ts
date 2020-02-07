@@ -9,6 +9,7 @@ import { Emoji } from '../../lib/constants';
 import { Items } from 'oldschooljs';
 import { RichDisplay } from 'klasa';
 import { util } from 'klasa';
+import { UserSettings } from '../../lib/UserSettings';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -47,8 +48,8 @@ export default class extends Command {
 	// @ts-ignore
 	async run(msg: KlasaMessage, [page = 1]: [number]) {
 		await msg.author.settings.sync(true);
-		const coins: number = msg.author.settings.get('GP');
-		const _bank: Bank = msg.author.settings.get('bank');
+		const coins: number = msg.author.settings.get(UserSettings.GP);
+		const _bank: Bank = msg.author.settings.get(UserSettings.Bank);
 
 		const bank: Bank = { ..._bank, 995: coins };
 

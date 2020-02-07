@@ -1,10 +1,12 @@
-import { KlasaClient, CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 import { User } from 'discord.js';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { sleep } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { Emoji, ClientSettings, UserSettings, Time } from '../../lib/constants';
+import { Emoji, Time } from '../../lib/constants';
+import { UserSettings } from '../../lib/UserSettings';
+import { ClientSettings } from '../../lib/ClientSettings';
 
 const options = {
 	max: 1,
@@ -25,7 +27,7 @@ export default class extends BotCommand {
 
 	async checkBal(user: KlasaUser, amount: number) {
 		await user.settings.sync(true);
-		return user.settings.get('GP') >= amount;
+		return user.settings.get(UserSettings.GP) >= amount;
 	}
 
 	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
@@ -99,11 +101,11 @@ export default class extends BotCommand {
 			dicingBank + Math.round(dividedAmount * 100) / 100
 		);
 
-		const winsOfWinner = winner.settings.get(UserSettings.Stats.Duel.Wins);
-		winner.settings.update(UserSettings.Stats.Duel.Wins, winsOfWinner + 1);
+		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins);
+		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);
 
-		const lossesOfLoser = loser.settings.get(UserSettings.Stats.Duel.Losses);
-		loser.settings.update(UserSettings.Stats.Duel.Losses, lossesOfLoser + 1);
+		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses);
+		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
 		await winner.addGP(winningAmount - tax);
 

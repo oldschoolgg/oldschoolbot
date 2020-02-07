@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { GuildSettings } from '../../lib/GuildSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -13,12 +14,14 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [input]: [string]) {
-		const isDisabled = msg.guild?.settings.get('staffOnlyChannels').includes(msg.channel.id);
+		const isDisabled = msg.guild?.settings
+			.get(GuildSettings.StaffOnlyChannels)
+			.includes(msg.channel.id);
 
 		if (input === 'disable') {
 			if (isDisabled) throw `This channel is already disabled.`;
 
-			await msg.guild!.settings.update('staffOnlyChannels', msg.channel.id, {
+			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 				action: 'add'
 			});
 
@@ -26,7 +29,7 @@ export default class extends BotCommand {
 		} else {
 			if (!isDisabled) throw `This channel is already enabled.`;
 
-			await msg.guild!.settings.update('staffOnlyChannels', msg.channel.id, {
+			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 				action: 'remove'
 			});
 

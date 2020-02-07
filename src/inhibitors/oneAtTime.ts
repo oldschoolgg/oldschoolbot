@@ -1,4 +1,4 @@
-import { Command, Inhibitor, InhibitorStore, KlasaMessage, KlasaClient } from 'klasa';
+import { Command, Inhibitor, InhibitorStore, KlasaMessage } from 'klasa';
 
 export default class extends Inhibitor {
 	public constructor(store: InhibitorStore, file: string[], directory: string) {

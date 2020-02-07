@@ -1,12 +1,14 @@
-import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { TextChannel } from 'discord.js';
 
 import { triviaQuestions } from '../../../resources/trivia-questions.json';
 import { BotCommand } from '../../lib/BotCommand.js';
-import { Time, Emoji, SupportServer, Channel, ClientSettings } from '../../lib/constants.js';
+import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
 import { roll, rand, formatDuration } from '../../../config/util.js';
 import * as pets from '../../../data/pets';
 import { randomHappyEmoji, isWeekend } from '../../lib/util.js';
+import { UserSettings } from '../../lib/UserSettings.js';
+import { ClientSettings } from '../../lib/ClientSettings.js';
 
 const easyTrivia = triviaQuestions.slice(0, 40);
 
@@ -28,11 +30,11 @@ export default class DailyCommand extends BotCommand {
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync();
 		const currentDate = new Date().getTime();
-		const lastVoteDate = msg.author.settings.get('lastDailyTimestamp');
+		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
 		const difference = currentDate - lastVoteDate;
 
 		if (difference >= Time.Hour * 12) {
-			await msg.author.settings.update('lastDailyTimestamp', currentDate);
+			await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
 
 			const trivia = easyTrivia[Math.floor(Math.random() * easyTrivia.length)];
 
@@ -113,11 +115,11 @@ export default class DailyCommand extends BotCommand {
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
-			const userPets = user.settings.get('pets');
+			const userPets = { ...user.settings.get(UserSettings.Pets) };
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
 
-			user.settings.update('pets', { ...userPets });
+			await user.settings.update('pets', { ...userPets });
 
 			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
@@ -136,7 +138,7 @@ export default class DailyCommand extends BotCommand {
 		// @ts-ignore
 		const gpImage = this.client.commands.get('bank').generateImage(amount);
 
-		await user.settings.update('GP', user.settings.get('GP') + amount);
+		await user.settings.update(UserSettings.GP, user.settings.get(UserSettings.GP) + amount);
 		return msg.send(dmStr, gpImage).catch(() => null);
 	}
 }

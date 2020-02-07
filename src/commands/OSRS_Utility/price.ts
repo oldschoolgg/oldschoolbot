@@ -1,4 +1,4 @@
-import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Util } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
 

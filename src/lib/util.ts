@@ -6,6 +6,7 @@ import { ScheduledTask, KlasaUser, util } from 'klasa';
 import { Tasks, Emoji } from './constants';
 import { Util } from 'discord.js';
 import killableMonsters from './killableMonsters';
+import { UserSettings } from './UserSettings';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -146,7 +147,7 @@ export function activityTaskFilter(task: ScheduledTask) {
 }
 
 export function getMinionName(user: KlasaUser) {
-	const name = user.settings.get('minion.name');
+	const name = user.settings.get(UserSettings.Minion.Name);
 	return name
 		? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
 		: `${Emoji.Minion} Your minion`;

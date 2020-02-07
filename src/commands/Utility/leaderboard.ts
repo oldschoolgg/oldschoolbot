@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { util, KlasaMessage, Command, KlasaClient, CommandStore, RichDisplay } from 'klasa';
+import { util, KlasaMessage, Command, CommandStore, RichDisplay } from 'klasa';
 
 import { fmNum } from '../../../config/util';
 import { SettingsEntry } from '../../lib/types';
@@ -7,6 +7,7 @@ import { findMonster, stringMatches, noOp, notEmpty } from '../../lib/util';
 import pets from '../../lib/pets';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { Time } from '../../lib/constants';
+import { ClientSettings } from '../../lib/ClientSettings';
 
 interface LeaderboardUser extends SettingsEntry {
 	user: string;
@@ -71,7 +72,7 @@ export default class extends Command {
 	}
 
 	async petrecords(msg: KlasaMessage) {
-		const petRecords = this.client.settings.get('petRecords');
+		const petRecords = this.client.settings.get(ClientSettings.PetRecords);
 		const embed = new MessageEmbed().setDescription(
 			`These numbers show the lowest and highest records of pets from the \`${msg.cmdPrefix}pet\` command.`
 		);

@@ -1,9 +1,10 @@
 import { Task } from 'klasa';
 
-import { Activity, Events, UserSettings } from '../../lib/constants';
+import { Activity, Events } from '../../lib/constants';
 import { randomItemFromArray, roll } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
 import { TextChannel } from 'discord.js';
+import { UserSettings } from '../../lib/UserSettings';
 
 const deathMessages = [
 	"{name} just died while killing {monster}, however they're on their back to continue the trip.",

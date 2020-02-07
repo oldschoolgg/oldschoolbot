@@ -1,4 +1,4 @@
-import { KlasaMessage, KlasaClient, CommandStore } from 'klasa';
+import { KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
 import ClueTiers from '../../lib/clueTiers';

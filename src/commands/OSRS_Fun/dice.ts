@@ -1,10 +1,12 @@
-import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Image, Color, Emoji, Channel, ClientSettings, UserSettings } from '../../lib/constants';
+import { Image, Color, Emoji, Channel } from '../../lib/constants';
 import { rand } from '../../../config/util';
+import { UserSettings } from '../../lib/UserSettings';
+import { ClientSettings } from '../../lib/ClientSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,13 +34,13 @@ export default class extends BotCommand {
 			}
 
 			await msg.author.settings.sync(true);
-			const gp = msg.author.settings.get('GP');
+			const gp = msg.author.settings.get(UserSettings.GP);
 			if (amount > gp) throw "You don't have enough GP.";
 			const won = roll >= 55;
 			let amountToAdd = won ? gp + amount : gp - amount;
 			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
-			await msg.author.settings.update('GP', amountToAdd);
+			await msg.author.settings.update(UserSettings.GP, amountToAdd);
 
 			const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DicingBank);
 			const dividedAmount = (dicingBank + (won ? -amount : amount)) / 1_000_000;
@@ -48,11 +50,11 @@ export default class extends BotCommand {
 			);
 
 			if (won) {
-				const wins = msg.author.settings.get(UserSettings.Stats.Dice.Wins);
-				msg.author.settings.update(UserSettings.Stats.Dice.Wins, wins + 1);
+				const wins = msg.author.settings.get(UserSettings.Stats.DiceWins);
+				msg.author.settings.update(UserSettings.Stats.DiceWins, wins + 1);
 			} else {
-				const losses = msg.author.settings.get(UserSettings.Stats.Dice.Losses);
-				msg.author.settings.update(UserSettings.Stats.Dice.Losses, losses + 1);
+				const losses = msg.author.settings.get(UserSettings.Stats.DiceLosses);
+				msg.author.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
 			}
 
 			embed.setDescription(

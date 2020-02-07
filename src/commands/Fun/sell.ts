@@ -1,9 +1,10 @@
-import { KlasaMessage, KlasaClient, CommandStore } from 'klasa';
+import { KlasaMessage, CommandStore } from 'klasa';
 import { Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings, ClientSettings } from '../../lib/constants';
+import { UserSettings } from '../../lib/UserSettings';
+import { ClientSettings } from '../../lib/ClientSettings';
 
 const options = {
 	max: 1,

@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { SkillsEnum } from './types';
 
 export const enum Time {
 	Millisecond = 1,
@@ -70,44 +69,6 @@ export const enum Activity {
 	ClueCompletion = 'ClueCompletion',
 	Mining = 'Mining'
 }
-
-export const UserSettings = {
-	Minion: {
-		Name: 'minion.name',
-		HasBought: 'minion.hasBought',
-		DailyDuration: 'minion.dailyDuration'
-	},
-	GP: 'GP',
-	Bank: 'bank',
-	CollectionLogBank: 'collectionLogBank',
-	CollectionLog: 'collectionLog',
-	MonsterScores: 'monsterScores',
-	ClueScores: 'clueScores',
-	LastDailyTimestamp: 'lastDailyTimestamp',
-	Skills: {
-		Mining: `skills.${SkillsEnum.Mining}`
-	},
-	Stats: {
-		Deaths: 'stats.deaths',
-		Dice: {
-			Wins: 'stats.diceWins',
-			Losses: 'stats.diceLosses'
-		},
-		Duel: {
-			Wins: 'stats.duelWins',
-			Losses: 'stats.duelLosses'
-		}
-	}
-};
-
-export const ClientSettings = {
-	EconomyStats: {
-		DicingBank: 'economyStats.dicingBank',
-		DuelTaxBank: 'economyStats.duelTaxBank',
-		ItemSellTaxBank: 'economyStats.itemSellTaxBank',
-		DailiesAmount: 'economyStats.dailiesAmount'
-	}
-};
 
 export const enum Events {
 	Debug = 'debug',

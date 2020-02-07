@@ -2,7 +2,8 @@ import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 import { TextChannel } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Events, UserSettings, Time, Channel } from '../../lib/constants';
+import { Events, Time, Channel } from '../../lib/constants';
+import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -17,11 +18,12 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
 		await msg.author.settings.sync(true);
-		const GP = msg.author.settings.get('GP');
+		const GP = msg.author.settings.get(UserSettings.GP);
 		if (GP < amount) throw `You don't have enough GP.`;
 		if (this.client.oneCommandAtATimeCache.has(user.id)) throw `That user is busy right now.`;
 		if (user.id === msg.author.id) throw `You can't send money to yourself.`;
 		if (user.bot) throw `You can't send money to a bot.`;
+
 		if (
 			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) <
 			Time.Minute * 1
