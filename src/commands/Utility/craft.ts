@@ -2,6 +2,7 @@ import { KlasaMessage, KlasaClient, CommandStore } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import craftableItems from './craftableItems'
 import { stringMatches } from '../../lib/util';
+import { Items } from 'oldschooljs';
 const options = {
     max: 1,
     time: 10000,
@@ -23,7 +24,7 @@ export default class extends BotCommand {
             oneAtTime: true
         });
     }
-    async run(msg: KlasaMessage, [quantity, itemName]: [null | number | string, string]) {
+    async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 
         if (typeof quantity === 'string') {
             itemName = quantity;
@@ -40,32 +41,34 @@ export default class extends BotCommand {
         }
 
         // main code //
-        const hasItem = await msg.author.hasItem(item.inputItems, quantity);
-        if (!hasItem) {
-            throw `You dont have all required items.`;
+        for (let t = 0; t <= item.inputItems.length; t++) {
+            let osItem = Items.get(item.inputItems[t]);
+            const hasItem = await msg.author.hasItem(osItem.id, quantity);
+            if (!hasItem) {
+                throw `You dont have all required items.`;
+            }
         }
-    }
-    const craftMsg = await msg.channel.send(
-        `${msg.author}, say \`confirm\` to craft ${quantity} ${itemName}(s).`);
+        const craftMsg = await msg.channel.send(
+            `${msg.author}, say \`confirm\` to craft ${quantity} ${itemName}(s).`);
         try {
-    const collected = await msg.channel.awaitMessages(
-        _msg =>
-            _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-        options
-    );
-    if (!collected || !collected.first()) {
-        throw "This shouldn't be possible...";
-    }
-} catch (err) {
-    return craftMsg.edit(`Cancelling craft of ${quantity}x ${itemName}(s).`);
-}
-for (let i = 1; i < Name.length; i++) {
-    await msg.author.removeItemFromBank(Name[i], quantity);
-}
-await msg.author.addItemsToBank({ [Name[0]]: quantity }, false);
-msg.author.log(`crafted Quantity[${quantity}] ${itemName}(s)`);
+            const collected = await msg.channel.awaitMessages(
+                _msg =>
+                    _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+                options
+            );
+            if (!collected || !collected.first()) {
+                throw "This shouldn't be possible...";
+            }
+        } catch (err) {
+            return craftMsg.edit(`Cancelling craft of ${quantity}x ${itemName}(s).`);
+        }
+        for (let i = 1; i < Name.length; i++) {
+            await msg.author.removeItemFromBank(Name[i], quantity);
+        }
+        await msg.author.addItemsToBank({ [Name[0]]: quantity }, false);
+        msg.author.log(`crafted Quantity[${quantity}] ${itemName}(s)`);
 
-return msg.send(
-    `Crafted ${quantity}x ${itemName}(s)`);
+        return msg.send(
+            `Crafted ${quantity}x ${itemName}(s)`);
     }
 }
