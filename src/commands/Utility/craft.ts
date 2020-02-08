@@ -26,10 +26,6 @@ export default class extends BotCommand {
     }
     async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 
-        if (typeof quantity === 'string') {
-            itemName = quantity;
-            quantity = null;
-        }
         const item = craftableItems.Items.find(
             item => stringMatches(item.outputItem, itemName) || stringMatches(item.outputItem.split(' ')[0], itemName)
         );
