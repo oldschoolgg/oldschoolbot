@@ -84,4 +84,11 @@ export const enum BadgesEnum {
 	Booster = 1
 }
 
+export const enum PermissionLevelsEnum {
+	Zero = 0,
+	Moderator = 6,
+	Admin = 7,
+	Owner = 10
+}
+
 export const rootFolder = join(__dirname, '..', '..', '..');
