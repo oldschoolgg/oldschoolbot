@@ -1,9 +1,9 @@
 import { Event, EventStore } from 'klasa';
 import { MessageEmbed, TextChannel } from 'discord.js';
 import he from 'he';
-import Twit from 'twit';
+import * as Twit from 'twit';
 
-import privateConfig from '../../config/private';
+import * as privateConfig from '../../config/private';
 
 const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
