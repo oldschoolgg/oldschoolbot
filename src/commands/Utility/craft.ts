@@ -3,13 +3,13 @@ import { BotCommand } from '../../lib/BotCommand';
 import craftableItems from './craftableItems'
 import { stringMatches } from '../../lib/util';
 import { Items } from 'oldschooljs';
+
 const options = {
     max: 1,
     time: 10000,
     errors: ['time']
 };
 
-var Name: Array<number> = [];
 export default class extends BotCommand {
     public constructor(
         client: KlasaClient,
@@ -37,9 +37,10 @@ export default class extends BotCommand {
         }
 
         // main code //
-        for (let t = 0; t <= item.inputItems.length; t++) {
-            let osItem = Items.get(item.inputItems[t]);
-            const hasItem = await msg.author.hasItem(osItem.id, quantity);
+        for (let t = 0; t < item.inputItems.length; t++) {
+            var osItem = (Items.get(item.inputItems[t]));
+            var x = osItem.id;
+            let hasItem = await msg.author.hasItem(x, quantity);
             if (!hasItem) {
                 throw `You dont have all required items.`;
             }
@@ -58,13 +59,20 @@ export default class extends BotCommand {
         } catch (err) {
             return craftMsg.edit(`Cancelling craft of ${quantity}x ${itemName}(s).`);
         }
-        for (let i = 1; i < Name.length; i++) {
-            await msg.author.removeItemFromBank(Name[i], quantity);
-        }
-        await msg.author.addItemsToBank({ [Name[0]]: quantity }, false);
-        msg.author.log(`crafted Quantity[${quantity}] ${itemName}(s)`);
 
-        return msg.send(
-            `Crafted ${quantity}x ${itemName}(s)`);
+        for (let t = 0; t < item.inputItems.length; t++) {
+            var osItem = Items.get(item.inputItems[t]);
+            var x = osItem.id;
+            if (!osItem) throw `That item doesnt exist.`;
+            await msg.author.removeItemFromBank(x, quantity);
+        }
+        for (let t = 0; t < item.outputItem.length; t++) {
+            var osItem = Items.get(item.outputItem);
+            var x = osItem.id;
+            if (!osItem) throw `That item doesnt exist.`;
+            await msg.author.addItemsToBank({ [x]: quantity }, false);
+            return msg.send(
+                `Crafted ${quantity}x ${itemName}(s)`);
+        }
     }
 }

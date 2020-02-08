@@ -2,7 +2,7 @@ const items = [
     {
         inputItems: ['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3'],
         outputItem: 'Godsword blade',
-        /*skillRequirements = { smithing: 80 }*/
+        skillRequirements: { smithing: 80 }
     },
     {
         inputItems: ['Godsword blade', 'Armadyl hilt'],
@@ -19,42 +19,42 @@ const items = [
     {
         inputItems: ['Draconic visage'],
         outputItem: 'Dragonfire shield',
-        /* skillRequirements = { smithing: 90 }*/
+        skillRequirements: { smithing: 90 }
     },
     {
         inputItems: ['Skeletal visage'],
         outputItem: 'Dragonfire ward',
-        /* skillRequirements = { smithing: 90 }*/
+        skillRequirements: { smithing: 90 }
     },
     {
         inputItems: ['Elysian sigil', 'Spirit shield', 'Holy elixir'],
         outputItem: 'Elysian Spirit Shield',
-        /* skillRequirements = { smithing: 85, prayer: 90 }*/
+        skillRequirements: { smithing: 85, prayer: 90 }
     },
     {
         inputItems: ['Arcane sigil', 'Spirit shield', 'Holy elixir'],
         outputItem: 'Arcane Spirit Shield',
-        /* skillRequirements = { smithing: 85, prayer: 90 }*/
+        skillRequirements: { smithing: 85, prayer: 90 }
     },
     {
         inputItems: ['Spectral sigil', 'Spirit shield', 'Holy elixir'],
         outputItem: 'Spectral Spirit Shield',
-        /* skillRequirements = { smithing: 85, prayer: 90 }*/
+        skillRequirements: { smithing: 85, prayer: 90 }
     },
     {
         inputItems: ['Tanzanite fang'],
         outputItem: 'Toxic blowpipe (empty)',
-        /*skillRequirements = { fletching: 53 }*/
+        skillRequirements: { fletching: 53 }
     },
     {
         inputItems: ['Serpentine visage'],
         outputItem: 'Serpentine helm (uncharged)',
-        /* skillRequirements = { fletching: 52 }*/
+        skillRequirements: { fletching: 52 }
     },
     {
         inputItems: ['Staff of the dead', 'Magic fang'],
         outputItem: 'Toxic staff (uncharged)',
-        /* skillRequirements = { crafting: 59 }*/
+        skillRequirements: { crafting: 59 }
     },
     {
         inputItems: ['Serpentine helm (uncharged)', 'Magma mutagen'],
@@ -67,7 +67,7 @@ const items = [
     {
         inputItems: ['Ranger boots', 'Pegasian crystal'],
         outputItem: 'Pegasian boots',
-        /*skillRequirements = { magic: 60, runecraft: 60 }*/
+        skillRequirements: { magic: 60, runecraft: 60 }
     },
     {
         inputItems: ['Saradomin page 1', 'Saradomin page 2', 'Saradomin page 3', 'Saradomin page 4'],
