@@ -227,7 +227,7 @@ export function roll(max: number) {
 	return Math.floor(Math.random() * max + 1) === 1;
 }
 
-export function removeDuplicatesFromArray(arr: unknown[]) {
+export function removeDuplicatesFromArray<T>(arr: T[]): T[] {
 	return [...new Set(arr)];
 }
 

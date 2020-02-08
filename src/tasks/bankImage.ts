@@ -14,8 +14,9 @@ import {
 	saveCtx,
 	restoreCtx
 } from '../lib/util';
-import { Bank } from '../lib/types';
 import { ClientSettings } from '../lib/ClientSettings';
+import { Bank } from '../lib/types/index';
+import { CollectionLogType } from '../lib/collectionLog';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -284,7 +285,7 @@ export default class BankImageTask extends Task {
 	async generateCollectionLogImage(
 		collectionLog: Bank,
 		title: string = '',
-		type: any
+		type: CollectionLogType
 	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
