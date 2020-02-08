@@ -1,5 +1,5 @@
 import { KlasaMessage, Command, Event, util } from 'klasa';
-import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel } from 'discord.js';
+import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel, User } from 'discord.js';
 
 import { rootFolder, Channel, Emoji } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
@@ -38,7 +38,10 @@ export default class extends Event {
 			].join('\n');
 		}
 
-		const channel = this.client.channels.get(Channel.ErrorLogs);
+		// If in development, send the error to the developers DM.
+		const channel = await (this.client.production
+			? this.client.channels.get(Channel.ErrorLogs)
+			: (this.client.owners.values().next().value as User).createDM());
 
 		(channel as TextChannel).send(
 			new MessageEmbed()

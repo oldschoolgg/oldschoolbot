@@ -1,13 +1,14 @@
-const { Command } = require('klasa');
-const fetch = require('node-fetch');
-const { MessageEmbed } = require('discord.js');
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { MessageEmbed } from 'discord.js';
+import fetch from 'node-fetch';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+import OSRSStreamers from '../../../data/osrs_streamers';
+
+export default class extends Command {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 2,
-			aliases: ['streams'],
-			description: 'Shows the current top 5 RuneScape streamers on Twitch.'
+			aliases: ['streams']
 		});
 	}
 
@@ -15,24 +16,24 @@ module.exports = class extends Command {
 		if (!this.client.twitchClientID) this.disable();
 	}
 
-	async run(msg) {
+	async run(msg: KlasaMessage) {
 		const [stringList, streams] = await fetch(
 			`https://api.twitch.tv/helix/streams?game_id=459931&&type=live&first=12`,
 			{
-				headers: { 'Client-ID': this.client.twitchClientID }
+				headers: { 'Client-ID': this.client.twitchClientID as string }
 			}
 		)
 			.then(res => res.json())
-			.then(res => [res.data.map(stream => stream.user_id).join('&id='), res.data]);
+			.then(res => [res.data.map((stream: any) => stream.user_id).join('&id='), res.data]);
 
 		const streamers = await fetch(`https://api.twitch.tv/helix/users?id=${stringList}`, {
 			headers: {
-				'Client-ID': this.client.twitchClientID
+				'Client-ID': this.client.twitchClientID as string
 			}
 		})
 			.then(res => res.json())
 			.then(res => {
-				const usernames = res.data.map(user => user.display_name);
+				const usernames = res.data.map((user: any) => user.display_name);
 				for (let i = 0; i < streams.length; i++) {
 					streams[i].username = usernames[i];
 				}
@@ -43,10 +44,10 @@ module.exports = class extends Command {
 
 		streamers
 			.filter(
-				str => str.username && this.client.streamers.includes(str.username.toLowerCase())
+				(str: any) => str.username && OSRSStreamers.includes(str.username.toLowerCase())
 			)
 			.slice(0, 5)
-			.map(strm =>
+			.map((strm: any) =>
 				embed.addField(
 					`${strm.username} - ${strm.viewer_count} Viewers`,
 					`https://www.twitch.tv/${strm.username.toLowerCase()}`
@@ -55,4 +56,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-};
+}

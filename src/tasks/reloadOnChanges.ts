@@ -1,5 +1,5 @@
 import { sep, extname, basename, join } from 'path';
-import { Task, KlasaClient, TaskStore, Stopwatch, Piece } from 'klasa';
+import { Task, TaskStore, Stopwatch, Piece } from 'klasa';
 import { watch } from 'chokidar';
 
 const nodeModules = `${sep}node_modules${sep}`;
@@ -7,8 +7,8 @@ const nodeModules = `${sep}node_modules${sep}`;
 export default class extends Task {
 	private _running = false;
 
-	public constructor(client: KlasaClient, store: TaskStore, file: string[], directory: string) {
-		super(client, store, file, directory);
+	public constructor(store: TaskStore, file: string[], directory: string) {
+		super(store, file, directory);
 		this.enabled = !this.client.production;
 	}
 

@@ -1,18 +1,14 @@
-import { Command, Timestamp, KlasaClient, CommandStore } from 'klasa';
+import { Command, Timestamp, CommandStore } from 'klasa';
 
 import { MessageEmbed, GuildMember } from 'discord.js';
 import { KlasaMessage } from 'klasa';
+import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends Command {
 	public timestamp = new Timestamp('d MMMM YYYY');
 
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Get information on a mentioned user.',
 			usage: '[Member:member]',
 			requiredPermissions: ['EMBED_LINKS']
@@ -22,7 +18,7 @@ export default class extends Command {
 	async run(msg: KlasaMessage, [member]: [GuildMember]) {
 		if (!member) member = await msg.guild!.members.fetch(msg.author.id);
 		const { user, joinedTimestamp } = member;
-		const totalCommandsUsed = user.settings.get('totalCommandsUsed');
+		const totalCommandsUsed = user.settings.get(UserSettings.TotalCommandsUsed);
 		const commandsUsed = (totalCommandsUsed && totalCommandsUsed.toLocaleString()) || 0;
 
 		const embed = new MessageEmbed()

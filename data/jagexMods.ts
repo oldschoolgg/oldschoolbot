@@ -1,4 +1,6 @@
-module.exports = [
+import { JMod } from '../src/lib/types';
+
+const JagexMods: JMod[] = [
 	{ redditUsername: 'modghost', formattedName: 'Mod Ghost' },
 	{ redditUsername: 'jagexjd', formattedName: 'Mod JD' },
 	{ redditUsername: 'jagex_wolf', formattedName: 'Mod Wolf' },
@@ -25,3 +27,5 @@ module.exports = [
 	{ redditUsername: 'jagexflippy', formattedName: 'Mod Flippy' },
 	{ redditUsername: 'jagexbolton', formattedName: 'Mod Bolton' }
 ];
+
+export default JagexMods;

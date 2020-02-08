@@ -190,7 +190,7 @@ module.exports = class extends Command {
 					)} times to get the Skotos Pet **Back-to-Back (2 in a row)!** <:Skotos:324127378890817546>`
 				);
 			case 'TANGLEROOT':
-			case 'FARMING':
+			case 'FARMING': {
 				const drop = this.skillPetRoll(6893);
 				const xp = (drop * 13913).toLocaleString();
 				const gp = (drop * 210000).toLocaleString();
@@ -198,6 +198,7 @@ module.exports = class extends Command {
 				return msg.send(
 					`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet **Back-to-Back (2 in a row)!** <:Tangleroot:324127378978635778> You also got...\n<:xp:630911040510623745> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`
 				);
+			}
 			case 'JAD':
 				return msg.send(
 					`You had to kill Jad ${this.petRoll(

@@ -1,14 +1,12 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import emoji from './skill-emoji';
-import streamers from '../data/osrs-streamers';
-import { token, twitchClientID, twitterApp } from './private.js';
+import { token, twitchClientID } from './private.js';
 import permissionLevels from '../src/lib/config/permissionLevels';
 
 const production = require('os').platform() === 'linux';
 
 const clientProperties = {
-	streamers,
 	guildLogs: '346212633583681536',
 	voteLogs: '469523207691436042',
 	twitchClientID,
@@ -19,7 +17,6 @@ const clientProperties = {
 		month: 2628000,
 		year: 525667 * 60
 	},
-	twitterApp,
 	notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`,
 	production
 };

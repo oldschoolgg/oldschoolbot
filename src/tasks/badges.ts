@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 
 import badges from '../lib/badges';
+import { UserSettings } from '../lib/UserSettings';
 
 export default class extends Task {
 	async init() {
@@ -13,11 +14,15 @@ export default class extends Task {
 	cacheBadges() {
 		const newCache = new Map();
 
-		const usersWithBadges = this.client.users.filter(u => u.settings.get('badges').length > 0);
+		const usersWithBadges = this.client.users.filter(
+			u => u.settings.get(UserSettings.Badges).length > 0
+		);
 		for (const user of usersWithBadges.values()) {
-			const RSN = user.settings.get('RSN');
+			const RSN = user.settings.get(UserSettings.RSN);
 			if (!RSN) continue;
-			const userBadges = user.settings.get('badges').map((badge: number) => badges[badge]);
+			const userBadges = user.settings
+				.get(UserSettings.Badges)
+				.map((badge: number) => badges[badge]);
 
 			newCache.set(RSN.toLowerCase(), userBadges.join(' '));
 		}

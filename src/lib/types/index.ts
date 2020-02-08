@@ -80,3 +80,37 @@ export interface KillableMonster extends Monster {
 export const enum SkillsEnum {
 	Mining = 'mining'
 }
+
+export interface CachedItemPrice {
+	price: number;
+	fetchedAt: number;
+}
+
+export type ItemPriceCache = { [key: string]: CachedItemPrice };
+
+export interface OSRSPoll {
+	title: string;
+	description: string;
+	questions: PollQuestion[];
+}
+
+export interface PollQuestion {
+	question: string;
+	votes: PollVotes;
+}
+
+export interface PollVotes {
+	Yes: string;
+	No: string;
+	'Skip question': string;
+}
+
+export interface PetRecords {
+	highest: Bank;
+	lowest: Bank;
+}
+
+export interface JMod {
+	redditUsername: string;
+	formattedName: string;
+}

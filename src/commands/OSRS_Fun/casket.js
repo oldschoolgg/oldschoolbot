@@ -3,8 +3,6 @@ const { MessageAttachment } = require('discord.js');
 const { Clues } = require('oldschooljs');
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
-const uniqueItems = require('../../../data/rareClueItems');
-
 const ClueTiers = [
 	{
 		name: 'Beginner',

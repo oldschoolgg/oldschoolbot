@@ -2,8 +2,8 @@ const { Util } = require('discord.js');
 const { Command } = require('klasa');
 
 class TagCommand extends Command {
-	constructor(client, store, file, directory) {
-		super(client, store, file, directory, {
+	constructor(store, file, directory) {
+		super(store, file, directory, {
 			description: 'Allows you to create, remove or show tags.',
 			runIn: ['text'],
 			subcommands: true,

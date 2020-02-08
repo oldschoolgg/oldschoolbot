@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { SkillsEnum } from './types';
 
 export const enum Time {
 	Millisecond = 1,
@@ -71,44 +70,6 @@ export const enum Activity {
 	Mining = 'Mining'
 }
 
-export const UserSettings = {
-	Minion: {
-		Name: 'minion.name',
-		HasBought: 'minion.hasBought',
-		DailyDuration: 'minion.dailyDuration'
-	},
-	GP: 'GP',
-	Bank: 'bank',
-	CollectionLogBank: 'collectionLogBank',
-	CollectionLog: 'collectionLog',
-	MonsterScores: 'monsterScores',
-	ClueScores: 'clueScores',
-	LastDailyTimestamp: 'lastDailyTimestamp',
-	Skills: {
-		Mining: `skills.${SkillsEnum.Mining}`
-	},
-	Stats: {
-		Deaths: 'stats.deaths',
-		Dice: {
-			Wins: 'stats.diceWins',
-			Losses: 'stats.diceLosses'
-		},
-		Duel: {
-			Wins: 'stats.duelWins',
-			Losses: 'stats.duelLosses'
-		}
-	}
-};
-
-export const ClientSettings = {
-	EconomyStats: {
-		DicingBank: 'economyStats.dicingBank',
-		DuelTaxBank: 'economyStats.duelTaxBank',
-		ItemSellTaxBank: 'economyStats.itemSellTaxBank',
-		DailiesAmount: 'economyStats.dailiesAmount'
-	}
-};
-
 export const enum Events {
 	Debug = 'debug',
 	Error = 'error',
@@ -116,6 +77,18 @@ export const enum Events {
 	Verbose = 'verbose',
 	Warn = 'warn',
 	Wtf = 'wtf'
+}
+
+export const enum BadgesEnum {
+	Developer = 0,
+	Booster = 1
+}
+
+export const enum PermissionLevelsEnum {
+	Zero = 0,
+	Moderator = 6,
+	Admin = 7,
+	Owner = 10
 }
 
 export const rootFolder = join(__dirname, '..', '..', '..');

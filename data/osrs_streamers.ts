@@ -1,4 +1,4 @@
-export default [
+const OSRSStreamers = [
 	'oldschoolrs',
 	'faux',
 	'wooxsolo',
@@ -68,3 +68,5 @@ export default [
 	'foxxi',
 	'flutten'
 ];
+
+export default OSRSStreamers;

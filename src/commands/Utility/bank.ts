@@ -1,4 +1,4 @@
-import { Command, KlasaMessage, KlasaClient, CommandStore } from 'klasa';
+import { Command, KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
@@ -9,6 +9,7 @@ import { Emoji } from '../../lib/constants';
 import { Items } from 'oldschooljs';
 import { RichDisplay } from 'klasa';
 import { util } from 'klasa';
+import { UserSettings } from '../../lib/UserSettings';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -19,13 +20,8 @@ ctx.font = '14px OSRSFont';
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
 export default class extends Command {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Shows how much virtual GP you have',
 			cooldown: 3,
 			usage: '[page:int]',
@@ -52,8 +48,8 @@ export default class extends Command {
 	// @ts-ignore
 	async run(msg: KlasaMessage, [page = 1]: [number]) {
 		await msg.author.settings.sync(true);
-		const coins: number = msg.author.settings.get('GP');
-		const _bank: Bank = msg.author.settings.get('bank');
+		const coins: number = msg.author.settings.get(UserSettings.GP);
+		const _bank: Bank = msg.author.settings.get(UserSettings.Bank);
 
 		const bank: Bank = { ..._bank, 995: coins };
 

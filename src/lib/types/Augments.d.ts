@@ -1,7 +1,11 @@
 import { Image } from 'canvas';
-import { Bank, SkillsEnum } from '.';
-import { Settings } from 'klasa';
+import { Db } from 'mongodb';
+import { Settings, SettingsUpdateResult } from 'klasa';
 import { FSWatcher } from 'fs';
+
+import { CustomGet } from '../UserSettings';
+import { Bank, SkillsEnum } from '.';
+import { CommentStream, SubmissionStream } from 'snoostorm';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -12,7 +16,12 @@ declare module 'klasa' {
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
 		public killWorkerThread?: ArbitraryThreadType;
+		twitchClientID?: string;
+		osggDB?: Db;
+		commentStream?: CommentStream;
+		submissionStream?: SubmissionStream;
 	}
+
 	interface Command {
 		altProtection?: boolean;
 		oneAtTime?: boolean;
@@ -26,7 +35,7 @@ declare module 'klasa' {
 			flags?: { [key: string]: string | number }
 		): Promise<Buffer>;
 		generateCollectionLogImage(
-			collectionLog: number[],
+			collectionLog: Bank,
 			title: string = '',
 			type: any
 		): Promise<Buffer>;
@@ -36,6 +45,10 @@ declare module 'klasa' {
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
+	}
+
+	interface SettingsFolder {
+		get<K extends string, S>(key: CustomGet<K, S>): S;
 	}
 }
 

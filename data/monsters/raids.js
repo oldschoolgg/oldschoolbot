@@ -143,15 +143,22 @@ const raids = {
 				itemReceived = this.determineItem();
 				if (this.roll(65)) {
 					loot.pet.amount++;
-					if (loot.pet.amount > 1) { loot.pet.items += ` ${itemReceived.emoji}`; }
-					else { loot.pet.items += `with ${itemReceived.emoji}`; }
+					if (loot.pet.amount > 1) {
+						loot.pet.items += ` ${itemReceived.emoji}`;
+					} else {
+						loot.pet.items += `with ${itemReceived.emoji}`;
+					}
 				}
 				loot[itemReceived.shortName]++;
 			}
 		}
 		for (const key in loot) {
 			if (key === 'pet') {
-				displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].amount.toLocaleString()} ${loot[key].items}`);
+				displayLoot.push(
+					`**${this.drops[key].emoji}**: ${loot[key].amount.toLocaleString()} ${
+						loot[key].items
+					}`
+				);
 				totalValue += this.drops[key].price * loot[key].amount;
 			} else {
 				displayLoot.push(`**${this.drops[key].emoji}**: ${loot[key].toLocaleString()} `);
