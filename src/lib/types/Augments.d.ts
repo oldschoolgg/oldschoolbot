@@ -1,6 +1,6 @@
 import { Image } from 'canvas';
 import { Db } from 'mongodb';
-import { Settings } from 'klasa';
+import { Settings, SettingsUpdateResult } from 'klasa';
 import { FSWatcher } from 'fs';
 
 import { CustomGet } from '../UserSettings';
