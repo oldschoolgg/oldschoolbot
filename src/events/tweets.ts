@@ -1,9 +1,10 @@
-const { Event } = require('klasa');
-const { MessageEmbed } = require('discord.js');
-const he = require('he');
-const Twit = require('twit');
+import { Event, EventStore } from 'klasa';
+import { MessageEmbed, TextChannel } from 'discord.js';
+import he from 'he';
+import Twit from 'twit';
 
-/* eslint-disable no-inline-comments */
+import privateConfig from '../../config/private';
+
 const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
 	'940563176', // SoupRS
@@ -115,27 +116,37 @@ const HCIM_DEATHS = ['797859891373371392'];
 const HEXIS = ['760605320108310528'];
 const HEXIS_CHANNEL = '626168717004242953';
 
-module.exports = class extends Event {
-	constructor(...args) {
-		super(...args, { once: true, event: 'klasaReady' });
+interface Tweet {
+	text: string;
+	url: string;
+	name: string;
+	avatar: string;
+	image: string;
+	id: string;
+	authorURL: string;
+}
+
+export default class extends Event {
+	public constructor(store: EventStore, file: string[], directory: string) {
+		super(store, file, directory, { once: true, event: 'klasaReady' });
 		this.enabled = this.client.production;
 	}
 
 	async init() {
-		if (!this.client.twitterApp || !this.client.twitterApp.access_token) {
+		if (!privateConfig.twitterApp) {
 			this.disable();
 		}
 	}
 
 	run() {
-		const twitter = new Twit(this.client.twitterApp);
+		const twitter = new Twit(privateConfig.twitterApp);
 
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
 
 		stream.on('tweet', this.handleTweet.bind(this));
 	}
 
-	handleTweet(tweet) {
+	handleTweet(tweet: any) {
 		// If its a retweet, return.
 		if (tweet.retweeted || tweet.delete) {
 			return;
@@ -165,36 +176,35 @@ module.exports = class extends Event {
 		this.sendTweet(formattedTweet);
 	}
 
-	sendTweet({ text, url, name, avatar, image, id, authorURL }) {
+	sendTweet({ text, url, name, avatar, image, id, authorURL }: Tweet) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${text}`)
 			.setColor(1942002)
 			.setThumbnail(avatar)
-			.setAuthor(name, null, authorURL)
+			.setAuthor(name, undefined, authorURL)
 			.setImage(image);
 
-		let key;
+		let key: string;
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
-		if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
-		if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
-		if (HEXIS.includes(id)) key = 'hexis';
-
-		if (!key) return;
+		else if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
+		else if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
+		else if (HEXIS.includes(id)) key = 'hexis';
+		else return;
 
 		if (key === 'hexis') {
-			return this.client.channels
-				.get(HEXIS_CHANNEL)
+			return (this.client.channels.get(HEXIS_CHANNEL) as TextChannel)!
 				.send(`<${url}>`, { embed })
 				.catch(() => null);
 		}
 
 		this.client.guilds
-			.filter(guild => guild.settings.get(key))
+			.filter(guild => !!guild.settings.get(key as string))
 			.map(guild => {
+				// @ts-ignore
 				const channel = guild.channels.get(guild.settings.get(key));
-				if (channel && channel.postable) {
+				if (channel && channel instanceof TextChannel && channel.postable) {
 					channel.send(`<${url}>`, { embed }).catch(() => null);
 				}
 			});
 	}
-};
+}

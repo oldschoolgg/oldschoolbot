@@ -1,10 +1,12 @@
 import { PermissionLevels, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
+import { PermissionLevelsEnum } from '../constants';
+
 const permissionLevels = new PermissionLevels()
 	.add(0, () => true)
 	.add(
-		6,
+		PermissionLevelsEnum.Moderator,
 		(message: KlasaMessage) =>
 			!!message.guild &&
 			!!message.member &&
@@ -14,7 +16,7 @@ const permissionLevels = new PermissionLevels()
 		}
 	)
 	.add(
-		7,
+		PermissionLevelsEnum.Admin,
 		(message: KlasaMessage) =>
 			!!message.guild &&
 			!!message.member &&
@@ -23,7 +25,9 @@ const permissionLevels = new PermissionLevels()
 			fetch: true
 		}
 	)
-	.add(9, (message: KlasaMessage) => message.author === message.client.owner, { break: true })
-	.add(10, (message: KlasaMessage) => message.author === message.client.owner);
+	.add(9, (message: KlasaMessage) => message.client.owners.has(message.author), { break: true })
+	.add(PermissionLevelsEnum.Owner, (message: KlasaMessage) =>
+		message.client.owners.has(message.author)
+	);
 
 export default permissionLevels;

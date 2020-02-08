@@ -2,7 +2,7 @@ const { Finalizer } = require('klasa');
 
 module.exports = class extends Finalizer {
 	constructor(...args) {
-		super(...args, { enabled: true });
+		super(...args, { enabled: false });
 	}
 
 	run(msg) {

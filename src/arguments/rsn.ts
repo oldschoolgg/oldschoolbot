@@ -1,18 +1,24 @@
-const { Argument } = require('klasa');
+import { Argument, Possible, KlasaMessage } from 'klasa';
 
-const { userOrMember } = require('../../config/constants');
+import { GuildSettings } from '../lib/GuildSettings';
 
-module.exports = class extends Argument {
-	async run(arg, possible, msg) {
-		const prefix = msg.guild ? msg.guild.settings.get('prefix') : '+';
+export default class extends Argument {
+	async run(arg: string, _: Possible, msg: KlasaMessage) {
+		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '+';
 		if (typeof arg === 'undefined') {
 			if (!msg.author.settings.get('RSN')) await msg.author.settings.sync(true);
 			const player = msg.author.settings.get('RSN');
 			if (player) return player;
 			throw `Please specify a username, or set one with \`${prefix}setrsn <username>\``;
 		}
-		if (userOrMember.test(arg)) {
-			const user = await this.client.users.fetch(userOrMember.exec(arg)[1]).catch(() => null);
+
+		// @ts-ignore
+		if (this.constructor.regex.userOrMember.test(arg)) {
+			const user = await this.client.users
+				// @ts-ignore
+				.fetch(this.constructor.regex.userOrMember.exec(arg)[1])
+				.catch(() => null);
+
 			const rsn = user && user.settings.get('RSN');
 			if (rsn) return rsn;
 			throw "That person doesn't have an RSN set.";
@@ -20,4 +26,4 @@ module.exports = class extends Argument {
 		if (arg.length > 12) throw 'Invalid username. Please try again.';
 		return arg.toLowerCase();
 	}
-};
+}

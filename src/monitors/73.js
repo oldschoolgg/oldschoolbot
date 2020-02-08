@@ -2,7 +2,7 @@ const { Monitor } = require('klasa');
 
 module.exports = class extends Monitor {
 	constructor(...args) {
-		super(...args, { enabled: true, ignoreOthers: false });
+		super(...args, { enabled: false, ignoreOthers: false });
 	}
 
 	async run(msg) {

@@ -1,16 +1,12 @@
-import { KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
+import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 3,
 			aliases: ['bal', 'gp'],
 			description: 'Shows how much virtual GP you own.'
@@ -19,7 +15,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		const coins: number = msg.author.settings.get('GP');
+		const coins = msg.author.settings.get(UserSettings.GP);
 
 		if (coins === 0) {
 			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;

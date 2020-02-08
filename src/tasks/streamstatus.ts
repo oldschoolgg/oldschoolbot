@@ -1,18 +1,21 @@
-const { Task } = require('klasa');
-const fetch = require('node-fetch');
-const moment = require('moment');
-const { MessageEmbed } = require('discord.js');
+import { Task } from 'klasa';
+import moment = require('moment');
+import { MessageEmbed, TextChannel } from 'discord.js';
 
-const { twitchAPIRequestOptions, resolveTwitchUsersFromNames } = require('../../config/util');
+import OSRSStreamers from '../../data/osrs_streamers';
+import { resolveTwitchUsersFromNames, twitchAPIRequestOptions } from '../../config/util';
+import { GuildSettings } from '../lib/GuildSettings';
 
-module.exports = class extends Task {
+export default class extends Task {
+	public idList: number[] = [];
+
 	async init() {
 		if (!this.client.twitchClientID) this.disable();
 		await this.syncIDs();
 	}
 
 	async syncIDs() {
-		this.idList = (await resolveTwitchUsersFromNames(this.client.streamers)).map(u => u._id);
+		this.idList = (await resolveTwitchUsersFromNames(OSRSStreamers)).map((u: any) => u._id);
 	}
 
 	async run() {
@@ -38,7 +41,7 @@ module.exports = class extends Task {
 						.setThumbnail(channel.logo)
 						.setAuthor(
 							`${channel.display_name} is now Live on Twitch!`,
-							null,
+							undefined,
 							channel.url
 						)
 						.setImage(`${preview.medium}?osrsbot=${Math.random() * 1000}`);
@@ -46,20 +49,23 @@ module.exports = class extends Task {
 					this.client.guilds
 						.filter(
 							guild =>
-								guild.settings.get('twitchnotifs') &&
+								!!guild.settings.get(GuildSettings.TwitchNotifications.Channel) &&
 								guild.settings
-									.get('streamers')
+									.get(GuildSettings.TwitchNotifications.Streamers)
 									.includes(channel.display_name.toLowerCase())
 						)
 						.forEach(guild => {
 							const _channel = this.client.channels.get(
-								guild.settings.get('twitchnotifs')
+								guild.settings.get(GuildSettings.TwitchNotifications.Channel)
 							);
-							if (_channel) _channel.send({ embed });
+
+							if (_channel && _channel instanceof TextChannel && _channel.postable) {
+								_channel.send({ embed });
+							}
 						});
 				}
-				this.client.user.setActivity('discord.gg/ob');
+				this.client.user?.setActivity('discord.gg/ob');
 			})
 			.catch(console.error);
 	}
-};
+}

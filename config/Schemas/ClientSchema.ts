@@ -1,4 +1,4 @@
-const { Client } = require('klasa');
+import { Client } from 'klasa';
 
 Client.defaultClientSchema
 	.add('commandStats', 'any', { default: {} })
@@ -6,8 +6,6 @@ Client.defaultClientSchema
 	.add('prices', 'any', { default: {} })
 	.add('pollQuestions', 'any', { default: {} })
 	.add('petRecords', 'any', { default: { lowest: {}, highest: {} } })
-	.add('usernameCache', 'any', { default: {} })
-	.add('lastPlayerStats', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

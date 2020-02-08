@@ -28,7 +28,7 @@ export default class extends Task {
 			ore.name
 		}, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
-		} asks if you'd like them to do another of the same trip..`;
+		} asks if you'd like them to do another of the same trip.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;

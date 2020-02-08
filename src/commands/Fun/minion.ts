@@ -1,7 +1,8 @@
-import { KlasaClient, CommandStore, KlasaMessage, util } from 'klasa';
+import { CommandStore, KlasaMessage, util } from 'klasa';
+import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Tasks, Activity, UserSettings, Emoji, Time, Events } from '../../lib/constants';
+import { Tasks, Activity, Emoji, Time, Events } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
@@ -19,7 +20,7 @@ import {
 import { rand } from '../../../config/util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
-import { Util } from 'oldschooljs';
+import { UserSettings } from '../../lib/UserSettings';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -47,13 +48,8 @@ const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
 
 export default class extends BotCommand {
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
@@ -123,7 +119,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 		if (msg.author.hasMinion) throw 'You already have a minion!';
 
 		await msg.author.settings.sync(true);
-		const balance = msg.author.settings.get('GP');
+		const balance = msg.author.settings.get(UserSettings.GP);
 
 		if (balance < cost) {
 			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
@@ -192,7 +188,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		this.client.commands.get('mine').run(msg, [quantity, oreName]);
+		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
@@ -224,7 +220,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
 		}
 
-		const bank = msg.author.settings.get('bank');
+		const bank = msg.author.settings.get(UserSettings.Bank);
 		const numOfScrolls = bank[clueTier.scrollID];
 
 		if (!numOfScrolls || numOfScrolls < quantity) {
@@ -294,8 +290,8 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 		}
 
 		// Make sure they have all the required items to kill this monster
-		const bank = msg.author.settings.get('bank');
-		for (const item of monster.itemsRequired) {
+		const bank = msg.author.settings.get(UserSettings.Bank);
+		for (const item of monster.itemsRequired as number[]) {
 			if (!bank[item] || bank[item] < 0) {
 				throw `To kill ${
 					monster.name

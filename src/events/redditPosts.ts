@@ -1,24 +1,33 @@
-const { Event } = require('klasa');
-const { MessageEmbed } = require('discord.js');
-const { CommentStream, SubmissionStream } = require('snoostorm');
-const Snoowrap = require('snoowrap');
-const he = require('he');
+import { Event, EventStore } from 'klasa';
+import he from 'he';
+import Snoowrap from 'snoowrap';
+import { CommentStream, SubmissionStream } from 'snoostorm';
 
+import { MessageEmbed, TextChannel } from 'discord.js';
+
+import { GuildSettings } from '../lib/GuildSettings';
+import JagexMods from '../../data/jagexMods';
+import { JMod } from '../lib/types';
 const { redditApp } = require('../../config/private');
-const jagexMods = require('../../data/jagexMods');
 
-const jmodAccounts = jagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
+const jmodAccounts = JagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
-module.exports = class extends Event {
-	constructor(...args) {
-		super(...args, { once: true, event: 'klasaReady' });
+interface RedditPost {
+	jmod?: JMod;
+	text: string;
+	url: string;
+	title?: string;
+}
+
+export default class extends Event {
+	public _redditIdCache: Set<any> = new Set();
+
+	public constructor(store: EventStore, file: string[], directory: string) {
+		super(store, file, directory, { once: true, event: 'klasaReady' });
 		this.enabled = this.client.production;
 	}
 
 	async init() {
-		if (!this.client._redditIdCache) {
-			this.client._redditIdCache = new Set();
-		}
 		const redditClient = new Snoowrap(redditApp);
 
 		if (!redditApp || !redditApp.password) {
@@ -29,21 +38,21 @@ module.exports = class extends Event {
 			);
 			return;
 		}
-		/* eslint-disable new-cap */
+
 		this.client.commentStream = new CommentStream(redditClient, {
 			subreddit: '2007scape',
 			limit: 30,
-			pollTime: 15000
+			pollTime: 15_000
 		});
 
 		this.client.commentStream.on('item', comment => {
 			if (!jmodAccounts.includes(comment.author.name.toLowerCase())) return;
-			if (this.client._redditIdCache.has(comment.id)) return;
-			this.client._redditIdCache.add(comment.id);
+			if (this._redditIdCache.has(comment.id)) return;
+			this._redditIdCache.add(comment.id);
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
 				url: `https://www.reddit.com${comment.permalink}?context=1`,
-				jmod: jagexMods.find(
+				jmod: JagexMods.find(
 					mod => mod.redditUsername.toLowerCase() === comment.author.name.toLowerCase()
 				)
 			});
@@ -54,18 +63,18 @@ module.exports = class extends Event {
 		this.client.submissionStream = new SubmissionStream(redditClient, {
 			subreddit: '2007scape',
 			limit: 20,
-			pollTime: 60000
+			pollTime: 60_000
 		});
 
 		this.client.submissionStream.on('item', post => {
 			if (!jmodAccounts.includes(post.author.name.toLowerCase())) return;
-			if (this.client._redditIdCache.has(post.id)) return;
-			this.client._redditIdCache.add(post.id);
+			if (this._redditIdCache.has(post.id)) return;
+			this._redditIdCache.add(post.id);
 			this.sendEmbed({
 				text: post.selftext,
 				url: `https://www.reddit.com${post.permalink}`,
 				title: post.title,
-				jmod: jagexMods.find(
+				jmod: JagexMods.find(
 					mod => mod.redditUsername.toLowerCase() === post.author.name.toLowerCase()
 				)
 			});
@@ -76,15 +85,16 @@ module.exports = class extends Event {
 
 	run() {}
 
-	sendEmbed({ text, url, title, jmod }) {
-		const embed = new MessageEmbed()
-			.setDescription(he.decode(text))
-			.setColor(1942002)
-			.setAuthor(
+	sendEmbed({ text, url, title, jmod }: RedditPost) {
+		const embed = new MessageEmbed().setDescription(he.decode(text)).setColor(1942002);
+
+		if (jmod) {
+			embed.setAuthor(
 				jmod.formattedName,
 				undefined,
 				`https://www.reddit.com/user/${jmod.redditUsername}`
 			);
+		}
 
 		if (title) {
 			embed.setTitle(title);
@@ -92,10 +102,12 @@ module.exports = class extends Event {
 		}
 
 		this.client.guilds
-			.filter(guild => guild.settings.get('jmodComments'))
+			.filter(guild => !!guild.settings.get(GuildSettings.JMODComments))
 			.map(guild => {
-				const channel = guild.channels.get(guild.settings.get('jmodComments'));
-				if (channel) channel.send(`<${url}>`, { embed }).catch(() => null);
+				const channel = guild.channels.get(guild.settings.get(GuildSettings.JMODComments));
+				if (channel && channel instanceof TextChannel && channel.postable) {
+					channel.send(`<${url}>`, { embed }).catch(() => null);
+				}
 			});
 	}
-};
+}

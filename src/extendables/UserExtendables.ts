@@ -1,7 +1,7 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
-import { UserSettings, Events, Activity, Emoji, Channel, Time } from '../lib/constants';
+import { Events, Activity, Emoji, Channel, Time } from '../lib/constants';
 import {
 	Bank,
 	MonsterActivityTaskOptions,
@@ -20,15 +20,11 @@ import {
 import clueTiers from '../lib/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
 import Mining from '../lib/skills/mining';
+import { UserSettings } from '../lib/UserSettings';
 
 export default class extends Extendable {
-	public constructor(
-		client: KlasaClient,
-		store: ExtendableStore,
-		file: string[],
-		directory: string
-	) {
-		super(client, store, file, directory, { appliesTo: [User] });
+	public constructor(store: ExtendableStore, file: string[], directory: string) {
+		super(store, file, directory, { appliesTo: [User] });
 	}
 
 	get sanitizedName(this: User) {
@@ -159,19 +155,19 @@ export default class extends Extendable {
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
-		return convertXPtoLVL(this.settings.get(`skills.${skillName}`));
+		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number);
 	}
 
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
 		await this.settings.sync(true);
-		const currentXP = this.settings.get(`skills.${skillName}`);
+		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 		if (currentXP >= 200_000_000) return;
 		const newXP = Math.min(200_000_000, currentXP + amount);
 		return this.settings.update(`skills.${skillName}`, newXP);
 	}
 
 	public get badges(this: User) {
-		const username = this.settings.get('RSN');
+		const username = this.settings.get(UserSettings.RSN);
 		if (!username) return '';
 		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
 	}
@@ -183,7 +179,7 @@ export default class extends Extendable {
 	}
 
 	public get minionName(this: User): string {
-		const name = this.settings.get('minion.name');
+		const name = this.settings.get(UserSettings.Minion.Name);
 		return name
 			? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
 			: `${Emoji.Minion} Your minion`;

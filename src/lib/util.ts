@@ -1,11 +1,13 @@
 import { Image } from 'canvas';
-import { Bank } from './types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask, KlasaUser, util } from 'klasa';
-import { Tasks, Emoji } from './constants';
-import { Util } from 'discord.js';
+import { Util, Client } from 'discord.js';
+
+import { Tasks, Emoji, Events } from './constants';
 import killableMonsters from './killableMonsters';
+import { UserSettings } from './UserSettings';
+import { Bank } from './types';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -146,7 +148,7 @@ export function activityTaskFilter(task: ScheduledTask) {
 }
 
 export function getMinionName(user: KlasaUser) {
-	const name = user.settings.get('minion.name');
+	const name = user.settings.get(UserSettings.Minion.Name);
 	return name
 		? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
 		: `${Emoji.Minion} Your minion`;
@@ -258,4 +260,8 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
+}
+
+export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
+	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }

@@ -1,4 +1,4 @@
-import { Command, CommandOptions, CommandStore, KlasaMessage, util, KlasaClient } from 'klasa';
+import { Command, CommandOptions, CommandStore, KlasaMessage, util } from 'klasa';
 
 export abstract class BotCommand extends Command {
 	public altProtection: boolean;
@@ -6,14 +6,12 @@ export abstract class BotCommand extends Command {
 	public oneAtTime: boolean;
 
 	public constructor(
-		client: KlasaClient,
 		store: CommandStore,
 		file: string[],
 		directory: string,
 		options: BotCommandOptions = {}
 	) {
 		super(
-			client,
 			store,
 			file,
 			directory,
