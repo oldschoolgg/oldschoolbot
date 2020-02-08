@@ -1,4 +1,4 @@
-import { Command, Timestamp, KlasaClient, CommandStore } from 'klasa';
+import { Command, Timestamp, CommandStore } from 'klasa';
 
 import { MessageEmbed, GuildMember } from 'discord.js';
 import { KlasaMessage } from 'klasa';
@@ -7,12 +7,7 @@ import { UserSettings } from '../../lib/UserSettings';
 export default class extends Command {
 	public timestamp = new Timestamp('d MMMM YYYY');
 
-	public constructor(
-		client: KlasaClient,
-		store: CommandStore,
-		file: string[],
-		directory: string
-	) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Get information on a mentioned user.',
 			usage: '[Member:member]',
