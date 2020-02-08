@@ -1,9 +1,8 @@
 import { KlasaMessage, Command, Event, util } from 'klasa';
-import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel } from 'discord.js';
+import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel, User } from 'discord.js';
 
 import { rootFolder, Channel, Emoji } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
-import { User } from 'discord.js';
 
 export default class extends Event {
 	public async run(msg: KlasaMessage, command: Command, _: string[], error: string | Error) {
