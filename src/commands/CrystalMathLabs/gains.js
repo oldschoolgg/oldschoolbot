@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			description: 'Shows the ranks of an account',
 			usage: '<ehp|ranks|xp|levels> <day|week|month|year> (username:...rsn)',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 		this.types = {
 			ehp: 'ehpGained',

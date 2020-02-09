@@ -7,7 +7,8 @@ module.exports = class extends Command {
 			cooldown: 5,
 			description: 'Update a CML profile.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 	}
 

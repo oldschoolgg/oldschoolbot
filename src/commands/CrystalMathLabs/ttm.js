@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			aliases: [],
 			description: 'Shows the Time to Max of an account',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 	}
 

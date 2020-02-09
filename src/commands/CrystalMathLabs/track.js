@@ -14,7 +14,8 @@ module.exports = class extends Command {
 				'firemaking|crafting|smithing|mining|herblore|agility|' +
 				'thieving|slayer|farming|runecrafting|hunter|construction> <day|week|month|year> (username:...rsn)',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 	}
 

@@ -9,7 +9,8 @@ module.exports = class extends Command {
 			cooldown: 3,
 			description: 'Shows the EHP stats of an account',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 	}
 
