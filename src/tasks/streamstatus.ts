@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import fetch from 'node-fetch';
 import moment = require('moment');
 import { MessageEmbed, TextChannel } from 'discord.js';
 
