@@ -12,7 +12,8 @@ export default class extends BotCommand {
 			aliases: ['clue'],
 			usage: '<ClueTier:string>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			enabled: false
 		});
 	}
 

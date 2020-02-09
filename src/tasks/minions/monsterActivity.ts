@@ -1,4 +1,4 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task, KlasaMessage, TaskStore } from 'klasa';
 import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
 
 import { Events, Time, Emoji } from '../../lib/constants';
@@ -8,6 +8,10 @@ import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/clueTiers';
 
 export default class extends Task {
+	public constructor(store: TaskStore, file: string[], directory: string) {
+		super(store, file, directory, { enabled: false });
+	}
+
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID);
 		const user = await this.client.users.fetch(userID);

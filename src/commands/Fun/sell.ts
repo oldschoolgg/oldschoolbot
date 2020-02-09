@@ -20,7 +20,8 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<quantity:int{1}> <itemname:...string>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			enabled: false
 		});
 	}
 
