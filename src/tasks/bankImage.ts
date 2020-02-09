@@ -15,8 +15,7 @@ import {
 	restoreCtx
 } from '../lib/util';
 import { ClientSettings } from '../lib/ClientSettings';
-import { Bank } from '../lib/types/index';
-import { CollectionLogType } from '../lib/collectionLog';
+import { Bank, CollectionLogType } from '../lib/types/index';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
