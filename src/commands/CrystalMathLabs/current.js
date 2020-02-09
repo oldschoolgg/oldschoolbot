@@ -15,7 +15,8 @@ module.exports = class extends Command {
 				'mining|herblore|agility|thieving|slayer|farming|runecrafting|hunter|' +
 				'construction|ehp> <day|week|month> [count:int{1,20}]',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 	}
 

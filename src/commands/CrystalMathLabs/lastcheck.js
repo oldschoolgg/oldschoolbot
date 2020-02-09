@@ -9,7 +9,8 @@ module.exports = class extends Command {
 			aliases: [],
 			description: 'Checks when a CML Account was last updated.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 	}
 

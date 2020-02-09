@@ -9,7 +9,8 @@ module.exports = class extends Command {
 			cooldown: 2,
 			description: 'Shows the Time to 200m all of an account',
 			usage: '(username:...rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			enabled: false
 		});
 	}
 
