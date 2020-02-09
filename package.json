@@ -14,7 +14,7 @@
 		"crystalmethlabs": "github:gc/crystalmethlabs",
 		"discord.js": "discordjs/discord.js",
 		"he": "^1.2.0",
-		"klasa": "github:dirigeants/klasa#916/head",
+		"klasa": "github:dirigeants/klasa#875/head",
 		"markovchain": "^1.0.2",
 		"moment": "^2.21.0",
 		"mongodb": "^3.5.2",
