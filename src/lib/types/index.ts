@@ -1,4 +1,5 @@
 import { Activity } from '../constants';
+import * as collectionLog from '../collectionLog';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 export interface Bank {
@@ -114,3 +115,20 @@ export interface JMod {
 	redditUsername: string;
 	formattedName: string;
 }
+
+export enum CollectionLogTypeName {
+	Overall = 'Overall',
+	Boss = 'Boss',
+	Clue = 'Clue',
+	Pets = 'Pets'
+}
+
+export type CollectionLogType = { aliases: string[] } & (
+	| {
+			name: CollectionLogTypeName.Overall;
+			items: number[];
+	  }
+	| { name: CollectionLogTypeName.Boss; items: typeof collectionLog.bosses }
+	| { name: CollectionLogTypeName.Clue; items: typeof collectionLog.clues }
+	| { name: CollectionLogTypeName.Pets; items: typeof collectionLog.pets }
+);

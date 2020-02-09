@@ -1,4 +1,5 @@
 import { removeDuplicatesFromArray } from './util';
+import { CollectionLogTypeName, CollectionLogType } from './types/index';
 
 export const bosses = {
 	Zulrah: [12921, 12936, 13201, 13200, 6571, 12927, 12922, 12932],
@@ -559,9 +560,9 @@ export const clues = {
 	'9421': [20128, 20131, 20134, 20137, 20140]
 };
 
-export const collectionLogTypes = [
+export const collectionLogTypes: CollectionLogType[] = [
 	{
-		name: 'Overall' as const,
+		name: CollectionLogTypeName.Overall,
 		aliases: ['all', 'overall'],
 		items: removeDuplicatesFromArray(
 			[...Object.values(bosses), ...Object.values(clues), ...Object.values(pets)].flat(
@@ -570,22 +571,18 @@ export const collectionLogTypes = [
 		)
 	},
 	{
-		name: 'Boss' as const,
+		name: CollectionLogTypeName.Boss,
 		aliases: ['bosses', 'boss'],
 		items: bosses
 	},
 	{
-		name: 'Clue' as const,
+		name: CollectionLogTypeName.Clue,
 		aliases: ['clues', 'clue'],
 		items: clues
 	},
 	{
-		name: 'Pets' as const,
+		name: CollectionLogTypeName.Pets,
 		aliases: ['pet', 'pets'],
 		items: pets
 	}
 ];
-
-type ArrayElementOf<T> = T extends (infer E)[] ? E : never;
-
-export type CollectionLogType = ArrayElementOf<typeof collectionLogTypes>;
