@@ -1,9 +1,9 @@
-import { Task } from 'klasa';
+import { Task, TaskStore } from 'klasa';
+import { TextChannel } from 'discord.js';
 
 import { Activity, Events } from '../../lib/constants';
 import { randomItemFromArray, roll } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
-import { TextChannel } from 'discord.js';
 import { UserSettings } from '../../lib/UserSettings';
 
 const deathMessages = [
@@ -35,6 +35,10 @@ const randomPVPDeathMessage = (minionName: string, monsterName: string) =>
 		.replace('{monster}', monsterName);
 
 export default class extends Task {
+	public constructor(store: TaskStore, file: string[], directory: string) {
+		super(store, file, directory, { enabled: false });
+	}
+
 	async run() {
 		const currentTasks = this.client.schedule.tasks.filter(
 			task => task.data.type === Activity.MonsterKilling
@@ -79,7 +83,9 @@ export default class extends Task {
 				}
 			}
 
-			task.update({ data: { ...task.data, quantity: task.data.quantity - 1 } });
+			task.update({
+				data: { ...task.data, quantity: task.data.quantity - 1 }
+			});
 
 			break;
 		}

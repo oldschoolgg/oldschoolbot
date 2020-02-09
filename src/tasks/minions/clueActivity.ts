@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { Task, TaskStore } from 'klasa';
 import { Events } from '../../lib/constants';
 import { ClueActivityTaskOptions } from '../../lib/types';
 import { getMinionName } from '../../lib/util';
@@ -7,6 +7,10 @@ import { TextChannel, DMChannel } from 'discord.js';
 import clueTiers from '../../lib/clueTiers';
 
 export default class extends Task {
+	public constructor(store: TaskStore, file: string[], directory: string) {
+		super(store, file, directory, { enabled: false });
+	}
+
 	async run({ clueID, userID, channelID, quantity }: ClueActivityTaskOptions) {
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.users.fetch(userID);
