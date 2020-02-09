@@ -114,3 +114,5 @@ export interface JMod {
 	redditUsername: string;
 	formattedName: string;
 }
+
+export type AnyObject = Record<PropertyKey, unknown> | {};
