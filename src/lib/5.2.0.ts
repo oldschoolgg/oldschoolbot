@@ -3,7 +3,7 @@ import { mergeDefault } from '@klasa/utils';
 import { join } from 'path';
 import { readJSON, outputJSON } from 'fs-nextra';
 
-export type AnyObject = Record<keyof any, unknown> | {};
+export type AnyObject = Record<PropertyKey, unknown> | {};
 
 // -----------------------------
 
@@ -31,7 +31,7 @@ interface Guild {
 	language?: string;
 	disableNaturalPrefix?: boolean;
 	disabledCommands?: readonly string[];
-	tags?: readonly object[];
+	tags?: readonly [string, string][];
 	totalCommandsUsed?: number;
 	streamers?: readonly string[];
 	staffOnlyChannels?: readonly string[];
@@ -92,14 +92,33 @@ export interface RawClientSettings {
 	schedules: readonly object[];
 }
 
+export const ClientSettingsSchema = /* sql */ `
+	CREATE TABLE IF NOT EXISTS "clientStorage" (
+		"id"                           VARCHAR(19)                              NOT NULL,
+		"commandStats"                 JSON          DEFAULT '{}'::JSON         NOT NULL,
+		"totalCommandsUsed"            INTEGER       DEFAULT 0                  NOT NULL,
+		"prices"                       JSON          DEFAULT '{}'::JSON         NOT NULL,
+		"pollQuestions"                JSON          DEFAULT '{}'::JSON         NOT NULL,
+		"petRecords"                   JSON          DEFAULT '{}'::JSON         NOT NULL,
+		"economyStats.dicingBank"      INTEGER       DEFAULT 0                  NOT NULL,
+		"economyStats.duelTaxBank"     INTEGER       DEFAULT 0                  NOT NULL,
+		"economyStats.dailiesAmount"   INTEGER       DEFAULT 0                  NOT NULL,
+		"economyStats.itemSellTaxBank" INTEGER       DEFAULT 0                  NOT NULL,
+		"userBlacklist"                VARCHAR(19)[] DEFAULT ARRAY[]::VARCHAR[] NOT NULL,
+		"guildBlacklist"               VARCHAR(19)[] DEFAULT ARRAY[]::VARCHAR[] NOT NULL,
+		"schedules"                    JSON[]        DEFAULT ARRAY[]::JSON[]    NOT NULL,
+		PRIMARY KEY("id")
+	);
+`;
+
 export interface RawUserSettings {
 	id: string;
 	totalCommandsUsed: number;
-	GP: number;
+	GP: string;
 	RSN: string | null;
 	pets: object;
 	badges: readonly number[];
-	lastDailyTimestamp: number;
+	lastDailyTimestamp: string;
 	bank: object;
 	collectionLogBank: object;
 	monsterScores: object;
@@ -117,23 +136,27 @@ export interface RawUserSettings {
 
 export const UserSettingsSchema = /* sql */ `
 	CREATE TABLE IF NOT EXISTS users (
-		"id"               VARCHAR(19)                               NOT NULL,
-		"command_uses"     INTEGER       DEFAULT 0                   NOT NULL,
-		"banner_list"      VARCHAR(6)[]  DEFAULT '{}'::VARCHAR(6)[]  NOT NULL,
-		"badge_set"        VARCHAR(6)[]  DEFAULT '{}'::VARCHAR(6)[]  NOT NULL,
-		"badge_list"       VARCHAR(6)[]  DEFAULT '{}'::VARCHAR(6)[]  NOT NULL,
-		"color"            INTEGER       DEFAULT 0                   NOT NULL,
-		"marry"            VARCHAR(19)[] DEFAULT '{}'::VARCHAR(19)[] NOT NULL,
-		"money"            BIGINT        DEFAULT 0                   NOT NULL,
-		"vault"            BIGINT        DEFAULT 0                   NOT NULL,
-		"point_count"      INTEGER       DEFAULT 0                   NOT NULL,
-		"reputation_count" INTEGER       DEFAULT 0                   NOT NULL,
-		"theme_level"      VARCHAR(6)    DEFAULT '1001'              NOT NULL,
-		"theme_profile"    VARCHAR(6)    DEFAULT '0001'              NOT NULL,
-		"dark_theme"       BOOLEAN       DEFAULT FALSE               NOT NULL,
-		"moderation_dm"    BOOLEAN       DEFAULT TRUE                NOT NULL,
-		"next_daily"       BIGINT,
-		"next_reputation"  BIGINT,
+		"id"                   VARCHAR(19)                              NOT NULL,
+		"totalCommandsUsed"    INTEGER      DEFAULT 0                   NOT NULL,
+		"GP"                   BIGINT       DEFAULT 0                   NOT NULL,
+		"RSN"                  VARCHAR(15),
+		"pets"                 JSON         DEFAULT '{}'::JSON          NOT NULL,
+		"badges"               SMALLINT[]   DEFAULT ARRAY[]::SMALLINT[] NOT NULL,
+		"lastDailyTimestamp"   BIGINT       DEFAULT 0                   NOT NULL,
+		"bank"                 JSON         DEFAULT '{}'::JSON          NOT NULL,
+		"collectionLogBank"    JSON         DEFAULT '{}'::JSON          NOT NULL,
+		"monsterScores"        JSON         DEFAULT '{}'::JSON          NOT NULL,
+		"clueScores"           JSON         DEFAULT '{}'::JSON          NOT NULL,
+		"minion.name"          VARCHAR(100),
+		"minion.hasBought"     BOOLEAN      DEFAULT FALSE               NOT NULL,
+		"minion.dailyDuration" INTEGER      DEFAULT 0                   NOT NULL,
+		"stats.deaths"         INTEGER      DEFAULT 0                   NOT NULL,
+		"stats.diceWins"       INTEGER      DEFAULT 0                   NOT NULL,
+		"stats.diceLosses"     INTEGER      DEFAULT 0                   NOT NULL,
+		"stats.duelWins"       INTEGER      DEFAULT 0                   NOT NULL,
+		"stats.duelLosses"     INTEGER      DEFAULT 0                   NOT NULL,
+		"skills.mining"        INTEGER      DEFAULT 0                   NOT NULL,
+		PRIMARY KEY("id")
 	);
 `;
 
@@ -143,7 +166,7 @@ export interface RawGuildSettings {
 	language: string;
 	disableNaturalPrefix: boolean;
 	disabledCommands: readonly string[];
-	tags: readonly object[];
+	tags: readonly [string, string][];
 	totalCommandsUsed: number;
 	streamers: readonly string[];
 	staffOnlyChannels: readonly string[];
@@ -156,6 +179,31 @@ export interface RawGuildSettings {
 	twitchnotifs: string | null;
 	levelUpMessages: string | null;
 }
+
+export const GuildSettingsSchema = /* sql */ `
+	CREATE TABLE IF NOT EXISTS guilds (
+		"id"                   VARCHAR(19)                              NOT NULL,
+		"prefix"               VARCHAR(10)   DEFAULT '+'                NOT NULL,
+		"language"             VARCHAR(5)    DEFAULT 'en-US'            NOT NULL,
+		"disableNaturalPrefix" BOOLEAN       DEFAULT FALSE              NOT NULL,
+		"disabledCommands"     VARCHAR(30)[] DEFAULT ARRAY[]::VARCHAR[] NOT NULL,
+		"tags"                 JSON[]        DEFAULT ARRAY[]::JSON[]    NOT NULL,
+		"totalCommandsUsed"    INTEGER       DEFAULT 0                  NOT NULL,
+		"streamers"            VARCHAR(50)[] DEFAULT ARRAY[]::VARCHAR[] NOT NULL,
+		"staffOnlyChannels"    VARCHAR(19)[] DEFAULT ARRAY[]::VARCHAR[] NOT NULL,
+		"jmodComments"         VARCHAR(19),
+		"hcimdeaths"           VARCHAR(19),
+		"joyReactions"         VARCHAR(19),
+		"petchannel"           VARCHAR(19),
+		"streamertweets"       VARCHAR(19),
+		"tweetchannel"         VARCHAR(19),
+		"twitchnotifs"         VARCHAR(19),
+		"levelUpMessages"      VARCHAR(19),
+		PRIMARY KEY("id"),
+		CHECK("prefix" <> ''),
+		CHECK(ARRAY_LENGTH("streamers", 1) <= 200)
+	);
+`;
 
 const options = {
 	database: 'klasa',
@@ -191,9 +239,8 @@ async function main() {
 
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	pgsql.on('error', console.error);
-	const dbconnection = await pgsql.connect();
+	await ensureRables(pgsql);
 	await uploadAll(pgsql);
-	dbconnection.release();
 	await pgsql.end();
 }
 
@@ -208,6 +255,16 @@ async function migrateAll() {
 	console.time('Migrating migrateUsers');
 	await migrateUsers();
 	console.timeEnd('Migrating migrateUsers');
+}
+
+async function ensureRables(pgsql: Pool) {
+	await pgsql.query(`
+		BEGIN;
+		${ClientSettingsSchema}
+		${GuildSettingsSchema}
+		${UserSettingsSchema}
+		COMMIT;
+ 	`);
 }
 
 async function uploadAll(pgsql: Pool) {
@@ -289,9 +346,14 @@ async function migrateGuilds() {
 	await outputJSON(join(rootData, 'guilds.new.json'), transformed);
 }
 
+interface TransformedUserSettings extends Omit<RawUserSettings, 'GP' | 'lastDailyTimestamp'> {
+	GP: number;
+	lastDailyTimestamp: number;
+}
+
 async function migrateUsers() {
 	const entries = (await readJSON(join(rootData, 'users.json'))) as User[];
-	const transformed: RawUserSettings[] = [];
+	const transformed: TransformedUserSettings[] = [];
 
 	for (const entry of entries) {
 		transformed.push({
@@ -306,7 +368,6 @@ async function migrateUsers() {
 			collectionLogBank: entry.collectionLogBank || {},
 			monsterScores: entry.monsterScores || {},
 			clueScores: entry.clueScores || {},
-			//	point_count: Math.max(Math.round(entry.points || 0), 0),
 			'minion.name': entry.minion?.name || null,
 			'minion.hasBought': entry.minion?.hasBought || false,
 			'minion.dailyDuration': entry.minion?.dailyDuration || 0,
