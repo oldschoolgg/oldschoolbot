@@ -239,7 +239,7 @@ async function main() {
 
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	pgsql.on('error', console.error);
-	await ensureRables(pgsql);
+	await ensureTables(pgsql);
 	await uploadAll(pgsql);
 	await pgsql.end();
 }
@@ -257,7 +257,7 @@ async function migrateAll() {
 	console.timeEnd('Migrating migrateUsers');
 }
 
-async function ensureRables(pgsql: Pool) {
+async function ensureTables(pgsql: Pool) {
 	await pgsql.query(`
 		BEGIN;
 		${ClientSettingsSchema}
