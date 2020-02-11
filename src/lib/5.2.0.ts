@@ -207,6 +207,8 @@ export const GuildSettingsSchema = /* sql */ `
 
 const options = {
 	database: 'klasa',
+
+	// if your reading this, these passwords are fake dont worry
 	//password: 'kl23gkl2nduio21jbj32',
 	password: '123',
 	user: 'postgres'
@@ -283,7 +285,7 @@ async function uploadAll(pgsql: Pool) {
 	console.timeEnd('Uploading users');
 }
 
-const rootData = join(__dirname, '..', '..', 'database', 'data');
+const rootData = join(__dirname, '..', '..', '..', 'database', 'data');
 
 async function migrateClientStorage() {
 	const entries = (await readJSON(join(rootData, 'clientStorage.json'))) as ClientStorage[];
@@ -307,10 +309,10 @@ async function migrateClientStorage() {
 			prices: entry.prices || {},
 			pollQuestions: entry.pollQuestions || {},
 			petRecords: entry.petRecords || {},
-			'economyStats.dicingBank': entry.economyStats?.dicingBank || 0,
-			'economyStats.duelTaxBank': entry.economyStats?.duelTaxBank || 0,
-			'economyStats.dailiesAmount': entry.economyStats?.dailiesAmount || 0,
-			'economyStats.itemSellTaxBank': entry.economyStats?.itemSellTaxBank || 0
+			'economyStats.dicingBank': Math.floor(entry.economyStats?.dicingBank || 0),
+			'economyStats.duelTaxBank': Math.floor(entry.economyStats?.duelTaxBank || 0),
+			'economyStats.dailiesAmount': Math.floor(entry.economyStats?.dailiesAmount || 0),
+			'economyStats.itemSellTaxBank': Math.floor(entry.economyStats?.itemSellTaxBank || 0)
 		});
 	}
 
