@@ -1,4 +1,4 @@
-import { Task, KlasaMessage, TaskStore } from 'klasa';
+import { Task, KlasaMessage } from 'klasa';
 import { TextChannel, DMChannel } from 'discord.js';
 import { Items } from 'oldschooljs';
 
@@ -11,10 +11,6 @@ const Mining = Skills.get(SkillsEnum.Mining);
 const MiningPet = Items.get('Rock golem');
 
 export default class extends Task {
-	public constructor(store: TaskStore, file: string[], directory: string) {
-		super(store, file, directory, { enabled: false });
-	}
-
 	async run({ oreID, quantity, userID, channelID }: MiningActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
