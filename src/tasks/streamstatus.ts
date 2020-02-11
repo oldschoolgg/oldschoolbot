@@ -4,7 +4,7 @@ import moment = require('moment');
 import { MessageEmbed, TextChannel } from 'discord.js';
 
 import OSRSStreamers from '../../data/osrs_streamers';
-import { resolveTwitchUsersFromNames, twitchAPIRequestOptions } from '../../config/util';
+import { resolveTwitchUsersFromNames, twitchAPIRequestOptions } from '../util';
 import { GuildSettings } from '../lib/GuildSettings';
 
 export default class extends Task {

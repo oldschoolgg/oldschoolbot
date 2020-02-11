@@ -1,7 +1,7 @@
 const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
-const { toTitleCase } = require('../../../config/util');
+const { toTitleCase } = require('../../util');
 
 const badgeMap = {
 	im: '<:ironman:626647335900020746>',

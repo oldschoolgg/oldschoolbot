@@ -1,7 +1,7 @@
 const { Command } = require('klasa');
 const fetch = require('node-fetch');
 
-const { cmlErrorCheck } = require('../../../config/util');
+const { cmlErrorCheck } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

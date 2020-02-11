@@ -1,7 +1,7 @@
 const { Command } = require('klasa');
 const { Hiscores } = require('oldschooljs');
 
-const { xpLeft } = require('../../../config/util');
+const { xpLeft } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

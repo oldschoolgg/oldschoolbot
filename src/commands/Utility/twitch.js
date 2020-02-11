@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 
 const { twitchClientID } = require('../../../config/private');
 
-const { resolveTwitchUsersFromNames, twitchAPIRequestOptions } = require('../../../config/util');
+const { resolveTwitchUsersFromNames, twitchAPIRequestOptions } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

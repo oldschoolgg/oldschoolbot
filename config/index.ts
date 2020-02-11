@@ -1,6 +1,6 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
-import emoji from './skill-emoji';
+import emoji from '../data/skill-emoji';
 import { token, twitchClientID, postgresConfig } from './private.js';
 import permissionLevels from '../src/lib/config/permissionLevels';
 
