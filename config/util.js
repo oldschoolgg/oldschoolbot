@@ -97,6 +97,7 @@ function flatten(arr) {
 
 const formatDuration = ms => {
 	if (ms < 0) ms = -ms;
+	if (ms < 60000) return "less than a minute";
 	const time = {
 		day: Math.floor(ms / 86400000),
 		hour: Math.floor(ms / 3600000) % 24,
