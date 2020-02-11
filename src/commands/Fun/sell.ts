@@ -79,7 +79,7 @@ export default class extends BotCommand {
 		const dividedAmount = (priceOfItem * quantity * 0.2) / 1_000_000;
 		this.client.settings.update(
 			ClientSettings.EconomyStats.ItemSellTaxBank,
-			itemSellTaxBank + Math.round(dividedAmount * 100) / 100
+			Math.floor(itemSellTaxBank + Math.round(dividedAmount * 100) / 100)
 		);
 
 		msg.author.log(`sold Quantity[${quantity}] ItemID[${osItem.id}] for ${totalPrice}`);

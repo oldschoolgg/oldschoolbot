@@ -98,7 +98,7 @@ export default class extends BotCommand {
 		const dividedAmount = tax / 1_000_000;
 		this.client.settings.update(
 			ClientSettings.EconomyStats.DuelTaxBank,
-			dicingBank + Math.round(dividedAmount * 100) / 100
+			Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
 		);
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins);
