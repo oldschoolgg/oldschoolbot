@@ -57,8 +57,7 @@ export default class extends BotCommand {
 			usage:
 				'[kill|setname|buy|clue|kc|pat|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
-			subcommands: true,
-			enabled: false
+			subcommands: true
 		});
 	}
 

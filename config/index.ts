@@ -1,7 +1,7 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import emoji from './skill-emoji';
-import { token, twitchClientID } from './private.js';
+import { token, twitchClientID, postgresConfig } from './private.js';
 import permissionLevels from '../src/lib/config/permissionLevels';
 
 const production = require('os').platform() === 'linux';
@@ -45,7 +45,8 @@ const clientOptions: KlasaClientOptions = {
 	createPiecesFolders: false,
 	prefix: '+',
 	providers: {
-		default: production ? 'rethinkdb' : 'json'
+		default: 'postgres',
+		postgres: postgresConfig
 	},
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
