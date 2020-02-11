@@ -46,7 +46,7 @@ export default class extends BotCommand {
 			const dividedAmount = (dicingBank + (won ? -amount : amount)) / 1_000_000;
 			this.client.settings.update(
 				ClientSettings.EconomyStats.DicingBank,
-				dicingBank + Math.round(dividedAmount * 100) / 100
+				Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
 			);
 
 			if (won) {

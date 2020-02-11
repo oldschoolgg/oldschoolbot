@@ -129,7 +129,7 @@ export default class DailyCommand extends BotCommand {
 		const dividedAmount = amount / 1_000_000;
 		this.client.settings.update(
 			ClientSettings.EconomyStats.DailiesAmount,
-			dailiesAmount + Math.round(dividedAmount * 100) / 100
+			Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
 		);
 
 		const channel = this.client.channels.get(Channel.Notifications);
