@@ -52,11 +52,11 @@ module.exports = class extends Task {
 			questions.push(obj);
 		});
 
-		const { errors } = this.client.settings.update(
-			'pollQuestions',
-			{ title, description, questions },
-			{ arrayAction: 'overwrite' }
-		);
+		const { errors } = this.client.settings.update('pollQuestions', {
+			title,
+			description,
+			questions
+		});
 		if (errors) this.client.emit('wtf', errors);
 	}
 };

@@ -23,8 +23,7 @@ export default class DailyCommand extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 5,
-			enabled: false
+			cooldown: 5
 		});
 	}
 

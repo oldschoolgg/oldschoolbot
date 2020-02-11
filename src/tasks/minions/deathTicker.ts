@@ -1,4 +1,4 @@
-import { Task, TaskStore } from 'klasa';
+import { Task } from 'klasa';
 import { TextChannel } from 'discord.js';
 
 import { Activity, Events } from '../../lib/constants';
@@ -35,10 +35,6 @@ const randomPVPDeathMessage = (minionName: string, monsterName: string) =>
 		.replace('{monster}', monsterName);
 
 export default class extends Task {
-	public constructor(store: TaskStore, file: string[], directory: string) {
-		super(store, file, directory, { enabled: false });
-	}
-
 	async run() {
 		const currentTasks = this.client.schedule.tasks.filter(
 			task => task.data.type === Activity.MonsterKilling
