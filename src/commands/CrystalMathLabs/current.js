@@ -2,7 +2,7 @@ const { Command } = require('klasa');
 const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
-const { cmlErrorCheck } = require('../../../config/util');
+const { cmlErrorCheck } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

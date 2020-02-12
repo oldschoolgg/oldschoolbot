@@ -2,7 +2,7 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
-const { cleanString } = require('../../../config/util');
+const { cleanString } = require('../../util');
 
 const cache = new Map();
 const ignoredCategories = ['Slang dictionary', 'Disambiguation'].map(i => `Category:${i}`);

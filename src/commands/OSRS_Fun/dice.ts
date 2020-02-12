@@ -4,7 +4,7 @@ import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Image, Color, Emoji, Channel } from '../../lib/constants';
-import { rand } from '../../../config/util';
+import { rand } from '../../util';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
 

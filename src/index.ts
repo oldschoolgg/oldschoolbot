@@ -8,7 +8,9 @@ import { ClientSettings } from './lib/ClientSettings';
 
 Client.use(require('@kcp/tags'));
 
-import('../config/Schemas');
+import('./lib/schemas/ClientSchema');
+import('./lib/schemas/UserSchema');
+import('./lib/schemas/GuildSchema');
 
 class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();

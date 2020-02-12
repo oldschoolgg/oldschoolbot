@@ -1,6 +1,6 @@
 const { Command } = require('klasa');
 
-const { roll, cleanString } = require('../../../config/util');
+const { roll, cleanString } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

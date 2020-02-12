@@ -17,7 +17,7 @@ import {
 	ClueActivityTaskOptions,
 	SkillsEnum
 } from '../../lib/types/index';
-import { rand } from '../../../config/util';
+import { rand } from '../../util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';

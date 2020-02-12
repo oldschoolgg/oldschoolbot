@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const { cleanString } = require('../../../config/util');
+const { cleanString } = require('../../util');
 const pets = require('../../../data/pets');
 
 module.exports = class extends Command {

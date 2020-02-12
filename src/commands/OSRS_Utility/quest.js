@@ -2,7 +2,7 @@ const { Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
 const quests = require('../../../data/quests.json');
-const { cleanString } = require('../../../config/util');
+const { cleanString } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

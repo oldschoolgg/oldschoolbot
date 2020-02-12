@@ -1,7 +1,7 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
-const { toTitleCase } = require('../../config/util');
+const { toTitleCase } = require('../util');
 
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
