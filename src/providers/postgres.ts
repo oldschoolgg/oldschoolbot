@@ -60,7 +60,7 @@ export default class extends SQLProvider {
 				database: 'klasa',
 				max: 30,
 				idleTimeoutMillis: 30000,
-				connectionTimeoutMillis: 30000
+				connectionTimeoutMillis: 0
 			},
 			this.client.options.providers.postgres
 		);
