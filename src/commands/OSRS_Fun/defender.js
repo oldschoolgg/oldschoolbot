@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const { roll } = require('../../../config/util');
+const { roll } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

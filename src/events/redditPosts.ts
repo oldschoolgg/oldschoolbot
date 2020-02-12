@@ -1,5 +1,5 @@
 import { Event, EventStore } from 'klasa';
-import he from 'he';
+import * as he from 'he';
 import * as Snoowrap from 'snoowrap';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 

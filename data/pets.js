@@ -1,4 +1,4 @@
-const { roll } = require('../config/util');
+const { roll } = require('../src/util');
 const raids = require('../data/monsters/raids');
 
 const xpEmoji = '<:xp:630911040510623745>';

@@ -1,6 +1,6 @@
 import { Emoji } from './constants';
 import raids = require('../../data/monsters/raids');
-import { roll } from '../../config/util';
+import { roll } from '../util';
 import { Pet } from './types';
 
 const xpEmoji = Emoji.XP;

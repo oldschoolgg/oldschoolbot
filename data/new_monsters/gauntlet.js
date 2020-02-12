@@ -1,4 +1,4 @@
-const { roll } = require('../../config/util');
+const { roll } = require('../../src/util');
 
 const drops = {
 	blade: '<:Blade_of_saeldor_inactive:637345429868118046>',
