@@ -1,5 +1,6 @@
 import { Client, SchemaFolder } from 'klasa';
-import { SkillsEnum } from '../../src/lib/types';
+
+import { SkillsEnum } from '../types';
 
 Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })

@@ -4,9 +4,8 @@ import { TextChannel } from 'discord.js';
 import { triviaQuestions } from '../../../resources/trivia-questions.json';
 import { BotCommand } from '../../lib/BotCommand.js';
 import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
-import { roll, rand, formatDuration } from '../../util.js/index.js';
 import * as pets from '../../../data/pets';
-import { randomHappyEmoji, isWeekend } from '../../lib/util.js';
+import { randomHappyEmoji, isWeekend, formatDuration, rand, roll } from '../../lib/util.js';
 import { UserSettings } from '../../lib/UserSettings.js';
 import { ClientSettings } from '../../lib/ClientSettings.js';
 
