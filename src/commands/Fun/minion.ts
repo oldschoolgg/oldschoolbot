@@ -245,7 +245,6 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 			type: Activity.ClueCompletion
 		};
 
-		msg.author.incrementMinionDailyDuration(duration);
 		this.client.schedule.create(Tasks.ClueActivity, Date.now() + duration, {
 			data,
 			catchUp: true
@@ -326,7 +325,6 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 			type: Activity.MonsterKilling
 		};
 
-		msg.author.incrementMinionDailyDuration(duration);
 		this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
 			data,
 			catchUp: true
