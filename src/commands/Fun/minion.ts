@@ -17,7 +17,7 @@ import {
 	ClueActivityTaskOptions,
 	SkillsEnum
 } from '../../lib/types/index';
-import { rand } from '../../../config/util';
+import { rand } from '../../util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';
@@ -245,7 +245,6 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 			type: Activity.ClueCompletion
 		};
 
-		msg.author.incrementMinionDailyDuration(duration);
 		this.client.schedule.create(Tasks.ClueActivity, Date.now() + duration, {
 			data,
 			catchUp: true
@@ -326,7 +325,6 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 			type: Activity.MonsterKilling
 		};
 
-		msg.author.incrementMinionDailyDuration(duration);
 		this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
 			data,
 			catchUp: true

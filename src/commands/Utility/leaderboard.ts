@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { util, KlasaMessage, Command, CommandStore, RichDisplay } from 'klasa';
 
-import { fmNum } from '../../../config/util';
+import { fmNum } from '../../util';
 import { SettingsEntry } from '../../lib/types';
 import { findMonster, stringMatches, noOp, notEmpty } from '../../lib/util';
 import pets from '../../lib/pets';

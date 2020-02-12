@@ -6,7 +6,7 @@ const fs = require('fs');
 const bg = fs.readFileSync('./resources/images/tob-bg.png');
 const canvas = createCanvas(399, 100);
 const ctx = canvas.getContext('2d');
-const { rand } = require('../../../config/util');
+const { rand } = require('../../util');
 
 ctx.font = '16px OSRSFont';
 

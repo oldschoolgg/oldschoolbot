@@ -2,7 +2,7 @@ const { Command } = require('klasa');
 const { Hiscores } = require('oldschooljs');
 const { MessageEmbed } = require('discord.js');
 
-const { toTitleCase } = require('../../../config/util');
+const { toTitleCase } = require('../../util');
 
 module.exports = class extends Command {
 	constructor(...args) {

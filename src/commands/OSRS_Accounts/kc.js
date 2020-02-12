@@ -1,7 +1,7 @@
 const { Command } = require('klasa');
 const { Hiscores, constants } = require('oldschooljs');
 
-const { toTitleCase, cleanString } = require('../../../config/util');
+const { toTitleCase, cleanString } = require('../../util');
 
 const aliasNameMap = {
 	corp: 'corporealBeast',

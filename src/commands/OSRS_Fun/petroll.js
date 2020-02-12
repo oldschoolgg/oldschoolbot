@@ -1,5 +1,5 @@
 const { Command } = require('klasa');
-const { roll } = require('../../../config/util');
+const { roll } = require('../../util');
 const pets = require('../../../data/pets');
 
 module.exports = class extends Command {

@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const { twitchClientID } = require('./private');
+const { twitchClientID } = require('../config/private');
 
 const convertLVLtoXP = lvl => {
 	let points = 0;

@@ -6,7 +6,7 @@ const {
 const { Hiscores, constants } = require('oldschooljs');
 const { MessageEmbed } = require('discord.js');
 
-const { toTitleCase } = require('../../../config/util');
+const { toTitleCase } = require('../../util');
 const pets = require('../../../data/pets');
 
 // Emojis for bosses with no pets
