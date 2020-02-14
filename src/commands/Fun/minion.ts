@@ -12,15 +12,13 @@ import {
 	isWeekend,
 	itemNameFromID
 } from '../../lib/util';
-import {
-	MonsterActivityTaskOptions,
-	ClueActivityTaskOptions,
-	SkillsEnum
-} from '../../lib/types/index';
+import { SkillsEnum } from '../../lib/types/index';
 import { rand } from '../../util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';
+import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -242,13 +240,12 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.ClueCompletion
+			type: Activity.ClueCompletion,
+			id: rand(1, 10_000_000),
+			finishDate: Date.now() + duration
 		};
 
-		this.client.schedule.create(Tasks.ClueActivity, Date.now() + duration, {
-			data,
-			catchUp: true
-		});
+		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
 
 		return msg.send(
 			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
@@ -322,13 +319,12 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.MonsterKilling
+			type: Activity.MonsterKilling,
+			id: rand(1, 10_000_000),
+			finishDate: Date.now() + duration
 		};
 
-		this.client.schedule.create(Tasks.MonsterActivity, Date.now() + duration, {
-			data,
-			catchUp: true
-		});
+		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 
 		return msg.send(
 			`${getMinionName(msg.author)} is now killing ${data.quantity}x ${

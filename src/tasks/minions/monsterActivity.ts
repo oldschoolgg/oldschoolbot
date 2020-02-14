@@ -2,10 +2,10 @@ import { Task, KlasaMessage } from 'klasa';
 import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
 
 import { Events, Time, Emoji } from '../../lib/constants';
-import { MonsterActivityTaskOptions } from '../../lib/types';
 import { getMinionName, noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/clueTiers';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {

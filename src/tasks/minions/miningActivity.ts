@@ -4,8 +4,9 @@ import { Items } from 'oldschooljs';
 
 import { saidYes, noOp, rand } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { SkillsEnum, MiningActivityTaskOptions } from '../../lib/types';
+import { SkillsEnum } from '../../lib/types';
 import Skills from '../../lib/skills';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
 
 const Mining = Skills.get(SkillsEnum.Mining);
 const MiningPet = Items.get('Rock golem');
