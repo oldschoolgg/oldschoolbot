@@ -3,10 +3,11 @@ import { Items } from 'oldschooljs';
 
 export default class extends Task {
 	async init() {
-		this.run();
+		await Items.fetchAll();
 	}
 
 	async run() {
+		if (!this.client.production) return;
 		this.syncItems();
 	}
 

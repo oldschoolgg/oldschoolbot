@@ -28,6 +28,7 @@ export default class extends Command {
 			aliases: ['lb']
 		});
 
+		// eslint-disable-next-line @typescript-eslint/unbound-method
 		this.resolveEntries = this.resolveEntries.bind(this);
 	}
 
@@ -101,6 +102,7 @@ export default class extends Command {
 				.filter(filter)
 				.sort(sort)
 				.slice(0, 300)
+				// eslint-disable-next-line @typescript-eslint/unbound-method
 				.map(this.resolveEntries)
 		);
 
@@ -181,8 +183,9 @@ export default class extends Command {
 
 	async kc(msg: KlasaMessage, [name]: [string]) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-		if (!name)
+		if (!name) {
 			throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``;
+		}
 		const monster = findMonster(name);
 		if (!monster) throw `That's not a valid monster!`;
 

@@ -25,14 +25,13 @@ export default class extends BotCommand {
 			});
 
 			return msg.sendLocale('CHANNEL_DISABLED');
-		} else {
-			if (!isDisabled) throw `This channel is already enabled.`;
-
-			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
-				arrayAction: 'remove'
-			});
-
-			return msg.sendLocale('CHANNEL_ENABLED');
 		}
+		if (!isDisabled) throw `This channel is already enabled.`;
+
+		await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
+			arrayAction: 'remove'
+		});
+
+		return msg.sendLocale('CHANNEL_ENABLED');
 	}
 }

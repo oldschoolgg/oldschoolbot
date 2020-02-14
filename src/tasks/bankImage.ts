@@ -100,7 +100,7 @@ export default class BankImageTask extends Task {
 
 	async generateBankImage(
 		itemLoot: Bank,
-		title: string = '',
+		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {}
 	): Promise<Buffer> {
@@ -164,7 +164,7 @@ export default class BankImageTask extends Task {
 		loot = loot.sort((a, b) => b.value - a.value);
 
 		// Paging
-		const page = flags.page;
+		const { page } = flags;
 		if (typeof page === 'number') {
 			const chunked = util.chunk(loot, 56);
 			const pageLoot = chunked[page];
@@ -201,8 +201,8 @@ export default class BankImageTask extends Task {
 
 		for (let i = 0; i < chunkedLoot.length; i++) {
 			if (i > 6) {
-				let state = saveCtx(ctx);
-				let temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
+				const state = saveCtx(ctx);
+				const temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
 				canvas.height += itemSize + (i === chunkedLoot.length ? 0 : spacer);
 
 				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
@@ -281,11 +281,7 @@ export default class BankImageTask extends Task {
 		return canvas.toBuffer();
 	}
 
-	async generateCollectionLogImage(
-		collectionLog: Bank,
-		title: string = '',
-		type: any
-	): Promise<Buffer> {
+	async generateCollectionLogImage(collectionLog: Bank, title = '', type: any): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -371,8 +367,8 @@ export default class BankImageTask extends Task {
 			let column = 0;
 
 			if (row > 6) {
-				let state = saveCtx(ctx);
-				let temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
+				const state = saveCtx(ctx);
+				const temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
 				canvas.height += itemSize + spacer;
 
 				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
@@ -384,7 +380,7 @@ export default class BankImageTask extends Task {
 			}
 
 			const flatItems = items.flat(Infinity);
-			const completedThisSection = items.every(itemID => !!collectionLog[itemID]);
+			const completedThisSection = items.every(itemID => Boolean(collectionLog[itemID]));
 
 			for (const itemID of flatItems) {
 				const xLoc = Math.floor(
@@ -396,7 +392,7 @@ export default class BankImageTask extends Task {
 					itemID,
 					xLoc,
 					yLoc,
-					!!collectionLog[itemID],
+					Boolean(collectionLog[itemID]),
 					collectionLog[itemID] || 0,
 					completedThisSection
 				);

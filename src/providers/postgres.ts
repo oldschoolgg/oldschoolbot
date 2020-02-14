@@ -51,7 +51,7 @@ export default class extends SQLProvider {
 	public pgsql: Pool | null = null;
 
 	public async init() {
-		//if (!ENABLE_POSTGRES) return this.unload();
+		// if (!ENABLE_POSTGRES) return this.unload();
 
 		const poolOptions = mergeDefault<PostgresOptions, PostgresOptions>(
 			{
@@ -98,10 +98,11 @@ export default class extends SQLProvider {
 
 		// Otherwise generate datatypes from the schema
 		const gateway = this.client.gateways.get(table);
-		if (!gateway)
+		if (!gateway) {
 			throw new Error(
 				`There is no gateway defined with the name ${table} nor an array of rows with datatypes have been given. Expected any of either.`
 			);
+		}
 
 		const schemaValues = [...gateway.schema.values(true)];
 		const generatedColumns = schemaValues.map(this.qb.generateDatatype.bind(this.qb));
@@ -255,13 +256,16 @@ export default class extends SQLProvider {
 		queryConfig: QueryArrayConfig<I>,
 		values?: I
 	): Promise<QueryArrayResult<R>>;
+
 	public run<R extends QueryResultRow = any, I extends unknown[] = unknown[]>(
 		queryConfig: QueryConfig<I>
 	): Promise<QueryResult<R>>;
+
 	public run<R extends QueryResultRow = any, I extends unknown[] = unknown[]>(
 		queryTextOrConfig: string | QueryConfig<I>,
 		values?: I
 	): Promise<QueryResult<R>>;
+
 	public run(...sql: readonly unknown[]) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556
@@ -272,13 +276,16 @@ export default class extends SQLProvider {
 		queryConfig: QueryArrayConfig<I>,
 		values?: I
 	): Promise<QueryArrayResult<R>['rows']>;
+
 	public async runAll<R extends QueryResultRow = any, I extends unknown[] = unknown[]>(
 		queryConfig: QueryConfig<I>
 	): Promise<QueryResult<R>['rows']>;
+
 	public async runAll<R extends QueryResultRow = any, I extends unknown[] = unknown[]>(
 		queryTextOrConfig: string | QueryConfig<I>,
 		values?: I
 	): Promise<QueryResult<R>['rows']>;
+
 	public async runAll(...sql: readonly unknown[]) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556
@@ -290,13 +297,16 @@ export default class extends SQLProvider {
 		queryConfig: QueryArrayConfig<I>,
 		values?: I
 	): Promise<QueryArrayResult<R>['rows'][number]>;
+
 	public async runOne<R extends QueryResultRow = any, I extends unknown[] = unknown[]>(
 		queryConfig: QueryConfig<I>
 	): Promise<QueryResult<R>['rows'][number]>;
+
 	public async runOne<R extends QueryResultRow = any, I extends unknown[] = unknown[]>(
 		queryTextOrConfig: string | QueryConfig<I>,
 		values?: I
 	): Promise<QueryResult<R>['rows'][number]>;
+
 	public async runOne(...sql: readonly unknown[]) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556

@@ -1,4 +1,5 @@
-import { Bank, ItemPriceCache, OSRSPoll, PetRecords } from './types';
+/* eslint-disable @typescript-eslint/no-namespace */
+import { Bank, ItemPriceCache, OSRSPoll, PetRecords as PetRecordsType } from './types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -11,7 +12,7 @@ export namespace ClientSettings {
 	export const CommandStats = T<Bank>('commandStats');
 	export const Prices = T<ItemPriceCache>('prices');
 	export const PollQuestions = T<OSRSPoll>('pollQuestions');
-	export const PetRecords = T<PetRecords>('petRecords');
+	export const PetRecords = T<PetRecordsType>('petRecords');
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
 
 	export namespace EconomyStats {

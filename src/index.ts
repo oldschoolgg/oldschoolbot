@@ -1,12 +1,13 @@
 import { Client, KlasaClientOptions } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
+import { Client as TagsClient } from '@kcp/tags';
 
-import { token, clientOptions, clientProperties } from '../config';
+import { privateConfig, clientOptions, clientProperties } from './config';
 import { Time, Events } from './lib/constants';
 import { ClientSettings } from './lib/ClientSettings';
 
-Client.use(require('@kcp/tags'));
+Client.use(TagsClient);
 
 import('./lib/schemas/ClientSchema');
 import('./lib/schemas/UserSchema');
@@ -16,7 +17,8 @@ class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	constructor(options: KlasaClientOptions) {
 		super(options);
-		for (const prop in clientProperties) {
+		for (const prop of Object.keys(clientProperties)) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			this[prop] = clientProperties[prop];
 		}
@@ -33,7 +35,7 @@ class OldSchoolBot extends Client {
 			return 1;
 		}
 
-		let currentItems = this.settings!.get(ClientSettings.Prices);
+		const currentItems = this.settings!.get(ClientSettings.Prices);
 
 		const currentItem = currentItems[itemID];
 
@@ -42,7 +44,7 @@ class OldSchoolBot extends Client {
 		}
 
 		this.emit(Events.Log, `Fetching Price of item[${itemID}]`);
-		let itemData = await fetch(
+		const itemData = await fetch(
 			`https://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemID}`
 		)
 			.then(res => res.json())
@@ -66,4 +68,4 @@ class OldSchoolBot extends Client {
 	}
 }
 
-new OldSchoolBot(clientOptions).login(token);
+new OldSchoolBot(clientOptions).login(privateConfig!.token);

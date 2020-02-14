@@ -1,12 +1,24 @@
 {
-	"extends": ["klasa", "prettier"],
+	"parser": "@typescript-eslint/parser",
+	"extends": ["bamboo", "prettier/@typescript-eslint", "plugin:prettier/recommended"],
 	"rules": {
 		"no-mixed-operators": "off",
 		"consistent-return": "off",
-		"prettier/prettier": "error",
 		"array-callback-return": "off",
 		"id-length": "off",
-		"complexity": "off"
+		"complexity": "off",
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/explicit-member-accessibility": "off",
+		"@typescript-eslint/prefer-for-of": "off",
+		"@typescript-eslint/no-floating-promises": "off",
+		"@typescript-eslint/require-await": "off",
+		"radix": "off",
+		"no-throw-literal": "off",
+		"no-negated-condition": "off"
 	},
-	"plugins": ["prettier"]
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": 2018
+	}
 }

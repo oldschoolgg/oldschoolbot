@@ -3,7 +3,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import * as he from 'he';
 import * as Twit from 'twit';
 
-import * as privateConfig from '../../config/private';
+import { privateConfig } from '../config';
 
 const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
@@ -131,13 +131,13 @@ export default class extends Event {
 	}
 
 	async init() {
-		if (!privateConfig.twitterApp) {
+		if (!privateConfig!.twitterApp) {
 			this.disable();
 		}
 	}
 
 	run() {
-		const twitter = new Twit(privateConfig.twitterApp);
+		const twitter = new Twit(privateConfig!.twitterApp);
 
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
 
@@ -196,8 +196,9 @@ export default class extends Event {
 		}
 
 		this.client.guilds
-			.filter(guild => !!guild.settings.get(key as string))
+			.filter(guild => Boolean(guild.settings.get(key as string)))
 			.map(guild => {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 				// @ts-ignore
 				const channel = guild.channels.get(guild.settings.get(key));
 				if (channel && channel instanceof TextChannel && channel.postable) {

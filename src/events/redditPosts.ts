@@ -2,13 +2,12 @@ import { Event, EventStore } from 'klasa';
 import * as he from 'he';
 import * as Snoowrap from 'snoowrap';
 import { CommentStream, SubmissionStream } from 'snoostorm';
-
 import { MessageEmbed, TextChannel } from 'discord.js';
 
 import { GuildSettings } from '../lib/GuildSettings';
 import JagexMods from '../../data/jagexMods';
 import { JMod } from '../lib/types';
-const { redditApp } = require('../../config/private');
+import { privateConfig } from '../config';
 
 const jmodAccounts = JagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
@@ -27,10 +26,11 @@ export default class extends Event {
 		this.enabled = this.client.production;
 	}
 
-	async init() {
-		const redditClient = new Snoowrap(redditApp);
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	async run() {}
 
-		if (!redditApp || !redditApp.password) {
+	async init() {
+		if (!privateConfig!.redditApp) {
 			this.disable();
 			this.client.emit(
 				'log',
@@ -38,6 +38,8 @@ export default class extends Event {
 			);
 			return;
 		}
+
+		const redditClient = new Snoowrap(privateConfig!.redditApp);
 
 		this.client.commentStream = new CommentStream(redditClient, {
 			subreddit: '2007scape',
@@ -83,8 +85,6 @@ export default class extends Event {
 		this.client.submissionStream.on('error', console.error);
 	}
 
-	run() {}
-
 	sendEmbed({ text, url, title, jmod }: RedditPost) {
 		const embed = new MessageEmbed().setDescription(he.decode(text)).setColor(1942002);
 
@@ -102,7 +102,7 @@ export default class extends Event {
 		}
 
 		this.client.guilds
-			.filter(guild => !!guild.settings.get(GuildSettings.JMODComments))
+			.filter(guild => Boolean(guild.settings.get(GuildSettings.JMODComments)))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get(GuildSettings.JMODComments));
 				if (channel && channel instanceof TextChannel && channel.postable) {

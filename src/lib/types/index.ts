@@ -59,7 +59,9 @@ export interface CachedItemPrice {
 	fetchedAt: number;
 }
 
-export type ItemPriceCache = { [key: string]: CachedItemPrice };
+export interface ItemPriceCache {
+	[key: string]: CachedItemPrice;
+}
 
 export interface OSRSPoll {
 	title: string;
@@ -89,3 +91,32 @@ export interface JMod {
 }
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
+
+export interface PrivateConfig {
+	token: string;
+	postgresConfig: {
+		database: string;
+		user: string;
+		password: string;
+		port: number;
+	};
+
+	twitchClientID: string;
+	redditApp: {
+		userAgent: string;
+		clientId: string;
+		clientSecret: string;
+		username: string;
+		password: string;
+	};
+	twitterApp: {
+		consumer_key: string;
+		consumer_secret: string;
+		access_token_key: string;
+		access_token_secret: string;
+	};
+	mongoDB: {
+		dbUrl: string;
+		dbName: string;
+	};
+}
