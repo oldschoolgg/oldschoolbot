@@ -8,6 +8,7 @@ export default function runActivityTask(
 	data: MinionActivityTaskData
 ) {
 	const task = client.tasks.get(taskName);
+
 	if (!task) {
 		throw `Missing essential task: ${taskName}.`;
 	}
