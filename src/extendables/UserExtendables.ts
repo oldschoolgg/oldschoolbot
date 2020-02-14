@@ -209,7 +209,7 @@ export default class extends Extendable {
 
 		const durationRemaining = currentTask.finishDate - Date.now();
 		const formattedDuration =
-			durationRemaining < 0 ? 'Less than a minute' : formatDuration(durationRemaining);
+			durationRemaining < 0 ? 'less than a minute' : formatDuration(durationRemaining);
 
 		switch (currentTask.type) {
 			case Activity.MonsterKilling: {
