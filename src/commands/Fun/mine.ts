@@ -80,7 +80,7 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask(this.client, Tasks.MiningTicker, data);
 
 		return msg.send(
 			`${msg.author.minionName} is now mining ${quantity}x ${

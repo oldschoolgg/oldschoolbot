@@ -1,6 +1,5 @@
 import { Client } from 'discord.js';
 
-import { Tasks } from '../constants';
 import { MinionActivityTask, MinionActivityTaskData } from '../types/minions';
 
 export default function runActivityTask(
@@ -8,7 +7,7 @@ export default function runActivityTask(
 	taskName: MinionActivityTask,
 	data: MinionActivityTaskData
 ) {
-	const task = client.tasks.get(Tasks.MonsterActivity);
+	const task = client.tasks.get(taskName);
 	if (!task) {
 		throw `Missing essential task: ${taskName}.`;
 	}
