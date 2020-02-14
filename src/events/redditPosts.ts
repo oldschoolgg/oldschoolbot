@@ -8,7 +8,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { GuildSettings } from '../lib/GuildSettings';
 import JagexMods from '../../data/jagexMods';
 import { JMod } from '../lib/types';
-const { redditApp } = require('../../config/private');
+import { redditApp } from '../../config/private';
 
 const jmodAccounts = JagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
@@ -26,6 +26,9 @@ export default class extends Event {
 		super(store, file, directory, { once: true, event: 'klasaReady' });
 		this.enabled = this.client.production;
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	async run() {}
 
 	async init() {
 		const redditClient = new Snoowrap(redditApp);
@@ -82,8 +85,6 @@ export default class extends Event {
 
 		this.client.submissionStream.on('error', console.error);
 	}
-
-	run() {}
 
 	sendEmbed({ text, url, title, jmod }: RedditPost) {
 		const embed = new MessageEmbed().setDescription(he.decode(text)).setColor(1942002);

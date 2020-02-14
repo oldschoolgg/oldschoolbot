@@ -8,9 +8,7 @@ const permissionLevels = new PermissionLevels()
 	.add(
 		PermissionLevelsEnum.Moderator,
 		(message: KlasaMessage) =>
-			Boolean(message.guild) &&
-			Boolean(message.member) &&
-			message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS),
+			message.member ? message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS) : false,
 		{
 			fetch: true
 		}
@@ -18,9 +16,9 @@ const permissionLevels = new PermissionLevels()
 	.add(
 		PermissionLevelsEnum.Admin,
 		(message: KlasaMessage) =>
-			Boolean(message.guild) &&
-			Boolean(message.member) &&
-			message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR),
+			message.member
+				? message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+				: false,
 		{
 			fetch: true
 		}

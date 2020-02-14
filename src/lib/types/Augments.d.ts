@@ -1,4 +1,3 @@
-import { Image } from 'canvas';
 import { Db } from 'mongodb';
 import { Settings, SettingsUpdateResult } from 'klasa';
 import { FSWatcher } from 'fs';

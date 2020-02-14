@@ -45,7 +45,7 @@ export default class extends Extendable {
 			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
 				amount}]`
 		);
-		return await this.settings.update(UserSettings.GP, currentGP - amount);
+		return this.settings.update(UserSettings.GP, currentGP - amount);
 	}
 
 	public async addGP(this: User, amount: number) {
@@ -54,7 +54,7 @@ export default class extends Extendable {
 		this.log(
 			`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`
 		);
-		return await this.settings.update(UserSettings.GP, currentGP + amount);
+		return this.settings.update(UserSettings.GP, currentGP + amount);
 	}
 
 	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
@@ -85,7 +85,7 @@ export default class extends Extendable {
 
 		this.log(`Had items added to bank - ${JSON.stringify(items)}`);
 
-		return await this.settings.update(
+		return this.settings.update(
 			UserSettings.Bank,
 			addBankToBank(items, {
 				...this.settings.get(UserSettings.Bank)
@@ -107,7 +107,7 @@ export default class extends Extendable {
 
 		this.log(`had Quantity[${amountToRemove}] of ItemID[${itemID}] removed from bank.`);
 
-		return await this.settings.update(
+		return this.settings.update(
 			UserSettings.Bank,
 			removeItemFromBank(bank, itemID, amountToRemove)
 		);
@@ -117,7 +117,7 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
-		return await this.settings.update(
+		return this.settings.update(
 			UserSettings.CollectionLogBank,
 			addBankToBank(items, {
 				...this.settings.get(UserSettings.CollectionLogBank)
@@ -131,7 +131,7 @@ export default class extends Extendable {
 
 		this.log(`had Quantity[${amountToAdd}] KC added to Monster[${monsterID}]`);
 
-		return await this.settings.update(
+		return this.settings.update(
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
 		);
@@ -143,7 +143,7 @@ export default class extends Extendable {
 
 		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
 
-		return await this.settings.update(
+		return this.settings.update(
 			UserSettings.ClueScores,
 			addItemToBank(currentClueScores, clueID, amountToAdd)
 		);

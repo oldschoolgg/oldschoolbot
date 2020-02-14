@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
 export function T<TCustom>(k: string): CustomGet<string, TCustom> {

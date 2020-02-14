@@ -1,14 +1,12 @@
-import { Command, KlasaMessage, CommandStore } from 'klasa';
+import { Command, KlasaMessage, CommandStore, RichDisplay, util } from 'klasa';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
+import { Items } from 'oldschooljs';
 
 import { generateHexColorForCashStack, formatItemStackQuantity, chunkObject } from '../../lib/util';
 import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
-import { Items } from 'oldschooljs';
-import { RichDisplay } from 'klasa';
-import { util } from 'klasa';
 import { UserSettings } from '../../lib/UserSettings';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
@@ -45,6 +43,7 @@ export default class extends Command {
 		return new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore
 	async run(msg: KlasaMessage, [page = 1]: [number]) {
 		await msg.author.settings.sync(true);
@@ -91,6 +90,7 @@ export default class extends Command {
 		const task = this.client.tasks.get('bankImage');
 
 		// TODO - add 'WTF' error handling, maybe coerce this
+		// eslint-disable-next-line @typescript-eslint/unbound-method
 		if (!task || !task.generateBankImage) throw '';
 
 		if (bankKeys.length < 57) {

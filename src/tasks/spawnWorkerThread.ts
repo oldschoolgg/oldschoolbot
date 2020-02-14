@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 import { spawn, Pool, Worker } from 'threads';
 
 export default class extends Task {
-	init() {
+	async init() {
 		this.run();
 	}
 

@@ -60,8 +60,8 @@ export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove = 
 export function addItemToBank(bank: Bank, itemID: number, amountToAdd = 1) {
 	const newBank = { ...bank };
 
-	if (!newBank[itemID]) newBank[itemID] = amountToAdd;
-	else newBank[itemID] += amountToAdd;
+	if (newBank[itemID]) newBank[itemID] += amountToAdd;
+	else newBank[itemID] = amountToAdd;
 
 	return newBank;
 }
@@ -110,6 +110,7 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
 export function noOp(any: any): any {}
 
 export function stringMatches(str: string, str2: string) {
@@ -136,7 +137,7 @@ export function formatDuration(ms: number) {
 	};
 	return Object.entries(time)
 		.filter(val => val[1] !== 0)
-		.map(([key, val]) => `${val} ${key}${val !== 1 ? 's' : ''}`)
+		.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`)
 		.join(', ');
 }
 
@@ -205,7 +206,7 @@ export function saveCtx(ctx: any) {
 }
 
 export function restoreCtx(ctx: any, state: any) {
-	for (const prop in state) {
+	for (const prop of Object.keys(state)) {
 		ctx[prop] = state[prop];
 	}
 }

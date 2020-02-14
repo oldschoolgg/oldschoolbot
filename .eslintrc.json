@@ -11,7 +11,11 @@
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/explicit-member-accessibility": "off",
 		"@typescript-eslint/prefer-for-of": "off",
-		"@typescript-eslint/no-floating-promises": "off"
+		"@typescript-eslint/no-floating-promises": "off",
+		"@typescript-eslint/require-await": "off",
+		"radix": "off",
+		"no-throw-literal": "off",
+		"no-negated-condition": "off"
 	},
 	"parserOptions": {
 		"sourceType": "module",

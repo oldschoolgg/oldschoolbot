@@ -52,6 +52,7 @@ expose({
 				return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit to 1 million by nitro boosting in the support server.*`;
 			}
 
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			if (osjsMonster.kill) return osjsMonster.kill(quantity);
 		}

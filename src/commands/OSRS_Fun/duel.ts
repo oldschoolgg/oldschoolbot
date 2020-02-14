@@ -109,6 +109,7 @@ export default class extends BotCommand {
 
 		await winner.addGP(winningAmount - tax);
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
 

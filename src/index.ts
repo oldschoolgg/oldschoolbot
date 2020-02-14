@@ -1,12 +1,13 @@
 import { Client, KlasaClientOptions } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
+import KCPTags from '@kcp/tags';
 
 import { token, clientOptions, clientProperties } from '../config';
 import { Time, Events } from './lib/constants';
 import { ClientSettings } from './lib/ClientSettings';
 
-Client.use(require('@kcp/tags'));
+Client.use(KCPTags);
 
 import('./lib/schemas/ClientSchema');
 import('./lib/schemas/UserSchema');
@@ -16,7 +17,8 @@ class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	constructor(options: KlasaClientOptions) {
 		super(options);
-		for (const prop in clientProperties) {
+		for (const prop of Object.keys(clientProperties)) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			this[prop] = clientProperties[prop];
 		}

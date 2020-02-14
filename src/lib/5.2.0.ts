@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import { Pool } from 'pg';
 import { mergeDefault } from '@klasa/utils';
 import { join } from 'path';
