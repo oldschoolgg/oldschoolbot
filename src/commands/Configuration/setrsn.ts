@@ -12,7 +12,8 @@ export default class extends Command {
 	}
 
 	async run(msg: KlasaMessage, [newRSN]: [string]) {
-		const RSN = msg.author.settings.get('RSN');
+		await msg.author.settings.sync(true);
+		const RSN = msg.author.settings.get(UserSettings.RSN);
 		if (!newRSN && RSN) {
 			return msg.sendLocale('RSN_CURRENT', [msg.author.settings.get(UserSettings.RSN)]);
 		}
