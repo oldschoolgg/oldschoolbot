@@ -2,13 +2,7 @@ import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
 import { Events, Activity, Emoji, Channel, Time } from '../lib/constants';
-import {
-	Bank,
-	MonsterActivityTaskOptions,
-	ClueActivityTaskOptions,
-	SkillsEnum,
-	MiningActivityTaskOptions
-} from '../lib/types';
+import { Bank, SkillsEnum } from '../lib/types';
 import {
 	addBankToBank,
 	removeItemFromBank,
@@ -21,6 +15,14 @@ import clueTiers from '../lib/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
 import Mining from '../lib/skills/mining';
 import { UserSettings } from '../lib/UserSettings';
+import {
+	MonsterActivityTaskOptions,
+	ClueActivityTaskOptions,
+	MiningActivityTaskOptions,
+	TickerTaskData,
+	MinionActivityTaskData
+} from '../lib/types/minions';
+import getActivityOfUser from '../lib/util/getActivityOfUser';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -175,7 +177,11 @@ export default class extends Extendable {
 	public get minionIsBusy(this: User): boolean {
 		return this.client.schedule.tasks
 			.filter(activityTaskFilter)
-			.some(task => task.data.userID === this.id);
+			.some(task =>
+				(task.data as TickerTaskData).subTasks.some(
+					(subTask: MinionActivityTaskData) => subTask.userID === this.id
+				)
+			);
 	}
 
 	public get minionName(this: User): string {
@@ -190,9 +196,7 @@ export default class extends Extendable {
 	}
 
 	public get minionStatus(this: User) {
-		const currentTask = this.client.schedule.tasks.find(
-			task => activityTaskFilter(task) && task.data.userID === this.id
-		);
+		const currentTask = getActivityOfUser(this.client, this);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
@@ -202,32 +206,39 @@ export default class extends Extendable {
 - Do clue scrolls with \`+minion clue 1 easy\` (complete 1 easy clue)
 - Pat your minion with \`+minion pat\``;
 		}
-		switch (currentTask.data.type) {
+
+		const durationRemaining = currentTask.finishDate - Date.now();
+		const formattedDuration =
+			durationRemaining < 0 ? 'Less than a minute' : formatDuration(durationRemaining);
+
+		switch (currentTask.type) {
 			case Activity.MonsterKilling: {
-				const data: MonsterActivityTaskOptions = currentTask.data;
+				const data = currentTask as MonsterActivityTaskOptions;
 				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
-				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
-				return `${this.minionName} is currently killing ${currentTask.data.quantity}x ${
+
+				return `${this.minionName} is currently killing ${data.quantity}x ${
 					monster!.name
-				}. Approximately ${duration} remaining.`;
+				}. Approximately ${formattedDuration} remaining.`;
 			}
 
 			case Activity.ClueCompletion: {
-				const data: ClueActivityTaskOptions = currentTask.data;
+				const data = currentTask as ClueActivityTaskOptions;
+
 				const clueTier = clueTiers.find(tier => tier.id === data.clueID);
-				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
-				return `${this.minionName} is currently completing ${currentTask.data.quantity}x ${
+
+				return `${this.minionName} is currently completing ${data.quantity}x ${
 					clueTier!.name
-				} clues. Approximately ${duration} remaining.`;
+				} clues. Approximately ${formattedDuration} remaining.`;
 			}
 
 			case Activity.Mining: {
-				const data: MiningActivityTaskOptions = currentTask.data;
+				const data = currentTask as MiningActivityTaskOptions;
+
 				const ore = Mining.Ores.find(ore => ore.id === data.oreID);
-				const duration = formatDuration(Date.now() - new Date(currentTask.time).getTime());
-				return `${this.minionName} is currently mining ${currentTask.data.quantity}x ${
+
+				return `${this.minionName} is currently mining ${data.quantity}x ${
 					ore!.name
-				}. Approximately ${duration} remaining. Your ${
+				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Mining
 				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
