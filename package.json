@@ -1,8 +1,8 @@
 {
 	"scripts": {
-		"lint": "eslint ./ --fix && prettier --check ./ --write",
+		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
 		"build": "tsc -p .",
-		"start": "concurrently \"tsc -p . -w\" \"node dist/src\""
+		"start": "npm run build && concurrently \"tsc -p . -w\" \"node dist/src\""
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
@@ -46,7 +46,7 @@
 		"eslint": "^6.8.0",
 		"eslint-config-bamboo": "^3.0.0",
 		"eslint-config-klasa": "github:dirigeants/klasa-lint",
-		"eslint-config-prettier": "^6.0.0",
+		"eslint-config-prettier": "^6.10.0",
 		"eslint-plugin-prettier": "^3.1.2",
 		"prettier": "^1.19.1",
 		"typescript": "^3.7.5"

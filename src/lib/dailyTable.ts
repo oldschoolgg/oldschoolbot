@@ -47,7 +47,7 @@ const DailyTable = new LootTable()
 	.add('Event rpg', 1, 2)
 	.add('Green banner', 1, 2);
 
-export default function dailyRoll(qty: number = 1) {
+export default function dailyRoll(qty = 1) {
 	const loot = new Loot();
 
 	for (let i = 0; i < qty; i++) {

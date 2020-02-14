@@ -25,8 +25,7 @@ export default class extends BotCommand {
 		if (user.bot) throw `You can't send money to a bot.`;
 
 		if (
-			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) <
-				Time.Minute * 1 &&
+			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) < Time.Minute &&
 			this.client.production
 		) {
 			(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(

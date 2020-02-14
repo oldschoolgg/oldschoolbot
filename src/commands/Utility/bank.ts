@@ -71,7 +71,7 @@ export default class extends Command {
 			const display = new RichDisplay();
 			display.setFooterPrefix(`Page `);
 
-			let textBank = [];
+			const textBank = [];
 			for (const [id, qty] of Object.entries(bank)) {
 				textBank.push(`**${Items.get(parseInt(id))!.name}:** ${qty.toLocaleString()}`);
 			}

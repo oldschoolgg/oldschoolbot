@@ -93,7 +93,7 @@ export default class extends Extendable {
 		);
 	}
 
-	public async removeItemFromBank(this: User, itemID: number, amountToRemove: number = 1) {
+	public async removeItemFromBank(this: User, itemID: number, amountToRemove = 1) {
 		await this.settings.sync(true);
 		const bank = { ...this.settings.get(UserSettings.Bank) };
 		if (typeof bank[itemID] === 'undefined' || bank[itemID] < amountToRemove) {

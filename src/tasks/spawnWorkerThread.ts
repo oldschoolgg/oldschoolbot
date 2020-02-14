@@ -2,10 +2,11 @@ import { Task } from 'klasa';
 import { spawn, Pool, Worker } from 'threads';
 
 export default class extends Task {
-	async init() {
+	init() {
 		this.run();
 	}
-	async run() {
+
+	run() {
 		this.client.killWorkerThread = Pool(() => spawn(new Worker('../lib/killWorker')), 8);
 
 		const terminateCb = async () => {

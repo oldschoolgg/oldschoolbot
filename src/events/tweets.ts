@@ -196,7 +196,7 @@ export default class extends Event {
 		}
 
 		this.client.guilds
-			.filter(guild => !!guild.settings.get(key as string))
+			.filter(guild => Boolean(guild.settings.get(key as string)))
 			.map(guild => {
 				// @ts-ignore
 				const channel = guild.channels.get(guild.settings.get(key));

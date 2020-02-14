@@ -8,7 +8,6 @@ import { resolveTwitchUsersFromNames, twitchAPIRequestOptions } from '../util';
 import { GuildSettings } from '../lib/GuildSettings';
 
 export default class extends Task {
-
 	public idList: number[] = [];
 
 	async init() {
@@ -51,7 +50,9 @@ export default class extends Task {
 					this.client.guilds
 						.filter(
 							guild =>
-								!!guild.settings.get(GuildSettings.TwitchNotifications.Channel) &&
+								Boolean(
+									guild.settings.get(GuildSettings.TwitchNotifications.Channel)
+								) &&
 								guild.settings
 									.get(GuildSettings.TwitchNotifications.Streamers)
 									.includes(channel.display_name.toLowerCase())
@@ -70,5 +71,4 @@ export default class extends Task {
 			})
 			.catch(console.error);
 	}
-
 }

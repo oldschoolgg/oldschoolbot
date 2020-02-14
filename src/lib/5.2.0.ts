@@ -209,7 +209,7 @@ const options = {
 	database: 'klasa',
 
 	// if your reading this, these passwords are fake dont worry
-	//password: 'kl23gkl2nduio21jbj32',
+	// password: 'kl23gkl2nduio21jbj32',
 	password: '123',
 	user: 'postgres'
 };

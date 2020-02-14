@@ -13,13 +13,15 @@ export default class extends Monitor {
 	}
 
 	public async run(message: KlasaMessage) {
-		if (message.guild && message.guild.me === null)
+		if (message.guild && message.guild.me === null) {
 			await message.guild.members.fetch(this.client.user!.id);
+		}
 		if (!message.channel.postable) return undefined;
-		if (!message.commandText && message.prefix === this.client.mentionPrefix)
+		if (!message.commandText && message.prefix === this.client.mentionPrefix) {
 			return this.sendPrefixReminder(message);
+		}
 		if (!message.commandText) return undefined;
-		if (!message.command)
+		if (!message.command) {
 			return this.client.emit(
 				'commandUnknown',
 				message,
@@ -27,6 +29,7 @@ export default class extends Monitor {
 				message.prefix,
 				message.prefixLength
 			);
+		}
 		this.client.emit('commandRun', message, message.command, message.args);
 
 		return this.runCommand(message);
@@ -38,8 +41,9 @@ export default class extends Monitor {
 			if (
 				staffOnlyChannels.includes(message.channel.id) &&
 				!(await message.hasAtLeastPermissionLevel(PermissionLevelsEnum.Moderator))
-			)
+			) {
 				return;
+			}
 		}
 		const prefix = message.guildSettings.get(GuildSettings.Prefix);
 		return message.sendLocale('PREFIX_REMINDER', [prefix.length ? prefix : undefined]);

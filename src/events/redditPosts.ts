@@ -102,7 +102,7 @@ export default class extends Event {
 		}
 
 		this.client.guilds
-			.filter(guild => !!guild.settings.get(GuildSettings.JMODComments))
+			.filter(guild => Boolean(guild.settings.get(GuildSettings.JMODComments)))
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get(GuildSettings.JMODComments));
 				if (channel && channel instanceof TextChannel && channel.postable) {

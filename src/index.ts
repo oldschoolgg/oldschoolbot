@@ -33,7 +33,7 @@ class OldSchoolBot extends Client {
 			return 1;
 		}
 
-		let currentItems = this.settings!.get(ClientSettings.Prices);
+		const currentItems = this.settings!.get(ClientSettings.Prices);
 
 		const currentItem = currentItems[itemID];
 
@@ -42,7 +42,7 @@ class OldSchoolBot extends Client {
 		}
 
 		this.emit(Events.Log, `Fetching Price of item[${itemID}]`);
-		let itemData = await fetch(
+		const itemData = await fetch(
 			`https://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemID}`
 		)
 			.then(res => res.json())

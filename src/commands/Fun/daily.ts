@@ -81,7 +81,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (msg.author.hasMinion) {
-			amount = amount / 4;
+			amount /= 4;
 		}
 
 		if (roll(73)) {

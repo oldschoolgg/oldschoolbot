@@ -59,7 +59,9 @@ export interface CachedItemPrice {
 	fetchedAt: number;
 }
 
-export type ItemPriceCache = { [key: string]: CachedItemPrice };
+export interface ItemPriceCache {
+	[key: string]: CachedItemPrice;
+}
 
 export interface OSRSPoll {
 	title: string;
