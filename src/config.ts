@@ -17,8 +17,6 @@ if (!fs.existsSync('./private.json')) {
 const production = require('os').platform() === 'linux';
 
 const clientProperties = {
-	guildLogs: '346212633583681536',
-	voteLogs: '469523207691436042',
 	twitchClientID: privateConfig?.twitchClientID,
 	emoji,
 	timePeriods: {
@@ -27,7 +25,6 @@ const clientProperties = {
 		month: 2628000,
 		year: 525667 * 60
 	},
-	notFound: `There was an error in fetching stats for that account. The account might not exist, or is banned.`,
 	production
 };
 
