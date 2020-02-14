@@ -1,7 +1,25 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { TextChannel } from 'discord.js';
+import * as fs from 'fs';
 
-import { triviaQuestions } from '../../../resources/trivia-questions.json';
+if (!fs.existsSync('./resources/trivia-questions.json')) {
+	fs.writeFileSync(
+		'./resources/trivia-questions.json',
+		JSON.stringify(
+			{
+				triviaQuestions: []
+			},
+			null,
+			4
+		)
+	);
+	console.log(`Created empty trivia questions file at ./resources/trivia-questions.json`);
+}
+
+const { triviaQuestions } = JSON.parse(
+	fs.readFileSync('./resources/trivia-questions.json').toString()
+);
+
 import { BotCommand } from '../../lib/BotCommand.js';
 import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
 import * as pets from '../../../data/pets';
@@ -9,7 +27,7 @@ import { randomHappyEmoji, isWeekend, formatDuration, rand, roll } from '../../l
 import { UserSettings } from '../../lib/UserSettings.js';
 import { ClientSettings } from '../../lib/ClientSettings.js';
 
-const easyTrivia = triviaQuestions.slice(0, 40);
+const easyTrivia = triviaQuestions!.slice(0, 40);
 
 const options = {
 	max: 1,
