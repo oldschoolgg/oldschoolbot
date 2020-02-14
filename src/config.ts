@@ -1,15 +1,25 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
+import * as fs from 'fs';
 
 import emoji from '../data/skill-emoji';
-import { token, twitchClientID, postgresConfig } from './private.js';
-import permissionLevels from '../src/lib/config/permissionLevels';
+import permissionLevels from './lib/config/permissionLevels';
+import { PrivateConfig } from './lib/types';
+
+let privateConfig: PrivateConfig | undefined;
+if (!fs.existsSync('./private.json')) {
+	fs.writeFileSync('./private.json', JSON.stringify({ token: 'PUT_TOKEN_HERE' }, null, 4));
+	console.error(`Please fill in the bots token in the private.json file.`);
+	process.exit();
+} else {
+	privateConfig = JSON.parse(fs.readFileSync('./private.json').toString());
+}
 
 const production = require('os').platform() === 'linux';
 
 const clientProperties = {
 	guildLogs: '346212633583681536',
 	voteLogs: '469523207691436042',
-	twitchClientID,
+	twitchClientID: privateConfig?.twitchClientID,
 	emoji,
 	timePeriods: {
 		day: 86400,
@@ -46,7 +56,7 @@ const clientOptions: KlasaClientOptions = {
 	prefix: '+',
 	providers: {
 		default: 'postgres',
-		postgres: postgresConfig
+		postgres: privateConfig?.postgresConfig
 	},
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
@@ -58,4 +68,4 @@ const clientOptions: KlasaClientOptions = {
 	noPrefixDM: true
 };
 
-export { token, clientOptions, clientProperties };
+export { privateConfig, clientOptions, clientProperties };

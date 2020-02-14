@@ -3,7 +3,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import * as he from 'he';
 import * as Twit from 'twit';
 
-import * as privateConfig from '../../config/private';
+import { privateConfig } from '../config';
 
 const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
@@ -131,13 +131,13 @@ export default class extends Event {
 	}
 
 	async init() {
-		if (!privateConfig.twitterApp) {
+		if (!privateConfig!.twitterApp) {
 			this.disable();
 		}
 	}
 
 	run() {
-		const twitter = new Twit(privateConfig.twitterApp);
+		const twitter = new Twit(privateConfig!.twitterApp);
 
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
 

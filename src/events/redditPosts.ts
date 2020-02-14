@@ -2,13 +2,12 @@ import { Event, EventStore } from 'klasa';
 import * as he from 'he';
 import * as Snoowrap from 'snoowrap';
 import { CommentStream, SubmissionStream } from 'snoostorm';
-
 import { MessageEmbed, TextChannel } from 'discord.js';
 
 import { GuildSettings } from '../lib/GuildSettings';
 import JagexMods from '../../data/jagexMods';
 import { JMod } from '../lib/types';
-import { redditApp } from '../../config/private';
+import { privateConfig } from '../config';
 
 const jmodAccounts = JagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
@@ -31,9 +30,7 @@ export default class extends Event {
 	async run() {}
 
 	async init() {
-		const redditClient = new Snoowrap(redditApp);
-
-		if (!redditApp || !redditApp.password) {
+		if (!privateConfig!.redditApp) {
 			this.disable();
 			this.client.emit(
 				'log',
@@ -41,6 +38,8 @@ export default class extends Event {
 			);
 			return;
 		}
+
+		const redditClient = new Snoowrap(privateConfig!.redditApp);
 
 		this.client.commentStream = new CommentStream(redditClient, {
 			subreddit: '2007scape',

@@ -6,7 +6,6 @@
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,
-		"allowSyntheticDefaultImports": true,
 		"types": ["node", "node-fetch", "discord.js", "klasa"]
 	},
 	"include": ["./src/**/*"],
