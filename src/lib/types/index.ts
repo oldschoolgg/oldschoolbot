@@ -1,34 +1,7 @@
-import { Activity } from '../constants';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 export interface Bank {
 	[key: number]: number;
-}
-
-export interface ActivityTaskOptions {
-	type: Activity;
-	userID: string;
-}
-
-export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
-	monsterID: number;
-	channelID: string;
-	quantity: number;
-	duration: number;
-}
-
-export interface ClueActivityTaskOptions extends ActivityTaskOptions {
-	clueID: number;
-	channelID: string;
-	duration: number;
-	quantity: number;
-}
-
-export interface MiningActivityTaskOptions extends ActivityTaskOptions {
-	oreID: number;
-	duration: number;
-	channelID: string;
-	quantity: number;
 }
 
 export interface SettingsEntry {

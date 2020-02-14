@@ -1,10 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { determineScaledOreTime, stringMatches, formatDuration } from '../../lib/util';
+import { determineScaledOreTime, stringMatches, formatDuration, rand } from '../../lib/util';
 import Mining from '../../lib/skills/mining';
-import { SkillsEnum, MiningActivityTaskOptions } from '../../lib/types';
+import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -73,20 +75,17 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Mining
+			type: Activity.Mining,
+			id: rand(1, 10_000_000),
+			finishDate: Date.now() + duration
 		};
 
-		this.client.schedule.create(Tasks.MiningActivity, Date.now() + duration, {
-			data,
-			catchUp: true
-		});
+		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 
 		return msg.send(
 			`${msg.author.minionName} is now mining ${quantity}x ${
 				ore.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);
-
-		//return msg.send(`Mining ${quantity} of ${ore.name}`);
 	}
 }

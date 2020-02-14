@@ -142,9 +142,11 @@ export function formatDuration(ms: number) {
 }
 
 export function activityTaskFilter(task: ScheduledTask) {
-	return ([Tasks.MonsterActivity, Tasks.ClueActivity, Tasks.MiningActivity] as string[]).includes(
-		task.taskName
-	);
+	return ([
+		Tasks.ClueTicker,
+		Tasks.MiningTicker,
+		Tasks.MonsterKillingTicker
+	] as string[]).includes(task.taskName);
 }
 
 export function getMinionName(user: KlasaUser) {
