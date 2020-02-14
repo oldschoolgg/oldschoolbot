@@ -1,7 +1,6 @@
-import { Command, Timestamp, CommandStore } from 'klasa';
-
+import { Command, Timestamp, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, GuildMember } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+
 import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends Command {

@@ -29,9 +29,9 @@ export default class extends Command {
 	}
 
 	async run(msg: KlasaMessage, [quantity, bossName]: [number, string]) {
-		const result: ItemBank = await this.client.killWorkerThread.queue(async (fn: any) => {
-			return fn.kill({ quantity, bossName, limit: this.determineKillLimit(msg.author) });
-		});
+		const result: ItemBank = await this.client.killWorkerThread.queue(async (fn: any) =>
+			fn.kill({ quantity, bossName, limit: this.determineKillLimit(msg.author) })
+		);
 
 		if (typeof result === 'string') {
 			return msg.send(result);

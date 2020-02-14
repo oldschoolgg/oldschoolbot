@@ -8,9 +8,8 @@ export default class extends Event {
 	public async run(msg: KlasaMessage, command: Command, _: string[], error: string | Error) {
 		if (typeof error === 'string') {
 			return msg.send(error);
-		} else {
-			msg.send(`An unexpected error occurred ${Emoji.Sad}`);
 		}
+		msg.send(`An unexpected error occurred ${Emoji.Sad}`);
 
 		await this._sendErrorChannel(msg, command, error);
 	}

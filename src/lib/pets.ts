@@ -600,6 +600,7 @@ const pets: Pet[] = [
 ];
 
 for (const pet of pets) {
+	// eslint-disable-next-line @typescript-eslint/unbound-method
 	pet.finish = () => {
 		let count = 0;
 		let hasPet = false;

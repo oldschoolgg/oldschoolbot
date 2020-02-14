@@ -25,7 +25,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		let re = /’/gi;
+		const re = /’/gi;
 		const osItem = Items.get(itemName.replace(re, "'"));
 		if (!osItem) throw `That item doesnt exist.`;
 		if (
@@ -36,7 +36,7 @@ export default class extends BotCommand {
 			throw `That item isn't tradeable.`;
 		}
 
-		let priceOfItem = await this.client.fetchItemPrice(osItem.id);
+		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
 		let totalPrice = priceOfItem * quantity;
 
 		const hasItem = await msg.author.hasItem(osItem.id, quantity);

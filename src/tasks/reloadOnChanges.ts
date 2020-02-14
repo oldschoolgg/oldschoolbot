@@ -12,6 +12,7 @@ export default class extends Task {
 		this.enabled = !this.client.production;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	async run() {}
 
 	async reloadPiece(name: string, _path: string, piece?: Piece) {
@@ -27,10 +28,12 @@ export default class extends Task {
 		const reload = this.client.commands.get('reload');
 		if (!reload) return;
 		if (piece) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			await reload.run({ sendLocale: () => null, sendMessage: () => null }, [piece]);
 			log = `Reloaded it in ${timer}`;
 		} else {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			await reload.everything({
 				sendLocale: () => null,

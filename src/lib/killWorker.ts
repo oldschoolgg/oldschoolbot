@@ -52,6 +52,7 @@ expose({
 				return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit to 1 million by nitro boosting in the support server.*`;
 			}
 
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			if (osjsMonster.kill) return osjsMonster.kill(quantity);
 		}
@@ -76,8 +77,9 @@ expose({
 			case 'LAVADRAGONS':
 			case 'LAVADRAGS':
 			case 'LAVADRAG': {
-				if (quantity > 200)
+				if (quantity > 200) {
 					return 'I can only kill a maximum of 200 Lava Dragons at a time!';
+				}
 				const loot = lavaDragon.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
@@ -86,8 +88,9 @@ expose({
 			case 'BRUTALBLACKDRAGONS':
 			case 'BRUTALBLACKDRAGS':
 			case 'BRUTALBLACKS': {
-				if (quantity > 100)
+				if (quantity > 100) {
 					return 'I can only kill a maximum of 100 Brutal Black Dragons at a time!';
+				}
 				const loot = brutalBlackDragon.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
@@ -114,8 +117,9 @@ expose({
 			case 'ABYSSALDEMONS':
 			case 'ABBYDEMON':
 			case 'ABBYDEMONS': {
-				if (quantity > 5000)
+				if (quantity > 5000) {
 					return 'I can only do a maximum of 5000 Abyssal Demon kills at a time!';
+				}
 				const loot = abbyDemon.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
@@ -185,8 +189,9 @@ expose({
 
 			case 'THERMY':
 			case 'THERMONUCLEARSMOKEDEVIL': {
-				if (quantity > 500)
+				if (quantity > 500) {
 					return "I can only kill 500 Thermonuclear smoke devil's at a time!";
+				}
 				const loot = thermy.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}

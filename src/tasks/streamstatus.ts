@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 import fetch from 'node-fetch';
-import moment = require('moment');
+import * as moment from 'moment';
 import { MessageEmbed, TextChannel } from 'discord.js';
 
 import OSRSStreamers from '../../data/osrs_streamers';
@@ -50,7 +50,9 @@ export default class extends Task {
 					this.client.guilds
 						.filter(
 							guild =>
-								!!guild.settings.get(GuildSettings.TwitchNotifications.Channel) &&
+								Boolean(
+									guild.settings.get(GuildSettings.TwitchNotifications.Channel)
+								) &&
 								guild.settings
 									.get(GuildSettings.TwitchNotifications.Streamers)
 									.includes(channel.display_name.toLowerCase())

@@ -49,7 +49,9 @@ export default class extends BotCommand {
 		const task = this.client.tasks.get('bankImage');
 
 		// TODO - add 'WTF' error handling, maybe coerce this
+		// eslint-disable-next-line @typescript-eslint/unbound-method
 		if (!task || !task.generateBankImage) throw '';
+
 		const image = await task!.generateBankImage(
 			loot,
 			`You opened a ${clueTier.name} clue and received...`

@@ -1,6 +1,6 @@
-import { Command } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 import { GuildSettings } from '../../lib/GuildSettings';
-import { CommandStore, KlasaMessage } from 'klasa';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {

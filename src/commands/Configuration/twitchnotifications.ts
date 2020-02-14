@@ -1,6 +1,6 @@
-import { Command, CommandStore } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 import { GuildSettings } from '../../lib/GuildSettings';
-import { KlasaMessage } from 'klasa';
 import OSRSStreamers from '../../../data/osrs_streamers';
 
 export default class extends Command {
@@ -67,8 +67,9 @@ export default class extends Command {
 		if (!name) {
 			return msg.sendLocale('TN_NO_STREAMER_REMOVE', [msg.guild!.settings.get('prefix')]);
 		}
-		if (!OSRSStreamers.includes(name.toLowerCase()))
+		if (!OSRSStreamers.includes(name.toLowerCase())) {
 			return msg.sendLocale('TN_INVALID_STREAMER');
+		}
 		if (
 			!msg
 				.guild!.settings.get(GuildSettings.TwitchNotifications.Streamers)

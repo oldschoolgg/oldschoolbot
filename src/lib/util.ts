@@ -26,9 +26,8 @@ export function formatItemStackQuantity(quantity: number) {
 		return `${Math.floor(quantity / 1000000)}M`;
 	} else if (quantity > 99999) {
 		return `${Math.floor(quantity / 1000)}K`;
-	} else {
-		return quantity.toString();
 	}
+	return quantity.toString();
 }
 
 export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
@@ -41,8 +40,8 @@ export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
 	});
 }
 
-export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove: number = 1) {
-	let newBank = { ...bank };
+export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove = 1) {
+	const newBank = { ...bank };
 	const currentValue = bank[itemID];
 
 	// If they don't have this item in the bank, just return it.
@@ -58,11 +57,11 @@ export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove: n
 	return newBank;
 }
 
-export function addItemToBank(bank: Bank, itemID: number, amountToAdd: number = 1) {
-	let newBank = { ...bank };
+export function addItemToBank(bank: Bank, itemID: number, amountToAdd = 1) {
+	const newBank = { ...bank };
 
-	if (!newBank[itemID]) newBank[itemID] = amountToAdd;
-	else newBank[itemID] += amountToAdd;
+	if (newBank[itemID]) newBank[itemID] += amountToAdd;
+	else newBank[itemID] = amountToAdd;
 
 	return newBank;
 }
@@ -100,7 +99,7 @@ export function chunkObject(obj: { [key: string]: any }, limit: number) {
 }
 
 export function toTitleCase(str: string) {
-	let splitStr = str.toLowerCase().split(' ');
+	const splitStr = str.toLowerCase().split(' ');
 	for (let i = 0; i < splitStr.length; i++) {
 		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
 	}
@@ -111,6 +110,7 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
 export function noOp(any: any): any {}
 
 export function stringMatches(str: string, str2: string) {
@@ -118,7 +118,7 @@ export function stringMatches(str: string, str2: string) {
 }
 
 export function bankToString(bank: ItemBank, chunkSize?: number) {
-	let display = [];
+	const display = [];
 	for (const [itemID, qty] of Object.entries(bank)) {
 		const item = Items.get(parseInt(itemID));
 		if (!item) continue;
@@ -137,7 +137,7 @@ export function formatDuration(ms: number) {
 	};
 	return Object.entries(time)
 		.filter(val => val[1] !== 0)
-		.map(([key, val]) => `${val} ${key}${val !== 1 ? 's' : ''}`)
+		.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`)
 		.join(', ');
 }
 
@@ -178,7 +178,7 @@ export function findMonster(str: string) {
 }
 
 export function saveCtx(ctx: any) {
-	let props = [
+	const props = [
 		'strokeStyle',
 		'fillStyle',
 		'globalAlpha',
@@ -198,7 +198,7 @@ export function saveCtx(ctx: any) {
 		'direction',
 		'imageSmoothingEnabled'
 	];
-	let state: { [key: string]: any } = {};
+	const state: { [key: string]: any } = {};
 	for (const prop of props) {
 		state[prop] = ctx[prop];
 	}
@@ -206,7 +206,7 @@ export function saveCtx(ctx: any) {
 }
 
 export function restoreCtx(ctx: any, state: any) {
-	for (const prop in state) {
+	for (const prop of Object.keys(state)) {
 		ctx[prop] = state[prop];
 	}
 }

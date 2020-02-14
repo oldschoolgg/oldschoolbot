@@ -85,7 +85,7 @@ export default class extends BotCommand {
 		await sleep(2000);
 		await duelMsg.edit(`${user.username} and ${msg.author.username} begin fighting...`);
 
-		let [winner, loser] = Math.random() > 0.5 ? [user, msg.author] : [msg.author, user];
+		const [winner, loser] = Math.random() > 0.5 ? [user, msg.author] : [msg.author, user];
 
 		await sleep(2000);
 		await duelMsg.edit(`The fight is almost over...`);
@@ -109,6 +109,7 @@ export default class extends BotCommand {
 
 		await winner.addGP(winningAmount - tax);
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
 
