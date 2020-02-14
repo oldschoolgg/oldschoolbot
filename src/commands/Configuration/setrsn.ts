@@ -19,7 +19,9 @@ export default class extends Command {
 		}
 
 		if (!newRSN && !RSN) {
-			return msg.sendLocale('RSN_NOT_SET', [msg.guild!.settings.get(GuildSettings.Prefix)]);
+			return msg.sendLocale('RSN_NOT_SET', [
+				msg.guild!.settings.get(GuildSettings.Prefix) ?? '+'
+			]);
 		}
 
 		newRSN = newRSN.toLowerCase();
@@ -32,10 +34,10 @@ export default class extends Command {
 		}
 
 		if (RSN !== null) {
-			await msg.author.settings.update('RSN', newRSN);
+			await msg.author.settings.update(UserSettings.RSN, newRSN);
 			msg.sendLocale('RSN_CHANGED', [RSN, newRSN]);
 		} else {
-			await msg.author.settings.update('RSN', newRSN);
+			await msg.author.settings.update(UserSettings.RSN, newRSN);
 			msg.sendLocale('RSN_SET_TO', [newRSN]);
 		}
 
