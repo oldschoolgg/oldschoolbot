@@ -60,6 +60,7 @@ export default class DailyCommand extends BotCommand {
 				const collected = await msg.channel.awaitMessages(
 					answer =>
 						answer.author.id === msg.author.id &&
+						answer.content &&
 						trivia.a.includes(answer.content.toLowerCase()),
 					options
 				);
