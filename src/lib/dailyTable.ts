@@ -50,12 +50,12 @@ const DailyTable = new LootTable()
 	.add(CommonTable, 1, 2)
 	.add('Mystery box', 1, 2);
 
-export default function dailyRoll(qty = 1) {
+export default function dailyRoll(qty = 1, correct = false) {
 	const loot = new Loot();
 
 	for (let i = 0; i < qty; i++) {
 		loot.add(DailyTable.roll());
-		loot.add(CommonTable.roll());
+		if (correct) loot.add(CommonTable.roll());
 	}
 
 	return loot.values();

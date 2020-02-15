@@ -55,14 +55,16 @@ export default class DailyCommand extends BotCommand {
 		if (difference < Time.Hour * 12) {
 			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
 
-			return msg.send(`You can claim your next daily in ${duration}.`);
+			return msg.send(
+				`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`
+			);
 		}
 
 		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
 
 		const trivia = easyTrivia[Math.floor(Math.random() * easyTrivia.length)];
 
-		await msg.channel.send(`**Daily Trivia:** ${trivia.q}`);
+		await msg.channel.send(`**${Emoji.Diango} Diango asks...** ${trivia.q}`);
 		try {
 			const collected = await msg.channel.awaitMessages(
 				answer =>
@@ -79,7 +81,6 @@ export default class DailyCommand extends BotCommand {
 	}
 
 	async reward(msg: KlasaMessage, triviaCorrect: boolean) {
-		// console.log(dailyRoll(168_250));
 		const user = msg.author;
 		if (Date.now() - user.createdTimestamp < Time.Month) {
 			user.log(`[NAC-DAILY]`);
@@ -89,7 +90,7 @@ export default class DailyCommand extends BotCommand {
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 
-		const loot = dailyRoll();
+		const loot = dailyRoll(1, triviaCorrect);
 
 		const bonuses = [];
 
@@ -122,16 +123,24 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (!triviaCorrect) {
-			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.5);
+			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.4);
 		}
+
+		// Ensure amount of GP is an integer
+		loot[COINS_ID] = Math.floor(loot[COINS_ID]);
 
 		let chStr = `${bonuses.join('')} ${user.username} just got their daily and received ${loot[
 			COINS_ID
 		].toLocaleString()} GP! ${randomHappyEmoji()}`;
 
-		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
+		const correct = triviaCorrect ? 'correct' : 'incorrect';
+		const reward = triviaCorrect
+			? "I've picked you some random items as a reward..."
+			: 'Even though you got it wrong, heres a little reward...';
 
-		let dmStr = `${bonuses.join('')} You answered **${correct}** and received...\n`;
+		let dmStr = `${bonuses.join('')} **${
+			Emoji.Diango
+		} Diango says..** That's ${correct}! ${reward}\n`;
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
@@ -140,7 +149,7 @@ export default class DailyCommand extends BotCommand {
 			else userPets[pet.id]++;
 
 			await msg.author.settings.sync(true);
-			await user.settings.update('pets', { ...userPets });
+			await user.settings.update(UserSettings.Pets, { ...userPets });
 
 			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
