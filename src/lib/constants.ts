@@ -95,3 +95,5 @@ export const enum PermissionLevelsEnum {
 }
 
 export const rootFolder = join(__dirname, '..', '..', '..');
+
+export const COINS_ID = 995;

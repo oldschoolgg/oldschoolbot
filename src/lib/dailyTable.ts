@@ -2,6 +2,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import Loot from 'oldschooljs/dist/structures/Loot';
 
 const RareTable = new LootTable()
+	.add('Hornwood helm')
 	.add('Hand fan')
 	.add('Mask of balance')
 	.add('Druidic wreath')
@@ -19,18 +20,9 @@ const UncommonTable = new LootTable()
 	.add('Rainbow scarf')
 	.add("Diango's claws");
 
-const CasketTable = new LootTable()
-	.add('Reward casket (beginner)', 1, 6)
-	.add('Reward casket (easy)', 1, 5)
-	.add('Reward casket (medium)', 1, 4)
-	.add('Reward casket (hard)', 1, 3)
-	.add('Reward casket (elite)', 1, 2)
-	.add('Reward casket (master)', 1, 1);
-
-const DailyTable = new LootTable()
-	.every('Coins', [1_000_000, 4_000_000])
-	.oneIn(2000, 'Hornwood helm')
-	.add(UncommonTable)
+const CommonTable = new LootTable()
+	.add('Event rpg', 1, 2)
+	.add('Green banner', 1, 2)
 	.add('Spinning plate', [1, 20])
 	.add('Brown toy horsey')
 	.add('White toy horsey')
@@ -41,17 +33,29 @@ const DailyTable = new LootTable()
 	.add(11705)
 	.add(11706)
 
-	.add('Coins', [500_000, 15_000_000])
-	.add(CasketTable)
+	.add(UncommonTable);
 
-	.add('Event rpg', 1, 2)
-	.add('Green banner', 1, 2);
+const CasketTable = new LootTable()
+	.add('Reward casket (beginner)', 1, 4)
+	.add('Reward casket (easy)', 1, 3)
+	.add('Reward casket (medium)', 1, 2)
+	.add('Reward casket (hard)', 1, 1);
+
+const DailyTable = new LootTable()
+	.every('Coins', [1_000_000, 3_000_000])
+
+	.add('Coins', [100_000, 10_000_000])
+	.add(CasketTable)
+	.add(UncommonTable)
+	.add(CommonTable, 1, 2)
+	.add('Mystery box', 1, 2);
 
 export default function dailyRoll(qty = 1) {
 	const loot = new Loot();
 
 	for (let i = 0; i < qty; i++) {
 		loot.add(DailyTable.roll());
+		loot.add(CommonTable.roll());
 	}
 
 	return loot.values();

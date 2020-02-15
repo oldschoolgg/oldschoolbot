@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { TextChannel } from 'discord.js';
+import { TextChannel, MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
 
 if (!fs.existsSync('./resources/trivia-questions.json')) {
@@ -20,12 +20,13 @@ const { triviaQuestions } = JSON.parse(
 	fs.readFileSync('./resources/trivia-questions.json').toString()
 );
 
-import { BotCommand } from '../../lib/BotCommand.js';
-import { Time, Emoji, SupportServer, Channel } from '../../lib/constants.js';
+import { BotCommand } from '../../lib/BotCommand';
+import { Time, Emoji, SupportServer, Channel, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
-import { randomHappyEmoji, isWeekend, formatDuration, rand, roll } from '../../lib/util.js';
-import { UserSettings } from '../../lib/UserSettings.js';
-import { ClientSettings } from '../../lib/ClientSettings.js';
+import { randomHappyEmoji, isWeekend, formatDuration, roll } from '../../lib/util';
+import { UserSettings } from '../../lib/UserSettings';
+import { ClientSettings } from '../../lib/ClientSettings';
+import dailyRoll from '../../lib/dailyTable';
 
 const easyTrivia = triviaQuestions!.slice(0, 40);
 
@@ -50,33 +51,35 @@ export default class DailyCommand extends BotCommand {
 		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
 		const difference = currentDate - lastVoteDate;
 
-		if (difference >= Time.Hour * 12) {
-			await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
-
-			const trivia = easyTrivia[Math.floor(Math.random() * easyTrivia.length)];
-
-			await msg.channel.send(`**Daily Trivia:** ${trivia.q}`);
-			try {
-				const collected = await msg.channel.awaitMessages(
-					answer =>
-						answer.author.id === msg.author.id &&
-						answer.content &&
-						trivia.a.includes(answer.content.toLowerCase()),
-					options
-				);
-				const winner = collected.first();
-				if (winner) return this.reward(msg, true);
-			} catch (err) {
-				return this.reward(msg, false);
-			}
-		} else {
+		// If they have already claimed a daily in the past 12h
+		if (difference < Time.Hour * 12) {
 			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
 
 			return msg.send(`You can claim your next daily in ${duration}.`);
 		}
+
+		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
+
+		const trivia = easyTrivia[Math.floor(Math.random() * easyTrivia.length)];
+
+		await msg.channel.send(`**Daily Trivia:** ${trivia.q}`);
+		try {
+			const collected = await msg.channel.awaitMessages(
+				answer =>
+					answer.author.id === msg.author.id &&
+					answer.content &&
+					trivia.a.includes(answer.content.toLowerCase()),
+				options
+			);
+			const winner = collected.first();
+			if (winner) return this.reward(msg, true);
+		} catch (err) {
+			return this.reward(msg, false);
+		}
 	}
 
 	async reward(msg: KlasaMessage, triviaCorrect: boolean) {
+		// console.log(dailyRoll(168_250));
 		const user = msg.author;
 		if (Date.now() - user.createdTimestamp < Time.Month) {
 			user.log(`[NAC-DAILY]`);
@@ -86,25 +89,26 @@ export default class DailyCommand extends BotCommand {
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 
-		let amount = rand(1_000_000, 6_000_000);
+		const loot = dailyRoll();
+
 		const bonuses = [];
 
 		if (isWeekend()) {
-			amount *= 2;
+			loot[COINS_ID] *= 2;
 			bonuses.push(Emoji.MoneyBag);
 		}
 
 		if (member) {
-			amount = Math.floor(amount * 1.5);
+			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
 			bonuses.push(Emoji.OSBot);
 		}
 
 		if (msg.author.hasMinion) {
-			amount /= 4;
+			loot[COINS_ID] /= 1.5;
 		}
 
 		if (roll(73)) {
-			amount = Math.floor(amount * 1.73);
+			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.73);
 			bonuses.push(Emoji.Joy);
 		}
 
@@ -112,20 +116,18 @@ export default class DailyCommand extends BotCommand {
 			if (roll(2)) {
 				bonuses.push(Emoji.Bpaptu);
 			} else {
-				amount += 1_000_000_000;
+				loot[COINS_ID] += 1_000_000_000;
 				bonuses.push(Emoji.Diamond);
 			}
 		}
 
 		if (!triviaCorrect) {
-			amount = Math.floor(amount * 0.5);
+			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.5);
 		}
 
-		await msg.author.settings.sync(true);
-
-		let chStr = `${bonuses.join('')} ${
-			user.username
-		} just got their daily and received ${amount.toLocaleString()} GP! ${randomHappyEmoji()}`;
+		let chStr = `${bonuses.join('')} ${user.username} just got their daily and received ${loot[
+			COINS_ID
+		].toLocaleString()} GP! ${randomHappyEmoji()}`;
 
 		const correct = triviaCorrect ? 'correctly' : 'incorrectly';
 
@@ -137,6 +139,7 @@ export default class DailyCommand extends BotCommand {
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
 
+			await msg.author.settings.sync(true);
 			await user.settings.update('pets', { ...userPets });
 
 			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
@@ -144,7 +147,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		const dailiesAmount = this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount);
-		const dividedAmount = amount / 1_000_000;
+		const dividedAmount = loot[COINS_ID] / 1_000_000;
 		this.client.settings.update(
 			ClientSettings.EconomyStats.DailiesAmount,
 			Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
@@ -155,9 +158,11 @@ export default class DailyCommand extends BotCommand {
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
-		const gpImage = this.client.commands.get('bank').generateImage(amount);
+		const image = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(loot, `${msg.author.username}'s Daily`);
 
-		await user.settings.update(UserSettings.GP, user.settings.get(UserSettings.GP) + amount);
-		return msg.send(dmStr, gpImage).catch(() => null);
+		await user.addItemsToBank(loot, true);
+		return msg.send(dmStr, new MessageAttachment(image)).catch(() => null);
 	}
 }
