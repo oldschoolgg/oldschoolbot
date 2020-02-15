@@ -620,7 +620,7 @@ export const collectionLogTypes = [
 	},
 	{
 		name: 'Diango',
-		aliases: ['diango'],
+		aliases: ['diango', 'dailies', 'daily'],
 		items: diangoCollectionLog
 	}
 ];
