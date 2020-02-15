@@ -1,4 +1,5 @@
 import { removeDuplicatesFromArray } from './util';
+import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
 
 export const bosses = {
 	Zulrah: [12921, 12936, 13201, 13200, 6571, 12927, 12922, 12932],
@@ -559,6 +560,39 @@ export const clues = {
 	'9421': [20128, 20131, 20134, 20137, 20140]
 };
 
+export const diangoCollectionLog = {
+	Common: transformArrayOfResolvableItems([
+		'Event rpg',
+		'Green banner',
+		'Spinning plate',
+		'Brown toy horsey',
+		'White toy horsey',
+		'Black toy horsey',
+		'Grey toy horsey',
+		11705,
+		11706
+	]),
+	Uncommon: transformArrayOfResolvableItems([
+		'Tiger toy',
+		'Lion toy',
+		'Snow leopard toy',
+		'Amur leopard toy',
+		'Holy handegg',
+		'Peaceful handegg',
+		'Chaotic handegg',
+		'Rainbow scarf',
+		"Diango's claws"
+	]),
+	Rare: transformArrayOfResolvableItems([
+		'Hornwood helm',
+		'Hand fan',
+		'Mask of balance',
+		'Druidic wreath',
+		'Disk of returning'
+	]),
+	Other: transformArrayOfResolvableItems(['Mystery box', 'Stale baguette'])
+};
+
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
@@ -583,5 +617,10 @@ export const collectionLogTypes = [
 		name: 'Pets',
 		aliases: ['pet', 'pets'],
 		items: pets
+	},
+	{
+		name: 'Diango',
+		aliases: ['diango', 'dailies', 'daily'],
+		items: diangoCollectionLog
 	}
 ];
