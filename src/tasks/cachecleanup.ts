@@ -64,6 +64,7 @@ export default class MemorySweeper extends Task {
 			// Clear members that haven't send a message in the last 30 minutes
 			const { me } = guild;
 			for (const [id, member] of guild.members) {
+				if (this.shouldCacheUser(member.user)) continue;
 				if (member === me) continue;
 				if (member.lastMessageID && member.lastMessageID > this.OLD_SNOWFLAKE) continue;
 				guildMembers++;
