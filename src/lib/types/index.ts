@@ -1,4 +1,10 @@
 import Monster from 'oldschooljs/dist/structures/Monster';
+import { BeginnerCasket } from 'oldschooljs/dist/clues/Beginner';
+import { MediumCasket } from 'oldschooljs/dist/clues/Medium';
+import { EasyCasket } from 'oldschooljs/dist/clues/Easy';
+import { HardCasket } from 'oldschooljs/dist/clues/Hard';
+import { EliteCasket } from 'oldschooljs/dist/clues/Elite';
+import { MasterCasket } from 'oldschooljs/dist/clues/Master';
 
 export interface Bank {
 	[key: number]: number;
@@ -119,4 +125,12 @@ export interface PrivateConfig {
 		dbUrl: string;
 		dbName: string;
 	};
+}
+
+export interface ClueTier {
+	name: string;
+	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	id: number;
+	scrollID: number;
+	timeToFinish: number;
 }

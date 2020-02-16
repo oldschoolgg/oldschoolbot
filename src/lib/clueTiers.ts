@@ -1,9 +1,10 @@
 import { Clues } from 'oldschooljs';
-
-import { Time } from './constants';
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
-const tiers = [
+import { Time } from './constants';
+import { ClueTier } from './types';
+
+const clueTiers: ClueTier[] = [
 	{
 		name: 'Beginner',
 		table: Beginner,
@@ -48,4 +49,4 @@ const tiers = [
 	}
 ];
 
-export default tiers;
+export default clueTiers;
