@@ -44,7 +44,6 @@ export default class MemorySweeper extends Task {
 	}
 
 	async run() {
-		console.log('wtf');
 		let presences = 0;
 		let guildMembers = 0;
 		let voiceStates = 0;
