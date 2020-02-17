@@ -204,7 +204,8 @@ export default class extends Extendable {
 - Use \`+minion setname [name]\` to change your minions' name.
 - You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
 - Do clue scrolls with \`+minion clue 1 easy\` (complete 1 easy clue)
-- Pat your minion with \`+minion pat\``;
+- Pat your minion with \`+minion pat\`
+- Hurt your minion with \`+minion hurt\``;
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();

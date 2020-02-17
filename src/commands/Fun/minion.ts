@@ -42,8 +42,19 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
+const hurtMessages = [
+	'You hit {name} on the head.',
+	'You violently punch {name} in the face, they look sad and you can see a tear rolling down their cheek.',
+	'You kick {name} against their shin, and say how dissapointed you are.',
+	'You shout at {name}, what a terrible performance.',
+	'After you punch {name}, they feel more motivated to prevent this in the future.'
+];
+
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
+
+const randomHurtMessage = (minionName: string) =>
+	randomItemFromArray(hurtMessages).replace('{name}', minionName);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -53,7 +64,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[kill|setname|buy|clue|kc|pat|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
+				'[kill|setname|buy|clue|kc|pat|hurt|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -76,6 +87,18 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(randomPatMessage(getMinionName(msg.author)));
+	}
+
+	async hurt(msg: KlasaMessage) {
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		if (msg.author.minionIsBusy) {
+			return msg.send(msg.author.minionStatus);
+		}
+
+		return msg.send(randomHurtMessage(getMinionName(msg.author)));
 	}
 
 	async stats(msg: KlasaMessage) {
