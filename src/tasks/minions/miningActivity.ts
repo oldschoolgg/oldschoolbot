@@ -7,6 +7,7 @@ import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import Skills from '../../lib/skills';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const Mining = Skills.get(SkillsEnum.Mining);
 const MiningPet = Items.get('Rock golem');
@@ -61,7 +62,7 @@ export default class extends Task {
 
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: Time.Minute * 2,
+				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
 				max: 1
 			})
 			.then(messages => {

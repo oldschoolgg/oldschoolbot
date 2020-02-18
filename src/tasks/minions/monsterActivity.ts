@@ -7,6 +7,7 @@ import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/UserSettings';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -66,7 +67,7 @@ export default class extends Task {
 
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: Time.Minute * 2,
+				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
 				max: 1
 			})
 			.then(messages => {
