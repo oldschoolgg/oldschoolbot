@@ -6,6 +6,7 @@ import { getMinionName, noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -35,9 +36,11 @@ export default class extends Task {
 
 		let str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${
 			monster.name
-		}.  ${getMinionName(user)} asks if you'd like them to do another trip of ${quantity} ${
-			monster.name
-		}.`;
+		}. Your ${monster.name} KC is now ${(user.settings.get(UserSettings.MonsterScores)[
+			monster.id
+		] ?? 0) + quantity} ${getMinionName(
+			user
+		)} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
