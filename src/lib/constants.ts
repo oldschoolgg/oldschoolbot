@@ -18,7 +18,10 @@ export const enum Channel {
 
 export const enum Roles {
 	Booster = '665908237152813057',
-	Contributor = '456181501437018112'
+	Contributor = '456181501437018112',
+	Moderator = '622806157563527178',
+	PatronTier1 = '678970545789730826',
+	PatronTier2 = '678967943979204608'
 }
 
 export const enum Emoji {
@@ -98,3 +101,9 @@ export const enum PermissionLevelsEnum {
 export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;
+
+export const enum PerkTier {
+	One = 1, // Boosters, Contributors, Mods
+	Two = 2, // Tier 1 Patron
+	Three = 3 // Tier 2 Patron
+}
