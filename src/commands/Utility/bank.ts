@@ -119,6 +119,19 @@ export default class extends Command {
 			}
 		);
 
+		if (msg.flagArgs.full) {
+			const image = await task.generateBankImage(
+				bank,
+				`${msg.author.username}'s Bank`,
+				true,
+				{
+					...msg.flagArgs
+				}
+			);
+
+			return msg.send(new MessageAttachment(image, 'osbot.png'));
+		}
+
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 }
