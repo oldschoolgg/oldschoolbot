@@ -78,11 +78,6 @@ export default class extends Command {
 				msg.guild.members.map(member => member.user.settings.get(UserSettings.Bank))
 			);
 
-			// Fetch the guilds' members if it seems like they aren't cached.
-			if (msg.guild.members.size < msg.guild.memberCount) {
-				await msg.guild.members.fetch();
-			}
-
 			const image = await task!.generateBankImage(
 				serverBank,
 				`Bank Of All Users in ${msg.guild.name}`,
