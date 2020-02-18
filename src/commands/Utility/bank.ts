@@ -66,14 +66,22 @@ export default class extends Command {
 		}
 
 		if (msg.flagArgs.text) {
+			const textBank = [];
+			for (const [id, qty] of Object.entries(bank)) {
+				textBank.push(`${Items.get(parseInt(id))!.name}: ${qty.toLocaleString()}`);
+			}
+
+			if (msg.flagArgs.full) {
+				return msg.channel.sendFile(
+					Buffer.from(textBank.join('\n')),
+					`${msg.author.username}s_Bank.txt`,
+					'Here is your entire bank in txt file format.'
+				);
+			}
+
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 			const display = new RichDisplay();
 			display.setFooterPrefix(`Page `);
-
-			const textBank = [];
-			for (const [id, qty] of Object.entries(bank)) {
-				textBank.push(`**${Items.get(parseInt(id))!.name}:** ${qty.toLocaleString()}`);
-			}
 
 			for (const page of util.chunk(textBank, 10)) {
 				display.addPage(
