@@ -6,8 +6,6 @@ import { getMinionName, noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/UserSettings';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -37,11 +35,9 @@ export default class extends Task {
 
 		let str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${
 			monster.name
-		}. Your ${monster.name} KC is now ${(user.settings.get(UserSettings.MonsterScores)[
-			monster.id
-		] ?? 0) + quantity} ${getMinionName(
-			user
-		)} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+		}.  ${getMinionName(user)} asks if you'd like them to do another trip of ${quantity} ${
+			monster.name
+		}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
@@ -67,7 +63,7 @@ export default class extends Task {
 
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
+				time: Time.Minute * 2,
 				max: 1
 			})
 			.then(messages => {

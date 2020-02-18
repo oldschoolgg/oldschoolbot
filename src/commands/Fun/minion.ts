@@ -42,8 +42,7 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
-const 
-Messages = [
+const hurtMessages = [
 	'You hit {name} on the head.',
 	'You violently punch {name} in the face, they look sad and you can see a tear rolling down their cheek.',
 	'You kick {name} against their shin, and say how dissapointed you are.',
@@ -65,7 +64,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[k|kill|setname|buy|clue|kc|pat|hurt|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
+				'[kill|setname|buy|clue|kc|pat|hurt|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -109,9 +108,7 @@ export default class extends BotCommand {
 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
-${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-			.get(UserSettings.Skills.Mining)
-			.toLocaleString()} xp)
+${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
 `);
 	}
 
@@ -280,10 +277,6 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 				clueTier.timeToFinish * quantity
 			)} to finish.`
 		);
-	}
-
-	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		this.kill(msg, [quantity, name]);
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
