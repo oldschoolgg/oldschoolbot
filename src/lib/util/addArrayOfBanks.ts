@@ -1,6 +1,6 @@
 import { Bank, StringKeyedBank } from '../types';
 
-export default function addArrayOfBanks(arrayOfBanks: Bank[]) {
+export default function addArrayOfBanks(arrayOfBanks: readonly Bank[]) {
 	const newBank: StringKeyedBank = {};
 
 	for (const bank of arrayOfBanks) {
