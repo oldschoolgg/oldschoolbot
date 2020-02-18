@@ -85,7 +85,9 @@ export default class extends BotCommand {
 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
-${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)}
+${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
+			.get(UserSettings.Skills.Mining)
+			.toLocaleString()} xp)
 `);
 	}
 
