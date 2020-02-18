@@ -8,6 +8,8 @@ import { generateHexColorForCashStack, formatItemStackQuantity, chunkObject } fr
 import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/UserSettings';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import addArrayOfBanks from '../../lib/util/addArrayOfBanks';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -65,15 +67,51 @@ export default class extends Command {
 			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;
 		}
 
+		const task = this.client.tasks.get('bankImage');
+
+		if (msg.flagArgs.server && msg.guild) {
+			if (getUsersPerkTier(msg.author) < 2) {
+				throw `This feature is available only to patrons.`;
+			}
+
+			const serverBank = addArrayOfBanks(
+				msg.guild.members.map(member => member.user.settings.get(UserSettings.Bank))
+			);
+
+			// Fetch the guilds' members if it seems like they aren't cached.
+			if (msg.guild.members.size < msg.guild.memberCount) {
+				await msg.guild.members.fetch();
+			}
+
+			const image = await task!.generateBankImage(
+				serverBank,
+				`Bank Of All Users in ${msg.guild.name}`,
+				true,
+				{
+					...msg.flagArgs
+				}
+			);
+
+			return msg.send(new MessageAttachment(image, 'osbot.png'));
+		}
+
 		if (msg.flagArgs.text) {
+			const textBank = [];
+			for (const [id, qty] of Object.entries(bank)) {
+				textBank.push(`${Items.get(parseInt(id))!.name}: ${qty.toLocaleString()}`);
+			}
+
+			if (msg.flagArgs.full) {
+				return msg.channel.sendFile(
+					Buffer.from(textBank.join('\n')),
+					`${msg.author.username}s_Bank.txt`,
+					'Here is your entire bank in txt file format.'
+				);
+			}
+
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 			const display = new RichDisplay();
 			display.setFooterPrefix(`Page `);
-
-			const textBank = [];
-			for (const [id, qty] of Object.entries(bank)) {
-				textBank.push(`**${Items.get(parseInt(id))!.name}:** ${qty.toLocaleString()}`);
-			}
 
 			for (const page of util.chunk(textBank, 10)) {
 				display.addPage(
@@ -87,14 +125,9 @@ export default class extends Command {
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
-		const task = this.client.tasks.get('bankImage');
-
-		// TODO - add 'WTF' error handling, maybe coerce this
-		// eslint-disable-next-line @typescript-eslint/unbound-method
-		if (!task || !task.generateBankImage) throw '';
 
 		if (bankKeys.length < 57) {
-			const image = await task.generateBankImage(
+			const image = await task!.generateBankImage(
 				bank,
 				`${msg.author.username}'s Bank - Page 1 of 1`,
 				true,
@@ -109,7 +142,7 @@ export default class extends Command {
 		const bankPage = chunkedObject[page - 1];
 
 		if (!bankPage) throw "You don't have any items on that page!";
-		const image = await task.generateBankImage(
+		const image = await task!.generateBankImage(
 			bank,
 			`${msg.author.username}'s Bank - Page ${page} of ${chunkedObject.length}`,
 			true,
@@ -118,6 +151,19 @@ export default class extends Command {
 				page: page - 1
 			}
 		);
+
+		if (msg.flagArgs.full) {
+			const image = await task!.generateBankImage(
+				bank,
+				`${msg.author.username}'s Bank`,
+				true,
+				{
+					...msg.flagArgs
+				}
+			);
+
+			return msg.send(new MessageAttachment(image, 'osbot.png'));
+		}
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
