@@ -64,7 +64,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[kill|setname|buy|clue|kc|pat|hurt|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
+				'[k|kill|setname|buy|clue|kc|pat|hurt|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
