@@ -1,8 +1,9 @@
 import { KlasaUser, KlasaMessage, Command, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
-import { UserSettings } from '../../lib/UserSettings';
 import clueTiers from '../../lib/clueTiers';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { PerkTier } from '../../lib/constants';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -19,8 +20,18 @@ export default class extends Command {
 			return Infinity;
 		}
 
-		if (user.settings.get(UserSettings.Badges).length > 0) {
-			return 10_000;
+		const perkTier = getUsersPerkTier(user);
+
+		if (perkTier === PerkTier.Three) {
+			return 50_000;
+		}
+
+		if (perkTier === PerkTier.Two) {
+			return 20_000;
+		}
+
+		if (perkTier === PerkTier.One) {
+			return 1_000;
 		}
 
 		return 50;

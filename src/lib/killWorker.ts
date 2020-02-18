@@ -49,7 +49,11 @@ expose({
 
 		if (osjsMonster) {
 			if (quantity > limit) {
-				return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit to 1 million by nitro boosting in the support server.*`;
+				return (
+					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
+					`*You can increase your limit by up to 1 million by becoming a patron (\`+patreon\`), ` +
+					`or 100,000 by nitro boosting the support server.*`
+				);
 			}
 
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
