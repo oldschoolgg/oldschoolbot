@@ -70,6 +70,10 @@ export default class extends Command {
 		const task = this.client.tasks.get('bankImage');
 
 		if (msg.flagArgs.server && msg.guild) {
+			if (getUsersPerkTier(msg.author) < 100) {
+				throw `This feature is currently disabled.`;
+			}
+
 			if (getUsersPerkTier(msg.author) < 2) {
 				throw `This feature is available only to patrons.`;
 			}
