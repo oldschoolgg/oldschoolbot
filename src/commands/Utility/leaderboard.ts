@@ -124,7 +124,6 @@ export default class extends Command {
 	}
 
 	async query(query: string, cacheUsernames = true) {
-		console.log(`Querying: ${query}`);
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		const result = await this.client.providers.default!.runAll(query);
