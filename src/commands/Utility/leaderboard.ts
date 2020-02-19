@@ -1,23 +1,87 @@
 import { MessageEmbed } from 'discord.js';
 import { util, KlasaMessage, Command, CommandStore, RichDisplay } from 'klasa';
 
-import { fmNum } from '../../util';
-import { SettingsEntry } from '../../lib/types';
-import { findMonster, stringMatches, noOp, notEmpty } from '../../lib/util';
-import pets from '../../lib/pets';
-import { collectionLogTypes } from '../../lib/collectionLog';
+import { SettingsEntry, StringKeyedBank } from '../../lib/types';
+import badges from '../../lib/badges';
 import { Time } from '../../lib/constants';
-import { ClientSettings } from '../../lib/ClientSettings';
+import { findMonster, stringMatches } from '../../lib/util';
+import { collectionLogTypes } from '../../lib/collectionLog';
 
-interface LeaderboardUser extends SettingsEntry {
-	user: string;
-	fetchedAt: number;
+const CACHE_TIME = Time.Minute * 5;
+
+interface GPUser {
+	id: string;
+	GP: number;
+}
+
+interface PetUser {
+	id: string;
+	petcount: number;
+}
+
+interface KCUser {
+	id: string;
+	monsterScores: StringKeyedBank;
+}
+
+interface CLUser {
+	id: string;
+	collectionLogBank: StringKeyedBank;
+}
+
+interface GPLeaderboard {
+	lastUpdated: number;
+	list: GPUser[];
+}
+
+interface PetLeaderboard {
+	lastUpdated: number;
+	list: PetUser[];
+}
+
+interface KCLeaderboard {
+	lastUpdated: number;
+	list: KCUser[];
+}
+
+interface CLLeaderboard {
+	lastUpdated: number;
+	list: CLUser[];
+}
+
+interface UsernameCache {
+	lastUpdated: number;
+	map: Map<string, string>;
 }
 
 export default class extends Command {
 	public settingEntryCache: SettingsEntry[] = [];
 	public lastCacheUpdate = 0;
-	public userCache: Map<string, LeaderboardUser> = new Map();
+
+	public usernameCache: UsernameCache = {
+		lastUpdated: 0,
+		map: new Map()
+	};
+
+	public gpLeaderboard: GPLeaderboard = {
+		lastUpdated: 0,
+		list: []
+	};
+
+	public petLeaderboard: PetLeaderboard = {
+		lastUpdated: 0,
+		list: []
+	};
+
+	public kcLeaderboard: KCLeaderboard = {
+		lastUpdated: 0,
+		list: []
+	};
+
+	public clLeaderboard: CLLeaderboard = {
+		lastUpdated: 0,
+		list: []
+	};
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -27,9 +91,31 @@ export default class extends Command {
 			subcommands: true,
 			aliases: ['lb']
 		});
+	}
 
-		// eslint-disable-next-line @typescript-eslint/unbound-method
-		this.resolveEntries = this.resolveEntries.bind(this);
+	getUsername(userID: string) {
+		const username = this.usernameCache.map.get(userID);
+		if (!username) return '(Unknown)';
+		return username;
+	}
+
+	async cacheUsernames() {
+		const arrayOfUsers: { badges: number[]; id: string }[] = await this.query(
+			`SELECT "badges", "id" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0;`,
+			false
+		);
+
+		for (const user of this.client.users.values()) {
+			this.usernameCache.map.set(user.id, user.username);
+		}
+
+		for (const user of arrayOfUsers) {
+			this.usernameCache.map.set(
+				user.id,
+				`${user.badges.map(num => badges[num]).join(' ')} ${this.getUsername(user.id) ||
+					'(Unknown)'}`
+			);
+		}
 	}
 
 	async run(msg: KlasaMessage) {
@@ -37,152 +123,84 @@ export default class extends Command {
 		return null;
 	}
 
-	async resolveEntries(settingsEntry: SettingsEntry) {
-		const cachedUser = this.userCache.get(settingsEntry.id);
-		if (!cachedUser || Date.now() - cachedUser.fetchedAt < Time.Minute * 30) {
-			const user = await this.client.users.fetch(settingsEntry.id).catch(noOp);
-
-			const leaderBoardUser: LeaderboardUser = {
-				...settingsEntry,
-				fetchedAt: Date.now(),
-				user: user ? `${user.badges} ${user.username}` : 'Unknown'
-			};
-
-			this.userCache.set(settingsEntry.id, leaderBoardUser);
-		}
-
-		return cachedUser;
-	}
-
-	async fetchRawUserSettings(): Promise<SettingsEntry[]> {
-		if (
-			this.settingEntryCache.length === 0 ||
-			Date.now() - this.lastCacheUpdate < Time.Minute * 30
-		) {
-			const results = await (this.client.providers.get(
-				this.client.options.providers.default as string
-			) as any).db
-				.table('users')
-				.run();
-
-			this.settingEntryCache = results;
-			this.lastCacheUpdate = Date.now();
-		}
-
-		return this.settingEntryCache;
-	}
-
-	async petrecords(msg: KlasaMessage) {
-		const petRecords = this.client.settings.get(ClientSettings.PetRecords);
-		const embed = new MessageEmbed().setDescription(
-			`These numbers show the lowest and highest records of pets from the \`${msg.cmdPrefix}pet\` command.`
-		);
-
-		const columns = [];
-		for (const pet of pets) {
-			columns.push(
-				`${pet.emoji} ${fmNum(petRecords.lowest[pet.id]) || '0'} - ${fmNum(
-					petRecords.highest[pet.id]
-				) || '?'}`
-			);
-		}
-
-		for (const column of util.chunk(columns, 15)) {
-			embed.addField('<:OSBot:601768469905801226> Lowest - Highest', column, true);
-		}
-
-		return msg.send(embed);
-	}
-
-	async fetchUsers(filter: any, sort: any) {
-		const rawUserSettings = await this.fetchRawUserSettings();
-
-		const users = await Promise.all(
-			rawUserSettings
-				.filter(filter)
-				.sort(sort)
-				.slice(0, 300)
-				// eslint-disable-next-line @typescript-eslint/unbound-method
-				.map(this.resolveEntries)
-		);
-
-		return users.filter(notEmpty);
+	async query(query: string, cacheUsernames = true) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		const result = await this.client.providers.default!.runAll(query);
+		if (cacheUsernames) this.cacheUsernames();
+		return result;
 	}
 
 	async gp(msg: KlasaMessage) {
-		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-
 		const onlyForGuild = msg.flagArgs.server;
 
-		const users = await this.fetchUsers(
-			(u: LeaderboardUser) => {
-				if (!u.GP) return false;
-				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
-				return true;
-			},
-			(a: LeaderboardUser, b: LeaderboardUser) => (b.GP ?? 0) - (a.GP ?? 0)
-		);
-
-		const display = new RichDisplay();
-		display.setFooterPrefix(`Page `);
-
-		for (const page of util.chunk(users, 10)) {
-			display.addPage(
-				new MessageEmbed()
-					.setTitle('GP Leaderboard')
-					.setDescription(
-						page
-							.map(
-								({ user, GP }) =>
-									`**${user}** has ${GP ? GP.toLocaleString() : 0} GP `
-							)
-							.join('\n')
-					)
-			);
+		if (Date.now() - this.gpLeaderboard.lastUpdated > CACHE_TIME) {
+			this.gpLeaderboard.list = (
+				await this.query(
+					`SELECT "id", "GP" FROM users WHERE "GP" > 0 ORDER BY "GP" DESC LIMIT 2000;`
+				)
+			).map((res: any) => ({ ...res, GP: parseInt(res.GP) }));
+			this.gpLeaderboard.lastUpdated = Date.now();
 		}
 
-		return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
+		let { list } = this.gpLeaderboard;
+
+		if (onlyForGuild && msg.guild) {
+			list = list.filter((gpUser: GPUser) => msg.guild!.members.has(gpUser.id));
+		}
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							({ id, GP }) =>
+								`**${this.getUsername(id)}** has ${GP.toLocaleString()} GP `
+						)
+						.join('\n')
+				),
+			'GP Leaderboard'
+		);
 	}
 
 	async pets(msg: KlasaMessage) {
-		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-
 		const onlyForGuild = msg.flagArgs.server;
 
-		const users = await this.fetchUsers(
-			(u: LeaderboardUser) => {
-				if (!u.pets) return false;
-				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
-				return true;
-			},
-			(a: LeaderboardUser, b: LeaderboardUser) =>
-				(b.pets ? Object.keys(b.pets).length : 0) -
-				(a.pets ? Object.keys(a.pets).length : 0)
-		);
-
-		const display = new RichDisplay();
-		display.setFooterPrefix(`Page `);
-
-		for (const page of util.chunk(users, 10)) {
-			display.addPage(
-				new MessageEmbed()
-					.setTitle('Pets Leaderboard')
-					.setDescription(
-						page
-							.map(
-								({ user, pets }) =>
-									`**${user}** has ${pets ? Object.keys(pets).length : 0} pets `
-							)
-							.join('\n')
-					)
+		if (Date.now() - this.petLeaderboard.lastUpdated > CACHE_TIME) {
+			this.petLeaderboard.list = await this.query(
+				`SELECT u.id, u.petcount FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS(pets)) petcount, id FROM users
+) u
+ORDER BY u.petcount DESC LIMIT 2000;`
 			);
+			this.petLeaderboard.lastUpdated = Date.now();
 		}
 
-		return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
+		let { list } = this.petLeaderboard;
+
+		if (onlyForGuild && msg.guild) {
+			list = list.filter((gpUser: PetUser) => msg.guild!.members.has(gpUser.id));
+		}
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							({ id, petcount }) =>
+								`**${this.getUsername(id)}** has ${petcount.toLocaleString()} pets `
+						)
+						.join('\n')
+				),
+			'Pet Leaderboard'
+		);
 	}
 
 	async kc(msg: KlasaMessage, [name]: [string]) {
-		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 		if (!name) {
 			throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``;
 		}
@@ -191,43 +209,45 @@ export default class extends Command {
 
 		const onlyForGuild = msg.flagArgs.server;
 
-		const users = await this.fetchUsers(
-			(u: LeaderboardUser) => {
-				if (!u.monsterScores || !u.monsterScores[monster.id]) return false;
-				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
-				return true;
-			},
-			(a: LeaderboardUser, b: LeaderboardUser) => {
+		if (Date.now() - this.kcLeaderboard.lastUpdated > CACHE_TIME) {
+			this.kcLeaderboard.list = (
+				await this.query(
+					`SELECT id, "monsterScores" FROM users WHERE "monsterScores"::text <> '{}'::text;`
+				)
+			).map((res: any) => ({ ...res, GP: parseInt(res.GP) }));
+			this.kcLeaderboard.lastUpdated = Date.now();
+		}
+
+		let list = this.kcLeaderboard.list
+			.filter(user => typeof user.monsterScores[monster.id] === 'number')
+			.sort((a: KCUser, b: KCUser) => {
 				const aScore = a.monsterScores![monster.id] ?? 0;
 				const bScore = b.monsterScores![monster.id] ?? 0;
 				return bScore - aScore;
-			}
-		);
+			})
+			.slice(0, 2000);
 
-		const display = new RichDisplay();
-		display.setFooterPrefix(`Page `);
-
-		for (const page of util.chunk(users, 10)) {
-			display.addPage(
-				new MessageEmbed()
-					.setTitle(`KC Leaderboard for ${monster.name}`)
-					.setDescription(
-						page
-							.map(
-								({ user, monsterScores }) =>
-									`**${user}**: ${monsterScores![monster.id] ?? 0}`
-							)
-							.join('\n')
-					)
-			);
+		if (onlyForGuild && msg.guild) {
+			list = list.filter((kcUser: KCUser) => msg.guild!.members.has(kcUser.id));
 		}
 
-		return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							({ id, monsterScores }) =>
+								`**${this.getUsername(id)}:** ${monsterScores[monster.id]} KC`
+						)
+						.join('\n')
+				),
+			`KC Leaderboard for ${monster.name}`
+		);
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
@@ -242,13 +262,15 @@ export default class extends Command {
 
 		const onlyForGuild = msg.flagArgs.server;
 
-		const users = await this.fetchUsers(
-			(u: LeaderboardUser) => {
-				if (!u.collectionLogBank) return false;
-				if (onlyForGuild && msg.guild && !msg.guild.members.has(u.id)) return false;
-				return true;
-			},
-			(a: LeaderboardUser, b: LeaderboardUser) => {
+		if (Date.now() - this.clLeaderboard.lastUpdated > CACHE_TIME) {
+			this.clLeaderboard.list = await this.query(
+				`SELECT id, "collectionLogBank" FROM users WHERE "collectionLogBank"::text <> '{}'::text;`
+			);
+			this.clLeaderboard.lastUpdated = Date.now();
+		}
+
+		let list = this.clLeaderboard.list
+			.sort((a: CLUser, b: CLUser) => {
 				const aScore = a.collectionLogBank
 					? Object.entries(a.collectionLogBank).filter(
 							([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))
@@ -260,32 +282,47 @@ export default class extends Command {
 					  ).length
 					: -1;
 				return bScore - aScore;
-			}
+			})
+			.slice(0, 2000);
+
+		if (onlyForGuild && msg.guild) {
+			list = list.filter((kcUser: CLUser) => msg.guild!.members.has(kcUser.id));
+		}
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							({ id, collectionLogBank }) =>
+								`**${this.getUsername(id)}:** ${
+									Object.entries(collectionLogBank).filter(
+										([itemID, qty]) =>
+											qty > 0 && items.includes(parseInt(itemID))
+									).length
+								}`
+						)
+						.join('\n')
+				),
+			`${type.name} Collection Log Leaderboard`
 		);
+	}
+
+	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
+		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 
 		const display = new RichDisplay();
 		display.setFooterPrefix(`Page `);
 
-		for (const page of util.chunk(users, 10)) {
-			display.addPage(
-				new MessageEmbed()
-					.setTitle(`${type.name} Collection Log Leaderboard`)
-					.setDescription(
-						page
-							.map(
-								({ user, collectionLogBank = {} }) =>
-									`**${user}**: ${
-										Object.entries(collectionLogBank).filter(
-											([itemID, qty]) =>
-												qty > 0 && items.includes(parseInt(itemID))
-										).length
-									}`
-							)
-							.join('\n')
-					)
-			);
+		for (const page of pages) {
+			display.addPage(new MessageEmbed().setTitle(title).setDescription(page));
 		}
 
-		return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
+		return display.run(loadingMsg as KlasaMessage, {
+			jump: false,
+			stop: false
+		});
 	}
 }
