@@ -40,7 +40,7 @@ export default class extends Command {
 	async run(msg: KlasaMessage, [tier, quantity = 1]: [string, number]) {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
-			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit to 10,000 by nitro boosting in the support server.*`;
+			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
 		}
 
 		const clueTier = clueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());
