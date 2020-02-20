@@ -27,7 +27,6 @@ import { randomHappyEmoji, isWeekend, formatDuration, roll } from '../../lib/uti
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
-import bankHasNoneOfItems from '../../lib/util/bankHasNoneOfItems';
 import { transformArrayOfResolvableItems } from '../../lib/util/transformArrayOfResolvableItems';
 
 const easyTrivia = triviaQuestions!.slice(0, 40);
