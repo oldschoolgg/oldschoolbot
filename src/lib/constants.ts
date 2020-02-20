@@ -49,7 +49,8 @@ export const enum Emoji {
 	ThumbsDown = '👎',
 	Casket = '<:Casket:365003978678730772>',
 	Mining = '<:mining:630911040128811010>',
-	Diango = '<:diangoChatHead:678146375300415508>'
+	Diango = '<:diangoChatHead:678146375300415508>',
+	BirthdayPresent = '<:birthdayPresent:680041979710668880>'
 }
 
 export const enum Image {

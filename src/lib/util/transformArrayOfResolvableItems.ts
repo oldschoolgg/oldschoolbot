@@ -10,8 +10,7 @@ export function transformArrayOfResolvableItems(itemArray: (number | string)[]):
 		} else {
 			const osItem = Items.get(item);
 			if (!osItem) {
-				console.error(`No item found for: ${item}.`);
-				continue;
+				throw `No item found for: ${item}.`;
 			}
 			newArray.push(osItem.id);
 		}
