@@ -1,5 +1,5 @@
 import { Task, TaskStore, Colors, KlasaUser } from 'klasa';
-import { SnowflakeUtil, Channel, TextChannel } from 'discord.js';
+import { SnowflakeUtil } from 'discord.js';
 
 import { UserSettings } from '../lib/UserSettings';
 
@@ -44,11 +44,18 @@ export default class MemorySweeper extends Task {
 	}
 
 	async run() {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		const queryRes = await this.client.providers!.default!.runAll(
+			`SELECT ARRAY(SELECT "id" FROM users WHERE "badges"::text <> '{}'::text OR "bank"::text <> '{}'::text OR "minion.hasBought" = true); `
+		);
+
+		const shouldCacheUsers: Set<string> = new Set(queryRes[0].array);
+
 		let presences = 0;
 		let guildMembers = 0;
 		let voiceStates = 0;
 		let emojis = 0;
-		let lastMessages = 0;
 		let users = 0;
 
 		// Per-Guild sweeper
@@ -63,7 +70,7 @@ export default class MemorySweeper extends Task {
 			// Clear members that haven't send a message in the last 30 minutes
 			const { me } = guild;
 			for (const [id, member] of guild.members) {
-				if (this.shouldCacheUser(member.user)) continue;
+				if (shouldCacheUsers.has(member.user.id)) continue;
 				if (member === me) continue;
 				if (member.lastMessageID && member.lastMessageID > this.OLD_SNOWFLAKE) continue;
 				guildMembers++;
@@ -77,17 +84,9 @@ export default class MemorySweeper extends Task {
 			guild.emojis.clear();
 		}
 
-		// Per-Channel sweeper
-		for (const channel of this.client.channels.values()) {
-			if (this.isTextChannel(channel) && channel.lastMessageID) {
-				channel.lastMessageID = null;
-				lastMessages++;
-			}
-		}
-
 		// Per-User sweeper
 		for (const user of this.client.users.values()) {
-			if (this.shouldCacheUser(user)) continue;
+			if (shouldCacheUsers.has(user.id)) continue;
 			this.client.users.delete(user.id);
 			users++;
 		}
@@ -99,9 +98,7 @@ export default class MemorySweeper extends Task {
 				guildMembers
 			)} [GuildMember]s | ${this.setColor(voiceStates)} [VoiceState]s | ${this.setColor(
 				users
-			)} [User]s | ${this.setColor(emojis)} [Emoji]s | ${this.setColor(
-				lastMessages
-			)} [Last Message]s.`
+			)} [User]s | ${this.setColor(emojis)} [Emoji]s`
 		);
 	}
 
@@ -122,9 +119,5 @@ export default class MemorySweeper extends Task {
 		if (number > 100) return this.colors.yellow.format(text);
 		// Green color
 		return this.colors.green.format(text);
-	}
-
-	private isTextChannel(channel: Channel): channel is TextChannel {
-		return channel.type === 'text';
 	}
 }
