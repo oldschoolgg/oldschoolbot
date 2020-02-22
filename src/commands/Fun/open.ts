@@ -86,7 +86,7 @@ export default class extends BotCommand {
 
 		const loot = bankFromLootTableOutput(openable.table.roll());
 
-		await msg.author.addItemsToBank(loot);
+		await msg.author.addItemsToBank(loot, true);
 
 		return msg.send(
 			`${openable.emoji} You opened a ${openable.name} and received: ${
