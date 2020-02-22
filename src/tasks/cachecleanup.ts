@@ -1,13 +1,9 @@
-import { Task, TaskStore, Colors, KlasaUser } from 'klasa';
+import { Task, TaskStore, Colors } from 'klasa';
 import { SnowflakeUtil } from 'discord.js';
 
-import { UserSettings } from '../lib/UserSettings';
+import { Time } from '../lib/constants';
 
-// THRESHOLD equals to 30 minutes in milliseconds:
-//     - 1000 milliseconds = 1 second
-//     - 60 seconds        = 1 minute
-//     - 30 minutes
-const THRESHOLD = 1000 * 60 * 30;
+const THRESHOLD = Time.Minute * 30;
 
 export default class MemorySweeper extends Task {
 	colors: { red: Colors; yellow: Colors; green: Colors };
@@ -27,20 +23,6 @@ export default class MemorySweeper extends Task {
 		// The header with the console colors
 		this.header = new Colors({ text: 'lightblue' }).format('[CACHE CLEANUP]');
 		this.OLD_SNOWFLAKE = SnowflakeUtil.generate(Date.now() - THRESHOLD);
-	}
-
-	shouldCacheUser(user: KlasaUser) {
-		if (
-			user.settings.get(UserSettings.GP) ||
-			user.settings.get(UserSettings.RSN) ||
-			user.settings.get(UserSettings.Badges).length > 0 ||
-			Object.keys(user.settings.get(UserSettings.Pets)).length > 0 ||
-			Object.keys(user.settings.get(UserSettings.Bank)).length > 0
-		) {
-			return true;
-		}
-
-		if (user.lastMessageID && user.lastMessageID > this.OLD_SNOWFLAKE) return true;
 	}
 
 	async run() {
