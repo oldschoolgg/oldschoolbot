@@ -1,4 +1,4 @@
-import { Command, KlasaMessage, CommandStore, RichDisplay, util } from 'klasa';
+import { Command, KlasaMessage, CommandStore, util } from 'klasa';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
@@ -10,6 +10,7 @@ import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import addArrayOfBanks from '../../lib/util/addArrayOfBanks';
+import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -109,7 +110,7 @@ export default class extends Command {
 			}
 
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
-			const display = new RichDisplay();
+			const display = new UserRichDisplay();
 			display.setFooterPrefix(`Page `);
 
 			for (const page of util.chunk(textBank, 10)) {
@@ -120,7 +121,10 @@ export default class extends Command {
 				);
 			}
 
-			return display.run(loadingMsg as KlasaMessage, { jump: false, stop: false });
+			return display.start(loadingMsg as KlasaMessage, msg.author.id, {
+				jump: false,
+				stop: false
+			});
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
