@@ -143,6 +143,7 @@ export const UserSettingsSchema = /* sql */ `
 		"RSN"                  VARCHAR(15),
 		"pets"                 JSON         DEFAULT '{}'::JSON          NOT NULL,
 		"badges"               SMALLINT[]   DEFAULT ARRAY[]::SMALLINT[] NOT NULL,
+		"bitfield"             SMALLINT[]   DEFAULT ARRAY[]::SMALLINT[] NOT NULL,
 		"lastDailyTimestamp"   BIGINT       DEFAULT 0                   NOT NULL,
 		"bank"                 JSON         DEFAULT '{}'::JSON          NOT NULL,
 		"collectionLogBank"    JSON         DEFAULT '{}'::JSON          NOT NULL,
