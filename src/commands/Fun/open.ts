@@ -89,9 +89,9 @@ export default class extends BotCommand {
 		await msg.author.addItemsToBank(loot);
 
 		return msg.send(
-			`${openable.emoji} You opened a ${
-				openable.name
-			} and received: ${createReadableItemListFromBank(loot)}.`
+			`${openable.emoji} You opened a ${openable.name} and received: ${
+				Object.keys(loot).length > 0 ? createReadableItemListFromBank(loot) : 'Nothing! Sad'
+			}.`
 		);
 	}
 }
