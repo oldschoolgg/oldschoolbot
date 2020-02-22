@@ -27,6 +27,7 @@ export interface SettingsEntry {
 	collectionLogBank?: Bank;
 	pets?: number[];
 	lastDailyTimestamp?: number;
+	bitfield?: number[];
 	totalCommandsUsed?: number;
 	minion?: {
 		name?: string;

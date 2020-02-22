@@ -9,6 +9,7 @@ Client.defaultUserSchema
 	.add('RSN', 'string', { default: null })
 	.add('pets', 'any', { default: {} })
 	.add('badges', 'integer', { array: true, default: [] })
+	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })

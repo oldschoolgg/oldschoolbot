@@ -50,7 +50,8 @@ export const enum Emoji {
 	Casket = '<:Casket:365003978678730772>',
 	Mining = '<:mining:630911040128811010>',
 	Diango = '<:diangoChatHead:678146375300415508>',
-	BirthdayPresent = '<:birthdayPresent:680041979710668880>'
+	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
+	MysteryBox = '<:mysterybox:680783258488799277>'
 }
 
 export const enum Image {
@@ -107,4 +108,8 @@ export const enum PerkTier {
 	One = 1, // Boosters, Contributors, Mods
 	Two = 2, // Tier 1 Patron
 	Three = 3 // Tier 2 Patron
+}
+
+export const enum BitField {
+	HasGivenBirthdayPresent = 1
 }
