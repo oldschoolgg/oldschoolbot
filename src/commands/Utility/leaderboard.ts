@@ -1,11 +1,12 @@
 import { MessageEmbed } from 'discord.js';
-import { util, KlasaMessage, Command, CommandStore, RichDisplay } from 'klasa';
+import { util, KlasaMessage, Command, CommandStore } from 'klasa';
 
 import { SettingsEntry, StringKeyedBank } from '../../lib/types';
 import badges from '../../lib/badges';
 import { Time } from '../../lib/constants';
 import { findMonster, stringMatches } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
+import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 
 const CACHE_TIME = Time.Minute * 5;
 
@@ -89,7 +90,8 @@ export default class extends Command {
 			usage: '[pets|gp|petrecords|kc|cl] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
-			aliases: ['lb']
+			aliases: ['lb'],
+			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES']
 		});
 	}
 
@@ -313,14 +315,14 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 
-		const display = new RichDisplay();
+		const display = new UserRichDisplay();
 		display.setFooterPrefix(`Page `);
 
 		for (const page of pages) {
 			display.addPage(new MessageEmbed().setTitle(title).setDescription(page));
 		}
 
-		return display.run(loadingMsg as KlasaMessage, {
+		return display.start(loadingMsg as KlasaMessage, msg.author.id, {
 			jump: false,
 			stop: false
 		});
