@@ -90,7 +90,9 @@ export default class extends BotCommand {
 
 		return msg.send(
 			`${openable.emoji} You opened a ${openable.name} and received: ${
-				Object.keys(loot).length > 0 ? createReadableItemListFromBank(loot) : 'Nothing! Sad'
+				Object.keys(loot).length > 0
+					? createReadableItemListFromBank(this.client, loot)
+					: 'Nothing! Sad'
 			}.`
 		);
 	}
