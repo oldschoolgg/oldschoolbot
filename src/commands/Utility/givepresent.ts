@@ -52,6 +52,8 @@ export default class extends BotCommand {
 				`${Emoji.BirthdayPresent} ${msg.author.username} just gave a gift to ${user.username}!`
 			);
 
-		return msg.send(`You gave a present to ${user} ${Emoji.BirthdayPresent}!`);
+		return msg.send(
+			`You gave a present to ${user} ${Emoji.BirthdayPresent}! You can open this present with \`${msg.cmdPrefix}open present\``
+		);
 	}
 }
