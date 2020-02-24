@@ -168,7 +168,7 @@ export default class BankImageTask extends Task {
 		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID);
 		ctx.drawImage(bgImage!.image, 0, 0, bgImage!.image.width, bgImage!.image.height);
 
-		let items = createTupleOfItemsFromBank(this.client, itemLoot);
+		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
 
 		const totalValue = addArrayOfNumbers(items.map(i => i[2]));
 

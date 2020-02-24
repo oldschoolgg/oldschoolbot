@@ -4,13 +4,13 @@ import { Roles, PerkTier } from '../constants';
 import getSupportGuild from './getSupportGuild';
 
 export default function getUsersPerkTier(user: KlasaUser): number {
-	const supportGuild = getSupportGuild(user.client);
-	const member = supportGuild.members.find(member => member.user === user);
-	if (!member) return 0;
-
 	if (user.client.owners.has(user)) {
 		return 10;
 	}
+
+	const supportGuild = getSupportGuild(user.client);
+	const member = supportGuild.members.find(member => member.user === user);
+	if (!member) return 0;
 
 	if (member.roles.has(Roles.PatronTier2)) {
 		return PerkTier.Three;
