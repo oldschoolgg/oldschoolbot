@@ -1,12 +1,15 @@
+import { KlasaClient } from 'klasa';
 import { Items } from 'oldschooljs';
 
-import { Bank } from '../types';
+import { Bank, ItemTuple } from '../types';
+import getItemPrice from './getItemPrice';
 
-export default function createTupleOfItemsFromBank(bank: Bank) {
-	const readableTuple: [string, number][] = [];
+export default function createTupleOfItemsFromBank(client: KlasaClient, bank: Bank) {
+	const readableTuple: ItemTuple[] = [];
 
 	for (const [itemID, qty] of Object.entries(bank)) {
-		readableTuple.push([Items.get(parseInt(itemID))!.name, qty]);
+		const item = Items.get(parseInt(itemID));
+		readableTuple.push([item!.id, qty, getItemPrice(client, itemID) * qty]);
 	}
 
 	return readableTuple;

@@ -31,7 +31,8 @@ declare module 'klasa' {
 			bank: Bank,
 			title?: string,
 			showValue?: boolean,
-			flags?: { [key: string]: string | number }
+			flags?: { [key: string]: string | number },
+			bankBackgroundID = 1
 		): Promise<Buffer>;
 		generateCollectionLogImage(
 			collectionLog: Bank,
