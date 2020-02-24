@@ -136,7 +136,8 @@ export default class extends Command {
 				true,
 				{
 					...msg.flagArgs
-				}
+				},
+				msg.author.settings.get(UserSettings.BankBackground)
 			);
 			return msg.send(new MessageAttachment(image, 'osbot.png'));
 		}
@@ -152,7 +153,8 @@ export default class extends Command {
 			{
 				...msg.flagArgs,
 				page: page - 1
-			}
+			},
+			msg.author.settings.get(UserSettings.BankBackground)
 		);
 
 		if (msg.flagArgs.full) {

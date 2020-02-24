@@ -139,3 +139,5 @@ export interface ClueTier {
 	scrollID: number;
 	timeToFinish: number;
 }
+
+export type ItemTuple = [number, number, number];

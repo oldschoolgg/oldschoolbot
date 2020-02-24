@@ -267,3 +267,7 @@ export function itemNameFromID(itemID: number | string) {
 export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
 	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }
+
+export function addArrayOfNumbers(arr: number[]) {
+	return arr.reduce((a, b) => a + b, 0);
+}
