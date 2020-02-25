@@ -48,23 +48,26 @@ export default class extends BotCommand {
 			totalPrice = Math.floor(totalPrice * 0.8);
 		}
 
-		const sellMsg = await msg.channel.send(
-			`${msg.author}, say \`confirm\` to sell ${quantity} ${
-				osItem.name
-			} for ${totalPrice.toLocaleString()} (${toKMB(totalPrice)}).`
-		);
-
-		try {
-			const collected = await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				options
+		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+			const sellMsg = await msg.channel.send(
+				`${msg.author}, say \`confirm\` to sell ${quantity} ${
+					osItem.name
+				} for ${totalPrice.toLocaleString()} (${toKMB(totalPrice)}).`
 			);
-			if (!collected || !collected.first()) {
-				throw "This shouldn't be possible...";
+
+			try {
+				const collected = await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					options
+				);
+				if (!collected || !collected.first()) {
+					throw "This shouldn't be possible...";
+				}
+			} catch (err) {
+				return sellMsg.edit(`Cancelling sale of ${quantity}x ${osItem.name}.`);
 			}
-		} catch (err) {
-			return sellMsg.edit(`Cancelling sale of ${quantity}x ${osItem.name}.`);
 		}
 
 		await msg.author.removeItemFromBank(osItem.id, quantity);
