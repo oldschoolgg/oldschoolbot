@@ -9,6 +9,7 @@ export namespace GuildSettings {
 	export const StaffOnlyChannels = T<readonly string[]>('staffOnlyChannels');
 	export const Prefix = T<string>('prefix');
 	export const DisabledCommands = T<readonly string[]>('disabledCommands');
+	export const Tags = T<readonly [string, string][]>('tags');
 	export const HCIMDeaths = T<string>('hcimdeaths');
 	export const JMODComments = T<string>('jmodComments');
 	export const StreamerTweets = T<string>('streamertweets');
