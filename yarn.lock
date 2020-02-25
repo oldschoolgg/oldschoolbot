@@ -1995,10 +1995,10 @@ observable-fns@^0.5.0:
   resolved "https://registry.yarnpkg.com/observable-fns/-/observable-fns-0.5.0.tgz#9b71bb3e1a6ac9840b3922b67de0092773230177"
   integrity sha512-BWmxvFppAKRWWTYns+yW3RaoXLTkSVF1cnLNe06opO4/C4VVfZgRkwSEBLOAA6bcTNM1zDDRz2T+l52cPNuaZQ==
 
-oldschooljs@^0.8.8:
-  version "0.8.8"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.8.8.tgz#ee72fdda44fdbad4a0968062ef63abd9eb181513"
-  integrity sha512-uU3yaTcRPaGEdzW7oprs8UT24AM3W0hNCruoMvY58SqfBLeD2nx4xsodAh0eJDC53/cnzRsUwzPcZ32RJphvMA==
+oldschooljs@^0.8.9:
+  version "0.8.9"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.8.9.tgz#8f7b45981f31bf8785c9565dbf5cd15d17775541"
+  integrity sha512-A0fymcmRxq7surs6BsBfiSLPaXpPUM3iPOeEIUo6OhXFSMksCdV0HwZGf4b4EbycX6ndp3OagkyZrTAQPsipVw==
   dependencies:
     jsdom "^16.0.1"
     node-fetch "^2.6.0"
