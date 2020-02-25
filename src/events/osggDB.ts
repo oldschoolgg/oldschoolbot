@@ -1,7 +1,7 @@
 import { Event, EventStore } from 'klasa';
 import { MongoClient } from 'mongodb';
 
-const { dbUrl, dbName } = require('../../config/private').mongoDB;
+const { dbUrl, dbName } = require('../../private').mongoDB;
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
