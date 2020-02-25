@@ -28,7 +28,13 @@ export default class extends Task {
 
 		const image = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot, `Loot From ${quantity} ${monster.name}:`);
+			.generateBankImage(
+				loot,
+				`Loot From ${quantity} ${monster.name}:`,
+				true,
+				{},
+				user.settings.get(UserSettings.BankBackground)
+			);
 
 		this.client.emit(
 			Events.Log,
