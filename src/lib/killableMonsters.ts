@@ -1,7 +1,8 @@
-import { Monsters, Items } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
 
 import { Time } from './constants';
 import { Bank } from './types';
+import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
 
 interface KillableMonster {
 	id: number;
@@ -318,12 +319,22 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: ['Zamorakian spear']
+	},
+	{
+		id: Monsters.KalphiteQueen.id,
+		name: Monsters.KalphiteQueen.name,
+		aliases: Monsters.KalphiteQueen.aliases,
+		timeToFinish: Time.Minute * 4,
+		table: Monsters.KalphiteQueen,
+		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 7,
+		itemsRequired: []
 	}
 ].map(killableMonster => ({
 	...killableMonster,
-	itemsRequired: (killableMonster.itemsRequired as string[]).map(
-		(itemName: string) => Items.get(itemName)!.id
-	)
+	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired)
 }));
 
 export default killableMonsters;
