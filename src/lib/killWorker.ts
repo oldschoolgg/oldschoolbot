@@ -9,7 +9,6 @@ import raids = require('../../data/monsters/raids');
 import tob = require('../../data/monsters/tob');
 import abbyDemon = require('../../data/monsters/abbyDemon');
 import demonicGorilla = require('../../data/monsters/demonicGorilla');
-import kalphiteQueen = require('../../data/monsters/kalphiteQueen');
 import lizardmanShaman = require('../../data/monsters/lizardmanShaman');
 import wyvern = require('../../data/monsters/wyvern');
 import ancientWyvern = require('../../data/monsters/ancientWyvern');
@@ -134,12 +133,6 @@ expose({
 			case 'DEMONICS': {
 				if (quantity > 500) return "I can only kill 500 Demonic Gorilla's at a time!";
 				const loot = demonicGorilla.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-			case 'KQ':
-			case 'KALPHITEQUEEN': {
-				if (quantity > 500) return "I can only kill 500 Kalphite Queen's at a time!";
-				const loot = kalphiteQueen.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
 			case 'SHAMANS':
