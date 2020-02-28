@@ -10,7 +10,7 @@ import { UserSettings } from '../../lib/UserSettings';
 
 const options = {
 	max: 1,
-	time: 10000,
+	time: 20000,
 	errors: ['time']
 };
 
