@@ -104,7 +104,7 @@ export default class extends Monitor {
 				);
 			}
 		} catch (response) {
-			this.client.emit('commandInhibited', message, message.command, response);
+			return this.client.emit('commandInhibited', message, message.command, response);
 		}
 		if (this.client.options.typing) message.channel.stopTyping();
 		if (message.command!.oneAtTime) {
