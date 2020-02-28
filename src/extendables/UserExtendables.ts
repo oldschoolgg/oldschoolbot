@@ -149,8 +149,8 @@ export default class extends Extendable {
 		);
 	}
 
-	public async hasItem(this: User, itemID: number, amount = 1) {
-		await this.settings.sync(true);
+	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
+		if (sync) await this.settings.sync(true);
 
 		const bank = this.settings.get(UserSettings.Bank);
 		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
