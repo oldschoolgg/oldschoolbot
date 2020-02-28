@@ -232,8 +232,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		this.client.commands.get('quest')!.run(msg, []);
 	}
 
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
+	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
 		await msg.author.settings.sync(true);
+
+		if (typeof quantity === 'string') {
+			tierName = quantity;
+			quantity = 1;
+		}
+
 		if (msg.author.minionIsBusy) {
 			this.client.emit(
 				Events.Log,
@@ -293,9 +299,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		return msg.send(
 			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
 				clueTier.name
-			} clues, it'll take around ${formatDuration(
-				clueTier.timeToFinish * quantity
-			)} to finish.`
+			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 
