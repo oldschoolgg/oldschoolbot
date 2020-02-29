@@ -286,8 +286,8 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
-		if (monster.id === 128) {
-			throw `Kalphite Queen is currently disabled due to a bug!`;
+		if (monster.id === 128 || monster.id === 8026) {
+			throw `Kalphite Queen and Vorkath are currently disabled due to a bug!`;
 		}
 
 		// If no quantity provided, set it to the max.
