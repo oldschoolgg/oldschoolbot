@@ -14,7 +14,6 @@ export default class extends BotCommand {
 			cooldown: 10,
 			aliases: ['cl'],
 			usage: '[type:string]'
-			// usageDelim: ' '
 		});
 	}
 
