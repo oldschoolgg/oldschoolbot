@@ -940,14 +940,14 @@ export const cluesRares = {
 	])
 };
 export const cluesAll = {
-    ...cluesShared,
-    ...cluesRares,
-    ...cluesEasy,
-    ...cluesBeginner,
-    ...cluesMedium,
-    ...cluesHard,
-    ...cluesElite,
-    ...cluesMaster
+	...cluesShared,
+	...cluesRares,
+	...cluesEasy,
+	...cluesBeginner,
+	...cluesMedium,
+	...cluesHard,
+	...cluesElite,
+	...cluesMaster
 };
 export const diangoCollectionLog = {
 	Common: transformArrayOfResolvableItems([
