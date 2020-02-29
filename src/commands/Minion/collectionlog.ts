@@ -13,8 +13,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 10,
 			aliases: ['cl'],
-			usage: '[type:string]',
-			//usageDelim: ' '
+			usage: '[type:string]'
+			// usageDelim: ' '
 		});
 	}
 
