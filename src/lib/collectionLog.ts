@@ -942,8 +942,8 @@ export const cluesRares = {
 export const cluesAll = {
 	...cluesShared,
 	...cluesRares,
-	...cluesEasy,
 	...cluesBeginner,
+	...cluesEasy,
 	...cluesMedium,
 	...cluesHard,
 	...cluesElite,
