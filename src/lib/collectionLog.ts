@@ -939,16 +939,16 @@ export const cluesRares = {
 		'Gilded spade'
 	])
 };
-export const cluesAll = Object.assign(
-	{},
-	cluesShared,
-	cluesRares,
-	cluesEasy,
-	cluesMedium,
-	cluesHard,
-	cluesElite,
-	cluesMaster
-);
+export const cluesAll = {
+    ...cluesShared,
+    ...cluesRares,
+    ...cluesEasy,
+    ...cluesBeginner,
+    ...cluesMedium,
+    ...cluesHard,
+    ...cluesElite,
+    ...cluesMaster
+};
 export const diangoCollectionLog = {
 	Common: transformArrayOfResolvableItems([
 		'Event rpg',
