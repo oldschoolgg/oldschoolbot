@@ -9,6 +9,7 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 declare module 'klasa' {
 	interface KlasaClient {
 		public oneCommandAtATimeCache: Set<string>;
+		public secondaryUserBusyCache: Set<string>;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public settings: Settings;
 		public production: boolean;
@@ -69,8 +70,14 @@ declare module 'discord.js' {
 		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
 		skillLevel(skillName: SkillsEnum): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
+		toggleBusy(busy: boolean): void;
 		sanitizedName: string;
 		badges: string;
+		/**
+		 * If they are currently locked into a economy command, or
+		 * locked from being targeted in an economy command by another (duel, sellto, etc)
+		 */
+		isBusy: boolean;
 		minionIsBusy: boolean;
 		minionStatus: string;
 		minionName: string;

@@ -15,6 +15,8 @@ import('./lib/schemas/GuildSchema');
 
 class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
+	public secondaryUserBusyCache = new Set<string>();
+
 	constructor(options: KlasaClientOptions) {
 		super(options);
 		for (const prop of Object.keys(clientProperties)) {
