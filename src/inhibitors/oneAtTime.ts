@@ -8,7 +8,7 @@ export default class extends Inhibitor {
 	public async run(msg: KlasaMessage, command: Command) {
 		if (!command.oneAtTime) return;
 
-		if (this.client.oneCommandAtATimeCache.has(msg.author.id)) {
+		if (msg.author.isBusy) {
 			throw true;
 		}
 	}
