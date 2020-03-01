@@ -7,6 +7,7 @@ import cleanItemName from '../../lib/util/cleanItemName';
 import { GuildMember } from 'discord.js';
 import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/UserSettings';
+import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
 
 const options = {
 	max: 1,
@@ -31,7 +32,7 @@ export default class extends BotCommand {
 	) {
 		if (buyerMember.user.id === msg.author.id) throw `You can't trade yourself.`;
 		if (buyerMember.user.bot) throw `You can't trade a bot.`;
-		if (this.client.oneCommandAtATimeCache.has(buyerMember.user.id)) {
+		if (buyerMember.user.isBusy) {
 			throw `That user is busy right now.`;
 		}
 
@@ -47,6 +48,23 @@ export default class extends BotCommand {
 			throw `That item is not tradeable.`;
 		}
 
+		buyerMember.user.toggleBusy(true);
+		msg.author.toggleBusy(true);
+		try {
+			await this.sell(msg, buyerMember, price, quantity, osItem);
+		} finally {
+			buyerMember.user.toggleBusy(false);
+			msg.author.toggleBusy(false);
+		}
+	}
+
+	async sell(
+		msg: KlasaMessage,
+		buyerMember: GuildMember,
+		price: number,
+		quantity: number,
+		osItem: Item | PartialItem
+	) {
 		const hasItem = await msg.author.hasItem(osItem.id, quantity);
 		if (!hasItem) {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
@@ -54,6 +72,8 @@ export default class extends BotCommand {
 
 		const itemDesc = `${quantity}x ${osItem.name}`;
 		const priceDesc = `${Util.toKMB(price)} GP (${price.toLocaleString()})`;
+
+		buyerMember.user.toggleBusy(true);
 
 		const sellMsg = await msg.channel.send(
 			`${msg.author}, say \`confirm\` to confirm that you want to sell ${itemDesc} to \`${buyerMember.user.username}#${buyerMember.user.discriminator}\` for a *total* of ${priceDesc}.`
@@ -67,6 +87,7 @@ export default class extends BotCommand {
 				options
 			);
 		} catch (err) {
+			buyerMember.user.toggleBusy(false);
 			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
 		}
 
@@ -82,6 +103,7 @@ export default class extends BotCommand {
 				options
 			);
 		} catch (err) {
+			buyerMember.user.toggleBusy(false);
 			buyerConfirmationMsg.edit(`Cancelling sale of ${itemDesc}.`);
 			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
 		}
@@ -91,6 +113,7 @@ export default class extends BotCommand {
 				!(await msg.author.hasItem(osItem.id, quantity, false)) ||
 				buyerMember.user.settings.get(UserSettings.GP) < price
 			) {
+				buyerMember.user.toggleBusy(false);
 				return msg.send(`One of you lacks the required GP or items to make this trade.`);
 			}
 
@@ -100,12 +123,15 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(osItem.id, quantity);
 			await buyerMember.user.addItemsToBank({ [osItem.id]: quantity });
 		} catch (err) {
+			buyerMember.user.toggleBusy(false);
 			this.client.emit(Events.Wtf, err);
 			return msg.send(`Fatal error occurred. Please seek help in the support server.`);
 		}
 
+		buyerMember.user.toggleBusy(false);
+
 		msg.author.log(
-			`sold ${itemDesc} itemID[${osItem.id}] to userID[${buyerMember.user.id}] for ${price}`
+			`sold ${itemDesc} itemID[${osItem.id}] to ${buyerMember.user.sanitizedName} for ${price}`
 		);
 
 		return msg.send(`Sale of ${itemDesc} complete!`);
