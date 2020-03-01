@@ -73,8 +73,6 @@ export default class extends BotCommand {
 		const itemDesc = `${quantity}x ${osItem.name}`;
 		const priceDesc = `${Util.toKMB(price)} GP (${price.toLocaleString()})`;
 
-		buyerMember.user.toggleBusy(true);
-
 		const sellMsg = await msg.channel.send(
 			`${msg.author}, say \`confirm\` to confirm that you want to sell ${itemDesc} to \`${buyerMember.user.username}#${buyerMember.user.discriminator}\` for a *total* of ${priceDesc}.`
 		);
@@ -87,7 +85,6 @@ export default class extends BotCommand {
 				options
 			);
 		} catch (err) {
-			buyerMember.user.toggleBusy(false);
 			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
 		}
 
@@ -103,7 +100,6 @@ export default class extends BotCommand {
 				options
 			);
 		} catch (err) {
-			buyerMember.user.toggleBusy(false);
 			buyerConfirmationMsg.edit(`Cancelling sale of ${itemDesc}.`);
 			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
 		}
@@ -113,7 +109,6 @@ export default class extends BotCommand {
 				!(await msg.author.hasItem(osItem.id, quantity, false)) ||
 				buyerMember.user.settings.get(UserSettings.GP) < price
 			) {
-				buyerMember.user.toggleBusy(false);
 				return msg.send(`One of you lacks the required GP or items to make this trade.`);
 			}
 
@@ -123,12 +118,9 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(osItem.id, quantity);
 			await buyerMember.user.addItemsToBank({ [osItem.id]: quantity });
 		} catch (err) {
-			buyerMember.user.toggleBusy(false);
 			this.client.emit(Events.Wtf, err);
 			return msg.send(`Fatal error occurred. Please seek help in the support server.`);
 		}
-
-		buyerMember.user.toggleBusy(false);
 
 		msg.author.log(
 			`sold ${itemDesc} itemID[${osItem.id}] to ${buyerMember.user.sanitizedName} for ${price}`
