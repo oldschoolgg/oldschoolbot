@@ -1,12 +1,8 @@
 import { JMod } from '../src/lib/types';
 
 const JagexMods: JMod[] = [
-	{ redditUsername: 'modghost', formattedName: 'Mod Ghost' },
 	{ redditUsername: 'jagexjd', formattedName: 'Mod JD' },
-	{ redditUsername: 'jagex_wolf', formattedName: 'Mod Wolf' },
 	{ redditUsername: 'mod_kieren', formattedName: 'Mod Kieren' },
-	{ redditUsername: 'jagexatlas', formattedName: 'Mod Atlas' },
-	{ redditUsername: 'jagexgambit', formattedName: 'Mod Gambit' },
 	{ redditUsername: 'jagexsween', formattedName: 'Mod Sween' },
 	{ redditUsername: 'jagexbruno', formattedName: 'Mod Bruno' },
 	{ redditUsername: 'mod_archie', formattedName: 'Mod Archie' },
@@ -19,7 +15,6 @@ const JagexMods: JMod[] = [
 	{ redditUsername: 'jagexgee', formattedName: 'Mod Gee' },
 	{ redditUsername: 'jagexlenny', formattedName: 'Mod Lenny' },
 	{ redditUsername: 'jagexlottie', formattedName: 'Mod Lottie' },
-	{ redditUsername: 'jagexmaz', formattedName: 'Mod Maz' },
 	{ redditUsername: 'jagexmunro', formattedName: 'Mod Munro' },
 	{ redditUsername: 'jagexacorn', formattedName: 'Mod Acorn' },
 	{ redditUsername: 'jagex_weath', formattedName: 'Mod Weath' },
