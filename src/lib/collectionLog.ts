@@ -434,6 +434,12 @@ export const cluesMedium = {
 	])
 };
 export const cluesHard = {
+	'Hard ornament kits': transformArrayOfResolvableItems([
+		'Dragon boots ornament kit',
+		'Tzhaar-ket-om ornament kit',
+		'Berserker necklace ornament kit',
+		'Rune defender ornament kit'
+	]),
 	'Rune trimmed armor': transformArrayOfResolvableItems([
 		'Rune full helm (g)',
 		'Rune platebody (g)',
@@ -626,7 +632,6 @@ export const cluesHard = {
 };
 export const cluesElite = {
 	'Elite ornament kits': transformArrayOfResolvableItems([
-		'Dragon boots ornament kit',
 		'Dragon full helm ornament kit',
 		'Dragon chainbody ornament kit',
 		'Dragon legs/skirt ornament kit',
