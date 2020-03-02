@@ -130,6 +130,10 @@ export interface PrivateConfig {
 		dbUrl: string;
 		dbName: string;
 	};
+	patreon: {
+		campaignID: number;
+		token: string;
+	};
 }
 
 export interface ClueTier {
@@ -141,3 +145,14 @@ export interface ClueTier {
 }
 
 export type ItemTuple = [number, number, number];
+
+export interface Patron {
+	patreonID: string;
+	discordID?: string;
+	entitledTiers: string[];
+	lastChargeDate: string;
+	lastChargeStatus: string;
+	lifeTimeSupportCents: number;
+	patronStatus: string;
+	pledgeRelationshipStart: string;
+}
