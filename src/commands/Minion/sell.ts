@@ -5,14 +5,14 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import cleanItemName from '../../lib/util/cleanItemName';
 
 const options = {
 	max: 1,
 	time: 10000,
 	errors: ['time']
 };
-
-const specialUntradeables = [995];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -25,14 +25,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		const re = /’/gi;
-		const osItem = Items.get(itemName.replace(re, "'"));
+		const osItem = Items.get(cleanItemName(itemName));
 		if (!osItem) throw `That item doesnt exist.`;
-		if (
-			specialUntradeables.includes(osItem.id) ||
-			!('tradeable' in osItem) ||
-			!osItem.tradeable
-		) {
+		if (!itemIsTradeable(osItem.id)) {
 			throw `That item isn't tradeable.`;
 		}
 
@@ -56,15 +51,12 @@ export default class extends BotCommand {
 			);
 
 			try {
-				const collected = await msg.channel.awaitMessages(
+				await msg.channel.awaitMessages(
 					_msg =>
 						_msg.author.id === msg.author.id &&
 						_msg.content.toLowerCase() === 'confirm',
 					options
 				);
-				if (!collected || !collected.first()) {
-					throw "This shouldn't be possible...";
-				}
 			} catch (err) {
 				return sellMsg.edit(`Cancelling sale of ${quantity}x ${osItem.name}.`);
 			}

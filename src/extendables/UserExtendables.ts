@@ -33,6 +33,29 @@ export default class extends Extendable {
 		return `(${this.username.replace(/[()]/g, '')})[${this.id}]`;
 	}
 
+	get isBusy(this: User) {
+		const client = this.client as KlasaClient;
+		return (
+			client.oneCommandAtATimeCache.has(this.id) || client.secondaryUserBusyCache.has(this.id)
+		);
+	}
+
+	/**
+	 * Toggle whether this user is busy or not, this adds another layer of locking the user
+	 * from economy actions.
+	 *
+	 * @param busy boolean Whether the new toggled state will be busy or not busy.
+	 */
+	public toggleBusy(this: User, busy: boolean) {
+		const client = this.client as KlasaClient;
+
+		if (busy) {
+			client.secondaryUserBusyCache.add(this.id);
+		} else {
+			client.secondaryUserBusyCache.delete(this.id);
+		}
+	}
+
 	public log(this: User, stringLog: string) {
 		this.client.emit(Events.Log, `${this.sanitizedName} ${stringLog}`);
 	}
@@ -149,8 +172,8 @@ export default class extends Extendable {
 		);
 	}
 
-	public async hasItem(this: User, itemID: number, amount = 1) {
-		await this.settings.sync(true);
+	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
+		if (sync) await this.settings.sync(true);
 
 		const bank = this.settings.get(UserSettings.Bank);
 		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;

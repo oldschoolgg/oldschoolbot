@@ -23,7 +23,7 @@ const { triviaQuestions } = JSON.parse(
 import { BotCommand } from '../../lib/BotCommand';
 import { Time, Emoji, SupportServer, Channel, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
-import { randomHappyEmoji, isWeekend, formatDuration, roll } from '../../lib/util';
+import { randomHappyEmoji, isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
@@ -71,7 +71,7 @@ export default class DailyCommand extends BotCommand {
 				answer =>
 					answer.author.id === msg.author.id &&
 					answer.content &&
-					trivia.a.includes(answer.content.toLowerCase()),
+					trivia.a.some((_ans: string) => stringMatches(_ans, answer.content)),
 				options
 			);
 			const winner = collected.first();
