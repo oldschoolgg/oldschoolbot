@@ -6,7 +6,7 @@ export const enum Time {
 	Minute = 1000 * 60,
 	Hour = 1000 * 60 * 60,
 	Day = 1000 * 60 * 60 * 24,
-	Month = 1000 * 60 * 60 * 24 * 30,
+	Month = 1000 * 60 * 60 * 24 * 31,
 	Year = 1000 * 60 * 60 * 24 * 365
 }
 
@@ -111,5 +111,12 @@ export const enum PerkTier {
 }
 
 export const enum BitField {
-	HasGivenBirthdayPresent = 1
+	HasGivenBirthdayPresent = 1,
+	IsPatronTier1 = 2,
+	IsPatronTier2 = 3
+}
+
+export const enum PatronTierID {
+	One = '4608201',
+	Two = '4608226'
 }
