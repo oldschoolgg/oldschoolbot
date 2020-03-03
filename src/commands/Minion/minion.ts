@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[k|kill|setname|buy|clue|kc|pat|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -101,6 +101,22 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 		for (const [monID, monKC] of Object.entries(monsterScores)) {
 			const mon = killableMonsters.find(m => m.id === parseInt(monID));
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
+		}
+		return msg.send(res);
+	}
+
+	async clues(msg: KlasaMessage) {
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
+		if (Object.keys(clueScores).length === 0) throw `You haven't done any clues yet.`;
+
+		let res = `${Emoji.Casket} **${getMinionName(msg.author)}'s Clue Scores:**\n\n`;
+		for (const [clueID, clueScore] of Object.entries(clueScores)) {
+			const clue = clueTiers.find(c => c.id === parseInt(clueID));
+			res += `**${clue!.name}**: ${clueScore}\n`;
 		}
 		return msg.send(res);
 	}
