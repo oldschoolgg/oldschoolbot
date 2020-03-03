@@ -975,7 +975,6 @@ export const holiday = {
 		'Cow trousers',
 		'Cow gloves',
 		'Cow shoes',
-		'Birthday present',
 		'Slice of birthday cake',
 		'War ship'
 	])
