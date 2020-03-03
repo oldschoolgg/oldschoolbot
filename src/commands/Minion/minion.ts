@@ -248,7 +248,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
-
+		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
 				clueTier.name
@@ -335,7 +335,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-
+		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
 				monster.name
