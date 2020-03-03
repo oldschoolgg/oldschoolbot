@@ -30,7 +30,7 @@ export const bosses = {
 	Callisto: [11920, 7158, 12603, 13178],
 	Scorpia: [11930, 11933, 13181],
 	Venenatis: [11920, 7158, 12605, 13177],
-	Vetion: [11920, 7158, 12601, 13179, 6806],
+	Vetion: [11920, 7158, 12601, 13179],
 	'King Black Dragon': [11920, 1149, 7980, 12653, 11286]
 };
 
@@ -434,6 +434,12 @@ export const cluesMedium = {
 	])
 };
 export const cluesHard = {
+	'Hard ornament kits': transformArrayOfResolvableItems([
+		'Dragon boots ornament kit',
+		'Tzhaar-ket-om ornament kit',
+		'Berserker necklace ornament kit',
+		'Rune defender ornament kit'
+	]),
 	'Rune trimmed armor': transformArrayOfResolvableItems([
 		'Rune full helm (g)',
 		'Rune platebody (g)',
@@ -626,7 +632,6 @@ export const cluesHard = {
 };
 export const cluesElite = {
 	'Elite ornament kits': transformArrayOfResolvableItems([
-		'Dragon boots ornament kit',
 		'Dragon full helm ornament kit',
 		'Dragon chainbody ornament kit',
 		'Dragon legs/skirt ornament kit',
@@ -949,6 +954,32 @@ export const cluesAll = {
 	...cluesElite,
 	...cluesMaster
 };
+export const championScrolls = {
+	'Champion scrolls': transformArrayOfResolvableItems([
+		'Earth warrior champion scroll',
+		'Ghoul champion scroll',
+		'Giant champion scroll',
+		'Goblin champion scroll',
+		'Hobgoblin champion scroll',
+		'Imp champion scroll',
+		'Jogre champion scroll',
+		'Lesser demon champion scroll',
+		'Skeleton champion scroll',
+		'Zombie champion scroll'
+	])
+};
+export const holiday = {
+	'Birthday Event': transformArrayOfResolvableItems([
+		'Cow mask',
+		'Cow top',
+		'Cow trousers',
+		'Cow gloves',
+		'Cow shoes',
+		'Birthday present',
+		'Slice of birthday cake',
+		'War ship'
+	])
+};
 export const diangoCollectionLog = {
 	Common: transformArrayOfResolvableItems([
 		'Event rpg',
@@ -1046,6 +1077,16 @@ export const collectionLogTypes = [
 		name: 'Pets',
 		aliases: ['pet', 'pets'],
 		items: pets
+	},
+	{
+		name: 'Champion scroll',
+		aliases: ['champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
+		items: championScrolls
+	},
+	{
+		name: 'Holiday',
+		aliases: ['holiday', 'holidays'],
+		items: holiday
 	},
 	{
 		name: 'Diango',
