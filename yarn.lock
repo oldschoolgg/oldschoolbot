@@ -761,7 +761,7 @@ detect-libc@^1.0.2:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
 
-discord.js@discordjs/discord.js:
+discord.js@discordjs/discord.js#97eac663b3e1292cc399c56eb701069301f4637d:
   version "12.0.0-dev"
   resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/97eac663b3e1292cc399c56eb701069301f4637d"
   dependencies:
@@ -1687,7 +1687,7 @@ keyv@3.0.0:
 
 "klasa@github:dirigeants/klasa#916/head":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/38dc490366610b5e9c5e8b3c024bbf2a2aa79917"
+  resolved "https://codeload.github.com/dirigeants/klasa/tar.gz/c22698fd2aa4badf0a2085e813162ea64c724b7d"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
