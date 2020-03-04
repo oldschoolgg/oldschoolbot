@@ -109,7 +109,7 @@ const tob = {
 				lootTrack.push(droppedItem.shortName);
 			}
 		}
-		loot.push(It took you **${kc.toLocaleString()}** kills to finish the Theatere of Blood ${drops.pet.emoji})
+		loot.push(`It took you **${kc.toLocaleString()}** kills to finish the Theatere of Blood ${drops.pet.emoji}`)
 	},
 
 	determineItem() {
