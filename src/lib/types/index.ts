@@ -1,10 +1,10 @@
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { BeginnerCasket } from 'oldschooljs/dist/clues/Beginner';
-import { MediumCasket } from 'oldschooljs/dist/clues/Medium';
-import { EasyCasket } from 'oldschooljs/dist/clues/Easy';
-import { HardCasket } from 'oldschooljs/dist/clues/Hard';
-import { EliteCasket } from 'oldschooljs/dist/clues/Elite';
-import { MasterCasket } from 'oldschooljs/dist/clues/Master';
+import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
+import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
+import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
+import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
+import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
+import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 
 export interface Bank {
 	[key: number]: number;
