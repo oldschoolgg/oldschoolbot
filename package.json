@@ -19,7 +19,7 @@
 		"moment": "^2.21.0",
 		"mongodb": "^3.5.2",
 		"node-fetch": "^2.6.0",
-		"oldschooljs": "^0.9.2",
+		"oldschooljs": "^0.9.3",
 		"p-limit": "^2.2.2",
 		"pg": "^7.18.1",
 		"rethinkdbdash": "^2.3.31",
