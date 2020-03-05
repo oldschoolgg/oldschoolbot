@@ -1,5 +1,5 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import RareDropTable from 'oldschooljs/dist/monsters/subtables/RareDropTable';
+import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 
 const ClueTable = new LootTable()
 	.addItem('Clue scroll (easy)', 1, 9)
