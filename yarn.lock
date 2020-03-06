@@ -761,9 +761,9 @@ detect-libc@^1.0.2:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
 
-discord.js@discordjs/discord.js#97eac663b3e1292cc399c56eb701069301f4637d:
+discord.js@discordjs/discord.js#fe7df708e44e0280dfaf0f8e457b154781bb5140:
   version "12.0.0-dev"
-  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/97eac663b3e1292cc399c56eb701069301f4637d"
+  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/fe7df708e44e0280dfaf0f8e457b154781bb5140"
   dependencies:
     "@discordjs/collection" "^0.1.1"
     abort-controller "^3.0.0"
