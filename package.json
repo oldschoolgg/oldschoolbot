@@ -12,7 +12,7 @@
 		"cheerio": "^1.0.0-rc.3",
 		"chokidar": "^3.3.1",
 		"crystalmethlabs": "github:gc/crystalmethlabs",
-		"discord.js": "discordjs/discord.js#97eac663b3e1292cc399c56eb701069301f4637d",
+		"discord.js": "discordjs/discord.js#fe7df708e44e0280dfaf0f8e457b154781bb5140",
 		"he": "^1.2.0",
 		"klasa": "github:dirigeants/klasa#916/head",
 		"markovchain": "^1.0.2",
