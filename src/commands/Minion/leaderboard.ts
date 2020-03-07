@@ -250,6 +250,10 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
+		if (!this.client.owners.has(msg.author)) {
+			throw `The collection log leaderboard is temporarily disabled.`;
+		}
+
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
