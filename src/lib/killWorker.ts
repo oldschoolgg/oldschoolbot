@@ -11,12 +11,10 @@ import grotesqueGuardians = require('../../data/monsters/grotesqueGuardians');
 import abyssalSire = require('../../data/monsters/abyssalSire');
 import thermy = require('../../data/monsters/thermy');
 import skotizo = require('../../data/monsters/skotizo');
-import runeDragon = require('../../data/monsters/adamantDragon');
 import alchemicalHydra = require('../../data/monsters/alchemicalHydra');
 import hydra = require('../../data/monsters/hydra');
 import hespori = require('../../data/monsters/hespori');
 import gauntlet = require('../../data/new_monsters/gauntlet');
-import basKnight = require('../../data/monsters/basKnight');
 import wintertodt = require('../../data/monsters/wintertodt');
 import kraken = require('../../data/monsters/kraken');
 import obor = require('../../data/monsters/obor');
@@ -160,13 +158,6 @@ expose({
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
 
-			case 'RUNEDRAGONS':
-			case 'RUNEDRAGS': {
-				if (quantity > 1000) return 'I can only kill 1000 Rune Dragons at a time!';
-				const loot = runeDragon.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-
 			case 'BRYOPHYTA':
 			case 'MOSSGIANTBOSS': {
 				if (quantity > 500) return "I can only kill 500 Bryophyta's at a time!";
@@ -212,17 +203,6 @@ expose({
 			case 'CG': {
 				if (quantity > 500) return 'I can only kill 500 Gauntlets at a time!';
 				const loot = gauntlet.kill(quantity, true);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-
-			case 'BASKNIGHT':
-			case 'BASILISKKNIGHT':
-			case 'BK':
-			case 'BASILISK': {
-				if (quantity > 300) {
-					return 'I can only kill 300 Basilik Knights at a time!';
-				}
-				const loot = basKnight.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
 
