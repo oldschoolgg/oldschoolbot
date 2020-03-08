@@ -156,3 +156,14 @@ export interface Patron {
 	patronStatus: string;
 	pledgeRelationshipStart: string;
 }
+
+export interface Ore {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	respawnTime: number;
+	petChance?: number;
+	nuggets?: boolean;
+	minerals?: number;
+}
