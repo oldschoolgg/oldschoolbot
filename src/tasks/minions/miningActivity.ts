@@ -51,7 +51,7 @@ export default class extends Task {
 		const numberOfMinutes = duration / Time.Minute;
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
-			const numberOfNuggets = rand(0, Math.floor(duration / 4));
+			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
 			loot[12012] = numberOfNuggets;
 		} else if (numberOfMinutes > 10 && ore.minerals) {
 			let numberOfMinerals = 0;
