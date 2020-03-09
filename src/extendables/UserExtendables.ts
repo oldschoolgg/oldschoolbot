@@ -188,7 +188,7 @@ export default class extends Extendable {
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 		if (currentXP >= 200_000_000) return;
 		const newXP = Math.min(200_000_000, currentXP + amount);
-		return this.settings.update(`skills.${skillName}`, newXP);
+		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 	}
 
 	public get badges(this: User) {
