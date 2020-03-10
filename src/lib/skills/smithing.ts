@@ -6,7 +6,7 @@ const bars: Bar[] = [
 	{
 		name: 'Bronze bar',
 		level: 1,
-		xp: 6,
+		xp: 6.2,
 		id: itemID('Bronze bar'),
 		inputOres: { [itemID('Copper ore')]: 1, [itemID('Tin ore')]: 1 },
 		chanceOfFail: 0
@@ -14,7 +14,7 @@ const bars: Bar[] = [
 	{
 		name: 'Iron bar',
 		level: 15,
-		xp: 12,
+		xp: 12.5,
 		id: itemID('Iron bar'),
 		inputOres: { [itemID('Iron ore')]: 1 },
 		chanceOfFail: 50
@@ -22,7 +22,7 @@ const bars: Bar[] = [
 	{
 		name: 'Silver bar',
 		level: 20,
-		xp: 13,
+		xp: 13.6,
 		id: itemID('Silver bar'),
 		inputOres: { [itemID('Silver ore')]: 1 },
 		chanceOfFail: 0
@@ -30,7 +30,7 @@ const bars: Bar[] = [
 	{
 		name: 'Steel bar',
 		level: 30,
-		xp: 17,
+		xp: 17.5,
 		id: itemID('Steel bar'),
 		inputOres: { [itemID('Iron ore')]: 1, [itemID('Coal')]: 2 },
 		chanceOfFail: 0
@@ -38,7 +38,7 @@ const bars: Bar[] = [
 	{
 		name: 'Gold bar',
 		level: 40,
-		xp: 22,
+		xp: 22.5,
 		id: itemID('Gold bar'),
 		inputOres: { [itemID('Gold ore')]: 1 },
 		chanceOfFail: 0
@@ -54,7 +54,7 @@ const bars: Bar[] = [
 	{
 		name: 'Adamantite bar',
 		level: 70,
-		xp: 37,
+		xp: 37.5,
 		id: itemID('Adamantite bar'),
 		inputOres: { [itemID('Adamantite ore')]: 1, [itemID('Coal')]: 6 },
 		chanceOfFail: 0
