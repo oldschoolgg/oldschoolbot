@@ -1011,6 +1011,11 @@ export const diangoCollectionLog = {
 	]),
 	Other: transformArrayOfResolvableItems(['Mystery box', 'Stale baguette'])
 };
+export const skillCapes = {
+	hoods: transformArrayOfResolvableItems(['Mining hood', 'Smithing hood']),
+	capes: transformArrayOfResolvableItems(['Mining cape', 'Smithing cape']),
+	'trimmed capes': transformArrayOfResolvableItems(['Mining cape(t)', 'Smithing cape(t)'])
+};
 
 export const collectionLogTypes = [
 	{
@@ -1091,5 +1096,10 @@ export const collectionLogTypes = [
 		name: 'Diango',
 		aliases: ['diango', 'dailies', 'daily'],
 		items: diangoCollectionLog
+	},
+	{
+		name: 'Skill capes',
+		aliases: ['skill capes', 'skill cape', 'skillcapes', 'skillcape'],
+		items: skillCapes
 	}
 ];
