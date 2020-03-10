@@ -13,6 +13,6 @@ export default class extends Event {
 
 	async run(message: string) {
 		const channel = this.client.channels.get(Channel.Notifications);
-		if (channel) (channel as TextChannel).send(message);
+		if (channel && this.client.production) (channel as TextChannel).send(message);
 	}
 }
