@@ -71,6 +71,7 @@ export default class extends Task {
 
 		channel.send(str, new MessageAttachment(image));
 
+		user.toggleBusy(true);
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
 				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
@@ -86,7 +87,8 @@ export default class extends Task {
 						.kill(response as KlasaMessage, [quantity, monster.name]);
 				}
 			})
-			.catch(noOp);
+			.catch(noOp)
+			.finally(() => user.toggleBusy(false));
 
 		user.incrementMonsterScore(monsterID, quantity);
 	}

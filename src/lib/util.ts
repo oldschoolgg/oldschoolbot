@@ -144,8 +144,8 @@ export function formatDuration(ms: number) {
 export function activityTaskFilter(task: ScheduledTask) {
 	return ([
 		Tasks.ClueTicker,
-		Tasks.MiningTicker,
-		Tasks.MonsterKillingTicker
+		Tasks.MonsterKillingTicker,
+		Tasks.SkillingTicker
 	] as string[]).includes(task.taskName);
 }
 

@@ -20,9 +20,11 @@ import {
 	ClueActivityTaskOptions,
 	MiningActivityTaskOptions,
 	TickerTaskData,
-	MinionActivityTaskData
+	ActivityTaskOptions,
+	SmithingActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
+import Smithing from '../lib/skills/smithing';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -202,7 +204,7 @@ export default class extends Extendable {
 			.filter(activityTaskFilter)
 			.some(task =>
 				(task.data as TickerTaskData).subTasks.some(
-					(subTask: MinionActivityTaskData) => subTask.userID === this.id
+					(subTask: ActivityTaskOptions) => subTask.userID === this.id
 				)
 			);
 	}
@@ -264,6 +266,18 @@ export default class extends Extendable {
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Mining
 				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
+			}
+
+			case Activity.Smithing: {
+				const data = currentTask as SmithingActivityTaskOptions;
+
+				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
+
+				return `${this.minionName} is currently smithing ${data.quantity}x ${
+					bar!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}
 		}
 	}

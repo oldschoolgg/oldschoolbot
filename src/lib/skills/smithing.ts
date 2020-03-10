@@ -1,0 +1,68 @@
+import { SkillsEnum, Bar } from '../types';
+import itemID from '../util/itemID';
+
+const bars: Bar[] = [
+	{
+		name: 'Bronze bar',
+		level: 1,
+		xp: 6,
+		id: itemID('Bronze bar'),
+		inputOres: { [itemID('Copper ore')]: 1, [itemID('Tin ore')]: 1 },
+		chanceOfFail: 0
+	},
+	{
+		name: 'Iron bar',
+		level: 15,
+		xp: 12,
+		id: itemID('Iron bar'),
+		inputOres: { [itemID('Iron ore')]: 1 },
+		chanceOfFail: 50
+	},
+	{
+		name: 'Steel bar',
+		level: 30,
+		xp: 17,
+		id: itemID('Steel bar'),
+		inputOres: { [itemID('Iron ore')]: 1, [itemID('Coal')]: 2 },
+		chanceOfFail: 0
+	},
+	{
+		name: 'Gold bar',
+		level: 40,
+		xp: 22,
+		id: itemID('Gold bar'),
+		inputOres: { [itemID('Gold ore')]: 1 },
+		chanceOfFail: 0
+	},
+	{
+		name: 'Mithril bar',
+		level: 50,
+		xp: 30,
+		id: itemID('Mithril bar'),
+		inputOres: { [itemID('Mithril ore')]: 1, [itemID('Coal')]: 4 },
+		chanceOfFail: 0
+	},
+	{
+		name: 'Adamantite bar',
+		level: 70,
+		xp: 37,
+		id: itemID('Adamantite bar'),
+		inputOres: { [itemID('Adamantite ore')]: 1, [itemID('Coal')]: 6 },
+		chanceOfFail: 0
+	},
+	{
+		name: 'Runite bar',
+		level: 85,
+		xp: 50,
+		id: itemID('Runite bar'),
+		inputOres: { [itemID('Runite ore')]: 1, [itemID('Coal')]: 8 },
+		chanceOfFail: 0
+	}
+];
+
+const Smithing = {
+	Bars: bars,
+	id: SkillsEnum.Smithing
+};
+
+export default Smithing;

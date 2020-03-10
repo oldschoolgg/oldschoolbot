@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -88,6 +88,9 @@ export default class extends BotCommand {
 ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
 			.get(UserSettings.Skills.Mining)
 			.toLocaleString()} xp)
+${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
+			SkillsEnum.Smithing
+		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
 `);
 	}
 
@@ -205,6 +208,10 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
 		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
+	}
+
+	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
+		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {

@@ -5,13 +5,12 @@ import { Items } from 'oldschooljs';
 import { saidYes, noOp, rand } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
-import Skills from '../../lib/skills';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { roll } from 'oldschooljs/dist/util/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import Mining from '../../lib/skills/mining';
 
-const Mining = Skills.get(SkillsEnum.Mining);
 const MiningPet = Items.get('Rock golem');
 
 export default class extends Task {
@@ -19,7 +18,7 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
-		const ore = Mining!.Ores.find(ore => ore.id === oreID);
+		const ore = Mining.Ores.find(ore => ore.id === oreID);
 
 		if (!ore) return;
 
@@ -80,6 +79,7 @@ export default class extends Task {
 
 		channel.send(str);
 
+		user.toggleBusy(true);
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
 				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
@@ -95,6 +95,7 @@ export default class extends Task {
 						.run(response as KlasaMessage, [quantity, ore.name]);
 				}
 			})
-			.catch(noOp);
+			.catch(noOp)
+			.finally(() => user.toggleBusy(false));
 	}
 }
