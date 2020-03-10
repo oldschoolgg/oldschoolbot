@@ -31,5 +31,7 @@ Client.defaultUserSchema
 			.add('duelWins', 'integer', { default: 0 })
 	)
 	.add('skills', (folder: SchemaFolder) =>
-		folder.add(SkillsEnum.Mining, 'integer', { default: 0 })
+		folder
+			.add(SkillsEnum.Mining, 'integer', { default: 0 })
+			.add(SkillsEnum.Smithing, 'integer', { default: 0 })
 	);
