@@ -20,6 +20,14 @@ const bars: Bar[] = [
 		chanceOfFail: 50
 	},
 	{
+		name: 'Silver bar',
+		level: 20,
+		xp: 13,
+		id: itemID('Silver bar'),
+		inputOres: { [itemID('Silver ore')]: 1 },
+		chanceOfFail: 0
+	},
+	{
 		name: 'Steel bar',
 		level: 30,
 		xp: 17,
