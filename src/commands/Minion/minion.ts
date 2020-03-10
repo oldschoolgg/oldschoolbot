@@ -207,7 +207,6 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		if (msg.author.id !== '157797566833098752') throw `Mining is temporarily disabled.`;
 		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
 	}
 
