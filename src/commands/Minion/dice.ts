@@ -4,9 +4,9 @@ import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Image, Color, Emoji, Channel } from '../../lib/constants';
-import { rand } from '../../util';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
+import { rand } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
