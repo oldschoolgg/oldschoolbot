@@ -49,11 +49,21 @@ export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove = 
 	if (typeof currentValue === 'undefined') return bank;
 
 	// If they will have 0 or less of this item afterwards, delete it entirely.
-	if (currentValue <= amountToRemove) {
+	if (currentValue - amountToRemove <= 0) {
 		delete newBank[itemID];
 	}
 
 	newBank[itemID] = currentValue - amountToRemove;
+
+	return newBank;
+}
+
+export function removeBankFromBank(targetBank: Bank, bankToRemove: Bank) {
+	let newBank = { ...targetBank };
+
+	for (const [itemID, qty] of Object.entries(bankToRemove)) {
+		newBank = removeItemFromBank(newBank, parseInt(itemID), qty);
+	}
 
 	return newBank;
 }
