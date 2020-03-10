@@ -91,10 +91,10 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
-			duration: Time.Minute,
+			duration,
 			type: Activity.Smithing,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + Time.Second * 20
+			finishDate: Date.now() + duration
 		};
 
 		// Remove the ores from their bank.
