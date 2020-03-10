@@ -53,7 +53,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			throw `${msg.author.minionName} needs ${bar.level} Smithing to smith ${bar.name}'s.`;
+			throw `${msg.author.minionName} needs ${bar.level} Smithing to smith ${bar.name}s.`;
 		}
 
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
 				bar.name
-			}'s you can smith is ${Math.floor((Time.Minute * 30) / timeToSmithSingleBar)}.`;
+			}s you can smith is ${Math.floor((Time.Minute * 30) / timeToSmithSingleBar)}.`;
 		}
 
 		const data: SmithingActivityTaskOptions = {
@@ -109,9 +109,10 @@ export default class extends BotCommand {
 			}
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await msg.author.settings.update(UserSettings.Bank, newBank);
+
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now smithing ${quantity}x ${
