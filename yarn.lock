@@ -394,7 +394,7 @@ bl@^2.2.0:
     readable-stream "^2.3.5"
     safe-buffer "^5.1.1"
 
-"bluebird@>= 3.0.1", bluebird@^3.1.5, bluebird@^3.5.0, bluebird@^3.5.5:
+bluebird@^3.1.5, bluebird@^3.5.0, bluebird@^3.5.5:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.1.tgz#df70e302b471d7473489acf26a93d63b53f874de"
   integrity sha512-DdmyoGCleJnkbp3nkbxTLJ18rjDsE4yCggEwKNXkeV123sPNfOCYeDoeuOY+F2FrSjO1YXcTU+dsy96KMy+gcg==
@@ -1995,10 +1995,10 @@ observable-fns@^0.5.0:
   resolved "https://registry.yarnpkg.com/observable-fns/-/observable-fns-0.5.0.tgz#9b71bb3e1a6ac9840b3922b67de0092773230177"
   integrity sha512-BWmxvFppAKRWWTYns+yW3RaoXLTkSVF1cnLNe06opO4/C4VVfZgRkwSEBLOAA6bcTNM1zDDRz2T+l52cPNuaZQ==
 
-oldschooljs@^0.9.6:
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.9.6.tgz#510a50db746b547848c9843f92af762d82e7e4d3"
-  integrity sha512-8x7vK/gNAbEt6YlGDXvmjMCfd/FF7z84egGxJGo9oz8IVWRsh6XS6/118N+Suf4sqOieh9uMW1MHwU7Z2kDmyg==
+oldschooljs@^0.9.8:
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.9.8.tgz#8443f5e8988f47b5d90ea1690b446ccfb01fffca"
+  integrity sha512-a5iBzpvdN5lz9TVahAV4mhs+imaQES6DpQWQZYPcwsTPUyMkxTmviQYGjhClea5VqGy+NyjBTngMpdbK52+r7A==
   dependencies:
     jsdom "^16.0.1"
     node-fetch "^2.6.0"
@@ -2062,7 +2062,7 @@ p-is-promise@^1.1.0:
   resolved "https://registry.yarnpkg.com/p-is-promise/-/p-is-promise-1.1.0.tgz#9c9456989e9f6588017b0434d56097675c3da05e"
   integrity sha1-nJRWmJ6fZYgBewQ01WCXZ1w9oF4=
 
-p-limit@^2.0.0, p-limit@^2.2.2:
+p-limit@^2.0.0:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.2.2.tgz#61279b67721f5287aa1c13a9a7fbbc48c9291b1e"
   integrity sha512-WGR+xHecKTr7EbUEhyLSh5Dube9JtdiG78ufaeLxTgpudf/20KqyMioIUZJAezlTIi6evxuoUs9YXc11cU+yzQ==
@@ -2312,6 +2312,11 @@ query-string@^5.0.1:
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
 
+random-js@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/random-js/-/random-js-2.1.0.tgz#0c03238b0a4f701f7a4c7303036ade3083d8ee14"
+  integrity sha512-CRUyWmnzmZBA7RZSVGq0xMqmgCyPPxbiKNLFA5ud7KenojVX2s7Gv+V7eB52beKTPGxWRnVZ7D/tCIgYJJ8vNQ==
+
 rc@^1.2.7:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"
@@ -2491,13 +2496,6 @@ restore-cursor@^3.1.0:
   dependencies:
     onetime "^5.1.0"
     signal-exit "^3.0.2"
-
-rethinkdbdash@^2.3.31:
-  version "2.3.31"
-  resolved "https://registry.yarnpkg.com/rethinkdbdash/-/rethinkdbdash-2.3.31.tgz#fe2f73d1fa6e6f5d96d8e881292013cf6dca914d"
-  integrity sha512-6nXrKFjdg2Ug0YpdmPWSvyD/2EisHnFNt4FWZ74dcXGK48ievSv+cNFTmVv+KjLi6I9CCf6w4CKZ6yCYTfMfdQ==
-  dependencies:
-    bluebird ">= 3.0.1"
 
 rimraf@2.6.3:
   version "2.6.3"
