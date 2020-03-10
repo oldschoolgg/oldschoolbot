@@ -1,6 +1,6 @@
-import { SkillsEnum } from '../types';
+import { SkillsEnum, Ore } from '../types';
 
-const ores = [
+const ores: Ore[] = [
 	{
 		level: 1,
 		xp: 5,
@@ -53,7 +53,8 @@ const ores = [
 		id: 453,
 		name: 'Coal',
 		respawnTime: 2,
-		petChance: 300_000
+		petChance: 300_000,
+		minerals: 60
 	},
 	{
 		level: 40,
@@ -61,7 +62,8 @@ const ores = [
 		id: 444,
 		name: 'Gold ore',
 		respawnTime: 2,
-		petChance: 300_000
+		petChance: 300_000,
+		nuggets: true
 	},
 	{
 		level: 55,
@@ -69,7 +71,8 @@ const ores = [
 		id: 447,
 		name: 'Mithril ore',
 		respawnTime: 10,
-		petChance: 150_000
+		petChance: 150_000,
+		nuggets: true
 	},
 	{
 		level: 70,
@@ -77,7 +80,8 @@ const ores = [
 		id: 449,
 		name: 'Adamantite ore',
 		respawnTime: 18,
-		petChance: 60_000
+		petChance: 60_000,
+		nuggets: true
 	},
 	{
 		level: 85,
@@ -85,7 +89,8 @@ const ores = [
 		id: 451,
 		name: 'Runite ore',
 		respawnTime: 50,
-		petChance: 45_000
+		petChance: 45_000,
+		nuggets: true
 	},
 	{
 		level: 92,
@@ -93,7 +98,8 @@ const ores = [
 		id: 21347,
 		name: 'Amethyst',
 		respawnTime: 40,
-		petChance: 50_000
+		petChance: 50_000,
+		minerals: 20
 	}
 ];
 

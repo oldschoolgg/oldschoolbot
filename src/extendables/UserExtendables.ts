@@ -273,7 +273,7 @@ export default class extends Extendable {
 
 		const currentDuration = this.settings.get(UserSettings.Minion.DailyDuration);
 		const newDuration = currentDuration + duration;
-		if (newDuration > Time.Hour * 17) {
+		if (newDuration > Time.Hour * 16) {
 			const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
 
 			this.log(log);
