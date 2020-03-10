@@ -1,5 +1,4 @@
 import { Task, KlasaMessage } from 'klasa';
-import { TextChannel, DMChannel } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { saidYes, noOp, rand } from '../../lib/util';
@@ -10,6 +9,7 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { roll } from 'oldschooljs/dist/util/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Mining from '../../lib/skills/mining';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 const MiningPet = Items.get('Rock golem');
 
@@ -67,19 +67,11 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		let channel = this.client.channels.get(channelID);
-		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
-			channel = await user.createDM();
-			if (!channel) return;
-		}
-
-		if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) {
-			return;
-		}
+		const channel = this.client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
 
 		channel.send(str);
 
-		user.toggleBusy(true);
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
 				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
@@ -89,13 +81,15 @@ export default class extends Task {
 				const response = messages.first();
 
 				if (response) {
+					if (response.author.minionIsBusy) return;
+
 					user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
+
 					this.client.commands
 						.get('mine')!
 						.run(response as KlasaMessage, [quantity, ore.name]);
 				}
 			})
-			.catch(noOp)
-			.finally(() => user.toggleBusy(false));
+			.catch(noOp);
 	}
 }

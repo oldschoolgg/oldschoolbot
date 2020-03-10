@@ -1,5 +1,5 @@
 import { Task, KlasaMessage } from 'klasa';
-import { TextChannel, MessageAttachment, DMChannel } from 'discord.js';
+import { MessageAttachment } from 'discord.js';
 
 import { Events, Time, Emoji } from '../../lib/constants';
 import { getMinionName, noOp, saidYes } from '../../lib/util';
@@ -8,6 +8,7 @@ import clueTiers from '../../lib/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -59,19 +60,11 @@ export default class extends Task {
 				)}), you can get your minion to complete them using \`+minion clue 1 easy/medium/etc \``;
 		}
 
-		let channel = this.client.channels.get(channelID);
-		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
-			channel = await user.createDM();
-			if (!channel) return;
-		}
-
-		if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) {
-			return;
-		}
+		const channel = this.client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
 
 		channel.send(str, new MessageAttachment(image));
 
-		user.toggleBusy(true);
 		channel
 			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
 				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
@@ -81,14 +74,14 @@ export default class extends Task {
 				const response = messages.first();
 
 				if (response) {
-					user.log(` continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+					if (response.author.minionIsBusy) return;
+
 					this.client.commands
 						.get('minion')!
 						.kill(response as KlasaMessage, [quantity, monster.name]);
 				}
 			})
-			.catch(noOp)
-			.finally(() => user.toggleBusy(false));
+			.catch(noOp);
 
 		user.incrementMonsterScore(monsterID, quantity);
 	}
