@@ -9,7 +9,8 @@ import {
 	addItemToBank,
 	activityTaskFilter,
 	formatDuration,
-	convertXPtoLVL
+	convertXPtoLVL,
+	toTitleCase
 } from '../lib/util';
 import clueTiers from '../lib/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
@@ -25,6 +26,7 @@ import {
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skills/smithing';
+import Skills from '../lib/skills';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -189,7 +191,37 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 		if (currentXP >= 200_000_000) return;
+
+		const skill = Skills.find(skill => skill.id === skillName);
+		if (!skill) return;
+
 		const newXP = Math.min(200_000_000, currentXP + amount);
+
+		// If they reached a XP milestone, send a server notification.
+		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {
+			if (newXP < XPMilestone) break;
+
+			if (currentXP < XPMilestone && newXP >= XPMilestone) {
+				this.client.emit(
+					Events.ServerNotification,
+					`${skill.emoji} **${this.username}'s** minion, ${
+						this.minionName
+					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(skillName)}!`
+				);
+				break;
+			}
+		}
+
+		// If they just reached 99, send a server notification.
+		if (convertXPtoLVL(currentXP) < 99 && convertXPtoLVL(newXP) >= 99) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${skill.emoji} **${this.username}'s** minion, ${
+					this.minionName
+				}, just achieved level 99 in ${toTitleCase(skillName)}!`
+			);
+		}
+
 		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 	}
 

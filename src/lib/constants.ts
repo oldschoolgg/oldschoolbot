@@ -88,7 +88,9 @@ export const enum Events {
 	Log = 'log',
 	Verbose = 'verbose',
 	Warn = 'warn',
-	Wtf = 'wtf'
+	Wtf = 'wtf',
+	ServerNotification = 'serverNotification',
+	SkillLevelUp = 'skillLevelUp'
 }
 
 export const enum BadgesEnum {

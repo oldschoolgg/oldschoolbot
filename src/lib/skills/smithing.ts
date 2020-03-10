@@ -1,5 +1,6 @@
 import { SkillsEnum, Bar } from '../types';
 import itemID from '../util/itemID';
+import { Emoji } from '../constants';
 
 const bars: Bar[] = [
 	{
@@ -62,7 +63,8 @@ const bars: Bar[] = [
 
 const Smithing = {
 	Bars: bars,
-	id: SkillsEnum.Smithing
+	id: SkillsEnum.Smithing,
+	emoji: Emoji.Smithing
 };
 
 export default Smithing;
