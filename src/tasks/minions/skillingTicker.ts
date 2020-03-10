@@ -2,28 +2,33 @@ import { Task } from 'klasa';
 
 import { Tasks } from '../../lib/constants';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
-import { MiningTickerTaskData } from '../../lib/types/minions';
 import runActivityTask from '../../lib/util/runActivityTask';
+import { SkillingTickerTaskData } from '../../lib/types/minions';
+import { taskNameFromType } from '../../lib/util/taskNameFromType';
 
 export default class extends Task {
-	async run(data: MiningTickerTaskData) {
+	async run(data: SkillingTickerTaskData) {
 		const now = Date.now();
 		const tasksThatWereFinished: number[] = [];
 
-		for (const miningTaskData of data.subTasks) {
+		for (const skillingTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			if (miningTaskData.finishDate > now) break;
+			if (skillingTaskData.finishDate > now) break;
 
-			await runActivityTask(this.client, Tasks.MiningActivity, miningTaskData);
+			await runActivityTask(
+				this.client,
+				taskNameFromType(skillingTaskData.type),
+				skillingTaskData
+			);
 
-			tasksThatWereFinished.push(miningTaskData.id);
+			tasksThatWereFinished.push(skillingTaskData.id);
 		}
 
 		if (tasksThatWereFinished.length === 0) return;
 
 		await removeSubTasksFromActivityTask(
 			this.client,
-			Tasks.MiningTicker,
+			Tasks.SkillingTicker,
 			tasksThatWereFinished
 		);
 	}

@@ -12,6 +12,12 @@ export default function addSubTaskToActivityTask(
 
 	if (!task) throw `Missing activity task: ${taskName}.`;
 
+	if (
+		task.data.subTasks.some((task: ActivityTaskOptions) => task.userID === subTaskToAdd.userID)
+	) {
+		throw `That user is busy.`;
+	}
+
 	return task.update({
 		data: {
 			...task.data,

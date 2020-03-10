@@ -62,7 +62,8 @@ export interface KillableMonster extends Monster {
 }
 
 export const enum SkillsEnum {
-	Mining = 'mining'
+	Mining = 'mining',
+	Smithing = 'smithing'
 }
 
 export interface CachedItemPrice {
@@ -166,4 +167,16 @@ export interface Ore {
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
+}
+
+export interface Bar {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputOres: Bank;
+	/**
+	 * Chance that the ore will fail to smelt (i.e iron), out of 100
+	 */
+	chanceOfFail: number;
 }

@@ -26,6 +26,12 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
+	barID: number;
+	channelID: string;
+	quantity: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: MonsterActivityTaskOptions[];
 }
@@ -34,17 +40,17 @@ export interface ClueTickerTaskData {
 	subTasks: ClueActivityTaskOptions[];
 }
 
-export interface MiningTickerTaskData {
-	subTasks: MiningActivityTaskOptions[];
+export interface SkillingTickerTaskData {
+	subTasks: ActivityTaskOptions[];
 }
 
 export type TickerTaskData =
 	| MonsterKillingTickerTaskData
 	| ClueTickerTaskData
-	| MiningTickerTaskData;
+	| SkillingTickerTaskData;
 
-export type MinionActivityTask = Tasks.MonsterActivity | Tasks.ClueActivity | Tasks.MiningActivity;
-export type MinionActivityTaskData =
-	| MonsterActivityTaskOptions
-	| ClueActivityTaskOptions
-	| MiningActivityTaskOptions;
+export type MinionActivityTask =
+	| Tasks.MonsterActivity
+	| Tasks.ClueActivity
+	| Tasks.MiningActivity
+	| Tasks.SmithingActivity;

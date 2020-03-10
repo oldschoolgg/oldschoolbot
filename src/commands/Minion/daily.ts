@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { TextChannel, MessageAttachment } from 'discord.js';
+import { MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
 
 if (!fs.existsSync('./resources/trivia-questions.json')) {
@@ -21,9 +21,9 @@ const { triviaQuestions } = JSON.parse(
 );
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Time, Emoji, SupportServer, Channel, COINS_ID } from '../../lib/constants';
+import { Time, Emoji, SupportServer, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
-import { randomHappyEmoji, isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
+import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
@@ -138,10 +138,6 @@ export default class DailyCommand extends BotCommand {
 			Emoji.Diango
 		} Diango says..** That's ${correct}! ${reward}\n`;
 
-		let chStr = `${bonuses.join('')} ${user.username} just got their daily and received ${loot[
-			COINS_ID
-		].toLocaleString()} GP! ${randomHappyEmoji()}`;
-
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
 			const userPets = { ...user.settings.get(UserSettings.Pets) };
@@ -151,7 +147,6 @@ export default class DailyCommand extends BotCommand {
 			await msg.author.settings.sync(true);
 			await user.settings.update(UserSettings.Pets, { ...userPets });
 
-			chStr += `\nThey also received the **${pet.name}** pet! ${pet.emoji}`;
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 		}
 
@@ -161,9 +156,6 @@ export default class DailyCommand extends BotCommand {
 			ClientSettings.EconomyStats.DailiesAmount,
 			Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
 		);
-
-		const channel = this.client.channels.get(Channel.Notifications);
-		if (channel) (channel as TextChannel).send(chStr);
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
