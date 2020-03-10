@@ -1,5 +1,5 @@
 import { expose } from 'threads';
-import Monsters from 'oldschooljs/dist/simulation/monsters';
+import { Monsters } from 'oldschooljs';
 
 import sarachnis = require('../../data/monsters/sarachnis');
 import lavaDragon = require('../../data/monsters/lavaDragon');
@@ -44,9 +44,7 @@ expose({
 				);
 			}
 
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			if (osjsMonster.kill) return osjsMonster.kill(quantity);
+			return osjsMonster.kill(quantity, {});
 		}
 
 		switch (cleanString(bossName)) {
