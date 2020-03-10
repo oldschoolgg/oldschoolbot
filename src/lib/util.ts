@@ -3,6 +3,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask, KlasaUser, util } from 'klasa';
 import { Util, Client } from 'discord.js';
+import { nodeCrypto, integer } from 'random-js';
 
 import { Tasks, Emoji, Events } from './constants';
 import killableMonsters from './killableMonsters';
@@ -214,10 +215,6 @@ export function saidYes(content: string) {
 	return newContent === 'y' || newContent === 'yes';
 }
 
-export function roll(max: number) {
-	return Math.floor(Math.random() * max + 1) === 1;
-}
-
 export function removeDuplicatesFromArray(arr: unknown[]) {
 	return [...new Set(arr)];
 }
@@ -242,7 +239,11 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 }
 
 export function rand(min: number, max: number) {
-	return Math.floor(Math.random() * (max - min + 1) + min);
+	return integer(min, max)(nodeCrypto);
+}
+
+export function roll(max: number) {
+	return rand(1, max) === 1;
 }
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
