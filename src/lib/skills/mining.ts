@@ -1,4 +1,5 @@
 import { SkillsEnum, Ore } from '../types';
+import { Emoji } from '../constants';
 
 const ores: Ore[] = [
 	{
@@ -105,7 +106,8 @@ const ores: Ore[] = [
 
 const Mining = {
 	Ores: ores,
-	id: SkillsEnum.Mining
+	id: SkillsEnum.Mining,
+	emoji: Emoji.Mining
 };
 
 export default Mining;

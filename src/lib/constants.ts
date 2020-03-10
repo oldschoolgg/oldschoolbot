@@ -49,6 +49,7 @@ export const enum Emoji {
 	ThumbsDown = '👎',
 	Casket = '<:Casket:365003978678730772>',
 	Mining = '<:mining:630911040128811010>',
+	Smithing = '<:smithing:630911040452034590>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>'
@@ -68,15 +69,17 @@ export const enum Tasks {
 	MonsterActivity = 'monsterActivity',
 	ClueActivity = 'clueActivity',
 	MiningActivity = 'miningActivity',
+	SmithingActivity = 'smithingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
-	MiningTicker = 'miningTicker'
+	SkillingTicker = 'skillingTicker'
 }
 
 export const enum Activity {
 	MonsterKilling = 'MonsterKilling',
 	ClueCompletion = 'ClueCompletion',
-	Mining = 'Mining'
+	Mining = 'Mining',
+	Smithing = 'Smithing'
 }
 
 export const enum Events {
@@ -85,7 +88,9 @@ export const enum Events {
 	Log = 'log',
 	Verbose = 'verbose',
 	Warn = 'warn',
-	Wtf = 'wtf'
+	Wtf = 'wtf',
+	ServerNotification = 'serverNotification',
+	SkillLevelUp = 'skillLevelUp'
 }
 
 export const enum BadgesEnum {

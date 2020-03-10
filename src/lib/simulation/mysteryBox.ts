@@ -2,9 +2,9 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 
 const ClueTable = new LootTable()
-	.addItem('Clue scroll (easy)', 1, 9)
-	.addItem('Clue scroll (medium)', 1, 4)
-	.addItem('Clue scroll (hard)', 1, 4);
+	.add('Clue scroll (easy)', 1, 9)
+	.add('Clue scroll (medium)', 1, 4)
+	.add('Clue scroll (hard)', 1, 4);
 
 const MysteryBoxTable = new LootTable()
 	.add('Old boot')

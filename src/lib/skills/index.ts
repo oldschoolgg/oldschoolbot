@@ -1,10 +1,14 @@
 import { Collection } from 'discord.js';
 
 import Mining from './mining';
-import { SkillsEnum } from '../types/index';
+import Smithing from './smithing';
+import { SkillsEnum } from '../types';
 
-export type Skill = typeof Mining;
+export type Skill = typeof Mining | typeof Smithing;
 
-const Skills: Collection<string, Skill> = new Collection([[SkillsEnum.Mining, Mining]]);
+const Skills: Collection<string, Skill> = new Collection([
+	[SkillsEnum.Mining, Mining as Skill],
+	[SkillsEnum.Smithing, Smithing as Skill]
+]);
 
 export default Skills;

@@ -39,6 +39,7 @@ export namespace UserSettings {
 	}
 
 	export namespace Skills {
-		export const Mining = T<string>(`skills.${SkillsEnum.Mining}`);
+		export const Mining = T<number>(`skills.${SkillsEnum.Mining}`);
+		export const Smithing = T<number>(`skills.${SkillsEnum.Smithing}`);
 	}
 }
