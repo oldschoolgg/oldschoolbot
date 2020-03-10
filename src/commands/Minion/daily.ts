@@ -27,7 +27,6 @@ import { randomHappyEmoji, isWeekend, formatDuration, roll, stringMatches } from
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
-import { transformArrayOfResolvableItems } from '../../lib/util/transformArrayOfResolvableItems';
 
 const easyTrivia = triviaQuestions!.slice(0, 40);
 
@@ -138,22 +137,6 @@ export default class DailyCommand extends BotCommand {
 		let dmStr = `${bonuses.join('')} **${
 			Emoji.Diango
 		} Diango says..** That's ${correct}! ${reward}\n`;
-
-		const holidayItems = transformArrayOfResolvableItems([
-			'Cow mask',
-			'Cow top',
-			'Cow trousers',
-			'Cow gloves',
-			'Cow shoes'
-		]);
-
-		const bank = user.settings.get(UserSettings.Bank);
-		for (const item of holidayItems) {
-			if (bank[item]) continue;
-			loot[item] = 1;
-			dmStr += `${Emoji.BirthdayPresent} **You've received a Holiday Item for the birthday of OSRS!**\n`;
-			break;
-		}
 
 		let chStr = `${bonuses.join('')} ${user.username} just got their daily and received ${loot[
 			COINS_ID

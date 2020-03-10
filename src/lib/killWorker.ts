@@ -1,31 +1,20 @@
 import { expose } from 'threads';
-import Monsters from 'oldschooljs/dist/monsters';
+import Monsters from 'oldschooljs/dist/simulation/monsters';
 
 import sarachnis = require('../../data/monsters/sarachnis');
-import kurask = require('../../data/monsters/kurask');
 import lavaDragon = require('../../data/monsters/lavaDragon');
 import brutalBlackDragon = require('../../data/monsters/brutalBlackDragon');
 import raids = require('../../data/monsters/raids');
 import tob = require('../../data/monsters/tob');
-import abbyDemon = require('../../data/monsters/abbyDemon');
-import demonicGorilla = require('../../data/monsters/demonicGorilla');
-import lizardmanShaman = require('../../data/monsters/lizardmanShaman');
 import wyvern = require('../../data/monsters/wyvern');
-import ancientWyvern = require('../../data/monsters/ancientWyvern');
 import grotesqueGuardians = require('../../data/monsters/grotesqueGuardians');
-import kingBlackDragon = require('../../data/monsters/kingBlackDragon');
 import abyssalSire = require('../../data/monsters/abyssalSire');
 import thermy = require('../../data/monsters/thermy');
 import skotizo = require('../../data/monsters/skotizo');
-import mithrilDragon = require('../../data/monsters/mithrilDragon');
-import runeDragon = require('../../data/monsters/adamantDragon');
 import alchemicalHydra = require('../../data/monsters/alchemicalHydra');
 import hydra = require('../../data/monsters/hydra');
-import drake = require('../../data/monsters/drake');
-import wyrm = require('../../data/monsters/wyrm');
 import hespori = require('../../data/monsters/hespori');
 import gauntlet = require('../../data/new_monsters/gauntlet');
-import basKnight = require('../../data/monsters/basKnight');
 import wintertodt = require('../../data/monsters/wintertodt');
 import kraken = require('../../data/monsters/kraken');
 import obor = require('../../data/monsters/obor');
@@ -70,12 +59,6 @@ expose({
 				const loot = sarachnis.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
-			case 'KURASK':
-			case 'KURASKS': {
-				if (quantity > 5000) return 'I can only kill a maximum of 5000 Kurasks at a time!';
-				const loot = kurask.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
 			case 'LAVADRAGON':
 			case 'LAVADRAGONS':
 			case 'LAVADRAGS':
@@ -116,33 +99,6 @@ expose({
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
 
-			case 'ABYSSALDEMON':
-			case 'ABYSSALDEMONS':
-			case 'ABBYDEMON':
-			case 'ABBYDEMONS': {
-				if (quantity > 5000) {
-					return 'I can only do a maximum of 5000 Abyssal Demon kills at a time!';
-				}
-				const loot = abbyDemon.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-			case 'GORILLAS':
-			case 'DGS':
-			case 'DEMONICGORILLAS':
-			case 'DEMONICGORILLA':
-			case 'DEMONICS': {
-				if (quantity > 500) return "I can only kill 500 Demonic Gorilla's at a time!";
-				const loot = demonicGorilla.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-			case 'SHAMANS':
-			case 'LIZARDMANSHAMANS':
-			case 'LIZARDMANSHAMAN':
-			case 'LIZARDMEN': {
-				if (quantity > 1000) return "I can only kill 1000 Lizardman Shaman's at a time!";
-				const loot = lizardmanShaman.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
 			case 'SKELETALWYVERN':
 			case 'SKELETALWYVERNS':
 			case 'WYVERNS': {
@@ -150,13 +106,7 @@ expose({
 				const loot = wyvern.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
-			case 'ANCIENTWYVERN':
-			case 'ANCIENTWYVERNS':
-			case 'FOSSILISLANDWYVERNS': {
-				if (quantity > 1000) return 'I can only kill 1000 Ancient Wyverns at a time!';
-				const loot = ancientWyvern.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
+
 			case 'GROTESQUEGUARDIANS':
 			case 'GGS':
 			case 'DUSK':
@@ -165,12 +115,7 @@ expose({
 				const loot = grotesqueGuardians.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
-			case 'KBD':
-			case 'KINGBLACKDRAGON': {
-				if (quantity > 500) return 'I can only kill 500 King Black Dragons at a time!';
-				const loot = kingBlackDragon.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
+
 			case 'ABYSSALSIRE':
 			case 'ABBYSIRE':
 			case 'SIRE': {
@@ -212,21 +157,6 @@ expose({
 				const loot = obor.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
-			case 'MITHRILDRAGONS':
-			case 'MITHRILDRAGS':
-			case 'MITHDRAGS':
-			case 'MITHDRAGONS': {
-				if (quantity > 1000) return 'I can only kill 1000 Mithril Dragons at a time!';
-				const loot = mithrilDragon.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-
-			case 'RUNEDRAGONS':
-			case 'RUNEDRAGS': {
-				if (quantity > 1000) return 'I can only kill 1000 Rune Dragons at a time!';
-				const loot = runeDragon.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
 
 			case 'BRYOPHYTA':
 			case 'MOSSGIANTBOSS': {
@@ -256,20 +186,6 @@ expose({
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
 
-			case 'DRAKES':
-			case 'DRAKE': {
-				if (quantity > 500) return 'I can only kill 500 Drakes at a time!';
-				const loot = drake.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-
-			case 'WYRMS':
-			case 'WYRM': {
-				if (quantity > 500) return 'I can only kill 500 Wyrms at a time!';
-				const loot = wyrm.kill(quantity);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-
 			case 'HESPORIS':
 			case 'HESPORI': {
 				if (quantity > 100) return 'I can only kill 100 Hesporis at a time!';
@@ -287,17 +203,6 @@ expose({
 			case 'CG': {
 				if (quantity > 500) return 'I can only kill 500 Gauntlets at a time!';
 				const loot = gauntlet.kill(quantity, true);
-				return loot.length > 0 ? loot : 'You got nothing.';
-			}
-
-			case 'BASKNIGHT':
-			case 'BASILISKKNIGHT':
-			case 'BK':
-			case 'BASILISK': {
-				if (quantity > 300) {
-					return 'I can only kill 300 Basilik Knights at a time!';
-				}
-				const loot = basKnight.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
 

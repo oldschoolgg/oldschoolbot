@@ -8,12 +8,14 @@ import { SkillsEnum } from '../../lib/types';
 import Skills from '../../lib/skills';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { roll } from 'oldschooljs/dist/util/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 const Mining = Skills.get(SkillsEnum.Mining);
 const MiningPet = Items.get('Rock golem');
 
 export default class extends Task {
-	async run({ oreID, quantity, userID, channelID }: MiningActivityTaskOptions) {
+	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
@@ -45,6 +47,24 @@ export default class extends Task {
 			loot[MiningPet!.id] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 		}
+
+		const numberOfMinutes = duration / Time.Minute;
+
+		if (numberOfMinutes > 10 && ore.nuggets) {
+			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
+			loot[12012] = numberOfNuggets;
+		} else if (numberOfMinutes > 10 && ore.minerals) {
+			let numberOfMinerals = 0;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(ore.minerals)) numberOfMinerals++;
+			}
+
+			if (numberOfMinerals > 0) {
+				loot[21341] = numberOfMinerals;
+			}
+		}
+
+		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
 		await user.addItemsToBank(loot, true);
 

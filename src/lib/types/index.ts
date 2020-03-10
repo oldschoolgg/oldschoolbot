@@ -1,10 +1,10 @@
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { BeginnerCasket } from 'oldschooljs/dist/clues/Beginner';
-import { MediumCasket } from 'oldschooljs/dist/clues/Medium';
-import { EasyCasket } from 'oldschooljs/dist/clues/Easy';
-import { HardCasket } from 'oldschooljs/dist/clues/Hard';
-import { EliteCasket } from 'oldschooljs/dist/clues/Elite';
-import { MasterCasket } from 'oldschooljs/dist/clues/Master';
+import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
+import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
+import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
+import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
+import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
+import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 
 export interface Bank {
 	[key: number]: number;
@@ -130,6 +130,10 @@ export interface PrivateConfig {
 		dbUrl: string;
 		dbName: string;
 	};
+	patreon: {
+		campaignID: number;
+		token: string;
+	};
 }
 
 export interface ClueTier {
@@ -141,3 +145,25 @@ export interface ClueTier {
 }
 
 export type ItemTuple = [number, number, number];
+
+export interface Patron {
+	patreonID: string;
+	discordID?: string;
+	entitledTiers: string[];
+	lastChargeDate: string;
+	lastChargeStatus: string;
+	lifeTimeSupportCents: number;
+	patronStatus: string;
+	pledgeRelationshipStart: string;
+}
+
+export interface Ore {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	respawnTime: number;
+	petChance?: number;
+	nuggets?: boolean;
+	minerals?: number;
+}
