@@ -84,6 +84,17 @@ const Craftables: Craftable[] = [
 			[itemID('Dragonfire ward')]: 1
 		},
 		smithingLevel: 90
+	},
+	{
+		name: 'Infernal pickaxe',
+		inputItems: {
+			[itemID('Dragon pickaxe')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal pickaxe')]: 1
+		},
+		smithingLevel: 85
 	}
 ];
 
