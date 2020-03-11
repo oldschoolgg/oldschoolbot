@@ -1,8 +1,8 @@
-import { Util } from 'oldschooljs';
+import { toKMB } from 'oldschooljs/dist/util/util';
 
 const formatBankValue = (totalValue: number): string => {
 	if (totalValue < 1e9) {
-		return Util.toKMB(totalValue);
+		return toKMB(totalValue);
 	}
 
 	// Special case if bank value >= 1B: show three decimals

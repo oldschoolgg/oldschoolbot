@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
 import fetch from 'node-fetch';
-import { toKMB } from 'oldschooljs/dist/util/util';
 import { Util } from 'oldschooljs';
 
 import {
