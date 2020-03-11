@@ -64,6 +64,26 @@ const Craftables: Craftable[] = [
 			[itemID('Zamorak godsword')]: 1
 		},
 		smithingLevel: 80
+	},
+	{
+		name: 'Dragonfire shield',
+		inputItems: {
+			[itemID('Draconic visage')]: 1
+		},
+		outputItems: {
+			[itemID('Dragonfire shield')]: 1
+		},
+		smithingLevel: 90
+	},
+	{
+		name: 'Dragonfire ward',
+		inputItems: {
+			[itemID('Skeletal visage')]: 1
+		},
+		outputItems: {
+			[itemID('Dragonfire ward')]: 1
+		},
+		smithingLevel: 90
 	}
 ];
 
