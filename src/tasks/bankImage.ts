@@ -119,25 +119,6 @@ export default class BankImageTask extends Task {
 		}
 	}
 
-	public static formatBankValue = (totalValue: number): string => {
-		if (totalValue < 1e9) {
-			return toKMB(totalValue);
-		}
-
-		// Special case if bank value >= 1B: show three decimals
-		let formattedValue = (totalValue / 1e9).toFixed(3);
-
-		// Remove trailing zeroes
-		while (
-			['0', '.'].includes(formattedValue[formattedValue.length - 1]) &&
-			formattedValue.length > 1
-		) {
-			formattedValue = formattedValue.slice(0, -1);
-		}
-
-		return formattedValue + 'b';
-	};
-
 	async getItemImage(itemID: number): Promise<Image> {
 		const isOnDisk = this.itemIconsList.has(itemID);
 		const cachedImage = this.itemIconImagesCache.get(itemID);
@@ -434,4 +415,23 @@ export default class BankImageTask extends Task {
 
 		return canvas.toBuffer();
 	}
+
+	public static formatBankValue = (totalValue: number): string => {
+		if (totalValue < 1e9) {
+			return toKMB(totalValue);
+		}
+
+		// Special case if bank value >= 1B: show three decimals
+		let formattedValue = (totalValue / 1e9).toFixed(3);
+
+		// Remove trailing zeroes
+		while (
+			['0', '.'].includes(formattedValue[formattedValue.length - 1]) &&
+			formattedValue.length > 1
+		) {
+			formattedValue = formattedValue.slice(0, -1);
+		}
+
+		return `${formattedValue}b`;
+	};
 }
