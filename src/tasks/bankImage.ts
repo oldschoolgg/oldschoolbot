@@ -18,6 +18,7 @@ import { Bank } from '../lib/types';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
+import formatBankValue from '../lib/util/formatBankValue';
 import { Events } from '../lib/constants';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
@@ -196,7 +197,7 @@ export default class BankImageTask extends Task {
 		ctx.font = '16px RuneScape Bold 12';
 
 		if (showValue) {
-			title += ` (Value: ${BankImageTask.formatBankValue(totalValue)})`;
+			title += ` (Value: ${formatBankValue(totalValue)})`;
 		}
 
 		ctx.fillStyle = '#000000';
@@ -415,23 +416,4 @@ export default class BankImageTask extends Task {
 
 		return canvas.toBuffer();
 	}
-
-	public static formatBankValue = (totalValue: number): string => {
-		if (totalValue < 1e9) {
-			return toKMB(totalValue);
-		}
-
-		// Special case if bank value >= 1B: show three decimals
-		let formattedValue = (totalValue / 1e9).toFixed(3);
-
-		// Remove trailing zeroes
-		while (
-			['0', '.'].includes(formattedValue[formattedValue.length - 1]) &&
-			formattedValue.length > 1
-		) {
-			formattedValue = formattedValue.slice(0, -1);
-		}
-
-		return `${formattedValue}b`;
-	};
 }
