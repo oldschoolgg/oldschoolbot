@@ -119,6 +119,17 @@ const Craftables: Craftable[] = [
 			[itemID('Odium ward')]: 1
 		},
 		smithingLevel: 1
+	},
+	{
+		name: 'Crystal key',
+		inputItems: {
+			[itemID('Loop half of key')]: 1,
+			[itemID('Tooth half of key')]: 1
+		},
+		outputItems: {
+			[itemID('Crystal key')]: 1
+		},
+		smithingLevel: 1
 	}
 ];
 
