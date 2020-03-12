@@ -95,6 +95,30 @@ const Craftables: Craftable[] = [
 			[itemID('Infernal pickaxe')]: 1
 		},
 		smithingLevel: 85
+	},
+	{
+		name: 'Malediction ward',
+		inputItems: {
+			[itemID('Malediction shard 1')]: 1,
+			[itemID('Malediction shard 2')]: 1,
+			[itemID('Malediction shard 3')]: 1
+		},
+		outputItems: {
+			[itemID('Malediction ward')]: 1
+		},
+		smithingLevel: 1
+	},
+	{
+		name: 'Odium ward',
+		inputItems: {
+			[itemID('Odium shard 1')]: 1,
+			[itemID('Odium shard 2')]: 1,
+			[itemID('Odium shard 3')]: 1
+		},
+		outputItems: {
+			[itemID('Odium ward')]: 1
+		},
+		smithingLevel: 1
 	}
 ];
 
