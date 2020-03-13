@@ -1,7 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 const CrystalChestTable = new LootTable()
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Spinach roll', 1],
@@ -10,8 +10,8 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem('Uncut dragonstone', 1)
-	.addItem(
+	.add('Uncut dragonstone', 1)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Air rune', 50],
@@ -29,7 +29,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Ruby', 2],
@@ -38,7 +38,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Runite bar', 3]
@@ -46,7 +46,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Iron ore', 150]
@@ -54,7 +54,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Coal', 100]
@@ -62,7 +62,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Raw swordfish', 5],
@@ -71,7 +71,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Tooth half of key', 1],
@@ -80,7 +80,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Loop half of key', 1],
@@ -89,7 +89,7 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem(
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Adamant sq shield', 1]
@@ -97,6 +97,6 @@ const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.addItem([['Uncut dragonstone'], ['Rune platelegs']], 1, 1);
+	.add([['Uncut dragonstone'], ['Rune platelegs']], 1, 1);
 
 export default CrystalChestTable;
