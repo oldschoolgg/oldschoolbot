@@ -57,7 +57,8 @@ export default class extends BotCommand {
 
 		// If the user has a dragon pickaxe & over 61 mining provide 15% speed boost
 		if (
-			(await msg.author.hasItem(itemID('Dragon pickaxe'), 1, true)) &&
+			((await msg.author.hasItem(itemID('Dragon pickaxe'), 1, true)) ||
+				(await msg.author.hasItem(itemID('Infernal pickaxe'), 1, true))) &&
 			msg.author.skillLevel(SkillsEnum.Mining) > 61
 		) {
 			timeToMine *= 0.85;
