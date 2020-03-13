@@ -27,9 +27,10 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
-	barID: number;
-	channelID: string;
-	quantity: number;
+  smithingActivityType: string;
+  barID: number;
+  channelID: string;
+  quantity: number; 
 }
 
 export interface MonsterKillingTickerTaskData {

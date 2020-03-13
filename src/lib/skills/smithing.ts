@@ -69,10 +69,10 @@ const bars: Bar[] = [
 	}
 ];
 
-const Smithing = {
+const Smelting = {
 	Bars: bars,
 	id: SkillsEnum.Smithing,
 	emoji: Emoji.Smithing
 };
 
-export default Smithing;
+export default Smelting;

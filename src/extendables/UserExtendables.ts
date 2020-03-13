@@ -2,7 +2,7 @@ import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
 import { Events, Activity, Emoji, Channel, Time } from '../lib/constants';
-import { Bank, SkillsEnum } from '../lib/types';
+import { Bank, SkillsEnum, SmithingActivityEnum } from '../lib/types';
 import {
 	addBankToBank,
 	removeItemFromBank,
@@ -302,14 +302,18 @@ export default class extends Extendable {
 
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
+        
+        switch (data.smithingActivityType) {
+          case SmithingActivityEnum.Smelting: {
+            const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
-				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
-
-				return `${this.minionName} is currently smithing ${data.quantity}x ${
-					bar!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Smithing
-				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+				    return `${this.minionName} is currently smelting ${data.quantity}x ${
+					   bar!.name
+				    }. Approximately ${formattedDuration} remaining. Your ${
+					   Emoji.Smithing
+				    } Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+          }
+        }
 			}
 		}
 	}

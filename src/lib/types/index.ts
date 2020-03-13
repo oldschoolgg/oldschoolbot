@@ -157,6 +157,10 @@ export interface Patron {
 	patronStatus: string;
 	pledgeRelationshipStart: string;
 }
+export const enum SmithingActivityEnum {
+  Smelting = 'smelting',
+  ItemSmithing = 'itemSmithing' //currently not in use but will be when item smithing is added
+}
 
 export interface Ore {
 	level: number;

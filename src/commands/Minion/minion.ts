@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smelt] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -207,11 +207,19 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
+		await this.client.commands.get('mine')!.run(msg, [quantity, oreName]).catch(
+      (err) => {
+        throw err
+      }
+    )
 	}
 
-	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
+	async smelt(msg: KlasaMessage, [quantity, barName]: [number, string]) {
+		await this.client.commands.get('smelt')!.run(msg, [quantity, barName]).catch(
+      (err) => {
+        throw err
+      }
+    )
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
@@ -282,7 +290,11 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		this.kill(msg, [quantity, name]);
+		await this.kill(msg, [quantity, name]).catch(
+      (err) => {
+        throw err
+      }
+    )
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
