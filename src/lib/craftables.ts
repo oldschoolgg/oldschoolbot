@@ -68,20 +68,24 @@ const Craftables: Craftable[] = [
 	{
 		name: 'Dragonfire shield',
 		inputItems: {
-			[itemID('Draconic visage')]: 1
+			[itemID('Draconic visage')]: 1,
+			[itemID('Anti-dragon shield')]: 1
 		},
 		outputItems: {
-			[itemID('Dragonfire shield')]: 1
+			// Uncharged dragonfire shield
+			11284: 1
 		},
 		smithingLevel: 90
 	},
 	{
 		name: 'Dragonfire ward',
 		inputItems: {
-			[itemID('Skeletal visage')]: 1
+			[itemID('Skeletal visage')]: 1,
+			[itemID('Anti-dragon shield')]: 1
 		},
 		outputItems: {
-			[itemID('Dragonfire ward')]: 1
+			// Uncharged Dragonfire ward
+			22003: 1
 		},
 		smithingLevel: 90
 	},
