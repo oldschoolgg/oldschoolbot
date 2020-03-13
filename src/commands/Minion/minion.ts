@@ -207,19 +207,21 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		await this.client.commands.get('mine')!.run(msg, [quantity, oreName]).catch(
-      (err) => {
-        throw err
-      }
-    )
+		await this.client.commands
+			.get('mine')!
+			.run(msg, [quantity, oreName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async smelt(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		await this.client.commands.get('smelt')!.run(msg, [quantity, barName]).catch(
-      (err) => {
-        throw err
-      }
-    )
+		await this.client.commands
+			.get('smelt')!
+			.run(msg, [quantity, barName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
@@ -290,11 +292,9 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		await this.kill(msg, [quantity, name]).catch(
-      (err) => {
-        throw err
-      }
-    )
+		await this.kill(msg, [quantity, name]).catch(err => {
+			throw err;
+		});
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {

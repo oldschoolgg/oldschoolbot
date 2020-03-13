@@ -302,18 +302,18 @@ export default class extends Extendable {
 
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
-        
-        switch (data.smithingActivityType) {
-          case SmithingActivityEnum.Smelting: {
-            const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
-				    return `${this.minionName} is currently smelting ${data.quantity}x ${
-					   bar!.name
-				    }. Approximately ${formattedDuration} remaining. Your ${
-					   Emoji.Smithing
-				    } Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
-          }
-        }
+				switch (data.smithingActivityType) {
+					case SmithingActivityEnum.Smelting: {
+						const bar = Smithing.Bars.find(bar => bar.id === data.barID);
+
+						return `${this.minionName} is currently smelting ${data.quantity}x ${
+							bar!.name
+						}. Approximately ${formattedDuration} remaining. Your ${
+							Emoji.Smithing
+						} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+					}
+				}
 			}
 		}
 	}

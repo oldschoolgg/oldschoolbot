@@ -28,7 +28,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, barName = '']: [null | number | string, string]) {
-    if (!msg.author.hasMinion) {
+		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
 		}
 
@@ -88,7 +88,7 @@ export default class extends BotCommand {
 
 		const data: SmithingActivityTaskOptions = {
 			smithingActivityType: SmithingActivityEnum.Smelting,
-      barID: bar.id,
+			barID: bar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -120,6 +120,5 @@ export default class extends BotCommand {
 				bar.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);
-
 	}
 }
