@@ -5,7 +5,7 @@ import ClueTiers from '../../lib/clueTiers';
 import { Events } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
-import { stringMatches } from '../../lib/util';
+import { stringMatches, itemNameFromID } from '../../lib/util';
 import bankFromLootTableOutput from '../../lib/util/bankFromLootTableOutput';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
@@ -15,7 +15,6 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['clue'],
 			usage: '<ClueTier:string>',
-			usageDelim: ' ',
 			oneAtTime: true
 		});
 	}
@@ -79,7 +78,7 @@ export default class extends BotCommand {
 
 		const hasItem = await msg.author.hasItem(openable.itemID);
 		if (!hasItem) {
-			throw `You don't have a ${openable.name} to open!`;
+			throw `You don't have a ${itemNameFromID(openable.itemID)} to open!`;
 		}
 
 		await msg.author.removeItemFromBank(openable.itemID);
