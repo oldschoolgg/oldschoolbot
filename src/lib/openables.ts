@@ -3,6 +3,8 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import BirthdayPresentTable from './simulation/birthdayPresent';
 import { Emoji } from './constants';
 import MysteryBoxTable from './simulation/mysteryBox';
+import CasketTable from './simulation/casket';
+import CrystalChestTable from './simulation/crystalChest';
 
 interface Openable {
 	name: string;
@@ -26,6 +28,20 @@ const Openables: Openable[] = [
 		aliases: ['mystery box', 'mystery'],
 		table: MysteryBoxTable,
 		emoji: Emoji.MysteryBox
+	},
+	{
+		name: 'Casket',
+		itemID: 405,
+		aliases: ['casket'],
+		table: CasketTable,
+		emoji: Emoji.Casket
+	},
+	{
+		name: 'Crystal chest',
+		itemID: 989,
+		aliases: ['crystal chest'],
+		table: CrystalChestTable,
+		emoji: Emoji.Casket
 	}
 ];
 
