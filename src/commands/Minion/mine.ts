@@ -7,6 +7,7 @@ import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -56,10 +57,10 @@ export default class extends BotCommand {
 
 		// If the user has a dragon pickaxe & over 61 mining provide 15% speed boost
 		if (
-			(await msg.author.hasItem(11920, 1, true)) &&
+			(await msg.author.hasItem(itemID('Dragon pickaxe'), 1, true)) &&
 			msg.author.skillLevel(SkillsEnum.Mining) > 61
 		) {
-			timeToMine *= 85 / 100;
+			timeToMine *= 0.85;
 		}
 
 		// If no quantity provided, set it to the max.
