@@ -2,6 +2,7 @@ import { Client, KlasaClientOptions } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 import { Client as TagsClient } from '@kcp/tags';
+import pLimit from 'p-limit';
 
 import { privateConfig, clientOptions, clientProperties } from './config';
 import { Time, Events } from './lib/constants';
@@ -16,6 +17,7 @@ import('./lib/schemas/GuildSchema');
 class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();
+	public queuePromise = pLimit(1);
 
 	constructor(options: KlasaClientOptions) {
 		super(options);

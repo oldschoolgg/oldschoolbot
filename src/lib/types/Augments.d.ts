@@ -1,15 +1,17 @@
 import { Db } from 'mongodb';
 import { Settings, SettingsUpdateResult } from 'klasa';
 import { FSWatcher } from 'fs';
+import { CommentStream, SubmissionStream } from 'snoostorm';
+import { Limit } from 'p-limit';
 
 import { CustomGet } from '../UserSettings';
 import { Bank, SkillsEnum } from '.';
-import { CommentStream, SubmissionStream } from 'snoostorm';
 
 declare module 'klasa' {
 	interface KlasaClient {
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
+		public queuePromise: Limit;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public settings: Settings;
 		public production: boolean;

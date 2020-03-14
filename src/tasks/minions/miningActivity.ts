@@ -70,26 +70,28 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
-		channel.send(str);
+		this.client.queuePromise(() => {
+			channel.send(str);
 
-		channel
-			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-				max: 1
-			})
-			.then(messages => {
-				const response = messages.first();
+			channel
+				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
+					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
+					max: 1
+				})
+				.then(messages => {
+					const response = messages.first();
 
-				if (response) {
-					if (response.author.minionIsBusy) return;
+					if (response) {
+						if (response.author.minionIsBusy) return;
 
-					user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
+						user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
 
-					this.client.commands
-						.get('mine')!
-						.run(response as KlasaMessage, [quantity, ore.name]);
-				}
-			})
-			.catch(noOp);
+						this.client.commands
+							.get('mine')!
+							.run(response as KlasaMessage, [quantity, ore.name]);
+					}
+				})
+				.catch(noOp);
+		});
 	}
 }

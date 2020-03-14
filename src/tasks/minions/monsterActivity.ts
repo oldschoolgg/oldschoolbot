@@ -65,24 +65,27 @@ export default class extends Task {
 
 		channel.send(str, new MessageAttachment(image));
 
-		channel
-			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-				max: 1
-			})
-			.then(messages => {
-				const response = messages.first();
+		this.client.queuePromise(() => {
+			channel.send(str, new MessageAttachment(image));
+			channel
+				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
+					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
+					max: 1
+				})
+				.then(messages => {
+					const response = messages.first();
 
-				if (response) {
-					if (response.author.minionIsBusy) return;
+					if (response) {
+						if (response.author.minionIsBusy) return;
 
-					this.client.commands
-						.get('minion')!
-						.kill(response as KlasaMessage, [quantity, monster.name]);
-				}
-			})
-			.catch(noOp);
+						this.client.commands
+							.get('minion')!
+							.kill(response as KlasaMessage, [quantity, monster.name]);
+					}
+				})
+				.catch(noOp);
 
-		user.incrementMonsterScore(monsterID, quantity);
+			user.incrementMonsterScore(monsterID, quantity);
+		});
 	}
 }
