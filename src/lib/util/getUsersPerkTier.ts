@@ -11,7 +11,6 @@ export default function getUsersPerkTier(user: KlasaUser): number {
 
 	const supportGuild = getSupportGuild(user.client);
 	const member = supportGuild.members.find(member => member.user === user);
-	if (!member) return 0;
 
 	if (
 		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2) ||
@@ -27,6 +26,8 @@ export default function getUsersPerkTier(user: KlasaUser): number {
 	if ([Roles.Booster, Roles.Moderator].some(roleID => member.roles.has(roleID))) {
 		return PerkTier.One;
 	}
+
+	if (!member) return 0;
 
 	return 0;
 }
