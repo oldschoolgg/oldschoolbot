@@ -21,10 +21,12 @@ export default function getUsersPerkTier(user: KlasaUser): number {
 	const member = supportGuild.members.find(member => member.user === user);
 	if (!member) return 0;
 
-	if (
-		[Roles.Booster, Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID))
-	) {
+	if ([Roles.Booster, Roles.Moderator].some(roleID => member.roles.has(roleID))) {
 		return PerkTier.One;
+	}
+
+	if ([Roles.Contributor].some(roleID => member.roles.has(roleID))) {
+		return PerkTier.Three;
 	}
 
 	return 0;
