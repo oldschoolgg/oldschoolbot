@@ -1,11 +1,10 @@
 import { Task } from 'klasa';
 
-import { TextChannel, DMChannel } from 'discord.js';
-
 import clueTiers from '../../lib/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { Events } from '../../lib/constants';
 import { getMinionName } from '../../lib/util';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 export default class extends Task {
 	async run({ clueID, userID, channelID, quantity }: ClueActivityTaskOptions) {
@@ -32,16 +31,11 @@ export default class extends Task {
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
-		let channel = this.client.channels.get(channelID);
-		if (!channel || !(channel instanceof TextChannel) || !channel.postable) {
-			channel = await user.createDM();
-			if (!channel) return;
-		}
+		const channel = this.client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
 
-		if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) {
-			return;
-		}
-
-		channel.send(str);
+		this.client.queuePromise(() => {
+			channel.send(str);
+		});
 	}
 }

@@ -1995,10 +1995,10 @@ observable-fns@^0.5.0:
   resolved "https://registry.yarnpkg.com/observable-fns/-/observable-fns-0.5.0.tgz#9b71bb3e1a6ac9840b3922b67de0092773230177"
   integrity sha512-BWmxvFppAKRWWTYns+yW3RaoXLTkSVF1cnLNe06opO4/C4VVfZgRkwSEBLOAA6bcTNM1zDDRz2T+l52cPNuaZQ==
 
-oldschooljs@^0.9.8:
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-0.9.8.tgz#8443f5e8988f47b5d90ea1690b446ccfb01fffca"
-  integrity sha512-a5iBzpvdN5lz9TVahAV4mhs+imaQES6DpQWQZYPcwsTPUyMkxTmviQYGjhClea5VqGy+NyjBTngMpdbK52+r7A==
+oldschooljs@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.0.1.tgz#bf7f563214ddffe6e57d5fad77f56d500b44aab3"
+  integrity sha512-Y8D6JvHtn+iephFzmLxVg9oYFjHBVipTz1SsDXEpIdbNtxR876n+vWTADLmYA1FBwLivwF2hjg00w2UE+pEcjA==
   dependencies:
     jsdom "^16.0.1"
     node-fetch "^2.6.0"
@@ -2062,7 +2062,7 @@ p-is-promise@^1.1.0:
   resolved "https://registry.yarnpkg.com/p-is-promise/-/p-is-promise-1.1.0.tgz#9c9456989e9f6588017b0434d56097675c3da05e"
   integrity sha1-nJRWmJ6fZYgBewQ01WCXZ1w9oF4=
 
-p-limit@^2.0.0:
+p-limit@^2.0.0, p-limit@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.2.2.tgz#61279b67721f5287aa1c13a9a7fbbc48c9291b1e"
   integrity sha512-WGR+xHecKTr7EbUEhyLSh5Dube9JtdiG78ufaeLxTgpudf/20KqyMioIUZJAezlTIi6evxuoUs9YXc11cU+yzQ==
