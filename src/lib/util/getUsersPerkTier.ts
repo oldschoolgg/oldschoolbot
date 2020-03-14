@@ -9,7 +9,14 @@ export default function getUsersPerkTier(user: KlasaUser): number {
 		return 10;
 	}
 
-	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2)) {
+	const supportGuild = getSupportGuild(user.client);
+	const member = supportGuild.members.find(member => member.user === user);
+	if (!member) return 0;
+
+	if (
+		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2) ||
+		[Roles.Contributor].some(roleID => member.roles.has(roleID))
+	) {
 		return PerkTier.Three;
 	}
 
@@ -17,16 +24,8 @@ export default function getUsersPerkTier(user: KlasaUser): number {
 		return PerkTier.Two;
 	}
 
-	const supportGuild = getSupportGuild(user.client);
-	const member = supportGuild.members.find(member => member.user === user);
-	if (!member) return 0;
-
 	if ([Roles.Booster, Roles.Moderator].some(roleID => member.roles.has(roleID))) {
 		return PerkTier.One;
-	}
-
-	if ([Roles.Contributor].some(roleID => member.roles.has(roleID))) {
-		return PerkTier.Three;
 	}
 
 	return 0;
