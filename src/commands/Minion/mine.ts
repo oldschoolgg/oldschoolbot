@@ -48,19 +48,11 @@ export default class extends BotCommand {
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
-		let timeToMine = determineScaledOreTime(
+		const timeToMine = determineScaledOreTime(
 			ore!.xp,
 			ore.respawnTime,
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
-
-		// If the user has a dragon pickaxe & over 61 mining provide 15% speed boost
-		if (
-			(await msg.author.hasItem(11920, 1, true)) &&
-			msg.author.skillLevel(SkillsEnum.Mining) > 61
-		) {
-			timeToMine *= 85 / 100;
-		}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
