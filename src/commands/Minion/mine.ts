@@ -58,6 +58,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor((Time.Minute * 30) / timeToMine);
 		}
+
 		const duration = quantity * timeToMine;
 
 		if (duration > Time.Minute * 30) {
