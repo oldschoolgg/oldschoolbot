@@ -50,7 +50,11 @@ export default class extends Task {
 						.get(UserSettings.BitField)
 						.filter(
 							number =>
-								![BitField.IsPatronTier1, BitField.IsPatronTier2].includes(number)
+								![
+									BitField.IsPatronTier1,
+									BitField.IsPatronTier2,
+									BitField.IsPatronTier3
+								].includes(number)
 						),
 					{
 						arrayAction: ArrayActions.Overwrite
@@ -75,6 +79,15 @@ export default class extends Task {
 				!user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2)
 			) {
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier2, {
+					arrayAction: ArrayActions.Add
+				});
+			}
+
+			if (
+				patron.entitledTiers.includes(PatronTierID.Three) &&
+				!user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3)
+			) {
+				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier3, {
 					arrayAction: ArrayActions.Add
 				});
 			}
