@@ -40,6 +40,8 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (msg.author.ironmode)throw `You can't duel someone in ironmode.`;
+		if (user.ironmode)throw `You can't duel someone in ironmode.` 
 		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
 		if (user.id === msg.author.id) throw `You cant duel yourself.`;
 		if (user.bot) throw `You cant duel a bot.`;

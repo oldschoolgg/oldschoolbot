@@ -20,6 +20,7 @@ export namespace UserSettings {
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
+	export const ironmode = T<boolean>('ironmode');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

@@ -25,6 +25,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		if (msg.author.ironmode)throw `Iron players can't sell items.`
 		const osItem = Items.get(cleanItemName(itemName));
 		if (!osItem) throw `That item doesnt exist.`;
 		if (!itemIsTradeable(osItem.id)) {

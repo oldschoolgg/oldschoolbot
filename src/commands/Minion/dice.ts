@@ -19,6 +19,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
+		if (msg.author.ironmode) throw `Your in ironmode and you cant play dice.`;
 		const roll = rand(1, 100);
 
 		const embed = new MessageEmbed()

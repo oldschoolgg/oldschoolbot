@@ -29,6 +29,7 @@ export interface SettingsEntry {
 	lastDailyTimestamp?: number;
 	bitfield?: number[];
 	totalCommandsUsed?: number;
+	ironmode?: boolean;
 	minion?: {
 		name?: string;
 		hasBought: boolean;
