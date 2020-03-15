@@ -59,7 +59,7 @@ export default class extends BotCommand {
 		if (
 			((await msg.author.hasItem(itemID('Dragon pickaxe'), 1, true)) ||
 				(await msg.author.hasItem(itemID('Infernal pickaxe'), 1, true))) &&
-			msg.author.skillLevel(SkillsEnum.Mining) > 61
+			msg.author.skillLevel(SkillsEnum.Mining) >= 61
 		) {
 			timeToMine *= 0.85;
 		}
