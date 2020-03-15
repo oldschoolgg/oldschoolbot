@@ -110,18 +110,33 @@ export const rootFolder = join(__dirname, '..', '..', '..');
 export const COINS_ID = 995;
 
 export const enum PerkTier {
-	One = 1, // Boosters, Contributors, Mods
-	Two = 2, // Tier 1 Patron
-	Three = 3 // Tier 2 Patron
+	/**
+	 * Boosters
+	 */
+	One = 1,
+	/**
+	 * Tier 1 Patron
+	 */
+	Two = 2,
+	/**
+	 * Tier 2 Patron, Contributors, Mods
+	 */
+	Three = 3,
+	/**
+	 * Tier 3 Patron
+	 */
+	Four = 4
 }
 
 export const enum BitField {
 	HasGivenBirthdayPresent = 1,
 	IsPatronTier1 = 2,
-	IsPatronTier2 = 3
+	IsPatronTier2 = 3,
+	IsPatronTier3 = 4
 }
 
 export const enum PatronTierID {
 	One = '4608201',
-	Two = '4608226'
+	Two = '4608226',
+	Three = '4720356'
 }
