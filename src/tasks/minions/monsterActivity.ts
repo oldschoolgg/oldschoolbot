@@ -63,8 +63,6 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
-		channel.send(str, new MessageAttachment(image));
-
 		this.client.queuePromise(() => {
 			channel.send(str, new MessageAttachment(image));
 			channel
