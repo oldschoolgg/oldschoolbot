@@ -1,6 +1,6 @@
 import { Inhibitor, KlasaMessage } from 'klasa';
 
-import { SupportServer } from '../lib/constants';
+import { SupportServer, PerkTier } from '../lib/constants';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Inhibitor {
@@ -10,7 +10,7 @@ export default class extends Inhibitor {
 
 		const perkTier = getUsersPerkTier(msg.author);
 
-		if (msg.member && perkTier > 0) {
+		if (msg.member && perkTier >= PerkTier.Two) {
 			return false;
 		}
 
