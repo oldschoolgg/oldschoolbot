@@ -60,6 +60,8 @@ export default class extends Task {
 				)}), you can get your minion to complete them using \`+minion clue 1 easy/medium/etc \``;
 		}
 
+		user.incrementMonsterScore(monsterID, quantity);
+
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
@@ -82,8 +84,6 @@ export default class extends Task {
 					}
 				})
 				.catch(noOp);
-
-			user.incrementMonsterScore(monsterID, quantity);
 		});
 	}
 }
