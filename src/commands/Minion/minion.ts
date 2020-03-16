@@ -77,7 +77,7 @@ export default class extends BotCommand {
 
 		if (msg.author.ironman) {
 			await msg.send(
-				`Would you like to end ironmode? You will keep all your items and stats but you will have to start over if you want to play ironmode again.Please say \`yes\` to confirm.`
+				`Would you like to end ironman? You will keep all your items and stats but you will have to start over if you want to play ironman again.Please say \`yes\` to confirm.`
 			);
 			try {
 				await msg.channel.awaitMessages(
@@ -99,7 +99,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.send(
-			`Are you sure you want to start afresh and play in ironmode? (Reset your bank and all your stats, lose the ability to get GP from dailies,trade,dice,duel,etc) Please say \`yes\` to confirm.`
+			`Are you sure you want to start afresh and play in ironman? (Reset your bank and all your stats, lose the ability to get GP from dailies,trade,dice,duel,etc) Please say \`yes\` to confirm.`
 		);
 
 		try {
