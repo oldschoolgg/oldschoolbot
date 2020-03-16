@@ -3,8 +3,9 @@ import fetch from 'node-fetch';
 
 import { privateConfig } from '../config';
 import { Patron } from '../lib/types';
-import { PatronTierID, BitField, Time } from '../lib/constants';
+import { PatronTierID, BitField, Time, Roles, BadgesEnum } from '../lib/constants';
 import { UserSettings } from '../lib/UserSettings';
+import getSupportGuild from '../lib/util/getSupportGuild';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${privateConfig?.patreon.campaignID}/members`
@@ -41,31 +42,52 @@ export default class extends Task {
 		for (const patron of fetchedPatrons) {
 			if (!patron.discordID) continue;
 			const user = await this.client.users.fetch(patron.discordID);
+			const supportGuild = getSupportGuild(user.client);
+			const member = await supportGuild.members.fetch(user.id).catch(() => null);
+
+			const userBitfield = user.settings.get(UserSettings.BitField);
+			const userBadges = user.settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Month) {
+				// Remove any/all the patron bits from this user.
 				await user.settings.update(
 					UserSettings.BitField,
-					user.settings
-						.get(UserSettings.BitField)
-						.filter(
-							number =>
-								![
-									BitField.IsPatronTier1,
-									BitField.IsPatronTier2,
-									BitField.IsPatronTier3
-								].includes(number)
-						),
+					userBitfield.filter(
+						number =>
+							![
+								BitField.IsPatronTier1,
+								BitField.IsPatronTier2,
+								BitField.IsPatronTier3
+							].includes(number)
+					),
 					{
 						arrayAction: ArrayActions.Overwrite
 					}
 				);
+
+				// Remove patreon role, if they have it
+				if (member && member.roles.has(Roles.Patron)) {
+					await member.roles.remove(Roles.Patron);
+				}
+
+				// Remove patreon badge(s)
+				await user.settings.update(
+					UserSettings.Badges,
+					userBadges.filter(
+						number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)
+					),
+					{
+						arrayAction: ArrayActions.Overwrite
+					}
+				);
+
 				continue;
 			}
 
 			if (
 				patron.entitledTiers.includes(PatronTierID.One) &&
-				!user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier1)
+				!userBitfield.includes(BitField.IsPatronTier1)
 			) {
 				// If they are tier X on patreon, and they arent marked as tier X patreon in discord,
 				// give them it.
@@ -76,7 +98,7 @@ export default class extends Task {
 
 			if (
 				patron.entitledTiers.includes(PatronTierID.Two) &&
-				!user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2)
+				!userBitfield.includes(BitField.IsPatronTier2)
 			) {
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier2, {
 					arrayAction: ArrayActions.Add
@@ -85,13 +107,30 @@ export default class extends Task {
 
 			if (
 				patron.entitledTiers.includes(PatronTierID.Three) &&
-				!user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3)
+				!userBitfield.includes(BitField.IsPatronTier3)
 			) {
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier3, {
 					arrayAction: ArrayActions.Add
 				});
 			}
+
+			// If they have neither the limited time badge or normal badge, give them the normal one.
+			if (
+				!userBadges.includes(BadgesEnum.Patron) &&
+				!userBadges.includes(BadgesEnum.LimitedPatron)
+			) {
+				await user.settings.update(UserSettings.Badges, BadgesEnum.Patron, {
+					arrayAction: ArrayActions.Add
+				});
+			}
+
+			// Add patreon role, if they don't have it
+			if (member && !member.roles.has(Roles.Patron)) {
+				await member.roles.add(Roles.Patron);
+			}
 		}
+
+		this.client.tasks.get('badges')?.run();
 	}
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {

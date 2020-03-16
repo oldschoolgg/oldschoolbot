@@ -21,7 +21,9 @@ export const enum Roles {
 	Contributor = '456181501437018112',
 	Moderator = '622806157563527178',
 	PatronTier1 = '678970545789730826',
-	PatronTier2 = '678967943979204608'
+	PatronTier2 = '678967943979204608',
+	PatronTier3 = '687408140832342043',
+	Patron = '679620175838183424'
 }
 
 export const enum Emoji {
@@ -95,7 +97,9 @@ export const enum Events {
 
 export const enum BadgesEnum {
 	Developer = 0,
-	Booster = 1
+	Booster = 1,
+	LimitedPatron = 2,
+	Patron = 3
 }
 
 export const enum PermissionLevelsEnum {
