@@ -31,7 +31,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: [],
-		notifyDrops: ['']
+		notifyDrops: []
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -187,7 +187,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		itemsRequired: [],
-		notifyDrops: ['']
+		notifyDrops: []
 	},
 	{
 		id: Monsters.Guard.id,
@@ -200,7 +200,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		itemsRequired: [],
-		notifyDrops: ['']
+		notifyDrops: []
 	},
 	{
 		id: Monsters.Woman.id,
@@ -213,7 +213,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		itemsRequired: [],
-		notifyDrops: ['']
+		notifyDrops: []
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -304,7 +304,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: [],
-		notifyDrops: ['']
+		notifyDrops: []
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
