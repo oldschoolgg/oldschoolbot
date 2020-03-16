@@ -91,10 +91,10 @@ export default class extends BotCommand {
 				);
 				await msg.author.settings.sync(true);
 				await msg.author.settings.update(UserSettings.Minion.ironman, false);
-				await msg.send('You are no longer in ironmode BTW.');
+				await msg.send('You are no longer in ironman BTW.');
 
 			} catch (err) {
-				return msg.channel.send('Cancelled ironmode swap.');
+				return msg.channel.send('Cancelled ironman swap.');
 			}
 		}
 
@@ -128,11 +128,11 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Minion.ironman, true);
 		
 
-			await msg.send('You are now in ironmode BTW.');
+			await msg.send('You are now in ironman BTW.');
 			
 
 		} catch (err) {
-			return msg.channel.send(err);
+			return msg.channel.send('Cancelled ironman swap.');
 
 		}
 		
