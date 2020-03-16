@@ -70,6 +70,7 @@ export const enum Tasks {
 	ClueActivity = 'clueActivity',
 	MiningActivity = 'miningActivity',
 	SmithingActivity = 'smithingActivity',
+	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker'
@@ -79,7 +80,8 @@ export const enum Activity {
 	MonsterKilling = 'MonsterKilling',
 	ClueCompletion = 'ClueCompletion',
 	Mining = 'Mining',
-	Smithing = 'Smithing'
+	Smithing = 'Smithing',
+	Questing = 'Questing'
 }
 
 export const enum Events {

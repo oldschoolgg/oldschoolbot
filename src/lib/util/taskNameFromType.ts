@@ -10,5 +10,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.MiningActivity;
 		case Activity.Smithing:
 			return Tasks.SmithingActivity;
+		case Activity.Questing:
+			return Tasks.QuestingActivity;
 	}
 }
