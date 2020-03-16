@@ -82,7 +82,8 @@ export default class extends BotCommand {
 			try {
 				await msg.channel.awaitMessages(
 					answer =>
-						answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes',
+						answer.author.id === msg.author.id &&
+						answer.content.toLowerCase() === 'yes',
 					{
 						max: 1,
 						time: 15000,
@@ -92,7 +93,6 @@ export default class extends BotCommand {
 				await msg.author.settings.sync(true);
 				await msg.author.settings.update(UserSettings.Minion.ironman, false);
 				await msg.send('You are no longer in ironman BTW.');
-
 			} catch (err) {
 				return msg.channel.send('Cancelled ironman swap.');
 			}
@@ -115,28 +115,20 @@ export default class extends BotCommand {
 
 			await msg.author.settings.sync(true);
 
-			
-			await msg.author.settings.reset('bank');	
+			await msg.author.settings.reset('bank');
 			await msg.author.settings.reset('collectionLogBank');
 			await msg.author.settings.reset('GP');
 			await msg.author.settings.reset('monsterScores');
 			await msg.author.settings.reset('clueScores');
 			await msg.author.settings.reset('stats');
 			await msg.author.settings.reset('skills');
-			
 
 			await msg.author.settings.update(UserSettings.Minion.ironman, true);
-		
 
 			await msg.send('You are now in ironman BTW.');
-			
-
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
-
 		}
-		
-		
 	}
 
 	async pat(msg: KlasaMessage) {

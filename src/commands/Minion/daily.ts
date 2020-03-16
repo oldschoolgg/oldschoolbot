@@ -126,9 +126,9 @@ export default class DailyCommand extends BotCommand {
 			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.4);
 		}
 
-		//Check to see if user is iron and remove GP if true.
-		if (user.ironman){
-			loot[COINS_ID] = 0
+		// Check to see if user is iron and remove GP if true.
+		if (user.ironman) {
+			loot[COINS_ID] = 0;
 		}
 
 		// Ensure amount of GP is an integer
