@@ -127,7 +127,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		//Check to see if user is iron and remove GP if true.
-		if (user.ironmode){
+		if (user.ironman){
 			loot[COINS_ID] = 0
 		}
 

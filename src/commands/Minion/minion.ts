@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|ironmode] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|ironman] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -66,7 +66,7 @@ export default class extends BotCommand {
 		return msg.send(msg.author.minionStatus);
 	}
 
-	async ironmode(msg: KlasaMessage) {
+	async ironman(msg: KlasaMessage) {
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
@@ -75,7 +75,7 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 
-		if (msg.author.ironmode) {
+		if (msg.author.ironman) {
 			await msg.send(
 				`Would you like to end ironmode? You will keep all your items and stats but you will have to start over if you want to play ironmode again.Please say \`yes\` to confirm.`
 			);
@@ -90,7 +90,7 @@ export default class extends BotCommand {
 					}
 				);
 				await msg.author.settings.sync(true);
-				await msg.author.settings.update(UserSettings.ironmode, false);
+				await msg.author.settings.update(UserSettings.Minion.ironman, false);
 				await msg.send('You are no longer in ironmode BTW.');
 
 			} catch (err) {
@@ -99,7 +99,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.send(
-			`Are you sure you want to start afresh and play in ironmode? (Reset your bank and all your stats, lose the ability to trade,dice,duel,etc) Please say \`yes\` to confirm.`
+			`Are you sure you want to start afresh and play in ironmode? (Reset your bank and all your stats, lose the ability to get GP from dailies,trade,dice,duel,etc) Please say \`yes\` to confirm.`
 		);
 
 		try {
@@ -119,50 +119,21 @@ export default class extends BotCommand {
 			await msg.author.settings.reset('bank');	
 			await msg.author.settings.reset('collectionLogBank');
 			await msg.author.settings.reset('GP');
-			await msg.author.settings.reset('pets');
 			await msg.author.settings.reset('monsterScores');
 			await msg.author.settings.reset('clueScores');
-			await msg.author.settings.reset('totalCommandsUsed');
-			await msg.author.settings.reset('stats.deaths');
-			await msg.author.settings.reset('stats.diceWins');
-			await msg.author.settings.reset('stats.diceLosses');
-			await msg.author.settings.reset('stats.duelWins');
-			await msg.author.settings.reset('stats.duelLosses');
-			await msg.author.settings.reset(`skills.${SkillsEnum.Mining}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Smithing}`);
-			/*
-			Future skills to be reset.
-			await msg.author.settings.reset(`skills.${SkillsEnum.Attack}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Strength}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Defence}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Ranged}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Prayer}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Magic}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Runecraft}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Hitpoints}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Crafting}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Fishing}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Cooking}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Firemaking}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Woodcutting}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Agility}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Herblore}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Thieving}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Fletching}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Slayer}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Farming}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Construction}`);
-			await msg.author.settings.reset(`skills.${SkillsEnum.Hunter}`);
-			*/
+			await msg.author.settings.reset('stats');
+			await msg.author.settings.reset('skills');
+			
 
-			await msg.author.settings.update(UserSettings.ironmode, true);
+			await msg.author.settings.update(UserSettings.Minion.ironman, true);
 		
 
 			await msg.send('You are now in ironmode BTW.');
 			
 
 		} catch (err) {
-			return msg.channel.send('Cancelled ironmode swap2.');
+			return msg.channel.send(err);
+
 		}
 		
 		
