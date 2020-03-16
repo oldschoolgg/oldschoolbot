@@ -14,7 +14,7 @@ export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 
 	if (
 		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2) ||
-		(member && [Roles.Contributor].some(roleID => member.roles.has(roleID)))
+		(member && [Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID)))
 	) {
 		return PerkTier.Three;
 	}
@@ -23,7 +23,7 @@ export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 		return PerkTier.Two;
 	}
 
-	if (member && [Roles.Booster, Roles.Moderator].some(roleID => member.roles.has(roleID))) {
+	if (member && [Roles.Booster].some(roleID => member.roles.has(roleID))) {
 		return PerkTier.One;
 	}
 
