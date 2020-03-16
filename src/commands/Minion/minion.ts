@@ -77,7 +77,7 @@ export default class extends BotCommand {
 
 		if (msg.author.ironman) {
 			await msg.send(
-				`Would you like to end ironman? You will keep all your items and stats but you will have to start over if you want to play ironman again.Please say \`yes\` to confirm.`
+				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again.Please say \`yes\` to confirm.`
 			);
 			try {
 				await msg.channel.awaitMessages(
@@ -92,14 +92,14 @@ export default class extends BotCommand {
 				);
 				await msg.author.settings.sync(true);
 				await msg.author.settings.update(UserSettings.Minion.ironman, false);
-				await msg.send('You are no longer in ironman BTW.');
+				await msg.send('You are no longer an ironman BTW.');
 			} catch (err) {
 				return msg.channel.send('Cancelled ironman swap.');
 			}
 		}
 
 		await msg.send(
-			`Are you sure you want to start afresh and play in ironman? (Reset your bank and all your stats, lose the ability to get GP from dailies,trade,dice,duel,etc) Please say \`yes\` to confirm.`
+			`Are you sure you want to start afresh and play as an ironman? (Reset your bank and all your stats, lose the ability to get GP from dailies,trade,dice,duel,etc) Please say \`yes\` to confirm.`
 		);
 
 		try {
@@ -125,7 +125,7 @@ export default class extends BotCommand {
 
 			await msg.author.settings.update(UserSettings.Minion.ironman, true);
 
-			await msg.send('You are now in ironman BTW.');
+			await msg.send('You are now an ironman BTW.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
 		}
