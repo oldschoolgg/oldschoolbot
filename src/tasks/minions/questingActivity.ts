@@ -12,8 +12,8 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentQP = user.settings.get(UserSettings.QP);
 
-		// Give them a random amount of QP within (4,7)
-		const qpRecieved = Math.floor(Math.random() * 4) + 3;
+		// Give them (0,3) QP, this averages to ~90 hours for 275
+		const qpRecieved = Math.floor(Math.random() * 4);
 
 		let str = `${user}, ${
 			user.minionName
