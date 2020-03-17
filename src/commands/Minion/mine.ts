@@ -75,9 +75,9 @@ export default class extends BotCommand {
 
 		if (duration > Time.Minute * 30) {
 			throw `${
-				msg.author.minionName
+			msg.author.minionName
 			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
-				ore.name
+			ore.name
 			} you can mine is ${Math.floor((Time.Minute * 30) / timeToMine)}.`;
 		}
 
@@ -96,7 +96,7 @@ export default class extends BotCommand {
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now mining ${quantity}x ${
-				ore.name
+			ore.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
