@@ -57,14 +57,14 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
-		// If the user has a dragon pickaxe & over 61 mining provide 15% speed boost
+		// If the user has over 61 mining, 15%/10% speed boost for infernal/drag picks.
 		const bank = msg.author.settings.get(UserSettings.Bank);
-		if (
-			(bankHasItem(bank, itemID('Dragon pickaxe')) ||
-				bankHasItem(bank, itemID('Infernal pickaxe'))) &&
-			msg.author.skillLevel(SkillsEnum.Mining) >= 61
-		) {
-			timeToMine *= 0.85;
+		if (msg.author.skillLevel(SkillsEnum.Mining) >= 61) {
+			if (bankHasItem(bank, itemID('Infernal pickaxe'))) {
+				timeToMine = Math.floor(timeToMine * 0.89);
+			} else if (bankHasItem(bank, itemID('Dragon pickaxe'))) {
+				timeToMine = Math.floor(timeToMine * 0.94);
+			}
 		}
 
 		// If no quantity provided, set it to the max.
