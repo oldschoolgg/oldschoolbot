@@ -1,11 +1,9 @@
 import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
-import { TextChannel } from 'discord.js';
 
 import pets from '../lib/pets';
 import { GuildSettings } from '../lib/GuildSettings';
 import { roll } from '../lib/util';
 import { UserSettings } from '../lib/UserSettings';
-import { Channel } from '../lib/constants';
 
 export default class extends Monitor {
 	public __memberCache: { [key: string]: number } = {};
