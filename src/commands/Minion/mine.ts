@@ -7,6 +7,9 @@ import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import itemID from '../../lib/util/itemID';
+import { UserSettings } from '../../lib/UserSettings';
+import bankHasItem from '../../lib/util/bankHasItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -48,17 +51,26 @@ export default class extends BotCommand {
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
-		const timeToMine = determineScaledOreTime(
+		let timeToMine = determineScaledOreTime(
 			ore!.xp,
 			ore.respawnTime,
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
+		// If the user has a dragon pickaxe & over 61 mining provide 15% speed boost
+		const bank = msg.author.settings.get(UserSettings.Bank);
+		if (
+			(bankHasItem(bank, itemID('Dragon pickaxe')) ||
+				bankHasItem(bank, itemID('Infernal pickaxe'))) &&
+			msg.author.skillLevel(SkillsEnum.Mining) >= 61
+		) {
+			timeToMine *= 0.85;
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor((Time.Minute * 30) / timeToMine);
 		}
-
 		const duration = quantity * timeToMine;
 
 		if (duration > Time.Minute * 30) {
