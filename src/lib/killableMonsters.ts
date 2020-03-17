@@ -17,6 +17,7 @@ interface KillableMonster {
 	canBeKilled: boolean;
 	difficultyRating: number;
 	itemsRequired: (string | number)[];
+	notifyDrops: (string | number)[];
 }
 
 const killableMonsters: KillableMonster[] = [
@@ -161,7 +162,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		itemsRequired: [],
-		notifyDrops: ['Pet kreearra', 'Curved bone']
+		notifyDrops: ["Pet kree'arra", 'Curved bone']
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -174,7 +175,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		itemsRequired: [],
-		notifyDrops: ['Pet kril tsutsaroth']
+		notifyDrops: ["Pet k'ril tsutsaroth"]
 	},
 	{
 		id: Monsters.Man.id,
@@ -252,7 +253,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 8,
 		itemsRequired: [],
-		notifyDrops: ['Vetion jr', 'Skeleton champion scroll', 'Curved bone', 'Ring of the gods']
+		notifyDrops: ["Vet'ion jr.", 'Skeleton champion scroll', 'Curved bone', 'Ring of the gods']
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -330,7 +331,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 8,
 		itemsRequired: [],
-		notifyDrops: ['Scorpias offspring']
+		notifyDrops: ["Scorpia's offspring"]
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -360,7 +361,8 @@ const killableMonsters: KillableMonster[] = [
 	}
 ].map(killableMonster => ({
 	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired)
+	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
+	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
 }));
 
 export default killableMonsters;

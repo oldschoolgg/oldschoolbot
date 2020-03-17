@@ -9,6 +9,8 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -24,6 +26,20 @@ export default class extends Task {
 		}
 
 		const loot = monster.table.kill(quantity);
+		const itemsToAnnounce = filterBankFromArrayOfItems(monster.notifyDrops as number[], loot);
+		if (Object.keys(itemsToAnnounce).length > 0) {
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${
+					user.minionName
+				}, just received **${await createReadableItemListFromBank(
+					this.client,
+					itemsToAnnounce
+				)}**, their ${monster.name} KC is ${user.settings.get(UserSettings.MonsterScores)[
+					monster.id
+				] ?? 1}!`
+			);
+		}
 
 		await user.addItemsToBank(loot, true);
 
