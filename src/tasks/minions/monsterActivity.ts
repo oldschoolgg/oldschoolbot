@@ -78,6 +78,8 @@ export default class extends Task {
 					if (response) {
 						if (response.author.minionIsBusy) return;
 
+						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+
 						this.client.commands
 							.get('minion')!
 							.kill(response as KlasaMessage, [quantity, monster.name]);
