@@ -19,8 +19,8 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
 		}
-		const CurrentQP = msg.author.settings.get(UserSettings.QP);
-		if (CurrentQP >= 275) {
+		const currentQP = msg.author.settings.get(UserSettings.QP);
+		if (currentQP >= 275) {
 			throw `You already have the maximum amount of Quest Points`;
 		}
 
@@ -42,7 +42,9 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${msg.author.minionName} is now questing, it'll take around ${formatDuration(
+			`${
+			msg.author.minionName
+			} is now completing quests, it'll take around ${formatDuration(
 				duration
 			)} to finish.`
 		);

@@ -12,14 +12,20 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentQP = user.settings.get(UserSettings.QP);
 
-		// Give them (0,3) QP, this averages to ~90 hours for 275
-		const qpRecieved = Math.floor(Math.random() * 4);
+		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
+		let qpRecieved = 4;
+		if (currentQP >= 84) {
+			qpRecieved = 3;
+			if (currentQP >= 182) {
+				qpRecieved = Math.floor(Math.random() * 3);
+			}
+		}
 
 		let str = `${user}, ${
 			user.minionName
-		} finished questing, you received ${qpRecieved.toLocaleString()} QP. ${
+			} finished questing, you received ${qpRecieved.toLocaleString()} QP. ${
 			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+			} asks if you'd like them to do another of the same trip.`;
 
 		if (currentQP + qpRecieved >= 275) {
 			str += `You have achieved the maximum amount of 275 Quest Points!`;
