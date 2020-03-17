@@ -2,43 +2,43 @@ import { removeDuplicatesFromArray } from './util';
 import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
 
 export const bosses = {
-	'Zulrah': transformArrayOfResolvableItems([
+	Zulrah: transformArrayOfResolvableItems([
 		'Uncut onyx',
 		'Tanzanite fang',
 		'Magic fang',
-		'Serpentine visage',		
+		'Serpentine visage',
 		'Magma mutagen',
 		'Tanzanite mutagen',
 		'Jar of swamp',
 		'Pet snakeling'
 	]),
-	'Shards': transformArrayOfResolvableItems([
+	Shards: transformArrayOfResolvableItems([
 		'Godsword shard 1',
 		'Godsword shard 2',
 		'Godsword shard 3'
 	]),
-	'Zammy': transformArrayOfResolvableItems([
+	Zammy: transformArrayOfResolvableItems([
 		'Steam battlestaff',
 		'Zamorakian spear',
 		'Staff of the dead',
 		'Zamorak hilt',
 		"Pet k'ril tsutsaroth"
 	]),
-	'Bandos': transformArrayOfResolvableItems([
+	Bandos: transformArrayOfResolvableItems([
 		'Bandos chestplate',
 		'Bandos tassets',
 		'Bandos boots',
 		'Bandos hilt',
 		'Pet general graardor'
 	]),
-	'Saradomin': transformArrayOfResolvableItems([
+	Saradomin: transformArrayOfResolvableItems([
 		'Saradomin sword',
 		"Saradomin's light",
 		'Armadyl crossbow',
 		'Saradomin hilt',
 		'Pet zilyana'
 	]),
-	'Arma': transformArrayOfResolvableItems([
+	Arma: transformArrayOfResolvableItems([
 		'Armadyl helmet',
 		'Armadyl chestplate',
 		'Armadyl chainskirt',
@@ -53,7 +53,7 @@ export const bosses = {
 		'Elysian sigil',
 		'Pet dark core'
 	]),
-	'Cerberus': transformArrayOfResolvableItems([
+	Cerberus: transformArrayOfResolvableItems([
 		'Primordial crystal',
 		'Pegasian crystal',
 		'Eternal crystal',
@@ -73,7 +73,7 @@ export const bosses = {
 		'Pet dagannoth supreme',
 		'Pet dagannoth rex'
 	]),
-	'Vorkath': transformArrayOfResolvableItems([
+	Vorkath: transformArrayOfResolvableItems([
 		'Dragonbone necklace',
 		"Vorkath's head",
 		'Skeletal visage',
@@ -81,7 +81,7 @@ export const bosses = {
 		'Jar of decay',
 		'Vorki'
 	]),
-	'Barrows': transformArrayOfResolvableItems([
+	Barrows: transformArrayOfResolvableItems([
 		"Ahrim's staff",
 		"Ahrim's hood",
 		"Ahrim's robetop",
@@ -128,13 +128,13 @@ export const bosses = {
 		'Tyrannical ring',
 		'Callisto cub'
 	]),
-	'Venenatis': transformArrayOfResolvableItems([
+	Venenatis: transformArrayOfResolvableItems([
 		'Dragon pickaxe',
 		'Dragon 2h sword',
 		'Treasonous ring',
 		'Venenatis spiderling'
 	]),
-	'Vetion': transformArrayOfResolvableItems([
+	Vetion: transformArrayOfResolvableItems([
 		'Dragon pickaxe',
 		'Dragon 2h sword',
 		'Ring of the gods',
@@ -162,7 +162,7 @@ export const bosses = {
 		'Odium shard 2',
 		'Fedora'
 	]),
-	'Scorpia': transformArrayOfResolvableItems([
+	Scorpia: transformArrayOfResolvableItems([
 		'Malediction shard 3',
 		'Odium shard 3',
 		"Scorpia's offspring"
@@ -217,7 +217,7 @@ export const pets = {
 		'Ikkle hydra'
 	]),
 	space2: [],
-	'Other': transformArrayOfResolvableItems([
+	Other: transformArrayOfResolvableItems([
 		'Bloodhound',
 		'Herbi',
 		'Chompy chick',
@@ -256,7 +256,7 @@ export const cluesShared = {
 		'Ancient page 3',
 		'Ancient page 4'
 	]),
-	'Blessings': transformArrayOfResolvableItems([
+	Blessings: transformArrayOfResolvableItems([
 		'Holy blessing',
 		'Unholy blessing',
 		'Peaceful blessing',
@@ -479,7 +479,7 @@ export const cluesMedium = {
 		"Green d'hide body (g)",
 		"Green d'hide chaps (g)"
 	]),
-	'Headbands': transformArrayOfResolvableItems([
+	Headbands: transformArrayOfResolvableItems([
 		'Red headband',
 		'Black headband',
 		'Brown headband',
@@ -489,7 +489,7 @@ export const cluesMedium = {
 		'Pink headband',
 		'Green headband'
 	]),
-	'Boaters': transformArrayOfResolvableItems([
+	Boaters: transformArrayOfResolvableItems([
 		'Red boater',
 		'Orange boater',
 		'Green boater',
@@ -768,7 +768,7 @@ export const cluesHard = {
 		'3rd age range legs',
 		'3rd age vambraces'
 	]),
-	'Gilded': transformArrayOfResolvableItems([
+	Gilded: transformArrayOfResolvableItems([
 		'Gilded full helm',
 		'Gilded med helm',
 		'Gilded platebody',
@@ -892,7 +892,7 @@ export const cluesElite = {
 		'3rd age bow',
 		'3rd age cloak'
 	]),
-	'Gilded': transformArrayOfResolvableItems([
+	Gilded: transformArrayOfResolvableItems([
 		'Gilded full helm',
 		'Gilded med helm',
 		'Gilded platebody',
@@ -1014,7 +1014,7 @@ export const cluesMaster = {
 		'3rd age axe',
 		'3rd age pickaxe'
 	]),
-	'Gilded': transformArrayOfResolvableItems([
+	Gilded: transformArrayOfResolvableItems([
 		'Gilded full helm',
 		'Gilded med helm',
 		'Gilded platebody',
@@ -1076,7 +1076,7 @@ export const cluesRares = {
 		'3rd age pickaxe'
 	]),
 	'3rd Age Ring': transformArrayOfResolvableItems(['Ring of 3rd age']),
-	'Gilded': transformArrayOfResolvableItems([
+	Gilded: transformArrayOfResolvableItems([
 		'Gilded full helm',
 		'Gilded med helm',
 		'Gilded platebody',
@@ -1139,7 +1139,7 @@ export const holiday = {
 	])
 };
 export const diangoCollectionLog = {
-	'Common': transformArrayOfResolvableItems([
+	Common: transformArrayOfResolvableItems([
 		'Event rpg',
 		'Green banner',
 		'Spinning plate',
@@ -1150,7 +1150,7 @@ export const diangoCollectionLog = {
 		11705,
 		11706
 	]),
-	'Uncommon': transformArrayOfResolvableItems([
+	Uncommon: transformArrayOfResolvableItems([
 		'Tiger toy',
 		'Lion toy',
 		'Snow leopard toy',
@@ -1161,18 +1161,18 @@ export const diangoCollectionLog = {
 		'Rainbow scarf',
 		"Diango's claws"
 	]),
-	'Rare': transformArrayOfResolvableItems([
+	Rare: transformArrayOfResolvableItems([
 		'Hornwood helm',
 		'Hand fan',
 		'Mask of balance',
 		'Druidic wreath',
 		'Disk of returning'
 	]),
-	'Other': transformArrayOfResolvableItems(['Mystery box', 'Stale baguette'])
+	Other: transformArrayOfResolvableItems(['Mystery box', 'Stale baguette'])
 };
 export const skillCapes = {
-	'hoods': transformArrayOfResolvableItems(['Mining hood', 'Smithing hood']),
-	'capes': transformArrayOfResolvableItems(['Mining cape', 'Smithing cape']),
+	hoods: transformArrayOfResolvableItems(['Mining hood', 'Smithing hood']),
+	capes: transformArrayOfResolvableItems(['Mining cape', 'Smithing cape']),
 	'trimmed capes': transformArrayOfResolvableItems(['Mining cape(t)', 'Smithing cape(t)'])
 };
 
