@@ -6,6 +6,9 @@ import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
 import cleanItemName from '../../lib/util/cleanItemName';
+import { removeItemFromBank } from '../../lib/util';
+import Loot from 'oldschooljs/dist/structures/Loot';
+import user from '../Utility/user';
 
 const options = {
 	max: 1,
@@ -53,7 +56,7 @@ export default class extends BotCommand {
 
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, say \`confirm\` to sell ${quantity} ${
-					osItem.name
+				osItem.name
 				} for ${totalPrice.toLocaleString()} (${toKMB(totalPrice)}).`
 			);
 
@@ -138,7 +141,7 @@ export default class extends BotCommand {
 
 					message += ` - ${quantity} ${
 						osItem.name
-					} for ${totalPrice.toLocaleString()} (${toKMB(totalPrice)}).\n`;
+						} for ${totalPrice.toLocaleString()} (${toKMB(totalPrice)}).\n`;
 				}
 			}
 
@@ -162,9 +165,13 @@ export default class extends BotCommand {
 				return sellMsg.edit(`Cancelling sale.`);
 			}
 
-			for (const itemID in bank) {
-				await msg.author.removeItemFromBank(parseInt(itemID), bank[itemID]);
+			let removeThese = new Loot();
+			if (1 === 1) {
+				for (const itemID in bank) {
+					removeThese = loot.add(parseInt(itemID), bank[itemID]);
+				}
 			}
+			await user.removeItemFromBank(removeThese, 1);
 
 			await msg.author.settings.update(
 				UserSettings.GP,
