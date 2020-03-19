@@ -91,6 +91,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			SkillsEnum.Smithing
 		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
 

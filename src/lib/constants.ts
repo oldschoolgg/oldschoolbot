@@ -54,7 +54,8 @@ export const enum Emoji {
 	Smithing = '<:smithing:630911040452034590>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
-	MysteryBox = '<:mysterybox:680783258488799277>'
+	MysteryBox = '<:mysterybox:680783258488799277>',
+	QuestIcon = '<:questIcon:690191385907036179>'
 }
 
 export const enum Image {
