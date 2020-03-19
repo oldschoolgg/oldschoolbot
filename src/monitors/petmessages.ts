@@ -31,7 +31,7 @@ export default class extends Monitor {
 			msg.author.settings.update(UserSettings.Pets, { ...userPets });
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(
-					`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
+					`${msg.author} has a funny feeling like they would have been followed.`
 				);
 			} else {
 				msg.channel.send(`You have a funny feeling like you’re being followed, ${
