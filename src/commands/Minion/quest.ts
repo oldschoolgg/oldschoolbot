@@ -18,11 +18,12 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
+			throw `You dont have a minion.`;
 		}
+
 		const currentQP = msg.author.settings.get(UserSettings.QP);
 		if (currentQP >= MAX_QP) {
-			throw `You already have the maximum amount of Quest Points`;
+			throw `You already have the maximum amount of Quest Points.`;
 		}
 
 		if (msg.author.minionIsBusy) {
