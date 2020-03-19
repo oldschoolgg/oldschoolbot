@@ -8,6 +8,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			cooldown: 3,
+			aliases: ['qi'],
 			description: 'Shows information on a Quest. (Work in Progress)',
 			usage: '<questName:str>'
 		});
