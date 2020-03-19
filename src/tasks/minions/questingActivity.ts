@@ -28,10 +28,12 @@ export default class extends Task {
 		let str = `${user}, ${
 			user.minionName
 		} finished questing, you received ${qpRecieved.toLocaleString()} QP. Your current QP is ${currentQP +
-			qpRecieved} ${user.minionName} asks if you'd like them to do another of the same trip.`;
+			qpRecieved}.`;
 
 		if (currentQP + qpRecieved >= MAX_QP) {
-			str += `You have achieved the maximum amount of ${MAX_QP} Quest Points!`;
+			str += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
+		} else {
+			str += ` ${user.minionName} asks if you'd like them to do another of the same trip.`;
 		}
 
 		await user.addQP(qpRecieved);
@@ -41,6 +43,7 @@ export default class extends Task {
 
 		this.client.queuePromise(() => {
 			channel.send(str).catch(noOp);
+			if (currentQP + qpRecieved >= MAX_QP) return;
 			channel
 				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
 					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
