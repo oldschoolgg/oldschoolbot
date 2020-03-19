@@ -27,9 +27,8 @@ export default class extends Task {
 
 		let str = `${user}, ${
 			user.minionName
-		} finished questing, you received ${qpRecieved.toLocaleString()} QP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		} finished questing, you received ${qpRecieved.toLocaleString()} QP. Your current QP is ${currentQP +
+			qpRecieved} ${user.minionName} asks if you'd like them to do another of the same trip.`;
 
 		if (currentQP + qpRecieved >= MAX_QP) {
 			str += `You have achieved the maximum amount of ${MAX_QP} Quest Points!`;

@@ -269,6 +269,9 @@ export default class extends Extendable {
 - Use \`+minion setname [name]\` to change your minions' name.
 - You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
 - Do clue scrolls with \`+minion clue 1 easy\` (complete 1 easy clue)
+- Train mining with \`+mine\`
+- Train smithing with \`+smith\`
+- Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
 
@@ -323,8 +326,9 @@ export default class extends Extendable {
 			case Activity.Questing: {
 				return `${
 					this.minionName
-				} is currently Questing. Approximately ${formattedDuration} remaining. 
-				Your total amount of Quest Points are ${this.settings.get(UserSettings.QP)}`;
+				} is currently Questing. Approximately ${formattedDuration} remaining. Your current Quest Point count is: ${this.settings.get(
+					UserSettings.QP
+				)}.`;
 			}
 		}
 	}
