@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -212,6 +212,10 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 
 	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
 		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
+	}
+
+	async quest(msg: KlasaMessage) {
+		this.client.commands.get('quest')!.run(msg, []);
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {

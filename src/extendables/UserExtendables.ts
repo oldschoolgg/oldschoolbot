@@ -84,6 +84,26 @@ export default class extends Extendable {
 		return this.settings.update(UserSettings.GP, currentGP + amount);
 	}
 
+	public async addQP(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentQP = this.settings.get(UserSettings.QP);
+		this.log(
+			`had ${amount} QP added. BeforeBalance[${currentQP}] NewBalance[${currentQP + amount}]`
+		);
+		return this.settings.update(UserSettings.QP, currentQP + amount);
+	}
+
+	public async removeQP(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentQP = this.settings.get(UserSettings.QP);
+		if (currentQP < amount) throw `${this.sanitizedName} doesn't have enough QP.`;
+		this.log(
+			`had ${amount} QP removed. BeforeBalance[${currentQP}] NewBalance[${currentQP -
+				amount}]`
+		);
+		return this.settings.update(UserSettings.QP, currentQP - amount);
+	}
+
 	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
 		await this.settings.sync(true);
 		for (const { scrollID } of clueTiers) {
@@ -310,6 +330,13 @@ export default class extends Extendable {
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Questing: {
+				return `${
+					this.minionName
+				} is currently Questing. Approximately ${formattedDuration} remaining. 
+				Your total amount of Quest Points are ${this.settings.get(UserSettings.QP)}`;
 			}
 		}
 	}
