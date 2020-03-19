@@ -146,3 +146,5 @@ export const enum PatronTierID {
 	Two = '4608226',
 	Three = '4720356'
 }
+
+export const MAX_QP = 275;

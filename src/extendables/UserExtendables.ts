@@ -1,7 +1,7 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
-import { Events, Activity, Emoji, Channel, Time } from '../lib/constants';
+import { Events, Activity, Emoji, Channel, Time, MAX_QP } from '../lib/constants';
 import { Bank, SkillsEnum } from '../lib/types';
 import {
 	addBankToBank,
@@ -87,21 +87,9 @@ export default class extends Extendable {
 	public async addQP(this: User, amount: number) {
 		await this.settings.sync(true);
 		const currentQP = this.settings.get(UserSettings.QP);
-		this.log(
-			`had ${amount} QP added. BeforeBalance[${currentQP}] NewBalance[${currentQP + amount}]`
-		);
-		return this.settings.update(UserSettings.QP, currentQP + amount);
-	}
-
-	public async removeQP(this: User, amount: number) {
-		await this.settings.sync(true);
-		const currentQP = this.settings.get(UserSettings.QP);
-		if (currentQP < amount) throw `${this.sanitizedName} doesn't have enough QP.`;
-		this.log(
-			`had ${amount} QP removed. BeforeBalance[${currentQP}] NewBalance[${currentQP -
-				amount}]`
-		);
-		return this.settings.update(UserSettings.QP, currentQP - amount);
+		const newQP = Math.min(MAX_QP, currentQP + amount);
+		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
+		return this.settings.update(UserSettings.QP, newQP);
 	}
 
 	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
