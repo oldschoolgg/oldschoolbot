@@ -24,6 +24,7 @@ export default class extends Task {
 		}
 
 		const loot = monster.table.kill(quantity);
+
 		await user.addItemsToBank(loot, true);
 
 		const image = await this.client.tasks
