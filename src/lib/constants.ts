@@ -54,7 +54,8 @@ export const enum Emoji {
 	Smithing = '<:smithing:630911040452034590>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
-	MysteryBox = '<:mysterybox:680783258488799277>'
+	MysteryBox = '<:mysterybox:680783258488799277>',
+	QuestIcon = '<:questIcon:690191385907036179>'
 }
 
 export const enum Image {
@@ -72,6 +73,7 @@ export const enum Tasks {
 	ClueActivity = 'clueActivity',
 	MiningActivity = 'miningActivity',
 	SmithingActivity = 'smithingActivity',
+	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker'
@@ -81,7 +83,8 @@ export const enum Activity {
 	MonsterKilling = 'MonsterKilling',
 	ClueCompletion = 'ClueCompletion',
 	Mining = 'Mining',
-	Smithing = 'Smithing'
+	Smithing = 'Smithing',
+	Questing = 'Questing'
 }
 
 export const enum Events {
@@ -144,3 +147,5 @@ export const enum PatronTierID {
 	Two = '4608226',
 	Three = '4720356'
 }
+
+export const MAX_QP = 275;

@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -91,6 +91,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			SkillsEnum.Smithing
 		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
 
@@ -98,6 +99,7 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
+
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
 
 		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
@@ -106,6 +108,18 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
 		}
 		return msg.send(res);
+	}
+
+	async qp(msg: KlasaMessage) {
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		return msg.send(
+			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(
+				UserSettings.QP
+			)}.`
+		);
 	}
 
 	async clues(msg: KlasaMessage) {
@@ -212,6 +226,10 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 
 	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
 		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
+	}
+
+	async quest(msg: KlasaMessage) {
+		this.client.commands.get('quest')!.run(msg, []);
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {

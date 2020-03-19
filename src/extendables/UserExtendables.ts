@@ -1,7 +1,7 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
-import { Events, Activity, Emoji, Channel, Time } from '../lib/constants';
+import { Events, Activity, Emoji, Channel, Time, MAX_QP } from '../lib/constants';
 import { Bank, SkillsEnum } from '../lib/types';
 import {
 	addBankToBank,
@@ -82,6 +82,14 @@ export default class extends Extendable {
 			`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`
 		);
 		return this.settings.update(UserSettings.GP, currentGP + amount);
+	}
+
+	public async addQP(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentQP = this.settings.get(UserSettings.QP);
+		const newQP = Math.min(MAX_QP, currentQP + amount);
+		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
+		return this.settings.update(UserSettings.QP, newQP);
 	}
 
 	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
@@ -261,6 +269,9 @@ export default class extends Extendable {
 - Use \`+minion setname [name]\` to change your minions' name.
 - You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
 - Do clue scrolls with \`+minion clue 1 easy\` (complete 1 easy clue)
+- Train mining with \`+mine\`
+- Train smithing with \`+smith\`
+- Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
 
@@ -310,6 +321,14 @@ export default class extends Extendable {
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Questing: {
+				return `${
+					this.minionName
+				} is currently Questing. Approximately ${formattedDuration} remaining. Your current Quest Point count is: ${this.settings.get(
+					UserSettings.QP
+				)}.`;
 			}
 		}
 	}
