@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { formatDuration, rand } from '../../lib/util';
-import { Time, Activity, Tasks } from '../../lib/constants';
+import { Time, Activity, Tasks, MAX_QP } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/UserSettings';
@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			throw `You dont have a minion`;
 		}
 		const currentQP = msg.author.settings.get(UserSettings.QP);
-		if (currentQP >= 275) {
+		if (currentQP >= MAX_QP) {
 			throw `You already have the maximum amount of Quest Points`;
 		}
 
@@ -42,9 +42,9 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${msg.author.minionName} is now completing quests, it'll take around ${formatDuration(
-				duration
-			)} to finish.`
+			`${
+				msg.author.minionName
+			} is now completing quests, they'll come back in around ${formatDuration(duration)}.`
 		);
 	}
 }
