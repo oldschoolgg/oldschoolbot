@@ -270,7 +270,10 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		if (Date.now() - this.clLeaderboard.lastUpdated > CACHE_TIME) {
 			this.clLeaderboard.list = await this.query(
-				`SELECT id, "collectionLogBank" FROM users WHERE "collectionLogBank"::text <> '{}'::text;`
+				`SELECT u.id, u.logbanklength, u."collectionLogBank" FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) logbanklength , id, "collectionLogBank" FROM users
+) u
+WHERE u.logbanklength > 300 ORDER BY u.logbanklength DESC;`
 			);
 			this.clLeaderboard.lastUpdated = Date.now();
 		}
