@@ -451,7 +451,7 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: [],
 		notifyDrops: [],
 		qpRequired: 0
-	}
+	},
 	{
 		id: Monsters.Skeleton.id,
 		name: Monsters.Skeleton.name,
