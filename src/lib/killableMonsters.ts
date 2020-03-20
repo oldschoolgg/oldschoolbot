@@ -535,6 +535,20 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: [],
 		notifyDrops: [],
 		qpRequired: 0
+	},
+	{
+		id: Monsters.Dwarf.id,
+		name: Monsters.Dwarf.name,
+		aliases: Monsters.Dwarf.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.Dwarf,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
 	}
 ].map(killableMonster => ({
 	...killableMonster,
