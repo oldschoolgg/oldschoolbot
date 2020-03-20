@@ -114,7 +114,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
+		itemsRequired: ['Armadyl chestplate', 'Armadyl platelegs'],
 		notifyDrops: ['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']
 	},
 	{
