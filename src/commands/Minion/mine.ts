@@ -11,6 +11,25 @@ import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
 
+const pickaxes = [
+	{
+		id: itemID('3rd age pickaxe'),
+		reductionPercent: 13
+	},
+	{
+		id: itemID('Gilded pickaxe'),
+		reductionPercent: 11
+	},
+	{
+		id: itemID('Infernal pickaxe'),
+		reductionPercent: 10
+	},
+	{
+		id: itemID('Dragon pickaxe'),
+		reductionPercent: 6
+	}
+];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -57,13 +76,14 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
-		// If the user has over 61 mining, 15%/10% speed boost for infernal/drag picks.
+		// For each pickaxe, if they have it, give them its' bonus and break.
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		if (msg.author.skillLevel(SkillsEnum.Mining) >= 61) {
-			if (bankHasItem(bank, itemID('Infernal pickaxe'))) {
-				timeToMine = Math.floor(timeToMine * 0.89);
-			} else if (bankHasItem(bank, itemID('Dragon pickaxe'))) {
-				timeToMine = Math.floor(timeToMine * 0.94);
+			for (const pickaxe of pickaxes) {
+				if (bankHasItem(bank, pickaxe.id)) {
+					timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
+					break;
+				}
 			}
 		}
 
