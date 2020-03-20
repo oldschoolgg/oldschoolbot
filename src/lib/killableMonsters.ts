@@ -88,7 +88,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
+		itemsRequired: ['Bandos chestplate', 'Bandos tassets'],
 		notifyDrops: ['Hellpuppy', 'Jar of souls'],
 		qpRequired: 0
 	},
@@ -121,7 +121,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: ['Armadyl chestplate', 'Armadyl platelegs'],
+		itemsRequired: ['Armadyl chestplate', 'Armadyl chainskirt'],
 		notifyDrops: ['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage'],
 		qpRequired: 0
 	},
@@ -137,7 +137,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 8,
 		itemsRequired: [
 			'Armadyl chestplate',
-			'Armadyl platelegs',
+			'Armadyl chainskirt',
 			"Ahrim's robetop",
 			"Ahrim's robeskirt"
 		],
@@ -266,7 +266,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: [],
+		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
 		notifyDrops: ['Callisto cub', 'Curved bone', 'Tyrannical ring'],
 		qpRequired: 0
 	},
@@ -294,7 +294,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: [],
+		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
 		notifyDrops: ['Treasonous ring', 'Venenatis spiderling', 'Curved bone'],
 		qpRequired: 0
 	},
@@ -392,7 +392,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
+		itemsRequired: [],
 		notifyDrops: ['Jar of sand', 'Kalphite princess'],
 		qpRequired: 0
 	},
