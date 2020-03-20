@@ -340,7 +340,11 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 					monster.name
 				}, you need these items: ${monster.itemsRequired
 					.map(id => itemNameFromID(id))
-					.join(', ')}.`;
+					.join(
+						', '
+					)}. \n\nYou can buy these items from other players at the grand exchange channel (\`${
+					msg.cmdPrefix
+				}ge\`)`;
 			}
 		}
 
