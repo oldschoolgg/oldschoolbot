@@ -37,7 +37,7 @@ export default class extends Task {
 					itemsToAnnounce
 				)}**, their ${monster.name} KC is ${user.settings.get(UserSettings.MonsterScores)[
 					monster.id
-				] ?? 1}!`
+				] + quantity}!`
 			);
 		}
 
