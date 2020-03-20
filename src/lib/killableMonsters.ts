@@ -96,7 +96,12 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: [],
+		itemsRequired: [
+			"Dharok's helm",
+			"Dharok's platebody",
+			"Dharok's platelegs",
+			"Dharok's greataxe"
+		],
 		notifyDrops: ['Baby mole', 'Curved bone']
 	},
 	{
@@ -356,7 +361,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
+		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
 		notifyDrops: ['Jar of sand', 'Kalphite princess']
 	}
 ].map(killableMonster => ({
