@@ -24,8 +24,16 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Goldsmith gauntlets')]: 1
 		},
-		qpRequired: 35,
+		qpRequired: 25,
 		gpCost: 1_000_000
+	},
+	{
+		name: 'Anti-dragon shield',
+		outputItems: {
+			[itemID('Anti-dragon shield')]: 1
+		},
+		qpRequired: 35,
+		gpCost: 10_000
 	}
 ];
 
