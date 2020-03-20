@@ -332,6 +332,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			quantity = Math.floor((Time.Minute * 30) / monster.timeToFinish);
 		}
 
+		if (monster.qpRequired && msg.author.settings.get(UserSettings.QP) < monster.qpRequired) {
+			throw `You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`${msg.cmdPrefix}quest\``;
+		}
+
 		// Make sure they have all the required items to kill this monster
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const item of monster.itemsRequired as number[]) {
