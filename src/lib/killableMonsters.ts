@@ -350,7 +350,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: [],
+		itemsRequired: ['Anti-dragon shield'],
 		notifyDrops: ['Dragon pickaxe', 'Prince black dragon', 'Draconic visage'],
 		qpRequired: 0
 	},
@@ -518,7 +518,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
+		itemsRequired: ['Anti-dragon shield'],
 		notifyDrops: [],
 		qpRequired: 0
 	},
