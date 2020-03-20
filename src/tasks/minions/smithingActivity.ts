@@ -38,7 +38,7 @@ export default class extends Task {
 			bar.id === itemID('Gold bar') &&
 			bankHasItem(user.settings.get(UserSettings.Bank), itemID('Goldsmith gauntlets'))
 		) {
-			xpReceived *= 2.5;
+			xpReceived *= quantity * 56.2;
 		}
 
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
