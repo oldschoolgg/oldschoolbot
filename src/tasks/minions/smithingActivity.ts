@@ -8,6 +8,9 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import Smithing from '../../lib/skills/smithing';
 import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import itemID from '../../lib/util/itemID';
+import bankHasItem from '../../lib/util/bankHasItem';
+import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID }: SmithingActivityTaskOptions) {
@@ -29,7 +32,14 @@ export default class extends Task {
 			quantity = newQuantity;
 		}
 
-		const xpReceived = quantity * bar.xp;
+		let xpReceived = quantity * bar.xp;
+
+		if (
+			bar.id === itemID('Gold bar') &&
+			bankHasItem(user.settings.get(UserSettings.Bank), itemID('Goldsmith gauntlets'))
+		) {
+			xpReceived *= 2.5;
+		}
 
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Smithing);
