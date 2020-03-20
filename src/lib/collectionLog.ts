@@ -117,9 +117,7 @@ export const bosses = {
 		'Jar of sand',
 		'Kalphite princess'
 	]),
-	'Lizardman shaman': transformArrayOfResolvableItems([
-		'Dragon warhammer'
-		])
+	'Lizardman shaman': transformArrayOfResolvableItems(['Dragon warhammer']),
 	/* 'Boss Shared':transformArrayOfResolvableItems([
 		'Dragon pickaxe',
 		'Dragon 2h sword'
