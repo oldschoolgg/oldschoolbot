@@ -127,7 +127,12 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
+		itemsRequired: [
+			'Armadyl chestplate',
+			'Armadyl platelegs',
+			"Ahrim's robetop",
+			"Ahrim's robeskirt"
+		],
 		notifyDrops: ['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling']
 	},
 	{
