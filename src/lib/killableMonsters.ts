@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { Time } from './constants';
 import { Bank } from './types';
 import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
+import itemID from './util/itemID';
 
 interface KillableMonster {
 	id: number;
@@ -19,6 +20,12 @@ interface KillableMonster {
 	itemsRequired: (string | number)[];
 	notifyDrops: (string | number)[];
 	qpRequired: number;
+
+	/**
+	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
+	 * this monster.
+	 */
+	itemInBankBoosts?: Bank;
 }
 
 const killableMonsters: KillableMonster[] = [
@@ -380,7 +387,11 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: ['Zamorakian spear'],
 		notifyDrops: ['Spectral sigil', 'Arcane sigil', 'Elysian sigil', 'Pet dark core'],
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Bandos godsword')]: 5,
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.KalphiteQueen.id,

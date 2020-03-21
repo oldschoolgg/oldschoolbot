@@ -1,7 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { determineScaledOreTime, stringMatches, formatDuration, rand } from '../../lib/util';
+import {
+	determineScaledOreTime,
+	stringMatches,
+	formatDuration,
+	rand,
+	itemNameFromID
+} from '../../lib/util';
 import Mining from '../../lib/skills/mining';
 import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
@@ -78,10 +84,12 @@ export default class extends BotCommand {
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const bank = msg.author.settings.get(UserSettings.Bank);
+		const boosts = [];
 		if (msg.author.skillLevel(SkillsEnum.Mining) >= 61) {
 			for (const pickaxe of pickaxes) {
 				if (bankHasItem(bank, pickaxe.id)) {
 					timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
+					boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
 					break;
 				}
 			}
@@ -114,10 +122,15 @@ export default class extends BotCommand {
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now mining ${quantity}x ${
-				ore.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
-		);
+
+		let response = `${msg.author.minionName} is now mining ${quantity}x ${
+			ore.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }
