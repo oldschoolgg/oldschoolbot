@@ -19,6 +19,7 @@ import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import bankHasItem from '../../lib/util/bankHasItem';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -327,9 +328,21 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		const bank = msg.author.settings.get(UserSettings.Bank);
+
+		let { timeToFinish } = monster;
+		const boosts = [];
+		if (monster.itemInBankBoosts) {
+			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
+				if (!bankHasItem(bank, parseInt(itemID))) continue;
+				timeToFinish *= (100 - boostAmount) / 100;
+				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+			}
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / monster.timeToFinish);
+			quantity = Math.floor((Time.Minute * 30) / timeToFinish);
 		}
 
 		if (monster.qpRequired && msg.author.settings.get(UserSettings.QP) < monster.qpRequired) {
@@ -337,7 +350,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Make sure they have all the required items to kill this monster
-		const bank = msg.author.settings.get(UserSettings.Bank);
+
 		for (const item of monster.itemsRequired as number[]) {
 			if (!bank[item] || bank[item] < 0) {
 				throw `To kill ${
@@ -352,19 +365,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			}
 		}
 
-		let duration = monster.timeToFinish * quantity;
+		let duration = timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
 			throw `${getMinionName(
 				msg.author
 			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				monster.name
-			} is ${Math.floor((Time.Minute * 30) / monster.timeToFinish)}.`;
+			} is ${Math.floor((Time.Minute * 30) / timeToFinish)}.`;
 		}
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
 		}
 
@@ -381,10 +395,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
-				monster.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
-		);
+
+		let response = `${getMinionName(msg.author)} is now killing ${data.quantity}x ${
+			monster.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }
