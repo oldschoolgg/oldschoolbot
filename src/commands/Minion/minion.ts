@@ -106,18 +106,21 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			.setDescription(`Type ${msg.cmdPrefix}kill to see a list of killable monsters`);
 
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
+		const max = Math.ceil(Object.entries(monsterScores).length / 3);
 		let res = ``;
 		let i = 1;
 		for (const [monID, monKC] of Object.entries(monsterScores)) {
 			const mon = killableMonsters.find(m => m.id === parseInt(monID));
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
-			if (i % 10 === 0) {
+			if (i % max === 0) {
 				embed.addField('\u200b', `${res}`, true);
 				res = ``;
 			}
 			i++;
 		}
-		embed.addField('\u200b', `${res}`, true);
+		if (res !== ``) {
+			embed.addField('\u200b', `${res}`, true);
+		}
 		return msg.send(embed);
 	}
 
