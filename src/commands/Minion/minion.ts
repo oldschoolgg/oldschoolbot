@@ -222,15 +222,30 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
+		await this.client.commands
+			.get('mine')!
+			.run(msg, [quantity, oreName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
+		await this.client.commands
+			.get('smith')!
+			.run(msg, [quantity, barName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async quest(msg: KlasaMessage) {
-		this.client.commands.get('quest')!.run(msg, []);
+		await this.client.commands
+			.get('quest')!
+			.run(msg, [])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
@@ -305,7 +320,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		this.kill(msg, [quantity, name]);
+		await this.kill(msg, [quantity, name]).catch(err => {
+			throw err;
+		});
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
