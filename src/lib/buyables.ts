@@ -48,72 +48,72 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Hardleather gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 5,
+		gpCost: 50_000
 	},
 	{
 		name: 'Bronze gloves',
 		outputItems: {
 			[itemID('Bronze gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 10,
+		gpCost: 100_000
 	},
 	{
 		name: 'Iron gloves',
 		outputItems: {
 			[itemID('Iron gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 20,
+		gpCost: 200_000
 	},
 	{
 		name: 'Steel gloves',
 		outputItems: {
 			[itemID('Steel gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 25,
+		gpCost: 300_000
 	},
 	{
 		name: 'Black gloves',
 		outputItems: {
 			[itemID('Black gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 35,
+		gpCost: 400_000
 	},
 	{
 		name: 'Mithril gloves',
 		outputItems: {
 			[itemID('Mithril gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 50,
+		gpCost: 500_000
 	},
 	{
 		name: 'Adamant gloves',
 		outputItems: {
 			[itemID('Adamant gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 65,
+		gpCost: 600_000
 	},
 	{
 		name: 'Rune gloves',
 		outputItems: {
 			[itemID('Rune gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 85,
+		gpCost: 700_000
 	},
 	{
 		name: 'Dragon gloves',
 		outputItems: {
 			[itemID('Dragon gloves')]: 1
 		},
-		qpRequired: 1,
-		gpCost: 1
+		qpRequired: 107,
+		gpCost: 850_000
 	},
 	{
 		name: 'Barrows gloves',
