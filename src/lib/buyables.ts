@@ -34,6 +34,30 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 35,
 		gpCost: 10_000
+	},
+	{
+		name: 'Barrows gloves',
+		outputItems: {
+			[itemID('Barrows gloves')]: 1
+		},
+		qpRequired: 175,
+		gpCost: 1_000_000
+	},
+	{
+		name: 'Helm of neitiznot',
+		outputItems: {
+			[itemID('Helm of neitiznot')]: 1
+		},
+		qpRequired: 75,
+		gpCost: 500_000
+	},
+	{
+		name: 'Magic secateurs',
+		outputItems: {
+			[itemID('Magic secateurs')]: 1
+		},
+		qpRequired: 40,
+		gpCost: 2_500_000
 	}
 ];
 

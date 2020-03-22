@@ -1135,8 +1135,7 @@ export const holiday = {
 		'Cow trousers',
 		'Cow gloves',
 		'Cow shoes',
-		'Slice of birthday cake',
-		'War ship'
+		'Slice of birthday cake'
 	])
 };
 export const diangoCollectionLog = {
