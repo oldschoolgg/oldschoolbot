@@ -91,7 +91,7 @@ export default class extends BotCommand {
 					}
 				);
 				await msg.author.settings.sync(true);
-				await msg.author.settings.update(UserSettings.Minion.ironman, false);
+				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
 				await msg.send('You are no longer an ironman BTW.');
 			} catch (err) {
 				return msg.channel.send('Cancelled ironman swap.');
@@ -99,7 +99,9 @@ export default class extends BotCommand {
 		}
 
 		await msg.send(
-			`Are you sure you want to start afresh and play as an ironman? (Reset your bank and all your stats, lose the ability to get GP from dailies,trade,dice,duel,etc) Please say \`yes\` to confirm.`
+			`Are you sure you want to start afresh and play as an ironman?
+${Emoji.Warning}**(This will reset your bank,collection log,GP,monster and clue KC, skills and any misc. stats, you will lose the ability to get GP from dailies,trade,dice,duel,etc)**${Emoji.Warning}
+Please say \`yes\` to confirm.`
 		);
 
 		try {
@@ -113,17 +115,15 @@ export default class extends BotCommand {
 				}
 			);
 
-			await msg.author.settings.sync(true);
+			await msg.author.settings.reset(UserSettings.Bank);
+			await msg.author.settings.reset(UserSettings.CollectionLogBank);
+			await msg.author.settings.reset(UserSettings.GP);
+			await msg.author.settings.reset(UserSettings.MonsterScores);
+			await msg.author.settings.reset(UserSettings.ClueScores);
+			await msg.author.settings.reset(UserSettings.Stats);
+			await msg.author.settings.reset(UserSettings.Skills);
 
-			await msg.author.settings.reset('bank');
-			await msg.author.settings.reset('collectionLogBank');
-			await msg.author.settings.reset('GP');
-			await msg.author.settings.reset('monsterScores');
-			await msg.author.settings.reset('clueScores');
-			await msg.author.settings.reset('stats');
-			await msg.author.settings.reset('skills');
-
-			await msg.author.settings.update(UserSettings.Minion.ironman, true);
+			await msg.author.settings.update(UserSettings.Minion.Ironman, true);
 
 			await msg.send('You are now an ironman BTW.');
 		} catch (err) {
