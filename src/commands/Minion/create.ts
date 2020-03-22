@@ -43,12 +43,22 @@ export default class extends BotCommand {
 			craftableItem.inputItems
 		);
 
+		const cantHaveItemsString = await createReadableItemListFromBank(
+			this.client,
+			craftableItem.cantHaveItems
+		);
+
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Ensure they have the required items to create the item.
 		if (!bankHasAllItemsFromBank(userBank, craftableItem.inputItems)) {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}.`;
+		}
+
+		// Check for any items they cant have 2 of.
+		if (bankHasAllItemsFromBank(userBank, craftableItem.cantHaveItems)) {
+			throw `You already have a ${cantHaveItemsString} in your bank.`;
 		}
 
 		const sellMsg = await msg.channel.send(
