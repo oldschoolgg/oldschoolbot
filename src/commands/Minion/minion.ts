@@ -101,7 +101,7 @@ export default class extends BotCommand {
 
 		await msg.send(
 			`Are you sure you want to start afresh and play as an ironman?
-${Emoji.Warning}**(This will reset your bank,collection log,GP,monster and clue KC, skills and any misc. stats, you will lose the ability to get GP from dailies,trade,dice,duel,etc)**${Emoji.Warning}
+${Emoji.Warning}**(This will reset your bank,collection log,GP,QP,monster and clue KC, skills and any misc. stats, you will lose the ability to get GP from dailies,trade,dice,duel,etc)**${Emoji.Warning}
 Please say \`yes\` to confirm.`
 		);
 
@@ -119,6 +119,7 @@ Please say \`yes\` to confirm.`
 			await msg.author.settings.reset(UserSettings.Bank);
 			await msg.author.settings.reset(UserSettings.CollectionLogBank);
 			await msg.author.settings.reset(UserSettings.GP);
+			await msg.author.settings.reset(UserSettings.QP);
 			await msg.author.settings.reset(UserSettings.MonsterScores);
 			await msg.author.settings.reset(UserSettings.ClueScores);
 			await msg.author.settings.reset(UserSettings.Stats);
