@@ -9,6 +9,8 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
@@ -24,6 +26,20 @@ export default class extends Task {
 		}
 
 		const loot = monster.table.kill(quantity);
+		const itemsToAnnounce = filterBankFromArrayOfItems(monster.notifyDrops as number[], loot);
+		if (Object.keys(itemsToAnnounce).length > 0) {
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${
+					user.minionName
+				}, just received **${await createReadableItemListFromBank(
+					this.client,
+					itemsToAnnounce
+				)}**, their ${monster.name} KC is ${user.settings.get(UserSettings.MonsterScores)[
+					monster.id
+				] + quantity}!`
+			);
+		}
 
 		await user.addItemsToBank(loot, true);
 
@@ -60,10 +76,10 @@ export default class extends Task {
 				)}), you can get your minion to complete them using \`+minion clue 1 easy/medium/etc \``;
 		}
 
+		user.incrementMonsterScore(monsterID, quantity);
+
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
-
-		channel.send(str, new MessageAttachment(image));
 
 		this.client.queuePromise(() => {
 			channel.send(str, new MessageAttachment(image));
@@ -78,14 +94,14 @@ export default class extends Task {
 					if (response) {
 						if (response.author.minionIsBusy) return;
 
+						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+
 						this.client.commands
 							.get('minion')!
 							.kill(response as KlasaMessage, [quantity, monster.name]);
 					}
 				})
 				.catch(noOp);
-
-			user.incrementMonsterScore(monsterID, quantity);
 		});
 	}
 }

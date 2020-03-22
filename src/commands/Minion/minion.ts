@@ -19,6 +19,7 @@ import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import bankHasItem from '../../lib/util/bankHasItem';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -53,7 +54,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|ironman] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|ironman] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -156,6 +157,7 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			SkillsEnum.Smithing
 		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
 
@@ -163,6 +165,7 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
+
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
 
 		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
@@ -171,6 +174,18 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
 		}
 		return msg.send(res);
+	}
+
+	async qp(msg: KlasaMessage) {
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		return msg.send(
+			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(
+				UserSettings.QP
+			)}.`
+		);
 	}
 
 	async clues(msg: KlasaMessage) {
@@ -272,15 +287,40 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
+		await this.client.commands
+			.get('mine')!
+			.run(msg, [quantity, oreName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
+		await this.client.commands
+			.get('smith')!
+			.run(msg, [quantity, barName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
+	async quest(msg: KlasaMessage) {
+		await this.client.commands
+			.get('quest')!
+			.run(msg, [])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
 		await msg.author.settings.sync(true);
+
+		if (typeof quantity === 'string') {
+			tierName = quantity;
+			quantity = 1;
+		}
+
 		if (msg.author.minionIsBusy) {
 			this.client.emit(
 				Events.Log,
@@ -340,14 +380,14 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 		return msg.send(
 			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
 				clueTier.name
-			} clues, it'll take around ${formatDuration(
-				clueTier.timeToFinish * quantity
-			)} to finish.`
+			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		this.kill(msg, [quantity, name]);
+		await this.kill(msg, [quantity, name]).catch(err => {
+			throw err;
+		});
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
@@ -374,36 +414,57 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		const bank = msg.author.settings.get(UserSettings.Bank);
+
+		let { timeToFinish } = monster;
+		const boosts = [];
+		if (monster.itemInBankBoosts) {
+			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
+				if (!bankHasItem(bank, parseInt(itemID))) continue;
+				timeToFinish *= (100 - boostAmount) / 100;
+				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+			}
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / monster.timeToFinish);
+			quantity = Math.floor((Time.Minute * 30) / timeToFinish);
+		}
+
+		if (monster.qpRequired && msg.author.settings.get(UserSettings.QP) < monster.qpRequired) {
+			throw `You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`${msg.cmdPrefix}quest\``;
 		}
 
 		// Make sure they have all the required items to kill this monster
-		const bank = msg.author.settings.get(UserSettings.Bank);
+
 		for (const item of monster.itemsRequired as number[]) {
 			if (!bank[item] || bank[item] < 0) {
 				throw `To kill ${
 					monster.name
 				}, you need these items: ${monster.itemsRequired
 					.map(id => itemNameFromID(id))
-					.join(', ')}.`;
+					.join(
+						', '
+					)}. \n\nYou can buy these items from other players at the grand exchange channel (\`${
+					msg.cmdPrefix
+				}ge\`)`;
 			}
 		}
 
-		let duration = monster.timeToFinish * quantity;
+		let duration = timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
 			throw `${getMinionName(
 				msg.author
 			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				monster.name
-			} is ${Math.floor((Time.Minute * 30) / monster.timeToFinish)}.`;
+			} is ${Math.floor((Time.Minute * 30) / timeToFinish)}.`;
 		}
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
 		}
 
@@ -420,10 +481,15 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
-				monster.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
-		);
+
+		let response = `${getMinionName(msg.author)} is now killing ${data.quantity}x ${
+			monster.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }

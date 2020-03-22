@@ -9,6 +9,7 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 
 export namespace UserSettings {
 	export const GP = T<number>('GP');
+	export const QP = T<number>('QP');
 	export const Bank = T<BankType>('bank');
 	export const BankBackground = T<number>('bankBackground');
 	export const Pets = T<BankType>('pets');

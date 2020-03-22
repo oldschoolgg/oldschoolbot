@@ -21,7 +21,9 @@ export const enum Roles {
 	Contributor = '456181501437018112',
 	Moderator = '622806157563527178',
 	PatronTier1 = '678970545789730826',
-	PatronTier2 = '678967943979204608'
+	PatronTier2 = '678967943979204608',
+	PatronTier3 = '687408140832342043',
+	Patron = '679620175838183424'
 }
 
 export const enum Emoji {
@@ -53,7 +55,9 @@ export const enum Emoji {
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
-	Warning = '⚠️'
+	QuestIcon = '<:questIcon:690191385907036179>',
+  Warning = '⚠️'
+
 }
 
 export const enum Image {
@@ -71,6 +75,7 @@ export const enum Tasks {
 	ClueActivity = 'clueActivity',
 	MiningActivity = 'miningActivity',
 	SmithingActivity = 'smithingActivity',
+	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker'
@@ -80,7 +85,8 @@ export const enum Activity {
 	MonsterKilling = 'MonsterKilling',
 	ClueCompletion = 'ClueCompletion',
 	Mining = 'Mining',
-	Smithing = 'Smithing'
+	Smithing = 'Smithing',
+	Questing = 'Questing'
 }
 
 export const enum Events {
@@ -96,7 +102,9 @@ export const enum Events {
 
 export const enum BadgesEnum {
 	Developer = 0,
-	Booster = 1
+	Booster = 1,
+	LimitedPatron = 2,
+	Patron = 3
 }
 
 export const enum PermissionLevelsEnum {
@@ -111,18 +119,35 @@ export const rootFolder = join(__dirname, '..', '..', '..');
 export const COINS_ID = 995;
 
 export const enum PerkTier {
-	One = 1, // Boosters, Contributors, Mods
-	Two = 2, // Tier 1 Patron
-	Three = 3 // Tier 2 Patron
+	/**
+	 * Boosters
+	 */
+	One = 1,
+	/**
+	 * Tier 1 Patron
+	 */
+	Two = 2,
+	/**
+	 * Tier 2 Patron, Contributors, Mods
+	 */
+	Three = 3,
+	/**
+	 * Tier 3 Patron
+	 */
+	Four = 4
 }
 
 export const enum BitField {
 	HasGivenBirthdayPresent = 1,
 	IsPatronTier1 = 2,
-	IsPatronTier2 = 3
+	IsPatronTier2 = 3,
+	IsPatronTier3 = 4
 }
 
 export const enum PatronTierID {
 	One = '4608201',
-	Two = '4608226'
+	Two = '4608226',
+	Three = '4720356'
 }
+
+export const MAX_QP = 275;

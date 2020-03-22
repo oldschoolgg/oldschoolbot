@@ -69,6 +69,7 @@ declare module 'discord.js' {
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
+		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
 		skillLevel(skillName: SkillsEnum): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;

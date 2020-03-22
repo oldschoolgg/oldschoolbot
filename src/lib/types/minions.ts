@@ -32,6 +32,10 @@ export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
+	channelID: string;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: MonsterActivityTaskOptions[];
 }
@@ -53,4 +57,5 @@ export type MinionActivityTask =
 	| Tasks.MonsterActivity
 	| Tasks.ClueActivity
 	| Tasks.MiningActivity
-	| Tasks.SmithingActivity;
+	| Tasks.SmithingActivity
+	| Tasks.QuestingActivity;

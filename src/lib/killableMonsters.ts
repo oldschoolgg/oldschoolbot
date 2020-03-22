@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { Time } from './constants';
 import { Bank } from './types';
 import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
+import itemID from './util/itemID';
 
 interface KillableMonster {
 	id: number;
@@ -17,6 +18,14 @@ interface KillableMonster {
 	canBeKilled: boolean;
 	difficultyRating: number;
 	itemsRequired: (string | number)[];
+	notifyDrops: (string | number)[];
+	qpRequired: number;
+
+	/**
+	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
+	 * this monster.
+	 */
+	itemInBankBoosts?: Bank;
 }
 
 const killableMonsters: KillableMonster[] = [
@@ -30,7 +39,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -42,7 +53,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Pet dagannoth prime'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -54,7 +67,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Pet dagannoth rex'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -66,7 +81,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Pet dagannoth supreme'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Cerberus.id,
@@ -78,7 +95,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: []
+		itemsRequired: ['Bandos chestplate', 'Bandos tassets'],
+		notifyDrops: ['Hellpuppy', 'Jar of souls'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GiantMole.id,
@@ -90,7 +109,14 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: []
+		itemsRequired: [
+			"Dharok's helm",
+			"Dharok's platebody",
+			"Dharok's platelegs",
+			"Dharok's greataxe"
+		],
+		notifyDrops: ['Baby mole', 'Curved bone'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Vorkath.id,
@@ -102,7 +128,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: []
+		itemsRequired: ['Armadyl chestplate', 'Armadyl chainskirt'],
+		notifyDrops: ['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -114,7 +142,14 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: []
+		itemsRequired: [
+			'Armadyl chestplate',
+			'Armadyl chainskirt',
+			"Ahrim's robetop",
+			"Ahrim's robeskirt"
+		],
+		notifyDrops: ['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GeneralGraardor.id,
@@ -126,7 +161,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Pet general graardor', 'Curved bone'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -138,7 +175,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Pet zilyana'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -150,7 +189,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ["Pet kree'arra", 'Curved bone'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -162,7 +203,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ["Pet k'ril tsutsaroth"],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Man.id,
@@ -174,7 +217,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Guard.id,
@@ -186,7 +231,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Woman.id,
@@ -198,7 +245,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -210,7 +259,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Goblin champion scroll'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Callisto.id,
@@ -222,7 +273,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: []
+		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
+		notifyDrops: ['Callisto cub', 'Curved bone', 'Tyrannical ring'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -234,7 +287,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ["Vet'ion jr.", 'Skeleton champion scroll', 'Curved bone', 'Ring of the gods'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -246,7 +301,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: []
+		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
+		notifyDrops: ['Treasonous ring', 'Venenatis spiderling', 'Curved bone'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -258,7 +315,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Pet chaos elemental'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -270,7 +329,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Pet chaos elemental'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -282,7 +343,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -294,7 +357,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: []
+		itemsRequired: ['Anti-dragon shield'],
+		notifyDrops: ['Dragon pickaxe', 'Prince black dragon', 'Draconic visage'],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -306,7 +371,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ["Scorpia's offspring"],
+		qpRequired: 0
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -318,7 +385,13 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: ['Zamorakian spear']
+		itemsRequired: ['Zamorakian spear'],
+		notifyDrops: ['Spectral sigil', 'Arcane sigil', 'Elysian sigil', 'Pet dark core'],
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Bandos godsword')]: 5,
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.KalphiteQueen.id,
@@ -330,11 +403,168 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: []
+		itemsRequired: [],
+		notifyDrops: ['Jar of sand', 'Kalphite princess'],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.LizardmanShaman.id,
+		name: Monsters.LizardmanShaman.name,
+		aliases: Monsters.LizardmanShaman.aliases,
+		timeToFinish: Time.Minute * 1.1,
+		table: Monsters.LizardmanShaman,
+		emoji: '<:Dragon_warhammer:405998717154623488>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6,
+		itemsRequired: ["Karil's crossbow"],
+		notifyDrops: ['Dragon warhammer'],
+		qpRequired: 30
+	},
+	{
+		id: Monsters.Lizardman.id,
+		name: Monsters.Lizardman.name,
+		aliases: Monsters.Lizardman.aliases,
+		timeToFinish: Time.Second * 20,
+		table: Monsters.Lizardman,
+		emoji: '<:Xerics_talisman_inert:456176488669249539>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 3,
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 30
+	},
+	{
+		id: Monsters.GreaterDemon.id,
+		name: Monsters.GreaterDemon.name,
+		aliases: Monsters.GreaterDemon.aliases,
+		timeToFinish: Time.Second * 25,
+		table: Monsters.GreaterDemon,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Cow.id,
+		name: Monsters.Cow.name,
+		aliases: Monsters.Cow.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.Cow,
+		emoji: '🐮',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Skeleton.id,
+		name: Monsters.Skeleton.name,
+		aliases: Monsters.Skeleton.aliases,
+		timeToFinish: Time.Second * 9,
+		table: Monsters.Skeleton,
+		emoji: '☠️',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: ['Skeleton champion scroll'],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Zombie.id,
+		name: Monsters.Zombie.name,
+		aliases: Monsters.Zombie.aliases,
+		timeToFinish: Time.Second * 9,
+		table: Monsters.Zombie,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: ['Zombie champion scroll'],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Rat.id,
+		name: Monsters.Rat.name,
+		aliases: Monsters.Rat.aliases,
+		timeToFinish: Time.Second * 1.5,
+		table: Monsters.Rat,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.FireGiant.id,
+		name: Monsters.FireGiant.name,
+		aliases: Monsters.FireGiant.aliases,
+		timeToFinish: Time.Second * 16,
+		table: Monsters.FireGiant,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: ['Giant champion scroll'],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.BlueDragon.id,
+		name: Monsters.BlueDragon.name,
+		aliases: Monsters.BlueDragon.aliases,
+		timeToFinish: Time.Second * 40,
+		table: Monsters.BlueDragon,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: ['Anti-dragon shield'],
+		notifyDrops: [],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Ankou.id,
+		name: Monsters.Ankou.name,
+		aliases: Monsters.Ankou.aliases,
+		timeToFinish: Time.Second * 15,
+		table: Monsters.Ankou,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Dwarf.id,
+		name: Monsters.Dwarf.name,
+		aliases: Monsters.Dwarf.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.Dwarf,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: [],
+		notifyDrops: [],
+		qpRequired: 0
 	}
 ].map(killableMonster => ({
 	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired)
+	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
+	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
 }));
 
 export default killableMonsters;

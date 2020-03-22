@@ -1,11 +1,9 @@
 import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
-import { TextChannel } from 'discord.js';
 
 import pets from '../lib/pets';
 import { GuildSettings } from '../lib/GuildSettings';
 import { roll } from '../lib/util';
 import { UserSettings } from '../lib/UserSettings';
-import { Channel } from '../lib/constants';
 
 export default class extends Monitor {
 	public __memberCache: { [key: string]: number } = {};
@@ -33,7 +31,7 @@ export default class extends Monitor {
 			msg.author.settings.update(UserSettings.Pets, { ...userPets });
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(
-					`${msg.author} has a funny feeling like they would have been followed.`
+					`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
 				);
 			} else {
 				msg.channel.send(`You have a funny feeling like you’re being followed, ${
@@ -41,10 +39,6 @@ export default class extends Monitor {
 				} ${pet.emoji}
 Type \`${msg.guild.settings.get(GuildSettings.Prefix)}mypets\` to see your pets.`);
 			}
-
-			(this.client.channels.get(Channel.Notifications) as TextChannel)?.send(
-				`Someone just got the **${pet.name}** pet! ${pet.emoji}`
-			);
 		}
 	}
 }

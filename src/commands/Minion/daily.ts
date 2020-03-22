@@ -28,8 +28,6 @@ import { UserSettings } from '../../lib/UserSettings';
 import { ClientSettings } from '../../lib/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
 
-const easyTrivia = triviaQuestions!.slice(0, 40);
-
 const options = {
 	max: 1,
 	time: 13000,
@@ -62,7 +60,7 @@ export default class DailyCommand extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
 
-		const trivia = easyTrivia[Math.floor(Math.random() * easyTrivia.length)];
+		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 
 		await msg.channel.send(`**${Emoji.Diango} Diango asks...** ${trivia.q}`);
 		try {
