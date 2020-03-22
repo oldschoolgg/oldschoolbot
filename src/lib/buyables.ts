@@ -28,12 +28,92 @@ const Buyables: Buyable[] = [
 		gpCost: 1_000_000
 	},
 	{
+		name: 'Cooking gauntlets',
+		outputItems: {
+			[itemID('Cooking gauntlets')]: 1
+		},
+		qpRequired: 25,
+		gpCost: 1_000_000
+	},
+	{
 		name: 'Anti-dragon shield',
 		outputItems: {
 			[itemID('Anti-dragon shield')]: 1
 		},
 		qpRequired: 35,
 		gpCost: 10_000
+	},
+	{
+		name: 'Hardleather gloves',
+		outputItems: {
+			[itemID('Hardleather gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Bronze gloves',
+		outputItems: {
+			[itemID('Bronze gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Iron gloves',
+		outputItems: {
+			[itemID('Iron gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Steel gloves',
+		outputItems: {
+			[itemID('Steel gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Black gloves',
+		outputItems: {
+			[itemID('Black gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Mithril gloves',
+		outputItems: {
+			[itemID('Mithril gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Adamant gloves',
+		outputItems: {
+			[itemID('Adamant gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Rune gloves',
+		outputItems: {
+			[itemID('Rune gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
+	},
+	{
+		name: 'Dragon gloves',
+		outputItems: {
+			[itemID('Dragon gloves')]: 1
+		},
+		qpRequired: 1,
+		gpCost: 1
 	},
 	{
 		name: 'Barrows gloves',

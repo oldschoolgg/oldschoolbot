@@ -130,7 +130,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 8,
 		itemsRequired: ['Armadyl chestplate', 'Armadyl chainskirt'],
 		notifyDrops: ['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage'],
-		qpRequired: 200
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -149,7 +149,7 @@ const killableMonsters: KillableMonster[] = [
 			"Ahrim's robeskirt"
 		],
 		notifyDrops: ['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling'],
-		qpRequired: 75
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GeneralGraardor.id,
