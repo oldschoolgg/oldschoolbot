@@ -291,6 +291,19 @@ const Craftables: Craftable[] = [
 		},
 		smithingLevel: 1
 	}
+	{
+		name: 'Master clue',
+		inputItems: {
+			[itemID('Clue scroll (easy)')]: 1,
+			[itemID('Clue scroll (medium)')]: 1,
+			[itemID('Clue scroll (hard)')]: 1,
+			[itemID('Clue scroll (elite)')]: 1
+		},
+		outputItems: {
+			[itemID('Clue scroll (master)')]: 1
+		},
+		smithingLevel: 1
+	}
 ];
 
 export default Craftables;
