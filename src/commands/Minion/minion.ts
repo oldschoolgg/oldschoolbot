@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -93,6 +93,10 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			SkillsEnum.Smithing
 		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
+		
+${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
+			SkillsEnum.Woodcutting
+		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
 `);
 	}
 
@@ -237,6 +241,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			.catch(err => {
 				throw err;
 			});
+	}
+
+	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
+		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
 	}
 
 	async quest(msg: KlasaMessage) {
