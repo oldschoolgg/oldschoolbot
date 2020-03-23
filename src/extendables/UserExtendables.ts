@@ -23,13 +23,16 @@ import {
 	TickerTaskData,
 	ActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	FiremakingActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skills/smithing';
+import Firemaking from '../lib/skills/firemaking';
 import Woodcutting from '../lib/skills/woodcutting';
 import Skills from '../lib/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -348,6 +351,18 @@ export default class extends Extendable {
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Firemaking: {
+				const data = currentTask as FiremakingActivityTaskOptions;
+
+				const log = Firemaking.Logs.find(log => log.id === data.logID);
+
+				return `${this.minionName} is currently lighting ${data.quantity}x ${
+					log!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Firemaking
+				} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;
 			}
 
 			case Activity.Questing: {
