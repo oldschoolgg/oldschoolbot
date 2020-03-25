@@ -6,6 +6,7 @@ interface Craftable {
 	outputItems: Bank;
 	inputItems: Bank;
 	smithingLevel?: number;
+	addOutputToCollectionLog?: boolean;
 }
 
 const Craftables: Craftable[] = [
@@ -296,6 +297,7 @@ const Craftables: Craftable[] = [
 	 */
 	{
 		name: 'Prospector helmet',
+		addOutputToCollectionLog: true,
 		outputItems: {
 			[itemID('Prospector helmet')]: 1
 		},
@@ -305,6 +307,7 @@ const Craftables: Craftable[] = [
 	},
 	{
 		name: 'Prospector jacket',
+		addOutputToCollectionLog: true,
 		outputItems: {
 			[itemID('Prospector jacket')]: 1
 		},
@@ -314,6 +317,7 @@ const Craftables: Craftable[] = [
 	},
 	{
 		name: 'Prospector legs',
+		addOutputToCollectionLog: true,
 		outputItems: {
 			[itemID('Prospector legs')]: 1
 		},
@@ -323,6 +327,7 @@ const Craftables: Craftable[] = [
 	},
 	{
 		name: 'Prospector boots',
+		addOutputToCollectionLog: true,
 		outputItems: {
 			[itemID('Prospector boots')]: 1
 		},
