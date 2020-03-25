@@ -1,4 +1,6 @@
 import { join } from 'path';
+import { Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 export const enum Time {
 	Millisecond = 1,
@@ -149,3 +151,5 @@ export const enum PatronTierID {
 }
 
 export const MAX_QP = 275;
+
+export const TradeableItems = Items.filter(item => (item as Item).tradeable);
