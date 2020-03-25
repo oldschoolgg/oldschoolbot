@@ -4,6 +4,7 @@ export abstract class BotCommand extends Command {
 	public altProtection: boolean;
 	public guildOnly: boolean;
 	public oneAtTime: boolean;
+	public perkTier?: number;
 
 	public constructor(
 		store: CommandStore,
@@ -20,6 +21,7 @@ export abstract class BotCommand extends Command {
 		this.altProtection = options.altProtection!;
 		this.oneAtTime = options.oneAtTime!;
 		this.guildOnly = options.guildOnly!;
+		this.perkTier = options.perkTier;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,4 +39,5 @@ export interface BotCommandOptions extends CommandOptions {
 	altProtection?: boolean;
 	oneAtTime?: boolean;
 	guildOnly?: boolean;
+	perkTier?: number;
 }
