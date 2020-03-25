@@ -1,4 +1,5 @@
 import { Clues } from 'oldschooljs';
+
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
 import { Time } from './constants';
