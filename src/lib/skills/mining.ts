@@ -1,5 +1,6 @@
 import { SkillsEnum, Ore } from '../types';
 import { Emoji } from '../constants';
+import itemID from '../util/itemID';
 
 const ores: Ore[] = [
 	{
@@ -104,10 +105,18 @@ const ores: Ore[] = [
 	}
 ];
 
+const prospectorItems: { [key: number]: number } = {
+	[itemID('Prospector helmet')]: 0.4,
+	[itemID('Prospector jacket')]: 0.8,
+	[itemID('Prospector legs')]: 0.6,
+	[itemID('Prospector boots')]: 0.2
+};
+
 const Mining = {
 	Ores: ores,
 	id: SkillsEnum.Mining,
-	emoji: Emoji.Mining
+	emoji: Emoji.Mining,
+	prospectorItems
 };
 
 export default Mining;
