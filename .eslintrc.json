@@ -15,7 +15,13 @@
 		"@typescript-eslint/require-await": "off",
 		"radix": "off",
 		"no-throw-literal": "off",
-		"no-negated-condition": "off"
+		"no-negated-condition": "off",
+		"padding-line-between-statements": [
+				"error",
+				{ "blankLine": "always", "prev": "import", "next": "const" },
+				{ "blankLine": "always", "prev": "import", "next": "export" },
+				{ "blankLine": "always", "prev": "const", "next": "export" }
+		]
 	},
 	"parserOptions": {
 		"sourceType": "module",
