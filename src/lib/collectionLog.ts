@@ -1210,7 +1210,7 @@ export const quest = {
 		'Steel gloves',
 		'Iron gloves',
 		'Bronze gloves',
-		'Hardleather gloves',
+		'Hardleather gloves'
 	])
 };
 export const collectionLogTypes = [
