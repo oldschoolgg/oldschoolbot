@@ -140,20 +140,26 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async buy(msg: KlasaMessage) {
-		let cost = 50_000_000;
-		const accountAge = Date.now() - msg.author.createdTimestamp;
-		if (accountAge > Time.Year * 2) {
-			cost = 5_000_000;
-		} else if (accountAge > Time.Year) {
-			cost = 10_000_000;
-		} else if (accountAge > Time.Month * 6) {
-			cost = 35_000_000;
-		}
-
 		if (msg.author.hasMinion) throw 'You already have a minion!';
 
 		await msg.author.settings.sync(true);
 		const balance = msg.author.settings.get(UserSettings.GP);
+
+		let cost = 50_000_000;
+		const accountAge = Date.now() - msg.author.createdTimestamp;
+		if (accountAge > Time.Year) {
+			cost = 0;
+		} else if (accountAge > Time.Month * 6) {
+			cost = 25_000_000;
+		}
+
+		if (cost === 0) {
+			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
+
+			return msg.channel.send(
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules!`
+			);
+		}
 
 		if (balance < cost) {
 			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
