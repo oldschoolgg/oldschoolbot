@@ -1,5 +1,4 @@
 import { Task, KlasaMessage } from 'klasa';
-import { Items } from 'oldschooljs';
 
 import { saidYes, noOp, rand } from '../../lib/util';
 import { Time } from '../../lib/constants';
@@ -9,8 +8,9 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Woodcutting from '../../lib/skills/woodcutting';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import itemID from '../../lib/util/itemID';
 
-const WoodcuttingPet = Items.get('Beaver');
+const WoodcuttingPet = itemID('Beaver');
 
 export default class extends Task {
 	async run({ logID, quantity, userID, channelID }: WoodcuttingActivityTaskOptions) {
@@ -42,7 +42,7 @@ export default class extends Task {
 
 		// Roll for pet at 1.5x chance
 		if (Log.petChance && rand(1, Log.petChance * 1.5) < quantity) {
-			loot[WoodcuttingPet!.id] = 1;
+			loot[WoodcuttingPet!] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 		}
 

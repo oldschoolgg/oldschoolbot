@@ -1,5 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { determineScaledLogTime, stringMatches, formatDuration, rand } from '../../lib/util';
+import {
+	determineScaledLogTime,
+	stringMatches,
+	formatDuration,
+	rand,
+	itemNameFromID
+} from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 
 import { SkillsEnum } from '../../lib/types';
@@ -10,6 +16,17 @@ import Woodcutting from '../../lib/skills/woodcutting';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
+
+const axes = [
+	{
+		id: itemID('Infernal axe'),
+		reductionPercent: 13
+	},
+	{
+		id: itemID('Dragon axe'),
+		reductionPercent: 10
+	}
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -41,7 +58,7 @@ export default class extends BotCommand {
 		);
 
 		if (!log) {
-			throw `Thats not a valid log to mine. Valid ores are ${Woodcutting.Logs.map(
+			throw `Thats not a valid log to chop. Valid logs are ${Woodcutting.Logs.map(
 				log => log.name
 			).join(', ')}.`;
 		}
@@ -59,11 +76,14 @@ export default class extends BotCommand {
 
 		// If the user has a dragon axe & over 61 mining provide 10% speed boost
 		const bank = msg.author.settings.get(UserSettings.Bank);
+		const boosts = [];
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) >= 61) {
-			if (bankHasItem(bank, itemID('Infernal axe'))) {
-				timetoChop = Math.floor(timetoChop * 0.86);
-			} else if (bankHasItem(bank, itemID('Dragon axe'))) {
-				timetoChop = Math.floor(timetoChop * 0.9);
+			for (const axe of axes) {
+				if (bankHasItem(bank, axe.id)) {
+					timetoChop = Math.floor(timetoChop * ((100 - axe.reductionPercent) / 100));
+					boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
+					break;
+				}
 			}
 		}
 
@@ -95,10 +115,14 @@ export default class extends BotCommand {
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now Woodcutting ${quantity}x ${
-				log.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
-		);
+		let response = `${msg.author.minionName} is now chopping ${quantity}x ${
+			log.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }
