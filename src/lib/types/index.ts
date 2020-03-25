@@ -184,7 +184,7 @@ export interface Bar {
 	chanceOfFail: number;
 }
 
-export interface Log {
+export interface Burn {
 	level: number;
 	xp: number;
 	id: number;

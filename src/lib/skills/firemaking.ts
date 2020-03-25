@@ -1,8 +1,8 @@
-import { SkillsEnum, Log } from '../types';
+import { SkillsEnum, Burn } from '../types';
 import itemID from '../util/itemID';
 import { Emoji } from '../constants';
 
-const logs: Log[] = [
+const logs: Burn[] = [
 	{
 		name: 'Logs',
 		level: 1,
