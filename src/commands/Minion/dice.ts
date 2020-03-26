@@ -33,8 +33,8 @@ export default class extends BotCommand {
 				throw `You can only dice up to 2bil at a time!`;
 			}
 
-			if (amount < 2_000_000) {
-				throw `You have to dice atleast 2m.`;
+			if (amount < 200_000) {
+				throw `You have to dice atleast 200k.`;
 			}
 
 			await msg.author.settings.sync(true);
