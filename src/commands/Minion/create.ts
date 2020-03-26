@@ -8,6 +8,7 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import Craftables from '../../lib/craftables';
 import { SkillsEnum } from '../../lib/types';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
+import bankHasItem from '../../lib/util/bankHasItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -57,9 +58,11 @@ export default class extends BotCommand {
 		}
 
 		// Check for any items they cant have 2 of.
-		if (bankHasAllItemsFromBank(userBank, craftableItem.cantHaveItems)) {
-			throw `You already have a ${cantHaveItemsString} in your bank.`;
+		for (const [itemID] of Object.entries(craftableItem.cantHaveItems)) {
+			if (bankHasItem(userBank, parseInt(itemID))) {
+			throw `You already have ${cantHaveItemsString} in your bank.`;
 		}
+	}
 
 		const sellMsg = await msg.channel.send(
 			`${msg.author}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}.`
