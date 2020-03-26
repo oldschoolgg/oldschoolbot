@@ -92,11 +92,10 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			SkillsEnum.Smithing
 		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
-${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
-		
 ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
 			SkillsEnum.Woodcutting
 		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
 

@@ -64,6 +64,7 @@ export default class extends Task {
 					const response = messages.first();
 
 					if (response) {
+						if (response.author.minionIsBusy) return;
 						user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
 						this.client.commands
 							.get('chop')!

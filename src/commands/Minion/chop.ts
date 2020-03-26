@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+
 import {
 	determineScaledLogTime,
 	stringMatches,
@@ -7,7 +8,6 @@ import {
 	itemNameFromID
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-
 import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -58,7 +58,7 @@ export default class extends BotCommand {
 		);
 
 		if (!log) {
-			throw `Thats not a valid log to chop. Valid logs are ${Woodcutting.Logs.map(
+			throw `That's not a valid log to chop. Valid logs are ${Woodcutting.Logs.map(
 				log => log.name
 			).join(', ')}.`;
 		}
@@ -67,14 +67,14 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
-		// Calculate the time it takes to mine a single log of this type, at this persons level.
+		// Calculate the time it takes to chop a single log of this type, at this persons level.
 		let timetoChop = determineScaledLogTime(
 			log!.xp,
 			log.respawnTime,
 			msg.author.skillLevel(SkillsEnum.Woodcutting)
 		);
 
-		// If the user has a dragon axe & over 61 mining provide 10% speed boost
+		// If the user has an axe apply boost
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const boosts = [];
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) >= 61) {

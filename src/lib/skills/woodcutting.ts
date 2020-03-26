@@ -31,14 +31,14 @@ const logs: Log[] = [
 		xp: 67.5,
 		id: 1519,
 		name: 'Willow Logs',
-		respawnTime: 0,
+		respawnTime: -0.25,
 		petChance: 289_286
 	},
 	{
 		level: 35,
 		xp: 85,
 		id: 6333,
-		name: 'teak Logs',
+		name: 'Teak Logs',
 		respawnTime: -1,
 		petChance: 264_336
 	},
@@ -62,7 +62,7 @@ const logs: Log[] = [
 		level: 50,
 		xp: 125,
 		id: 6332,
-		name: 'Mahongany Logs',
+		name: 'Mahogany Logs',
 		respawnTime: 2,
 		petChance: 220_623
 	},
@@ -87,7 +87,7 @@ const logs: Log[] = [
 		xp: 127,
 		id: 21626,
 		name: 'Sulliusceps',
-		respawnTime: -1,
+		respawnTime: -2,
 		petChance: 343_000
 	},
 	{

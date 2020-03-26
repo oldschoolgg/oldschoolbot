@@ -20,6 +20,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Smithing hood'),
 		untrimmed: itemID('Smithing cape'),
 		trimmed: itemID('Smithing cape(t)')
+	},
+	{
+		skill: SkillsEnum.Woodcutting,
+		hood: itemID('Woodcutting hood'),
+		untrimmed: itemID('Woodcutting cape'),
+		trimmed: itemID('Woodcutting cape(t)')
 	}
 ];
 
