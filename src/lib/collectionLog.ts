@@ -744,7 +744,7 @@ export const cluesHard = {
 		'Robin hood hat',
 		'Magic longbow',
 		'Magic shortbow',
-		'Amulet of glory (t4)',
+		'Amulet of glory (t)',
 		'Explorer backpack',
 		'Rune cane',
 		'Zombie head'
