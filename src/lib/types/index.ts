@@ -188,5 +188,5 @@ export interface Log {
 	name: string;
 	respawnTime: number;
 	petChance?: number;
-	birdsNest?: boolean;
+	birdNest?: boolean;
 }

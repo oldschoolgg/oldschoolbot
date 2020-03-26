@@ -9,11 +9,12 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import Woodcutting from '../../lib/skills/woodcutting';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
+import { roll } from 'oldschooljs/dist/util/util';
 
 const WoodcuttingPet = itemID('Beaver');
 
 export default class extends Task {
-	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
+	async run({ logID, quantity, userID, channelID }: WoodcuttingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Woodcutting);
 
@@ -45,12 +46,13 @@ export default class extends Task {
 			loot[WoodcuttingPet!] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 		}
-
-		const numberOfMinutes = duration / Time.Minute;
-
-		if (numberOfMinutes > 10 && Log.birdsNest) {
-			const numberOfNests = rand(0, Math.floor(numberOfMinutes / 12));
-			loot[5073] = numberOfNests;
+		// roll for a birds nest with an item in it that is not a clue
+		let nests = 0;
+		for (let i = 0; i < quantity; i++) {
+			if (roll(256)) {
+				nests++;
+				loot[5073] = nests;
+			}
 		}
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
