@@ -1177,7 +1177,7 @@ export const skillCapes = {
 	'trimmed capes': transformArrayOfResolvableItems([
 		'Mining cape(t)',
 		'Smithing cape(t)',
-		'Woodcutting cape(t)'
+		'Woodcut cape(t)'
 	])
 };
 
