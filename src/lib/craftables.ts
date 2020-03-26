@@ -21,8 +21,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Armadyl godsword',
@@ -33,8 +32,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Armadyl godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Bandos godsword',
@@ -45,8 +43,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Bandos godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Saradomin godsword',
@@ -57,8 +54,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Saradomin godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Zamorak godsword',
@@ -69,8 +65,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Dragonfire shield',
@@ -82,8 +77,7 @@ const Craftables: Craftable[] = [
 			// Uncharged dragonfire shield
 			11284: 1
 		},
-		smithingLevel: 90,
-		cantHaveItems: {}
+		smithingLevel: 90
 	},
 	{
 		name: 'Dragonfire ward',
@@ -95,8 +89,7 @@ const Craftables: Craftable[] = [
 			// Uncharged Dragonfire ward
 			22003: 1
 		},
-		smithingLevel: 90,
-		cantHaveItems: {}
+		smithingLevel: 90
 	},
 	{
 		name: 'Infernal pickaxe',
@@ -107,8 +100,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Infernal pickaxe')]: 1
 		},
-		smithingLevel: 85,
-		cantHaveItems: {}
+		smithingLevel: 85
 	},
 	{
 		name: 'Malediction ward',
@@ -120,8 +112,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Malediction ward')]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Odium ward',
@@ -133,8 +124,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Odium ward')]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Crystal key',
@@ -145,8 +135,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Crystal key')]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Verac's armour set",
@@ -159,8 +148,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Verac's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Veracs',
@@ -173,8 +161,7 @@ const Craftables: Craftable[] = [
 			[itemID("Verac's plateskirt")]: 1,
 			[itemID("Verac's flail")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Dharok's armour set",
@@ -187,8 +174,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Dharok's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Dharoks',
@@ -201,8 +187,7 @@ const Craftables: Craftable[] = [
 			[itemID("Dharok's platelegs")]: 1,
 			[itemID("Dharok's greataxe")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Guthan's armour set",
@@ -215,8 +200,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Guthan's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Guthans',
@@ -229,8 +213,7 @@ const Craftables: Craftable[] = [
 			[itemID("Guthan's chainskirt")]: 1,
 			[itemID("Guthan's warspear")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Ahrim's armour set",
@@ -243,8 +226,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Ahrim's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Ahrims',
@@ -257,8 +239,7 @@ const Craftables: Craftable[] = [
 			[itemID("Ahrim's robeskirt")]: 1,
 			[itemID("Ahrim's staff")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Torag's armour set",
@@ -271,8 +252,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Torag's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Torags',
@@ -285,8 +265,7 @@ const Craftables: Craftable[] = [
 			[itemID("Torag's platelegs")]: 1,
 			[itemID("Torag's hammers")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Karil's armour set",
@@ -299,8 +278,7 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Karil's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Karils',
@@ -313,8 +291,7 @@ const Craftables: Craftable[] = [
 			[itemID("Karil's leatherskirt")]: 1,
 			[itemID("Karil's crossbow")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	/**
 	 * Prospector outfit
