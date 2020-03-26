@@ -273,6 +273,7 @@ export default class extends Extendable {
 - Do clue scrolls with \`+minion clue 1 easy\` (complete 1 easy clue)
 - Train mining with \`+mine\`
 - Train smithing with \`+smith\`
+- Train woodcutting with \`+chop\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}

@@ -64,7 +64,7 @@ export interface KillableMonster extends Monster {
 export const enum SkillsEnum {
 	Mining = 'mining',
 	Smithing = 'smithing',
-	Woodcutting = 'Woodcutting'
+	Woodcutting = 'woodcutting'
 }
 
 export interface CachedItemPrice {

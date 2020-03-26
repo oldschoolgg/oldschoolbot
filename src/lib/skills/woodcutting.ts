@@ -85,7 +85,7 @@ const logs: Log[] = [
 	{
 		level: 65,
 		xp: 127,
-		id: 21626,
+		id: 6004,
 		name: 'Sulliusceps',
 		respawnTime: -2,
 		petChance: 343_000
