@@ -13,7 +13,7 @@ import itemID from '../../lib/util/itemID';
 const WoodcuttingPet = itemID('Beaver');
 
 export default class extends Task {
-	async run({ logID, quantity, userID, channelID }: WoodcuttingActivityTaskOptions) {
+	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Woodcutting);
 
@@ -44,6 +44,13 @@ export default class extends Task {
 		if (Log.petChance && rand(1, Log.petChance * 1.5) < quantity) {
 			loot[WoodcuttingPet!] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
+		}
+
+		const numberOfMinutes = duration / Time.Minute;
+
+		if (numberOfMinutes > 10 && Log.birdsNest) {
+			const numberOfNests = rand(0, Math.floor(numberOfMinutes / 12));
+			loot[5073] = numberOfNests;
 		}
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;

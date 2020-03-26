@@ -5,6 +5,7 @@ import { Emoji } from './constants';
 import MysteryBoxTable from './simulation/mysteryBox';
 import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
+import BirdsNestTable from './simulation/birdsNest';
 
 interface Openable {
 	name: string;
@@ -41,6 +42,13 @@ const Openables: Openable[] = [
 		itemID: 989,
 		aliases: ['crystal chest'],
 		table: CrystalChestTable,
+		emoji: Emoji.Casket
+	},
+	{
+		name: 'Birds nest',
+		itemID: 5073,
+		aliases: ['birds nest'],
+		table: BirdsNestTable,
 		emoji: Emoji.Casket
 	}
 ];
