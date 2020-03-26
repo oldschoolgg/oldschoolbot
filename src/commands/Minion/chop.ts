@@ -20,7 +20,7 @@ import bankHasItem from '../../lib/util/bankHasItem';
 const axes = [
 	{
 		id: itemID('3rd age axe'),
-		reductionPercent: 11
+		reductionPercent: 13
 	},
 	{
 		id: itemID('Gilded axe'),
