@@ -32,6 +32,12 @@ export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
+	logID: number;
+	channelID: string;
+	quantity: number;
+}
+
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }
@@ -58,4 +64,5 @@ export type MinionActivityTask =
 	| Tasks.ClueActivity
 	| Tasks.MiningActivity
 	| Tasks.SmithingActivity
+	| Tasks.WoodcuttingActivity
 	| Tasks.QuestingActivity;
