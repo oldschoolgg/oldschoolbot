@@ -90,6 +90,14 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentQP = this.settings.get(UserSettings.QP);
 		const newQP = Math.min(MAX_QP, currentQP + amount);
+
+		if (currentQP < MAX_QP && newQP === MAX_QP) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
+			);
+		}
+
 		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
 	}
