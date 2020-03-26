@@ -1,7 +1,7 @@
 import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp, rand } from '../../lib/util';
-import { Time } from '../../lib/constants';
+import { Time, Events, Emoji } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -63,6 +63,10 @@ export default class extends Task {
 		if (ore.petChance && rand(1, ore.petChance * 1.5) < quantity) {
 			loot[itemID('Rock golem')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Mining} **${user}'s** minion, ${user.minionName}, just recieved a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+			);
 		}
 
 		const numberOfMinutes = duration / Time.Minute;

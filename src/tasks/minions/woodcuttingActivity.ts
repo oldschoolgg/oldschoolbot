@@ -1,7 +1,7 @@
 import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp, rand } from '../../lib/util';
-import { Time } from '../../lib/constants';
+import { Time, Emoji, Events } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -44,6 +44,10 @@ export default class extends Task {
 		if (Log.petChance && rand(1, Log.petChance * 1.5) < quantity) {
 			loot[WoodcuttingPet!] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Woodcutting} **${user}'s** minion, ${user.minionName}, just recieved a Beaver while cutting ${Log.name} at level ${currentLevel} Woodcutting!`
+			);
 		}
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
