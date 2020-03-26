@@ -35,9 +35,9 @@ export default class extends Task {
 				}, just received **${await createReadableItemListFromBank(
 					this.client,
 					itemsToAnnounce
-				)}**, their ${monster.name} KC is ${user.settings.get(UserSettings.MonsterScores)[
+				)}**, their ${monster.name} KC is ${(user.settings.get(UserSettings.MonsterScores)[
 					monster.id
-				] + quantity}!`
+				] ?? 0) + quantity}!`
 			);
 		}
 

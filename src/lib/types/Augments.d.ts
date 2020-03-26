@@ -28,7 +28,9 @@ declare module 'klasa' {
 		altProtection?: boolean;
 		oneAtTime?: boolean;
 		guildOnly?: boolean;
+		perkTier?: number;
 	}
+
 	interface Task {
 		generateBankImage(
 			bank: Bank,

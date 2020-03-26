@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -92,6 +92,9 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			SkillsEnum.Smithing
 		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
+			SkillsEnum.Woodcutting
+		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -140,20 +143,26 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async buy(msg: KlasaMessage) {
-		let cost = 50_000_000;
-		const accountAge = Date.now() - msg.author.createdTimestamp;
-		if (accountAge > Time.Year * 2) {
-			cost = 5_000_000;
-		} else if (accountAge > Time.Year) {
-			cost = 10_000_000;
-		} else if (accountAge > Time.Month * 6) {
-			cost = 35_000_000;
-		}
-
 		if (msg.author.hasMinion) throw 'You already have a minion!';
 
 		await msg.author.settings.sync(true);
 		const balance = msg.author.settings.get(UserSettings.GP);
+
+		let cost = 50_000_000;
+		const accountAge = Date.now() - msg.author.createdTimestamp;
+		if (accountAge > Time.Year) {
+			cost = 0;
+		} else if (accountAge > Time.Month * 6) {
+			cost = 25_000_000;
+		}
+
+		if (cost === 0) {
+			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
+
+			return msg.channel.send(
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules!`
+			);
+		}
 
 		if (balance < cost) {
 			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
@@ -222,15 +231,34 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
+		await this.client.commands
+			.get('mine')!
+			.run(msg, [quantity, oreName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
+		await this.client.commands
+			.get('smith')!
+			.run(msg, [quantity, barName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
+		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
 	}
 
 	async quest(msg: KlasaMessage) {
-		this.client.commands.get('quest')!.run(msg, []);
+		await this.client.commands
+			.get('quest')!
+			.run(msg, [])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
@@ -305,7 +333,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		this.kill(msg, [quantity, name]);
+		await this.kill(msg, [quantity, name]).catch(err => {
+			throw err;
+		});
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {

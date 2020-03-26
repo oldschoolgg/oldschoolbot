@@ -15,6 +15,11 @@ interface GPUser {
 	GP: number;
 }
 
+interface QPUser {
+	id: string;
+	QP: number;
+}
+
 interface PetUser {
 	id: string;
 	petcount: number;
@@ -33,6 +38,11 @@ interface CLUser {
 interface GPLeaderboard {
 	lastUpdated: number;
 	list: GPUser[];
+}
+
+interface QPLeaderboard {
+	lastUpdated: number;
+	list: QPUser[];
 }
 
 interface PetLeaderboard {
@@ -69,6 +79,11 @@ export default class extends Command {
 		list: []
 	};
 
+	public qpLeaderboard: QPLeaderboard = {
+		lastUpdated: 0,
+		list: []
+	};
+
 	public petLeaderboard: PetLeaderboard = {
 		lastUpdated: 0,
 		list: []
@@ -87,7 +102,7 @@ export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the people with the most virtual GP.',
-			usage: '[pets|gp|petrecords|kc|cl] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -164,6 +179,40 @@ export default class extends Command {
 						.join('\n')
 				),
 			'GP Leaderboard'
+		);
+	}
+
+	async qp(msg: KlasaMessage) {
+		const onlyForGuild = msg.flagArgs.server;
+
+		if (Date.now() - this.qpLeaderboard.lastUpdated > CACHE_TIME) {
+			this.qpLeaderboard.list = (
+				await this.query(
+					`SELECT "id", "QP" FROM users WHERE "QP" > 0 ORDER BY "QP" DESC LIMIT 2000;`
+				)
+			).map((res: any) => ({ ...res, GP: parseInt(res.GP) }));
+			this.qpLeaderboard.lastUpdated = Date.now();
+		}
+
+		let { list } = this.qpLeaderboard;
+
+		if (onlyForGuild && msg.guild) {
+			list = list.filter((qpUser: QPUser) => msg.guild!.members.has(qpUser.id));
+		}
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							({ id, QP }) =>
+								`**${this.getUsername(id)}** has ${QP.toLocaleString()} QP`
+						)
+						.join('\n')
+				),
+			'QP Leaderboard'
 		);
 	}
 
@@ -250,10 +299,6 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		if (!this.client.owners.has(msg.author)) {
-			throw `The collection log leaderboard is temporarily disabled.`;
-		}
-
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
@@ -268,7 +313,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		const onlyForGuild = msg.flagArgs.server;
 
-		if (Date.now() - this.clLeaderboard.lastUpdated > CACHE_TIME) {
+		if (Date.now() - this.clLeaderboard.lastUpdated > CACHE_TIME + Time.Minute * 30) {
 			this.clLeaderboard.list = await this.query(
 				`SELECT u.id, u.logbanklength, u."collectionLogBank" FROM (
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) logbanklength , id, "collectionLogBank" FROM users

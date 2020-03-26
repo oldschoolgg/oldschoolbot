@@ -30,7 +30,11 @@ export default class extends BotCommand {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
 			if (amount > 2_000_000_000) {
-				throw `You can only stake up to 2bil at a time!`;
+				throw `You can only dice up to 2bil at a time!`;
+			}
+
+			if (amount < 200_000) {
+				throw `You have to dice atleast 200k.`;
 			}
 
 			await msg.author.settings.sync(true);

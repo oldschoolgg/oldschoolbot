@@ -6,7 +6,8 @@ interface Craftable {
 	outputItems: Bank;
 	inputItems: Bank;
 	smithingLevel?: number;
-	cantHaveItems: Bank;
+	addOutputToCollectionLog?: boolean;
+	cantHaveItems?: Bank;
 }
 
 const Craftables: Craftable[] = [
@@ -314,6 +315,49 @@ const Craftables: Craftable[] = [
 		},
 		smithingLevel: 1,
 		cantHaveItems: {}
+	},
+	/**
+	 * Prospector outfit
+	 */
+	{
+		name: 'Prospector helmet',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector helmet')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 40
+		}
+	},
+	{
+		name: 'Prospector jacket',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector jacket')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 60
+		}
+	},
+	{
+		name: 'Prospector legs',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector legs')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 50
+		}
+	},
+	{
+		name: 'Prospector boots',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector boots')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 30
+		}
 	},
 	{
 		name: 'Master clue',

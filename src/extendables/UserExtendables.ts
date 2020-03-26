@@ -22,10 +22,12 @@ import {
 	MiningActivityTaskOptions,
 	TickerTaskData,
 	ActivityTaskOptions,
-	SmithingActivityTaskOptions
+	SmithingActivityTaskOptions,
+	WoodcuttingActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skills/smithing';
+import Woodcutting from '../lib/skills/woodcutting';
 import Skills from '../lib/skills';
 
 export default class extends Extendable {
@@ -88,6 +90,14 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentQP = this.settings.get(UserSettings.QP);
 		const newQP = Math.min(MAX_QP, currentQP + amount);
+
+		if (currentQP < MAX_QP && newQP === MAX_QP) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
+			);
+		}
+
 		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
 	}
@@ -271,6 +281,7 @@ export default class extends Extendable {
 - Do clue scrolls with \`+minion clue 1 easy\` (complete 1 easy clue)
 - Train mining with \`+mine\`
 - Train smithing with \`+smith\`
+- Train woodcutting with \`+chop\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -329,6 +340,17 @@ export default class extends Extendable {
 				} is currently Questing. Approximately ${formattedDuration} remaining. Your current Quest Point count is: ${this.settings.get(
 					UserSettings.QP
 				)}.`;
+			}
+			case Activity.Woodcutting: {
+				const data = currentTask as WoodcuttingActivityTaskOptions;
+
+				const log = Woodcutting.Logs.find(log => log.id === data.logID);
+
+				return `${this.minionName} is currently chopping ${data.quantity}x ${
+					log!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Woodcutting
+				} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
 			}
 		}
 	}

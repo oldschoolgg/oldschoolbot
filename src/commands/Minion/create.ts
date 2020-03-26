@@ -91,6 +91,10 @@ export default class extends BotCommand {
 			)
 		);
 
+		if (craftableItem.addOutputToCollectionLog) {
+			msg.author.addItemsToCollectionLog(craftableItem.outputItems);
+		}
+
 		return msg.send(`You created ${outputItemsString}.`);
 	}
 }
