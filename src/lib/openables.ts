@@ -49,7 +49,7 @@ const Openables: Openable[] = [
 		itemID: 5073,
 		aliases: ['birds nest', 'bird nest'],
 		table: BirdNestTable,
-		emoji: Emoji.Casket
+		emoji: Emoji.BirdNest
 	}
 ];
 

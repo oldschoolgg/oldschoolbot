@@ -59,6 +59,7 @@ export const enum Emoji {
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
+	BirdNest = '<:Birdnest:692946556399124520>',
 	QuestIcon = '<:questIcon:690191385907036179>'
 }
 

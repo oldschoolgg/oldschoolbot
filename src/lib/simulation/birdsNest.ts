@@ -37,7 +37,7 @@ const EggTable = new LootTable()
 	.add('Evil chicken wings', 1, 1)
 	.add('Evil chicken legs', 1, 1)
 	.add('Evil chicken feet', 1, 1)
-	.add(SeedNestTable, 1, 296);
+	.add(SeedNestTable, 1, 296)
 
 // chance at each nest type
 const BirdNestTable = new LootTable()
