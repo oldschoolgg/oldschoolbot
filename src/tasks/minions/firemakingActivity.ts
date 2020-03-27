@@ -5,7 +5,7 @@ import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+// import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Firemaking from '../../lib/skills/firemaking';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
@@ -33,13 +33,13 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 		// uncomment to get ashes from burning logs
-		const loot = {
+		/* const loot = {
 			[Burn.id]: quantity
 		};
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank(loot, true); */
 
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;

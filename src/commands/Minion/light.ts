@@ -27,7 +27,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, logName = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, burnName = '']: [null | number | string, string]) {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
 		}
@@ -37,13 +37,14 @@ export default class extends BotCommand {
 		}
 
 		if (typeof quantity === 'string') {
-			logName = quantity;
+			burnName = quantity;
 			quantity = null;
 		}
 
 		const burn = Firemaking.Burns.find(
 			burn =>
-				stringMatches(burn.name, logName) || stringMatches(burn.name.split(' ')[0], logName)
+				stringMatches(burn.name, burnName) ||
+				stringMatches(burn.name.split(' ')[0], burnName)
 		);
 
 		if (!burn) {
@@ -70,9 +71,9 @@ export default class extends BotCommand {
 		// Check the user has the required logs to light.
 		// Multiplying the logs required by the quantity of ashes.
 		const requiredLogs: [string, number][] = Object.entries(burn.inputLogs);
-		for (const [logID, qty] of requiredLogs) {
-			if (!bankHasItem(userBank, parseInt(logID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(logID))}.`;
+		for (const [burnID, qty] of requiredLogs) {
+			if (!bankHasItem(userBank, parseInt(burnID), qty * quantity)) {
+				throw `You don't have enough ${itemNameFromID(parseInt(burnID))}.`;
 			}
 		}
 
@@ -99,15 +100,15 @@ export default class extends BotCommand {
 
 		// Remove the logs from their bank.
 		let newBank = { ...userBank };
-		for (const [logID, qty] of requiredLogs) {
-			if (newBank[parseInt(logID)] < qty) {
+		for (const [burnID, qty] of requiredLogs) {
+			if (newBank[parseInt(burnID)] < qty) {
 				this.client.emit(
 					Events.Wtf,
 					`${msg.author.sanitizedName} had insufficient logs to be removed.`
 				);
 				throw `What a terrible failure :(`;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(logID), qty * quantity);
+			newBank = removeItemFromBank(newBank, parseInt(burnID), qty * quantity);
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
