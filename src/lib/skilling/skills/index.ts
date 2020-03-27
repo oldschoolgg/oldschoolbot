@@ -1,5 +1,6 @@
 import { Collection } from 'discord.js';
 
+import Cooking from './cooking';
 import Mining from './mining';
 import Smithing from './smithing';
 import Woodcutting from './woodcutting';
