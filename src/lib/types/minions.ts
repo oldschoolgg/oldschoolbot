@@ -32,7 +32,7 @@ export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 export interface FiremakingActivityTaskOptions extends ActivityTaskOptions {
-	logID: number;
+	burnID: number;
 	channelID: string;
 	quantity: number;
 }

@@ -357,10 +357,10 @@ export default class extends Extendable {
 			case Activity.Firemaking: {
 				const data = currentTask as FiremakingActivityTaskOptions;
 
-				const log = Firemaking.Logs.find(log => log.id === data.logID);
+				const burn = Firemaking.Burns.find(burn => burn.id === data.burnID);
 
 				return `${this.minionName} is currently lighting ${data.quantity}x ${
-					log!.name
+					burn!.name
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Firemaking
 				} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;

@@ -5,26 +5,26 @@ import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-// import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Firemaking from '../../lib/skills/firemaking';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 export default class extends Task {
-	async run({ logID, quantity, userID, channelID }: FiremakingActivityTaskOptions) {
+	async run({ burnID, quantity, userID, channelID }: FiremakingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		const Log = Firemaking.Logs.find(Log => Log.id === logID);
+		const Burn = Firemaking.Burns.find(Burn => Burn.id === burnID);
 
-		if (!Log) return;
+		if (!Burn) return;
 
-		const xpReceived = quantity * Log.xp;
+		const xpReceived = quantity * Burn.xp;
 
 		await user.addXP(SkillsEnum.Firemaking, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		let str = `${user}, ${user.minionName} finished lighting ${quantity} ${
-			Log.name
+			Burn.name
 		}, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
@@ -33,13 +33,13 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 		// uncomment to get ashes from burning logs
-		// const loot = {
-		// 	[Log.id]: quantity
-		// };
+		const loot = {
+			[Burn.id]: quantity
+		};
 
-		// str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
-		// await user.addItemsToBank(loot, true);
+		await user.addItemsToBank(loot, true);
 
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
@@ -56,10 +56,10 @@ export default class extends Task {
 
 					if (response) {
 						if (response.author.minionIsBusy) return;
-						user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
+						user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.id}]`);
 						this.client.commands
 							.get('light')!
-							.run(response as KlasaMessage, [quantity, Log.name]);
+							.run(response as KlasaMessage, [quantity, Burn.name]);
 					}
 				})
 				.catch(noOp);

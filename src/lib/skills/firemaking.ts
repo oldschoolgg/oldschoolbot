@@ -2,14 +2,14 @@ import { SkillsEnum, Burn } from '../types';
 import itemID from '../util/itemID';
 import { Emoji } from '../constants';
 
-const logs: Burn[] = [
+const burns: Burn[] = [
 	{
 		name: 'Logs',
 		level: 1,
 		xp: 40,
 		id: itemID('ashes'),
 		inputLogs: { [itemID('Logs')]: 1 }
-	},
+	}, 
 	{
 		name: 'Oak logs',
 		level: 15,
@@ -76,7 +76,7 @@ const logs: Burn[] = [
 ];
 
 const Firemaking = {
-	Logs: logs,
+	Burns: burns,
 	id: SkillsEnum.Firemaking,
 	emoji: Emoji.Firemaking
 };

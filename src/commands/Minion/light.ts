@@ -41,19 +41,19 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const log = Firemaking.Logs.find(
-			log =>
-				stringMatches(log.name, logName) || stringMatches(log.name.split(' ')[0], logName)
+		const burn = Firemaking.Burns.find(
+			burn =>
+				stringMatches(burn.name, logName) || stringMatches(burn.name.split(' ')[0], logName)
 		);
 
-		if (!log) {
-			throw `That's not a valid log to light. Valid logs are ${Firemaking.Logs.map(
-				log => log.name
+		if (!burn) {
+			throw `That's not a valid log to light. Valid logs are ${Firemaking.Burns.map(
+				burn => burn.name
 			).join(', ')}.`;
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Firemaking) < log.level) {
-			throw `${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}s.`;
+		if (msg.author.skillLevel(SkillsEnum.Firemaking) < burn.level) {
+			throw `${msg.author.minionName} needs ${burn.level} Firemaking to light ${burn.name}s.`;
 		}
 
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
@@ -69,7 +69,7 @@ export default class extends BotCommand {
 
 		// Check the user has the required logs to light.
 		// Multiplying the logs required by the quantity of ashes.
-		const requiredLogs: [string, number][] = Object.entries(log.inputLogs);
+		const requiredLogs: [string, number][] = Object.entries(burn.inputLogs);
 		for (const [logID, qty] of requiredLogs) {
 			if (!bankHasItem(userBank, parseInt(logID), qty * quantity)) {
 				throw `You don't have enough ${itemNameFromID(parseInt(logID))}.`;
@@ -82,12 +82,12 @@ export default class extends BotCommand {
 			throw `${
 				msg.author.minionName
 			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
-				log.name
+				burn.name
 			}s you can light is ${Math.floor((Time.Minute * 30) / timeToLightSingleLog)}.`;
 		}
 
 		const data: FiremakingActivityTaskOptions = {
-			logID: log.id,
+			burnID: burn.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -116,7 +116,7 @@ export default class extends BotCommand {
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now lighting ${quantity}x ${
-				log.name
+				burn.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
