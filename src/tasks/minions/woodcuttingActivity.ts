@@ -51,9 +51,9 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			if (roll(256)) {
 				nests++;
-				loot[5073] = nests;
 			}
 		}
+		loot[5073] = nests;
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 

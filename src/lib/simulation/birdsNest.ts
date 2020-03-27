@@ -33,11 +33,11 @@ const RingTable = new LootTable()
 
 // chance at a piece of the evil chicken outfit
 const EggTable = new LootTable()
-	.add('Evil chicken head', 1, 1)
-	.add('Evil chicken wings', 1, 1)
-	.add('Evil chicken legs', 1, 1)
-	.add('Evil chicken feet', 1, 1)
-	.add(SeedNestTable, 1, 296);
+	.oneIn(300, 'Evil chicken head')
+	.oneIn(300, 'Evil chicken wings')
+	.oneIn(300, 'Evil chicken legs')
+	.oneIn(300, 'Evil chicken feet')
+	.every(SeedNestTable);
 
 // chance at each nest type
 const BirdNestTable = new LootTable()
