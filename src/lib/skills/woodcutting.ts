@@ -99,7 +99,7 @@ const logs: Log[] = [
 		name: 'Sulliusceps',
 		respawnTime: -2,
 		petChance: 343_000,
-		birdNest: false
+		birdNest: true
 	},
 	{
 		level: 75,
