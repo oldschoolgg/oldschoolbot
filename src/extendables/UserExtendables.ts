@@ -301,6 +301,7 @@ export default class extends Extendable {
 - Train mining with \`+mine\`
 - Train smithing with \`+smith\`
 - Train woodcutting with \`+chop\`
+- Train firemaking with \`+light\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}

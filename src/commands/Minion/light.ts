@@ -47,7 +47,7 @@ export default class extends BotCommand {
 		);
 
 		if (!log) {
-			throw `Thats not a valid log to light. Valid logs are ${Firemaking.Logs.map(
+			throw `That's not a valid log to light. Valid logs are ${Firemaking.Logs.map(
 				log => log.name
 			).join(', ')}.`;
 		}

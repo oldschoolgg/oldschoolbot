@@ -32,7 +32,7 @@ export default class extends Task {
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
-
+		// uncomment to get ashes from burning logs
 		// const loot = {
 		// 	[Log.id]: quantity
 		// };
@@ -55,6 +55,7 @@ export default class extends Task {
 					const response = messages.first();
 
 					if (response) {
+						if (response.author.minionIsBusy) return;
 						user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
 						this.client.commands
 							.get('light')!
