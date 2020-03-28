@@ -76,8 +76,8 @@ export default class extends BotCommand {
 		}
 
 		const QP = msg.author.settings.get(UserSettings.QP);
-		if (QP < 25 && log.name === 'Sulliusceps') {
-			throw `You need 25 QP to visit fossil island and cut Sulliusceps`;
+		if (QP < log.qpRequired) {
+			throw `You need ${log.qpRequired} QP to cut ${log.name}`;
 		}
 
 		// Calculate the time it takes to chop a single log of this type, at this persons level.

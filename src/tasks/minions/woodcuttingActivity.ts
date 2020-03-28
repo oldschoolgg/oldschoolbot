@@ -46,7 +46,7 @@ export default class extends Task {
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Woodcutting} **${user}'s** minion, ${user.minionName}, just recieved a Beaver while cutting ${Log.name} at level ${currentLevel} Woodcutting!`
+				`${Emoji.Woodcutting} **${user}'s** minion, ${user.minionName}, just received a Beaver while cutting ${Log.name} at level ${currentLevel} Woodcutting!`
 			);
 		}
 
