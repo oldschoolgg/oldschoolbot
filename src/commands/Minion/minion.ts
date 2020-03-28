@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Tasks, Activity, Emoji, Time, Events } from '../../lib/constants';
+import { Tasks, Activity, Emoji, Time, Events, Color } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
@@ -20,6 +20,7 @@ import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import bankHasItem from '../../lib/util/bankHasItem';
+import { MessageEmbed } from 'discord.js';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -103,15 +104,28 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
+		const embed = new MessageEmbed()
+			.setColor(Color.Orange)
+			.setTitle(`**${getMinionName(msg.author)}'s KCs:**\n\n`)
+			.setDescription(`Type ${msg.cmdPrefix}kill to see a list of killable monsters`);
 
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
-
-		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
+		const max = Math.ceil(Object.entries(monsterScores).length / 3);
+		let res = ``;
+		let i = 1;
 		for (const [monID, monKC] of Object.entries(monsterScores)) {
 			const mon = killableMonsters.find(m => m.id === parseInt(monID));
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
+			if (i % max === 0) {
+				embed.addField('\u200b', `${res}`, true);
+				res = ``;
+			}
+			i++;
 		}
-		return msg.send(res);
+		if (res !== ``) {
+			embed.addField('\u200b', `${res}`, true);
+		}
+		return msg.send(embed);
 	}
 
 	async qp(msg: KlasaMessage) {
