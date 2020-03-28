@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Tasks, Activity, Emoji, Time, Events } from '../../lib/constants';
+import { Tasks, Activity, Emoji, Time, Events, Color } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
@@ -19,7 +19,7 @@ import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import bankHasItem from '../../lib/util/bankHasItem';
+import { MessageEmbed } from 'discord.js';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp] [quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -92,9 +92,6 @@ ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.autho
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 			SkillsEnum.Smithing
 		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
-${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-			SkillsEnum.Woodcutting
-		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -103,15 +100,28 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
+		const embed = new MessageEmbed()
+			.setColor(Color.Orange)
+			.setTitle(`**${getMinionName(msg.author)}'s KCs:**\n\n`)
+			.setDescription(`Type ${msg.cmdPrefix}kill to see a list of killable monsters`);
 
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
-
-		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
+		const max = Math.ceil(Object.entries(monsterScores).length / 3);
+		let res = ``;
+		let i = 1;
 		for (const [monID, monKC] of Object.entries(monsterScores)) {
 			const mon = killableMonsters.find(m => m.id === parseInt(monID));
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
+			if (i % max === 0) {
+				embed.addField('\u200b', `${res}`, true);
+				res = ``;
+			}
+			i++;
 		}
-		return msg.send(res);
+		if (res !== ``) {
+			embed.addField('\u200b', `${res}`, true);
+		}
+		return msg.send(embed);
 	}
 
 	async qp(msg: KlasaMessage) {
@@ -143,26 +153,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async buy(msg: KlasaMessage) {
+		let cost = 50_000_000;
+		const accountAge = Date.now() - msg.author.createdTimestamp;
+		if (accountAge > Time.Year * 2) {
+			cost = 5_000_000;
+		} else if (accountAge > Time.Year) {
+			cost = 10_000_000;
+		} else if (accountAge > Time.Month * 6) {
+			cost = 35_000_000;
+		}
+
 		if (msg.author.hasMinion) throw 'You already have a minion!';
 
 		await msg.author.settings.sync(true);
 		const balance = msg.author.settings.get(UserSettings.GP);
-
-		let cost = 50_000_000;
-		const accountAge = Date.now() - msg.author.createdTimestamp;
-		if (accountAge > Time.Year) {
-			cost = 0;
-		} else if (accountAge > Time.Month * 6) {
-			cost = 25_000_000;
-		}
-
-		if (cost === 0) {
-			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
-			return msg.channel.send(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules!`
-			);
-		}
 
 		if (balance < cost) {
 			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
@@ -231,44 +235,19 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		await this.client.commands
-			.get('mine')!
-			.run(msg, [quantity, oreName])
-			.catch(err => {
-				throw err;
-			});
+		this.client.commands.get('mine')!.run(msg, [quantity, oreName]);
 	}
 
 	async smith(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		await this.client.commands
-			.get('smith')!
-			.run(msg, [quantity, barName])
-			.catch(err => {
-				throw err;
-			});
-	}
-
-	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
+		this.client.commands.get('smith')!.run(msg, [quantity, barName]);
 	}
 
 	async quest(msg: KlasaMessage) {
-		await this.client.commands
-			.get('quest')!
-			.run(msg, [])
-			.catch(err => {
-				throw err;
-			});
+		this.client.commands.get('quest')!.run(msg, []);
 	}
 
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
+	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
 		await msg.author.settings.sync(true);
-
-		if (typeof quantity === 'string') {
-			tierName = quantity;
-			quantity = 1;
-		}
-
 		if (msg.author.minionIsBusy) {
 			this.client.emit(
 				Events.Log,
@@ -328,14 +307,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		return msg.send(
 			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
 				clueTier.name
-			} clues, it'll take around ${formatDuration(duration)} to finish.`
+			} clues, it'll take around ${formatDuration(
+				clueTier.timeToFinish * quantity
+			)} to finish.`
 		);
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		await this.kill(msg, [quantity, name]).catch(err => {
-			throw err;
-		});
+		this.kill(msg, [quantity, name]);
 	}
 
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
@@ -362,21 +341,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-
-		let { timeToFinish } = monster;
-		const boosts = [];
-		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!bankHasItem(bank, parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
-			}
-		}
-
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / timeToFinish);
+			quantity = Math.floor((Time.Minute * 30) / monster.timeToFinish);
 		}
 
 		if (monster.qpRequired && msg.author.settings.get(UserSettings.QP) < monster.qpRequired) {
@@ -384,7 +351,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Make sure they have all the required items to kill this monster
-
+		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const item of monster.itemsRequired as number[]) {
 			if (!bank[item] || bank[item] < 0) {
 				throw `To kill ${
@@ -399,20 +366,19 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			}
 		}
 
-		let duration = timeToFinish * quantity;
+		let duration = monster.timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
 			throw `${getMinionName(
 				msg.author
 			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				monster.name
-			} is ${Math.floor((Time.Minute * 30) / timeToFinish)}.`;
+			} is ${Math.floor((Time.Minute * 30) / monster.timeToFinish)}.`;
 		}
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
 		}
 
@@ -429,15 +395,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
-
-		let response = `${getMinionName(msg.author)} is now killing ${data.quantity}x ${
-			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
-
-		if (boosts.length > 0) {
-			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
-		}
-
-		return msg.send(response);
+		return msg.send(
+			`${getMinionName(msg.author)} is now killing ${data.quantity}x ${
+				monster.name
+			}, it'll take around ${formatDuration(duration)} to finish.`
+		);
 	}
 }
