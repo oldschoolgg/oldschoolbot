@@ -11,6 +11,7 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/UserSettings';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID }: CookingActivityTaskOptions) {
@@ -35,8 +36,6 @@ export default class extends Task {
 			quantity = newQuantity;
 		}
 
-		const xpReceived = quantity * cookable.xp;
-
 		// This only applies to items that cooking gauntlets reduce the burn chance for
 		if (
 			cookable.stopBurnAtCG > 1 &&
@@ -53,6 +52,9 @@ export default class extends Task {
 			}
 			quantity = newQuantity;
 		}
+
+		const xpReceived = quantity * cookable.xp;
+		const burntQuantity = oldQuantity - quantity;
 
 		await user.addXP(SkillsEnum.Cooking, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Cooking);
@@ -74,6 +76,10 @@ export default class extends Task {
 		const loot = {
 			[cookable.id]: quantity
 		};
+
+		loot[cookable.burntCookable] = burntQuantity;
+
+		str += `\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
 		await user.addItemsToBank(loot, true);
 

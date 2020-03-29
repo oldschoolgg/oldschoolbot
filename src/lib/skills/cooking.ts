@@ -7,118 +7,131 @@ const cookables: Cookable[] = [
 		level: 1,
 		xp: 30,
 		id: itemID('Cooked meat'),
-		name: 'Cooked meat',
-		inputCookables: { [itemID('Raw meat')]: 1 },
+		name: 'Raw beef',
+		inputCookables: { [itemID('Raw beef')]: 1 },
 		stopBurnAt: 31,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt meat')
 	},
 	{
 		level: 1,
 		xp: 30,
 		id: itemID('Shrimps'),
-		name: 'Shrimps',
+		name: 'Raw shrimps',
 		inputCookables: { [itemID('Raw shrimps')]: 1 },
 		stopBurnAt: 34,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt shrimp')
 	},
 	{
 		level: 1,
 		xp: 30,
 		id: itemID('Cooked chicken'),
-		name: 'Cooked chicken',
+		name: 'Raw chicken',
 		inputCookables: { [itemID('Raw chicken')]: 1 },
-		stopBurnAt: 50,
-		stopBurnAtCG: 1
+		stopBurnAt: 34,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt chicken')
 	},
 	{
 		level: 1,
 		xp: 30,
 		id: itemID('Anchovies'),
-		name: 'Anchovies',
+		name: 'Raw anchovies',
 		inputCookables: { [itemID('Raw anchovies')]: 1 },
 		stopBurnAt: 34,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 323
 	},
 	{
 		level: 1,
 		xp: 40,
 		id: itemID('Sardine'),
-		name: 'Sardine',
+		name: 'Raw sardine',
 		inputCookables: { [itemID('Raw sardine')]: 1 },
 		stopBurnAt: 37,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 369
 	},
 	{
 		level: 5,
 		xp: 50,
 		id: itemID('Herring'),
-		name: 'Herring',
+		name: 'Raw herring',
 		inputCookables: { [itemID('Raw herring')]: 1 },
 		stopBurnAt: 41,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 357
 	},
 	{
 		level: 10,
 		xp: 60,
 		id: itemID('Mackerel'),
-		name: 'Mackerel',
+		name: 'Raw mackerel',
 		inputCookables: { [itemID('Raw mackerel')]: 1 },
 		stopBurnAt: 45,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 357
 	},
 	{
 		level: 15,
 		xp: 70,
 		id: itemID('Trout'),
-		name: 'Trout',
+		name: 'Raw trout',
 		inputCookables: { [itemID('Raw trout')]: 1 },
 		stopBurnAt: 49,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 343
 	},
 	{
 		level: 18,
 		xp: 75,
 		id: itemID('Cod'),
-		name: 'Cod',
+		name: 'Raw cod',
 		inputCookables: { [itemID('Raw cod')]: 1 },
 		stopBurnAt: 52,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 343
 	},
 	{
 		level: 20,
 		xp: 80,
 		id: itemID('Pike'),
-		name: 'Pike',
+		name: 'Raw pike',
 		inputCookables: { [itemID('Raw pike')]: 1 },
 		stopBurnAt: 64,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 343
 	},
 	{
 		level: 25,
 		xp: 90,
 		id: itemID('Salmon'),
-		name: 'Salmon',
+		name: 'Raw salmon',
 		inputCookables: { [itemID('Raw salmon')]: 1 },
 		stopBurnAt: 58,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 343
 	},
 	{
 		level: 30,
 		xp: 100,
 		id: itemID('Tuna'),
-		name: 'Tune',
+		name: 'Raw tuna',
 		inputCookables: { [itemID('Raw tuna')]: 1 },
 		stopBurnAt: 63,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 367
 	},
 	{
 		level: 30,
 		xp: 190,
 		id: itemID('Cooked karambwan'),
-		name: 'Cooked karambwan',
+		name: 'Raw karambwan',
 		inputCookables: { [itemID('Raw karambwan')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt karambwan')
 	},
 	{
 		level: 35,
@@ -127,79 +140,88 @@ const cookables: Cookable[] = [
 		name: 'Jug of wine',
 		inputCookables: { [itemID('Grapes')]: 1, [itemID('Jug of wine')]: 1 },
 		stopBurnAt: 68,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Jug of bad wine')
 	},
 	{
 		level: 40,
 		xp: 120,
 		id: itemID('Lobster'),
-		name: 'Lobster',
+		name: 'Raw lobster',
 		inputCookables: { [itemID('Raw lobster')]: 1 },
 		stopBurnAt: 74,
-		stopBurnAtCG: 64
+		stopBurnAtCG: 64,
+		burntCookable: itemID('Burnt lobster')
 	},
 	{
 		level: 43,
 		xp: 130,
 		id: itemID('Bass'),
-		name: 'Bass',
+		name: 'Raw bass',
 		inputCookables: { [itemID('Raw bass')]: 1 },
 		stopBurnAt: 80,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: 367
 	},
 	{
 		level: 45,
 		xp: 140,
 		id: itemID('Swordfish'),
-		name: 'Swordfish',
+		name: 'Raw swordfish',
 		inputCookables: { [itemID('Raw swordfish')]: 1 },
 		stopBurnAt: 86,
-		stopBurnAtCG: 81
+		stopBurnAtCG: 81,
+		burntCookable: itemID('Burnt swordfish')
 	},
 	{
 		level: 62,
 		xp: 150,
 		id: itemID('Monkfish'),
-		name: 'Monkfish',
+		name: 'Raw monkfish',
 		inputCookables: { [itemID('Raw monkfish')]: 1 },
 		stopBurnAt: 90,
-		stopBurnAtCG: 88
+		stopBurnAtCG: 88,
+		burntCookable: itemID('Burnt monkfish')
 	},
 	{
 		level: 80,
 		xp: 210,
 		id: itemID('Shark'),
-		name: 'Shark',
+		name: 'Raw shark',
 		inputCookables: { [itemID('Raw shark')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 94
+		stopBurnAtCG: 94,
+		burntCookable: itemID('Burnt shark')
 	},
 	{
 		level: 84,
 		xp: 230,
 		id: itemID('Anglerfish'),
-		name: 'Anglerfish',
+		name: 'Raw anglerfish',
 		inputCookables: { [itemID('Raw anglerfish')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 98
+		stopBurnAtCG: 98,
+		burntCookable: itemID('Burnt anglerfish')
 	},
 	{
 		level: 90,
 		xp: 215,
 		id: itemID('Dark crab'),
-		name: 'Dark crab',
+		name: 'Raw dark crab',
 		inputCookables: { [itemID('Raw dark crab')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt dark crab')
 	},
 	{
 		level: 91,
 		xp: 216.2,
 		id: itemID('Manta ray'),
-		name: 'Manta ray',
+		name: 'Raw manta ray',
 		inputCookables: { [itemID('Raw manta ray')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 1
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt manta ray')
 	}
 ];
 const Cooking = {

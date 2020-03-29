@@ -8,6 +8,7 @@ import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Cooking from '../../lib/skills/cooking';
 import { UserSettings } from '../../lib/UserSettings';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -50,8 +51,11 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
-		// All cookables take 1.8s to smith, add on quarter of a second to account for banking/etc.
-		const timeToCookSingleCookable = Time.Second * 2.05;
+		// Based off catherby fish/hr rates
+		let timeToCookSingleCookable = Time.Second * 2.88;
+		if (cookable.id === itemID('Jug of wine')) {
+			timeToCookSingleCookable /= 1.6;
+		}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
