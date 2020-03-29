@@ -7,7 +7,7 @@ const burns: Burn[] = [
 		name: 'Logs',
 		level: 1,
 		xp: 40,
-		id: itemID('logs'),
+		id: itemID('Logs'),
 		inputLogs: { [itemID('Logs')]: 1 }
 	},
 	{
@@ -56,7 +56,7 @@ const burns: Burn[] = [
 		name: 'Yew logs',
 		level: 60,
 		xp: 202.5,
-		id: itemID('aYew logs'),
+		id: itemID('Yew logs'),
 		inputLogs: { [itemID('Yew logs')]: 1 }
 	},
 	{
