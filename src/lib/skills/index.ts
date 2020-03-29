@@ -9,6 +9,7 @@ import Firemaking from './firemaking';
 export type Skill = typeof Mining | typeof Smithing | typeof Woodcutting | typeof Firemaking;
 
 const Skills: Collection<string, Skill> = new Collection([
+	[SkillsEnum.Fishing, Fishing as Skill],
 	[SkillsEnum.Mining, Mining as Skill],
 	[SkillsEnum.Smithing, Smithing as Skill],
 	[SkillsEnum.Woodcutting, Woodcutting as Skill],

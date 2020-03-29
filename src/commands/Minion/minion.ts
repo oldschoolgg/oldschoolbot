@@ -173,18 +173,21 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
+${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
+				.get(UserSettings.Skills.Fishing)
+				.toLocaleString()} xp)
 ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-			.get(UserSettings.Skills.Mining)
-			.toLocaleString()} xp)
+				.get(UserSettings.Skills.Mining)
+				.toLocaleString()} xp)
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
-			SkillsEnum.Smithing
-		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+					SkillsEnum.Smithing
+				)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
 ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-			SkillsEnum.Woodcutting
-		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+					SkillsEnum.Woodcutting
+				)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
 ${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
-			SkillsEnum.Firemaking
-		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
+					SkillsEnum.Firemaking
+				)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -338,6 +341,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
 	}
 
+	async fish(msg: KlasaMessage, [quantity, fishName]: [number, string]) {
+		await this.client.commands
+			.get('fish')!
+			.run(msg, [quantity, fishName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
 		await this.client.commands
 			.get('mine')!
@@ -404,7 +416,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
+			clueTier.name
 			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
 		}
 
@@ -439,7 +451,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now completing ${data.quantity}x ${
-				clueTier.name
+			clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
@@ -506,13 +518,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		for (const item of monster.itemsRequired as number[]) {
 			if (!bank[item] || bank[item] < 0) {
 				throw `To kill ${
-					monster.name
+				monster.name
 				}, you need these items: ${monster.itemsRequired
 					.map(id => itemNameFromID(id))
 					.join(
 						', '
 					)}. \n\nYou can buy these items from other players at the grand exchange channel (\`${
-					msg.cmdPrefix
+				msg.cmdPrefix
 				}ge\`)`;
 			}
 		}
@@ -522,7 +534,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-				monster.name
+			monster.name
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
@@ -550,7 +562,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+			}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

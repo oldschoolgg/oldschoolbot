@@ -53,6 +53,7 @@ export const enum Emoji {
 	ThumbsUp = '👍',
 	ThumbsDown = '👎',
 	Casket = '<:Casket:365003978678730772>',
+	Fishing = '<:fishing:630911040091193356>',
 	Mining = '<:mining:630911040128811010>',
 	Smithing = '<:smithing:630911040452034590>',
 	Woodcutting = '<:woodcutting:630911040099450892>',
@@ -79,6 +80,7 @@ export const SupportServer = '342983479501389826';
 export const enum Tasks {
 	MonsterActivity = 'monsterActivity',
 	ClueActivity = 'clueActivity',
+	FishingActivity = 'fishingActivity',
 	MiningActivity = 'miningActivity',
 	SmithingActivity = 'smithingActivity',
 	WoodcuttingActivity = 'woodcuttingActivity',
@@ -92,6 +94,7 @@ export const enum Tasks {
 export const enum Activity {
 	MonsterKilling = 'MonsterKilling',
 	ClueCompletion = 'ClueCompletion',
+	Fishing = 'Fishing',
 	Mining = 'Mining',
 	Smithing = 'Smithing',
 	Woodcutting = 'Woodcutting',

@@ -6,6 +6,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.ClueActivity;
 		case Activity.MonsterKilling:
 			return Tasks.MonsterActivity;
+		case Activity.Fishing:
+			return Tasks.FishingActivity;
 		case Activity.Mining:
 			return Tasks.MiningActivity;
 		case Activity.Smithing:

@@ -54,6 +54,7 @@ export interface KillWorkerOptions {
 }
 
 export const enum SkillsEnum {
+	Fishing = 'fishing',
 	Mining = 'mining',
 	Smithing = 'smithing',
 	Woodcutting = 'woodcutting',
