@@ -1,8 +1,7 @@
 import { Task, KlasaMessage } from 'klasa';
-import { Items } from 'oldschooljs';
 
 import { saidYes, noOp, rand } from '../../lib/util';
-import { Time } from '../../lib/constants';
+import { Time, Events, Emoji } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -10,8 +9,10 @@ import { roll } from 'oldschooljs/dist/util/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Mining from '../../lib/skills/mining';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-
-const MiningPet = Items.get('Rock golem');
+import itemID from '../../lib/util/itemID';
+import bankHasItem from '../../lib/util/bankHasItem';
+import { UserSettings } from '../../lib/UserSettings';
+import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -22,7 +23,24 @@ export default class extends Task {
 
 		if (!ore) return;
 
-		const xpReceived = quantity * ore.xp;
+		let xpReceived = quantity * ore.xp;
+		let bonusXP = 0;
+
+		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
+		if (bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), Mining.prospectorItems)) {
+			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
+			xpReceived += amountToAdd;
+			bonusXP += amountToAdd;
+		} else {
+			// For each prospector item, check if they have it, give its' XP boost if so.
+			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
+				if (bankHasItem(user.settings.get(UserSettings.Bank), parseInt(itemID))) {
+					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
+					xpReceived += amountToAdd;
+					bonusXP += amountToAdd;
+				}
+			}
+		}
 
 		await user.addXP(SkillsEnum.Mining, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Mining);
@@ -43,8 +61,12 @@ export default class extends Task {
 
 		// Roll for pet at 1.5x chance
 		if (ore.petChance && rand(1, ore.petChance * 1.5) < quantity) {
-			loot[MiningPet!.id] = 1;
+			loot[itemID('Rock golem')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Mining} **${user}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+			);
 		}
 
 		const numberOfMinutes = duration / Time.Minute;
@@ -64,6 +86,9 @@ export default class extends Task {
 		}
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		if (bonusXP > 0) {
+			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
 
 		await user.addItemsToBank(loot, true);
 

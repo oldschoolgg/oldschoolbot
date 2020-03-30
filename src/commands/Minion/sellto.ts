@@ -1,13 +1,14 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Items, Util } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import cleanItemName from '../../lib/util/cleanItemName';
 import { GuildMember } from 'discord.js';
-import { Events } from '../../lib/constants';
+import { Events, TradeableItems } from '../../lib/constants';
 import { UserSettings } from '../../lib/UserSettings';
 import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
+import { stringMatches } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -41,10 +42,11 @@ export default class extends BotCommand {
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
-
-		const osItem = Items.get(cleanItemName(itemName));
+		const osItem = TradeableItems.find(item =>
+			stringMatches(item.name, cleanItemName(itemName))
+		);
 		if (!osItem) throw `That item doesnt exist.`;
-		const tradeable = itemIsTradeable(cleanItemName(itemName));
+		const tradeable = itemIsTradeable(osItem.id);
 
 		if (!tradeable) {
 			throw `That item is not tradeable.`;

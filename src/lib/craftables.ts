@@ -6,6 +6,8 @@ interface Craftable {
 	outputItems: Bank;
 	inputItems: Bank;
 	smithingLevel?: number;
+	addOutputToCollectionLog?: boolean;
+	cantHaveItems: Bank;
 }
 
 const Craftables: Craftable[] = [
@@ -19,7 +21,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1
 		},
-		smithingLevel: 80
+		smithingLevel: 80,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Armadyl godsword',
@@ -30,7 +33,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Armadyl godsword')]: 1
 		},
-		smithingLevel: 80
+		smithingLevel: 80,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Bandos godsword',
@@ -41,7 +45,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Bandos godsword')]: 1
 		},
-		smithingLevel: 80
+		smithingLevel: 80,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Saradomin godsword',
@@ -52,7 +57,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Saradomin godsword')]: 1
 		},
-		smithingLevel: 80
+		smithingLevel: 80,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Zamorak godsword',
@@ -63,7 +69,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
 		},
-		smithingLevel: 80
+		smithingLevel: 80,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Dragonfire shield',
@@ -75,7 +82,8 @@ const Craftables: Craftable[] = [
 			// Uncharged dragonfire shield
 			11284: 1
 		},
-		smithingLevel: 90
+		smithingLevel: 90,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Dragonfire ward',
@@ -87,7 +95,8 @@ const Craftables: Craftable[] = [
 			// Uncharged Dragonfire ward
 			22003: 1
 		},
-		smithingLevel: 90
+		smithingLevel: 90,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Infernal pickaxe',
@@ -98,7 +107,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Infernal pickaxe')]: 1
 		},
-		smithingLevel: 85
+		smithingLevel: 85,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Malediction ward',
@@ -110,7 +120,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Malediction ward')]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Odium ward',
@@ -122,7 +133,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Odium ward')]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Crystal key',
@@ -133,7 +145,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Crystal key')]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: "Verac's armour set",
@@ -146,7 +159,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Verac's armour set")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Veracs',
@@ -159,7 +173,8 @@ const Craftables: Craftable[] = [
 			[itemID("Verac's plateskirt")]: 1,
 			[itemID("Verac's flail")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: "Dharok's armour set",
@@ -172,7 +187,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Dharok's armour set")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Dharoks',
@@ -185,7 +201,8 @@ const Craftables: Craftable[] = [
 			[itemID("Dharok's platelegs")]: 1,
 			[itemID("Dharok's greataxe")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: "Guthan's armour set",
@@ -198,7 +215,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Guthan's armour set")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Guthans',
@@ -211,7 +229,8 @@ const Craftables: Craftable[] = [
 			[itemID("Guthan's chainskirt")]: 1,
 			[itemID("Guthan's warspear")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: "Ahrim's armour set",
@@ -224,7 +243,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Ahrim's armour set")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Ahrims',
@@ -237,7 +257,8 @@ const Craftables: Craftable[] = [
 			[itemID("Ahrim's robeskirt")]: 1,
 			[itemID("Ahrim's staff")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: "Torag's armour set",
@@ -250,7 +271,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Torag's armour set")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Torags',
@@ -263,7 +285,8 @@ const Craftables: Craftable[] = [
 			[itemID("Torag's platelegs")]: 1,
 			[itemID("Torag's hammers")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: "Karil's armour set",
@@ -276,7 +299,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID("Karil's armour set")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
 	},
 	{
 		name: 'Karils',
@@ -289,7 +313,70 @@ const Craftables: Craftable[] = [
 			[itemID("Karil's leatherskirt")]: 1,
 			[itemID("Karil's crossbow")]: 1
 		},
-		smithingLevel: 1
+		smithingLevel: 1,
+		cantHaveItems: {}
+	},
+	/**
+	 * Prospector outfit
+	 */
+	{
+		name: 'Prospector helmet',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector helmet')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 40
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Prospector jacket',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector jacket')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 60
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Prospector legs',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector legs')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 50
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Prospector boots',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Prospector boots')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 30
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Master clue',
+		inputItems: {
+			[itemID('Clue scroll (easy)')]: 1,
+			[itemID('Clue scroll (medium)')]: 1,
+			[itemID('Clue scroll (hard)')]: 1,
+			[itemID('Clue scroll (elite)')]: 1
+		},
+		outputItems: {
+			[itemID('Clue scroll (master)')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Clue scroll (master)')]: 1
+		}
 	}
 ];
 

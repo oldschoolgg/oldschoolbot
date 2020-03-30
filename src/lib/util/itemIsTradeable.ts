@@ -3,10 +3,11 @@ import { Items } from 'oldschooljs';
 import { transformArrayOfResolvableItems } from './transformArrayOfResolvableItems';
 
 const specialUntradeables = transformArrayOfResolvableItems(['Coins']);
+
 /**
  * These items aren't tradeable ingame, but we want to specially let them be traded.
  */
-const specialTradeables = transformArrayOfResolvableItems([
+export const specialTradeables = transformArrayOfResolvableItems([
 	'Birthday cake',
 	'War ship',
 	'Birthday present'

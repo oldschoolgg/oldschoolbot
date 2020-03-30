@@ -36,4 +36,5 @@ Client.defaultUserSchema
 		folder
 			.add(SkillsEnum.Mining, 'integer', { default: 0 })
 			.add(SkillsEnum.Smithing, 'integer', { default: 0 })
+			.add(SkillsEnum.Woodcutting, 'integer', { default: 0 })
 	);
