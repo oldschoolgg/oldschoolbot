@@ -8,7 +8,8 @@ const logs: Log[] = [
 		id: 1511,
 		name: 'Logs',
 		respawnTime: 3,
-		petChance: 317_647
+		petChance: 317_647,
+		qpRequired: 0
 	},
 	{
 		level: 1,
@@ -16,7 +17,8 @@ const logs: Log[] = [
 		id: 2862,
 		name: 'Achey Logs',
 		respawnTime: 2.5,
-		petChance: 317_647
+		petChance: 317_647,
+		qpRequired: 0
 	},
 	{
 		level: 15,
@@ -24,7 +26,8 @@ const logs: Log[] = [
 		id: 1521,
 		name: 'Oak Logs',
 		respawnTime: 0.5,
-		petChance: 361_146
+		petChance: 361_146,
+		qpRequired: 0
 	},
 	{
 		level: 30,
@@ -32,7 +35,8 @@ const logs: Log[] = [
 		id: 1519,
 		name: 'Willow Logs',
 		respawnTime: -0.25,
-		petChance: 289_286
+		petChance: 289_286,
+		qpRequired: 0
 	},
 	{
 		level: 35,
@@ -40,7 +44,8 @@ const logs: Log[] = [
 		id: 6333,
 		name: 'Teak Logs',
 		respawnTime: -1,
-		petChance: 264_336
+		petChance: 264_336,
+		qpRequired: 0
 	},
 	{
 		level: 45,
@@ -48,7 +53,8 @@ const logs: Log[] = [
 		id: 1517,
 		name: 'Maple Logs',
 		respawnTime: 0.75,
-		petChance: 221_918
+		petChance: 221_918,
+		qpRequired: 0
 	},
 	{
 		level: 45,
@@ -56,7 +62,8 @@ const logs: Log[] = [
 		id: 3239,
 		name: 'Bark',
 		respawnTime: 0,
-		petChance: 214_367
+		petChance: 214_367,
+		qpRequired: 0
 	},
 	{
 		level: 50,
@@ -64,7 +71,8 @@ const logs: Log[] = [
 		id: 6332,
 		name: 'Mahogany Logs',
 		respawnTime: 2,
-		petChance: 220_623
+		petChance: 220_623,
+		qpRequired: 0
 	},
 	{
 		level: 54,
@@ -72,7 +80,8 @@ const logs: Log[] = [
 		id: 10810,
 		name: 'Arctic Pine Logs',
 		respawnTime: 4.5,
-		petChance: 145_758
+		petChance: 145_758,
+		qpRequired: 0
 	},
 	{
 		level: 60,
@@ -80,7 +89,8 @@ const logs: Log[] = [
 		id: 1515,
 		name: 'Yew Logs',
 		respawnTime: 5,
-		petChance: 145_013
+		petChance: 145_013,
+		qpRequired: 0
 	},
 	{
 		level: 65,
@@ -88,7 +98,8 @@ const logs: Log[] = [
 		id: 6004,
 		name: 'Sulliusceps',
 		respawnTime: -2,
-		petChance: 343_000
+		petChance: 343_000,
+		qpRequired: 25
 	},
 	{
 		level: 75,
@@ -96,7 +107,8 @@ const logs: Log[] = [
 		id: 1513,
 		name: 'Magic Logs',
 		respawnTime: 15,
-		petChance: 72_321
+		petChance: 72_321,
+		qpRequired: 0
 	},
 	{
 		level: 90,
@@ -104,7 +116,8 @@ const logs: Log[] = [
 		id: 19669,
 		name: 'Redwood Logs',
 		respawnTime: 1.5,
-		petChance: 72_321
+		petChance: 72_321,
+		qpRequired: 0
 	}
 ];
 
