@@ -30,8 +30,8 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[buyerMember, price, quantity, itemName]: [GuildMember, number, number, string]
 	) {
-		if (msg.author.ironman) throw `Iron players can't sell items.`;
-		if (buyerMember.user.ironman) throw `Iron players can't be sold items.`;
+		if (msg.author.Ironman) throw `Iron players can't sell items.`;
+		if (buyerMember.user.Ironman) throw `Iron players can't be sold items.`;
 		if (buyerMember.user.id === msg.author.id) throw `You can't trade yourself.`;
 		if (buyerMember.user.bot) throw `You can't trade a bot.`;
 		if (buyerMember.user.isBusy) {

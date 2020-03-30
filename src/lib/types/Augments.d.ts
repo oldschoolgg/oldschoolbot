@@ -85,6 +85,6 @@ declare module 'discord.js' {
 		minionStatus: string;
 		minionName: string;
 		hasMinion: boolean;
-		ironman: boolean;
+		Ironman: boolean;
 	}
 }

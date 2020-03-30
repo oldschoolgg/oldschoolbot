@@ -76,9 +76,9 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 
-		if (msg.author.ironman) {
+		if (msg.author.Ironman) {
 			await msg.send(
-				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again.Please say \`yes\` to confirm.`
+				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say \`yes\` to confirm.`
 			);
 			try {
 				await msg.channel.awaitMessages(
@@ -93,7 +93,7 @@ export default class extends BotCommand {
 				);
 				await msg.author.settings.sync(true);
 				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
-				await msg.send('You are no longer an ironman BTW.');
+				await msg.send('You are no longer an ironman.');
 			} catch (err) {
 				return msg.channel.send('Cancelled ironman swap.');
 			}
@@ -101,7 +101,7 @@ export default class extends BotCommand {
 
 		await msg.send(
 			`Are you sure you want to start afresh and play as an ironman?
-${Emoji.Warning}**(This will reset your bank,collection log,GP,QP,monster and clue KC, skills and any misc. stats, you will lose the ability to get GP from dailies,trade,dice,duel,etc)**${Emoji.Warning}
+${Emoji.Warning}**(This will reset your bank, collection log, GP, QP, monster and clue KC, skills and any miscellaneous stats, you will lose the ability to get GP from dailies, trade, dice, duel, etc)**${Emoji.Warning}
 Please say \`yes\` to confirm.`
 		);
 
@@ -127,7 +127,7 @@ Please say \`yes\` to confirm.`
 
 			await msg.author.settings.update(UserSettings.Minion.Ironman, true);
 
-			await msg.send('You are now an ironman BTW.');
+			await msg.send('You are now an ironman.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
 		}

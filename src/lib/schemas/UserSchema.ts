@@ -22,7 +22,7 @@ Client.defaultUserSchema
 			.add('name', 'string')
 			.add('hasBought', 'boolean', { default: false })
 			.add('dailyDuration', 'integer', { default: 0 })
-			.add('ironman', 'boolean', { default: false })
+			.add('Ironman', 'boolean', { default: false })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
