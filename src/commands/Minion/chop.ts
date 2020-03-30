@@ -75,6 +75,11 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
+		const QP = msg.author.settings.get(UserSettings.QP);
+		if (QP < log.qpRequired) {
+			throw `You need ${log.qpRequired} QP to cut ${log.name}`;
+		}
+
 		// Calculate the time it takes to chop a single log of this type, at this persons level.
 		let timetoChop = determineScaledLogTime(
 			log!.xp,
