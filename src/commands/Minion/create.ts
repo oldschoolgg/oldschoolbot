@@ -8,6 +8,7 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import Craftables from '../../lib/craftables';
 import { SkillsEnum } from '../../lib/types';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
+import bankHasItem from '../../lib/util/bankHasItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -43,12 +44,24 @@ export default class extends BotCommand {
 			craftableItem.inputItems
 		);
 
+		const cantHaveItemsString = await createReadableItemListFromBank(
+			this.client,
+			craftableItem.cantHaveItems
+		);
+
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Ensure they have the required items to create the item.
 		if (!bankHasAllItemsFromBank(userBank, craftableItem.inputItems)) {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}.`;
+		}
+
+		// Check for any items they cant have 2 of.
+		for (const [itemID] of Object.entries(craftableItem.cantHaveItems)) {
+			if (bankHasItem(userBank, parseInt(itemID))) {
+				throw `You already have ${cantHaveItemsString} in your bank.`;
+			}
 		}
 
 		const sellMsg = await msg.channel.send(
