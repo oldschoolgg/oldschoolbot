@@ -731,21 +731,23 @@ export const cluesHard = {
 		'Blue dragon mask',
 		'Red dragon mask',
 		'Black dragon mask',
+		'Cyclops head',
 		'Tan cavalier',
 		'Dark cavalier',
 		'Black cavalier',
 		'Red cavalier',
 		'White cavalier',
 		'Navy cavalier',
-		"Pirate's hat",
-		'Pith helmet'
+		"Pirate's hat"
 	]),
 	'Hard misc.  2': transformArrayOfResolvableItems([
+		'Pith helmet',
 		'Robin hood hat',
 		'Magic longbow',
 		'Magic shortbow',
 		'Amulet of glory (t4)',
 		'Explorer backpack',
+		'Nunchaku',
 		'Rune cane',
 		'Zombie head'
 	]),
@@ -838,13 +840,12 @@ export const cluesElite = {
 		'Rune dragon mask',
 		'Lava dragon mask',
 		'Giant boot',
-		'Cyclops head',
 		"Uri's hat",
 		'Afro',
-		'Big pirate hat'
+		'Big pirate hat',
+		'Deerstalker'
 	]),
 	'Elite misc 2': transformArrayOfResolvableItems([
-		'Deerstalker',
 		'Top hat',
 		'Sagacious spectacles',
 		'Monocle',
@@ -855,11 +856,10 @@ export const cluesElite = {
 		'Ranger gloves',
 		'Holy wraps',
 		'Fremennik kilt',
-		'Ring of nature'
+		'Ring of nature',
+		'Katana'
 	]),
 	'Elite misc 3': transformArrayOfResolvableItems([
-		'Nunchaku',
-		'Katana',
 		'Dragon cane',
 		'Briefcase',
 		'Arceuus scarf',
