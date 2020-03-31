@@ -88,7 +88,7 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		// Remove the ores from their bank.
+		// Remove the cookables from their bank.
 		let newBank = { ...userBank };
 		for (const [cookableID, qty] of requiredCookables) {
 			if (newBank[parseInt(cookableID)] < qty) {
