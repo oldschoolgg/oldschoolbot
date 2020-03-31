@@ -77,7 +77,7 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 
-		if (msg.author.Ironman) {
+		if (msg.author.isIronman) {
 			await msg.send(
 				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say \`yes\` to confirm.`
 			);

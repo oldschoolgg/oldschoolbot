@@ -46,6 +46,10 @@ export default class extends Extendable {
 		);
 	}
 
+	public get isIronman(this: User) {
+		return this.settings.get(UserSettings.Minion.Ironman);
+	}
+
 	/**
 	 * Toggle whether this user is busy or not, this adds another layer of locking the user
 	 * from economy actions.
