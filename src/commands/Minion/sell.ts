@@ -20,11 +20,13 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<quantity:int{1}> <itemname:...string>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			ironCantUse: true
 		});
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		const osItem = Items.get(cleanItemName(itemName));
 		if (!osItem) throw `That item doesnt exist.`;
 		if (!itemIsTradeable(osItem.id)) {

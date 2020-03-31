@@ -14,11 +14,13 @@ export default class extends BotCommand {
 			description: 'Simulates dice rolls from Runescape.',
 			usage: '[amount:int{1}]',
 			requiredPermissions: ['EMBED_LINKS'],
-			oneAtTime: true
+			oneAtTime: true,
+			ironCantUse: true
 		});
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
+		if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
 		const roll = rand(1, 100);
 
 		const embed = new MessageEmbed()

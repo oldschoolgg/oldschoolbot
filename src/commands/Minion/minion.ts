@@ -6,7 +6,6 @@ import { Tasks, Activity, Emoji, Time, Events } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
-	getMinionName,
 	randomItemFromArray,
 	findMonster,
 	isWeekend,
@@ -54,7 +53,8 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman] [quantity:int{1}|name:...string] [name:...string]',
+
 			usageDelim: ' ',
 			subcommands: true
 		});
@@ -67,6 +67,91 @@ export default class extends BotCommand {
 		return msg.send(msg.author.minionStatus);
 	}
 
+	async ironman(msg: KlasaMessage) {
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		if (msg.author.minionIsBusy) {
+			return msg.send(msg.author.minionStatus);
+		}
+
+		/**
+		 * If the user is an ironman already, lets ask them if they want to de-iron.
+		 */
+		if (msg.author.isIronman) {
+			await msg.send(
+				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say \`deiron\` to confirm.`
+			);
+			try {
+				await msg.channel.awaitMessages(
+					answer =>
+						answer.author.id === msg.author.id &&
+						answer.content.toLowerCase() === 'deiron',
+					{
+						max: 1,
+						time: 15000,
+						errors: ['time']
+					}
+				);
+				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
+				return msg.send('You are no longer an ironman.');
+			} catch (err) {
+				return msg.channel.send('Cancelled de-ironning.');
+			}
+		}
+
+		await msg.send(
+			`Are you sure you want to start over and play as an ironman?
+
+:warning: **Read the following text before confirming. This is your only warning. ** :warning:
+
+The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
+
+After becoming an ironman:
+	- You will no longer be able to receive GP from  \`+daily\`
+	- You will no longer be able to use \`+pay\`, \`+duel\`, \`+sellto\`, \`+sell\`, \`+dice\`
+	- You can de-iron at any time, and keep all your stuff acquired while playing as an ironman.
+
+Type \`confirm\` if you understand the above information, and want to become an ironman now.`
+		);
+
+		try {
+			await msg.channel.awaitMessages(
+				answer =>
+					answer.author.id === msg.author.id &&
+					answer.content.toLowerCase() === 'confirm',
+				{
+					max: 1,
+					time: 15000,
+					errors: ['time']
+				}
+			);
+
+			msg.author.log(
+				`just became an ironman, previous settings: ${JSON.stringify(
+					msg.author.settings.toJSON()
+				)}`
+			);
+
+			await msg.author.settings.reset([
+				UserSettings.Bank,
+				UserSettings.CollectionLogBank,
+				UserSettings.GP,
+				UserSettings.QP,
+				UserSettings.MonsterScores,
+				UserSettings.ClueScores,
+				'stats',
+				'skills'
+			]);
+
+			await msg.author.settings.update(UserSettings.Minion.Ironman, true);
+			return msg.send('You are now an ironman.');
+		} catch (err) {
+			return msg.channel.send('Cancelled ironman swap.');
+		}
+	}
+
 	async pat(msg: KlasaMessage) {
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
@@ -76,7 +161,7 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 
-		return msg.send(randomPatMessage(getMinionName(msg.author)));
+		return msg.send(randomPatMessage(msg.author.minionName));
 	}
 
 	async stats(msg: KlasaMessage) {
@@ -106,7 +191,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
 
-		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
+		let res = `**${msg.author.minionName}'s KCs:**\n\n`;
 		for (const [monID, monKC] of Object.entries(monsterScores)) {
 			const mon = killableMonsters.find(m => m.id === parseInt(monID));
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
@@ -134,7 +219,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
 		if (Object.keys(clueScores).length === 0) throw `You haven't done any clues yet.`;
 
-		let res = `${Emoji.Casket} **${getMinionName(msg.author)}'s Clue Scores:**\n\n`;
+		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
 		for (const [clueID, clueScore] of Object.entries(clueScores)) {
 			const clue = clueTiers.find(c => c.id === parseInt(clueID));
 			res += `**${clue!.name}**: ${clueScore}\n`;
@@ -289,9 +374,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let duration = clueTier.timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
-			throw `${getMinionName(
-				msg.author
-			)} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+			throw `${
+				msg.author.minionName
+			} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				clueTier.name
 			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
 		}
@@ -326,7 +411,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
+			`${msg.author.minionName} is now completing ${data.quantity}x ${
 				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
@@ -401,9 +486,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let duration = timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
-			throw `${getMinionName(
-				msg.author
-			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+			throw `${
+				msg.author.minionName
+			} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				monster.name
 			} is ${Math.floor((Time.Minute * 30) / timeToFinish)}.`;
 		}
@@ -430,7 +515,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		let response = `${getMinionName(msg.author)} is now killing ${data.quantity}x ${
+		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 

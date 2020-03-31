@@ -3,7 +3,6 @@ import { Task } from 'klasa';
 import clueTiers from '../../lib/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { Events } from '../../lib/constants';
-import { getMinionName } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 export default class extends Task {
@@ -25,9 +24,9 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		const str = `${user}, ${getMinionName(user)} finished completing ${quantity} ${
+		const str = `${user}, ${user.minionName} finished completing ${quantity} ${
 			clueTier.name
-		} clues. ${getMinionName(user)} carefully places the reward casket${
+		} clues. ${user.minionName} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 

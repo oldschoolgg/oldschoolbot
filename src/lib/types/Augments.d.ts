@@ -29,6 +29,7 @@ declare module 'klasa' {
 		oneAtTime?: boolean;
 		guildOnly?: boolean;
 		perkTier?: number;
+		ironCantUse?: boolean;
 	}
 
 	interface Task {
@@ -87,5 +88,6 @@ declare module 'discord.js' {
 		minionStatus: string;
 		minionName: string;
 		hasMinion: boolean;
+		isIronman: boolean;
 	}
 }

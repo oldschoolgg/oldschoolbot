@@ -5,6 +5,7 @@ export abstract class BotCommand extends Command {
 	public guildOnly: boolean;
 	public oneAtTime: boolean;
 	public perkTier?: number;
+	public ironCantUse?: boolean;
 
 	public constructor(
 		store: CommandStore,
@@ -16,12 +17,21 @@ export abstract class BotCommand extends Command {
 			store,
 			file,
 			directory,
-			util.mergeDefault({ altProtection: false, oneAtTime: false, guildOnly: false }, options)
+			util.mergeDefault(
+				{
+					altProtection: false,
+					oneAtTime: false,
+					guildOnly: false,
+					ironCantUse: false
+				},
+				options
+			)
 		);
 		this.altProtection = options.altProtection!;
 		this.oneAtTime = options.oneAtTime!;
 		this.guildOnly = options.guildOnly!;
 		this.perkTier = options.perkTier;
+		this.ironCantUse = options.ironCantUse;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,4 +50,5 @@ export interface BotCommandOptions extends CommandOptions {
 	oneAtTime?: boolean;
 	guildOnly?: boolean;
 	perkTier?: number;
+	ironCantUse?: boolean;
 }

@@ -22,7 +22,8 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
-			altProtection: true
+			altProtection: true,
+			ironCantUse: true
 		});
 	}
 
@@ -40,6 +41,8 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (msg.author.isIronman) throw `You can't duel someone as an ironman.`;
+		if (user.isIronman) throw `You can't duel someone as an ironman.`;
 		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
 		if (user.id === msg.author.id) throw `You cant duel yourself.`;
 		if (user.bot) throw `You cant duel a bot.`;

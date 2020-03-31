@@ -46,6 +46,10 @@ export default class extends Extendable {
 		);
 	}
 
+	public get isIronman(this: User) {
+		return this.settings.get(UserSettings.Minion.Ironman);
+	}
+
 	/**
 	 * Toggle whether this user is busy or not, this adds another layer of locking the user
 	 * from economy actions.
@@ -261,9 +265,10 @@ export default class extends Extendable {
 
 	public get minionName(this: User): string {
 		const name = this.settings.get(UserSettings.Minion.Name);
+		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
 		return name
-			? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
-			: `${Emoji.Minion} Your minion`;
+			? `${prefix} ${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
+			: `${prefix} ${Emoji.Minion} Your minion`;
 	}
 
 	public get hasMinion(this: User) {
