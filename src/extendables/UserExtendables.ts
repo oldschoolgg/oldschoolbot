@@ -357,7 +357,7 @@ export default class extends Extendable {
 			case Activity.Firemaking: {
 				const data = currentTask as FiremakingActivityTaskOptions;
 
-				const burn = Firemaking.Burns.find(burn => burn.id === data.burnID);
+				const burn = Firemaking.Burnables.find(burn => burn.inputLogs === data.burnableID);
 
 				return `${this.minionName} is currently lighting ${data.quantity}x ${
 					burn!.name

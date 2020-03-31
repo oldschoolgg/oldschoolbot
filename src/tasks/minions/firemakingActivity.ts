@@ -5,16 +5,15 @@ import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-// import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Firemaking from '../../lib/skills/firemaking';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 export default class extends Task {
-	async run({ burnID, quantity, userID, channelID }: FiremakingActivityTaskOptions) {
+	async run({ burnableID, quantity, userID, channelID }: FiremakingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		const Burn = Firemaking.Burns.find(Burn => Burn.id === burnID);
+		const Burn = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID);
 
 		if (!Burn) return;
 
@@ -32,14 +31,6 @@ export default class extends Task {
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
-		// uncomment to get ashes from burning logs
-		/* const loot = {
-			[Burn.id]: quantity
-		};
-
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
-
-		await user.addItemsToBank(loot, true); */
 
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
@@ -56,7 +47,7 @@ export default class extends Task {
 
 					if (response) {
 						if (response.author.minionIsBusy) return;
-						user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.id}]`);
+						user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.inputLogs}]`);
 						this.client.commands
 							.get('light')!
 							.run(response as KlasaMessage, [quantity, Burn.name]);

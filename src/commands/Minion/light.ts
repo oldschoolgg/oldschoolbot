@@ -1,20 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	stringMatches,
-	formatDuration,
-	rand,
-	itemNameFromID,
-	removeItemFromBank
-} from '../../lib/util';
+import { stringMatches, formatDuration, rand } from '../../lib/util';
 import { SkillsEnum } from '../../lib/types';
-import { Time, Activity, Tasks, Events } from '../../lib/constants';
+import { Time, Activity, Tasks } from '../../lib/constants';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Firemaking from '../../lib/skills/firemaking';
-import bankHasItem from '../../lib/util/bankHasItem';
-import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,7 +19,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, burnName = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, logName = '']: [null | number | string, string]) {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
 		}
@@ -36,25 +28,24 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 
-		if (typeof quantity === 'string') {
-			burnName = quantity;
-			quantity = null;
-		}
-
-		const burn = Firemaking.Burns.find(
-			burn =>
-				stringMatches(burn.name, burnName) ||
-				stringMatches(burn.name.split(' ')[0], burnName)
+		const log = Firemaking.Burnables.find(
+			log =>
+				stringMatches(log.name, logName) || stringMatches(log.name.split(' ')[0], logName)
 		);
 
-		if (!burn) {
-			throw `That's not a valid log to light. Valid logs are ${Firemaking.Burns.map(
-				burn => burn.name
+		if (!log) {
+			throw `That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(
+				log => log.name
 			).join(', ')}.`;
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Firemaking) < burn.level) {
-			throw `${msg.author.minionName} needs ${burn.level} Firemaking to light ${burn.name}s.`;
+		if (msg.author.skillLevel(SkillsEnum.Firemaking) < log.level) {
+			throw `${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}s.`;
+		}
+
+		if (typeof quantity === 'string') {
+			logName = quantity;
+			quantity = null;
 		}
 
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
@@ -66,15 +57,12 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Check the user has the required logs to light.
 		// Multiplying the logs required by the quantity of ashes.
-		const requiredLogs: [string, number][] = Object.entries(burn.inputLogs);
-		for (const [burnID, qty] of requiredLogs) {
-			if (!bankHasItem(userBank, parseInt(burnID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(burnID))}.`;
-			}
+		const hasRequiredLogs = await msg.author.hasItem(log.inputLogs, quantity);
+		if (!hasRequiredLogs) {
+			throw `You dont have ${quantity}x ${log.name}.`;
 		}
 
 		const duration = quantity * timeToLightSingleLog;
@@ -83,12 +71,12 @@ export default class extends BotCommand {
 			throw `${
 				msg.author.minionName
 			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
-				burn.name
+				log.name
 			}s you can light is ${Math.floor((Time.Minute * 30) / timeToLightSingleLog)}.`;
 		}
 
 		const data: FiremakingActivityTaskOptions = {
-			burnID: burn.id,
+			burnableID: log.inputLogs,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -99,25 +87,14 @@ export default class extends BotCommand {
 		};
 
 		// Remove the logs from their bank.
-		let newBank = { ...userBank };
-		for (const [burnID, qty] of requiredLogs) {
-			if (newBank[parseInt(burnID)] < qty) {
-				this.client.emit(
-					Events.Wtf,
-					`${msg.author.sanitizedName} had insufficient logs to be removed.`
-				);
-				throw `What a terrible failure :(`;
-			}
-			newBank = removeItemFromBank(newBank, parseInt(burnID), qty * quantity);
-		}
+		await msg.author.removeItemFromBank(log.inputLogs, quantity);
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now lighting ${quantity}x ${
-				burn.name
+				log.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
