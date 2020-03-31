@@ -199,5 +199,5 @@ export interface Creature {
 	name: string;
 	respawnTime: number;
 	petChance?: number;
-	drops?: string[]
+	drops?: string[];
 }

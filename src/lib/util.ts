@@ -121,7 +121,7 @@ export function cleanString(str: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): any { }
+export function noOp(any: any): any {}
 
 export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
