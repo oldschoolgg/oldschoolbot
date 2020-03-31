@@ -9,7 +9,7 @@ import {
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { SkillsEnum } from '../../lib/types';
-import { Time, Activity, Tasks } from '../../lib/constants';
+import { Activity, Tasks } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Woodcutting from '../../lib/skills/woodcutting';
@@ -102,17 +102,17 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / timetoChop);
+			quantity = Math.floor(msg.author.maxTripLength / timetoChop);
 		}
 
 		const duration = quantity * timetoChop;
 
-		if (duration > Time.Minute * 30) {
-			throw `${
-				msg.author.minionName
-			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount of ${
 				log.name
-			} you can chop is ${Math.floor((Time.Minute * 30) / timetoChop)}.`;
+			} you can chop is ${Math.floor(msg.author.maxTripLength / timetoChop)}.`;
 		}
 
 		const data: WoodcuttingActivityTaskOptions = {

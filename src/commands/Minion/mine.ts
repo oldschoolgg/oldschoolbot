@@ -10,7 +10,7 @@ import {
 } from '../../lib/util';
 import Mining from '../../lib/skills/mining';
 import { SkillsEnum } from '../../lib/types';
-import { Time, Activity, Tasks } from '../../lib/constants';
+import { Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
@@ -97,16 +97,16 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / timeToMine);
+			quantity = Math.floor(msg.author.maxTripLength / timeToMine);
 		}
 		const duration = quantity * timeToMine;
 
-		if (duration > Time.Minute * 30) {
-			throw `${
-				msg.author.minionName
-			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount of ${
 				ore.name
-			} you can mine is ${Math.floor((Time.Minute * 30) / timeToMine)}.`;
+			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
 		const data: MiningActivityTaskOptions = {

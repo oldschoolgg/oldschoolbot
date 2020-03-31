@@ -373,12 +373,12 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (!clueTier) throw invalidClue(msg.cmdPrefix);
 
 		let duration = clueTier.timeToFinish * quantity;
-		if (duration > Time.Minute * 30) {
-			throw `${
-				msg.author.minionName
-			} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${
 				clueTier.name
-			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
+			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
 		}
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
@@ -461,7 +461,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / timeToFinish);
+			quantity = Math.floor(msg.author.maxTripLength / timeToFinish);
 		}
 
 		if (monster.qpRequired && msg.author.settings.get(UserSettings.QP) < monster.qpRequired) {
@@ -485,12 +485,12 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		let duration = timeToFinish * quantity;
-		if (duration > Time.Minute * 30) {
-			throw `${
-				msg.author.minionName
-			} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${
 				monster.name
-			} is ${Math.floor((Time.Minute * 30) / timeToFinish)}.`;
+			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
 		const randomAddedDuration = rand(1, 20);
