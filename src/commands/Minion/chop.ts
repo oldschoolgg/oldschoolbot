@@ -77,7 +77,7 @@ export default class extends BotCommand {
 
 		const QP = msg.author.settings.get(UserSettings.QP);
 		if (QP < log.qpRequired) {
-			throw `You need ${log.qpRequired} QP to cut ${log.name}`;
+			throw `${msg.author.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
 
 		// Calculate the time it takes to chop a single log of this type, at this persons level.
