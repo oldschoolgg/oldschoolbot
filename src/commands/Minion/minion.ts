@@ -6,7 +6,6 @@ import { Tasks, Activity, Emoji, Time, Events } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
-	getMinionName,
 	randomItemFromArray,
 	findMonster,
 	isWeekend,
@@ -162,7 +161,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			return msg.send(msg.author.minionStatus);
 		}
 
-		return msg.send(randomPatMessage(getMinionName(msg.author)));
+		return msg.send(randomPatMessage(msg.author.minionName));
 	}
 
 	async stats(msg: KlasaMessage) {
@@ -192,7 +191,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
 
-		let res = `**${getMinionName(msg.author)}'s KCs:**\n\n`;
+		let res = `**${msg.author.minionName}'s KCs:**\n\n`;
 		for (const [monID, monKC] of Object.entries(monsterScores)) {
 			const mon = killableMonsters.find(m => m.id === parseInt(monID));
 			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
@@ -220,7 +219,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
 		if (Object.keys(clueScores).length === 0) throw `You haven't done any clues yet.`;
 
-		let res = `${Emoji.Casket} **${getMinionName(msg.author)}'s Clue Scores:**\n\n`;
+		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
 		for (const [clueID, clueScore] of Object.entries(clueScores)) {
 			const clue = clueTiers.find(c => c.id === parseInt(clueID));
 			res += `**${clue!.name}**: ${clueScore}\n`;
@@ -375,9 +374,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let duration = clueTier.timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
-			throw `${getMinionName(
-				msg.author
-			)} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+			throw `${
+				msg.author.minionName
+			} can't go on Clue trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				clueTier.name
 			} is ${Math.floor((Time.Minute * 30) / clueTier.timeToFinish)}.`;
 		}
@@ -412,7 +411,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${getMinionName(msg.author)} is now completing ${data.quantity}x ${
+			`${msg.author.minionName} is now completing ${data.quantity}x ${
 				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
@@ -487,9 +486,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let duration = timeToFinish * quantity;
 		if (duration > Time.Minute * 30) {
-			throw `${getMinionName(
-				msg.author
-			)} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
+			throw `${
+				msg.author.minionName
+			} can't go on PvM trips longer than 30 minutes, try a lower quantity. The highest amount you can do for ${
 				monster.name
 			} is ${Math.floor((Time.Minute * 30) / timeToFinish)}.`;
 		}
@@ -516,7 +515,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		let response = `${getMinionName(msg.author)} is now killing ${data.quantity}x ${
+		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
