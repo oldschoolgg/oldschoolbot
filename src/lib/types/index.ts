@@ -32,6 +32,7 @@ export interface SettingsEntry {
 	minion?: {
 		name?: string;
 		hasBought: boolean;
+		ironman: boolean;
 	};
 }
 

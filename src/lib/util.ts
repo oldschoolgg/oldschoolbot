@@ -1,13 +1,12 @@
 import { Image } from 'canvas';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask, KlasaUser, util } from 'klasa';
-import { Util, Client } from 'discord.js';
+import { ScheduledTask, util } from 'klasa';
+import { Client } from 'discord.js';
 import { nodeCrypto, integer } from 'random-js';
 
-import { Tasks, Emoji, Events } from './constants';
+import { Tasks, Events } from './constants';
 import killableMonsters from './killableMonsters';
-import { UserSettings } from './UserSettings';
 import { Bank } from './types';
 
 export function generateHexColorForCashStack(coins: number) {
@@ -160,13 +159,6 @@ export function activityTaskFilter(task: ScheduledTask) {
 	] as string[]).includes(task.taskName);
 }
 
-export function getMinionName(user: KlasaUser) {
-	const name = user.settings.get(UserSettings.Minion.Name);
-	return name
-		? `${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
-		: `${Emoji.Minion} Your minion`;
-}
-
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
@@ -179,18 +171,8 @@ export function findMonster(str: string) {
 
 export function saveCtx(ctx: any) {
 	const props = [
-		'strokeStyle',
 		'fillStyle',
 		'globalAlpha',
-		'lineWidth',
-		'lineCap',
-		'lineJoin',
-		'miterLimit',
-		'lineDashOffset',
-		'shadowOffsetX',
-		'shadowOffsetY',
-		'shadowBlur',
-		'shadowColor',
 		'globalCompositeOperation',
 		'font',
 		'textAlign',

@@ -2,7 +2,7 @@ import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
 import { Events, Time, Emoji } from '../../lib/constants';
-import { getMinionName, noOp, saidYes } from '../../lib/util';
+import { noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -58,13 +58,12 @@ export default class extends Task {
 			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
 		);
 
-		let str = `${user}, ${getMinionName(user)} finished killing ${quantity} ${
+		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		}. Your ${monster.name} KC is now ${(user.settings.get(UserSettings.MonsterScores)[
-			monster.id
-		] ?? 0) + quantity} ${getMinionName(
-			user
-		)} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
+			quantity} ${
+			user.minionName
+		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
