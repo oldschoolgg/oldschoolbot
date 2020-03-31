@@ -17,6 +17,7 @@ import {
 import { Bank } from '../lib/types';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
+import filterByCategory from '../lib/util/filterByCategory';
 import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import { Events } from '../lib/constants';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -141,6 +142,12 @@ export default class BankImageTask extends Task {
 		const searchQuery = flags.search || flags.s;
 		if (searchQuery && typeof searchQuery === 'string') {
 			items = filterItemTupleByQuery(searchQuery, items);
+		}
+
+		// Filter by preset
+		const filterQuery = flags.filter;
+		if (filterQuery && typeof filterQuery === 'string') {
+			items = filterByCategory(filterQuery, items);
 		}
 
 		// Sorting
