@@ -1,7 +1,7 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
-import { Events, Activity, Emoji, Channel, Time, MAX_QP } from '../lib/constants';
+import { Events, Activity, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
 import { Bank, SkillsEnum } from '../lib/types';
 import {
 	addBankToBank,
@@ -29,6 +29,7 @@ import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skills/smithing';
 import Woodcutting from '../lib/skills/woodcutting';
 import Skills from '../lib/skills';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -273,6 +274,16 @@ export default class extends Extendable {
 
 	public get hasMinion(this: User) {
 		return this.settings.get(UserSettings.Minion.HasBought);
+	}
+
+	public get maxTripLength(this: User) {
+		const perkTier = getUsersPerkTier(this);
+		console.log(perkTier);
+		if (perkTier === PerkTier.Two) return Time.Minute * 33;
+		if (perkTier === PerkTier.Three) return Time.Minute * 36;
+		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
+
+		return Time.Minute * 30;
 	}
 
 	public get minionStatus(this: User) {
