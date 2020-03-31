@@ -170,7 +170,7 @@ const raids = {
 			`**GP/HR (30-Min Solo Raids):** ${(totalValue / (quantity / 2)).toLocaleString()} GP`
 		);
 		displayLoot.push(`**Total Hours**: ${(quantity / 2).toLocaleString()}`);
-		return displayLoot.join('\n');
+		return displayLoot.join('\n').slice(0, 1999);
 	},
 	roll(max) {
 		return Math.floor(Math.random() * max + 1) === 1;
