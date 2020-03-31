@@ -61,7 +61,8 @@ export const enum Emoji {
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
 	Warning = '⚠️',
-	Ironman = '<:ironman:626647335900020746>'
+	Ironman = '<:ironman:626647335900020746>',
+	Hunter = '<:hunter:630911040166559784>'
 }
 
 export const enum Image {
@@ -80,6 +81,7 @@ export const enum Tasks {
 	MiningActivity = 'miningActivity',
 	SmithingActivity = 'smithingActivity',
 	WoodcuttingActivity = 'woodcuttingActivity',
+	HunterActivity = 'hunterActivity',
 	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -92,6 +94,7 @@ export const enum Activity {
 	Mining = 'Mining',
 	Smithing = 'Smithing',
 	Woodcutting = 'Woodcutting',
+	Hunter = 'Hunter',
 	Questing = 'Questing'
 }
 

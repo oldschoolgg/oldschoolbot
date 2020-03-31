@@ -1172,12 +1172,13 @@ export const diangoCollectionLog = {
 	Other: transformArrayOfResolvableItems(['Mystery box', 'Stale baguette'])
 };
 export const skillCapes = {
-	hoods: transformArrayOfResolvableItems(['Mining hood', 'Smithing hood', 'Woodcutting hood']),
-	capes: transformArrayOfResolvableItems(['Mining cape', 'Smithing cape', 'Woodcutting cape']),
+	hoods: transformArrayOfResolvableItems(['Mining hood', 'Smithing hood', 'Woodcutting hood', 'Hunter hood']),
+	capes: transformArrayOfResolvableItems(['Mining cape', 'Smithing cape', 'Woodcutting cape', 'Hunter cape']),
 	'trimmed capes': transformArrayOfResolvableItems([
 		'Mining cape(t)',
 		'Smithing cape(t)',
-		'Woodcut. cape(t)'
+		'Woodcut. cape(t)',
+		'Hunter cape(t)'
 	])
 };
 

@@ -121,7 +121,7 @@ export function cleanString(str: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): any {}
+export function noOp(any: any): any { }
 
 export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
@@ -230,6 +230,10 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
+	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
+	return Math.floor((t + respawnTime) * 1000) * 1.2;
+}
+export function determineScaledCreatureTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }

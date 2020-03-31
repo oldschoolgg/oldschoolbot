@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|hunt] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -172,14 +172,17 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
 ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-			.get(UserSettings.Skills.Mining)
-			.toLocaleString()} xp)
+				.get(UserSettings.Skills.Mining)
+				.toLocaleString()} xp)
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
-			SkillsEnum.Smithing
-		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+					SkillsEnum.Smithing
+				)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
 ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-			SkillsEnum.Woodcutting
-		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+					SkillsEnum.Woodcutting
+				)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+${Emoji.Hunter} Hunter: ${msg.author.skillLevel(
+					SkillsEnum.Hunter
+				)} (${msg.author.settings.get(UserSettings.Skills.Hunter).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -337,6 +340,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
 	}
 
+	async hunt(msg: KlasaMessage, [quantity, creatureName]: [number, string]) {
+		await this.client.commands
+			.get('hunt')!
+			.run(msg, [quantity, creatureName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
 	async quest(msg: KlasaMessage) {
 		await this.client.commands
 			.get('quest')!
@@ -377,7 +389,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
+			clueTier.name
 			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
 		}
 
@@ -412,7 +424,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now completing ${data.quantity}x ${
-				clueTier.name
+			clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
@@ -473,13 +485,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		for (const item of monster.itemsRequired as number[]) {
 			if (!bank[item] || bank[item] < 0) {
 				throw `To kill ${
-					monster.name
+				monster.name
 				}, you need these items: ${monster.itemsRequired
 					.map(id => itemNameFromID(id))
 					.join(
 						', '
 					)}. \n\nYou can buy these items from other players at the grand exchange channel (\`${
-					msg.cmdPrefix
+				msg.cmdPrefix
 				}ge\`)`;
 			}
 		}
@@ -489,7 +501,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-				monster.name
+			monster.name
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
@@ -517,7 +529,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+			}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
