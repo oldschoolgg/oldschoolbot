@@ -134,18 +134,20 @@ Type \`confirm\` if you understand the above information, and want to become an 
 					msg.author.settings.toJSON()
 				)}`
 			);
-			await msg.author.settings.reset(UserSettings.Bank);
-			await msg.author.settings.reset(UserSettings.CollectionLogBank);
-			await msg.author.settings.reset(UserSettings.GP);
-			await msg.author.settings.reset(UserSettings.QP);
-			await msg.author.settings.reset(UserSettings.MonsterScores);
-			await msg.author.settings.reset(UserSettings.ClueScores);
-			await msg.author.settings.reset(UserSettings.Stats);
-			await msg.author.settings.reset(UserSettings.Skills);
+
+			await msg.author.settings.reset([
+				UserSettings.Bank,
+				UserSettings.CollectionLogBank,
+				UserSettings.GP,
+				UserSettings.QP,
+				UserSettings.MonsterScores,
+				UserSettings.ClueScores,
+				'stats',
+				'skills'
+			]);
 
 			await msg.author.settings.update(UserSettings.Minion.Ironman, true);
-
-			await msg.send('You are now an ironman.');
+			return msg.send('You are now an ironman.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
 		}
