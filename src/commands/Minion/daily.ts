@@ -124,13 +124,13 @@ export default class DailyCommand extends BotCommand {
 			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.4);
 		}
 
+		// Ensure amount of GP is an integer
+		loot[COINS_ID] = Math.floor(loot[COINS_ID]);
+
 		// Check to see if user is iron and remove GP if true.
 		if (user.isIronman) {
 			loot[COINS_ID] = 0;
 		}
-
-		// Ensure amount of GP is an integer
-		loot[COINS_ID] = Math.floor(loot[COINS_ID]);
 
 		const correct = triviaCorrect ? 'correct' : 'incorrect';
 		const reward = triviaCorrect
@@ -143,7 +143,9 @@ export default class DailyCommand extends BotCommand {
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
-			const userPets = { ...user.settings.get(UserSettings.Pets) };
+			const userPets = {
+				...user.settings.get(UserSettings.Pets)
+			};
 			if (!userPets[pet.id]) userPets[pet.id] = 1;
 			else userPets[pet.id]++;
 
@@ -153,12 +155,16 @@ export default class DailyCommand extends BotCommand {
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 		}
 
-		const dailiesAmount = this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount);
-		const dividedAmount = loot[COINS_ID] / 1_000_000;
-		this.client.settings.update(
-			ClientSettings.EconomyStats.DailiesAmount,
-			Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
-		);
+		if (loot[COINS_ID] > 0) {
+			const dailiesAmount = this.client.settings.get(
+				ClientSettings.EconomyStats.DailiesAmount
+			);
+			const dividedAmount = loot[COINS_ID] / 1_000_000;
+			this.client.settings.update(
+				ClientSettings.EconomyStats.DailiesAmount,
+				Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
+			);
+		}
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
