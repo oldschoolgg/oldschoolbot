@@ -23,7 +23,8 @@ export default class extends BotCommand {
 			usage:
 				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> <itemname:...string>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			ironCantUse: true
 		});
 	}
 

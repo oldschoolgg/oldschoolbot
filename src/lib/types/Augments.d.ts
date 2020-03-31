@@ -29,6 +29,7 @@ declare module 'klasa' {
 		oneAtTime?: boolean;
 		guildOnly?: boolean;
 		perkTier?: number;
+		ironCantUse?: boolean;
 	}
 
 	interface Task {

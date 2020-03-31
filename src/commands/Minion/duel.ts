@@ -22,7 +22,8 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
-			altProtection: true
+			altProtection: true,
+			ironCantUse: true
 		});
 	}
 
