@@ -20,7 +20,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
-		if (msg.author.isIronman) throw `Your an ironman and you cant play dice.`;
+		if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
 		const roll = rand(1, 100);
 
 		const embed = new MessageEmbed()
