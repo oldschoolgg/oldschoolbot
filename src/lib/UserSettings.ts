@@ -37,7 +37,7 @@ export namespace UserSettings {
 
 		export const HasBought = T<boolean>('minion.hasBought');
 		export const DailyDuration = T<number>('minion.dailyDuration');
-		export const Ironman = T<boolean>('minion.Ironman');
+		export const Ironman = T<boolean>('minion.ironman');
 	}
 
 	export namespace Skills {

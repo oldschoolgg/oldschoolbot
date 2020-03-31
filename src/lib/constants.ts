@@ -60,7 +60,8 @@ export const enum Emoji {
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
-	Warning = '⚠️'
+	Warning = '⚠️',
+	Ironman = '<:ironman:626647335900020746>'
 }
 
 export const enum Image {
