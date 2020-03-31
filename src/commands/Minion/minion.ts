@@ -77,39 +77,51 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 
+		/**
+		 * If the user is an ironman already, lets ask them if they want to de-iron.
+		 */
 		if (msg.author.isIronman) {
 			await msg.send(
-				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say \`yes\` to confirm.`
+				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say \`deiron\` to confirm.`
 			);
 			try {
 				await msg.channel.awaitMessages(
 					answer =>
 						answer.author.id === msg.author.id &&
-						answer.content.toLowerCase() === 'yes',
+						answer.content.toLowerCase() === 'deiron',
 					{
 						max: 1,
 						time: 15000,
 						errors: ['time']
 					}
 				);
-				await msg.author.settings.sync(true);
 				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
-				await msg.send('You are no longer an ironman.');
+				return msg.send('You are no longer an ironman.');
 			} catch (err) {
-				return msg.channel.send('Cancelled ironman swap.');
+				return msg.channel.send('Cancelled de-ironning.');
 			}
 		}
 
 		await msg.send(
-			`Are you sure you want to start afresh and play as an ironman?
-${Emoji.Warning}**(This will reset your bank, collection log, GP, QP, monster and clue KC, skills and any miscellaneous stats, you will lose the ability to get GP from dailies, trade, dice, duel, etc)**${Emoji.Warning}
-Please say \`yes\` to confirm.`
+			`Are you sure you want to start over and play as an ironman?
+
+:warning: **Read the following text before confirming. This is your only warning. ** :warning:
+
+The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
+
+After becoming an ironman:
+	- You will no longer be able to receive GP from  \`+daily\`
+	- You will no longer be able to use \`+pay\`, \`+duel\`, \`+sellto\`, \`+sell\`, \`+dice\`
+	- You can de-iron at any time, and keep all your stuff acquired while playing as an ironman.
+
+Type \`confirm\` if you understand the above information, and want to become an ironman now.`
 		);
 
 		try {
 			await msg.channel.awaitMessages(
 				answer =>
-					answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes',
+					answer.author.id === msg.author.id &&
+					answer.content.toLowerCase() === 'confirm',
 				{
 					max: 1,
 					time: 15000,
@@ -117,6 +129,11 @@ Please say \`yes\` to confirm.`
 				}
 			);
 
+			msg.author.log(
+				`just became an ironman, previous settings: ${JSON.stringify(
+					msg.author.settings.toJSON()
+				)}`
+			);
 			await msg.author.settings.reset(UserSettings.Bank);
 			await msg.author.settings.reset(UserSettings.CollectionLogBank);
 			await msg.author.settings.reset(UserSettings.GP);
