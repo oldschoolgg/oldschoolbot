@@ -6,12 +6,12 @@ import Woodcutting from './woodcutting';
 import { SkillsEnum } from '../types';
 import Firemaking from './firemaking';
 
-export type Skill = typeof Mining | typeof Smithing | typeof Woodcutting| typeof Firemaking;
+export type Skill = typeof Mining | typeof Smithing | typeof Woodcutting | typeof Firemaking;
 
 const Skills: Collection<string, Skill> = new Collection([
 	[SkillsEnum.Mining, Mining as Skill],
 	[SkillsEnum.Smithing, Smithing as Skill],
-	[SkillsEnum.Woodcutting, Woodcutting as Skill]
+	[SkillsEnum.Woodcutting, Woodcutting as Skill],
 	[SkillsEnum.Firemaking, Firemaking as Skill]
 ]);
 

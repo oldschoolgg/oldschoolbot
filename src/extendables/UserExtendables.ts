@@ -33,7 +33,6 @@ import Woodcutting from '../lib/skills/woodcutting';
 import Skills from '../lib/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
-
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });

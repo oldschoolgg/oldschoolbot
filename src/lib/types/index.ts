@@ -194,8 +194,8 @@ export interface Log {
 	qpRequired: number;
 }
 export interface Burnable {
-level: number;
-xp: number;
-name: string;
-inputLogs: number;
-}	
+	level: number;
+	xp: number;
+	name: string;
+	inputLogs: number;
+}

@@ -339,6 +339,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
 		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
 	}
+
 	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
 		this.client.commands.get('light')!.run(msg, [quantity, logName]);
 	}
