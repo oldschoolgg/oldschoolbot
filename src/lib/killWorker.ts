@@ -83,7 +83,7 @@ expose({
 			case 'RAIDS1':
 			case 'COX':
 			case 'CHAMBERSOFXERIC': {
-				if (quantity > 100000) return 'I can only do a maximum of 100,000 Raids at a time!';
+				if (quantity > 10_000) return 'I can only do a maximum of 10,000 Raids at a time!';
 				const loot = raids.kill(quantity);
 				return loot.length > 0 ? loot : 'You got nothing.';
 			}
