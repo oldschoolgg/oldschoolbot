@@ -128,7 +128,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
-			ore.name
+				ore.name
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
@@ -148,7 +148,7 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name
-			}, it'll take around ${formatDuration(duration)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
