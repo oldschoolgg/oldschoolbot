@@ -280,7 +280,6 @@ export default class extends Extendable {
 
 	public get maxTripLength(this: User) {
 		const perkTier = getUsersPerkTier(this);
-		console.log(perkTier);
 		if (perkTier === PerkTier.Two) return Time.Minute * 33;
 		if (perkTier === PerkTier.Three) return Time.Minute * 36;
 		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
