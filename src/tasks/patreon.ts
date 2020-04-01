@@ -126,7 +126,7 @@ export default class extends Task {
 
 			// Add patreon role, if they don't have it
 			if (member && !member.roles.has(Roles.Patron)) {
-				await member.roles.add(Roles.Patron);
+				await member.roles.add(Roles.Patron).catch(() => null);
 			}
 		}
 
