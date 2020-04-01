@@ -58,7 +58,7 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / timeToLightSingleLog);
+			quantity = Math.floor(msg.author.maxTripLength / timeToLightSingleLog);
 		}
 
 		await msg.author.settings.sync(true);
@@ -72,12 +72,12 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToLightSingleLog;
 
-		if (duration > Time.Minute * 30) {
-			throw `${
-				msg.author.minionName
-			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount of ${
 				log.name
-			}s you can light is ${Math.floor((Time.Minute * 30) / timeToLightSingleLog)}.`;
+			}s you can light is ${Math.floor(msg.author.maxTripLength / timeToLightSingleLog)}.`;
 		}
 
 		const data: FiremakingActivityTaskOptions = {
