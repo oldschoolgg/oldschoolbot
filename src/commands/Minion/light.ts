@@ -7,6 +7,7 @@ import { Time, Activity, Tasks } from '../../lib/constants';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Firemaking from '../../lib/skills/firemaking';
+import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -48,17 +49,17 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`;
 		}
 
-		if (typeof quantity === 'string') {
-			logName = quantity;
-			quantity = null;
-		}
-
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToLightSingleLog);
+			const amountOfLogsOwned = msg.author.settings.get(UserSettings.Bank)[log.inputLogs];
+			if (!amountOfLogsOwned || amountOfLogsOwned === 0) throw `You have no ${log.name}.`;
+			quantity = Math.min(
+				Math.floor(msg.author.maxTripLength / timeToLightSingleLog),
+				amountOfLogsOwned
+			);
 		}
 
 		await msg.author.settings.sync(true);
