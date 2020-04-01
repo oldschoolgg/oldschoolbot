@@ -193,6 +193,7 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 }
+
 export interface Burnable {
 	level: number;
 	xp: number;
