@@ -33,7 +33,6 @@ export default class extends BotCommand {
 		) {
 			throw `Your smithing level isn't high enough to craft this item. You need ${craftableItem.smithingLevel} Smithing.`;
 		}
-		console.log(craftableItem);
 		const outputItemsString = await createReadableItemListFromBank(
 			this.client,
 			craftableItem.outputItems
