@@ -1,7 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand, removeItemFromBank } from '../../lib/util';
+import {
+	stringMatches,
+	formatDuration,
+	rand,
+	removeItemFromBank,
+	itemNameFromID
+} from '../../lib/util';
 import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
@@ -9,6 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Cooking from '../../lib/skills/cooking';
 import { UserSettings } from '../../lib/UserSettings';
 import itemID from '../../lib/util/itemID';
+import bankHasItem from '../../lib/util/bankHasItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -65,7 +72,15 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
+		// Check the user has the required ores to smith these bars.
+		// Multiplying the ore required by the quantity of bars.
+
 		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);
+		for (const [cookableID, qty] of requiredCookables) {
+			if (!bankHasItem(userBank, parseInt(cookableID), qty * quantity)) {
+				throw `You don't have enough ${itemNameFromID(parseInt(cookableID))}.`;
+			}
+		}
 
 		const duration = quantity * timeToCookSingleCookable;
 
