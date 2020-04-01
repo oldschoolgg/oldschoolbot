@@ -18,7 +18,7 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const fish = Fishing.Fishies.find(fish => fish.id === fishID);
+		const fish = Fishing.Fishes.find(fish => fish.id === fishID);
 
 		if (!fish) return;
 
@@ -31,7 +31,7 @@ export default class extends Task {
 			xpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
-			// For each prospector item, check if they have it, give its' XP boost if so.
+			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
 				if (bankHasItem(user.settings.get(UserSettings.Bank), parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));

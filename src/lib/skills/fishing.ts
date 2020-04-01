@@ -2,7 +2,7 @@ import { SkillsEnum, Fish } from '../types';
 import { Emoji } from '../constants';
 import itemID from '../util/itemID';
 
-const fishies: Fish[] = [
+const fishes: Fish[] = [
 	{
 		level: 1,
 		xp: 10,
@@ -195,7 +195,7 @@ const anglerItems: { [key: number]: number } = {
 };
 
 const Fishing = {
-	Fishies: fishies,
+	Fishes: fishes,
 	id: SkillsEnum.Fishing,
 	emoji: Emoji.Fishing,
 	anglerItems

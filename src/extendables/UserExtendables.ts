@@ -331,7 +331,7 @@ export default class extends Extendable {
 			case Activity.Fishing: {
 				const data = currentTask as FishingActivityTaskOptions;
 
-				const fish = Fishing.Fishies.find(fish => fish.id === data.fishID);
+				const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
 
 				return `${this.minionName} is currently fishing ${data.quantity}x ${
 					fish!.name

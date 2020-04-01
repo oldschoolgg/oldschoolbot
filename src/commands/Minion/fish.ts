@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { roll } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, formatDuration, rand } from '../../lib/util';
@@ -8,7 +9,6 @@ import { Time, Activity, Tasks } from '../../lib/constants';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { UserSettings } from '../../lib/UserSettings';
-import { roll } from 'oldschooljs/dist/util/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -35,12 +35,12 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const fish = Fishing.Fishies.find(
+		const fish = Fishing.Fishes.find(
 			fish => stringMatches(fish.name, name) || stringMatches(fish.name.split(' ')[0], name)
 		);
 
 		if (!fish) {
-			throw `Thats not a valid fish to catch. Valid fishies are ${Fishing.Fishies.map(
+			throw `Thats not a valid fish to catch. Valid fishies are ${Fishing.Fishes.map(
 				fish => fish.name
 			).join(', ')}.`;
 		}
@@ -63,13 +63,12 @@ export default class extends BotCommand {
 		}
 
 		// If no quantity provided, set it to the max.
+		const scaledTimePerFish =
+			Time.Second *
+			fish.timePerFish *
+			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
 		if (quantity === null) {
-			quantity = Math.floor(
-				(Time.Minute * 30) /
-					(Time.Second *
-						fish.timePerFish *
-						(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100))
-			);
+			quantity = Math.floor((Time.Minute * 30) / scaledTimePerFish);
 		}
 
 		if (fish.bait) {
@@ -79,11 +78,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const duration =
-			quantity *
-			Time.Second *
-			fish.timePerFish *
-			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
+		const duration = quantity * scaledTimePerFish;
 
 		if (duration > Time.Minute * 30) {
 			throw `${
@@ -95,11 +90,13 @@ export default class extends BotCommand {
 			)}.`;
 		}
 
-		// Add some variability
-		if (roll(2)) {
-			quantity += rand(1, Math.ceil(3500 / quantity));
-		} else {
-			quantity -= rand(1, Math.ceil(3500 / quantity));
+		// Add some variability but limit the threshold so it's not abusable
+		if (quantity > Math.floor((Time.Minute * 30) / scaledTimePerFish) / 1.1) {
+			if (roll(2)) {
+				quantity += rand(1, Math.ceil(3500 / quantity));
+			} else {
+				quantity -= rand(1, Math.ceil(3500 / quantity));
+			}
 		}
 
 		const data: FishingActivityTaskOptions = {
