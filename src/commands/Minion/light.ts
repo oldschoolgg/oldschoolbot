@@ -62,8 +62,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.settings.sync(true);
-
 		// Check the user has the required logs to light.
 		// Multiplying the logs required by the quantity of ashes.
 		const hasRequiredLogs = await msg.author.hasItem(log.inputLogs, quantity);
