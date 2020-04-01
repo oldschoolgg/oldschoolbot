@@ -65,7 +65,8 @@ export interface KillableMonster extends Monster {
 export const enum SkillsEnum {
 	Mining = 'mining',
 	Smithing = 'smithing',
-	Woodcutting = 'woodcutting'
+	Woodcutting = 'woodcutting',
+	Firemaking = 'firemaking'
 }
 
 export interface CachedItemPrice {
@@ -182,6 +183,7 @@ export interface Bar {
 	 */
 	chanceOfFail: number;
 }
+
 export interface Log {
 	level: number;
 	xp: number;
@@ -190,4 +192,11 @@ export interface Log {
 	respawnTime: number;
 	petChance?: number;
 	qpRequired: number;
+}
+
+export interface Burnable {
+	level: number;
+	xp: number;
+	name: string;
+	inputLogs: number;
 }

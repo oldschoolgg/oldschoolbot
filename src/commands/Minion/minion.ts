@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -180,6 +180,9 @@ ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
 ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
 			SkillsEnum.Woodcutting
 		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
+			SkillsEnum.Firemaking
+		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -335,6 +338,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
 		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
+	}
+
+	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
+		this.client.commands.get('light')!.run(msg, [quantity, logName]);
 	}
 
 	async quest(msg: KlasaMessage) {
