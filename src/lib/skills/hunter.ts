@@ -68,13 +68,23 @@ const creatures: Creature[] = [
 		petChance: 98_373
 	},
 	{
+		level: 67,
+		xp: 319.2,
+		id: 2905,
+		name: 'Black salamander',
+		respawnTime: 5,
+		drops: ['Black salamander'],
+		wildy: true
+	},
+	{
 		level: 73,
 		xp: 315,
 		id: 2912,
 		name: 'Black chinchompa',
 		respawnTime: 5,
 		drops: ['Black chinchompa'],
-		petChance: 82_758
+		petChance: 82_758,
+		wildy: true
 	}
 ];
 
