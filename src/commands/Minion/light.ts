@@ -28,6 +28,11 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 
+		if (typeof quantity === 'string') {
+			logName = quantity;
+			quantity = null;
+		}
+
 		const log = Firemaking.Burnables.find(
 			log =>
 				stringMatches(log.name, logName) || stringMatches(log.name.split(' ')[0], logName)
@@ -40,7 +45,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Firemaking) < log.level) {
-			throw `${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}s.`;
+			throw `${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`;
 		}
 
 		if (typeof quantity === 'string') {
