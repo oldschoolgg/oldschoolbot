@@ -59,7 +59,7 @@ const burnables: Burnable[] = [
 	},
 	{
 		name: 'Redwood logs',
-		level: 60,
+		level: 90,
 		xp: 350,
 		inputLogs: itemID('Redwood logs')
 	}
