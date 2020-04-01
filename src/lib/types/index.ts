@@ -200,5 +200,5 @@ export interface Creature {
 	respawnTime: number;
 	petChance?: number;
 	drops?: string[];
-	wildy?: boolean
+	wildy?: boolean;
 }
