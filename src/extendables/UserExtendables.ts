@@ -23,10 +23,12 @@ import {
 	TickerTaskData,
 	ActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	FiremakingActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skills/smithing';
+import Firemaking from '../lib/skills/firemaking';
 import Woodcutting from '../lib/skills/woodcutting';
 import Skills from '../lib/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -298,6 +300,7 @@ export default class extends Extendable {
 - Train mining with \`+mine\`
 - Train smithing with \`+smith\`
 - Train woodcutting with \`+chop\`
+- Train firemaking with \`+light\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -348,6 +351,18 @@ export default class extends Extendable {
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Firemaking: {
+				const data = currentTask as FiremakingActivityTaskOptions;
+
+				const burn = Firemaking.Burnables.find(burn => burn.inputLogs === data.burnableID);
+
+				return `${this.minionName} is currently lighting ${data.quantity}x ${
+					burn!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Firemaking
+				} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;
 			}
 
 			case Activity.Questing: {
