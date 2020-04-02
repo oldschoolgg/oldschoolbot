@@ -6,6 +6,7 @@ import { Patron } from '../lib/types';
 import { PatronTierID, BitField, Time, Roles, BadgesEnum } from '../lib/constants';
 import { UserSettings } from '../lib/UserSettings';
 import getSupportGuild from '../lib/util/getSupportGuild';
+import { noOp } from '../lib/util';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${privateConfig?.patreon.campaignID}/members`
@@ -43,7 +44,7 @@ export default class extends Task {
 			if (!patron.discordID) continue;
 			const user = await this.client.users.fetch(patron.discordID);
 			const supportGuild = getSupportGuild(user.client);
-			const member = await supportGuild.members.fetch(user.id).catch(() => null);
+			const member = await supportGuild.members.fetch(user.id).catch(noOp);
 
 			const userBitfield = user.settings.get(UserSettings.BitField);
 			const userBadges = user.settings.get(UserSettings.Badges);
@@ -68,7 +69,7 @@ export default class extends Task {
 
 				// Remove patreon role, if they have it
 				if (member && member.roles.has(Roles.Patron)) {
-					await member.roles.remove(Roles.Patron).catch(() => null);
+					await member.roles.remove(Roles.Patron).catch(noOp);
 				}
 
 				// Remove patreon badge(s)
@@ -126,7 +127,7 @@ export default class extends Task {
 
 			// Add patreon role, if they don't have it
 			if (member && !member.roles.has(Roles.Patron)) {
-				await member.roles.add(Roles.Patron).catch(() => null);
+				await member.roles.add(Roles.Patron).catch(noOp);
 			}
 		}
 
