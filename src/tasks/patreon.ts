@@ -68,7 +68,7 @@ export default class extends Task {
 
 				// Remove patreon role, if they have it
 				if (member && member.roles.has(Roles.Patron)) {
-					await member.roles.remove(Roles.Patron);
+					await member.roles.remove(Roles.Patron).catch(() => null);
 				}
 
 				// Remove patreon badge(s)
