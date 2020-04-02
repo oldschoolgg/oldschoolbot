@@ -1,9 +1,10 @@
 import { Task, ArrayActions } from 'klasa';
 import fetch from 'node-fetch';
+import { TextChannel } from 'discord.js';
 
 import { privateConfig } from '../config';
 import { Patron } from '../lib/types';
-import { PatronTierID, BitField, Time, Roles, BadgesEnum } from '../lib/constants';
+import { PatronTierID, BitField, Time, Roles, BadgesEnum, Channel } from '../lib/constants';
 import { UserSettings } from '../lib/UserSettings';
 import getSupportGuild from '../lib/util/getSupportGuild';
 import { noOp } from '../lib/util';
@@ -39,9 +40,12 @@ export default class extends Task {
 
 	async run() {
 		const fetchedPatrons = await this.fetchPatrons();
-
+		const result = [];
 		for (const patron of fetchedPatrons) {
-			if (!patron.discordID) continue;
+			if (!patron.discordID) {
+				result.push(`Patron[${patron.patreonID}] has no discord connected, so continuing.`);
+				continue;
+			}
 			const user = await this.client.users.fetch(patron.discordID);
 			const supportGuild = getSupportGuild(user.client);
 			const member = await supportGuild.members.fetch(user.id).catch(noOp);
@@ -51,6 +55,10 @@ export default class extends Task {
 
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Month) {
+				result.push(
+					`${user}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
+				);
+
 				// Remove any/all the patron bits from this user.
 				await user.settings.update(
 					UserSettings.BitField,
@@ -69,6 +77,7 @@ export default class extends Task {
 
 				// Remove patreon role, if they have it
 				if (member && member.roles.has(Roles.Patron)) {
+					result.push(`${user}[${patron.patreonID}] had Patron role removed.`);
 					await member.roles.remove(Roles.Patron).catch(noOp);
 				}
 
@@ -90,6 +99,7 @@ export default class extends Task {
 				patron.entitledTiers.includes(PatronTierID.One) &&
 				!userBitfield.includes(BitField.IsPatronTier1)
 			) {
+				result.push(`${user}[${patron.patreonID}] was given Tier 1.`);
 				// If they are tier X on patreon, and they arent marked as tier X patreon in discord,
 				// give them it.
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier1, {
@@ -101,6 +111,7 @@ export default class extends Task {
 				patron.entitledTiers.includes(PatronTierID.Two) &&
 				!userBitfield.includes(BitField.IsPatronTier2)
 			) {
+				result.push(`${user}[${patron.patreonID}] was given Tier 2.`);
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier2, {
 					arrayAction: ArrayActions.Add
 				});
@@ -110,6 +121,7 @@ export default class extends Task {
 				patron.entitledTiers.includes(PatronTierID.Three) &&
 				!userBitfield.includes(BitField.IsPatronTier3)
 			) {
+				result.push(`${user}[${patron.patreonID}] was given Tier 3.`);
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier3, {
 					arrayAction: ArrayActions.Add
 				});
@@ -120,6 +132,7 @@ export default class extends Task {
 				!userBadges.includes(BadgesEnum.Patron) &&
 				!userBadges.includes(BadgesEnum.LimitedPatron)
 			) {
+				result.push(`${user}[${patron.patreonID}] was given Patron badge.`);
 				await user.settings.update(UserSettings.Badges, BadgesEnum.Patron, {
 					arrayAction: ArrayActions.Add
 				});
@@ -127,9 +140,12 @@ export default class extends Task {
 
 			// Add patreon role, if they don't have it
 			if (member && !member.roles.has(Roles.Patron)) {
+				result.push(`${user}[${patron.patreonID}] was given Patron role.`);
 				await member.roles.add(Roles.Patron).catch(noOp);
 			}
 		}
+
+		(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(result.join('\n'));
 
 		this.client.tasks.get('badges')?.run();
 	}
