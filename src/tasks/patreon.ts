@@ -56,7 +56,7 @@ export default class extends Task {
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Month) {
 				result.push(
-					`${user}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
+					`${user.username}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
 				);
 
 				// Remove any/all the patron bits from this user.
@@ -77,7 +77,7 @@ export default class extends Task {
 
 				// Remove patreon role, if they have it
 				if (member && member.roles.has(Roles.Patron)) {
-					result.push(`${user}[${patron.patreonID}] had Patron role removed.`);
+					result.push(`${user.username}[${patron.patreonID}] had Patron role removed.`);
 					await member.roles.remove(Roles.Patron).catch(noOp);
 				}
 
@@ -99,7 +99,7 @@ export default class extends Task {
 				patron.entitledTiers.includes(PatronTierID.One) &&
 				!userBitfield.includes(BitField.IsPatronTier1)
 			) {
-				result.push(`${user}[${patron.patreonID}] was given Tier 1.`);
+				result.push(`${user.username}[${patron.patreonID}] was given Tier 1.`);
 				// If they are tier X on patreon, and they arent marked as tier X patreon in discord,
 				// give them it.
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier1, {
@@ -111,7 +111,7 @@ export default class extends Task {
 				patron.entitledTiers.includes(PatronTierID.Two) &&
 				!userBitfield.includes(BitField.IsPatronTier2)
 			) {
-				result.push(`${user}[${patron.patreonID}] was given Tier 2.`);
+				result.push(`${user.username}[${patron.patreonID}] was given Tier 2.`);
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier2, {
 					arrayAction: ArrayActions.Add
 				});
@@ -121,7 +121,7 @@ export default class extends Task {
 				patron.entitledTiers.includes(PatronTierID.Three) &&
 				!userBitfield.includes(BitField.IsPatronTier3)
 			) {
-				result.push(`${user}[${patron.patreonID}] was given Tier 3.`);
+				result.push(`${user.username}[${patron.patreonID}] was given Tier 3.`);
 				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier3, {
 					arrayAction: ArrayActions.Add
 				});
@@ -132,7 +132,7 @@ export default class extends Task {
 				!userBadges.includes(BadgesEnum.Patron) &&
 				!userBadges.includes(BadgesEnum.LimitedPatron)
 			) {
-				result.push(`${user}[${patron.patreonID}] was given Patron badge.`);
+				result.push(`${user.username}[${patron.patreonID}] was given Patron badge.`);
 				await user.settings.update(UserSettings.Badges, BadgesEnum.Patron, {
 					arrayAction: ArrayActions.Add
 				});
@@ -140,7 +140,7 @@ export default class extends Task {
 
 			// Add patreon role, if they don't have it
 			if (member && !member.roles.has(Roles.Patron)) {
-				result.push(`${user}[${patron.patreonID}] was given Patron role.`);
+				result.push(`${user.username}[${patron.patreonID}] was given Patron role.`);
 				await member.roles.add(Roles.Patron).catch(noOp);
 			}
 		}
