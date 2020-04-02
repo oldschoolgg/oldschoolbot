@@ -145,7 +145,10 @@ export default class extends Task {
 			}
 		}
 
-		(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(result.join('\n'));
+		(this.client.channels.get(Channel.ErrorLogs) as TextChannel).sendFile(
+			Buffer.from(result.join('\n')),
+			'patreon.txt'
+		);
 
 		this.client.tasks.get('badges')?.run();
 	}
