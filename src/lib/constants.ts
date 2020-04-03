@@ -62,7 +62,8 @@ export const enum Emoji {
 	QuestIcon = '<:questIcon:690191385907036179>',
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
-	Firemaking = '<:firemaking:630911040175210518>'
+	Firemaking = '<:firemaking:630911040175210518>',
+	EasterEgg = '<:easterEgg:695473553314938920>'
 }
 
 export const enum Image {
