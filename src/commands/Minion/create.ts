@@ -28,11 +28,14 @@ export default class extends BotCommand {
 
 		// Ensure they have the required skills to create the item.
 		if (
-			craftableItem.smithingLevel &&
-			msg.author.skillLevel(SkillsEnum.Smithing) < craftableItem.smithingLevel
+			(craftableItem.smithingLevel &&
+				msg.author.skillLevel(SkillsEnum.Smithing) < craftableItem.smithingLevel) ||
+			(craftableItem.firemakingLevel &&
+				msg.author.skillLevel(SkillsEnum.Firemaking) < craftableItem.firemakingLevel)
 		) {
-			throw `Your smithing level isn't high enough to craft this item. You need ${craftableItem.smithingLevel} Smithing.`;
+			throw `You don't have high enough stats to craft this item.`;
 		}
+
 		const outputItemsString = await createReadableItemListFromBank(
 			this.client,
 			craftableItem.outputItems
