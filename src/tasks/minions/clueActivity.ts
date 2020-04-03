@@ -5,7 +5,6 @@ import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { Events, Emoji } from '../../lib/constants';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/UserSettings';
 import { roll } from 'oldschooljs/dist/util/util';
 import { randomItemFromArray } from '../../lib/util';
 
