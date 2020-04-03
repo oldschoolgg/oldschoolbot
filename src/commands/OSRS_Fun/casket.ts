@@ -22,6 +22,10 @@ export default class extends Command {
 
 		const perkTier = getUsersPerkTier(user);
 
+		if (perkTier === PerkTier.Four) {
+			return 100_000;
+		}
+
 		if (perkTier === PerkTier.Three) {
 			return 50_000;
 		}
