@@ -192,3 +192,15 @@ export interface Burnable {
 	name: string;
 	inputLogs: number;
 }
+
+export interface Fish {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	petChance: number;
+	timePerFish: number;
+	bait?: number;
+	itemRequirement: number;
+	qpRequired?: number;
+}

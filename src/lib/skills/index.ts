@@ -5,6 +5,7 @@ import Smithing from './smithing';
 import Woodcutting from './woodcutting';
 import { SkillsEnum } from '../types';
 import Firemaking from './firemaking';
+import Fishing from './fishing';
 
 export type Skill =
 	| typeof Fishing
