@@ -37,7 +37,17 @@ export default class extends Task {
 
 		const loot = { [clueTier.id]: quantity };
 		const easterEggID = itemID('Easter egg');
-		if (roll(3)) {
+
+		const eggChances: { [key: number]: number } = {
+			19836: 3,
+			20543: 4,
+			20544: 5,
+			20545: 6,
+			20546: 7,
+			23245: 8
+		};
+
+		if (roll(eggChances[clueTier.id])) {
 			loot[easterEggID] = 1;
 			str += `\n\n${Emoji.EasterEgg} **${randomItemFromArray(easterEggMessages).replace(
 				'{name}',
