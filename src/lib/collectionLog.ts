@@ -1137,6 +1137,10 @@ export const holiday = {
 		'Cow shoes',
 		'Slice of birthday cake',
 		'War ship'
+	]),
+	'Easter Event': transformArrayOfResolvableItems([
+		'Bunny ears',
+		'Easter egg'
 	])
 };
 export const diangoCollectionLog = {
