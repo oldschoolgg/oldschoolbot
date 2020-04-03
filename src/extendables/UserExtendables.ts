@@ -24,7 +24,8 @@ import {
 	ActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
-	FiremakingActivityTaskOptions
+	FiremakingActivityTaskOptions,
+	FishingActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skills/smithing';
@@ -32,6 +33,7 @@ import Firemaking from '../lib/skills/firemaking';
 import Woodcutting from '../lib/skills/woodcutting';
 import Skills from '../lib/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import Fishing from '../lib/skills/fishing';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
