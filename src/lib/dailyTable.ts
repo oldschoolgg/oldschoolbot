@@ -35,17 +35,10 @@ const CommonTable = new LootTable()
 
 	.add(UncommonTable);
 
-const CasketTable = new LootTable()
-	.add('Reward casket (beginner)', 1, 4)
-	.add('Reward casket (easy)', 1, 3)
-	.add('Reward casket (medium)', 1, 2)
-	.add('Reward casket (hard)', 1, 1);
-
 const DailyTable = new LootTable()
 	.every('Coins', [1_000_000, 3_000_000])
 
 	.add('Coins', [100_000, 10_000_000])
-	.add(CasketTable)
 	.add(UncommonTable)
 	.add(CommonTable, 1, 2)
 	.add('Mystery box', 1, 2);
