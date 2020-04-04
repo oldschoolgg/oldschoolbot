@@ -22,15 +22,17 @@ export default class extends Task {
 		// Calculate failed laps
 		let lapsFailed = 0;
 		for (let t = 0; t < quantity; t++) {
-			if (rand(1, 100) > 100 * ((course.level + 5) / user.skillLevel(SkillsEnum.Agility))) {
+			if (rand(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
 				lapsFailed += 1;
 			}
 		}
 
 		// Calculate marks of grace
 		let totalMarks = 0;
+		const timePerLap = course.lapTime * Time.Second;
+		const maxQuantity = Math.floor(user.maxTripLength / timePerLap);
 		if (course.marksPer60) {
-			for (let i = 0; i < course.marksPer60; i++) {
+			for (let i = 0; i < Math.floor(course.marksPer60 * (quantity / maxQuantity)); i++) {
 				if (roll(2)) {
 					totalMarks += 1;
 				}
@@ -40,16 +42,16 @@ export default class extends Task {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
-		const xpReceived = Math.floor(quantity - lapsFailed / 4) * course.xp;
+		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
 		await user.addXP(SkillsEnum.Agility, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Agility);
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-			} laps, you also received ${xpReceived.toLocaleString()} XP and ${totalMarks}x Mark of grace. ${
+		} laps and fell on ${lapsFailed} of them, you also received ${xpReceived.toLocaleString()} XP and ${totalMarks}x Mark of grace. ${
 			user.minionName
-			} asks if you'd like them to do another of the same trip.`;
+		} asks if you'd like them to do another of the same trip.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${newLevel}!`;

@@ -59,7 +59,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
-			course.name
+				course.name
 			} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`;
 		}
 
@@ -71,7 +71,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Agility,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 60000
+			finishDate: Date.now() + duration
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
@@ -79,7 +79,7 @@ export default class extends BotCommand {
 
 		const response = `${msg.author.minionName} is now doing ${quantity}x ${
 			course.name
-			} laps, it'll take around ${formatDuration(duration)} to finish.`;
+		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
 		return msg.send(response);
 	}

@@ -53,7 +53,7 @@ export const enum Emoji {
 	ThumbsUp = '👍',
 	ThumbsDown = '👎',
 	Casket = '<:Casket:365003978678730772>',
-	Agility = '<:mining:630911040128811010>',
+	Agility = '<:agility:630911040355565568>',
 	Mining = '<:mining:630911040128811010>',
 	Smithing = '<:smithing:630911040452034590>',
 	Woodcutting = '<:woodcutting:630911040099450892>',

@@ -81,7 +81,7 @@ export default class extends Extendable {
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
 		this.log(
 			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
-			amount}]`
+				amount}]`
 		);
 		return this.settings.update(UserSettings.GP, currentGP - amount);
 	}
@@ -232,7 +232,7 @@ export default class extends Extendable {
 				this.client.emit(
 					Events.ServerNotification,
 					`${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
+						this.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(skillName)}!`
 				);
 				break;
@@ -244,7 +244,7 @@ export default class extends Extendable {
 			this.client.emit(
 				Events.ServerNotification,
 				`${skill.emoji} **${this.username}'s** minion, ${
-				this.minionName
+					this.minionName
 				}, just achieved level 99 in ${toTitleCase(skillName)}!`
 			);
 		}
@@ -317,7 +317,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently killing ${data.quantity}x ${
 					monster!.name
-					}. Approximately ${formattedDuration} remaining.`;
+				}. Approximately ${formattedDuration} remaining.`;
 			}
 
 			case Activity.ClueCompletion: {
@@ -327,7 +327,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently completing ${data.quantity}x ${
 					clueTier!.name
-					} clues. Approximately ${formattedDuration} remaining.`;
+				} clues. Approximately ${formattedDuration} remaining.`;
 			}
 
 			case Activity.Agility: {
@@ -337,9 +337,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently running ${data.quantity}x ${
 					course!.name
-					} laps. Approximately ${formattedDuration} remaining. Your ${
+				} laps. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Agility
-					} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
+				} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
 			}
 
 			case Activity.Mining: {
@@ -349,9 +349,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently mining ${data.quantity}x ${
 					ore!.name
-					}. Approximately ${formattedDuration} remaining. Your ${
+				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Mining
-					} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
+				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
 
 			case Activity.Smithing: {
@@ -361,9 +361,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					bar!.name
-					}. Approximately ${formattedDuration} remaining. Your ${
+				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
-					} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}
 
 			case Activity.Firemaking: {
@@ -373,17 +373,17 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently lighting ${data.quantity}x ${
 					burn!.name
-					}. Approximately ${formattedDuration} remaining. Your ${
+				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Firemaking
-					} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;
+				} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;
 			}
 
 			case Activity.Questing: {
 				return `${
 					this.minionName
-					} is currently Questing. Approximately ${formattedDuration} remaining. Your current Quest Point count is: ${this.settings.get(
-						UserSettings.QP
-					)}.`;
+				} is currently Questing. Approximately ${formattedDuration} remaining. Your current Quest Point count is: ${this.settings.get(
+					UserSettings.QP
+				)}.`;
 			}
 			case Activity.Woodcutting: {
 				const data = currentTask as WoodcuttingActivityTaskOptions;
@@ -392,9 +392,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently chopping ${data.quantity}x ${
 					log!.name
-					}. Approximately ${formattedDuration} remaining. Your ${
+				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Woodcutting
-					} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
+				} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
 			}
 		}
 	}
