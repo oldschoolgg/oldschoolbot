@@ -77,7 +77,7 @@ const courses: Course[] = [
 		name: 'Ardougne',
 		level: 90,
 		xp: 793,
-		marksPer60: 24,
+		marksPer60: 22,
 		lapTime: 45.6,
 		petChance: 34_440
 	}
