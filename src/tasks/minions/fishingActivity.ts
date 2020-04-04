@@ -67,6 +67,11 @@ export default class extends Task {
 			str += `\nYou have a funny feeling you're being followed...`;
 		}
 
+		// Roll for big fish
+		if (fish.bigFish && roll(fish.bigFishRate!)) {
+			loot[fish.bigFish] = 1;
+		}
+
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;

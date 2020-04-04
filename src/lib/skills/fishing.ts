@@ -124,7 +124,9 @@ const fishes: Fish[] = [
 		name: 'Bass',
 		petChance: 382_609,
 		timePerFish: 10.3,
-		itemRequirement: itemID('Big fishing net')
+		itemRequirement: itemID('Big fishing net'),
+		bigFish: itemID('Big bass'),
+		bigFishRate: 1000
 	},
 	{
 		level: 50,
@@ -133,7 +135,9 @@ const fishes: Fish[] = [
 		name: 'Swordfish',
 		petChance: 128_885,
 		timePerFish: 11,
-		itemRequirement: itemID('Harpoon')
+		itemRequirement: itemID('Harpoon'),
+		bigFish: itemID('Big swordfish'),
+		bigFishRate: 2500
 	},
 	{
 		level: 62,
@@ -162,7 +166,9 @@ const fishes: Fish[] = [
 		name: 'Shark',
 		petChance: 82_243,
 		timePerFish: 30,
-		itemRequirement: itemID('Harpoon')
+		itemRequirement: itemID('Harpoon'),
+		bigFish: itemID('Big shark'),
+		bigFishRate: 5000
 	},
 	{
 		level: 82,

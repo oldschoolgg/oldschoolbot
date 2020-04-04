@@ -203,4 +203,6 @@ export interface Fish {
 	bait?: number;
 	itemRequirement: number;
 	qpRequired?: number;
+	bigFish?: number;
+	bigFishRate?: number;
 }
