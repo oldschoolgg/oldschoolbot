@@ -20,6 +20,12 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
+	courseID: string;
+	channelID: string;
+	quantity: number;
+}
+
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	channelID: string;
@@ -67,6 +73,7 @@ export type TickerTaskData =
 export type MinionActivityTask =
 	| Tasks.MonsterActivity
 	| Tasks.ClueActivity
+	| Tasks.AgilityActivity
 	| Tasks.MiningActivity
 	| Tasks.SmithingActivity
 	| Tasks.WoodcuttingActivity

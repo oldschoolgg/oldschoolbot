@@ -53,6 +53,7 @@ export const enum Emoji {
 	ThumbsUp = '👍',
 	ThumbsDown = '👎',
 	Casket = '<:Casket:365003978678730772>',
+	Agility = '<:mining:630911040128811010>',
 	Mining = '<:mining:630911040128811010>',
 	Smithing = '<:smithing:630911040452034590>',
 	Woodcutting = '<:woodcutting:630911040099450892>',
@@ -77,6 +78,7 @@ export const enum Color {
 export const SupportServer = '342983479501389826';
 
 export const enum Tasks {
+	AgilityActivity = 'agilityActivity',
 	MonsterActivity = 'monsterActivity',
 	ClueActivity = 'clueActivity',
 	MiningActivity = 'miningActivity',
@@ -90,6 +92,7 @@ export const enum Tasks {
 }
 
 export const enum Activity {
+	Agility = 'Agility',
 	MonsterKilling = 'MonsterKilling',
 	ClueCompletion = 'ClueCompletion',
 	Mining = 'Mining',

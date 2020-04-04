@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|laps] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -171,6 +171,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
+${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
+			.get(UserSettings.Skills.Agility)
+			.toLocaleString()} xp)
 ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
 			.get(UserSettings.Skills.Mining)
 			.toLocaleString()} xp)
@@ -316,6 +319,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
 		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
+	}
+
+	async laps(msg: KlasaMessage, [quantity, courseName]: [number, string]) {
+		await this.client.commands
+			.get('laps')!
+			.run(msg, [quantity, courseName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {

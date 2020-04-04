@@ -63,6 +63,7 @@ export interface KillableMonster extends Monster {
 }
 
 export const enum SkillsEnum {
+	Agility = 'agility',
 	Mining = 'mining',
 	Smithing = 'smithing',
 	Woodcutting = 'woodcutting',
@@ -199,4 +200,13 @@ export interface Burnable {
 	xp: number;
 	name: string;
 	inputLogs: number;
+}
+
+export interface Course {
+	name: string;
+	level: number;
+	xp: number;
+	marksPer60?: number;
+	lapTime: number;
+	petChance: number;
 }
