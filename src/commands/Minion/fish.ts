@@ -40,7 +40,7 @@ export default class extends BotCommand {
 		);
 
 		if (!fish) {
-			throw `Thats not a valid fish to catch. Valid fishies are ${Fishing.Fishes.map(
+			throw `Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(
 				fish => fish.name
 			).join(', ')}.`;
 		}

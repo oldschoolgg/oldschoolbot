@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, rand } from '../../lib/util';
+import { saidYes, noOp, roll } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
@@ -61,8 +61,8 @@ export default class extends Task {
 			[fish.id]: quantity
 		};
 
-		// Roll for pet at 1.5x chance
-		if (fish.petChance && rand(1, fish.petChance * 1.5) < quantity) {
+		// Roll for pet
+		if (fish.petChance && roll(fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25)) {
 			loot[itemID('Heron')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 		}
