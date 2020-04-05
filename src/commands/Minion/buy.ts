@@ -23,7 +23,7 @@ export default class extends BotCommand {
 		if (!buyable) {
 			throw `I don't recognize that item, the items you can buy are: ${Buyables.map(
 				item => item.name
-			).join(', ').}`;
+			).join(', ')}.`;
 		}
 
 		await msg.author.settings.sync(true);
