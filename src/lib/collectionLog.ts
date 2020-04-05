@@ -1177,19 +1177,22 @@ export const skillCapes = {
 		'Mining hood',
 		'Smithing hood',
 		'Woodcutting hood',
-		'Firemaking hood'
+		'Firemaking hood',
+		'Quest point hood'
 	]),
 	capes: transformArrayOfResolvableItems([
 		'Mining cape',
 		'Smithing cape',
 		'Woodcutting cape',
-		'Firemaking cape'
+		'Firemaking cape',
+		'Quest point cape'
 	]),
 	'trimmed capes': transformArrayOfResolvableItems([
 		'Mining cape(t)',
 		'Smithing cape(t)',
 		'Woodcut. cape(t)',
-		'Firemaking cape(t)'
+		'Firemaking cape(t)',
+		'Quest point cape (t)'
 	])
 };
 export const quest = {
