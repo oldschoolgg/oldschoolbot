@@ -78,9 +78,16 @@ export default class extends BotCommand {
 		const itemDesc = `${quantity}x ${osItem.name}`;
 		const priceDesc = `${Util.toKMB(price)} GP (${price.toLocaleString()})`;
 
-		const sellMsg = await msg.channel.send(
-			`${msg.author}, say \`confirm\` to confirm that you want to sell ${itemDesc} to \`${buyerMember.user.username}#${buyerMember.user.discriminator}\` for a *total* of ${priceDesc}.`
-		);
+		let sellStr = `${msg.author}, say \`confirm\` to confirm that you want to sell ${itemDesc} to \`${buyerMember.user.username}#${buyerMember.user.discriminator}\` for a *total* of ${priceDesc}.`;
+
+		const priceOfItemBotPays = await this.client.fetchItemPrice(osItem.id);
+		const totalPrice = Math.floor(priceOfItemBotPays * quantity * 0.8);
+
+		if (totalPrice > price) {
+			sellStr += `\n\nWarning: The bot would pay you more (${totalPrice.toLocaleString()} GP) for these items than you are selling them for!`;
+		}
+
+		const sellMsg = await msg.channel.send(sellStr);
 
 		// Confirm the seller wants to sell
 		try {
