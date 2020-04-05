@@ -55,6 +55,10 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (fish.name === 'Barbarian fishing' && msg.author.skillLevel(SkillsEnum.Agility) < 15) {
+			throw `You need at least 15 Agility to catch those!`;
+		}
+
 		await msg.author.settings.sync(true);
 
 		const hasItem = await msg.author.hasItem(fish.itemRequirement, 1);
@@ -84,7 +88,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
-				fish.name
+			fish.name
 			} you can fish is approximately ${Math.floor(
 				msg.author.maxTripLength / (Time.Second * fish.timePerFish) - 4
 			)}.`;
@@ -120,7 +124,7 @@ export default class extends BotCommand {
 
 		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+			}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		return msg.send(response);
 	}

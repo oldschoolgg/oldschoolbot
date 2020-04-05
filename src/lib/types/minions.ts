@@ -8,6 +8,12 @@ export interface ActivityTaskOptions {
 	finishDate: number;
 }
 
+export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
+	courseID: string;
+	channelID: string;
+	quantity: number;
+}
+
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	channelID: string;
@@ -71,6 +77,7 @@ export type TickerTaskData =
 	| SkillingTickerTaskData;
 
 export type MinionActivityTask =
+	| Tasks.AgilityActivity
 	| Tasks.MonsterActivity
 	| Tasks.ClueActivity
 	| Tasks.FishingActivity

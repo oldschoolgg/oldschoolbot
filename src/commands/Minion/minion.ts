@@ -55,7 +55,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -173,6 +173,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
+${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
+			.get(UserSettings.Skills.Agility)
+			.toLocaleString()} xp)
 ${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
 			.get(UserSettings.Skills.Fishing)
 			.toLocaleString()} xp)
@@ -345,6 +348,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await this.client.commands
 			.get('fish')!
 			.run(msg, [quantity, fishName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async laps(msg: KlasaMessage, [quantity, courseName]: [number, string]) {
+		await this.client.commands
+			.get('laps')!
+			.run(msg, [quantity, courseName])
 			.catch(err => {
 				throw err;
 			});

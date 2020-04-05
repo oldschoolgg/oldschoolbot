@@ -190,6 +190,16 @@ const fishes: Fish[] = [
 		bait: itemID('Dark fishing bait'),
 		timePerFish: 11.7,
 		itemRequirement: itemID('Lobster pot')
+	},
+	{
+		level: 48,
+		xp: 130,
+		id: itemID('Leaping trout'),
+		name: 'Barbarian fishing',
+		petChance: 426_954,
+		bait: itemID('Feather'),
+		timePerFish: 3,
+		itemRequirement: itemID('Barbarian rod')
 	}
 ];
 

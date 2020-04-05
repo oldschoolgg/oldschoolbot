@@ -2,6 +2,8 @@ import { Activity, Tasks } from '../constants';
 
 export function taskNameFromType(activityType: Activity) {
 	switch (activityType) {
+		case Activity.Agility:
+			return Tasks.AgilityActivity;
 		case Activity.ClueCompletion:
 			return Tasks.ClueActivity;
 		case Activity.MonsterKilling:

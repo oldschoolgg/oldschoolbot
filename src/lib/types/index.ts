@@ -54,6 +54,7 @@ export interface KillWorkerOptions {
 }
 
 export const enum SkillsEnum {
+	Agility = 'agility',
 	Fishing = 'fishing',
 	Mining = 'mining',
 	Smithing = 'smithing',
@@ -205,4 +206,13 @@ export interface Fish {
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
+}
+
+export interface Course {
+	name: string;
+	level: number;
+	xp: number;
+	marksPer60?: number;
+	lapTime: number;
+	petChance: number;
 }
