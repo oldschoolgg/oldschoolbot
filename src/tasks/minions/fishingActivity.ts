@@ -82,9 +82,9 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${
 			fish.name
-			}, you also received ${xpReceived.toLocaleString()} XP. ${
+		}, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
-			} asks if you'd like them to do another of the same trip.`;
+		} asks if you'd like them to do another of the same trip.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
@@ -109,9 +109,9 @@ export default class extends Task {
 		if (fish.name === 'Barbarian fishing') {
 			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
 				fish.name
-				}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP. ${
+			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP. ${
 				user.minionName
-				} asks if you'd like them to do another of the same trip.
+			} asks if you'd like them to do another of the same trip.
 			\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
 			if (newLevel > currentLevel) {
 				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
