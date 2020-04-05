@@ -122,6 +122,7 @@ const logs: Log[] = [
 ];
 
 const Woodcutting = {
+	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
 	id: SkillsEnum.Woodcutting,
 	emoji: Emoji.Woodcutting

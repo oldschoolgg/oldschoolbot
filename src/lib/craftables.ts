@@ -8,6 +8,7 @@ interface Craftable {
 	smithingLevel?: number;
 	addOutputToCollectionLog?: boolean;
 	cantHaveItems: Bank;
+	firemakingLevel?: number;
 }
 
 const Craftables: Craftable[] = [
@@ -377,6 +378,18 @@ const Craftables: Craftable[] = [
 		cantHaveItems: {
 			[itemID('Clue scroll (master)')]: 1
 		}
+	},
+	{
+		name: 'Infernal axe',
+		inputItems: {
+			[itemID('Dragon axe')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal axe')]: 1
+		},
+		firemakingLevel: 85,
+		cantHaveItems: {}
 	}
 ];
 

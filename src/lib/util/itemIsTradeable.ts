@@ -8,7 +8,7 @@ const specialUntradeables = transformArrayOfResolvableItems(['Coins']);
  * These items aren't tradeable ingame, but we want to specially let them be traded.
  */
 export const specialTradeables = transformArrayOfResolvableItems([
-	'Birthday cake',
+	'Slice of birthday cake',
 	'War ship',
 	'Birthday present'
 ]);

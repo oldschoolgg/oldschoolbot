@@ -130,7 +130,7 @@ export default class DailyCommand extends BotCommand {
 
 		// Check to see if user is iron and remove GP if true.
 		if (user.isIronman) {
-			loot[COINS_ID] = 0;
+			delete loot[COINS_ID];
 		}
 
 		const correct = triviaCorrect ? 'correct' : 'incorrect';

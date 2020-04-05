@@ -3,6 +3,7 @@ import { Settings, SettingsUpdateResult } from 'klasa';
 import { FSWatcher } from 'fs';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Limit } from 'p-limit';
+import { Image } from 'canvas';
 
 import { CustomGet } from '../UserSettings';
 import { Bank, SkillsEnum } from '.';
@@ -45,6 +46,7 @@ declare module 'klasa' {
 			title: string = '',
 			type: any
 		): Promise<Buffer>;
+		getItemImage(itemID: number): Promise<Image>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
@@ -68,7 +70,7 @@ declare module 'discord.js' {
 			numberToAdd?: number
 		): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		hasItem(monsterID: number, amount = 1, sync = true): Promise<boolean>;
+		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
