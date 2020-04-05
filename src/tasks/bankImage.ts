@@ -145,7 +145,7 @@ export default class BankImageTask extends Task {
 		}
 
 		// Filter by preset
-		const filterQuery = flags.filter;
+		const filterQuery = flags.skilling || flags.barrows || flags.gear;
 		if (filterQuery && typeof filterQuery === 'string') {
 			items = filterByCategory(filterQuery, items);
 		}
