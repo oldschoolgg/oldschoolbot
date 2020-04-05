@@ -36,6 +36,21 @@ const pickaxes = [
 	}
 ];
 
+const gloves = [
+	{
+		id: itemID('Expert mining gloves'),
+		reductionPercent: 6
+	},
+	{
+		id: itemID('Superior mining gloves'),
+		reductionPercent: 4
+	},
+	{
+		id: itemID('Mining gloves'),
+		reductionPercent: 2
+	}
+];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -90,6 +105,14 @@ export default class extends BotCommand {
 				if (bankHasItem(bank, pickaxe.id)) {
 					timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
 					boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
+					break;
+				}
+			}
+
+			for (const glove of gloves) {
+				if (bankHasItem(bank, glove.id)) {
+					timeToMine = Math.floor(timeToMine * ((100 - glove.reductionPercent) / 100));
+					boosts.push(`${glove.reductionPercent}% for ${itemNameFromID(glove.id)}`);
 					break;
 				}
 			}
