@@ -365,6 +365,41 @@ const Craftables: Craftable[] = [
 		cantHaveItems: {}
 	},
 	{
+		name: 'Mining gloves',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Mining gloves')]: 1
+		},
+		inputItems: {
+			[itemID('Unidentified minerals')]: 60
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Superior mining gloves',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Superior mining gloves')]: 1
+		},
+		inputItems: {
+			[itemID('Unidentified minerals')]: 120
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Expert mining gloves',
+		addOutputToCollectionLog: true,
+		outputItems: {
+			[itemID('Expert mining gloves')]: 1
+		},
+		inputItems: {
+			[itemID('Superior mining gloves')]: 1,
+			[itemID('Mining gloves')]: 1,
+			[itemID('Unidentified minerals')]: 60
+		},
+		cantHaveItems: {}
+	},
+	{
 		name: 'Master clue',
 		inputItems: {
 			[itemID('Clue scroll (easy)')]: 1,
