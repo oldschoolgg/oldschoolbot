@@ -66,6 +66,7 @@ const burnables: Burnable[] = [
 ];
 
 const Firemaking = {
+	aliases: ['fm', 'firemaking'],
 	Burnables: burnables,
 	id: SkillsEnum.Firemaking,
 	emoji: Emoji.Firemaking

@@ -1,8 +1,9 @@
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Util } from 'oldschooljs';
+import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Tasks, Activity, Emoji, Time, Events } from '../../lib/constants';
+import { Tasks, Activity, Emoji, Time, Events, Color } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
@@ -19,6 +20,7 @@ import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import bankHasItem from '../../lib/util/bankHasItem';
+import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -193,13 +195,31 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
+		const entries = Object.entries(monsterScores);
+		if (entries.length === 0) throw `${msg.author.minionName} hasn't killed any monsters yet!`;
 
-		let res = `**${msg.author.minionName}'s KCs:**\n\n`;
-		for (const [monID, monKC] of Object.entries(monsterScores)) {
-			const mon = killableMonsters.find(m => m.id === parseInt(monID));
-			res += `${mon!.emoji} **${mon!.name}**: ${monKC}\n`;
+		const embed = new MessageEmbed()
+			.setColor(Color.Orange)
+			.setTitle(`**${msg.author.minionName}'s KCs**`)
+			.setDescription(
+				`These are your minions Kill Counts for all monsters, to see your Clue Scores, use \`${msg.cmdPrefix}m clues\`.`
+			);
+
+		for (const monsterScoreChunk of util.chunk(entries, 10)) {
+			embed.addField(
+				'\u200b',
+				monsterScoreChunk
+					.map(([monID, monKC]) => {
+						const mon = killableMonsters.find(m => m.id === parseInt(monID));
+						if (!mon) return `??[${monID}]: ${monKC}`;
+						return `${mon!.emoji} **${mon!.name}**: ${monKC}`;
+					})
+					.join('\n'),
+				true
+			);
 		}
-		return msg.send(res);
+
+		return msg.send(embed);
 	}
 
 	async qp(msg: KlasaMessage) {
@@ -454,10 +474,16 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-
-		let { timeToFinish } = monster;
 		const boosts = [];
+
+		let [timeToFinish, percentReduced] = reducedTimeFromKC(
+			monster,
+			msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 1
+		);
+
+		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC `);
+
+		const bank = msg.author.settings.get(UserSettings.Bank);
 		if (monster.itemInBankBoosts) {
 			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
 				if (!bankHasItem(bank, parseInt(itemID))) continue;

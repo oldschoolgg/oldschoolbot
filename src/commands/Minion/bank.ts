@@ -11,6 +11,7 @@ import { UserSettings } from '../../lib/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import addArrayOfBanks from '../../lib/util/addArrayOfBanks';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import getOSItem from '../../lib/util/getOSItem';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
 const canvas = createCanvas(50, 50);
@@ -25,8 +26,9 @@ export default class extends Command {
 		super(store, file, directory, {
 			description: 'Shows how much virtual GP you have',
 			cooldown: 3,
-			usage: '[page:int]',
-			requiredPermissions: ['ATTACH_FILES']
+			usage: '[page:int|name:string]',
+			requiredPermissions: ['ATTACH_FILES'],
+			aliases: ['b']
 		});
 	}
 
@@ -48,12 +50,17 @@ export default class extends Command {
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore
-	async run(msg: KlasaMessage, [page = 1]: [number]) {
+	async run(msg: KlasaMessage, [pageNumberOrItemName = 1]: [number | string]) {
 		await msg.author.settings.sync(true);
 		const coins: number = msg.author.settings.get(UserSettings.GP);
 		const _bank: Bank = msg.author.settings.get(UserSettings.Bank);
 
 		const bank: Bank = { ..._bank, 995: coins };
+
+		if (typeof pageNumberOrItemName === 'string') {
+			const item = getOSItem(pageNumberOrItemName);
+			return msg.send(`You have ${(bank[item.id] ?? 0).toLocaleString()}x ${item.name}.`);
+		}
 
 		for (const key in bank) {
 			if (bank[key] === 0) {
@@ -96,9 +103,14 @@ export default class extends Command {
 		}
 
 		if (msg.flagArgs.text) {
+			const debug = Boolean(msg.flagArgs.debug);
 			const textBank = [];
 			for (const [id, qty] of Object.entries(bank)) {
-				textBank.push(`${Items.get(parseInt(id))!.name}: ${qty.toLocaleString()}`);
+				textBank.push(
+					`${Items.get(parseInt(id))!.name}${
+						debug ? `[${id}]` : ''
+					}: ${qty.toLocaleString()}`
+				);
 			}
 
 			if (msg.flagArgs.full) {
@@ -143,16 +155,16 @@ export default class extends Command {
 		}
 
 		const chunkedObject = chunkObject(bank, 56);
-		const bankPage = chunkedObject[page - 1];
+		const bankPage = chunkedObject[pageNumberOrItemName - 1];
 
 		if (!bankPage) throw "You don't have any items on that page!";
 		const image = await task!.generateBankImage(
 			bank,
-			`${msg.author.username}'s Bank - Page ${page} of ${chunkedObject.length}`,
+			`${msg.author.username}'s Bank - Page ${pageNumberOrItemName} of ${chunkedObject.length}`,
 			true,
 			{
 				...msg.flagArgs,
-				page: page - 1
+				page: pageNumberOrItemName - 1
 			},
 			msg.author.settings.get(UserSettings.BankBackground)
 		);

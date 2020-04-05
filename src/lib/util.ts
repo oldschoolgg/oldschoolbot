@@ -6,7 +6,7 @@ import { Client } from 'discord.js';
 import { nodeCrypto, integer } from 'random-js';
 
 import { Tasks, Events } from './constants';
-import killableMonsters from './killableMonsters';
+import killableMonsters, { KillableMonster } from './killableMonsters';
 import { Bank } from './types';
 
 export function generateHexColorForCashStack(coins: number) {
@@ -163,10 +163,11 @@ export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
 
-export function findMonster(str: string) {
-	return killableMonsters.find(
+export function findMonster(str: string): KillableMonster | undefined {
+	const mon = killableMonsters.find(
 		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
 	);
+	return mon;
 }
 
 export function saveCtx(ctx: any) {

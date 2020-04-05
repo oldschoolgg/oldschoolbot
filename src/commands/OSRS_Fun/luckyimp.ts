@@ -1,23 +1,21 @@
-const { Command } = require('klasa');
-const {
-	Items,
-	Monsters: { LuckyImp }
-} = require('oldschooljs');
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { Items, Openables } from 'oldschooljs';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+export default class extends Command {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 1,
 			usage: '[quantity:int{1}]',
 			usageDelim: ' '
 		});
 	}
-	async run(msg, [qty = 1]) {
+
+	async run(msg: KlasaMessage, [qty = 1]: [number]) {
 		if (qty > 10 && msg.author.id !== '157797566833098752') {
 			throw `I can only catch 10 Lucky Imps at a time!`;
 		}
 
-		const loot = LuckyImp.kill(qty);
+		const loot = Openables.LuckyImp.open(qty);
 
 		const opened = `You caught ${qty} Lucky Imp${qty > 1 ? 's' : ''}`;
 
@@ -25,7 +23,7 @@ module.exports = class extends Command {
 
 		let display = `${opened} and received...\n`;
 		for (const [itemID, quantity] of Object.entries(loot)) {
-			display += `**${Items.get(parseInt(itemID)).name}:** ${quantity.toLocaleString()}`;
+			display += `**${Items.get(parseInt(itemID))?.name}:** ${quantity.toLocaleString()}`;
 			if (itemID === '9185') {
 				display += ' <:swampletics:656224747587108912>';
 			}
@@ -35,6 +33,8 @@ module.exports = class extends Command {
 			display += '\n';
 		}
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
 		return msg.sendLarge(display, `loot-from-${qty}-lucky-imps.txt`);
 	}
-};
+}
