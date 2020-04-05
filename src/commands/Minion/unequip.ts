@@ -12,7 +12,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range> <itemName:...string>',
+			usage: '<melee|mage|range|skilling|misc> <itemName:...string>',
 			usageDelim: ' '
 		});
 	}
