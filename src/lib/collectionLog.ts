@@ -1192,7 +1192,29 @@ export const skillCapes = {
 		'Firemaking cape(t)'
 	])
 };
-
+export const quest = {
+	various: transformArrayOfResolvableItems([
+		'Quest point hood',
+		'Quest point cape',
+		'Helm of neitiznot',
+		'Anti-dragon shield',
+		'Goldsmith gauntlets',
+		'Cooking gauntlets',
+		'Magic secateurs'
+	]),
+	gloves: transformArrayOfResolvableItems([
+		'Barrows gloves',
+		'Dragon gloves',
+		'Rune gloves',
+		'Adamant gloves',
+		'Mithril gloves',
+		'Black gloves',
+		'Steel gloves',
+		'Iron gloves',
+		'Bronze gloves',
+		'Hardleather gloves'
+	])
+};
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
@@ -1277,5 +1299,10 @@ export const collectionLogTypes = [
 		name: 'Skill capes',
 		aliases: ['skill capes', 'skill cape', 'skillcapes', 'skillcape'],
 		items: skillCapes
+	},
+	{
+		name: 'Quest',
+		aliases: ['quests', 'q', 'quest'],
+		items: quest
 	}
 ];
