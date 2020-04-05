@@ -1172,7 +1172,7 @@ export const diangoCollectionLog = {
 	]),
 	Other: transformArrayOfResolvableItems(['Mystery box', 'Stale baguette'])
 };
-export const skillCapes = {
+export const capes = {
 	hoods: transformArrayOfResolvableItems([
 		'Mining hood',
 		'Smithing hood',
@@ -1299,9 +1299,9 @@ export const collectionLogTypes = [
 		items: diangoCollectionLog
 	},
 	{
-		name: 'Skill capes',
-		aliases: ['skill capes', 'skill cape', 'skillcapes', 'skillcape'],
-		items: skillCapes
+		name: 'Capes',
+		aliases: ['skill capes', 'skill cape', 'skillcapes', 'skillcape', 'capes'],
+		items: capes
 	},
 	{
 		name: 'Quest',
