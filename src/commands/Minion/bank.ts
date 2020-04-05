@@ -26,7 +26,8 @@ export default class extends Command {
 			description: 'Shows how much virtual GP you have',
 			cooldown: 3,
 			usage: '[page:int]',
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: ['ATTACH_FILES'],
+			aliases: ['b']
 		});
 	}
 
