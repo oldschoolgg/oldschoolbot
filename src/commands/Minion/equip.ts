@@ -82,7 +82,7 @@ export default class extends BotCommand {
 			throw `You can't equip more than 1 of this item at once, as it isn't stackable!`;
 		}
 
-		await msg.author.removeItemFromBank(itemToEquip.id);
+		await msg.author.removeItemFromBank(itemToEquip.id, quantity);
 		const newGear = { ...currentEquippedGear };
 		newGear[slot] = {
 			item: itemToEquip.id,
