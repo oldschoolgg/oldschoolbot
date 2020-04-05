@@ -68,7 +68,7 @@ export default class extends BotCommand {
 			fish.timePerFish *
 			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / scaledTimePerFish);
+			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
 		}
 
 		if (fish.bait) {
@@ -80,22 +80,22 @@ export default class extends BotCommand {
 
 		const duration = quantity * scaledTimePerFish;
 
-		if (duration > Time.Minute * 30) {
-			throw `${
-				msg.author.minionName
-			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount of ${
 				fish.name
 			} you can fish is approximately ${Math.floor(
-				(Time.Minute * 30) / (Time.Second * fish.timePerFish) - 4
+				msg.author.maxTripLength / (Time.Second * fish.timePerFish) - 4
 			)}.`;
 		}
 
 		// Add some variability but limit the threshold so it's not abusable
-		if (quantity > Math.floor((Time.Minute * 30) / scaledTimePerFish) / 1.1) {
+		if (quantity > 20) {
 			if (roll(2)) {
-				quantity += rand(1, Math.ceil(3500 / quantity));
+				quantity += rand(1, quantity * 0.1);
 			} else {
-				quantity -= rand(1, Math.ceil(3500 / quantity));
+				quantity -= rand(1, quantity * 0.1);
 			}
 		}
 
