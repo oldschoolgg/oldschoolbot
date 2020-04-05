@@ -59,8 +59,8 @@ export default class extends Task {
 			[ore.id]: quantity
 		};
 
-		// Roll for pet at 1.5x chance
-		if (ore.petChance && rand(1, ore.petChance * 1.5) < quantity) {
+		// Roll for pet
+		if (ore.petChance && roll(ore.petChance - user.skillLevel(SkillsEnum.Mining) * 25)) {
 			loot[itemID('Rock golem')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
