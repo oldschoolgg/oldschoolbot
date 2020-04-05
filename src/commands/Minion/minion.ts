@@ -20,6 +20,7 @@ import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import bankHasItem from '../../lib/util/bankHasItem';
+import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -210,6 +211,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				monsterScoreChunk
 					.map(([monID, monKC]) => {
 						const mon = killableMonsters.find(m => m.id === parseInt(monID));
+						if (!mon) return `??[${monID}]: ${monKC}`;
 						return `${mon!.emoji} **${mon!.name}**: ${monKC}`;
 					})
 					.join('\n'),
@@ -472,10 +474,16 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-
-		let { timeToFinish } = monster;
 		const boosts = [];
+
+		let [timeToFinish, percentReduced] = reducedTimeFromKC(
+			monster,
+			msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 1
+		);
+
+		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC `);
+
+		const bank = msg.author.settings.get(UserSettings.Bank);
 		if (monster.itemInBankBoosts) {
 			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
 				if (!bankHasItem(bank, parseInt(itemID))) continue;

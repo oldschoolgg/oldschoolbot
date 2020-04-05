@@ -5,7 +5,7 @@ import { Bank } from './types';
 import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
 import itemID from './util/itemID';
 
-interface KillableMonster {
+export interface KillableMonster {
 	id: number;
 	name: string;
 	aliases: string[];
