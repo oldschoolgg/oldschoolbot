@@ -4,11 +4,22 @@ import { util, KlasaMessage, Command, CommandStore } from 'klasa';
 import { SettingsEntry, StringKeyedBank } from '../../lib/types';
 import badges from '../../lib/badges';
 import { Time } from '../../lib/constants';
-import { findMonster, stringMatches } from '../../lib/util';
+import { findMonster, stringMatches, toTitleCase, convertXPtoLVL } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import Skills from '../../lib/skills';
 
 const CACHE_TIME = Time.Minute * 5;
+
+interface SkillUser {
+	id: string;
+	totalxp?: number;
+	['minion.ironman']: boolean;
+	['skills.woodcutting']?: number;
+	['skills.mining']?: number;
+	['skills.smithing']?: number;
+	['skills.firemaking']?: number;
+}
 
 interface GPUser {
 	id: string;
@@ -102,7 +113,7 @@ export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the people with the most virtual GP.',
-			usage: '[pets|gp|petrecords|kc|cl|qp] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -295,6 +306,58 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 						.join('\n')
 				),
 			`KC Leaderboard for ${monster.name}`
+		);
+	}
+
+	async skills(msg: KlasaMessage, [inputSkill = 'overall']: [string]) {
+		let res: SkillUser[] = [];
+		const skill = Skills.find(_skill =>
+			_skill.aliases.some(name => stringMatches(name, inputSkill))
+		);
+
+		if (inputSkill === 'overall') {
+			res = await this.query(
+				`SELECT id, "skills.woodcutting" + "skills.mining" + "skills.smithing" as totalxp FROM users ORDER BY totalxp DESC LIMIT 2000;`
+			);
+		} else {
+			if (!skill) {
+				throw `That's not a valid skill.`;
+			}
+
+			res = await this.query(
+				`SELECT "skills.${skill.id}", id, "minion.ironman" FROM users ORDER BY "skills.${skill.id}" DESC LIMIT 2000;`
+			);
+		}
+
+		const onlyForGuild = msg.flagArgs.server;
+
+		if (onlyForGuild && msg.guild) {
+			res = res.filter((user: SkillUser) => msg.guild!.members.has(user.id));
+		}
+
+		if (msg.flagArgs.im || msg.flagArgs.ironman) {
+			res = res.filter((user: SkillUser) => user['minion.ironman']);
+		}
+
+		this.doMenu(
+			msg,
+			util.chunk(res, 10).map(subList =>
+				subList
+					.map((obj: SkillUser) => {
+						const objKey = inputSkill === 'overall' ? 'totalxp' : `skills.${skill?.id}`;
+						// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+						// @ts-ignore
+						const skillXP = obj[objKey] ?? 0;
+						const skillLVL =
+							inputSkill === 'overall' ? '' : `(${convertXPtoLVL(skillXP)})`;
+
+						return `**${this.getUsername(
+							obj.id
+						)}:** ${skillXP.toLocaleString()} ${skillLVL}`;
+					})
+					.join('\n')
+			),
+			`${skill ? toTitleCase(skill.id) : 'Overall'} Leaderboard`
 		);
 	}
 

@@ -70,6 +70,7 @@ const bars: Bar[] = [
 ];
 
 const Smithing = {
+	aliases: ['smithing'],
 	Bars: bars,
 	id: SkillsEnum.Smithing,
 	emoji: Emoji.Smithing

@@ -113,6 +113,7 @@ const prospectorItems: { [key: number]: number } = {
 };
 
 const Mining = {
+	aliases: ['mining'],
 	Ores: ores,
 	id: SkillsEnum.Mining,
 	emoji: Emoji.Mining,
