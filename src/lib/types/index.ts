@@ -1,4 +1,3 @@
-import Monster from 'oldschooljs/dist/structures/Monster';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -52,14 +51,6 @@ export interface KillWorkerOptions {
 	bossName: string;
 	quantity: number;
 	limit: number;
-}
-
-export interface KillableMonster extends Monster {
-	table: Monster;
-	timeToFinish: number;
-	emoji: string;
-	wildy: boolean;
-	canBeKilled: boolean;
 }
 
 export const enum SkillsEnum {

@@ -5,7 +5,7 @@ import { Bank } from './types';
 import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
 import itemID from './util/itemID';
 
-interface KillableMonster {
+export interface KillableMonster {
 	id: number;
 	name: string;
 	aliases: string[];
@@ -130,7 +130,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 8,
 		itemsRequired: ['Armadyl chestplate', 'Armadyl chainskirt'],
 		notifyDrops: ['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage'],
-		qpRequired: 0
+		qpRequired: 205
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -149,7 +149,7 @@ const killableMonsters: KillableMonster[] = [
 			"Ahrim's robeskirt"
 		],
 		notifyDrops: ['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling'],
-		qpRequired: 0
+		qpRequired: 75
 	},
 	{
 		id: Monsters.GeneralGraardor.id,
