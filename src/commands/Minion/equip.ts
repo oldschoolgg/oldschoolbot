@@ -63,12 +63,13 @@ export default class extends BotCommand {
 		const equippedInThisSlot = currentEquippedGear[slot];
 		if (equippedInThisSlot) {
 			const newGear = { ...currentEquippedGear };
-			newGear[slot] = null;
 			msg.author.log(
 				`automatically unequipping ${itemNameFromID(
 					newGear[slot]!.item
 				)}, so they can equip ${itemName}`
 			);
+			newGear[slot] = null;
+
 			await msg.author.addItemsToBank({
 				[equippedInThisSlot.item]: equippedInThisSlot.quantity
 			});
