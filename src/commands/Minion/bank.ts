@@ -96,9 +96,14 @@ export default class extends Command {
 		}
 
 		if (msg.flagArgs.text) {
+			const debug = Boolean(msg.flagArgs.debug);
 			const textBank = [];
 			for (const [id, qty] of Object.entries(bank)) {
-				textBank.push(`${Items.get(parseInt(id))!.name}: ${qty.toLocaleString()}`);
+				textBank.push(
+					`${Items.get(parseInt(id))!.name}${
+						debug ? `[${id}]` : ''
+					}: ${qty.toLocaleString()}`
+				);
 			}
 
 			if (msg.flagArgs.full) {
