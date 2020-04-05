@@ -6,7 +6,7 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 export default class extends Task {
-	async run({itemName, totalValue, quantity, channelID, userID}: AlchingActivityTaskOptions) {
+	async run({ itemName, totalValue, quantity, channelID, userID }: AlchingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 
 		await user.settings.update(
@@ -25,6 +25,6 @@ export default class extends Task {
 
 		this.client.queuePromise(() => {
 			channel.send(str);
-		})
+		});
 	}
 }

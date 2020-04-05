@@ -80,10 +80,10 @@ export default class extends BotCommand {
 		if (!hasItem) {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
-		if(!hasFireRune) {
+		if (!hasFireRune) {
 			throw `You don't have ${quantity * 5}x ${fireRune.name}`;
 		}
-		if(!hasNatureRune) {
+		if (!hasNatureRune) {
 			throw `You don't have ${quantity}x ${natureRune.name}`;
 		}
 
@@ -92,14 +92,17 @@ export default class extends BotCommand {
 		// Confirm the user wants to alch the item(s)
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const alchMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to High Alch ${quantity}x ${osItem.name} for ${totalValue}gp (${toKMB(
-					totalValue
-				)}).`
+				`${
+					msg.author
+				}, say \`confirm\` to confirm that you want to High Alch ${quantity}x ${
+					osItem.name
+				} for ${totalValue}gp (${toKMB(totalValue)}).`
 			);
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
-						_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -115,9 +118,9 @@ export default class extends BotCommand {
 			itemName: osItem.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			quantity: quantity,
-			duration: duration,
-			totalValue: totalValue,
+			quantity,
+			duration,
+			totalValue,
 			type: Activity.Alching,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
@@ -125,13 +128,13 @@ export default class extends BotCommand {
 
 		// Remove alched items, as well as runes from bank
 		await msg.author.removeItemFromBank(osItem.id, quantity);
-		await msg.author.removeItemFromBank(fireRune.id, quantity*5);
+		await msg.author.removeItemFromBank(fireRune.id, quantity * 5);
 		await msg.author.removeItemFromBank(natureRune.id, quantity);
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		let response = `${msg.author.minionName} is now alching ${quantity}x ${
+		const response = `${msg.author.minionName} is now alching ${quantity}x ${
 			osItem.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
