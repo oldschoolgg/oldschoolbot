@@ -27,7 +27,7 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion. Use the command \`${msg.guild?.settings.get(
 				GuildSettings.Prefix
-				)}minion buy\` to get one.`;
+			)}minion buy\` to get one.`;
 		}
 
 		if (msg.author.minionIsBusy) {
@@ -41,7 +41,7 @@ export default class extends BotCommand {
 
 		itemName = itemName.toLowerCase();
 		const osItem = Items.get(cleanItemName(itemName)) as Item;
-		if (!osItem) throw "That is not a valid item.";
+		if (!osItem) throw 'That is not a valid item.';
 		const highAlchValue = osItem.highalch;
 
 		const natureRune = Items.get(cleanItemName('Nature rune'))!;
@@ -54,7 +54,7 @@ export default class extends BotCommand {
 		const numNatureRunes = userBank[natureRune.id];
 
 		// Alching is a 5-tick/3 second action
-		const timePerAlch = Time.Second * 3;	
+		const timePerAlch = Time.Second * 3;
 
 		// Calculates the max number of alchs based on the max duration, runes, and number of items to be alched
 		let maxCasts = Math.min(Math.min(numFireRunes / 5, numNatureRunes), numAlchables);
@@ -65,7 +65,7 @@ export default class extends BotCommand {
 			quantity = maxCasts;
 		}
 
-		if (!highAlchValue && highAlchValue == 0) throw `That's not a valid item you can alch.`;
+		if (!highAlchValue && highAlchValue === 0) throw `That's not a valid item you can alch.`;
 
 		const duration = quantity * timePerAlch;
 
