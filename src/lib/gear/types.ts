@@ -3,7 +3,9 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 export enum GearSetupTypes {
 	Melee = 'melee',
 	Mage = 'mage',
-	Range = 'range'
+	Range = 'range',
+	Misc = 'misc',
+	Skilling = 'skilling'
 }
 
 export interface GearSlotItem {

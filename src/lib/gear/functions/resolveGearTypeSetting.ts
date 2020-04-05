@@ -9,5 +9,9 @@ export default function resolveGearTypeSetting(type: GearTypes.GearSetupTypes) {
 			return UserSettings.Gear.Mage;
 		case GearTypes.GearSetupTypes.Range:
 			return UserSettings.Gear.Range;
+		case GearTypes.GearSetupTypes.Skilling:
+			return UserSettings.Gear.Skilling;
+		case GearTypes.GearSetupTypes.Misc:
+			return UserSettings.Gear.Misc;
 	}
 }

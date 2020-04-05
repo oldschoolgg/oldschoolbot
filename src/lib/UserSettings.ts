@@ -52,5 +52,7 @@ export namespace UserSettings {
 		export const Melee = T<GearTypes.GearSetup>(`gear.melee`);
 		export const Range = T<GearTypes.GearSetup>(`gear.range`);
 		export const Mage = T<GearTypes.GearSetup>(`gear.mage`);
+		export const Misc = T<GearTypes.GearSetup>(`gear.misc`);
+		export const Skilling = T<GearTypes.GearSetup>(`gear.skilling`);
 	}
 }

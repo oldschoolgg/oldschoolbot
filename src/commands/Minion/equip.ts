@@ -6,6 +6,7 @@ import { GearTypes } from '../../lib/gear';
 import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { itemNameFromID } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -13,7 +14,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range> [quantity:integer{1}] <itemName:...string>',
+			usage: '<melee|mage|range|skilling|misc> [quantity:integer{1}] <itemName:...string>',
 			usageDelim: ' '
 		});
 	}
@@ -23,7 +24,7 @@ export default class extends BotCommand {
 		[gearType, quantity = 1, itemName]: [GearTypes.GearSetupTypes, number, string]
 	): Promise<KlasaMessage> {
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
-		console.log(`${msg.author.username} tried to equip ${quantity}x ${itemName}`);
+
 		const itemToEquip = getOSItem(itemName);
 		if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) {
 			throw `This item isn't equippable.`;
@@ -62,9 +63,12 @@ export default class extends BotCommand {
 		const equippedInThisSlot = currentEquippedGear[slot];
 		if (equippedInThisSlot) {
 			const newGear = { ...currentEquippedGear };
-			console.log(newGear);
 			newGear[slot] = null;
-
+			msg.author.log(
+				`automatically unequipping ${itemNameFromID(
+					newGear[slot]!.item
+				)}, so they can equip ${itemName}`
+			);
 			await msg.author.addItemsToBank({
 				[equippedInThisSlot.item]: equippedInThisSlot.quantity
 			});
@@ -83,6 +87,8 @@ export default class extends BotCommand {
 			item: itemToEquip.id,
 			quantity
 		};
+
+		msg.author.log(`equipping ${quantity}x ${itemToEquip.name}[${itemToEquip.id}]`);
 
 		await msg.author.settings.update(gearTypeSetting, newGear);
 

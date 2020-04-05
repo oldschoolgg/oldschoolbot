@@ -45,4 +45,6 @@ Client.defaultUserSchema
 			.add('melee', 'any', { default: Gear.defaultGear })
 			.add('mage', 'any', { default: Gear.defaultGear })
 			.add('range', 'any', { default: Gear.defaultGear })
+			.add('misc', 'any', { default: Gear.defaultGear })
+			.add('skilling', 'any', { default: Gear.defaultGear })
 	);
