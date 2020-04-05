@@ -11,17 +11,19 @@ import Buyables from '../../lib/buyables';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<name:string>',
+			usage: '[name:string]',
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true
 		});
 	}
 
-	async run(msg: KlasaMessage, [buyableName]: [string]) {
+	async run(msg: KlasaMessage, [buyableName = '']: [string]) {
 		const buyable = Buyables.find(item => stringMatches(buyableName, item.name));
 		if (!buyable) {
-			throw `I don't recognize that item.`;
+			throw `I don't recognize that item, the items you can buy are: ${Buyables.map(
+				item => item.name
+			).join(', ').}`;
 		}
 
 		await msg.author.settings.sync(true);
