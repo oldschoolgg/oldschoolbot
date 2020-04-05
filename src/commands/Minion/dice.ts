@@ -64,7 +64,7 @@ export default class extends BotCommand {
 			}
 
 			embed.setDescription(
-				`You rolled **${roll}** on the percentile dice, and you ${
+				`${msg.author.username} rolled **${roll}** on the percentile dice, and you ${
 					won ? 'won' : 'lost'
 				} ${Util.toKMB(amountToAdd - gp)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
 			);

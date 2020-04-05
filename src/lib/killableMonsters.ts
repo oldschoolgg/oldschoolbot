@@ -418,7 +418,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: ["Karil's crossbow"],
-		notifyDrops: ['Dragon warhammer'],
+		notifyDrops: ['Dragon warhammer', 'Curved bone'],
 		qpRequired: 30
 	},
 	{
