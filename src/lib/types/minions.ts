@@ -65,6 +65,13 @@ export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }
 
+export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
+	itemName: string;
+	channelID: string;
+	quantity: number;
+	totalValue: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: MonsterActivityTaskOptions[];
 }
@@ -93,4 +100,5 @@ export type MinionActivityTask =
 	| Tasks.WoodcuttingActivity
 	| Tasks.RunecraftActivity
 	| Tasks.FiremakingActivity
-	| Tasks.QuestingActivity;
+	| Tasks.QuestingActivity
+	| Tasks.AlchingActivity;

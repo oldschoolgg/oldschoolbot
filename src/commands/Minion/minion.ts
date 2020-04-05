@@ -58,7 +58,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|alch] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -359,6 +359,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await this.client.commands
 			.get('fish')!
 			.run(msg, [quantity, fishName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async alch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		await this.client.commands
+			.get('alch')!
+			.run(msg, [quantity, itemName])
 			.catch(err => {
 				throw err;
 			});

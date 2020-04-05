@@ -27,7 +27,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
-	AgilityActivityTaskOptions
+	AgilityActivityTaskOptions,
+	AlchingActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skilling/skills/smithing';
@@ -447,6 +448,12 @@ export default class extends Extendable {
 				}x Essence into ${rune!.name}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Runecraft
 				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
+			}
+			case Activity.Alching: {
+				const data = currentTask as AlchingActivityTaskOptions;
+
+
+				return `${this.minionName} is currently alching ${data.quantity}x ${data.itemName}, for a value of ${data.totalValue}. Approximately ${formattedDuration} remaining.`
 			}
 		}
 	}
