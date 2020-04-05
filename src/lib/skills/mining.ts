@@ -60,7 +60,7 @@ const ores: Ore[] = [
 	},
 	{
 		level: 40,
-		xp: 65,
+		xp: 45,
 		id: 444,
 		name: 'Gold ore',
 		respawnTime: 2,
