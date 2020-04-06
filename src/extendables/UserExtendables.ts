@@ -452,7 +452,7 @@ export default class extends Extendable {
 			case Activity.Alching: {
 				const data = currentTask as AlchingActivityTaskOptions;
 
-				return `${this.minionName} is currently alching ${data.quantity}x ${data.itemName}, for a value of ${data.totalValue}. Approximately ${formattedDuration} remaining.`
+				return `${this.minionName} is currently alching ${data.quantity}x ${data.itemName}, for a value of ${data.totalValue}. Approximately ${formattedDuration} remaining.`;
 			}
 		}
 	}
