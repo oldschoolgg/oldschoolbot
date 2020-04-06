@@ -505,7 +505,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 1
 		);
 
-		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC `);
+		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		if (monster.itemInBankBoosts) {
