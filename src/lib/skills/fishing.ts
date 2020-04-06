@@ -9,8 +9,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw shrimps'),
 		name: 'Shrimps',
 		petChance: 435_165,
-		timePerFish: 3.6,
-		itemRequirement: itemID('Small fishing net')
+		timePerFish: 3.6
 	},
 	{
 		level: 5,
@@ -19,8 +18,7 @@ const fishes: Fish[] = [
 		name: 'Sardine',
 		petChance: 528_000,
 		bait: itemID('Fishing bait'),
-		timePerFish: 3.6,
-		itemRequirement: itemID('Fishing rod')
+		timePerFish: 3.6
 	},
 	{
 		level: 5,
@@ -29,8 +27,7 @@ const fishes: Fish[] = [
 		name: 'Karambwanji',
 		petChance: 443_697,
 		qpRequired: 15,
-		timePerFish: 3.6,
-		itemRequirement: itemID('Small fishing net')
+		timePerFish: 3.6
 	},
 	{
 		level: 10,
@@ -39,8 +36,7 @@ const fishes: Fish[] = [
 		name: 'Herring',
 		petChance: 528_000,
 		bait: itemID('Fishing bait'),
-		timePerFish: 3.6,
-		itemRequirement: itemID('Fishing rod')
+		timePerFish: 3.6
 	},
 	{
 		level: 15,
@@ -48,8 +44,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw anchovies'),
 		name: 'Anchovies',
 		petChance: 435_165,
-		timePerFish: 7,
-		itemRequirement: itemID('Small fishing net')
+		timePerFish: 7
 	},
 	{
 		level: 16,
@@ -57,8 +52,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw mackerel'),
 		name: 'Mackerel',
 		petChance: 382_609,
-		timePerFish: 3.6,
-		itemRequirement: itemID('Big fishing net')
+		timePerFish: 3.6
 	},
 	{
 		level: 20,
@@ -67,8 +61,7 @@ const fishes: Fish[] = [
 		name: 'Trout',
 		petChance: 461_808,
 		bait: itemID('Feather'),
-		timePerFish: 4.5,
-		itemRequirement: itemID('Fly fishing rod')
+		timePerFish: 4.5
 	},
 	{
 		level: 23,
@@ -76,8 +69,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw cod'),
 		name: 'Cod',
 		petChance: 382_609,
-		timePerFish: 5,
-		itemRequirement: itemID('Big fishing net')
+		timePerFish: 5
 	},
 	{
 		level: 25,
@@ -86,8 +78,7 @@ const fishes: Fish[] = [
 		name: 'Pike',
 		petChance: 305_792,
 		bait: itemID('Fishing bait'),
-		timePerFish: 6,
-		itemRequirement: itemID('Fishing rod')
+		timePerFish: 6
 	},
 	{
 		level: 30,
@@ -96,8 +87,7 @@ const fishes: Fish[] = [
 		name: 'Salmon',
 		petChance: 461_808,
 		bait: itemID('Feather'),
-		timePerFish: 5.04,
-		itemRequirement: itemID('Fly fishing rod')
+		timePerFish: 5.04
 	},
 	{
 		level: 35,
@@ -105,8 +95,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw tuna'),
 		name: 'Tuna',
 		petChance: 128_885,
-		timePerFish: 9.6,
-		itemRequirement: itemID('Harpoon')
+		timePerFish: 9.6
 	},
 	{
 		level: 40,
@@ -114,8 +103,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw lobster'),
 		name: 'Lobster',
 		petChance: 116_129,
-		timePerFish: 11,
-		itemRequirement: itemID('Lobster pot')
+		timePerFish: 11
 	},
 	{
 		level: 46,
@@ -124,7 +112,6 @@ const fishes: Fish[] = [
 		name: 'Bass',
 		petChance: 382_609,
 		timePerFish: 10.3,
-		itemRequirement: itemID('Big fishing net'),
 		bigFish: itemID('Big bass'),
 		bigFishRate: 1000
 	},
@@ -135,7 +122,6 @@ const fishes: Fish[] = [
 		name: 'Swordfish',
 		petChance: 128_885,
 		timePerFish: 11,
-		itemRequirement: itemID('Harpoon'),
 		bigFish: itemID('Big swordfish'),
 		bigFishRate: 2500
 	},
@@ -146,8 +132,7 @@ const fishes: Fish[] = [
 		name: 'Monkfish',
 		petChance: 138_583,
 		qpRequired: 100,
-		timePerFish: 13.5,
-		itemRequirement: itemID('Small fishing net')
+		timePerFish: 13.5
 	},
 	{
 		level: 65,
@@ -156,8 +141,7 @@ const fishes: Fish[] = [
 		name: 'Karambwan',
 		petChance: 170_874,
 		bait: itemID('Raw karambwanji'),
-		timePerFish: 4.5,
-		itemRequirement: itemID('Karambwan vessel')
+		timePerFish: 4.5
 	},
 	{
 		level: 76,
@@ -166,7 +150,6 @@ const fishes: Fish[] = [
 		name: 'Shark',
 		petChance: 82_243,
 		timePerFish: 30,
-		itemRequirement: itemID('Harpoon'),
 		bigFish: itemID('Big shark'),
 		bigFishRate: 5000
 	},
@@ -178,8 +161,7 @@ const fishes: Fish[] = [
 		petChance: 78_649,
 		bait: itemID('Sandworms'),
 		qpRequired: 40,
-		timePerFish: 18.75,
-		itemRequirement: itemID('Fishing rod')
+		timePerFish: 18.75
 	},
 	{
 		level: 85,
@@ -188,8 +170,7 @@ const fishes: Fish[] = [
 		name: 'Dark crab',
 		petChance: 149_434,
 		bait: itemID('Dark fishing bait'),
-		timePerFish: 11.7,
-		itemRequirement: itemID('Lobster pot')
+		timePerFish: 11.7
 	},
 	{
 		level: 48,
@@ -198,8 +179,7 @@ const fishes: Fish[] = [
 		name: 'Barbarian fishing',
 		petChance: 426_954,
 		bait: itemID('Feather'),
-		timePerFish: 3,
-		itemRequirement: itemID('Barbarian rod')
+		timePerFish: 3
 	}
 ];
 

@@ -202,7 +202,6 @@ export interface Fish {
 	petChance: number;
 	timePerFish: number;
 	bait?: number;
-	itemRequirement: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;

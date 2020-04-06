@@ -58,13 +58,6 @@ export default class extends BotCommand {
 			throw `You need at least 15 Agility to catch those!`;
 		}
 
-		await msg.author.settings.sync(true);
-
-		const hasItem = await msg.author.hasItem(fish.itemRequirement, 1);
-		if (!hasItem) {
-			throw `${msg.author.minionName} doesn't have the proper equipment to fish ${fish.name}.`;
-		}
-
 		// If no quantity provided, set it to the max.
 		const scaledTimePerFish =
 			Time.Second *
