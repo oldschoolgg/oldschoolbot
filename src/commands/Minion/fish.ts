@@ -92,8 +92,8 @@ export default class extends BotCommand {
 			}
 		}
 
-		const fifteenPercent = Math.floor(calcPercentOfNum(15, quantity));
-		quantity += rand(-fifteenPercent, fifteenPercent);
+		const tenPercent = Math.floor(calcPercentOfNum(10, quantity));
+		quantity += rand(-tenPercent, tenPercent);
 
 		const data: FishingActivityTaskOptions = {
 			fishID: fish.id,
