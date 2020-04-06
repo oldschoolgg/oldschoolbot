@@ -73,7 +73,8 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
 		}
-		const duration = quantity * scaledTimePerFish;
+
+		let duration = quantity * scaledTimePerFish;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -92,8 +93,8 @@ export default class extends BotCommand {
 			}
 		}
 
-		const tenPercent = Math.floor(calcPercentOfNum(10, quantity));
-		quantity += rand(-tenPercent, tenPercent);
+		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
+		duration += rand(-tenPercent, tenPercent);
 
 		const data: FishingActivityTaskOptions = {
 			fishID: fish.id,
