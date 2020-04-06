@@ -1178,6 +1178,8 @@ export const capes = {
 		'Smithing hood',
 		'Woodcutting hood',
 		'Firemaking hood',
+		'Fishing hood',
+		'Agility hood',
 		'Quest point hood'
 	]),
 	capes: transformArrayOfResolvableItems([
@@ -1185,6 +1187,8 @@ export const capes = {
 		'Smithing cape',
 		'Woodcutting cape',
 		'Firemaking cape',
+		'Fishing cape',
+		'Agility cape',
 		'Quest point cape'
 	]),
 	'trimmed capes': transformArrayOfResolvableItems([
@@ -1192,6 +1196,8 @@ export const capes = {
 		'Smithing cape(t)',
 		'Woodcut. cape(t)',
 		'Firemaking cape(t)',
+		'Fishing cape(t)',
+		'Agility cape(t)',
 		'Quest point cape (t)'
 	])
 };

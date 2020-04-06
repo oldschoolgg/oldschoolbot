@@ -19,7 +19,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [buyableName = '']: [string]) {
-		const buyable = Buyables.find(item => stringMatches(buyableName, item.name));
+		const buyable = Buyables.find(
+			item =>
+				stringMatches(buyableName, item.name) ||
+				(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
+		);
+
 		if (!buyable) {
 			throw `I don't recognize that item, the items you can buy are: ${Buyables.map(
 				item => item.name
