@@ -211,6 +211,7 @@ const anglerItems: { [key: number]: number } = {
 };
 
 const Fishing = {
+	aliases: ['fishing'],
 	Fishes: fishes,
 	id: SkillsEnum.Fishing,
 	emoji: Emoji.Fishing,

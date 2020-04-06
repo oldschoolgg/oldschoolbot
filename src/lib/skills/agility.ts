@@ -84,6 +84,7 @@ const courses: Course[] = [
 ];
 
 const Agility = {
+	aliases: ['agility'],
 	Courses: courses,
 	id: SkillsEnum.Agility,
 	emoji: Emoji.Agility
