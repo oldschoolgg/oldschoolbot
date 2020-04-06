@@ -3,14 +3,16 @@ import { Emoji } from '../constants';
 
 const courses: Course[] = [
 	{
-		name: 'Gnome stronghold',
+		name: 'Gnome Stronghold Agility Course',
+		aliases: ['gnome stronghold', 'gnome'],
 		level: 1,
 		xp: 88,
 		lapTime: 34,
 		petChance: 35_609
 	},
 	{
-		name: 'Draynor',
+		name: 'Draynor Village Rooftop Course',
+		aliases: ['draynor'],
 		level: 10,
 		xp: 120,
 		marksPer60: 12,
@@ -18,7 +20,8 @@ const courses: Course[] = [
 		petChance: 33_005
 	},
 	{
-		name: 'Al kharid',
+		name: 'Al Kharid Rooftop Course',
+		aliases: ['al kharid'],
 		level: 20,
 		xp: 180,
 		marksPer60: 8,
@@ -26,7 +29,8 @@ const courses: Course[] = [
 		petChance: 26_648
 	},
 	{
-		name: 'Varrock',
+		name: 'Varrock Rooftop Course',
+		aliases: ['varrock'],
 		level: 30,
 		xp: 238,
 		marksPer60: 12,
@@ -34,7 +38,8 @@ const courses: Course[] = [
 		petChance: 24_410
 	},
 	{
-		name: 'Canifis',
+		name: 'Canifis Rooftop Course',
+		aliases: ['canifis'],
 		level: 40,
 		xp: 240,
 		marksPer60: 19,
@@ -42,7 +47,8 @@ const courses: Course[] = [
 		petChance: 36_842
 	},
 	{
-		name: 'Falador',
+		name: 'Falador Rooftop Course',
+		aliases: ['fally', 'falador'],
 		level: 50,
 		xp: 440,
 		marksPer60: 13,
@@ -50,7 +56,8 @@ const courses: Course[] = [
 		petChance: 26_806
 	},
 	{
-		name: 'Seers village',
+		name: `Seers' Village Rooftop Course`,
+		aliases: ['seers', 'seers village'],
 		level: 60,
 		xp: 570,
 		marksPer60: 12,
@@ -58,7 +65,8 @@ const courses: Course[] = [
 		petChance: 35_205
 	},
 	{
-		name: 'Pollnivneach',
+		name: 'Pollnivneach Rooftop Course',
+		aliases: ['pol', 'pollnivneach'],
 		level: 70,
 		xp: 890,
 		marksPer60: 9,
@@ -66,7 +74,8 @@ const courses: Course[] = [
 		petChance: 33_422
 	},
 	{
-		name: 'Rellekka',
+		name: 'Rellekka Rooftop Course',
+		aliases: ['rel', 'rellekka'],
 		level: 80,
 		xp: 780,
 		marksPer60: 14,
@@ -74,7 +83,8 @@ const courses: Course[] = [
 		petChance: 31_063
 	},
 	{
-		name: 'Ardougne',
+		name: 'Ardougne Rooftop Course',
+		aliases: ['ardy', 'ardougne'],
 		level: 90,
 		xp: 793,
 		marksPer60: 22,

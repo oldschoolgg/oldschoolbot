@@ -214,4 +214,5 @@ export interface Course {
 	marksPer60?: number;
 	lapTime: number;
 	petChance: number;
+	aliases: string[];
 }

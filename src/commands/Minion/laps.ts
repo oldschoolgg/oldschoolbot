@@ -33,9 +33,8 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const course = Agility.Courses.find(
-			course =>
-				stringMatches(course.name, name) || stringMatches(course.name.split(' ')[0], name)
+		const course = Agility.Courses.find(course =>
+			course.aliases.some(alias => stringMatches(alias, name))
 		);
 
 		if (!course) {
