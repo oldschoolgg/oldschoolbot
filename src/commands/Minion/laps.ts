@@ -44,7 +44,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
-			throw `${msg.author.minionName} needs ${course.level} agility to train at ${course.name}'s course.`;
+			throw `${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`;
 		}
 
 		// If no quantity provided, set it to the max.
