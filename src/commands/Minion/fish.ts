@@ -1,8 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { roll } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
+import { stringMatches, formatDuration, rand, roll } from '../../lib/util';
 import Fishing from '../../lib/skills/fishing';
 import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
