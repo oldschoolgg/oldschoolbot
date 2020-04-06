@@ -364,10 +364,23 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
+<<<<<<< HEAD
+=======
+	async laps(msg: KlasaMessage, [quantity, courseName]: [number, string]) {
+		await this.client.commands
+			.get('laps')!
+			.run(msg, [quantity, courseName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+>>>>>>> Should fix remaining conflicts
 	async alch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		await this.client.commands
 			.get('alch')!
 			.run(msg, [quantity, itemName])
+<<<<<<< HEAD
 			.catch(err => {
 				throw err;
 			});
@@ -377,10 +390,12 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await this.client.commands
 			.get('laps')!
 			.run(msg, [quantity, courseName])
+=======
+>>>>>>> Should fix remaining conflicts
 			.catch(err => {
 				throw err;
 			});
-	}
+		}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
 		await this.client.commands
