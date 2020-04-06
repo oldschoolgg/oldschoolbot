@@ -63,7 +63,7 @@ const ores: Ore[] = [
 		xp: 45,
 		id: 444,
 		name: 'Gold ore',
-		respawnTime: 2,
+		respawnTime: 4,
 		petChance: 300_000,
 		nuggets: true
 	},
