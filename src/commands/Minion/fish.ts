@@ -63,8 +63,18 @@ export default class extends BotCommand {
 			Time.Second *
 			fish.timePerFish *
 			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
+
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
+		}
+
+		// Add some variability but limit the threshold so it's not abusable
+		if (quantity > 20) {
+			if (roll(2)) {
+				quantity += rand(1, quantity * 0.1);
+			} else {
+				quantity -= rand(1, quantity * 0.1);
+			}
 		}
 
 		if (fish.bait) {
@@ -84,15 +94,6 @@ export default class extends BotCommand {
 			} you can fish is approximately ${Math.floor(
 				msg.author.maxTripLength / (Time.Second * fish.timePerFish) - 4
 			)}.`;
-		}
-
-		// Add some variability but limit the threshold so it's not abusable
-		if (quantity > 20) {
-			if (roll(2)) {
-				quantity += rand(1, quantity * 0.1);
-			} else {
-				quantity -= rand(1, quantity * 0.1);
-			}
 		}
 
 		const data: FishingActivityTaskOptions = {
