@@ -1,23 +1,23 @@
-import { Items } from 'oldschooljs';
-
 import { ItemTuple } from '../types';
 import { stringMatches } from '../util';
-import filterables from '../filterables';
+import { filterableTypes } from '../filterables';
 
 export default function filterByCategory(filterQuery: string, items: ItemTuple[]) {
 	const filteredBank: ItemTuple[] = [];
-	const filtered = filterables.find(
-		filtered =>
-			stringMatches(filtered.name, filterQuery) ||
-			stringMatches(filtered.name.split(' ')[0], filterQuery)
+	const filtered = filterableTypes.find(_filtered =>
+		_filtered.aliases.some(name => stringMatches(name, filterQuery))
 	);
 
-	const filterList = filtered?.items;
+	if (!filtered) {
+		throw `That's not a valid filter type. The valid types are: ${filterableTypes
+			.map(filtered => filtered.name)
+			.join(', ')}`;
+	}
+
+	const filterList = Object.values(filtered.items).flat(100);
 
 	for (const item of items) {
-		if (typeof filterList === 'undefined') {
-			throw '';
-		} else if (filterList.some(x => x === Items.get(item[0])!.name)) {
+		if (filterList.some(x => x === item[0])!) {
 			filteredBank.push(item);
 		}
 	}
