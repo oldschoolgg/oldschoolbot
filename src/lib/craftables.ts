@@ -425,6 +425,81 @@ const Craftables: Craftable[] = [
 		},
 		firemakingLevel: 85,
 		cantHaveItems: {}
+	},
+	{
+		name: 'Graceful',
+		inputItems: {
+			[itemID('Mark of grace')]: 260
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1,
+			[itemID('Graceful top')]: 1,
+			[itemID('Graceful legs')]: 1,
+			[itemID('Graceful gloves')]: 1,
+			[itemID('Graceful boots')]: 1,
+			[itemID('Graceful cape')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Graceful hood',
+		inputItems: {
+			[itemID('Mark of grace')]: 35
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Graceful top',
+		inputItems: {
+			[itemID('Mark of grace')]: 55
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Graceful legs',
+		inputItems: {
+			[itemID('Mark of grace')]: 60
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Graceful gloves',
+		inputItems: {
+			[itemID('Mark of grace')]: 30
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Graceful boots',
+		inputItems: {
+			[itemID('Mark of grace')]: 40
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Graceful cape',
+		inputItems: {
+			[itemID('Mark of grace')]: 40
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		},
+		cantHaveItems: {}
 	}
 ];
 

@@ -7,6 +7,7 @@ interface Buyable {
 	outputItems: Bank;
 	qpRequired: number;
 	gpCost: number;
+	aliases?: string[];
 }
 
 const Buyables: Buyable[] = [
@@ -138,6 +139,15 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 40,
 		gpCost: 2_500_000
+	},
+	{
+		name: 'Huge Fishing Bait Pack',
+		aliases: ['fishing bait'],
+		outputItems: {
+			[itemID('Fishing bait')]: 10_000
+		},
+		qpRequired: 0,
+		gpCost: 10_000 * 5
 	}
 ];
 

@@ -24,7 +24,9 @@ import {
 	ActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
-	FiremakingActivityTaskOptions
+	FiremakingActivityTaskOptions,
+	FishingActivityTaskOptions,
+	AgilityActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Smithing from '../lib/skills/smithing';
@@ -32,6 +34,8 @@ import Firemaking from '../lib/skills/firemaking';
 import Woodcutting from '../lib/skills/woodcutting';
 import Skills from '../lib/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import Fishing from '../lib/skills/fishing';
+import Agility from '../lib/skills/agility';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -326,6 +330,30 @@ export default class extends Extendable {
 				return `${this.minionName} is currently completing ${data.quantity}x ${
 					clueTier!.name
 				} clues. Approximately ${formattedDuration} remaining.`;
+			}
+
+			case Activity.Agility: {
+				const data = currentTask as AgilityActivityTaskOptions;
+
+				const course = Agility.Courses.find(course => course.name === data.courseID);
+
+				return `${this.minionName} is currently running ${data.quantity}x ${
+					course!.name
+				} laps. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Agility
+				} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
+			}
+
+			case Activity.Fishing: {
+				const data = currentTask as FishingActivityTaskOptions;
+
+				const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
+
+				return `${this.minionName} is currently fishing ${data.quantity}x ${
+					fish!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Fishing
+				} Fishing level is ${this.skillLevel(SkillsEnum.Fishing)}`;
 			}
 
 			case Activity.Mining: {
