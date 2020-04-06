@@ -3,7 +3,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/UserSettings';
-import { stringMatches, addBankToBank, removeBankFromBank } from '../../lib/util';
+import {
+	stringMatches,
+	addBankToBank,
+	removeBankFromBank,
+	multiplyBankQuantity
+} from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Craftables from '../../lib/craftables';
 import { SkillsEnum } from '../../lib/types';
@@ -13,14 +18,19 @@ import bankHasItem from '../../lib/util/bankHasItem';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<itemName:string>',
+			usage: '[quantity:int{1}] <itemName:...string>',
+			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true
 		});
 	}
 
-	async run(msg: KlasaMessage, [itemName]: [string]) {
+	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		if (typeof quantity !== 'number') {
+			quantity = 1;
+		}
+
 		itemName = itemName.toLowerCase();
 
 		const craftableItem = Craftables.find(item => stringMatches(item.name, itemName));
@@ -36,15 +46,12 @@ export default class extends BotCommand {
 			throw `You don't have high enough stats to craft this item.`;
 		}
 
-		const outputItemsString = await createReadableItemListFromBank(
-			this.client,
-			craftableItem.outputItems
-		);
+		const outItems = multiplyBankQuantity(craftableItem.outputItems, quantity);
+		const inItems = multiplyBankQuantity(craftableItem.inputItems, quantity);
 
-		const inputItemsString = await createReadableItemListFromBank(
-			this.client,
-			craftableItem.inputItems
-		);
+		const outputItemsString = await createReadableItemListFromBank(this.client, outItems);
+
+		const inputItemsString = await createReadableItemListFromBank(this.client, inItems);
 
 		const cantHaveItemsString = await createReadableItemListFromBank(
 			this.client,
@@ -55,7 +62,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Ensure they have the required items to create the item.
-		if (!bankHasAllItemsFromBank(userBank, craftableItem.inputItems)) {
+		if (!bankHasAllItemsFromBank(userBank, inItems)) {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}.`;
 		}
 
@@ -87,14 +94,11 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(
 			UserSettings.Bank,
-			addBankToBank(
-				craftableItem.outputItems,
-				removeBankFromBank(userBank, craftableItem.inputItems)
-			)
+			addBankToBank(outItems, removeBankFromBank(userBank, inItems))
 		);
 
 		if (craftableItem.addOutputToCollectionLog) {
-			msg.author.addItemsToCollectionLog(craftableItem.outputItems);
+			msg.author.addItemsToCollectionLog(outItems);
 		}
 
 		return msg.send(`You created ${outputItemsString}.`);
