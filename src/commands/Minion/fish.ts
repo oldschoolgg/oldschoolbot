@@ -1,7 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand, roll, itemNameFromID } from '../../lib/util';
+import {
+	stringMatches,
+	formatDuration,
+	rand,
+	itemNameFromID,
+	calcPercentOfNum
+} from '../../lib/util';
 import Fishing from '../../lib/skills/fishing';
 import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
@@ -67,23 +73,6 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
 		}
-
-		// Add some variability but limit the threshold so it's not abusable
-		if (quantity > 20) {
-			if (roll(2)) {
-				quantity += rand(1, quantity * 0.1);
-			} else {
-				quantity -= rand(1, quantity * 0.1);
-			}
-		}
-
-		if (fish.bait) {
-			const hasBait = await msg.author.hasItem(fish.bait, quantity);
-			if (!hasBait) {
-				throw `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
-			}
-		}
-
 		const duration = quantity * scaledTimePerFish;
 
 		if (duration > msg.author.maxTripLength) {
@@ -95,6 +84,16 @@ export default class extends BotCommand {
 				msg.author.maxTripLength / (Time.Second * fish.timePerFish) - 4
 			)}.`;
 		}
+
+		if (fish.bait) {
+			const hasBait = await msg.author.hasItem(fish.bait, quantity);
+			if (!hasBait) {
+				throw `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
+			}
+		}
+
+		const fifteenPercent = Math.floor(calcPercentOfNum(15, quantity));
+		quantity += rand(-fifteenPercent, fifteenPercent);
 
 		const data: FishingActivityTaskOptions = {
 			fishID: fish.id,
