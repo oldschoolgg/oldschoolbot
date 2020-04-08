@@ -14,15 +14,19 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc> [quantity:integer{1}] <itemName:...string>',
+			usage: '<melee|mage|range|skilling|misc> [quantity:integer{1}] [itemName:...string]',
 			usageDelim: ' '
 		});
 	}
 
 	async run(
 		msg: KlasaMessage,
-		[gearType, quantity = 1, itemName]: [GearTypes.GearSetupTypes, number, string]
+		[gearType, quantity = 1, itemName = '']: [GearTypes.GearSetupTypes, number, string]
 	): Promise<KlasaMessage> {
+		if (msg.flagArgs.name) {
+			quantity = 1;
+			itemName = msg.flagArgs.name;
+		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 
 		const itemToEquip = getOSItem(itemName);
