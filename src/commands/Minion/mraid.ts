@@ -1,9 +1,14 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
 import { removeDuplicatesFromArray, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { Tasks, Time, Activity } from '../../lib/constants';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
+import { UserSettings } from '../../lib/UserSettings';
+import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
+import { gearStatsMeetsStats } from '../../lib/gear/functions/gearStatsMeetsStats';
+import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../lib/gear/raidsGear';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -18,10 +23,33 @@ export default class extends BotCommand {
 		});
 	}
 
+	checkUsersGear(user: KlasaUser): [boolean, string] {
+		const meleeGear = user.settings.get(UserSettings.Gear.Melee);
+		if (!gearStatsMeetsStats(minimumMeleeGear, sumOfSetupStats(meleeGear))) {
+			return [false, `Melee`];
+		}
+
+		const mageGear = user.settings.get(UserSettings.Gear.Mage);
+		if (!gearStatsMeetsStats(minimumMageGear, sumOfSetupStats(mageGear))) {
+			return [false, `Mage`];
+		}
+
+		const rangeGear = user.settings.get(UserSettings.Gear.Range);
+		if (!gearStatsMeetsStats(minimumRangeGear, sumOfSetupStats(rangeGear))) {
+			return [false, `Range`];
+		}
+
+		return [true, ''];
+	}
+
 	async checkUsers(users: readonly KlasaUser[]) {
 		for (const user of users) {
 			if (user.bot) throw `${user.username} can't do raids, because they're a bot.`;
 			if (user.minionIsBusy) throw `${user.username} is busy and can't join the raid.`;
+			const [hasReqGear, reason] = this.checkUsersGear(user);
+			if (!hasReqGear) {
+				throw `${user.username}'s ${reason} gear doesn't meet the minimum requirements.`;
+			}
 		}
 	}
 
@@ -43,7 +71,7 @@ export default class extends BotCommand {
 		return newUsers;
 	}
 
-	async party(msg: KlasaMessage, [users]: [readonly KlasaUser[]]) {
+	async party(msg: KlasaMessage, [users = []]: [readonly KlasaUser[]]) {
 		let newUsers: KlasaUser[] | undefined;
 		try {
 			newUsers = await this.cleanUpParty(msg, users);
