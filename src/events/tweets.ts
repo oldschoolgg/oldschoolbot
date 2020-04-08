@@ -52,6 +52,8 @@ const ALL_TWITTERS = [
 	'1102924576449880064', // JagexHusky
 	'1158375416467509248', // JagexFlippy
 	'1178684006352719873', // JagexOasis
+	'1230792862981410816', // JagexDeagle
+	'1247105690008793089', // JagexArcane
 	/* HCIM Deaths */
 	'797859891373371392', // HCIM_Deaths
 	/* Hexis */
