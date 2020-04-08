@@ -33,8 +33,9 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
-		if (GP < buyable.gpCost) throw `You don't have enough GP to buy this item.`;
-
+		if (GP < buyable.gpCost) {
+			throw `You need ${toKMB(buyable.gpCost)} GP to purchase this item.`;
+		}
 		const QP = msg.author.settings.get(UserSettings.QP);
 		if (QP < buyable.qpRequired) {
 			throw `You need ${buyable.qpRequired} QP to purchase this item.`;
