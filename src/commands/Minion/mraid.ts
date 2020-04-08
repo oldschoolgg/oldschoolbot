@@ -26,16 +26,13 @@ export default class extends BotCommand {
 	}
 
 	async cleanUpParty(msg: KlasaMessage, users: readonly KlasaUser[]) {
-		let newUsers = [...users];
+		const newUsers = removeDuplicatesFromArray(users.filter(user => user.id !== msg.author.id));
 
-		// Remove any duplicates, and the author if they've tagged themself.
-		newUsers = removeDuplicatesFromArray(users.filter(user => user.id !== msg.author.id));
-
-		if (!users || users.length === 0) {
+		if (users.length === 0) {
 			throw `Please specify which users you want in your party, by tagging them all.`;
 		}
 
-		if (!users || users.length > 50) {
+		if (users.length > 50) {
 			throw `You can't have more than 50 people in a raid!.`;
 		}
 
