@@ -200,7 +200,7 @@ const nieveTasks = [
 	},
 	{
 		name: 'Drake',
-		amount: '30-95',
+		amount: [30, 95],
 		extendedAmount: null,
 		requirements: {
 			slayerLevel: 84
