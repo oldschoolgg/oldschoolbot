@@ -89,6 +89,7 @@ export default class extends Task {
 			channel
 				.awaitMessages(
 					(msg: KlasaMessage) => {
+						if (msg.author !== user) return false;
 						return (
 							(getUsersPerkTier(user) > PerkTier.One &&
 								msg.content.toLowerCase() === 'c') ||
