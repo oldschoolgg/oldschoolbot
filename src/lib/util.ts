@@ -247,13 +247,8 @@ export function determineCombatLevel(
 	const meleeCombatLevel = 0.325 * (StrengthLevel + AttackLevel);
 	const magicCombatLevel = 0.325 * Math.floor((3 * MagicLevel) / 2);
 	const rangeCombatLevel = 0.325 * Math.floor((3 * RangeLevel) / 2);
-	if (magicCombatLevel > rangeCombatLevel && magicCombatLevel > meleeCombatLevel) {
-		return Math.floor(baseCombatLevel + magicCombatLevel);
-	} else if (rangeCombatLevel > magicCombatLevel && rangeCombatLevel > meleeCombatLevel) {
-		return Math.floor(baseCombatLevel + rangeCombatLevel);
-	} else if (meleeCombatLevel > magicCombatLevel && meleeCombatLevel > rangeCombatLevel) {
-		return Math.floor(baseCombatLevel + meleeCombatLevel);
-	}
+	const max = Math.max(meleeCombatLevel, magicCombatLevel, rangeCombatLevel);
+	return Math.floor(baseCombatLevel + max);
 }
 
 export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
