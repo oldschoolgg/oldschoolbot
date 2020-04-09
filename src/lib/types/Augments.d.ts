@@ -157,6 +157,9 @@ declare module 'discord.js' {
 		minionStatus: string;
 		minionName: string;
 		hasMinion: boolean;
+		hasSlayerTask: boolean;
+		slayerTaskID: number;
+		slayerTaskQuantity: number;
 		isIronman: boolean;
 		maxTripLength: number;
 		rawSkills: Skills;

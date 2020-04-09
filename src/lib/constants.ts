@@ -56,6 +56,7 @@ export const enum Emoji {
 	Cooking = '<:cooking:630911040426868756>',
 	Fishing = '<:fishing:630911040091193356>',
 	Mining = '<:mining:630911040128811010>',
+	Slayer = '<:slayer:630911040560824330>',
 	Smithing = '<:smithing:630911040452034590>',
 	Woodcutting = '<:woodcutting:630911040099450892>',
 	Runecraft = '<:runecraft:630911040435257364>',
@@ -67,6 +68,7 @@ export const enum Emoji {
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
+<<<<<<< HEAD
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
 	Join = '<:join:705971600956194907>',
@@ -80,6 +82,23 @@ export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
 	Start = '705973302719414329'
+=======
+	EasterEgg = '<:easterEgg:695473553314938920>',
+	runecraft = '<:runecraft:630911040435257364>',
+	thieving = '<:thieving:630910829352452123>',
+	ranged = '<:ranged:630911040258834473>',
+	construction = '<:construction:630911040493715476>',
+	herblore = '<:herblore:630911040535658496>',
+	attack = '<:attack:630911039969427467>',
+	strength = '<:strength:630911040481263617>',
+	defence = '<:defence:630911040393052180>',
+	hitpoints = '<:hitpoints:630911040460292108>',
+	magic = '<:magic:630911040334331917>',
+	crafting = '<:crafting:630911040460161047>',
+	fletching = '<:fletching:630911040544309258>',
+	farming = '<:farming:630911040355565599>',
+	prayer = '<:prayer:630911040426868746>'
+>>>>>>> e951724... slayer skill
 }
 
 export const enum Image {

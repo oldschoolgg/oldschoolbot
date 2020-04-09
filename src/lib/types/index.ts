@@ -33,6 +33,11 @@ export interface SettingsEntry {
 		hasBought: boolean;
 		ironman: boolean;
 	};
+	slayer?: {
+		hasSlayerTask: boolean;
+		slayerTaskID: number;
+		slayerTaskQuantity: number;
+	};
 }
 
 export interface Pet {

@@ -26,6 +26,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	channelID: string;
 	quantity: number;
+	slayerTask: boolean;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {

@@ -29,6 +29,13 @@ Client.defaultUserSchema
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
 	)
+	.add('slayer', folder =>
+		folder
+
+			.add('hasSlayerTask', 'boolean', { default: false })
+			.add('slayerTaskID', 'number', { default: 0 })
+			.add('slayerTaskQuantity', 'integer', { default: 0 })
+	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
 			.add('deaths', 'integer', { default: 0 })
@@ -44,7 +51,13 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Agility, 'integer', { default: 0 })
 			.add(SkillsEnum.Cooking, 'integer', { default: 0 })
 			.add(SkillsEnum.Fishing, 'integer', { default: 0 })
+			.add(SkillsEnum.Hitpoints, 'integer', { default: 0 })
+			.add(SkillsEnum.Magic, 'integer', { default: 0 })
 			.add(SkillsEnum.Mining, 'integer', { default: 0 })
+			.add(SkillsEnum.Prayer, 'integer', { default: 0 })
+			.add(SkillsEnum.Range, 'integer', { default: 0 })
+			.add(SkillsEnum.Slayer, 'integer', { default: 0 })
+			.add(SkillsEnum.Strength, 'integer', { default: 0 })
 			.add(SkillsEnum.Smithing, 'integer', { default: 0 })
 			.add(SkillsEnum.Woodcutting, 'integer', { default: 0 })
 			.add(SkillsEnum.Firemaking, 'integer', { default: 0 })

@@ -63,6 +63,11 @@ interface User {
 		hasBought?: boolean;
 		dailyDuration?: number;
 	};
+	slayer?: {
+		hasSlayerTask?: boolean;
+		slayerTaskID?: number;
+		slayerTaskQuantity?: number;
+	};
 	stats?: {
 		deaths?: number;
 		diceWins?: number;
@@ -127,6 +132,9 @@ export interface RawUserSettings {
 	'minion.name': string | null;
 	'minion.hasBought': boolean;
 	'minion.dailyDuration': number;
+	'slayer.hasSlayerTask': boolean;
+	'slayer.slayerTaskID': number;
+	'slayer.slayerTaskQuantity': number;
 	'stats.deaths': number;
 	'stats.diceWins': number;
 	'stats.diceLosses': number;
@@ -375,6 +383,9 @@ async function migrateUsers() {
 			'minion.name': entry.minion?.name || null,
 			'minion.hasBought': entry.minion?.hasBought || false,
 			'minion.dailyDuration': entry.minion?.dailyDuration || 0,
+			'slayer.hasSlayerTask': entry.slayer?.hasSlayerTask || false,
+			'slayer.slayerTaskID': entry.slayer?.slayerTaskID || 0,
+			'slayer.slayerTaskQuantity': entry.slayer?.slayerTaskQuantity || 0,
 			'stats.deaths': entry.stats?.deaths || 0,
 			'stats.diceWins': entry.stats?.diceWins || 0,
 			'stats.diceLosses': entry.stats?.diceLosses || 0,
