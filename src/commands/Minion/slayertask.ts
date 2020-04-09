@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import slayerMasters from '../../lib/slayer/slayerMasters';
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, rand } from '../../lib/util';
+import { stringMatches, rand, determineCombatLevel } from '../../lib/util';
 import nieveTasks from '../../lib/slayer/nieveTasks';
 import { UserSettings } from '../../lib/UserSettings';
 import { Monsters } from 'oldschooljs';
@@ -36,14 +36,6 @@ export default class extends BotCommand {
 				.join(', ')}.`;
 		}
 
-		// Filter by slayer level
-		const filteredTasks = nieveTasks.filter(
-			task =>
-				Monsters.get(task.ID)?.data.slayerLevelRequired! <=
-				msg.author.skillLevel(SkillsEnum.Slayer)
-		);
-		/*
-		// Filter by combat level -- not necessary
 		const userCombatLevel = determineCombatLevel(
 			msg.author.skillLevel(SkillsEnum.Prayer),
 			msg.author.skillLevel(SkillsEnum.Hitpoints),
@@ -53,7 +45,23 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Magic),
 			msg.author.skillLevel(SkillsEnum.Range)
 		);
-		 Need combat level required Monsters.get(task.ID)?.data.combatLevelRequired!
+		if (
+			master.requirements.combatLevel > userCombatLevel ||
+			master.requirements.slayerLevel > msg.author.skillLevel(SkillsEnum.Slayer)
+		) {
+			throw `You need a combat level of ${
+				master.requirements.combatLevel
+			}, and a slayer level of ${master.requirements.slayerLevel} to use this master! 
+You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Slayer)} slayer.`;
+		}
+		const filteredTasks = nieveTasks.filter(
+			task =>
+				Monsters.get(task.ID)?.data.slayerLevelRequired! <=
+				msg.author.skillLevel(SkillsEnum.Slayer)
+		);
+		/*
+		// Filter by combat level -- not necessary
+		Needs combat level required
 		const filteredTasks = filteredSlayerTasks.filter(
 			task =>
 				Monsters.get(task.ID)?.data.combatLevelRequired! <= userCombatLevel

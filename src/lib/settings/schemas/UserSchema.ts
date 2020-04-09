@@ -51,7 +51,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Agility, 'integer', { default: 0 })
 			.add(SkillsEnum.Cooking, 'integer', { default: 0 })
 			.add(SkillsEnum.Fishing, 'integer', { default: 0 })
-			.add(SkillsEnum.Hitpoints, 'integer', { default: 0 })
+			.add(SkillsEnum.Hitpoints, 'integer', { default: 1154 })
 			.add(SkillsEnum.Magic, 'integer', { default: 0 })
 			.add(SkillsEnum.Mining, 'integer', { default: 0 })
 			.add(SkillsEnum.Prayer, 'integer', { default: 0 })
