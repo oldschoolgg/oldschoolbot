@@ -1,7 +1,7 @@
 import { Bank } from './types';
 import itemID from './util/itemID';
 
-interface Craftable {
+interface Createable {
 	name: string;
 	outputItems: Bank;
 	inputItems: Bank;
@@ -11,7 +11,7 @@ interface Craftable {
 	firemakingLevel?: number;
 }
 
-const Craftables: Craftable[] = [
+const Createables: Createable[] = [
 	{
 		name: 'Godsword blade',
 		inputItems: {
@@ -525,4 +525,4 @@ const Craftables: Craftable[] = [
 	}
 ];
 
-export default Craftables;
+export default Createables;

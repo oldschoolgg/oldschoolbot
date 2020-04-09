@@ -10,7 +10,7 @@ import {
 	multiplyBankQuantity
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Craftables from '../../lib/craftables';
+import Createables from '../../lib/createables';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import { SkillsEnum } from '../../lib/skilling/types';
 
@@ -32,21 +32,21 @@ export default class extends BotCommand {
 
 		itemName = itemName.toLowerCase();
 
-		const craftableItem = Craftables.find(item => stringMatches(item.name, itemName));
-		if (!craftableItem) throw `That's not a valid item you can create.`;
+		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
+		if (!createableItem) throw `That's not a valid item you can create.`;
 
 		// Ensure they have the required skills to create the item.
 		if (
-			(craftableItem.smithingLevel &&
-				msg.author.skillLevel(SkillsEnum.Smithing) < craftableItem.smithingLevel) ||
-			(craftableItem.firemakingLevel &&
-				msg.author.skillLevel(SkillsEnum.Firemaking) < craftableItem.firemakingLevel)
+			(createableItem.smithingLevel &&
+				msg.author.skillLevel(SkillsEnum.Smithing) < createableItem.smithingLevel) ||
+			(createableItem.firemakingLevel &&
+				msg.author.skillLevel(SkillsEnum.Firemaking) < createableItem.firemakingLevel)
 		) {
 			throw `You don't have high enough stats to craft this item.`;
 		}
 
-		const outItems = multiplyBankQuantity(craftableItem.outputItems, quantity);
-		const inItems = multiplyBankQuantity(craftableItem.inputItems, quantity);
+		const outItems = multiplyBankQuantity(createableItem.outputItems, quantity);
+		const inItems = multiplyBankQuantity(createableItem.inputItems, quantity);
 
 		const outputItemsString = await createReadableItemListFromBank(this.client, outItems);
 
@@ -54,7 +54,7 @@ export default class extends BotCommand {
 
 		const cantHaveItemsString = await createReadableItemListFromBank(
 			this.client,
-			craftableItem.cantHaveItems
+			createableItem.cantHaveItems
 		);
 
 		await msg.author.settings.sync(true);
@@ -66,7 +66,7 @@ export default class extends BotCommand {
 		}
 
 		// Check for any items they cant have 2 of.
-		for (const [itemID, qty] of Object.entries(craftableItem.cantHaveItems)) {
+		for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
 			const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
 			if (numOwned >= qty) {
 				throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
@@ -97,7 +97,7 @@ export default class extends BotCommand {
 			addBankToBank(outItems, removeBankFromBank(userBank, inItems))
 		);
 
-		if (craftableItem.addOutputToCollectionLog) {
+		if (createableItem.addOutputToCollectionLog) {
 			msg.author.addItemsToCollectionLog(outItems);
 		}
 
