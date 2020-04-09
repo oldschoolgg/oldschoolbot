@@ -5,10 +5,9 @@ import { removeDuplicatesFromArray, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { Tasks, Time, Activity } from '../../lib/constants';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/UserSettings';
-import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { gearStatsMeetsStats } from '../../lib/gear/functions/gearStatsMeetsStats';
 import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../lib/gear/raidsGear';
+import { MinigameIDEnum } from '../../lib/minigames';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -18,24 +17,31 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<solo|party|mass> [users:...user]',
 			usageDelim: ' ',
-			subcommands: true,
-			permissionLevel: 10
+			subcommands: true
 		});
 	}
 
+	calculateUsersPoints(user: KlasaUser) {
+		const KC = user.getMinigameKC(MinigameIDEnum.Raids);
+		const pointsFromGear = 15_000;
+		const pointsFromKC = KC * 5;
+
+		return pointsFromGear + pointsFromKC;
+	}
+
 	checkUsersGear(user: KlasaUser): [boolean, string] {
-		const meleeGear = user.settings.get(UserSettings.Gear.Melee);
-		if (!gearStatsMeetsStats(minimumMeleeGear, sumOfSetupStats(meleeGear))) {
+		this.calculateUsersPoints(user);
+		const { meleeGearStats, mageGearStats, rangeGearStats } = user.getCombatGearStats();
+
+		if (!gearStatsMeetsStats(minimumMeleeGear, meleeGearStats)) {
 			return [false, `Melee`];
 		}
 
-		const mageGear = user.settings.get(UserSettings.Gear.Mage);
-		if (!gearStatsMeetsStats(minimumMageGear, sumOfSetupStats(mageGear))) {
+		if (!gearStatsMeetsStats(minimumMageGear, mageGearStats)) {
 			return [false, `Mage`];
 		}
 
-		const rangeGear = user.settings.get(UserSettings.Gear.Range);
-		if (!gearStatsMeetsStats(minimumRangeGear, sumOfSetupStats(rangeGear))) {
+		if (!gearStatsMeetsStats(minimumRangeGear, rangeGearStats)) {
 			return [false, `Range`];
 		}
 

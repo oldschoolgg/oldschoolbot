@@ -18,6 +18,7 @@ Client.defaultUserSchema
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
+	.add('minigameScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
 	.add('minion', folder =>
 		folder

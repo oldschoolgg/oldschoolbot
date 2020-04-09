@@ -9,6 +9,7 @@ import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions } from '.';
 import { SkillsEnum } from '../skilling/types';
 import { KillableMonster } from '../minions/types';
+import { GearSetup, GearStats } from '../gear/types';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -118,6 +119,13 @@ declare module 'discord.js' {
 		 * Returns this users Collection Log bank.
 		 */
 		collectionLog: Bank;
+		getMinigameKC(minigameID: number): number;
+		getCombatGear(): { meleeGear: GearSetup; rangeGear: GearSetup; mageGear: GearSetup };
+		getCombatGearStats(): {
+			meleeGearStats: GearStats;
+			rangeGearStats: GearStats;
+			mageGearStats: GearStats;
+		};
 		sanitizedName: string;
 		badges: string;
 		/**

@@ -18,6 +18,7 @@ export namespace UserSettings {
 	export const CollectionLogBank = T<ItemBank>('collectionLogBank');
 	export const MonsterScores = T<ItemBank>('monsterScores');
 	export const ClueScores = T<ItemBank>('clueScores');
+	export const MinigameScores = T<ItemBank>('minigameScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly number[]>('bitfield');
 	export const Badges = T<readonly number[]>('badges');
