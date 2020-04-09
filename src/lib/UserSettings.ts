@@ -42,10 +42,20 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 	}
 
+	export namespace Slayer {
+		export const HasSlayerTask = T<boolean>('slayer.hasSlayerTask');
+		export const SlayerTaskID = T<number>('slayer.slayerTaskID');
+		export const SlayerTaskQuantity = T<number>('slayer.slayerTaskQuantity');
+	}
+
 	export namespace Skills {
 		export const Agility = T<number>(`skills.${SkillsEnum.Agility}`);
 		export const Cooking = T<number>(`skills.${SkillsEnum.Cooking}`);
 		export const Fishing = T<number>(`skills.${SkillsEnum.Fishing}`);
+		export const Prayer = T<number>(`skills.${SkillsEnum.Prayer}`);
+		export const Slayer = T<number>(`skills.${SkillsEnum.Slayer}`);
+		export const Strength = T<number>(`skills.${SkillsEnum.Strength}`);
+		export const Magic = T<number>(`skills.${SkillsEnum.Magic}`);
 		export const Mining = T<number>(`skills.${SkillsEnum.Mining}`);
 		export const Smithing = T<number>(`skills.${SkillsEnum.Smithing}`);
 		export const Woodcutting = T<string>(`skills.${SkillsEnum.Woodcutting}`);

@@ -2,6 +2,7 @@ import { Collection } from 'discord.js';
 
 import Cooking from './cooking';
 import Mining from './mining';
+import Slayer from './slayer';
 import Smithing from './smithing';
 import Woodcutting from './woodcutting';
 import Firemaking from './firemaking';
@@ -14,7 +15,11 @@ export type Skill =
 	| typeof Agility
 	| typeof Cooking
 	| typeof Fishing
+	| typeof Magic
 	| typeof Mining
+	| typeof Prayer
+	| typeof Slayer
+	| typeof Strength
 	| typeof Smithing
 	| typeof Woodcutting
 	| typeof Firemaking
@@ -24,7 +29,11 @@ const Skills: Collection<string, Skill> = new Collection([
 	[SkillsEnum.Agility, Agility as Skill],
 	[SkillsEnum.Cooking, Cooking as Skill],
 	[SkillsEnum.Fishing, Fishing as Skill],
+	[SkillsEnum.Magic, Magic as Skill],
 	[SkillsEnum.Mining, Mining as Skill],
+	[SkillsEnum.Prayer, Prayer as Skill],
+	[SkillsEnum.Slayer, Slayer as Skill],
+	[SkillsEnum.Strength, Strength as Skill],
 	[SkillsEnum.Smithing, Smithing as Skill],
 	[SkillsEnum.Woodcutting, Woodcutting as Skill],
 	[SkillsEnum.Firemaking, Firemaking as Skill],

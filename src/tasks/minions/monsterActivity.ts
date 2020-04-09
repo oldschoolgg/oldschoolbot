@@ -14,7 +14,7 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import MinionCommand from '../../commands/Minion/minion';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
+	async run({ monsterID, userID, channelID, quantity, slayerTask }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID);
 		const user = await this.client.users.fetch(userID);
 
@@ -32,7 +32,7 @@ export default class extends Task {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
-					user.minionName
+				user.minionName
 				}, just received **${await createReadableItemListFromBank(
 					this.client,
 					itemsToAnnounce
@@ -61,10 +61,10 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
+			} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
 			quantity} ${
 			user.minionName
-		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+			} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
@@ -79,6 +79,27 @@ export default class extends Task {
 			}
 		}
 
+		// Need to add a way to pull slayer xp for the monster, and check if they leveled up, and add the xp on
+
+		if (slayerTask) {
+			if (user.slayerTaskQuantity < quantity) {
+				const slayerXP =
+					Number(user.slayerTaskQuantity) *
+					Monsters.get(user.slayerTaskID)?.data.slayerXP!;
+				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
+				user.slayerTaskQuantity = 0;
+				user.hasSlayerTask = false;
+				user.slayerTaskID = 0;
+				str += `You gained ${slayerXP} slayer XP and finished your slayer task!`;
+				await user.addXP(SkillsEnum.Slayer, slayerXP);
+			} else {
+				const slayerXP = quantity * Monsters.get(user.slayerTaskID)?.data.slayerXP!;
+				const newQuantity = user.slayerTaskQuantity - quantity;
+				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, newQuantity);
+				str += `\nYou gained ${slayerXP} slayer XP, and still have ${newQuantity} left to kill.`;
+				await user.addXP(SkillsEnum.Slayer, slayerXP);
+			}
+		}
 		user.incrementMonsterScore(monsterID, quantity);
 
 		const channel = this.client.channels.get(channelID);

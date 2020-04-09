@@ -234,6 +234,26 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
+export function determineCombatLevel(
+	PrayerLevel: number,
+	HitpointsLevel: number,
+	DefenceLevel: number,
+	StrengthLevel: number,
+	AttackLevel: number,
+	MagicLevel: number,
+	RangeLevel: number
+) {
+	const baseCombatLevel = (Math.floor(PrayerLevel / 2) + HitpointsLevel + DefenceLevel) / 4;
+	const meleeCombatLevel = baseCombatLevel + (StrengthLevel + AttackLevel) * 0.325;
+	const magicCombatLevel = 0.325 * Math.floor((3 * MagicLevel) / 2);
+	const rangeCombatLevel = 0.325 * Math.floor((3 * RangeLevel) / 2);
+	if (magicCombatLevel > rangeCombatLevel) {
+		return Math.floor(baseCombatLevel + meleeCombatLevel + magicCombatLevel);
+	}
+
+	return Math.floor(baseCombatLevel + meleeCombatLevel + rangeCombatLevel);
+}
+
 export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;

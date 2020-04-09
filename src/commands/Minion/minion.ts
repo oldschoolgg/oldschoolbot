@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage, util } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Util, Monsters } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -178,29 +178,32 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
 ${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
-			.get(UserSettings.Skills.Agility)
-			.toLocaleString()} xp)
+				.get(UserSettings.Skills.Agility)
+				.toLocaleString()} xp)
 ${Emoji.Cooking} Cooking: ${msg.author.skillLevel(SkillsEnum.Cooking)} (${msg.author.settings
-			.get(UserSettings.Skills.Cooking)
-			.toLocaleString()} xp)
+				.get(UserSettings.Skills.Cooking)
+				.toLocaleString()} xp)
 ${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
-			.get(UserSettings.Skills.Fishing)
-			.toLocaleString()} xp)
+				.get(UserSettings.Skills.Fishing)
+				.toLocaleString()} xp)
 ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-			.get(UserSettings.Skills.Mining)
-			.toLocaleString()} xp)
+				.get(UserSettings.Skills.Mining)
+				.toLocaleString()} xp)
+${Emoji.Slayer} Slayer: ${msg.author.skillLevel(SkillsEnum.Slayer)} (${msg.author.settings
+				.get(UserSettings.Skills.Slayer)
+				.toLocaleString()} xp)
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
-			SkillsEnum.Smithing
-		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+					SkillsEnum.Smithing
+				)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
 ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-			SkillsEnum.Woodcutting
-		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+					SkillsEnum.Woodcutting
+				)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
 ${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
-			SkillsEnum.Firemaking
-		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
+					SkillsEnum.Firemaking
+				)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
 ${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
-			SkillsEnum.Runecraft
-		)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
+					SkillsEnum.Runecraft
+				)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -447,7 +450,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
+			clueTier.name
 			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
 		}
 
@@ -482,7 +485,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now completing ${data.quantity}x ${
-				clueTier.name
+			clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
@@ -562,12 +565,29 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-				monster.name
+			monster.name
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
+
+		let slayerTask = false;
+		if (msg.author.hasSlayerTask) {
+			const task = Monsters.get(msg.author.slayerTaskID);
+			const taskName = task?.name;
+			const filteredMonster = nieveTasks.find(task => task.name === taskName);
+			if (taskName === monster.name || filteredMonster?.alternatives.includes(monster.name)) {
+				if (
+					msg.author.skillLevel(SkillsEnum.Slayer) >=
+					Monsters.get(msg.author.slayerTaskID)?.data.slayerLevelRequired!
+				) {
+					slayerTask = true;
+					boosts.push(`10% Boost for being on a ${taskName} slayer task`);
+					duration *= 0.9;
+				}
+			}
+		}
 
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
@@ -580,6 +600,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			channelID: msg.channel.id,
 			quantity,
 			duration,
+			slayerTask,
 			type: Activity.MonsterKilling,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
@@ -590,7 +611,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+			}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
