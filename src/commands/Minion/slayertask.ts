@@ -46,7 +46,7 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Range)
 		);
 		if (
-			master.requirements.combatLevel > userCombatLevel ||
+			master.requirements.combatLevel > userCombatLevel! ||
 			master.requirements.slayerLevel > msg.author.skillLevel(SkillsEnum.Slayer)
 		) {
 			throw `You need a combat level of ${
@@ -82,19 +82,14 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 				const slayerMonster = filteredTasks[i];
 				const minQuantity = slayerMonster.amount[0];
 				const maxQuantity = slayerMonster.amount[1];
-				if (typeof minQuantity === 'number' && typeof maxQuantity === 'number') {
-					const quantity = rand(minQuantity, maxQuantity);
-					await msg.author.settings.update(
-						UserSettings.Slayer.SlayerTaskQuantity,
-						quantity
-					);
-					await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, true);
-					await msg.author.settings.update(
-						UserSettings.Slayer.SlayerTaskID,
-						slayerMonster.ID
-					);
-					return msg.send(`Your new slayer task is ${quantity}x ${slayerMonster.name}`);
-				}
+				const quantity = rand(minQuantity, maxQuantity);
+				await msg.author.settings.update(UserSettings.Slayer.SlayerTaskQuantity, quantity);
+				await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, true);
+				await msg.author.settings.update(
+					UserSettings.Slayer.SlayerTaskID,
+					slayerMonster.ID
+				);
+				return msg.send(`Your new slayer task is ${quantity}x ${slayerMonster.name}`);
 			}
 		}
 	}
