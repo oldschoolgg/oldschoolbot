@@ -361,8 +361,40 @@ export default class extends Extendable {
 	public get blockList(this: User) {
 		return this.settings.get(UserSettings.Slayer.BlockList);
 	}
+<<<<<<< HEAD
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
+=======
+
+	public get unlockedAviansie(this: User) {
+		return this.settings.get(UserSettings.Slayer.UnlockedAviansie);
+	}
+
+	public get unlockedBasilisk(this: User) {
+		return this.settings.get(UserSettings.Slayer.UnlockedBasilisk);
+	}
+
+	public get unlockedBoss(this: User) {
+		return this.settings.get(UserSettings.Slayer.UnlockedBoss);
+	}
+
+	public get unlockedLizardman(this: User) {
+		return this.settings.get(UserSettings.Slayer.UnlockedLizardman);
+	}
+
+	public get unlockedMithrilDragon(this: User) {
+		return this.settings.get(UserSettings.Slayer.UnlockedMithrilDragon);
+	}
+
+	public get unlockedRedDragon(this: User) {
+		return this.settings.get(UserSettings.Slayer.UnlockedRedDragon);
+	}
+
+	public get unlockedTzHaar(this: User) {
+		return this.settings.get(UserSettings.Slayer.UnlockedTzHaar);
+	}
+
+>>>>>>> 0773b41... various things
 	public get maxTripLength(this: User) {
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) return Time.Minute * 33;

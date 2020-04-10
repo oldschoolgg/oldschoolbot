@@ -568,7 +568,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			const task = Monsters.get(msg.author.slayerTaskID);
 			const taskName = task?.name;
 			const filteredMonster = nieveTasks.find(task => task.name === taskName);
-			if (taskName === monster.name || filteredMonster?.alternatives.includes(monster.name)) {
+			if (
+				taskName === monster.name ||
+				filteredMonster?.alternatives?.includes(monster.name)
+			) {
 				if (
 					msg.author.skillLevel(SkillsEnum.Slayer) >=
 					Monsters.get(msg.author.slayerTaskID)?.data.slayerLevelRequired!

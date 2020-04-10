@@ -69,6 +69,13 @@ interface User {
 		slayerTaskQuantity?: number;
 		slayerPoints?: number;
 		blockList?: number[];
+		unlockedAviansie: boolean;
+		unlockedBasilisk: boolean;
+		unlockedBoss: boolean;
+		unlockedLizardman: boolean;
+		unlockedMithrilDragon: boolean;
+		unlockedRedDragon: boolean;
+		unlockedTzHaar: boolean;
 	};
 	stats?: {
 		deaths?: number;
@@ -139,6 +146,13 @@ export interface RawUserSettings {
 	'slayer.slayerTaskQuantity': number;
 	'slayer.slayerPoints': number;
 	'slayer.blockList': number[];
+	'slayer.unlockedAviansie': boolean;
+	'slayer.unlockedBasilisk': boolean;
+	'slayer.unlockedBoss': boolean;
+	'slayer.unlockedLizardman': boolean;
+	'slayer.unlockedMithrilDragon': boolean;
+	'slayer.unlockedRedDragon': boolean;
+	'slayer.unlockedTzHaar': boolean;
 	'stats.deaths': number;
 	'stats.diceWins': number;
 	'stats.diceLosses': number;
@@ -392,6 +406,14 @@ async function migrateUsers() {
 			'slayer.slayerTaskQuantity': entry.slayer?.slayerTaskQuantity || 0,
 			'slayer.slayerPoints': entry.slayer?.slayerPoints || 0,
 			'slayer.blockList': entry.slayer?.blockList || [],
+			'slayer.unlockedAviansie': entry.slayer?.unlockedAviansie || false,
+			'slayer.unlockedBasilisk': entry.slayer?.unlockedBasilisk || false,
+			'slayer.unlockedBoss': entry.slayer?.unlockedBoss || false,
+			'slayer.unlockedLizardman': entry.slayer?.unlockedLizardman || false,
+			'slayer.unlockedMithrilDragon': entry.slayer?.unlockedMithrilDragon || false,
+			'slayer.unlockedRedDragon': entry.slayer?.unlockedRedDragon || false,
+			'slayer.unlockedTzHaar': entry.slayer?.unlockedTzHaar || false,
+
 			'stats.deaths': entry.stats?.deaths || 0,
 			'stats.diceWins': entry.stats?.diceWins || 0,
 			'stats.diceLosses': entry.stats?.diceLosses || 0,

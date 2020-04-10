@@ -82,9 +82,8 @@ export default class extends Task {
 					Number(user.slayerTaskQuantity) *
 					Monsters.get(user.slayerTaskID)?.data.slayerXP!;
 				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
-				user.slayerTaskQuantity = 0;
-				user.hasSlayerTask = false;
-				user.slayerTaskID = 0;
+				await user.settings.update(UserSettings.Slayer.HasSlayerTask, false);
+				await user.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
 				str += `You gained ${slayerXP} slayer XP and finished your slayer task!`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
 			} else {

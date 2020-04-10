@@ -37,6 +37,13 @@ Client.defaultUserSchema
 			.add('slayerTaskQuantity', 'number', { default: 0 })
 			.add('slayerPoints', 'integer', { default: 0 })
 			.add('blockList', 'integer', { array: true, default: [] })
+			.add('unlockedAviansie', 'boolean', { default: false })
+			.add('unlockedBasilisk', 'boolean', { default: false })
+			.add('unlockedBoss', 'boolean', { default: false })
+			.add('unlockedLizardman', 'boolean', { default: false })
+			.add('unlockedMithrilDragon', 'boolean', { default: false })
+			.add('unlockedRedDragon', 'boolean', { default: false })
+			.add('unlockedTzHaar', 'boolean', { default: false })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
