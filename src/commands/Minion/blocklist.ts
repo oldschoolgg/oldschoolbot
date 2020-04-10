@@ -27,9 +27,6 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBlockList = msg.author.blockList;
 		const task = nieveTasks.filter(task => stringMatches(taskname, task.name));
-		if (!task) {
-			throw `That's not a valid task.`;
-		}
 
 		if (taskname === 'show') {
 			let str = 'Your current block list: ';
