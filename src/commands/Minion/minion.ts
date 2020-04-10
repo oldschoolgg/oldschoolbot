@@ -51,7 +51,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -170,7 +170,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		}
 
 		return msg.send(`${msg.author.minionName}'s Stats:
-
+${Emoji.Crafting} Crafting: ${msg.author.skillLevel(
+			SkillsEnum.Crafting
+		)} (${msg.author.settings.get(UserSettings.Skills.Crafting).toLocaleString()} xp)
 ${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
 			.get(UserSettings.Skills.Agility)
 			.toLocaleString()} xp)
@@ -408,6 +410,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
 		this.client.commands.get('light')!.run(msg, [quantity, logName]);
+	}
+
+	async craft(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		await this.client.commands
+			.get('craft')!
+			.run(msg, [quantity, itemName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async quest(msg: KlasaMessage) {

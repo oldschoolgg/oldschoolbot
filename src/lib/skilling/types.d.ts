@@ -6,7 +6,8 @@ export const enum SkillsEnum {
 	Smithing = 'smithing',
 	Woodcutting = 'woodcutting',
 	Firemaking = 'firemaking',
-	Runecraft = 'runecraft'
+	Runecraft = 'runecraft',
+	Crafting = 'crafting'
 }
 
 export interface Ore {
@@ -91,6 +92,7 @@ export interface Cookable {
 	stopBurnAtCG: number;
 	burntCookable: number;
 }
+
 export interface SmithedBar {
 	level: number;
 	xp: number;
@@ -99,4 +101,13 @@ export interface SmithedBar {
 	inputBars: Bank;
 	timeToUse: number;
 	outputMultiple: number;
+}
+
+export interface Craftable {
+	name: string;
+	id: number;
+	level: number;
+	xp: number;
+	inputItems: Bank;
+	tickRate: number;
 }
