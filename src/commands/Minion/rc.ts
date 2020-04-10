@@ -8,6 +8,8 @@ import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skil
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/UserSettings';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -59,7 +61,34 @@ export default class extends BotCommand {
 
 		const numEssenceOwned = await msg.author.numberOfItemInBank(itemID('Pure essence'));
 
-		const maxCanDo = Math.floor(msg.author.maxTripLength / Runecraft.timePerInventory) * 28;
+		let { tripLength } = rune;
+		const boosts = [];
+		if (
+			hasArrayOfItemsEquipped(
+				[
+					'Graceful hood',
+					'Graceful top',
+					'Graceful legs',
+					'Graceful gloves',
+					'Graceful boots',
+					'Graceful cape'
+				].map(itemID),
+				msg.author.settings.get(UserSettings.Gear.Skilling)
+			)
+		) {
+			tripLength -= rune.tripLength * 0.1;
+			boosts.push(`10% for Graceful`);
+		}
+
+		if (msg.author.skillLevel(SkillsEnum.Agility) > 90) {
+			tripLength -= rune.tripLength * 0.1;
+			boosts.push(`10% for 90+ Agility`);
+		} else if (msg.author.skillLevel(SkillsEnum.Agility) > 60) {
+			tripLength -= rune.tripLength * 0.05;
+			boosts.push(`5% for 60+ Agility`);
+		}
+
+		const maxCanDo = Math.floor(msg.author.maxTripLength / tripLength) * 28;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -70,9 +99,8 @@ export default class extends BotCommand {
 			throw `You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players (\`${msg.cmdPrefix}ge\`).`;
 		}
 
-		const numberOfInventories = Math.max(quantity / 28, 1);
-
-		const duration = numberOfInventories * Runecraft.timePerInventory;
+		const numberOfInventories = Math.max(Math.ceil(quantity / 28), 1);
+		const duration = numberOfInventories * tripLength;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -102,7 +130,8 @@ export default class extends BotCommand {
 			rune.name
 		}, it'll take around ${formatDuration(
 			duration
-		)} to finish. You'll get ${quantityPerEssence * quantity}x runes due to the multiplier.`;
+		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${quantityPerEssence *
+			quantity}x runes due to the multiplier.`;
 
 		return msg.send(response);
 	}
