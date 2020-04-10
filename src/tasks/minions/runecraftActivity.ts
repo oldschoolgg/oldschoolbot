@@ -1,13 +1,14 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
-import { Time } from '../../lib/constants';
+import { saidYes, noOp, roll } from '../../lib/util';
+import { Time, Events, Emoji } from '../../lib/constants';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import { SkillsEnum } from '../../lib/skilling/types';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ runeID, essenceQuantity, userID, channelID }: RunecraftActivityTaskOptions) {
@@ -38,6 +39,15 @@ export default class extends Task {
 		const loot = {
 			[rune.id]: runeQuantity
 		};
+
+		if (roll(1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25)) {
+			loot[itemID('Rift guardian')] = 1;
+			str += `\nYou have a funny feeling you're being followed...`;
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Runecraft} **${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${rune.name}s at level ${currentLevel} Runecrafting!`
+			);
+		}
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
