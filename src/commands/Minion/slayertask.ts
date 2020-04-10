@@ -22,8 +22,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [slayermaster]: [string]) {
 		await msg.author.settings.sync(true);
 
+		if (!msg.author.hasMinion) {
+			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
+		}
+
 		// If they already have a slayer task tell them what it is
-		if (msg.author.hasSlayerTask) {
+		if (msg.author.hasSlayerTask || slayermaster === 'show') {
 			const mon = Monsters.get(msg.author.slayerTaskID);
 			if (!mon) throw `WTF`;
 			throw `You already have a slayer task of ${msg.author.slayerTaskQuantity}x ${mon.name}.`;
@@ -54,19 +58,21 @@ export default class extends BotCommand {
 			}, and a slayer level of ${master.requirements.slayerLevel} to use this master! 
 You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Slayer)} slayer.`;
 		}
-		const filteredTasks = nieveTasks.filter(
+
+		// Filter by slayer level
+		const filteredByLevel = nieveTasks.filter(
 			task =>
 				Monsters.get(task.ID)?.data.slayerLevelRequired! <=
 				msg.author.skillLevel(SkillsEnum.Slayer)
 		);
-		/*
-		// Filter by combat level -- not necessary
-		Needs combat level required
-		const filteredTasks = filteredSlayerTasks.filter(
-			task =>
-				Monsters.get(task.ID)?.data.combatLevelRequired! <= userCombatLevel
+
+		// Filter by default unlock
+		const filteredLockedTasks = filteredByLevel.filter(task => task.unlocked === true);
+
+		// Filter by block list
+		const filteredTasks = filteredLockedTasks.filter(
+			task => !msg.author.blockList.includes(task.ID)
 		);
-		*/
 
 		let totalweight = 0;
 		for (let i = 0; i < filteredTasks.length; i++) {
