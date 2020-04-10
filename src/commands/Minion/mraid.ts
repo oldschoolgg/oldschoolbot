@@ -8,6 +8,7 @@ import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { gearStatsMeetsStats } from '../../lib/gear/functions/gearStatsMeetsStats';
 import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../lib/gear/raidsGear';
 import { MinigameIDEnum } from '../../lib/minigames';
+import { TextChannel } from 'discord.js';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -17,7 +18,8 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<solo|party|mass> [users:...user]',
 			usageDelim: ' ',
-			subcommands: true
+			subcommands: true,
+			permissionLevel: 10
 		});
 	}
 
@@ -75,6 +77,38 @@ export default class extends BotCommand {
 		await this.checkUsers(newUsers);
 
 		return newUsers;
+	}
+
+	async mass(msg: KlasaMessage) {
+		const duration = Number(Time.Minute);
+
+		const members = (msg.channel as TextChannel).members.random(20);
+
+		const data: RaidsActivityTaskOptions = {
+			duration,
+			challengeMode: false,
+			channelID: msg.channel.id,
+			quantity: 1,
+			partyLeaderID: msg.author.id,
+			userID: msg.author.id,
+			type: Activity.Raids,
+			id: rand(1, 10_000_000),
+			finishDate: Date.now() + duration,
+			team: members.map(u => ({
+				id: u.id,
+				personalPoints: 30_000,
+				canReceiveDust: true,
+				canReceiveAncientTablet: false
+			}))
+		};
+
+		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+
+		return msg.send(
+			`The raid is starting... the leader is ${
+				msg.author.username
+			}, and the party members are: ${members.map(u => u.user.username).join(', ')}`
+		);
 	}
 
 	async party(msg: KlasaMessage, [users = []]: [readonly KlasaUser[]]) {
