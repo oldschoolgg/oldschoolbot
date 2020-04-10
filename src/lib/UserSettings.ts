@@ -48,6 +48,13 @@ export namespace UserSettings {
 		export const SlayerTaskQuantity = T<number>('slayer.slayerTaskQuantity');
 		export const SlayerPoints = T<number>('slayer.slayerPoints');
 		export const BlockList = T<number[]>('slayer.blockList');
+		export const UnlockedAviansie = T<boolean>('slayer.unlockedAviansie');
+		export const UnlockedBasilisk = T<boolean>('slayer.unlockedBasilisk');
+		export const UnlockedBoss = T<boolean>('slayer.unlockedBoss');
+		export const UnlockedLizardman = T<boolean>('slayer.unlockedLizardman');
+		export const UnlockedMithrilDragon = T<boolean>('slayer.unlockedMithrilDragon');
+		export const UnlockedRedDragon = T<boolean>('slayer.unlockedRedDragon');
+		export const UnlockedTzHaar = T<boolean>('slayer.unlockedTzHaar');
 	}
 
 	export namespace Skills {

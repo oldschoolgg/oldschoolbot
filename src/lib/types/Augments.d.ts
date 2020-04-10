@@ -123,6 +123,13 @@ declare module 'discord.js' {
 		slayerTaskQuantity: number;
 		slayerPoints: number;
 		blockList: number[];
+		unlockedAviansie: boolean;
+		unlockedBasilisk: boolean;
+		unlockedBoss: boolean;
+		unlockedLizardman: boolean;
+		unlockedMithrilDragon: boolean;
+		unlockedRedDragon: boolean;
+		unlockedTzHaar: boolean;
 		isIronman: boolean;
 		maxTripLength: number;
 	}
