@@ -7,6 +7,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import itemID from '../../lib/util/itemID';
+import { UserSettings } from '../../lib/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -33,10 +34,15 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const rune = Runecraft.Runes.find(_rune => stringMatches(_rune.name, name));
+		if (name.endsWith('s')) name = name.slice(0, name.length - 1);
+
+		const rune = Runecraft.Runes.find(
+			_rune =>
+				stringMatches(_rune.name, name) || stringMatches(_rune.name.split(' ')[0], name)
+		);
 
 		if (!rune) {
-			throw `Thats not a valid rune to mine. Valid rune are ${Runecraft.Runes.map(
+			throw `Thats not a valid rune. Valid rune are ${Runecraft.Runes.map(
 				_rune => _rune.name
 			).join(', ')}.`;
 		}
@@ -45,6 +51,10 @@ export default class extends BotCommand {
 
 		if (quantityPerEssence === 0) {
 			throw `${msg.author.minionName} needs ${rune.levels[0][0]} Runecraft to create ${rune.name}s.`;
+		}
+
+		if (rune.qpRequired && msg.author.settings.get(UserSettings.QP) < rune.qpRequired) {
+			throw `You need ${rune.qpRequired} QP to craft this rune.`;
 		}
 
 		const numEssenceOwned = await msg.author.numberOfItemInBank(itemID('Pure essence'));

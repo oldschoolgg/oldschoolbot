@@ -61,7 +61,8 @@ const Runes: Rune[] = [
 			[26, 2],
 			[52, 3],
 			[78, 4]
-		]
+		],
+		tripLength: Time.Minute
 	},
 	{
 		xp: 7,
