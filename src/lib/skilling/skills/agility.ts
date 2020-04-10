@@ -1,5 +1,5 @@
-import { SkillsEnum, Course } from '../types';
-import { Emoji } from '../constants';
+import { Emoji } from '../../constants';
+import { Course, SkillsEnum } from '../types';
 
 const courses: Course[] = [
 	{

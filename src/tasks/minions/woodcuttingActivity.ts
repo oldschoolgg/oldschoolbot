@@ -2,13 +2,13 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp, rand } from '../../lib/util';
 import { Time, Emoji, Events } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Woodcutting from '../../lib/skills/woodcutting';
+import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 const WoodcuttingPet = itemID('Beaver');
 

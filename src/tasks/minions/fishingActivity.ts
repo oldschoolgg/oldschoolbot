@@ -2,16 +2,16 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp, roll } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Fishing from '../../lib/skills/fishing';
+import Fishing from '../../lib/skilling/skills/fishing';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/UserSettings';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
 	async run({ fishID, quantity, userID, channelID }: FishingActivityTaskOptions) {

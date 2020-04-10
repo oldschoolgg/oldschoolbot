@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/UserSettings';
-import Skillcapes from '../../lib/skillcapes';
+import Skillcapes from '../../lib/skilling/skillcapes';
 import { stringMatches, convertXPtoLVL, toTitleCase } from '../../lib/util';
 import countSkillsAtleast99 from '../../lib/util/countSkillsAtleast99';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';

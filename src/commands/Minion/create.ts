@@ -6,9 +6,9 @@ import { UserSettings } from '../../lib/UserSettings';
 import { stringMatches, addBankToBank, removeBankFromBank } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Craftables from '../../lib/craftables';
-import { SkillsEnum } from '../../lib/types';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import bankHasItem from '../../lib/util/bankHasItem';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

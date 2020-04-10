@@ -8,12 +8,12 @@ import {
 	itemNameFromID,
 	calcPercentOfNum
 } from '../../lib/util';
-import Fishing from '../../lib/skills/fishing';
-import { SkillsEnum } from '../../lib/types';
+import Fishing from '../../lib/skilling/skills/fishing';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { UserSettings } from '../../lib/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

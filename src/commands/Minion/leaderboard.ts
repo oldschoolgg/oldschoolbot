@@ -7,7 +7,7 @@ import { Time } from '../../lib/constants';
 import { findMonster, stringMatches, toTitleCase, convertXPtoLVL } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
-import Skills from '../../lib/skills';
+import Skills from '../../lib/skilling/skills';
 
 const CACHE_TIME = Time.Minute * 5;
 

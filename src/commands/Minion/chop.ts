@@ -8,14 +8,14 @@ import {
 	itemNameFromID
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { SkillsEnum } from '../../lib/types';
 import { Activity, Tasks } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Woodcutting from '../../lib/skills/woodcutting';
+import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 const axes = [
 	{

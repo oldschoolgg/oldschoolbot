@@ -1,4 +1,4 @@
-import itemID from './util/itemID';
+import itemID from '../util/itemID';
 import { SkillsEnum } from './types';
 
 interface Skillcape {
@@ -44,6 +44,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Fishing hood'),
 		untrimmed: itemID('Fishing cape'),
 		trimmed: itemID('Fishing cape(t)')
+	},
+	{
+		skill: SkillsEnum.Runecraft,
+		hood: itemID('Runecraft hood'),
+		untrimmed: itemID('Runecraft cape'),
+		trimmed: itemID('Runecraft cape(t)')
 	}
 ];
 
