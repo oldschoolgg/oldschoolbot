@@ -12,6 +12,8 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import MinionCommand from '../../commands/Minion/minion';
+import { SkillsEnum } from '../../lib/types';
+import { Monsters } from 'oldschooljs';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, slayerTask }: MonsterActivityTaskOptions) {
@@ -32,7 +34,7 @@ export default class extends Task {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
-				user.minionName
+					user.minionName
 				}, just received **${await createReadableItemListFromBank(
 					this.client,
 					itemsToAnnounce
@@ -61,10 +63,10 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-			} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
+		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
 			quantity} ${
 			user.minionName
-			} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
@@ -78,8 +80,6 @@ export default class extends Task {
 				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc \``;
 			}
 		}
-
-		// Need to add a way to pull slayer xp for the monster, and check if they leveled up, and add the xp on
 
 		if (slayerTask) {
 			if (user.slayerTaskQuantity < quantity) {

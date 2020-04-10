@@ -30,6 +30,8 @@ export interface SettingsEntry {
 		hasSlayerTask: boolean;
 		slayerTaskID: number;
 		slayerTaskQuantity: number;
+		slayerPoints: number;
+		blockList: number[];
 	};
 }
 

@@ -30,7 +30,9 @@ Client.defaultUserSchema
 
 			.add('hasSlayerTask', 'boolean', { default: false })
 			.add('slayerTaskID', 'number', { default: 0 })
-			.add('slayerTaskQuantity', 'integer', { default: 0 })
+			.add('slayerTaskQuantity', 'number', { default: 0 })
+			.add('slayerPoints', 'integer', { default: 0 })
+			.add('blockList', 'integer', { array: true, default: [] })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

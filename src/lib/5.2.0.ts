@@ -67,6 +67,8 @@ interface User {
 		hasSlayerTask?: boolean;
 		slayerTaskID?: number;
 		slayerTaskQuantity?: number;
+		slayerPoints?: number;
+		blockList?: number[];
 	};
 	stats?: {
 		deaths?: number;
@@ -135,6 +137,8 @@ export interface RawUserSettings {
 	'slayer.hasSlayerTask': boolean;
 	'slayer.slayerTaskID': number;
 	'slayer.slayerTaskQuantity': number;
+	'slayer.slayerPoints': number;
+	'slayer.blockList': number[];
 	'stats.deaths': number;
 	'stats.diceWins': number;
 	'stats.diceLosses': number;
@@ -386,6 +390,8 @@ async function migrateUsers() {
 			'slayer.hasSlayerTask': entry.slayer?.hasSlayerTask || false,
 			'slayer.slayerTaskID': entry.slayer?.slayerTaskID || 0,
 			'slayer.slayerTaskQuantity': entry.slayer?.slayerTaskQuantity || 0,
+			'slayer.slayerPoints': entry.slayer?.slayerPoints || 0,
+			'slayer.blockList': entry.slayer?.blockList || [],
 			'stats.deaths': entry.stats?.deaths || 0,
 			'stats.diceWins': entry.stats?.diceWins || 0,
 			'stats.diceLosses': entry.stats?.diceLosses || 0,

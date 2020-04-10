@@ -46,6 +46,8 @@ export namespace UserSettings {
 		export const HasSlayerTask = T<boolean>('slayer.hasSlayerTask');
 		export const SlayerTaskID = T<number>('slayer.slayerTaskID');
 		export const SlayerTaskQuantity = T<number>('slayer.slayerTaskQuantity');
+		export const SlayerPoints = T<number>('slayer.slayerPoints');
+		export const BlockList = T<number[]>('slayer.blockList');
 	}
 
 	export namespace Skills {

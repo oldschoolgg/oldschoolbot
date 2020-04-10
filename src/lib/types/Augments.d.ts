@@ -76,6 +76,8 @@ declare module 'discord.js' {
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
+		addSlayerPoints(amount: number): Promise<SettingsUpdateResult>;
+		removeSlayerPoints(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
 		skillLevel(skillName: SkillsEnum): number;
@@ -119,6 +121,8 @@ declare module 'discord.js' {
 		hasSlayerTask: boolean;
 		slayerTaskID: number;
 		slayerTaskQuantity: number;
+		slayerPoints: number;
+		blockList: number[];
 		isIronman: boolean;
 		maxTripLength: number;
 	}

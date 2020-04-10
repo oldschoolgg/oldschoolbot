@@ -11,7 +11,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Deviant spectres'],
 		weight: 6,
-		ID: Monsters.AberrantSpectre.id
+		ID: Monsters.AberrantSpectre.id,
+		unlocked: true
 	},
 	{
 		name: 'Abyssal demon',
@@ -23,7 +24,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
 		weight: 9,
-		ID: Monsters.AbyssalDemon.id
+		ID: Monsters.AbyssalDemon.id,
+		unlocked: true
 	},
 	{
 		name: 'Adamant dragon',
@@ -34,7 +36,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Adamant dragon'],
 		weight: 2,
-		ID: Monsters.AdamantDragon.id
+		ID: Monsters.AdamantDragon.id,
+		unlocked: true
 	},
 	{
 		name: 'Ankou',
@@ -45,7 +48,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Dark Ankou'],
 		weight: 5,
-		ID: Monsters.Ankou.id
+		ID: Monsters.Ankou.id,
+		unlocked: true
 	},
 	{
 		name: 'Aviansie',
@@ -62,7 +66,8 @@ const nieveTasks = [
 			'Reanimated aviansie'
 		],
 		weight: 6,
-		ID: Monsters.Aviansie.id
+		ID: Monsters.Aviansie.id,
+		unlocked: false
 	},
 	{
 		name: 'Basilisk',
@@ -74,7 +79,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Basilisk Knight'],
 		weight: 6,
-		ID: Monsters.Basilisk.id
+		ID: Monsters.Basilisk.id,
+		unlocked: false
 	},
 	{
 		name: 'Black demon',
@@ -85,7 +91,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Demonic gorilla', 'Balfrug Kreeyath', 'Porazdir', 'Skotizo'],
 		weight: 9,
-		ID: Monsters.BlackDemon.id
+		ID: Monsters.BlackDemon.id,
+		unlocked: true
 	},
 	{
 		name: 'Black dragon',
@@ -97,7 +104,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Baby black dragon', 'King Black Dragon', 'Brutal black dragon'],
 		weight: 6,
-		ID: Monsters.BlackDragon.id
+		ID: Monsters.BlackDragon.id,
+		unlocked: true
 	},
 	{
 		name: 'Bloodveld',
@@ -109,7 +117,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Mutated Bloodveld'],
 		weight: 9,
-		ID: Monsters.Bloodveld.id
+		ID: Monsters.Bloodveld.id,
+		unlocked: true
 	},
 	{
 		name: 'Blue Dragon',
@@ -121,7 +130,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Blue dragon', 'Baby blue dragon', 'Brutal blue dragon', 'Vorkath'],
 		weight: 4,
-		ID: Monsters.BlueDragon.id
+		ID: Monsters.BlueDragon.id,
+		unlocked: true
 	},
 	{
 		name: 'Boss',
@@ -132,7 +142,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Boss'],
 		weight: 8,
-		ID: Monsters.Vorkath.id
+		ID: Monsters.Vorkath.id,
+		unlocked: false
 	},
 	{
 		name: 'Brine rat',
@@ -145,7 +156,8 @@ const nieveTasks = [
 		},
 		alternatives: [],
 		weight: 3,
-		ID: Monsters.BrineRat.id
+		ID: Monsters.BrineRat.id,
+		unlocked: true
 	},
 	{
 		name: 'Cave horror',
@@ -158,7 +170,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Cave horror'],
 		weight: 5,
-		ID: Monsters.CaveHorror.id
+		ID: Monsters.CaveHorror.id,
+		unlocked: true
 	},
 	{
 		name: 'Cave kraken',
@@ -171,7 +184,8 @@ const nieveTasks = [
 		},
 		alternatives: 'Kraken',
 		weight: 6,
-		ID: Monsters.CaveKraken.id
+		ID: Monsters.CaveKraken.id,
+		unlocked: true
 	},
 	{
 		name: 'Dagannoth',
@@ -183,7 +197,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Dagannoth spawn', 'Dagannoth fledgeling', 'Dagannoth Kings'],
 		weight: 8,
-		ID: Monsters.Dagannoth.id
+		ID: Monsters.Dagannoth.id,
+		unlocked: true
 	},
 	{
 		name: 'Dark beast',
@@ -196,7 +211,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Dark beast'],
 		weight: 5,
-		ID: Monsters.DarkBeast.id
+		ID: Monsters.DarkBeast.id,
+		unlocked: true
 	},
 	{
 		name: 'Drake',
@@ -207,7 +223,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Drake'],
 		weight: 7,
-		ID: Monsters.Drake.id
+		ID: Monsters.Drake.id,
+		unlocked: true
 	},
 	{
 		name: 'Dust devil',
@@ -220,7 +237,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Dust devil'],
 		weight: 6,
-		ID: Monsters.DustDevil.id
+		ID: Monsters.DustDevil.id,
+		unlocked: true
 	},
 	{
 		name: 'Elf warrior',
@@ -232,7 +250,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Elf warrior', 'mourner', 'Reanimated elf'],
 		weight: 4,
-		ID: Monsters.ElfWarrior.id
+		ID: Monsters.ElfWarrior.id,
+		unlocked: true
 	},
 	{
 		name: 'Fire giant',
@@ -243,7 +262,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Fire giant'],
 		weight: 9,
-		ID: Monsters.FireGiant.id
+		ID: Monsters.FireGiant.id,
+		unlocked: true
 	},
 	{
 		name: 'Spitting wyvern',
@@ -256,7 +276,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Spitting wyvern', 'taloned wyvern', 'long-tailed wyvern', 'Ancient Wyvern'],
 		weight: 5,
-		ID: Monsters.FossilIslandWyvernAncient.id
+		ID: Monsters.FossilIslandWyvernAncient.id,
+		unlocked: true
 	},
 	{
 		name: 'Gargoyle',
@@ -269,7 +290,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Grotesque Guardians'],
 		weight: 6,
-		ID: Monsters.Gargoyle.id
+		ID: Monsters.Gargoyle.id,
+		unlocked: true
 	},
 	{
 		name: 'Greater demon',
@@ -280,7 +302,8 @@ const nieveTasks = [
 		},
 		alternatives: ["K'ril Tsutsaroth", 'Tstanon Karlak', 'Skotizo'],
 		weight: 7,
-		ID: Monsters.GreaterDemon.id
+		ID: Monsters.GreaterDemon.id,
+		unlocked: true
 	},
 	{
 		name: 'Hellhound',
@@ -291,7 +314,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		weight: 8,
-		ID: Monsters.Hellhound.id
+		ID: Monsters.Hellhound.id,
+		unlocked: true
 	},
 	{
 		name: 'Iron dragon',
@@ -303,7 +327,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Iron dragon'],
 		weight: 5,
-		ID: Monsters.IronDragon.id
+		ID: Monsters.IronDragon.id,
+		unlocked: true
 	},
 	{
 		name: 'Kalphite worker',
@@ -319,7 +344,8 @@ const nieveTasks = [
 			'Kalphite Queen'
 		],
 		weight: 9,
-		ID: Monsters.KalphiteWorker.id
+		ID: Monsters.KalphiteWorker.id,
+		unlocked: true
 	},
 	{
 		name: 'Kurask',
@@ -331,7 +357,8 @@ const nieveTasks = [
 		},
 		alternatives: [],
 		weight: 3,
-		ID: Monsters.Kurask.id
+		ID: Monsters.Kurask.id,
+		unlocked: true
 	},
 	{
 		name: 'Lizardman brute',
@@ -342,7 +369,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Lizardman brute', 'Lizardman shaman'],
 		weight: 8,
-		ID: Monsters.Lizardman.id
+		ID: Monsters.Lizardman.id,
+		unlocked: false
 	},
 	{
 		name: 'Scarab mage',
@@ -354,7 +382,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Scarab', 'scarab swarm', 'locust rider', 'scarab mage'],
 		weight: 4,
-		ID: Monsters.ScarabMage.id
+		ID: Monsters.ScarabMage.id,
+		unlocked: true
 	},
 	{
 		name: 'Mithril dragon',
@@ -365,7 +394,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Mithril dragon'],
 		weight: 5,
-		ID: Monsters.MithrilDragon.id
+		ID: Monsters.MithrilDragon.id,
+		unlocked: false
 	},
 	{
 		name: 'Zygomite',
@@ -378,7 +408,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Ancient Zygomite'],
 		weight: 2,
-		ID: Monsters.Zygomite.id
+		ID: Monsters.Zygomite.id,
+		unlocked: true
 	},
 	{
 		name: 'Nechryael',
@@ -390,7 +421,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Greater Nechryael'],
 		weight: 7,
-		ID: Monsters.Nechryael.id
+		ID: Monsters.Nechryael.id,
+		unlocked: true
 	},
 	{
 		name: 'Red dragon',
@@ -403,7 +435,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Baby red dragon', 'Brutal red dragon'],
 		weight: 5,
-		ID: Monsters.RedDragon.id
+		ID: Monsters.RedDragon.id,
+		unlocked: false
 	},
 	{
 		name: 'Rune dragon',
@@ -414,7 +447,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Rune dragon'],
 		weight: 2,
-		ID: Monsters.RuneDragon.id
+		ID: Monsters.RuneDragon.id,
+		unlocked: true
 	},
 	{
 		name: 'Skeletal wyvern',
@@ -427,7 +461,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Skeletal wyvern'],
 		weight: 5,
-		ID: Monsters.SkeletalWyvern.id
+		ID: Monsters.SkeletalWyvern.id,
+		unlocked: true
 	},
 	{
 		name: 'Smoke devil',
@@ -439,7 +474,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Thermonuclear smoke devil'],
 		weight: 7,
-		ID: Monsters.SmokeDevil.id
+		ID: Monsters.SmokeDevil.id,
+		unlocked: true
 	},
 	{
 		name: 'Spiritual mage',
@@ -454,7 +490,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Spiritual mage', 'Spiritual ranger', 'Spiritual warrior'],
 		weight: 6,
-		ID: Monsters.SpiritualMage.id
+		ID: Monsters.SpiritualMage.id,
+		unlocked: true
 	},
 	{
 		name: 'Steel dragon',
@@ -466,7 +503,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Steel dragon'],
 		weight: 5,
-		ID: Monsters.SteelDragon.id
+		ID: Monsters.SteelDragon.id,
+		unlocked: true
 	},
 	{
 		name: 'Suqah',
@@ -478,7 +516,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Suqah'],
 		weight: 8,
-		ID: Monsters.Suqah.id
+		ID: Monsters.Suqah.id,
+		unlocked: true
 	},
 	{
 		name: 'Mountain troll',
@@ -489,7 +528,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Mountain troll', 'Ice troll', 'Troll general'],
 		weight: 6,
-		ID: Monsters.MountainTroll.id
+		ID: Monsters.MountainTroll.id,
+		unlocked: true
 	},
 	{
 		name: 'Turoth',
@@ -501,7 +541,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Turoth'],
 		weight: 3,
-		ID: Monsters.Turoth.id
+		ID: Monsters.Turoth.id,
+		unlocked: true
 	},
 	{
 		name: 'TzHaar',
@@ -512,7 +553,8 @@ const nieveTasks = [
 		},
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
 		weight: 10,
-		ID: Monsters.Goblin.id
+		ID: Monsters.Goblin.id,
+		unlocked: false
 	},
 	{
 		name: 'Wyrm',
@@ -523,7 +565,8 @@ const nieveTasks = [
 		},
 		alternatives: ['Wyrm'],
 		weight: 7,
-		ID: Monsters.Wyrm.id
+		ID: Monsters.Wyrm.id,
+		unlocked: true
 	}
 ];
 

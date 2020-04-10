@@ -117,6 +117,28 @@ export default class extends Extendable {
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
+	public async addSlayerPoints(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentSlayerPoints = this.settings.get(UserSettings.Slayer.SlayerPoints);
+		this.log(
+			`had ${amount} Slayer Points added. BeforeBalance[${currentSlayerPoints}] NewBalance[${currentSlayerPoints +
+				amount}]`
+		);
+		return this.settings.update(UserSettings.Slayer.SlayerPoints, currentSlayerPoints + amount);
+	}
+
+	public async removeSlayerPoints(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentSlayerPoints = this.settings.get(UserSettings.Slayer.SlayerPoints);
+		if (currentSlayerPoints < amount)
+			throw `${this.sanitizedName} doesn't have enough Slayer Points.`;
+		this.log(
+			`had ${amount} Slayer Points removed. BeforeBalance[${currentSlayerPoints}] NewBalance[${currentSlayerPoints -
+				amount}]`
+		);
+		return this.settings.update(UserSettings.Slayer.SlayerPoints, currentSlayerPoints - amount);
+	}
+
 	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
 		await this.settings.sync(true);
 		for (const { scrollID } of clueTiers) {
@@ -303,6 +325,14 @@ export default class extends Extendable {
 
 	public get slayerTaskQuantity(this: User) {
 		return this.settings.get(UserSettings.Slayer.SlayerTaskQuantity);
+	}
+
+	public get slayerPoints(this: User) {
+		return this.settings.get(UserSettings.Slayer.SlayerPoints);
+	}
+
+	public get blockList(this: User) {
+		return this.settings.get(UserSettings.Slayer.BlockList);
 	}
 
 	public get maxTripLength(this: User) {
