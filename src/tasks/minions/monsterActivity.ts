@@ -13,37 +13,15 @@ import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 
 export default class extends Task {
-<<<<<<< HEAD
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
-		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
-=======
 	async run({ monsterID, userID, channelID, quantity, slayerTask }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID);
->>>>>>> e951724... slayer skill
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		const loot = monster.table.kill(quantity);
-<<<<<<< HEAD
 		announceLoot(this.client, user, monster, quantity, loot);
-=======
-		const itemsToAnnounce = filterBankFromArrayOfItems(monster.notifyDrops as number[], loot);
-		if (Object.keys(itemsToAnnounce).length > 0) {
-			this.client.emit(
-				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
-				user.minionName
-				}, just received **${await createReadableItemListFromBank(
-					this.client,
-					itemsToAnnounce
-				)}**, their ${monster.name} KC is ${(user.settings.get(UserSettings.MonsterScores)[
-					monster.id
-				] ?? 0) + quantity}!`
-			);
-		}
->>>>>>> e951724... slayer skill
 
 		await user.addItemsToBank(loot, true);
 

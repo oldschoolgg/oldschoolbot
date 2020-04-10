@@ -3,12 +3,8 @@ import { Collection } from 'discord.js';
 import { SkillsEnum } from '../types';
 import Cooking from './cooking';
 import Mining from './mining';
-<<<<<<< HEAD
 import Smithing from './smithing/smithing';
-=======
 import Slayer from './slayer';
-import Smithing from './smithing';
->>>>>>> e951724... slayer skill
 import Woodcutting from './woodcutting';
 import Firemaking from './firemaking';
 import Fishing from './fishing';

@@ -206,7 +206,6 @@ ${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
 					SkillsEnum.Firemaking
 				)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
 ${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
-<<<<<<< HEAD
 			SkillsEnum.Runecraft
 		)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
 ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.author.settings
@@ -215,10 +214,6 @@ ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.autho
 ${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
 			SkillsEnum.Fletching
 		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
-=======
-					SkillsEnum.Runecraft
-				)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
->>>>>>> e951724... slayer skill
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -444,7 +439,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-<<<<<<< HEAD
 	async fletch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		await this.client.commands
 			.get('fletch')!
@@ -453,49 +447,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				throw err;
 			});
 	}
-=======
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		await msg.author.settings.sync(true);
-
-		if (typeof quantity === 'string') {
-			tierName = quantity;
-			quantity = 1;
-		}
-
-		if (msg.author.minionIsBusy) {
-			this.client.emit(
-				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
-			);
-			return msg.send(msg.author.minionStatus);
-		}
-
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		if (!tierName) throw invalidClue(msg.cmdPrefix);
-
-		const clueTier = clueTiers.find(tier => stringMatches(tier.name, tierName));
-
-		if (!clueTier) throw invalidClue(msg.cmdPrefix);
-
-		let duration = clueTier.timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-			clueTier.name
-			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
-		}
-
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
-		}
->>>>>>> e951724... slayer skill
 
 	async bury(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
 		await this.client.commands
@@ -533,7 +484,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-<<<<<<< HEAD
 	@requiresMinion
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
 		await this.client.commands
@@ -542,15 +492,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			.catch(err => {
 				throw err;
 			});
-=======
-		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now completing ${data.quantity}x ${
-			clueTier.name
-			} clues, it'll take around ${formatDuration(duration)} to finish.`
-		);
->>>>>>> e951724... slayer skill
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {

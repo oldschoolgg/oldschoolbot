@@ -311,23 +311,26 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.Minion.HasBought);
 	}
 
-<<<<<<< HEAD
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
-=======
 	public get hasSlayerTask(this: User) {
 		return this.settings.get(UserSettings.Slayer.HasSlayerTask);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
 	public get slayerTaskID(this: User) {
 		return this.settings.get(UserSettings.Slayer.SlayerTaskID);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
 	public get slayerTaskQuantity(this: User) {
 		return this.settings.get(UserSettings.Slayer.SlayerTaskQuantity);
 	}
 
->>>>>>> e951724... slayer skill
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) return Time.Minute * 33;

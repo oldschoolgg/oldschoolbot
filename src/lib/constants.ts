@@ -68,7 +68,6 @@ export const enum Emoji {
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
-<<<<<<< HEAD
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
 	Join = '<:join:705971600956194907>',
@@ -82,7 +81,6 @@ export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
 	Start = '705973302719414329'
-=======
 	EasterEgg = '<:easterEgg:695473553314938920>',
 	runecraft = '<:runecraft:630911040435257364>',
 	thieving = '<:thieving:630910829352452123>',
@@ -98,7 +96,6 @@ export const enum ReactionEmoji {
 	fletching = '<:fletching:630911040544309258>',
 	farming = '<:farming:630911040355565599>',
 	prayer = '<:prayer:630911040426868746>'
->>>>>>> e951724... slayer skill
 }
 
 export const enum Image {
