@@ -115,7 +115,7 @@ const Runes: Rune[] = [
 			[44, 1],
 			[91, 2]
 		],
-		tripLength: Time.Minute * 1.3
+		tripLength: Time.Minute * 1.5
 	},
 	{
 		xp: 9.5,
@@ -137,7 +137,7 @@ const Runes: Rune[] = [
 			[99, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 2
+		tripLength: Time.Minute * 1.3
 	},
 	{
 		xp: 8,
