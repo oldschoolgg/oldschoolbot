@@ -27,6 +27,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (!selectedImage.available) {
+			throw `This image is not currently available.`;
+		}
+
 		if (msg.author.settings.get(UserSettings.BankBackground) === selectedImage.id) {
 			throw `This is already your bank background.`;
 		}

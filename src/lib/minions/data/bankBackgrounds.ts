@@ -6,39 +6,46 @@ const backgroundImages: BankBackground[] = [
 	{
 		id: 1,
 		name: 'Default',
-		image: null
+		image: null,
+		available: true
 	},
 	{
 		id: 2,
 		name: 'Morytania',
-		image: null
+		image: null,
+		available: false
 	},
 	{
 		id: 3,
 		name: 'Lumbridge',
 		image: null,
+		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 100_000_000
 	},
 	{
 		id: 4,
 		name: 'Karamja',
-		image: null
+		image: null,
+		available: false
 	},
 	{
 		id: 5,
 		name: 'Draynor Manor',
-		image: null
+		image: null,
+		available: false
 	},
 	{
 		id: 6,
 		name: 'Barrows',
-		image: null
+		image: null,
+		available: false
 	},
 	{
 		id: 7,
 		name: 'Bandos',
 		image: null,
+		available: true,
 		collectionLogItemsNeeded: transformStringBankToNum({
 			'Armadyl hilt': 1,
 			'Zamorak hilt': 1,
@@ -70,6 +77,7 @@ const backgroundImages: BankBackground[] = [
 		id: 8,
 		name: 'Corporeal Beast',
 		image: null,
+		available: true,
 		collectionLogItemsNeeded: transformStringBankToNum({
 			'Spirit shield': 4,
 			'Holy elixir': 4,
