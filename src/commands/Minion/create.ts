@@ -7,7 +7,6 @@ import { stringMatches, addBankToBank, removeBankFromBank } from '../../lib/util
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Craftables from '../../lib/craftables';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
-import bankHasItem from '../../lib/util/bankHasItem';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
@@ -60,9 +59,10 @@ export default class extends BotCommand {
 		}
 
 		// Check for any items they cant have 2 of.
-		for (const [itemID] of Object.entries(craftableItem.cantHaveItems)) {
-			if (bankHasItem(userBank, parseInt(itemID))) {
-				throw `You already have ${cantHaveItemsString} in your bank.`;
+		for (const [itemID, qty] of Object.entries(craftableItem.cantHaveItems)) {
+			const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
+			if (numOwned >= qty) {
+				throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
 			}
 		}
 

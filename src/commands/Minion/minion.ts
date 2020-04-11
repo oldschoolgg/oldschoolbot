@@ -3,7 +3,7 @@ import { Util } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Tasks, Activity, Emoji, Time, Events, Color } from '../../lib/constants';
+import { Tasks, Activity, Emoji, Time, Events, Color, PerkTier } from '../../lib/constants';
 import {
 	stringMatches,
 	formatDuration,
@@ -21,6 +21,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import bankHasItem from '../../lib/util/bankHasItem';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -267,7 +268,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let cost = 50_000_000;
 		const accountAge = Date.now() - msg.author.createdTimestamp;
-		if (accountAge > Time.Year) {
+		if (accountAge > Time.Year || getUsersPerkTier(msg.author) >= PerkTier.One) {
 			cost = 0;
 		} else if (accountAge > Time.Month * 6) {
 			cost = 25_000_000;
