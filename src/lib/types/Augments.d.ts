@@ -81,6 +81,11 @@ declare module 'discord.js' {
 		skillLevel(skillName: SkillsEnum): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
+		/**
+		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
+		 * @param itemID The item ID.
+		 */
+		numOfItemsOwned(itemID: number): number;
 		sanitizedName: string;
 		badges: string;
 		/**
