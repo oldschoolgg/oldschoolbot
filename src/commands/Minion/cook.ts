@@ -8,14 +8,14 @@ import {
 	removeItemFromBank,
 	itemNameFromID
 } from '../../lib/util';
-import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Cooking from '../../lib/skills/cooking';
+import Cooking from '../../lib/skilling/skills/cooking';
 import { UserSettings } from '../../lib/UserSettings';
 import itemID from '../../lib/util/itemID';
 import bankHasItem from '../../lib/util/bankHasItem';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { CookingActivityTaskOptions } from '../../lib/types/minions';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

@@ -2,16 +2,16 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import Cooking from '../../lib/skills/cooking';
+import Cooking from '../../lib/skilling/skills/cooking';
 import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/UserSettings';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID }: CookingActivityTaskOptions) {

@@ -355,6 +355,20 @@ export default class extends Extendable {
 					} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
 			}
 
+			case Activity.Cooking: {
+				const data = currentTask as CookingActivityTaskOptions;
+
+				const cookable = Cooking.Cookables.find(
+					cookable => cookable.id === data.cookableID
+				);
+
+				return `${this.minionName} is currently cooking ${data.quantity}x ${
+					cookable!.name
+					}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Cooking
+					} Cooking level is ${this.skillLevel(SkillsEnum.Cooking)}`;
+			}
+
 			case Activity.Fishing: {
 				const data = currentTask as FishingActivityTaskOptions;
 

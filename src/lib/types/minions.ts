@@ -14,6 +14,12 @@ export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface CookingActivityTaskOptions extends ActivityTaskOptions {
+	cookableID: number;
+	channelID: string;
+	quantity: number;
+}
+
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	channelID: string;
@@ -78,6 +84,7 @@ export type TickerTaskData =
 
 export type MinionActivityTask =
 	| Tasks.AgilityActivity
+	| Tasks.CookingActivity
 	| Tasks.MonsterActivity
 	| Tasks.ClueActivity
 	| Tasks.FishingActivity

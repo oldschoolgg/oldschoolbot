@@ -1,5 +1,6 @@
 export const enum SkillsEnum {
 	Agility = 'agility',
+	Cooking = 'cooking',
 	Fishing = 'fishing',
 	Mining = 'mining',
 	Smithing = 'smithing',
@@ -78,4 +79,15 @@ export interface Rune {
 	name: string;
 	qpRequired?: number;
 	tripLength: number;
+}
+
+export interface Cookable {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputCookables: Bank;
+	stopBurnAt: number;
+	stopBurnAtCG: number;
+	burntCookable: number;
 }
