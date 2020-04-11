@@ -1,7 +1,7 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import { SkillsEnum } from '../types';
 import Gear from '../gear';
+import { SkillsEnum } from '../skilling/types';
 
 Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
@@ -41,6 +41,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Smithing, 'integer', { default: 0 })
 			.add(SkillsEnum.Woodcutting, 'integer', { default: 0 })
 			.add(SkillsEnum.Firemaking, 'integer', { default: 0 })
+			.add(SkillsEnum.Runecraft, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

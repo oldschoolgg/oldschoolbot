@@ -2,12 +2,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, formatDuration, rand } from '../../lib/util';
-import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Firemaking from '../../lib/skills/firemaking';
+import Firemaking from '../../lib/skilling/skills/firemaking';
 import { UserSettings } from '../../lib/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

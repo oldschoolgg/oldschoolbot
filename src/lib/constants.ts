@@ -58,6 +58,7 @@ export const enum Emoji {
 	Mining = '<:mining:630911040128811010>',
 	Smithing = '<:smithing:630911040452034590>',
 	Woodcutting = '<:woodcutting:630911040099450892>',
+	Runecraft = '<:runecraft:630911040435257364>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
@@ -86,6 +87,7 @@ export const enum Tasks {
 	MiningActivity = 'miningActivity',
 	SmithingActivity = 'smithingActivity',
 	WoodcuttingActivity = 'woodcuttingActivity',
+	RunecraftActivity = 'runecraftActivity',
 	FiremakingActivity = 'firemakingActivity',
 	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
@@ -102,7 +104,8 @@ export const enum Activity {
 	Smithing = 'Smithing',
 	Woodcutting = 'Woodcutting',
 	Questing = 'Questing',
-	Firemaking = 'Firemaking'
+	Firemaking = 'Firemaking',
+	Runecraft = 'Runecraft'
 }
 
 export const enum Events {

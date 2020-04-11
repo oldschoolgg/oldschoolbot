@@ -8,14 +8,14 @@ import {
 	rand,
 	itemNameFromID
 } from '../../lib/util';
-import Mining from '../../lib/skills/mining';
-import { SkillsEnum } from '../../lib/types';
+import Mining from '../../lib/skilling/skills/mining';
 import { Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 const pickaxes = [
 	{

@@ -6,7 +6,8 @@ import { Limit } from 'p-limit';
 import { Image } from 'canvas';
 
 import { CustomGet } from '../UserSettings';
-import { Bank, SkillsEnum } from '.';
+import { Bank } from '.';
+import { SkillsEnum } from '../skilling/types';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -71,6 +72,7 @@ declare module 'discord.js' {
 		): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
+		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;

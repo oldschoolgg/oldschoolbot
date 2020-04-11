@@ -8,13 +8,13 @@ import {
 	itemNameFromID,
 	removeItemFromBank
 } from '../../lib/util';
-import { SkillsEnum } from '../../lib/types';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smithing from '../../lib/skills/smithing';
+import Smithing from '../../lib/skilling/skills/smithing';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

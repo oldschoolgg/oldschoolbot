@@ -3,10 +3,11 @@ import { Collection } from 'discord.js';
 import Mining from './mining';
 import Smithing from './smithing';
 import Woodcutting from './woodcutting';
-import { SkillsEnum } from '../types';
 import Firemaking from './firemaking';
 import Fishing from './fishing';
 import Agility from './agility';
+import { SkillsEnum } from '../types';
+import Runecraft from './runecraft';
 
 export type Skill =
 	| typeof Agility
@@ -14,7 +15,8 @@ export type Skill =
 	| typeof Mining
 	| typeof Smithing
 	| typeof Woodcutting
-	| typeof Firemaking;
+	| typeof Firemaking
+	| typeof Runecraft;
 
 const Skills: Collection<string, Skill> = new Collection([
 	[SkillsEnum.Agility, Agility as Skill],
@@ -22,7 +24,8 @@ const Skills: Collection<string, Skill> = new Collection([
 	[SkillsEnum.Mining, Mining as Skill],
 	[SkillsEnum.Smithing, Smithing as Skill],
 	[SkillsEnum.Woodcutting, Woodcutting as Skill],
-	[SkillsEnum.Firemaking, Firemaking as Skill]
+	[SkillsEnum.Firemaking, Firemaking as Skill],
+	[SkillsEnum.Runecraft, Runecraft as Skill]
 ]);
 
 export default Skills;

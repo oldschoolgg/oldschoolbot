@@ -2,13 +2,13 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { roll, rand } from 'oldschooljs/dist/util/util';
-import Agility from '../../lib/skills/agility';
+import Agility from '../../lib/skilling/skills/agility';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
 	async run({ courseID, quantity, userID, channelID }: AgilityActivityTaskOptions) {

@@ -1,6 +1,6 @@
-import { SkillsEnum, Fish } from '../types';
-import { Emoji } from '../constants';
-import itemID from '../util/itemID';
+import { Fish, SkillsEnum } from '../types';
+import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
 
 const fishes: Fish[] = [
 	{

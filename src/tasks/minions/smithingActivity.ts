@@ -2,15 +2,15 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import Smithing from '../../lib/skills/smithing';
+import Smithing from '../../lib/skilling/skills/smithing';
 import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID }: SmithingActivityTaskOptions) {
