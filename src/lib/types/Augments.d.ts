@@ -86,6 +86,10 @@ declare module 'discord.js' {
 		 * @param itemID The item ID.
 		 */
 		numOfItemsOwned(itemID: number): number;
+		/**
+		 * Returns this users Collection Log bank.
+		 */
+		collectionLog: Bank;
 		sanitizedName: string;
 		badges: string;
 		/**

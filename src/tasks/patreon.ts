@@ -4,10 +4,19 @@ import { TextChannel } from 'discord.js';
 
 import { privateConfig } from '../config';
 import { Patron } from '../lib/types';
-import { PatronTierID, BitField, Time, Roles, BadgesEnum, Channel } from '../lib/constants';
+import {
+	PatronTierID,
+	BitField,
+	Time,
+	Roles,
+	BadgesEnum,
+	Channel,
+	PerkTier
+} from '../lib/constants';
 import { UserSettings } from '../lib/UserSettings';
 import getSupportGuild from '../lib/util/getSupportGuild';
 import { noOp } from '../lib/util';
+import BankImageTask from './bankImage';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${privateConfig?.patreon.campaignID}/members`
@@ -92,7 +101,16 @@ export default class extends Task {
 					}
 				);
 
-				continue;
+				// Remove patron bank background
+				const bankBg = (this.client.tasks.get(
+					'bankImage'
+				) as BankImageTask).backgroundImages.find(
+					img => img.id === user.settings.get(UserSettings.BankBackground)
+				);
+
+				if (bankBg && bankBg.perkTierNeeded && bankBg.perkTierNeeded >= PerkTier.One) {
+					await user.settings.update(UserSettings.BankBackground, 1);
+				}
 			}
 
 			if (
