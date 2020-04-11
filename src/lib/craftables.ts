@@ -500,6 +500,19 @@ const Craftables: Craftable[] = [
 			[itemID('Graceful cape')]: 1
 		},
 		cantHaveItems: {}
+	},
+	{
+		name: 'Hell cat ears',
+		inputItems: {
+			[itemID('Cat ears')]: 1,
+			[itemID('Red dye')]: 1
+		},
+		outputItems: {
+			[itemID('Hell cat ears')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Hell cat ears')]: 1
+		}
 	}
 ];
 

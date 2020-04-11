@@ -19,6 +19,8 @@ import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import { Events } from '../lib/constants';
+import backgroundImages from '../lib/minions/data/bankBackgrounds';
+import { BankBackground } from '../lib/minions/types';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -26,39 +28,6 @@ registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
 
 const bankImageFile = fs.readFileSync('./resources/images/bank.png');
 const bankRepeaterFile = fs.readFileSync('./resources/images/repeating.png');
-
-const backgroundImages = [
-	{
-		id: 1,
-		name: 'Default',
-		image: null
-	},
-	{
-		id: 2,
-		name: 'Morytania',
-		image: null
-	},
-	{
-		id: 3,
-		name: 'Lumbridge',
-		image: null
-	},
-	{
-		id: 4,
-		name: 'Karamja',
-		image: null
-	},
-	{
-		id: 5,
-		name: 'Draynor Manor',
-		image: null
-	},
-	{
-		id: 6,
-		name: 'Barrows',
-		image: null
-	}
-];
 
 const CACHE_DIR = './icon_cache';
 const spacer = 12;
@@ -69,11 +38,7 @@ const distanceFromSide = 16;
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
-	public backgroundImages: {
-		image: Image;
-		id: number;
-		name: string;
-	}[] = [];
+	public backgroundImages: BankBackground[] = [];
 
 	public repeatingImage: Image | null = null;
 
@@ -165,8 +130,8 @@ export default class BankImageTask extends Task {
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID);
-		ctx.drawImage(bgImage!.image, 0, 0, bgImage!.image.width, bgImage!.image.height);
+		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
+		ctx.drawImage(bgImage!.image, 0, 0, bgImage.image!.width, bgImage.image!.height);
 
 		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
 
