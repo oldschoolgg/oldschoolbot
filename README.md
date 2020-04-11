@@ -24,7 +24,7 @@ Contributors are listed in this file, and given a Contributor role in the suppor
 
 1. Clone the repository: `git clone https://github.com/gc/oldschoolbot.git`
 2. Go into the folder, and
-   `npm install`
+   `yarn install`
 3. Make a file called `private.js` in the `/config` folder with this content, filling in your bot token:
 
 ```js
