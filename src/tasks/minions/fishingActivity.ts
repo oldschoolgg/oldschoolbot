@@ -125,7 +125,10 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (fish.petChance && roll(fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25)) {
+		if (
+			fish.petChance &&
+			roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)
+		) {
 			loot[itemID('Heron')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 		}

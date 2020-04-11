@@ -40,7 +40,7 @@ export default class extends Task {
 			[rune.id]: runeQuantity
 		};
 
-		if (roll(1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25)) {
+		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
 			loot[itemID('Rift guardian')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
