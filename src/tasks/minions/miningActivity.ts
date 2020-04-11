@@ -2,17 +2,17 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp, rand } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { roll } from 'oldschooljs/dist/util/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Mining from '../../lib/skills/mining';
+import Mining from '../../lib/skilling/skills/mining';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/UserSettings';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {

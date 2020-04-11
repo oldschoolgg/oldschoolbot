@@ -84,5 +84,6 @@ export type MinionActivityTask =
 	| Tasks.MiningActivity
 	| Tasks.SmithingActivity
 	| Tasks.WoodcuttingActivity
+	| Tasks.RunecraftActivity
 	| Tasks.FiremakingActivity
 	| Tasks.QuestingActivity;

@@ -2,11 +2,11 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import Firemaking from '../../lib/skills/firemaking';
+import Firemaking from '../../lib/skilling/skills/firemaking';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
 	async run({ burnableID, quantity, userID, channelID }: FiremakingActivityTaskOptions) {

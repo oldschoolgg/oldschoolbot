@@ -12,7 +12,6 @@ import {
 	isWeekend,
 	itemNameFromID
 } from '../../lib/util';
-import { SkillsEnum } from '../../lib/types/index';
 import { rand } from '../../util';
 import clueTiers from '../../lib/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
@@ -21,6 +20,7 @@ import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/t
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import bankHasItem from '../../lib/util/bankHasItem';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -191,6 +191,9 @@ ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
 ${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
 			SkillsEnum.Firemaking
 		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
+${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
+			SkillsEnum.Runecraft
+		)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}

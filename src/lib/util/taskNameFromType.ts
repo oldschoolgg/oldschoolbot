@@ -20,5 +20,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FiremakingActivity;
 		case Activity.Questing:
 			return Tasks.QuestingActivity;
+		case Activity.Runecraft:
+			return Tasks.RunecraftActivity;
 	}
 }

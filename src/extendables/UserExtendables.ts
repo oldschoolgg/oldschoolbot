@@ -2,7 +2,7 @@ import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
 import { Events, Activity, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
-import { Bank, SkillsEnum } from '../lib/types';
+import { Bank } from '../lib/types';
 import {
 	addBankToBank,
 	removeItemFromBank,
@@ -14,7 +14,7 @@ import {
 } from '../lib/util';
 import clueTiers from '../lib/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
-import Mining from '../lib/skills/mining';
+import Mining from '../lib/skilling/skills/mining';
 import { UserSettings } from '../lib/UserSettings';
 import {
 	MonsterActivityTaskOptions,
@@ -29,13 +29,15 @@ import {
 	AgilityActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
-import Smithing from '../lib/skills/smithing';
-import Firemaking from '../lib/skills/firemaking';
-import Woodcutting from '../lib/skills/woodcutting';
-import Skills from '../lib/skills';
+import Smithing from '../lib/skilling/skills/smithing';
+import Firemaking from '../lib/skilling/skills/firemaking';
+import Woodcutting from '../lib/skilling/skills/woodcutting';
+import Skills from '../lib/skilling/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
-import Fishing from '../lib/skills/fishing';
-import Agility from '../lib/skills/agility';
+import Fishing from '../lib/skilling/skills/fishing';
+import Agility from '../lib/skilling/skills/agility';
+import { SkillsEnum } from '../lib/skilling/types';
+import Runecraft, { RunecraftActivityTaskOptions } from '../lib/skilling/skills/runecraft';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -210,6 +212,13 @@ export default class extends Extendable {
 
 		const bank = this.settings.get(UserSettings.Bank);
 		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
+	}
+
+	public async numberOfItemInBank(this: User, itemID: number, sync = true) {
+		if (sync) await this.settings.sync(true);
+
+		const bank = this.settings.get(UserSettings.Bank);
+		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
@@ -409,6 +418,17 @@ export default class extends Extendable {
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Woodcutting
 				} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
+			}
+			case Activity.Runecraft: {
+				const data = currentTask as RunecraftActivityTaskOptions;
+
+				const rune = Runecraft.Runes.find(_rune => _rune.id === data.runeID);
+
+				return `${this.minionName} is currently turning ${
+					data.essenceQuantity
+				}x Essence into ${rune!.name}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Runecraft
+				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
 			}
 		}
 	}

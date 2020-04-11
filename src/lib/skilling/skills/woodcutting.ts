@@ -1,5 +1,5 @@
-import { SkillsEnum, Log } from '../types';
-import { Emoji } from '../constants';
+import { Emoji } from '../../constants';
+import { Log, SkillsEnum } from '../types';
 
 const logs: Log[] = [
 	{
