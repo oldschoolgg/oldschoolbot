@@ -120,7 +120,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Runecraft,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + Number(Time.Minute)
+			finishDate: Date.now() + duration
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
