@@ -2,12 +2,12 @@ import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import BankImageTask from '../../tasks/bankImage';
-import { stringMatches, addBankToBank, removeBankFromBank } from '../../lib/util';
+import { stringMatches, removeBankFromBank } from '../../lib/util';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { UserSettings } from '../../lib/UserSettings';
-import { Time } from 'oldschooljs/dist/constants';
+import { Time } from '../../lib/constants';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
