@@ -12,7 +12,8 @@ import {
 	formatItemStackQuantity,
 	saveCtx,
 	restoreCtx,
-	addArrayOfNumbers
+	addArrayOfNumbers,
+	stringMatches
 } from '../lib/util';
 import { Bank } from '../lib/types';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
@@ -22,6 +23,7 @@ import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import { Events } from '../lib/constants';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
+import { filterableTypes } from '../lib/filterables';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -145,9 +147,12 @@ export default class BankImageTask extends Task {
 		}
 
 		// Filter by preset
-		const filterQuery = flags.skilling || flags.barrows || flags.gear;
-		if (filterQuery && typeof filterQuery === 'string') {
-			items = filterByCategory(filterQuery, items);
+		for (const flag of Object.keys(flags)) {
+			if (
+				filterableTypes.some(type => type.aliases.some(alias => stringMatches(alias, flag)))
+			) {
+				items = filterByCategory(flag, items);
+			}
 		}
 
 		// Sorting
