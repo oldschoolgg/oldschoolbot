@@ -72,9 +72,8 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		// Check the user has the required ores to smith these bars.
-		// Multiplying the ore required by the quantity of bars.
-
+		// Check the user has the required cookables
+		// Multiplying the cookable required by the quantity
 		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);
 		for (const [cookableID, qty] of requiredCookables) {
 			if (!bankHasItem(userBank, parseInt(cookableID), qty * quantity)) {
@@ -84,12 +83,12 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToCookSingleCookable;
 
-		if (duration > Time.Minute * 30) {
-			throw `${
-				msg.author.minionName
-			} can't go on trips longer than 30 minutes, try a lower quantity. The highest amount of ${
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on trips longer than ${
+				msg.author.maxTripLength
+			} minutes, try a lower quantity. The highest amount of ${
 				cookable.name
-			}s you can cook is ${Math.floor((Time.Minute * 30) / timeToCookSingleCookable)}.`;
+			}s you can cook is ${Math.floor(msg.author.maxTripLength / timeToCookSingleCookable)}.`;
 		}
 
 		const data: CookingActivityTaskOptions = {
