@@ -70,7 +70,7 @@ export default class extends Task {
 		}
 
 		if (cookable.stopBurnAt > 0 && oldQuantity > quantity) {
-			str += `\n\n${oldQuantity - quantity} ${cookable.name}s failed to cook.`;
+			str += `\n\n${oldQuantity - quantity}x ${cookable.name} failed to cook.`;
 		}
 
 		const loot = {
