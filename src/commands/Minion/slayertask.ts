@@ -8,12 +8,24 @@ import { UserSettings } from '../../lib/UserSettings';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from '../../lib/types';
 import bossTasks from '../../lib/slayer/bossTasks';
+import turaelTasks from '../../lib/slayer/turaelTasks';
 
 const options = {
 	max: 1,
 	time: 10000,
 	errors: ['time']
 };
+
+const taskList = [
+	{
+		name: 'Nieve',
+		tasks: nieveTasks
+	},
+	{
+		name: 'Turael',
+		tasks: turaelTasks
+	}
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -62,27 +74,35 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, newSlayerPoints);
 			return msg.send(`Successfully cancelled task`);
 		}
+
 		// If they already have a slayer task tell them what it is
 		if (msg.author.hasSlayerTask) {
 			const mon = Monsters.get(msg.author.slayerTaskID);
 			if (!mon) throw `WTF`;
 			let str = `You already have a slayer task of ${msg.author.slayerTaskQuantity}x ${mon.name}.\n`;
-			const task = nieveTasks.find(monster =>
+			const allTasks = nieveTasks.concat(turaelTasks);
+			const currentTask = allTasks.find(monster =>
 				stringMatches(Monsters.get(msg.author.slayerTaskID)!.name, monster.name)
 			);
-			if (task?.alternatives) {
-				str += `You can also kill these monsters: ${task?.alternatives}`;
+			if (currentTask?.alternatives) {
+				str += `You can also kill these monsters: ${currentTask?.alternatives}!`;
 				const re = /\,/gi;
 				return msg.send(str.replace(re, `, `));
 			}
 			throw str;
 		}
 
+		// Figure out what master they're using
 		const master = slayerMasters.find(person => stringMatches(slayermaster, person.name));
 		if (!master) {
 			throw `That's not a valid slayer master. Valid masters are ${slayerMasters
 				.map(person => person.name)
 				.join(', ')}.`;
+		}
+		// Get that masters list of tasks
+		const listOfTasks = taskList.find(task => stringMatches(slayermaster, task.name));
+		if (!listOfTasks) {
+			throw `WTF`;
 		}
 
 		const userCombatLevel = determineCombatLevel(
@@ -101,11 +121,11 @@ export default class extends BotCommand {
 			throw `You need a combat level of ${
 				master.requirements.combatLevel
 			}, and a slayer level of ${master.requirements.slayerLevel} to use this master! 
-		You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Slayer)} slayer.`;
+You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Slayer)} slayer.`;
 		}
 
 		// Filter by slayer level
-		const filteredByLevel = nieveTasks.filter(
+		const filteredByLevel = listOfTasks.tasks.filter(
 			task =>
 				Monsters.get(task.ID)?.data.slayerLevelRequired! <=
 				msg.author.skillLevel(SkillsEnum.Slayer)
@@ -115,51 +135,56 @@ export default class extends BotCommand {
 		const filteredLockedTasks = filteredByLevel.filter(task => task.unlocked === true);
 
 		// Filter by block list
-		const filteredBlockedTasks = filteredLockedTasks.filter(
+		let filteredTasks = filteredLockedTasks.filter(
 			task => !msg.author.blockList.includes(task.ID)
 		);
 
 		// Filter by quest point requirements
+		/*
 		const currentQP = msg.author.settings.get(UserSettings.QP);
+		if(filteredBlockedTasks) {
 		let filteredTasks = filteredBlockedTasks.filter(
-			task => task.requirements.questPoints <= currentQP
+			task => task.requirements!.questPoints <= currentQP
 		);
-
+		}
+*/
 		// Filter by unlocks -- Theres probably an easier way to do this but I can't figure it out
-		if (msg.author.unlockedAviansie) {
-			filteredTasks = filteredTasks.concat(
-				nieveTasks.filter(monster => monster.name === 'Aviansie')
-			);
-		}
-		if (msg.author.unlockedBasilisk) {
-			filteredTasks = filteredTasks.concat(
-				nieveTasks.filter(monster => monster.name === 'Basilisk')
-			);
-		}
-		if (msg.author.unlockedBoss) {
-			filteredTasks = filteredTasks.concat(
-				nieveTasks.filter(monster => monster.name === 'Boss')
-			);
-		}
-		if (msg.author.unlockedLizardman) {
-			filteredTasks = filteredTasks.concat(
-				nieveTasks.filter(monster => monster.name === 'Lizardman brute')
-			);
-		}
-		if (msg.author.unlockedMithrilDragon) {
-			filteredTasks = filteredTasks.concat(
-				nieveTasks.filter(monster => monster.name === 'Mithril dragon')
-			);
-		}
-		if (msg.author.unlockedRedDragon) {
-			filteredTasks = filteredTasks.concat(
-				nieveTasks.filter(monster => monster.name === 'Red dragon')
-			);
-		}
-		if (msg.author.unlockedTzHaar) {
-			filteredTasks = filteredTasks.concat(
-				nieveTasks.filter(monster => monster.name === 'TzHaar')
-			);
+		if (slayermaster === 'Nieve') {
+			if (msg.author.unlockedAviansie) {
+				filteredTasks = filteredTasks.concat(
+					nieveTasks.filter(monster => monster.name === 'Aviansie')
+				);
+			}
+			if (msg.author.unlockedBasilisk) {
+				filteredTasks = filteredTasks.concat(
+					nieveTasks.filter(monster => monster.name === 'Basilisk')
+				);
+			}
+			if (msg.author.unlockedBoss) {
+				filteredTasks = filteredTasks.concat(
+					nieveTasks.filter(monster => monster.name === 'Boss')
+				);
+			}
+			if (msg.author.unlockedLizardman) {
+				filteredTasks = filteredTasks.concat(
+					nieveTasks.filter(monster => monster.name === 'Lizardman brute')
+				);
+			}
+			if (msg.author.unlockedMithrilDragon) {
+				filteredTasks = filteredTasks.concat(
+					nieveTasks.filter(monster => monster.name === 'Mithril dragon')
+				);
+			}
+			if (msg.author.unlockedRedDragon) {
+				filteredTasks = filteredTasks.concat(
+					nieveTasks.filter(monster => monster.name === 'Red dragon')
+				);
+			}
+			if (msg.author.unlockedTzHaar) {
+				filteredTasks = filteredTasks.concat(
+					nieveTasks.filter(monster => monster.name === 'TzHaar')
+				);
+			}
 		}
 		let totalweight = 0;
 		for (let i = 0; i < filteredTasks.length; i++) {
@@ -168,6 +193,11 @@ export default class extends BotCommand {
 		if (filteredTasks.length === 0) {
 			throw `You don't have a high enough Slayer level to get a task from that Master.`;
 		}
+		msg.send(
+			`**Possible tasks**: ${`That's not a valid slayer master. Valid masters are ${slayerMasters
+				.map(person => person.name)
+				.join(', ')}.`}`
+		);
 		let number = rand(1, totalweight);
 		for (let i = 0; i < filteredTasks.length; i++) {
 			number -= filteredTasks[i].weight;

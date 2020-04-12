@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
 import { Time } from 'oldschooljs/dist/constants';
+import { UserSettings } from '../../lib/UserSettings';
 
 const slayerShopItems = [
 	{
@@ -48,6 +49,10 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [unlockname]: [string]) {
 		await msg.author.settings.sync(true);
+
+		if (unlockname === 'bal') {
+			throw `Your current Slayer Points balance is: ${msg.author.slayerPoints}`;
+		}
 		const unlock = slayerShopItems.find(item => stringMatches(unlockname, item.name));
 		if (!unlock) {
 			throw `That's not a valid unlock. Valid unlocks are ${slayerShopItems
@@ -77,66 +82,52 @@ You currently have ${msg.author.slayerPoints} slayer points.`
 			return sellMsg.edit(`Cancelling purchase of ability to kill ${unlock.name}.`);
 		}
 
-		/* This needs a better way + added back to nieveTasks
+		// This needs a better way
 		if (unlock.name === 'Aviansie') {
 			if (msg.author.unlockedAviansie) {
-				throw `You already have that unlocked, why would you want to buy it again?.`;
+				throw `You already have that unlocked, why would you want to buy it again?`;
 			}
 			await msg.author.settings.update(UserSettings.Slayer.UnlockedAviansie, true);
-			return msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerPoints}`);
 		}
 		if (unlock.name === 'Basilisk') {
 			if (msg.author.unlockedBasilisk) {
-				throw `You already have that unlocked, why would you want to buy it again?.`;
+				throw `You already have that unlocked, why would you want to buy it again?`;
 			}
 			await msg.author.settings.update(UserSettings.Slayer.UnlockedBasilisk, true);
-			return msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerPoints}`);
 		}
 		if (unlock.name === 'Boss') {
 			if (msg.author.unlockedBoss) {
-				throw `You already have that unlocked, why would you want to buy it again?.`;
+				throw `You already have that unlocked, why would you want to buy it again?`;
 			}
 			await msg.author.settings.update(UserSettings.Slayer.UnlockedBoss, true);
-			return msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerPoints}`);
 		}
 		if (unlock.name === 'Lizardman') {
 			if (msg.author.unlockedLizardman) {
-				throw `You already have that unlocked, why would you want to buy it again?.`;
+				throw `You already have that unlocked, why would you want to buy it again?`;
 			}
 			await msg.author.settings.update(UserSettings.Slayer.UnlockedLizardman, true);
-			return msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerPoints}`);
 		}
 		if (unlock.name === 'Mithril dragon') {
 			if (msg.author.unlockedMithrilDragon) {
-				throw `You already have that unlocked, why would you want to buy it again?.`;
+				throw `You already have that unlocked, why would you want to buy it again?`;
 			}
 			await msg.author.settings.update(UserSettings.Slayer.UnlockedMithrilDragon, true);
-			return msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerPoints}`);
 		}
 		if (unlock.name === 'Red dragon') {
 			if (msg.author.unlockedRedDragon) {
-				throw `You already have that unlocked, why would you want to buy it again?.`;
+				throw `You already have that unlocked, why would you want to buy it again?`;
 			}
 			await msg.author.settings.update(UserSettings.Slayer.UnlockedRedDragon, true);
-			return msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerPoints}`);
 		}
 		if (unlock.name === 'TzHaar') {
 			if (msg.author.unlockedTzHaar) {
 				throw `You already have that unlocked.`;
 			}
 			await msg.author.settings.update(UserSettings.Slayer.UnlockedTzHaar, true);
-			return msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerPoints}`);
 		}
-
 		const newQuantity = msg.author.slayerPoints - unlock.slayerPointsRequired;
 		await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, newQuantity);
-		*/
+		msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
+Your new total is ${msg.author.slayerPoints}`);
 	}
 }
