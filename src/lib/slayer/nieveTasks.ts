@@ -9,7 +9,7 @@ const nieveTasks = [
 			slayerLevel: 60,
 			combatLevel: 65
 		},
-		alternatives: ['Deviant spectre'],
+		alternatives: ['Deviant Spectre'],
 		weight: 6,
 		ID: Monsters.AberrantSpectre.id,
 		unlocked: true
@@ -34,7 +34,6 @@ const nieveTasks = [
 		requirements: {
 			questPoints: 205
 		},
-
 		weight: 2,
 		ID: Monsters.AdamantDragon.id,
 		unlocked: true
@@ -55,13 +54,7 @@ const nieveTasks = [
 		name: 'Aviansie',
 		amount: [120, 185],
 		extendedAmount: [130, 250],
-		alternatives: [
-			'Kree arra',
-			'Flight Kilisa',
-			'Flockleader Geerin',
-			'Wingman Skree',
-			'Reanimated aviansie'
-		],
+		alternatives: ['Kree arra'],
 		weight: 6,
 		ID: Monsters.Aviansie.id,
 		unlocked: false
@@ -85,7 +78,7 @@ const nieveTasks = [
 		requirements: {
 			combatLevel: 80
 		},
-		alternatives: ['Demonic gorilla', 'Skotizo'],
+		alternatives: ['Demonic Gorilla', 'Skotizo'],
 		weight: 9,
 		ID: Monsters.BlackDemon.id,
 		unlocked: true
@@ -98,7 +91,7 @@ const nieveTasks = [
 			combatLevel: 80,
 			questPoints: 32
 		},
-		alternatives: ['Baby black dragon', 'King Black Dragon', 'Brutal black dragon'],
+		alternatives: ['Baby Black Dragon', 'King Black Dragon', 'Brutal Black Dragon'],
 		weight: 6,
 		ID: Monsters.BlackDragon.id,
 		unlocked: true
@@ -123,7 +116,7 @@ const nieveTasks = [
 			combatLevel: 65,
 			questPoints: 32
 		},
-		alternatives: ['Baby blue dragon', 'Brutal blue dragon', 'Vorkath'],
+		alternatives: ['Baby Blue Dragon', 'Brutal Blue Dragon', 'Vorkath'],
 		weight: 4,
 		ID: Monsters.BlueDragon.id,
 		unlocked: true
@@ -170,7 +163,7 @@ const nieveTasks = [
 			combatLevel: 80,
 			slayerLevel: 87
 		},
-		alternatives: 'Kraken',
+		alternatives: ['Kraken'],
 		weight: 6,
 		ID: Monsters.CaveKraken.id,
 		unlocked: true
@@ -196,7 +189,7 @@ const nieveTasks = [
 			combatLevel: 90,
 			questPoints: 24
 		},
-		alternatives: ['Dark beast'],
+		alternatives: ['Dark Beast'],
 		weight: 5,
 		ID: Monsters.DarkBeast.id,
 		unlocked: true
@@ -221,7 +214,7 @@ const nieveTasks = [
 			questPoints: 15,
 			slayerLevel: 65
 		},
-		alternatives: ['Dust devil'],
+		alternatives: ['Dust Devil'],
 		weight: 6,
 		ID: Monsters.DustDevil.id,
 		unlocked: true
@@ -233,7 +226,7 @@ const nieveTasks = [
 			combatLevel: 70,
 			questPoints: 30
 		},
-		alternatives: ['Elf warrior', 'Elf archer'],
+		alternatives: ['Elf Warrior', 'Elf Archer'],
 		weight: 4,
 		ID: Monsters.ElfWarrior.id,
 		unlocked: true
@@ -257,7 +250,7 @@ const nieveTasks = [
 			slayerLevel: 66,
 			questPoints: 10
 		},
-		alternatives: ['Taloned wyvern', 'Long-tailed wyvern', 'Ancient Wyvern'],
+		alternatives: ['Taloned Wyvern', 'Long-tailed Wyvern', 'Ancient Wyvern'],
 		weight: 5,
 		ID: Monsters.FossilIslandWyvernAncient.id,
 		unlocked: true
@@ -337,7 +330,7 @@ const nieveTasks = [
 	{
 		name: 'Lizardman brute',
 		amount: [90, 120],
-		alternatives: ['Lizardman shaman'],
+		alternatives: ['Lizardman Shaman'],
 		weight: 8,
 		ID: Monsters.Lizardman.id,
 		unlocked: false
@@ -482,7 +475,7 @@ const nieveTasks = [
 		requirements: {
 			combatLevel: 60
 		},
-		alternatives: ['Ice troll', 'Troll general'],
+		alternatives: ['Ice Troll', 'Troll General'],
 		weight: 6,
 		ID: Monsters.MountainTroll.id,
 		unlocked: true
@@ -500,7 +493,7 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'TzHaar',
+		name: 'TzHaar-Ket',
 		amount: [110, 180],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
 		weight: 10,
