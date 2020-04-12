@@ -1,7 +1,6 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
-import ClueTiers from '../../lib/clueTiers';
 import { Events } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
@@ -12,9 +11,14 @@ import { cluesRares } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/UserSettings';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 
-const itemsToNotifyOf: number[] = Object.values(cluesRares).flat(Infinity);
-itemsToNotifyOf.push(itemID('Bloodhound'));
+const itemsToNotifyOf: number[] = Object.values(cluesRares)
+	.flat(Infinity)
+	.concat(
+		ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward)
+	)
+	.concat([itemID('Bloodhound')]);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -43,12 +47,23 @@ export default class extends BotCommand {
 
 		const opened = `You opened one of your ${clueTier.name} Clue Caskets`;
 
+		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] + 1;
+
+		// If this tier has a milestone reward, and their new score meets the req, and
+		// they don't own it already, add it to the loot.
+		if (
+			clueTier.milestoneReward &&
+			nthCasket >= clueTier.milestoneReward.scoreNeeded &&
+			(await msg.author.numOfItemsOwned(clueTier.milestoneReward.itemReward)) === 0
+		) {
+			loot[clueTier.milestoneReward.itemReward] = 1;
+		}
+
 		// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 		// and send a notification if they got one.
 		const keys = Object.keys(loot);
 		if (keys.some(key => itemsToNotifyOf.includes(parseInt(key)))) {
 			const lootStr = await createReadableItemListFromBank(this.client, loot);
-			const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1;
 
 			this.client.emit(
 				Events.ServerNotification,
@@ -71,13 +86,9 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(loot, true);
 
-		const task = this.client.tasks.get('bankImage');
+		const task = this.client.tasks.get('bankImage')!;
 
-		// TODO - add 'WTF' error handling, maybe coerce this
-		// eslint-disable-next-line @typescript-eslint/unbound-method
-		if (!task || !task.generateBankImage) throw '';
-
-		const image = await task!.generateBankImage(
+		const image = await task.generateBankImage(
 			loot,
 			`You opened a ${clueTier.name} clue and received...`
 		);

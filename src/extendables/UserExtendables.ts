@@ -12,7 +12,7 @@ import {
 	convertXPtoLVL,
 	toTitleCase
 } from '../lib/util';
-import clueTiers from '../lib/clueTiers';
+import clueTiers from '../lib/minions/data/clueTiers';
 import killableMonsters from '../lib/killableMonsters';
 import Mining from '../lib/skilling/skills/mining';
 import { UserSettings } from '../lib/UserSettings';

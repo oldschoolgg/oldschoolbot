@@ -1,10 +1,3 @@
-import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
-import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
-import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
-import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
-import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
-
 export interface Bank {
 	[key: number]: number;
 }
@@ -122,14 +115,6 @@ export interface PrivateConfig {
 		campaignID: number;
 		token: string;
 	};
-}
-
-export interface ClueTier {
-	name: string;
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
-	id: number;
-	scrollID: number;
-	timeToFinish: number;
 }
 
 export type ItemTuple = [number, number, number];

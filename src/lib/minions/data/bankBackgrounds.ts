@@ -87,6 +87,20 @@ const backgroundImages: BankBackground[] = [
 			'Pet dark core': 1
 		}),
 		gpCost: 100_000_000
+	},
+	{
+		id: 9,
+		name: 'Casket',
+		image: null,
+		available: true,
+		collectionLogItemsNeeded: transformStringBankToNum({
+			'Large spade': 1,
+			'Clueless scroll': 1,
+			'Heavy casket': 1,
+			'Scroll sack': 1,
+			Bloodhound: 1
+		}),
+		gpCost: 100_000_000
 	}
 ];
 

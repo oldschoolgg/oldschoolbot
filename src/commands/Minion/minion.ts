@@ -13,7 +13,7 @@ import {
 	itemNameFromID
 } from '../../lib/util';
 import { rand } from '../../util';
-import clueTiers from '../../lib/clueTiers';
+import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';

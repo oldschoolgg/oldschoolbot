@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import clueTiers from '../../lib/clueTiers';
+import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { Events, Emoji } from '../../lib/constants';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
