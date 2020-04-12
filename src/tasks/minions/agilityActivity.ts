@@ -63,7 +63,10 @@ export default class extends Task {
 		};
 
 		// Roll for pet
-		if (course.petChance && roll(course.petChance - user.skillLevel(SkillsEnum.Agility) * 25)) {
+		if (
+			course.petChance &&
+			roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)
+		) {
 			loot[itemID('Giant squirrel')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
