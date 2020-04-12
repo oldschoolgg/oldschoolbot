@@ -598,7 +598,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			slayerTask,
 			type: Activity.MonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
+			finishDate: Date.now() + 60000
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);

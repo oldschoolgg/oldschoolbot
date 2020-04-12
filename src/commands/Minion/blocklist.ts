@@ -75,7 +75,11 @@ export default class extends BotCommand {
 			throw `The task **${taskname}** has been **removed** from your block list`;
 		}
 
+		// Add to block list
 		if (typeof userBlockList === 'undefined' || userBlockList.length < 5) {
+			if (task.length === 0) {
+				throw `That's not a valid task to block.`;
+			}
 			msg.send(`Are you sure you'd like to block ${taskname}? Say \`confirm\` to continue.`);
 			try {
 				await msg.channel.awaitMessages(
