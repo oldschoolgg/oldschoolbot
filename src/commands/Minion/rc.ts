@@ -10,6 +10,7 @@ import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/UserSettings';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { SkillsEnum } from '../../lib/skilling/types';
+import bankHasItem from '../../lib/util/bankHasItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -88,7 +89,17 @@ export default class extends BotCommand {
 			boosts.push(`5% for 60+ Agility`);
 		}
 
-		const maxCanDo = Math.floor(msg.author.maxTripLength / tripLength) * 28;
+		let inventorySize = 28;
+
+		// For each pouch the user has, increase their inventory size.
+		const bank = msg.author.settings.get(UserSettings.Bank);
+		for (const pouch of Runecraft.pouches) {
+			if (bankHasItem(bank, pouch.id)) {
+				inventorySize += pouch.capacity - 1;
+			}
+		}
+
+		const maxCanDo = Math.floor(msg.author.maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -99,7 +110,7 @@ export default class extends BotCommand {
 			throw `You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players (\`${msg.cmdPrefix}ge\`).`;
 		}
 
-		const numberOfInventories = Math.max(Math.ceil(quantity / 28), 1);
+		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
 		const duration = numberOfInventories * tripLength;
 
 		if (duration > msg.author.maxTripLength) {
