@@ -96,6 +96,14 @@ export function addArrayOfItemsToBank(bank: Bank, items: number[]) {
 	return newBank;
 }
 
+export function multiplyBankQuantity(bank: Bank, quantity: number) {
+	const newBank = { ...bank };
+	for (const [itemID] of Object.entries(newBank)) {
+		newBank[parseInt(itemID)] *= quantity;
+	}
+	return newBank;
+}
+
 export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
