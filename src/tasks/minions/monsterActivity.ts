@@ -82,17 +82,18 @@ export default class extends Task {
 		}
 
 		if (slayerTask) {
-			if (user.slayerTaskQuantity < quantity) {
-				const slayerXP =
-					Number(user.slayerTaskQuantity) *
-					Monsters.get(user.slayerTaskID)?.data.slayerXP!;
+			if (user.slayerTaskQuantity <= quantity) {
+				const slayerXP = Math.floor(
+					user.slayerTaskQuantity * Monsters.get(monster.id)?.data.slayerXP!
+				);
 				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
 				await user.settings.update(UserSettings.Slayer.HasSlayerTask, false);
 				await user.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
-				str += `You gained ${slayerXP} slayer XP and finished your slayer task!`;
+				str += ` You gained ${slayerXP} slayer XP and finished your slayer task! You have recieved **73** slayer points!`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
+				await user.addSlayerPoints(73);
 			} else {
-				const slayerXP = quantity * Monsters.get(user.slayerTaskID)?.data.slayerXP!;
+				const slayerXP = Math.floor(quantity * Monsters.get(monster.id)?.data.slayerXP!);
 				const newQuantity = user.slayerTaskQuantity - quantity;
 				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, newQuantity);
 				str += `\nYou gained ${slayerXP} slayer XP, and still have ${newQuantity} left to kill.`;

@@ -7,8 +7,7 @@ const nieveTasks = [
 		extendedAmount: [200, 250],
 		requirements: {
 			slayerLevel: 60,
-			combatLevel: 65,
-			questPoints: 0
+			combatLevel: 65
 		},
 		alternatives: ['Deviant spectre'],
 		weight: 6,
@@ -21,8 +20,7 @@ const nieveTasks = [
 		extendedAmount: [200, 250],
 		requirements: {
 			slayerLevel: 85,
-			combatLevel: 85,
-			questPoints: 0
+			combatLevel: 85
 		},
 		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
 		weight: 9,
@@ -46,8 +44,7 @@ const nieveTasks = [
 		amount: [50, 90],
 		extendedAmount: [90, 150],
 		requirements: {
-			combatLevel: 40,
-			questPoints: 0
+			combatLevel: 40
 		},
 		alternatives: ['Dark Ankou'],
 		weight: 5,
@@ -58,10 +55,6 @@ const nieveTasks = [
 		name: 'Aviansie',
 		amount: [120, 185],
 		extendedAmount: [130, 250],
-		requirements: {
-			unlocked: [10],
-			questPoints: 0
-		},
 		alternatives: [
 			'Kree arra',
 			'Flight Kilisa',
@@ -78,9 +71,7 @@ const nieveTasks = [
 		amount: [120, 180],
 		extendedAmount: [200, 250],
 		requirements: {
-			slayerLevel: 40,
-			unlocked: [25],
-			questPoints: 0
+			slayerLevel: 40
 		},
 		alternatives: ['Basilisk Knight'],
 		weight: 6,
@@ -92,8 +83,7 @@ const nieveTasks = [
 		amount: [120, 185],
 		extendedAmount: [200, 250],
 		requirements: {
-			combatLevel: 80,
-			questPoints: 0
+			combatLevel: 80
 		},
 		alternatives: ['Demonic gorilla', 'Skotizo'],
 		weight: 9,
@@ -101,7 +91,7 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Black dragon',
+		name: 'Black Dragon',
 		amount: [10, 20],
 		extendedAmount: [40, 60],
 		requirements: {
@@ -119,8 +109,7 @@ const nieveTasks = [
 		extendedAmount: [200, 250],
 		requirements: {
 			combatLevel: 50,
-			slayerLevel: 50,
-			questPoints: 0
+			slayerLevel: 50
 		},
 		alternatives: ['Mutated Bloodveld'],
 		weight: 9,
@@ -130,7 +119,6 @@ const nieveTasks = [
 	{
 		name: 'Blue Dragon',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
 			combatLevel: 65,
 			questPoints: 32
@@ -143,11 +131,6 @@ const nieveTasks = [
 	{
 		name: 'Boss',
 		amount: [3, 20],
-		extendedAmount: null,
-		requirements: {
-			unlocked: [13],
-			questPoints: 0
-		},
 		alternatives: ['Boss'],
 		weight: 8,
 		ID: Monsters.Vorkath.id,
@@ -156,7 +139,6 @@ const nieveTasks = [
 	{
 		name: 'Brine rat',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
 			combatLevel: 45,
 			slayerLevel: 47,
@@ -176,7 +158,6 @@ const nieveTasks = [
 			slayerLevel: 58,
 			questPoints: 15
 		},
-		alternatives: ['Cave horror'],
 		weight: 5,
 		ID: Monsters.CaveHorror.id,
 		unlocked: true
@@ -187,9 +168,7 @@ const nieveTasks = [
 		extendedAmount: [150, 200],
 		requirements: {
 			combatLevel: 80,
-			slayerLevel: 87,
-			magicLevel: 50,
-			questPoints: 0
+			slayerLevel: 87
 		},
 		alternatives: 'Kraken',
 		weight: 6,
@@ -199,12 +178,11 @@ const nieveTasks = [
 	{
 		name: 'Dagannoth',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
 			combatLevel: 75,
 			questPoints: 3
 		},
-		alternatives: ['Dagannoth supreme', 'Dagannoth rex', 'Dagannoth prime'],
+		alternatives: ['Dagannoth Supreme', 'Dagannoth Rex', 'Dagannoth Prime'],
 		weight: 8,
 		ID: Monsters.Dagannoth.id,
 		unlocked: true
@@ -226,10 +204,8 @@ const nieveTasks = [
 	{
 		name: 'Drake',
 		amount: [30, 95],
-		extendedAmount: null,
 		requirements: {
-			slayerLevel: 84,
-			questPoints: 0
+			slayerLevel: 84
 		},
 		alternatives: ['Drake'],
 		weight: 7,
@@ -253,7 +229,6 @@ const nieveTasks = [
 	{
 		name: 'Elf warrior',
 		amount: [60, 90],
-		extendedAmount: null,
 		requirements: {
 			combatLevel: 70,
 			questPoints: 30
@@ -266,10 +241,8 @@ const nieveTasks = [
 	{
 		name: 'Fire giant',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
-			combatLevel: 65,
-			questPoints: 0
+			combatLevel: 65
 		},
 		weight: 9,
 		ID: Monsters.FireGiant.id,
@@ -308,8 +281,7 @@ const nieveTasks = [
 		amount: [120, 185],
 		extendedAmount: [150, 200],
 		requirements: {
-			combatLevel: 75,
-			questPoints: 0
+			combatLevel: 75
 		},
 		alternatives: ['Kril Tsutsaroth', 'Skotizo'],
 		weight: 7,
@@ -319,12 +291,10 @@ const nieveTasks = [
 	{
 		name: 'Hellhound',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
-			combatLevel: 75,
-			questPoints: 0
+			combatLevel: 75
 		},
-		alternatives: ['Cerberus', "Vet'ion"],
+		alternatives: ['Cerberus'],
 		weight: 8,
 		ID: Monsters.Hellhound.id,
 		unlocked: true
@@ -342,14 +312,12 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Kalphite worker',
+		name: 'Kalphite Worker',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
-			combatLevel: 15,
-			questPoints: 0
+			combatLevel: 15
 		},
-		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
+		alternatives: ['Kalphite Soldier', 'Kalphite Guardian', 'Kalphite Queen'],
 		weight: 9,
 		ID: Monsters.KalphiteWorker.id,
 		unlocked: true
@@ -357,11 +325,9 @@ const nieveTasks = [
 	{
 		name: 'Kurask',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
 			slayerLevel: 70,
-			combatLevel: 65,
-			questPoints: 0
+			combatLevel: 65
 		},
 
 		weight: 3,
@@ -371,11 +337,6 @@ const nieveTasks = [
 	{
 		name: 'Lizardman brute',
 		amount: [90, 120],
-		extendedAmount: null,
-		requirements: {
-			unlocked: [12],
-			questPoints: 0
-		},
 		alternatives: ['Lizardman shaman'],
 		weight: 8,
 		ID: Monsters.Lizardman.id,
@@ -389,20 +350,15 @@ const nieveTasks = [
 			combatLevel: 85,
 			questPoints: 13
 		},
-		alternatives: ['Scarabs', 'Scarab swarm', 'Locust rider', 'Scarab mage', 'Giant scarab'],
+		alternatives: ['Scarabs', 'Scarab Swarm', 'Locust Rider', 'Scarab mage', 'Giant scarab'],
 		weight: 4,
 		ID: Monsters.ScarabMage.id,
 		unlocked: true
 	},
 	{
-		name: 'Mithril dragon',
+		name: 'Mithril Dragon',
 		amount: [4, 9],
 		extendedAmount: [20, 40],
-		requirements: {
-			unlocked: [9],
-			questPoints: 0
-		},
-
 		weight: 5,
 		ID: Monsters.MithrilDragon.id,
 		unlocked: false
@@ -410,7 +366,6 @@ const nieveTasks = [
 	{
 		name: 'Zygomite',
 		amount: [10, 25],
-		extendedAmount: null,
 		requirements: {
 			combatLevel: 60,
 			slayerLevel: 57,
@@ -427,8 +382,7 @@ const nieveTasks = [
 		extendedAmount: [200, 250],
 		requirements: {
 			combatLevel: 85,
-			slayerLevel: 80,
-			questPoints: 0
+			slayerLevel: 80
 		},
 		alternatives: ['Greater Nechryael'],
 		weight: 7,
@@ -436,21 +390,19 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Red dragon',
+		name: 'Red Dragon',
 		amount: [30, 80],
-		extendedAmount: null,
 		requirements: {
 			combatLevel: 68,
-			questPoints: 32,
-			unlocked: [8]
+			questPoints: 32
 		},
-		alternatives: ['Baby red dragon', 'Brutal red dragon'],
+		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
 		weight: 5,
 		ID: Monsters.RedDragon.id,
 		unlocked: false
 	},
 	{
-		name: 'Rune dragon',
+		name: 'Rune Dragon',
 		amount: [3, 6],
 		extendedAmount: [30, 60],
 		requirements: {
@@ -461,7 +413,7 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Skeletal wyvern',
+		name: 'Skeletal Wyvern',
 		amount: [5, 15],
 		extendedAmount: [50, 70],
 		requirements: {
@@ -475,37 +427,33 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Smoke devil',
+		name: 'Smoke Devil',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
 			combatLevel: 85,
-			slayerLevel: 93,
-			questPoints: 0
+			slayerLevel: 93
 		},
-		alternatives: ['Thermonuclear smoke devil'],
+		alternatives: ['Thermonuclear Smoke Devil'],
 		weight: 7,
 		ID: Monsters.SmokeDevil.id,
 		unlocked: true
 	},
 	{
-		name: 'Spiritual mage',
+		name: 'Spiritual Mage',
 		amount: [120, 185],
 		extendedAmount: [180, 250],
 		requirements: {
 			combatLevel: 60,
 			questPoints: 2,
-			slayerLevel: 83,
-			strengthLevel: 60,
-			agilityLevel: 60
+			slayerLevel: 83
 		},
-		alternatives: ['Spiritual ranger', 'Spiritual warrior'],
+		alternatives: ['Spiritual Ranger', 'Spiritual Warrior'],
 		weight: 6,
 		ID: Monsters.SpiritualMage.id,
 		unlocked: true
 	},
 	{
-		name: 'Steel dragon',
+		name: 'Steel Dragon',
 		amount: [30, 60],
 		extendedAmount: [40, 60],
 		requirements: {
@@ -531,10 +479,8 @@ const nieveTasks = [
 	{
 		name: 'Mountain troll',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
-			combatLevel: 60,
-			questPoints: 0
+			combatLevel: 60
 		},
 		alternatives: ['Ice troll', 'Troll general'],
 		weight: 6,
@@ -544,11 +490,9 @@ const nieveTasks = [
 	{
 		name: 'Turoth',
 		amount: [120, 185],
-		extendedAmount: null,
 		requirements: {
 			slayerLevel: 55,
-			combatLevel: 60,
-			questPoints: 0
+			combatLevel: 60
 		},
 
 		weight: 3,
@@ -558,11 +502,6 @@ const nieveTasks = [
 	{
 		name: 'TzHaar',
 		amount: [110, 180],
-		extendedAmount: null,
-		requirements: {
-			unlocked: [11],
-			questPoints: 0
-		},
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
 		weight: 10,
 		ID: Monsters.Goblin.id,
@@ -571,10 +510,8 @@ const nieveTasks = [
 	{
 		name: 'Wyrm',
 		amount: [80, 145],
-		extendedAmount: null,
 		requirements: {
-			slayerLevel: 62,
-			questPoints: 0
+			slayerLevel: 62
 		},
 		weight: 7,
 		ID: Monsters.Wyrm.id,

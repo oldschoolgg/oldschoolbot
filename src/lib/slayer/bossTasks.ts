@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 const bossTasks = [
+	/*
 	{
 		name: 'Abyssal sire',
 		amount: [3, 35],
@@ -16,7 +17,7 @@ const bossTasks = [
 			slayerLevel: 95
 		},
 		ID: Monsters.AlchemicalHydra.id
-	},
+	}, */
 	{
 		name: 'Barrows',
 		amount: [1, 5],
@@ -80,7 +81,7 @@ const bossTasks = [
 		name: 'Giant mole',
 		amount: [3, 35],
 		ID: Monsters.GiantMole.id
-	},
+	} /*
 	{
 		name: 'Grotesque guardians',
 		amount: [3, 35],
@@ -88,7 +89,7 @@ const bossTasks = [
 			slayerLevel: 75
 		},
 		ID: Monsters.GrotesqueGuardians.id
-	},
+	}, */,
 	{
 		name: 'Kril tsutsaroth',
 		amount: [3, 35],
@@ -103,7 +104,7 @@ const bossTasks = [
 		name: 'King black dragon',
 		amount: [3, 35],
 		ID: Monsters.KingBlackDragon.id
-	},
+	} /*
 	{
 		name: 'Kraken',
 		amount: [3, 35],
@@ -111,22 +112,23 @@ const bossTasks = [
 			slayerLevel: 87
 		},
 		ID: Monsters.Kraken.id
-	},
+	}, */,
 	{
 		name: 'Kree arra',
 		amount: [3, 35],
 		ID: Monsters.Kreearra.id
-	},
+	} /*
 	{
 		name: 'Sarachnis',
 		amount: [3, 35],
 		ID: Monsters.Sarachnis.id
-	},
+	}, */,
 	{
 		name: 'Scorpia',
 		amount: [3, 35],
 		ID: Monsters.Scorpia.id
 	},
+	/*
 	{
 		name: 'Thermonuclear smoke devil',
 		amount: [3, 35],
@@ -134,7 +136,7 @@ const bossTasks = [
 			slayerLevel: 93
 		},
 		ID: Monsters.ThermonuclearSmokeDevil.id
-	},
+	}, */
 	{
 		name: 'Venenatis',
 		amount: [3, 35],

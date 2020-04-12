@@ -576,14 +576,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (msg.author.hasSlayerTask) {
 			const task = Monsters.get(msg.author.slayerTaskID);
 			const taskName = task?.name;
-			const filteredMonster = nieveTasks.find(task => task.name === taskName);
+			const allTasks = nieveTasks.concat(turaelTasks);
+			const filteredMonster = allTasks.find(find => find.name === taskName);
 			if (
 				taskName === monster.name ||
 				filteredMonster?.alternatives?.includes(monster.name)
 			) {
 				if (
 					msg.author.skillLevel(SkillsEnum.Slayer) >=
-					Monsters.get(msg.author.slayerTaskID)?.data.slayerLevelRequired!
+					Monsters.get(monster.id)?.data.slayerLevelRequired!
 				) {
 					slayerTask = true;
 					boosts.push(`10% Boost for being on a ${taskName} slayer task`);
