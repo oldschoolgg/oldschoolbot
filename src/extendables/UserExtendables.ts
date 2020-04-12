@@ -306,6 +306,7 @@ export default class extends Extendable {
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
 
+- Visit <https://www.oldschool.gg/oldschoolbot/minions> for extensive information on minions.
 - Use \`+minion setname [name]\` to change your minions' name.
 - You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
 - Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
