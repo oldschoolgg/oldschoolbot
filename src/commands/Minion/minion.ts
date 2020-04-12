@@ -532,9 +532,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Make sure they have all the required items to kill this monster
-
 		for (const item of monster.itemsRequired as number[]) {
-			if (!bank[item] || bank[item] < 0) {
+			if (!bank[item] && !msg.author.hasItemEquippedAnywhere(item)) {
 				throw `To kill ${
 					monster.name
 				}, you need these items: ${monster.itemsRequired

@@ -87,6 +87,11 @@ declare module 'discord.js' {
 		 */
 		numOfItemsOwned(itemID: number): number;
 		/**
+		 * Returns true if the user has this item equipped in any of their setups.
+		 * @param itemID The item ID.
+		 */
+		hasItemEquippedAnywhere(itemID: number): boolean;
+		/**
 		 * Returns this users Collection Log bank.
 		 */
 		collectionLog: Bank;
