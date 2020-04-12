@@ -1,7 +1,7 @@
 import { KlasaUser, KlasaMessage, Command, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
-import clueTiers from '../../lib/clueTiers';
+import clueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { PerkTier } from '../../lib/constants';
 
