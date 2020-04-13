@@ -179,6 +179,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 ${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
 			.get(UserSettings.Skills.Agility)
 			.toLocaleString()} xp)
+${Emoji.Cooking} Cooking: ${msg.author.skillLevel(SkillsEnum.Cooking)} (${msg.author.settings
+			.get(UserSettings.Skills.Cooking)
+			.toLocaleString()} xp)
 ${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
 			.get(UserSettings.Skills.Fishing)
 			.toLocaleString()} xp)
