@@ -53,7 +53,14 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Armadyl chestplate', "Karil's leathertop"],
+			['Armadyl chainskirt', "Karil's leatherbottom"]
+		]),
 		notifyDrops: resolveItems(['Pet dagannoth prime']),
 		qpRequired: 0
 	},
@@ -67,7 +74,14 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Bandos chestplate', "Torag's platebody"],
+			['Bandos tassets', "Torag's platelegs"]
+		]),
 		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0
 	},
@@ -81,7 +95,14 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Bandos chestplate', "Torag's platebody"],
+			['Bandos tassets', "Torag's platelegs"]
+		]),
 		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0
 	},
@@ -95,7 +116,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems(['Bandos chestplate', 'Bandos tassets']),
+		itemsRequired: resolveItems(['Bandos chestplate', 'Bandos tassets', 'Zamorakian hasta']),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0
 	},
@@ -183,7 +204,10 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherbottom", 'Armadyl chainskirt']
+		]),
 		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 0
 	},
@@ -197,7 +221,10 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherbottom", 'Armadyl chainskirt']
+		]),
 		notifyDrops: resolveItems(["Pet kree'arra", 'Curved bone']),
 		qpRequired: 0
 	},
@@ -211,9 +238,15 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherbottom", 'Armadyl chainskirt']
+		]),
 		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.Man.id,
@@ -300,7 +333,12 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			"Verac's helm",
+			"Verac's brassard",
+			"Verac's plateskirt",
+			"Verac's flail"
+		]),
 		notifyDrops: resolveItems([
 			"Vet'ion jr.",
 			'Skeleton champion scroll',
@@ -380,9 +418,17 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
+		itemsRequired: resolveItems([
+			'Anti-dragon shield',
+			['Armadyl crossbow', 'Rune crossbow'],
+			"Black d'hide body",
+			"Black d'hide chaps"
+		]),
 		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Armadyl crossbow')]: 10
+		}
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -449,7 +495,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: resolveItems([["Karil's crossbow", 'Rune crossbow']]),
-		notifyDrops: resolveItems(['Dragon warhammer', 'Curved bone']),
+		notifyDrops: resolveItems(['Dragon warhammer', 'Curved bone', 'Armadyl crossbow']),
 		qpRequired: 30
 	},
 	{
