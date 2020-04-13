@@ -91,3 +91,12 @@ export interface Cookable {
 	stopBurnAtCG: number;
 	burntCookable: number;
 }
+export interface SmithedBar {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputBars: Bank;
+	timeToUse: number;
+	outputMultiple: number;
+}

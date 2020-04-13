@@ -24,6 +24,7 @@ import {
 	TickerTaskData,
 	ActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SmithedActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
@@ -401,6 +402,20 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					bar!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Smithed: {
+				const data = currentTask as SmithedActivityTaskOptions;
+
+				const SmithedBar = Smithing.Bars.find(
+					SmithedBar => SmithedBar.id === data.smithedBarID
+				);
+
+				return `${this.minionName} is currently smithing ${data.quantity}x ${
+					SmithedBar!.name
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;

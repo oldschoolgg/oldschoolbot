@@ -57,7 +57,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smithed] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -397,6 +397,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			.catch(err => {
 				throw err;
 			});
+		}
+	async smithed(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
+		this.client.commands.get('smithed')!.run(msg, [quantity, smithedBarName]);
 	}
 
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
