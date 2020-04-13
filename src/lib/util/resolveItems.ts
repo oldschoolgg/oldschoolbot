@@ -26,5 +26,3 @@ export default function resolveItems(itemArray: ArrayItemsResolvable): ArrayItem
 
 	return newArray;
 }
-
-console.log(resolveItems(['Knife', ['Knife', 'Knife']]));

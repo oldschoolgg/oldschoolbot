@@ -538,9 +538,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		// Make sure they have all the required items to kill this monster
 		for (const item of monster.itemsRequired) {
 			if (Array.isArray(item)) {
-				console.log(
-					item.some(itemReq => msg.author.hasItemEquippedOrInBank(itemReq as number))
-				);
 				if (!item.some(itemReq => msg.author.hasItemEquippedOrInBank(itemReq as number))) {
 					throw `You need one of these items to kill ${monster.name}: ${formatItemReqs(
 						monster.itemsRequired
