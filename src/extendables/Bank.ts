@@ -29,4 +29,16 @@ export default class extends Extendable {
 
 		return numOwned;
 	}
+
+	public numItemsInBankSync(this: User, itemID: number) {
+		const bank = this.settings.get(UserSettings.Bank);
+
+		const result = bank[itemID];
+
+		if (typeof result !== 'undefined') {
+			return result;
+		}
+
+		return 0;
+	}
 }

@@ -129,3 +129,7 @@ export interface Patron {
 	patronStatus: string;
 	pledgeRelationshipStart: string;
 }
+
+export type ResolvableItem = number | string;
+export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
+export type ArrayItemsResolved = (number | number[])[];

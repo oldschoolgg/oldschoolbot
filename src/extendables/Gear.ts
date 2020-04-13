@@ -20,4 +20,8 @@ export default class extends Extendable {
 
 		return false;
 	}
+
+	public hasItemEquippedOrInBank(this: User, itemID: number) {
+		return this.hasItemEquippedAnywhere(itemID) || this.numItemsInBankSync(itemID) > 0;
+	}
 }
