@@ -7,9 +7,6 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import itemID from '../../lib/util/itemID';
-import bankHasItem from '../../lib/util/bankHasItem';
-import { UserSettings } from '../../lib/UserSettings';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { SkillsEnum } from '../../lib/skilling/types';
 
@@ -37,10 +34,7 @@ export default class extends Task {
 		}
 
 		// This only applies to items that cooking gauntlets reduce the burn chance for
-		if (
-			cookable.stopBurnAtCG > 1 &&
-			bankHasItem(user.settings.get(UserSettings.Bank), itemID('Cooking gauntlets'))
-		) {
+		if (cookable.stopBurnAtCG > 1 && user.hasItemEquippedOrInBank('Cooking gauntlets')) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (

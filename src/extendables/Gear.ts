@@ -2,6 +2,7 @@ import { Extendable, SettingsFolder, ExtendableStore } from 'klasa';
 import { User } from 'discord.js';
 
 import { GearTypes } from '../lib/gear';
+import itemID from '../lib/util/itemID';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -21,7 +22,8 @@ export default class extends Extendable {
 		return false;
 	}
 
-	public hasItemEquippedOrInBank(this: User, itemID: number) {
-		return this.hasItemEquippedAnywhere(itemID) || this.numItemsInBankSync(itemID) > 0;
+	public hasItemEquippedOrInBank(this: User, item: number | string) {
+		const id = typeof item === 'string' ? itemID(item) : item;
+		return this.hasItemEquippedAnywhere(id) || this.numItemsInBankSync(id) > 0;
 	}
 }

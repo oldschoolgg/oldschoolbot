@@ -93,9 +93,9 @@ declare module 'discord.js' {
 		hasItemEquippedAnywhere(itemID: number): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
-		 * @param itemID The item ID.
+		 * @param item
 		 */
-		hasItemEquippedOrInBank(itemID: number): boolean;
+		hasItemEquippedOrInBank(item: number | string): boolean;
 		/**
 		 * Returns how many of the item the user has in their bank.
 		 * @param itemID The item ID.

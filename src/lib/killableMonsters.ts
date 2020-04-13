@@ -59,7 +59,7 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's helm",
 			"Guthan's warspear",
 			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherbottom"]
+			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth prime']),
 		qpRequired: 0
@@ -206,7 +206,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		itemsRequired: resolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherbottom", 'Armadyl chainskirt']
+			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 0
@@ -223,7 +223,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		itemsRequired: resolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherbottom", 'Armadyl chainskirt']
+			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(["Pet kree'arra", 'Curved bone']),
 		qpRequired: 0
@@ -240,7 +240,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		itemsRequired: resolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherbottom", 'Armadyl chainskirt']
+			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
 		qpRequired: 0,
