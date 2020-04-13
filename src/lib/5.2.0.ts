@@ -76,6 +76,7 @@ interface User {
 		unlockedMithrilDragon: boolean;
 		unlockedRedDragon: boolean;
 		unlockedTzHaar: boolean;
+		currentSlayerMaster?: number;
 	};
 	stats?: {
 		deaths?: number;
@@ -153,6 +154,7 @@ export interface RawUserSettings {
 	'slayer.unlockedMithrilDragon': boolean;
 	'slayer.unlockedRedDragon': boolean;
 	'slayer.unlockedTzHaar': boolean;
+	'slayer.currentSlayerMaster': number;
 	'stats.deaths': number;
 	'stats.diceWins': number;
 	'stats.diceLosses': number;
@@ -413,7 +415,7 @@ async function migrateUsers() {
 			'slayer.unlockedMithrilDragon': entry.slayer?.unlockedMithrilDragon || false,
 			'slayer.unlockedRedDragon': entry.slayer?.unlockedRedDragon || false,
 			'slayer.unlockedTzHaar': entry.slayer?.unlockedTzHaar || false,
-
+			'slayer.currentSlayerMaster': entry.slayer?.currentSlayerMaster || 0,
 			'stats.deaths': entry.stats?.deaths || 0,
 			'stats.diceWins': entry.stats?.diceWins || 0,
 			'stats.diceLosses': entry.stats?.diceLosses || 0,

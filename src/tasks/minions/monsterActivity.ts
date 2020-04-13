@@ -13,6 +13,7 @@ import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { SkillsEnum } from '../../lib/types';
 import { Monsters } from 'oldschooljs';
+import killableMonsters from '../../lib/minions/monsters/index';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, slayerTask }: MonsterActivityTaskOptions) {
@@ -29,7 +30,7 @@ export default class extends Task {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
-					user.minionName
+				user.minionName
 				}, just received **${await createReadableItemListFromBank(
 					this.client,
 					itemsToAnnounce
@@ -58,10 +59,10 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
+			} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
 			quantity} ${
 			user.minionName
-		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+			} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
@@ -77,6 +78,11 @@ export default class extends Task {
 		}
 
 		if (slayerTask) {
+			const currentSlayerLevel = user.skillLevel(SkillsEnum.Slayer);
+			let slayerPoints = 0;
+			if (user.currentSlayerMaster === 2) {
+				slayerPoints = 12;
+			}
 			if (user.slayerTaskQuantity <= quantity) {
 				const slayerXP = Math.floor(
 					user.slayerTaskQuantity * Monsters.get(monster.id)?.data.slayerXP!
@@ -84,15 +90,23 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
 				await user.settings.update(UserSettings.Slayer.HasSlayerTask, false);
 				await user.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
-				str += ` You gained ${slayerXP} slayer XP and finished your slayer task! You have recieved **73** slayer points!`;
+				str += ` You gained ${slayerXP} slayer XP and **finished your slayer task!** You have recieved ${slayerPoints} slayer points!`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
-				await user.addSlayerPoints(73);
+				await user.addSlayerPoints(slayerPoints);
+				const newSlayerLevel = user.skillLevel(SkillsEnum.Slayer);
+				if (newSlayerLevel > currentSlayerLevel) {
+					str += `\n\n${user.minionName}'s slayer level is now ${newSlayerLevel}!`;
+				}
 			} else {
 				const slayerXP = Math.floor(quantity * Monsters.get(monster.id)?.data.slayerXP!);
 				const newQuantity = user.slayerTaskQuantity - quantity;
 				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, newQuantity);
 				str += `\nYou gained ${slayerXP} slayer XP, and still have ${newQuantity} left to kill.`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
+				const newSlayerLevel = user.skillLevel(SkillsEnum.Slayer);
+				if (newSlayerLevel > currentSlayerLevel) {
+					str += `\n\n${user.minionName}'s slayer level is now ${newSlayerLevel}!`;
+				}
 			}
 		}
 		user.incrementMonsterScore(monsterID, quantity);
@@ -137,7 +151,6 @@ export default class extends Task {
 						}
 
 						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
-
 						this.client.commands
 							.get('minion')!
 							.kill(response as KlasaMessage, [quantity, monster.name]);

@@ -72,7 +72,7 @@ export default class extends Extendable {
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
 		this.log(
 			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
-				amount}]`
+			amount}]`
 		);
 		return this.settings.update(UserSettings.GP, currentGP - amount);
 	}
@@ -107,7 +107,7 @@ export default class extends Extendable {
 		const currentSlayerPoints = this.settings.get(UserSettings.Slayer.SlayerPoints);
 		this.log(
 			`had ${amount} Slayer Points added. BeforeBalance[${currentSlayerPoints}] NewBalance[${currentSlayerPoints +
-				amount}]`
+			amount}]`
 		);
 		return this.settings.update(UserSettings.Slayer.SlayerPoints, currentSlayerPoints + amount);
 	}
@@ -119,7 +119,7 @@ export default class extends Extendable {
 			throw `${this.sanitizedName} doesn't have enough Slayer Points.`;
 		this.log(
 			`had ${amount} Slayer Points removed. BeforeBalance[${currentSlayerPoints}] NewBalance[${currentSlayerPoints -
-				amount}]`
+			amount}]`
 		);
 		return this.settings.update(UserSettings.Slayer.SlayerPoints, currentSlayerPoints - amount);
 	}
@@ -270,7 +270,7 @@ export default class extends Extendable {
 				this.client.emit(
 					Events.ServerNotification,
 					`${skill.emoji} **${this.username}'s** minion, ${
-						this.minionName
+					this.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(skillName)}!`
 				);
 				break;
@@ -289,10 +289,15 @@ export default class extends Extendable {
 			this.client.emit(
 				Events.ServerNotification,
 				`${skill.emoji} **${this.username}'s** minion, ${
+<<<<<<< HEAD
 					this.minionName
 				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
 					parseInt(usersWith.count) + 1
 				)} to get 99 ${skillNameCased}.`
+=======
+				this.minionName
+				}, just achieved level 99 in ${toTitleCase(skillName)}!`
+>>>>>>> 8eb0dd6... small fixes + re arrange killable monsters
 			);
 		}
 
@@ -388,6 +393,10 @@ export default class extends Extendable {
 
 	public get unlockedTzHaar(this: User) {
 		return this.settings.get(UserSettings.Slayer.UnlockedTzHaar);
+	}
+
+	public get currentSlayerMaster(this: User) {
+		return this.settings.get(UserSettings.Slayer.CurrentSlayerMaster);
 	}
 
 	public get maxTripLength(this: User) {

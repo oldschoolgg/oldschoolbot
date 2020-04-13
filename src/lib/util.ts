@@ -12,6 +12,8 @@ import { Tasks, Events } from './constants';
 import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';
+import { Bank } from './types';
+import killableMonsters, { KillableMonster } from './minions/monsters/index';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {

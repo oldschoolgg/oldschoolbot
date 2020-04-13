@@ -44,6 +44,7 @@ Client.defaultUserSchema
 			.add('unlockedMithrilDragon', 'boolean', { default: false })
 			.add('unlockedRedDragon', 'boolean', { default: false })
 			.add('unlockedTzHaar', 'boolean', { default: false })
+			.add('currentSlayerMaster', 'number', { default: 0 })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

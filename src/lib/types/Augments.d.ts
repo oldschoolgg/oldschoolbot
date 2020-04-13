@@ -171,6 +171,7 @@ declare module 'discord.js' {
 		unlockedMithrilDragon: boolean;
 		unlockedRedDragon: boolean;
 		unlockedTzHaar: boolean;
+		currentSlayerMaster: number;
 		isIronman: boolean;
 		maxTripLength: number;
 		rawSkills: Skills;

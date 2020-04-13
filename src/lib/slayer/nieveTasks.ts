@@ -28,7 +28,7 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Adamant dragon',
+		name: 'Adamant Dragon',
 		amount: [3, 7],
 		extendedAmount: [20, 30],
 		requirements: {
@@ -54,7 +54,7 @@ const nieveTasks = [
 		name: 'Aviansie',
 		amount: [120, 185],
 		extendedAmount: [130, 250],
-		alternatives: ['Kree arra'],
+		alternatives: ["Kree'arra"],
 		weight: 6,
 		ID: Monsters.Aviansie.id,
 		unlocked: false
@@ -72,7 +72,7 @@ const nieveTasks = [
 		unlocked: false
 	},
 	{
-		name: 'Black demon',
+		name: 'Black Demon',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
 		requirements: {
@@ -143,7 +143,7 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Cave horror',
+		name: 'Cave Horror',
 		amount: [120, 180],
 		extendedAmount: [200, 250],
 		requirements: {
@@ -270,13 +270,13 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Greater demon',
+		name: 'Greater Demon',
 		amount: [120, 185],
 		extendedAmount: [150, 200],
 		requirements: {
 			combatLevel: 75
 		},
-		alternatives: ['Kril Tsutsaroth', 'Skotizo'],
+		alternatives: ["K'ril Tsutsaroth", 'Skotizo'],
 		weight: 7,
 		ID: Monsters.GreaterDemon.id,
 		unlocked: true
@@ -328,7 +328,7 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Lizardman brute',
+		name: 'Lizardman',
 		amount: [90, 120],
 		alternatives: ['Lizardman Shaman'],
 		weight: 8,
@@ -432,7 +432,7 @@ const nieveTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Spiritual Mage',
+		name: 'Spiritual Ranger',
 		amount: [120, 185],
 		extendedAmount: [180, 250],
 		requirements: {
@@ -440,9 +440,9 @@ const nieveTasks = [
 			questPoints: 2,
 			slayerLevel: 83
 		},
-		alternatives: ['Spiritual Ranger', 'Spiritual Warrior'],
+		alternatives: ['Spiritual Mage', 'Spiritual Warrior'],
 		weight: 6,
-		ID: Monsters.SpiritualMage.id,
+		ID: Monsters.SpiritualRanger.id,
 		unlocked: true
 	},
 	{

@@ -46,7 +46,7 @@ const turaelTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Bear',
+		name: 'Black bear',
 		amount: [15, 20],
 
 		requirements: {
@@ -155,12 +155,7 @@ const turaelTasks = [
 		name: 'Goblin',
 		amount: [15, 20],
 
-		alternatives: [
-			'Cave goblin guards',
-			'Sergeant Strongstack',
-			'Sergeant Steelwill',
-			'Sergeant Grimspike'
-		],
+		alternatives: ['Cave Goblin Guards', 'General Graardor'],
 		weight: 7,
 		ID: Monsters.Goblin.id,
 		unlocked: true
@@ -263,7 +258,7 @@ const turaelTasks = [
 		requirements: {
 			combatLevel: 15
 		},
-		alternatives: ['Skeleton mage', 'Skeleton', 'Vetion', 'Skogre', 'Skeleton fremennik'],
+		alternatives: ['Skeleton', "Vet'ion"],
 		weight: 7,
 		ID: Monsters.Skeleton.id,
 		unlocked: true

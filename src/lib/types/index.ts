@@ -46,6 +46,7 @@ export interface SettingsEntry {
 		unlockedMithrilDragon: boolean;
 		unlockedRedDragon: boolean;
 		unlockedTzHaar: boolean;
+		currentSlayerMaster: number;
 	};
 }
 

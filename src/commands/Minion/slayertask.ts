@@ -72,6 +72,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, false);
 			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, newSlayerPoints);
+			await msg.author.settings.update(UserSettings.Slayer.CurrentSlayerMaster, 0);
 			return msg.send(`Successfully cancelled task`);
 		}
 
@@ -193,19 +194,19 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 		if (filteredTasks.length === 0) {
 			throw `You don't have a high enough Slayer level to get a task from that Master.`;
 		}
-		msg.send(
-			`**Possible tasks**: ${`That's not a valid slayer master. Valid masters are ${slayerMasters
-				.map(person => person.name)
-				.join(', ')}.`}`
-		);
 		let number = rand(1, totalweight);
 		for (let i = 0; i < filteredTasks.length; i++) {
 			number -= filteredTasks[i].weight;
 			if (number <= 0) {
 				const slayerMonster = filteredTasks[i];
-				if (slayerMonster.name === 'boss') {
-					const monsterNumber = rand(0, bossTasks.length);
-					const monster = bossTasks[monsterNumber];
+				if (slayerMonster.name === 'Boss') {
+					const filteredBossTasks = bossTasks.filter(
+						task =>
+							Monsters.get(task.ID)?.data.slayerLevelRequired! <=
+							msg.author.skillLevel(SkillsEnum.Slayer)
+					);
+					const monsterNumber = rand(0, filteredBossTasks.length);
+					const monster = filteredBossTasks[monsterNumber];
 					const minQuantity = monster.amount[0];
 					const maxQuantity = monster.amount[1];
 					const quantity = rand(minQuantity, maxQuantity);
@@ -215,6 +216,11 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 					);
 					await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, true);
 					await msg.author.settings.update(UserSettings.Slayer.SlayerTaskID, monster.ID);
+					await msg.author.settings.update(
+						UserSettings.Slayer.CurrentSlayerMaster,
+						master.masterID
+					);
+
 					return msg.send(
 						`Your new slayer task is a boss task of ${quantity}x ${monster.name}`
 					);
@@ -227,6 +233,10 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 				await msg.author.settings.update(
 					UserSettings.Slayer.SlayerTaskID,
 					slayerMonster.ID
+				);
+				await msg.author.settings.update(
+					UserSettings.Slayer.CurrentSlayerMaster,
+					master.masterID
 				);
 				return msg.send(`Your new slayer task is ${quantity}x ${slayerMonster.name}`);
 			}
