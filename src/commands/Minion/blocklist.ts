@@ -29,10 +29,24 @@ export default class extends BotCommand {
 		const userBlockList = msg.author.blockList;
 		const allTasks = nieveTasks.concat(turaelTasks);
 		const task = allTasks.filter(task => stringMatches(taskname, task.name));
-		if (taskname === Monsters.get(msg.author.slayerTaskID)?.name.toLowerCase()) {
+		if (taskname.toLowerCase() === Monsters.get(msg.author.slayerTaskID)?.name.toLowerCase()) {
+			msg.send(
+				`Are you sure you'd like to unblock ${taskname}? Say \`confirm\` to continue.`
+			);
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					options
+				);
+			} catch (err) {
+				throw `Cancelling block list addition of ${taskname}.`;
+			}
 			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
 			await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, false);
 			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
+			await msg.author.settings.update(UserSettings.Slayer.CurrentSlayerMaster, 0);
 			return msg.send(
 				`The task **${taskname}** has been **added** to your block list. You have ${msg.author.slayerPoints} Slayer Points left. Your current task of ${taskname} has also been cancelled.`
 			);

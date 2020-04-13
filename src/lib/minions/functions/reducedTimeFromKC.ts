@@ -1,5 +1,5 @@
-import { KillableMonster } from '../../killableMonsters';
 import { Time } from '../../constants';
+import { KillableMonster } from '../monsters/index';
 
 const FIVE_HOURS = Time.Hour * 5;
 

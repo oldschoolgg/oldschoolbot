@@ -520,6 +520,21 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		const allTasks = nieveTasks.concat(turaelTasks);
+		const thisMonster = allTasks.find(find => find.name === monster.name);
+		if (
+			Monsters.get(monster.id)!.data.slayerLevelRequired >
+			msg.author.skillLevel(SkillsEnum.Slayer)
+		) {
+			throw `You need ${
+			Monsters.get(monster.id)!.data.slayerLevelRequired
+			} Slayer to kill that monster.`;
+		}
+		if (thisMonster?.requirements?.questPoints! > msg.author.settings.get(UserSettings.QP)) {
+			throw `You need ${thisMonster?.requirements
+				?.questPoints!} Quest Points to kill that monster.`;
+		}
+
 		const boosts = [];
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(
@@ -576,7 +591,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (msg.author.hasSlayerTask) {
 			const task = Monsters.get(msg.author.slayerTaskID);
 			const taskName = task?.name;
-			const allTasks = nieveTasks.concat(turaelTasks);
 			const filteredMonster = allTasks.find(find => find.name === taskName);
 			if (
 				taskName === monster.name ||
@@ -586,6 +600,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 					msg.author.skillLevel(SkillsEnum.Slayer) >=
 					Monsters.get(monster.id)?.data.slayerLevelRequired!
 				) {
+					if (quantity > msg.author.slayerTaskQuantity) {
+						throw `You only have ${msg.author.slayerTaskQuantity}x ${taskName} left on your slayer task. Try \`${msg.cmdPrefix}m kill ${msg.author.slayerTaskQuantity} ${name}\` instead.`;
+					}
 					slayerTask = true;
 					boosts.push(`10% Boost for being on a ${taskName} slayer task`);
 					duration *= 0.9;
@@ -607,7 +624,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			slayerTask,
 			type: Activity.MonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 60000
+			finishDate: Date.now() + 30000
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);

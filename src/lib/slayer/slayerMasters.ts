@@ -8,7 +8,8 @@ const slayerMasters = [
 		requirements: {
 			combatLevel: 85,
 			slayerLevel: 30
-		}
+		},
+		masterID: 2
 	},
 	{
 		name: 'Turael',
@@ -16,7 +17,8 @@ const slayerMasters = [
 		requirements: {
 			combatLevel: 3,
 			slayerLevel: 0
-		}
+		},
+		masterID: 1
 	}
 ];
 

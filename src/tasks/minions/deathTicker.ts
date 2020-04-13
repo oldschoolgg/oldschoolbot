@@ -3,8 +3,9 @@ import { TextChannel } from 'discord.js';
 
 import { Activity, Events } from '../../lib/constants';
 import { randomItemFromArray, roll } from '../../lib/util';
-import killableMonsters from '../../lib/killableMonsters';
+
 import { UserSettings } from '../../lib/UserSettings';
+import killableMonsters from '../../lib/minions/monsters/index';
 
 const deathMessages = [
 	"{name} just died while killing {monster}, however they're on their back to continue the trip.",

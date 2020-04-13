@@ -55,6 +55,7 @@ export namespace UserSettings {
 		export const UnlockedMithrilDragon = T<boolean>('slayer.unlockedMithrilDragon');
 		export const UnlockedRedDragon = T<boolean>('slayer.unlockedRedDragon');
 		export const UnlockedTzHaar = T<boolean>('slayer.unlockedTzHaar');
+		export const CurrentSlayerMaster = T<number>('slayer.currentSlayerMaster');
 	}
 
 	export namespace Skills {

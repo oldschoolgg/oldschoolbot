@@ -6,8 +6,8 @@ import { Client } from 'discord.js';
 import { nodeCrypto, integer } from 'random-js';
 
 import { Tasks, Events } from './constants';
-import killableMonsters, { KillableMonster } from './killableMonsters';
 import { Bank } from './types';
+import killableMonsters, { KillableMonster } from './minions/monsters/index';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
