@@ -1,6 +1,6 @@
-import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
+import resolveItems from './util/resolveItems';
 
-const barrows = transformArrayOfResolvableItems([
+const barrows = resolveItems([
 	"Ahrim's hood",
 	"Ahrim's robetop",
 	"Ahrim's robeskirt",
@@ -34,7 +34,7 @@ const barrows = transformArrayOfResolvableItems([
 	'Bolt rack'
 ]);
 
-const skilling = transformArrayOfResolvableItems([
+const skilling = resolveItems([
 	'Rune essence',
 	'Copper ore',
 	'Tin ore',
@@ -150,7 +150,7 @@ const skilling = transformArrayOfResolvableItems([
 	'Grapes'
 ]);
 
-const gear = transformArrayOfResolvableItems([
+const gear = resolveItems([
 	'Armadyl helmet',
 	'Armadyl chestplate',
 	'Armadyl chainskirt',
@@ -192,7 +192,7 @@ const gear = transformArrayOfResolvableItems([
 	'Anti-dragon shield'
 ]);
 
-const cluesAndCaskets = transformArrayOfResolvableItems([
+const cluesAndCaskets = resolveItems([
 	'Clue scroll (beginner)',
 	'Clue scroll (easy)',
 	'Clue scroll (medium)',

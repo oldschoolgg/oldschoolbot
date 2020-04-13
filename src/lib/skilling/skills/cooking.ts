@@ -224,6 +224,7 @@ const cookables: Cookable[] = [
 		burntCookable: itemID('Burnt manta ray')
 	}
 ];
+
 const Cooking = {
 	aliases: ['cooking', 'cook'],
 	Cookables: cookables,
