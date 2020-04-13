@@ -10,6 +10,16 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { SkillsEnum } from '../../lib/skilling/types';
 
+function getAmountBurned(qtyCooking: number, stopBurningLvl: number, cookingLvl: number) {
+	let burnedAmount = 0;
+	for (let i = 0; i < qtyCooking; i++) {
+		if (rand(0, 100) < stopBurningLvl - cookingLvl) {
+			burnedAmount++;
+		}
+	}
+	return burnedAmount;
+}
+
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID }: CookingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
@@ -18,37 +28,22 @@ export default class extends Task {
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID);
 		if (!cookable) return;
 
-		// If this item has a chance of failing to cook, calculate that here.
-		const oldQuantity = quantity;
-		if (cookable.stopBurnAt > 0) {
-			let newQuantity = 0;
-			for (let i = 0; i < quantity; i++) {
-				if (
-					rand(0, 100) <
-					(100 * user.skillLevel(SkillsEnum.Cooking)) / cookable.stopBurnAt
-				) {
-					newQuantity++;
-				}
-			}
-			quantity = newQuantity;
-		}
+		let burnedAmount = 0;
+		let stopBurningLvl = 0;
 
-		// This only applies to items that cooking gauntlets reduce the burn chance for
 		if (cookable.stopBurnAtCG > 1 && user.hasItemEquippedOrInBank('Cooking gauntlets')) {
-			let newQuantity = 0;
-			for (let i = 0; i < quantity; i++) {
-				if (
-					rand(0, 100) <
-					(100 * user.skillLevel(SkillsEnum.Cooking)) / cookable.stopBurnAtCG
-				) {
-					newQuantity++;
-				}
-			}
-			quantity = newQuantity;
+			stopBurningLvl = cookable.stopBurnAtCG;
+		} else {
+			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		const xpReceived = quantity * cookable.xp;
-		const burntQuantity = oldQuantity - quantity;
+		burnedAmount = getAmountBurned(
+			quantity,
+			stopBurningLvl,
+			user.skillLevel(SkillsEnum.Cooking)
+		);
+
+		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
 		await user.addXP(SkillsEnum.Cooking, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Cooking);
@@ -63,15 +58,15 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Cooking level is now ${newLevel}!`;
 		}
 
-		if (cookable.stopBurnAt > 0 && oldQuantity > quantity) {
-			str += `\n\n${oldQuantity - quantity}x ${cookable.name} failed to cook.`;
+		if (burnedAmount > 0) {
+			str += `\n\n${burnedAmount}x ${cookable.name} failed to cook.`;
 		}
 
 		const loot = {
-			[cookable.id]: quantity
+			[cookable.id]: quantity - burnedAmount
 		};
 
-		loot[cookable.burntCookable] = burntQuantity;
+		loot[cookable.burntCookable] = burnedAmount;
 
 		str += `\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
@@ -93,11 +88,11 @@ export default class extends Task {
 				if (response) {
 					if (response.author.minionIsBusy) return;
 
-					user.log(`continued trip of ${oldQuantity}x ${cookable.name}[${cookable.id}]`);
+					user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
 
 					this.client.commands
 						.get('cook')!
-						.run(response as KlasaMessage, [oldQuantity, cookable.name]);
+						.run(response as KlasaMessage, [quantity, cookable.name]);
 				}
 			})
 			.catch(noOp);
