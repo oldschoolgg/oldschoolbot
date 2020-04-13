@@ -6,7 +6,7 @@ import { Limit } from 'p-limit';
 import { Image } from 'canvas';
 
 import { CustomGet } from '../UserSettings';
-import { Bank, ArrayItemsResolved } from '.';
+import { Bank } from '.';
 import { SkillsEnum } from '../skilling/types';
 
 declare module 'klasa' {
