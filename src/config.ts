@@ -50,11 +50,11 @@ const clientOptions: KlasaClientOptions = {
 	},
 	/* Klasa Options */
 	createPiecesFolders: false,
-	prefix: '+',
-	// providers: {
-	//	default: 'postgres',
-	//	postgres: privateConfig?.postgresConfig
-	// },
+	prefix: '^',
+	providers: {
+		default: 'postgres',
+		postgres: privateConfig?.postgresConfig
+	},
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
 	readyMessage: (client: KlasaClient) =>

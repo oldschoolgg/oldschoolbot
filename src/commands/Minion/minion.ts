@@ -402,7 +402,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		this.client.commands.get('smithed')!.run(msg, [quantity, smithedBarName]);
 	}
 	async smith(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
-		this.client.commands.get('smith')!.run(msg, [quantity, smithedBarName]);
+		this.client.commands.get('smith')!.run(msg, [quantity, smithedBarName])
+		.catch(err => {
+			throw err;
+		});
 	}
 
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
@@ -416,6 +419,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	async quest(msg: KlasaMessage) {
 		await this.client.commands
 			.get('quest')!
+			.run(msg, [])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async bars(msg: KlasaMessage) {
+		await this.client.commands
+			.get('bar')!
 			.run(msg, [])
 			.catch(err => {
 				throw err;

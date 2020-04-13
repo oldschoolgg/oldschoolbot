@@ -64,7 +64,7 @@ export default class extends BotCommand {
 		);
 
 		if (!smithedBar) {
-			throw `That is not a valid craftable item, to see the items availible do \`${msg.cmdPrefix}smithed --items\``;
+			throw `That is not a valid craftable item, to see the items availible do \`${msg.cmdPrefix}smith --items\``;
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedBar.level) {
@@ -78,7 +78,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor((Time.Minute * 30) / timeToSmithSingleBar);
 		}
-
+		
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
@@ -109,7 +109,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Smithed,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
+			finishDate: Date.now() + 60000
 		};
 
 		// Remove the bars from their bank.
