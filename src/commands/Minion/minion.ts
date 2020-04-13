@@ -22,6 +22,7 @@ import bankHasItem from '../../lib/util/bankHasItem';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { formatItemReqs } from '../../lib/util/formatItemReqs';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -535,17 +536,18 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Make sure they have all the required items to kill this monster
-		for (const item of monster.itemsRequired as number[]) {
-			if (!bank[item] && !msg.author.hasItemEquippedAnywhere(item)) {
-				throw `To kill ${
-					monster.name
-				}, you need these items: ${monster.itemsRequired
-					.map(id => itemNameFromID(id))
-					.join(
-						', '
-					)}. \n\nYou can buy these items from other players at the grand exchange channel (\`${
-					msg.cmdPrefix
-				}ge\`)`;
+		for (const item of monster.itemsRequired) {
+			if (Array.isArray(item)) {
+				console.log(
+					item.some(itemReq => msg.author.hasItemEquippedOrInBank(itemReq as number))
+				);
+				if (!item.some(itemReq => msg.author.hasItemEquippedOrInBank(itemReq as number))) {
+					throw `You need one of these items to kill ${monster.name}: ${formatItemReqs(
+						monster.itemsRequired
+					)}`;
+				}
+			} else if (!msg.author.hasItemEquippedOrInBank(item)) {
+				throw `You need a ${itemNameFromID(item)} to kill ${monster.name}.`;
 			}
 		}
 

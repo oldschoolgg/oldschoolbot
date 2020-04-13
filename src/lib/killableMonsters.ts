@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from './constants';
-import { Bank } from './types';
-import { transformArrayOfResolvableItems } from './util/transformArrayOfResolvableItems';
+import { Bank, ArrayItemsResolved } from './types';
+import resolveItems from './util/resolveItems';
 import itemID from './util/itemID';
 
 export interface KillableMonster {
@@ -17,8 +17,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**
@@ -39,8 +39,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -53,8 +53,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: [],
-		notifyDrops: ['Pet dagannoth prime'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet dagannoth prime']),
 		qpRequired: 0
 	},
 	{
@@ -67,8 +67,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: [],
-		notifyDrops: ['Pet dagannoth rex'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0
 	},
 	{
@@ -81,8 +81,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: [],
-		notifyDrops: ['Pet dagannoth supreme'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0
 	},
 	{
@@ -95,8 +95,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: ['Bandos chestplate', 'Bandos tassets'],
-		notifyDrops: ['Hellpuppy', 'Jar of souls'],
+		itemsRequired: resolveItems(['Bandos chestplate', 'Bandos tassets']),
+		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0
 	},
 	{
@@ -109,13 +109,13 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: [
+		itemsRequired: resolveItems([
 			"Dharok's helm",
 			"Dharok's platebody",
 			"Dharok's platelegs",
 			"Dharok's greataxe"
-		],
-		notifyDrops: ['Baby mole', 'Curved bone'],
+		]),
+		notifyDrops: resolveItems(['Baby mole', 'Curved bone']),
 		qpRequired: 0
 	},
 	{
@@ -128,8 +128,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: ['Armadyl chestplate', 'Armadyl chainskirt'],
-		notifyDrops: ['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage'],
+		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
+		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205
 	},
 	{
@@ -142,13 +142,18 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [
+		itemsRequired: resolveItems([
 			'Armadyl chestplate',
 			'Armadyl chainskirt',
 			"Ahrim's robetop",
 			"Ahrim's robeskirt"
-		],
-		notifyDrops: ['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling'],
+		]),
+		notifyDrops: resolveItems([
+			'Tanzanite mutagen',
+			'Magma mutagen',
+			'Jar of swamp',
+			'Pet snakeling'
+		]),
 		qpRequired: 75
 	},
 	{
@@ -161,9 +166,12 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ['Pet general graardor', 'Curved bone'],
-		qpRequired: 0
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet general graardor', 'Curved bone']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -175,8 +183,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ['Pet zilyana'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 0
 	},
 	{
@@ -189,8 +197,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ["Pet kree'arra", 'Curved bone'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(["Pet kree'arra", 'Curved bone']),
 		qpRequired: 0
 	},
 	{
@@ -203,8 +211,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ["Pet k'ril tsutsaroth"],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
 		qpRequired: 0
 	},
 	{
@@ -217,8 +225,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -231,8 +239,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -245,8 +253,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -259,8 +267,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Goblin champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Goblin champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -273,8 +281,13 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
-		notifyDrops: ['Callisto cub', 'Curved bone', 'Tyrannical ring'],
+		itemsRequired: resolveItems([
+			"Verac's helm",
+			"Verac's brassard",
+			"Verac's plateskirt",
+			"Verac's flail"
+		]),
+		notifyDrops: resolveItems(['Callisto cub', 'Curved bone', 'Tyrannical ring']),
 		qpRequired: 0
 	},
 	{
@@ -287,8 +300,13 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
-		notifyDrops: ["Vet'ion jr.", 'Skeleton champion scroll', 'Curved bone', 'Ring of the gods'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([
+			"Vet'ion jr.",
+			'Skeleton champion scroll',
+			'Curved bone',
+			'Ring of the gods'
+		]),
 		qpRequired: 0
 	},
 	{
@@ -301,8 +319,13 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
-		notifyDrops: ['Treasonous ring', 'Venenatis spiderling', 'Curved bone'],
+		itemsRequired: resolveItems([
+			"Verac's helm",
+			"Verac's brassard",
+			"Verac's plateskirt",
+			"Verac's flail"
+		]),
+		notifyDrops: resolveItems(['Treasonous ring', 'Venenatis spiderling', 'Curved bone']),
 		qpRequired: 0
 	},
 	{
@@ -315,8 +338,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
-		notifyDrops: ['Pet chaos elemental'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0
 	},
 	{
@@ -329,8 +352,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: [],
-		notifyDrops: ['Pet chaos elemental'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0
 	},
 	{
@@ -343,8 +366,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -357,8 +380,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: ['Anti-dragon shield'],
-		notifyDrops: ['Dragon pickaxe', 'Prince black dragon', 'Draconic visage'],
+		itemsRequired: resolveItems(['Anti-dragon shield']),
+		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
 		qpRequired: 0
 	},
 	{
@@ -371,8 +394,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
-		notifyDrops: ["Scorpia's offspring"],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0
 	},
 	{
@@ -385,8 +408,13 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: ['Zamorakian spear'],
-		notifyDrops: ['Spectral sigil', 'Arcane sigil', 'Elysian sigil', 'Pet dark core'],
+		itemsRequired: resolveItems(['Zamorakian spear']),
+		notifyDrops: resolveItems([
+			'Spectral sigil',
+			'Arcane sigil',
+			'Elysian sigil',
+			'Pet dark core'
+		]),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Bandos godsword')]: 5,
@@ -403,22 +431,25 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ['Jar of sand', 'Kalphite princess'],
-		qpRequired: 0
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
 		name: Monsters.LizardmanShaman.name,
 		aliases: Monsters.LizardmanShaman.aliases,
-		timeToFinish: Time.Minute * 1.1,
+		timeToFinish: 1.1,
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: ["Karil's crossbow"],
-		notifyDrops: ['Dragon warhammer', 'Curved bone'],
+		itemsRequired: resolveItems([["Karil's crossbow", 'Rune crossbow']]),
+		notifyDrops: resolveItems(['Dragon warhammer', 'Curved bone']),
 		qpRequired: 30
 	},
 	{
@@ -431,8 +462,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 30
 	},
 	{
@@ -445,8 +476,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -459,8 +490,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -473,8 +504,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Skeleton champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Skeleton champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -487,8 +518,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Zombie champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Zombie champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -501,8 +532,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -515,8 +546,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Giant champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -529,8 +560,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: ['Anti-dragon shield'],
-		notifyDrops: [],
+		itemsRequired: resolveItems(['Anti-dragon shield']),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -543,8 +574,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -557,14 +588,10 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	}
-].map(killableMonster => ({
-	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
-	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
-}));
+];
 
 export default killableMonsters;
