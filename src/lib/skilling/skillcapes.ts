@@ -50,6 +50,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Runecraft hood'),
 		untrimmed: itemID('Runecraft cape'),
 		trimmed: itemID('Runecraft cape(t)')
+	},
+	{
+		skill: SkillsEnum.Cooking,
+		hood: itemID('Cooking hood'),
+		untrimmed: itemID('Cooking cape'),
+		trimmed: itemID('Cooking cape(t)')
 	}
 ];
 
