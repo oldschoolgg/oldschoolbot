@@ -58,7 +58,7 @@ export default class extends Task {
 					user.log(`continued trip of  ${SmithedBar.name}[${SmithedBar.id}]`);
 
 					this.client.commands
-						.get('smithed')!
+						.get('smith')!
 						.run(response as KlasaMessage, [SmithedBar.name]);
 				}
 			})

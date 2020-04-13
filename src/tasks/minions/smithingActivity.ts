@@ -83,7 +83,7 @@ export default class extends Task {
 					user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
 
 					this.client.commands
-						.get('smith')!
+						.get('smelt')!
 						.run(response as KlasaMessage, [oldQuantity, bar.name]);
 				}
 			})

@@ -8,13 +8,13 @@ import {
 	itemNameFromID,
 	removeItemFromBank
 } from '../../lib/util';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smithing from '../../lib/skilling/skills/smithing';
+import Smithing from '../../lib/skilling/skills/smithedItems';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { SmithedActivityTaskOptions } from '../../lib/types/minions';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -22,14 +22,30 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, barName = '']: [null | number | string, string]) {
+	async run(
+		msg: KlasaMessage,
+		[quantity, smithedBarName = '']: [null | number | string, string]
+	) {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
+		}
+		if (msg.flagArgs.items) {
+			return msg.channel.sendFile(
+				Buffer.from(
+					Smithing.SmithedBars.map(
+						item =>
+							`${item.name} - lvl ${item.level} : ${Object.entries(item.inputBars)
+								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+								.join(', ')}`
+					).join('\n')
+				),
+				`Available Smithing items.txt`
+			);
 		}
 
 		if (msg.author.minionIsBusy) {
@@ -37,42 +53,41 @@ export default class extends BotCommand {
 		}
 
 		if (typeof quantity === 'string') {
-			barName = quantity;
+			smithedBarName = quantity;
 			quantity = null;
 		}
 
-		const bar = Smithing.Bars.find(
-			bar =>
-				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
+		const smithedBar = Smithing.SmithedBars.find(
+			smithedBar =>
+				stringMatches(smithedBar.name, smithedBarName) ||
+				stringMatches(smithedBar.name.split(' ')[0], smithedBarName)
 		);
 
-		if (!bar) {
-			throw `Thats not a valid bar to smith. Valid bars are ${Smithing.Bars.map(
-				bar => bar.name
-			).join(', ')}.`;
+		if (!smithedBar) {
+			throw `That is not a valid craftable item, to see the items availible do \`${msg.cmdPrefix}smithed --items\``;
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			throw `${msg.author.minionName} needs ${bar.level} Smithing to smith ${bar.name}s.`;
+		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedBar.level) {
+			throw `${msg.author.minionName} needs ${smithedBar.level} Smithing to smith ${smithedBar.name}s.`;
 		}
 
-		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
+		// Time to smith an item, add on quarter of a second to account for banking/etc.
+		const timeToSmithSingleBar = smithedBar.timeToUse + Time.Second / 4;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
+			quantity = Math.floor((Time.Minute * 30) / timeToSmithSingleBar);
 		}
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		// Check the user has the required ores to smith these bars.
-		// Multiplying the ore required by the quantity of bars.
-		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
-		for (const [oreID, qty] of requiredOres) {
-			if (!bankHasItem(userBank, parseInt(oreID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(oreID))}.`;
+		// Check the user has the required bars to smith these itemss.
+		// Multiplying the bars required by the quantity of items.
+		const requiredBars: [string, number][] = Object.entries(smithedBar.inputBars);
+		for (const [barID, qty] of requiredBars) {
+			if (!bankHasItem(userBank, parseInt(barID), qty * quantity)) {
+				throw `You don't have enough ${itemNameFromID(parseInt(barID))}.`;
 			}
 		}
 
@@ -82,32 +97,32 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
-				bar.name
+				smithedBar.name
 			}s you can smith is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		const data: SmithingActivityTaskOptions = {
-			barID: bar.id,
+		const data: SmithedActivityTaskOptions = {
+			smithedBarID: smithedBar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smithing,
+			type: Activity.Smithed,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
 		};
 
-		// Remove the ores from their bank.
+		// Remove the bars from their bank.
 		let newBank = { ...userBank };
-		for (const [oreID, qty] of requiredOres) {
-			if (newBank[parseInt(oreID)] < qty) {
+		for (const [barID, qty] of requiredBars) {
+			if (newBank[parseInt(barID)] < qty) {
 				this.client.emit(
 					Events.Wtf,
-					`${msg.author.sanitizedName} had insufficient ores to be removed.`
+					`${msg.author.sanitizedName} had insufficient bars to be removed.`
 				);
 				throw `What a terrible failure :(`;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
+			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
@@ -115,8 +130,8 @@ export default class extends BotCommand {
 
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${msg.author.minionName} is now smithing ${quantity}x ${
-				bar.name
+			`${msg.author.minionName} is now smithing ${quantity * smithedBar.outputMultiple}x ${
+				smithedBar.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
