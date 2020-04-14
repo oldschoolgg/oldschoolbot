@@ -50,6 +50,7 @@ interface User {
 	id: string;
 	totalCommandsUsed?: number;
 	GP?: number;
+	CurrentTime?: number;
 	RSN?: string;
 	pets?: object;
 	badges?: readonly number[];
@@ -116,6 +117,7 @@ export interface RawUserSettings {
 	id: string;
 	totalCommandsUsed: number;
 	GP: string;
+	CurrentTime: number;
 	RSN: string | null;
 	pets: object;
 	badges: readonly number[];
@@ -364,6 +366,7 @@ async function migrateUsers() {
 			id: entry.id,
 			totalCommandsUsed: entry.totalCommandsUsed || 0,
 			GP: entry.GP || 0,
+			CurrentTime: entry.CurrentTime || 0,
 			RSN: entry.RSN || null,
 			pets: entry.pets || {},
 			badges: entry.badges || [],

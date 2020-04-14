@@ -10,6 +10,7 @@ export interface SettingsEntry {
 	id: string;
 	RSN?: string;
 	GP?: number;
+	CurrentTime?: number;
 	autoupdate?: boolean;
 	badges?: string[];
 	bank?: Bank;

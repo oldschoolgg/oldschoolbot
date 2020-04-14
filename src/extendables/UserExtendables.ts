@@ -101,6 +101,16 @@ export default class extends Extendable {
 		return this.settings.update(UserSettings.GP, currentGP + amount);
 	}
 
+	public async addBankStandingTime(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentTime = this.settings.get(UserSettings.CurrentTime);
+		this.log(
+			`had ${amount} time added. BeforeBalance[${currentTime}] NewBalance[${currentTime +
+				amount}]`
+		);
+		return this.settings.update(UserSettings.CurrentTime, currentTime + amount);
+	}
+
 	public async addQP(this: User, amount: number) {
 		await this.settings.sync(true);
 		const currentQP = this.settings.get(UserSettings.QP);
@@ -354,6 +364,10 @@ export default class extends Extendable {
 				} laps. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Agility
 				} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
+			}
+
+			case Activity.BankStanding: {
+				return `${this.minionName} is currently bankstanding`;
 			}
 
 			case Activity.Cooking: {

@@ -407,6 +407,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		this.client.commands.get('light')!.run(msg, [quantity, logName]);
 	}
 
+	async bankstand(msg: KlasaMessage, [quantity, name]: [number, string]) {
+		this.client.commands.get('bankstand')!.run(msg, [quantity, name]);
+	}
+
 	async quest(msg: KlasaMessage) {
 		await this.client.commands
 			.get('quest')!

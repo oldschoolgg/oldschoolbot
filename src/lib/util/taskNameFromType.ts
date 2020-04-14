@@ -4,6 +4,8 @@ export function taskNameFromType(activityType: Activity) {
 	switch (activityType) {
 		case Activity.Agility:
 			return Tasks.AgilityActivity;
+		case Activity.BankStanding:
+			return Tasks.BankStandingActivity;
 		case Activity.ClueCompletion:
 			return Tasks.ClueActivity;
 		case Activity.Cooking:
