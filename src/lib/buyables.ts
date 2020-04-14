@@ -148,6 +148,15 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10_000 * 5
+	},
+	{
+		name: 'Huge jugs',
+		aliases: ['jug of water', 'jugs of water'],
+		outputItems: {
+			[itemID('Jug of water')]: 10_000
+		},
+		qpRequired: 0,
+		gpCost: 10_000 * 5
 	}
 ];
 
