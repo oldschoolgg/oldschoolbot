@@ -5,20 +5,10 @@ import { Time } from '../../lib/constants';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import Cooking from '../../lib/skilling/skills/cooking';
-import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { SkillsEnum } from '../../lib/skilling/types';
-
-function getAmountBurned(qtyCooking: number, stopBurningLvl: number, cookingLvl: number) {
-	let burnedAmount = 0;
-	for (let i = 0; i < qtyCooking; i++) {
-		if (rand(0, 100) < stopBurningLvl - cookingLvl) {
-			burnedAmount++;
-		}
-	}
-	return burnedAmount;
-}
+import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID }: CookingActivityTaskOptions) {
@@ -37,7 +27,7 @@ export default class extends Task {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = getAmountBurned(
+		burnedAmount = calcBurntCookables(
 			quantity,
 			stopBurningLvl,
 			user.skillLevel(SkillsEnum.Cooking)
