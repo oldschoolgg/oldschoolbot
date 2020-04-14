@@ -488,7 +488,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.LizardmanShaman.id,
 		name: Monsters.LizardmanShaman.name,
 		aliases: Monsters.LizardmanShaman.aliases,
-		timeToFinish: 1.1,
+		timeToFinish: Time.Minute * 1.1,
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
