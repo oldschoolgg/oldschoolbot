@@ -6,9 +6,9 @@ import { stringMatches, rand, determineCombatLevel } from '../../lib/util';
 import nieveTasks from '../../lib/slayer/nieveTasks';
 import { UserSettings } from '../../lib/UserSettings';
 import { Monsters } from 'oldschooljs';
-import { SkillsEnum } from '../../lib/types';
 import bossTasks from '../../lib/slayer/bossTasks';
 import turaelTasks from '../../lib/slayer/turaelTasks';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 const options = {
 	max: 1,

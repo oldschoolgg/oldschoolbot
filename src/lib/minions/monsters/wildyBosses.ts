@@ -1,8 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
-import { transformArrayOfResolvableItems } from '../../util/transformArrayOfResolvableItems';
 import { Time } from 'oldschooljs/dist/constants';
-import { Bank } from '../../types';
+import { Bank, ArrayItemsResolved } from '../../types';
+import resolveItems from '../../util/resolveItems';
+import itemID from '../../util/itemID';
 
 export interface KillableMonster {
 	id: number;
@@ -16,8 +17,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**
@@ -38,8 +39,13 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
-		notifyDrops: ['Callisto cub', 'Curved bone', 'Tyrannical ring'],
+		itemsRequired: resolveItems([
+			"Verac's helm",
+			"Verac's brassard",
+			"Verac's plateskirt",
+			"Verac's flail"
+		]),
+		notifyDrops: resolveItems(['Callisto cub', 'Curved bone', 'Tyrannical ring']),
 		qpRequired: 0
 	},
 	{
@@ -52,8 +58,18 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
-		notifyDrops: ["Vet'ion jr.", 'Skeleton champion scroll', 'Curved bone', 'Ring of the gods'],
+		itemsRequired: resolveItems([
+			"Verac's helm",
+			"Verac's brassard",
+			"Verac's plateskirt",
+			"Verac's flail"
+		]),
+		notifyDrops: resolveItems([
+			"Vet'ion jr.",
+			'Skeleton champion scroll',
+			'Curved bone',
+			'Ring of the gods'
+		]),
 		qpRequired: 0
 	},
 	{
@@ -66,8 +82,13 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: ["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"],
-		notifyDrops: ['Treasonous ring', 'Venenatis spiderling', 'Curved bone'],
+		itemsRequired: resolveItems([
+			"Verac's helm",
+			"Verac's brassard",
+			"Verac's plateskirt",
+			"Verac's flail"
+		]),
+		notifyDrops: resolveItems(['Treasonous ring', 'Venenatis spiderling', 'Curved bone']),
 		qpRequired: 0
 	},
 	{
@@ -80,8 +101,8 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
-		notifyDrops: ['Pet chaos elemental'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0
 	},
 	{
@@ -94,8 +115,8 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: [],
-		notifyDrops: ['Pet chaos elemental'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0
 	},
 	{
@@ -108,8 +129,8 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -122,9 +143,17 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: ['Anti-dragon shield'],
-		notifyDrops: ['Dragon pickaxe', 'Prince black dragon', 'Draconic visage'],
-		qpRequired: 0
+		itemsRequired: resolveItems([
+			'Anti-dragon shield',
+			['Armadyl crossbow', 'Rune crossbow'],
+			"Black d'hide body",
+			"Black d'hide chaps"
+		]),
+		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Armadyl crossbow')]: 10
+		}
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -136,14 +165,10 @@ const wildyBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [],
-		notifyDrops: ["Scorpia's offspring"],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0
 	}
-].map(killableMonster => ({
-	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
-	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
-}));
+];
 
 export default wildyBosses;

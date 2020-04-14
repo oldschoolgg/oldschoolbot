@@ -19,6 +19,9 @@ import { SkillsEnum } from '../lib/skilling/types';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import { production } from '../config';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
+import Runecraft, { RunecraftActivityTaskOptions } from '../lib/skilling/skills/runecraft';
+import Cooking from '../lib/skilling/skills/cooking';
+import killableMonsters from '../lib/minions/monsters';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -72,7 +75,7 @@ export default class extends Extendable {
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
 		this.log(
 			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
-			amount}]`
+				amount}]`
 		);
 		return this.settings.update(UserSettings.GP, currentGP - amount);
 	}
@@ -107,7 +110,7 @@ export default class extends Extendable {
 		const currentSlayerPoints = this.settings.get(UserSettings.Slayer.SlayerPoints);
 		this.log(
 			`had ${amount} Slayer Points added. BeforeBalance[${currentSlayerPoints}] NewBalance[${currentSlayerPoints +
-			amount}]`
+				amount}]`
 		);
 		return this.settings.update(UserSettings.Slayer.SlayerPoints, currentSlayerPoints + amount);
 	}
@@ -119,7 +122,7 @@ export default class extends Extendable {
 			throw `${this.sanitizedName} doesn't have enough Slayer Points.`;
 		this.log(
 			`had ${amount} Slayer Points removed. BeforeBalance[${currentSlayerPoints}] NewBalance[${currentSlayerPoints -
-			amount}]`
+				amount}]`
 		);
 		return this.settings.update(UserSettings.Slayer.SlayerPoints, currentSlayerPoints - amount);
 	}
@@ -270,7 +273,7 @@ export default class extends Extendable {
 				this.client.emit(
 					Events.ServerNotification,
 					`${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
+						this.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(skillName)}!`
 				);
 				break;
@@ -290,12 +293,16 @@ export default class extends Extendable {
 				Events.ServerNotification,
 				`${skill.emoji} **${this.username}'s** minion, ${
 <<<<<<< HEAD
+<<<<<<< HEAD
 					this.minionName
 				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
 					parseInt(usersWith.count) + 1
 				)} to get 99 ${skillNameCased}.`
 =======
 				this.minionName
+=======
+					this.minionName
+>>>>>>> 0740232... rebase + re organize
 				}, just achieved level 99 in ${toTitleCase(skillName)}!`
 >>>>>>> 8eb0dd6... small fixes + re arrange killable monsters
 			);
@@ -408,6 +415,158 @@ export default class extends Extendable {
 		return Time.Minute * 30;
 	}
 
+<<<<<<< HEAD
+=======
+	public get minionStatus(this: User) {
+		const currentTask = getActivityOfUser(this.client, this);
+
+		if (!currentTask) {
+			return `${this.minionName} is currently doing nothing.
+
+- Visit <https://www.oldschool.gg/oldschoolbot/minions> for extensive information on minions.
+- Use \`+minion setname [name]\` to change your minions' name.
+- You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
+- Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
+- Train mining with \`+mine\`
+- Train smithing with \`+smith\`
+- Train woodcutting with \`+chop\`
+- Train firemaking with \`+light\`
+- Gain quest points with \`+quest\`
+- Pat your minion with \`+minion pat\``;
+		}
+
+		const durationRemaining = currentTask.finishDate - Date.now();
+		const formattedDuration =
+			durationRemaining < 0 ? 'less than a minute' : formatDuration(durationRemaining);
+
+		switch (currentTask.type) {
+			case Activity.MonsterKilling: {
+				const data = currentTask as MonsterActivityTaskOptions;
+				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
+
+				return `${this.minionName} is currently killing ${data.quantity}x ${
+					monster!.name
+				}. Approximately ${formattedDuration} remaining.`;
+			}
+
+			case Activity.ClueCompletion: {
+				const data = currentTask as ClueActivityTaskOptions;
+
+				const clueTier = clueTiers.find(tier => tier.id === data.clueID);
+
+				return `${this.minionName} is currently completing ${data.quantity}x ${
+					clueTier!.name
+				} clues. Approximately ${formattedDuration} remaining.`;
+			}
+
+			case Activity.Agility: {
+				const data = currentTask as AgilityActivityTaskOptions;
+
+				const course = Agility.Courses.find(course => course.name === data.courseID);
+
+				return `${this.minionName} is currently running ${data.quantity}x ${
+					course!.name
+				} laps. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Agility
+				} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
+			}
+
+			case Activity.Cooking: {
+				const data = currentTask as CookingActivityTaskOptions;
+
+				const cookable = Cooking.Cookables.find(
+					cookable => cookable.id === data.cookableID
+				);
+
+				return `${this.minionName} is currently cooking ${data.quantity}x ${
+					cookable!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Cooking
+				} Cooking level is ${this.skillLevel(SkillsEnum.Cooking)}`;
+			}
+
+			case Activity.Fishing: {
+				const data = currentTask as FishingActivityTaskOptions;
+
+				const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
+
+				return `${this.minionName} is currently fishing ${data.quantity}x ${
+					fish!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Fishing
+				} Fishing level is ${this.skillLevel(SkillsEnum.Fishing)}`;
+			}
+
+			case Activity.Mining: {
+				const data = currentTask as MiningActivityTaskOptions;
+
+				const ore = Mining.Ores.find(ore => ore.id === data.oreID);
+
+				return `${this.minionName} is currently mining ${data.quantity}x ${
+					ore!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Mining
+				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
+			}
+
+			case Activity.Smithing: {
+				const data = currentTask as SmithingActivityTaskOptions;
+
+				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
+
+				return `${this.minionName} is currently smithing ${data.quantity}x ${
+					bar!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Firemaking: {
+				const data = currentTask as FiremakingActivityTaskOptions;
+
+				const burn = Firemaking.Burnables.find(burn => burn.inputLogs === data.burnableID);
+
+				return `${this.minionName} is currently lighting ${data.quantity}x ${
+					burn!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Firemaking
+				} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;
+			}
+
+			case Activity.Questing: {
+				return `${
+					this.minionName
+				} is currently Questing. Approximately ${formattedDuration} remaining. Your current Quest Point count is: ${this.settings.get(
+					UserSettings.QP
+				)}.`;
+			}
+
+			case Activity.Woodcutting: {
+				const data = currentTask as WoodcuttingActivityTaskOptions;
+
+				const log = Woodcutting.Logs.find(log => log.id === data.logID);
+
+				return `${this.minionName} is currently chopping ${data.quantity}x ${
+					log!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Woodcutting
+				} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
+			}
+			case Activity.Runecraft: {
+				const data = currentTask as RunecraftActivityTaskOptions;
+
+				const rune = Runecraft.Runes.find(_rune => _rune.id === data.runeID);
+
+				return `${this.minionName} is currently turning ${
+					data.essenceQuantity
+				}x Essence into ${rune!.name}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Runecraft
+				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
+			}
+		}
+	}
+
+>>>>>>> 0740232... rebase + re organize
 	public async incrementMinionDailyDuration(this: User, duration: number) {
 		await this.settings.sync(true);
 

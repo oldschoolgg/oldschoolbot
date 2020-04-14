@@ -16,15 +16,32 @@ import {
 import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
+<<<<<<< HEAD
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+=======
+import { UserSettings } from '../../lib/UserSettings';
+import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
+>>>>>>> 0740232... rebase + re organize
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+<<<<<<< HEAD
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
+=======
+import { formatItemReqs } from '../../lib/util/formatItemReqs';
+import killableMonsters from '../../lib/minions/monsters';
+import turaelTasks from '../../lib/slayer/turaelTasks';
+import nieveTasks from '../../lib/slayer/nieveTasks';
+
+const invalidClue = (prefix: string) =>
+	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
+		.map(tier => tier.name)
+		.join(', ')}. For example, \`${prefix}minion clue 1 easy\``;
+>>>>>>> 0740232... rebase + re organize
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -182,38 +199,41 @@ ${Emoji.Crafting} Crafting: ${msg.author.skillLevel(
 			SkillsEnum.Crafting
 		)} (${msg.author.settings.get(UserSettings.Skills.Crafting).toLocaleString()} xp)
 ${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
-				.get(UserSettings.Skills.Agility)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Agility)
+			.toLocaleString()} xp)
 ${Emoji.Cooking} Cooking: ${msg.author.skillLevel(SkillsEnum.Cooking)} (${msg.author.settings
-				.get(UserSettings.Skills.Cooking)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Cooking)
+			.toLocaleString()} xp)
 ${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
-				.get(UserSettings.Skills.Fishing)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Fishing)
+			.toLocaleString()} xp)
 ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-				.get(UserSettings.Skills.Mining)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Mining)
+			.toLocaleString()} xp)
 ${Emoji.Slayer} Slayer: ${msg.author.skillLevel(SkillsEnum.Slayer)} (${msg.author.settings
-				.get(UserSettings.Skills.Slayer)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Slayer)
+			.toLocaleString()} xp)
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
-					SkillsEnum.Smithing
-				)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+			SkillsEnum.Smithing
+		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
 ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-					SkillsEnum.Woodcutting
-				)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+			SkillsEnum.Woodcutting
+		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
 ${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
-					SkillsEnum.Firemaking
-				)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
+			SkillsEnum.Firemaking
+		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
 ${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
 			SkillsEnum.Runecraft
 		)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
+<<<<<<< HEAD
 ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.author.settings
 			.get(UserSettings.Skills.Prayer)
 			.toLocaleString()} xp)
 ${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
 			SkillsEnum.Fletching
 		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
+=======
+>>>>>>> 0740232... rebase + re organize
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -439,6 +459,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
+<<<<<<< HEAD
 	async fletch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		await this.client.commands
 			.get('fletch')!
@@ -447,6 +468,49 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				throw err;
 			});
 	}
+=======
+	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
+		await msg.author.settings.sync(true);
+
+		if (typeof quantity === 'string') {
+			tierName = quantity;
+			quantity = 1;
+		}
+
+		if (msg.author.minionIsBusy) {
+			this.client.emit(
+				Events.Log,
+				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
+			);
+			return msg.send(msg.author.minionStatus);
+		}
+
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		if (!tierName) throw invalidClue(msg.cmdPrefix);
+
+		const clueTier = clueTiers.find(tier => stringMatches(tier.name, tierName));
+
+		if (!clueTier) throw invalidClue(msg.cmdPrefix);
+
+		let duration = clueTier.timeToFinish * quantity;
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${
+				clueTier.name
+			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
+		}
+
+		const bank = msg.author.settings.get(UserSettings.Bank);
+		const numOfScrolls = bank[clueTier.scrollID];
+
+		if (!numOfScrolls || numOfScrolls < quantity) {
+			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
+		}
+>>>>>>> 0740232... rebase + re organize
 
 	async bury(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
 		await this.client.commands
@@ -535,7 +599,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			msg.author.skillLevel(SkillsEnum.Slayer)
 		) {
 			throw `You need ${
-			Monsters.get(monster.id)!.data.slayerLevelRequired
+				Monsters.get(monster.id)!.data.slayerLevelRequired
 			} Slayer to kill that monster.`;
 		}
 		if (thisMonster?.requirements?.questPoints! > msg.author.settings.get(UserSettings.QP)) {
@@ -570,7 +634,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-			monster.name
+				monster.name
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
@@ -621,7 +685,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
-			}, it'll take around ${formatDuration(duration)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

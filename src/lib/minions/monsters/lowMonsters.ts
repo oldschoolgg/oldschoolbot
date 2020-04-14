@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
-import { Bank } from '../../types';
-import { transformArrayOfResolvableItems } from '../../util/transformArrayOfResolvableItems';
+import { Bank, ArrayItemsResolved } from '../../types';
 import { Time } from 'oldschooljs/dist/constants';
+import resolveItems from '../../util/resolveItems';
 
 export interface KillableMonster {
 	id: number;
@@ -16,8 +16,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**
@@ -38,8 +38,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -52,8 +52,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -66,8 +66,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -80,8 +80,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Goblin champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Goblin champion scroll']),
 		qpRequired: 0
 	},
 
@@ -95,8 +95,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -109,8 +109,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Skeleton champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Skeleton champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -123,8 +123,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Zombie champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Zombie champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -137,8 +137,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -151,8 +151,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: ['Giant champion scroll'],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -165,8 +165,8 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: ['Anti-dragon shield'],
-		notifyDrops: [],
+		itemsRequired: resolveItems(['Anti-dragon shield']),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -179,14 +179,10 @@ const lowMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	}
-].map(killableMonster => ({
-	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
-	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
-}));
+];
 
 export default lowMonsters;

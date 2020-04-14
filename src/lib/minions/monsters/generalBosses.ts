@@ -1,9 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
-import { Bank } from '../../types';
-import { transformArrayOfResolvableItems } from '../../util/transformArrayOfResolvableItems';
+import { Bank, ArrayItemsResolved } from '../../types';
 import { Time } from 'oldschooljs/dist/constants';
 import itemID from '../../util/itemID';
+import resolveItems from '../../util/resolveItems';
 
 export interface KillableMonster {
 	id: number;
@@ -17,8 +17,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**
@@ -39,8 +39,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -53,8 +53,15 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: [],
-		notifyDrops: ['Pet dagannoth prime'],
+		itemsRequired: resolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Armadyl chestplate', "Karil's leathertop"],
+			['Armadyl chainskirt', "Karil's leatherskirt"]
+		]),
+		notifyDrops: resolveItems(['Pet dagannoth prime']),
 		qpRequired: 0
 	},
 	{
@@ -67,8 +74,15 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: [],
-		notifyDrops: ['Pet dagannoth rex'],
+		itemsRequired: resolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Bandos chestplate', "Torag's platebody"],
+			['Bandos tassets', "Torag's platelegs"]
+		]),
+		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0
 	},
 	{
@@ -81,8 +95,15 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: [],
-		notifyDrops: ['Pet dagannoth supreme'],
+		itemsRequired: resolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Bandos chestplate', "Torag's platebody"],
+			['Bandos tassets', "Torag's platelegs"]
+		]),
+		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0
 	},
 
@@ -96,13 +117,18 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: [
+
+		itemsRequired: resolveItems([
 			"Dharok's helm",
+
 			"Dharok's platebody",
+
 			"Dharok's platelegs",
+
 			"Dharok's greataxe"
-		],
-		notifyDrops: ['Baby mole', 'Curved bone'],
+		]),
+
+		notifyDrops: resolveItems(['Baby mole', 'Curved bone']),
 		qpRequired: 0
 	},
 	{
@@ -115,8 +141,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: ['Armadyl chestplate', 'Armadyl chainskirt'],
-		notifyDrops: ['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage'],
+		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
+		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205
 	},
 	{
@@ -129,13 +155,25 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: [
+		itemsRequired: resolveItems([
 			'Armadyl chestplate',
+
 			'Armadyl chainskirt',
+
 			"Ahrim's robetop",
+
 			"Ahrim's robeskirt"
-		],
-		notifyDrops: ['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling'],
+		]),
+
+		notifyDrops: resolveItems([
+			'Tanzanite mutagen',
+
+			'Magma mutagen',
+
+			'Jar of swamp',
+
+			'Pet snakeling'
+		]),
 		qpRequired: 75
 	},
 	{
@@ -148,8 +186,13 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: ['Zamorakian spear'],
-		notifyDrops: ['Spectral sigil', 'Arcane sigil', 'Elysian sigil', 'Pet dark core'],
+		itemsRequired: resolveItems(['Zamorakian spear']),
+		notifyDrops: resolveItems([
+			'Spectral sigil',
+			'Arcane sigil',
+			'Elysian sigil',
+			'Pet dark core'
+		]),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Bandos godsword')]: 5,
@@ -166,9 +209,12 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ['Jar of sand', 'Kalphite princess'],
-		qpRequired: 0
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
@@ -180,14 +226,10 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: ["Karil's crossbow"],
-		notifyDrops: ['Dragon warhammer', 'Curved bone'],
+		itemsRequired: resolveItems([["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']]),
+		notifyDrops: resolveItems(['Dragon warhammer', 'Curved bone']),
 		qpRequired: 30
 	}
-].map(killableMonster => ({
-	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
-	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
-}));
+];
 
 export default gwdBosses;

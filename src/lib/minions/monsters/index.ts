@@ -4,7 +4,7 @@ import lowMonsters from './lowMonsters';
 import slayerBosses from './slayerBosses';
 import slayerMonsters from './slayerMonsters';
 import wildyBosses from './wildyBosses';
-import { Bank } from '../../types';
+import { Bank, ArrayItemsResolved } from '../../types';
 
 export interface KillableMonster {
 	id: number;
@@ -18,8 +18,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**

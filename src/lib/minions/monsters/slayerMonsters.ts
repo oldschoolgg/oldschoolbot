@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
-import { Bank } from '../../types';
-import { transformArrayOfResolvableItems } from '../../util/transformArrayOfResolvableItems';
+import { Bank, ArrayItemsResolved } from '../../types';
 import { Time } from 'oldschooljs/dist/constants';
+import resolveItems from '../../util/resolveItems';
 
 export interface KillableMonster {
 	id: number;
@@ -16,8 +16,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**
@@ -38,8 +38,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 30
 	},
 	{
@@ -52,8 +52,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -66,8 +66,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -80,8 +80,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -94,8 +94,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -108,8 +108,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -122,8 +122,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -136,8 +136,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -150,8 +150,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -164,8 +164,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -178,8 +178,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -192,8 +192,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -206,8 +206,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -220,8 +220,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -234,8 +234,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -248,8 +248,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -262,8 +262,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -276,8 +276,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -290,8 +290,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -304,8 +304,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -318,8 +318,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -332,8 +332,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -346,8 +346,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -360,8 +360,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -374,8 +374,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -388,8 +388,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -402,8 +402,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -416,8 +416,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -430,8 +430,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -444,8 +444,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -458,8 +458,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -472,8 +472,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -486,8 +486,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -500,8 +500,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -514,8 +514,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -528,8 +528,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -542,8 +542,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -556,8 +556,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -570,8 +570,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -584,8 +584,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -598,8 +598,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -612,8 +612,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -626,8 +626,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -640,8 +640,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -654,8 +654,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -668,8 +668,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -682,8 +682,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -696,8 +696,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -710,8 +710,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -724,8 +724,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -738,8 +738,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -752,8 +752,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -766,8 +766,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -780,8 +780,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -794,8 +794,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -808,8 +808,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -822,8 +822,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -836,8 +836,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -850,8 +850,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -864,8 +864,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -878,8 +878,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -892,8 +892,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -906,8 +906,8 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	},
 	{
@@ -920,14 +920,10 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: [],
-		notifyDrops: [],
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0
 	}
-].map(killableMonster => ({
-	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
-	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
-}));
+];
 
 export default gwdBosses;
