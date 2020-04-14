@@ -26,13 +26,21 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [taskname]: [string]) {
 		await msg.author.settings.sync(true);
+		if (msg.author.minionIsBusy) {
+			return msg.send(msg.author.minionStatus);
+		}
 		const userBlockList = msg.author.blockList;
 		const allTasks = nieveTasks.concat(turaelTasks);
+		// Block if their current task matches the block request
 		const task = allTasks.filter(task => stringMatches(taskname, task.name));
 		if (taskname.toLowerCase() === Monsters.get(msg.author.slayerTaskID)?.name.toLowerCase()) {
-			msg.send(
-				`Are you sure you'd like to unblock ${taskname}? Say \`confirm\` to continue.`
-			);
+			if (userBlockList.length >= 5) {
+				throw `You already have a full block list`;
+			}
+			if (msg.author.slayerPoints < 100) {
+				throw `You need 100 slayer points to block that task and you only have ${msg.author.slayerPoints}`;
+			}
+			msg.send(`Are you sure you'd like to block ${taskname}? Say \`confirm\` to continue.`);
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
@@ -43,10 +51,14 @@ export default class extends BotCommand {
 			} catch (err) {
 				throw `Cancelling block list addition of ${taskname}.`;
 			}
+			await msg.author.removeSlayerPoints(100);
 			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
 			await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, false);
 			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
 			await msg.author.settings.update(UserSettings.Slayer.CurrentSlayerMaster, 0);
+			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].ID, {
+				arrayAction: 'add'
+			});
 			return msg.send(
 				`The task **${taskname}** has been **added** to your block list. You have ${msg.author.slayerPoints} Slayer Points left. Your current task of ${taskname} has also been cancelled.`
 			);
@@ -66,7 +78,7 @@ export default class extends BotCommand {
 		}
 
 		// Block list removal
-		if (msg.flagArgs.unblock) {
+		if (msg.flagArgs.unblockthistask) {
 			if (!userBlockList.includes(task[0].ID)) {
 				throw `That task isn't on your block list.`;
 			}
@@ -91,10 +103,15 @@ export default class extends BotCommand {
 
 		// Add to block list
 		if (typeof userBlockList === 'undefined' || userBlockList.length < 5) {
+			if (msg.author.slayerPoints < 100) {
+				throw `You need 100 slayer points to block that task and you only have ${msg.author.slayerPoints}`;
+			}
 			if (task.length === 0) {
 				throw `That's not a valid task to block.`;
 			}
-			msg.send(`Are you sure you'd like to block ${taskname}? Say \`confirm\` to continue.`);
+			msg.send(
+				`Are you sure you'd like to block ${taskname} for 100 slayer points? Say \`confirm\` to continue.`
+			);
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>

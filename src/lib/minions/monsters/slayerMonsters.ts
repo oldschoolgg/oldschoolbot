@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { Bank, ArrayItemsResolved } from '../../types';
 import { Time } from 'oldschooljs/dist/constants';
 import resolveItems from '../../util/resolveItems';
+import itemID from '../../util/itemID';
 
 export interface KillableMonster {
 	id: number;
@@ -27,7 +28,7 @@ export interface KillableMonster {
 	itemInBankBoosts?: Bank;
 }
 
-const gwdBosses: KillableMonster[] = [
+const slayerMonsters: KillableMonster[] = [
 	{
 		id: Monsters.Lizardman.id,
 		name: Monsters.Lizardman.name,
@@ -208,7 +209,7 @@ const gwdBosses: KillableMonster[] = [
 		difficultyRating: 2,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
-		qpRequired: 0
+		qpRequired: 69
 	},
 	{
 		id: Monsters.Drake.id,
@@ -570,9 +571,15 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems([
+			['Leaf-bladed spear', 'Leaf-bladed sword', 'Leaf-bladed battleaxe']
+		]),
 		notifyDrops: resolveItems([]),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Leaf-bladed sword')]: 8,
+			[itemID('Leaf-bladed battleaxe')]: 10
+		}
 	},
 	{
 		id: Monsters.BrineRat.id,
@@ -926,4 +933,4 @@ const gwdBosses: KillableMonster[] = [
 	}
 ];
 
-export default gwdBosses;
+export default slayerMonsters;
