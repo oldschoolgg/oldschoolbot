@@ -64,9 +64,18 @@ export default class extends BotCommand {
 			timeToCookSingleCookable /= 1.6;
 		}
 
-		// If no quantity provided, set it to the max.
+		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);
+
+		// // If no quantity provided, set it to the max the player can make by either the items in bank or time.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / timeToCookSingleCookable);
+			quantity = Math.floor(msg.author.maxTripLength / timeToCookSingleCookable);
+			for (const [cookableID, qty] of requiredCookables) {
+				const itemsOwned = msg.author.numItemsInBankSync(parseInt(cookableID));
+				if (itemsOwned === 0) {
+					throw `You have no ${itemNameFromID(parseInt(cookableID))}.`;
+				}
+				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
+			}
 		}
 
 		await msg.author.settings.sync(true);
@@ -74,7 +83,6 @@ export default class extends BotCommand {
 
 		// Check the user has the required cookables
 		// Multiplying the cookable required by the quantity
-		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);
 		for (const [cookableID, qty] of requiredCookables) {
 			if (!bankHasItem(userBank, parseInt(cookableID), qty * quantity)) {
 				throw `You don't have enough ${itemNameFromID(parseInt(cookableID))}.`;
