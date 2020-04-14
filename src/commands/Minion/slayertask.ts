@@ -40,12 +40,17 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [slayermaster]: [string]) {
 		await msg.author.settings.sync(true);
-
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
 
 		if (msg.author.hasSlayerTask && slayermaster === 'cancel') {
+			if (msg.author.minionIsBusy) {
+				return msg.send(msg.author.minionStatus);
+			}
+			if (msg.author.slayerPoints < 30) {
+				return msg.send(`You need 30 Slayer Points to cancel your task.`);
+			}
 			msg.send(
 				`Are you sure you'd like to cancel your current task of ${
 					msg.author.slayerTaskQuantity
@@ -136,19 +141,16 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 		const filteredLockedTasks = filteredByLevel.filter(task => task.unlocked === true);
 
 		// Filter by block list
-		let filteredTasks = filteredLockedTasks.filter(
+		const filteredBlockedTasks = filteredLockedTasks.filter(
 			task => !msg.author.blockList.includes(task.ID)
 		);
 
 		// Filter by quest point requirements
-		/*
 		const currentQP = msg.author.settings.get(UserSettings.QP);
-		if(filteredBlockedTasks) {
 		let filteredTasks = filteredBlockedTasks.filter(
-			task => task.requirements!.questPoints <= currentQP
+			task => task.requirements?.questPoints! <= currentQP
 		);
-		}
-*/
+
 		// Filter by unlocks -- Theres probably an easier way to do this but I can't figure it out
 		if (slayermaster === 'Nieve') {
 			if (msg.author.unlockedAviansie) {

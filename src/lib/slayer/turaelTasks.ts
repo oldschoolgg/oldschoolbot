@@ -163,7 +163,6 @@ const turaelTasks = [
 	{
 		name: 'Icefiend',
 		amount: [15, 20],
-
 		requirements: {
 			combatLevel: 20
 		},

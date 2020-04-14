@@ -28,7 +28,7 @@ export interface KillableMonster {
 	itemInBankBoosts?: Bank;
 }
 
-const gwdBosses: KillableMonster[] = [
+const generalBosses: KillableMonster[] = [
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
@@ -232,4 +232,4 @@ const gwdBosses: KillableMonster[] = [
 	}
 ];
 
-export default gwdBosses;
+export default generalBosses;

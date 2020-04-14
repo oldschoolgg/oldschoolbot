@@ -45,7 +45,6 @@ const nieveTasks = [
 		requirements: {
 			combatLevel: 40
 		},
-		alternatives: ['Dark Ankou'],
 		weight: 5,
 		ID: Monsters.Ankou.id,
 		unlocked: true
