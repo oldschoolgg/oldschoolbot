@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
-import { Bank } from '../../types';
-import { transformArrayOfResolvableItems } from '../../util/transformArrayOfResolvableItems';
+import { Bank, ArrayItemsResolved } from '../../types';
 import { Time } from 'oldschooljs/dist/constants';
+import resolveItems from '../../util/resolveItems';
 
 export interface KillableMonster {
 	id: number;
@@ -16,8 +16,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**
@@ -38,14 +38,10 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: ['Bandos chestplate', 'Bandos tassets'],
-		notifyDrops: ['Hellpuppy', 'Jar of souls'],
+		itemsRequired: resolveItems(['Bandos chestplate', 'Bandos tassets', 'Zamorakian spear']),
+		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0
 	}
-].map(killableMonster => ({
-	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
-	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
-}));
+];
 
 export default gwdBosses;

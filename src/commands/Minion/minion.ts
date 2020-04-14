@@ -14,7 +14,6 @@ import {
 } from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -23,6 +22,9 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { formatItemReqs } from '../../lib/util/formatItemReqs';
+import killableMonsters from '../../lib/minions/monsters';
+import turaelTasks from '../../lib/slayer/turaelTasks';
+import nieveTasks from '../../lib/slayer/nieveTasks';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -178,32 +180,32 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(`${msg.author.minionName}'s Stats:
 
 ${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
-				.get(UserSettings.Skills.Agility)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Agility)
+			.toLocaleString()} xp)
 ${Emoji.Cooking} Cooking: ${msg.author.skillLevel(SkillsEnum.Cooking)} (${msg.author.settings
-				.get(UserSettings.Skills.Cooking)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Cooking)
+			.toLocaleString()} xp)
 ${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
-				.get(UserSettings.Skills.Fishing)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Fishing)
+			.toLocaleString()} xp)
 ${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-				.get(UserSettings.Skills.Mining)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Mining)
+			.toLocaleString()} xp)
 ${Emoji.Slayer} Slayer: ${msg.author.skillLevel(SkillsEnum.Slayer)} (${msg.author.settings
-				.get(UserSettings.Skills.Slayer)
-				.toLocaleString()} xp)
+			.get(UserSettings.Skills.Slayer)
+			.toLocaleString()} xp)
 ${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
-					SkillsEnum.Smithing
-				)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
+			SkillsEnum.Smithing
+		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
 ${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-					SkillsEnum.Woodcutting
-				)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
+			SkillsEnum.Woodcutting
+		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
 ${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
-					SkillsEnum.Firemaking
-				)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
+			SkillsEnum.Firemaking
+		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
 ${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
-					SkillsEnum.Runecraft
-				)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
+			SkillsEnum.Runecraft
+		)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -450,7 +452,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-			clueTier.name
+				clueTier.name
 			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
 		}
 
@@ -485,7 +487,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now completing ${data.quantity}x ${
-			clueTier.name
+				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
@@ -527,7 +529,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			msg.author.skillLevel(SkillsEnum.Slayer)
 		) {
 			throw `You need ${
-			Monsters.get(monster.id)!.data.slayerLevelRequired
+				Monsters.get(monster.id)!.data.slayerLevelRequired
 			} Slayer to kill that monster.`;
 		}
 		if (thisMonster?.requirements?.questPoints! > msg.author.settings.get(UserSettings.QP)) {
@@ -580,7 +582,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${
-			monster.name
+				monster.name
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
@@ -632,7 +634,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
-			}, it'll take around ${formatDuration(duration)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

@@ -1,5 +1,5 @@
 import { SkillsEnum } from '../types';
-import { Emoji } from '../constants';
+import { Emoji } from '../../constants';
 
 const Attack = {
 	aliases: ['attack'],

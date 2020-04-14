@@ -3,7 +3,6 @@ import { MessageAttachment } from 'discord.js';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
 import { noOp, saidYes } from '../../lib/util';
-import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/UserSettings';
@@ -12,9 +11,9 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import MinionCommand from '../../commands/Minion/minion';
-import { SkillsEnum } from '../../lib/types';
 import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/monsters/index';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, slayerTask }: MonsterActivityTaskOptions) {
@@ -35,7 +34,7 @@ export default class extends Task {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
-				user.minionName
+					user.minionName
 				}, just received **${await createReadableItemListFromBank(
 					this.client,
 					itemsToAnnounce
@@ -64,10 +63,10 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-			} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
+		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
 			quantity} ${
 			user.minionName
-			} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 

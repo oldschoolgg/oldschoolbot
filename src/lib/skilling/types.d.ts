@@ -1,9 +1,17 @@
 export const enum SkillsEnum {
 	Agility = 'agility',
+	Attack = 'attack',
 	Cooking = 'cooking',
+	Defence = 'defence',
 	Fishing = 'fishing',
+	Hitpoints = 'Hitpoints',
+	Magic = 'magic',
 	Mining = 'mining',
+	Prayer = 'prayer',
+	Range = 'range',
+	Slayer = 'slayer',
 	Smithing = 'smithing',
+	Strength = 'strength',
 	Woodcutting = 'woodcutting',
 	Firemaking = 'firemaking',
 	Runecraft = 'runecraft'

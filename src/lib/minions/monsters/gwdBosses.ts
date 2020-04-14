@@ -1,8 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
-import { Bank } from '../../types';
-import { transformArrayOfResolvableItems } from '../../util/transformArrayOfResolvableItems';
+import { Bank, ArrayItemsResolved } from '../../types';
 import { Time } from 'oldschooljs/dist/constants';
+import resolveItems from '../../util/resolveItems';
+import itemID from '../../util/itemID';
 
 export interface KillableMonster {
 	id: number;
@@ -16,8 +17,8 @@ export interface KillableMonster {
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
-	itemsRequired: (string | number)[];
-	notifyDrops: (string | number)[];
+	itemsRequired: ArrayItemsResolved;
+	notifyDrops: ArrayItemsResolved;
 	qpRequired: number;
 
 	/**
@@ -38,9 +39,12 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ['Pet general graardor', 'Curved bone'],
-		qpRequired: 0
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems(['Pet general graardor', 'Curved bone']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -52,8 +56,11 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ['Pet zilyana'],
+		itemsRequired: resolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		]),
+		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 0
 	},
 	{
@@ -66,8 +73,11 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ["Pet kree'arra", 'Curved bone'],
+		itemsRequired: resolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		]),
+		notifyDrops: resolveItems(["Pet kree'arra", 'Curved bone']),
 		qpRequired: 0
 	},
 	{
@@ -80,14 +90,16 @@ const gwdBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: [],
-		notifyDrops: ["Pet k'ril tsutsaroth"],
-		qpRequired: 0
+		itemsRequired: resolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		]),
+		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
 	}
-].map(killableMonster => ({
-	...killableMonster,
-	itemsRequired: transformArrayOfResolvableItems(killableMonster.itemsRequired),
-	notifyDrops: transformArrayOfResolvableItems(killableMonster.notifyDrops)
-}));
+];
 
 export default gwdBosses;

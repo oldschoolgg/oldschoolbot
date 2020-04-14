@@ -10,6 +10,9 @@ import Fishing from './fishing';
 import Agility from './agility';
 import { SkillsEnum } from '../types';
 import Runecraft from './runecraft';
+import Magic from './magic';
+import Prayer from './prayer';
+import Strength from './strength';
 
 export type Skill =
 	| typeof Agility
