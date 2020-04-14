@@ -153,7 +153,10 @@ export default class extends Task {
 						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
 						this.client.commands
 							.get('minion')!
-							.kill(response as KlasaMessage, [quantity, monster.name]);
+							.kill(response as KlasaMessage, [quantity, monster.name])
+							.catch(err => {
+								throw err;
+							});
 					}
 				})
 				.catch(noOp);
