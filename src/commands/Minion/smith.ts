@@ -78,7 +78,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor((Time.Minute * 30) / timeToSmithSingleBar);
 		}
-		
+
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
@@ -109,7 +109,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Smithed,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 60000
+			finishDate: Date.now() + duration
 		};
 
 		// Remove the bars from their bank.
@@ -132,7 +132,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now smithing ${quantity * smithedBar.outputMultiple}x ${
 				smithedBar.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			}, using it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }
