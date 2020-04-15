@@ -64,19 +64,10 @@ interface User {
 		dailyDuration?: number;
 	};
 	slayer?: {
-		hasSlayerTask?: boolean;
-		slayerTaskID?: number;
-		slayerTaskQuantity?: number;
-		slayerPoints?: number;
+		slayerInfo?: number[];
 		blockList?: number[];
-		unlockedAviansie: boolean;
-		unlockedBasilisk: boolean;
-		unlockedBoss: boolean;
-		unlockedLizardman: boolean;
-		unlockedMithrilDragon: boolean;
-		unlockedRedDragon: boolean;
-		unlockedTzHaar: boolean;
-		currentSlayerMaster?: number;
+		extendList?: number[];
+		unlockedList?: number[];
 	};
 	stats?: {
 		deaths?: number;
@@ -142,19 +133,10 @@ export interface RawUserSettings {
 	'minion.name': string | null;
 	'minion.hasBought': boolean;
 	'minion.dailyDuration': number;
-	'slayer.hasSlayerTask': boolean;
-	'slayer.slayerTaskID': number;
-	'slayer.slayerTaskQuantity': number;
-	'slayer.slayerPoints': number;
+	'slayer.slayerInfo': number[];
 	'slayer.blockList': number[];
-	'slayer.unlockedAviansie': boolean;
-	'slayer.unlockedBasilisk': boolean;
-	'slayer.unlockedBoss': boolean;
-	'slayer.unlockedLizardman': boolean;
-	'slayer.unlockedMithrilDragon': boolean;
-	'slayer.unlockedRedDragon': boolean;
-	'slayer.unlockedTzHaar': boolean;
-	'slayer.currentSlayerMaster': number;
+	'slayer.extendList': number[];
+	'slayer.unlockedList': number[];
 	'stats.deaths': number;
 	'stats.diceWins': number;
 	'stats.diceLosses': number;
@@ -403,19 +385,10 @@ async function migrateUsers() {
 			'minion.name': entry.minion?.name || null,
 			'minion.hasBought': entry.minion?.hasBought || false,
 			'minion.dailyDuration': entry.minion?.dailyDuration || 0,
-			'slayer.hasSlayerTask': entry.slayer?.hasSlayerTask || false,
-			'slayer.slayerTaskID': entry.slayer?.slayerTaskID || 0,
-			'slayer.slayerTaskQuantity': entry.slayer?.slayerTaskQuantity || 0,
-			'slayer.slayerPoints': entry.slayer?.slayerPoints || 0,
+			'slayer.slayerInfo': entry.slayer?.slayerInfo || [],
 			'slayer.blockList': entry.slayer?.blockList || [],
-			'slayer.unlockedAviansie': entry.slayer?.unlockedAviansie || false,
-			'slayer.unlockedBasilisk': entry.slayer?.unlockedBasilisk || false,
-			'slayer.unlockedBoss': entry.slayer?.unlockedBoss || false,
-			'slayer.unlockedLizardman': entry.slayer?.unlockedLizardman || false,
-			'slayer.unlockedMithrilDragon': entry.slayer?.unlockedMithrilDragon || false,
-			'slayer.unlockedRedDragon': entry.slayer?.unlockedRedDragon || false,
-			'slayer.unlockedTzHaar': entry.slayer?.unlockedTzHaar || false,
-			'slayer.currentSlayerMaster': entry.slayer?.currentSlayerMaster || 0,
+			'slayer.extendList': entry.slayer?.extendList || [],
+			'slayer.unlockedList': entry.slayer?.unlockedList || [],
 			'stats.deaths': entry.stats?.deaths || 0,
 			'stats.diceWins': entry.stats?.diceWins || 0,
 			'stats.diceLosses': entry.stats?.diceLosses || 0,

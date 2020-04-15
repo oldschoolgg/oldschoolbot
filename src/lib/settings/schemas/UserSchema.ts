@@ -31,20 +31,10 @@ Client.defaultUserSchema
 	)
 	.add('slayer', folder =>
 		folder
-
-			.add('hasSlayerTask', 'boolean', { default: false })
-			.add('slayerTaskID', 'number', { default: 0 })
-			.add('slayerTaskQuantity', 'number', { default: 0 })
-			.add('slayerPoints', 'integer', { default: 0 })
+			.add('slayerInfo', 'integer', { array: true, default: [] })
 			.add('blockList', 'integer', { array: true, default: [] })
-			.add('unlockedAviansie', 'boolean', { default: false })
-			.add('unlockedBasilisk', 'boolean', { default: false })
-			.add('unlockedBoss', 'boolean', { default: false })
-			.add('unlockedLizardman', 'boolean', { default: false })
-			.add('unlockedMithrilDragon', 'boolean', { default: false })
-			.add('unlockedRedDragon', 'boolean', { default: false })
-			.add('unlockedTzHaar', 'boolean', { default: false })
-			.add('currentSlayerMaster', 'number', { default: 0 })
+			.add('extendList', 'integer', { array: true, default: [] })
+			.add('unlockedList', 'integer', { array: true, default: [] })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

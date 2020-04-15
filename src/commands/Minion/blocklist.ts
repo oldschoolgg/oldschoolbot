@@ -31,14 +31,16 @@ export default class extends BotCommand {
 		}
 		const userBlockList = msg.author.blockList;
 		const allTasks = nieveTasks.concat(turaelTasks);
+
 		// Block if their current task matches the block request
 		const task = allTasks.filter(task => stringMatches(taskname, task.name));
-		if (taskname.toLowerCase() === Monsters.get(msg.author.slayerTaskID)?.name.toLowerCase()) {
+
+		if (taskname.toLowerCase() === Monsters.get(msg.author.slayerInfo[1])?.name.toLowerCase()) {
 			if (userBlockList.length >= 5) {
 				throw `You already have a full block list`;
 			}
-			if (msg.author.slayerPoints < 100) {
-				throw `You need 100 slayer points to block that task and you only have ${msg.author.slayerPoints}`;
+			if (msg.author.slayerInfo[4] < 100) {
+				throw `You need 100 slayer points to block that task and you only have ${msg.author.slayerInfo[4]}`;
 			}
 			msg.send(`Are you sure you'd like to block ${taskname}? Say \`confirm\` to continue.`);
 			try {
@@ -51,18 +53,21 @@ export default class extends BotCommand {
 			} catch (err) {
 				throw `Cancelling block list addition of ${taskname}.`;
 			}
-			await msg.author.removeSlayerPoints(100);
-			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
-			await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, false);
-			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
-			await msg.author.settings.update(UserSettings.Slayer.CurrentSlayerMaster, 0);
+			const newSlayerPoints = msg.author.slayerInfo[4] - 100;
+			// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
+			const newInfo = [0, 0, 0, 0, newSlayerPoints];
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+				arrayAction: 'overwrite'
+			});
 			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].ID, {
 				arrayAction: 'add'
 			});
 			return msg.send(
-				`The task **${taskname}** has been **added** to your block list. You have ${msg.author.slayerPoints} Slayer Points left. Your current task of ${taskname} has also been cancelled.`
+				`The task **${taskname}** has been **added** to your block list. You have ${msg.author.slayerInfo[4]} Slayer Points left. Your current task of ${taskname} has also been cancelled.`
 			);
 		}
+
+		// Show them their block list if requested
 		if (taskname === 'show') {
 			let str = 'Your current block list: ';
 			for (let i = 0; i < userBlockList.length; i++) {
@@ -103,8 +108,8 @@ export default class extends BotCommand {
 
 		// Add to block list
 		if (typeof userBlockList === 'undefined' || userBlockList.length < 5) {
-			if (msg.author.slayerPoints < 100) {
-				throw `You need 100 slayer points to block that task and you only have ${msg.author.slayerPoints}`;
+			if (msg.author.slayerInfo[4] < 100) {
+				throw `You need 100 slayer points to block that task and you only have ${msg.author.slayerInfo[4]}`;
 			}
 			if (task.length === 0) {
 				throw `That's not a valid task to block.`;
@@ -122,8 +127,8 @@ export default class extends BotCommand {
 			} catch (err) {
 				throw `Cancelling block list addition of ${taskname}.`;
 			}
-			if (msg.author.slayerPoints < 100) {
-				throw `It costs 100 slayer points to block a task and you only have ${msg.author.slayerPoints}.`;
+			if (msg.author.slayerInfo[4] < 100) {
+				throw `It costs 100 slayer points to block a task and you only have ${msg.author.slayerInfo[4]}.`;
 			}
 			if (userBlockList.includes(task[0].ID)) {
 				throw `That task is already on your block list`;
@@ -132,7 +137,7 @@ export default class extends BotCommand {
 				arrayAction: 'add'
 			});
 			await msg.author.removeSlayerPoints(100);
-			throw `The task **${taskname}** has been **added** to your block list. You have ${msg.author.slayerPoints} Slayer Points left.`;
+			throw `The task **${taskname}** has been **added** to your block list. You have ${msg.author.slayerInfo[4]} Slayer Points left.`;
 		}
 
 		// If they already have a slayer task tell them what it is

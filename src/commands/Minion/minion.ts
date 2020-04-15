@@ -459,7 +459,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-<<<<<<< HEAD
 	async fletch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		await this.client.commands
 			.get('fletch')!
@@ -468,49 +467,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				throw err;
 			});
 	}
-=======
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		await msg.author.settings.sync(true);
-
-		if (typeof quantity === 'string') {
-			tierName = quantity;
-			quantity = 1;
-		}
-
-		if (msg.author.minionIsBusy) {
-			this.client.emit(
-				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
-			);
-			return msg.send(msg.author.minionStatus);
-		}
-
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		if (!tierName) throw invalidClue(msg.cmdPrefix);
-
-		const clueTier = clueTiers.find(tier => stringMatches(tier.name, tierName));
-
-		if (!clueTier) throw invalidClue(msg.cmdPrefix);
-
-		let duration = clueTier.timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
-			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
-		}
-
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
-		}
->>>>>>> 0740232... rebase + re organize
 
 	async bury(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
 		await this.client.commands
@@ -641,11 +597,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
+		// Assume they aren't on a slayer task and check if they are
 		let slayerTask = false;
-		if (msg.author.hasSlayerTask) {
-			const task = Monsters.get(msg.author.slayerTaskID);
+		if (msg.author.slayerInfo[0] === 0) {
+			const task = Monsters.get(msg.author.slayerInfo[1]);
 			const taskName = task?.name;
 			const filteredMonster = allTasks.find(find => find.name === taskName);
+			// Check if this monster is an alternative to any task
 			if (
 				taskName === monster.name ||
 				filteredMonster?.alternatives?.includes(monster.name)
@@ -654,8 +612,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 					msg.author.skillLevel(SkillsEnum.Slayer) >=
 					Monsters.get(monster.id)?.data.slayerLevelRequired!
 				) {
-					if (quantity > msg.author.slayerTaskQuantity) {
-						throw `You only have ${msg.author.slayerTaskQuantity}x ${taskName} left on your slayer task. Try \`${msg.cmdPrefix}m kill ${msg.author.slayerTaskQuantity} ${name}\` instead.`;
+					// If they're trying to kill more than what is left on their slayer task stop them so they dont get the % boost "off task"
+					if (quantity > msg.author.slayerInfo[2]) {
+						throw `You only have ${msg.author.slayerInfo[2]}x ${taskName} left on your slayer task. Try \`${msg.cmdPrefix}m kill ${msg.author.slayerInfo[2]} ${name}\` instead.`;
 					}
 					slayerTask = true;
 					boosts.push(`10% Boost for being on a ${taskName} slayer task`);

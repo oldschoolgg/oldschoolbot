@@ -34,19 +34,10 @@ export interface SettingsEntry {
 		ironman: boolean;
 	};
 	slayer?: {
-		hasSlayerTask: boolean;
-		slayerTaskID: number;
-		slayerTaskQuantity: number;
-		slayerPoints: number;
+		slayerInfo: number[];
 		blockList: number[];
-		unlockedAviansie: boolean;
-		unlockedBasilisk: boolean;
-		unlockedBoss: boolean;
-		unlockedLizardman: boolean;
-		unlockedMithrilDragon: boolean;
-		unlockedRedDragon: boolean;
-		unlockedTzHaar: boolean;
-		currentSlayerMaster: number;
+		extendList: number[];
+		unlockedList: number[];
 	};
 }
 

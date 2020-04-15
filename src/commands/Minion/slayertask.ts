@@ -44,20 +44,20 @@ export default class extends BotCommand {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
 
-		if (msg.author.hasSlayerTask && slayermaster === 'cancel') {
+		if (msg.author.slayerInfo[0] === 1 && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
 			}
-			if (msg.author.slayerPoints < 30) {
+			if (msg.author.slayerInfo[4] < 30) {
 				return msg.send(`You need 30 Slayer Points to cancel your task.`);
 			}
 			msg.send(
 				`Are you sure you'd like to cancel your current task of ${
-					msg.author.slayerTaskQuantity
+					msg.author.slayerInfo[2]
 				}x ${
-					Monsters.get(msg.author.slayerTaskID)?.name
+					Monsters.get(msg.author.slayerInfo[1])?.name
 				}? It will cost 30 slayer points and your current total is ${
-					msg.author.slayerPoints
+					msg.author.slayerInfo[4]
 				}. Say \`confirm\` to continue.`
 			);
 			try {
@@ -69,26 +69,25 @@ export default class extends BotCommand {
 				);
 			} catch (err) {
 				throw `Cancelled request to cancel ${
-					Monsters.get(msg.author.slayerTaskID)?.name
+					Monsters.get(msg.author.slayerInfo[1])?.name
 				} slayer task.`;
 			}
-			const newSlayerPoints = msg.author.slayerPoints - 30;
-			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
-			await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, false);
-			await msg.author.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
-			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, newSlayerPoints);
-			await msg.author.settings.update(UserSettings.Slayer.CurrentSlayerMaster, 0);
+			const newSlayerPoints = msg.author.slayerInfo[4] - 30;
+			// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
+			const newInfo = [0, 0, 0, 0, newSlayerPoints];
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo);
 			return msg.send(`Successfully cancelled task`);
 		}
 
 		// If they already have a slayer task tell them what it is
-		if (msg.author.hasSlayerTask) {
-			const mon = Monsters.get(msg.author.slayerTaskID);
+
+		if (msg.author.slayerInfo[0] === 1) {
+			const mon = Monsters.get(msg.author.slayerInfo[1]);
 			if (!mon) throw `WTF`;
-			let str = `You already have a slayer task of ${msg.author.slayerTaskQuantity}x ${mon.name}.\n`;
+			let str = `You already have a slayer task of ${msg.author.slayerInfo[2]}x ${mon.name}.\n`;
 			const allTasks = nieveTasks.concat(turaelTasks);
 			const currentTask = allTasks.find(monster =>
-				stringMatches(Monsters.get(msg.author.slayerTaskID)!.name, monster.name)
+				stringMatches(Monsters.get(msg.author.slayerInfo[1])!.name, monster.name)
 			);
 			if (currentTask?.alternatives) {
 				str += `You can also kill these monsters: ${currentTask?.alternatives}!`;
@@ -122,7 +121,7 @@ export default class extends BotCommand {
 		);
 		if (
 			master.requirements.combatLevel > userCombatLevel! ||
-			master.requirements.slayerLevel > msg.author.skillLevel(SkillsEnum.Slayer)
+			master.requirements.slayerLevel! > msg.author.skillLevel(SkillsEnum.Slayer)
 		) {
 			throw `You need a combat level of ${
 				master.requirements.combatLevel
@@ -147,48 +146,19 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 
 		// Filter by quest point requirements
 		const currentQP = msg.author.settings.get(UserSettings.QP);
-		let filteredTasks = filteredBlockedTasks.filter(
+		const filteredByQP = filteredBlockedTasks.filter(
 			task => task.requirements?.questPoints! <= currentQP
 		);
 
-		// Filter by unlocks -- Theres probably an easier way to do this but I can't figure it out
-		if (slayermaster === 'Nieve') {
-			if (msg.author.unlockedAviansie) {
-				filteredTasks = filteredTasks.concat(
-					nieveTasks.filter(monster => monster.name === 'Aviansie')
-				);
-			}
-			if (msg.author.unlockedBasilisk) {
-				filteredTasks = filteredTasks.concat(
-					nieveTasks.filter(monster => monster.name === 'Basilisk')
-				);
-			}
-			if (msg.author.unlockedBoss) {
-				filteredTasks = filteredTasks.concat(
-					nieveTasks.filter(monster => monster.name === 'Boss')
-				);
-			}
-			if (msg.author.unlockedLizardman) {
-				filteredTasks = filteredTasks.concat(
-					nieveTasks.filter(monster => monster.name === 'Lizardman brute')
-				);
-			}
-			if (msg.author.unlockedMithrilDragon) {
-				filteredTasks = filteredTasks.concat(
-					nieveTasks.filter(monster => monster.name === 'Mithril dragon')
-				);
-			}
-			if (msg.author.unlockedRedDragon) {
-				filteredTasks = filteredTasks.concat(
-					nieveTasks.filter(monster => monster.name === 'Red dragon')
-				);
-			}
-			if (msg.author.unlockedTzHaar) {
-				filteredTasks = filteredTasks.concat(
-					nieveTasks.filter(monster => monster.name === 'TzHaar')
-				);
-			}
-		}
+		// Filter by unlocks
+		const filteredBlockedByDefault = master.tasks.filter(task => task.unlocked === true);
+
+		const filteredByUnlocked = filteredBlockedByDefault.filter(task =>
+			msg.author.unlockedList.includes(task.ID)
+		);
+		const filteredByDefaultAndUnlocked = filteredBlockedByDefault.concat(filteredByUnlocked);
+		const filteredTasks = filteredByQP.concat(filteredByDefaultAndUnlocked);
+
 		let totalweight = 0;
 		for (let i = 0; i < filteredTasks.length; i++) {
 			totalweight += filteredTasks[i].weight;
@@ -211,17 +181,16 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 					const monster = filteredBossTasks[monsterNumber];
 					const minQuantity = monster.amount[0];
 					const maxQuantity = monster.amount[1];
-					const quantity = rand(minQuantity, maxQuantity);
-					await msg.author.settings.update(
-						UserSettings.Slayer.SlayerTaskQuantity,
-						quantity
-					);
-					await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, true);
-					await msg.author.settings.update(UserSettings.Slayer.SlayerTaskID, monster.ID);
-					await msg.author.settings.update(
-						UserSettings.Slayer.CurrentSlayerMaster,
-						master.masterID
-					);
+					const quantity = Math.floor(rand(minQuantity, maxQuantity));
+					// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
+					const newInfo = [
+						1,
+						monster.ID,
+						quantity,
+						master.masterID,
+						msg.author.slayerInfo[4]
+					];
+					await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo);
 
 					return msg.send(
 						`Your new slayer task is a boss task of ${quantity}x ${monster.name}`
@@ -229,17 +198,18 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 				}
 				const minQuantity = slayerMonster.amount[0];
 				const maxQuantity = slayerMonster.amount[1];
-				const quantity = rand(minQuantity, maxQuantity);
-				await msg.author.settings.update(UserSettings.Slayer.SlayerTaskQuantity, quantity);
-				await msg.author.settings.update(UserSettings.Slayer.HasSlayerTask, true);
-				await msg.author.settings.update(
-					UserSettings.Slayer.SlayerTaskID,
-					slayerMonster.ID
-				);
-				await msg.author.settings.update(
-					UserSettings.Slayer.CurrentSlayerMaster,
-					master.masterID
-				);
+				const quantity = Math.floor(rand(minQuantity, maxQuantity));
+				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
+				const newInfo = [
+					1,
+					slayerMonster.ID,
+					quantity,
+					master.masterID,
+					msg.author.slayerInfo[4] ?? 0
+				];
+				await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+					arrayAction: 'overwrite'
+				});
 				return msg.send(`Your new slayer task is ${quantity}x ${slayerMonster.name}`);
 			}
 		}
