@@ -348,12 +348,12 @@ const slayerMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems([
-			['Leaf-bladed spear', 'Lead-bladed sword', 'Leaf-bladed battleaxe']
+			['Leaf-bladed spear', 'Leaf-bladed sword', 'Leaf-bladed battleaxe']
 		]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Lead-bladed sword')]: 5,
+			[itemID('Leaf-bladed sword')]: 5,
 			[itemID('Leaf-bladed battleaxe')]: 5
 		}
 	},
@@ -670,11 +670,11 @@ const slayerMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([['Boots of stone', 'Brimstone boots']]),
+		itemsRequired: resolveItems([['Boots of stone', 'Boots of brimstone']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Brimstone boots')]: 5
+			[itemID('Boots of brimstone')]: 5
 		}
 	},
 	{
