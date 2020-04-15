@@ -81,30 +81,35 @@ export default class extends Task {
 			}
 		}
 
+		// If they're on a slayer task continue
 		if (slayerTask) {
 			const currentSlayerLevel = user.skillLevel(SkillsEnum.Slayer);
+			// Check what master they're using, 2 = Nieve
 			let slayerPoints = 0;
-			if (user.currentSlayerMaster === 2) {
+			if (user.slayerInfo[3] === 2) {
 				slayerPoints = 12;
 			}
-			if (user.slayerTaskQuantity <= quantity) {
+			// If the quantity they're killing is <= the amount left on their task, finish the task. Else just give them xp and reduce the quantity left
+			if (user.slayerInfo[2] <= quantity) {
 				const slayerXP = Math.floor(
-					user.slayerTaskQuantity * Monsters.get(monster.id)?.data.slayerXP!
+					user.slayerInfo[2] * Monsters.get(monster.id)?.data.slayerXP!
 				);
-				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, 0);
-				await user.settings.update(UserSettings.Slayer.HasSlayerTask, false);
-				await user.settings.update(UserSettings.Slayer.SlayerTaskID, 0);
+
+				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
+				const newInfo = [0, 0, 0, 0, user.slayerInfo[4] + slayerPoints];
+				await user.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+					arrayAction: 'overwrite'
+				});
 				str += ` You gained ${slayerXP} slayer XP and **finished your slayer task!** You have recieved ${slayerPoints} slayer points!`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
-				await user.addSlayerPoints(slayerPoints);
 				const newSlayerLevel = user.skillLevel(SkillsEnum.Slayer);
 				if (newSlayerLevel > currentSlayerLevel) {
 					str += `\n\n${user.minionName}'s slayer level is now ${newSlayerLevel}!`;
 				}
 			} else {
 				const slayerXP = Math.floor(quantity * Monsters.get(monster.id)?.data.slayerXP!);
-				const newQuantity = user.slayerTaskQuantity - quantity;
-				await user.settings.update(UserSettings.Slayer.SlayerTaskQuantity, newQuantity);
+				const newQuantity = user.slayerInfo[2] - quantity;
+				await user.settings.update(UserSettings.Slayer.SlayerInfo[2], newQuantity);
 				str += `\nYou gained ${slayerXP} slayer XP, and still have ${newQuantity} left to kill.`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
 				const newSlayerLevel = user.skillLevel(SkillsEnum.Slayer);

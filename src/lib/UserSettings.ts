@@ -43,19 +43,10 @@ export namespace UserSettings {
 	}
 
 	export namespace Slayer {
-		export const HasSlayerTask = T<boolean>('slayer.hasSlayerTask');
-		export const SlayerTaskID = T<number>('slayer.slayerTaskID');
-		export const SlayerTaskQuantity = T<number>('slayer.slayerTaskQuantity');
-		export const SlayerPoints = T<number>('slayer.slayerPoints');
+		export const SlayerInfo = T<number[]>('slayer.slayerInfo');
 		export const BlockList = T<number[]>('slayer.blockList');
-		export const UnlockedAviansie = T<boolean>('slayer.unlockedAviansie');
-		export const UnlockedBasilisk = T<boolean>('slayer.unlockedBasilisk');
-		export const UnlockedBoss = T<boolean>('slayer.unlockedBoss');
-		export const UnlockedLizardman = T<boolean>('slayer.unlockedLizardman');
-		export const UnlockedMithrilDragon = T<boolean>('slayer.unlockedMithrilDragon');
-		export const UnlockedRedDragon = T<boolean>('slayer.unlockedRedDragon');
-		export const UnlockedTzHaar = T<boolean>('slayer.unlockedTzHaar');
-		export const CurrentSlayerMaster = T<number>('slayer.currentSlayerMaster');
+		export const ExtendList = T<number[]>('slayer.extendList');
+		export const UnlockedList = T<number[]>('slayer.unlockedList');
 	}
 
 	export namespace Skills {

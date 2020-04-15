@@ -118,19 +118,10 @@ declare module 'discord.js' {
 		minionStatus: string;
 		minionName: string;
 		hasMinion: boolean;
-		hasSlayerTask: boolean;
-		slayerTaskID: number;
-		slayerTaskQuantity: number;
-		slayerPoints: number;
+		slayerInfo: number[];
 		blockList: number[];
-		unlockedAviansie: boolean;
-		unlockedBasilisk: boolean;
-		unlockedBoss: boolean;
-		unlockedLizardman: boolean;
-		unlockedMithrilDragon: boolean;
-		unlockedRedDragon: boolean;
-		unlockedTzHaar: boolean;
-		currentSlayerMaster: number;
+		extendList: number[];
+		unlockedList: number[];
 		isIronman: boolean;
 		maxTripLength: number;
 	}

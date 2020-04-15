@@ -15,8 +15,7 @@ const slayerMasters = [
 		name: 'Turael',
 		tasks: turaelTasks,
 		requirements: {
-			combatLevel: 3,
-			slayerLevel: 0
+			combatLevel: 3
 		},
 		masterID: 1
 	}

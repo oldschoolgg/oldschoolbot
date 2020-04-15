@@ -522,6 +522,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		// Get all slayer tasks and check if it requires a slayer level or QP to kill
 		const allTasks = nieveTasks.concat(turaelTasks);
 		const thisMonster = allTasks.find(find => find.name === monster.name);
 		if (
@@ -589,11 +590,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
+		// Assume they aren't on a slayer task and check if they are
 		let slayerTask = false;
-		if (msg.author.hasSlayerTask) {
-			const task = Monsters.get(msg.author.slayerTaskID);
+		if (msg.author.slayerInfo[0] === 0) {
+			const task = Monsters.get(msg.author.slayerInfo[1]);
 			const taskName = task?.name;
 			const filteredMonster = allTasks.find(find => find.name === taskName);
+			// Check if this monster is an alternative to any task
 			if (
 				taskName === monster.name ||
 				filteredMonster?.alternatives?.includes(monster.name)
@@ -602,8 +605,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 					msg.author.skillLevel(SkillsEnum.Slayer) >=
 					Monsters.get(monster.id)?.data.slayerLevelRequired!
 				) {
-					if (quantity > msg.author.slayerTaskQuantity) {
-						throw `You only have ${msg.author.slayerTaskQuantity}x ${taskName} left on your slayer task. Try \`${msg.cmdPrefix}m kill ${msg.author.slayerTaskQuantity} ${name}\` instead.`;
+					// If they're trying to kill more than what is left on their slayer task stop them so they dont get the % boost "off task"
+					if (quantity > msg.author.slayerInfo[2]) {
+						throw `You only have ${msg.author.slayerInfo[2]}x ${taskName} left on your slayer task. Try \`${msg.cmdPrefix}m kill ${msg.author.slayerInfo[2]} ${name}\` instead.`;
 					}
 					slayerTask = true;
 					boosts.push(`10% Boost for being on a ${taskName} slayer task`);
