@@ -7,11 +7,9 @@ export interface UserAuthObject {
 }
 
 export default class ApiRequest extends IncomingMessage {
-
 	public constructor(socket: Socket) {
 		super(socket);
 	}
-
 }
 
 export default interface ApiRequest {
