@@ -629,6 +629,13 @@ export const cluesHard = {
 		'Rune helm (h3)',
 		'Rune helm (h4)',
 		'Rune helm (h5)',
+		'Rune platebody (h1)',
+		'Rune platebody (h2)',
+		'Rune platebody (h3)',
+		'Rune platebody (h4)',
+		'Rune platebody (h5)'
+	]),
+	'Rune heraldic armour 2': resolveItems([
 		'Rune shield (h1)',
 		'Rune shield (h2)',
 		'Rune shield (h3)',
@@ -718,9 +725,11 @@ export const cluesHard = {
 		'Magic shortbow',
 		'Amulet of glory (t4)',
 		'Explorer backpack',
+		'Thieving bag',
 		'Nunchaku',
+		'Dual sai',
 		'Rune cane',
-		'Zombie head'
+		19912 // Zombie head
 	]),
 	'3rd Age Melee': resolveItems([
 		'3rd age full helmet',
