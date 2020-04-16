@@ -1,14 +1,13 @@
 import { Client, KlasaClientOptions } from 'klasa';
-import fetch from 'node-fetch';
-import { Util } from 'oldschooljs';
 import { Client as TagsClient } from '@kcp/tags';
+import { Client as KDHClient } from 'klasa-dashboard-hooks';
 import pLimit from 'p-limit';
 
-import { privateConfig, clientOptions, clientProperties } from './config';
-import { Time, Events } from './lib/constants';
-import { ClientSettings } from './lib/ClientSettings';
+import { clientOptions, clientProperties } from './lib/config/config';
+import { botToken } from './config';
 
 Client.use(TagsClient);
+Client.use(KDHClient);
 
 import('./lib/schemas/ClientSchema');
 import('./lib/schemas/UserSchema');
@@ -27,49 +26,6 @@ class OldSchoolBot extends Client {
 			this[prop] = clientProperties[prop];
 		}
 	}
-
-	async fetchItemPrice(itemID: number | string) {
-		if (!this.production) {
-			return 73;
-		}
-
-		if (typeof itemID === 'string') itemID = parseInt(itemID);
-
-		if (itemID === 995) {
-			return 1;
-		}
-
-		const currentItems = this.settings!.get(ClientSettings.Prices);
-
-		const currentItem = currentItems[itemID];
-
-		if (currentItem && Date.now() - currentItem.fetchedAt < Time.Day * 7) {
-			return currentItem.price;
-		}
-
-		this.emit(Events.Log, `Fetching Price of item[${itemID}]`);
-		const itemData = await fetch(
-			`https://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemID}`
-		)
-			.then(res => res.json())
-			.then(item => item.item)
-			.catch(() => null);
-
-		let price = 0;
-
-		const currentPrice = itemData?.current?.price;
-		if (currentPrice) {
-			price = typeof currentPrice === 'string' ? Util.fromKMB(currentPrice) : currentPrice;
-		}
-
-		const newItems = { ...currentItems };
-
-		newItems[itemID] = { price, fetchedAt: Date.now() };
-
-		await this.settings!.update('prices', newItems);
-
-		return price;
-	}
 }
 
-new OldSchoolBot(clientOptions).login(privateConfig!.token);
+new OldSchoolBot(clientOptions).login(botToken);

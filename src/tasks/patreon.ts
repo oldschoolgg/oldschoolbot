@@ -2,7 +2,6 @@ import { Task, ArrayActions } from 'klasa';
 import fetch from 'node-fetch';
 import { TextChannel } from 'discord.js';
 
-import { privateConfig } from '../config';
 import { Patron } from '../lib/types';
 import {
 	PatronTierID,
@@ -17,10 +16,12 @@ import { UserSettings } from '../lib/UserSettings';
 import getSupportGuild from '../lib/util/getSupportGuild';
 import { noOp } from '../lib/util';
 import BankImageTask from './bankImage';
+import { patreonConfig } from '../config';
 
 const patreonApiURL = new URL(
-	`https://patreon.com/api/oauth2/v2/campaigns/${privateConfig?.patreon.campaignID}/members`
+	`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`
 );
+
 patreonApiURL.search = new URLSearchParams([
 	['include', ['user', 'currently_entitled_tiers'].join(',')],
 	[
@@ -36,13 +37,9 @@ patreonApiURL.search = new URLSearchParams([
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
 
-const requestOptions = {
-	headers: { Authorization: `Bearer ${privateConfig?.patreon.token}` }
-};
-
 export default class extends Task {
 	async init() {
-		if (!privateConfig?.patreon) {
+		if (!patreonConfig) {
 			this.disable();
 		}
 	}
@@ -173,9 +170,9 @@ export default class extends Task {
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {
 		const users: Patron[] = [];
-		const result: any = await fetch(url || patreonApiURL, requestOptions).then(res =>
-			res.json()
-		);
+		const result: any = await fetch(url || patreonApiURL, {
+			headers: { Authorization: `Bearer ${patreonConfig!.token}` }
+		}).then(res => res.json());
 
 		if (result.errors) {
 			console.error(result.errors);

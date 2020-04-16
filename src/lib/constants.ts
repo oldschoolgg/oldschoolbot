@@ -177,3 +177,11 @@ export const MAX_QP = 275;
 export const TradeableItems = Items.filter(
 	item => (item as Item).tradeable || specialTradeables.includes(item.id)
 );
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Mime {
+	export const enum Types {
+		ApplicationJson = 'application/json',
+		TextPlain = 'text/plain'
+	}
+}
