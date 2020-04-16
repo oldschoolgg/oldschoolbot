@@ -411,6 +411,7 @@ export const cluesEasy = {
 		'Team cape x',
 		'Team cape zero',
 		'Rain bow',
+		'Willow comp bow',
 		'Ham joint',
 		'Black cane',
 		'Black pickaxe',
@@ -565,7 +566,8 @@ export const cluesMedium = {
 		'Lovakengj banner',
 		'Piscarilius banner',
 		'Shayzien banner',
-		'Cabbage round shield'
+		'Cabbage round shield',
+		'Yew comp bow'
 	])
 };
 export const cluesHard = {
@@ -721,6 +723,7 @@ export const cluesHard = {
 	'Hard misc.  2': resolveItems([
 		'Pith helmet',
 		'Robin hood hat',
+		'Magic comp bow',
 		'Magic longbow',
 		'Magic shortbow',
 		'Amulet of glory (t4)',
