@@ -101,7 +101,17 @@ You currently have ${msg.author.slayerInfo[4]} slayer points.`
 		});
 
 		const newQuantity = msg.author.slayerInfo[4] - unlock.slayerPointsRequired;
-		await msg.author.settings.update(UserSettings.Slayer.SlayerInfo[4], newQuantity);
+		const newInfo = [
+			msg.author.slayerInfo[0],
+			msg.author.slayerInfo[1],
+			msg.author.slayerInfo[2],
+			msg.author.slayerInfo[3],
+			newQuantity,
+			msg.author.slayerInfo[5]
+		];
+		await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+			arrayAction: 'overwrite'
+		});
 		msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
 Your new total is ${msg.author.slayerInfo[4]}`);
 	}

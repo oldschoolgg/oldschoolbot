@@ -14,6 +14,7 @@ import MinionCommand from '../../commands/Minion/minion';
 import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/monsters/index';
 import { SkillsEnum } from '../../lib/skilling/types';
+import taskBoost from '../../lib/slayer/taskBoost';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, slayerTask }: MonsterActivityTaskOptions) {
@@ -89,18 +90,28 @@ export default class extends Task {
 			if (user.slayerInfo[3] === 2) {
 				slayerPoints = 12;
 			}
+			// Check if they're on a slayer task streak
+			const streakAmount = taskBoost.find(
+				amount => user.slayerInfo[5] + 1 === amount.streakAmount
+			);
+			if (typeof streakAmount?.pointsGiven !== 'undefined') {
+				slayerPoints = streakAmount?.pointsGiven!;
+			}
 			// If the quantity they're killing is <= the amount left on their task, finish the task. Else just give them xp and reduce the quantity left
-			if (user.slayerInfo[2] <= quantity) {
+			if (user.slayerInfo[2] === quantity) {
 				const slayerXP = Math.floor(
 					user.slayerInfo[2] * Monsters.get(monster.id)?.data.slayerXP!
 				);
 
-				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
-				const newInfo = [0, 0, 0, 0, user.slayerInfo[4] + slayerPoints];
+				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points, Streak
+				const streak = user.slayerInfo[5] + 1;
+				const slayPointUpdate = user.slayerInfo[4] + slayerPoints;
+				const newInfo = [0, 0, 0, 0, slayPointUpdate, streak];
 				await user.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
 					arrayAction: 'overwrite'
 				});
-				str += ` You gained ${slayerXP} slayer XP and **finished your slayer task!** You have recieved ${slayerPoints} slayer points!`;
+
+				str += ` You gained ${slayerXP} slayer XP and **finished your slayer task!** You have recieved ${slayerPoints} slayer points! Your current streak is ${user.slayerInfo[5]}.`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
 				const newSlayerLevel = user.skillLevel(SkillsEnum.Slayer);
 				if (newSlayerLevel > currentSlayerLevel) {
@@ -109,7 +120,18 @@ export default class extends Task {
 			} else {
 				const slayerXP = Math.floor(quantity * Monsters.get(monster.id)?.data.slayerXP!);
 				const newQuantity = user.slayerInfo[2] - quantity;
-				await user.settings.update(UserSettings.Slayer.SlayerInfo[2], newQuantity);
+				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points, Streak
+				const newInfo = [
+					user.slayerInfo[0],
+					user.slayerInfo[1],
+					newQuantity,
+					user.slayerInfo[3],
+					user.slayerInfo[4],
+					user.slayerInfo[5] ?? 0
+				];
+				await user.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+					arrayAction: 'overwrite'
+				});
 				str += `\nYou gained ${slayerXP} slayer XP, and still have ${newQuantity} left to kill.`;
 				await user.addXP(SkillsEnum.Slayer, slayerXP);
 				const newSlayerLevel = user.skillLevel(SkillsEnum.Slayer);

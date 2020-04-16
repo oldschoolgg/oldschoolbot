@@ -148,6 +148,105 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10_000 * 5
+	},
+	{
+		name: 'Enchanted gem',
+		aliases: ['enchanted', 'gem'],
+		outputItems: {
+			[itemID('Enchanted gem')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Leaf-bladed spear',
+		aliases: ['leafbladed spear', 'leaf spear'],
+		outputItems: {
+			[itemID('Leaf-bladed spear')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 250_000
+	},
+	{
+		name: 'Mirror shield',
+		aliases: ['mirror'],
+		outputItems: {
+			[itemID('Mirror shield')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Rock hammer',
+		aliases: ['rock'],
+		outputItems: {
+			[itemID('Rock hammer')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Face mask',
+		aliases: ['face'],
+		outputItems: {
+			[itemID('Face mask')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Earmuffs',
+		aliases: ['earmuff'],
+		outputItems: {
+			[itemID('Earmuffs')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Nose peg',
+		aliases: ['nose'],
+		outputItems: {
+			[itemID('Nose peg')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Spiny helmet',
+		aliases: ['spiny'],
+		outputItems: {
+			[itemID('Spiny helmet')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Slayer gloves',
+		aliases: ['slay gloves'],
+		outputItems: {
+			[itemID('Slayer gloves')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Witchwood icon',
+		aliases: ['witchwood'],
+		outputItems: {
+			[itemID('Witchwood icon')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Boots of stone',
+		aliases: ['stone boots'],
+		outputItems: {
+			[itemID('Boots of stone')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
 	}
 ];
 

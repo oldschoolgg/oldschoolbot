@@ -592,7 +592,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// Assume they aren't on a slayer task and check if they are
 		let slayerTask = false;
-		if (msg.author.slayerInfo[0] === 0) {
+		if (msg.author.slayerInfo[0] === 1) {
 			const task = Monsters.get(msg.author.slayerInfo[1]);
 			const taskName = task?.name;
 			const filteredMonster = allTasks.find(find => find.name === taskName);
@@ -630,7 +630,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			slayerTask,
 			type: Activity.MonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
+			finishDate: Date.now() + 60000
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);

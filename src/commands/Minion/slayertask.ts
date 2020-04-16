@@ -43,7 +43,12 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
-
+		const baseInfo = [0, 0, 0, 0, 0, 0];
+		if (msg.author.slayerInfo.length === 0) {
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, baseInfo, {
+				arrayAction: 'overwrite'
+			});
+		}
 		if (msg.author.slayerInfo[0] === 1 && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
@@ -74,13 +79,14 @@ export default class extends BotCommand {
 			}
 			const newSlayerPoints = msg.author.slayerInfo[4] - 30;
 			// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
-			const newInfo = [0, 0, 0, 0, newSlayerPoints];
-			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo);
+			const newInfo = [0, 0, 0, 0, newSlayerPoints, msg.author.slayerInfo[5]];
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+				arrayAction: 'overwrite'
+			});
 			return msg.send(`Successfully cancelled task`);
 		}
 
 		// If they already have a slayer task tell them what it is
-
 		if (msg.author.slayerInfo[0] === 1) {
 			const mon = Monsters.get(msg.author.slayerInfo[1]);
 			if (!mon) throw `WTF`;
@@ -143,21 +149,17 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 		const filteredBlockedTasks = filteredLockedTasks.filter(
 			task => !msg.author.blockList.includes(task.ID)
 		);
-
-		// Filter by quest point requirements
-		const currentQP = msg.author.settings.get(UserSettings.QP);
-		const filteredByQP = filteredBlockedTasks.filter(
-			task => task.requirements?.questPoints! <= currentQP
-		);
+		// Filter by quest point requirements ------ FIX THIS @@@@@@@@@
+		const filteredByQP = filteredBlockedTasks.filter(task => !task.requirements?.questPoints!);
 
 		// Filter by unlocks
-		const filteredBlockedByDefault = master.tasks.filter(task => task.unlocked === true);
+		const filteredBlockedByDefault = filteredByQP.filter(task => task.unlocked === true);
 
 		const filteredByUnlocked = filteredBlockedByDefault.filter(task =>
 			msg.author.unlockedList.includes(task.ID)
 		);
-		const filteredByDefaultAndUnlocked = filteredBlockedByDefault.concat(filteredByUnlocked);
-		const filteredTasks = filteredByQP.concat(filteredByDefaultAndUnlocked);
+
+		const filteredTasks = filteredBlockedByDefault.concat(filteredByUnlocked);
 
 		let totalweight = 0;
 		for (let i = 0; i < filteredTasks.length; i++) {
@@ -188,9 +190,12 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 						monster.ID,
 						quantity,
 						master.masterID,
-						msg.author.slayerInfo[4]
+						msg.author.slayerInfo[4],
+						msg.author.slayerInfo[5]
 					];
-					await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo);
+					await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+						arrayAction: 'overwrite'
+					});
 
 					return msg.send(
 						`Your new slayer task is a boss task of ${quantity}x ${monster.name}`
@@ -199,13 +204,15 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 				const minQuantity = slayerMonster.amount[0];
 				const maxQuantity = slayerMonster.amount[1];
 				const quantity = Math.floor(rand(minQuantity, maxQuantity));
+
 				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
 				const newInfo = [
 					1,
 					slayerMonster.ID,
 					quantity,
 					master.masterID,
-					msg.author.slayerInfo[4] ?? 0
+					msg.author.slayerInfo[4] ?? 0,
+					msg.author.slayerInfo[5]
 				];
 				await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
 					arrayAction: 'overwrite'
