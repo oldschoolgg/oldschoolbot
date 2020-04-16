@@ -34,7 +34,7 @@ export default class extends BotCommand {
 
 		// Block if their current task matches the block request
 		const task = allTasks.filter(task => stringMatches(taskname, task.name));
-
+		// If the task theyre trying to block is an actual task, continue
 		if (taskname.toLowerCase() === Monsters.get(msg.author.slayerInfo[1])?.name.toLowerCase()) {
 			if (userBlockList.length >= 5) {
 				throw `You already have a full block list`;
@@ -54,8 +54,8 @@ export default class extends BotCommand {
 				throw `Cancelling block list addition of ${taskname}.`;
 			}
 			const newSlayerPoints = msg.author.slayerInfo[4] - 100;
-			// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
-			const newInfo = [0, 0, 0, 0, newSlayerPoints];
+			// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points, Streak
+			const newInfo = [0, 0, 0, 0, newSlayerPoints, msg.author.slayerInfo[5]];
 			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
 				arrayAction: 'overwrite'
 			});
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 		}
 
 		// Block list removal
-		if (msg.flagArgs.unblockthistask) {
+		if (msg.flagArgs.unblock) {
 			if (!userBlockList.includes(task[0].ID)) {
 				throw `That task isn't on your block list.`;
 			}
@@ -100,6 +100,7 @@ export default class extends BotCommand {
 			} catch (err) {
 				throw `Cancelling block list removal of ${taskname}.`;
 			}
+
 			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].ID, {
 				arrayAction: 'remove'
 			});
@@ -136,7 +137,18 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].ID, {
 				arrayAction: 'add'
 			});
-			await msg.author.removeSlayerPoints(100);
+			const newSlayerPoints = msg.author.slayerInfo[4] - 100;
+			const newInfo = [
+				msg.author.slayerInfo[0],
+				msg.author.slayerInfo[1],
+				msg.author.slayerInfo[2],
+				msg.author.slayerInfo[3],
+				newSlayerPoints,
+				msg.author.slayerInfo[5]
+			];
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+				arrayAction: 'overwrite'
+			});
 			throw `The task **${taskname}** has been **added** to your block list. You have ${msg.author.slayerInfo[4]} Slayer Points left.`;
 		}
 
