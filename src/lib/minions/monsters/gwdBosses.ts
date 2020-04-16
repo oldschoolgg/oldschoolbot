@@ -1,9 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
 import { Bank, ArrayItemsResolved } from '../../types';
-import { Time } from 'oldschooljs/dist/constants';
 import resolveItems from '../../util/resolveItems';
 import itemID from '../../util/itemID';
+import { Time } from '../../constants';
 
 export interface KillableMonster {
 	id: number;
