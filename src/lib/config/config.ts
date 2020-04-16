@@ -38,7 +38,7 @@ const clientOptions: KlasaClientOptions = {
 	/* Klasa Options */
 	createPiecesFolders: false,
 	prefix: '+',
-	providers: providerConfig,
+	providers: providerConfig ?? undefined,
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
 	readyMessage: (client: KlasaClient) =>
