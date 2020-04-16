@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
-import { Monsters } from 'oldschooljs';
 import nieveTasks from '../../lib/slayer/nieveTasks';
 import { UserSettings } from '../../lib/UserSettings';
 import turaelTasks from '../../lib/slayer/turaelTasks';
