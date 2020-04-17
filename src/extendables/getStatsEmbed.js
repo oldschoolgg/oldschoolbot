@@ -21,8 +21,6 @@ class getStatsEmbed extends Extendable {
 		key = 'level',
 		showExtra = true
 	) {
-		const { emoji } = this.client;
-
 		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
 
 		const embed = new MessageEmbed()
