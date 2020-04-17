@@ -1,10 +1,10 @@
 import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import { Client } from 'discord.js';
 import fetch from 'node-fetch';
+import { Util } from 'oldschooljs';
 
 import { ClientSettings } from '../lib/ClientSettings';
 import { Time, Events } from '../lib/constants';
-import { Util } from 'oldschooljs';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {

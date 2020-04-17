@@ -1,12 +1,19 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import permissionLevels from './permissionLevels';
-import { providerConfig, twitchClientID, customClientOptions, KDHPort } from '../../config';
+import {
+	providerConfig,
+	twitchClientID,
+	customClientOptions,
+	KDHPort,
+	production
+} from '../../config';
 import ApiResponse from '../api/structures/ApiResponse';
 import ApiRequest from '../api/structures/ApiRequest';
 
 const clientProperties = {
 	twitchClientID,
+	production,
 	timePeriods: {
 		day: 86400,
 		week: 604800,

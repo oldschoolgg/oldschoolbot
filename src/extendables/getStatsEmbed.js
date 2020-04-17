@@ -3,6 +3,8 @@ const { MessageEmbed } = require('discord.js');
 
 const { toTitleCase } = require('../util');
 
+const emoji = require('../../data/skill-emoji');
+
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
 		super(...args, {
