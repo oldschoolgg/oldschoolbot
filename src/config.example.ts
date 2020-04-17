@@ -15,7 +15,7 @@ export const production = require('os').platform() === 'linux';
 
 export const clientSecret = '';
 export const clientID = '';
-export const KDHPort = 1234;
+export const KDHPort = null;
 
 export const twitchClientID: string | null = null;
 export const redditAppConfig: RedditAppConfig = null;

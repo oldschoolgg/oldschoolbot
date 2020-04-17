@@ -48,7 +48,7 @@ const clientOptions: KlasaClientOptions = {
 	},
 	noPrefixDM: true,
 	dashboardHooks: {
-		port: KDHPort,
+		port: KDHPort ?? undefined,
 		apiPrefix: '',
 		serverOptions: {
 			IncomingMessage: ApiRequest,

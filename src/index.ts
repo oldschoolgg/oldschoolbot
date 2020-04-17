@@ -4,10 +4,13 @@ import { Client as KDHClient } from 'klasa-dashboard-hooks';
 import pLimit from 'p-limit';
 
 import { clientOptions, clientProperties } from './lib/config/config';
-import { botToken } from './config';
+import { botToken, KDHPort } from './config';
 
 Client.use(TagsClient);
-Client.use(KDHClient);
+
+if (KDHPort) {
+	Client.use(KDHClient);
+}
 
 import('./lib/schemas/ClientSchema');
 import('./lib/schemas/UserSchema');
