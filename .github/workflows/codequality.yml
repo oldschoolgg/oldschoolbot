@@ -24,6 +24,11 @@ jobs:
                   key: ${{ runner.os }}-12-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
+            - name: Copy Configuration
+              run: |
+                pushd src &&
+                cp config.example.ts config.ts &&
+                popd
             - name: Run ESLint
               uses: icrawl/action-eslint@v1
               env:
@@ -48,6 +53,11 @@ jobs:
                   key: ${{ runner.os }}-12-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
+            - name: Copy Configuration
+              run: |
+                pushd src &&
+                cp config.example.ts config.ts &&
+                popd
             - name: Run TSC
               uses: icrawl/action-tsc@v1
               env:

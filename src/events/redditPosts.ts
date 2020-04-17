@@ -7,7 +7,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { GuildSettings } from '../lib/GuildSettings';
 import JagexMods from '../../data/jagexMods';
 import { JMod } from '../lib/types';
-import { privateConfig } from '../config';
+import { redditAppConfig } from '../config';
 
 const jmodAccounts = JagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
@@ -30,7 +30,7 @@ export default class extends Event {
 	async run() {}
 
 	async init() {
-		if (!privateConfig!.redditApp) {
+		if (!redditAppConfig) {
 			this.disable();
 			this.client.emit(
 				'log',
@@ -39,7 +39,7 @@ export default class extends Event {
 			return;
 		}
 
-		const redditClient = new Snoowrap(privateConfig!.redditApp);
+		const redditClient = new Snoowrap(redditAppConfig);
 
 		this.client.commentStream = new CommentStream(redditClient, {
 			subreddit: '2007scape',

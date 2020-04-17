@@ -120,3 +120,9 @@ declare module 'discord.js' {
 		maxTripLength: number;
 	}
 }
+
+declare module 'klasa-dashboard-hooks' {
+	interface AuthData {
+		user_id: string;
+	}
+}
