@@ -47,7 +47,7 @@ export default class extends BotCommand {
 
 		const opened = `You opened one of your ${clueTier.name} Clue Caskets`;
 
-		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] + 1;
+		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0 + 1;
 
 		// If this tier has a milestone reward, and their new score meets the req, and
 		// they don't own it already, add it to the loot.
