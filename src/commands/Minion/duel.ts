@@ -4,8 +4,8 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { sleep, noOp } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/UserSettings';
-import { ClientSettings } from '../../lib/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Emoji } from '../../lib/constants';
 
 const options = {

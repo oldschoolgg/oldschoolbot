@@ -24,8 +24,8 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Time, Emoji, SupportServer, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
 import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
-import { UserSettings } from '../../lib/UserSettings';
-import { ClientSettings } from '../../lib/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
 import itemID from '../../lib/util/itemID';
 

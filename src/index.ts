@@ -12,9 +12,9 @@ if (KDHPort) {
 	Client.use(KDHClient);
 }
 
-import('./lib/schemas/ClientSchema');
-import('./lib/schemas/UserSchema');
-import('./lib/schemas/GuildSchema');
+import('./lib/settings/schemas/ClientSchema');
+import('./lib/settings/schemas/UserSchema');
+import('./lib/settings/schemas/GuildSchema');
 
 class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();

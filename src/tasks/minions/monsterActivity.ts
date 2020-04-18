@@ -6,7 +6,7 @@ import { noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';

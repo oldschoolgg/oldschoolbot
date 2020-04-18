@@ -13,7 +13,7 @@ import { Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { SkillsEnum } from '../../lib/skilling/types';
 

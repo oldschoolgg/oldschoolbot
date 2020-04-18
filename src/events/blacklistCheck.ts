@@ -1,6 +1,6 @@
 import { Event, EventStore, KlasaGuild } from 'klasa';
 
-import { ClientSettings } from '../lib/ClientSettings';
+import { ClientSettings } from '../lib/settings/types/ClientSettings';
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
