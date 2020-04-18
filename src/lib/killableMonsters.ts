@@ -136,11 +136,17 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems(['Bandos chestplate', 'Bandos tassets', 'Zamorakian spear']),
+		itemsRequired: resolveItems([
+			["Torag's platebody", "Dharok's platebody"],
+			["Torag's platelegs", "Dharok's platelegs"],
+			'Zamorakian spear'
+		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Spectral spirit shield')]: 10
+			[itemID('Spectral spirit shield')]: 10,
+			[itemID('Bandos chestplate')]: 5,
+			[itemID('Bandos tassets')]: 5
 		}
 	},
 	{
