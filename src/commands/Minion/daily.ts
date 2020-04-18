@@ -168,8 +168,8 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		const bunnyEarsID = itemID('Bunny ears');
-		const bank = user.settings.get(UserSettings.Bank);
-		if (!bank[bunnyEarsID] && roll(3)) {
+		const numOwned = msg.author.numOfItemsOwned(bunnyEarsID);
+		if (numOwned === 0 && roll(3)) {
 			loot[bunnyEarsID] = 1;
 			dmStr += `${Emoji.EasterEgg} **You've received a pair of Bunny Ears for Easter!**`;
 		}
