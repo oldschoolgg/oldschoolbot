@@ -41,7 +41,10 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Barrows gloves')]: 5
+		}
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -62,7 +65,13 @@ const killableMonsters: KillableMonster[] = [
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth prime']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Armadyl chestplate')]: 2,
+			[itemID('Armadyl chainskirt')]: 2,
+			[itemID('Bandos chestplate')]: 2,
+			[itemID('Bandos tassets')]: 2
+		}
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -83,7 +92,11 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos tassets', "Torag's platelegs"]
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth rex']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Occult necklace')]: 5,
+			[itemID("Iban's staff")]: 5
+		}
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -104,7 +117,14 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos tassets', "Torag's platelegs"]
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth supreme']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Armadyl chestplate')]: 2,
+			[itemID('Armadyl chainskirt')]: 2,
+			[itemID('Bandos chestplate')]: 2,
+			[itemID('Bandos tassets')]: 2,
+			[itemID('Saradomin godsword')]: 2
+		}
 	},
 	{
 		id: Monsters.Cerberus.id,
@@ -118,7 +138,10 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		itemsRequired: resolveItems(['Bandos chestplate', 'Bandos tassets', 'Zamorakian spear']),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Spectral spirit shield')]: 10
+		}
 	},
 	{
 		id: Monsters.GiantMole.id,
@@ -137,7 +160,11 @@ const killableMonsters: KillableMonster[] = [
 			"Dharok's greataxe"
 		]),
 		notifyDrops: resolveItems(['Baby mole', 'Curved bone']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Barrows gloves')]: 5,
+			[itemID('Berserker ring')]: 5
+		}
 	},
 	{
 		id: Monsters.Vorkath.id,
@@ -151,7 +178,10 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 8,
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
-		qpRequired: 205
+		qpRequired: 205,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -175,7 +205,12 @@ const killableMonsters: KillableMonster[] = [
 			'Jar of swamp',
 			'Pet snakeling'
 		]),
-		qpRequired: 75
+		qpRequired: 75,
+		itemInBankBoosts: {
+			[itemID('Barrows gloves')]: 5,
+			[itemID('Ranger boots')]: 5,
+			[itemID("Iban's staff")]: 2
+		}
 	},
 	{
 		id: Monsters.GeneralGraardor.id,
@@ -189,7 +224,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems(['Pet general graardor', 'Curved bone']),
-		qpRequired: 0,
+		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
 		}
@@ -209,7 +244,11 @@ const killableMonsters: KillableMonster[] = [
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(['Pet zilyana']),
-		qpRequired: 0
+		qpRequired: 75,
+		itemInBankBoosts: {
+			[itemID('Ranger boots')]: 5,
+			[itemID('Armadyl crossbow')]: 5
+		}
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -226,7 +265,10 @@ const killableMonsters: KillableMonster[] = [
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(["Pet kree'arra", 'Curved bone']),
-		qpRequired: 0
+		qpRequired: 75,
+		itemInBankBoosts: {
+			[itemID('Ranger boots')]: 5
+		}
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -243,7 +285,7 @@ const killableMonsters: KillableMonster[] = [
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
-		qpRequired: 0,
+		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
 		}
@@ -321,7 +363,11 @@ const killableMonsters: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		notifyDrops: resolveItems(['Callisto cub', 'Curved bone', 'Tyrannical ring']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Proselyte hauberk')]: 2,
+			[itemID('Proselyte cuisse')]: 2
+		}
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -345,7 +391,11 @@ const killableMonsters: KillableMonster[] = [
 			'Curved bone',
 			'Ring of the gods'
 		]),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Bandos godsword')]: 3,
+			[itemID('Dragon warhammer')]: 3
+		}
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -364,7 +414,10 @@ const killableMonsters: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		notifyDrops: resolveItems(['Treasonous ring', 'Venenatis spiderling', 'Curved bone']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Barrows gloves')]: 3
+		}
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -376,9 +429,13 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems(["Black d'hide body", "Black d'hide chaps"]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Archers ring')]: 3,
+			[itemID('Barrows gloves')]: 3
+		}
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -392,7 +449,11 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID("Karil's leathertop")]: 3,
+			[itemID("Karil's leatherskirt")]: 3
+		}
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -406,7 +467,10 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Occult necklace')]: 10
+		}
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -421,8 +485,8 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems([
 			'Anti-dragon shield',
 			['Armadyl crossbow', 'Rune crossbow'],
-			"Black d'hide body",
-			"Black d'hide chaps"
+			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)"],
+			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)"]
 		]),
 		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
@@ -442,7 +506,10 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 8,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Occult necklace')]: 10
+		}
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -477,7 +544,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems([]),
+		itemsRequired: resolveItems(['Bandos godsword', "Verac's plateskirt", "Black d'hide body"]),
 		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -494,9 +561,12 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: resolveItems([["Karil's crossbow", 'Rune crossbow']]),
-		notifyDrops: resolveItems(['Dragon warhammer', 'Curved bone', 'Armadyl crossbow']),
-		qpRequired: 30
+		itemsRequired: resolveItems([["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']]),
+		notifyDrops: resolveItems(['Dragon warhammer', 'Curved bone']),
+		qpRequired: 30,
+		itemInBankBoosts: {
+			[itemID('Ring of the gods')]: 3
+		}
 	},
 	{
 		id: Monsters.Lizardman.id,
@@ -608,7 +678,10 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems([]),
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Zamorakian spear')]: 10
+		}
 	},
 	{
 		id: Monsters.Ankou.id,
