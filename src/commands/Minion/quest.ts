@@ -4,7 +4,7 @@ import { formatDuration, rand } from '../../lib/util';
 import { Time, Activity, Tasks, MAX_QP } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

@@ -5,7 +5,7 @@ import { Time, MAX_QP } from '../../lib/constants';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends Task {
 	async run({ userID, channelID }: QuestingActivityTaskOptions) {

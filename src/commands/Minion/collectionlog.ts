@@ -4,7 +4,7 @@ import { MessageAttachment } from 'discord.js';
 import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { stringMatches } from '../../lib/util';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 const slicedCollectionLogTypes = collectionLogTypes.slice(1);
 

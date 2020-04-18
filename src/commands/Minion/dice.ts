@@ -4,8 +4,8 @@ import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Image, Color, Emoji, Channel } from '../../lib/constants';
-import { UserSettings } from '../../lib/UserSettings';
-import { ClientSettings } from '../../lib/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { rand } from '../../lib/util';
 
 export default class extends BotCommand {

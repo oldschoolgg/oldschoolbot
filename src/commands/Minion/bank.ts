@@ -7,7 +7,7 @@ import { Items } from 'oldschooljs';
 import { generateHexColorForCashStack, formatItemStackQuantity, chunkObject } from '../../lib/util';
 import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import addArrayOfBanks from '../../lib/util/addArrayOfBanks';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';

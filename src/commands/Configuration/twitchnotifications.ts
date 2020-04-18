@@ -1,6 +1,6 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
-import { GuildSettings } from '../../lib/GuildSettings';
+import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import OSRSStreamers from '../../../data/osrs_streamers';
 
 export default class extends Command {

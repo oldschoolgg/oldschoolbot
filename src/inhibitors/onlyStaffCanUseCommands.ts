@@ -1,6 +1,6 @@
 import { Inhibitor, KlasaMessage } from 'klasa';
 
-import { GuildSettings } from '../lib/GuildSettings';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
 
 export default class extends Inhibitor {
 	async run(msg: KlasaMessage) {

@@ -6,7 +6,7 @@ import { stringMatches, removeBankFromBank } from '../../lib/util';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Time } from '../../lib/constants';
 
 export default class extends BotCommand {

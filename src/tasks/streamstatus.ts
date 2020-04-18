@@ -5,7 +5,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 
 import OSRSStreamers from '../../data/osrs_streamers';
 import { resolveTwitchUsersFromNames, twitchAPIRequestOptions } from '../util';
-import { GuildSettings } from '../lib/GuildSettings';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
 
 export default class extends Task {
 	public idList: number[] = [];

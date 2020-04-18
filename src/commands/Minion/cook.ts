@@ -11,7 +11,7 @@ import {
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Cooking from '../../lib/skilling/skills/cooking';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemID from '../../lib/util/itemID';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { SkillsEnum } from '../../lib/skilling/types';
