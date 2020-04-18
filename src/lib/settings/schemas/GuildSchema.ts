@@ -11,4 +11,9 @@ Client.defaultGuildSchema
 	.add('tweetchannel', 'textchannel', { default: null })
 	.add('twitchnotifs', 'textchannel', { default: null })
 	.add('levelUpMessages', 'textchannel', { default: null })
-	.add('staffOnlyChannels', 'textchannel', { array: true, default: [] });
+	.add('staffOnlyChannels', 'textchannel', { array: true, default: [] })
+	.add('randomEvents', folder =>
+		folder
+			.add('enabled', 'boolean', { default: false })
+			.add('redirectChannel', 'textchannel', { default: null })
+	);

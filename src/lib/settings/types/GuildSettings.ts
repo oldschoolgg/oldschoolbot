@@ -19,4 +19,8 @@ export namespace GuildSettings {
 		export const Channel = T<string>('twitchnotifs');
 		export const Streamers = T<readonly string[]>('streamers');
 	}
+	export namespace RandomEvents {
+		export const Enabled = T<boolean>('randomEvents.enabled');
+		export const RedirectChannel = T<string>('randomEvents.redirectChannel');
+	}
 }

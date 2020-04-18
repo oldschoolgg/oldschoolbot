@@ -52,8 +52,10 @@ declare module 'klasa' {
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
 	}
+
 	interface KlasaMessage {
 		cmdPrefix: string;
+		askBoolean(): Promise<boolean>;
 	}
 
 	interface SettingsFolder {
@@ -62,6 +64,11 @@ declare module 'klasa' {
 }
 
 declare module 'discord.js' {
+	interface Message {
+		askBoolean(personToAsk: KlasaUser): Promise<boolean>;
+		removeAllReactions(): void;
+	}
+
 	interface User {
 		addItemsToBank(items: Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: Bank): Promise<SettingsUpdateResult>;

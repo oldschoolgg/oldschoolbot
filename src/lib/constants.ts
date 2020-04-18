@@ -67,7 +67,12 @@ export const enum Emoji {
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
-	EasterEgg = '<:easterEgg:695473553314938920>'
+	EasterEgg = '<:easterEgg:695473553314938920>',
+	Yes = '🇾',
+	One = '1️⃣',
+	Two = '2️⃣',
+	Three = '3️⃣',
+	Four = '4️⃣'
 }
 
 export const enum Image {
