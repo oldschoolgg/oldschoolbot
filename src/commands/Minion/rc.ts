@@ -4,7 +4,10 @@ import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, formatDuration, rand } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Runecraft, {
+	RunecraftActivityTaskOptions,
+	gracefulItems
+} from '../../lib/skilling/skills/runecraft';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -66,14 +69,7 @@ export default class extends BotCommand {
 		const boosts = [];
 		if (
 			hasArrayOfItemsEquipped(
-				[
-					'Graceful hood',
-					'Graceful top',
-					'Graceful legs',
-					'Graceful gloves',
-					'Graceful boots',
-					'Graceful cape'
-				].map(itemID),
+				gracefulItems.map(itemID),
 				msg.author.settings.get(UserSettings.Gear.Skilling)
 			)
 		) {

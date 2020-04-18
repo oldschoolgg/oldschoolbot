@@ -13,8 +13,6 @@ import { Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import bankHasItem from '../../lib/util/bankHasItem';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 const pickaxes = [
@@ -98,11 +96,10 @@ export default class extends BotCommand {
 		);
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
-		const bank = msg.author.settings.get(UserSettings.Bank);
 		const boosts = [];
 		if (msg.author.skillLevel(SkillsEnum.Mining) >= 61) {
 			for (const pickaxe of pickaxes) {
-				if (bankHasItem(bank, pickaxe.id)) {
+				if (msg.author.hasItemEquippedOrInBank(pickaxe.id)) {
 					timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
 					boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
 					break;
@@ -110,7 +107,7 @@ export default class extends BotCommand {
 			}
 
 			for (const glove of gloves) {
-				if (bankHasItem(bank, glove.id)) {
+				if (msg.author.hasItemEquippedAnywhere(glove.id)) {
 					timeToMine = Math.floor(timeToMine * ((100 - glove.reductionPercent) / 100));
 					boosts.push(`${glove.reductionPercent}% for ${itemNameFromID(glove.id)}`);
 					break;
