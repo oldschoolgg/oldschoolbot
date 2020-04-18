@@ -7,7 +7,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { SkillsEnum } from '../../lib/skilling/types';
 import bankHasItem from '../../lib/util/bankHasItem';

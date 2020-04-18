@@ -12,7 +12,7 @@ import {
 	Channel,
 	PerkTier
 } from '../lib/constants';
-import { UserSettings } from '../lib/UserSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import getSupportGuild from '../lib/util/getSupportGuild';
 import { noOp } from '../lib/util';
 import BankImageTask from './bankImage';

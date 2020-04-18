@@ -3,8 +3,8 @@ import { Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/UserSettings';
-import { ClientSettings } from '../../lib/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import cleanItemName from '../../lib/util/cleanItemName';
 

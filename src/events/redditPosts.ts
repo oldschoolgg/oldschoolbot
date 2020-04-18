@@ -4,7 +4,7 @@ import * as Snoowrap from 'snoowrap';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { MessageEmbed, TextChannel } from 'discord.js';
 
-import { GuildSettings } from '../lib/GuildSettings';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import JagexMods from '../../data/jagexMods';
 import { JMod } from '../lib/types';
 import { redditAppConfig } from '../config';

@@ -1,7 +1,7 @@
 import { Command, Timestamp, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, GuildMember } from 'discord.js';
 
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends Command {
 	public timestamp = new Timestamp('d MMMM YYYY');

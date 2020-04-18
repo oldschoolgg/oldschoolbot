@@ -2,7 +2,7 @@ import { KlasaUser } from 'klasa';
 
 import { Roles, PerkTier, BitField } from '../constants';
 import getSupportGuild from './getSupportGuild';
-import { UserSettings } from '../UserSettings';
+import { UserSettings } from '../settings/types/UserSettings';
 
 export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 	if (user.client.owners.has(user)) {

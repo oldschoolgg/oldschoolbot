@@ -1,5 +1,5 @@
 import { Inhibitor, KlasaMessage, Command } from 'klasa';
-import { UserSettings } from '../lib/UserSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 
 export default class extends Inhibitor {
 	public async run(msg: KlasaMessage, command: Command) {

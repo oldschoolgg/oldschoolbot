@@ -3,7 +3,7 @@ import { Client } from 'discord.js';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
-import { ClientSettings } from '../lib/ClientSettings';
+import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { Time, Events } from '../lib/constants';
 
 export default class extends Extendable {
