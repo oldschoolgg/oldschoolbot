@@ -365,8 +365,8 @@ const killableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Callisto cub', 'Curved bone', 'Tyrannical ring']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Proselyte hauberk')]: 2,
-			[itemID('Proselyte cuisse')]: 2
+			[itemID('Barrows gloves')]: 2,
+			[itemID('Berserker ring')]: 2
 		}
 	},
 	{
