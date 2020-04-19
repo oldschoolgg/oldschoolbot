@@ -43,7 +43,8 @@ const killableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 5
+			[itemID('Barrows gloves')]: 5,
+			[itemID("Iban's staff")]: 2
 		}
 	},
 	{
