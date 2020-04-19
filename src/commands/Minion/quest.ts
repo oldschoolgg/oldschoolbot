@@ -5,6 +5,8 @@ import { Time, Activity, Tasks, MAX_QP } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import itemID from '../../lib/util/itemID';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -34,9 +36,21 @@ export default class extends BotCommand {
 
 		let duration = Time.Minute * 30;
 
-		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
+		if (
+			hasArrayOfItemsEquipped(
+				[
+					'Graceful hood',
+					'Graceful top',
+					'Graceful legs',
+					'Graceful gloves',
+					'Graceful boots',
+					'Graceful cape'
+				].map(itemID),
+				msg.author.settings.get(UserSettings.Gear.Skilling)
+			)
+		) {
 			duration *= 0.9;
+			boosts.push(`10% for Graceful`);
 		}
 
 		const data: QuestingActivityTaskOptions = {
