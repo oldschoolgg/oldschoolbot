@@ -3,7 +3,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Image, Color, Emoji, Channel } from '../../lib/constants';
+import { Image, Color, Emoji, Channel, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { rand } from '../../lib/util';
@@ -69,10 +69,9 @@ export default class extends BotCommand {
 				} ${Util.toKMB(amountToAdd - gp)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
 			);
 
-			const channel = this.client.channels.get(Channel.Notifications);
-
-			if (amount >= 1_000_000_000 && channel) {
-				(channel as TextChannel).send(
+			if (amount >= 1_000_000_000) {
+				this.client.emit(
+					Events.ServerNotification,
 					`${Emoji.Dice} **${msg.author.username}** just diced **${Util.toKMB(
 						amount
 					)}** and ${won ? 'won' : 'lost'}.`
