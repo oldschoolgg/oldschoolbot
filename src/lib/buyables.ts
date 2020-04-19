@@ -157,6 +157,15 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 30,
 		gpCost: 250_000
+	},
+	{
+		name: 'Barrelchest anchor',
+		aliases: ['anchor'],
+		outputItems: {
+			[itemID('Barrelchest anchor')]: 1
+		},
+		qpRequired: 30,
+		gpCost: 2_000_000
 	}
 ];
 

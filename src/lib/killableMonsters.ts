@@ -43,8 +43,8 @@ const killableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 5,
-			[itemID("Iban's staff")]: 2
+			[itemID('Barrows gloves')]: 2,
+			[itemID("Iban's staff")]: 5
 		}
 	},
 	{
@@ -274,7 +274,7 @@ const killableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(["Pet kree'arra", 'Curved bone']),
 		qpRequired: 75,
 		itemInBankBoosts: {
-			[itemID('Ranger boots')]: 5
+			[itemID('Armadyl crossbow')]: 5
 		}
 	},
 	{
@@ -400,7 +400,6 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Bandos godsword')]: 3,
 			[itemID('Dragon warhammer')]: 3
 		}
 	},
@@ -436,7 +435,10 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: resolveItems(["Black d'hide body", "Black d'hide chaps"]),
+		itemsRequired: resolveItems([
+			["Black d'hide body", "Karil's leathertop"],
+			["Black d'hide chaps", "Karil's leatherskirt"]
+		]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -492,8 +494,18 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems([
 			'Anti-dragon shield',
 			['Armadyl crossbow', 'Rune crossbow'],
-			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)"],
-			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)"]
+			[
+				"Black d'hide body",
+				"Black d'hide body (g)",
+				"Black d'hide body (t)",
+				"Karil's leathertop"
+			],
+			[
+				"Black d'hide chaps",
+				"Black d'hide chaps (g)",
+				"Black d'hide chaps (t)",
+				"Karil's leatherskirt"
+			]
 		]),
 		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
@@ -551,7 +563,11 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems(['Bandos godsword', "Verac's plateskirt", "Black d'hide body"]),
+		itemsRequired: resolveItems([
+			'Barrelchest anchor',
+			"Verac's plateskirt",
+			["Black d'hide body", "Karil's leathertop"]
+		]),
 		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
 		itemInBankBoosts: {
