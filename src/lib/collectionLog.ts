@@ -1210,6 +1210,20 @@ export const quest = {
 		'Hardleather gloves'
 	])
 };
+
+export const skillingLog = {
+	Mining: resolveItems([
+		'Prospector helmet',
+		'Prospector jacket',
+		'Prospector legs',
+		'Prospector boots',
+		'Mining gloves',
+		'Superior mining gloves',
+		'Expert mining gloves'
+	]),
+	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass'])
+};
+
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
@@ -1299,5 +1313,10 @@ export const collectionLogTypes = [
 		name: 'Quest',
 		aliases: ['quests', 'q', 'quest'],
 		items: quest
+	},
+	{
+		name: 'Skilling',
+		aliases: ['s', 'skilling', 'skills'],
+		items: skillingLog
 	}
 ];
