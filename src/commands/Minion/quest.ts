@@ -66,7 +66,7 @@ export default class extends BotCommand {
 		msg.author.incrementMinionDailyDuration(duration);
 		let response = `${
 			msg.author.minionName
-			} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;
+		} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
