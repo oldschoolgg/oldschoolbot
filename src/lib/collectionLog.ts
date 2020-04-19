@@ -1,5 +1,6 @@
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
+import { gracefulItems } from './skilling/skills/runecraft';
 
 export const bosses = {
 	Zulrah: resolveItems([
@@ -1219,9 +1220,13 @@ export const skillingLog = {
 		'Prospector boots',
 		'Mining gloves',
 		'Superior mining gloves',
-		'Expert mining gloves'
+		'Expert mining gloves',
+		'Golden nugget',
+		'Unidentified minerals',
+		'Rock golem'
 	]),
-	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass'])
+	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
+	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel'])
 };
 
 export const collectionLogTypes = [
