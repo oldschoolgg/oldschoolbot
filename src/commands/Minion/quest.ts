@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
-import { formatDuration, rand, isWeekend } from '../../lib/util';
+import { formatDuration, rand } from '../../lib/util';
 import { Time, Activity, Tasks, MAX_QP } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
@@ -66,7 +66,7 @@ export default class extends BotCommand {
 		msg.author.incrementMinionDailyDuration(duration);
 		let response = `${
 			msg.author.minionName
-		} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;
+			} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
