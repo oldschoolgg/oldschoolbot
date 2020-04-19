@@ -1,12 +1,12 @@
 import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 import { User } from 'discord.js';
-import { toKMB } from 'oldschooljs/dist/util/util';
+import { Util } from 'oldschooljs';
 
 import { sleep, noOp } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { Emoji } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 
 const options = {
 	max: 1,
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 		}
 
 		const duelMsg = await msg.channel.send(
-			`${user.username}, say \`fight\` if you accept the duel for ${toKMB(amount)} GP.`
+			`${user.username}, say \`fight\` if you accept the duel for ${Util.toKMB(amount)} GP.`
 		);
 
 		try {
@@ -120,13 +120,22 @@ export default class extends BotCommand {
 
 		await winner.addGP(winningAmount - tax);
 
+		if (amount >= 1_000_000_000) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.MoneyBag} **${winner.username}** just won a **${Util.toKMB(
+					winningAmount
+				)}** GP duel against ${loser.username}.`
+			);
+		}
+
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
 		return msg.channel.send(
-			`Congratulations ${winner.username}! You won ${toKMB(winningAmount)}, and paid ${toKMB(
-				tax
-			)} tax.`,
+			`Congratulations ${winner.username}! You won ${Util.toKMB(
+				winningAmount
+			)}, and paid ${Util.toKMB(tax)} tax.`,
 			gpImage
 		);
 	}
