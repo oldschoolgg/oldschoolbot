@@ -9,6 +9,7 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { SkillsEnum } from '../../lib/skilling/types';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID }: CookingActivityTaskOptions) {
@@ -21,7 +22,10 @@ export default class extends Task {
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		if (cookable.stopBurnAtCG > 1 && user.hasItemEquippedOrInBank('Cooking gauntlets')) {
+		if (
+			cookable.stopBurnAtCG > 1 &&
+			user.hasItemEquippedAnywhere(itemID('Cooking gauntlets'))
+		) {
 			stopBurningLvl = cookable.stopBurnAtCG;
 		} else {
 			stopBurningLvl = cookable.stopBurnAt;

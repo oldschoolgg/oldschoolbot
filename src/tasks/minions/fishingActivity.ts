@@ -8,10 +8,9 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import Fishing from '../../lib/skilling/skills/fishing';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
-import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import { SkillsEnum } from '../../lib/skilling/types';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 
 export default class extends Task {
 	async run({ fishID, quantity, userID, channelID }: FishingActivityTaskOptions) {
@@ -59,14 +58,19 @@ export default class extends Task {
 		let bonusXP = 0;
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
-		if (bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), Fishing.anglerItems)) {
+		if (
+			hasArrayOfItemsEquipped(
+				Object.keys(Fishing.anglerItems).map(itemID),
+				user.settings.get(UserSettings.Gear.Skilling)
+			)
+		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
 			xpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (bankHasItem(user.settings.get(UserSettings.Bank), parseInt(itemID))) {
+				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
