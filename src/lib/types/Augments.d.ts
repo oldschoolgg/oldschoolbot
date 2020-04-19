@@ -125,6 +125,8 @@ declare module 'discord.js' {
 		hasMinion: boolean;
 		isIronman: boolean;
 		maxTripLength: number;
+
+		lastRandomEventDate: number | undefined;
 	}
 }
 

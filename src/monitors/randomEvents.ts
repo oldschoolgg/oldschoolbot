@@ -4,33 +4,64 @@ import { MessageEmbed } from 'discord.js';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { Emoji, Time } from '../lib/constants';
-import { shuffle } from '../lib/util';
+import { shuffle, cleanString, roll } from '../lib/util';
 import resolveItems from '../lib/util/resolveItems';
 
 const numberEmojis = [Emoji.One, Emoji.Two, Emoji.Three, Emoji.Four];
 
 export default class extends Monitor {
+	public lastEventDates: Map<string, number> = new Map();
+	public dupeMessageCache: Map<string, Set<string>> = new Map();
+
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, { ignoreOthers: false, enabled: true });
 	}
 
-	/* eslint-disable consistent-return */
 	async run(msg: KlasaMessage) {
-		if (!msg.guild || !msg.guild.settings.get(GuildSettings.RandomEvents.Enabled)) return;
+		if (
+			!msg.guild ||
+			!msg.guild.settings.get(GuildSettings.RandomEvents.Enabled) ||
+			msg.guild.memberCount < 3 ||
+			msg.author.bot ||
+			!msg.author.hasMinion
+		) {
+			console.log(1, msg.content);
+			return;
+		}
 
 		// If no redirect channel, and the bot can't speak in this channel, return.
 		if (
 			!channelIsSendable(msg.channel) &&
 			!msg.guild.settings.get(GuildSettings.RandomEvents.RedirectChannel)
 		) {
+			console.log(2, msg.content);
 			return;
+		}
+
+		// If they've received a random event in past hour, don't give another.
+		// const lastEventDate = this.lastEventDates.get(msg.author.id);
+		// if (lastEventDate && Date.now() - lastEventDate < Time.Hour) return;
+
+		const cleanedContent = cleanString(msg.content);
+
+		if (!this.dupeMessageCache.get(msg.author.id)) {
+			this.dupeMessageCache.set(msg.author.id, new Set());
+		}
+
+		if (!roll(50)) return;
+
+		// If their dupe message cache has this message already, return.
+		const dupeMessageCache = this.dupeMessageCache.get(msg.author.id);
+
+		if (dupeMessageCache) {
+			if (dupeMessageCache.has(cleanedContent)) return;
+			dupeMessageCache.add(cleanedContent);
 		}
 
 		// Can't get a random event if minion isn't doing something.
 		// if (!msg.author.minionIsBusy) return;
-		if (msg.channel.id !== '701085094659489843') return;
-		if (msg.author.id !== '157797566833098752') return;
 
+		this.lastEventDates.set(msg.author.id, Date.now());
 		return this.drillDemon(msg);
 	}
 
