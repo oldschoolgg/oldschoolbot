@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Image, Color, Emoji, Channel, Events } from '../../lib/constants';
+import { Image, Color, Emoji, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { rand } from '../../lib/util';
