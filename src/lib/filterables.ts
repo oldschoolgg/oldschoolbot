@@ -189,7 +189,8 @@ const gear = resolveItems([
 	"Verac's plateskirt",
 	"Verac's flail",
 	"Verac's armour set",
-	'Anti-dragon shield'
+	'Anti-dragon shield',
+	'Dragon warhammer'
 ]);
 
 const cluesAndCaskets = resolveItems([
