@@ -1,6 +1,6 @@
 import { Argument, Possible, KlasaMessage } from 'klasa';
 
-import { GuildSettings } from '../lib/GuildSettings';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
 
 export default class extends Argument {
 	async run(arg: string, _: Possible, msg: KlasaMessage) {

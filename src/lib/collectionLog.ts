@@ -1,5 +1,6 @@
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
+import { gracefulItems } from './skilling/skills/runecraft';
 
 export const bosses = {
 	Zulrah: resolveItems([
@@ -411,6 +412,7 @@ export const cluesEasy = {
 		'Team cape x',
 		'Team cape zero',
 		'Rain bow',
+		'Willow comp bow',
 		'Ham joint',
 		'Black cane',
 		'Black pickaxe',
@@ -565,7 +567,8 @@ export const cluesMedium = {
 		'Lovakengj banner',
 		'Piscarilius banner',
 		'Shayzien banner',
-		'Cabbage round shield'
+		'Cabbage round shield',
+		'Yew comp bow'
 	])
 };
 export const cluesHard = {
@@ -629,6 +632,13 @@ export const cluesHard = {
 		'Rune helm (h3)',
 		'Rune helm (h4)',
 		'Rune helm (h5)',
+		'Rune platebody (h1)',
+		'Rune platebody (h2)',
+		'Rune platebody (h3)',
+		'Rune platebody (h4)',
+		'Rune platebody (h5)'
+	]),
+	'Rune heraldic armour 2': resolveItems([
 		'Rune shield (h1)',
 		'Rune shield (h2)',
 		'Rune shield (h3)',
@@ -714,13 +724,16 @@ export const cluesHard = {
 	'Hard misc.  2': resolveItems([
 		'Pith helmet',
 		'Robin hood hat',
+		'Magic comp bow',
 		'Magic longbow',
 		'Magic shortbow',
 		'Amulet of glory (t4)',
 		'Explorer backpack',
+		'Thieving bag',
 		'Nunchaku',
+		'Dual sai',
 		'Rune cane',
-		'Zombie head'
+		19912 // Zombie head
 	]),
 	'3rd Age Melee': resolveItems([
 		'3rd age full helmet',
@@ -1198,6 +1211,24 @@ export const quest = {
 		'Hardleather gloves'
 	])
 };
+
+export const skillingLog = {
+	Mining: resolveItems([
+		'Prospector helmet',
+		'Prospector jacket',
+		'Prospector legs',
+		'Prospector boots',
+		'Mining gloves',
+		'Superior mining gloves',
+		'Expert mining gloves',
+		'Golden nugget',
+		'Unidentified minerals',
+		'Rock golem'
+	]),
+	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
+	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel'])
+};
+
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
@@ -1287,5 +1318,10 @@ export const collectionLogTypes = [
 		name: 'Quest',
 		aliases: ['quests', 'q', 'quest'],
 		items: quest
+	},
+	{
+		name: 'Skilling',
+		aliases: ['s', 'skilling', 'skills'],
+		items: skillingLog
 	}
 ];

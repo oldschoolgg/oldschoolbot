@@ -1,7 +1,7 @@
 import { Extendable, ExtendableStore } from 'klasa';
 import { User } from 'discord.js';
 
-import { UserSettings } from '../lib/UserSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {

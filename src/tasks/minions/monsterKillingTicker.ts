@@ -14,7 +14,7 @@ export default class extends Task {
 			// If the current task being checked finishes past now, break.
 			if (monsterKillingTaskData.finishDate > now) break;
 
-			await runActivityTask(this.client, Tasks.MonsterActivity, monsterKillingTaskData);
+			runActivityTask(this.client, Tasks.MonsterActivity, monsterKillingTaskData);
 
 			tasksThatWereFinished.push(monsterKillingTaskData.id);
 		}

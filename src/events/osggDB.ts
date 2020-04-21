@@ -1,7 +1,7 @@
 import { Event, EventStore } from 'klasa';
 import { MongoClient } from 'mongodb';
 
-const { dbUrl, dbName } = require('../../private').mongoDB;
+import { mongoDBConfig } from '../config';
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
@@ -10,7 +10,9 @@ export default class extends Event {
 	}
 
 	async run() {
-		const client = await MongoClient.connect(dbUrl, {
+		if (!mongoDBConfig) return;
+
+		const client = await MongoClient.connect(mongoDBConfig.dbUrl, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true
 		}).catch(err => {
@@ -22,7 +24,7 @@ export default class extends Event {
 			return;
 		}
 
-		this.client.osggDB = client.db(dbName);
+		this.client.osggDB = client.db(mongoDBConfig.dbName);
 
 		// Enable collections command only after the DB is connected.
 		this.client.commands.get('collections')!.enable();

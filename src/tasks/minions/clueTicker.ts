@@ -14,7 +14,7 @@ export default class extends Task {
 			// If the current task being checked finishes past now, break.
 			if (clueTaskData.finishDate > now) break;
 
-			await runActivityTask(this.client, Tasks.ClueActivity, clueTaskData);
+			runActivityTask(this.client, Tasks.ClueActivity, clueTaskData);
 
 			tasksThatWereFinished.push(clueTaskData.id);
 		}

@@ -24,8 +24,8 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Time, Emoji, SupportServer, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
 import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
-import { UserSettings } from '../../lib/UserSettings';
-import { ClientSettings } from '../../lib/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
 import itemID from '../../lib/util/itemID';
 
@@ -63,7 +63,9 @@ export default class DailyCommand extends BotCommand {
 
 		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 
-		await msg.channel.send(`**${Emoji.Diango} Diango asks...** ${trivia.q}`);
+		await msg.channel.send(
+			`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${trivia.q}`
+		);
 		try {
 			const collected = await msg.channel.awaitMessages(
 				answer =>
@@ -168,8 +170,8 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		const bunnyEarsID = itemID('Bunny ears');
-		const bank = user.settings.get(UserSettings.Bank);
-		if (!bank[bunnyEarsID] && roll(3)) {
+		const numOwned = msg.author.numOfItemsOwned(bunnyEarsID);
+		if (numOwned === 0 && roll(3)) {
 			loot[bunnyEarsID] = 1;
 			dmStr += `${Emoji.EasterEgg} **You've received a pair of Bunny Ears for Easter!**`;
 		}

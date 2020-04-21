@@ -4,10 +4,13 @@ import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, formatDuration, rand } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Runecraft, {
+	RunecraftActivityTaskOptions,
+	gracefulItems
+} from '../../lib/skilling/skills/runecraft';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { SkillsEnum } from '../../lib/skilling/types';
 import bankHasItem from '../../lib/util/bankHasItem';
@@ -66,14 +69,7 @@ export default class extends BotCommand {
 		const boosts = [];
 		if (
 			hasArrayOfItemsEquipped(
-				[
-					'Graceful hood',
-					'Graceful top',
-					'Graceful legs',
-					'Graceful gloves',
-					'Graceful boots',
-					'Graceful cape'
-				].map(itemID),
+				gracefulItems.map(itemID),
 				msg.author.settings.get(UserSettings.Gear.Skilling)
 			)
 		) {
@@ -81,10 +77,10 @@ export default class extends BotCommand {
 			boosts.push(`10% for Graceful`);
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Agility) > 90) {
+		if (msg.author.skillLevel(SkillsEnum.Agility) >= 90) {
 			tripLength -= rune.tripLength * 0.1;
 			boosts.push(`10% for 90+ Agility`);
-		} else if (msg.author.skillLevel(SkillsEnum.Agility) > 60) {
+		} else if (msg.author.skillLevel(SkillsEnum.Agility) >= 60) {
 			tripLength -= rune.tripLength * 0.05;
 			boosts.push(`5% for 60+ Agility`);
 		}

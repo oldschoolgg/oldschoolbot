@@ -15,14 +15,15 @@ import {
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import bankHasItem from '../../lib/util/bankHasItem';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { formatItemReqs } from '../../lib/util/formatItemReqs';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import itemID from '../../lib/util/itemID';
 
 const invalidClue = (prefix: string) =>
 	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
@@ -463,6 +464,22 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
+		if (
+			hasArrayOfItemsEquipped(
+				[
+					'Graceful hood',
+					'Graceful top',
+					'Graceful legs',
+					'Graceful gloves',
+					'Graceful boots',
+					'Graceful cape'
+				].map(itemID),
+				msg.author.settings.get(UserSettings.Gear.Skilling)
+			)
+		) {
+			duration *= 0.9;
+		}
+
 		if (isWeekend()) {
 			duration *= 0.9;
 		}
@@ -526,10 +543,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
 		if (monster.itemInBankBoosts) {
 			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!bankHasItem(bank, parseInt(itemID))) continue;
+				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
 				timeToFinish *= (100 - boostAmount) / 100;
 				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 			}

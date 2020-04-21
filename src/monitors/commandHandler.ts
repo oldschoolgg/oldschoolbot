@@ -1,6 +1,6 @@
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { GuildSettings } from '../lib/GuildSettings';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { PermissionLevelsEnum } from '../lib/constants';
 import { floatPromise } from '../lib/util';
 

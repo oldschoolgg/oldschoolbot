@@ -8,7 +8,7 @@ import { stringMatches, itemNameFromID } from '../../lib/util';
 import bankFromLootTableOutput from '../../lib/util/bankFromLootTableOutput';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -47,7 +47,7 @@ export default class extends BotCommand {
 
 		const opened = `You opened one of your ${clueTier.name} Clue Caskets`;
 
-		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] + 1;
+		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0 + 1;
 
 		// If this tier has a milestone reward, and their new score meets the req, and
 		// they don't own it already, add it to the loot.

@@ -1,7 +1,7 @@
 import { Extendable, SettingsFolder, ExtendableStore } from 'klasa';
 import { User } from 'discord.js';
 
-import { UserSettings } from '../lib/UserSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import { GearTypes } from '../lib/gear';
 
 export default class extends Extendable {

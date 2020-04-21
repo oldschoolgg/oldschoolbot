@@ -1,9 +1,9 @@
 import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
 
 import pets from '../lib/pets';
-import { GuildSettings } from '../lib/GuildSettings';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { roll } from '../lib/util';
-import { UserSettings } from '../lib/UserSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 
 export default class extends Monitor {
 	public __memberCache: { [key: string]: number } = {};
