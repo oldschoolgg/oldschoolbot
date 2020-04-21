@@ -157,7 +157,7 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 300 * 100
-    },
+	},
 	{
 		name: "Iban's staff",
 		aliases: ['iban'],
