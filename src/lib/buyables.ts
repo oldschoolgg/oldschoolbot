@@ -184,7 +184,7 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 300 * 100
-	},
+	}
 ];
 
 export default Buyables;
