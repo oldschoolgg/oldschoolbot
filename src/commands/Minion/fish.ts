@@ -81,9 +81,7 @@ export default class extends BotCommand {
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
 				fish.name
-			} you can fish is approximately ${Math.floor(
-				msg.author.maxTripLength / (Time.Second * fish.timePerFish) - 4
-			)}.`;
+			} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`;
 		}
 
 		if (fish.bait) {

@@ -189,7 +189,8 @@ const gear = resolveItems([
 	"Verac's plateskirt",
 	"Verac's flail",
 	"Verac's armour set",
-	'Anti-dragon shield'
+	'Anti-dragon shield',
+	'Dragon warhammer'
 ]);
 
 const cluesAndCaskets = resolveItems([
@@ -205,6 +206,122 @@ const cluesAndCaskets = resolveItems([
 	'Reward casket (hard)',
 	'Reward casket (elite)',
 	'Reward casket (master)'
+]);
+
+const godwars = resolveItems([
+	'Bandos tassets',
+	'Bandos chestplate',
+	'Bandos boots',
+	'Bandos hilt',
+	'Bandos godsword',
+	'Pet general graardor',
+	'Armadyl helmet',
+	'Armadyl chestplate',
+	'Armadyl chainskirt',
+	'Armadyl hilt',
+	'Armadyl godsword',
+	"Pet kree'arra",
+	'Zamorakian spear',
+	'Zamorak hilt',
+	'Zamorak godsword',
+	'Staff of the dead',
+	'Steam battlestaff',
+	"Pet k'ril tsutsaroth",
+	'Saradomin sword',
+	"Saradomin's light",
+	'Armadyl crossbow',
+	'Saradomin hilt',
+	'Saradomin godsword',
+	'Pet zilyana',
+	'Godsword shard 1',
+	'Godsword shard 2',
+	'Godsword shard 3',
+	'Godsword blade'
+]);
+
+const dagannothkings = resolveItems([
+	'Berserker ring',
+	'Warrior ring',
+	'Archers ring',
+	'Seers ring',
+	'Dragon axe',
+	'Fremennik helm',
+	'Fremennik blade',
+	'Fremennik shield',
+	'Rock-shell helm',
+	'Rock-shell plate',
+	'Rock-shell legs',
+	'Rock-shell boots',
+	'Rock-shell gloves',
+	'Berserker helm',
+	'Warrior helm',
+	'Pet dagannoth rex',
+	'Seercull',
+	'Spined helm',
+	'Spined body',
+	'Spined chaps',
+	'Spined boots',
+	'Spined gloves',
+	'Archers helm',
+	'Pet dagannoth supreme',
+	'Skeletal helm',
+	'Skeletal top',
+	'Skeletal bottoms',
+	'Skeletal boots',
+	'Skeletal gloves',
+	'Mud battlestaff',
+	'Pet dagannoth prime'
+]);
+
+const cerberus = resolveItems([
+	'Primordial crystal',
+	'Pegasian crystal',
+	'Eternal crystal',
+	'Smouldering stone',
+	'Key master teleport',
+	'Jar of souls',
+	'Hellpuppy'
+]);
+
+const zulrah = resolveItems([
+	"Zulrah's scales",
+	'Tanzanite mutagen',
+	'Magma mutagen',
+	'Tanzanite fang',
+	'Magic fang',
+	'Serpentine visage',
+	'Uncut onyx',
+	'Zul-andra teleport',
+	'Jar of swamp',
+	'Pet snakeling',
+	'Tanzanite helm',
+	'Magma helm',
+	'Toxic blowpipe',
+	'Uncharged toxic trident',
+	'Trident of the swamp',
+	'Serpentine helm'
+]);
+
+const corporealbeast = resolveItems([
+	'Spectral sigil',
+	'Arcane sigil',
+	'Elysian sigil',
+	'Spirit shield',
+	'Holy elixir',
+	'Pet dark core',
+	'Onyx bolts (e)',
+	'Blessed spirit shield',
+	'Spectral spirit shield',
+	'Arcane spirit shield',
+	'Elysian spirit shield'
+]);
+
+const kalphitequeen = resolveItems([
+	'Dragon chainbody',
+	'Dragon 2h sword',
+	'Kq head',
+	'Jar of sand',
+	'Kalphite princess'
 ]);
 
 export const filterableTypes = [
@@ -227,5 +344,35 @@ export const filterableTypes = [
 		name: 'Clues and Caskets',
 		aliases: ['clues', 'caskets', 'cl', 'clue', 'casket', 'tt'],
 		items: cluesAndCaskets
+	},
+	{
+		name: 'God wars',
+		aliases: ['gwd', 'godwars', 'gw'],
+		items: godwars
+	},
+	{
+		name: 'Dagannoth kings',
+		aliases: ['dks', 'dk', 'dagannoth', 'kings'],
+		items: dagannothkings
+	},
+	{
+		name: 'Cerberus',
+		aliases: ['cerb', 'ce'],
+		items: cerberus
+	},
+	{
+		name: 'Zulrah',
+		aliases: ['zul', 'zulr'],
+		items: zulrah
+	},
+	{
+		name: 'Corporeal beast',
+		aliases: ['corp', 'co', 'corporeal'],
+		items: corporealbeast
+	},
+	{
+		name: 'Kalphite queen',
+		aliases: ['kq', 'ka', 'kalphite', 'queen'],
+		items: kalphitequeen
 	}
 ];
