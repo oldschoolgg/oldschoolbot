@@ -149,7 +149,7 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 10_000 * 5
 	},
-    {
+	{
 		name: 'Huge Jug Pack',
 		aliases: ['jug of water', 'jugs of water'],
 		outputItems: {
@@ -158,7 +158,7 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 300 * 100
     },
-    {
+	{
 		name: "Iban's staff",
 		aliases: ['iban'],
 		outputItems: {
