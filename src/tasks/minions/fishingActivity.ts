@@ -1,7 +1,7 @@
 import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp, roll } from '../../lib/util';
-import { Time } from '../../lib/constants';
+import { Time, Events, Emoji } from '../../lib/constants';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -56,6 +56,7 @@ export default class extends Task {
 			xpReceived = quantity * fish.xp;
 		}
 		let bonusXP = 0;
+		console.log(`1`);
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
@@ -133,8 +134,13 @@ export default class extends Task {
 			fish.petChance &&
 			roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)
 		) {
+			console.log(`pet ${itemID('Heron')}`);
 			loot[itemID('Heron')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
+			);
 		}
 
 		// Roll for big fish
