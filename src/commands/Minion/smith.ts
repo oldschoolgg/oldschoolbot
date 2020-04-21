@@ -15,7 +15,6 @@ import Smithing from '../../lib/skilling/skills/smithedItems';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { SmithedActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
