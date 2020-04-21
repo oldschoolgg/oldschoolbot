@@ -8,8 +8,6 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
-import bankHasItem from '../../lib/util/bankHasItem';
-import { UserSettings } from '../../lib/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
@@ -36,7 +34,7 @@ export default class extends Task {
 
 		if (
 			bar.id === itemID('Gold bar') &&
-			bankHasItem(user.settings.get(UserSettings.Bank), itemID('Goldsmith gauntlets'))
+			user.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
 		) {
 			xpReceived = quantity * 56.2;
 		}

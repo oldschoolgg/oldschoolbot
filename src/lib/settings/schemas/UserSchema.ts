@@ -1,7 +1,7 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import Gear from '../gear';
-import { SkillsEnum } from '../skilling/types';
+import Gear from '../../gear';
+import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })

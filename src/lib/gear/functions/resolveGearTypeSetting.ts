@@ -1,5 +1,5 @@
 import { GearTypes } from '..';
-import { UserSettings } from '../../UserSettings';
+import { UserSettings } from '../../settings/types/UserSettings';
 
 export default function resolveGearTypeSetting(type: GearTypes.GearSetupTypes) {
 	switch (type) {

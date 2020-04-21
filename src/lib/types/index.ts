@@ -84,38 +84,43 @@ export interface JMod {
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
 
-export interface PrivateConfig {
-	token: string;
-	postgresConfig: {
-		database: string;
-		user: string;
-		password: string;
-		port: number;
-	};
+export type PostgresConfig = null | {
+	database: string;
+	user: string;
+	password: string;
+	port: number;
+};
 
-	twitchClientID: string;
-	redditApp: {
-		userAgent: string;
-		clientId: string;
-		clientSecret: string;
-		username: string;
-		password: string;
-	};
-	twitterApp: {
-		consumer_key: string;
-		consumer_secret: string;
-		access_token_key: string;
-		access_token_secret: string;
-	};
-	mongoDB: {
-		dbUrl: string;
-		dbName: string;
-	};
-	patreon: {
-		campaignID: number;
-		token: string;
-	};
-}
+export type ProviderConfig = null | {
+	default: string;
+	postgres?: PostgresConfig;
+};
+
+export type RedditAppConfig = null | {
+	userAgent: string;
+	clientId: string;
+	clientSecret: string;
+	username: string;
+	password: string;
+};
+
+export type TwitterAppConfig = null | {
+	consumer_key: string;
+	consumer_secret: string;
+	access_token: string;
+	access_token_key?: string;
+	access_token_secret: string;
+};
+
+export type MongoDBConfig = null | {
+	dbUrl: string;
+	dbName: string;
+};
+
+export type PatreonConfig = null | {
+	campaignID: number;
+	token: string;
+};
 
 export type ItemTuple = [number, number, number];
 

@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 
 import badges from '../lib/badges';
-import { UserSettings } from '../lib/UserSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 
 export default class extends Task {
 	async init() {

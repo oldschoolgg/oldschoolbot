@@ -13,8 +13,9 @@ import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Smithing from '../../lib/skilling/skills/smithedItems';
 import bankHasItem from '../../lib/util/bankHasItem';
-import { UserSettings } from '../../lib/UserSettings';
 import { SmithedActivityTaskOptions } from '../../lib/types/minions';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

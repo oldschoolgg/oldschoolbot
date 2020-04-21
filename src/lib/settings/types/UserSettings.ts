@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { Bank as BankType } from './types';
-import { GearTypes } from './gear';
-import { SkillsEnum } from './skilling/types';
+import { Bank as BankType } from '../../types';
+import { GearTypes } from '../../gear';
+import { SkillsEnum } from '../../skilling/types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 

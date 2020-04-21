@@ -3,6 +3,8 @@ const { MessageEmbed } = require('discord.js');
 
 const { toTitleCase } = require('../util');
 
+const { default: emoji } = require('../../data/skill-emoji');
+
 class getStatsEmbed extends Extendable {
 	constructor(...args) {
 		super(...args, {
@@ -19,8 +21,6 @@ class getStatsEmbed extends Extendable {
 		key = 'level',
 		showExtra = true
 	) {
-		const { emoji } = this.client;
-
 		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
 
 		const embed = new MessageEmbed()

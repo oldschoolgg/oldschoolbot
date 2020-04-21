@@ -5,7 +5,7 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Limit } from 'p-limit';
 import { Image } from 'canvas';
 
-import { CustomGet } from '../UserSettings';
+import { CustomGet } from '../settings/types/UserSettings';
 import { Bank } from '.';
 import { SkillsEnum } from '../skilling/types';
 
@@ -118,5 +118,11 @@ declare module 'discord.js' {
 		hasMinion: boolean;
 		isIronman: boolean;
 		maxTripLength: number;
+	}
+}
+
+declare module 'klasa-dashboard-hooks' {
+	interface AuthData {
+		user_id: string;
 	}
 }

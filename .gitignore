@@ -4,6 +4,7 @@ src/bwd/provider/json/
 /config/private.js
 /config/private.json
 /private.json
+src/config.ts
 resources/trivia-questions.json
 dist/
 bwd/

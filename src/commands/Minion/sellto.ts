@@ -6,7 +6,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import cleanItemName from '../../lib/util/cleanItemName';
 import { GuildMember } from 'discord.js';
 import { Events, TradeableItems } from '../../lib/constants';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
 import { stringMatches } from '../../lib/util';
 

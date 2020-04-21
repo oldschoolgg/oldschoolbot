@@ -1,6 +1,7 @@
 import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
+import { TextChannel } from 'discord.js';
 
-import { SupportServer, Emoji } from '../lib/constants';
+import { SupportServer, Emoji, Channel } from '../lib/constants';
 import { roll } from '../lib/util';
 
 // The actual rates are these numbers divided by 10.
@@ -42,6 +43,12 @@ export default class extends Monitor {
 				}
 				msg.member?.roles.add(roleID);
 				msg.react(Emoji.Gift);
+
+				const channel = this.client.channels.get(Channel.Notifications);
+
+				(channel as TextChannel).send(
+					`${Emoji.Fireworks} **${msg.author.username}** just received the **${name} role. `
+				);
 				break;
 			}
 		}

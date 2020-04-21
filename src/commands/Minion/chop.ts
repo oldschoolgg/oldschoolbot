@@ -13,8 +13,7 @@ import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/UserSettings';
-import bankHasItem from '../../lib/util/bankHasItem';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 const axes = [
@@ -88,11 +87,10 @@ export default class extends BotCommand {
 		);
 
 		// If the user has an axe apply boost
-		const bank = msg.author.settings.get(UserSettings.Bank);
 		const boosts = [];
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) >= 61) {
 			for (const axe of axes) {
-				if (bankHasItem(bank, axe.id)) {
+				if (msg.author.hasItemEquippedOrInBank(axe.id)) {
 					timetoChop = Math.floor(timetoChop * ((100 - axe.reductionPercent) / 100));
 					boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
 					break;

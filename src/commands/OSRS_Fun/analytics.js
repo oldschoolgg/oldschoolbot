@@ -4,6 +4,8 @@ const { MessageEmbed } = require('discord.js');
 
 const { convertXPtoLVL } = require('../../util');
 
+const { emoji } = require('../../../data/skill-emoji');
+
 module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
@@ -16,7 +18,6 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [username]) {
-		const { emoji } = this.client;
 		const player = await Hiscores.fetch(username).catch(err => {
 			throw err.message;
 		});

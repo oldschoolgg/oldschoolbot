@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	stringMatches,
 	addBankToBank,

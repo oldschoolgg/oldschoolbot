@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { GuildSettings } from '../../lib/GuildSettings';
+import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

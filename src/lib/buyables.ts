@@ -148,6 +148,24 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10_000 * 5
+	},
+	{
+		name: "Iban's staff",
+		aliases: ['iban'],
+		outputItems: {
+			[itemID("Iban's staff")]: 1
+		},
+		qpRequired: 30,
+		gpCost: 250_000
+	},
+	{
+		name: 'Barrelchest anchor',
+		aliases: ['anchor'],
+		outputItems: {
+			[itemID('Barrelchest anchor')]: 1
+		},
+		qpRequired: 30,
+		gpCost: 2_000_000
 	}
 ];
 

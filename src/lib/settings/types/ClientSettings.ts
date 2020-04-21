@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { Bank, ItemPriceCache, OSRSPoll, PetRecords as PetRecordsType } from './types';
+import { Bank, ItemPriceCache, OSRSPoll, PetRecords as PetRecordsType } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 

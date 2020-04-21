@@ -1,10 +1,9 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Items } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util/util';
+import { Items, Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/UserSettings';
-import { ClientSettings } from '../../lib/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import cleanItemName from '../../lib/util/cleanItemName';
 
@@ -18,14 +17,14 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '<quantity:int{1}> <itemname:...string>',
+			usage: '[quantity:int{1}] <itemname:...string>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+	async run(msg: KlasaMessage, [quantity, itemName]: [number | undefined, string]) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		const osItem = Items.get(cleanItemName(itemName));
 		if (!osItem) throw `That item doesnt exist.`;
@@ -33,11 +32,17 @@ export default class extends BotCommand {
 			throw `That item isn't tradeable.`;
 		}
 
+		const numItemsHas = await msg.author.numberOfItemInBank(osItem.id);
+		if (numItemsHas === 0) throw `You don't have any of this item to sell!`;
+
+		if (!quantity) {
+			quantity = numItemsHas;
+		}
+
 		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
 		let totalPrice = priceOfItem * quantity;
 
-		const hasItem = await msg.author.hasItem(osItem.id, quantity);
-		if (!hasItem) {
+		if (quantity > numItemsHas) {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
 
@@ -49,7 +54,7 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, say \`confirm\` to sell ${quantity} ${
 					osItem.name
-				} for ${totalPrice.toLocaleString()} (${toKMB(totalPrice)}).`
+				} for ${totalPrice.toLocaleString()} (${Util.toKMB(totalPrice)}).`
 			);
 
 			try {
@@ -82,7 +87,7 @@ export default class extends BotCommand {
 		msg.author.log(`sold Quantity[${quantity}] ItemID[${osItem.id}] for ${totalPrice}`);
 
 		return msg.send(
-			`Sold ${quantity}x ${osItem.name} for ${totalPrice.toLocaleString()}gp (${toKMB(
+			`Sold ${quantity}x ${osItem.name} for ${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
 			)})`
 		);

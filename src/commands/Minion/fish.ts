@@ -12,7 +12,7 @@ import Fishing from '../../lib/skilling/skills/fishing';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
