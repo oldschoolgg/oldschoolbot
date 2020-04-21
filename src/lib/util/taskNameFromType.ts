@@ -30,5 +30,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.QuestingActivity;
 		case Activity.Runecraft:
 			return Tasks.RunecraftActivity;
+		case Activity.Raids:
+			return Tasks.RaidsActivity;
 	}
 }

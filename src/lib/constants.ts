@@ -104,7 +104,9 @@ export const enum Tasks {
 	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
-	SkillingTicker = 'skillingTicker'
+	SkillingTicker = 'skillingTicker',
+	RaidsActivity = 'raidsActivity',
+	MinigameTicker = 'minigameTicker'
 }
 
 export const enum Activity {
@@ -121,7 +123,8 @@ export const enum Activity {
 	Firemaking = 'Firemaking',
 	Runecraft = 'Runecraft',
 	Smelting = 'Smelting',
-	Crafting = 'Crafting'
+	Crafting = 'Crafting',
+	Raids = 'Raids'
 }
 
 export const enum Events {
