@@ -175,7 +175,16 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 30,
 		gpCost: 2_000_000
-	}
+	},
+	{
+		name: 'Feather pack',
+		aliases: ['feather'],
+		outputItems: {
+			[itemID('Feather')]: 300
+		},
+		qpRequired: 0,
+		gpCost: 300 * 100
+	},
 ];
 
 export default Buyables;
