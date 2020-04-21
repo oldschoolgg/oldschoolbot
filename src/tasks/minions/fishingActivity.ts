@@ -56,7 +56,6 @@ export default class extends Task {
 			xpReceived = quantity * fish.xp;
 		}
 		let bonusXP = 0;
-		console.log(`1`);
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
