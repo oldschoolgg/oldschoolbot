@@ -23,15 +23,15 @@ import {
 	MiningActivityTaskOptions,
 	TickerTaskData,
 	ActivityTaskOptions,
+	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	SmithedActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	AgilityActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
-import Smithing from '../lib/skilling/skills/smithing';
+import Smithing from '../lib/skilling/skills/smelting';
 import Firemaking from '../lib/skilling/skills/firemaking';
 import Woodcutting from '../lib/skilling/skills/woodcutting';
 import Skills from '../lib/skilling/skills';
@@ -314,7 +314,7 @@ export default class extends Extendable {
 - You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
 - Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
 - Train mining with \`+mine\`
-- Train smithing with \`+smith\`
+- Train smithing with \`+smelt\` or \`+smith\`
 - Train woodcutting with \`+chop\`
 - Train firemaking with \`+light\`
 - Gain quest points with \`+quest\`
@@ -395,8 +395,8 @@ export default class extends Extendable {
 				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
 
-			case Activity.Smithing: {
-				const data = currentTask as SmithingActivityTaskOptions;
+			case Activity.Smelting: {
+				const data = currentTask as SmeltingActivityTaskOptions;
 
 				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
@@ -407,8 +407,8 @@ export default class extends Extendable {
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}
 
-			case Activity.Smithed: {
-				const data = currentTask as SmithedActivityTaskOptions;
+			case Activity.Smithing: {
+				const data = currentTask as SmithingActivityTaskOptions;
 
 				const SmithedBar = Smithing.Bars.find(
 					SmithedBar => SmithedBar.id === data.smithedBarID

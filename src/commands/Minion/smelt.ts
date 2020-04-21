@@ -9,9 +9,9 @@ import {
 	removeItemFromBank
 } from '../../lib/util';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smithing from '../../lib/skilling/skills/smithing';
+import Smelting from '../../lib/skilling/skills/smelting';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -41,19 +41,19 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const bar = Smithing.Bars.find(
+		const bar = Smelting.Bars.find(
 			bar =>
 				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
 
 		if (!bar) {
-			throw `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(
+			throw `Thats not a valid bar to smelt. Valid bars are ${Smelting.Bars.map(
 				bar => bar.name
 			).join(', ')}.`;
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			throw `${msg.author.minionName} needs ${bar.level} Smithing to smith ${bar.name}s.`;
+			throw `${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
 
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
@@ -86,13 +86,13 @@ export default class extends BotCommand {
 			}s you can smelt is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		const data: SmithingActivityTaskOptions = {
+		const data: SmeltingActivityTaskOptions = {
 			barID: bar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smithing,
+			type: Activity.Smelting,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
 		};

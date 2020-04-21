@@ -400,10 +400,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async smithed(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
-		this.client.commands.get('smithed')!.run(msg, [quantity, smithedBarName]);
-	}
-
 	async smith(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
 		this.client.commands
 			.get('smith')!

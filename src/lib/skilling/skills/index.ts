@@ -2,7 +2,7 @@ import { Collection } from 'discord.js';
 
 import Cooking from './cooking';
 import Mining from './mining';
-import Smithing from './smithing';
+import Smithing from './smelting';
 import Woodcutting from './woodcutting';
 import Firemaking from './firemaking';
 import Fishing from './fishing';

@@ -44,13 +44,13 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
+export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	channelID: string;
 	quantity: number;
 }
 
-export interface SmithedActivityTaskOptions extends ActivityTaskOptions {
+export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
 	smithedBarID: number;
 	channelID: string;
 	quantity: number;
@@ -96,8 +96,8 @@ export type MinionActivityTask =
 	| Tasks.ClueActivity
 	| Tasks.FishingActivity
 	| Tasks.MiningActivity
+	| Tasks.SmeltingActivity
 	| Tasks.SmithingActivity
-	| Tasks.SmithedActivity
 	| Tasks.WoodcuttingActivity
 	| Tasks.RunecraftActivity
 	| Tasks.FiremakingActivity

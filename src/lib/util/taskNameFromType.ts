@@ -14,10 +14,10 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FishingActivity;
 		case Activity.Mining:
 			return Tasks.MiningActivity;
+		case Activity.Smelting:
+			return Tasks.SmeltingActivity;
 		case Activity.Smithing:
 			return Tasks.SmithingActivity;
-		case Activity.Smithed:
-			return Tasks.SmithedActivity;
 		case Activity.Woodcutting:
 			return Tasks.WoodcuttingActivity;
 		case Activity.Firemaking:

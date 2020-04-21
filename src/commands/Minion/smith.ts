@@ -11,9 +11,9 @@ import {
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smithing from '../../lib/skilling/skills/smithedItems';
+import Smithing from '../../lib/skilling/skills/smithing';
 import bankHasItem from '../../lib/util/bankHasItem';
-import { SmithedActivityTaskOptions } from '../../lib/types/minions';
+import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {
@@ -64,7 +64,7 @@ export default class extends BotCommand {
 		);
 
 		if (!smithedBar) {
-			throw `That is not a valid craftable item, to see the items availible do \`${msg.cmdPrefix}smith --items\``;
+			throw `That is not a valid item to smith, to see the items availible do \`${msg.cmdPrefix}smith --items\``;
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedBar.level) {
@@ -101,13 +101,13 @@ export default class extends BotCommand {
 			}s you can smith is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		const data: SmithedActivityTaskOptions = {
+		const data: SmithingActivityTaskOptions = {
 			smithedBarID: smithedBar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smithed,
+			type: Activity.Smithing,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
 		};
