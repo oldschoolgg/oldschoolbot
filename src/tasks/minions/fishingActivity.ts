@@ -133,7 +133,6 @@ export default class extends Task {
 			fish.petChance &&
 			roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)
 		) {
-			console.log(`pet ${itemID('Heron')}`);
 			loot[itemID('Heron')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
