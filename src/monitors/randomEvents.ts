@@ -1,10 +1,10 @@
 import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, TextChannel } from 'discord.js';
 
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { Emoji, Time } from '../lib/constants';
-import { shuffle, cleanString, roll } from '../lib/util';
+import { shuffle, cleanString } from '../lib/util';
 import resolveItems from '../lib/util/resolveItems';
 
 const numberEmojis = [Emoji.One, Emoji.Two, Emoji.Three, Emoji.Four];
@@ -12,6 +12,7 @@ const numberEmojis = [Emoji.One, Emoji.Two, Emoji.Three, Emoji.Four];
 export default class extends Monitor {
 	public lastEventDates: Map<string, number> = new Map();
 	public dupeMessageCache: Map<string, Set<string>> = new Map();
+	public usersHas: Set<string> = new Set();
 
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, { ignoreOthers: false, enabled: true });
@@ -23,11 +24,14 @@ export default class extends Monitor {
 			!msg.guild.settings.get(GuildSettings.RandomEvents.Enabled) ||
 			msg.guild.memberCount < 3 ||
 			msg.author.bot ||
-			!msg.author.hasMinion
+			!(msg.channel instanceof TextChannel) ||
+			this.usersHas.size > 1 ||
+			this.usersHas.has(msg.author.id)
 		) {
 			console.log(1, msg.content);
 			return;
 		}
+		// !msg.author.hasMinion
 
 		// If no redirect channel, and the bot can't speak in this channel, return.
 		if (
@@ -48,7 +52,8 @@ export default class extends Monitor {
 			this.dupeMessageCache.set(msg.author.id, new Set());
 		}
 
-		if (!roll(50)) return;
+		if (msg.channel.parentID !== '682948213895987221') return;
+		// if (!roll(50)) return;
 
 		// If their dupe message cache has this message already, return.
 		const dupeMessageCache = this.dupeMessageCache.get(msg.author.id);
@@ -62,7 +67,14 @@ export default class extends Monitor {
 		// if (!msg.author.minionIsBusy) return;
 
 		this.lastEventDates.set(msg.author.id, Date.now());
-		return this.drillDemon(msg);
+		try {
+			this.usersHas.add(msg.author.id);
+			await this.drillDemon(msg);
+		} catch (err) {
+			throw err;
+		} finally {
+			this.usersHas.delete(msg.author.id);
+		}
 	}
 
 	async drillDemon(msg: KlasaMessage) {
