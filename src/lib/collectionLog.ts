@@ -658,13 +658,13 @@ export const cluesHard = {
 	'Enchanted robes': resolveItems(['Enchanted hat', 'Enchanted top', 'Enchanted robe']),
 	"Blessed d'hide": resolveItems([
 		'Guthix coif',
-		"Guthix d'hide",
+		"Guthix d'hide body",
 		'Guthix chaps',
 		'Guthix bracers',
 		"Guthix d'hide boots",
 		"Guthix d'hide shield",
 		'Saradomin coif',
-		"Saradomin d'hide",
+		"Saradomin d'hide body",
 		'Saradomin chaps',
 		'Saradomin bracers',
 		"Saradomin d'hide boots",
@@ -672,13 +672,13 @@ export const cluesHard = {
 	]),
 	"Blessed d'hide 2": resolveItems([
 		'Zamorak coif',
-		"Zamorak d'hide",
+		"Zamorak d'hide body",
 		'Zamorak chaps',
 		'Zamorak bracers',
 		"Zamorak d'hide boots",
 		"Zamorak d'hide shield",
 		'Armadyl coif',
-		"Armadyl d'hide",
+		"Armadyl d'hide body",
 		'Armadyl chaps',
 		'Armadyl bracers',
 		"Armadyl d'hide boots",
@@ -686,13 +686,13 @@ export const cluesHard = {
 	]),
 	"Blessed d'hide 3": resolveItems([
 		'Ancient coif',
-		"Ancient d'hide",
+		"Ancient d'hide body",
 		'Ancient chaps',
 		'Ancient bracers',
 		"Ancient d'hide boots",
 		"Ancient d'hide shield",
 		'Bandos coif',
-		"Bandos d'hide",
+		"Bandos d'hide body",
 		'Bandos chaps',
 		'Bandos bracers',
 		"Bandos d'hide boots",
@@ -770,7 +770,7 @@ export const cluesHard = {
 		'Gilded coif',
 		"Gilded d'hide body",
 		"Gilded d'hide chaps",
-		"Gilded d'hide vambs",
+		"Gilded d'hide vambraces",
 		'Gilded 2h sword',
 		'Gilded spear',
 		'Gilded hasta'
@@ -892,7 +892,7 @@ export const cluesElite = {
 		'Gilded coif',
 		"Gilded d'hide body",
 		"Gilded d'hide chaps",
-		"Gilded d'hide vambs",
+		"Gilded d'hide vambraces",
 		'Gilded 2h sword',
 		'Gilded spear',
 		'Gilded hasta'
@@ -1014,7 +1014,7 @@ export const cluesMaster = {
 		'Gilded coif',
 		"Gilded d'hide body",
 		"Gilded d'hide chaps",
-		"Gilded d'hide vambs",
+		"Gilded d'hide vambraces",
 		'Gilded 2h sword',
 		'Gilded spear',
 		'Gilded hasta'
@@ -1076,7 +1076,7 @@ export const cluesRares = {
 		'Gilded coif',
 		"Gilded d'hide body",
 		"Gilded d'hide chaps",
-		"Gilded d'hide vambs",
+		"Gilded d'hide vambraces",
 		'Gilded 2h sword',
 		'Gilded spear',
 		'Gilded hasta'
@@ -1229,6 +1229,39 @@ export const skillingLog = {
 	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel'])
 };
 
+export const coxLog = {
+	Misc: resolveItems([
+		'Dexterous prayer scroll',
+		'Torn prayer scroll',
+		'Arcane prayer scroll',
+		'Dark relic'
+	]),
+	Weapons: resolveItems([
+		'Twisted bow',
+		'Elder maul',
+		'Kodai wand',
+		'Dragon hunter crossbow',
+		'Dragon claws'
+	]),
+	Armor: resolveItems([
+		'Ancestral hat',
+		'Ancestral robe top',
+		'Ancestral robe bottom',
+		'Twisted buckler',
+		"Dinh's bulwark"
+	]),
+	Others: resolveItems([
+		'Metamorphic dust',
+		'Olmlet',
+
+		"Xeric's guard",
+		"Xeric's warrior",
+		"Xeric's sentinel",
+		"Xeric's general",
+		"Xeric's champion"
+	])
+};
+
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
@@ -1323,5 +1356,10 @@ export const collectionLogTypes = [
 		name: 'Skilling',
 		aliases: ['s', 'skilling', 'skills'],
 		items: skillingLog
+	},
+	{
+		name: 'Chambers of Xeric',
+		aliases: ['raids', 'cox'],
+		items: coxLog
 	}
 ];

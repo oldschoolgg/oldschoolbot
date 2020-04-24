@@ -2,7 +2,7 @@ const { Command, Timestamp } = require('klasa');
 const fetch = require('node-fetch');
 const { MessageEmbed } = require('discord.js');
 
-const { twitchClientID } = require('../../../private.json');
+const { twitchClientID } = require('../../config');
 
 const { resolveTwitchUsersFromNames, twitchAPIRequestOptions } = require('../../util');
 

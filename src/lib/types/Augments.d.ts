@@ -54,6 +54,11 @@ declare module 'klasa' {
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
+		sendBankImage(options: {
+			bank: Bank;
+			content?: string;
+			title?: string;
+		}): Promise<KlasaMessage>;
 	}
 
 	interface SettingsFolder {

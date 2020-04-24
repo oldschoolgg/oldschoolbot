@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const { twitchClientID } = require('../private.json');
+const { twitchClientID } = require('./config');
 
 const convertLVLtoXP = lvl => {
 	let points = 0;
@@ -51,7 +51,7 @@ function rand(min, max) {
 const twitchAPIRequestOptions = {
 	headers: {
 		Accept: 'application/vnd.twitchtv.v5+json',
-		'Client-ID': twitchClientID
+		'Client-ID': twitchClientID ?? ''
 	}
 };
 
