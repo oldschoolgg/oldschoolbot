@@ -262,7 +262,7 @@ const dagannothkings = resolveItems([
 	'Spined chaps',
 	'Spined boots',
 	'Spined gloves',
-	'Archers helm',
+	'Archer helm',
 	'Pet dagannoth supreme',
 	'Skeletal helm',
 	'Skeletal top',
