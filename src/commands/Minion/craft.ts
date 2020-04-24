@@ -42,7 +42,7 @@ export default class extends BotCommand {
 								.join(', ')}`
 					).join('\n')
 				),
-				`Availible crafting items.txt`
+				`Available crafting items.txt`
 			);
 		}
 
@@ -58,7 +58,7 @@ export default class extends BotCommand {
 		const Craft = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
 
 		if (!Craft) {
-			throw `That is not a valid craftable item, to see the items availible do \`${msg.cmdPrefix}craft --items\``;
+			throw `That is not a valid craftable item, to see the items available do \`${msg.cmdPrefix}craft --items\``;
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Crafting) < Craft.level) {
