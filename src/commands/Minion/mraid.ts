@@ -8,7 +8,6 @@ import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { gearStatsMeetsStats } from '../../lib/gear/functions/gearStatsMeetsStats';
 import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../lib/gear/raidsGear';
 import { MinigameIDEnum } from '../../lib/minigames';
-import { TextChannel } from 'discord.js';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -81,8 +80,18 @@ export default class extends BotCommand {
 
 	async mass(msg: KlasaMessage) {
 		const duration = Number(Time.Minute);
-
-		const members = (msg.channel as TextChannel).members.random(20);
+		await msg.channel.messages.fetch({ limit: 100 });
+		const members = [
+			...new Set(
+				msg.channel.messages
+					.first(100)
+					.filter(u => !u.author.bot)
+					.map(m => m.author)
+					.sort(() => {
+						return 0.5 - Math.random();
+					})
+			)
+		].slice(0, 10);
 
 		const data: RaidsActivityTaskOptions = {
 			duration,
@@ -107,7 +116,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`The raid is starting... the leader is ${
 				msg.author.username
-			}, and the party members are: ${members.map(u => u.user.username).join(', ')}`
+			}, and the party members are: ${members.map(u => u.username).join(', ')}`
 		);
 	}
 
