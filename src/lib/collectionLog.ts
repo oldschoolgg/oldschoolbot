@@ -658,7 +658,7 @@ export const cluesHard = {
 	'Enchanted robes': resolveItems(['Enchanted hat', 'Enchanted top', 'Enchanted robe']),
 	"Blessed d'hide": resolveItems([
 		'Guthix coif',
-		"Guthix d'hide",
+		"Guthix d'hide body",
 		'Guthix chaps',
 		'Guthix bracers',
 		"Guthix d'hide boots",
@@ -672,7 +672,7 @@ export const cluesHard = {
 	]),
 	"Blessed d'hide 2": resolveItems([
 		'Zamorak coif',
-		"Zamorak d'hide",
+		"Zamorak d'hide body",
 		'Zamorak chaps',
 		'Zamorak bracers',
 		"Zamorak d'hide boots",
@@ -686,7 +686,7 @@ export const cluesHard = {
 	]),
 	"Blessed d'hide 3": resolveItems([
 		'Ancient coif',
-		"Ancient d'hide",
+		"Ancient d'hide body",
 		'Ancient chaps',
 		'Ancient bracers',
 		"Ancient d'hide boots",
