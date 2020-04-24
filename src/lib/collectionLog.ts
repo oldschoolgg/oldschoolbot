@@ -1229,6 +1229,39 @@ export const skillingLog = {
 	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel'])
 };
 
+export const coxLog = {
+	Misc: resolveItems([
+		'Dexterous prayer scroll',
+		'Torn prayer scroll',
+		'Arcane prayer scroll',
+		'Dark relic'
+	]),
+	Weapons: resolveItems([
+		'Twisted bow',
+		'Elder maul',
+		'Kodai wand',
+		'Dragon hunter crossbow',
+		'Dragon claws'
+	]),
+	Armor: resolveItems([
+		'Ancestral hat',
+		'Ancestral robe top',
+		'Ancestral robe bottom',
+		'Twisted buckler',
+		"Dinh's bulwark"
+	]),
+	Others: resolveItems([
+		'Metamorphic dust',
+		'Olmlet',
+
+		"Xeric's guard",
+		"Xeric's warrior",
+		"Xeric's sentinel",
+		"Xeric's general",
+		"Xeric's champion"
+	])
+};
+
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
@@ -1323,5 +1356,10 @@ export const collectionLogTypes = [
 		name: 'Skilling',
 		aliases: ['s', 'skilling', 'skills'],
 		items: skillingLog
+	},
+	{
+		name: 'Chambers of Xeric',
+		aliases: ['raids', 'cox'],
+		items: coxLog
 	}
 ];
