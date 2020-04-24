@@ -11,7 +11,7 @@ import {
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smelting from '../../lib/skilling/skills/smelting';
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';

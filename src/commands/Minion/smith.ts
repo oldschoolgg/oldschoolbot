@@ -11,7 +11,7 @@ import {
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smithing from '../../lib/skilling/skills/smithing';
+import Smithing from '../../lib/skilling/skills/smithing/smithing';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

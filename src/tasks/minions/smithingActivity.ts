@@ -6,7 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import Smithing from '../../lib/skilling/skills/smithing';
+import Smithing from '../../lib/skilling/skills/smithing/smithing';
 
 export default class extends Task {
 	async run({ smithedBarID, quantity, userID, channelID }: SmithingActivityTaskOptions) {

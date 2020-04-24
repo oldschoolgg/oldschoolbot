@@ -4,7 +4,7 @@ import { saidYes, noOp } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import Smelting from '../../lib/skilling/skills/smelting';
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';

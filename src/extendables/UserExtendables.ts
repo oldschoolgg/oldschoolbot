@@ -31,7 +31,7 @@ import {
 	AgilityActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
-import Smithing from '../lib/skilling/skills/smelting';
+import Smithing from '../lib/skilling/skills/smithing/smelting';
 import Firemaking from '../lib/skilling/skills/firemaking';
 import Woodcutting from '../lib/skilling/skills/woodcutting';
 import Skills from '../lib/skilling/skills';
