@@ -9,7 +9,7 @@ import Firemaking from './firemaking';
 import Fishing from './fishing';
 import Agility from './agility';
 import Runecraft from './runecraft';
-import Crafting from './crafting';
+import Crafting from './crafting/crafting';
 
 export type Skill =
 	| typeof Crafting

@@ -38,7 +38,7 @@ import Skills from '../lib/skilling/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import Fishing from '../lib/skilling/skills/fishing';
 import Agility from '../lib/skilling/skills/agility';
-import Crafting from '../lib/skilling/skills/crafting';
+import Crafting from '../lib/skilling/skills/crafting/crafting';
 import { SkillsEnum } from '../lib/skilling/types';
 import Runecraft, { RunecraftActivityTaskOptions } from '../lib/skilling/skills/runecraft';
 import Cooking from '../lib/skilling/skills/cooking';

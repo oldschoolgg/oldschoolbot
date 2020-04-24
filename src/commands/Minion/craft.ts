@@ -12,7 +12,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Crafting from '../../lib/skilling/skills/crafting';
+import Crafting from '../../lib/skilling/skills/crafting/crafting';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
 
