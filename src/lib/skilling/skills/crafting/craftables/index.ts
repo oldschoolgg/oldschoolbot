@@ -1,4 +1,4 @@
-import { Craftable } from '../../types';
+import { Craftable } from '../../../types';
 import Birdhouse from './birdhouse';
 import Built from './built';
 import Dragonhide from './dragonhide';

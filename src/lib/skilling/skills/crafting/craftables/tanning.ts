@@ -1,6 +1,6 @@
-import { Craftable } from '../../types';
-import itemID from '../../../util/itemID';
-import { transformStringBankToNum } from '../../../util/transformStringBankToNum';
+import { Craftable } from '../../../types';
+import itemID from '../../../../util/itemID';
+import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
 
 const Tanning: Craftable[] = [
 	{
