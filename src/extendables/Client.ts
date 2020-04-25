@@ -55,7 +55,10 @@ export default class extends Extendable {
 
 		const newItems = { ...currentItems };
 
-		newItems[itemID] = { price, fetchedAt: Date.now() };
+		newItems[itemID] = {
+			price,
+			fetchedAt: Date.now() + Time.Hour * Math.floor(Math.random() * 100)
+		};
 
 		await this.settings!.update('prices', newItems);
 
