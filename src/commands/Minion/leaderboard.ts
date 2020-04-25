@@ -115,7 +115,7 @@ export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the people with the most virtual GP.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -192,6 +192,31 @@ export default class extends Command {
 						.join('\n')
 				),
 			'GP Leaderboard'
+		);
+	}
+
+	async sacrifice(msg: KlasaMessage) {
+		const list: { id: string; amount: number }[] = (
+			await this.query(
+				`SELECT "id", "sacrificedValue" FROM users WHERE "sacrificedValue" > 0 ORDER BY "sacrificedValue" DESC LIMIT 2000;`
+			)
+		).map((res: any) => ({ ...res, amount: parseInt(res.sacrificedValue) }));
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							({ id, amount }) =>
+								`**${this.getUsername(
+									id
+								)}** sacrificed ${amount.toLocaleString()} GP `
+						)
+						.join('\n')
+				),
+			'Sacrifice Leaderboard'
 		);
 	}
 
