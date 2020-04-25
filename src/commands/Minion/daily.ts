@@ -1,5 +1,4 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
 
 if (!fs.existsSync('./resources/trivia-questions.json')) {
@@ -176,13 +175,12 @@ export default class DailyCommand extends BotCommand {
 			dmStr += `${Emoji.EasterEgg} **You've received a pair of Bunny Ears for Easter!**`;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		const image = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(loot, `${msg.author.username}'s Daily`);
-
 		await user.addItemsToBank(loot, true);
-		return msg.send(dmStr, new MessageAttachment(image)).catch(() => null);
+
+		return msg.sendBankImage({
+			bank: loot,
+			title: `${msg.author.username}'s Daily`,
+			content: dmStr
+		});
 	}
 }
