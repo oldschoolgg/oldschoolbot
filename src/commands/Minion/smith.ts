@@ -113,6 +113,7 @@ export default class extends BotCommand {
 		};
 
 		// Remove the bars from their bank.
+		let usedbars = 0;
 		let newBank = { ...userBank };
 		for (const [barID, qty] of requiredBars) {
 			if (newBank[parseInt(barID)] < qty) {
@@ -123,6 +124,7 @@ export default class extends BotCommand {
 				throw `What a terrible failure :(`;
 			}
 			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
+			usedbars = qty * quantity;
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
@@ -132,7 +134,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now smithing ${quantity * smithedBar.outputMultiple}x ${
 				smithedBar.name
-			}, using it'll take around ${formatDuration(duration)} to finish.`
+			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }
