@@ -47,7 +47,7 @@ export default class extends Monitor {
 				const channel = this.client.channels.get(Channel.Notifications);
 
 				(channel as TextChannel).send(
-					`${Emoji.Fireworks} **${msg.author.username}** just received the **${name} role. `
+					`${Emoji.Fireworks} **${msg.author.username}** just received the **${name}** role. `
 				);
 				break;
 			}
