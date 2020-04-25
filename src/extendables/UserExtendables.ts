@@ -31,7 +31,6 @@ import {
 	AgilityActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
-import Smithing from '../lib/skilling/skills/smithing/smelting';
 import Firemaking from '../lib/skilling/skills/firemaking';
 import Woodcutting from '../lib/skilling/skills/woodcutting';
 import Skills from '../lib/skilling/skills';
@@ -41,6 +40,8 @@ import Agility from '../lib/skilling/skills/agility';
 import { SkillsEnum } from '../lib/skilling/types';
 import Runecraft, { RunecraftActivityTaskOptions } from '../lib/skilling/skills/runecraft';
 import Cooking from '../lib/skilling/skills/cooking';
+import Smelting from '../lib/skilling/skills/smithing/smelting';
+import Smithing from '../lib/skilling/skills/smithing/smithing';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -398,9 +399,9 @@ export default class extends Extendable {
 			case Activity.Smelting: {
 				const data = currentTask as SmeltingActivityTaskOptions;
 
-				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
+				const bar = Smelting.Bars.find(bar => bar.id === data.barID);
 
-				return `${this.minionName} is currently smithing ${data.quantity}x ${
+				return `${this.minionName} is currently smelting ${data.quantity}x ${
 					bar!.name
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
@@ -410,9 +411,7 @@ export default class extends Extendable {
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithedBar = Smithing.Bars.find(
-					SmithedBar => SmithedBar.id === data.smithedBarID
-				);
+				const SmithedBar = Smithing.SmithedBars.find(item => item.id === data.smithedBarID);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					SmithedBar!.name
