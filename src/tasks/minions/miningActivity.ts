@@ -28,7 +28,7 @@ export default class extends Task {
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
 			hasArrayOfItemsEquipped(
-				Object.keys(Mining.prospectorItems).map(itemID),
+				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
 				user.settings.get(UserSettings.Gear.Skilling)
 			)
 		) {
