@@ -69,6 +69,7 @@ const bars: Bar[] = [
 	}
 ];
 
+// TODO - this is NOT right. It shouldnt be coded to look like a skill, should be mats in a new folder, only smithing.ts in root
 const Smelting = {
 	aliases: ['smelting'],
 	Bars: bars,
