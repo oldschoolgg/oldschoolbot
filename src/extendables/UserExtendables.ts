@@ -286,9 +286,12 @@ export default class extends Extendable {
 	public get minionName(this: User): string {
 		const name = this.settings.get(UserSettings.Minion.Name);
 		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
+
+		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
+
 		return name
-			? `${prefix} ${Emoji.Minion} **${Util.escapeMarkdown(name)}**`
-			: `${prefix} ${Emoji.Minion} Your minion`;
+			? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**`
+			: `${prefix} ${icon} Your minion`;
 	}
 
 	public get hasMinion(this: User) {

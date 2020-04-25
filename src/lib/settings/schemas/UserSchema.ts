@@ -13,6 +13,7 @@ Client.defaultUserSchema
 	.add('badges', 'integer', { array: true, default: [] })
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
+	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
@@ -24,6 +25,7 @@ Client.defaultUserSchema
 			.add('hasBought', 'boolean', { default: false })
 			.add('dailyDuration', 'integer', { default: 0 })
 			.add('ironman', 'boolean', { default: false })
+			.add('icon', 'string', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
