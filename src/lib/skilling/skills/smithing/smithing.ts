@@ -9,10 +9,11 @@ import Rune from './rune';
 
 const smithedBars: SmithedBar[] = [...Bronze, ...Iron, ...Steel, ...Mithril, ...Adamant, ...Rune];
 
-const Smith = {
+const Smithing = {
+	aliases: ['smithing'],
 	SmithedBars: smithedBars,
 	id: SkillsEnum.Smithing,
 	emoji: Emoji.Smithing
 };
 
-export default Smith;
+export default Smithing;
