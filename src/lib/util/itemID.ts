@@ -1,8 +1,7 @@
-import { Items } from 'oldschooljs';
+import getOSItem from './getOSItem';
 
 export default function itemID(name: string) {
-	const osItem = Items.get(name);
-	if (!osItem) throw `That item doesnt exist.`;
+	const osItem = getOSItem(name);
 
 	return osItem.id;
 }

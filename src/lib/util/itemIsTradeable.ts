@@ -1,6 +1,5 @@
-import { Items } from 'oldschooljs';
-
 import resolveItems from './resolveItems';
+import getOSItem from './getOSItem';
 
 const specialUntradeables = resolveItems(['Coins']);
 
@@ -14,8 +13,7 @@ export const specialTradeables = resolveItems([
 ]);
 
 export default function itemIsTradeable(itemID: number | string) {
-	const osItem = Items.get(itemID);
-	if (!osItem) throw `That item doesnt exist.`;
+	const osItem = getOSItem(itemID);
 
 	if (specialTradeables.includes(osItem.id)) return true;
 	if (specialUntradeables.includes(osItem.id) || !('tradeable' in osItem) || !osItem.tradeable) {

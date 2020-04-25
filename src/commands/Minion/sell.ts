@@ -1,11 +1,11 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Items, Util } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import cleanItemName from '../../lib/util/cleanItemName';
+import getOSItem from '../../lib/util/getOSItem';
 
 const options = {
 	max: 1,
@@ -26,8 +26,8 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number | undefined, string]) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
-		const osItem = Items.get(cleanItemName(itemName));
-		if (!osItem) throw `That item doesnt exist.`;
+		const osItem = getOSItem(itemName);
+
 		if (!itemIsTradeable(osItem.id)) {
 			throw `That item isn't tradeable.`;
 		}

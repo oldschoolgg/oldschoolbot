@@ -19,8 +19,8 @@ export default class extends Task {
 		const currentAgilityLevel = user.skillLevel(SkillsEnum.Agility);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID);
-
 		if (!fish) return;
+
 		let xpReceived = 0;
 		let leapingSturgeon = 0;
 		let leapingSalmon = 0;
@@ -60,7 +60,7 @@ export default class extends Task {
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
 			hasArrayOfItemsEquipped(
-				Object.keys(Fishing.anglerItems).map(itemID),
+				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
 				user.settings.get(UserSettings.Gear.Skilling)
 			)
 		) {
