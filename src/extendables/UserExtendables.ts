@@ -23,6 +23,7 @@ import {
 	MiningActivityTaskOptions,
 	TickerTaskData,
 	ActivityTaskOptions,
+	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -30,7 +31,7 @@ import {
 	AgilityActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
-import Smithing from '../lib/skilling/skills/smithing';
+import Smithing from '../lib/skilling/skills/smithing/smelting';
 import Firemaking from '../lib/skilling/skills/firemaking';
 import Woodcutting from '../lib/skilling/skills/woodcutting';
 import Skills from '../lib/skilling/skills';
@@ -313,7 +314,7 @@ export default class extends Extendable {
 - You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
 - Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
 - Train mining with \`+mine\`
-- Train smithing with \`+smith\`
+- Train smithing with \`+smelt\` or \`+smith\`
 - Train woodcutting with \`+chop\`
 - Train firemaking with \`+light\`
 - Gain quest points with \`+quest\`
@@ -394,13 +395,27 @@ export default class extends Extendable {
 				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
 
-			case Activity.Smithing: {
-				const data = currentTask as SmithingActivityTaskOptions;
+			case Activity.Smelting: {
+				const data = currentTask as SmeltingActivityTaskOptions;
 
 				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					bar!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Smithing: {
+				const data = currentTask as SmithingActivityTaskOptions;
+
+				const SmithedBar = Smithing.Bars.find(
+					SmithedBar => SmithedBar.id === data.smithedBarID
+				);
+
+				return `${this.minionName} is currently smithing ${data.quantity}x ${
+					SmithedBar!.name
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;

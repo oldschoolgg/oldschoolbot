@@ -2,28 +2,48 @@ import { Task, KlasaMessage } from 'klasa';
 
 import { saidYes, noOp } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import Smithing from '../../lib/skilling/skills/smithing/smithing';
+import itemID from '../../lib/util/itemID';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
-	async run({ smithedBarID, quantity, userID, channelID }: SmithingActivityTaskOptions) {
+	async run({ barID, quantity, userID, channelID }: SmeltingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		const SmithedBar = Smithing.SmithedBars.find(SmithedBar => SmithedBar.id === smithedBarID);
-		if (!SmithedBar) return;
+		const bar = Smelting.Bars.find(bar => bar.id === barID);
+		if (!bar) return;
 
-		const xpReceived = quantity * SmithedBar.xp;
+		// If this bar has a chance of failing to smith, calculate that here.
+		const oldQuantity = quantity;
+		if (bar.chanceOfFail > 0) {
+			let newQuantity = 0;
+			for (let i = 0; i < quantity; i++) {
+				if (rand(0, 100) < bar.chanceOfFail) {
+					newQuantity++;
+				}
+			}
+			quantity = newQuantity;
+		}
+
+		let xpReceived = quantity * bar.xp;
+
+		if (
+			bar.id === itemID('Gold bar') &&
+			user.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
+		) {
+			xpReceived = quantity * 56.2;
+		}
 
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		let str = `${user}, ${user.minionName} finished smithing ${quantity *
-			SmithedBar.outputMultiple}x ${
-			SmithedBar.name
+		let str = `${user}, ${user.minionName} finished smithing ${quantity}x ${
+			bar.name
 		}, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
@@ -32,8 +52,12 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;
 		}
 
+		if (bar.chanceOfFail > 0 && oldQuantity > quantity) {
+			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
+		}
+
 		const loot = {
-			[SmithedBar.id]: quantity * SmithedBar.outputMultiple
+			[bar.id]: quantity
 		};
 
 		await user.addItemsToBank(loot, true);
@@ -54,11 +78,11 @@ export default class extends Task {
 				if (response) {
 					if (response.author.minionIsBusy) return;
 
-					user.log(`continued trip of  ${SmithedBar.name}[${SmithedBar.id}]`);
+					user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
 
 					this.client.commands
-						.get('smith')!
-						.run(response as KlasaMessage, [SmithedBar.name]);
+						.get('smelt')!
+						.run(response as KlasaMessage, [oldQuantity, bar.name]);
 				}
 			})
 			.catch(noOp);

@@ -1,6 +1,6 @@
-import itemID from '../../util/itemID';
-import { Emoji } from '../../constants';
-import { Bar, SkillsEnum } from '../types';
+import itemID from '../../../util/itemID';
+import { Emoji } from '../../../constants';
+import { Bar, SkillsEnum } from '../../types';
 
 const bars: Bar[] = [
 	{
@@ -69,11 +69,11 @@ const bars: Bar[] = [
 	}
 ];
 
-const Smithing = {
-	aliases: ['smithing'],
+const Smelting = {
+	aliases: ['smelting'],
 	Bars: bars,
 	id: SkillsEnum.Smithing,
 	emoji: Emoji.Smithing
 };
 
-export default Smithing;
+export default Smelting;
