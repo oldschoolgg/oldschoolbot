@@ -6,4 +6,4 @@
 
 -   _List of changes here_
 
-[] I have tested all my changes thoroughly.
+-   [] I have tested all my changes thoroughly.

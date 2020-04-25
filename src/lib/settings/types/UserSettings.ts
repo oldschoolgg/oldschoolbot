@@ -23,6 +23,7 @@ export namespace UserSettings {
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
+	export const SacrificedValue = T<number>('sacrificedValue');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
@@ -36,10 +37,10 @@ export namespace UserSettings {
 
 	export namespace Minion {
 		export const Name = T<string>('minion.name');
-
 		export const HasBought = T<boolean>('minion.hasBought');
 		export const DailyDuration = T<number>('minion.dailyDuration');
 		export const Ironman = T<boolean>('minion.ironman');
+		export const Icon = T<string | null>('minion.icon');
 	}
 
 	export namespace Skills {

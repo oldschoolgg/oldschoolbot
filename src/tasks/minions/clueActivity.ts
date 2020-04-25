@@ -2,20 +2,8 @@ import { Task } from 'klasa';
 
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { Events, Emoji } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import itemID from '../../lib/util/itemID';
-import { roll } from 'oldschooljs/dist/util/util';
-import { randomItemFromArray } from '../../lib/util';
-
-const easterEggMessages = [
-	'While on an adventure finishing this clue, {name} stumbled upon an Easter Bunny who gave them an Easter Egg!',
-	'{name} found an Easter Egg in the gardens of Falador while completing the clue scroll!',
-	'The Easter Bunny gave {name} an Easter Egg while they were doing the clue scroll!',
-	'{name} found an Easter Egg under a fountain in Lumbridge while completing the clue scroll!',
-	'{name} found an Easter Egg sitting on a path while completing the clue scroll!',
-	'{name} found an Easter Egg in the Tree Gnome Village maze completing the clue scroll!'
-];
 
 export default class extends Task {
 	async run({ clueID, userID, channelID, quantity }: ClueActivityTaskOptions) {
@@ -29,32 +17,13 @@ export default class extends Task {
 			return;
 		}
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity} ${
+		const str = `${user}, ${user.minionName} finished completing ${quantity} ${
 			clueTier.name
 		} clues. ${user.minionName} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
 		const loot = { [clueTier.id]: quantity };
-		const easterEggID = itemID('Easter egg');
-
-		const eggChances: { [key: number]: number } = {
-			19836: 3,
-			20543: 4,
-			20544: 5,
-			20545: 6,
-			20546: 7,
-			23245: 8
-		};
-
-		if (roll(eggChances[clueTier.id])) {
-			loot[easterEggID] = 1;
-			str += `\n\n${Emoji.EasterEgg} **${randomItemFromArray(easterEggMessages).replace(
-				'{name}',
-				user.minionName
-			)}**`;
-		}
-
 		await user.addItemsToBank(loot, true);
 
 		this.client.emit(
