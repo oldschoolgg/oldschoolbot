@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { Bank as BankType } from '../../types';
+import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
 
@@ -12,12 +12,12 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
-	export const Bank = T<BankType>('bank');
+	export const Bank = T<ItemBank>('bank');
 	export const BankBackground = T<number>('bankBackground');
-	export const Pets = T<BankType>('pets');
-	export const CollectionLogBank = T<BankType>('collectionLogBank');
-	export const MonsterScores = T<BankType>('monsterScores');
-	export const ClueScores = T<BankType>('clueScores');
+	export const Pets = T<ItemBank>('pets');
+	export const CollectionLogBank = T<ItemBank>('collectionLogBank');
+	export const MonsterScores = T<ItemBank>('monsterScores');
+	export const ClueScores = T<ItemBank>('clueScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly number[]>('bitfield');
 	export const Badges = T<readonly number[]>('badges');
