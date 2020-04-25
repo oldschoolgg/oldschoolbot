@@ -424,7 +424,8 @@ const Craftables: Craftable[] = [
 			[itemID('Infernal axe')]: 1
 		},
 		firemakingLevel: 85,
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Graceful',
@@ -439,7 +440,8 @@ const Craftables: Craftable[] = [
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
 		},
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Graceful hood',
@@ -449,7 +451,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Graceful hood')]: 1
 		},
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Graceful top',
@@ -459,7 +462,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Graceful top')]: 1
 		},
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Graceful legs',
@@ -469,7 +473,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Graceful legs')]: 1
 		},
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Graceful gloves',
@@ -479,7 +484,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
 		},
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Graceful boots',
@@ -489,7 +495,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Graceful boots')]: 1
 		},
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Graceful cape',
@@ -499,7 +506,8 @@ const Craftables: Craftable[] = [
 		outputItems: {
 			[itemID('Graceful cape')]: 1
 		},
-		cantHaveItems: {}
+		cantHaveItems: {},
+		addOutputToCollectionLog: true
 	},
 	{
 		name: 'Hell cat ears',
@@ -512,7 +520,8 @@ const Craftables: Craftable[] = [
 		},
 		cantHaveItems: {
 			[itemID('Hell cat ears')]: 1
-		}
+		},
+		addOutputToCollectionLog: true
 	}
 ];
 
