@@ -138,8 +138,8 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		itemsRequired: resolveItems([
-			["Torag's platebody", "Dharok's platebody"],
-			["Torag's platelegs", "Dharok's platelegs"],
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
 			'Zamorakian spear'
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
