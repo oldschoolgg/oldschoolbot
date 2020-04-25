@@ -1,8 +1,7 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Items } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import cleanItemName from '../../lib/util/cleanItemName';
+import getOSItem from '../../lib/util/getOSItem';
 
 const options = {
 	max: 1,
@@ -21,8 +20,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		const osItem = Items.get(cleanItemName(itemName));
-		if (!osItem) throw `That item doesnt exist.`;
+		const osItem = getOSItem(itemName);
 
 		const hasItem = await msg.author.hasItem(osItem.id, quantity, false);
 		if (!hasItem) {
