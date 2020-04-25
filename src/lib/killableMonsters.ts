@@ -564,7 +564,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		itemsRequired: resolveItems([
-			'Barrelchest anchor',
+			"Verac's flail",
 			"Verac's plateskirt",
 			["Black d'hide body", "Karil's leathertop"]
 		]),
