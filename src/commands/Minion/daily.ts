@@ -26,7 +26,6 @@ import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import dailyRoll from '../../lib/dailyTable';
-import itemID from '../../lib/util/itemID';
 
 const options = {
 	max: 1,
@@ -166,13 +165,6 @@ export default class DailyCommand extends BotCommand {
 				ClientSettings.EconomyStats.DailiesAmount,
 				Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
 			);
-		}
-
-		const bunnyEarsID = itemID('Bunny ears');
-		const numOwned = msg.author.numOfItemsOwned(bunnyEarsID);
-		if (numOwned === 0 && roll(3)) {
-			loot[bunnyEarsID] = 1;
-			dmStr += `${Emoji.EasterEgg} **You've received a pair of Bunny Ears for Easter!**`;
 		}
 
 		await user.addItemsToBank(loot, true);
