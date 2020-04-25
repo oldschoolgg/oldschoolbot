@@ -5,7 +5,6 @@ import { MessageEmbed } from 'discord.js';
 import { BotCommand } from '../../lib/BotCommand';
 import { Tasks, Activity, Emoji, Time, Events, Color, PerkTier } from '../../lib/constants';
 import {
-	stringMatches,
 	formatDuration,
 	randomItemFromArray,
 	findMonster,
@@ -16,19 +15,13 @@ import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { formatItemReqs } from '../../lib/util/formatItemReqs';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import itemID from '../../lib/util/itemID';
-
-const invalidClue = (prefix: string) =>
-	`That isn't a valid clue tier, the valid tiers are: ${clueTiers
-		.map(tier => tier.name)
-		.join(', ')}. For example, \`${prefix}minion clue 1 easy\``;
+import { requiresMinion } from '../../lib/minions/decorators';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -426,91 +419,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
+	@requiresMinion
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		await msg.author.settings.sync(true);
-
-		if (typeof quantity === 'string') {
-			tierName = quantity;
-			quantity = 1;
-		}
-
-		if (msg.author.minionIsBusy) {
-			this.client.emit(
-				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${tierName}`
-			);
-			return msg.send(msg.author.minionStatus);
-		}
-
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		if (!tierName) throw invalidClue(msg.cmdPrefix);
-
-		const clueTier = clueTiers.find(tier => stringMatches(tier.name, tierName));
-
-		if (!clueTier) throw invalidClue(msg.cmdPrefix);
-
-		let duration = clueTier.timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
-			} is ${Math.floor(msg.author.maxTripLength / clueTier.timeToFinish)}.`;
-		}
-
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
-		}
-
-		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
-
-		const randomAddedDuration = rand(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
-		if (
-			hasArrayOfItemsEquipped(
-				[
-					'Graceful hood',
-					'Graceful top',
-					'Graceful legs',
-					'Graceful gloves',
-					'Graceful boots',
-					'Graceful cape'
-				].map(itemID),
-				msg.author.settings.get(UserSettings.Gear.Skilling)
-			)
-		) {
-			duration *= 0.9;
-		}
-
-		if (isWeekend()) {
-			duration *= 0.9;
-		}
-
-		const data: ClueActivityTaskOptions = {
-			clueID: clueTier.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.ClueCompletion,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now completing ${data.quantity}x ${
-				clueTier.name
-			} clues, it'll take around ${formatDuration(duration)} to finish.`
-		);
+		await this.client.commands
+			.get('mclue')!
+			.run(msg, [quantity, tierName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {

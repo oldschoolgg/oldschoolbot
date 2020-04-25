@@ -11,7 +11,9 @@ export default class MemorySweeper extends Task {
 	OLD_SNOWFLAKE: string;
 
 	public constructor(store: TaskStore, file: string[], directory: string) {
-		super(store, file, directory, {});
+		super(store, file, directory, {
+			enabled: false
+		});
 
 		// The colors to stylise the console's logs
 		this.colors = {

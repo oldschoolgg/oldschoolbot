@@ -6,6 +6,10 @@ export interface StringKeyedBank {
 	[key: string]: number;
 }
 
+export interface ItemBank {
+	[key: number]: number;
+}
+
 export interface SettingsEntry {
 	id: string;
 	RSN?: string;

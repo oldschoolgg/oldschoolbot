@@ -15,6 +15,8 @@ import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import bankHasItem from '../../lib/util/bankHasItem';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { ItemBank } from '../../lib/types';
+import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,15 +29,9 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, barName = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			barName = quantity;
 			quantity = null;
@@ -98,7 +94,7 @@ export default class extends BotCommand {
 		};
 
 		// Remove the ores from their bank.
-		let newBank = { ...userBank };
+		let newBank: ItemBank = { ...userBank };
 		for (const [oreID, qty] of requiredOres) {
 			if (newBank[parseInt(oreID)] < qty) {
 				this.client.emit(
