@@ -76,6 +76,15 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToCraftSingleItem);
 			for (const [itemID, qty] of requiredItems) {
+				const id = parseInt(itemID);
+				if (id === 995) {
+					const userGP = msg.author.settings.get(UserSettings.GP);
+					if (!userGP) {
+						throw `You have no GP.`;
+					}
+					quantity = Math.min(quantity, Math.floor(userGP / qty));
+					continue;
+				}
 				const itemsOwned = userBank[parseInt(itemID)];
 				if (!itemsOwned) {
 					throw `You have no ${itemNameFromID(parseInt(itemID))}.`;
