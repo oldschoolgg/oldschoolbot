@@ -380,7 +380,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			.catch(err => {
 				throw err;
 			});
-		}
+	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
 		await this.client.commands

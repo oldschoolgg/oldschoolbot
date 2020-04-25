@@ -8,9 +8,9 @@ import { formatDuration, rand } from '../../lib/util';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { Activity, Tasks, Time } from '../../lib/constants';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { GuildSettings } from '../../lib/GuildSettings';
+import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

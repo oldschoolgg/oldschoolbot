@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
