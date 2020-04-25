@@ -5,6 +5,7 @@ import { Util } from 'oldschooljs';
 
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { Time, Events } from '../lib/constants';
+import getOSItem from '../lib/util/getOSItem';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -26,7 +27,14 @@ export default class extends Extendable {
 
 		const currentItem = currentItems[itemID];
 
-		if (currentItem && Date.now() - currentItem.fetchedAt < Time.Day * 7) {
+		const osItem = getOSItem(itemID);
+		const needsToFetchAgain = osItem.tradeable_on_ge && currentItem.price === 0;
+
+		if (
+			!needsToFetchAgain &&
+			currentItem &&
+			Date.now() - currentItem.fetchedAt < Time.Day * 7
+		) {
 			return currentItem.price;
 		}
 
