@@ -17,7 +17,7 @@ const itemsToShow = Object.values(coxLog)
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<amount:int{1}> [points:int{1,100000}] [names:...str]',
+			usage: '<amount:int{1, 30}> [points:int{1,100000}] [names:...str]',
 			usageDelim: ' ',
 			aliases: ['cox'],
 			requiredPermissions: ['EMBED_LINKS']
