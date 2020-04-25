@@ -6,6 +6,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import getOSItem from '../../lib/util/getOSItem';
 import minionIcons from '../../lib/minions/data/minionIcons';
+import { Events } from '../../lib/constants';
 
 const options = {
 	max: 1,
@@ -88,6 +89,10 @@ export default class extends BotCommand {
 				if (currentIcon === icon.emoji) break;
 				await msg.author.settings.update(UserSettings.Minion.Icon, icon.emoji);
 				str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
+				this.client.emit(
+					Events.ServerNotification,
+					`**${msg.author.username}** just unlocked the ${icon.emoji} icon for their minion.`
+				);
 				break;
 			}
 		}
