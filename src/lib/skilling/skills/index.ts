@@ -9,8 +9,10 @@ import Firemaking from './firemaking';
 import Fishing from './fishing';
 import Agility from './agility';
 import Runecraft from './runecraft';
+import Crafting from './crafting/crafting';
 
 export type Skill =
+	| typeof Crafting
 	| typeof Agility
 	| typeof Cooking
 	| typeof Fishing
@@ -21,6 +23,7 @@ export type Skill =
 	| typeof Runecraft;
 
 const Skills: Collection<string, Skill> = new Collection([
+	[SkillsEnum.Crafting, Crafting as Skill],
 	[SkillsEnum.Agility, Agility as Skill],
 	[SkillsEnum.Cooking, Cooking as Skill],
 	[SkillsEnum.Fishing, Fishing as Skill],
