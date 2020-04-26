@@ -28,7 +28,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
-	AgilityActivityTaskOptions
+	AgilityActivityTaskOptions,
+	CraftingActivityTaskOptions
 } from '../lib/types/minions';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import Firemaking from '../lib/skilling/skills/firemaking';
@@ -37,6 +38,7 @@ import Skills from '../lib/skilling/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import Fishing from '../lib/skilling/skills/fishing';
 import Agility from '../lib/skilling/skills/agility';
+import Crafting from '../lib/skilling/skills/crafting/crafting';
 import { SkillsEnum } from '../lib/skilling/types';
 import Runecraft, { RunecraftActivityTaskOptions } from '../lib/skilling/skills/runecraft';
 import Cooking from '../lib/skilling/skills/cooking';
@@ -321,6 +323,7 @@ export default class extends Extendable {
 - Train smithing with \`+smelt\` or \`+smith\`
 - Train woodcutting with \`+chop\`
 - Train firemaking with \`+light\`
+- Train crafting with \`+craft\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -347,6 +350,17 @@ export default class extends Extendable {
 				return `${this.minionName} is currently completing ${data.quantity}x ${
 					clueTier!.name
 				} clues. Approximately ${formattedDuration} remaining.`;
+			}
+
+			case Activity.Crafting: {
+				const data = currentTask as CraftingActivityTaskOptions;
+				const craftable = Crafting.Craftables.find(item => item.id === data.craftableID);
+
+				return `${this.minionName} is currently crafting ${data.quantity}x ${
+					craftable!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Crafting
+				} Crafting level is ${this.skillLevel(SkillsEnum.Crafting)}`;
 			}
 
 			case Activity.Agility: {

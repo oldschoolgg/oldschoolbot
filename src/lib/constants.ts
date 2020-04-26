@@ -67,6 +67,7 @@ export const enum Emoji {
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
+	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>'
 }
 
@@ -92,6 +93,7 @@ export const enum Tasks {
 	WoodcuttingActivity = 'woodcuttingActivity',
 	RunecraftActivity = 'runecraftActivity',
 	FiremakingActivity = 'firemakingActivity',
+	CraftingActivity = 'craftingActivity',
 	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -110,7 +112,8 @@ export const enum Activity {
 	Questing = 'Questing',
 	Firemaking = 'Firemaking',
 	Runecraft = 'Runecraft',
-	Smelting = 'Smelting'
+	Smelting = 'Smelting',
+	Crafting = 'Crafting'
 }
 
 export const enum Events {

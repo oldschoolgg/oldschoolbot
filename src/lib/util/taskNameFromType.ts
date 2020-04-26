@@ -22,6 +22,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WoodcuttingActivity;
 		case Activity.Firemaking:
 			return Tasks.FiremakingActivity;
+		case Activity.Crafting:
+			return Tasks.CraftingActivity;
 		case Activity.Questing:
 			return Tasks.QuestingActivity;
 		case Activity.Runecraft:

@@ -68,6 +68,12 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
+	craftableID: number;
+	channelID: string;
+	quantity: number;
+}
+
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }
@@ -90,6 +96,7 @@ export type TickerTaskData =
 	| SkillingTickerTaskData;
 
 export type MinionActivityTask =
+	| Tasks.CraftingActivity
 	| Tasks.AgilityActivity
 	| Tasks.CookingActivity
 	| Tasks.MonsterActivity
