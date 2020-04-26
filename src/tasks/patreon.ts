@@ -186,7 +186,7 @@ export default class extends Task {
 
 			const patron: Patron = {
 				patreonID: user.relationships.user.data.id,
-				discordID: socialConnections.discord?.user_id,
+				discordID: socialConnections?.discord?.user_id,
 				entitledTiers: user.relationships.currently_entitled_tiers.data.map(
 					(i: any) => i.id
 				),
