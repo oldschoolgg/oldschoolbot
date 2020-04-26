@@ -69,9 +69,7 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Armadyl chestplate')]: 2,
-			[itemID('Armadyl chainskirt')]: 2,
-			[itemID('Bandos chestplate')]: 2,
-			[itemID('Bandos tassets')]: 2
+			[itemID('Armadyl chainskirt')]: 2
 		}
 	},
 	{
@@ -120,8 +118,6 @@ const killableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Armadyl chestplate')]: 2,
-			[itemID('Armadyl chainskirt')]: 2,
 			[itemID('Bandos chestplate')]: 2,
 			[itemID('Bandos tassets')]: 2,
 			[itemID('Saradomin godsword')]: 2

@@ -76,7 +76,7 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor((Time.Minute * 30) / timeToSmithSingleBar);
+			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
 		}
 
 		await msg.author.settings.sync(true);
