@@ -180,13 +180,13 @@ export default class extends Task {
 		}
 
 		for (const user of result.data) {
-			const { discord } = result.included.find(
+			const socialConnections = result.included.find(
 				(i: any) => i.id === user.relationships.user.data.id
 			).attributes.social_connections;
 
 			const patron: Patron = {
 				patreonID: user.relationships.user.data.id,
-				discordID: discord?.user_id,
+				discordID: socialConnections.discord?.user_id,
 				entitledTiers: user.relationships.currently_entitled_tiers.data.map(
 					(i: any) => i.id
 				),
