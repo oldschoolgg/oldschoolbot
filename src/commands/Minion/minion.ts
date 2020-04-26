@@ -140,6 +140,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.MonsterScores,
 				UserSettings.ClueScores,
 				UserSettings.BankBackground,
+				UserSettings.SacrificedValue,
 				'gear',
 				'stats',
 				'skills'
