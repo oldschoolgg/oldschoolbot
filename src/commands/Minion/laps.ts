@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
+import { stringMatches, formatDuration, rand, isWeekend } from '../../lib/util';
 import Agility from '../../lib/skilling/skills/agility';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -52,7 +52,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timePerLap);
 		}
-		const duration = quantity * timePerLap;
+		let duration = quantity * timePerLap;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -60,6 +60,12 @@ export default class extends BotCommand {
 			)}, try a lower quantity. The highest amount of ${
 				course.name
 			} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`;
+		}
+
+		const boosts = [];
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
 		}
 
 		const data: AgilityActivityTaskOptions = {
@@ -76,9 +82,13 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		const response = `${msg.author.minionName} is now doing ${quantity}x ${
+		let response = `${msg.author.minionName} is now doing ${quantity}x ${
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
 
 		return msg.send(response);
 	}

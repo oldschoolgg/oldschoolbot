@@ -33,7 +33,10 @@ export default class extends BotCommand {
 		itemName = itemName.toLowerCase();
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
-		if (!createableItem) throw `That's not a valid item you can create.`;
+		if (!createableItem)
+			throw `That's not a valid item you can create. Valid items are: ${Createables.map(
+				item => item.name
+			).join(', ')}.`;
 
 		// Ensure they have the required skills to create the item.
 		if (

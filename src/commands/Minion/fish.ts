@@ -6,7 +6,8 @@ import {
 	formatDuration,
 	rand,
 	itemNameFromID,
-	calcPercentOfNum
+	calcPercentOfNum,
+	isWeekend
 } from '../../lib/util';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { Time, Activity, Tasks } from '../../lib/constants';
@@ -94,6 +95,12 @@ export default class extends BotCommand {
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
 		duration += rand(-tenPercent, tenPercent);
 
+		const boosts = [];
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
+		}
+
 		const data: FishingActivityTaskOptions = {
 			fishID: fish.id,
 			userID: msg.author.id,
@@ -113,9 +120,13 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
+		let response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
 
 		return msg.send(response);
 	}

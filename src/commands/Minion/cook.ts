@@ -6,7 +6,8 @@ import {
 	formatDuration,
 	rand,
 	removeItemFromBank,
-	itemNameFromID
+	itemNameFromID,
+	isWeekend
 } from '../../lib/util';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -89,7 +90,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const duration = quantity * timeToCookSingleCookable;
+		let duration = quantity * timeToCookSingleCookable;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${
@@ -97,6 +98,12 @@ export default class extends BotCommand {
 			} minutes, try a lower quantity. The highest amount of ${
 				cookable.name
 			}s you can cook is ${Math.floor(msg.author.maxTripLength / timeToCookSingleCookable)}.`;
+		}
+
+		const boosts = [];
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
 		}
 
 		const data: CookingActivityTaskOptions = {
@@ -127,10 +134,14 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now cooking ${quantity}x ${
-				cookable.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
-		);
+		let response = `${msg.author.minionName} is now cooking ${quantity}x ${
+			cookable.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }

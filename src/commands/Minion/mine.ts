@@ -6,7 +6,8 @@ import {
 	stringMatches,
 	formatDuration,
 	rand,
-	itemNameFromID
+	itemNameFromID,
+	isWeekend
 } from '../../lib/util';
 import Mining from '../../lib/skilling/skills/mining';
 import { Activity, Tasks } from '../../lib/constants';
@@ -119,7 +120,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToMine);
 		}
-		const duration = quantity * timeToMine;
+		let duration = quantity * timeToMine;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -127,6 +128,11 @@ export default class extends BotCommand {
 			)}, try a lower quantity. The highest amount of ${
 				ore.name
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
+		}
+
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
 		}
 
 		const data: MiningActivityTaskOptions = {

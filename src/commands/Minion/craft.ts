@@ -6,7 +6,8 @@ import {
 	formatDuration,
 	rand,
 	itemNameFromID,
-	removeItemFromBank
+	removeItemFromBank,
+	isWeekend
 } from '../../lib/util';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
@@ -93,7 +94,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const duration = quantity * timeToCraftSingleItem;
+		let duration = quantity * timeToCraftSingleItem;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -116,6 +117,12 @@ export default class extends BotCommand {
 			if (!bankHasItem(userBank, id, qty * quantity)) {
 				throw `You don't have enough ${itemNameFromID(id)}.`;
 			}
+		}
+
+		const boosts = [];
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
 		}
 
 		const data: CraftingActivityTaskOptions = {
@@ -143,10 +150,14 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now crafting ${quantity}x ${
-				Craft.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
-		);
+		let response = `${msg.author.minionName} is now crafting ${quantity}x ${
+			Craft.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }

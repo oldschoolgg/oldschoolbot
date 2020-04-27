@@ -5,7 +5,8 @@ import {
 	stringMatches,
 	formatDuration,
 	rand,
-	itemNameFromID
+	itemNameFromID,
+	isWeekend
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
@@ -103,7 +104,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(msg.author.maxTripLength / timetoChop);
 		}
 
-		const duration = quantity * timetoChop;
+		let duration = quantity * timetoChop;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -111,6 +112,11 @@ export default class extends BotCommand {
 			)}, try a lower quantity. The highest amount of ${
 				log.name
 			} you can chop is ${Math.floor(msg.author.maxTripLength / timetoChop)}.`;
+		}
+
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
 		}
 
 		const data: WoodcuttingActivityTaskOptions = {

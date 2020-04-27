@@ -64,6 +64,17 @@ export default class extends BotCommand {
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
+		const currentQP = msg.author.settings.get(UserSettings.QP);
+		if (currentQP !== 0) {
+			let boostAmount = 1 - 0.25 * (currentQP / clueTier.qpBoost);
+			if (currentQP >= clueTier.qpBoost) {
+				boostAmount = 0.75;
+			}
+			const actualNumber = Math.floor((1 - boostAmount) * 100);
+			boosts.push(`${actualNumber}% boost for QP`);
+			duration *= boostAmount;
+		}
+
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const numOfScrolls = bank[clueTier.scrollID];
 

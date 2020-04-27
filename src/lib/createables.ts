@@ -522,6 +522,50 @@ const Createables: Createable[] = [
 			[itemID('Hell cat ears')]: 1
 		},
 		addOutputToCollectionLog: true
+	},
+	{
+		name: 'Serpentine helm',
+		inputItems: {
+			[itemID('Serpentine helm (uncharged)')]: 1,
+			[itemID("Zulrah's scales")]: 11_000
+		},
+		outputItems: {
+			[itemID('Serpentine helm')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Toxic staff of the dead',
+		inputItems: {
+			[itemID('Toxic staff (uncharged)')]: 1,
+			[itemID("Zulrah's scales")]: 11_000
+		},
+		outputItems: {
+			[itemID('Toxic staff of the dead')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Magma helm',
+		inputItems: {
+			[itemID('Serpentine helm')]: 1,
+			[itemID('Magma mutagen')]: 1
+		},
+		outputItems: {
+			[itemID('Magma helm')]: 1
+		},
+		cantHaveItems: {}
+	},
+	{
+		name: 'Tanzanite helm',
+		inputItems: {
+			[itemID('Serpentine helm')]: 1,
+			[itemID('Tanzanite mutagen')]: 1
+		},
+		outputItems: {
+			[itemID('Tanzanite helm')]: 1
+		},
+		cantHaveItems: {}
 	}
 ];
 

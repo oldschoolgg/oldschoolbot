@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
+import { stringMatches, formatDuration, rand, isWeekend } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Runecraft, {
@@ -107,7 +107,7 @@ export default class extends BotCommand {
 		}
 
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
-		const duration = numberOfInventories * tripLength;
+		let duration = numberOfInventories * tripLength;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -118,6 +118,11 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemFromBank(itemID('Pure essence'), quantity);
+
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
+		}
 
 		const data: RunecraftActivityTaskOptions = {
 			runeID: rune.id,
@@ -133,12 +138,16 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		const response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${
+		let response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${
 			rune.name
 		}, it'll take around ${formatDuration(
 			duration
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${quantityPerEssence *
 			quantity}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
 
 		return msg.send(response);
 	}

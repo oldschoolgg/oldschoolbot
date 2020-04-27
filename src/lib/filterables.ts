@@ -60,6 +60,12 @@ const skilling = resolveItems([
 	'Uncut diamond',
 	'Uncut dragonstone',
 	'Uncut onyx',
+	'Sapphire',
+	'Emerald',
+	'Ruby',
+	'Diamond',
+	'Dragonstone',
+	'Onyx',
 	'Logs',
 	'Oak logs',
 	'Willow logs',
@@ -147,7 +153,9 @@ const skilling = resolveItems([
 	'Celastrus seed',
 	'Redwood tree seed',
 	'Raw shark',
-	'Grapes'
+	'Grapes',
+	'Battlestaff',
+	'Fire orb'
 ]);
 
 const gear = resolveItems([

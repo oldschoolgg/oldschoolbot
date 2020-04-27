@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
+import { stringMatches, formatDuration, rand, isWeekend } from '../../lib/util';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -69,7 +69,7 @@ export default class extends BotCommand {
 			throw `You dont have ${quantity}x ${log.name}.`;
 		}
 
-		const duration = quantity * timeToLightSingleLog;
+		let duration = quantity * timeToLightSingleLog;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -77,6 +77,12 @@ export default class extends BotCommand {
 			)}, try a lower quantity. The highest amount of ${
 				log.name
 			}s you can light is ${Math.floor(msg.author.maxTripLength / timeToLightSingleLog)}.`;
+		}
+
+		const boosts = [];
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
 		}
 
 		const data: FiremakingActivityTaskOptions = {
@@ -96,10 +102,14 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now lighting ${quantity}x ${
-				log.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
-		);
+		let response = `${msg.author.minionName} is now lighting ${quantity}x ${
+			log.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }

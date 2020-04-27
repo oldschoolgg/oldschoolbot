@@ -32,4 +32,5 @@ export interface ClueTier {
 	scrollID: number;
 	timeToFinish: number;
 	milestoneReward?: ClueMilestoneReward;
+	qpBoost: number;
 }

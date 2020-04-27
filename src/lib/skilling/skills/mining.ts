@@ -28,10 +28,10 @@ const ores: Ore[] = [
 	},
 	{
 		level: 15,
-		xp: 48,
+		xp: 35,
 		id: 440,
 		name: 'Iron ore',
-		respawnTime: 0.2,
+		respawnTime: -0.1,
 		petChance: 750_000
 	},
 	{
@@ -60,7 +60,7 @@ const ores: Ore[] = [
 	},
 	{
 		level: 40,
-		xp: 45,
+		xp: 65,
 		id: 444,
 		name: 'Gold ore',
 		respawnTime: 4,

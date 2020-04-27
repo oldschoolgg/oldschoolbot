@@ -6,7 +6,8 @@ import {
 	formatDuration,
 	rand,
 	itemNameFromID,
-	removeItemFromBank
+	removeItemFromBank,
+	isWeekend
 } from '../../lib/util';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
@@ -91,7 +92,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const duration = quantity * timeToSmithSingleBar;
+		let duration = quantity * timeToSmithSingleBar;
 
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -99,6 +100,12 @@ export default class extends BotCommand {
 			)}, try a lower quantity. The highest amount of ${
 				smithedBar.name
 			}s you can smith is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
+		}
+
+		const boosts = [];
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
 		}
 
 		const data: SmithingActivityTaskOptions = {
@@ -131,10 +138,15 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		msg.author.incrementMinionDailyDuration(duration);
-		return msg.send(
-			`${msg.author.minionName} is now smithing ${quantity * smithedBar.outputMultiple}x ${
-				smithedBar.name
-			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`
-		);
+		let response = `${msg.author.minionName} is now smithing ${quantity *
+			smithedBar.outputMultiple}x ${
+			smithedBar.name
+		}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
 	}
 }
