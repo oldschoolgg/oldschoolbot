@@ -13,7 +13,7 @@ import {
 	toTitleCase
 } from '../lib/util';
 import clueTiers from '../lib/minions/data/clueTiers';
-import killableMonsters from '../lib/killableMonsters';
+import killableMonsters from '../lib/minions/data/killableMonsters';
 import Mining from '../lib/skilling/skills/mining';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import {

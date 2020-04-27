@@ -3,7 +3,7 @@ import { TextChannel } from 'discord.js';
 
 import { Activity, Events } from '../../lib/constants';
 import { randomItemFromArray, roll } from '../../lib/util';
-import killableMonsters from '../../lib/killableMonsters';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 const deathMessages = [

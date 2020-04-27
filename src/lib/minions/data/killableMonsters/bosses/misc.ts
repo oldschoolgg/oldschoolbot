@@ -1,0 +1,147 @@
+import { Monsters } from 'oldschooljs';
+
+import { KillableMonster } from '../../../types';
+import resolveItems from '../../../../util/resolveItems';
+import itemID from '../../../../util/itemID';
+import { Time } from '../../../../constants';
+
+const killableBosses: KillableMonster[] = [
+	{
+		id: Monsters.GiantMole.id,
+		name: Monsters.GiantMole.name,
+		aliases: Monsters.GiantMole.aliases,
+		timeToFinish: Time.Minute * 1.6,
+		table: Monsters.GiantMole,
+		emoji: '<:Baby_mole:324127375858204672>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 3,
+		itemsRequired: resolveItems([
+			"Dharok's helm",
+			"Dharok's platebody",
+			"Dharok's platelegs",
+			"Dharok's greataxe"
+		]),
+		notifyDrops: resolveItems(['Baby mole', 'Curved bone']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Barrows gloves')]: 5,
+			[itemID('Berserker ring')]: 5
+		}
+	},
+	{
+		id: Monsters.Vorkath.id,
+		name: Monsters.Vorkath.name,
+		aliases: Monsters.Vorkath.aliases,
+		timeToFinish: Time.Minute * 3.2,
+		table: Monsters.Vorkath,
+		emoji: '<:Vorki:400713309252222977>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 8,
+		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
+		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
+		qpRequired: 205,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
+	},
+	{
+		id: Monsters.Zulrah.id,
+		name: Monsters.Zulrah.name,
+		aliases: Monsters.Zulrah.aliases,
+		timeToFinish: Time.Minute * 3.2,
+		table: Monsters.Zulrah,
+		emoji: '<:Pet_snakeling:324127377816944642>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 8,
+		itemsRequired: resolveItems([
+			'Armadyl chestplate',
+			'Armadyl chainskirt',
+			"Ahrim's robetop",
+			"Ahrim's robeskirt"
+		]),
+		notifyDrops: resolveItems([
+			'Tanzanite mutagen',
+			'Magma mutagen',
+			'Jar of swamp',
+			'Pet snakeling'
+		]),
+		qpRequired: 75,
+		itemInBankBoosts: {
+			[itemID('Barrows gloves')]: 5,
+			[itemID('Ranger boots')]: 5,
+			[itemID("Iban's staff")]: 2
+		}
+	},
+	{
+		id: Monsters.KalphiteQueen.id,
+		name: Monsters.KalphiteQueen.name,
+		aliases: Monsters.KalphiteQueen.aliases,
+		timeToFinish: Time.Minute * 4,
+		table: Monsters.KalphiteQueen,
+		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 7,
+		itemsRequired: resolveItems([
+			"Verac's flail",
+			"Verac's plateskirt",
+			["Black d'hide body", "Karil's leathertop"]
+		]),
+		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 10
+		}
+	},
+	{
+		id: Monsters.CorporealBeast.id,
+		name: Monsters.CorporealBeast.name,
+		aliases: Monsters.CorporealBeast.aliases,
+		table: Monsters.CorporealBeast,
+		timeToFinish: Time.Minute * 18,
+		emoji: '<:Pet_dark_core:324127377347313674>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6,
+		itemsRequired: resolveItems(['Zamorakian spear']),
+		notifyDrops: resolveItems([
+			'Spectral sigil',
+			'Arcane sigil',
+			'Elysian sigil',
+			'Pet dark core'
+		]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Bandos godsword')]: 5,
+			[itemID('Dragon warhammer')]: 10
+		}
+	},
+	{
+		id: Monsters.Cerberus.id,
+		name: Monsters.Cerberus.name,
+		aliases: Monsters.Cerberus.aliases,
+		timeToFinish: Time.Minute * 2.65,
+		table: Monsters.Cerberus,
+		emoji: '<:Hellpuppy:324127376185491458>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 7,
+		itemsRequired: resolveItems([
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
+			'Zamorakian spear'
+		]),
+		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Spectral spirit shield')]: 10,
+			[itemID('Bandos chestplate')]: 5,
+			[itemID('Bandos tassets')]: 5
+		}
+	}
+];
+
+export default killableBosses;
