@@ -14,7 +14,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { formatItemReqs } from '../../lib/util/formatItemReqs';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
 
@@ -488,22 +487,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			quantity = Math.floor(msg.author.maxTripLength / timeToFinish);
 		}
 
-		if (monster.qpRequired && msg.author.settings.get(UserSettings.QP) < monster.qpRequired) {
-			throw `You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`${msg.cmdPrefix}quest\``;
-		}
-
-		// Make sure they have all the required items to kill this monster
-		for (const item of monster.itemsRequired) {
-			if (Array.isArray(item)) {
-				if (!item.some(itemReq => msg.author.hasItemEquippedOrInBank(itemReq as number))) {
-					throw `You need one of these items to kill ${monster.name}: ${formatItemReqs(
-						monster.itemsRequired
-					)}`;
-				}
-			} else if (!msg.author.hasItemEquippedOrInBank(item)) {
-				throw `You need a ${itemNameFromID(item)} to kill ${monster.name}.`;
-			}
-		}
+		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
+		if (!hasReqs) throw reason;
 
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {

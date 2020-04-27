@@ -1,7 +1,7 @@
 import { Image } from 'canvas';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask, util } from 'klasa';
+import { ScheduledTask, util, KlasaClient } from 'klasa';
 import { Client } from 'discord.js';
 import { nodeCrypto, integer } from 'random-js';
 
@@ -208,7 +208,7 @@ export function saidYes(content: string) {
 	return newContent === 'y' || newContent === 'yes';
 }
 
-export function removeDuplicatesFromArray(arr: unknown[]) {
+export function removeDuplicatesFromArray<T>(arr: readonly T[]): T[] {
 	return [...new Set(arr)];
 }
 
@@ -275,4 +275,8 @@ export function calcWhatPercent(partialValue: number, totalValue: number): numbe
  */
 export function calcPercentOfNum(percent: number, valueToCalc: number): number {
 	return (percent * valueToCalc) / 100;
+}
+
+export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
+	return Promise.all(ids.map(id => client.users.fetch(id)));
 }

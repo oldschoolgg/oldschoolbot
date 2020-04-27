@@ -104,6 +104,7 @@ export const enum Activity {
 	Agility = 'Agility',
 	Cooking = 'Cooking',
 	MonsterKilling = 'MonsterKilling',
+	GroupMonsterKilling = 'GroupMonsterKilling',
 	ClueCompletion = 'ClueCompletion',
 	Fishing = 'Fishing',
 	Mining = 'Mining',

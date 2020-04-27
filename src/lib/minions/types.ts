@@ -6,8 +6,9 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 
-import { Bank } from '../types';
+import { Bank, ArrayItemsResolved } from '../types';
 import { PerkTier } from '../constants';
+import { MonsterActivityTaskOptions } from '../types/minions';
 
 export interface BankBackground {
 	image: Image | null;
@@ -55,4 +56,14 @@ export interface KillableMonster {
 	 * this monster.
 	 */
 	itemInBankBoosts?: Bank;
+
+	/**
+	 * Whether or not this monster can be groupkilled.
+	 */
+	groupKillable?: true;
+}
+
+export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
+	leader: string;
+	users: string[];
 }
