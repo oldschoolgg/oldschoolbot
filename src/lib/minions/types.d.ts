@@ -33,3 +33,26 @@ export interface ClueTier {
 	timeToFinish: number;
 	milestoneReward?: ClueMilestoneReward;
 }
+
+export interface KillableMonster {
+	id: number;
+	name: string;
+	aliases: string[];
+	timeToFinish: number;
+	table: {
+		kill(quantity: number): Bank;
+	};
+	emoji: string;
+	wildy: boolean;
+	canBeKilled: boolean;
+	difficultyRating: number;
+	itemsRequired?: ArrayItemsResolved;
+	notifyDrops?: ArrayItemsResolved;
+	qpRequired: number;
+
+	/**
+	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
+	 * this monster.
+	 */
+	itemInBankBoosts?: Bank;
+}

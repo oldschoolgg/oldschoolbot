@@ -4,16 +4,10 @@ import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Tasks, Activity, Emoji, Time, Events, Color, PerkTier } from '../../lib/constants';
-import {
-	formatDuration,
-	randomItemFromArray,
-	findMonster,
-	isWeekend,
-	itemNameFromID
-} from '../../lib/util';
+import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters from '../../lib/killableMonsters';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -22,6 +16,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { formatItemReqs } from '../../lib/util/formatItemReqs';
 import { requiresMinion } from '../../lib/minions/decorators';
+import findMonster from '../../lib/minions/functions/findMonster';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters

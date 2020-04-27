@@ -3,7 +3,7 @@ import { MessageAttachment } from 'discord.js';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
 import { noOp, saidYes } from '../../lib/util';
-import killableMonsters from '../../lib/killableMonsters';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
