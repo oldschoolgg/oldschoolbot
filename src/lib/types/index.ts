@@ -1,3 +1,5 @@
+import { KlasaUser } from 'klasa';
+
 export interface Bank {
 	[key: number]: number;
 }
@@ -142,3 +144,12 @@ export interface Patron {
 export type ResolvableItem = number | string;
 export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
 export type ArrayItemsResolved = (number | number[])[];
+
+export interface MakePartyOptions {
+	maxSize: number;
+	minSize: number;
+	users: readonly KlasaUser[];
+	leader: KlasaUser;
+	message: string;
+	joinWord: string;
+}

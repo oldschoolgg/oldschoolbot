@@ -44,6 +44,7 @@ import Runecraft, { RunecraftActivityTaskOptions } from '../lib/skilling/skills/
 import Cooking from '../lib/skilling/skills/cooking';
 import Smelting from '../lib/skilling/skills/smithing/smelting';
 import Smithing from '../lib/skilling/skills/smithing/smithing';
+import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -335,6 +336,15 @@ export default class extends Extendable {
 		switch (currentTask.type) {
 			case Activity.MonsterKilling: {
 				const data = currentTask as MonsterActivityTaskOptions;
+				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
+
+				return `${this.minionName} is currently killing ${data.quantity}x ${
+					monster!.name
+				}. Approximately ${formattedDuration} remaining.`;
+			}
+
+			case Activity.GroupMonsterKilling: {
+				const data = currentTask as GroupMonsterActivityTaskOptions;
 				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
 
 				return `${this.minionName} is currently killing ${data.quantity}x ${
