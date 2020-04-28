@@ -85,6 +85,7 @@ export const enum Tasks {
 	AgilityActivity = 'agilityActivity',
 	CookingActivity = 'cookingActivity',
 	MonsterActivity = 'monsterActivity',
+	GroupMonsterActivity = 'groupMonsterActivity',
 	ClueActivity = 'clueActivity',
 	FishingActivity = 'fishingActivity',
 	MiningActivity = 'miningActivity',

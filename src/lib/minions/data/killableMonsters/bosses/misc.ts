@@ -117,7 +117,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Bandos godsword')]: 5,
 			[itemID('Dragon warhammer')]: 10
-		}
+		},
+		groupKillable: true,
+		respawnTime: 40_000
 	},
 	{
 		id: Monsters.Cerberus.id,

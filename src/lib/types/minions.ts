@@ -101,6 +101,7 @@ export type MinionActivityTask =
 	| Tasks.AgilityActivity
 	| Tasks.CookingActivity
 	| Tasks.MonsterActivity
+	| Tasks.GroupMonsterActivity
 	| Tasks.ClueActivity
 	| Tasks.FishingActivity
 	| Tasks.MiningActivity
