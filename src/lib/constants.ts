@@ -69,12 +69,14 @@ export const enum Emoji {
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
+	Prayer = 'Prayer',
 	Join = '<:join:705971600956194907>'
 }
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
 	Start = '705973302719414329'
+	
 }
 
 export const enum Image {
@@ -101,6 +103,7 @@ export const enum Tasks {
 	RunecraftActivity = 'runecraftActivity',
 	FiremakingActivity = 'firemakingActivity',
 	CraftingActivity = 'craftingActivity',
+	PrayerActivity = 'prayerActivity',
 	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -121,7 +124,8 @@ export const enum Activity {
 	Firemaking = 'Firemaking',
 	Runecraft = 'Runecraft',
 	Smelting = 'Smelting',
-	Crafting = 'Crafting'
+	Crafting = 'Crafting',
+	Prayer = 'Prayer'
 }
 
 export const enum Events {

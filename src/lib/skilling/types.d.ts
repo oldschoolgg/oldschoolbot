@@ -7,7 +7,8 @@ export const enum SkillsEnum {
 	Woodcutting = 'woodcutting',
 	Firemaking = 'firemaking',
 	Runecraft = 'runecraft',
-	Crafting = 'crafting'
+	Crafting = 'crafting',
+	Prayer = 'prayer'
 }
 
 export interface Ore {
@@ -110,4 +111,11 @@ export interface Craftable {
 	xp: number;
 	inputItems: Bank;
 	tickRate: number;
+}
+
+export interface Bone {
+	level: number;
+	xp: number;
+	name: string;
+	inputBones: number;
 }
