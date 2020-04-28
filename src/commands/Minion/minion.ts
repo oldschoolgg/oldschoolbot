@@ -480,11 +480,28 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
+		// Check if they have any boost items
 		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+			for (let i = 0; i < monster.itemInBankBoosts.length; i++) {
+				// Removes the boost value from the array
+				const newArray = monster.itemInBankBoosts[i].slice(
+					1,
+					monster.itemInBankBoosts[i].length
+				);
+				const boostAmt = monster.itemInBankBoosts[i][0];
+				let boostName = '';
+				let boost = false;
+				// Checks if the user has any of the items
+				for (const item of newArray) {
+					boostName += `${itemNameFromID(item)} **or** `;
+					if (msg.author.hasItemEquippedOrInBank(item)) {
+						boost = true;
+					}
+				}
+				if (boost === true) {
+					timeToFinish *= (100 - boostAmt) / 100;
+					boosts.push(`${boostAmt}% for ${boostName.slice(0, -8)}`);
+				}
 			}
 		}
 
