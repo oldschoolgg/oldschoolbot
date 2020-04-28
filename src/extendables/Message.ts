@@ -61,10 +61,15 @@ export default class extends Extendable {
 
 						const confirmed =
 							usersWhoConfirmed.length === usersWithoutLeader.length
-								? `Everyone!`
-								: usersWhoConfirmed.map(u => u.username).join(', ');
+								? `-`
+								: usersWithoutLeader
+										.filter(user => !usersWhoConfirmed.includes(user))
+										.map(u => u.username)
+										.join(', ');
 
-						confirmMessage.edit(`${options.message}\n\nConfirmed Users: ${confirmed}`);
+						confirmMessage.edit(
+							`${options.message}\n\n**Unconfirmed Users:** ${confirmed}`
+						);
 						return true;
 					}
 					return false;
