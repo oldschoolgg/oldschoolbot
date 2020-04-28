@@ -7,6 +7,7 @@ import { nodeCrypto, integer } from 'random-js';
 
 import { Tasks, Events } from './constants';
 import { Bank } from './types';
+import { channelIsSendable } from './util/channelIsSendable';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -128,7 +129,9 @@ export function cleanString(str: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): any {}
+export function noOp(any: any): void {
+	return undefined;
+}
 
 export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
@@ -279,4 +282,10 @@ export function calcPercentOfNum(percent: number, valueToCalc: number): number {
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 	return Promise.all(ids.map(id => client.users.fetch(id)));
+}
+
+export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
+	const channel = client.channels.get(channelID);
+	if (!channelIsSendable(channel)) return;
+	client.queuePromise(() => channel.send(str));
 }

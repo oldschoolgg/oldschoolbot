@@ -56,11 +56,11 @@ export interface KillableMonster {
 	 * this monster.
 	 */
 	itemInBankBoosts?: Bank;
-
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
 	groupKillable?: true;
+	respawnTime?: number;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {

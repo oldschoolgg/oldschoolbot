@@ -277,13 +277,17 @@ export default class extends Extendable {
 	}
 
 	public get minionIsBusy(this: User): boolean {
-		return this.client.schedule.tasks
-			.filter(activityTaskFilter)
-			.some(task =>
-				(task.data as TickerTaskData).subTasks.some(
-					(subTask: ActivityTaskOptions) => subTask.userID === this.id
-				)
-			);
+		return this.client.schedule.tasks.filter(activityTaskFilter).some(task =>
+			(task.data as TickerTaskData).subTasks.some((subTask: ActivityTaskOptions) => {
+				if (
+					subTask.type === Activity.GroupMonsterKilling &&
+					(subTask as GroupMonsterActivityTaskOptions).users.includes(this.id)
+				) {
+					return true;
+				}
+				return subTask.userID === this.id;
+			})
+		);
 	}
 
 	public get minionName(this: User): string {
@@ -349,6 +353,8 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently killing ${data.quantity}x ${
 					monster!.name
+				} with a party of ${
+					data.users.length
 				}. Approximately ${formattedDuration} remaining.`;
 			}
 
