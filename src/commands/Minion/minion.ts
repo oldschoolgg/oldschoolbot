@@ -493,14 +493,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				let boost = false;
 				// Checks if the user has any of the items
 				for (const item of newArray) {
-					boostName += `${itemNameFromID(item)} **or** `;
 					if (msg.author.hasItemEquippedOrInBank(item)) {
+						boostName = `${itemNameFromID(item)}`;
 						boost = true;
 					}
 				}
 				if (boost === true) {
 					timeToFinish *= (100 - boostAmt) / 100;
-					boosts.push(`${boostAmt}% for ${boostName.slice(0, -8)}`);
+					boosts.push(`${boostAmt}% for ${boostName}`);
 				}
 			}
 		}
