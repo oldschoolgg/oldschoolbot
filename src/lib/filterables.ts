@@ -155,7 +155,11 @@ const skilling = resolveItems([
 	'Raw shark',
 	'Grapes',
 	'Battlestaff',
-	'Fire orb'
+	'Fire orb',
+	'Green dragon leather',
+	'Blue dragon leather',
+	'Red dragon leather',
+	'Black dragon leather'
 ]);
 
 const gear = resolveItems([
