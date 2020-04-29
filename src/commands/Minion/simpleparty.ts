@@ -10,8 +10,6 @@ export default class extends BotCommand {
 			usage: '<mass|party> [users:...user]',
 			usageDelim: ' ',
 			cooldown: 5,
-			oneAtTime: true,
-			altProtection: true,
 			subcommands: true
 		});
 	}
