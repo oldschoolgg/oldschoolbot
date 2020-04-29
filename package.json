@@ -6,6 +6,7 @@
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
+		"@types/lodash": "^4.14.150",
 		"bufferutil": "^4.0.1",
 		"canvas": "^2.6.1",
 		"canvas-constructor": "^1.1.2",
@@ -17,6 +18,7 @@
 		"klasa": "github:dirigeants/klasa#916/head",
 		"klasa-dashboard-hooks": "https://github.com/kyranet/klasa-dashboard-hooks",
 		"klasa-decorators": "^0.0.1",
+		"lodash": "^4.17.15",
 		"markovchain": "^1.0.2",
 		"moment": "^2.21.0",
 		"mongodb": "^3.5.2",

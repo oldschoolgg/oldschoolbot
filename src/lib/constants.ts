@@ -70,6 +70,11 @@ export const enum Emoji {
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>'
 }
+export const enum ReactionEmoji {
+	Join = '✅',
+	Leave = '705043374901690449',
+	Stop = '⛔'
+}
 
 export const enum Image {
 	DiceBag = 'https://i.imgur.com/sySQkSX.png'

@@ -23,7 +23,7 @@ export default async function announceLoot(
 		let notif = '';
 
 		if (team) {
-			notif = `In **${team.leader.username}'s** party of ${team.size} minions, ${team.lootRecipient.username} just received **${lootStr}**!`;
+			notif = `In **${team.leader.username}'s** party of ${team.size} minions killing ${monster.name}, ${team.lootRecipient.username} just received **${lootStr}**!`;
 		} else {
 			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${lootStr}**, their ${monster.name} KC is ${kc}!`;
 		}

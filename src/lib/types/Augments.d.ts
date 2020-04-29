@@ -60,7 +60,9 @@ declare module 'klasa' {
 			content?: string;
 			title?: string;
 		}): Promise<KlasaMessage>;
-		makeInviteParty(options: MakePartyOptions): void;
+		makeMassParty(options: MakePartyOptions): KlasaUser[];
+		makeInviteParty(options: MakePartyOptions): KlasaUser[];
+		removeAllReactions(): void;
 	}
 
 	interface SettingsFolder {
