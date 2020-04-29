@@ -20,7 +20,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
-		}
+		},
+		groupKillable: true,
+		respawnTime: Time.Minute * 1.5
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -41,7 +43,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Ranger boots')]: 5,
 			[itemID('Armadyl crossbow')]: 5
-		}
+		},
+		groupKillable: true,
+		respawnTime: Time.Minute * 1.5
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -61,7 +65,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Armadyl crossbow')]: 5
-		}
+		},
+		groupKillable: true,
+		respawnTime: Time.Minute * 1.5
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -81,7 +87,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
-		}
+		},
+		groupKillable: true,
+		respawnTime: Time.Minute * 1.5
 	}
 ];
 

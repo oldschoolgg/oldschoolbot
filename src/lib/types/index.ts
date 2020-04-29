@@ -148,8 +148,7 @@ export type ArrayItemsResolved = (number | number[])[];
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
-	users: readonly KlasaUser[];
 	leader: KlasaUser;
 	message: string;
-	joinWord: string;
+	usersAllowed?: string[];
 }
