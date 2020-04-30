@@ -56,12 +56,7 @@ export default class extends BotCommand {
 			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Tick} reaction to join.`
 		};
 
-		let users: KlasaUser[] = [];
-		try {
-			users = await msg.makeMassParty(partyOptions);
-		} catch (err) {
-			return msg.send(err.message);
-		}
+		const users = await msg.makePartyAwaiter(partyOptions);
 
 		this.checkReqs(users, monster);
 
@@ -119,12 +114,7 @@ export default class extends BotCommand {
 			message: `${msg.author.username} has invited ${usersInput.length} people to join their party to kill ${monster.name}! Click the ${Emoji.Tick} reaction to join.`
 		};
 
-		let users: KlasaUser[] = [];
-		try {
-			users = await msg.makeInviteParty(partyOptions);
-		} catch (err) {
-			return msg.send(err.message);
-		}
+		const users = await msg.makePartyAwaiter(partyOptions);
 
 		this.checkReqs(users, monster);
 

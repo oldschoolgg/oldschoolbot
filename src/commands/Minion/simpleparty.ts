@@ -22,12 +22,7 @@ export default class extends BotCommand {
 			message: `${msg.author.username} is doing amass! Anyone can click the ${Emoji.Tick} reaction to join.`
 		};
 
-		let users: KlasaUser[] = [];
-		try {
-			users = await msg.makeMassParty(partyOptions);
-		} catch (err) {
-			return msg.send(err.message);
-		}
+		const users = await msg.makePartyAwaiter(partyOptions);
 
 		return msg.channel.send(
 			`${partyOptions.leader.username}'s party (${users
@@ -47,15 +42,11 @@ export default class extends BotCommand {
 			usersAllowed: usersInput.map(u => u.id),
 			minSize: 1,
 			maxSize: 50,
-			message: `${msg.author.username} has invited ${usersInput.length} people to join their party! Click the ${Emoji.Tick} reaction to join.`
+			message: `${msg.author.username} has invited ${usersInput.length} people to join their party! Click the ${Emoji.Tick} reaction to join.`,
+			party: true
 		};
 
-		let users: KlasaUser[] = [];
-		try {
-			users = await msg.makeInviteParty(partyOptions);
-		} catch (err) {
-			return msg.send(err.message);
-		}
+		const users = await msg.makePartyAwaiter(partyOptions);
 
 		return msg.channel.send(
 			`${partyOptions.leader.username}'s party (${users
