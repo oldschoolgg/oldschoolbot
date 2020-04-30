@@ -67,7 +67,6 @@ export default class extends Task {
 							}
 						});
 				}
-				this.client.user?.setActivity('discord.gg/ob');
 			})
 			.catch(console.error);
 	}
