@@ -62,7 +62,7 @@ async function _setup(
 
 			collector.on('collect', async (reaction, user) => {
 				if (user.partial) await user.fetch();
-				switch (reaction.emoji.id || reaction.emoji.name) {
+				switch (reaction.emoji.name) {
 					case ReactionEmoji.Join: {
 						if (usersWhoConfirmed.includes(user)) return;
 
