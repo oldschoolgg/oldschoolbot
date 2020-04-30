@@ -72,7 +72,6 @@ export const enum Emoji {
 }
 export const enum ReactionEmoji {
 	Join = '✅',
-	Leave = '705043374901690449',
 	Stop = '⛔'
 }
 
