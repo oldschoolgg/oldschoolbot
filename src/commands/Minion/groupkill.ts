@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			leader: msg.author,
 			minSize: 1,
 			maxSize: 50,
-			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Tick} reaction to join.`
+			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Tick} reaction to join, click it again to leave.`
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);
@@ -111,7 +111,7 @@ export default class extends BotCommand {
 			usersAllowed: usersInput.map(u => u.id),
 			minSize: 1,
 			maxSize: 50,
-			message: `${msg.author.username} has invited ${usersInput.length} people to join their party to kill ${monster.name}! Click the ${Emoji.Tick} reaction to join.`
+			message: `${msg.author.username} has invited ${usersInput.length} people to join their party to kill ${monster.name}! Click the ${Emoji.Tick} reaction to join, click it again to leave.`
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);

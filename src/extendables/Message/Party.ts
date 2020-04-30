@@ -10,70 +10,76 @@ import { CustomReactionCollector } from '../../lib/structures/CustomReactionColl
 async function _setup(
 	msg: KlasaMessage,
 	options: MakePartyOptions
-): Promise<
-	[
-		(str: string) => Promise<KlasaMessage>,
-		KlasaUser[],
-		(onChange: () => void) => Promise<KlasaUser[]>
-	]
-> {
+): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
 	const confirmMessage = await msg.send(options.message);
 	await confirmMessage.react(ReactionEmoji.Join);
-	await confirmMessage.react(ReactionEmoji.Leave);
 	await confirmMessage.react(ReactionEmoji.Stop);
 
 	// Debounce message edits to prevent spam.
-	const debouncedEdit = debounce((str: string) => confirmMessage.edit(str), 500);
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];
 
-	const reactionAwaiter = (onChange: () => void) =>
+	const updateUsersIn = debounce(() => {
+		confirmMessage.edit(
+			`${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
+				.map(u => u.username)
+				.join(', ')}`
+		);
+	}, 500);
+
+	const removeUser = (user: KlasaUser) => {
+		console.log(`removing ${user.username}`);
+		if (user === options.leader) return;
+		const index = usersWhoConfirmed.indexOf(user);
+		if (index !== -1) {
+			usersWhoConfirmed.splice(index, 1);
+			updateUsersIn();
+		}
+	};
+
+	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
 			const collector = new CustomReactionCollector(
 				confirmMessage,
 				(reaction: MessageReaction, user: KlasaUser) => {
 					if (user.isIronman || user.bot) return false;
-					return ([
-						ReactionEmoji.Join,
-						ReactionEmoji.Leave,
-						ReactionEmoji.Stop
-					] as string[]).includes(reaction.emoji.id || reaction.emoji.name);
+					return ([ReactionEmoji.Join, ReactionEmoji.Stop] as string[]).includes(
+						reaction.emoji.id || reaction.emoji.name
+					);
 				},
-				{ time: 120_000 }
+				{ time: 120_000, max: options.usersAllowed?.length ?? options.maxSize }
 			);
+
+			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
+				console.log(`remove event triggered for ${user.username}`);
+				if (!usersWhoConfirmed.includes(user)) return false;
+				if (reaction.emoji.name !== ReactionEmoji.Join) return false;
+				removeUser(user);
+			});
 
 			for await (const [reaction, user] of collector) {
 				if (user.partial) await user.fetch();
 				switch (reaction.emoji.id || reaction.emoji.name) {
 					case ReactionEmoji.Join: {
-						// Sanity!
 						if (usersWhoConfirmed.includes(user)) continue;
-						// If only SOME may join, check
-						if (options.usersAllowed && !options.usersAllowed.includes(user.id))
-							continue;
 
-						// TODO(Magna): Handle maxSize pls thx
+						if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
+							continue;
+						}
+
+						if (usersWhoConfirmed.length >= options.maxSize) {
+							collector.stop('everyoneJoin');
+							break;
+						}
 
 						// Add the user
 						usersWhoConfirmed.push(user);
-						onChange();
+						updateUsersIn();
 						break;
 					}
-					case ReactionEmoji.Leave: {
-						// The leader cannot leave
-						if (user === options.leader) continue;
-						const index = usersWhoConfirmed.indexOf(user);
-						if (index !== -1) {
-							console.log(`${user.username} just left.`);
-							usersWhoConfirmed.splice(index, 1);
-							onChange();
-						}
-						break;
-					}
+
 					case ReactionEmoji.Stop: {
 						if (user === options.leader) {
-							reject(
-								`The leader canceled this ${options.party ? 'party' : 'amass'}!`
-							);
+							reject(`The leader canceled this ${options.party ? 'party' : 'mass'}!`);
 							collector.stop('partyCreatorEnd');
 						}
 						break;
@@ -83,7 +89,6 @@ async function _setup(
 
 			confirmMessage.removeAllReactions();
 
-			// If only the leader is overall in, sad beans
 			if (usersWhoConfirmed.length === 1) {
 				reject(`Nobody joined your ${options.party ? 'party' : 'mass'}! Sad :c`);
 			} else if (usersWhoConfirmed.length < options.minSize) {
@@ -93,7 +98,7 @@ async function _setup(
 			}
 		});
 
-	return [debouncedEdit, usersWhoConfirmed, reactionAwaiter];
+	return [usersWhoConfirmed, reactionAwaiter];
 }
 
 export default class extends Extendable {
@@ -102,15 +107,9 @@ export default class extends Extendable {
 	}
 
 	async makePartyAwaiter(this: KlasaMessage, options: MakePartyOptions) {
-		const [debouncedEdit, usersWhoConfirmed, reactionAwaiter] = await _setup(this, options);
+		const [usersWhoConfirmed, reactionAwaiter] = await _setup(this, options);
 
-		await reactionAwaiter(() => {
-			debouncedEdit(
-				`${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
-					.map(u => u.username)
-					.join(', ')}`
-			);
-		});
+		await reactionAwaiter();
 
 		return usersWhoConfirmed;
 	}
