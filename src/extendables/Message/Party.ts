@@ -27,7 +27,7 @@ async function _setup(
 	}, 500);
 
 	const removeUser = (user: KlasaUser) => {
-		console.log(`removing ${user.username}`);
+		console.log(`Removing ${user.username}`);
 		if (user === options.leader) return;
 		const index = usersWhoConfirmed.indexOf(user);
 		if (index !== -1) {
@@ -43,10 +43,14 @@ async function _setup(
 				(reaction: MessageReaction, user: KlasaUser) => {
 					if (user.isIronman || user.bot) return false;
 					return ([ReactionEmoji.Join, ReactionEmoji.Stop] as string[]).includes(
-						reaction.emoji.id || reaction.emoji.name
+						reaction.emoji.name
 					);
 				},
-				{ time: 120_000, max: options.usersAllowed?.length ?? options.maxSize }
+				{
+					time: 120_000,
+					max: options.usersAllowed?.length ?? options.maxSize,
+					dispose: true
+				}
 			);
 
 			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
@@ -56,14 +60,14 @@ async function _setup(
 				removeUser(user);
 			});
 
-			for await (const [reaction, user] of collector) {
+			collector.on('collect', async (reaction, user) => {
 				if (user.partial) await user.fetch();
-				switch (reaction.emoji.id || reaction.emoji.name) {
+				switch (reaction.emoji.name) {
 					case ReactionEmoji.Join: {
-						if (usersWhoConfirmed.includes(user)) continue;
+						if (usersWhoConfirmed.includes(user)) return;
 
 						if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
-							continue;
+							return;
 						}
 
 						if (usersWhoConfirmed.length >= options.maxSize) {
@@ -85,17 +89,19 @@ async function _setup(
 						break;
 					}
 				}
-			}
+			});
 
-			confirmMessage.removeAllReactions();
+			collector.once('end', () => {
+				confirmMessage.removeAllReactions();
 
-			if (usersWhoConfirmed.length === 1) {
-				reject(`Nobody joined your ${options.party ? 'party' : 'mass'}! Sad :c`);
-			} else if (usersWhoConfirmed.length < options.minSize) {
-				reject(`Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
-			} else {
-				resolve(usersWhoConfirmed);
-			}
+				if (usersWhoConfirmed.length === 1) {
+					reject(`Nobody joined your ${options.party ? 'party' : 'mass'}! Sad :c`);
+				} else if (usersWhoConfirmed.length < options.minSize) {
+					reject(`Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+				} else {
+					resolve(usersWhoConfirmed);
+				}
+			});
 		});
 
 	return [usersWhoConfirmed, reactionAwaiter];
