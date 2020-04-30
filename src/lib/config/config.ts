@@ -1,6 +1,7 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import permissionLevels from './permissionLevels';
+import { Intents } from './Intents';
 import {
 	providerConfig,
 	twitchClientID,
@@ -28,19 +29,20 @@ const clientOptions: KlasaClientOptions = {
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
 	messageSweepInterval: 120,
-	disabledEvents: [
-		'TYPING_START',
-		'CHANNEL_PINS_UPDATE',
-		'PRESENCE_UPDATE',
-		'VOICE_STATE_UPDATE',
-		'VOICE_SERVER_UPDATE'
-	],
+	disabledEvents: ['CHANNEL_PINS_UPDATE'],
 	disableEveryone: true,
 	shards: 'auto',
 	ws: {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
-		guild_subscriptions: false
+		intents: new Intents([
+			'GUILDS',
+			'GUILD_MEMBERS',
+			'GUILD_MESSAGES',
+			'GUILD_MESSAGE_REACTIONS',
+			'DIRECT_MESSAGES',
+			'DIRECT_MESSAGE_REACTIONS'
+		]).bitfield
 	},
 	/* Klasa Options */
 	createPiecesFolders: false,
