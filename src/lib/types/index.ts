@@ -151,4 +151,5 @@ export interface MakePartyOptions {
 	leader: KlasaUser;
 	message: string;
 	usersAllowed?: string[];
+	party?: boolean;
 }
