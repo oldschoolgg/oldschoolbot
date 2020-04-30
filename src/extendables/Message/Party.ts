@@ -42,7 +42,8 @@ async function _setup(
 			);
 
 			for await (const [reaction, user] of collector) {
-				switch (reaction.emoji.id ?? reaction.emoji.name) {
+				if (user.partial) await user.fetch();
+				switch (reaction.emoji.id || reaction.emoji.name) {
 					case ReactionEmoji.Join: {
 						// Sanity!
 						if (usersWhoConfirmed.includes(user)) continue;

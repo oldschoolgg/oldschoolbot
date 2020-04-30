@@ -62,6 +62,7 @@ const clientOptions: KlasaClientOptions = {
 			ServerResponse: ApiResponse
 		}
 	},
+	partials: ['USER'],
 	...customClientOptions
 };
 
