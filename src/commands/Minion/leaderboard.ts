@@ -4,10 +4,11 @@ import { util, KlasaMessage, Command, CommandStore } from 'klasa';
 import { SettingsEntry, StringKeyedBank } from '../../lib/types';
 import badges from '../../lib/badges';
 import { Time } from '../../lib/constants';
-import { findMonster, stringMatches, toTitleCase, convertXPtoLVL } from '../../lib/util';
+import { stringMatches, toTitleCase, convertXPtoLVL } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import Skills from '../../lib/skilling/skills';
+import findMonster from '../../lib/minions/functions/findMonster';
 
 const CACHE_TIME = Time.Minute * 5;
 

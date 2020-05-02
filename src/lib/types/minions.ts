@@ -1,4 +1,5 @@
 import { Activity, Tasks } from '../constants';
+import { GroupMonsterActivityTaskOptions } from '../minions/types';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -79,7 +80,7 @@ export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MonsterKillingTickerTaskData {
-	subTasks: MonsterActivityTaskOptions[];
+	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
 
 export interface ClueTickerTaskData {
@@ -100,6 +101,7 @@ export type MinionActivityTask =
 	| Tasks.AgilityActivity
 	| Tasks.CookingActivity
 	| Tasks.MonsterActivity
+	| Tasks.GroupMonsterActivity
 	| Tasks.ClueActivity
 	| Tasks.FishingActivity
 	| Tasks.MiningActivity

@@ -1,6 +1,8 @@
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
-import { Message, MessageAttachment } from 'discord.js';
-import { Bank } from '../lib/types';
+import { Message, MessageAttachment, TextChannel, Permissions } from 'discord.js';
+
+import { Bank } from '../../lib/types';
+import { noOp } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -28,5 +30,17 @@ export default class extends Extendable {
 	) {
 		const image = await this.client.tasks.get('bankImage')!.generateBankImage(bank, title);
 		return this.send(content, new MessageAttachment(image));
+	}
+
+	removeAllReactions(this: KlasaMessage) {
+		// Remove all reactions if the user has permissions to do so
+		if (
+			this.guild &&
+			(this.channel as TextChannel)
+				.permissionsFor(this.guild.me!)!
+				.has(Permissions.FLAGS.MANAGE_MESSAGES)
+		) {
+			this.reactions.removeAll().catch(noOp);
+		}
 	}
 }

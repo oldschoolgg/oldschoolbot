@@ -3,44 +3,24 @@ import { MessageAttachment } from 'discord.js';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
 import { noOp, saidYes } from '../../lib/util';
-import killableMonsters from '../../lib/killableMonsters';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import MinionCommand from '../../commands/Minion/minion';
+import announceLoot from '../../lib/minions/functions/announceLoot';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
-		const monster = killableMonsters.find(mon => mon.id === monsterID);
+		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
-		if (!monster || !user) {
-			this.client.emit(Events.Wtf, `Missing user or monster - ${logInfo}`);
-
-			return;
-		}
-
 		const loot = monster.table.kill(quantity);
-		const itemsToAnnounce = filterBankFromArrayOfItems(monster.notifyDrops as number[], loot);
-		if (Object.keys(itemsToAnnounce).length > 0) {
-			this.client.emit(
-				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
-					user.minionName
-				}, just received **${await createReadableItemListFromBank(
-					this.client,
-					itemsToAnnounce
-				)}**, their ${monster.name} KC is ${(user.settings.get(UserSettings.MonsterScores)[
-					monster.id
-				] ?? 0) + quantity}!`
-			);
-		}
+		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);
 
