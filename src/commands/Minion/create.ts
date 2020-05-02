@@ -26,23 +26,35 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		if (typeof quantity !== 'number') {
-			quantity = 1;
-		}
-
 		itemName = itemName.toLowerCase();
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) throw `That's not a valid item you can create.`;
 
+		if (typeof quantity !== 'number' || createableItem?.cantHaveItems) {
+			quantity = 1;
+		}
+
 		// Ensure they have the required skills to create the item.
 		if (
-			(createableItem.smithingLevel &&
-				msg.author.skillLevel(SkillsEnum.Smithing) < createableItem.smithingLevel) ||
-			(createableItem.firemakingLevel &&
-				msg.author.skillLevel(SkillsEnum.Firemaking) < createableItem.firemakingLevel)
+			createableItem.smithingLevel &&
+			msg.author.skillLevel(SkillsEnum.Smithing) < createableItem.smithingLevel
 		) {
-			throw `You don't have high enough stats to craft this item.`;
+			throw `You need ${createableItem.smithingLevel} smithing to create this item.`;
+		}
+
+		if (
+			createableItem.firemakingLevel &&
+			msg.author.skillLevel(SkillsEnum.Firemaking) < createableItem.firemakingLevel
+		) {
+			throw `You need ${createableItem.firemakingLevel} firemaking to create this item.`;
+		}
+
+		if (
+			createableItem.craftingLevel &&
+			msg.author.skillLevel(SkillsEnum.Firemaking) < createableItem.craftingLevel
+		) {
+			throw `You need ${createableItem.craftingLevel} crafting to create this item.`;
 		}
 
 		const outItems = multiplyBankQuantity(createableItem.outputItems, quantity);
