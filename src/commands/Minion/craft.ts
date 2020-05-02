@@ -86,8 +86,8 @@ export default class extends BotCommand {
 					continue;
 				}
 				const itemsOwned = userBank[parseInt(itemID)];
-				if (!itemsOwned) {
-					throw `You have no ${itemNameFromID(parseInt(itemID))}.`;
+				if (itemsOwned < qty) {
+					throw `You dont have enough ${itemNameFromID(parseInt(itemID))}.`;
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
