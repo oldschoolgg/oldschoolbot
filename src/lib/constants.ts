@@ -69,12 +69,12 @@ export const enum Emoji {
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
-	Join = '<:join:705971600956194907>'
+	Join = '<:join:706275228162195516>'
 }
 export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
+	Join = '706275228162195516',
+	Stop = '706275261016047816',
+	Start = '706275247086895114'
 }
 
 export const enum Image {
