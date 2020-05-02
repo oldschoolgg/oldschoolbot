@@ -6,14 +6,22 @@ import { debounce } from 'lodash';
 import { MakePartyOptions } from '../../lib/types';
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
+import { sleep } from '../../lib/util';
 
 async function _setup(
 	msg: KlasaMessage,
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
 	const confirmMessage = (await msg.channel.send(options.message)) as KlasaMessage;
-	await confirmMessage.react(ReactionEmoji.Join);
-	await confirmMessage.react(ReactionEmoji.Stop);
+	async function addEmojis() {
+		await confirmMessage.react(ReactionEmoji.Join);
+		await sleep(750);
+		await confirmMessage.react(ReactionEmoji.Stop);
+		await sleep(750);
+		await confirmMessage.react(ReactionEmoji.Start);
+	}
+
+	addEmojis();
 
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];
 
@@ -40,13 +48,25 @@ async function _setup(
 			const collector = new CustomReactionCollector(
 				confirmMessage,
 				(reaction: MessageReaction, user: KlasaUser) => {
-					if (user.isIronman || user.bot || user.minionIsBusy) return false;
+					if (
+						user.isIronman ||
+						user.bot ||
+						user.minionIsBusy ||
+						!reaction.emoji.id ||
+						!user.hasMinion
+					) {
+						return false;
+					}
+
 					if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
 						return false;
 					}
-					return ([ReactionEmoji.Join, ReactionEmoji.Stop] as string[]).includes(
-						reaction.emoji.name
-					);
+
+					return ([
+						ReactionEmoji.Join,
+						ReactionEmoji.Stop,
+						ReactionEmoji.Start
+					] as string[]).includes(reaction.emoji.id);
 				},
 				{
 					time: 120_000,
@@ -57,13 +77,13 @@ async function _setup(
 
 			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
 				if (!usersWhoConfirmed.includes(user)) return false;
-				if (reaction.emoji.name !== ReactionEmoji.Join) return false;
+				if (reaction.emoji.id !== ReactionEmoji.Join) return false;
 				removeUser(user);
 			});
 
 			collector.on('collect', async (reaction, user) => {
 				if (user.partial) await user.fetch();
-				switch (reaction.emoji.name) {
+				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
 						if (usersWhoConfirmed.includes(user)) return;
 
@@ -86,6 +106,14 @@ async function _setup(
 					case ReactionEmoji.Stop: {
 						if (user === options.leader) {
 							reject(`The leader canceled this ${options.party ? 'party' : 'mass'}!`);
+							collector.stop('partyCreatorEnd');
+						}
+						break;
+					}
+
+					case ReactionEmoji.Start: {
+						if (user === options.leader) {
+							resolve(usersWhoConfirmed);
 							collector.stop('partyCreatorEnd');
 						}
 						break;
