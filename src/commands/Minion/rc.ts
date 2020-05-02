@@ -90,9 +90,14 @@ export default class extends BotCommand {
 		// For each pouch the user has, increase their inventory size.
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const pouch of Runecraft.pouches) {
+			if (msg.author.skillLevel(SkillsEnum.Runecraft) < pouch.level) break;
 			if (bankHasItem(bank, pouch.id)) {
 				inventorySize += pouch.capacity - 1;
 			}
+		}
+
+		if (inventorySize > 28) {
+			boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 		}
 
 		const maxCanDo = Math.floor(msg.author.maxTripLength / tripLength) * inventorySize;
