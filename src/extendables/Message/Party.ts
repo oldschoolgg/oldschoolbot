@@ -12,7 +12,17 @@ async function _setup(
 	msg: KlasaMessage,
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
-	const confirmMessage = (await msg.channel.send(options.message)) as KlasaMessage;
+	const usersWhoConfirmed: KlasaUser[] = [options.leader];
+
+	function getMessageContent() {
+		return `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
+			.map(u => u.username)
+			.join(
+				', '
+			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`;
+	}
+
+	const confirmMessage = (await msg.channel.send(getMessageContent())) as KlasaMessage;
 	async function addEmojis() {
 		await confirmMessage.react(ReactionEmoji.Join);
 		await sleep(750);
@@ -23,15 +33,9 @@ async function _setup(
 
 	addEmojis();
 
-	const usersWhoConfirmed: KlasaUser[] = [options.leader];
-
 	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
-		confirmMessage.edit(
-			`${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
-				.map(u => u.username)
-				.join(', ')}`
-		);
+		confirmMessage.edit(getMessageContent());
 	}, 500);
 
 	const removeUser = (user: KlasaUser) => {
@@ -81,6 +85,15 @@ async function _setup(
 				removeUser(user);
 			});
 
+			function startTrip() {
+				if (usersWhoConfirmed.length < options.minSize) {
+					reject(`Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+					return;
+				}
+
+				resolve(usersWhoConfirmed);
+			}
+
 			collector.on('collect', async (reaction, user) => {
 				if (user.partial) await user.fetch();
 				switch (reaction.emoji.id) {
@@ -105,7 +118,9 @@ async function _setup(
 
 					case ReactionEmoji.Stop: {
 						if (user === options.leader) {
-							reject(`The leader canceled this ${options.party ? 'party' : 'mass'}!`);
+							reject(
+								`The leader cancelled this ${options.party ? 'party' : 'mass'}!`
+							);
 							collector.stop('partyCreatorEnd');
 						}
 						break;
@@ -113,7 +128,7 @@ async function _setup(
 
 					case ReactionEmoji.Start: {
 						if (user === options.leader) {
-							resolve(usersWhoConfirmed);
+							startTrip();
 							collector.stop('partyCreatorEnd');
 						}
 						break;
@@ -123,14 +138,7 @@ async function _setup(
 
 			collector.once('end', () => {
 				confirmMessage.removeAllReactions();
-
-				if (usersWhoConfirmed.length === 1) {
-					reject(`Nobody joined your ${options.party ? 'party' : 'mass'}! Sad :c`);
-				} else if (usersWhoConfirmed.length < options.minSize) {
-					reject(`Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
-				} else {
-					resolve(usersWhoConfirmed);
-				}
+				startTrip();
 			});
 		});
 
