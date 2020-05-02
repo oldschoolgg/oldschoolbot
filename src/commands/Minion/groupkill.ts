@@ -2,7 +2,7 @@ import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion, ironsCantUse } from '../../lib/minions/decorators';
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
 import { Activity, Tasks, Emoji } from '../../lib/constants';
 import { rand, formatDuration } from '../../lib/util';
@@ -35,6 +35,18 @@ export default class extends BotCommand {
 	checkReqs(users: KlasaUser[], monster: KillableMonster) {
 		// Check if every user has the requirements for this monster.
 		for (const user of users) {
+			if (!user.hasMinion) {
+				throw `${user.username} doesn't have a minion, so they can't join!`;
+			}
+
+			if (user.minionIsBusy) {
+				throw `${user.username} is busy right now and can't join!`;
+			}
+
+			if (user.isIronman) {
+				throw `${user.username} is an ironman, so they can't join!`;
+			}
+
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 			if (!hasReqs && 1 < 0) {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
@@ -43,8 +55,9 @@ export default class extends BotCommand {
 	}
 
 	@minionNotBusy
+	@requiresMinion
+	@ironsCantUse
 	async mass(msg: KlasaMessage, [inputQuantity, monsterName]: [number | undefined, string]) {
-		if (msg.author.id !== '157797566833098752') throw `deez nuts <:acHam:704315552809877524>`;
 		const monster = findMonster(monsterName);
 		if (!monster) throw `That monster doesn't exist!`;
 		if (!monster.groupKillable) throw `This monster can't be killed in groups!`;
@@ -92,11 +105,12 @@ export default class extends BotCommand {
 	}
 
 	@minionNotBusy
+	@requiresMinion
+	@ironsCantUse
 	async party(
 		msg: KlasaMessage,
 		[inputQuantity, monsterName, usersInput = []]: [number | undefined, string, KlasaUser[]]
 	) {
-		if (msg.author.id !== '157797566833098752') throw `deez nuts <:acHam:704315552809877524>`;
 		const monster = findMonster(monsterName);
 		if (!monster) throw `That monster doesn't exist!`;
 		if (!monster.groupKillable) throw `This monster can't be killed in groups!`;
@@ -111,11 +125,18 @@ export default class extends BotCommand {
 			usersAllowed: usersInput.map(u => u.id),
 			minSize: 1,
 			maxSize: 50,
-			message: `${msg.author.username} has invited ${usersInput.length} people to join their party to kill ${monster.name}! Click the ${Emoji.Tick} reaction to join, click it again to leave.`
+			message: `${msg.author.username} has invited ${usersInput.length} ${
+				usersInput.length > 1 ? 'people' : 'person'
+			} to join their party to kill ${monster.name}! Click the ${
+				Emoji.Tick
+			} reaction to join, click it again to leave.`
 		};
+
+		this.checkReqs(usersInput, monster);
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
+		// that error comes from here
 		this.checkReqs(users, monster);
 
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
@@ -145,7 +166,7 @@ export default class extends BotCommand {
 				monster.timeToFinish
 			)}, and waiting ${formatDuration(
 				monster.respawnTime!
-			)} between kills. - the total trip will take ${formatDuration(duration)}`
+			)} between kills. The total trip will take ${formatDuration(duration)}`
 		);
 	}
 }

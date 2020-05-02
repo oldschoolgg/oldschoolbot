@@ -6,9 +6,9 @@ import { calcPercentOfNum } from '../../util';
 export default function reducedTimeForGroup(users: KlasaUser[], monster: KillableMonster) {
 	let perKillTime = monster.timeToFinish;
 
-	// Monster is 20% faster to kill per user in the group.
+	// Monster is 35% faster to kill per user in the group.
 	for (let i = 0; i < users.length; i++) {
-		perKillTime -= calcPercentOfNum(20, perKillTime);
+		perKillTime -= calcPercentOfNum(35, perKillTime);
 	}
 
 	return perKillTime;
