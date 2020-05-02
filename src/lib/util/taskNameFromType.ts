@@ -10,6 +10,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.CookingActivity;
 		case Activity.MonsterKilling:
 			return Tasks.MonsterActivity;
+		case Activity.GroupMonsterKilling:
+			return Tasks.GroupMonsterActivity;
 		case Activity.Fishing:
 			return Tasks.FishingActivity;
 		case Activity.Mining:

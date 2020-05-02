@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import { Tasks } from '../../lib/constants';
+import { Tasks, Activity } from '../../lib/constants';
 import { MonsterKillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import runActivityTask from '../../lib/util/runActivityTask';
@@ -14,7 +14,13 @@ export default class extends Task {
 			// If the current task being checked finishes past now, break.
 			if (monsterKillingTaskData.finishDate > now) break;
 
-			runActivityTask(this.client, Tasks.MonsterActivity, monsterKillingTaskData);
+			runActivityTask(
+				this.client,
+				monsterKillingTaskData.type === Activity.MonsterKilling
+					? Tasks.MonsterActivity
+					: Tasks.GroupMonsterActivity,
+				monsterKillingTaskData
+			);
 
 			tasksThatWereFinished.push(monsterKillingTaskData.id);
 		}

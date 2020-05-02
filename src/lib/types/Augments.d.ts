@@ -6,8 +6,9 @@ import { Limit } from 'p-limit';
 import { Image } from 'canvas';
 
 import { CustomGet } from '../settings/types/UserSettings';
-import { Bank } from '.';
+import { Bank, MakePartyOptions } from '.';
 import { SkillsEnum } from '../skilling/types';
+import { KillableMonster } from '../minions/types';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -59,6 +60,8 @@ declare module 'klasa' {
 			content?: string;
 			title?: string;
 		}): Promise<KlasaMessage>;
+		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
+		removeAllReactions(): void;
 	}
 
 	interface SettingsFolder {
@@ -106,6 +109,11 @@ declare module 'discord.js' {
 		 * @param itemID The item ID.
 		 */
 		numItemsInBankSync(itemID: number): number;
+		/**
+		 * Returns a tuple where the first item is true/false if they have the requirements,
+		 * the second item is a string containing the reason they don't have the requirements.
+		 */
+		hasMonsterRequirements(monster: KillableMonster): [false, string] | [true];
 		/**
 		 * Returns this users Collection Log bank.
 		 */

@@ -1,13 +1,13 @@
 import { Image } from 'canvas';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask, util } from 'klasa';
+import { ScheduledTask, util, KlasaClient } from 'klasa';
 import { Client } from 'discord.js';
 import { nodeCrypto, integer } from 'random-js';
 
 import { Tasks, Events } from './constants';
-import killableMonsters, { KillableMonster } from './killableMonsters';
 import { Bank } from './types';
+import { channelIsSendable } from './util/channelIsSendable';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -129,7 +129,9 @@ export function cleanString(str: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): any {}
+export function noOp(any: any): void {
+	return undefined;
+}
 
 export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
@@ -171,13 +173,6 @@ export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
 
-export function findMonster(str: string): KillableMonster | undefined {
-	const mon = killableMonsters.find(
-		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
-	);
-	return mon;
-}
-
 export function saveCtx(ctx: any) {
 	const props = [
 		'fillStyle',
@@ -216,7 +211,7 @@ export function saidYes(content: string) {
 	return newContent === 'y' || newContent === 'yes';
 }
 
-export function removeDuplicatesFromArray(arr: unknown[]) {
+export function removeDuplicatesFromArray<T>(arr: readonly T[]): T[] {
 	return [...new Set(arr)];
 }
 
@@ -283,4 +278,14 @@ export function calcWhatPercent(partialValue: number, totalValue: number): numbe
  */
 export function calcPercentOfNum(percent: number, valueToCalc: number): number {
 	return (percent * valueToCalc) / 100;
+}
+
+export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
+	return Promise.all(ids.map(id => client.users.fetch(id)));
+}
+
+export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
+	const channel = client.channels.get(channelID);
+	if (!channelIsSendable(channel)) return;
+	client.queuePromise(() => channel.send(str));
 }

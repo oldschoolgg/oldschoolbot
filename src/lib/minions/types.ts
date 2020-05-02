@@ -6,8 +6,9 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 
-import { Bank } from '../types';
+import { Bank, ArrayItemsResolved } from '../types';
 import { PerkTier } from '../constants';
+import { MonsterActivityTaskOptions } from '../types/minions';
 
 export interface BankBackground {
 	image: Image | null;
@@ -32,4 +33,37 @@ export interface ClueTier {
 	scrollID: number;
 	timeToFinish: number;
 	milestoneReward?: ClueMilestoneReward;
+}
+
+export interface KillableMonster {
+	id: number;
+	name: string;
+	aliases: string[];
+	timeToFinish: number;
+	table: {
+		kill(quantity: number): Bank;
+	};
+	emoji: string;
+	wildy: boolean;
+	canBeKilled: boolean;
+	difficultyRating: number;
+	itemsRequired?: ArrayItemsResolved;
+	notifyDrops?: ArrayItemsResolved;
+	qpRequired: number;
+
+	/**
+	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
+	 * this monster.
+	 */
+	itemInBankBoosts?: Bank;
+	/**
+	 * Whether or not this monster can be groupkilled.
+	 */
+	groupKillable?: true;
+	respawnTime?: number;
+}
+
+export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
+	leader: string;
+	users: string[];
 }

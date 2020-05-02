@@ -70,6 +70,11 @@ export const enum Emoji {
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>'
 }
+export const enum ReactionEmoji {
+	Join = '705971600956194907',
+	Stop = '705972260950769669',
+	Start = '705973302719414329'
+}
 
 export const enum Image {
 	DiceBag = 'https://i.imgur.com/sySQkSX.png'
@@ -85,6 +90,7 @@ export const enum Tasks {
 	AgilityActivity = 'agilityActivity',
 	CookingActivity = 'cookingActivity',
 	MonsterActivity = 'monsterActivity',
+	GroupMonsterActivity = 'groupMonsterActivity',
 	ClueActivity = 'clueActivity',
 	FishingActivity = 'fishingActivity',
 	MiningActivity = 'miningActivity',
@@ -104,6 +110,7 @@ export const enum Activity {
 	Agility = 'Agility',
 	Cooking = 'Cooking',
 	MonsterKilling = 'MonsterKilling',
+	GroupMonsterKilling = 'GroupMonsterKilling',
 	ClueCompletion = 'ClueCompletion',
 	Fishing = 'Fishing',
 	Mining = 'Mining',
