@@ -29,7 +29,11 @@ export default class extends Monitor {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (!msg.guild || msg.guild.id !== SupportServer || Boolean(msg.command)) {
+		if (!msg.guild || msg.guild.id !== SupportServer) {
+			return;
+		}
+
+		if (!msg.command && !msg.author.bot) {
 			return;
 		}
 
