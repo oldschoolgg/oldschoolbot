@@ -31,7 +31,9 @@ export default class extends BotCommand {
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) throw `That's not a valid item you can create.`;
 
-		if (typeof quantity !== 'number' || createableItem.cantHaveItems) {
+		const cantHaveItemsBool = Boolean(createableItem.cantHaveItems);
+
+		if (typeof quantity !== 'number' || cantHaveItemsBool) {
 			quantity = 1;
 		}
 
@@ -85,6 +87,10 @@ export default class extends BotCommand {
 
 		const inputItemsString = await createReadableItemListFromBank(this.client, inItems);
 
+		const cantHaveItemsString = cantHaveItemsBool
+			? await createReadableItemListFromBank(this.client, createableItem.cantHaveItems!)
+			: '';
+
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
@@ -93,14 +99,9 @@ export default class extends BotCommand {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}.`;
 		}
 
-		// Check for any items they cant have 2 of.
-		if (createableItem.cantHaveItems) {
-			const cantHaveItemsString = await createReadableItemListFromBank(
-				this.client,
-				createableItem.cantHaveItems
-			);
-
-			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
+		if (cantHaveItemsBool) {
+			// Check for any items they cant have 2 of.
+			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems!)) {
 				const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
 				if (numOwned >= qty) {
 					throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
