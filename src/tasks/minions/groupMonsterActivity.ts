@@ -12,12 +12,16 @@ export default class extends Task {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: ItemBank } = {};
+		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
 			const loot = monster.table.kill(1);
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = addBankToBank(currentLoot ?? {}, loot);
+			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
+				? kcAmounts[userWhoGetsLoot]++
+				: 1;
 		}
 
 		const leaderUser = await this.client.users.fetch(leader);
@@ -29,7 +33,8 @@ export default class extends Task {
 			if (!user) continue;
 
 			await user.addItemsToBank(loot, true);
-			user.incrementMonsterScore(monsterID, quantity);
+			const kcToAdd = kcAmounts[user.id];
+			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
 			resultStr += `**${user.username} received:** ||${await createReadableItemListFromBank(
 				this.client,
 				loot
