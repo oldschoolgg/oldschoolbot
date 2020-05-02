@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.GroupMonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 1000,
+			finishDate: Date.now() + duration,
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		};
@@ -150,7 +150,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.GroupMonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 1000,
+			finishDate: Date.now() + duration,
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		};
