@@ -52,7 +52,7 @@ export default class extends BotCommand {
 
 		if (
 			createableItem.craftingLevel &&
-			msg.author.skillLevel(SkillsEnum.Firemaking) < createableItem.craftingLevel
+			msg.author.skillLevel(SkillsEnum.Crafting) < createableItem.craftingLevel
 		) {
 			throw `You need ${createableItem.craftingLevel} crafting to create this item.`;
 		}
