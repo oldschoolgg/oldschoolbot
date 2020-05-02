@@ -11,13 +11,13 @@ async function _setup(
 	msg: KlasaMessage,
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
-	const confirmMessage = await msg.send(options.message);
+	const confirmMessage = (await msg.channel.send(options.message)) as KlasaMessage;
 	await confirmMessage.react(ReactionEmoji.Join);
 	await confirmMessage.react(ReactionEmoji.Stop);
 
-	// Debounce message edits to prevent spam.
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];
 
+	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
 		confirmMessage.edit(
 			`${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
@@ -27,7 +27,6 @@ async function _setup(
 	}, 500);
 
 	const removeUser = (user: KlasaUser) => {
-		console.log(`Removing ${user.username}`);
 		if (user === options.leader) return;
 		const index = usersWhoConfirmed.indexOf(user);
 		if (index !== -1) {
@@ -41,7 +40,10 @@ async function _setup(
 			const collector = new CustomReactionCollector(
 				confirmMessage,
 				(reaction: MessageReaction, user: KlasaUser) => {
-					if (user.isIronman || user.bot) return false;
+					if (user.isIronman || user.bot || user.minionIsBusy) return false;
+					if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
+						return false;
+					}
 					return ([ReactionEmoji.Join, ReactionEmoji.Stop] as string[]).includes(
 						reaction.emoji.name
 					);
@@ -54,7 +56,6 @@ async function _setup(
 			);
 
 			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
-				console.log(`remove event triggered for ${user.username}`);
 				if (!usersWhoConfirmed.includes(user)) return false;
 				if (reaction.emoji.name !== ReactionEmoji.Join) return false;
 				removeUser(user);
@@ -70,7 +71,8 @@ async function _setup(
 							return;
 						}
 
-						if (usersWhoConfirmed.length >= options.maxSize) {
+						// +1 because of leader
+						if (usersWhoConfirmed.length >= options.maxSize + 1) {
 							collector.stop('everyoneJoin');
 							break;
 						}

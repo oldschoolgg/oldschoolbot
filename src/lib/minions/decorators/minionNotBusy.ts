@@ -8,7 +8,7 @@ const minionNotBusy = createFunctionInhibitor(
 	(msg: KlasaMessage) => {
 		return !msg.author.minionIsBusy;
 	},
-	(msg: KlasaMessage) => msg.send(msg.author.minionStatus)
+	(msg: KlasaMessage) => msg.send(`${msg.author.minionName} is currently busy.`)
 );
 
 export default minionNotBusy;
