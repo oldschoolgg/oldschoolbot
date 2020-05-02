@@ -342,7 +342,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
-		return msg.send(`Renamed your minion to ${Emoji.Minion} **${name}**`);
+		return msg.send(`Renamed your minion to ${msg.author.minionName}.`);
 	}
 
 	async fish(msg: KlasaMessage, [quantity, fishName]: [number, string]) {

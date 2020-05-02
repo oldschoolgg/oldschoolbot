@@ -7,7 +7,7 @@ export default function reducedTimeForGroup(users: KlasaUser[], monster: Killabl
 	let perKillTime = monster.timeToFinish;
 
 	// Monster is 35% faster to kill per user in the group.
-	for (let i = 0; i < users.length; i++) {
+	for (let i = 1; i < users.length; i++) {
 		perKillTime -= calcPercentOfNum(35, perKillTime);
 	}
 

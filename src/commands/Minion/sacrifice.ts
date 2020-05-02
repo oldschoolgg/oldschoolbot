@@ -74,6 +74,13 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (priceOfItem > 50_000_000) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${msg.author.username} just sacrificed ${quantity}x ${osItem.name}!`
+			);
+		}
+
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
