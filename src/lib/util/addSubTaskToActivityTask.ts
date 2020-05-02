@@ -13,11 +13,11 @@ export default function addSubTaskToActivityTask(
 
 	if (!task) throw `Missing activity task: ${taskName}.`;
 	if (
-		task.data.subTasks.some((task: ActivityTaskOptions) => {
-			if (task.userID === subTaskToAdd.userID) return true;
+		task.data.subTasks.some((subTask: ActivityTaskOptions) => {
+			if (subTask.userID === subTaskToAdd.userID) return true;
 			if (
-				task.type === Activity.GroupMonsterKilling &&
-				(task as GroupMonsterActivityTaskOptions).users.some(userID =>
+				subTask.type === Activity.GroupMonsterKilling &&
+				(subTask as GroupMonsterActivityTaskOptions).users.some(userID =>
 					(subTaskToAdd as GroupMonsterActivityTaskOptions).users.includes(userID)
 				)
 			) {
