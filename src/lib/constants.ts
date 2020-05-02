@@ -68,7 +68,8 @@ export const enum Emoji {
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
-	EasterEgg = '<:easterEgg:695473553314938920>'
+	EasterEgg = '<:easterEgg:695473553314938920>',
+	Join = '<:join:705971600956194907>'
 }
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
