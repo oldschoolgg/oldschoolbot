@@ -142,7 +142,7 @@ export default class extends Task {
 		}
 
 		// Roll for big fish
-		if (fish.bigFish && roll(fish.bigFishRate!)) {
+		if (fish.bigFish && roll(fish.bigFishRate! / quantity)) {
 			loot[fish.bigFish] = 1;
 		}
 
