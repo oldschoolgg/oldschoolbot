@@ -17,9 +17,7 @@ export default function addSubTaskToActivityTask(
 			if (subTask.userID === subTaskToAdd.userID) return true;
 			if (
 				subTask.type === Activity.GroupMonsterKilling &&
-				(subTask as GroupMonsterActivityTaskOptions).users.some(userID =>
-					(subTaskToAdd as GroupMonsterActivityTaskOptions).users.includes(userID)
-				)
+				(subTask as GroupMonsterActivityTaskOptions).users.includes(subTaskToAdd.userID)
 			) {
 				return true;
 			}
