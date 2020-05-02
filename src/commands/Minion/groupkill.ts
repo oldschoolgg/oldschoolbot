@@ -116,6 +116,7 @@ export default class extends BotCommand {
 		if (!monster.groupKillable) throw `This monster can't be killed in groups!`;
 
 		if (usersInput.length === 0) throw `You need to invite some people to your party!`;
+		if (usersInput.length > 100) throw `You can't have more than 100 in a party!`;
 		if (usersInput.includes(msg.author)) {
 			throw `You can't invite yourself to your own party!`;
 		}

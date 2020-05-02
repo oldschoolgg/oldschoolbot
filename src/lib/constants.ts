@@ -71,8 +71,9 @@ export const enum Emoji {
 	EasterEgg = '<:easterEgg:695473553314938920>'
 }
 export const enum ReactionEmoji {
-	Join = '✅',
-	Stop = '⛔'
+	Join = '705971600956194907',
+	Stop = '705972260950769669',
+	Start = '705973302719414329'
 }
 
 export const enum Image {
