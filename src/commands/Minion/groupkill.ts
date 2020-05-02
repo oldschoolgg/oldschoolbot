@@ -64,7 +64,7 @@ export default class extends BotCommand {
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 1,
+			minSize: 2,
 			maxSize: 50,
 			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Tick} reaction to join, click it again to leave.`
 		};
@@ -124,7 +124,7 @@ export default class extends BotCommand {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			usersAllowed: usersInput.map(u => u.id),
-			minSize: 1,
+			minSize: 2,
 			maxSize: 50,
 			message: `${msg.author.username} has invited ${usersInput.length} ${
 				usersInput.length > 1 ? 'people' : 'person'
