@@ -1,10 +1,11 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Misc } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
-import { stringMatches, itemNameFromID } from '../../lib/util';
+import { stringMatches, itemNameFromID, addBankToBank, roll } from '../../lib/util';
 import bankFromLootTableOutput from '../../lib/util/bankFromLootTableOutput';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
@@ -43,9 +44,15 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id);
 
-		const loot = clueTier.table.open();
+		let loot = clueTier.table.open();
+		let opened = `You opened one of your ${clueTier.name} Clue Caskets`;
 
-		const opened = `You opened one of your ${clueTier.name} Clue Caskets`;
+		let hadMimic = false;
+		if (clueTier.mimicChance && roll(clueTier.mimicChance)) {
+			loot = addBankToBank(Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot);
+			opened += ' and defeated the Mimic inside';
+			hadMimic = true;
+		}
 
 		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0 + 1;
 
@@ -75,7 +82,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (keys.length === 0) {
+		if (Object.keys(loot).length === 0) {
 			return msg.send(`${opened} and got nothing :(`);
 		}
 
@@ -90,10 +97,14 @@ export default class extends BotCommand {
 
 		const image = await task.generateBankImage(
 			loot,
-			`You opened a ${clueTier.name} clue and received...`
+			`You opened a ${clueTier.name} clue ${hadMimic ? 'with a mimic ' : ''}and received...`
 		);
 
 		msg.author.incrementClueScore(clueTier.id);
+		const MIMIC_ID = 23184;
+		if (hadMimic) {
+			msg.author.incrementMonsterScore(MIMIC_ID);
+		}
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
