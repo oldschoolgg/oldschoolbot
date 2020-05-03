@@ -2,7 +2,7 @@ import { KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 import { Misc } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
 import { stringMatches, itemNameFromID, addBankToBank, roll } from '../../lib/util';
@@ -101,9 +101,8 @@ export default class extends BotCommand {
 		);
 
 		msg.author.incrementClueScore(clueTier.id);
-		const MIMIC_ID = 23184;
 		if (hadMimic) {
-			msg.author.incrementMonsterScore(MIMIC_ID);
+			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID);
 		}
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));

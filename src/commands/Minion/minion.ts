@@ -3,7 +3,16 @@ import { Util } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Tasks, Activity, Emoji, Time, Events, Color, PerkTier } from '../../lib/constants';
+import {
+	Tasks,
+	Activity,
+	Emoji,
+	Time,
+	Events,
+	Color,
+	PerkTier,
+	MIMIC_MONSTER_ID
+} from '../../lib/constants';
 import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -217,6 +226,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				'\u200b',
 				monsterScoreChunk
 					.map(([monID, monKC]) => {
+						if (parseInt(monID) === MIMIC_MONSTER_ID) {
+							return `${Emoji.Casket} **Mimic:** ${monKC}`;
+						}
 						const mon = killableMonsters.find(m => m.id === parseInt(monID));
 						if (!mon) return `??[${monID}]: ${monKC}`;
 						return `${mon!.emoji} **${mon!.name}**: ${monKC}`;
