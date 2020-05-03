@@ -25,7 +25,7 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
 		}
-
+		// default bury speed
 		let speedmod = 1;
 
 		if (msg.flagArgs.chaos) {
@@ -74,7 +74,7 @@ export default class extends BotCommand {
 		// See if at chaos altar
 		let chaos = false;
 		if (msg.flagArgs.chaos) {
-			const trips = Math.floor(quantity / 27);
+			const trips = Math.ceil(quantity / 27);
 			let deathCounter = 0;
 
 			chaos = true;
@@ -85,7 +85,7 @@ export default class extends BotCommand {
 				}
 			}
 			for (let i = 0; i < deathCounter; i++) {
-				bonesLost += rand(1, 14);
+				bonesLost += rand(1, 27);
 			}
 		}
 
@@ -115,10 +115,10 @@ export default class extends BotCommand {
 			bonesLost,
 			type: Activity.Prayer,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
+			finishDate: Date.now() + 30000
 		};
 
-		// Remove the logs from their bank.
+		// Remove the bones from their bank.
 		await msg.author.removeItemFromBank(bone.inputBones, quantity);
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);

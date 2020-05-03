@@ -10,6 +10,12 @@ const bones: Bone[] = [
 		inputBones: itemID('Bones')
 	},
 	{
+		name: 'wolf bones',
+		level: 1,
+		xp: 4.5,
+		inputBones: itemID('Wolf bones')
+	},
+	{
 		name: 'monkey bones',
 		level: 1,
 		xp: 5,
@@ -115,7 +121,7 @@ const bones: Bone[] = [
 		name: 'superior dragon bones',
 		level: 70,
 		xp: 150,
-		inputBones: itemID('superior dragon bones')
+		inputBones: itemID('Superior dragon bones')
 	}
 ];
 
