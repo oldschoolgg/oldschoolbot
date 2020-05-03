@@ -7,6 +7,7 @@ import { roll } from '../lib/util';
 // The actual rates are these numbers divided by 10.
 const rareRoles: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
+	['706511231242076253', 1000, 'Xerician'],
 	['670211798091300864', 2500, 'Iron'],
 	['688563471096348771', 5000, 'Steel'],
 	['705987772372221984', 7500, 'Void'],
@@ -15,11 +16,16 @@ const rareRoles: [string, number, string][] = [
 	['705988547202515016', 20_000, "Inquisitors's"],
 	['670212713258942467', 25_000, 'Rune'],
 	['705988292646141983', 30_000, 'Obsidian'],
+	['706512132899995648', 40_000, 'Crystal'],
 	['670212821484568577', 50_000, 'Dragon'],
+	['706508079184871446', 60_000, 'Bandos'],
+	['706512315805204502', 65_000, 'Armadyl'],
 	['670212821484568577', 75_000, 'Barrows'],
 	['705988130401943643', 80_000, 'Ancestral'],
+	['706510440452194324', 85_000, "Dagon'hai"],
+	['706510238643388476', 90_000, 'Lunar'],
 	['688563780686446649', 100_000, 'Justiciar'],
-	['670212876832735244', 10_000_000, 'Third Age']
+	['670212876832735244', 1_000_000, 'Third Age']
 ];
 
 export default class extends Monitor {
@@ -27,17 +33,13 @@ export default class extends Monitor {
 		super(store, file, directory, {
 			enabled: true,
 			ignoreOthers: false,
-			ignoreBots: true,
+			ignoreBots: false,
 			ignoreEdits: true
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-		if (!msg.guild || msg.guild.id !== SupportServer) {
-			return;
-		}
-
-		if (!msg.command && !msg.author.bot) {
+		if (!msg.guild || msg.guild.id !== SupportServer || msg.command) {
 			return;
 		}
 
