@@ -4,7 +4,6 @@ import { TextChannel } from 'discord.js';
 import { SupportServer, Emoji, Channel } from '../lib/constants';
 import { roll } from '../lib/util';
 
-// The actual rates are these numbers divided by 10.
 const rareRoles: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
 	['706511231242076253', 1000, 'Xerician'],
