@@ -198,3 +198,5 @@ export namespace Mime {
 		TextPlain = 'text/plain'
 	}
 }
+
+export const MIMIC_MONSTER_ID = 23184;
