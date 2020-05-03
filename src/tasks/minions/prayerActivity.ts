@@ -23,12 +23,14 @@ export default class extends Task {
 		const Bury = Prayer.Bones.find(Bury => Bury.inputBones === boneID);
 
 		let pk = ``;
+		let offer = `burying`;
 		let xpmod = 1;
 		let newQuantity = quantity;
 		if (!Bury) return;
 		if (chaos === true) {
 			newQuantity = quantity - bonesLost;
 			pk = `you lost ${bonesLost} to pkers ,`;
+			offer = `offering`;
 			xpmod = 7;
 		}
 
@@ -37,7 +39,7 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Prayer, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
-		let str = `${user}, ${user.minionName} finished burying ${newQuantity} ${
+		let str = `${user}, ${user.minionName} finished ${offer} ${newQuantity} ${
 			Bury.name
 		}, ${pk} you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName

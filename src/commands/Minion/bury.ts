@@ -27,9 +27,12 @@ export default class extends BotCommand {
 		}
 		// default bury speed
 		let speedmod = 1;
-
+		let offer = 'burying';
+		let altar = '';
 		if (msg.flagArgs.chaos) {
 			speedmod = 4.8;
+			offer = 'offering';
+			altar = 'at the chaos altar';
 		}
 
 		if (msg.author.minionIsBusy) {
@@ -102,7 +105,7 @@ export default class extends BotCommand {
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
 				bone.name
-			}s you can light is ${Math.floor(msg.author.maxTripLength / timeToBuryABone)}.`;
+			}s you can bury is ${Math.floor(msg.author.maxTripLength / timeToBuryABone)}.`;
 		}
 
 		const data: PrayerActivityTaskOptions = {
@@ -125,9 +128,9 @@ export default class extends BotCommand {
 
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${msg.author.minionName} is now burying ${quantity}x ${
+			`${msg.author.minionName} is now ${offer} ${quantity}x ${
 				bone.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			} ${altar}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }

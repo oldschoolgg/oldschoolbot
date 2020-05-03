@@ -76,7 +76,6 @@ export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
 	Start = '705973302719414329'
-	
 }
 
 export const enum Image {
