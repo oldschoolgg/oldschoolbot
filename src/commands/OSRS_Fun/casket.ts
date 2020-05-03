@@ -1,9 +1,11 @@
 import { KlasaUser, KlasaMessage, Command, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Misc } from 'oldschooljs';
 
 import clueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { PerkTier } from '../../lib/constants';
+import { addBankToBank, roll } from '../../lib/util';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -55,17 +57,39 @@ export default class extends Command {
 				.join(', ')}`;
 		}
 
-		const loot = clueTier.table.open(quantity);
+		let loot = clueTier.table.open(quantity);
+		let mimicNumber = 0;
+		if (clueTier.mimicChance) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(clueTier.mimicChance)) {
+					loot = addBankToBank(
+						Misc.Mimic.open(clueTier.name as 'master' | 'elite'),
+						loot
+					);
+					mimicNumber++;
+				}
+			}
+		}
 
-		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${
-			quantity > 1 ? 's' : ''
+		const opened = `You opened ${quantity} ${clueTier.name} 
+		Clue Casket${quantity > 1 ? 's' : ''}
+		${
+			mimicNumber > 0
+				? ` and defeated ${mimicNumber} 
+					mimic${mimicNumber > 1 ? 's' : ''}`
+				: ''
 		}`;
 
 		if (Object.keys(loot).length === 0) return msg.send(`${opened} and got nothing :(`);
 
 		const image = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot, `Loot from ${quantity} ${clueTier.name} Clues`);
+			.generateBankImage(
+				loot,
+				`Loot from ${quantity} ${clueTier.name} Clue${quantity > 1 ? 's' : ''}${
+					mimicNumber > 0 ? ` with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
+				}`
+			);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}

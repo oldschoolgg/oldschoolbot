@@ -33,6 +33,7 @@ export interface ClueTier {
 	scrollID: number;
 	timeToFinish: number;
 	milestoneReward?: ClueMilestoneReward;
+	mimicChance: number | false;
 }
 
 export interface KillableMonster {
