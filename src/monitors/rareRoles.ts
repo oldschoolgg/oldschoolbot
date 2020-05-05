@@ -1,7 +1,7 @@
 import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
 import { TextChannel } from 'discord.js';
 
-import { SupportServer, Emoji, Channel } from '../lib/constants';
+import { SupportServer, Emoji, Channel, Time } from '../lib/constants';
 import { roll } from '../lib/util';
 
 const rareRoles: [string, number, string][] = [
@@ -28,12 +28,15 @@ const rareRoles: [string, number, string][] = [
 ];
 
 export default class extends Monitor {
+	public userCache: { [key: string]: number } = {};
+
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			enabled: true,
 			ignoreOthers: false,
 			ignoreBots: false,
-			ignoreEdits: true
+			ignoreEdits: true,
+			ignoreSelf: false
 		});
 	}
 
@@ -41,6 +44,10 @@ export default class extends Monitor {
 		if (!msg.guild || msg.guild.id !== SupportServer || msg.command) {
 			return;
 		}
+
+		const lastMessage = this.userCache[msg.author.id] || 1;
+		if (Date.now() - lastMessage < Time.Second * 13) return;
+		this.userCache[msg.author.id] = Date.now();
 
 		if (!roll(10)) return;
 
