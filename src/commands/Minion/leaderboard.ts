@@ -150,7 +150,7 @@ export default class extends Command {
 	}
 
 	async run(msg: KlasaMessage) {
-		this.gp(msg);
+		this.skills(msg, ['overall']);
 		return null;
 	}
 
@@ -381,7 +381,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 						return `**${this.getUsername(
 							obj.id
-						)}:** ${skillXP.toLocaleString()} ${skillLVL}`;
+						)}:** ${skillXP.toLocaleString()} xp ${skillLVL}`;
 					})
 					.join('\n')
 			),
