@@ -275,12 +275,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await msg.author.settings.sync(true);
 		const balance = msg.author.settings.get(UserSettings.GP);
 
-		let cost = 50_000_000;
+		let cost = 20_000_000;
 		const accountAge = Date.now() - msg.author.createdTimestamp;
-		if (accountAge > Time.Year || getUsersPerkTier(msg.author) >= PerkTier.One) {
+		if (accountAge > Time.Month * 6 || getUsersPerkTier(msg.author) >= PerkTier.One) {
 			cost = 0;
-		} else if (accountAge > Time.Month * 6) {
-			cost = 25_000_000;
 		}
 
 		if (cost === 0) {
