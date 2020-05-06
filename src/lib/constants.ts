@@ -60,6 +60,7 @@ export const enum Emoji {
 	Smithing = '<:smithing:630911040452034590>',
 	Woodcutting = '<:woodcutting:630911040099450892>',
 	Runecraft = '<:runecraft:630911040435257364>',
+	Prayer = '<:prayer:630911040426868746>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
@@ -69,7 +70,6 @@ export const enum Emoji {
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
-	Prayer = 'Prayer',
 	Join = '<:join:705971600956194907>'
 }
 export const enum ReactionEmoji {

@@ -80,7 +80,6 @@ export interface PrayerActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 	quantity: number;
 	chaos: boolean;
-	bonesLost: number;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {

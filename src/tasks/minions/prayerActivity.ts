@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
+import { saidYes, noOp, rand, roll } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { PrayerActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -9,14 +9,7 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
-	async run({
-		boneID,
-		quantity,
-		userID,
-		channelID,
-		chaos,
-		bonesLost
-	}: PrayerActivityTaskOptions) {
+	async run({ boneID, quantity, userID, channelID, chaos }: PrayerActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
@@ -25,13 +18,36 @@ export default class extends Task {
 		let pk = ``;
 		let offer = `burying`;
 		let xpmod = 1;
+		let bonesLost = 0;
 		let newQuantity = quantity;
 		if (!Bury) return;
+
 		if (chaos === true) {
-			newQuantity = quantity - bonesLost;
-			pk = `you lost ${bonesLost} to pkers ,`;
 			offer = `offering`;
 			xpmod = 7;
+
+			// make it so you can't lose more bones then you bring
+			let maxpk = 1;
+			if (quantity >= 27) {
+				maxpk = 27;
+			} else {
+				maxpk = quantity;
+			}
+
+			const trips = Math.ceil(quantity / 27);
+			let deathCounter = 0;
+			// roll a 10% chance to get pked per trip
+			for (let i = 0; i < trips; i++) {
+				if (roll(10)) {
+					deathCounter++;
+				}
+			}
+			// calc how many bones are lost
+			for (let i = 0; i < deathCounter; i++) {
+				bonesLost += rand(1, maxpk);
+			}
+			newQuantity = quantity - bonesLost;
+			pk = `you lost ${bonesLost} to pkers ,`;
 		}
 
 		const xpReceived = newQuantity * Bury.xp * xpmod;

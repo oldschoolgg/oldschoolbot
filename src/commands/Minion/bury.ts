@@ -8,7 +8,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { roll } from 'oldschooljs/dist/util/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -25,20 +24,21 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You dont have a minion`;
 		}
-		// default bury speed
-		let speedmod = 1;
-		let offer = 'burying';
-		let altar = '';
-		if (msg.flagArgs.chaos) {
-			speedmod = 4.8;
-			offer = 'offering';
-			altar = 'at the chaos altar';
-		}
 
 		if (msg.author.minionIsBusy) {
 			return msg.send(msg.author.minionStatus);
 		}
-
+		// default bury speed
+		let speedmod = 1;
+		let offer = 'burying';
+		let altar = '';
+		let chaos = false;
+		if (msg.flagArgs.chaos) {
+			chaos = true;
+			speedmod = 4.8;
+			offer = 'offering';
+			altar = 'at the chaos altar';
+		}
 		if (typeof quantity === 'string') {
 			boneName = quantity;
 			quantity = null;
@@ -73,28 +73,10 @@ export default class extends BotCommand {
 				amountOfBonesOwned
 			);
 		}
-		let bonesLost = 0;
-		// See if at chaos altar
-		let chaos = false;
-		if (msg.flagArgs.chaos) {
-			const trips = Math.ceil(quantity / 27);
-			let deathCounter = 0;
-
-			chaos = true;
-
-			for (let i = 0; i < trips; i++) {
-				if (roll(10)) {
-					deathCounter++;
-				}
-			}
-			for (let i = 0; i < deathCounter; i++) {
-				bonesLost += rand(1, 27);
-			}
-		}
 
 		// Check the user has the required bones to bury.
-		const hasRequiredLogs = await msg.author.hasItem(bone.inputBones, quantity);
-		if (!hasRequiredLogs) {
+		const hasRequiredBones = await msg.author.hasItem(bone.inputBones, quantity);
+		if (!hasRequiredBones) {
 			throw `You dont have ${quantity}x ${bone.name}.`;
 		}
 
@@ -115,7 +97,6 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			chaos,
-			bonesLost,
 			type: Activity.Prayer,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + 30000
