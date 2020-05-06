@@ -20,7 +20,8 @@ const JagexMods: JMod[] = [
 	{ redditUsername: 'jagex_weath', formattedName: 'Mod Weath' },
 	{ redditUsername: 'jagextide', formattedName: 'Mod Tide' },
 	{ redditUsername: 'jagexflippy', formattedName: 'Mod Flippy' },
-	{ redditUsername: 'jagexbolton', formattedName: 'Mod Bolton' }
+	{ redditUsername: 'jagexbolton', formattedName: 'Mod Bolton' },
+	{ redditUsername: 'jagexarcane', formattedName: 'Mod Arcane' }
 ];
 
 export default JagexMods;
