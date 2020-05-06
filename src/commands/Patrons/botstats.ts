@@ -67,7 +67,7 @@ GROUP BY "bankBackground";`);
 			result
 				.map(
 					res =>
-						`**${backgroundImages[res.bankBackground + 1].name}:** ${parseInt(
+						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(
 							res.count
 						).toLocaleString()}`
 				)
