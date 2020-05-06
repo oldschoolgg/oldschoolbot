@@ -13,25 +13,24 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
-		const Bury = Prayer.Bones.find(Bury => Bury.inputBones === boneID);
+		const Bury = Prayer.Bones.find(Bury => Bury.inputId === boneID);
 
 		let pk = ``;
 		let offer = `burying`;
 		let xpmod = 1;
 		let bonesLost = 0;
+		let bonesSaved = 0;
 		let newQuantity = quantity;
 		if (!Bury) return;
 
 		if (chaos === true) {
 			offer = `offering`;
-			xpmod = 7;
+			xpmod = 3.5;
 
 			// make it so you can't lose more bones then you bring
-			let maxpk = 1;
+			let maxpk = quantity;
 			if (quantity >= 27) {
 				maxpk = 27;
-			} else {
-				maxpk = quantity;
 			}
 
 			const trips = Math.ceil(quantity / 27);
@@ -46,8 +45,9 @@ export default class extends Task {
 			for (let i = 0; i < deathCounter; i++) {
 				bonesLost += rand(1, maxpk);
 			}
-			newQuantity = quantity - bonesLost;
-			pk = `you lost ${bonesLost} to pkers ,`;
+			bonesSaved = quantity * rand(.9,1.1);
+			newQuantity = quantity - bonesLost + bonesSaved;
+			pk = `you saved ${bonesSaved} by using the Chaos altar and you lost ${bonesLost} to pkers ,`;
 		}
 
 		const xpReceived = newQuantity * Bury.xp * xpmod;
@@ -80,7 +80,7 @@ export default class extends Task {
 
 					if (response) {
 						if (response.author.minionIsBusy) return;
-						user.log(`continued trip of ${quantity}x ${Bury.name}[${Bury.inputBones}]`);
+						user.log(`continued trip of ${quantity}x ${Bury.name}[${Bury.inputId}]`);
 						this.client.commands
 							.get('bury')!
 							.run(response as KlasaMessage, [quantity, Bury.name]);

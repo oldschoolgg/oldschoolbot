@@ -4,124 +4,124 @@ import { Emoji } from '../../constants';
 
 const bones: Bone[] = [
 	{
-		name: 'bones',
+		name: 'Bones',
 		level: 1,
 		xp: 4.5,
-		inputBones: itemID('Bones')
+		inputId: itemID('Bones')
 	},
 	{
-		name: 'wolf bones',
+		name: 'Wolf bones',
 		level: 1,
 		xp: 4.5,
-		inputBones: itemID('Wolf bones')
+		inputId: itemID('Wolf bones')
 	},
 	{
-		name: 'monkey bones',
+		name: 'Monkey bones',
 		level: 1,
 		xp: 5,
-		inputBones: itemID('Monkey bones')
+		inputId: itemID('Monkey bones')
 	},
 	{
-		name: 'bat bones',
+		name: 'Bat bones',
 		level: 1,
 		xp: 5.3,
-		inputBones: itemID('Bat bones')
+		inputId: itemID('Bat bones')
 	},
 	{
-		name: 'big bones',
+		name: 'Big bones',
 		level: 1,
 		xp: 15,
-		inputBones: itemID('Big bones')
+		inputId: itemID('Big bones')
 	},
 	{
-		name: 'jogre bones',
+		name: 'Jogre bones',
 		level: 1,
 		xp: 15,
-		inputBones: itemID('Jogre bones')
+		inputId: itemID('Jogre bones')
 	},
 	{
-		name: 'zogre bones',
+		name: 'Zogre bones',
 		level: 1,
 		xp: 22.5,
-		inputBones: itemID('Zogre bones')
+		inputId: itemID('Zogre bones')
 	},
 	{
-		name: 'shaikahan bones',
+		name: 'Shaikahan bones',
 		level: 1,
 		xp: 25,
-		inputBones: itemID('Shaikahan bones')
+		inputId: itemID('Shaikahan bones')
 	},
 	{
-		name: 'babydragon bones',
+		name: 'Babydragon bones',
 		level: 1,
 		xp: 30,
-		inputBones: itemID('Babydragon bones')
+		inputId: itemID('Babydragon bones')
 	},
 	{
-		name: 'wyrm bones',
+		name: 'Wyrm bones',
 		level: 1,
 		xp: 50,
-		inputBones: itemID('Wyrm bones')
+		inputId: itemID('Wyrm bones')
 	},
 	{
-		name: 'dragon bones',
+		name: 'Dragon bones',
 		level: 1,
 		xp: 72,
-		inputBones: itemID('Dragon bones')
+		inputId: itemID('Dragon bones')
 	},
 	{
-		name: 'wyvern bones',
+		name: 'Wyvern bones',
 		level: 1,
 		xp: 72,
-		inputBones: itemID('Wyvern bones')
+		inputId: itemID('Wyvern bones')
 	},
 	{
-		name: 'drake bones',
+		name: 'Drake bones',
 		level: 1,
 		xp: 80,
-		inputBones: itemID('Drake bones')
+		inputId: itemID('Drake bones')
 	},
 	{
 		name: 'Fayrg bones',
 		level: 1,
 		xp: 84,
-		inputBones: itemID('Fayrg bones')
+		inputId: itemID('Fayrg bones')
 	},
 	{
-		name: 'lava dragon bones',
+		name: 'Lava dragon bones',
 		level: 1,
 		xp: 85,
-		inputBones: itemID('Lava dragon bones')
+		inputId: itemID('Lava dragon bones')
 	},
 	{
-		name: 'raurg bones',
+		name: 'Raurg bones',
 		level: 1,
 		xp: 96,
-		inputBones: itemID('Raurg bones')
+		inputId: itemID('Raurg bones')
 	},
 	{
-		name: 'hydra bones',
+		name: 'Hydra bones',
 		level: 1,
 		xp: 110,
-		inputBones: itemID('Hydra bones')
+		inputId: itemID('Hydra bones')
 	},
 	{
-		name: 'dagannoth bones',
+		name: 'Dagannoth bones',
 		level: 1,
 		xp: 125,
-		inputBones: itemID('Dagannoth bones')
+		inputId: itemID('Dagannoth bones')
 	},
 	{
-		name: 'ourg bones',
+		name: 'Ourg bones',
 		level: 1,
 		xp: 140,
-		inputBones: itemID('Ourg bones')
+		inputId: itemID('Ourg bones')
 	},
 	{
-		name: 'superior dragon bones',
+		name: 'Superior dragon bones',
 		level: 70,
 		xp: 150,
-		inputBones: itemID('Superior dragon bones')
+		inputId: itemID('Superior dragon bones')
 	}
 ];
 

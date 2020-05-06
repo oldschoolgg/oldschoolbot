@@ -117,5 +117,5 @@ export interface Bone {
 	level: number;
 	xp: number;
 	name: string;
-	inputBones: number;
+	inputId: number;
 }

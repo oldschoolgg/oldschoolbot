@@ -61,12 +61,11 @@ export default class extends BotCommand {
 		}
 
 		// Time to bury a bone
-
 		const timeToBuryABone = speedmod * (Time.Second * 1.2 + Time.Second / 4);
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			const amountOfBonesOwned = msg.author.settings.get(UserSettings.Bank)[bone.inputBones];
+			const amountOfBonesOwned = msg.author.settings.get(UserSettings.Bank)[bone.inputId];
 			if (!amountOfBonesOwned || amountOfBonesOwned === 0) throw `You have no ${bone.name}.`;
 			quantity = Math.min(
 				Math.floor(msg.author.maxTripLength / timeToBuryABone),
@@ -75,7 +74,7 @@ export default class extends BotCommand {
 		}
 
 		// Check the user has the required bones to bury.
-		const hasRequiredBones = await msg.author.hasItem(bone.inputBones, quantity);
+		const hasRequiredBones = await msg.author.hasItem(bone.inputId, quantity);
 		if (!hasRequiredBones) {
 			throw `You dont have ${quantity}x ${bone.name}.`;
 		}
@@ -91,7 +90,7 @@ export default class extends BotCommand {
 		}
 
 		const data: PrayerActivityTaskOptions = {
-			boneID: bone.inputBones,
+			boneID: bone.inputId,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -102,11 +101,9 @@ export default class extends BotCommand {
 			finishDate: Date.now() + 30000
 		};
 
-		// Remove the bones from their bank.
-		await msg.author.removeItemFromBank(bone.inputBones, quantity);
+		await msg.author.removeItemFromBank(bone.inputId, quantity);
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now ${offer} ${quantity}x ${
