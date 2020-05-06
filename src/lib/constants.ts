@@ -102,7 +102,8 @@ export const enum Tasks {
 	RunecraftActivity = 'runecraftActivity',
 	FiremakingActivity = 'firemakingActivity',
 	CraftingActivity = 'craftingActivity',
-	PrayerActivity = 'prayerActivity',
+	BuryingActivity = 'buryingActivity',
+	OfferingActivity = 'offeringActivity',
 	QuestingActivity = 'questingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -124,7 +125,8 @@ export const enum Activity {
 	Runecraft = 'Runecraft',
 	Smelting = 'Smelting',
 	Crafting = 'Crafting',
-	Prayer = 'Prayer'
+	Burying = 'Burying',
+	Offering = 'Offering'
 }
 
 export const enum Events {

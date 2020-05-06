@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, formatDuration, rand } from '../../lib/util';
 import { Time, Activity, Tasks } from '../../lib/constants';
-import { BuryingActivityTaskOptions } from '../../lib/types/minions';
+import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -29,7 +29,10 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 		// default bury speed
-		const speedmod = 1;
+		const speedmod = 4.8;
+		// will be used if another altar is added
+		let altar = '';
+		altar = 'at the chaos altar';
 
 		if (typeof quantity === 'string') {
 			boneName = quantity;
@@ -43,13 +46,13 @@ export default class extends BotCommand {
 		);
 
 		if (!bone) {
-			throw `That's not a valid bone to bury. Valid bones are ${Prayer.Bones.map(
+			throw `That's not a valid bone to offer. Valid bones are ${Prayer.Bones.map(
 				bone => bone.name
 			).join(', ')}.`;
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < bone.level) {
-			throw `${msg.author.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`;
+			throw `${msg.author.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`;
 		}
 
 		// Time to bury a bone
@@ -81,13 +84,13 @@ export default class extends BotCommand {
 			}s you can bury is ${Math.floor(msg.author.maxTripLength / timeToBuryABone)}.`;
 		}
 
-		const data: BuryingActivityTaskOptions = {
+		const data: OfferingActivityTaskOptions = {
 			boneID: bone.inputId,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Burying,
+			type: Activity.Offering,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + 30000
 		};
@@ -97,9 +100,9 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${msg.author.minionName} is now burying ${quantity}x ${
+			`${msg.author.minionName} is now offering ${quantity}x ${
 				bone.name
-			} , it'll take around ${formatDuration(duration)} to finish.`
+			} ${altar}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }

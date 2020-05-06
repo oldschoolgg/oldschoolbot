@@ -75,11 +75,16 @@ export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface PrayerActivityTaskOptions extends ActivityTaskOptions {
+export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	channelID: string;
 	quantity: number;
-	chaos: boolean;
+}
+
+export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
+	boneID: number;
+	channelID: string;
+	quantity: number;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
@@ -118,4 +123,5 @@ export type MinionActivityTask =
 	| Tasks.RunecraftActivity
 	| Tasks.FiremakingActivity
 	| Tasks.QuestingActivity
-	| Tasks.PrayerActivity;
+	| Tasks.BuryingActivity
+	| Tasks.OfferingActivity;
