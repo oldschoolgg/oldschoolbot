@@ -10,7 +10,7 @@ import {
 	multiplyBankQuantity
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Createables from '../../lib/createables';
+import Createables from '../../lib/createables/createables';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import { SkillsEnum } from '../../lib/skilling/types';
 
@@ -55,6 +55,13 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Crafting) < createableItem.craftingLevel
 		) {
 			throw `You need ${createableItem.craftingLevel} crafting to create this item.`;
+		}
+
+		if (
+			createableItem.prayerLevel &&
+			msg.author.skillLevel(SkillsEnum.Prayer) < createableItem.prayerLevel
+		) {
+			throw `You need ${createableItem.prayerLevel} prayer to create this item.`;
 		}
 
 		const outItems = multiplyBankQuantity(createableItem.outputItems, quantity);

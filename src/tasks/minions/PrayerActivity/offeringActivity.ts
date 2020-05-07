@@ -39,7 +39,7 @@ export default class extends Task {
 		for (let i = 0; i < deathCounter; i++) {
 			bonesLost += rand(1, maxpk);
 		}
-		bonesSaved = quantity * (rand(90, 110) / 100);
+		bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
 		newQuantity = quantity - bonesLost + bonesSaved;
 
 		const xpReceived = newQuantity * Bury.xp * xpmod;
@@ -49,7 +49,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			Bury.name
-		}, you saved ${bonesSaved} by using the Chaos altar and you lost ${bonesLost} to pkers ,
+		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers ,
 		 you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
@@ -75,7 +75,7 @@ export default class extends Task {
 						if (response.author.minionIsBusy) return;
 						user.log(`continued trip of ${quantity}x ${Bury.name}[${Bury.inputId}]`);
 						this.client.commands
-							.get('bury')!
+							.get('offer')!
 							.run(response as KlasaMessage, [quantity, Bury.name]);
 					}
 				})

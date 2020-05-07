@@ -61,7 +61,7 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			const amountOfBonesOwned = msg.author.settings.get(UserSettings.Bank)[bone.inputId];
-			if (!amountOfBonesOwned || amountOfBonesOwned === 0) throw `You have no ${bone.name}.`;
+			if (!amountOfBonesOwned) throw `You have no ${bone.name}.`;
 			quantity = Math.min(
 				Math.floor(msg.author.maxTripLength / timeToBuryABone),
 				amountOfBonesOwned
