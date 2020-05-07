@@ -195,10 +195,10 @@ export default class extends BotCommand {
 		let teamMultiplier = 0;
 		for (const user of newUsers) {
 			const userGearScore = calcTotalGearScore(Object.values(user.getCombatGear()));
-			const userGearMultiplier = Math.max(2, userGearScore / BASE_GEAR_SCORE);
+			const userGearMultiplier = Math.min(2, userGearScore / BASE_GEAR_SCORE);
 			const userKcMultiplier = Math.min(
 				2,
-				Math.log(user.settings.get(UserSettings.MonsterScores)['RAIDS']) / Math.log(20)
+				Math.log(user.settings.get(UserSettings.MonsterScores)[1]) / Math.log(20)
 			);
 			const userPoints = BASE_POINTS * (userGearMultiplier + userKcMultiplier);
 			teamMultiplier += userGearMultiplier + userKcMultiplier;
