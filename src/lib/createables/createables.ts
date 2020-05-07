@@ -1,9 +1,9 @@
 import { Bank } from '../types';
 import Barrows from './barrows';
-import Misc from './Misc';
-import Crafting from './Crafting';
+import Misc from './misc';
+import Crafting from './crafting';
 import Prayer from './prayer';
-import SkillingSets from './SkillingSets';
+import SkillingSets from './skillingSets';
 import Smithing from './smithing';
 
 interface Createable {

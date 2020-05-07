@@ -17,8 +17,6 @@ export default class extends Task {
 
 		const xpmod = 3.5;
 		let bonesLost = 0;
-		let bonesSaved = 0;
-		let newQuantity = quantity;
 		if (!Bury) return;
 
 		// make it so you can't lose more bones then you bring
@@ -39,8 +37,8 @@ export default class extends Task {
 		for (let i = 0; i < deathCounter; i++) {
 			bonesLost += rand(1, maxpk);
 		}
-		bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
-		newQuantity = quantity - bonesLost + bonesSaved;
+		const bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
+		const newQuantity = quantity - bonesLost + bonesSaved;
 
 		const xpReceived = newQuantity * Bury.xp * xpmod;
 
