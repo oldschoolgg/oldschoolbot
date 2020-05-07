@@ -8,6 +8,10 @@ import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { gearStatsMeetsStats } from '../../lib/gear/functions/gearStatsMeetsStats';
 import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../lib/gear/raidsGear';
 import { MinigameIDEnum } from '../../lib/minigames';
+import { calcTotalGearScore } from '../../lib/minions/functions/raidsCalculations';
+import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
+import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -34,15 +38,15 @@ export default class extends BotCommand {
 		this.calculateUsersPoints(user);
 		const { meleeGearStats, mageGearStats, rangeGearStats } = user.getCombatGearStats();
 
-		if (!gearStatsMeetsStats(minimumMeleeGear, meleeGearStats)) {
+		if (!gearStatsMeetsStats(sumOfSetupStats(minimumMeleeGear), meleeGearStats)) {
 			return [false, `Melee`];
 		}
 
-		if (!gearStatsMeetsStats(minimumMageGear, mageGearStats)) {
+		if (!gearStatsMeetsStats(sumOfSetupStats(minimumMageGear), mageGearStats)) {
 			return [false, `Mage`];
 		}
 
-		if (!gearStatsMeetsStats(minimumRangeGear, rangeGearStats)) {
+		if (!gearStatsMeetsStats(sumOfSetupStats(minimumRangeGear), rangeGearStats)) {
 			return [false, `Range`];
 		}
 
@@ -181,7 +185,33 @@ export default class extends BotCommand {
 			);
 		}
 
-		const duration = Number(Time.Minute);
+		const BASE_GEAR_SCORE = calcTotalGearScore([
+			minimumMeleeGear,
+			minimumRangeGear,
+			minimumMageGear
+		]);
+		const BASE_POINTS = 10_000;
+		let teamMembers: TeamMember[] = [];
+		let teamMultiplier = 0;
+		for (const user of newUsers) {
+			const userGearScore = calcTotalGearScore(Object.values(user.getCombatGear()));
+			const userGearMultiplier = Math.max(2, userGearScore / BASE_GEAR_SCORE);
+			const userKcMultiplier = Math.min(
+				2,
+				Math.log(user.settings.get(UserSettings.MonsterScores)['RAIDS']) / Math.log(20)
+			);
+			const userPoints = BASE_POINTS * (userGearMultiplier + userKcMultiplier);
+			teamMultiplier += userGearMultiplier + userKcMultiplier;
+			teamMembers = teamMembers.concat([
+				{
+					id: user.id,
+					personalPoints: userPoints
+				}
+			]);
+		}
+
+		const BASE_TIME = 80 * Time.Minute;
+		const duration = BASE_TIME * (newUsers.length / teamMultiplier);
 
 		const data: RaidsActivityTaskOptions = {
 			duration,
@@ -193,12 +223,7 @@ export default class extends BotCommand {
 			type: Activity.Raids,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration,
-			team: newUsers.map(u => ({
-				id: u.id,
-				personalPoints: 20_000,
-				canReceiveDust: false,
-				canReceiveAncientTablet: false
-			}))
+			team: teamMembers
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
