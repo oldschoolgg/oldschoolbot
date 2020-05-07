@@ -10,7 +10,7 @@ import {
 	multiplyBankQuantity
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Createables from '../../lib/createables/createables';
+import Createables from '../../lib/createables';
 import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import { SkillsEnum } from '../../lib/skilling/types';
 

@@ -8,6 +8,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,16 +21,12 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, boneName = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
 		// default bury speed
-		const speedmod = 4.8;
+		const speedMod = 4.8;
+
 		// will be used if another altar is added
 		let altar = '';
 		altar = 'at the chaos altar';
@@ -55,8 +52,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`;
 		}
 
-		// Time to bury a bone
-		const timeToBuryABone = speedmod * (Time.Second * 1.2 + Time.Second / 4);
+		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

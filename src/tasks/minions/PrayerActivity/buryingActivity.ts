@@ -13,18 +13,18 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
-		const Bury = Prayer.Bones.find(Bury => Bury.inputId === boneID);
+		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
 
-		if (!Bury) return;
+		if (!bone) return;
 
-		const xpmod = 1;
-		const xpReceived = quantity * Bury.xp * xpmod;
+		const XPMod = 1;
+		const xpReceived = quantity * bone.xp * XPMod;
 
 		await user.addXP(SkillsEnum.Prayer, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished burying ${quantity} ${
-			Bury.name
+			bone.name
 		}, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
@@ -48,10 +48,10 @@ export default class extends Task {
 
 					if (response) {
 						if (response.author.minionIsBusy) return;
-						user.log(`continued trip of ${quantity}x ${Bury.name}[${Bury.inputId}]`);
+						user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
 						this.client.commands
 							.get('bury')!
-							.run(response as KlasaMessage, [quantity, Bury.name]);
+							.run(response as KlasaMessage, [quantity, bone.name]);
 					}
 				})
 				.catch(noOp);

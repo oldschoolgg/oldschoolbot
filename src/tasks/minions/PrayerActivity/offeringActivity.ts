@@ -13,16 +13,16 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
-		const Bury = Prayer.Bones.find(Bury => Bury.inputId === boneID);
+		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
 
-		const xpmod = 3.5;
+		const XPMod = 3.5;
 		let bonesLost = 0;
-		if (!Bury) return;
+		if (!bone) return;
 
 		// make it so you can't lose more bones then you bring
-		let maxpk = quantity;
+		let maxPK = quantity;
 		if (quantity >= 27) {
-			maxpk = 27;
+			maxPK = 27;
 		}
 
 		const trips = Math.ceil(quantity / 27);
@@ -35,20 +35,20 @@ export default class extends Task {
 		}
 		// calc how many bones are lost
 		for (let i = 0; i < deathCounter; i++) {
-			bonesLost += rand(1, maxpk);
+			bonesLost += rand(1, maxPK);
 		}
 		const bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
 		const newQuantity = quantity - bonesLost + bonesSaved;
 
-		const xpReceived = newQuantity * Bury.xp * xpmod;
+		const xpReceived = newQuantity * bone.xp * XPMod;
 
 		await user.addXP(SkillsEnum.Prayer, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
-			Bury.name
-		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers ,
-		 you also received ${xpReceived.toLocaleString()} XP. ${
+			bone.name
+		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers , 
+			you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
 
@@ -71,10 +71,10 @@ export default class extends Task {
 
 					if (response) {
 						if (response.author.minionIsBusy) return;
-						user.log(`continued trip of ${quantity}x ${Bury.name}[${Bury.inputId}]`);
+						user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
 						this.client.commands
 							.get('offer')!
-							.run(response as KlasaMessage, [quantity, Bury.name]);
+							.run(response as KlasaMessage, [quantity, bone.name]);
 					}
 				})
 				.catch(noOp);
