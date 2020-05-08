@@ -1268,6 +1268,17 @@ export const coxLog = {
 	])
 };
 
+export const miscLog = {
+	'God Books': resolveItems([
+		'Holy book',
+		'Unholy book',
+		'Book of war',
+		'Book of balance',
+		'Book of darkness',
+		'Book of law'
+	])
+};
+
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
@@ -1367,5 +1378,10 @@ export const collectionLogTypes = [
 		name: 'Chambers of Xeric',
 		aliases: ['raids', 'cox'],
 		items: coxLog
+	},
+	{
+		name: 'Misc',
+		aliases: ['misc'],
+		items: miscLog
 	}
 ];
