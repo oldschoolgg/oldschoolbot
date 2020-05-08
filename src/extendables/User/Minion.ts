@@ -14,7 +14,9 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	OfferingActivityTaskOptions,
+	BuryingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -32,6 +34,7 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { Emoji, Activity } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
+import Prayer from '../../lib/skilling/skills/prayer';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -50,6 +53,7 @@ export default class extends Extendable {
 - Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
 - Train mining with \`+mine\`
 - Train smithing with \`+smelt\` or \`+smith\`
+- Train prayer with \`+bury\` or \`+offer\`
 - Train woodcutting with \`+chop\`
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
@@ -175,6 +179,30 @@ export default class extends Extendable {
 				}. Approximately ${formattedDuration} remaining. Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
+
+			case Activity.Offering: {
+				const data = currentTask as OfferingActivityTaskOptions;
+
+				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
+
+				return `${this.minionName} is currently offering ${data.quantity}x ${
+					bones!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Prayer
+				} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
+			}
+
+			case Activity.Burying: {
+				const data = currentTask as BuryingActivityTaskOptions;
+
+				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
+
+				return `${this.minionName} is currently burying ${data.quantity}x ${
+					bones!.name
+				}. Approximately ${formattedDuration} remaining. Your ${
+					Emoji.Prayer
+				} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
 			}
 
 			case Activity.Firemaking: {
