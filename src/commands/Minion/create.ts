@@ -35,11 +35,18 @@ export default class extends BotCommand {
 			quantity = 1;
 		}
 
-		// Ensure they have the required skills to create the item.
+		if (
+			createableItem.QPRequired &&
+			msg.author.settings.get(UserSettings.QP) < createableItem.QPRequired
+		) {
+			throw `You need ${createableItem.QPRequired} QP to create this item.`;
+		}
+
 		if (
 			createableItem.smithingLevel &&
 			msg.author.skillLevel(SkillsEnum.Smithing) < createableItem.smithingLevel
 		) {
+			// Ensure they have the required skills to create the item.
 			throw `You need ${createableItem.smithingLevel} smithing to create this item.`;
 		}
 
@@ -64,17 +71,19 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.prayerLevel} prayer to create this item.`;
 		}
 
+		if (
+			createableItem.agilityLevel &&
+			msg.author.skillLevel(SkillsEnum.Agility) < createableItem.agilityLevel
+		) {
+			throw `You need ${createableItem.agilityLevel} agility to create this item.`;
+		}
+
 		const outItems = multiplyBankQuantity(createableItem.outputItems, quantity);
 		const inItems = multiplyBankQuantity(createableItem.inputItems, quantity);
 
 		const outputItemsString = await createReadableItemListFromBank(this.client, outItems);
 
 		const inputItemsString = await createReadableItemListFromBank(this.client, inItems);
-
-		const cantHaveItemsString = await createReadableItemListFromBank(
-			this.client,
-			createableItem.cantHaveItems
-		);
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
@@ -85,10 +94,17 @@ export default class extends BotCommand {
 		}
 
 		// Check for any items they cant have 2 of.
-		for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-			const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
-			if (numOwned >= qty) {
-				throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
+		if (createableItem.cantHaveItems) {
+			const cantHaveItemsString = await createReadableItemListFromBank(
+				this.client,
+				createableItem.cantHaveItems
+			);
+
+			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
+				const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
+				if (numOwned >= qty) {
+					throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
+				}
 			}
 		}
 
@@ -116,9 +132,7 @@ export default class extends BotCommand {
 			addBankToBank(outItems, removeBankFromBank(userBank, inItems))
 		);
 
-		if (createableItem.addOutputToCollectionLog) {
-			msg.author.addItemsToCollectionLog(outItems);
-		}
+		msg.author.addItemsToCollectionLog(outItems);
 
 		return msg.send(`You created ${outputItemsString}.`);
 	}

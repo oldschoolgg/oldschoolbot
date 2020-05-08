@@ -1,16 +1,18 @@
 import { Bank } from './types';
 import itemID from './util/itemID';
+import { transformStringBankToNum } from './util/transformStringBankToNum';
 
 interface Createable {
 	name: string;
 	outputItems: Bank;
 	inputItems: Bank;
 	smithingLevel?: number;
-	addOutputToCollectionLog?: boolean;
-	cantHaveItems: Bank;
+	cantHaveItems?: Bank;
 	firemakingLevel?: number;
 	craftingLevel?: number;
 	prayerLevel?: number;
+	agilityLevel?: number;
+	QPRequired?: number;
 }
 
 const Createables: Createable[] = [
@@ -24,8 +26,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Armadyl godsword',
@@ -36,8 +37,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Armadyl godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Bandos godsword',
@@ -48,8 +48,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Bandos godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Saradomin godsword',
@@ -60,8 +59,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Saradomin godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Zamorak godsword',
@@ -72,8 +70,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
 		},
-		smithingLevel: 80,
-		cantHaveItems: {}
+		smithingLevel: 80
 	},
 	{
 		name: 'Dragonfire shield',
@@ -85,8 +82,7 @@ const Createables: Createable[] = [
 			// Uncharged dragonfire shield
 			11284: 1
 		},
-		smithingLevel: 90,
-		cantHaveItems: {}
+		smithingLevel: 90
 	},
 	{
 		name: 'Dragonfire ward',
@@ -98,8 +94,7 @@ const Createables: Createable[] = [
 			// Uncharged Dragonfire ward
 			22003: 1
 		},
-		smithingLevel: 90,
-		cantHaveItems: {}
+		smithingLevel: 90
 	},
 	{
 		name: 'Infernal pickaxe',
@@ -110,8 +105,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Infernal pickaxe')]: 1
 		},
-		smithingLevel: 85,
-		cantHaveItems: {}
+		smithingLevel: 85
 	},
 	{
 		name: 'Malediction ward',
@@ -123,8 +117,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Malediction ward')]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Odium ward',
@@ -136,8 +129,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Odium ward')]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Crystal key',
@@ -148,8 +140,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Crystal key')]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Verac's armour set",
@@ -162,8 +153,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Verac's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Veracs',
@@ -176,8 +166,7 @@ const Createables: Createable[] = [
 			[itemID("Verac's plateskirt")]: 1,
 			[itemID("Verac's flail")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Dharok's armour set",
@@ -190,8 +179,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Dharok's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Dharoks',
@@ -204,8 +192,7 @@ const Createables: Createable[] = [
 			[itemID("Dharok's platelegs")]: 1,
 			[itemID("Dharok's greataxe")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Guthan's armour set",
@@ -218,8 +205,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Guthan's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Guthans',
@@ -232,8 +218,7 @@ const Createables: Createable[] = [
 			[itemID("Guthan's chainskirt")]: 1,
 			[itemID("Guthan's warspear")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Ahrim's armour set",
@@ -246,8 +231,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Ahrim's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Ahrims',
@@ -260,8 +244,7 @@ const Createables: Createable[] = [
 			[itemID("Ahrim's robeskirt")]: 1,
 			[itemID("Ahrim's staff")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Torag's armour set",
@@ -274,8 +257,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Torag's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Torags',
@@ -288,8 +270,7 @@ const Createables: Createable[] = [
 			[itemID("Torag's platelegs")]: 1,
 			[itemID("Torag's hammers")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: "Karil's armour set",
@@ -302,8 +283,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Karil's armour set")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	{
 		name: 'Karils',
@@ -316,81 +296,74 @@ const Createables: Createable[] = [
 			[itemID("Karil's leatherskirt")]: 1,
 			[itemID("Karil's crossbow")]: 1
 		},
-		smithingLevel: 1,
-		cantHaveItems: {}
+		smithingLevel: 1
 	},
 	/**
 	 * Prospector outfit
 	 */
 	{
 		name: 'Prospector helmet',
-		addOutputToCollectionLog: true,
+
 		outputItems: {
 			[itemID('Prospector helmet')]: 1
 		},
 		inputItems: {
 			[itemID('Golden nugget')]: 40
-		},
-		cantHaveItems: {}
+		}
 	},
 	{
 		name: 'Prospector jacket',
-		addOutputToCollectionLog: true,
+
 		outputItems: {
 			[itemID('Prospector jacket')]: 1
 		},
 		inputItems: {
 			[itemID('Golden nugget')]: 60
-		},
-		cantHaveItems: {}
+		}
 	},
 	{
 		name: 'Prospector legs',
-		addOutputToCollectionLog: true,
+
 		outputItems: {
 			[itemID('Prospector legs')]: 1
 		},
 		inputItems: {
 			[itemID('Golden nugget')]: 50
-		},
-		cantHaveItems: {}
+		}
 	},
 	{
 		name: 'Prospector boots',
-		addOutputToCollectionLog: true,
+
 		outputItems: {
 			[itemID('Prospector boots')]: 1
 		},
 		inputItems: {
 			[itemID('Golden nugget')]: 30
-		},
-		cantHaveItems: {}
+		}
 	},
 	{
 		name: 'Mining gloves',
-		addOutputToCollectionLog: true,
+
 		outputItems: {
 			[itemID('Mining gloves')]: 1
 		},
 		inputItems: {
 			[itemID('Unidentified minerals')]: 60
-		},
-		cantHaveItems: {}
+		}
 	},
 	{
 		name: 'Superior mining gloves',
-		addOutputToCollectionLog: true,
+
 		outputItems: {
 			[itemID('Superior mining gloves')]: 1
 		},
 		inputItems: {
 			[itemID('Unidentified minerals')]: 120
-		},
-		cantHaveItems: {}
+		}
 	},
 	{
 		name: 'Expert mining gloves',
-		addOutputToCollectionLog: true,
+
 		outputItems: {
 			[itemID('Expert mining gloves')]: 1
 		},
@@ -398,8 +371,7 @@ const Createables: Createable[] = [
 			[itemID('Superior mining gloves')]: 1,
 			[itemID('Mining gloves')]: 1,
 			[itemID('Unidentified minerals')]: 60
-		},
-		cantHaveItems: {}
+		}
 	},
 	{
 		name: 'Master clue',
@@ -425,9 +397,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Infernal axe')]: 1
 		},
-		firemakingLevel: 85,
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		firemakingLevel: 85
 	},
 	{
 		name: 'Graceful',
@@ -441,9 +411,7 @@ const Createables: Createable[] = [
 			[itemID('Graceful gloves')]: 1,
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
-		},
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Graceful hood',
@@ -452,9 +420,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Graceful hood')]: 1
-		},
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Graceful top',
@@ -463,9 +429,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Graceful top')]: 1
-		},
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Graceful legs',
@@ -474,9 +438,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Graceful legs')]: 1
-		},
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Graceful gloves',
@@ -485,9 +447,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
-		},
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Graceful boots',
@@ -496,9 +456,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Graceful boots')]: 1
-		},
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Graceful cape',
@@ -507,9 +465,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Graceful cape')]: 1
-		},
-		cantHaveItems: {},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Hell cat ears',
@@ -522,8 +478,7 @@ const Createables: Createable[] = [
 		},
 		cantHaveItems: {
 			[itemID('Hell cat ears')]: 1
-		},
-		addOutputToCollectionLog: true
+		}
 	},
 	/** Runecrafting Pouches */
 	{
@@ -536,8 +491,7 @@ const Createables: Createable[] = [
 		},
 		cantHaveItems: {
 			[itemID('Small pouch')]: 1
-		},
-		addOutputToCollectionLog: true
+		}
 	},
 	{
 		name: 'Medium pouch',
@@ -550,7 +504,7 @@ const Createables: Createable[] = [
 		cantHaveItems: {
 			[itemID('Medium pouch')]: 1
 		},
-		addOutputToCollectionLog: true,
+
 		craftingLevel: 10
 	},
 	{
@@ -564,7 +518,7 @@ const Createables: Createable[] = [
 		cantHaveItems: {
 			[itemID('Large pouch')]: 1
 		},
-		addOutputToCollectionLog: true,
+
 		craftingLevel: 20
 	},
 	{
@@ -578,7 +532,7 @@ const Createables: Createable[] = [
 		cantHaveItems: {
 			[itemID('Giant pouch')]: 1
 		},
-		addOutputToCollectionLog: true,
+
 		craftingLevel: 30
 	},
 	// Spirit Shields
@@ -591,8 +545,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Blessed spirit shield')]: 1
 		},
-		prayerLevel: 85,
-		cantHaveItems: {}
+		prayerLevel: 85
 	},
 	{
 		name: 'Spectral spirit shield',
@@ -604,8 +557,7 @@ const Createables: Createable[] = [
 			[itemID('Spectral spirit shield')]: 1
 		},
 		prayerLevel: 90,
-		smithingLevel: 85,
-		cantHaveItems: {}
+		smithingLevel: 85
 	},
 	{
 		name: 'Arcane spirit shield',
@@ -617,8 +569,7 @@ const Createables: Createable[] = [
 			[itemID('Arcane spirit shield')]: 1
 		},
 		prayerLevel: 90,
-		smithingLevel: 85,
-		cantHaveItems: {}
+		smithingLevel: 85
 	},
 	{
 		name: 'Elysian spirit shield',
@@ -630,8 +581,91 @@ const Createables: Createable[] = [
 			[itemID('Elysian spirit shield')]: 1
 		},
 		prayerLevel: 90,
-		smithingLevel: 85,
-		cantHaveItems: {}
+		smithingLevel: 85
+	},
+	{
+		name: 'Holy book',
+		inputItems: transformStringBankToNum({
+			'Saradomin page 1': 1,
+			'Saradomin page 2': 1,
+			'Saradomin page 3': 1,
+			'Saradomin page 4': 1
+		}),
+		outputItems: transformStringBankToNum({
+			'Holy book': 1
+		}),
+		agilityLevel: 35,
+		QPRequired: 5
+	},
+	{
+		name: 'Book of balance',
+		inputItems: transformStringBankToNum({
+			'Guthix page 1': 1,
+			'Guthix page 2': 1,
+			'Guthix page 3': 1,
+			'Guthix page 4': 1
+		}),
+		outputItems: transformStringBankToNum({
+			'Book of balance': 1
+		}),
+		agilityLevel: 35,
+		QPRequired: 5
+	},
+	{
+		name: 'Unholy book',
+		inputItems: transformStringBankToNum({
+			'Zamorak page 1': 1,
+			'Zamorak page 2': 1,
+			'Zamorak page 3': 1,
+			'Zamorak page 4': 1
+		}),
+		outputItems: transformStringBankToNum({
+			'Unholy book': 1
+		}),
+		agilityLevel: 35,
+		QPRequired: 5
+	},
+	{
+		name: 'Book of law',
+		inputItems: transformStringBankToNum({
+			'Armadyl page 1': 1,
+			'Armadyl page 2': 1,
+			'Armadyl page 3': 1,
+			'Armadyl page 4': 1
+		}),
+		outputItems: transformStringBankToNum({
+			'Book of law': 1
+		}),
+		agilityLevel: 35,
+		QPRequired: 5
+	},
+	{
+		name: 'Book of war',
+		inputItems: transformStringBankToNum({
+			'Bandos page 1': 1,
+			'Bandos page 2': 1,
+			'Bandos page 3': 1,
+			'Bandos page 4': 1
+		}),
+		outputItems: transformStringBankToNum({
+			'Book of war': 1
+		}),
+		agilityLevel: 35,
+		QPRequired: 5
+	},
+	{
+		name: 'Book of darkness',
+		inputItems: transformStringBankToNum({
+			'Ancient page 1': 1,
+			'Ancient page 2': 1,
+			'Ancient page 3': 1,
+			'Ancient page 4': 1
+		}),
+		outputItems: transformStringBankToNum({
+			'Book of darkness': 1
+		}),
+		agilityLevel: 35,
+		QPRequired: 5
 	}
 ];
 
