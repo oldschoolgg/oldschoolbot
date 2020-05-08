@@ -30,5 +30,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.QuestingActivity;
 		case Activity.Runecraft:
 			return Tasks.RunecraftActivity;
+		case Activity.Burying:
+			return Tasks.BuryingActivity;
+		case Activity.Offering:
+			return Tasks.OfferingActivity;
 	}
 }

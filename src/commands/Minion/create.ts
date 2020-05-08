@@ -57,6 +57,13 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.craftingLevel} crafting to create this item.`;
 		}
 
+		if (
+			createableItem.prayerLevel &&
+			msg.author.skillLevel(SkillsEnum.Prayer) < createableItem.prayerLevel
+		) {
+			throw `You need ${createableItem.prayerLevel} prayer to create this item.`;
+		}
+
 		const outItems = multiplyBankQuantity(createableItem.outputItems, quantity);
 		const inItems = multiplyBankQuantity(createableItem.inputItems, quantity);
 

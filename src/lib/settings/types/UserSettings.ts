@@ -53,6 +53,7 @@ export namespace UserSettings {
 		export const Firemaking = T<number>(`skills.${SkillsEnum.Firemaking}`);
 		export const Runecraft = T<number>(`skills.${SkillsEnum.Runecraft}`);
 		export const Crafting = T<number>(`skills.${SkillsEnum.Crafting}`);
+		export const Prayer = T<number>(`skills.${SkillsEnum.Prayer}`);
 	}
 
 	export namespace Gear {
