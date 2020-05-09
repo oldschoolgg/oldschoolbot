@@ -3,6 +3,7 @@ import { GearTypes } from '../../gear';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import getOSItem from '../../util/getOSItem';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
+import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../gear/raidsGear';
 
 const statMultipliers = {
 	prayer: 1,
@@ -107,4 +108,21 @@ export function calcTotalGearScore(gearSets): number {
 		getMageContribution(gearSets.mageGear) +
 		getRangeContribution(gearSets.rangeGear)
 	);
+}
+
+// TODO: fix this maybe
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+export function getGearMultiplier(gearSets): number {
+	const userGearScore = calcTotalGearScore(gearSets);
+	const BASE_GEAR_SCORE = calcTotalGearScore({
+		meleeGear: minimumMeleeGear,
+		mageGear: minimumMageGear,
+		rangeGear: minimumRangeGear
+	});
+	return Math.min(2, (3 * (userGearScore - BASE_GEAR_SCORE)) / BASE_GEAR_SCORE);
+}
+
+export function getKcMultiplier(kc: number): number {
+	return Math.min(2, Math.log(kc) / Math.log(30));
 }

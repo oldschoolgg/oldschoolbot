@@ -8,10 +8,11 @@ import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../lib/gear/raidsGear';
 import { MinigameIDEnum } from '../../lib/minigames';
 import {
-	calcTotalGearScore,
 	getMeleeContribution,
 	getMageContribution,
-	getRangeContribution
+	getRangeContribution,
+	getGearMultiplier,
+	getKcMultiplier
 } from '../../lib/minions/functions/raidsCalculations';
 import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -188,24 +189,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		const BASE_GEAR_SCORE = calcTotalGearScore({
-			meleeGear: minimumMeleeGear,
-			mageGear: minimumMageGear,
-			rangeGear: minimumRangeGear
-		});
-		const BASE_POINTS = 10_000;
+		const BASE_POINTS = 8_000;
 		let teamMembers: TeamMember[] = [];
 		let teamMultiplier = 0;
 		for (const user of newUsers) {
-			const userGearScore = calcTotalGearScore(user.getCombatGear());
-			const userGearMultiplier = Math.min(
-				2,
-				((userGearScore - BASE_GEAR_SCORE) * 3) / BASE_GEAR_SCORE
-			);
-			const userKcMultiplier = Math.min(
-				2,
+			const userGearMultiplier = getGearMultiplier(user.getCombatGear());
+			const userKcMultiplier = getKcMultiplier(
 				// TODO: use correct kc lookup value
-				Math.log(user.settings.get(UserSettings.MonsterScores)[1]) / Math.log(30)
+				user.settings.get(UserSettings.MonsterScores)[1]
 			);
 			const userMultiplier = userGearMultiplier + userKcMultiplier + 1;
 			const userPoints = BASE_POINTS * userMultiplier;
@@ -218,7 +209,7 @@ export default class extends BotCommand {
 			]);
 		}
 
-		const BASE_TIME = 80 * Time.Minute;
+		const BASE_TIME = 100 * Time.Minute;
 		const duration = BASE_TIME * (newUsers.length / teamMultiplier);
 
 		const data: RaidsActivityTaskOptions = {
