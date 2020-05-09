@@ -34,6 +34,7 @@ Client.defaultUserSchema
 			.add('diceLosses', 'integer', { default: 0 })
 			.add('duelLosses', 'integer', { default: 0 })
 			.add('duelWins', 'integer', { default: 0 })
+			.add('fightCavesAttempts', 'integer', { default: 0 })
 	)
 	.add('skills', (folder: SchemaFolder) =>
 		folder
