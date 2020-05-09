@@ -22,6 +22,9 @@ interface SkillUser {
 	['skills.firemaking']?: number;
 	['skills.runecraft']?: number;
 	['skills.cooking']?: number;
+	['skills.prayer']?: number;
+	['skills.crafting']?: number;
+	['skills.agility']?: number;
 }
 
 interface GPUser {
