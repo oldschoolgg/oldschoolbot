@@ -28,6 +28,8 @@ const uniques = [
 	22396
 ];
 
+// TODO: increment users kc score
+
 export default class extends Task {
 	async run({ channelID, team, challengeMode, duration }: RaidsActivityTaskOptions) {
 		const loot = ChambersOfXeric.complete({

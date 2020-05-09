@@ -16,13 +16,13 @@ const minimumMeleeGear: GearTypes.GearSetup = {
 	[EquipmentSlot.Ammo]: null,
 	[EquipmentSlot.Body]: singular("Torag's platebody"),
 	[EquipmentSlot.Cape]: null,
-	[EquipmentSlot.Feet]: null,
+	[EquipmentSlot.Feet]: singular('Rune boots'),
 	[EquipmentSlot.Hands]: singular('Mithril gloves'),
 	[EquipmentSlot.Head]: singular('Helm Of Neitiznot'),
 	[EquipmentSlot.Legs]: singular("Torag's platelegs"),
-	[EquipmentSlot.Neck]: singular('Amulet of power'),
+	[EquipmentSlot.Neck]: singular('Amulet of glory'),
 	[EquipmentSlot.Ring]: null,
-	[EquipmentSlot.Shield]: null,
+	[EquipmentSlot.Shield]: singular('Rune kiteshield'),
 	[EquipmentSlot.Weapon]: singular('Dragon scimitar')
 };
 
@@ -33,7 +33,7 @@ const minimumMageGear: GearTypes.GearSetup = {
 	[EquipmentSlot.Cape]: null,
 	[EquipmentSlot.Feet]: singular('Mystic boots'),
 	[EquipmentSlot.Hands]: singular('Mithril gloves'),
-	[EquipmentSlot.Head]: null,
+	[EquipmentSlot.Head]: singular('Mystic hat'),
 	[EquipmentSlot.Legs]: singular('Mystic robe bottom'),
 	[EquipmentSlot.Neck]: singular('Amulet of power'),
 	[EquipmentSlot.Ring]: null,
@@ -43,12 +43,12 @@ const minimumMageGear: GearTypes.GearSetup = {
 
 const minimumRangeGear: GearTypes.GearSetup = {
 	[EquipmentSlot.TwoHanded]: null,
-	[EquipmentSlot.Ammo]: singular('Steel arrow'),
+	[EquipmentSlot.Ammo]: singular('Adamant arrow'),
 	[EquipmentSlot.Body]: singular("Black d'hide body"),
 	[EquipmentSlot.Cape]: null,
-	[EquipmentSlot.Feet]: null,
+	[EquipmentSlot.Feet]: singular('Snakeskin boots'),
 	[EquipmentSlot.Hands]: singular('Mithril gloves'),
-	[EquipmentSlot.Head]: null,
+	[EquipmentSlot.Head]: singular('Snakeskin bandana'),
 	[EquipmentSlot.Legs]: singular("Black d'hide chaps"),
 	[EquipmentSlot.Neck]: singular('Amulet of power'),
 	[EquipmentSlot.Ring]: null,
@@ -67,8 +67,8 @@ const testMeleeGear: GearTypes.GearSetup = {
 	[EquipmentSlot.Legs]: singular('Bandos Tassets'),
 	[EquipmentSlot.Neck]: singular('Amulet of glory'),
 	[EquipmentSlot.Ring]: singular('Berserker ring'),
-	[EquipmentSlot.Shield]: singular('Dragon defender'),
-	[EquipmentSlot.Weapon]: singular('Abyssal whip')
+	[EquipmentSlot.Shield]: singular('Dragonfire shield'),
+	[EquipmentSlot.Weapon]: singular('Dragon scimitar')
 };
 
 const testMageGear: GearTypes.GearSetup = {
@@ -88,7 +88,7 @@ const testMageGear: GearTypes.GearSetup = {
 
 const testRangeGear: GearTypes.GearSetup = {
 	[EquipmentSlot.TwoHanded]: null,
-	[EquipmentSlot.Ammo]: singular('Dragon bolts'),
+	[EquipmentSlot.Ammo]: singular('Onyx bolts (e)'),
 	[EquipmentSlot.Body]: singular('Armadyl chestplate'),
 	[EquipmentSlot.Cape]: singular(`Ava's assembler`),
 	[EquipmentSlot.Feet]: singular('Ranger boots'),

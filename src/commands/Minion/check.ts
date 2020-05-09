@@ -1,7 +1,12 @@
 import { KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { calcTotalGearScore } from '../../lib/minions/functions/raidsCalculations';
+import {
+	calcTotalGearScore,
+	getMeleeContribution,
+	getRangeContribution,
+	getMageContribution
+} from '../../lib/minions/functions/raidsCalculations';
 import {
 	minimumMeleeGear,
 	minimumMageGear,
@@ -16,17 +21,29 @@ export default class extends BotCommand {
 		/**
 		 * THIS IS A TEMPORARY COMMAND TO HELP TESTING.
 		 */
-		const BASE_GEAR_SCORE = calcTotalGearScore([
-			minimumMeleeGear,
-			minimumRangeGear,
-			minimumMageGear
-		]);
-		const TEST_GEAR_SCORE = calcTotalGearScore([testMeleeGear, testRangeGear, testMageGear]);
-		const Multiplier = Math.min(2, TEST_GEAR_SCORE / BASE_GEAR_SCORE);
+		const BASE_GEAR_SCORE = calcTotalGearScore({
+			meleeGear: minimumMeleeGear,
+			rangeGear: minimumRangeGear,
+			mageGear: minimumMageGear
+		});
+		const TEST_GEAR_SCORE = calcTotalGearScore({
+			meleeGear: testMeleeGear,
+			rangeGear: testRangeGear,
+			mageGear: testMageGear
+		});
+		const difference = TEST_GEAR_SCORE - BASE_GEAR_SCORE;
+		const gearMultiplier = Math.min(2, (difference * 3) / BASE_GEAR_SCORE);
 
-		return msg.send(
-			`BASE: ${BASE_GEAR_SCORE}\nTEST: ${TEST_GEAR_SCORE}\nMultiplier: ${Multiplier}
-			`
-		);
+		const res = `min melee: ${getMeleeContribution(
+			minimumMeleeGear
+		)}\nmin range: ${getRangeContribution(minimumRangeGear)}\nmin mage: ${getMageContribution(
+			minimumMageGear
+		)}\n\ntest melee: ${getMeleeContribution(
+			testMeleeGear
+		)}\ntest range: ${getRangeContribution(testRangeGear)}\ntest mage: ${getMageContribution(
+			testMageGear
+		)}\n\nBASE: ${BASE_GEAR_SCORE}\nTEST: ${TEST_GEAR_SCORE}\nDifference: ${difference}\nMultiplier: ${gearMultiplier}`;
+
+		return msg.send(res);
 	}
 }

@@ -3,7 +3,8 @@ import { GearTypes } from '../../gear';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import getOSItem from '../../util/getOSItem';
 
-const attackStyleMultipliers = {
+const statMultipliers = {
+	prayer: 1,
 	attack: 5,
 	strength: 7,
 	damage: 10
@@ -33,7 +34,7 @@ const relevantRangeStats = [
 	'prayer'
 ];
 
-const relevantMagicStats = [
+const relevantMageStats = [
 	'attack_magic',
 	'defence_stab',
 	'defence_slash',
@@ -43,8 +44,6 @@ const relevantMagicStats = [
 	'magic_damage',
 	'prayer'
 ];
-
-const relevantGearStats = [relevantMeleeStats, relevantRangeStats, relevantMagicStats];
 
 function gearContribution(setup: GearTypes.GearSetup, relevantStats: string[]): number {
 	let sum = 0;
@@ -56,34 +55,49 @@ function gearContribution(setup: GearTypes.GearSetup, relevantStats: string[]): 
 		const item = getOSItem(itemSlot.item);
 		if (!item.equipment) continue;
 		// Only try to add the stats we care about for each style
-		for (const keyToAdd of relevantStats) {
-			// If the stat is an attack stat get that multiplier
-			const attackStyleMultiplier = Object.entries(attackStyleMultipliers).find(stat =>
-				keyToAdd.includes(stat[0])
+		for (const statToAdd of relevantStats) {
+			// If the stat has a multiplier get it
+			const statsMultiplier = Object.entries(statMultipliers).find(stat =>
+				statToAdd.includes(stat[0])
 			);
 
-			// Set attack multiplier to thefound multiplier or 0.5 if its not an attack style
-			const attackMultiplier =
-				typeof attackStyleMultiplier !== 'undefined' ? attackStyleMultiplier[1] : 0.5;
+			// Set stat multiplier to the found multiplier or default 0.5 if it has none
+			const statMultiplier =
+				typeof statsMultiplier !== 'undefined' ? statsMultiplier[1] : 0.5;
 
-			// If the item is set the multiplier to 8 - weapon speed (speed in value of ticks per attack) lower is faster
+			// If the item is a weapon set the multiplier to 8 - weapon speed (speed in value of ticks per attack) lower is faster
 			const multiplier = item.weapon
-				? 8 - item.weapon['attack_speed'] + attackMultiplier
-				: attackMultiplier;
+				? (8 - item.weapon['attack_speed']) * statMultiplier
+				: statMultiplier;
+
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
-			sum += Math.floor(item.equipment[keyToAdd] * multiplier);
+			sum += Math.floor(item.equipment[statToAdd] * multiplier);
 		}
 	}
 
 	return sum;
 }
 
-export function calcTotalGearScore(gearSets: GearTypes.GearSetup[]): number {
-	let sum = 0;
-	for (let i = 0; i < 3; i++) {
-		console.log(gearContribution(gearSets[i], relevantGearStats[i]));
-		sum += gearContribution(gearSets[i], relevantGearStats[i]);
-	}
-	return sum;
+export function getMeleeContribution(setup: GearTypes.GearSetup): number {
+	return gearContribution(setup, relevantMeleeStats);
+}
+
+export function getRangeContribution(setup: GearTypes.GearSetup): number {
+	return gearContribution(setup, relevantRangeStats);
+}
+
+export function getMageContribution(setup: GearTypes.GearSetup): number {
+	return gearContribution(setup, relevantMageStats);
+}
+
+// TODO: fix this maybe
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+export function calcTotalGearScore(gearSets): number {
+	return (
+		getMeleeContribution(gearSets.meleeGear) +
+		getMageContribution(gearSets.mageGear) +
+		getRangeContribution(gearSets.rangeGear)
+	);
 }

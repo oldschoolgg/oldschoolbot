@@ -5,11 +5,14 @@ import { removeDuplicatesFromArray, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { Tasks, Time, Activity } from '../../lib/constants';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { gearStatsMeetsStats } from '../../lib/gear/functions/gearStatsMeetsStats';
 import { minimumMeleeGear, minimumMageGear, minimumRangeGear } from '../../lib/gear/raidsGear';
 import { MinigameIDEnum } from '../../lib/minigames';
-import { calcTotalGearScore } from '../../lib/minions/functions/raidsCalculations';
-import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
+import {
+	calcTotalGearScore,
+	getMeleeContribution,
+	getMageContribution,
+	getRangeContribution
+} from '../../lib/minions/functions/raidsCalculations';
 import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
@@ -36,17 +39,17 @@ export default class extends BotCommand {
 
 	checkUsersGear(user: KlasaUser): [boolean, string] {
 		this.calculateUsersPoints(user);
-		const { meleeGearStats, mageGearStats, rangeGearStats } = user.getCombatGearStats();
+		const { meleeGear, mageGear, rangeGear } = user.getCombatGear();
 
-		if (!gearStatsMeetsStats(sumOfSetupStats(minimumMeleeGear), meleeGearStats)) {
+		if (getMeleeContribution(meleeGear) < getMeleeContribution(minimumMeleeGear)) {
 			return [false, `Melee`];
 		}
 
-		if (!gearStatsMeetsStats(sumOfSetupStats(minimumMageGear), mageGearStats)) {
+		if (getMageContribution(mageGear) < getMageContribution(minimumMageGear)) {
 			return [false, `Mage`];
 		}
 
-		if (!gearStatsMeetsStats(sumOfSetupStats(minimumRangeGear), rangeGearStats)) {
+		if (getRangeContribution(rangeGear) < getRangeContribution(minimumRangeGear)) {
 			return [false, `Range`];
 		}
 
@@ -185,23 +188,28 @@ export default class extends BotCommand {
 			);
 		}
 
-		const BASE_GEAR_SCORE = calcTotalGearScore([
-			minimumMeleeGear,
-			minimumRangeGear,
-			minimumMageGear
-		]);
+		const BASE_GEAR_SCORE = calcTotalGearScore({
+			meleeGear: minimumMeleeGear,
+			mageGear: minimumMageGear,
+			rangeGear: minimumRangeGear
+		});
 		const BASE_POINTS = 10_000;
 		let teamMembers: TeamMember[] = [];
 		let teamMultiplier = 0;
 		for (const user of newUsers) {
-			const userGearScore = calcTotalGearScore(Object.values(user.getCombatGear()));
-			const userGearMultiplier = Math.min(2, userGearScore / BASE_GEAR_SCORE);
+			const userGearScore = calcTotalGearScore(user.getCombatGear());
+			const userGearMultiplier = Math.min(
+				2,
+				((userGearScore - BASE_GEAR_SCORE) * 3) / BASE_GEAR_SCORE
+			);
 			const userKcMultiplier = Math.min(
 				2,
-				Math.log(user.settings.get(UserSettings.MonsterScores)[1]) / Math.log(20)
+				// TODO: use correct kc lookup value
+				Math.log(user.settings.get(UserSettings.MonsterScores)[1]) / Math.log(30)
 			);
-			const userPoints = BASE_POINTS * (userGearMultiplier + userKcMultiplier);
-			teamMultiplier += userGearMultiplier + userKcMultiplier;
+			const userMultiplier = userGearMultiplier + userKcMultiplier + 1;
+			const userPoints = BASE_POINTS * userMultiplier;
+			teamMultiplier += userMultiplier;
 			teamMembers = teamMembers.concat([
 				{
 					id: user.id,
