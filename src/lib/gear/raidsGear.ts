@@ -20,8 +20,8 @@ const minimumMeleeGear: GearTypes.GearSetup = {
 	[EquipmentSlot.Hands]: singular('Mithril gloves'),
 	[EquipmentSlot.Head]: singular('Helm Of Neitiznot'),
 	[EquipmentSlot.Legs]: singular("Torag's platelegs"),
-	[EquipmentSlot.Neck]: singular('Amulet of glory'),
-	[EquipmentSlot.Ring]: null,
+	[EquipmentSlot.Neck]: singular('Amulet of power'),
+	[EquipmentSlot.Ring]: singular('Berserker ring'),
 	[EquipmentSlot.Shield]: singular('Rune kiteshield'),
 	[EquipmentSlot.Weapon]: singular('Dragon scimitar')
 };
@@ -36,14 +36,14 @@ const minimumMageGear: GearTypes.GearSetup = {
 	[EquipmentSlot.Head]: singular('Mystic hat'),
 	[EquipmentSlot.Legs]: singular('Mystic robe bottom'),
 	[EquipmentSlot.Neck]: singular('Amulet of power'),
-	[EquipmentSlot.Ring]: null,
+	[EquipmentSlot.Ring]: singular('Seers ring'),
 	[EquipmentSlot.Shield]: null,
-	[EquipmentSlot.Weapon]: singular('Fire battlestaff')
+	[EquipmentSlot.Weapon]: singular('Ancient staff')
 };
 
 const minimumRangeGear: GearTypes.GearSetup = {
-	[EquipmentSlot.TwoHanded]: null,
-	[EquipmentSlot.Ammo]: singular('Adamant arrow'),
+	[EquipmentSlot.TwoHanded]: singular('Magic shortbow'),
+	[EquipmentSlot.Ammo]: singular('Rune arrow'),
 	[EquipmentSlot.Body]: singular("Black d'hide body"),
 	[EquipmentSlot.Cape]: null,
 	[EquipmentSlot.Feet]: singular('Snakeskin boots'),
@@ -51,9 +51,9 @@ const minimumRangeGear: GearTypes.GearSetup = {
 	[EquipmentSlot.Head]: singular('Snakeskin bandana'),
 	[EquipmentSlot.Legs]: singular("Black d'hide chaps"),
 	[EquipmentSlot.Neck]: singular('Amulet of power'),
-	[EquipmentSlot.Ring]: null,
+	[EquipmentSlot.Ring]: singular('Archers ring'),
 	[EquipmentSlot.Shield]: null,
-	[EquipmentSlot.Weapon]: singular('Magic shortbow')
+	[EquipmentSlot.Weapon]: null
 };
 
 const testMeleeGear: GearTypes.GearSetup = {
@@ -80,7 +80,7 @@ const testMageGear: GearTypes.GearSetup = {
 	[EquipmentSlot.Hands]: singular('Barrows gloves'),
 	[EquipmentSlot.Head]: singular("Ahrim's hood"),
 	[EquipmentSlot.Legs]: singular("Ahrim's robeskirt"),
-	[EquipmentSlot.Neck]: singular('amulet of glory'),
+	[EquipmentSlot.Neck]: singular('Amulet of glory'),
 	[EquipmentSlot.Ring]: singular('Seers ring'),
 	[EquipmentSlot.Shield]: singular(`Malediction ward`),
 	[EquipmentSlot.Weapon]: singular('Toxic staff of the dead')

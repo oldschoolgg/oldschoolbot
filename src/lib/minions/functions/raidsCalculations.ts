@@ -2,6 +2,7 @@ import { GearTypes } from '../../gear';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import getOSItem from '../../util/getOSItem';
+import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 
 const statMultipliers = {
 	prayer: 1,
@@ -11,9 +12,6 @@ const statMultipliers = {
 };
 
 const relevantMeleeStats = [
-	'attack_stab',
-	'attack_slash',
-	'attack_crush',
 	'defence_stab',
 	'defence_slash',
 	'defence_crush',
@@ -80,7 +78,16 @@ function gearContribution(setup: GearTypes.GearSetup, relevantStats: string[]): 
 }
 
 export function getMeleeContribution(setup: GearTypes.GearSetup): number {
-	return gearContribution(setup, relevantMeleeStats);
+	const statsSum = sumOfSetupStats(setup);
+	// find the highest of the attack stats and only count that as relevant
+	const stat =
+		statsSum.attack_stab >= statsSum.attack_slash &&
+		statsSum.attack_stab >= statsSum.attack_crush
+			? 'attack_stab'
+			: statsSum.attack_slash >= statsSum.attack_crush
+			? 'attack_slash'
+			: 'attack_crush';
+	return gearContribution(setup, relevantMeleeStats.concat([stat]));
 }
 
 export function getRangeContribution(setup: GearTypes.GearSetup): number {
