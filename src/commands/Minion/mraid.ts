@@ -198,6 +198,7 @@ export default class extends BotCommand {
 				// TODO: use correct kc lookup value
 				user.settings.get(UserSettings.MonsterScores)[1]
 			);
+			// range 1 - 5
 			const userMultiplier = userGearMultiplier + userKcMultiplier + 1;
 			const userPoints = BASE_POINTS * userMultiplier;
 			teamMultiplier += userMultiplier;

@@ -120,9 +120,11 @@ export function getGearMultiplier(gearSets): number {
 		mageGear: minimumMageGear,
 		rangeGear: minimumRangeGear
 	});
+	// 3 * difference between user gear and base gear to accentuate the gear difference
 	return Math.min(2, (3 * (userGearScore - BASE_GEAR_SCORE)) / BASE_GEAR_SCORE);
 }
 
 export function getKcMultiplier(kc: number): number {
+	// log base 30 of kc: returns 1 with kc 30 and 2 with kc 900
 	return Math.min(2, Math.log(kc) / Math.log(30));
 }
