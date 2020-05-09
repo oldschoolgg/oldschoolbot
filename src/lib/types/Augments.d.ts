@@ -4,6 +4,7 @@ import { FSWatcher } from 'fs';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Limit } from 'p-limit';
 import { Image } from 'canvas';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions } from '.';
@@ -114,6 +115,10 @@ declare module 'discord.js' {
 		 * the second item is a string containing the reason they don't have the requirements.
 		 */
 		hasMonsterRequirements(monster: KillableMonster): [false, string] | [true];
+		/**
+		 * Returns the KC the user has for this monster.
+		 */
+		getKC(monster: Monster): number;
 		/**
 		 * Returns this users Collection Log bank.
 		 */

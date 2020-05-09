@@ -280,6 +280,17 @@ export function calcPercentOfNum(percent: number, valueToCalc: number): number {
 	return (percent * valueToCalc) / 100;
 }
 
+/**
+ * Reduces a number by a percentage of itself.
+ * @param value, The number to be reduced.
+ * @param percent The total number that you want to get the percentage of.
+ */
+export function reduceNumByPercent(value: number, percent: number): number {
+	if (percent <= 0) return value;
+	if (percent >= 100) return 0;
+	return value * (percent / 100);
+}
+
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 	return Promise.all(ids.map(id => client.users.fetch(id)));
 }
