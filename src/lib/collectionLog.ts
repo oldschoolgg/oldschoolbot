@@ -764,13 +764,6 @@ export const cluesHard = {
 		'Gilded plateskirt',
 		'Gilded kiteshield',
 		'Gilded sq shield',
-		'Gilded boots'
-	]),
-	'Gilded 2': resolveItems([
-		'Gilded coif',
-		"Gilded d'hide body",
-		"Gilded d'hide chaps",
-		"Gilded d'hide vambraces",
 		'Gilded 2h sword',
 		'Gilded spear',
 		'Gilded hasta'
