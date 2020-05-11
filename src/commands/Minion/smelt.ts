@@ -52,20 +52,27 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
 
+		await msg.author.settings.sync(true);
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
+
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
+			for (const [oreID, qty] of requiredOres) {
+				const oresOwned = userBank[parseInt(oreID)];
+				if (oresOwned < qty) {
+					throw `You dont have enough ${itemNameFromID(parseInt(oreID))}.`;
+				}
+				quantity = Math.min(quantity, Math.floor(oresOwned / qty));
+			}
 		}
-
-		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Check the user has the required ores to smith these bars.
 		// Multiplying the ore required by the quantity of bars.
-		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
 		for (const [oreID, qty] of requiredOres) {
 			if (!bankHasItem(userBank, parseInt(oreID), qty * quantity)) {
 				throw `You don't have enough ${itemNameFromID(parseInt(oreID))}.`;
