@@ -6,6 +6,8 @@ import { Time } from '../../lib/constants';
 import { calcWhatPercent, formatDuration, reduceNumByPercent } from '../../lib/util';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import itemInSlot from '../../lib/gear/functions/itemInSlot';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 const { TzTokJad } = Monsters;
 
@@ -17,24 +19,25 @@ export default class extends BotCommand {
 		});
 	}
 
-	determineDuration(user: KlasaUser) {
+	determineDuration(user: KlasaUser): [number, string] {
 		let baseTime = Time.Hour * 2;
 
-		//
+		let debugStr = '';
+
+		// Reduce time based on KC
 		const jadKC = user.getKC(TzTokJad);
 		const percentIncreaseFromKC = Math.floor(calcWhatPercent(Math.min(50, jadKC), 50)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
+		debugStr += `-${percentIncreaseFromKC}% from KC`;
 
-		// Reduce the time based on how good their ranged gear is, if their gear has the max of
-		// 181 ranged attack bonus, they will get a full 25% increase.
+		// Reduce time based on Gear
 		const usersRangeStats = sumOfSetupStats(user.settings.get(UserSettings.Gear.Range));
-
 		const percentIncreaseFromRangeStats =
 			Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
-
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
+		debugStr += `, -${percentIncreaseFromRangeStats}% from Gear`;
 
-		return baseTime;
+		return [baseTime, debugStr];
 	}
 
 	determineChanceOfDeathPreJad(user: KlasaUser) {
@@ -47,12 +50,26 @@ export default class extends BotCommand {
 		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
 		// Chance of death cannot be 100% or 0%.
-
 		return Math.max(Math.min(chance, 99), 1);
 	}
 
+	checkGear(user: KlasaUser) {
+		const [weapon] = itemInSlot(
+			user.settings.get(UserSettings.Gear.Range),
+			EquipmentSlot.Weapon
+		);
+		const usersRangeStats = sumOfSetupStats(user.settings.get(UserSettings.Gear.Range));
+		if (usersRangeStats.attack_ranged < 160 || !weapon || !weapon.weapon) {
+			throw `Your ranged gear isn't powerful enough to even attempt the Fight Caves, you will surely die! You need ranged gear with high ranged attack.`;
+		}
+
+		if (!['crossbows', 'bows'].includes(weapon.weapon.weapon_type)) {
+			throw `You're not wearing a ranged weapon?! You should equip one to your range setup.'`;
+		}
+	}
+
 	async run(msg: KlasaMessage) {
-		const duration = this.determineDuration(msg.author);
+		const [duration, debugStr] = this.determineDuration(msg.author);
 		const jadDeathChance = this.determineChanceOfDeathInJad(msg.author);
 		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
 
@@ -60,10 +77,14 @@ export default class extends BotCommand {
 		const usersRangeStats = sumOfSetupStats(msg.author.settings.get(UserSettings.Gear.Range));
 		const jadKC = msg.author.getKC(TzTokJad);
 
+		this.checkGear(msg.author);
+
 		return msg.send(
 			`Your fight caves trip will take: ${formatDuration(duration)} (${duration /
 				1000 /
 				60} minutes).
+				
+${debugStr}
 				
 Jad KC: ${jadKC}
 Range Attack Bonus: ${usersRangeStats.attack_ranged}

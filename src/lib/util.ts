@@ -288,7 +288,7 @@ export function calcPercentOfNum(percent: number, valueToCalc: number): number {
 export function reduceNumByPercent(value: number, percent: number): number {
 	if (percent <= 0) return value;
 	if (percent >= 100) return 0;
-	return value * (percent / 100);
+	return value - value * (percent / 100);
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
