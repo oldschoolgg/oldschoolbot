@@ -22,7 +22,7 @@ const killableBosses: KillableMonster[] = [
 			"Dharok's platelegs",
 			"Dharok's greataxe"
 		]),
-		notifyDrops: resolveItems(['Baby mole', 'Curved bone']),
+		notifyDrops: resolveItems(['Baby mole']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 5,

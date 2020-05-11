@@ -16,7 +16,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		notifyDrops: resolveItems(['Pet general graardor', 'Curved bone']),
+		notifyDrops: resolveItems(['Pet general graardor']),
 		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
@@ -61,7 +61,7 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		notifyDrops: resolveItems(["Pet kree'arra", 'Curved bone']),
+		notifyDrops: resolveItems(["Pet kree'arra"]),
 		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Armadyl crossbow')]: 5
