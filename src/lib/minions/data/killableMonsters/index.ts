@@ -163,7 +163,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: resolveItems([["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']]),
-		notifyDrops: resolveItems(['Dragon warhammer', 'Curved bone']),
+		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: {
 			[itemID('Ring of the gods')]: 3
