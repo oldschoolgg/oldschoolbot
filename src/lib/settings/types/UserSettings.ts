@@ -2,22 +2,23 @@
 import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
+import { O } from 'ts-toolbelt';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
 export function T<TCustom>(k: string): CustomGet<string, TCustom> {
-	return k as CustomGet<string, TCustom>;
+	return k as CustomGet<string, Readonly<TCustom>>;
 }
 
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
-	export const Bank = T<ItemBank>('bank');
+	export const Bank = T<O.Readonly<ItemBank>>('bank');
 	export const BankBackground = T<number>('bankBackground');
-	export const Pets = T<ItemBank>('pets');
-	export const CollectionLogBank = T<ItemBank>('collectionLogBank');
-	export const MonsterScores = T<ItemBank>('monsterScores');
-	export const ClueScores = T<ItemBank>('clueScores');
+	export const Pets = T<O.Readonly<ItemBank>>('pets');
+	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');
+	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
+	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly number[]>('bitfield');
 	export const Badges = T<readonly number[]>('badges');
