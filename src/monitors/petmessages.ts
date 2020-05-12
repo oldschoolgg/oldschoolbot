@@ -25,10 +25,11 @@ export default class extends Monitor {
 		const pet = pets[Math.floor(Math.random() * pets.length)];
 		if (roll(Math.max(Math.min(pet.chance, 250000), 1000))) {
 			const userPets = msg.author.settings.get(UserSettings.Pets);
-			if (!userPets[pet.id]) userPets[pet.id] = 1;
-			else userPets[pet.id]++;
+			const newUserPets = { ...userPets };
+			if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
+			else newUserPets[pet.id]++;
 
-			msg.author.settings.update(UserSettings.Pets, { ...userPets });
+			msg.author.settings.update(UserSettings.Pets, { ...newUserPets });
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(
 					`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
