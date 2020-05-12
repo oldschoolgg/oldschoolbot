@@ -16,7 +16,8 @@ export const enum Time {
 export const enum Channel {
 	Notifications = '469523207691436042',
 	ErrorLogs = '665678499578904596',
-	Suggestions = '668441710703149074'
+	Suggestions = '668441710703149074',
+	GrandExchange = '682996313209831435'
 }
 
 export const enum Roles {
