@@ -54,7 +54,11 @@ export default class extends BotCommand {
 			hadMimic = true;
 		}
 
-		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0 + 1;
+		if (hadMimic) {
+			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID);
+		}
+		await msg.author.incrementClueScore(clueTier.id);
+		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id];
 
 		// If this tier has a milestone reward, and their new score meets the req, and
 		// they don't own it already, add it to the loot.
@@ -99,11 +103,6 @@ export default class extends BotCommand {
 			loot,
 			`You opened a ${clueTier.name} clue ${hadMimic ? 'with a mimic ' : ''}and received...`
 		);
-
-		msg.author.incrementClueScore(clueTier.id);
-		if (hadMimic) {
-			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID);
-		}
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
