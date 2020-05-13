@@ -132,7 +132,7 @@ export default class extends BotCommand {
 			addBankToBank(outItems, removeBankFromBank(userBank, inItems))
 		);
 
-		msg.author.addItemsToCollectionLog(outItems);
+		if (!createableItem.noCl) msg.author.addItemsToCollectionLog(outItems);
 
 		return msg.send(`You created ${outputItemsString}.`);
 	}
