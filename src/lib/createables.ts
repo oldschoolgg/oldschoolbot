@@ -13,6 +13,7 @@ interface Createable {
 	prayerLevel?: number;
 	agilityLevel?: number;
 	QPRequired?: number;
+	noCl?: boolean;
 }
 
 const Createables: Createable[] = [
@@ -116,8 +117,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Malediction ward')]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: 'Odium ward',
@@ -128,8 +128,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Odium ward')]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: 'Crystal key',
@@ -139,8 +138,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Crystal key')]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: "Verac's armour set",
@@ -152,8 +150,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID("Verac's armour set")]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: 'Veracs',
@@ -165,8 +162,7 @@ const Createables: Createable[] = [
 			[itemID("Verac's brassard")]: 1,
 			[itemID("Verac's plateskirt")]: 1,
 			[itemID("Verac's flail")]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: "Dharok's armour set",
@@ -178,8 +174,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID("Dharok's armour set")]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: 'Dharoks',
@@ -192,7 +187,7 @@ const Createables: Createable[] = [
 			[itemID("Dharok's platelegs")]: 1,
 			[itemID("Dharok's greataxe")]: 1
 		},
-		smithingLevel: 1
+		noCl: true
 	},
 	{
 		name: "Guthan's armour set",
@@ -205,7 +200,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Guthan's armour set")]: 1
 		},
-		smithingLevel: 1
+		noCl: true
 	},
 	{
 		name: 'Guthans',
@@ -218,7 +213,7 @@ const Createables: Createable[] = [
 			[itemID("Guthan's chainskirt")]: 1,
 			[itemID("Guthan's warspear")]: 1
 		},
-		smithingLevel: 1
+		noCl: true
 	},
 	{
 		name: "Ahrim's armour set",
@@ -231,7 +226,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Ahrim's armour set")]: 1
 		},
-		smithingLevel: 1
+		noCl: true
 	},
 	{
 		name: 'Ahrims',
@@ -244,7 +239,7 @@ const Createables: Createable[] = [
 			[itemID("Ahrim's robeskirt")]: 1,
 			[itemID("Ahrim's staff")]: 1
 		},
-		smithingLevel: 1
+		noCl: true
 	},
 	{
 		name: "Torag's armour set",
@@ -256,8 +251,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID("Torag's armour set")]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: 'Torags',
@@ -270,7 +264,7 @@ const Createables: Createable[] = [
 			[itemID("Torag's platelegs")]: 1,
 			[itemID("Torag's hammers")]: 1
 		},
-		smithingLevel: 1
+		noCl: true
 	},
 	{
 		name: "Karil's armour set",
@@ -282,8 +276,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID("Karil's armour set")]: 1
-		},
-		smithingLevel: 1
+		}
 	},
 	{
 		name: 'Karils',
@@ -296,14 +289,13 @@ const Createables: Createable[] = [
 			[itemID("Karil's leatherskirt")]: 1,
 			[itemID("Karil's crossbow")]: 1
 		},
-		smithingLevel: 1
+		noCl: true
 	},
 	/**
 	 * Prospector outfit
 	 */
 	{
 		name: 'Prospector helmet',
-
 		outputItems: {
 			[itemID('Prospector helmet')]: 1
 		},
@@ -313,7 +305,6 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Prospector jacket',
-
 		outputItems: {
 			[itemID('Prospector jacket')]: 1
 		},
@@ -323,7 +314,6 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Prospector legs',
-
 		outputItems: {
 			[itemID('Prospector legs')]: 1
 		},
@@ -333,7 +323,6 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Prospector boots',
-
 		outputItems: {
 			[itemID('Prospector boots')]: 1
 		},
@@ -343,7 +332,6 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Mining gloves',
-
 		outputItems: {
 			[itemID('Mining gloves')]: 1
 		},
@@ -353,7 +341,6 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Superior mining gloves',
-
 		outputItems: {
 			[itemID('Superior mining gloves')]: 1
 		},
@@ -363,7 +350,6 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Expert mining gloves',
-
 		outputItems: {
 			[itemID('Expert mining gloves')]: 1
 		},
