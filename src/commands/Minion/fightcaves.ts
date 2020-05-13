@@ -2,12 +2,14 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Time } from '../../lib/constants';
-import { calcWhatPercent, formatDuration, reduceNumByPercent } from '../../lib/util';
+import { Time, Activity, Tasks } from '../../lib/constants';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, rand } from '../../lib/util';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemInSlot from '../../lib/gear/functions/itemInSlot';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const { TzTokJad } = Monsters;
 
@@ -69,7 +71,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const [duration, debugStr] = this.determineDuration(msg.author);
+		this.checkGear(msg.author);
+
+		let [duration, debugStr] = this.determineDuration(msg.author);
 		const jadDeathChance = this.determineChanceOfDeathInJad(msg.author);
 		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
 
@@ -77,7 +81,21 @@ export default class extends BotCommand {
 		const usersRangeStats = sumOfSetupStats(msg.author.settings.get(UserSettings.Gear.Range));
 		const jadKC = msg.author.getKC(TzTokJad);
 
-		this.checkGear(msg.author);
+		duration += (rand(1, 5) * duration) / 100;
+
+		const data: MonsterActivityTaskOptions = {
+			monsterID: TzTokJad.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity: 1,
+			duration,
+			type: Activity.MonsterKilling,
+			id: rand(1, 10_000_000),
+			finishDate: Date.now() + duration
+		};
+
+		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		msg.author.incrementMinionDailyDuration(duration);
 
 		return msg.send(
 			`Your fight caves trip will take: ${formatDuration(duration)} (${duration /
@@ -95,28 +113,3 @@ You have a **${preJadDeathChance}%** chance of dying before you make it to jad, 
 		);
 	}
 }
-
-/*
-await msg.author.settings.sync(true);
-
-		const randomAddedDuration = rand(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
-		const data: MonsterActivityTaskOptions = {
-			monsterID: TzTokJad.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
-
-		const response = `${msg.author.minionName} is now off to try to complete the Fight Caves!`;
-
-		return msg.send(response);
-		*/
