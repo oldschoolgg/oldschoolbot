@@ -162,7 +162,8 @@ const Createables: Createable[] = [
 			[itemID("Verac's brassard")]: 1,
 			[itemID("Verac's plateskirt")]: 1,
 			[itemID("Verac's flail")]: 1
-		}
+		},
+		noCl: true
 	},
 	{
 		name: "Dharok's armour set",
@@ -199,8 +200,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID("Guthan's armour set")]: 1
-		},
-		noCl: true
+		}
 	},
 	{
 		name: 'Guthans',
@@ -225,8 +225,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID("Ahrim's armour set")]: 1
-		},
-		noCl: true
+		}
 	},
 	{
 		name: 'Ahrims',
