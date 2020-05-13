@@ -69,5 +69,7 @@ export default class extends Task {
 				}
 			})
 			.catch(console.error);
+
+		this.client.user?.setActivity('discord.gg/ob');
 	}
 }

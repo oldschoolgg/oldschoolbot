@@ -32,7 +32,7 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
-import { Emoji, Activity } from '../../lib/constants';
+import { Emoji, Activity, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -64,7 +64,9 @@ export default class extends Extendable {
 
 		const durationRemaining = currentTask.finishDate - Date.now();
 		const formattedDuration =
-			durationRemaining < 0 ? 'less than a minute' : formatDuration(durationRemaining);
+			durationRemaining < Time.Minute
+				? `They're on their way back now!`
+				: `Approximately ${formatDuration(durationRemaining)} remaining.`;
 
 		switch (currentTask.type) {
 			case Activity.MonsterKilling: {
@@ -73,7 +75,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently killing ${data.quantity}x ${
 					monster!.name
-				}. Approximately ${formattedDuration} remaining.`;
+				}. ${formattedDuration}`;
 			}
 
 			case Activity.GroupMonsterKilling: {
@@ -82,9 +84,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently killing ${data.quantity}x ${
 					monster!.name
-				} with a party of ${
-					data.users.length
-				}. Approximately ${formattedDuration} remaining.`;
+				} with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 
 			case Activity.ClueCompletion: {
@@ -94,7 +94,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently completing ${data.quantity}x ${
 					clueTier!.name
-				} clues. Approximately ${formattedDuration} remaining.`;
+				} clues. ${formattedDuration}`;
 			}
 
 			case Activity.Crafting: {
@@ -103,9 +103,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently crafting ${data.quantity}x ${
 					craftable!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Crafting
-				} Crafting level is ${this.skillLevel(SkillsEnum.Crafting)}`;
+				}. ${formattedDuration} Your ${Emoji.Crafting} Crafting level is ${this.skillLevel(
+					SkillsEnum.Crafting
+				)}`;
 			}
 
 			case Activity.Agility: {
@@ -115,7 +115,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently running ${data.quantity}x ${
 					course!.name
-				} laps. Approximately ${formattedDuration} remaining. Your ${
+				} laps. ${formattedDuration} Your ${
 					Emoji.Agility
 				} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
 			}
@@ -129,9 +129,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently cooking ${data.quantity}x ${
 					cookable!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Cooking
-				} Cooking level is ${this.skillLevel(SkillsEnum.Cooking)}`;
+				}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${this.skillLevel(
+					SkillsEnum.Cooking
+				)}`;
 			}
 
 			case Activity.Fishing: {
@@ -141,9 +141,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently fishing ${data.quantity}x ${
 					fish!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Fishing
-				} Fishing level is ${this.skillLevel(SkillsEnum.Fishing)}`;
+				}. ${formattedDuration} Your ${Emoji.Fishing} Fishing level is ${this.skillLevel(
+					SkillsEnum.Fishing
+				)}`;
 			}
 
 			case Activity.Mining: {
@@ -153,9 +153,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently mining ${data.quantity}x ${
 					ore!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Mining
-				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
+				}. ${formattedDuration} Your ${Emoji.Mining} Mining level is ${this.skillLevel(
+					SkillsEnum.Mining
+				)}`;
 			}
 
 			case Activity.Smelting: {
@@ -165,9 +165,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently smelting ${data.quantity}x ${
 					bar!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Smithing
-				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+				}. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
+					SkillsEnum.Smithing
+				)}`;
 			}
 
 			case Activity.Smithing: {
@@ -177,9 +177,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					SmithedBar!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Smithing
-				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+				}. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
+					SkillsEnum.Smithing
+				)}`;
 			}
 
 			case Activity.Offering: {
@@ -189,9 +189,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently offering ${data.quantity}x ${
 					bones!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Prayer
-				} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
+				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(
+					SkillsEnum.Prayer
+				)}`;
 			}
 
 			case Activity.Burying: {
@@ -201,9 +201,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently burying ${data.quantity}x ${
 					bones!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
-					Emoji.Prayer
-				} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
+				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(
+					SkillsEnum.Prayer
+				)}`;
 			}
 
 			case Activity.Firemaking: {
@@ -213,7 +213,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently lighting ${data.quantity}x ${
 					burn!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
+				}. ${formattedDuration} Your ${
 					Emoji.Firemaking
 				} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;
 			}
@@ -221,7 +221,7 @@ export default class extends Extendable {
 			case Activity.Questing: {
 				return `${
 					this.minionName
-				} is currently Questing. Approximately ${formattedDuration} remaining. Your current Quest Point count is: ${this.settings.get(
+				} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${this.settings.get(
 					UserSettings.QP
 				)}.`;
 			}
@@ -233,7 +233,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently chopping ${data.quantity}x ${
 					log!.name
-				}. Approximately ${formattedDuration} remaining. Your ${
+				}. ${formattedDuration} Your ${
 					Emoji.Woodcutting
 				} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
 			}
@@ -244,7 +244,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently turning ${
 					data.essenceQuantity
-				}x Essence into ${rune!.name}. Approximately ${formattedDuration} remaining. Your ${
+				}x Essence into ${rune!.name}. ${formattedDuration} Your ${
 					Emoji.Runecraft
 				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
 			}
