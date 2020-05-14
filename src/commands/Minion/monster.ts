@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { formatDuration, isWeekend } from '../../lib/util';
+import { formatDuration, isWeekend, itemNameFromID } from '../../lib/util';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -33,10 +33,14 @@ export default class MinionCommand extends BotCommand {
 		const userKc = msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
 
+		const ownedBoostItems = [];
+		let totalItemBoost = 0;
 		if (monster.itemInBankBoosts) {
 			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
 				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
 				timeToFinish *= (100 - boostAmount) / 100;
+				totalItemBoost += boostAmount;
+				ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 			}
 		}
 
@@ -59,8 +63,13 @@ export default class MinionCommand extends BotCommand {
 			str.push(
 				`These items provide boosts for ${monster.name}: ${formatItemBoosts(
 					monster.itemInBankBoosts
-				)}.\n`
+				)}.`
 			);
+			if (totalItemBoost) {
+				str.push(
+					`You own ${ownedBoostItems.join(', ')} for a total boost of ${totalItemBoost}\n`
+				);
+			}
 		}
 
 		const maxCanKill = Math.floor(msg.author.maxTripLength / timeToFinish);
