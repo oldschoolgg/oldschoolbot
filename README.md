@@ -49,6 +49,7 @@ If you have errors or issue, you can ask us for help in the developer channel in
 -   [[Wyatt](https://github.com/wyattos)]
 -   [[coolbop32](https://github.com/coolbop32)]
 -   [[duracell33](https://github.com/duracell33)]
+-   [[Chaika](Chaika)]
 
 ## Notes
 
