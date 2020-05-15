@@ -1,10 +1,11 @@
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
-import { MessageAttachment, TextChannel } from 'discord.js';
+import { MessageAttachment, TextChannel, DMChannel } from 'discord.js';
+
 import { Bank } from '../lib/types';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
-		super(store, file, directory, { appliesTo: [TextChannel] });
+		super(store, file, directory, { appliesTo: [TextChannel, DMChannel] });
 	}
 
 	async sendBankImage(

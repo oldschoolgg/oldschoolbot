@@ -56,7 +56,7 @@ export default class extends BotCommand {
 				}
 			}
 
-			return msg.sendBankImage({
+			return msg.channel.sendBankImage({
 				bank: loot,
 				title: `Loot from ${amount} solo raids with ${Util.toKMB(points)} points.`
 			});
