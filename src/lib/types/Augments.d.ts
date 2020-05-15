@@ -56,11 +56,7 @@ declare module 'klasa' {
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
-		sendBankImage(options: {
-			bank: Bank;
-			content?: string;
-			title?: string;
-		}): Promise<KlasaMessage>;
+
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
 	}
@@ -136,6 +132,14 @@ declare module 'discord.js' {
 		hasMinion: boolean;
 		isIronman: boolean;
 		maxTripLength: number;
+	}
+
+	interface TextChannel {
+		sendBankImage(options: {
+			bank: Bank;
+			content?: string;
+			title?: string;
+		}): Promise<KlasaMessage>;
 	}
 }
 
