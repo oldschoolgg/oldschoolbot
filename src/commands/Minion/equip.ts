@@ -1,12 +1,13 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import getOSItem from '../../lib/util/getOSItem';
 import { GearTypes } from '../../lib/gear';
 import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { itemNameFromID } from '../../lib/util';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import getOSItemsArray from '../../lib/util/getOSItemsArray';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -29,13 +30,17 @@ export default class extends BotCommand {
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 
-		const itemToEquip = getOSItem(itemName);
-		if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) {
-			throw `This item isn't equippable.`;
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItemsArray = getOSItemsArray(itemName) as Item[];
+		const itemToEquip = osItemsArray.find(
+			i => userBank[i.id] && i.equipable_by_player && i.equipment
+		);
+
+		if (!itemToEquip) {
+			throw `You don't have any of this item to equip, or its not equippable.`;
 		}
 
-		const { slot } = itemToEquip.equipment;
-
+		const { slot } = itemToEquip.equipment!;
 		const currentEquippedGear = msg.author.settings.get(gearTypeSetting);
 
 		/**
@@ -53,11 +58,6 @@ export default class extends BotCommand {
 			currentEquippedGear[EquipmentSlot.TwoHanded]
 		) {
 			throw `You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first.`;
-		}
-
-		const hasThisItem = await msg.author.hasItem(itemToEquip.id, quantity);
-		if (!hasThisItem) {
-			throw `You don't have this item, so you can't equip it.`;
 		}
 
 		/**

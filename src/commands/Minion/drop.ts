@@ -1,7 +1,8 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import getOSItem from '../../lib/util/getOSItem';
+import getOSItemsArray from '../../lib/util/getOSItemsArray';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 const options = {
 	max: 1,
@@ -13,18 +14,28 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 4,
-			usage: '<quantity:int{1}> <itemname:...string>',
+			usage: '[quantity:int{1}] <itemname:...string>',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		const osItem = getOSItem(itemName);
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItemsArray = getOSItemsArray(itemName);
+		const osItem = osItemsArray.find(i => userBank[i.id]);
 
-		const hasItem = await msg.author.hasItem(osItem.id, quantity, false);
-		if (!hasItem) {
-			throw `You don't have ${quantity}x ${osItem.name}.`;
+		if (!osItem) {
+			throw `You don't have any of this item to drop!`;
+		}
+
+		const numItemsHas = userBank[osItem.id];
+		if (!quantity) {
+			quantity = numItemsHas;
+		}
+
+		if (quantity > numItemsHas) {
+			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
 
 		const dropMsg = await msg.channel.send(

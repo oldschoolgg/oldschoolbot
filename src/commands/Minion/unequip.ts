@@ -1,10 +1,12 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import getOSItem from '../../lib/util/getOSItem';
 import { GearTypes } from '../../lib/gear';
 import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
+import getOSItemsArray from '../../lib/util/getOSItemsArray';
+import { Item } from 'oldschooljs/dist/meta/types';
+import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -22,25 +24,23 @@ export default class extends BotCommand {
 		[gearType, itemName]: [GearTypes.GearSetupTypes, string]
 	): Promise<KlasaMessage> {
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
-
-		const itemToEquip = getOSItem(itemName);
-		if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) {
-			throw `This item isn't equippable.`;
-		}
-
-		const { slot } = itemToEquip.equipment;
 		const currentEquippedGear = msg.author.settings.get(gearTypeSetting);
 
-		const equippedInThisSlot = currentEquippedGear[slot];
-		if (!equippedInThisSlot) throw `You have nothing equipped in this slot.`;
-		if (equippedInThisSlot.item !== itemToEquip.id) {
-			throw `You don't have a ${itemToEquip.name} equipped.`;
+		const osItemsArray = getOSItemsArray(itemName) as Item[];
+		const itemToEquip = osItemsArray.find(i => hasItemEquipped(i.id, currentEquippedGear));
+
+		if (!itemToEquip) {
+			throw `You don't have this item equipped!`;
 		}
+
+		// it thinks equipment can be null somehow but hasItemEquipped already checks that
+		const { slot } = itemToEquip.equipment!;
+		const equippedInThisSlot = currentEquippedGear[slot];
 		const newGear = { ...currentEquippedGear };
 		newGear[slot] = null;
 
 		await msg.author.addItemsToBank({
-			[equippedInThisSlot.item]: equippedInThisSlot.quantity
+			[equippedInThisSlot!.item]: equippedInThisSlot!.quantity
 		});
 		await msg.author.settings.update(gearTypeSetting, newGear);
 

@@ -4,9 +4,9 @@ import { Util } from 'oldschooljs';
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import getOSItem from '../../lib/util/getOSItem';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { Events } from '../../lib/constants';
+import getOSItemsArray from '../../lib/util/getOSItemsArray';
 
 const options = {
 	max: 1,
@@ -33,25 +33,25 @@ export default class extends BotCommand {
 			);
 		}
 
-		const osItem = getOSItem(itemName);
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItemsArray = getOSItemsArray(itemName);
+		const osItem = osItemsArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
-		if (!itemIsTradeable(osItem.id)) {
-			throw `That item isn't tradeable.`;
+		if (!osItem) {
+			throw `You don't have any of this item to sacrifice, or it is not tradeable.`;
 		}
 
-		const numItemsHas = await msg.author.numberOfItemInBank(osItem.id);
-		if (numItemsHas === 0) throw `You don't have any of this item.`;
-
+		const numItemsHas = userBank[osItem.id];
 		if (!quantity) {
 			quantity = numItemsHas;
 		}
 
-		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
-		const totalPrice = priceOfItem * quantity;
-
 		if (quantity > numItemsHas) {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
+
+		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
+		const totalPrice = priceOfItem * quantity;
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
