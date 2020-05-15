@@ -1,24 +1,22 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util, TextChannel } from 'discord.js';
 
-import { Events, Activity, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
+import { Events, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
 import { Bank } from '../lib/types';
 import {
 	addBankToBank,
 	removeItemFromBank,
 	addItemToBank,
-	activityTaskFilter,
 	formatDuration,
 	convertXPtoLVL,
 	toTitleCase
 } from '../lib/util';
 import clueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { TickerTaskData, ActivityTaskOptions } from '../lib/types/minions';
 import Skills from '../lib/skilling/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { SkillsEnum } from '../lib/skilling/types';
-import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
+import getActivityOfUser from '../lib/util/getActivityOfUser';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -251,17 +249,8 @@ export default class extends Extendable {
 	}
 
 	public get minionIsBusy(this: User): boolean {
-		return this.client.schedule.tasks.filter(activityTaskFilter).some(task =>
-			(task.data as TickerTaskData).subTasks.some((subTask: ActivityTaskOptions) => {
-				if (
-					subTask.type === Activity.GroupMonsterKilling &&
-					(subTask as GroupMonsterActivityTaskOptions).users.includes(this.id)
-				) {
-					return true;
-				}
-				return subTask.userID === this.id;
-			})
-		);
+		const usersTask = getActivityOfUser(this.client, this);
+		return Boolean(usersTask);
 	}
 
 	public get minionName(this: User): string {
