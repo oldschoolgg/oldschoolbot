@@ -50,9 +50,9 @@ export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove = 
 	// If they will have 0 or less of this item afterwards, delete it entirely.
 	if (currentValue - amountToRemove <= 0) {
 		delete newBank[itemID];
+	} else {
+		newBank[itemID] = currentValue - amountToRemove;
 	}
-
-	newBank[itemID] = currentValue - amountToRemove;
 
 	return newBank;
 }
