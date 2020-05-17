@@ -141,6 +141,14 @@ declare module 'discord.js' {
 			title?: string;
 		}): Promise<KlasaMessage>;
 	}
+
+	interface DMChannel {
+		sendBankImage(options: {
+			bank: Bank;
+			content?: string;
+			title?: string;
+		}): Promise<KlasaMessage>;
+	}
 }
 
 declare module 'klasa-dashboard-hooks' {

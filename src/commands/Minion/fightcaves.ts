@@ -1,15 +1,22 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Time, Activity, Tasks } from '../../lib/constants';
-import { calcWhatPercent, formatDuration, reduceNumByPercent, rand } from '../../lib/util';
+import {
+	calcWhatPercent,
+	formatDuration,
+	reduceNumByPercent,
+	rand,
+	percentChance
+} from '../../lib/util';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemInSlot from '../../lib/gear/functions/itemInSlot';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import mejJalImage from '../../lib/image/mejJalImage';
 
 const { TzTokJad } = Monsters;
 
@@ -17,7 +24,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			oneAtTime: true,
-			altProtection: true
+			altProtection: true,
+			requiredPermissions: ['ATTACH_FILES']
 		});
 	}
 
@@ -51,8 +59,8 @@ export default class extends BotCommand {
 		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
 		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
-		// Chance of death cannot be 100% or 0%.
-		return Math.max(Math.min(chance, 99), 1);
+		// Chance of death cannot be 100% or <5>%.
+		return Math.max(Math.min(chance, 99), 5);
 	}
 
 	checkGear(user: KlasaUser) {
@@ -61,21 +69,37 @@ export default class extends BotCommand {
 			EquipmentSlot.Weapon
 		);
 		const usersRangeStats = sumOfSetupStats(user.settings.get(UserSettings.Gear.Range));
-		if (usersRangeStats.attack_ranged < 160 || !weapon || !weapon.weapon) {
-			throw `Your ranged gear isn't powerful enough to even attempt the Fight Caves, you will surely die! You need ranged gear with high ranged attack.`;
+		if (
+			!weapon ||
+			!weapon.weapon ||
+			!['crossbows', 'bows'].includes(weapon.weapon.weapon_type)
+		) {
+			throw `JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with range weapon.`;
 		}
 
-		if (!['crossbows', 'bows'].includes(weapon.weapon.weapon_type)) {
-			throw `You're not wearing a ranged weapon?! You should equip one to your range setup.'`;
+		if (usersRangeStats.attack_ranged < 160) {
+			throw `JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.`;
 		}
 	}
 
 	async run(msg: KlasaMessage) {
-		this.checkGear(msg.author);
+		let duration;
+		let debugStr;
+		let jadDeathChance;
+		let preJadDeathChance;
 
-		let [duration, debugStr] = this.determineDuration(msg.author);
-		const jadDeathChance = this.determineChanceOfDeathInJad(msg.author);
-		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
+		try {
+			this.checkGear(msg.author);
+
+			[duration, debugStr] = this.determineDuration(msg.author);
+			jadDeathChance = this.determineChanceOfDeathInJad(msg.author);
+			preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
+		} catch (err) {
+			if (typeof err === 'string') {
+				return msg.channel.send(await mejJalImage(err));
+			}
+			throw err;
+		}
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.FightCavesAttempts);
 		const usersRangeStats = sumOfSetupStats(msg.author.settings.get(UserSettings.Gear.Range));
@@ -83,33 +107,42 @@ export default class extends BotCommand {
 
 		duration += (rand(1, 5) * duration) / 100;
 
-		const data: MonsterActivityTaskOptions = {
-			monsterID: TzTokJad.id,
+		const diedPreJad = percentChance(preJadDeathChance);
+		const finishDate = diedPreJad ? rand(Time.Minute, duration) : Date.now() + duration;
+
+		const data: FightCavesActivityTaskOptions = {
+			minigameID: TzTokJad.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,
 			duration,
-			type: Activity.MonsterKilling,
+			type: Activity.FightCaves,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
+			finishDate: 1 < 2 ? Date.now() + Number(Time.Minute) : finishDate,
+			jadDeathChance,
+			preJadDeathChance,
+			diedPreJad
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		return msg.send(
-			`Your fight caves trip will take: ${formatDuration(duration)} (${duration /
-				1000 /
-				60} minutes).
-				
-${debugStr}
-				
-Jad KC: ${jadKC}
-Range Attack Bonus: ${usersRangeStats.attack_ranged}
-Attempts: ${attempts}			
+		const totalDeathChance = (
+			((100 - preJadDeathChance + 1) * (100 - jadDeathChance)) /
+			100
+		).toFixed(1);
 
-You have a **${jadDeathChance}%** chance of dying in the Jad Fight, based on how many attempts you've done.
-You have a **${preJadDeathChance}%** chance of dying before you make it to jad, based on how many attempts you've done.`
+		return msg.send(
+			`**Duration:** ${formatDuration(duration)} (${duration / 1000 / 60} minutes)
+**Boosts:** ${debugStr}
+**Range Attack Bonus:** ${usersRangeStats.attack_ranged}
+**Jad Death Chance:** ${jadDeathChance}%
+**Pre-Jad Death Chance:** ${preJadDeathChance}%
+**Jad KC:** ${jadKC}
+**Attempts:** ${attempts}`,
+			await mejJalImage(
+				`You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`
+			)
 		);
 	}
 }
