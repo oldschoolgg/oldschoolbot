@@ -3,7 +3,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask, util, KlasaClient } from 'klasa';
 import { Client } from 'discord.js';
-import { nodeCrypto, integer } from 'random-js';
+import { nodeCrypto, integer, real, bool } from 'random-js';
 
 import { Tasks, Events } from './constants';
 import { Bank } from './types';
@@ -129,7 +129,7 @@ export function cleanString(str: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): void {
+export function noOp(any: any): undefined {
 	return undefined;
 }
 
@@ -240,6 +240,14 @@ export function determineScaledLogTime(xp: number, respawnTime: number, lvl: num
 
 export function rand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
+}
+
+export function randFloat(min: number, max: number) {
+	return real(min, max)(nodeCrypto);
+}
+
+export function percentChance(percent: number) {
+	return bool(percent / 100)(nodeCrypto);
 }
 
 export function roll(max: number) {
