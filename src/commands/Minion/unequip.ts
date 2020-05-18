@@ -21,6 +21,10 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[gearType, itemName]: [GearTypes.GearSetupTypes, string]
 	): Promise<KlasaMessage> {
+		if (msg.author.minionIsBusy) {
+			throw `${msg.author.minionName} is currently out on a trip, so you can't change their gear!`;
+		}
+
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 
 		const itemToEquip = getOSItem(itemName);

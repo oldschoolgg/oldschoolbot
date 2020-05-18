@@ -23,6 +23,10 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[gearType, quantity = 1, itemName = '']: [GearTypes.GearSetupTypes, number, string]
 	): Promise<KlasaMessage> {
+		if (msg.author.minionIsBusy) {
+			throw `${msg.author.minionName} is currently out on a trip, so you can't change their gear!`;
+		}
+
 		if (msg.flagArgs.name) {
 			quantity = 1;
 			itemName = msg.flagArgs.name;
