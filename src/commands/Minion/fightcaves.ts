@@ -22,6 +22,7 @@ import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import itemID from '../../lib/util/itemID';
 import { GearSetupTypes } from '../../lib/gear/types';
+import { SkillsEnum } from '../../lib/skilling/types';
 
 const { TzTokJad } = Monsters;
 
@@ -98,6 +99,10 @@ export default class extends BotCommand {
 				this.client,
 				fightCavesSupplies
 			)}.`;
+		}
+
+		if (user.skillLevel(SkillsEnum.Prayer) < 43) {
+			throw `JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.`;
 		}
 	}
 
