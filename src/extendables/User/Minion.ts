@@ -1,4 +1,4 @@
-import { Extendable, ExtendableStore } from 'klasa';
+import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import { User } from 'discord.js';
 
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
@@ -35,6 +35,7 @@ import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skil
 import { Emoji, Activity, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -247,6 +248,18 @@ export default class extends Extendable {
 					Emoji.Runecraft
 				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
 			}
+
+			case Activity.FightCaves: {
+				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}. ${formattedDuration}`;
+			}
 		}
+	}
+
+	getKC(this: KlasaUser, monster: Monster) {
+		return this.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
+	}
+
+	getCL(this: KlasaUser, itemID: number) {
+		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
 	}
 }

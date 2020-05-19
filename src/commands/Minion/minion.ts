@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage, util } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Util, Monsters } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -233,7 +233,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 							return `${Emoji.Casket} **Mimic:** ${monKC}`;
 						}
 						const mon = killableMonsters.find(m => m.id === parseInt(monID));
-						if (!mon) return `??[${monID}]: ${monKC}`;
+						if (!mon) return `**${Monsters.get(parseInt(monID))?.name}:** ${monKC}`;
 						return `${mon!.emoji} **${mon!.name}**: ${monKC}`;
 					})
 					.join('\n'),

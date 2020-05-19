@@ -91,6 +91,18 @@ export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }
 
+export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
+	minigameID: number;
+	channelID: string;
+	quantity: number;
+}
+
+export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
+	jadDeathChance: number;
+	preJadDeathChance: number;
+	preJadDeathTime: number | null;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -103,10 +115,15 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
+export interface MinigameTickerTaskData {
+	subTasks: FightCavesActivityTaskOptions[];
+}
+
 export type TickerTaskData =
 	| MonsterKillingTickerTaskData
 	| ClueTickerTaskData
-	| SkillingTickerTaskData;
+	| SkillingTickerTaskData
+	| MinigameTickerTaskData;
 
 export type MinionActivityTask =
 	| Tasks.CraftingActivity
@@ -124,4 +141,5 @@ export type MinionActivityTask =
 	| Tasks.FiremakingActivity
 	| Tasks.QuestingActivity
 	| Tasks.BuryingActivity
-	| Tasks.OfferingActivity;
+	| Tasks.OfferingActivity
+	| Tasks.FightCavesActivity;

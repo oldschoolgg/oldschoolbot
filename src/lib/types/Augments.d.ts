@@ -4,11 +4,14 @@ import { FSWatcher } from 'fs';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Limit } from 'p-limit';
 import { Image } from 'canvas';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions } from '.';
 import { SkillsEnum } from '../skilling/types';
 import { KillableMonster } from '../minions/types';
+import { UserFullGearSetup, GearSetupTypes } from '../gear/types';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -55,11 +58,7 @@ declare module 'klasa' {
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
-		sendBankImage(options: {
-			bank: Bank;
-			content?: string;
-			title?: string;
-		}): Promise<KlasaMessage>;
+
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
 	}
@@ -115,6 +114,18 @@ declare module 'discord.js' {
 		 */
 		hasMonsterRequirements(monster: KillableMonster): [false, string] | [true];
 		/**
+		 * Returns the KC the user has for this monster.
+		 */
+		getKC(monster: Monster): number;
+		/**
+		 * Gets the CL count for an item.
+		 */
+		getCL(itemID: number): number;
+		/**
+		 *
+		 */
+		equippedWeapon(setupType: GearSetupTypes): Item | null;
+		/**
 		 * Returns this users Collection Log bank.
 		 */
 		collectionLog: Bank;
@@ -131,6 +142,23 @@ declare module 'discord.js' {
 		hasMinion: boolean;
 		isIronman: boolean;
 		maxTripLength: number;
+		rawGear: UserFullGearSetup;
+	}
+
+	interface TextChannel {
+		sendBankImage(options: {
+			bank: Bank;
+			content?: string;
+			title?: string;
+		}): Promise<KlasaMessage>;
+	}
+
+	interface DMChannel {
+		sendBankImage(options: {
+			bank: Bank;
+			content?: string;
+			title?: string;
+		}): Promise<KlasaMessage>;
 	}
 }
 

@@ -169,7 +169,7 @@ export default class DailyCommand extends BotCommand {
 
 		await user.addItemsToBank(loot, true);
 
-		return msg.sendBankImage({
+		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `${msg.author.username}'s Daily`,
 			content: dmStr

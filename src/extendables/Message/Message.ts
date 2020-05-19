@@ -1,7 +1,6 @@
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
-import { Message, MessageAttachment, TextChannel, Permissions } from 'discord.js';
+import { Message, TextChannel, Permissions } from 'discord.js';
 
-import { Bank } from '../../lib/types';
 import { noOp } from '../../lib/util';
 
 export default class extends Extendable {
@@ -22,14 +21,6 @@ export default class extends Extendable {
 		if (content.length <= 2000 && !this.flagArgs.file) return this.send(content);
 
 		return this.channel.sendFile(Buffer.from(content), fileName, messageTooLong);
-	}
-
-	async sendBankImage(
-		this: KlasaMessage,
-		{ bank, content, title }: { bank: Bank; content?: string; title?: string }
-	) {
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(bank, title);
-		return this.send(content, new MessageAttachment(image));
 	}
 
 	removeAllReactions(this: KlasaMessage) {
