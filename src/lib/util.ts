@@ -3,7 +3,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask, util, KlasaClient } from 'klasa';
 import { Client } from 'discord.js';
-import { nodeCrypto, integer } from 'random-js';
+import { nodeCrypto, integer, real, bool } from 'random-js';
 
 import { Tasks, Events } from './constants';
 import { Bank } from './types';
@@ -50,9 +50,9 @@ export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove = 
 	// If they will have 0 or less of this item afterwards, delete it entirely.
 	if (currentValue - amountToRemove <= 0) {
 		delete newBank[itemID];
+	} else {
+		newBank[itemID] = currentValue - amountToRemove;
 	}
-
-	newBank[itemID] = currentValue - amountToRemove;
 
 	return newBank;
 }
@@ -129,7 +129,7 @@ export function cleanString(str: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): void {
+export function noOp(any: any): undefined {
 	return undefined;
 }
 
@@ -165,7 +165,8 @@ export function activityTaskFilter(task: ScheduledTask) {
 	return ([
 		Tasks.ClueTicker,
 		Tasks.MonsterKillingTicker,
-		Tasks.SkillingTicker
+		Tasks.SkillingTicker,
+		Tasks.MinigameTicker
 	] as string[]).includes(task.taskName);
 }
 
@@ -242,6 +243,14 @@ export function rand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
 }
 
+export function randFloat(min: number, max: number) {
+	return real(min, max)(nodeCrypto);
+}
+
+export function percentChance(percent: number) {
+	return bool(percent / 100)(nodeCrypto);
+}
+
 export function roll(max: number) {
 	return rand(1, max) === 1;
 }
@@ -278,6 +287,17 @@ export function calcWhatPercent(partialValue: number, totalValue: number): numbe
  */
 export function calcPercentOfNum(percent: number, valueToCalc: number): number {
 	return (percent * valueToCalc) / 100;
+}
+
+/**
+ * Reduces a number by a percentage of itself.
+ * @param value, The number to be reduced.
+ * @param percent The total number that you want to get the percentage of.
+ */
+export function reduceNumByPercent(value: number, percent: number): number {
+	if (percent <= 0) return value;
+	if (percent >= 100) return 0;
+	return value - value * (percent / 100);
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {

@@ -34,5 +34,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.BuryingActivity;
 		case Activity.Offering:
 			return Tasks.OfferingActivity;
+		case Activity.FightCaves:
+			return Tasks.FightCavesActivity;
 	}
 }
