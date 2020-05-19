@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 
 const { convertXPtoLVL } = require('../../util');
 
-const { emoji } = require('../../../data/skill-emoji');
+const { default: emoji } = require('../../../data/skill-emoji');
 
 module.exports = class extends Command {
 	constructor(...args) {
