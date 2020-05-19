@@ -17,6 +17,7 @@ import Skills from '../lib/skilling/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { SkillsEnum } from '../lib/skilling/types';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
+import { production } from '../config';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -286,9 +287,11 @@ export default class extends Extendable {
 			const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
 
 			this.log(log);
-			(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
-				`${this.sanitizedName} ${log}`
-			);
+			if (production) {
+				(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
+					`${this.sanitizedName} ${log}`
+				);
+			}
 		}
 
 		return this.settings.update(UserSettings.Minion.DailyDuration, newDuration);

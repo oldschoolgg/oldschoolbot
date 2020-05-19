@@ -165,7 +165,8 @@ export function activityTaskFilter(task: ScheduledTask) {
 	return ([
 		Tasks.ClueTicker,
 		Tasks.MonsterKillingTicker,
-		Tasks.SkillingTicker
+		Tasks.SkillingTicker,
+		Tasks.MinigameTicker
 	] as string[]).includes(task.taskName);
 }
 

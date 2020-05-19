@@ -248,10 +248,18 @@ export default class extends Extendable {
 					Emoji.Runecraft
 				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
 			}
+
+			case Activity.FightCaves: {
+				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}. ${formattedDuration}`;
+			}
 		}
 	}
 
 	getKC(this: KlasaUser, monster: Monster) {
 		return this.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
+	}
+
+	getCL(this: KlasaUser, itemID: number) {
+		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
 	}
 }

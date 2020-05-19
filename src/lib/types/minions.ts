@@ -100,7 +100,7 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
 	jadDeathChance: number;
 	preJadDeathChance: number;
-	diedPreJad: boolean;
+	preJadDeathTime: number | null;
 }
 
 export interface MonsterKillingTickerTaskData {

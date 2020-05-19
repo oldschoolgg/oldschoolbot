@@ -36,6 +36,7 @@ export namespace UserSettings {
 		export const DuelLosses = T<number>('stats.duelLosses');
 
 		export const FightCavesAttempts = T<number>('stats.fightCavesAttempts');
+		export const FireCapesSacrificed = T<number>('stats.fireCapesSacrificed');
 	}
 
 	export namespace Minion {

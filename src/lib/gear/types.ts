@@ -1,5 +1,9 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+export type UserFullGearSetup = {
+	[key in GearSetupTypes]: GearSetup;
+};
+
 export enum GearSetupTypes {
 	Melee = 'melee',
 	Mage = 'mage',

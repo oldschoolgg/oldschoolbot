@@ -10,6 +10,8 @@ import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions } from '.';
 import { SkillsEnum } from '../skilling/types';
 import { KillableMonster } from '../minions/types';
+import { UserFullGearSetup, GearSetupTypes } from '../gear/types';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -116,6 +118,14 @@ declare module 'discord.js' {
 		 */
 		getKC(monster: Monster): number;
 		/**
+		 * Gets the CL count for an item.
+		 */
+		getCL(itemID: number): number;
+		/**
+		 *
+		 */
+		equippedWeapon(setupType: GearSetupTypes): Item | null;
+		/**
 		 * Returns this users Collection Log bank.
 		 */
 		collectionLog: Bank;
@@ -132,6 +142,7 @@ declare module 'discord.js' {
 		hasMinion: boolean;
 		isIronman: boolean;
 		maxTripLength: number;
+		rawGear: UserFullGearSetup;
 	}
 
 	interface TextChannel {
