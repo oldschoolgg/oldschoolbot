@@ -8,7 +8,8 @@ export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
-			aliases: ['streams']
+			aliases: ['streams'],
+			enabled: false
 		});
 	}
 
