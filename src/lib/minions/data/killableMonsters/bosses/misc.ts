@@ -132,7 +132,7 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Dragon warhammer')]: 10
 		},
 		groupKillable: true,
-		respawnTime: 40_000,
+		respawnTime: 20_000,
 		levelRequirements: {
 			prayer: 43
 		},
