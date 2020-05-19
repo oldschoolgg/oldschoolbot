@@ -90,11 +90,20 @@ export default class extends Task {
 		if (loot[TzrekJadPet]) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** just received their ${formatOrdinal(
+				`**${user.username}** just received their ${formatOrdinal(
 					user.getCL(TzrekJadPet) + 1
 				)} ${Emoji.TzRekJad} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(
 					user.getKC(TzTokJad)
 				)} kill!`
+			);
+		}
+
+		if (user.getCL(itemID('Fire cape')) === 0) {
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}** just received their first Fire cape on their ${formatOrdinal(
+					attempts
+				)} attempt!`
 			);
 		}
 
