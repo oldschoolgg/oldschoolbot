@@ -1,16 +1,16 @@
 import { Event, EventStore } from 'klasa';
-import { RateLimitData } from 'discord.js';
+
 import { Events } from '../lib/constants';
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			once: false,
-			event: 'rateLimit'
+			event: 'shardError'
 		});
 	}
 
-	async run(limit: RateLimitData) {
-		this.client.emit(Events.Wtf, `Ratelimited: ${JSON.stringify(limit)}`);
+	async run(error: Error) {
+		this.client.emit(Events.Wtf, `Shard Error: ${error}`);
 	}
 }
