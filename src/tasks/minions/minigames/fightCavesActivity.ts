@@ -102,7 +102,7 @@ export default class extends Task {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}** just received their first Fire cape on their ${formatOrdinal(
-					attempts
+					attempts + 1
 				)} attempt!`
 			);
 		}
