@@ -158,8 +158,6 @@ export default class extends BotCommand {
 			`**Duration:** ${formatDuration(duration)} (${duration / 1000 / 60} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Jad Death Chance:** ${jadDeathChance}%
-**Pre-Jad Death Chance:** ${preJadDeathChance}%
 **Jad KC:** ${jadKC}
 **Attempts:** ${attempts}
 
