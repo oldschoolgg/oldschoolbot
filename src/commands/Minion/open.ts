@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			hadMimic = true;
 		}
 
-		const nthCasket = msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0 + 1;
+		const nthCasket = (msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + 1;
 
 		// If this tier has a milestone reward, and their new score meets the req, and
 		// they don't own it already, add it to the loot.
