@@ -35,7 +35,7 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
-			resultStr += `**${user.username} received:** ||${await createReadableItemListFromBank(
+			resultStr += `**${user} received:** ||${await createReadableItemListFromBank(
 				this.client,
 				loot
 			)}||\n`;
