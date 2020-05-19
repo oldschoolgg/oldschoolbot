@@ -7,6 +7,7 @@ import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName'
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { itemNameFromID } from '../../lib/util';
+import { requiresMinion } from '../../lib/minions/decorators';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -19,6 +20,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
 	async run(
 		msg: KlasaMessage,
 		[gearType, quantity = 1, itemName = '']: [GearTypes.GearSetupTypes, number, string]
