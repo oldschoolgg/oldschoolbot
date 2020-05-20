@@ -5,6 +5,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { GearTypes } from '../../lib/gear';
 import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
+import { requiresMinion } from '../../lib/minions/decorators';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -17,6 +18,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
 	async run(
 		msg: KlasaMessage,
 		[gearType, itemName]: [GearTypes.GearSetupTypes, string]
