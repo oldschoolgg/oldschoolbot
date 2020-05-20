@@ -12,6 +12,7 @@ interface Createable {
 	craftingLevel?: number;
 	prayerLevel?: number;
 	agilityLevel?: number;
+	fletchingLevel?: number;
 	QPRequired?: number;
 	noCl?: boolean;
 }
@@ -675,6 +676,26 @@ const Createables: Createable[] = [
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205
+	},
+	{
+		name: 'Toxic blowpipe (empty)',
+		inputItems: {
+			[itemID('Toxic blowpipe')]: 1
+		},
+		outputItems: {
+			[itemID('Toxic blowpipe (empty)')]: 1,
+			[itemID(`Zulrah's Scales`)]: 25000
+		}
+	},
+	{
+		name: 'Toxic blowpipe',
+		inputItems: {
+			[itemID('Toxic blowpipe (empty)')]: 1,
+			[itemID(`Zulrah's Scales`)]: 25000
+		},
+		outputItems: {
+			[itemID('Toxic blowpipe')]: 1
+		}
 	}
 ];
 
