@@ -1,21 +1,11 @@
-import { Task, ArrayActions } from 'klasa';
+import { Task, ArrayActions, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { TextChannel } from 'discord.js';
+import { O } from 'ts-toolbelt';
 
 import { Patron } from '../lib/types';
-import {
-	PatronTierID,
-	BitField,
-	Time,
-	Roles,
-	BadgesEnum,
-	Channel,
-	PerkTier
-} from '../lib/constants';
+import { PatronTierID, BitField, Time, BadgesEnum, Channel } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import getSupportGuild from '../lib/util/getSupportGuild';
-import { noOp } from '../lib/util';
-import BankImageTask from './bankImage';
 import { patreonConfig } from '../config';
 
 const patreonApiURL = new URL(
@@ -37,10 +27,53 @@ patreonApiURL.search = new URLSearchParams([
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
 
+const tiers: [PatronTierID, BitField][] = [
+	[PatronTierID.One, BitField.IsPatronTier1],
+	[PatronTierID.Two, BitField.IsPatronTier2],
+	[PatronTierID.Three, BitField.IsPatronTier3]
+];
+
 export default class extends Task {
 	async init() {
 		if (!patreonConfig) {
 			this.disable();
+		}
+	}
+
+	async removePerks(user: O.Readonly<KlasaUser>) {
+		const userBitfield = user.settings.get(UserSettings.BitField);
+		const userBadges = user.settings.get(UserSettings.Badges);
+
+		// Remove any/all the patron bits from this user.
+		await user.settings.update(
+			UserSettings.BitField,
+			userBitfield.filter(
+				number =>
+					![
+						BitField.IsPatronTier1,
+						BitField.IsPatronTier2,
+						BitField.IsPatronTier3
+					].includes(number)
+			),
+			{
+				arrayAction: ArrayActions.Overwrite
+			}
+		);
+
+		// Remove patreon badge(s)
+		await user.settings.update(
+			UserSettings.Badges,
+			userBadges.filter(
+				number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)
+			),
+			{
+				arrayAction: ArrayActions.Overwrite
+			}
+		);
+
+		// Remove patron bank background
+		if (user.settings.get(UserSettings.BankBackground) === 3) {
+			await user.settings.update(UserSettings.BankBackground, 1);
 		}
 	}
 
@@ -53,93 +86,29 @@ export default class extends Task {
 				continue;
 			}
 			const user = await this.client.users.fetch(patron.discordID);
-			const supportGuild = getSupportGuild(user.client);
-			const member = await supportGuild.members.fetch(user.id).catch(noOp);
 
 			const userBitfield = user.settings.get(UserSettings.BitField);
 			const userBadges = user.settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
-			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 32) {
+			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33) {
 				result.push(
 					`${user.username}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
 				);
-
-				// Remove any/all the patron bits from this user.
-				await user.settings.update(
-					UserSettings.BitField,
-					userBitfield.filter(
-						number =>
-							![
-								BitField.IsPatronTier1,
-								BitField.IsPatronTier2,
-								BitField.IsPatronTier3
-							].includes(number)
-					),
-					{
-						arrayAction: ArrayActions.Overwrite
-					}
-				);
-
-				// Remove patreon role, if they have it
-				if (member && member.roles.has(Roles.Patron)) {
-					result.push(`${user.username}[${patron.patreonID}] had Patron role removed.`);
-					await member.roles.remove(Roles.Patron).catch(noOp);
-				}
-
-				// Remove patreon badge(s)
-				await user.settings.update(
-					UserSettings.Badges,
-					userBadges.filter(
-						number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)
-					),
-					{
-						arrayAction: ArrayActions.Overwrite
-					}
-				);
-
-				// Remove patron bank background
-				const bankBg = (this.client.tasks.get(
-					'bankImage'
-				) as BankImageTask).backgroundImages.find(
-					img => img.id === user.settings.get(UserSettings.BankBackground)
-				);
-
-				if (bankBg && bankBg.perkTierNeeded && bankBg.perkTierNeeded >= PerkTier.One) {
-					await user.settings.update(UserSettings.BankBackground, 1);
-				}
+				this.removePerks(user);
 			}
 
-			if (
-				patron.entitledTiers.includes(PatronTierID.One) &&
-				!userBitfield.includes(BitField.IsPatronTier1)
-			) {
-				result.push(`${user.username}[${patron.patreonID}] was given Tier 1.`);
-				// If they are tier X on patreon, and they arent marked as tier X patreon in discord,
-				// give them it.
-				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier1, {
-					arrayAction: ArrayActions.Add
-				});
-			}
+			for (let i = 0; i < tiers.length; i++) {
+				const [tierID, bitFieldId] = tiers[i];
 
-			if (
-				patron.entitledTiers.includes(PatronTierID.Two) &&
-				!userBitfield.includes(BitField.IsPatronTier2)
-			) {
-				result.push(`${user.username}[${patron.patreonID}] was given Tier 2.`);
-				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier2, {
-					arrayAction: ArrayActions.Add
-				});
-			}
+				if (!patron.entitledTiers.includes(tierID)) continue;
+				if (userBitfield.includes(bitFieldId)) continue;
 
-			if (
-				patron.entitledTiers.includes(PatronTierID.Three) &&
-				!userBitfield.includes(BitField.IsPatronTier3)
-			) {
-				result.push(`${user.username}[${patron.patreonID}] was given Tier 3.`);
-				await user.settings.update(UserSettings.BitField, BitField.IsPatronTier3, {
+				result.push(`${user.username}[${patron.patreonID}] was given Tier ${i + 1}.`);
+				await user.settings.update(UserSettings.BitField, bitFieldId, {
 					arrayAction: ArrayActions.Add
 				});
+				break;
 			}
 
 			// If they have neither the limited time badge or normal badge, give them the normal one.
@@ -151,12 +120,6 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Badges, BadgesEnum.Patron, {
 					arrayAction: ArrayActions.Add
 				});
-			}
-
-			// Add patreon role, if they don't have it
-			if (member && !member.roles.has(Roles.Patron)) {
-				result.push(`${user.username}[${patron.patreonID}] was given Patron role.`);
-				await member.roles.add(Roles.Patron).catch(noOp);
 			}
 		}
 
