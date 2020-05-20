@@ -44,30 +44,24 @@ export default class MinionCommand extends BotCommand {
 			}
 		}
 
-		const str = [];
-
 		const QP = msg.author.settings.get(UserSettings.QP);
+
+		const str = [];
 		if (monster.qpRequired) {
 			str.push(
-				`${monster.name} requires ${monster.qpRequired}qp to kill, and you have ${QP}qp.\n`
+				`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`
 			);
 		}
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
-			str.push(
-				`These items are required to kill ${monster.name}: ${formatItemReqs(
-					monster.itemsRequired
-				)}\n`
-			);
+			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
 		}
 		if (monster.itemInBankBoosts) {
-			str.push(
-				`These items provide boosts for ${monster.name}: ${formatItemBoosts(
-					monster.itemInBankBoosts
-				)}.`
-			);
+			str.push(`**Boosts:** ${formatItemBoosts(monster.itemInBankBoosts)}.\n`);
 			if (totalItemBoost) {
 				str.push(
-					`You own ${ownedBoostItems.join(', ')} for a total boost of ${totalItemBoost}\n`
+					`You own ${ownedBoostItems.join(
+						', '
+					)} for a total boost of **${totalItemBoost}**\n`
 				);
 			}
 		}
@@ -83,37 +77,29 @@ export default class MinionCommand extends BotCommand {
 				10}kc.`
 		);
 
-		str.push(
-			`You currently recieve a ${percentReduced}% efficiency bonus with your ${userKc}kc.\n`
-		);
+		str.push(`You currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`);
+
+		str.push(`**Maximum Trip Length:** ${formatDuration(msg.author.maxTripLength)}.\n`);
 
 		str.push(
-			`The maximum time your minion can be out on a trip is ${formatDuration(
-				msg.author.maxTripLength
-			)}.`
-		);
-
-		str.push(
-			`This means the most you can kill with your current item and KC boosts is ${maxCanKill} with a time per kill of ${formatDuration(
+			`This means the most you can kill with your current item and KC boosts is ${maxCanKill} (${formatDuration(
 				timeToFinish
-			)}.\n`
+			)} per kill).\n`
 		);
 
 		const min = timeToFinish * maxCanKill * 1.01;
 		const max = timeToFinish * maxCanKill * 1.2;
 		str.push(
-			`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills will take from (${formatDuration(
+			`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
 				min
-			)}) to (${formatDuration(max)}) to finish.\n`
+			)}) and (${formatDuration(max)})\n`
 		);
 
-		if (isWeekend()) {
-			str.push(
-				`Because of the 10% weekend boost it will now take from (${formatDuration(
-					min * 0.9
-				)}) to (${formatDuration(max * 0.9)}) to finish.\n`
-			);
-		}
+		str.push(
+			`If the Weekend boost is active, it takes: (${formatDuration(
+				min * 0.9
+			)}) to (${formatDuration(max * 0.9)}) to finish.\n`
+		);
 
 		return msg.send(str.join('\n'));
 	}
