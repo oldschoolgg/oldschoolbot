@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { formatDuration, isWeekend, itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID } from '../../lib/util';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
