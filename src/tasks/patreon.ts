@@ -4,9 +4,10 @@ import { TextChannel } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
 import { Patron } from '../lib/types';
-import { PatronTierID, BitField, Time, BadgesEnum, Channel } from '../lib/constants';
+import { PatronTierID, BitField, Time, BadgesEnum, Channel, PerkTier } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { patreonConfig } from '../config';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`
@@ -92,6 +93,7 @@ export default class extends Task {
 
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33) {
+				if (getUsersPerkTier(user) < PerkTier.Two) continue;
 				result.push(
 					`${user.username}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
 				);
