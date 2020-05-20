@@ -196,7 +196,7 @@ export default class extends BotCommand {
 			const userGearMultiplier = getGearMultiplier(user.getCombatGear());
 			const userKcMultiplier = getKcMultiplier(
 				// TODO: use correct kc lookup value
-				user.settings.get(UserSettings.MonsterScores)[1]
+				user.settings.get(UserSettings.MonsterScores)[1] ?? 1
 			);
 			// range 1 - 5
 			const userMultiplier = userGearMultiplier + userKcMultiplier + 1;

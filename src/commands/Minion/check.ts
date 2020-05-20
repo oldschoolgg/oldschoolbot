@@ -1,4 +1,4 @@
-import { KlasaMessage } from 'klasa';
+import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
@@ -17,9 +17,18 @@ import {
 	minimumRangeGear
 } from '../../lib/gear/raidsGear';
 import { Time } from 'oldschooljs/dist/constants';
+import { formatDuration } from '../../util';
 
 export default class extends BotCommand {
-	async run(msg: KlasaMessage, [kc = 0]: [number]) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			cooldown: 1,
+			usage: '[quantity:integer{1}]',
+			usageDelim: ' '
+		});
+	}
+
+	async run(msg: KlasaMessage, [kc = 1]: [number]) {
 		/**
 		 * THIS IS A TEMPORARY COMMAND TO HELP TESTING.
 		 */
@@ -28,7 +37,6 @@ export default class extends BotCommand {
 			rangeGear: minimumRangeGear,
 			mageGear: minimumMageGear
 		});
-
 		const TEST_GEAR_SCORE = calcTotalGearScore({
 			meleeGear: testMeleeGear,
 			rangeGear: testRangeGear,
@@ -54,17 +62,19 @@ export default class extends BotCommand {
 		)}\ntest range: ${getRangeContribution(rangeGear)}\ntest mage: ${getMageContribution(
 			mageGear
 		)}\n\n`;
-
-		const totalMultiplier = 1 + gearMultiplier + getKcMultiplier(kc);
+		const kcMultiplier = getKcMultiplier(kc);
+		const totalMultiplier = 1 + gearMultiplier + kcMultiplier;
 		const BASE_TIME = Time.Minute * 100;
 		const BASE_POINTS = 8_000;
-		const timeAndPointsRes = `Time: ${BASE_TIME / totalMultiplier} Points: ${BASE_POINTS *
-			totalMultiplier}`;
+		const timeAndPointsRes = `Time: ${formatDuration(
+			BASE_TIME / totalMultiplier
+		)}\n Points: ${Math.floor(BASE_POINTS * totalMultiplier)}`;
 		const res =
 			`${minGearRequired}` +
 			`${testGearUsed}` +
-			`BASE: ${BASE_GEAR_SCORE}\nTEST: ${TEST_GEAR_SCORE}\nDifference: ${difference}\nGear Multiplier: ${gearMultiplier}` +
-			`Total multiplier: ${totalMultiplier}` +
+			`BASE: ${BASE_GEAR_SCORE}\nTEST: ${TEST_GEAR_SCORE}\nDifference: ${difference}\nGear Multiplier: ${gearMultiplier}\n` +
+			`KC Multiplier: ${kcMultiplier}\n` +
+			`Total multiplier: ${totalMultiplier}\n\n` +
 			`${timeAndPointsRes}`;
 
 		return msg.send(res);
