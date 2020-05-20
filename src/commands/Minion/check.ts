@@ -5,7 +5,8 @@ import {
 	calcTotalGearScore,
 	getMeleeContribution,
 	getRangeContribution,
-	getMageContribution
+	getMageContribution,
+	getKcMultiplier
 } from '../../lib/minions/functions/raidsCalculations';
 import {
 	testMeleeGear,
@@ -15,9 +16,10 @@ import {
 	minimumMageGear,
 	minimumRangeGear
 } from '../../lib/gear/raidsGear';
+import { Time } from 'oldschooljs/dist/constants';
 
 export default class extends BotCommand {
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [kc = 0]: [number]) {
 		/**
 		 * THIS IS A TEMPORARY COMMAND TO HELP TESTING.
 		 */
@@ -53,10 +55,17 @@ export default class extends BotCommand {
 			mageGear
 		)}\n\n`;
 
+		const totalMultiplier = 1 + gearMultiplier + getKcMultiplier(kc);
+		const BASE_TIME = Time.Minute * 100;
+		const BASE_POINTS = 8_000;
+		const timeAndPointsRes = `Time: ${BASE_TIME / totalMultiplier} Points: ${BASE_POINTS *
+			totalMultiplier}`;
 		const res =
 			`${minGearRequired}` +
 			`${testGearUsed}` +
-			`BASE: ${BASE_GEAR_SCORE}\nTEST: ${TEST_GEAR_SCORE}\nDifference: ${difference}\nMultiplier: ${gearMultiplier}`;
+			`BASE: ${BASE_GEAR_SCORE}\nTEST: ${TEST_GEAR_SCORE}\nDifference: ${difference}\nGear Multiplier: ${gearMultiplier}` +
+			`Total multiplier: ${totalMultiplier}` +
+			`${timeAndPointsRes}`;
 
 		return msg.send(res);
 	}
