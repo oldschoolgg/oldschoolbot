@@ -96,6 +96,7 @@ export default class extends Task {
 					`${user.username}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
 				);
 				this.removePerks(user);
+				continue;
 			}
 
 			for (let i = 0; i < tiers.length; i++) {
