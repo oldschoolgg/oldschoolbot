@@ -18,7 +18,7 @@ export default class extends Task {
 		if (!Fletchable) return;
 
 		const xpReceived = quantity * Fletchable.xp;
-		let newQuantity = quantity;
+		let newQuantity;
 		if (!Fletchable.outputMultiple) {
 			newQuantity = quantity;
 		} else {
