@@ -1238,7 +1238,7 @@ export const coxLog = {
 	Weapons: resolveItems([
 		'Twisted bow',
 		'Elder maul',
-		'Kodai wand',
+		'Kodai insignia',
 		'Dragon hunter crossbow',
 		'Dragon claws'
 	]),
