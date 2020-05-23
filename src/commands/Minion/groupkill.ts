@@ -17,7 +17,8 @@ export default class extends BotCommand {
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
-			subcommands: true
+			subcommands: true,
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
 		});
 	}
 
