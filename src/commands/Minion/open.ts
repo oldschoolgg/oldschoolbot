@@ -91,8 +91,6 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened a ${clueTier.name} casket.`
 		);
 
-		await msg.author.addItemsToBank(loot, true);
-
 		const task = this.client.tasks.get('bankImage')!;
 
 		const image = await task.generateBankImage(
@@ -102,12 +100,17 @@ export default class extends BotCommand {
 			{ showNewCL: 1 }
 		);
 
+		await msg.author.addItemsToBank(loot, true);
+
 		msg.author.incrementClueScore(clueTier.id);
 		if (hadMimic) {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID);
 		}
 
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.send(
+			`You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
+			new MessageAttachment(image, 'osbot.png')
+		);
 	}
 
 	async nonClueOpen(msg: KlasaMessage, type: string) {
