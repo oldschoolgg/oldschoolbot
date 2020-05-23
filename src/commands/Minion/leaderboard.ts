@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { util, KlasaMessage, Command, CommandStore } from 'klasa';
+import { Monsters } from 'oldschooljs';
 
 import { SettingsEntry, StringKeyedBank } from '../../lib/types';
 import badges from '../../lib/badges';
@@ -8,7 +9,6 @@ import { stringMatches, toTitleCase, convertXPtoLVL } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import Skills from '../../lib/skilling/skills';
-import { Monsters } from 'oldschooljs';
 
 const CACHE_TIME = Time.Minute * 5;
 
