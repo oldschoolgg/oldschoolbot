@@ -1,4 +1,4 @@
-import { Task, util, TaskStore } from 'klasa';
+import { Task, util, TaskStore, KlasaUser } from 'klasa';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
@@ -24,6 +24,8 @@ import { Events } from '../lib/constants';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { filterableTypes } from '../lib/filterables';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { allCollectionLogItems } from '../lib/collectionLog';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -125,8 +127,11 @@ export default class BankImageTask extends Task {
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
-		bankBackgroundID = 1
+		user?: KlasaUser
 	): Promise<Buffer> {
+		const bankBackgroundID = user?.settings.get(UserSettings.BankBackground) ?? 1;
+		const currentCL = user?.settings.get(UserSettings.CollectionLogBank);
+
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -225,7 +230,15 @@ export default class BankImageTask extends Task {
 					item.height
 				);
 
-				const quantityColor = generateHexColorForCashStack(quantity);
+				const isNewCLItem =
+					flags.showNewCL &&
+					currentCL &&
+					!currentCL[id] &&
+					allCollectionLogItems.includes(id);
+
+				const quantityColor = isNewCLItem
+					? '#ac7fff'
+					: generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
 
 				ctx.fillStyle = '#000000';

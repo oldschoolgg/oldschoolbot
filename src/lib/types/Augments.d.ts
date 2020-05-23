@@ -1,5 +1,5 @@
 import { Db } from 'mongodb';
-import { Settings, SettingsUpdateResult } from 'klasa';
+import { Settings, SettingsUpdateResult, KlasaUser } from 'klasa';
 import { FSWatcher } from 'fs';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Limit } from 'p-limit';
@@ -44,7 +44,7 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
-			bankBackgroundID = 1
+			user?: KlasaUser
 		): Promise<Buffer>;
 		generateCollectionLogImage(
 			collectionLog: Bank,
