@@ -1269,7 +1269,8 @@ export const miscLog = {
 		'Book of balance',
 		'Book of darkness',
 		'Book of law'
-	])
+	]),
+	Tzhaar: resolveItems(['Fire cape'])
 };
 
 export const collectionLogTypes = [
