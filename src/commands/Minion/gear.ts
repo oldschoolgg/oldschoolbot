@@ -5,6 +5,7 @@ import { GearTypes } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { MessageAttachment } from 'discord.js';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,7 +21,8 @@ export default class extends BotCommand {
 		const image = await generateGearImage(
 			this.client,
 			msg.author.settings.get(resolveGearTypeSetting(gearType)),
-			gearType
+			gearType,
+			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
