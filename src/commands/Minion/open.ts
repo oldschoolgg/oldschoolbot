@@ -97,7 +97,8 @@ export default class extends BotCommand {
 			loot,
 			`You opened a ${clueTier.name} clue ${hadMimic ? 'with a mimic ' : ''}and received...`,
 			false,
-			{ showNewCL: 1 }
+			{ showNewCL: 1 },
+			msg.author
 		);
 
 		await msg.author.addItemsToBank(loot, true);
