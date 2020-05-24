@@ -1,4 +1,3 @@
-
 import itemID from '../util/itemID';
 import { Createable } from '.';
 
