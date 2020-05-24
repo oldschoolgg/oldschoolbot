@@ -8,6 +8,9 @@ import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSett
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { itemNameFromID } from '../../lib/util';
 import { requiresMinion } from '../../lib/minions/decorators';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MessageAttachment } from 'discord.js';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -102,9 +105,16 @@ export default class extends BotCommand {
 		msg.author.log(`equipping ${quantity}x ${itemToEquip.name}[${itemToEquip.id}]`);
 
 		await msg.author.settings.update(gearTypeSetting, newGear);
+		const image = await generateGearImage(
+			this.client,
+			msg.author.settings.get(resolveGearTypeSetting(gearType)),
+			gearType,
+			msg.author.settings.get(UserSettings.Minion.EquippedPet)
+		);
 
 		return msg.send(
-			`You equipped ${itemToEquip.name} in your ${readableGearTypeName(gearType)} setup.`
+			`You equipped ${itemToEquip.name} in your ${readableGearTypeName(gearType)} setup.`,
+			new MessageAttachment(image, 'osbot.png')
 		);
 	}
 }

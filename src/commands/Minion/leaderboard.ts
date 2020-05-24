@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { util, KlasaMessage, Command, CommandStore } from 'klasa';
+import { Monsters } from 'oldschooljs';
 
 import { SettingsEntry, StringKeyedBank } from '../../lib/types';
 import badges from '../../lib/badges';
@@ -8,7 +9,6 @@ import { stringMatches, toTitleCase, convertXPtoLVL } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import Skills from '../../lib/skilling/skills';
-import findMonster from '../../lib/minions/functions/findMonster';
 
 const CACHE_TIME = Time.Minute * 5;
 
@@ -294,7 +294,13 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		if (!name) {
 			throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``;
 		}
-		const monster = findMonster(name);
+
+		const monster = Monsters.find(
+			mon =>
+				stringMatches(mon.name, name) ||
+				mon.aliases.some(alias => stringMatches(alias, name))
+		);
+
 		if (!monster) throw `That's not a valid monster!`;
 
 		const onlyForGuild = msg.flagArgs.server;

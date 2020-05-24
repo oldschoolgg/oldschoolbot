@@ -1238,7 +1238,7 @@ export const coxLog = {
 	Weapons: resolveItems([
 		'Twisted bow',
 		'Elder maul',
-		'Kodai wand',
+		'Kodai insignia',
 		'Dragon hunter crossbow',
 		'Dragon claws'
 	]),
@@ -1269,18 +1269,31 @@ export const miscLog = {
 		'Book of balance',
 		'Book of darkness',
 		'Book of law'
-	])
+	]),
+	Tzhaar: resolveItems(['Fire cape'])
 };
+
+export const allCollectionLogItems = removeDuplicatesFromArray(
+	[
+		...Object.values(bosses),
+		...Object.values(cluesAll),
+		...Object.values(pets),
+		...Object.values(championScrolls),
+		...Object.values(holiday),
+		...Object.values(diangoCollectionLog),
+		...Object.values(capes),
+		...Object.values(quest),
+		...Object.values(skillingLog),
+		...Object.values(coxLog),
+		...Object.values(miscLog)
+	].flat(Infinity)
+);
 
 export const collectionLogTypes = [
 	{
 		name: 'Overall',
 		aliases: ['all', 'overall'],
-		items: removeDuplicatesFromArray(
-			[...Object.values(bosses), ...Object.values(cluesAll), ...Object.values(pets)].flat(
-				Infinity
-			)
-		)
+		items: allCollectionLogItems
 	},
 	{
 		name: 'Boss',

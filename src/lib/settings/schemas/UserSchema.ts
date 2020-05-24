@@ -26,6 +26,7 @@ Client.defaultUserSchema
 			.add('dailyDuration', 'integer', { default: 0 })
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
+			.add('equippedPet', 'integer', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

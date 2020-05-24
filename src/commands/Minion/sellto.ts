@@ -46,7 +46,7 @@ export default class extends BotCommand {
 		const osItem = TradeableItems.find(item =>
 			stringMatches(item.name, cleanItemName(itemName))
 		);
-		if (!osItem) throw `${itemName} doesnt exist.`;
+		if (!osItem) throw `That item doesnt exist.`;
 		const tradeable = itemIsTradeable(osItem.id);
 
 		if (!tradeable) {

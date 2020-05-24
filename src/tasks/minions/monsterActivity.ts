@@ -30,8 +30,8 @@ export default class extends Task {
 				loot,
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
-				{},
-				user.settings.get(UserSettings.BankBackground)
+				{ showNewCL: 1 },
+				user
 			);
 
 		this.client.emit(
