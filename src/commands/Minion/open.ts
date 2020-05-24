@@ -96,7 +96,7 @@ export default class extends BotCommand {
 		const image = await task.generateBankImage(
 			loot,
 			`You opened a ${clueTier.name} clue ${hadMimic ? 'with a mimic ' : ''}and received...`,
-			false,
+			true,
 			{ showNewCL: 1 },
 			msg.author
 		);
