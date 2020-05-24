@@ -1,4 +1,5 @@
 import { KlasaMessage, CommandStore } from 'klasa';
+import { MessageAttachment } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
@@ -8,7 +9,6 @@ import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSett
 import { requiresMinion } from '../../lib/minions/decorators';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MessageAttachment } from 'discord.js';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
