@@ -8,7 +8,7 @@ const Javelins: Fletchable[] = [
 		level: 3,
 		xp: 1,
 		inputItems: { [itemID('Bronze javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	},
 	{
 		name: 'Iron javelin',
@@ -16,7 +16,7 @@ const Javelins: Fletchable[] = [
 		level: 17,
 		xp: 2,
 		inputItems: { [itemID('Iron javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	},
 	{
 		name: 'Steel javelin',
@@ -24,7 +24,7 @@ const Javelins: Fletchable[] = [
 		level: 32,
 		xp: 5,
 		inputItems: { [itemID('Steel javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	},
 	{
 		name: 'Mithril javelin',
@@ -32,7 +32,7 @@ const Javelins: Fletchable[] = [
 		level: 47,
 		xp: 8,
 		inputItems: { [itemID('Mithril javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	},
 	{
 		name: 'Adamant javelin',
@@ -40,7 +40,7 @@ const Javelins: Fletchable[] = [
 		level: 62,
 		xp: 10,
 		inputItems: { [itemID('Adamant javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	},
 	{
 		name: 'Rune javelin',
@@ -48,7 +48,7 @@ const Javelins: Fletchable[] = [
 		level: 77,
 		xp: 12.4,
 		inputItems: { [itemID('Rune javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	},
 	{
 		name: 'Amethyst javelin',
@@ -56,7 +56,7 @@ const Javelins: Fletchable[] = [
 		level: 84,
 		xp: 13.5,
 		inputItems: { [itemID('Amethyst javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	},
 	{
 		name: 'Dragon javelin',
@@ -64,7 +64,7 @@ const Javelins: Fletchable[] = [
 		level: 92,
 		xp: 15,
 		inputItems: { [itemID('Dragon javelin heads')]: 1, [itemID('Javelin shaft')]: 1 },
-		tickRate: 0.07
+		tickRate: 0.13
 	}
 ];
 
