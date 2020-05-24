@@ -252,7 +252,9 @@ export default class extends Extendable {
 			case Activity.FightCaves: {
 				return `${this.minionName} is currently attempting the ${
 					Emoji.AnimatedFireCape
-				} **Fight caves** ${Emoji.TzRekJad}. ${formatDuration(currentTask.duration)}`;
+				} **Fight caves** ${Emoji.TzRekJad}. ${formatDuration(
+					currentTask.duration
+				)} remaining.`;
 			}
 		}
 	}
