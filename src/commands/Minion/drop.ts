@@ -1,7 +1,9 @@
 import { KlasaMessage, CommandStore } from 'klasa';
+import { Items } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import getOSItem from '../../lib/util/getOSItem';
+import { stringMatches } from '../../lib/util';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 const options = {
 	max: 1,
@@ -20,7 +22,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		const osItem = getOSItem(itemName);
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItem = Items.find(i => stringMatches(itemName, i.name) && Boolean(userBank[i.id]));
+
+		if (!osItem) {
+			throw `I couldn't find any items matching this name that you own.`;
+		}
 
 		const hasItem = await msg.author.hasItem(osItem.id, quantity, false);
 		if (!hasItem) {
