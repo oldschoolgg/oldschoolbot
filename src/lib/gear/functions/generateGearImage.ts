@@ -35,7 +35,8 @@ const slotSize = 36;
 export async function generateGearImage(
 	client: KlasaClient,
 	gearSetup: GearTypes.GearSetup,
-	gearType: GearTypes.GearSetupTypes
+	gearType: GearTypes.GearSetupTypes,
+	petID: number | null
 ) {
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
@@ -47,6 +48,17 @@ export async function generateGearImage(
 
 	drawTitleText(ctx, readableGearTypeName(gearType), Math.floor(canvas.width / 2), 17);
 	// Draw Items
+
+	if (petID) {
+		const image = await client.tasks.get('bankImage')!.getItemImage(petID);
+		ctx.drawImage(
+			image,
+			173 + slotSize / 2 - image.width / 2,
+			195 + slotSize / 2 - image.height / 2,
+			image.width,
+			image.height
+		);
+	}
 
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];

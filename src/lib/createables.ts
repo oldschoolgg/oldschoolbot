@@ -653,6 +653,28 @@ const Createables: Createable[] = [
 		}),
 		agilityLevel: 35,
 		QPRequired: 5
+	},
+	{
+		name: "Ava's accumulator",
+		inputItems: transformStringBankToNum({
+			'Steel arrow': 75
+		}),
+		outputItems: transformStringBankToNum({
+			"Ava's accumulator": 1
+		}),
+		QPRequired: 30
+	},
+	{
+		name: "Ava's assembler",
+		inputItems: transformStringBankToNum({
+			'Mithril arrow': 75,
+			"Ava's accumulator": 1,
+			"Vorkath's head": 1
+		}),
+		outputItems: transformStringBankToNum({
+			"Ava's assembler": 1
+		}),
+		QPRequired: 205
 	}
 ];
 

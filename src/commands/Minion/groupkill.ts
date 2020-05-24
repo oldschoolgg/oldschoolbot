@@ -17,7 +17,8 @@ export default class extends BotCommand {
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
-			subcommands: true
+			subcommands: true,
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
 		});
 	}
 
@@ -163,7 +164,8 @@ export default class extends BotCommand {
 				.map(u => u.username)
 				.join(', ')}) is now off to kill ${quantity}x ${
 				monster.name
-			}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
+			}. Each kill takes ${formatDuration(perKillTime) ||
+				'1 second'} instead of ${formatDuration(
 				monster.timeToFinish
 			)}, and waiting ${formatDuration(
 				monster.respawnTime!

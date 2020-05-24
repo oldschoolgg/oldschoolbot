@@ -7,7 +7,7 @@ import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank'
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Time } from '../../lib/constants';
+import { Time, Events } from '../../lib/constants';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -102,7 +102,7 @@ export default class extends BotCommand {
 
 			const confirmMsg = await msg.channel.send(str);
 
-			// Confirm the user wants to create the item(s)
+			// Confirm the user wants to buy the bg
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
@@ -130,6 +130,12 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (selectedImage.id !== 1) {
+			this.client.emit(
+				Events.ServerNotification,
+				`**${msg.author.username}'s** just purchased the ${selectedImage.name} bank background!`
+			);
+		}
 		await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
 
 		return msg.send(`Your bank background is now **${selectedImage.name}**!`);

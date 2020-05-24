@@ -160,7 +160,9 @@ export default class extends BotCommand {
 		).toFixed(1);
 
 		return msg.send(
-			`**Duration:** ${formatDuration(duration)} (${duration / 1000 / 60} minutes)
+			`**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(
+				2
+			)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
