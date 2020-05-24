@@ -6,6 +6,9 @@ import { GearTypes } from '../../lib/gear';
 import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { requiresMinion } from '../../lib/minions/decorators';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MessageAttachment } from 'discord.js';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -50,8 +53,16 @@ export default class extends BotCommand {
 		});
 		await msg.author.settings.update(gearTypeSetting, newGear);
 
+		const image = await generateGearImage(
+			this.client,
+			msg.author.settings.get(resolveGearTypeSetting(gearType)),
+			gearType,
+			msg.author.settings.get(UserSettings.Minion.EquippedPet)
+		);
+
 		return msg.send(
-			`You unequipped ${itemToEquip.name} from your ${readableGearTypeName(gearType)} setup.`
+			`You unequipped ${itemToEquip.name} from your ${readableGearTypeName(gearType)} setup.`,
+			new MessageAttachment(image, 'osbot.png')
 		);
 	}
 }
