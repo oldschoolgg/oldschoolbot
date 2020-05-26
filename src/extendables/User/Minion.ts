@@ -20,6 +20,7 @@ import {
 	FletchingActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	FarmingActivityTaskOptions
+
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
