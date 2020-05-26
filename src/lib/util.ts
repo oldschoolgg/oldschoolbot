@@ -97,6 +97,10 @@ export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
 }
 
+export function plantMatches(str: any, str2: any) {
+	return cleanString(str) === cleanString(str2);
+}
+
 export function bankToString(bank: ItemBank, chunkSize?: number) {
 	const display = [];
 	for (const [itemID, qty] of Object.entries(bank)) {
