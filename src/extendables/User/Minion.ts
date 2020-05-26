@@ -31,6 +31,7 @@ import {
 	ClueActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,

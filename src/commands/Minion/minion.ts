@@ -466,6 +466,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
+	async farm(msg: KlasaMessage, [quantity, seedName, upgradeType]: [number, string, string]) {
+		await this.client.commands
+			.get('farm')!
+			.run(msg, [quantity, seedName, upgradeType])
+			.catch(err => {
+				throw err;
+			});
+	}
+
 	async quest(msg: KlasaMessage) {
 		await this.client.commands
 			.get('quest')!
