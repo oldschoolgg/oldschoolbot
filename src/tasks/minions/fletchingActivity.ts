@@ -20,17 +20,15 @@ export default class extends Task {
 		if (!fletchableItem) return;
 
 		const xpReceived = quantity * fletchableItem.xp;
-		let newQuantity;
-		if (!fletchableItem.outputMultiple) {
-			newQuantity = quantity;
-		} else {
-			newQuantity = quantity * fletchableItem.outputMultiple;
+
+		if (fletchableItem.outputMultiple) {
+			quantity *= fletchableItem.outputMultiple;
 		}
 
 		await user.addXP(SkillsEnum.Fletching, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Fletching);
 
-		let str = `${user}, ${user.minionName} finished fletching ${newQuantity} ${
+		let str = `${user}, ${user.minionName} finished fletching ${quantity} ${
 			fletchableItem.name
 		}s, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
@@ -41,7 +39,7 @@ export default class extends Task {
 		}
 
 		const loot = {
-			[fletchableItem.id]: newQuantity
+			[fletchableItem.id]: quantity
 		};
 
 		await user.addItemsToBank(loot, true);

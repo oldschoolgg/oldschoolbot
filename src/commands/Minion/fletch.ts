@@ -120,10 +120,6 @@ export default class extends BotCommand {
 		// Remove the required items from their bank.
 		let newBank = { ...userBank };
 		for (const [itemID, qty] of requiredItems) {
-			if (parseInt(itemID) === 995) {
-				await msg.author.removeGP(qty * quantity);
-				continue;
-			}
 			newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
