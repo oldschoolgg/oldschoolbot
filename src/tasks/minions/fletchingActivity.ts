@@ -13,24 +13,26 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fletching);
 
-		const Fletchable = Fletching.Fletchables.find(fletchable => fletchable.id === fletchableID);
+		const fletchableItem = Fletching.Fletchables.find(
+			fletchable => fletchable.id === fletchableID
+		);
 
-		if (!Fletchable) return;
+		if (!fletchableItem) return;
 
-		const xpReceived = quantity * Fletchable.xp;
+		const xpReceived = quantity * fletchableItem.xp;
 		let newQuantity;
-		if (!Fletchable.outputMultiple) {
+		if (!fletchableItem.outputMultiple) {
 			newQuantity = quantity;
 		} else {
-			newQuantity = quantity * Fletchable.outputMultiple;
+			newQuantity = quantity * fletchableItem.outputMultiple;
 		}
 
 		await user.addXP(SkillsEnum.Fletching, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Fletching);
 
 		let str = `${user}, ${user.minionName} finished fletching ${newQuantity} ${
-			Fletchable.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
+			fletchableItem.name
+		}s, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
 
@@ -39,7 +41,7 @@ export default class extends Task {
 		}
 
 		const loot = {
-			[Fletchable.id]: newQuantity
+			[fletchableItem.id]: newQuantity
 		};
 
 		await user.addItemsToBank(loot, true);
@@ -60,11 +62,11 @@ export default class extends Task {
 					if (response) {
 						if (response.author.minionIsBusy) return;
 						user.log(
-							`continued trip of ${quantity}x ${Fletchable.name}[${Fletchable.id}]`
+							`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`
 						);
 						this.client.commands
 							.get('fletch')!
-							.run(response as KlasaMessage, [quantity, Fletchable.name]);
+							.run(response as KlasaMessage, [quantity, fletchableItem.name]);
 					}
 				})
 				.catch(noOp);

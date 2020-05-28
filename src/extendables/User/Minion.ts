@@ -60,7 +60,7 @@ export default class extends Extendable {
 - Train woodcutting with \`+chop\`
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
-- Train dletching with \`+fletch\`
+- Train fletching with \`+fletch\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}

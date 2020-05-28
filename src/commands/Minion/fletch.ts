@@ -15,6 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
 import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,11 +28,9 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, fletchName = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
 		if (msg.flagArgs.items) {
 			return msg.channel.sendFile(
 				Buffer.from(
@@ -46,33 +45,35 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			fletchName = quantity;
 			quantity = null;
 		}
 
-		const Fletch = Fletching.Fletchables.find(item => stringMatches(item.name, fletchName));
+		const fletchableItem = Fletching.Fletchables.find(item =>
+			stringMatches(item.name, fletchName)
+		);
 
-		if (!Fletch) {
+		if (!fletchableItem) {
 			throw `That is not a valid fletchable item, to see the items available do \`${msg.cmdPrefix}fletch --items\``;
 		}
+		let sets = 'x';
+		if (fletchableItem.outputMultiple) {
+			sets = 'sets of';
+		}
 
-		if (msg.author.skillLevel(SkillsEnum.Fletching) < Fletch.level) {
-			throw `${msg.author.minionName} needs ${Fletch.level} Fletching to fletch ${Fletch.name}.`;
+		if (msg.author.skillLevel(SkillsEnum.Fletching) < fletchableItem.level) {
+			throw `${msg.author.minionName} needs ${fletchableItem.level} Fletching to fletch ${fletchableItem.name}.`;
 		}
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const requiredItems: [string, number][] = Object.entries(Fletch.inputItems);
+		const requiredItems: [string, number][] = Object.entries(fletchableItem.inputItems);
 
 		// Get the base time to fletch the item then add on quarter of a second per item to account for banking/etc.
-		let timeToFletchSingleItem = Fletch.tickRate * Time.Second * 0.6 + Time.Second / 4;
-		if (Fletch.tickRate < 1) {
-			timeToFletchSingleItem = Fletch.tickRate * Time.Second * 0.6;
+		let timeToFletchSingleItem = fletchableItem.tickRate * Time.Second * 0.6 + Time.Second / 4;
+		if (fletchableItem.tickRate < 1) {
+			timeToFletchSingleItem = fletchableItem.tickRate * Time.Second * 0.6;
 		}
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
@@ -93,7 +94,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
-				Fletch.name
+				fletchableItem.name
 			}s you can fletch is ${Math.floor(msg.author.maxTripLength / timeToFletchSingleItem)}.`;
 		}
 
@@ -106,7 +107,7 @@ export default class extends BotCommand {
 		}
 
 		const data: FletchingActivityTaskOptions = {
-			fletchableID: Fletch.id,
+			fletchableID: fletchableItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -131,9 +132,9 @@ export default class extends BotCommand {
 
 		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
-			`${msg.author.minionName} is now Fletching ${quantity}x ${
-				Fletch.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			`${msg.author.minionName} is now Fletching ${quantity} ${sets} ${
+				fletchableItem.name
+			}s, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }

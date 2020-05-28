@@ -676,8 +676,8 @@ const Createables: Createable[] = [
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205
-	},
-	{
+	}
+	/* {
 		name: 'Toxic blowpipe (empty)',
 		inputItems: {
 			[itemID('Toxic blowpipe')]: 1
@@ -696,7 +696,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Toxic blowpipe')]: 1
 		}
-	}
+	} */
 ];
 
 export default Createables;
