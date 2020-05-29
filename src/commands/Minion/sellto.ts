@@ -47,7 +47,7 @@ export default class extends BotCommand {
 		if (buyerMember.user.isBusy) {
 			throw `That user is busy right now.`;
 		}
-		if (buyerMember.user.settings.get(UserSettings.GP) < price)	{
+		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
 		const osItem = TradeableItems.find(item =>
@@ -61,11 +61,11 @@ export default class extends BotCommand {
 		}
 
 		const numItemsHas = await msg.author.numberOfItemInBank(osItem.id);
-        if (numItemsHas === 0) {
+		if (numItemsHas === 0) {
 			throw `You don't have any of this item to sell!`;
 		}
-		if (!quantity) { 
-			quantity = numItemsHas; 
+		if (!quantity) {
+			quantity = numItemsHas;
 		}
 
 		buyerMember.user.toggleBusy(true);
