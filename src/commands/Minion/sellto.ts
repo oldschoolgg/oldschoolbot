@@ -64,10 +64,10 @@ export default class extends BotCommand {
         if (numItemsHas === 0) {
 			throw `You don't have any of this item to sell!`;
 		}
-        if (!quantity) { 
+		if (!quantity) { 
 			quantity = numItemsHas; 
 		}
-			
+
 		buyerMember.user.toggleBusy(true);
 		msg.author.toggleBusy(true);
 		try {
