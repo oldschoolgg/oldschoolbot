@@ -47,15 +47,19 @@ export default class extends BotCommand {
 		if (buyerMember.user.isBusy) {
 			throw `That user is busy right now.`;
 		}
-
-		if (buyerMember.user.settings.get(UserSettings.GP) < price)	throw `That user doesn't have enough GP :(`;
+		if (buyerMember.user.settings.get(UserSettings.GP) < price)	{
+			throw `That user doesn't have enough GP :(`;
+		}
 		const osItem = TradeableItems.find(item =>
 			stringMatches(item.name, cleanItemName(itemName))
 		);
-		if (!osItem) throw `That item doesnt exist.`;
+		if (!osItem) {
+			throw `That item doesnt exist.`;
+		}
 		if (!itemIsTradeable(osItem.id)) {
 			throw `That item is not tradeable.`;
 		}
+
 		const numItemsHas = await msg.author.numberOfItemInBank(osItem.id);
         if (numItemsHas === 0) {
 			throw `You don't have any of this item to sell!`;
@@ -63,7 +67,6 @@ export default class extends BotCommand {
         if (!quantity) { 
 			quantity = numItemsHas; 
 		}
-			
 			
 		buyerMember.user.toggleBusy(true);
 		msg.author.toggleBusy(true);
