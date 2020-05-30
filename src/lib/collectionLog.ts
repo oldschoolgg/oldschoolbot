@@ -1160,6 +1160,7 @@ export const capes = {
 		'Cooking hood',
 		'Crafting hood',
 		'Prayer hood',
+		'Fletching hood',
 		'Quest point hood'
 	]),
 	capes: resolveItems([
@@ -1172,6 +1173,7 @@ export const capes = {
 		'Cooking cape',
 		'Crafting cape',
 		'Prayer cape',
+		'Fletching cape',
 		'Quest point cape'
 	]),
 	'trimmed capes': resolveItems([
@@ -1184,6 +1186,7 @@ export const capes = {
 		'Cooking cape(t)',
 		'Crafting cape(t)',
 		'Prayer cape(t)',
+		'Fletching cape(t)',
 		'Quest point cape (t)'
 	])
 };

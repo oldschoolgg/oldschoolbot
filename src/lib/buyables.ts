@@ -180,10 +180,10 @@ const Buyables: Buyable[] = [
 		name: 'Feather pack',
 		aliases: ['feather'],
 		outputItems: {
-			[itemID('Feather')]: 300
+			[itemID('Feather')]: 1000
 		},
 		qpRequired: 0,
-		gpCost: 300 * 100
+		gpCost: 1000 * 10
 	}
 ];
 
