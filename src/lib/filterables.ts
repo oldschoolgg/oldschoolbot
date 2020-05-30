@@ -674,7 +674,7 @@ export const filterableTypes = [
 	{
 		name: 'Fletching',
 		aliases: ['fletching', 'fletch'],
-		items: herblore
+		items: fletching
 	},
 	{
 		name: 'Agility',
