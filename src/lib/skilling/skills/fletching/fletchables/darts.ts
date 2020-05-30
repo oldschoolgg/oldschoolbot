@@ -1,5 +1,6 @@
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
+import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
 
 const Darts: Fletchable[] = [
 	{
@@ -7,7 +8,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Bronze dart'),
 		level: 10,
 		xp: 1.8,
-		inputItems: { [itemID('Bronze dart tip')]: 1, [itemID('Feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Bronze dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -15,7 +16,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Iron dart'),
 		level: 22,
 		xp: 3.8,
-		inputItems: { [itemID('Iron dart tip')]: 1, [itemID('Feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Iron dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -23,7 +24,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Steel dart'),
 		level: 37,
 		xp: 7.5,
-		inputItems: { [itemID('Steel dart tip')]: 1, [itemID('Feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Steel dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -31,7 +32,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Mithril dart'),
 		level: 52,
 		xp: 11.2,
-		inputItems: { [itemID('Mithril dart tip')]: 1, [itemID('Feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Mithril dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -39,7 +40,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Adamant dart'),
 		level: 67,
 		xp: 15,
-		inputItems: { [itemID('Adamant dart tip')]: 1, [itemID('Feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Adamant dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -47,7 +48,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Rune dart'),
 		level: 81,
 		xp: 18.8,
-		inputItems: { [itemID('Rune dart tip')]: 1, [itemID('Feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Rune dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -55,7 +56,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Dragon dart'),
 		level: 95,
 		xp: 25,
-		inputItems: { [itemID('Dragon dart tip')]: 1, [itemID('Feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Dragon dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	}
 ];

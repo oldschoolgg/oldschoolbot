@@ -1,5 +1,6 @@
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
+import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
 
 const Bolts: Fletchable[] = [
 	{
@@ -7,7 +8,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Bronze bolts'),
 		level: 9,
 		xp: 0.5,
-		inputItems: { [itemID('Bronze bolts (unf)')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Bronze bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -15,7 +16,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Iron bolts'),
 		level: 39,
 		xp: 1.5,
-		inputItems: { [itemID('Iron bolts (unf)')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Iron bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -23,7 +24,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Steel bolts'),
 		level: 46,
 		xp: 3.5,
-		inputItems: { [itemID('Steel bolts (unf)')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Steel bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -31,7 +32,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Mithril bolts'),
 		level: 54,
 		xp: 5,
-		inputItems: { [itemID('Mithril bolts (unf)')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Mithril bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -39,7 +40,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Broad bolts'),
 		level: 55,
 		xp: 3,
-		inputItems: { [itemID('Unfinished broad bolts')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Unfinished broad bolts': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -47,7 +48,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Adamant bolts'),
 		level: 61,
 		xp: 7,
-		inputItems: { [itemID('Adamant bolts (unf)')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Adamant bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -55,7 +56,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Runite bolts'),
 		level: 69,
 		xp: 10,
-		inputItems: { [itemID('Runite bolts (unf)')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Runite bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -63,7 +64,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Dragon bolts'),
 		level: 84,
 		xp: 12,
-		inputItems: { [itemID('Dragon bolts (unf)')]: 1, [itemID('feather')]: 1 },
+		inputItems: transformStringBankToNum({ 'Dragon bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	}
 ];
