@@ -15,6 +15,16 @@ const cookables: Cookable[] = [
 	},
 	{
 		level: 1,
+		xp: 3,
+		id: itemID('Sinew'),
+		name: 'Sinew',
+		inputCookables: { [itemID('Raw beef')]: 1 },
+		stopBurnAt: 1,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt meat')
+	},
+	{
+		level: 1,
 		xp: 30,
 		id: itemID('Shrimps'),
 		name: 'Shrimps',

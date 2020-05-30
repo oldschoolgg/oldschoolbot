@@ -36,5 +36,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.OfferingActivity;
 		case Activity.FightCaves:
 			return Tasks.FightCavesActivity;
+		case Activity.Fletching:
+			return Tasks.FletchingActivity;
 	}
 }

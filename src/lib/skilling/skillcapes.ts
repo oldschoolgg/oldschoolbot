@@ -68,6 +68,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Prayer hood'),
 		untrimmed: itemID('Prayer cape'),
 		trimmed: itemID('Prayer cape(t)')
+	},
+	{
+		skill: SkillsEnum.Fletching,
+		hood: itemID('Fletching hood'),
+		untrimmed: itemID('Fletching cape'),
+		trimmed: itemID('Fletching cape(t)')
 	}
 ];
 

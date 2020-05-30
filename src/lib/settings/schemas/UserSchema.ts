@@ -50,6 +50,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Runecraft, 'integer', { default: 0 })
 			.add(SkillsEnum.Crafting, 'integer', { default: 0 })
 			.add(SkillsEnum.Prayer, 'integer', { default: 0 })
+			.add(SkillsEnum.Fletching, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

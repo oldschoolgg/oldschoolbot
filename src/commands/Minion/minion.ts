@@ -54,7 +54,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -204,6 +204,9 @@ ${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
 ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.author.settings
 			.get(UserSettings.Skills.Prayer)
 			.toLocaleString()} xp)
+${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
+			SkillsEnum.Fletching
+		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -423,6 +426,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	async craft(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		await this.client.commands
 			.get('craft')!
+			.run(msg, [quantity, itemName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async fletch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		await this.client.commands
+			.get('fletch')!
 			.run(msg, [quantity, itemName])
 			.catch(err => {
 				throw err;

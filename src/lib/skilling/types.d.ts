@@ -8,7 +8,8 @@ export const enum SkillsEnum {
 	Firemaking = 'firemaking',
 	Runecraft = 'runecraft',
 	Crafting = 'crafting',
-	Prayer = 'prayer'
+	Prayer = 'prayer',
+	Fletching = 'fletching'
 }
 
 export interface Ore {
@@ -111,6 +112,16 @@ export interface Craftable {
 	xp: number;
 	inputItems: Bank;
 	tickRate: number;
+}
+
+export interface Fletchable {
+	name: string;
+	id: number;
+	level: number;
+	xp: number;
+	inputItems: Bank;
+	tickRate: number;
+	outputMultiple?: number;
 }
 
 export interface Bone {
