@@ -372,21 +372,21 @@ const herblore = resolveItems([
 	'Potato cactus',
 	"Red spiders' eggs",
 	'Snape grass',
-	'White berries'
-	'Avantoe potion (unf)'
-	'Cadantine potion (unf)'
-	'Dwarf weed potion (unf)'
-	'Guam potion (unf)'
-	'Harralander potion (unf)'
-	'Irit potion (unf)'
-	'Kwuarm potion (unf)'
-	'Lantadyme potion (unf)'
-	'Marrentill potion (unf)'
-	'Ranarr potion (unf)'
-	'Snapdragon potion (unf)'
-	'Tarromin potion (unf)'
-	'Toadflax potion (unf)'
-	'Torstol potion (unf)'
+	'White berries',
+	'Avantoe potion (unf)',
+	'Cadantine potion (unf)',
+	'Dwarf weed potion (unf)',
+	'Guam potion (unf)',
+	'Harralander potion (unf)',
+	'Irit potion (unf)',
+	'Kwuarm potion (unf)',
+	'Lantadyme potion (unf)',
+	'Marrentill potion (unf)',
+	'Ranarr potion (unf)',
+	'Snapdragon potion (unf)',
+	'Tarromin potion (unf)',
+	'Toadflax potion (unf)',
+	'Torstol potion (unf)',
 	'Vial of water',
 	'Eye of newt',
 	'Unicorn horn dust',
@@ -395,7 +395,7 @@ const herblore = resolveItems([
 	"Toad's legs",
 	'Dragon scale dust',
 	'Wine of zamorak',
-	'Amylase crystal'
+	'Amylase crystal',
 	'Jangerberries',
 	'Poison ivy berries',
 	"Zulrah's scales",
