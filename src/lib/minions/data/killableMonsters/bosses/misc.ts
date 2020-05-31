@@ -27,6 +27,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 5,
 			[itemID('Berserker ring')]: 5
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -44,6 +47,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -73,6 +79,9 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Barrows gloves')]: 5,
 			[itemID('Ranger boots')]: 5,
 			[itemID("Iban's staff")]: 2
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -94,6 +103,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -119,7 +131,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Dragon warhammer')]: 10
 		},
 		groupKillable: true,
-		respawnTime: 40_000
+		respawnTime: 40_000,
+		levelRequirements: {
+			prayer: 43
+		}
 	},
 	{
 		id: Monsters.Cerberus.id,
@@ -142,6 +157,9 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Spectral spirit shield')]: 10,
 			[itemID('Bandos chestplate')]: 5,
 			[itemID('Bandos tassets')]: 5
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	}
 ];

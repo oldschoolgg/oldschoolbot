@@ -22,7 +22,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Dragon warhammer')]: 10
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5
+		respawnTime: Time.Minute * 1.5,
+		levelRequirements: {
+			prayer: 43
+		}
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -45,7 +48,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Armadyl crossbow')]: 5
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5
+		respawnTime: Time.Minute * 1.5,
+		levelRequirements: {
+			prayer: 43
+		}
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -67,7 +73,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Armadyl crossbow')]: 5
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5
+		respawnTime: Time.Minute * 1.5,
+		levelRequirements: {
+			prayer: 43
+		}
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -89,7 +98,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Dragon warhammer')]: 10
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5
+		respawnTime: Time.Minute * 1.5,
+		levelRequirements: {
+			prayer: 43
+		}
 	}
 ];
 
