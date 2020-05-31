@@ -50,7 +50,8 @@ const killableBosses: KillableMonster[] = [
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			agility: 70
 		}
 	},
 	{
