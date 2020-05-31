@@ -13,6 +13,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
+import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 
 const itemsToNotifyOf: number[] = Object.values(cluesRares)
 	.flat(Infinity)
@@ -21,17 +22,37 @@ const itemsToNotifyOf: number[] = Object.values(cluesRares)
 	)
 	.concat([itemID('Bloodhound')]);
 
+const allOpenables = [...Openables.map(i => i.itemID), ...ClueTiers.map(i => i.id)];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['clue'],
-			usage: '<ClueTier:string>',
+			usage: '[name:string]',
 			oneAtTime: true
 		});
 	}
 
-	async run(msg: KlasaMessage, [tier]: [string]) {
+	async showAvailable(msg: KlasaMessage) {
+		const available = filterBankFromArrayOfItems(
+			allOpenables,
+			msg.author.settings.get(UserSettings.Bank)
+		);
+
+		if (Object.keys(available).length === 0) {
+			return `You have no openable items.`;
+		}
+
+		const itemsAvailable = await createReadableItemListFromBank(this.client, available);
+		return `You have ${itemsAvailable}.`;
+	}
+
+	async run(msg: KlasaMessage, [tier]: [string | undefined]) {
+		if (!tier) {
+			return msg.send(await this.showAvailable(msg));
+		}
+
 		const clueTier = ClueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());
 		if (!clueTier) {
 			return this.nonClueOpen(msg, tier);
@@ -39,7 +60,9 @@ export default class extends BotCommand {
 
 		const hasCasket = await msg.author.hasItem(clueTier.id);
 		if (!hasCasket) {
-			throw `You don't have any ${clueTier.name} Caskets to open!`;
+			throw `You don't have any ${
+				clueTier.name
+			} Caskets to open!\n\n However... ${await this.showAvailable(msg)}`;
 		}
 
 		await msg.author.removeItemFromBank(clueTier.id);
