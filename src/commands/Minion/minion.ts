@@ -510,6 +510,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		const monster = findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		/**
+		 * Check level requirements
+		 */
 		if (monster.levelRequirements) {
 			for (const [skillEnum, levelRequired] of Object.entries(monster.levelRequirements)) {
 				if (msg.author.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
