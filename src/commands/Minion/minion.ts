@@ -512,7 +512,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (monster.levelRequirements) {
 			for (const [skillEnum, levelRequired] of Object.entries(monster.levelRequirements)) {
-				if (msg.author.skillLevel(skillEnum as SkillsEnum) < levelRequired) {
+				if (msg.author.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
 					throw `You need level ${levelRequired} ${toTitleCase(skillEnum)} to kill ${
 						monster.name
 					}.`;
