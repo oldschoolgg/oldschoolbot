@@ -27,7 +27,7 @@
 		"p-limit": "^2.2.2",
 		"pg": "^8.2.1",
 		"random-js": "^2.1.0",
-		"rss-parser": "^3.7.5",
+		"rss-parser": "^3.8.0",
 		"snoostorm": "^1.2.2",
 		"snoowrap": "^1.19.0",
 		"threads": "^1.0.0",
