@@ -89,6 +89,10 @@ const backgroundImages: BankBackground[] = [
 			'Elysian sigil': 1,
 			'Pet dark core': 1
 		}),
+		itemCost: transformStringBankToNum({
+			'Spectral spirit shield': 1,
+			'Arcane spirit shield': 1
+		}),
 		gpCost: 100_000_000
 	},
 	{
