@@ -42,7 +42,7 @@
 		"@types/mongodb": "^3.3.15",
 		"@types/node": "^13.5.1",
 		"@types/node-fetch": "^2.5.4",
-		"@types/pg": "^7.14.1",
+		"@types/pg": "^7.14.3",
 		"@types/twit": "^2.2.23",
 		"@types/xml2js": "^0.4.5",
 		"@typescript-eslint/eslint-plugin": "^2.18.0",
