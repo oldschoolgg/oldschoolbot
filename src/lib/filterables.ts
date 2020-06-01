@@ -859,7 +859,6 @@ const potions = resolveItems([
 	'Extended super antifire(2)',
 	'Extended super antifire(3)',
 	'Extended super antifire(4)'
-	
 ]);
 
 export const filterableTypes = [
