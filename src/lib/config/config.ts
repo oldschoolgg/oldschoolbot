@@ -2,15 +2,7 @@ import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import permissionLevels from './permissionLevels';
 import { Intents } from './Intents';
-import {
-	providerConfig,
-	twitchClientID,
-	customClientOptions,
-	KDHPort,
-	production
-} from '../../config';
-import ApiResponse from '../api/structures/ApiResponse';
-import ApiRequest from '../api/structures/ApiRequest';
+import { providerConfig, twitchClientID, customClientOptions, production } from '../../config';
 
 const clientProperties = {
 	twitchClientID,
@@ -56,14 +48,6 @@ const clientOptions: KlasaClientOptions = {
 		interval: 10000
 	},
 	noPrefixDM: true,
-	dashboardHooks: {
-		port: KDHPort ?? undefined,
-		apiPrefix: '',
-		serverOptions: {
-			IncomingMessage: ApiRequest,
-			ServerResponse: ApiResponse
-		}
-	},
 	partials: ['USER'],
 	...customClientOptions
 };
