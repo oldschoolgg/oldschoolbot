@@ -63,13 +63,16 @@ const backgroundImages: BankBackground[] = [
 			'Steam battlestaff': 1,
 			'Zamorakian spear': 1,
 			'Staff of the dead': 1,
-			'Pet general graardor': 1
+			'Pet general graardor': 1,
+			"Pet k'ril tsutsaroth": 1,
+			"Pet kree'arra": 1,
+			'Pet zilyana': 1
 		}),
 		itemCost: transformStringBankToNum({
-			'Armadyl hilt': 1,
-			'Zamorak hilt': 1,
-			'Bandos hilt': 1,
-			'Saradomin hilt': 1
+			'Armadyl godsword': 1,
+			'Zamorak godsword': 1,
+			'Bandos godsword': 1,
+			'Saradomin godsword': 1
 		}),
 		gpCost: 100_000_000
 	},
