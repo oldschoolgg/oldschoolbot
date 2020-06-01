@@ -30,7 +30,7 @@
 		"rss-parser": "^3.8.0",
 		"snoostorm": "^1.2.2",
 		"snoowrap": "^1.19.0",
-		"threads": "^1.0.0",
+		"threads": "^1.4.1",
 		"ts-toolbelt": "^6.7.4",
 		"twit": "^2.2.9",
 		"utf-8-validate": "^5.0.2",
