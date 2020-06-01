@@ -1690,12 +1690,6 @@ keyv@3.0.0:
   dependencies:
     json-buffer "3.0.0"
 
-"klasa-dashboard-hooks@https://github.com/kyranet/klasa-dashboard-hooks":
-  version "0.0.1-dev"
-  resolved "https://github.com/kyranet/klasa-dashboard-hooks#74ac1a8503ba09a728948377ea92feeaebf30bd0"
-  dependencies:
-    node-fetch "^2.6.0"
-
 klasa-decorators@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
