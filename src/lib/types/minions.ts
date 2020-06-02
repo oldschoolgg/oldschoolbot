@@ -76,7 +76,7 @@ export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
-	fletchableID: number;
+	fletchableName: string;
 	channelID: string;
 	quantity: number;
 }

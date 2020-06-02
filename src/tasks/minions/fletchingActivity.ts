@@ -9,12 +9,12 @@ import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import Fletching from '../../lib/skilling/skills/fletching/fletching';
 
 export default class extends Task {
-	async run({ fletchableID, quantity, userID, channelID }: FletchingActivityTaskOptions) {
+	async run({ fletchableName, quantity, userID, channelID }: FletchingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fletching);
 
 		const fletchableItem = Fletching.Fletchables.find(
-			fletchable => fletchable.id === fletchableID
+			fletchable => fletchable.name === fletchableName
 		);
 
 		if (!fletchableItem) return;

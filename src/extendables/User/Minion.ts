@@ -258,7 +258,7 @@ export default class extends Extendable {
 			case Activity.Fletching: {
 				const data = currentTask as FletchingActivityTaskOptions;
 				const fletchable = Fletching.Fletchables.find(
-					item => item.id === data.fletchableID
+					item => item.name === data.fletchableName
 				);
 
 				return `${this.minionName} is currently fletching ${data.quantity}x ${
