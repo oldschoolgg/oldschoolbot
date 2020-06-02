@@ -518,7 +518,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				if (msg.author.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
 					throw `You need level ${levelRequired} ${toTitleCase(skillEnum)} to kill ${
 						monster.name
-					}.`;
+					}. Check https://www.oldschool.gg/oldschoolbot/minions?${toTitleCase(
+						skillEnum
+					)} for information on how to train this skill.`;
 				}
 			}
 		}
