@@ -22,6 +22,7 @@ import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skil
 import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	AgilityActivityTaskOptions,
@@ -81,6 +82,7 @@ export default class extends Extendable {
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
 - Train fletching with \`+fletch\`
+- Train farming with \`+farm\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -297,6 +299,17 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+
+			case Activity.Farming: {
+				const data = currentTask as FarmingActivityTaskOptions;
+
+				const plants = Farming.Plants.find(plants => plants.name === data.plantsName);
+
+				return `${this.minionName} is currently farming ${data.quantity}x ${
+					plants!.name
+				}. ${formattedDuration} Your ${
+					Emoji.Farming
+				} Farming level is ${this.skillLevel(SkillsEnum.Farming)}`;
 			}
 
 			case Activity.Sawmill: {

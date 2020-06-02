@@ -11,6 +11,7 @@ import Runecraft from './runecraft';
 import Smithing from './smithing';
 import Thieving from './thieving';
 import Woodcutting from './woodcutting';
+import Farming from './farming';
 
 export const Skills: Record<string, Skill> = {
 	Crafting,
@@ -24,7 +25,8 @@ export const Skills: Record<string, Skill> = {
 	Prayer,
 	Runecraft,
 	Fletching,
-	Thieving
+	Thieving,
+	Farming
 };
 
 export default Skills;

@@ -97,6 +97,14 @@ export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
+export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	plantsName: string;
+	channelID: string;
+	quantity: number;
+	upgradeType: string;
+	payment: string;
+}
+
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameIDsEnum;
 	quantity: number;
