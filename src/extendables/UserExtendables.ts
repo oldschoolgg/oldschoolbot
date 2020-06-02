@@ -239,7 +239,7 @@ export default class extends Extendable {
 					count: string;
 				}[]
 			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
-			console.log(usersWith, parseInt(usersWith.count), parseInt(usersWith.count) + 1);
+
 			this.client.emit(
 				Events.ServerNotification,
 				`${skill.emoji} **${this.username}'s** minion, ${
