@@ -31,7 +31,9 @@ patreonApiURL.search = new URLSearchParams([
 const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.One, BitField.IsPatronTier1],
 	[PatronTierID.Two, BitField.IsPatronTier2],
-	[PatronTierID.Three, BitField.IsPatronTier3]
+	[PatronTierID.Three, BitField.IsPatronTier3],
+	[PatronTierID.Four, BitField.IsPatronTier4],
+	[PatronTierID.Five, BitField.IsPatronTier5]
 ];
 
 export default class extends Task {
@@ -48,14 +50,7 @@ export default class extends Task {
 		// Remove any/all the patron bits from this user.
 		await user.settings.update(
 			UserSettings.BitField,
-			userBitfield.filter(
-				number =>
-					![
-						BitField.IsPatronTier1,
-						BitField.IsPatronTier2,
-						BitField.IsPatronTier3
-					].includes(number)
-			),
+			userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
 			{
 				arrayAction: ArrayActions.Overwrite
 			}

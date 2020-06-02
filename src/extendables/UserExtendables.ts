@@ -18,6 +18,7 @@ import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { SkillsEnum } from '../lib/skilling/types';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import { production } from '../config';
+import { formatOrdinal } from '../lib/util/formatOrdinal';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -232,11 +233,20 @@ export default class extends Extendable {
 
 		// If they just reached 99, send a server notification.
 		if (convertXPtoLVL(currentXP) < 99 && convertXPtoLVL(newXP) >= 99) {
+			const skillNameCased = toTitleCase(skillName);
+			const [usersWith] = await this.client.query<
+				{
+					count: string;
+				}[]
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
+
 			this.client.emit(
 				Events.ServerNotification,
 				`${skill.emoji} **${this.username}'s** minion, ${
 					this.minionName
-				}, just achieved level 99 in ${toTitleCase(skillName)}!`
+				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+					parseInt(usersWith.count) + 1
+				)} to get 99 ${skillNameCased}.`
 			);
 		}
 

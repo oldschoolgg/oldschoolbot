@@ -12,4 +12,5 @@ Client.defaultClientSchema
 			.add('duelTaxBank', 'number', { default: 0 })
 			.add('dailiesAmount', 'number', { default: 0 })
 			.add('itemSellTaxBank', 'number', { default: 0 })
+			.add('bankBgCostBank', 'any', { default: {} })
 	);
