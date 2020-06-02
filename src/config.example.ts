@@ -12,7 +12,14 @@ export const providerConfig: ProviderConfig | null = {
 	default: 'json'
 };
 export const production = require('os').platform() === 'linux';
+<<<<<<< HEAD
 export const staging = false;
+=======
+
+export const clientSecret = '';
+export const clientID = '';
+export const KDHPort = null;
+>>>>>>> Revert "Merge branch 'Farming' of https://github.com/ard35/oldschoolbot into Farming"
 
 export const twitchClientID: string | null = null;
 export const redditAppConfig: RedditAppConfig = null;
