@@ -19,6 +19,7 @@ declare module 'klasa' {
 		public secondaryUserBusyCache: Set<string>;
 		public queuePromise: Limit;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
+		public query<T>(query: string): Promise<T>;
 		public settings: Settings;
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
@@ -69,6 +70,10 @@ declare module 'klasa' {
 }
 
 declare module 'discord.js' {
+	interface Client {
+		public fetchItemPrice(itemID: number | string): Promise<number>;
+		public query<T>(query: string): Promise<T>;
+	}
 	interface User {
 		addItemsToBank(items: Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: Bank): Promise<SettingsUpdateResult>;

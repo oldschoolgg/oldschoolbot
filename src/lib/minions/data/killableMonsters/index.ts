@@ -25,6 +25,9 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
 			[itemID("Iban's staff")]: 5
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -50,6 +53,9 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Armadyl chestplate')]: 2,
 			[itemID('Armadyl chainskirt')]: 2
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -75,6 +81,9 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 5,
 			[itemID("Iban's staff")]: 5
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -101,6 +110,9 @@ const killableMonsters: KillableMonster[] = [
 			[itemID('Bandos chestplate')]: 2,
 			[itemID('Bandos tassets')]: 2,
 			[itemID('Saradomin godsword')]: 2
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{
@@ -167,6 +179,9 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 30,
 		itemInBankBoosts: {
 			[itemID('Ring of the gods')]: 3
+		},
+		levelRequirements: {
+			prayer: 43
 		}
 	},
 	{

@@ -183,20 +183,32 @@ export const enum PerkTier {
 	/**
 	 * Tier 3 Patron
 	 */
-	Four = 4
+	Four = 4,
+	/**
+	 * Tier 4 Patron
+	 */
+	Five = 5,
+	/**
+	 * Tier 5 Patron
+	 */
+	Six = 6
 }
 
 export const enum BitField {
 	HasGivenBirthdayPresent = 1,
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
-	IsPatronTier3 = 4
+	IsPatronTier3 = 4,
+	IsPatronTier4 = 5,
+	IsPatronTier5 = 6
 }
 
 export const enum PatronTierID {
 	One = '4608201',
 	Two = '4608226',
-	Three = '4720356'
+	Three = '4720356',
+	Four = '5262065',
+	Five = '5262216'
 }
 
 export const MAX_QP = 275;
