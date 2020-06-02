@@ -18,7 +18,8 @@ import {
 	OfferingActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	FletchingActivityTaskOptions,
-	AlchingActivityTaskOptions
+	AlchingActivityTaskOptions,
+	FarmingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -40,6 +41,7 @@ import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { itemNameFromID } from '../../lib/util';
+import Farming from '../../lib/skilling/skills/farming/farming';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -65,6 +67,7 @@ export default class extends Extendable {
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
 - Train fletching with \`+fletch\`
+- Train farming with \`+farm\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -279,6 +282,17 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+
+			case Activity.Farming: {
+				const data = currentTask as FarmingActivityTaskOptions;
+
+				const plants = Farming.Plants.find(plants => plants.name === data.plantsName);
+
+				return `${this.minionName} is currently farming ${data.quantity}x ${
+					plants!.name
+				}. ${formattedDuration} Your ${
+					Emoji.Farming
+				} Farming level is ${this.skillLevel(SkillsEnum.Farming)}`;
 			}
 		}
 	}

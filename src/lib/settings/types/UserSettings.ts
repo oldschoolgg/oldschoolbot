@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
+import { PatchTypes } from '../../farming';
 import { SkillsEnum } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
 
@@ -61,6 +62,7 @@ export namespace UserSettings {
 		export const Crafting = T<number>(`skills.${SkillsEnum.Crafting}`);
 		export const Prayer = T<number>(`skills.${SkillsEnum.Prayer}`);
 		export const Fletching = T<number>(`skills.${SkillsEnum.Fletching}`);
+		export const Farming = T<number>(`skills.${SkillsEnum.Farming}`);
 	}
 
 	export namespace Gear {
@@ -69,5 +71,22 @@ export namespace UserSettings {
 		export const Mage = T<GearTypes.GearSetup>(`gear.mage`);
 		export const Misc = T<GearTypes.GearSetup>(`gear.misc`);
 		export const Skilling = T<GearTypes.GearSetup>(`gear.skilling`);
+	}
+
+	export namespace FarmingPatches {
+		export const Herb = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const FruitTree = T<PatchTypes.FarmingPatchTypes>('farmingpatches.fruittree');
+		export const Tree = T<PatchTypes.FarmingPatchTypes>('farmingpatches.tree');
+		export const Allotment = T<PatchTypes.FarmingPatchTypes>('farmingpatches.allotment');
+		export const Cactus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Bush = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Spirit = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Hardwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Seaweed = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Vine = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Calquat = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Redwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Crystal = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Celastrus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
 	}
 }
