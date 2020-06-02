@@ -157,7 +157,16 @@ const skilling = resolveItems([
 	'Celastrus seed',
 	'Redwood tree seed',
 	'Raw shark',
-	'Grapes'
+	'Grapes',
+	'Feather',
+	'Big bones',
+	'Bronze dart tip',
+	'Iron dart tip',
+	'Steel dart tip',
+	'Mithril dart tip',
+	'Adamant dart tip',
+	'Rune dart tip',
+	'Dragon dart tip'
 ]);
 
 const gear = resolveItems([
@@ -548,6 +557,15 @@ const farming = resolveItems([
 ]);
 
 const fletching = resolveItems([
+	'Logs',
+	'Oak logs',
+	'Willow logs',
+	'Teak logs',
+	'Maple logs',
+	'Mahogany logs',
+	'Yew logs',
+	'Magic logs',
+	'Redwood logs',
 	'Bronze dart tip',
 	'Iron dart tip',
 	'Steel dart tip',
@@ -600,7 +618,7 @@ const fletching = resolveItems([
 	'Magic longbow (u)',
 	'Bow string',
 	'Crossbow string',
-	'Flax',
+	'flax',
 	'Sinew',
 	'Tanzanite fang',
 	'Celastrus bark',
