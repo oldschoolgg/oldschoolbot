@@ -101,6 +101,14 @@ export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	alchValue: number;
 }
 
+export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	plantsName: string;
+	channelID: string;
+	quantity: number;
+	upgradeType: string;
+	payment: string;
+}
+
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }
@@ -163,4 +171,5 @@ export type MinionActivityTask =
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity;
+	| Tasks.AlchingActivity
+	| Tasks.FarmingActivity;

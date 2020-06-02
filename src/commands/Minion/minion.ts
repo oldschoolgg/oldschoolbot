@@ -65,7 +65,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -223,6 +223,9 @@ ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.autho
 ${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
 			SkillsEnum.Fletching
 		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
+${Emoji.Farming} Farming: ${msg.author.skillLevel(SkillsEnum.Farming)} (${msg.author.settings
+			.get(UserSettings.Skills.Farming)
+			.toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -461,6 +464,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await this.client.commands
 			.get('bury')!
 			.run(msg, [quantity, boneName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async farm(msg: KlasaMessage, [quantity, seedName, upgradeType]: [number, string, string]) {
+		await this.client.commands
+			.get('farm')!
+			.run(msg, [quantity, seedName, upgradeType])
 			.catch(err => {
 				throw err;
 			});

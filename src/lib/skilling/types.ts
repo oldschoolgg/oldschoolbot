@@ -146,3 +146,22 @@ export type LevelRequirements = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+export interface Plant {
+	level: number;
+	plantXp: number;
+	checkXp: number;
+	harvestXp: number;
+	name: string;
+	inputItems: Bank;
+	outputCrop?: number;
+	outputLogs?: number;
+	treeWoodcuttingLevel?: number;
+	petChance: number;
+	seedType: string;
+	growthTime: number;
+	numOfStages: number;
+	chance1: number;
+	chance99: number;
+	chanceOfDeath: number;
+	protectionPayment: Bank;
+}
