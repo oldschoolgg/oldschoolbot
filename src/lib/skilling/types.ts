@@ -168,3 +168,23 @@ export interface Plankable {
 	outputItem: number;
 	gpCost: number;
 }
+
+export interface Plant {
+	level: number;
+	plantXp: number;
+	checkXp: number;
+	harvestXp: number;
+	name: string;
+	inputItems: ItemBank;
+	outputCrop?: number;
+	outputLogs?: number;
+	treeWoodcuttingLevel?: number;
+	petChance: number;
+	seedType: string;
+	growthTime: number;
+	numOfStages: number;
+	chance1: number;
+	chance99: number;
+	chanceOfDeath: number;
+	protectionPayment: ItemBank;
+}

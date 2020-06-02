@@ -1,6 +1,7 @@
 import { Client, SchemaFolder } from 'klasa';
 
 import Gear from '../../gear';
+import Farming from '../../farming';
 import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
@@ -55,6 +56,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Prayer, 'integer', { default: 0 })
 			.add(SkillsEnum.Fletching, 'integer', { default: 0 })
 			.add(SkillsEnum.Thieving, 'integer', { default: 0 })
+			.add(SkillsEnum.Farming, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
@@ -63,4 +65,21 @@ Client.defaultUserSchema
 			.add('range', 'any', { default: Gear.defaultGear })
 			.add('misc', 'any', { default: Gear.defaultGear })
 			.add('skilling', 'any', { default: Gear.defaultGear })
+	)
+	.add('farmingpatches', (folder: SchemaFolder) =>
+		folder
+			.add('herb', 'any', { default: Farming.defaultPatches })
+			.add('fruittree', 'any', { default: Farming.defaultPatches })
+			.add('tree', 'any', { default: Farming.defaultPatches })
+			.add('allotment', 'any', { default: Farming.defaultPatches })
+			.add('cactus', 'any', { default: Farming.defaultPatches })
+			.add('bush', 'any', { default: Farming.defaultPatches })
+			.add('spirit', 'any', { default: Farming.defaultPatches })
+			.add('hardwood', 'any', { default: Farming.defaultPatches })
+			.add('seaweed', 'any', { default: Farming.defaultPatches })
+			.add('vine', 'any', { default: Farming.defaultPatches })
+			.add('calquat', 'any', { default: Farming.defaultPatches })
+			.add('redwood', 'any', { default: Farming.defaultPatches })
+			.add('crystal', 'any', { default: Farming.defaultPatches })
+			.add('celastrus', 'any', { default: Farming.defaultPatches })
 	);

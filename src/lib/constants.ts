@@ -88,7 +88,8 @@ export const enum Emoji {
 	Hammer = '<:hammer:778418736595206184>',
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
-	Crab = '<:crab:778418736432021505>'
+	Crab = '<:crab:778418736432021505>',
+	Farming = '<:farming:712129722116735017>'
 }
 
 export const enum ReactionEmoji {
@@ -124,6 +125,7 @@ export const enum Tasks {
 	BuryingActivity = 'buryingActivity',
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
+	FarmingActivity = 'farmingActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -171,7 +173,8 @@ export const enum Activity {
 	Nightmare = 'Nightmare',
 	Sepulchre = 'Sepulchre',
 	FishingTrawler = 'FishingTrawler',
-	Zalcano = 'Zalcano'
+	Zalcano = 'Zalcano',
+	Farming = 'Farming'
 }
 
 export const enum Events {
