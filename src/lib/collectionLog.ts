@@ -1159,6 +1159,7 @@ export const capes = {
 		'Agility hood',
 		'Cooking hood',
 		'Crafting hood',
+		'Runecraft hood',
 		'Prayer hood',
 		'Fletching hood',
 		'Quest point hood'
@@ -1172,6 +1173,7 @@ export const capes = {
 		'Agility cape',
 		'Cooking cape',
 		'Crafting cape',
+		'Runecraft cape',
 		'Prayer cape',
 		'Fletching cape',
 		'Quest point cape'
@@ -1185,6 +1187,7 @@ export const capes = {
 		'Agility cape(t)',
 		'Cooking cape(t)',
 		'Crafting cape(t)',
+		'Runecraft cape(t)',
 		'Prayer cape(t)',
 		'Fletching cape(t)',
 		'Quest point cape (t)'
