@@ -12,16 +12,18 @@ export default class extends Task {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: ItemBank } = {};
-		const kcAmounts: { [key: string]: number } = {};
+		var kcAmounts: { [key: string]: number } = {};
+
+		for (let j = 0; j < users.length; j++) {
+			kcAmounts[users[j]] = 0;
+		}
 
 		for (let i = 0; i < quantity; i++) {
 			const loot = monster.table.kill(1);
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = addBankToBank(currentLoot ?? {}, loot);
-			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
-				? kcAmounts[userWhoGetsLoot]++
-				: 1;
+			kcAmounts[userWhoGetsLoot]++;
 		}
 
 		const leaderUser = await this.client.users.fetch(leader);
