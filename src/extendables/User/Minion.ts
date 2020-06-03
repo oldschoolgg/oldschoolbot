@@ -276,13 +276,13 @@ export default class extends Extendable {
 
 			case Activity.Pickpocketing: {
 				const data = currentTask as PickpocketingActivityTaskOptions;
-				const pickpocket = Pickpocket.pickpocketableNPC.find(
+				const pickpocket = Pickpocket.NPC.find(
 					npc => npc.name === data.pickpocketableNPC
 				);
 
 				return `${this.minionName} is currently pickpocketing ${data.quantity}x ${
 					pickpocket!.name
-				}. ${formattedDuration} Your ${Emoji.Pickpocketing} Thieving level is ${this.skillLevel(SkillsEnum.Pickpocketing)}`
+				}. ${formattedDuration} Your Thieving level is ${this.skillLevel(SkillsEnum.Thieving)}`
 			}
 		}
 	}

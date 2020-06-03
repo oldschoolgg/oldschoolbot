@@ -93,6 +93,11 @@ export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface PickpocketingActivityTaskOptions extends ActivityTaskOptions {
+	pickpocketableNPC: string;
+	quantity: number;
+}
+
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }
@@ -149,4 +154,5 @@ export type MinionActivityTask =
 	| Tasks.BuryingActivity
 	| Tasks.OfferingActivity
 	| Tasks.FightCavesActivity
-	| Tasks.FletchingActivity;
+	| Tasks.FletchingActivity
+	| Tasks.PickpocketingActivity;

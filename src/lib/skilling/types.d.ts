@@ -10,8 +10,7 @@ export const enum SkillsEnum {
 	Crafting = 'crafting',
 	Prayer = 'prayer',
 	Fletching = 'fletching',
-	Pickpocketing = 'pickpocketing',
-	Blackjacking = 'blackjacking'
+	Thieving = 'Thieving'
 }
 
 export interface Ore {
@@ -133,13 +132,9 @@ export interface Bone {
 	inputId: number;
 }
 
-export interface Pickpocket {
-	level: number,
-	xp: number,
-	name: string,
-}
-export interface Blackjack {
-	level: number,
-	xp: number,
-	name: string,
+export interface Thieve {
+	level: number;
+	xp: number;
+	name: string;
+	NPC: string;
 }
