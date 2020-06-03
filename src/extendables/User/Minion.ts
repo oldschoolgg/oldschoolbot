@@ -17,7 +17,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	BuryingActivityTaskOptions,
-	FletchingActivityTaskOptions
+	FletchingActivityTaskOptions,
+	PickpocketingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -38,6 +39,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import Pickpocket from '../../lib/skilling/skills/thieving/pickpocketing';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -270,6 +272,17 @@ export default class extends Extendable {
 				}. ${formattedDuration} Your ${
 					Emoji.Fletching
 				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
+			}
+
+			case Activity.Pickpocketing: {
+				const data = currentTask as PickpocketingActivityTaskOptions;
+				const pickpocket = Pickpocket.pickpocketableNPC.find(
+					npc => npc.name === data.pickpocketableNPC
+				);
+
+				return `${this.minionName} is currently pickpocketing ${data.quantity}x ${
+					pickpocket!.name
+				}. ${formattedDuration} Your ${Emoji.Pickpocketing} Thieving level is ${this.skillLevel(SkillsEnum.Pickpocketing)}`
 			}
 		}
 	}

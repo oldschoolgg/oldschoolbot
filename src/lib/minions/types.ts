@@ -68,3 +68,7 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	leader: string;
 	users: string[];
 }
+
+export interface PickpocketableNPC {
+	
+}
