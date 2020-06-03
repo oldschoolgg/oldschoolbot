@@ -152,10 +152,14 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.SacrificedValue,
 				'gear',
 				'stats',
-				'skills'
+				'skills',
+				'minion'
 			]);
 
-			await msg.author.settings.update(UserSettings.Minion.Ironman, true);
+			await msg.author.settings.update([
+				[UserSettings.Minion.Ironman, true],
+				[UserSettings.Minion.HasBought, true]
+			]);
 			return msg.send('You are now an ironman.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
