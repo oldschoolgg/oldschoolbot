@@ -12,7 +12,7 @@ export default class extends Task {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: ItemBank } = {};
-		var kcAmounts: { [key: string]: number } = {};
+		const kcAmounts: { [key: string]: number } = {};
 
 		for (let j = 0; j < users.length; j++) {
 			kcAmounts[users[j]] = 0;
