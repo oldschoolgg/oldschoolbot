@@ -14,6 +14,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 import itemID from '../../lib/util/itemID';
 
 const pickaxes = [
@@ -65,19 +66,14 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}] <rockName:...string>',
 			usageDelim: ' '
 		});
 	}
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
+	async run(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		const ore = Mining.Ores.find(
 			ore => stringMatches(ore.name, name) || stringMatches(ore.name.split(' ')[0], name)
 		);
@@ -125,21 +121,8 @@ export default class extends BotCommand {
 			}
 		}
 
-		// If no quantity provided, set it to the max.
-		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToMine);
-		}
+		quantity = checkActivityQuantity(msg.author, quantity, timeToMine);
 		const duration = quantity * timeToMine;
-
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					ore.name
-				} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`
-			);
-		}
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>(
 			this.client,

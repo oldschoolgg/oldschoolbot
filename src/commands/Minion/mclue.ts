@@ -10,6 +10,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -17,7 +18,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}] <name:...string>',
 			usageDelim: ' '
 		});
 	}
@@ -30,13 +31,8 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
 		await msg.author.settings.sync(true);
-
-		if (typeof quantity === 'string') {
-			tierName = quantity;
-			quantity = 1;
-		}
 
 		if (!tierName) return msg.send(this.invalidClue(msg));
 
@@ -50,27 +46,13 @@ export default class extends BotCommand {
 			clueTier,
 			msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1
 		);
-
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
+		quantity = checkActivityQuantity(msg.author, quantity, timeToFinish, {
+			[clueTier.scrollID]: 1
+		});
+
 		let duration = timeToFinish * quantity;
-
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					clueTier.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`
-			);
-		}
-
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			return msg.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
-		}
 
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
 

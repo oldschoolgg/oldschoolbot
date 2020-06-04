@@ -15,6 +15,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 import itemID from '../../lib/util/itemID';
 
 const axes = [
@@ -51,21 +52,17 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}] <logName:...string>',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
+	async run(msg: KlasaMessage, [quantity, logName]: [number, string]) {
 		const log = Woodcutting.Logs.find(
-			log => stringMatches(log.name, name) || stringMatches(log.name.split(' ')[0], name)
+			log =>
+				stringMatches(log.name, logName) || stringMatches(log.name.split(' ')[0], logName)
 		);
 
 		if (!log) {
@@ -109,22 +106,8 @@ export default class extends BotCommand {
 			}
 		}
 
-		// If no quantity provided, set it to the max.
-		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timetoChop);
-		}
-
+		quantity = checkActivityQuantity(msg.author, quantity, timetoChop);
 		const duration = quantity * timetoChop;
-
-		if (duration > msg.author.maxTripLength) {
-			return msg.channel.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					log.name
-				} you can chop is ${Math.floor(msg.author.maxTripLength / timetoChop)}.`
-			);
-		}
 
 		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>(
 			this.client,

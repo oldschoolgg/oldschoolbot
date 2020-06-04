@@ -24,6 +24,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { rand } from '../../util';
 
@@ -47,7 +48,7 @@ const patMessages = [
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
 
-const { floor } = Math;
+const { ceil } = Math;
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -57,7 +58,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel] [quantity:int{1}] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -408,7 +409,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async cook(msg: KlasaMessage, [quantity, cookableName]: [number | string, string]) {
+	async cook(msg: KlasaMessage, [quantity, cookableName]: [number, string]) {
 		await this.client.commands
 			.get('cook')!
 			.run(msg, [quantity, cookableName])
@@ -499,7 +500,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	@requiresMinion
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
+	async clue(msg: KlasaMessage, [quantity, tierName]: [number, string]) {
 		await this.client.commands
 			.get('mclue')!
 			.run(msg, [quantity, tierName])
@@ -508,23 +509,18 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+	async k(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		await this.kill(msg, [quantity, name]).catch(err => {
 			throw err;
 		});
 	}
 
 	@requiresMinion
-	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+	async kill(msg: KlasaMessage, [quantity, name]: [number, string]) {
+		await msg.author.settings.sync(true);
 		const boosts = [];
 		let messages: string[] = [];
 
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
-		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
 			msg.author.log(`[TTK-BUSY] ${quantity} ${name}`);
 			return msg.send(msg.author.minionStatus);
@@ -558,11 +554,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 			}
 		}
-
-		// If no quantity provided, set it to the max.
-		if (quantity === null) {
-			quantity = floor(msg.author.maxTripLength / timeToFinish);
-		}
+		quantity = checkActivityQuantity(msg.author, quantity, timeToFinish);
 
 		// Check food
 		if (
@@ -577,20 +569,12 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				this.client,
 				msg.author,
 				healAmountNeeded * quantity,
-				Math.ceil(healAmountNeeded / quantity),
+				ceil(healAmountNeeded / quantity),
 				monster.name
 			);
 		}
 
 		let duration = timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				monster.name
-			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
-		}
-
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 

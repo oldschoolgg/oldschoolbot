@@ -18,19 +18,14 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}] <runeName:...string>',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
+	async run(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		if (name.endsWith('s') || name.endsWith('S')) name = name.slice(0, name.length - 1);
 
 		const rune = Runecraft.Runes.find(
@@ -46,6 +41,7 @@ export default class extends BotCommand {
 			);
 		}
 
+		await msg.author.settings.sync(true);
 		const quantityPerEssence = calcMaxRCQuantity(rune, msg.author);
 
 		if (quantityPerEssence === 0) {
@@ -93,7 +89,7 @@ export default class extends BotCommand {
 		const maxCanDo = Math.floor(msg.author.maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
-		if (quantity === null) {
+		if (!quantity) {
 			quantity = Math.min(numEssenceOwned, maxCanDo);
 		}
 

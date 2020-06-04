@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -16,19 +17,14 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
+			usage: '[quantity:int{1}] [courseName:...string]',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
+	async run(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		const course = Agility.Courses.find(course =>
 			course.aliases.some(alias => stringMatches(alias, name))
 		);
@@ -55,20 +51,8 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
-		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timePerLap);
-		}
+		quantity = checkActivityQuantity(msg.author, quantity, timePerLap);
 		const duration = quantity * timePerLap;
-
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					course.name
-				} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`
-			);
-		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>(
 			this.client,

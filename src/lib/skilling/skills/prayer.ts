@@ -1,4 +1,5 @@
 import { Emoji } from '../../constants';
+import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { Bone, SkillsEnum } from '../types';
 
@@ -7,121 +8,141 @@ const bones: Bone[] = [
 		name: 'Bones',
 		level: 1,
 		xp: 4.5,
-		inputId: itemID('Bones')
+		id: itemID('Bones'),
+		inputItems: resolveNameBank({ Bones: 1 })
 	},
 	{
 		name: 'Wolf bones',
 		level: 1,
 		xp: 4.5,
-		inputId: itemID('Wolf bones')
+		id: itemID('Wolf bones'),
+		inputItems: resolveNameBank({ 'Wolf bones': 1 })
 	},
 	{
 		name: 'Monkey bones',
 		level: 1,
 		xp: 5,
-		inputId: itemID('Monkey bones')
+		id: itemID('Monkey bones'),
+		inputItems: resolveNameBank({ 'Monkey bones': 1 })
 	},
 	{
 		name: 'Bat bones',
 		level: 1,
 		xp: 5.3,
-		inputId: itemID('Bat bones')
+		id: itemID('Bat bones'),
+		inputItems: resolveNameBank({ 'Bat bones': 1 })
 	},
 	{
 		name: 'Big bones',
 		level: 1,
 		xp: 15,
-		inputId: itemID('Big bones')
+		id: itemID('Big bones'),
+		inputItems: resolveNameBank({ 'Big bones': 1 })
 	},
 	{
 		name: 'Jogre bones',
 		level: 1,
 		xp: 15,
-		inputId: itemID('Jogre bones')
+		id: itemID('Jogre bones'),
+		inputItems: resolveNameBank({ 'Jogre bones': 1 })
 	},
 	{
 		name: 'Zogre bones',
 		level: 1,
 		xp: 22.5,
-		inputId: itemID('Zogre bones')
+		id: itemID('Zogre bones'),
+		inputItems: resolveNameBank({ 'Zogre bones': 1 })
 	},
 	{
 		name: 'Shaikahan bones',
 		level: 1,
 		xp: 25,
-		inputId: itemID('Shaikahan bones')
+		id: itemID('Shaikahan bones'),
+		inputItems: resolveNameBank({ 'Shaikahan bones': 1 })
 	},
 	{
 		name: 'Babydragon bones',
 		level: 1,
 		xp: 30,
-		inputId: itemID('Babydragon bones')
+		id: itemID('Babydragon bones'),
+		inputItems: resolveNameBank({ 'Babydragon bones': 1 })
 	},
 	{
 		name: 'Wyrm bones',
 		level: 1,
 		xp: 50,
-		inputId: itemID('Wyrm bones')
+		id: itemID('Wyrm bones'),
+		inputItems: resolveNameBank({ 'Wyrm bones': 1 })
 	},
 	{
 		name: 'Dragon bones',
 		level: 1,
 		xp: 72,
-		inputId: itemID('Dragon bones')
+		id: itemID('Dragon bones'),
+		inputItems: resolveNameBank({ 'Dragon bones': 1 })
 	},
 	{
 		name: 'Wyvern bones',
 		level: 1,
 		xp: 72,
-		inputId: itemID('Wyvern bones')
+		id: itemID('Wyvern bones'),
+		inputItems: resolveNameBank({ 'Wyvern bones': 1 })
 	},
 	{
 		name: 'Drake bones',
 		level: 1,
 		xp: 80,
-		inputId: itemID('Drake bones')
+		id: itemID('Drake bones'),
+		inputItems: resolveNameBank({ 'Drake bones': 1 })
 	},
 	{
 		name: 'Fayrg bones',
 		level: 1,
 		xp: 84,
-		inputId: itemID('Fayrg bones')
+		id: itemID('Fayrg bones'),
+		inputItems: resolveNameBank({ 'Fayrg bones': 1 })
 	},
 	{
 		name: 'Lava dragon bones',
 		level: 1,
 		xp: 85,
-		inputId: itemID('Lava dragon bones')
+		id: itemID('Lava dragon bones'),
+		inputItems: resolveNameBank({ 'Lava dragon bones': 1 })
 	},
 	{
 		name: 'Raurg bones',
 		level: 1,
 		xp: 96,
-		inputId: itemID('Raurg bones')
+		id: itemID('Raurg bones'),
+		inputItems: resolveNameBank({ 'Raurg bones': 1 })
 	},
 	{
 		name: 'Hydra bones',
 		level: 1,
 		xp: 110,
-		inputId: itemID('Hydra bones')
+		id: itemID('Hydra bones'),
+		inputItems: resolveNameBank({ 'Hydra bones': 1 })
 	},
 	{
 		name: 'Dagannoth bones',
 		level: 1,
 		xp: 125,
-		inputId: itemID('Dagannoth bones')
+		id: itemID('Dagannoth bones'),
+		inputItems: resolveNameBank({ 'Dagannoth bones': 1 })
 	},
 	{
 		name: 'Ourg bones',
 		level: 1,
 		xp: 140,
-		inputId: itemID('Ourg bones')
+		id: itemID('Ourg bones'),
+		inputItems: resolveNameBank({ 'Ourg bones': 1 })
 	},
 	{
 		name: 'Superior dragon bones',
 		level: 70,
 		xp: 150,
-		inputId: itemID('Superior dragon bones')
+		id: itemID('Superior dragon bones'),
+		inputItems: resolveNameBank({ 'Superior dragon bones': 1 })
 	}
 ];
 

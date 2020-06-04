@@ -7,14 +7,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,14 +18,16 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
+			usage: '[quantity:int{1}] [craftName:...string]',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, craftName = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, craftName]: [number, string]) {
+		await msg.author.settings.sync(true);
+
 		if (msg.flagArgs.items) {
 			return msg.channel.sendFile(
 				Buffer.from(
@@ -43,11 +40,6 @@ export default class extends BotCommand {
 				),
 				`Available crafting items.txt`
 			);
-		}
-
-		if (typeof quantity === 'string') {
-			craftName = quantity;
-			quantity = null;
 		}
 
 		const Craft = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
@@ -64,66 +56,21 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const requiredItems: [string, number][] = Object.entries(Craft.inputItems);
-
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		const timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
 
-		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
-		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToCraftSingleItem);
-			for (const [itemID, qty] of requiredItems) {
-				const id = parseInt(itemID);
-				if (id === 995) {
-					const userGP = msg.author.settings.get(UserSettings.GP);
-					if (userGP < qty) {
-						return msg.send(`You do not have enough GP.`);
-					}
-					quantity = Math.min(quantity, Math.floor(userGP / qty));
-					continue;
-				}
-				const itemsOwned = userBank[parseInt(itemID)];
-				if (itemsOwned < qty) {
-					return msg.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
-				}
-				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
-			}
-		}
-
+		quantity = checkActivityQuantity(
+			msg.author,
+			quantity,
+			timeToCraftSingleItem,
+			Craft.inputItems
+		);
 		const duration = quantity * timeToCraftSingleItem;
 
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					Craft.name
-				}s you can craft is ${Math.floor(
-					msg.author.maxTripLength / timeToCraftSingleItem
-				)}.`
-			);
-		}
-
-		// Check the user has add the required items to craft.
-		for (const [itemID, qty] of requiredItems) {
-			const id = parseInt(itemID);
-			if (id === 995) {
-				const userGP = msg.author.settings.get(UserSettings.GP);
-				if (userGP < qty * quantity) {
-					return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
-				}
-				continue;
-			}
-			if (!bankHasItem(userBank, id, qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
-			}
-		}
-
+		const userBank = msg.author.settings.get(UserSettings.Bank);
 		// Remove the required items from their bank.
 		let newBank = { ...userBank };
-		for (const [itemID, qty] of requiredItems) {
+		for (const [itemID, qty] of Object.entries(Craft.inputItems)) {
 			if (parseInt(itemID) === 995) {
 				await msg.author.removeGP(qty * quantity);
 				continue;

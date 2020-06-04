@@ -8,12 +8,12 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
+			usage: '[quantity:int{1}] [name:...string]',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, name = '']: [string | number, string]) {
+	async run(msg: KlasaMessage, [quantity, name]: [number, string]) {
 		return this.client.commands
 			.get('minion')!
 			.kill(msg, [quantity, name])

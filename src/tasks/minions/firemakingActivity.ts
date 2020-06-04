@@ -19,7 +19,7 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		const Burn = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID);
+		const Burn = Firemaking.Burnables.find(Burn => Burn.id === burnableID);
 
 		if (!Burn) return;
 
@@ -62,7 +62,7 @@ export default class extends Task {
 		}
 
 		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.inputLogs}]`);
+			user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.id}]`);
 			return this.client.commands.get('light')!.run(res, [quantity, Burn.name]);
 		});
 	}

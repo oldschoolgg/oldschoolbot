@@ -198,7 +198,7 @@ export default class extends Extendable {
 			case Activity.Offering: {
 				const data = currentTask as OfferingActivityTaskOptions;
 
-				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
+				const bones = Prayer.Bones.find(bones => bones.id === data.boneID);
 
 				return `${this.minionName} is currently offering ${data.quantity}x ${
 					bones!.name
@@ -210,7 +210,7 @@ export default class extends Extendable {
 			case Activity.Burying: {
 				const data = currentTask as BuryingActivityTaskOptions;
 
-				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
+				const bones = Prayer.Bones.find(bones => bones.id === data.boneID);
 
 				return `${this.minionName} is currently burying ${data.quantity}x ${
 					bones!.name
@@ -222,7 +222,7 @@ export default class extends Extendable {
 			case Activity.Firemaking: {
 				const data = currentTask as FiremakingActivityTaskOptions;
 
-				const burn = Firemaking.Burnables.find(burn => burn.inputLogs === data.burnableID);
+				const burn = Firemaking.Burnables.find(burn => burn.id === data.burnableID);
 
 				return `${this.minionName} is currently lighting ${data.quantity}x ${
 					burn!.name

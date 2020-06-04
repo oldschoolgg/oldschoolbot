@@ -12,7 +12,7 @@ export default class extends Task {
 
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
-		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
+		const bone = Prayer.Bones.find(bone => bone.id === boneID);
 
 		if (!bone) return;
 
@@ -31,7 +31,7 @@ export default class extends Task {
 		}
 
 		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
+			user.log(`continued trip of ${quantity}x ${bone.name}[${bone.id}]`);
 			return this.client.commands.get('bury')!.run(res, [quantity, bone.name]);
 		});
 	}

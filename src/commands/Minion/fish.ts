@@ -11,11 +11,12 @@ import {
 	calcPercentOfNum,
 	formatDuration,
 	itemID,
-	itemNameFromID,
 	rand,
+	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,18 +24,15 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}] <fishName:...string>',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
+	async run(msg: KlasaMessage, [quantity, name]: [number, string]) {
+		await msg.author.settings.sync(true);
 
 		const fish = Fishing.Fishes.find(
 			fish => stringMatches(fish.name, name) || stringMatches(fish.name.split(' ')[0], name)
@@ -64,7 +62,6 @@ export default class extends BotCommand {
 			return msg.send(`You need at least 15 Agility to catch those!`);
 		}
 
-		// If no quantity provided, set it to the max.
 		let scaledTimePerFish =
 			Time.Second *
 			fish.timePerFish *
@@ -76,35 +73,25 @@ export default class extends BotCommand {
 			boosts.push(`5% for Crystal harpoon`);
 		}
 
-		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
-		}
-
-		let duration = quantity * scaledTimePerFish;
-
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					fish.name
-				} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`
-			);
-		}
-
 		if (fish.bait) {
-			const hasBait = await msg.author.hasItem(fish.bait, quantity);
-			if (!hasBait) {
-				return msg.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
-			}
+			quantity = checkActivityQuantity(msg.author, quantity, scaledTimePerFish, fish.bait);
+		} else {
+			quantity = checkActivityQuantity(msg.author, quantity, scaledTimePerFish);
 		}
+		let duration = quantity * scaledTimePerFish;
 
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
 		duration += rand(-tenPercent, tenPercent);
 
 		// Remove the bait from their bank.
 		if (fish.bait) {
-			await msg.author.removeItemFromBank(fish.bait, quantity);
+			const userBank = msg.author.settings.get(UserSettings.Bank);
+			// Remove the bait from their bank.
+			let newBank = { ...userBank };
+			for (const [itemID, qty] of Object.entries(fish.bait)) {
+				newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
+			}
+			await msg.author.settings.update(UserSettings.Bank, newBank);
 		}
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>(

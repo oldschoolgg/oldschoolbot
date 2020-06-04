@@ -7,14 +7,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
@@ -23,19 +18,14 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}] <cookableName:...string>',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, cookableName = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			cookableName = quantity;
-			quantity = null;
-		}
-
+	async run(msg: KlasaMessage, [quantity, cookableName]: [number, string]) {
 		await msg.author.settings.sync(true);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
@@ -63,47 +53,18 @@ export default class extends BotCommand {
 			timeToCookSingleCookable /= 1.6;
 		}
 
-		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);
-
-		// // If no quantity provided, set it to the max the player can make by either the items in bank or time.
-		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToCookSingleCookable);
-			for (const [cookableID, qty] of requiredCookables) {
-				const itemsOwned = msg.author.numItemsInBankSync(parseInt(cookableID));
-				if (itemsOwned === 0) {
-					return msg.send(`You have no ${itemNameFromID(parseInt(cookableID))}.`);
-				}
-				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
-			}
-		}
-
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-
-		// Check the user has the required cookables
-		// Multiplying the cookable required by the quantity
-		for (const [cookableID, qty] of requiredCookables) {
-			if (!bankHasItem(userBank, parseInt(cookableID), qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(parseInt(cookableID))}.`);
-			}
-		}
-
+		quantity = checkActivityQuantity(
+			msg.author,
+			quantity,
+			timeToCookSingleCookable,
+			cookable.inputCookables
+		);
 		const duration = quantity * timeToCookSingleCookable;
 
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${
-					msg.author.maxTripLength
-				} minutes, try a lower quantity. The highest amount of ${
-					cookable.name
-				}s you can cook is ${Math.floor(
-					msg.author.maxTripLength / timeToCookSingleCookable
-				)}.`
-			);
-		}
-
+		const userBank = msg.author.settings.get(UserSettings.Bank);
 		// Remove the cookables from their bank.
 		let newBank = { ...userBank };
-		for (const [cookableID, qty] of requiredCookables) {
+		for (const [cookableID, qty] of Object.entries(cookable.inputCookables)) {
 			if (newBank[parseInt(cookableID)] < qty) {
 				this.client.wtf(
 					new Error(

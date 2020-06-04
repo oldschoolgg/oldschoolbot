@@ -42,10 +42,11 @@ export interface Log {
 }
 
 export interface Burnable {
+	id: number;
 	level: number;
 	xp: number;
 	name: string;
-	inputLogs: number;
+	inputLogs: ItemBank;
 }
 
 export interface Fish {
@@ -55,7 +56,7 @@ export interface Fish {
 	name: string;
 	petChance: number;
 	timePerFish: number;
-	bait?: number;
+	bait?: ItemBank;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
@@ -145,7 +146,8 @@ export interface Bone {
 	level: number;
 	xp: number;
 	name: string;
-	inputId: number;
+	id: number;
+	inputItems: ItemBank;
 }
 
 export type LevelRequirements = Partial<

@@ -8,15 +8,9 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemID,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, itemID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -24,19 +18,15 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}] <barName:...string>',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, barName = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			barName = quantity;
-			quantity = null;
-		}
-
+	async run(msg: KlasaMessage, [quantity, barName]: [number, string]) {
+		await msg.author.settings.sync(true);
 		const bar = Smithing.Bars.find(
 			bar =>
 				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
@@ -57,40 +47,16 @@ export default class extends BotCommand {
 		}
 
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
+		const timeToSmeltSingleBar = Time.Second * 2.4 + Time.Second / 4;
 
-		// If no quantity provided, set it to the max.
-		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
-		}
+		quantity = checkActivityQuantity(msg.author, quantity, timeToSmeltSingleBar, bar.inputOres);
+		const duration = quantity * timeToSmeltSingleBar;
 
-		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-
-		// Check the user has the required ores to smith these bars.
-		// Multiplying the ore required by the quantity of bars.
-		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
-		for (const [oreID, qty] of requiredOres) {
-			if (!bankHasItem(userBank, parseInt(oreID), qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(parseInt(oreID))}.`);
-			}
-		}
-
-		const duration = quantity * timeToSmithSingleBar;
-
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					bar.name
-				}s you can smelt is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`
-			);
-		}
 
 		// Remove the ores from their bank.
 		let newBank: ItemBank = { ...userBank };
-		for (const [oreID, qty] of requiredOres) {
+		for (const [oreID, qty] of Object.entries(bar.inputOres)) {
 			if (newBank[parseInt(oreID)] < qty) {
 				this.client.wtf(
 					new Error(`${msg.author.sanitizedName} had insufficient ores to be removed.`)

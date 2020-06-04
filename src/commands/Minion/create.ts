@@ -26,15 +26,11 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+	async run(msg: KlasaMessage, [quantity = 1, itemName]: [number, string]) {
 		itemName = itemName.toLowerCase();
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) throw `That's not a valid item you can create.`;
-
-		if (!quantity || createableItem.cantHaveItems) {
-			quantity = 1;
-		}
 
 		if (
 			createableItem.QPRequired &&
@@ -47,6 +43,22 @@ export default class extends BotCommand {
 			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills)) {
 				if (msg.author.skillLevel(skillName as SkillsEnum) < lvl) {
 					throw `You need ${lvl} ${skillName} to create this item.`;
+				}
+			}
+		}
+
+		// Check for any items they cant have 2 of.
+		if (createableItem.cantHaveItems) {
+			quantity = 1;
+			const cantHaveItemsString = await createReadableItemListFromBank(
+				this.client,
+				createableItem.cantHaveItems
+			);
+
+			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
+				const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
+				if (numOwned >= qty) {
+					throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
 				}
 			}
 		}
@@ -85,21 +97,6 @@ export default class extends BotCommand {
 					? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
 					: ''
 			}.`;
-		}
-
-		// Check for any items they cant have 2 of.
-		if (createableItem.cantHaveItems) {
-			const cantHaveItemsString = await createReadableItemListFromBank(
-				this.client,
-				createableItem.cantHaveItems
-			);
-
-			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
-				if (numOwned >= qty) {
-					throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
-				}
-			}
 		}
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {

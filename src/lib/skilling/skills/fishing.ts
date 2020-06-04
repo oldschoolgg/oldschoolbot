@@ -1,4 +1,5 @@
 import { Emoji } from '../../constants';
+import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { Fish, SkillsEnum } from '../types';
 
@@ -18,7 +19,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw sardine'),
 		name: 'Sardine',
 		petChance: 528_000,
-		bait: itemID('Fishing bait'),
+		bait: resolveNameBank({ 'Fishing bait': 1 }),
 		timePerFish: 3.6,
 		clueScrollChance: 1_056_000
 	},
@@ -38,7 +39,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw herring'),
 		name: 'Herring',
 		petChance: 528_000,
-		bait: itemID('Fishing bait'),
+		bait: resolveNameBank({ 'Fishing bait': 1 }),
 		timePerFish: 3.6,
 		clueScrollChance: 1_056_000
 	},
@@ -66,7 +67,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw trout'),
 		name: 'Trout',
 		petChance: 461_808,
-		bait: itemID('Feather'),
+		bait: resolveNameBank({ Feather: 1 }),
 		timePerFish: 4.5,
 		clueScrollChance: 923_616
 	},
@@ -85,7 +86,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw pike'),
 		name: 'Pike',
 		petChance: 305_792,
-		bait: itemID('Fishing bait'),
+		bait: resolveNameBank({ 'Fishing bait': 1 }),
 		timePerFish: 6,
 		clueScrollChance: 305_792
 	},
@@ -95,7 +96,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw salmon'),
 		name: 'Salmon',
 		petChance: 461_808,
-		bait: itemID('Feather'),
+		bait: resolveNameBank({ Feather: 1 }),
 		timePerFish: 5.04,
 		clueScrollChance: 923_616
 	},
@@ -155,7 +156,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw karambwan'),
 		name: 'Karambwan',
 		petChance: 170_874,
-		bait: itemID('Raw karambwanji'),
+		bait: resolveNameBank({ 'Raw karambwanji': 1 }),
 		timePerFish: 4.5,
 		clueScrollChance: 170_874
 	},
@@ -176,7 +177,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw anglerfish'),
 		name: 'Anglerfish',
 		petChance: 78_649,
-		bait: itemID('Sandworms'),
+		bait: resolveNameBank({ Sandworms: 1 }),
 		qpRequired: 40,
 		timePerFish: 18.75,
 		clueScrollChance: 78_649
@@ -187,7 +188,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw dark crab'),
 		name: 'Dark crab',
 		petChance: 149_434,
-		bait: itemID('Dark fishing bait'),
+		bait: resolveNameBank({ 'Dark fishing bait': 1 }),
 		timePerFish: 11.7,
 		clueScrollChance: 149_434
 	},
@@ -197,7 +198,7 @@ const fishes: Fish[] = [
 		id: itemID('Leaping trout'),
 		name: 'Barbarian fishing',
 		petChance: 426_954,
-		bait: itemID('Feather'),
+		bait: resolveNameBank({ Feather: 1 }),
 		timePerFish: 3,
 		clueScrollChance: 1_280_862
 	}

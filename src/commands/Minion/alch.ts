@@ -7,14 +7,9 @@ import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	formatDuration,
-	removeBankFromBank,
-	resolveNameBank
-} from '../../lib/util';
+import { formatDuration, multiplyBank, removeBankFromBank, resolveNameBank } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import checkActivityQuantity from '../../lib/util/checkActivityQuantity';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import resolveItems from '../../lib/util/resolveItems';
 
@@ -49,7 +44,8 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
+	async run(msg: KlasaMessage, [quantity, item]: [number, Item[]]) {
+		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
@@ -58,22 +54,7 @@ export default class extends BotCommand {
 
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
-
-		const maxCasts = Math.min(
-			Math.floor(msg.author.maxTripLength / timePerAlch),
-			userBank[osItem.id]
-		);
-
-		if (!quantity) {
-			quantity = maxCasts;
-		}
-
-		if (quantity * timePerAlch > msg.author.maxTripLength) {
-			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
-		}
-
-		const duration = quantity * timePerAlch;
-		let fireRuneCost = quantity * 5;
+		let fireRuneCost = 5;
 
 		for (const runeProvider of unlimitedFireRuneProviders) {
 			if (msg.author.hasItemEquippedAnywhere(runeProvider)) {
@@ -82,23 +63,17 @@ export default class extends BotCommand {
 			}
 		}
 
+		const requiredItems = resolveNameBank({
+			...(fireRuneCost ? { 'Fire rune': fireRuneCost } : {}),
+			'Nature rune': 1,
+			[osItem.name]: 1
+		});
+
+		quantity = checkActivityQuantity(msg.author, quantity, timePerAlch, requiredItems);
+		const duration = quantity * timePerAlch;
 		const alchValue = quantity * osItem.highalch;
-		const consumedItems = addBanks([
-			resolveNameBank({
-				...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-				'Nature rune': quantity
-			}),
-			{ [osItem.id]: quantity }
-		]);
-
-		const consumedItemsString = await createReadableItemListFromBank(
-			this.client,
-			consumedItems
-		);
-
-		if (!bankHasAllItemsFromBank(userBank, consumedItems)) {
-			return msg.send(`You don't have the required items, you need ${consumedItemsString}`);
-		}
+		const consumedItems = multiplyBank(requiredItems, quantity);
+		const consumedItemsList = await createReadableItemListFromBank(this.client, consumedItems);
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const alchMessage = await msg.channel.send(
@@ -106,7 +81,7 @@ export default class extends BotCommand {
 					alchValue
 				)}). This will take approximately ${formatDuration(
 					duration
-				)}, and consume ${quantity}x Nature runes.`
+				)}, and consume ${consumedItemsList}.`
 			);
 
 			try {
