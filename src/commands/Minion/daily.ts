@@ -98,6 +98,9 @@ export default class DailyCommand extends BotCommand {
 			bonuses.push(Emoji.MoneyBag);
 		}
 
+		loot[COINS_ID] *= 2;
+		bonuses.push(Emoji.Sad);
+
 		if (member) {
 			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
 			bonuses.push(Emoji.OSBot);
