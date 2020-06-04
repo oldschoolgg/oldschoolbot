@@ -37,7 +37,6 @@ import { Emoji, Activity, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import Fletching from '../../lib/skilling/skills/fletching/fletching';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -257,12 +256,9 @@ export default class extends Extendable {
 			}
 			case Activity.Fletching: {
 				const data = currentTask as FletchingActivityTaskOptions;
-				const fletchable = Fletching.Fletchables.find(
-					item => item.name === data.fletchableName
-				);
 
 				return `${this.minionName} is currently fletching ${data.quantity}x ${
-					fletchable!.name
+					data.fletchableName
 				}. ${formattedDuration} Your ${
 					Emoji.Fletching
 				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
