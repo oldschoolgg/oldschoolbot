@@ -129,6 +129,8 @@ export default class extends BotCommand {
 
 		duration += (rand(1, 5) * duration) / 100;
 
+		duration *= 0.9;
+
 		const diedPreJad = percentChance(preJadDeathChance);
 		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
 		const finishDate = Date.now() + (preJadDeathTime ?? duration);
@@ -163,7 +165,7 @@ export default class extends BotCommand {
 			`**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(
 				2
 			)} minutes)
-**Boosts:** ${debugStr}
+**Boosts:** ${debugStr}, 10% because OSRS is down!
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
 **Attempts:** ${attempts}

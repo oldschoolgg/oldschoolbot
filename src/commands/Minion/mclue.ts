@@ -98,6 +98,9 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		boosts.push(`10% because OSRS is down!`);
+		duration *= 0.9;
+
 		const data: ClueActivityTaskOptions = {
 			clueID: clueTier.id,
 			userID: msg.author.id,
