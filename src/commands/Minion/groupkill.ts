@@ -8,6 +8,7 @@ import { Activity, Tasks, Emoji } from '../../lib/constants';
 import { rand, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { reducedTimeForGroup, findMonster } from '../../lib/minions/functions';
+// import { monthsShort } from 'moment';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -33,25 +34,38 @@ export default class extends BotCommand {
 		return [quantity, duration, perKillTime];
 	}
 
-	checkReqs(users: KlasaUser[], monster: KillableMonster) {
+	checkReqs(msg: KlasaMessage, users: KlasaUser[], monster: KillableMonster) {
 		// Check if every user has the requirements for this monster.
+		let removedUsers = [];
 		for (const user of users) {
 			if (!user.hasMinion) {
-				throw `${user.username} doesn't have a minion, so they can't join!`;
+				let userToRemove = users.indexOf(user);
+				users.splice(userToRemove,1);
+				removedUsers.push(`${user} doesn't have a minion, so they can't join!`);
 			}
 
 			if (user.minionIsBusy) {
-				throw `${user.username} is busy right now and can't join!`;
+				let userToRemove = users.indexOf(user);
+				users.splice(userToRemove,1);
+				removedUsers.push(`${user} is busy right now and can't join!`);
 			}
 
 			if (user.isIronman) {
-				throw `${user.username} is an ironman, so they can't join!`;
+				let userToRemove = users.indexOf(user);
+				users.splice(userToRemove,1);
+				removedUsers.push(`${user} is an ironman, so they can't join!`);
 			}
 
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 			if (!hasReqs && 1 < 0) {
-				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
+				let userToRemove = users.indexOf(user);
+				users.splice(userToRemove,1);
+				removedUsers.push(`${user} doesn't have the requirements for this monster: ${reason}`);
 			}
+
+		}
+		if (removedUsers.length > 0) {
+			return msg.channel.send(removedUsers.join(", "));
 		}
 	}
 
@@ -72,7 +86,7 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		this.checkReqs(users, monster);
+		this.checkReqs(msg, users, monster);
 
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
 
@@ -134,12 +148,12 @@ export default class extends BotCommand {
 			} reaction to join, click it again to leave.`
 		};
 
-		this.checkReqs(usersInput, monster);
+		this.checkReqs(msg, usersInput, monster);
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
 		// that error comes from here
-		this.checkReqs(users, monster);
+		this.checkReqs(msg, users, monster);
 
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
 
