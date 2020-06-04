@@ -19,7 +19,7 @@
 		"klasa-decorators": "^0.0.1",
 		"lodash": "^4.17.15",
 		"markovchain": "^1.0.2",
-		"moment": "^2.21.0",
+		"moment": "^2.26.0",
 		"mongodb": "^3.5.2",
 		"node-fetch": "^2.6.0",
 		"oldschooljs": "^1.1.3",
