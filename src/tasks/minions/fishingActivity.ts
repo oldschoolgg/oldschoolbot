@@ -38,7 +38,7 @@ export default class extends Task {
 				fishChanceSalmon = Math.random();
 				fishChanceTrout = Math.random();
 				if (
-					(fishChanceSturgeon < (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
+					(fishChanceSturgeon <= (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 70 &&
 					user.skillLevel(SkillsEnum.Agility) >= 45
 				) {
@@ -46,7 +46,7 @@ export default class extends Task {
 					agilityXpReceived += 7;
 					leapingSturgeon += 1;
 				} else if (
-					(fishChanceSalmon < (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
+					(fishChanceSalmon <= (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 58 &&
 					user.skillLevel(SkillsEnum.Agility) >= 30
 				) {
@@ -54,7 +54,7 @@ export default class extends Task {
 					leapingSalmon += 1;
 					agilityXpReceived += 6;
 				} else if (
-					(fishChanceTrout < ((32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing)))/255)
+					(fishChanceTrout <= ((32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing)))/255)
 				)) {
 					xpReceived += 50;
 					leapingTrout += 1;
