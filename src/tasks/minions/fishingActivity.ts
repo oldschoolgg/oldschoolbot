@@ -26,18 +26,27 @@ export default class extends Task {
 		let leapingSalmon = 0;
 		let leapingTrout = 0;
 		let agilityXpReceived = 0;
+		let fishChanceSturgeon = 0;
+		let fishChanceSalmon = 0;
+		let fishChanceTrout = 0;
+		let fishFailed = 0;
+		let attemptedQuantity = quantity;
+
 		if (fish.name === 'Barbarian fishing') {
-			for (let i = 0; i < quantity; i++) {
+			for (let i = 0; i < attemptedQuantity; i++) {
+				fishChanceSturgeon = Math.random();
+				fishChanceSalmon = Math.random();
+				fishChanceTrout = Math.random();
 				if (
-					roll(255 / (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))) &&
+					(fishChanceSturgeon < (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 70 &&
-					user.skillLevel(SkillsEnum.Agility) >= 48
+					user.skillLevel(SkillsEnum.Agility) >= 45
 				) {
 					xpReceived += 80;
 					agilityXpReceived += 7;
 					leapingSturgeon += 1;
 				} else if (
-					roll(255 / (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))) &&
+					(fishChanceSalmon < (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 58 &&
 					user.skillLevel(SkillsEnum.Agility) >= 30
 				) {
@@ -45,11 +54,14 @@ export default class extends Task {
 					leapingSalmon += 1;
 					agilityXpReceived += 6;
 				} else if (
-					roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))
-				) {
+					(fishChanceTrout < ((32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing)))/255)
+				)) {
 					xpReceived += 50;
 					leapingTrout += 1;
 					agilityXpReceived += 5;
+				}
+				else {;
+					fishFailed += 1;
 				}
 			}
 		} else {
@@ -111,12 +123,14 @@ export default class extends Task {
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 		if (fish.name === 'Barbarian fishing') {
-			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
+			str = `${user}, ${user.minionName} finished attempting to fish ${quantity} ${
 				fish.name
-			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP. ${
+			}. You received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP. ${
 				user.minionName
 			} asks if you'd like them to do another of the same trip.
-			\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
+			\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${
+				leapingTrout
+			}x Leaping trout, and failed to catch a fish in ${fishFailed}/${quantity} attempts.`;
 			if (newLevel > currentLevel) {
 				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
 			}

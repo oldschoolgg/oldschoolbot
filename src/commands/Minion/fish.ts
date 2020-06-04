@@ -113,9 +113,18 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
-			fish.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = '';
+
+		if (fish.name === 'Barbarian fishing') {
+			response = `${msg.author.minionName} is now attempting to fish ${quantity}x ${
+				fish.name
+			}, it'll take around ${formatDuration(duration)} to finish.`;
+		}
+		else {
+			response = `${msg.author.minionName} is now fishing ${quantity}x ${
+				fish.name
+			}, it'll take around ${formatDuration(duration)} to finish.`;
+		}
 
 		return msg.send(response);
 	}
