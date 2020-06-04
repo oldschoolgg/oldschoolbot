@@ -1,8 +1,11 @@
+import { KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearTypes } from '../src/lib/gear';
 import { initItemAliases } from '../src/lib/itemAliases';
-import { itemID } from '../src/lib/util';
+import { UserSettings } from '../src/lib/settings/types/UserSettings';
+import { ItemBank } from '../src/lib/types';
+import { itemID, resolveNameBank } from '../src/lib/util';
 
 export function mockArgument(arg: any) {
 	return new arg(
@@ -27,6 +30,7 @@ type PartialGearSetup = Partial<
 		[key in EquipmentSlot]: string;
 	}
 >;
+
 export function constructGearSetup(setup: PartialGearSetup): GearTypes.GearSetup {
 	return {
 		'2h': setup['2h'] ? { item: itemID(setup['2h']), quantity: 1 } : null,
@@ -46,4 +50,30 @@ export function constructGearSetup(setup: PartialGearSetup): GearTypes.GearSetup
 
 export async function testSetup() {
 	initItemAliases();
+}
+
+export function mockKlasaUser(otherSettings: Record<string, any> = {}): KlasaUser {
+	const defaultSettings = {
+		bank: resolveNameBank({ 'Fishing bait': 1000 }),
+		GP: 1000,
+		...otherSettings
+	};
+	const settings = new Map(Object.entries(defaultSettings));
+
+	return ({
+		minionName: 'nugget',
+		maxTripLength: 1000,
+		settings,
+		numItemsInBankSync(id: number) {
+			const bank = settings.get(UserSettings.Bank) as ItemBank;
+
+			const result = bank[id];
+
+			if (typeof result !== 'undefined') {
+				return result;
+			}
+
+			return 0;
+		}
+	} as unknown) as KlasaUser;
 }
