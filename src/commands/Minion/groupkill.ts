@@ -36,36 +36,37 @@ export default class extends BotCommand {
 
 	checkReqs(msg: KlasaMessage, users: KlasaUser[], monster: KillableMonster) {
 		// Check if every user has the requirements for this monster.
-		let removedUsers = [];
+		const removedUsers = [];
 		for (const user of users) {
 			if (!user.hasMinion) {
-				let userToRemove = users.indexOf(user);
-				users.splice(userToRemove,1);
+				const userToRemove = users.indexOf(user);
+				users.splice(userToRemove, 1);
 				removedUsers.push(`${user} doesn't have a minion, so they can't join!`);
 			}
 
 			if (user.minionIsBusy) {
-				let userToRemove = users.indexOf(user);
-				users.splice(userToRemove,1);
+				const userToRemove = users.indexOf(user);
+				users.splice(userToRemove, 1);
 				removedUsers.push(`${user} is busy right now and can't join!`);
 			}
 
 			if (user.isIronman) {
-				let userToRemove = users.indexOf(user);
-				users.splice(userToRemove,1);
+				const userToRemove = users.indexOf(user);
+				users.splice(userToRemove, 1);
 				removedUsers.push(`${user} is an ironman, so they can't join!`);
 			}
 
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 			if (!hasReqs && 1 < 0) {
-				let userToRemove = users.indexOf(user);
-				users.splice(userToRemove,1);
-				removedUsers.push(`${user} doesn't have the requirements for this monster: ${reason}`);
+				const userToRemove = users.indexOf(user);
+				users.splice(userToRemove, 1);
+				removedUsers.push(
+					`${user} doesn't have the requirements for this monster: ${reason}`
+				);
 			}
-
 		}
 		if (removedUsers.length > 0) {
-			return msg.channel.send(removedUsers.join(", "));
+			return msg.channel.send(removedUsers.join(', '));
 		}
 	}
 
