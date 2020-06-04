@@ -42,7 +42,7 @@
 		"@types/node": "^14.0.9",
 		"@types/node-fetch": "^2.5.7",
 		"@types/pg": "^7.14.3",
-		"@types/twit": "^2.2.23",
+		"@types/twit": "^2.2.24",
 		"@types/xml2js": "^0.4.5",
 		"@typescript-eslint/eslint-plugin": "^2.18.0",
 		"@typescript-eslint/parser": "^2.34.0",
