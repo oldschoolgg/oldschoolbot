@@ -571,6 +571,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
+		boosts.push(`10% Because OSRS is down!`);
+		duration *= 0.9;
+
 		const data: MonsterActivityTaskOptions = {
 			monsterID: monster.id,
 			userID: msg.author.id,
