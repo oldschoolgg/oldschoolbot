@@ -119,8 +119,7 @@ export default class extends BotCommand {
 			response = `${msg.author.minionName} is now attempting to fish ${quantity}x ${
 				fish.name
 			}, it'll take around ${formatDuration(duration)} to finish.`;
-		}
-		else {
+		} else {
 			response = `${msg.author.minionName} is now fishing ${quantity}x ${
 				fish.name
 			}, it'll take around ${formatDuration(duration)} to finish.`;

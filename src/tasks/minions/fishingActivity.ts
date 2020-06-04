@@ -30,7 +30,7 @@ export default class extends Task {
 		let fishChanceSalmon = 0;
 		let fishChanceTrout = 0;
 		let fishFailed = 0;
-		let attemptedQuantity = quantity;
+		const attemptedQuantity = quantity;
 
 		if (fish.name === 'Barbarian fishing') {
 			for (let i = 0; i < attemptedQuantity; i++) {
@@ -38,7 +38,8 @@ export default class extends Task {
 				fishChanceSalmon = Math.random();
 				fishChanceTrout = Math.random();
 				if (
-					(fishChanceSturgeon <= (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
+					fishChanceSturgeon <=
+						(8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing))) / 255 &&
 					user.skillLevel(SkillsEnum.Fishing) >= 70 &&
 					user.skillLevel(SkillsEnum.Agility) >= 45
 				) {
@@ -46,7 +47,8 @@ export default class extends Task {
 					agilityXpReceived += 7;
 					leapingSturgeon += 1;
 				} else if (
-					(fishChanceSalmon <= (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))/255) &&
+					fishChanceSalmon <=
+						(16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing))) / 255 &&
 					user.skillLevel(SkillsEnum.Fishing) >= 58 &&
 					user.skillLevel(SkillsEnum.Agility) >= 30
 				) {
@@ -54,13 +56,13 @@ export default class extends Task {
 					leapingSalmon += 1;
 					agilityXpReceived += 6;
 				} else if (
-					(fishChanceTrout <= ((32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing)))/255)
-				)) {
+					fishChanceTrout <=
+					(32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))) / 255
+				) {
 					xpReceived += 50;
 					leapingTrout += 1;
 					agilityXpReceived += 5;
-				}
-				else {;
+				} else {
 					fishFailed += 1;
 				}
 			}
@@ -128,9 +130,7 @@ export default class extends Task {
 			}. You received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP. ${
 				user.minionName
 			} asks if you'd like them to do another of the same trip.
-			\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${
-				leapingTrout
-			}x Leaping trout, and failed to catch a fish in ${fishFailed}/${quantity} attempts.`;
+			\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout, and failed to catch a fish in ${fishFailed}/${quantity} attempts.`;
 			if (newLevel > currentLevel) {
 				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
 			}
