@@ -62,7 +62,7 @@ const Shafts: Fletchable[] = [
 		id: itemID('Arrow shaft'),
 		level: 75,
 		xp: 30,
-		inputItems: transformStringBankToNum({ 'Yew logs': 1 }),
+		inputItems: transformStringBankToNum({ 'Magic logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 90
 	},
@@ -71,7 +71,7 @@ const Shafts: Fletchable[] = [
 		id: itemID('Arrow shaft'),
 		level: 90,
 		xp: 35,
-		inputItems: transformStringBankToNum({ 'Yew logs': 1 }),
+		inputItems: transformStringBankToNum({ 'Redwood logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 105
 	}
