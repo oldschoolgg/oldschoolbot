@@ -74,14 +74,30 @@ export default class extends BotCommand {
 			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
 		}
 
-		let duration = quantity * scaledTimePerFish;
+		let duration = 0;
+
+		if (fish.name === 'Barbarian fishing') {
+			duration = quantity * fish.timePerFish;
+		}
+		else {
+			duration = quantity * scaledTimePerFish;
+		}
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				fish.name
-			} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`;
+			if (fish.name === 'Barbarian fishing') {
+				throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					fish.name
+				} you can fish is ${Math.floor(msg.author.maxTripLength / fish.timePerFish)}.`;
+			}
+			else {
+				throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					fish.name
+				} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`;
+			}
 		}
 
 		if (fish.bait) {
