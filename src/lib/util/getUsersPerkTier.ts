@@ -20,14 +20,14 @@ export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 		return PerkTier.Five;
 	}
 
-	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3)) {
+	if (
+		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3) ||
+		(member && [Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID)))
+	) {
 		return PerkTier.Four;
 	}
 
-	if (
-		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2) ||
-		(member && [Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID)))
-	) {
+	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2)) {
 		return PerkTier.Three;
 	}
 
