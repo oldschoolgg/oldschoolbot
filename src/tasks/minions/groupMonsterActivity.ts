@@ -27,6 +27,12 @@ export default class extends Task {
 			kcAmounts[userWhoGetsLoot]++;
 		}
 
+		for (let k = 0; k < kcAmounts.length; k++) {
+			if (kcAmounts[users[k]] === 0) {
+				usersNoKc.push(users);
+			}
+		}
+
 		const leaderUser = await this.client.users.fetch(leader);
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
@@ -39,7 +45,7 @@ export default class extends Task {
 			const kcToAdd = kcAmounts[user.id];
 
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
-			if (kcToAdd === 0) usersNoKc.push(user);
+
 			resultStr += `**${user} received:** ||${await createReadableItemListFromBank(
 				this.client,
 				loot

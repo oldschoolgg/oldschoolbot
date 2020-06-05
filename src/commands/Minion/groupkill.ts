@@ -60,9 +60,7 @@ export default class extends BotCommand {
 			if (!hasReqs && 1 < 0) {
 				const userToRemove = users.indexOf(user);
 				users.splice(userToRemove, 1);
-				removedUsers.push(
-					`${user} doesn't have the requirements for this monster: ${reason}`
-				);
+				removedUsers.push(`${user}: ${reason}`);
 			}
 		}
 		if (removedUsers.length > 0) {
