@@ -13,6 +13,7 @@ export default class extends Task {
 
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
+		const usersNoKc = [];
 
 		for (let j = 0; j < users.length; j++) {
 			kcAmounts[users[j]] = 0;
@@ -36,11 +37,17 @@ export default class extends Task {
 
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
+
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
+			if (kcToAdd === 0) usersNoKc.push(user);
 			resultStr += `**${user} received:** ||${await createReadableItemListFromBank(
 				this.client,
 				loot
 			)}||\n`;
+
+			if (usersNoKc.length > 0) {
+				resultStr += `Users ${usersNoKc.join(`, `)} received no loot!`;
+			}
 
 			announceLoot(this.client, leaderUser, monster, quantity, loot, {
 				leader: leaderUser,
