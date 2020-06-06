@@ -68,7 +68,7 @@ export default class extends BotCommand {
 		}
 
 		if (removedUsers.length > 0) {
-			let usersRemoved = removedUsers.join(', ');
+			const usersRemoved = removedUsers.join(', ');
 			return msg.channel.send(usersRemoved);
 		}
 	}
