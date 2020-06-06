@@ -22,7 +22,7 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 		const usersWithKc: string[] = [];
 
-		for (let j = 0; j < users.length - 1; j++) {
+		for (let j = 0; j < users.length; j++) {
 			kcAmounts[users[j]] = 0;
 		}
 
@@ -44,11 +44,11 @@ export default class extends Task {
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
-			const purple = Object.keys(filterBankFromArrayOfItems(uniques, loot)).length > 0;
 			if (!user) continue;
 
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
+			const purple = Object.keys(filterBankFromArrayOfItems(uniques, loot)).length > 0;
 
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
 

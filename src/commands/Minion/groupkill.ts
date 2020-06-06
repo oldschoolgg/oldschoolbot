@@ -38,31 +38,30 @@ export default class extends BotCommand {
 		const removedUsers = [];
 		for (let i = users.length - 1; i >= 0; i--) {
 			const user = users[i];
-			let checkReqsState = -1;
+			let checkReqsState = false;
 			if (!user.hasMinion) {
-				checkReqsState += 2;
+				checkReqsState = true;
 				removedUsers.push(`${user} doesn't have a minion, so they can't join!`);
 			}
 
 			if (user.minionIsBusy) {
-				checkReqsState += 2;
+				checkReqsState = true;
 				removedUsers.push(`${user} is busy right now and can't join!`);
 			}
 
 			if (user.isIronman) {
-				checkReqsState += 2;
+				checkReqsState = true;
 				removedUsers.push(`${user} is an ironman, so they can't join!`);
 			}
 
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 			if (!hasReqs) {
-				checkReqsState += 2;
+				checkReqsState = true;
 				removedUsers.push(`${user}: ${reason}`);
 			}
 
-			if (checkReqsState > 0) {
-				const userToRemove = users.indexOf(user);
-				users.splice(userToRemove, 1);
+			if (checkReqsState === true) {
+				users.splice(users.indexOf(user), 1);
 			}
 		}
 
