@@ -6,6 +6,13 @@ import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
+
+const uniques = [
+	12819, // elysian
+	12823, // spectral
+	12827 // arcane
+];
 
 export default class extends Task {
 	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {
@@ -37,6 +44,7 @@ export default class extends Task {
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
+			const purple = Object.keys(filterBankFromArrayOfItems(uniques, loot)).length > 0;
 			if (!user) continue;
 
 			await user.addItemsToBank(loot, true);
@@ -44,10 +52,9 @@ export default class extends Task {
 
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
 
-			resultStr += `**${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
-				loot
-			)}||\n`;
+			resultStr += `**${user} received:** ${
+				purple ? '🟪' : ''
+			} ||${await createReadableItemListFromBank(this.client, loot)}||\n`;
 
 			announceLoot(this.client, leaderUser, monster, quantity, loot, {
 				leader: leaderUser,

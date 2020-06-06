@@ -8,7 +8,6 @@ import { Activity, Tasks, Emoji } from '../../lib/constants';
 import { rand, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { reducedTimeForGroup, findMonster } from '../../lib/minions/functions';
-// import { monthsShort } from 'moment';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
