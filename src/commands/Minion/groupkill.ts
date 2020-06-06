@@ -37,8 +37,8 @@ export default class extends BotCommand {
 	checkReqs(msg: KlasaMessage, users: KlasaUser[], monster: KillableMonster) {
 		// Check if every user has the requirements for this monster.
 		const removedUsers = [];
-		for (let i = users.length; i >= 0; i--) {
-			let user = users[i];
+		for (let i = users.length - 1; i >= 0; i--) {
+			const user = users[i];
 			let checkReqsState = -1;
 			if (!user.hasMinion) {
 				checkReqsState += 2;
@@ -102,13 +102,13 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.GroupMonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 30000,
+			finishDate: Date.now() + duration,
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-		for (const user of users) user.incrementMinionDailyDuration(30000);
+		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(
 			`${partyOptions.leader.username}'s party (${users
@@ -169,7 +169,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.GroupMonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 30000,
+			finishDate: Date.now() + duration,
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		};

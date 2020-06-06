@@ -15,7 +15,7 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 		const usersWithKc: string[] = [];
 
-		for (let j = 0; j < users.length; j++) {
+		for (let j = 0; j < users.length-1; j++) {
 			kcAmounts[users[j]] = 0;
 		}
 
@@ -57,7 +57,7 @@ export default class extends Task {
 		}
 
 		if (usersNoLoot.length > 0) {
-			resultStr += `Users @${usersNoLoot.join(`, `)} received no loot!\n`;
+			resultStr += `Users <@${usersNoLoot.join(`>, <@`)}> received no loot!\n`;
 		}
 
 		queuedMessageSend(this.client, channelID, resultStr);
