@@ -37,34 +37,39 @@ export default class extends BotCommand {
 	checkReqs(msg: KlasaMessage, users: KlasaUser[], monster: KillableMonster) {
 		// Check if every user has the requirements for this monster.
 		const removedUsers = [];
-		for (const user of users) {
+		for (let i = users.length; i >= 0; i--) {
+			let user = users[i];
+			let checkReqsState = -1;
 			if (!user.hasMinion) {
-				const userToRemove = users.indexOf(user);
-				users.splice(userToRemove, 1);
+				checkReqsState += 2;
 				removedUsers.push(`${user} doesn't have a minion, so they can't join!`);
 			}
 
 			if (user.minionIsBusy) {
-				const userToRemove = users.indexOf(user);
-				users.splice(userToRemove, 1);
+				checkReqsState += 2;
 				removedUsers.push(`${user} is busy right now and can't join!`);
 			}
 
 			if (user.isIronman) {
-				const userToRemove = users.indexOf(user);
-				users.splice(userToRemove, 1);
+				checkReqsState += 2;
 				removedUsers.push(`${user} is an ironman, so they can't join!`);
 			}
 
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
-			if (!hasReqs && 1 < 0) {
-				const userToRemove = users.indexOf(user);
-				users.splice(userToRemove, 1);
+			if (!hasReqs) {
+				checkReqsState += 2;
 				removedUsers.push(`${user}: ${reason}`);
 			}
+
+			if (checkReqsState > 0) {
+				const userToRemove = users.indexOf(user);
+				users.splice(userToRemove, 1);
+			}
 		}
+
 		if (removedUsers.length > 0) {
-			return msg.channel.send(removedUsers.join(', '));
+			let usersRemoved = removedUsers.join(', ');
+			return msg.channel.send(usersRemoved);
 		}
 	}
 
@@ -97,13 +102,13 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.GroupMonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration,
+			finishDate: Date.now() + 30000,
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-		for (const user of users) user.incrementMinionDailyDuration(duration);
+		for (const user of users) user.incrementMinionDailyDuration(30000);
 
 		return msg.channel.send(
 			`${partyOptions.leader.username}'s party (${users
@@ -164,7 +169,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.GroupMonsterKilling,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration,
+			finishDate: Date.now() + 30000,
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		};

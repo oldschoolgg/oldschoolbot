@@ -13,7 +13,7 @@ export default class extends Task {
 
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
-		const usersNoKc = [];
+		const usersWithKc: string[] = [];
 
 		for (let j = 0; j < users.length; j++) {
 			kcAmounts[users[j]] = 0;
@@ -25,14 +25,12 @@ export default class extends Task {
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = addBankToBank(currentLoot ?? {}, loot);
 			kcAmounts[userWhoGetsLoot]++;
-		}
-
-		for (let k = 0; k < kcAmounts.length; k++) {
-			if (kcAmounts[users[k]] === 0) {
-				usersNoKc.push(users);
+			if (!usersWithKc.includes(userWhoGetsLoot)) {
+				usersWithKc.push(userWhoGetsLoot);
 			}
 		}
 
+		const usersNoLoot = users.filter(x => !usersWithKc.includes(x));
 		const leaderUser = await this.client.users.fetch(leader);
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
@@ -51,15 +49,15 @@ export default class extends Task {
 				loot
 			)}||\n`;
 
-			if (usersNoKc.length > 0) {
-				resultStr += `Users ${usersNoKc.join(`, `)} received no loot!`;
-			}
-
 			announceLoot(this.client, leaderUser, monster, quantity, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
 			});
+		}
+
+		if (usersNoLoot.length > 0) {
+			resultStr += `Users @${usersNoLoot.join(`, `)} received no loot!\n`;
 		}
 
 		queuedMessageSend(this.client, channelID, resultStr);
