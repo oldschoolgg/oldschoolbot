@@ -15,7 +15,7 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 		const usersWithKc: string[] = [];
 
-		for (let j = 0; j < users.length-1; j++) {
+		for (let j = 0; j < users.length - 1; j++) {
 			kcAmounts[users[j]] = 0;
 		}
 
