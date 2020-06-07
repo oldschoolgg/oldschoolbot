@@ -11,7 +11,8 @@ import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItem
 const uniques = [
 	12819, // elysian
 	12823, // spectral
-	12827 // arcane
+	12827, // arcane
+	12816 // pet dark core
 ];
 
 export default class extends Task {
