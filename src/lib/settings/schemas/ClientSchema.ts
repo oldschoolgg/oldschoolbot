@@ -13,4 +13,5 @@ Client.defaultClientSchema
 			.add('dailiesAmount', 'number', { default: 0 })
 			.add('itemSellTaxBank', 'number', { default: 0 })
 			.add('bankBgCostBank', 'any', { default: {} })
+			.add('sacrificedBank', 'any', { default: {} })
 	);

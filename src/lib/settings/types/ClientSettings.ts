@@ -29,5 +29,6 @@ export namespace ClientSettings {
 		export const DailiesAmount = T<number>('economyStats.dailiesAmount');
 		export const ItemSellTaxBank = T<number>('economyStats.itemSellTaxBank');
 		export const BankBgCostBank = T<O.Readonly<ItemBank>>('economyStats.bankBgCostBank');
+		export const SacrificedBank = T<O.Readonly<ItemBank>>('economyStats.sacrificedBank');
 	}
 }
