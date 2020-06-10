@@ -20,8 +20,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 20,
-			usage:
-				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> <itemname:...string>',
+			usage: '<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}|itemname:...string> [itemname:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true
@@ -30,8 +29,12 @@ export default class extends BotCommand {
 
 	async run(
 		msg: KlasaMessage,
-		[buyerMember, price, quantity, itemName]: [GuildMember, number, number | undefined, string]
+		[buyerMember, price, quantity, itemName='']: [GuildMember, number, number, string]
 	) {
+		if (typeof quantity === 'string') {
+			itemName = quantity;
+			quantity = 0;
+		}
 		if (msg.author.isIronman) {
 			throw `Iron players can't sell items.`;
 		}
