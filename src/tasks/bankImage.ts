@@ -129,7 +129,8 @@ export default class BankImageTask extends Task {
 		flags: { [key: string]: string | number } = {},
 		user?: KlasaUser
 	): Promise<Buffer> {
-		const bankBackgroundID = user?.settings.get(UserSettings.BankBackground) ?? 1;
+		const bankBackgroundID =
+			user?.settings.get(UserSettings.BankBackground) ?? flags.background ?? 1;
 		const currentCL = user?.settings.get(UserSettings.CollectionLogBank);
 
 		const canvas = createCanvas(488, 331);

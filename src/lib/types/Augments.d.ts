@@ -157,6 +157,7 @@ declare module 'discord.js' {
 			bank: Bank;
 			content?: string;
 			title?: string;
+			background?: number;
 		}): Promise<KlasaMessage>;
 	}
 
@@ -165,6 +166,7 @@ declare module 'discord.js' {
 			bank: Bank;
 			content?: string;
 			title?: string;
+			background?: number;
 		}): Promise<KlasaMessage>;
 	}
 }

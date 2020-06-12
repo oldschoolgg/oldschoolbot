@@ -172,7 +172,8 @@ export default class DailyCommand extends BotCommand {
 		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `${msg.author.username}'s Daily`,
-			content: dmStr
+			content: dmStr,
+			background: msg.author.settings.get(UserSettings.BankBackground)
 		});
 	}
 }
