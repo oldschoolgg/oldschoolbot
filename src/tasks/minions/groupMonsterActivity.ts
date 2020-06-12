@@ -8,7 +8,6 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { Emoji } from '../../lib/constants';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {
