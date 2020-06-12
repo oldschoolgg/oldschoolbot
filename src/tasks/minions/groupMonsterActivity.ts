@@ -6,6 +6,9 @@ import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
+import { Emoji } from '../../lib/constants';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {
@@ -35,7 +38,13 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
-			resultStr += `**${user} received:** ||${await createReadableItemListFromBank(
+			const purple = Object.keys(loot).some(itemID =>
+				isImportantItemForMonster(parseInt(itemID), monster)
+			);
+
+			resultStr += `${
+				purple ? Emoji.Purple : ''
+			} **${user} received:** ||${await createReadableItemListFromBank(
 				this.client,
 				loot
 			)}||\n`;
