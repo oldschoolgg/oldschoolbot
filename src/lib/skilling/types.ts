@@ -95,6 +95,7 @@ export interface Cookable {
 	stopBurnAt: number;
 	stopBurnAtCG: number;
 	burntCookable: number;
+	healAmount?: number;
 }
 
 export interface SmithedBar {
