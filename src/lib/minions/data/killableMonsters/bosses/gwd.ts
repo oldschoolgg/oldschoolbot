@@ -4,6 +4,7 @@ import { KillableMonster } from '../../../types';
 import resolveItems from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
+import { bosses } from '../../../../collectionLog';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -25,7 +26,8 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards]
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -52,7 +54,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43,
 			agility: 70
-		}
+		},
+		uniques: [...bosses.Saradomin, ...bosses.Shards]
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -77,7 +80,8 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		uniques: [...bosses.Arma, ...bosses.Shards]
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -102,7 +106,8 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		uniques: [...bosses.Zammy, ...bosses.Shards]
 	}
 ];
 

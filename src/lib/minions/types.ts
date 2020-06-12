@@ -64,6 +64,7 @@ export interface KillableMonster {
 	groupKillable?: true;
 	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
+	uniques?: ArrayItemsResolved;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {

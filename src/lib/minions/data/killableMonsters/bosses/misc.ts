@@ -4,6 +4,7 @@ import { KillableMonster } from '../../../types';
 import resolveItems from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
+import { bosses } from '../../../../collectionLog';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -134,7 +135,8 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: 40_000,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		uniques: bosses['Corp Beast']
 	},
 	{
 		id: Monsters.Cerberus.id,
