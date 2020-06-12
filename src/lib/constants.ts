@@ -74,7 +74,8 @@ export const enum Emoji {
 	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
-	Fletching = '<:fletching:630911040544309258>'
+	Fletching = '<:fletching:630911040544309258>',
+	Purple = '🟪'
 }
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
