@@ -505,7 +505,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		if (!name) throw invalidMonster(msg.cmdPrefix);
-		const monster = findMonster(name);
+
+		const monster =
+			name === 'random'
+				? randomItemFromArray(
+						killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0])
+				  )
+				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
