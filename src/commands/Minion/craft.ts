@@ -79,8 +79,8 @@ export default class extends BotCommand {
 				const id = parseInt(itemID);
 				if (id === 995) {
 					const userGP = msg.author.settings.get(UserSettings.GP);
-					if (!userGP) {
-						throw `You have no GP.`;
+					if (userGP < qty) {
+						throw `You do not have enough GP.`;
 					}
 					quantity = Math.min(quantity, Math.floor(userGP / qty));
 					continue;
