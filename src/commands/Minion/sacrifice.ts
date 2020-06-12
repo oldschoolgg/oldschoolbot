@@ -7,6 +7,8 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import getOSItem from '../../lib/util/getOSItem';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { Events } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { addItemToBank } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -85,6 +87,15 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
 		await msg.author.removeItemFromBank(osItem.id, quantity);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.SacrificedBank,
+			addItemToBank(
+				this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
+				osItem.id,
+				quantity
+			)
+		);
 
 		msg.author.log(`sacrificed Quantity[${quantity}] ItemID[${osItem.id}] for ${totalPrice}`);
 

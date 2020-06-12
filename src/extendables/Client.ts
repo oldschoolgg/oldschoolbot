@@ -1,4 +1,4 @@
-import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, SQLProvider } from 'klasa';
 import { Client } from 'discord.js';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
@@ -63,5 +63,11 @@ export default class extends Extendable {
 		await this.settings!.update('prices', newItems);
 
 		return price;
+	}
+
+	async query(this: KlasaClient, query: string) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		return (this.providers.default as SQLProvider).runAll(query);
 	}
 }

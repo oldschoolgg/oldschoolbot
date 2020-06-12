@@ -11,14 +11,14 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	get rawGear(this: User) {
+	public rawGear(this: User) {
 		const gear = (this.settings.get('gear') as SettingsFolder).toJSON() as UserFullGearSetup;
 
 		return gear;
 	}
 
 	public hasItemEquippedAnywhere(this: User, itemID: number) {
-		const gear = this.rawGear;
+		const gear = this.rawGear();
 		for (const setup of Object.values(gear)) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === itemID);
 			if (thisItemEquipped) return true;
@@ -33,7 +33,7 @@ export default class extends Extendable {
 	}
 
 	public equippedWeapon(this: User, setup: GearSetupTypes) {
-		const gear = this.rawGear[setup];
+		const gear = this.rawGear()[setup];
 
 		const [normalWeapon] = itemInSlot(gear, EquipmentSlot.Weapon);
 		const [twoHandedWeapon] = itemInSlot(gear, EquipmentSlot.TwoHanded);

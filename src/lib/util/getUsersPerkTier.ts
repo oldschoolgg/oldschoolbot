@@ -12,14 +12,22 @@ export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 	const supportGuild = getSupportGuild(user.client);
 	const member = supportGuild.members.find(member => member.user === user);
 
-	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3)) {
-		return PerkTier.Four;
+	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier5)) {
+		return PerkTier.Six;
+	}
+
+	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier4)) {
+		return PerkTier.Five;
 	}
 
 	if (
-		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2) ||
+		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3) ||
 		(member && [Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID)))
 	) {
+		return PerkTier.Four;
+	}
+
+	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier2)) {
 		return PerkTier.Three;
 	}
 

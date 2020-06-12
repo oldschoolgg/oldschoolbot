@@ -13,7 +13,13 @@ import {
 	PerkTier,
 	MIMIC_MONSTER_ID
 } from '../../lib/constants';
-import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '../../lib/util';
+import {
+	formatDuration,
+	randomItemFromArray,
+	isWeekend,
+	itemNameFromID,
+	toTitleCase
+} from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -146,10 +152,14 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.SacrificedValue,
 				'gear',
 				'stats',
-				'skills'
+				'skills',
+				'minion'
 			]);
 
-			await msg.author.settings.update(UserSettings.Minion.Ironman, true);
+			await msg.author.settings.update([
+				[UserSettings.Minion.Ironman, true],
+				[UserSettings.Minion.HasBought, true]
+			]);
 			return msg.send('You are now an ironman.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
@@ -484,6 +494,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		});
 	}
 
+	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		if (typeof quantity === 'string') {
 			name = quantity;
@@ -498,15 +509,25 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			);
 			return msg.send(msg.author.minionStatus);
 		}
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
 
 		if (!name) throw invalidMonster(msg.cmdPrefix);
-
 		const monster = findMonster(name);
-
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
+
+		/**
+		 * Check level requirements
+		 */
+		if (monster.levelRequirements) {
+			for (const [skillEnum, levelRequired] of Object.entries(monster.levelRequirements)) {
+				if (msg.author.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
+					throw `You need level ${levelRequired} ${toTitleCase(skillEnum)} to kill ${
+						monster.name
+					}. Check https://www.oldschool.gg/oldschoolbot/minions?${toTitleCase(
+						skillEnum
+					)} for information on how to train this skill.`;
+				}
+			}
+		}
 
 		const boosts = [];
 
