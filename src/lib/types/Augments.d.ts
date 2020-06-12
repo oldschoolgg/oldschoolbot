@@ -7,7 +7,7 @@ import { Image } from 'canvas';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { CustomGet } from '../settings/types/UserSettings';
-import { Bank, MakePartyOptions } from '.';
+import { Bank, MakePartyOptions, Skills, ItemBank } from '.';
 import { SkillsEnum } from '../skilling/types';
 import { KillableMonster } from '../minions/types';
 import { UserFullGearSetup, GearSetupTypes } from '../gear/types';
@@ -130,6 +130,8 @@ declare module 'discord.js' {
 		 *
 		 */
 		equippedWeapon(setupType: GearSetupTypes): Item | null;
+		rawGear(): UserFullGearSetup;
+		allItemsOwned(): ItemBank;
 		/**
 		 * Returns this users Collection Log bank.
 		 */
@@ -147,7 +149,7 @@ declare module 'discord.js' {
 		hasMinion: boolean;
 		isIronman: boolean;
 		maxTripLength: number;
-		rawGear: UserFullGearSetup;
+		rawSkills: Skills;
 	}
 
 	interface TextChannel {
