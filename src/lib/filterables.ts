@@ -690,6 +690,17 @@ const prayer = resolveItems([
 	...bones
 ]);
 
+const food = resolveItems([
+	'Tuna',
+	'Lobster',
+	'Bass',
+	'Swordfish',
+	'Monkfish',
+	'Shark',
+	'Dark crab',
+	'Manta ray'
+]);
+
 export const filterableTypes = [
 	{
 		name: 'Barrows',
@@ -780,5 +791,10 @@ export const filterableTypes = [
 		name: 'Herbs',
 		aliases: ['herbs'],
 		items: herbs
+	},
+	{
+		name: 'Food',
+		aliases: ['food'],
+		items: food
 	}
 ];
