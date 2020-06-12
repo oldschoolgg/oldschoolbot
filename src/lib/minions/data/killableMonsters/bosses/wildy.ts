@@ -21,7 +21,7 @@ const killableBosses: KillableMonster[] = [
 			"Verac's plateskirt",
 			"Verac's flail"
 		]),
-		notifyDrops: resolveItems(['Callisto cub', 'Tyrannical ring']),
+		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
@@ -44,7 +44,7 @@ const killableBosses: KillableMonster[] = [
 			"Verac's plateskirt",
 			"Verac's flail"
 		]),
-		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll', 'Ring of the gods']),
+		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 3
@@ -66,7 +66,7 @@ const killableBosses: KillableMonster[] = [
 			"Verac's plateskirt",
 			"Verac's flail"
 		]),
-		notifyDrops: resolveItems(['Treasonous ring', 'Venenatis spiderling']),
+		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 3
