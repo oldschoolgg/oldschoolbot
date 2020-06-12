@@ -5,10 +5,17 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { KillableMonster } from '../lib/minions/types';
 import { formatItemReqs } from '../lib/util/formatItemReqs';
 import { itemNameFromID } from '../lib/util';
+import { Skills } from '../lib/types';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
+	}
+
+	public get rawSkills(this: User) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		return this.settings.get('skills').toJSON() as Skills;
 	}
 
 	public hasMonsterRequirements(this: User, monster: KillableMonster) {
