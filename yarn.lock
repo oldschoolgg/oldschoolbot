@@ -2927,10 +2927,10 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-threads@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/threads/-/threads-1.4.1.tgz#7e840f25370658136fd2d4e27042a2960da7a8e9"
-  integrity sha512-LSgGCu2lwdrfqjYWmeqO+7fgxAbUtjlsa7UA5J6r4x8fCoMd015h19rMwXqz4/q8l3svdloE36Of41rpZWiYFg==
+threads@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/threads/-/threads-1.5.0.tgz#517b2f192931883970691d56a1a564c55327fd8e"
+  integrity sha512-Sr4EDwEdUIMVG+jnmsZxaxl0GIg+HM76yWQygDub6jSzT79VjJHfj/ICGnoOu9nOMJoHXdgQz0L6fcvDxwgkkg==
   dependencies:
     callsites "^3.1.0"
     debug "^4.1.1"
