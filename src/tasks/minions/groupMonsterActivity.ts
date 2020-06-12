@@ -47,6 +47,11 @@ export default class extends Task {
 			});
 		}
 
+		const usersWithoutLoot = users.filter(id => !teamsLoot[id]);
+		if (usersWithoutLoot.length > 0) {
+			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
+		}
+
 		queuedMessageSend(this.client, channelID, resultStr);
 	}
 }
