@@ -52,10 +52,10 @@ const LogTable = todtTable([
 ]);
 
 const OreTable = todtTable([
-	['Silver ore', [5, 15]],
+	['Limestone', [3, 7]],
+	['Silver ore', [10, 12]],
 	['Iron ore', [5, 15]],
 	['Coal', [10, 14]],
-	['Limestone', [3, 7]],
 	['Gold ore', [8, 11]],
 	['Mithril ore', [3, 5]],
 	['Adamantite ore', [2, 3]],
@@ -87,14 +87,17 @@ const OtherTable = new LootTable()
 const TreeSeedsTable = todtTable([
 	['Acorn', [1, 1]],
 	['Willow seed', [1, 2]],
-	['Maple seed', [1, 3]],
-	['Yew seed', [1, 3]],
+	['Maple seed', [1, 2]],
+	['Banana tree seed', [1, 2]],
+	['Teak seed', [1, 2]],
+	['Mahogany seed', [1, 2]],
+	['Yew seed', [1, 2]],
 	['Magic seed', [1, 3]]
 ]);
 
 const HerbSeedsTable = todtTable([
-	['Ranarr seed', [1, 1]],
-	['Toadflax seed', [1, 2]],
+	['Ranarr seed', [1, 3]],
+	['Toadflax seed', [1, 3]],
 	['Irit seed', [1, 3]],
 	['Avantoe seed', [1, 3]],
 	['Kwuarm seed', [1, 3]],
@@ -106,11 +109,8 @@ const HerbSeedsTable = todtTable([
 ]);
 
 const OtherSeedsTable = todtTable([
-	['Banana tree seed', [1, 3]],
-	['Teak seed', [1, 3]],
-	['Mahogany seed', [1, 3]],
-	['Watermelon seed', [1, 13]],
-	['Snape grass seed', [1, 3]],
+	['Watermelon seed', [3, 7]],
+	['Snape grass seed', [3, 7]],
 	['Spirit seed', [1, 1]]
 ]);
 
