@@ -47,13 +47,6 @@ export default class extends Task {
 		const bank = user.settings.get(UserSettings.Bank);
 		let loot: ItemBank = {};
 
-		if (bankHasItem(loot, itemID('Phoenix'))) {
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.username}'s** minion, ${user.minionName}, just received a Phoenix!`
-			);
-		}
-
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
@@ -70,16 +63,23 @@ export default class extends Task {
 			);
 		}
 
+		if (bankHasItem(loot, itemID('Phoenix'))) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Phoenix} **${user.username}'s** minion, ${user.minionName}, just received a Phoenix!`
+			);
+		}
+
 		/**
 		 * https://oldschool.runescape.wiki/w/Wintertodt#Rewards_2
 		 *
-		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/10
+		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/20
 		 */
 		const numberOfRoots = Math.floor(totalPoints / 20);
 		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
 
-		const fmXpToGive = fmLvl * 100 + numberOfRoots * (fmLvl * 3);
+		const fmXpToGive = fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3);
 		const wcXpToGive = numberOfRoots * (wcLvl * 0.3);
 		await user.addXP(SkillsEnum.Woodcutting, wcXpToGive);
 		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
