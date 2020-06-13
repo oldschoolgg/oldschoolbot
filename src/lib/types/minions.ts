@@ -1,5 +1,6 @@
 import { Activity, Tasks } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { MinigameIDsEnum } from '../minions/data/minigames';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -98,7 +99,7 @@ export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
-	minigameID: number;
+	minigameID: MinigameIDsEnum;
 	channelID: string;
 	quantity: number;
 }
