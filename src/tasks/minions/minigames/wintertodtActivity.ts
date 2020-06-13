@@ -77,8 +77,8 @@ export default class extends Task {
 		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
 
-		const fmXpToGive = fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3);
-		const wcXpToGive = numberOfRoots * (wcLvl * 0.3);
+		const fmXpToGive = Math.floor(fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3));
+		const wcXpToGive = Math.floor(numberOfRoots * (wcLvl * 0.3));
 		await user.addXP(SkillsEnum.Woodcutting, wcXpToGive);
 		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
 
