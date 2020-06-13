@@ -137,10 +137,18 @@ const pyroPieces = resolveItems([
 
 export class WintertodtCrateClass {
 	public pickWeightedLootItem<T>(lvl: number, array: T[]): T {
-		const maxIndex = Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length));
-		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length)) - 2;
+		const maxIndex = Math.max(
+			Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length)),
+			1
+		);
+		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length));
 		const avg = (maxIndex + minIndex) / 2;
-		const rolledIndex = Math.min(Math.round(normal(avg + 1.75, avg - minIndex, 3)), maxIndex);
+		const rolledIndex = Math.min(
+			Math.round(normal(avg + avg * 0.3, avg - minIndex, 3)),
+			maxIndex
+		);
+
+		// console.log({ maxIndex, minIndex, avg, rolledIndex });
 
 		return array[rolledIndex];
 	}
