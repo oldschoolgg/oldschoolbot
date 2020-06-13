@@ -38,6 +38,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -276,5 +277,9 @@ export default class extends Extendable {
 
 	getCL(this: KlasaUser, itemID: number) {
 		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
+	}
+
+	getMinigameScore(this: KlasaUser, id: MinigameIDsEnum) {
+		return this.settings.get(UserSettings.MinigameScores)[id] ?? 0;
 	}
 }
