@@ -701,6 +701,17 @@ const food = resolveItems([
 	'Manta ray'
 ]);
 
+export const wintertodtItems = resolveItems([
+	'Phoenix',
+	'Pyromancer hood',
+	'Pyromancer garb',
+	'Pyromancer robe',
+	'Pyromancer boots',
+	'Warm gloves',
+	'Bruma torch',
+	'Burnt page'
+]);
+
 export const filterableTypes = [
 	{
 		name: 'Barrows',
@@ -796,5 +807,10 @@ export const filterableTypes = [
 		name: 'Food',
 		aliases: ['food'],
 		items: food
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wintertodt', 'todt', 'wt'],
+		items: wintertodtItems
 	}
 ];
