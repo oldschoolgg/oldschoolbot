@@ -73,9 +73,9 @@ export default class extends Task {
 		/**
 		 * https://oldschool.runescape.wiki/w/Wintertodt#Rewards_2
 		 *
-		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/20
+		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/10
 		 */
-		const numberOfRoots = Math.floor(totalPoints / 20);
+		const numberOfRoots = Math.floor(totalPoints / 10);
 		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
 
