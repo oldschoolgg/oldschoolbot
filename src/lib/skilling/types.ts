@@ -11,7 +11,9 @@ export enum SkillsEnum {
 	Runecraft = 'runecraft',
 	Crafting = 'crafting',
 	Prayer = 'prayer',
-	Fletching = 'fletching'
+	Fletching = 'fletching',
+	Farming = 'farming',
+	Herblore = 'herblore'
 }
 
 export interface Ore {

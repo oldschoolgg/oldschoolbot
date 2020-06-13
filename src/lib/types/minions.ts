@@ -109,6 +109,10 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 	preJadDeathTime: number | null;
 }
 
+export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -122,7 +126,7 @@ export interface SkillingTickerTaskData {
 }
 
 export interface MinigameTickerTaskData {
-	subTasks: FightCavesActivityTaskOptions[];
+	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
 }
 
 export type TickerTaskData =
@@ -149,4 +153,5 @@ export type MinionActivityTask =
 	| Tasks.BuryingActivity
 	| Tasks.OfferingActivity
 	| Tasks.FightCavesActivity
-	| Tasks.FletchingActivity;
+	| Tasks.FletchingActivity
+	| Tasks.WintertodtActivity;
