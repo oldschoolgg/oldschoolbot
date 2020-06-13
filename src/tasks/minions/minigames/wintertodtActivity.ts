@@ -35,9 +35,7 @@ const PointsTable = new SimpleTable<number>()
 	.add(740)
 	.add(750)
 	.add(780)
-	.add(850)
-	.add(910)
-	.add(1000);
+	.add(850);
 
 export default class extends Task {
 	async run({ userID, channelID, quantity }: WintertodtActivityTaskOptions) {
