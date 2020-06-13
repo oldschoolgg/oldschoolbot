@@ -83,7 +83,7 @@ export default class extends Task {
 		 *
 		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/10
 		 */
-		const numberOfRoots = Math.floor(totalPoints / 10);
+		const numberOfRoots = Math.floor((totalPoints - 50 * quantity) / 10);
 		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
 
