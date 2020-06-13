@@ -2,7 +2,13 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
-import { rand, reduceNumByPercent, calcWhatPercent, formatDuration } from '../../lib/util';
+import {
+	rand,
+	reduceNumByPercent,
+	calcWhatPercent,
+	formatDuration,
+	addItemToBank
+} from '../../lib/util';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -12,6 +18,8 @@ import bankHasItem from '../../lib/util/bankHasItem';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import resolveItems from '../../lib/util/resolveItems';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 
 const healingFoods = Cookables.filter(item => item.healAmount).reverse();
 
@@ -33,6 +41,8 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const fmLevel = msg.author.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
@@ -72,6 +82,17 @@ export default class extends BotCommand {
 
 			messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank.`);
 			await msg.author.removeItemFromBank(food.id, amountNeeded);
+
+			// Track this food cost in Economy Stats
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.WintertodtCost,
+				addItemToBank(
+					this.client.settings.get(ClientSettings.EconomyStats.WintertodtCost),
+					food.id,
+					amountNeeded
+				)
+			);
+
 			break;
 		}
 

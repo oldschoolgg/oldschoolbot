@@ -13,6 +13,7 @@ import itemID from '../../../lib/util/itemID';
 import { Emoji, Events } from '../../../lib/constants';
 import { ItemBank } from '../../../lib/types';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -60,6 +61,15 @@ export default class extends Task {
 				})
 			);
 		}
+
+		// Track this food cost in Economy Stats
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.WintertodtLoot,
+			addBankToBank(
+				this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot),
+				loot
+			)
+		);
 
 		if (bankHasItem(loot, itemID('Phoenix'))) {
 			this.client.emit(

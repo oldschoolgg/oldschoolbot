@@ -14,4 +14,6 @@ Client.defaultClientSchema
 			.add('itemSellTaxBank', 'number', { default: 0 })
 			.add('bankBgCostBank', 'any', { default: {} })
 			.add('sacrificedBank', 'any', { default: {} })
+			.add('wintertodtCost', 'any', { default: {} })
+			.add('wintertodtLoot', 'any', { default: {} })
 	);
