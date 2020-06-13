@@ -13,7 +13,8 @@ import {
 	saveCtx,
 	restoreCtx,
 	addArrayOfNumbers,
-	stringMatches
+	stringMatches,
+	itemNameFromID
 } from '../lib/util';
 import { Bank } from '../lib/types';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
@@ -257,6 +258,18 @@ export default class BankImageTask extends Task {
 					xLoc + distanceFromSide - 18,
 					yLoc + distanceFromTop - 24
 				);
+
+				if (flags.names) {
+					ctx.fillStyle = 'white';
+					fillTextXTimesInCtx(
+						ctx,
+						`${itemNameFromID(id)!
+							.replace('Grimy', 'Grmy')
+							.slice(0, 7)}..`,
+						xLoc + distanceFromSide - 18,
+						yLoc + distanceFromTop
+					);
+				}
 
 				if (flags.showvalue || flags.sv) {
 					const formattedValue = Util.toKMB(value);
