@@ -11,6 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import bankHasItem from '../../lib/util/bankHasItem';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import resolveItems from '../../lib/util/resolveItems';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 
 const healingFoods = Cookables.filter(item => item.healAmount).reverse();
 
@@ -75,7 +76,7 @@ export default class extends BotCommand {
 		}
 
 		const data: WintertodtActivityTaskOptions = {
-			minigameID: 2,
+			minigameID: MinigameIDsEnum.Wintertodt,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
