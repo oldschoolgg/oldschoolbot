@@ -29,7 +29,9 @@ const pyroPieces = resolveItems([
 	'Pyromancer robe',
 	'Pyromancer boots',
 	'Warm gloves',
-	'Bruma torch'
+	'Fire cape',
+	'Firemaking cape(t)',
+	'Firemaking cape'
 ]) as number[];
 
 export default class extends BotCommand {
