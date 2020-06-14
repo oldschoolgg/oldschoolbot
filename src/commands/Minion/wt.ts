@@ -35,6 +35,7 @@ const pyroPieces = resolveItems([
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['wintertodt'],
 			oneAtTime: true,
 			altProtection: true,
 			requiredPermissions: ['ATTACH_FILES']
