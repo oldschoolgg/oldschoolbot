@@ -81,7 +81,7 @@ const OtherTable = new LootTable()
 	.add('Coins', [2000, 5000], 36)
 	.add('Saltpetre', [3, 5], 6)
 	.add('Dynamite', [3, 5], 6)
-	.add('Burnt page', [7, 33], 4)
+	.add('Burnt page', [7, 33], 2)
 	.add('Pure essence', [30, 60], 1);
 
 const TreeSeedsTable = todtTable([
