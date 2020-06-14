@@ -268,6 +268,10 @@ export default class extends Extendable {
 					Emoji.Fletching
 				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
 			}
+
+			case Activity.Wintertodt: {
+				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
+			}
 		}
 	}
 
