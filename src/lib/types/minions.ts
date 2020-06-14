@@ -1,5 +1,6 @@
 import { Activity, Tasks } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { MinigameIDsEnum } from '../minions/data/minigames';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -98,7 +99,7 @@ export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
-	minigameID: number;
+	minigameID: MinigameIDsEnum;
 	channelID: string;
 	quantity: number;
 }
@@ -107,6 +108,10 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 	jadDeathChance: number;
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
+}
+
+export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
 }
 
 export interface MonsterKillingTickerTaskData {
@@ -122,7 +127,7 @@ export interface SkillingTickerTaskData {
 }
 
 export interface MinigameTickerTaskData {
-	subTasks: FightCavesActivityTaskOptions[];
+	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
 }
 
 export type TickerTaskData =
@@ -149,4 +154,5 @@ export type MinionActivityTask =
 	| Tasks.BuryingActivity
 	| Tasks.OfferingActivity
 	| Tasks.FightCavesActivity
-	| Tasks.FletchingActivity;
+	| Tasks.FletchingActivity
+	| Tasks.WintertodtActivity;

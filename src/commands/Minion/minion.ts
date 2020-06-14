@@ -13,13 +13,7 @@ import {
 	PerkTier,
 	MIMIC_MONSTER_ID
 } from '../../lib/constants';
-import {
-	formatDuration,
-	randomItemFromArray,
-	isWeekend,
-	itemNameFromID,
-	toTitleCase
-} from '../../lib/util';
+import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -511,23 +505,17 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		if (!name) throw invalidMonster(msg.cmdPrefix);
-		const monster = findMonster(name);
+
+		const monster =
+			name === 'random'
+				? randomItemFromArray(
+						killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0])
+				  )
+				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
-		/**
-		 * Check level requirements
-		 */
-		if (monster.levelRequirements) {
-			for (const [skillEnum, levelRequired] of Object.entries(monster.levelRequirements)) {
-				if (msg.author.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
-					throw `You need level ${levelRequired} ${toTitleCase(skillEnum)} to kill ${
-						monster.name
-					}. Check https://www.oldschool.gg/oldschoolbot/minions?${toTitleCase(
-						skillEnum
-					)} for information on how to train this skill.`;
-				}
-			}
-		}
+		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
+		if (!hasReqs) throw reason;
 
 		const boosts = [];
 
@@ -550,9 +538,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToFinish);
 		}
-
-		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
 
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {

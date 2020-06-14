@@ -188,6 +188,18 @@ export default class extends Extendable {
 		);
 	}
 
+	public async incrementMinigameScore(this: User, minigameID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const currentMinigameScores = this.settings.get(UserSettings.MinigameScores);
+
+		this.log(`had Quantity[${amountToAdd}] Score added to Minigame[${minigameID}]`);
+
+		return this.settings.update(
+			UserSettings.MinigameScores,
+			addItemToBank(currentMinigameScores, minigameID, amountToAdd)
+		);
+	}
+
 	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
 		if (sync) await this.settings.sync(true);
 
