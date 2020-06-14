@@ -144,11 +144,14 @@ export class WintertodtCrateClass {
 		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length));
 		const avg = (maxIndex + minIndex) / 2;
 		const rolledIndex = Math.min(
-			Math.round(normal(avg + avg * 0.3, avg - minIndex, 3)),
+			Math.max(
+				Math.round(
+					normal(avg * (lvl > 50 ? 1.2 : 1.1), (avg - minIndex) * (lvl > 50 ? 1.8 : 2), 3)
+				),
+				minIndex
+			),
 			maxIndex
 		);
-
-		// console.log({ maxIndex, minIndex, avg, rolledIndex });
 
 		return array[rolledIndex];
 	}
