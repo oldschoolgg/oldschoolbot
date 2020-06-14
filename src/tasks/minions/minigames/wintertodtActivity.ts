@@ -107,7 +107,9 @@ export default class extends Task {
 
 		if (!channelIsSendable(channel)) return;
 		return channel.send(
-			`${user.minionName} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive} Firemaking XP and ${wcXpToGive} Woodcutting XP, you cut ${numberOfRoots}x Bruma roots.`,
+			`${user} ${
+				user.minionName
+			} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP and ${wcXpToGive.toLocaleString()} Woodcutting XP, you cut ${numberOfRoots}x Bruma roots.`,
 			new MessageAttachment(image)
 		);
 	}
