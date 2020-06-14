@@ -130,10 +130,8 @@ export default class extends BotCommand {
 			`${
 				msg.author.minionName
 			} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
-				durationPerTodt
-			)} per todt, ${formatDuration(durationPerTodt * quantity)} in total.\n\n${messages.join(
-				', '
-			)}.`
+				durationPerTodt * quantity
+			)}. (${formatDuration(durationPerTodt)} per todt)\n\n${messages.join(', ')}.`
 		);
 	}
 }
