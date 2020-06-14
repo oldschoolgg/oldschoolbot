@@ -111,21 +111,25 @@ export default class extends BotCommand {
 			break;
 		}
 
+		const duration = durationPerTodt * quantity;
+
 		const data: WintertodtActivityTaskOptions = {
 			minigameID: MinigameIDsEnum.Wintertodt,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
-			duration: durationPerTodt * quantity,
+			duration,
 			type: Activity.Wintertodt,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 1
+			finishDate: Date.now() + duration
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
 
 		return msg.send(
-			`Doing ${quantity} Wintertodt - will take ${formatDuration(
+			`${
+				msg.author.minionName
+			} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 				durationPerTodt
 			)} per todt, ${formatDuration(durationPerTodt * quantity)} in total.\n\n${messages.join(
 				', '
