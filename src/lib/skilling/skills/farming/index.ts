@@ -5,8 +5,15 @@ import herbPlants from './herbPlants';
 import trees from './trees';
 import fruitTrees from './fruitTrees';
 import specialPlants from './specialPlants';
+import allotmentPlants from './allotments';
 
-const plants: Plant[] = [...herbPlants, ...trees, ...fruitTrees, ...specialPlants];
+const plants: Plant[] = [
+	...herbPlants,
+	...trees,
+	...allotmentPlants,
+	...fruitTrees,
+	...specialPlants
+];
 
 const farmerItems: { [key: number]: number } = {
 	[itemID(`Farmer's strawhat`)]: 0.4,

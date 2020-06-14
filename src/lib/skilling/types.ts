@@ -179,6 +179,12 @@ export interface Plant {
 	outputCrop?: number;
 	outputLogs?: number;
 	treeWoodcuttingLevel?: number;
+	fixedOutputAmount?: number;
+	woodcuttingXp?: number;
+	needsChopForHarvest: boolean;
+	fixedOutput: boolean;
+	givesLogs: boolean;
+	givesCrops: boolean;
 	petChance: number;
 	seedType: string;
 	growthTime: number;

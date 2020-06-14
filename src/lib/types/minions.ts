@@ -102,7 +102,8 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 	quantity: number;
 	upgradeType: string;
-	payment: string;
+	patchType: any;
+	msg: KlasaMessage;
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
