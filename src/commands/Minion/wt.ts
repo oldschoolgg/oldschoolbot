@@ -51,12 +51,17 @@ export default class extends BotCommand {
 			throw `You need 50 Firemaking to have a chance at defeating the Wintertodt.`;
 		}
 
+		const messages = [];
+
 		let durationPerTodt = Time.Minute * 7.3;
 
 		// Up to a 5% boost for 99 WC
-		durationPerTodt = reduceNumByPercent(durationPerTodt, calcWhatPercent(wcLevel, 99) / 10);
+		const wcBoost = calcWhatPercent(wcLevel + 1, 100) / 10;
+		if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
+		durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
 
-		let healAmountNeeded = 20 * 8;
+		const baseHealAmountNeeded = 20 * 8;
+		let healAmountNeeded = baseHealAmountNeeded;
 
 		for (const piece of pyroPieces) {
 			if (hasItemEquipped(piece, msg.author.settings.get(UserSettings.Gear.Skilling))) {
@@ -64,10 +69,15 @@ export default class extends BotCommand {
 				durationPerTodt = reduceNumByPercent(durationPerTodt, 5);
 			}
 		}
-
+		if (healAmountNeeded !== baseHealAmountNeeded) {
+			messages.push(
+				`${calcWhatPercent(
+					baseHealAmountNeeded - healAmountNeeded,
+					baseHealAmountNeeded
+				)}% less food for wearing Pyromancer pieces`
+			);
+		}
 		const quantity = Math.floor(msg.author.maxTripLength / durationPerTodt);
-
-		const messages = [];
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of healingFoods) {
@@ -81,7 +91,7 @@ export default class extends BotCommand {
 				continue;
 			}
 
-			messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank.`);
+			messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
 			await msg.author.removeItemFromBank(food.id, amountNeeded);
 
 			// Track this food cost in Economy Stats
@@ -115,7 +125,7 @@ export default class extends BotCommand {
 				durationPerTodt
 			)} per todt, ${formatDuration(durationPerTodt * quantity)} in total.\n\n${messages.join(
 				', '
-			)}`
+			)}.`
 		);
 	}
 }
