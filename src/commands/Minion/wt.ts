@@ -69,6 +69,7 @@ export default class extends BotCommand {
 				durationPerTodt = reduceNumByPercent(durationPerTodt, 5);
 			}
 		}
+
 		if (healAmountNeeded !== baseHealAmountNeeded) {
 			messages.push(
 				`${calcWhatPercent(
@@ -77,6 +78,7 @@ export default class extends BotCommand {
 				)}% less food for wearing Pyromancer pieces`
 			);
 		}
+
 		const quantity = Math.floor(msg.author.maxTripLength / durationPerTodt);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
