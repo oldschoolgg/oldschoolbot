@@ -291,9 +291,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently farming ${data.quantity}x ${
 					plants!.name
-				}. ${formattedDuration} Your ${
-					Emoji.Farming
-				} Farming level is ${this.skillLevel(SkillsEnum.Farming)}`;
+				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
+					SkillsEnum.Farming
+				)}`;
 			}
 		}
 	}
