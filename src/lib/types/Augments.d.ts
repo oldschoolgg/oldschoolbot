@@ -12,6 +12,7 @@ import { SkillsEnum } from '../skilling/types';
 import { KillableMonster } from '../minions/types';
 import { UserFullGearSetup, GearSetupTypes } from '../gear/types';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { MinigameIDsEnum } from '../minions/data/minigames';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -82,7 +83,12 @@ declare module 'discord.js' {
 			monsterID: number,
 			numberToAdd?: number
 		): Promise<SettingsUpdateResult>;
+
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
+		incrementMinigameScore(
+			minigameID: number,
+			numberToAdd?: number
+		): Promise<SettingsUpdateResult>;
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
@@ -121,7 +127,11 @@ declare module 'discord.js' {
 		/**
 		 * Returns the KC the user has for this monster.
 		 */
-		getKC(monster: Monster): number;
+		getKC(minigame: Monster): number;
+		/**
+		 * Returns minigame score
+		 */
+		getMinigameScore(id: MinigameIDsEnum): number;
 		/**
 		 * Gets the CL count for an item.
 		 */
@@ -157,6 +167,7 @@ declare module 'discord.js' {
 			bank: Bank;
 			content?: string;
 			title?: string;
+			background?: number;
 		}): Promise<KlasaMessage>;
 	}
 
@@ -165,6 +176,7 @@ declare module 'discord.js' {
 			bank: Bank;
 			content?: string;
 			title?: string;
+			background?: number;
 		}): Promise<KlasaMessage>;
 	}
 }

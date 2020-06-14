@@ -73,8 +73,10 @@ export const enum Emoji {
 	EasterEgg = '<:easterEgg:695473553314938920>',
 	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
+	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
-	Fletching = '<:fletching:630911040544309258>'
+	Fletching = '<:fletching:630911040544309258>',
+	Purple = '🟪'
 }
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
@@ -111,6 +113,7 @@ export const enum Tasks {
 	FletchingActivity = 'fletchingActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
+	WintertodtActivity = 'wintertodtActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -135,6 +138,7 @@ export const enum Activity {
 	Burying = 'Burying',
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
+	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching'
 }
 

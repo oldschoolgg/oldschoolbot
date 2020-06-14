@@ -64,9 +64,15 @@ export interface KillableMonster {
 	groupKillable?: true;
 	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
+	uniques?: ArrayItemsResolved;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
 	leader: string;
 	users: string[];
+}
+
+export interface Minigame {
+	id: number;
+	name: string;
 }
