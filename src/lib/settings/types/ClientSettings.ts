@@ -33,5 +33,6 @@ export namespace ClientSettings {
 
 		export const WintertodtCost = T<O.Readonly<ItemBank>>('economyStats.wintertodtCost');
 		export const WintertodtLoot = T<O.Readonly<ItemBank>>('economyStats.wintertodtLoot');
+		export const FightCavesCost = T<O.Readonly<ItemBank>>('economyStats.fightCavesCost');
 	}
 }

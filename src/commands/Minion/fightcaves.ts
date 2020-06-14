@@ -9,7 +9,8 @@ import {
 	reduceNumByPercent,
 	rand,
 	percentChance,
-	removeBankFromBank
+	removeBankFromBank,
+	addBankToBank
 } from '../../lib/util';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -23,6 +24,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import itemID from '../../lib/util/itemID';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 
 const { TzTokJad } = Monsters;
 
@@ -153,6 +155,15 @@ export default class extends BotCommand {
 
 		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
+
+		// Track this food cost in Economy Stats
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.FightCavesCost,
+			addBankToBank(
+				this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost),
+				fightCavesSupplies
+			)
+		);
 
 		const totalDeathChance = (
 			((100 - preJadDeathChance + 1) * (100 - jadDeathChance)) /

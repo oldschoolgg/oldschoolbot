@@ -16,4 +16,5 @@ Client.defaultClientSchema
 			.add('sacrificedBank', 'any', { default: {} })
 			.add('wintertodtCost', 'any', { default: {} })
 			.add('wintertodtLoot', 'any', { default: {} })
+			.add('fightCavesCost', 'any', { default: {} })
 	);
