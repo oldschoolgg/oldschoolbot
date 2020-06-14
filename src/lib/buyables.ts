@@ -194,7 +194,24 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 111,
 		gpCost: 750_000
+	},
+	{
+		name: 'Compost',
+		outputItems: {
+			[itemID('Compost')]: 500
+		},
+		qpRequired: 0,
+		gpCost: 500
+	},
+	{
+		name: 'Magic secateurs',
+		outputItems: {
+			[itemID('Magic secateurs')]: 1
+		},
+		qpRequired: 10,
+		gpCost: 40_000
 	}
+
 ];
 
 export default Buyables;

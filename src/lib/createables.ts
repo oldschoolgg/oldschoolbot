@@ -688,7 +688,17 @@ const Createables: Createable[] = [
 		}),
 		QPRequired: 111,
 		smithingLevel: 60
-	}
+	},
+	{
+		name: "Ultracompost",
+		inputItems: resolveNameBank({
+			'Supercompost': 1,
+			"Volcanic ash": 2,
+		}),
+		outputItems: resolveNameBank({
+			"Ultracompost": 1
+		}),
+	},
 	/* {
 		name: 'Toxic blowpipe (empty)',
 		inputItems: {

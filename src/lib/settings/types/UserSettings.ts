@@ -78,15 +78,15 @@ export namespace UserSettings {
 		export const FruitTree = T<PatchTypes.FarmingPatchTypes>('farmingpatches.fruittree');
 		export const Tree = T<PatchTypes.FarmingPatchTypes>('farmingpatches.tree');
 		export const Allotment = T<PatchTypes.FarmingPatchTypes>('farmingpatches.allotment');
-		export const Cactus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Bush = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Spirit = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Hardwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Seaweed = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Vine = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Calquat = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Redwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Crystal = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const Celastrus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
+		export const Cactus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.cactus');
+		export const Bush = T<PatchTypes.FarmingPatchTypes>('farmingpatches.bush');
+		export const Spirit = T<PatchTypes.FarmingPatchTypes>('farmingpatches.spirit');
+		export const Hardwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.hardwood');
+		export const Seaweed = T<PatchTypes.FarmingPatchTypes>('farmingpatches.seaweed');
+		export const Vine = T<PatchTypes.FarmingPatchTypes>('farmingpatches.vine');
+		export const Calquat = T<PatchTypes.FarmingPatchTypes>('farmingpatches.calquat');
+		export const Redwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.redwood');
+		export const Crystal = T<PatchTypes.FarmingPatchTypes>('farmingpatches.crystal');
+		export const Celastrus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.celastrus');
 	}
 }

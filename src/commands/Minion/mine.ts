@@ -137,7 +137,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Mining,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
+			finishDate: Date.now() + 1000
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
