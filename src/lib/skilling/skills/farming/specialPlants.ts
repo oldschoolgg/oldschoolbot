@@ -16,7 +16,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 149,
 		chance99: 208,
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Numulite')]: 200 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -38,7 +38,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 8,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Limpwurt root')]: 15 },
 		woodcuttingXp: 85,
 		needsChopForHarvest: true,
@@ -60,7 +60,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 7,
 		chance1: 0, //needs data
 		chance99: 0, //needs data
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: 0,
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -81,7 +81,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 8,
 		chance1: 0, //needs data
 		chance99: 0, //needs data
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Watermelon')]: 6 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -102,7 +102,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 7,
 		chance1: 62,
 		chance99: 177,
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Cadava berries')]: 6 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -124,7 +124,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 8,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Yanillian hops')]: 25 },
 		woodcuttingXp: 125,
 		needsChopForHarvest: true,
@@ -146,7 +146,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 8,
 		chance1: 0, //needs data
 		chance99: 0, //needs data
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Mushroom')]: 8 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -167,7 +167,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 7,
 		chance1: 0, //needs data
 		chance99: 0, //needs data
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Snape grass')]: 8 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -210,7 +210,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 8,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Poison ivy berries')]: 8 },
 		needsChopForHarvest: true,
 		fixedOutput: true,
@@ -254,7 +254,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 12,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: 0, //this takes like 3 items that is cba to code in
 		needsChopForHarvest: true,
 		fixedOutput: false,
@@ -276,7 +276,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 5,
 		chance1: 0, // needs data
 		chance99: 0, // needs data
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Potato cactus')]: 8 },
 		needsChopForHarvest: true,
 		fixedOutput: false,
@@ -298,7 +298,7 @@ const specialPlants: Plant[] = [
 		numOfStages: 10,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128, //needs data
+		chanceOfDeath: 17, //needs data
 		protectionPayment: { [itemID('Dragonfruit')]: 6 },
 		woodcuttingXp: 380,
 		needsChopForHarvest: true,
