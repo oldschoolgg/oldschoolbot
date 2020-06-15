@@ -304,8 +304,9 @@ export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 	return Promise.all(ids.map(id => client.users.fetch(id)));
 }
 
+//now splits a message into 2 if it is over the 2k character limit and under 4k characters
 export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str));
+	client.queuePromise(() => channel.send(str, {split:true}));
 }
