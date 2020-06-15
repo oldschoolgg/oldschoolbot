@@ -16,7 +16,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Sweetcorn')]: 9 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
@@ -40,7 +40,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Apples(5)')]: 4 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
@@ -64,7 +64,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Strawberries(5)')]: 3 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
@@ -88,7 +88,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Bananas(5)')]: 5 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
@@ -112,7 +112,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Watermelon')]: 10 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
@@ -136,7 +136,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Pineapple')]: 10 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
@@ -160,7 +160,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Papaya fruit')]: 15 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
@@ -184,7 +184,7 @@ const fruitTrees: Plant[] = [
 		numOfStages: 6,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 17 / 128,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Coconut')]: 15 },
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,

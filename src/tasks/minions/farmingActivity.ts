@@ -70,7 +70,7 @@ export default class extends Task {
 		}
 		else if (patchType.LastUpgradeType === 'ultracompost') {
 			lives += 3;
-			chanceOfDeathReduction = 1/7;
+			chanceOfDeathReduction = 1/10;
 		}
 
 		if (patchType.LastPayment === 'pay') chanceOfDeathReduction = 0;
@@ -139,12 +139,14 @@ export default class extends Task {
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.LastPlanted);
 			if (!plantToHarvest) return;
 
+			harvestXp = cropYield * plantToHarvest.harvestXp;
+
 			let quantityDead = 0;
 			for (var i=0; i<patchType.LastQuantity; i++) {
 				var j = 0;
 				for (j=0; j<plantToHarvest.numOfStages-1; j++) {
 				const checkIfDied = Math.random();
-					if (checkIfDied < (plantToHarvest.chanceOfDeath * chanceOfDeathReduction)){
+					if (checkIfDied < (Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction)/128)){
 						quantityDead += 1
 						j = plantToHarvest.numOfStages;
 						break;
@@ -189,7 +191,6 @@ export default class extends Task {
 				else {
 					loot[plantToHarvest.outputCrop] = cropYield;
 				}
-				harvestXp = cropYield * plantToHarvest.harvestXp;
 			}
 
 			if (plantToHarvest.needsChopForHarvest === true) {
@@ -221,6 +222,8 @@ export default class extends Task {
 					if(!plantToHarvest.outputCrop) return;
 					loot[plantToHarvest.outputCrop] = cropYield * alivePlants;
 				}
+
+				harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
 			}
 
 			if (quantity > patchType.LastQuantity) {

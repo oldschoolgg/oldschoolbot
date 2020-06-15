@@ -107,7 +107,7 @@ export default class extends BotCommand {
 		}
 
 		if ((plants.seedType === 'herb' || plants.name === 'Poison ivy') && payment === 'pay') throw `You cannot pay a farmer to look after your ${plants.name}s!`;
-		if ((plants.seedType === 'tree' || 'fruit tree')
+		if ((plants.seedType === 'tree' || plants.seedType === 'fruit tree')
 			&& (payment === 'pay')
 			&& (upgradeType === ('compost' || 'supercompost' || 'ultracompost'))) {
 			throw `You do not need to use compost if you are paying a nearby farmer to look over your trees.`;
