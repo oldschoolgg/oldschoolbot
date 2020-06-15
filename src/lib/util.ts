@@ -308,5 +308,5 @@ export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str, {split:true}));
+	client.queuePromise(() => channel.send(str, { split: true }));
 }
