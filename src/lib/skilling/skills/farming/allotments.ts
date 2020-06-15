@@ -14,8 +14,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 40,
 		numOfStages: 4,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Compost')]: 2 },
 		needsChopForHarvest: false,
@@ -35,8 +35,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 40,
 		numOfStages: 4,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Potatoes(10)')]: 1 },
 		needsChopForHarvest: false,
@@ -56,8 +56,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 40,
 		numOfStages: 4,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Onions(10)')]: 1 },
 		needsChopForHarvest: false,
@@ -77,8 +77,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 40,
 		numOfStages: 4,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Cabbages(10)')]: 2 },
 		needsChopForHarvest: false,
@@ -98,8 +98,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 60,
 		numOfStages: 6,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Jute fibre')]: 10 },
 		needsChopForHarvest: false,
@@ -119,8 +119,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 60,
 		numOfStages: 6,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Apples(5)')]: 1 },
 		needsChopForHarvest: false,
@@ -140,8 +140,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 80,
 		numOfStages: 8,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Curry leaf')]: 10 },
 		needsChopForHarvest: false,
@@ -161,8 +161,8 @@ const allotmentPlants: Plant[] = [
 		seedType: 'allotment',
 		growthTime: 70,
 		numOfStages: 7,
-		chance1: 0, //needs data
-		chance99: 0, //needs data
+		chance1: 154,
+		chance99: 193.56,
 		chanceOfDeath: 0, //needs data
 		protectionPayment: { [itemID('Jangerberries')]: 5 },
 		needsChopForHarvest: false,

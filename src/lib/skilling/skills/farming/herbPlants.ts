@@ -16,7 +16,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 25,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -37,7 +37,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 28,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -58,7 +58,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 31,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -79,7 +79,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 36,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -100,7 +100,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 39,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -121,7 +121,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 43,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -142,7 +142,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 46,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -163,7 +163,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 50,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -184,7 +184,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 54,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -205,7 +205,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 57,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -226,7 +226,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 60,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -247,7 +247,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 64,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -268,7 +268,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 67,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -289,7 +289,7 @@ const herbPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 71,
 		chance99: 80,
-		chanceOfDeath: 28 / 126,
+		chanceOfDeath: 28,
 		protectionPayment: 0, // not needed
 		needsChopForHarvest: false,
 		fixedOutput: false,
