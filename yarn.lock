@@ -109,10 +109,10 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.155.tgz#e2b4514f46a261fd11542e47519c20ebce7bc23a"
   integrity sha512-vEcX7S7aPhsBCivxMwAANQburHBtfN9RdyXFk84IJmu2Z4Hkg1tOFgaslRiEqqvoLtbCBi6ika1EMspE+NZ9Lg==
 
-"@types/mongodb@^3.5.20":
-  version "3.5.20"
-  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.5.20.tgz#4065afc55b6275d0dd8e831fa421018475d54d56"
-  integrity sha512-BN0wJn670DkivxiP7ZW0InX4qBtX01qITaucD+3A+sTgPQo4XUYay0Y+sGM4MJ9OyKDRlb3RQuVAlyeWzl/NoA==
+"@types/mongodb@^3.5.22":
+  version "3.5.22"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.5.22.tgz#860d97e92933f790b65842db06340672a06cecb1"
+  integrity sha512-5rfIExCN1hfyey8OEgpeRSwQyjLcMegtmO54Ag3KQLbRT41ydob3BYhb6uEIsTm7NbZqYPb2k+21Nw9sjON18w==
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
