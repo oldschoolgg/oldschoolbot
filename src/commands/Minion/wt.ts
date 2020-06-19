@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		let durationPerTodt = Time.Minute * 7.3;
 
 		// Up to a 10% boost for 99 WC
-		const wcBoost = calcWhatPercent(wcLevel + 1, 100) / 10;
+		const wcBoost = (wcLevel + 1) / 10;
 		if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
 		durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
 
