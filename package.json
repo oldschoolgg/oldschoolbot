@@ -30,7 +30,7 @@
 		"snoostorm": "^1.2.2",
 		"snoowrap": "^1.19.0",
 		"threads": "^1.4.1",
-		"ts-toolbelt": "^6.9.4",
+		"ts-toolbelt": "^6.9.9",
 		"twit": "^2.2.9",
 		"utf-8-validate": "^5.0.2",
 		"zlib-sync": "^0.1.6"
