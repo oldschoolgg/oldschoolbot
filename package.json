@@ -33,7 +33,7 @@
 		"ts-toolbelt": "^6.9.9",
 		"twit": "^2.2.9",
 		"utf-8-validate": "^5.0.2",
-		"zlib-sync": "^0.1.6"
+		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
 		"@types/cheerio": "^0.22.18",
