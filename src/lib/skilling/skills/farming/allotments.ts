@@ -7,7 +7,7 @@ const allotmentPlants: Plant[] = [
 		plantXp: 8,
 		checkXp: 0,
 		harvestXp: 9,
-		inputItems: { [itemID(`Potato seed`)]: 3},
+		inputItems: { [itemID(`Potato seed`)]: 3 },
 		outputCrop: itemID('Potato'),
 		name: `Potato`,
 		petChance: 173_977,
@@ -16,12 +16,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Compost')]: 2 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 8,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	},
 	{
 		level: 5,
@@ -37,12 +51,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Potatoes(10)')]: 1 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 6,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	},
 	{
 		level: 7,
@@ -58,12 +86,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Onions(10)')]: 1 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 6,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	},
 	{
 		level: 12,
@@ -79,12 +121,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 4,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Cabbages(10)')]: 2 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 6,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	},
 	{
 		level: 20,
@@ -100,12 +156,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 6,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Jute fibre')]: 10 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 6,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	},
 	{
 		level: 31,
@@ -121,12 +191,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 6,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Apples(5)')]: 1 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 6,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	},
 	{
 		level: 47,
@@ -142,12 +226,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 8,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Curry leaf')]: 10 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 6,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	},
 	{
 		level: 61,
@@ -163,12 +261,26 @@ const allotmentPlants: Plant[] = [
 		numOfStages: 7,
 		chance1: 154,
 		chance99: 193.56,
-		chanceOfDeath: 0, //needs data
+		chanceOfDeath: 0, // needs data
 		protectionPayment: { [itemID('Jangerberries')]: 5 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 6,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 2], // Canifs Patches (2)
+			[15, 3], // Harmony Island Patch (1)
+			[33, 5] // Prifddinas (2)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[45, 2] // Farming Guide Low (2)
+		]
 	}
 ];
 
