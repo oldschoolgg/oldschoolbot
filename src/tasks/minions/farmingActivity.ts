@@ -153,15 +153,13 @@ export default class extends Task {
 
 			let quantityDead = 0;
 			for (let i = 0; i < patchType.LastQuantity; i++) {
-				let j = 0;
-				for (j = 0; j < plantToHarvest.numOfStages - 1; j++) {
+				for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 					const checkIfDied = Math.random();
 					if (
 						checkIfDied <
 						Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128
 					) {
 						quantityDead += 1;
-						j = plantToHarvest.numOfStages;
 						break;
 					}
 				}
