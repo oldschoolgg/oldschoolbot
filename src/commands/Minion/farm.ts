@@ -8,7 +8,7 @@ import {
 	removeItemFromBank
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { Time, Activity, Tasks, Events } from '../../lib/constants';
+import { Time, Activity, Tasks } from '../../lib/constants';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Farming from '../../lib/skilling/skills/farming/farming';
@@ -19,6 +19,7 @@ import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTyp
 import { PatchTypes } from '../../lib/farming';
 import bankHasItem from '../../lib/util/bankHasItem';
 import itemID from '../../lib/util/itemID';
+import { calcNumOfPatches } from '../../lib/skilling/functions/calcNumOfPatches';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -26,30 +27,33 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage:
-				'<quantity:int{1}|name:...string> [plantName:...string]',
+			usage: '<quantity:int{1}|name:...string> [plantName:...string]',
 			usageDelim: ' '
 		});
 	}
 
 	@minionNotBusy
 	@requiresMinion
-	async run(
-		msg: KlasaMessage,
-		[quantity, plantName = '']: [
-			null | number | string,
-			string
-		]
-	) {
+	async run(msg: KlasaMessage, [quantity, plantName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.plants) {
 			return msg.channel.sendFile(
 				Buffer.from(
 					Farming.Plants.map(
-						item =>
-							`${item.name} - lvl ${item.level}: ${Object.entries(item.inputItems)
-								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))} || `)
-								.join(', ')}`
-					).join('\n')
+						plant =>
+							`${plant.seedType}: ${plant.name} -- lvl ${
+								plant.level
+							}: ${Object.entries(plant.inputItems)
+								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+								.join(', ')}\r\n	Default # of patches: ${
+								plant.defaultNumOfPatches
+							}\r\n${plant.additionalPatchesByFarmLvl.map(
+								entry =>
+									`	| Farming Level: ${entry[0]} => Total Additional Patches: ${entry[1]} |\r\n`
+							)} ${plant.additionalPatchesByQP.map(
+								entry =>
+									`	| Quest Points: ${entry[0]} => Total Additional Patches: ${entry[1]} |\r\n`
+							)} `
+					).join('\r\n')
 				),
 				`Farming Plants.txt`
 			);
@@ -57,16 +61,16 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const questPoints = msg.author.settings.get(UserSettings.QP);
 		const currentDate = new Date().getTime();
 		// var difference = quantity;
 
-		let payment = '';
+		let payment = false;
 		let upgradeType = '';
 		let str = '';
 		let upgradeStr = '';
 		let paymentStr = '';
-		let numOfPatches = 0;
-		let timePerPatch = Time.Minute * 1.5;
+		const timePerPatch = Time.Minute * 1.5;
 
 		if (typeof quantity === 'string') {
 			plantName = quantity;
@@ -85,10 +89,10 @@ export default class extends BotCommand {
 			).join(', ')}. *Make sure you are not attempting to farm 0 crops.*`;
 		}
 
-		if (msg.flagArgs.compost) {
+		/* if (msg.flagArgs.compost) {
 			upgradeType = 'compost';
 			upgradeStr += `You are treating all of your patches with compost. `;
-		}
+		}*/
 		if (msg.flagArgs.supercompost) {
 			upgradeType = 'supercompost';
 			upgradeStr += `You are treating all of your patches with supercompost. `;
@@ -98,7 +102,7 @@ export default class extends BotCommand {
 			upgradeStr += `You are treating all of your patches with ultracompost. `;
 		}
 		if (msg.flagArgs.pay) {
-			payment = 'pay';
+			payment = true;
 			paymentStr += `You are paying a nearby farmer to look after your patches. `;
 		}
 
@@ -106,79 +110,28 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${plants.level} Farming to plant ${plants.name}.`;
 		}
 
-		if ((plants.seedType === 'herb' || plants.name === 'Poison ivy') && payment === 'pay') throw `You cannot pay a farmer to look after your ${plants.name}s!`;
-		if ((plants.seedType === 'tree' || plants.seedType === 'fruit tree')
-			&& (payment === 'pay')
-			&& (upgradeType === ('compost' || 'supercompost' || 'ultracompost'))) {
+		if (plants.canPayFarmer === false && payment === true)
+			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
+		if (
+			plants.canCompostandPay === false &&
+			payment === true &&
+			upgradeType === ('compost' || 'supercompost' || 'ultracompost')
+		) {
 			throw `You do not need to use compost if you are paying a nearby farmer to look over your trees.`;
 		}
 
-		if ((plants.name === 'Poison ivy' && (payment === 'pay' || upgradeType != ''))) {
+		if (plants.canCompostPatch === false && upgradeType !== '') {
 			throw `There would be no point to add compost to your ${plants.name}s!`;
 		}
 
-		if (plants.seedType === 'herb') {
-			numOfPatches = 8;
-			if (msg.author.skillLevel(SkillsEnum.Farming) > 65) {
-				numOfPatches += 1;
-			}
+		if (plants.canPayFarmer === false && payment === true) {
+			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
 		}
-		if (plants.seedType === 'fruit tree') {
-			numOfPatches = 5;
-			if (msg.author.skillLevel(SkillsEnum.Farming) > 85) {
-				numOfPatches += 1;
-			}
-		}
-		if (plants.seedType === 'tree') {
-			numOfPatches = 5;
-			if (msg.author.skillLevel(SkillsEnum.Farming) > 65) {
-				numOfPatches += 1;
-			}
-		}
-		if (plants.seedType === 'allotment') {
-			numOfPatches = 14;
-		}
-		if (plants.seedType === 'cactus') {
-			numOfPatches = 2;
-		}
-		if (plants.seedType === 'bush') {
-			numOfPatches = 5;
-		}
-		if (plants.seedType === 'spirit') {
-			numOfPatches = 1;
-			if (msg.author.skillLevel(SkillsEnum.Farming) === 99) {
-				numOfPatches += 4;
-			}
-			if (msg.author.skillLevel(SkillsEnum.Farming) > 91) {
-				numOfPatches += 1;
-			}
-		}
-		if (plants.seedType === 'hardwood') {
-			numOfPatches = 3;
-		}
-		if (plants.seedType === 'seaweed') {
-			numOfPatches = 2;
-		}
-		if (plants.seedType === 'vine') {
-			numOfPatches = 12;
-		}
-		if (plants.seedType === 'calquat') {
-			numOfPatches = 1;
-		}
-		if (plants.seedType === 'redwood') {
-			numOfPatches = 0;
-			if (msg.author.skillLevel(SkillsEnum.Farming) > 85) {
-				numOfPatches += 1;
-			}
-		}
-		if (plants.seedType === 'crystal') {
-			numOfPatches = 1;
-		}
-		if (plants.seedType === 'celastrus') {
-			numOfPatches = 0;
-			if (msg.author.skillLevel(SkillsEnum.Farming) > 85) {
-				numOfPatches += 1;
-			}
+
+		const numOfPatches = calcNumOfPatches(plants, msg.author, questPoints);
+
+		if (numOfPatches === 0) {
+			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm <plant> --plants`';
 		}
 
 		// If no quantity provided, set it to the max PATCHES available.
@@ -194,46 +147,31 @@ export default class extends BotCommand {
 			} else if (bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
 				newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
 			}
-			if (newBank[parseInt(seedID)] < qty) {
-				this.client.emit(
-					Events.Wtf,
-					`${msg.author.sanitizedName} had insufficient ${seedID}s to be removed.`
-				);
-				throw `What a terrible failure :(`;
-			}
 		}
 
-		if (payment === 'pay') {
+		if (payment === true) {
 			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
 			for (const [itemID, qty] of requiredPayment) {
 				if (!bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
-					throw `You don't have enough ${itemNameFromID(parseInt(itemID))} to make payments to nearby farmers.`;
+					throw `You don't have enough ${itemNameFromID(
+						parseInt(itemID)
+					)} to make payments to nearby farmers.`;
 				} else if (bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
 					newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
-				}
-				if (newBank[parseInt(itemID)] < qty) {
-					this.client.emit(
-						Events.Wtf,
-						`${msg.author.sanitizedName} had insufficient ${itemID}s to be removed.`
-					);
-					throw `What a terrible failure :(`;
 				}
 			}
 		}
 
-		if (upgradeType === 'compost' || upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
+		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
 			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
-				if (!hasCompostType) {
-					throw `You dont have ${quantity}x ${upgradeType}.`;
+			if (!hasCompostType) {
+				throw `You dont have ${quantity}x ${upgradeType}.`;
 			}
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity)
-			if (newBank[itemID(upgradeType)] < quantity) {
-				this.client.emit(
-					Events.Wtf,
-					`${msg.author.sanitizedName} had insufficient ${upgradeType}s to be removed.`
-				);
-				throw `What a terrible failure :(`;
-			}
+			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+		} else if (bankHasItem(userBank, itemID('compost'), quantity)) {
+			upgradeType = 'compost';
+			upgradeStr += `You are treating all of your patches with compost. `;
+			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
 		}
 
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
@@ -266,14 +204,14 @@ export default class extends BotCommand {
 		const getPatchType = resolvePatchTypeSetting(seedToPatch);
 		const patchType: any = msg.author.settings.get(getPatchType);
 
-		/*const updatePatches = {
+		/* const updatePatches = {
 			PatchStage: 0,
 		};
 		msg.author.settings.update(getPatchType, updatePatches);*/
 
 		const data: FarmingActivityTaskOptions = {
 			plantsName: plants.name,
-			patchType: patchType,
+			patchType,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -301,7 +239,9 @@ export default class extends BotCommand {
 
 			str += `${msg.author.minionName} is now planting ${quantity}x ${
 				plants.name
-			}s. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(duration)} to finish.`;
+			}s. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
+				duration
+			)} to finish.`;
 		} else if (patchType.PatchStage === 1) {
 			const storeHarvestablePlant = patchType.LastPlanted;
 			const planted = Farming.Plants.find(
@@ -320,7 +260,7 @@ export default class extends BotCommand {
 			// initiate a cooldown feature for each of the seed types.
 			/* allows for a run of specific seed type to only be possible until the
 				previous run's plants has grown.*/
-			/*if (difference > planted.growthTime) {
+			/* if (difference > planted.growthTime) {
 				throw `Please come back when your crops have finished growing in ${formatDuration((patchType.PlantTime + (plants.growthTime * Time.Minute)- currentDate ))}!`;
 			}*/
 			const updatePatches = {
@@ -339,7 +279,9 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}s, and then planting ${quantity}x ${
 				plants.name
-			}s. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(duration)} to finish.`;
+			}s. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
+				duration
+			)} to finish.`;
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);

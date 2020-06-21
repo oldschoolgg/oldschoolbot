@@ -8,7 +8,7 @@ const trees: Plant[] = [
 		checkXp: 467.3,
 		harvestXp: 0,
 		name: `Oak`,
-		inputItems: { [itemID(`Acorn`)]: 1},
+		inputItems: { [itemID(`Acorn`)]: 1 },
 		outputLogs: itemID('Oak logs'),
 		treeWoodcuttingLevel: 15,
 		petChance: 22_483,
@@ -24,6 +24,16 @@ const trees: Plant[] = [
 		fixedOutput: false,
 		givesLogs: true,
 		givesCrops: false,
+		defaultNumOfPatches: 5,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guild Med (1)
+		]
 	},
 	{
 		level: 30,
@@ -31,7 +41,7 @@ const trees: Plant[] = [
 		checkXp: 1_456.5,
 		harvestXp: 0,
 		name: `Willow`,
-		inputItems: { [itemID(`Willow seed`)]: 1},
+		inputItems: { [itemID(`Willow seed`)]: 1 },
 		outputLogs: itemID('Willow logs'),
 		treeWoodcuttingLevel: 30,
 		petChance: 16_059,
@@ -40,13 +50,23 @@ const trees: Plant[] = [
 		numOfStages: 7,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 14 / 128, //estimate, needs data
+		chanceOfDeath: 14 / 128, // estimate, needs data
 		protectionPayment: { [itemID('Apples(5)')]: 1 },
 		woodcuttingXp: 67.5,
 		needsChopForHarvest: true,
 		fixedOutput: false,
 		givesLogs: true,
 		givesCrops: false,
+		defaultNumOfPatches: 5,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guild Med (1)
+		]
 	},
 	{
 		level: 45,
@@ -54,7 +74,7 @@ const trees: Plant[] = [
 		checkXp: 3_403.4,
 		harvestXp: 0,
 		name: `Maple`,
-		inputItems: { [itemID(`Maple seed`)]: 1},
+		inputItems: { [itemID(`Maple seed`)]: 1 },
 		outputLogs: itemID('Maple logs'),
 		treeWoodcuttingLevel: 45,
 		petChance: 14_052,
@@ -70,6 +90,16 @@ const trees: Plant[] = [
 		fixedOutput: false,
 		givesLogs: true,
 		givesCrops: false,
+		defaultNumOfPatches: 5,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guild Med (1)
+		]
 	},
 	{
 		level: 60,
@@ -77,7 +107,7 @@ const trees: Plant[] = [
 		checkXp: 7_069.9,
 		harvestXp: 0,
 		name: `Yew`,
-		inputItems: { [itemID(`Yew seed`)]: 1},
+		inputItems: { [itemID(`Yew seed`)]: 1 },
 		outputLogs: itemID('Yew logs'),
 		treeWoodcuttingLevel: 60,
 		petChance: 11_242,
@@ -86,13 +116,23 @@ const trees: Plant[] = [
 		numOfStages: 10,
 		chance1: 0, // not needed
 		chance99: 0, // not needed
-		chanceOfDeath: 10 / 128, //estimate, needs data
+		chanceOfDeath: 10 / 128, // estimate, needs data
 		protectionPayment: { [itemID('Cactus spine')]: 10 },
 		woodcuttingXp: 175,
 		needsChopForHarvest: true,
 		fixedOutput: false,
 		givesLogs: true,
 		givesCrops: false,
+		defaultNumOfPatches: 5,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guild Med (1)
+		]
 	},
 	{
 		level: 75,
@@ -100,7 +140,7 @@ const trees: Plant[] = [
 		checkXp: 13_768.3,
 		harvestXp: 0,
 		name: `Magic`,
-		inputItems: { [itemID(`Magic seed`)]: 1},
+		inputItems: { [itemID(`Magic seed`)]: 1 },
 		outputLogs: itemID('Magic logs'),
 		treeWoodcuttingLevel: 75,
 		petChance: 9_368,
@@ -116,6 +156,16 @@ const trees: Plant[] = [
 		fixedOutput: false,
 		givesLogs: true,
 		givesCrops: false,
+		defaultNumOfPatches: 5,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guild Med (1)
+		]
 	}
 ];
 

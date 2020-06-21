@@ -64,7 +64,6 @@ const ores: Ore[] = [
 		name: 'Volcanic ash',
 		respawnTime: 0.1,
 		petChance: 741_600
-
 	},
 	{
 		level: 30,
