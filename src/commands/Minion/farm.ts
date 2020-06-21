@@ -192,9 +192,6 @@ export default class extends BotCommand {
 			numOfPatches)}.`;
 		}
 
-		if (numOfPatches === 0) {
-			throw `There are no patches available to you for this plant at this stage. Please train your farming or raise your quest points!`;
-		}
 		if (quantity > numOfPatches) {
 			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 		}
