@@ -170,4 +170,10 @@ export interface Plant {
 	chance99: number;
 	chanceOfDeath: number;
 	protectionPayment: Bank;
+	defaultNumOfPatches: number;
+	canPayFarmer: boolean;
+	canCompostPatch: boolean;
+	canCompostandPay: boolean;
+	additionalPatchesByQP: number[][];
+	additionalPatchesByFarmLvl: number[][];
 }
