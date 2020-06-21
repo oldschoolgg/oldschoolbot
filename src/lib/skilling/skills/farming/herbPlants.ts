@@ -22,6 +22,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 14,
@@ -43,6 +58,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 19,
@@ -64,6 +94,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 26,
@@ -85,6 +130,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 32,
@@ -106,6 +166,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 38,
@@ -127,6 +202,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 44,
@@ -148,6 +238,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 50,
@@ -169,6 +274,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 56,
@@ -190,6 +310,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 62,
@@ -211,6 +346,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 67,
@@ -232,6 +382,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 73,
@@ -253,6 +418,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 79,
@@ -274,6 +454,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	},
 	{
 		level: 85,
@@ -295,6 +490,21 @@ const herbPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 5,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patches (1)
+			[10, 2], // Troll Stronghold (1)
+			[15, 3], // Harmony Island Patch (1)
+			[31, 4] // Weiss Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[65, 1] // Farming Guide Med (1)
+		]
 	}
 ];
 

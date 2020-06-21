@@ -25,6 +25,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	},
 	{
 		level: 33,
@@ -49,6 +61,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	},
 	{
 		level: 39,
@@ -73,6 +97,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	},
 	{
 		level: 42,
@@ -97,6 +133,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	},
 	{
 		level: 51,
@@ -121,6 +169,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	},
 	{
 		level: 57,
@@ -145,6 +205,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	},
 	{
 		level: 68,
@@ -169,6 +241,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	},
 	{
 		level: 81,
@@ -176,7 +260,7 @@ const fruitTrees: Plant[] = [
 		checkXp: 17_335,
 		harvestXp: 70,
 		name: `Dragonfruit`,
-		inputItems: { [itemID(`Dragonfruit tree seed`)]: 1},
+		inputItems: { [itemID(`Dragonfruit tree seed`)]: 1 },
 		outputCrop: itemID('Dragonfruit'),
 		petChance: 9_000,
 		seedType: 'fruit tree',
@@ -193,6 +277,18 @@ const fruitTrees: Plant[] = [
 		fixedOutput: true,
 		givesLogs: false,
 		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[22, 1] // Lletya Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[85, 1] // Farming Guide High (1)
+		]
 	}
 ];
 
