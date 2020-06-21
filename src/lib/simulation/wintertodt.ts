@@ -9,7 +9,7 @@ import itemID from '../util/itemID';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
 import resolveItems from '../util/resolveItems';
-import { randomItemFromArray, calcPercentOfNum } from '../util';
+import { randomItemFromArray, calcPercentOfNum, convertXPtoLVL } from '../util';
 import { normal } from '../util/normal';
 
 interface WintertodtCrateOptions {
@@ -179,7 +179,7 @@ export class WintertodtCrateClass {
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.roll() : MaterialTables.roll();
 			const skill = this.determineSkillOfTableSlot(matTable.item);
-			const skillLevel = (skills[skill] ?? 1) + 1;
+			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
 			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(
 				skillLevel,
 				matTable.item
