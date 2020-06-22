@@ -125,7 +125,7 @@ export function toTitleCase(str: string) {
 }
 
 export function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
+	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
