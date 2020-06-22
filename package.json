@@ -6,7 +6,7 @@
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
-		"@types/lodash": "^4.14.155",
+		"@types/lodash": "^4.14.156",
 		"bufferutil": "^4.0.1",
 		"canvas": "^2.6.1",
 		"canvas-constructor": "^1.1.2",
