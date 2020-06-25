@@ -715,7 +715,8 @@ export const wintertodtItems = resolveItems([
 	'Warm gloves',
 	'Bruma torch',
 	'Burnt page',
-	'Tome of fire'
+	'Tome of fire',
+	'Dragon axe'
 ]);
 
 export const filterableTypes = [
