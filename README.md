@@ -28,15 +28,16 @@ Contributors are listed in this file, and given a Contributor role in the suppor
 
 ### Setting up the bot to run locally for contributing
 
-To run the bot, you need the following things installed: Git, Yarn, NodeJS v12+
+**To run the bot, you need the following things: Git, Yarn, NodeJS v12+, a discord bot account**
 
 1. Clone the repository: `git clone https://github.com/gc/oldschoolbot.git`
-2. Go into the folder, and
-   `yarn install`
-3. Copy the `src/config.example.ts` file to `src/config.ts` and insert your token.
-4. Run `yarn start`
+2. Install the dependencies: `yarn`
+3. Make a config file from the example: `cp src/config.example.ts src/config.ts`
+4. Edit this new `config.ts` file, and input your bot token.
+5. Go to https://discord.com/developers/applications and ensure your bot has `Privileged Gateway Intents > Server Members Intent` enabled.
+6. Run `yarn build` - then run `yarn start`. In the future, you can type only `yarn start` to start the bot.
 
-If you have errors or issue, you can ask us for help in the developer channel in the discord server.
+If you have errors or issues, you can ask us for help in the developer channel in the [discord server](https://discord.gg/ob).
 
 ### Contributors
 
