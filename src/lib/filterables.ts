@@ -435,14 +435,19 @@ const zulrah = resolveItems([
 	'Magic fang',
 	'Serpentine visage',
 	'Uncut onyx',
+	'Onyx',
 	'Zul-andra teleport',
 	'Jar of swamp',
 	'Pet snakeling',
 	'Tanzanite helm',
 	'Magma helm',
+	'Toxic staff (uncharged)',
+	'Toxic staff of the dead',
 	'Toxic blowpipe',
+	'Toxic blowpipe (uncharged)',
 	'Uncharged toxic trident',
 	'Trident of the swamp',
+	'Serpentine helm (uncharged)',
 	'Serpentine helm'
 ]);
 
