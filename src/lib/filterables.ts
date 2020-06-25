@@ -746,12 +746,12 @@ export const filterableTypes = [
 	},
 	{
 		name: 'Cerberus',
-		aliases: ['cerb', 'ce'],
+		aliases: ['cerb', 'ce', 'cerberus'],
 		items: cerberus
 	},
 	{
 		name: 'Zulrah',
-		aliases: ['zul', 'zulr'],
+		aliases: ['zul', 'zulr', 'zulrah'],
 		items: zulrah
 	},
 	{
