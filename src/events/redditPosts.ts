@@ -49,7 +49,7 @@ export default class extends Event {
 			pollTime: 15_000
 		});
 
-		this.client.commentStream.on('item', comment => {
+		this.client.commentStream?.on('item', comment => {
 			if (!jmodAccounts.includes(comment.author.name.toLowerCase())) return;
 			if (this._redditIdCache.has(comment.id)) return;
 			this._redditIdCache.add(comment.id);
