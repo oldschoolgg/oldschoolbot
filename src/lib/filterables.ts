@@ -444,7 +444,6 @@ const zulrah = resolveItems([
 	'Toxic staff (uncharged)',
 	'Toxic staff of the dead',
 	'Toxic blowpipe',
-	'Toxic blowpipe (uncharged)',
 	'Uncharged toxic trident',
 	'Trident of the swamp',
 	'Serpentine helm (uncharged)',

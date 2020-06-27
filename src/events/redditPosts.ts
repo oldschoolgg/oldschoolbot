@@ -41,6 +41,8 @@ export default class extends Event {
 
 		const redditClient = new Snoowrap(redditAppConfig);
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
 		this.client.commentStream = new CommentStream(redditClient, {
 			subreddit: '2007scape',
 			limit: 30,
@@ -60,15 +62,15 @@ export default class extends Event {
 			});
 		});
 
-		this.client.commentStream.on('error', console.error);
-
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
 		this.client.submissionStream = new SubmissionStream(redditClient, {
 			subreddit: '2007scape',
 			limit: 20,
 			pollTime: 60_000
 		});
 
-		this.client.submissionStream.on('item', post => {
+		this.client.submissionStream?.on('item', post => {
 			if (!jmodAccounts.includes(post.author.name.toLowerCase())) return;
 			if (this._redditIdCache.has(post.id)) return;
 			this._redditIdCache.add(post.id);
@@ -81,8 +83,6 @@ export default class extends Event {
 				)
 			});
 		});
-
-		this.client.submissionStream.on('error', console.error);
 	}
 
 	sendEmbed({ text, url, title, jmod }: RedditPost) {
