@@ -3,8 +3,9 @@ import { KlasaMessage, CommandStore } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
-import { Tasks, Activity, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
+import { tickerTaskFromActivity } from '../../lib/minions/functions/tickerTaskFromActivity';
 
 const options = {
 	max: 1,
@@ -36,15 +37,11 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if you left them!`;
 		}
 
-		const taskTicker =
-			currentTask.type === Activity.ClueCompletion
-				? Tasks.ClueTicker
-				: currentTask.type === Activity.MonsterKilling
-				? Tasks.MonsterKillingTicker
-				: Tasks.SkillingTicker;
+		const taskTicker = tickerTaskFromActivity(currentTask.type);
 
 		const cancelMsg = await msg.channel.send(
-			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. They'll drop all their current loot to get back as fast as they can, so you won't receive any loot from this trip if you cancel it.`
+			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
+				`They'll drop all their current loot to get back as fast as they can, so you won't receive any loot from this trip if you cancel it.`
 		);
 
 		try {
