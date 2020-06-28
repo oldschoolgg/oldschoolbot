@@ -22,9 +22,12 @@ module.exports = class extends Command {
 		var noDropChance = Math.pow((1-(1/dropRate)),kills);
 		var dropChance = 100*(1-noDropChance);
 		var output = `${kills} monsters died for an item with a 1/${dropRate} (${round((100/dropRate),2)}%) drop rate!\nYou had a ${round(noDropChance*100,2)}% chance of not receiving the drop, and a ${round(dropChance,2)}% chance of receiving the item.`;
-		switch (true){ 
+		switch (true){
+			case kills == dropRate:
+				output = `${output} An unenglightened being would say 'but 1/x over x kills means I should get it', but you know better now.`;
+				break;
 			case dropChance < 1:
-				output = `${output} You are some sort of sentient water being you're so not-dry. How'd you even do this?`; 
+				output = `${output} You are some sort of sentient water being you're so not-dry. How'd you even do this?**Splash!**`; 
 				break;
 			case dropChance < 8:
 				output = `${output} You're a higher % water than a watermelon.`;
@@ -37,9 +40,6 @@ module.exports = class extends Command {
 				break;
 			case dropChance > 49 && dropChance < 51:
 				output = `${output} A perfect mix of dry and undry, as all things should be.`;
-				break;
-			case kills == dropRate:
-				output = `${output} An unenglightened being would say 'but 1/x over x kills means I should get it', but you know better now.`;
 				break;
 			case dropChance < 73:
 				break;
