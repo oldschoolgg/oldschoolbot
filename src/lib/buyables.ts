@@ -9,6 +9,7 @@ interface Buyable {
 	qpRequired: number;
 	gpCost: number;
 	aliases?: string[];
+	titheFarmPoints?: number;
 }
 
 const Buyables: Buyable[] = [
@@ -210,6 +211,56 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 10,
 		gpCost: 40_000
+	},
+	{
+		name: `Farmer's strawhat`,
+		aliases: ['Farmers strawhat', 'farmers hat', `farmer's hat`],
+		outputItems: {
+			[itemID(`Farmer's strawhat`)]: 1
+		},
+		qpRequired: 0,
+		gpCost: 0,
+		titheFarmPoints: 75
+	},
+	{
+		name: `Farmer's jacket`,
+		aliases: ['Farmers jacket'],
+		outputItems: {
+			[itemID(`Farmer's jacket`)]: 1
+		},
+		qpRequired: 0,
+		gpCost: 0,
+		titheFarmPoints: 150
+	},
+	{
+		name: `Farmer's shirt`,
+		aliases: ['Farmers shirt'],
+		outputItems: {
+			[itemID(`Farmer's shirt`)]: 1
+		},
+		qpRequired: 0,
+		gpCost: 0,
+		titheFarmPoints: 150
+	},
+	{
+		name: `Farmer's boro trousers`,
+		aliases: ['Farmers trousers', 'farmers bottoms', `farmer's trousers`],
+		outputItems: {
+			[itemID(`Farmer's boro trousers`)]: 1
+		},
+		qpRequired: 0,
+		gpCost: 0,
+		titheFarmPoints: 125
+	},
+	{
+		name: `Farmer's boots`,
+		aliases: ['Farmers boots'],
+		outputItems: {
+			[itemID(`Farmer's boots`)]: 1
+		},
+		qpRequired: 0,
+		gpCost: 0,
+		titheFarmPoints: 50
 	}
 ];
 

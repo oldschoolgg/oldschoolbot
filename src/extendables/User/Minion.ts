@@ -280,6 +280,10 @@ export default class extends Extendable {
 			case Activity.FightCaves: {
 				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
 			}
+			case Activity.TitheFarm: {
+				return `${this.minionName} is currently attempting the **Tithe Farm**. ${formattedDuration}`;
+			}
+
 			case Activity.Fletching: {
 				const data = currentTask as FletchingActivityTaskOptions;
 
