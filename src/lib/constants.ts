@@ -139,6 +139,7 @@ export const enum Tasks {
 	SawmillActivity = 'sawmillActivity',
 	PickpocketActivity = 'pickpocketActivity',
 
+	TitheFarmActivity = 'titheFarmActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -164,6 +165,7 @@ export const enum Activity {
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
+	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
 	Pickpocket = 'Pickpocket',
 	Alching = 'Alching',

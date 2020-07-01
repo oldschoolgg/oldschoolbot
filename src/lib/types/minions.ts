@@ -127,6 +127,7 @@ export interface NightmareActivityTaskOptions extends MinigameActivityTaskOption
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
+export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface AnimatedArmourActivityTaskOptions extends MinigameActivityTaskOptions {
 	armourID: string;
@@ -170,6 +171,7 @@ export interface MinigameTickerTaskData {
 		| NightmareActivityTaskOptions
 		| SepulchreActivityTaskOptions
 		| FishingTrawlerActivityTaskOptions
+		| TitheFarmActivityTaskOptions
 	)[];
 }
 
