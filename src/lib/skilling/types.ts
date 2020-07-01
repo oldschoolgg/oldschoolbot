@@ -152,11 +152,14 @@ export interface Plant {
 	checkXp: number;
 	harvestXp: number;
 	name: string;
+	aliases: string[];
 	inputItems: Bank;
 	outputCrop?: number;
 	outputLogs?: number;
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
+	variableYield?: boolean;
+	variableOutputAmount?: [string, number, number][];
 	woodcuttingXp?: number;
 	needsChopForHarvest: boolean;
 	fixedOutput: boolean;

@@ -39,6 +39,8 @@ Client.defaultUserSchema
 			.add('duelWins', 'integer', { default: 0 })
 			.add('fightCavesAttempts', 'integer', { default: 0 })
 			.add('fireCapesSacrificed', 'integer', { default: 0 })
+			.add('titheFarmsCompleted', 'integer', { default: 0 })
+			.add('titheFarmPoints', 'integer', { default: 0 })
 	)
 	.add('skills', (folder: SchemaFolder) =>
 		folder
@@ -79,4 +81,5 @@ Client.defaultUserSchema
 			.add('redwood', 'any', { default: Farming.defaultPatches })
 			.add('crystal', 'any', { default: Farming.defaultPatches })
 			.add('celastrus', 'any', { default: Farming.defaultPatches })
+			.add('hespori', 'any', { default: Farming.defaultPatches })
 	);

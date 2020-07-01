@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 
 import { Plant, SkillsEnum } from '../types';
+import { rand } from 'oldschooljs/dist/util/util';
 
 export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 	let numOfPatches = plant.defaultNumOfPatches;
@@ -21,4 +22,19 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 		}
 	}
 	return numOfPatches;
+}
+
+export function calcYieldCrystal(plant: Plant, upgradeType: string) {
+	if (!plant.variableYield) return;
+	if (!plant.variableOutputAmount) return;
+	let cropYield = 0;
+	for (let i = plant.variableOutputAmount.length; i > 0; i--) {
+		const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
+		if (upgradeType === upgradeTypeNeeded) {
+			cropYield = rand(min, max);
+			break;
+		}
+	}
+	if (!cropYield) throw `error!`;
+	return cropYield;
 }
