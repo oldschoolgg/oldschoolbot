@@ -699,6 +699,150 @@ const Createables: Createable[] = [
 			"Ultracompost": 1
 		}),
 	},
+	{
+		name: 'Tomatoes(5)',
+		inputItems: transformStringBankToNum({
+			Tomato: 5
+		}),
+		outputItems: transformStringBankToNum({
+			'Tomatoes(5)': 1
+		})
+	},
+	{
+		name: 'Tomato',
+		inputItems: transformStringBankToNum({
+			'Tomatoes(5)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			Tomato: 5
+		})
+	},
+	{
+		name: 'Apples(5)',
+		inputItems: transformStringBankToNum({
+			'Cooking apple': 5
+		}),
+		outputItems: transformStringBankToNum({
+			'Apples(5)': 1
+		})
+	},
+	{
+		name: 'Cooking apple',
+		inputItems: transformStringBankToNum({
+			'Apples(5)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			'Cooking Apple': 5
+		})
+	},
+	{
+		name: 'Bananas(5)',
+		inputItems: transformStringBankToNum({
+			Banana: 5
+		}),
+		outputItems: transformStringBankToNum({
+			'Bananas(5)': 1
+		})
+	},
+	{
+		name: 'Banana',
+		inputItems: transformStringBankToNum({
+			'Bananas(5)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			Banana: 5
+		})
+	},
+	{
+		name: 'Strawberries(5)',
+		inputItems: transformStringBankToNum({
+			Strawberry: 5
+		}),
+		outputItems: transformStringBankToNum({
+			'Strawberries(5)': 1
+		})
+	},
+	{
+		name: 'Strawberry',
+		inputItems: transformStringBankToNum({
+			'Strawberries(5)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			Strawberry: 5
+		})
+	},
+	{
+		name: 'Oranges(5)',
+		inputItems: transformStringBankToNum({
+			Orange: 5
+		}),
+		outputItems: transformStringBankToNum({
+			'Oranges(5)': 1
+		})
+	},
+	{
+		name: 'Orange',
+		inputItems: transformStringBankToNum({
+			'Oranges(5)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			Orange: 5
+		})
+	},
+	{
+		name: 'Potatoes(10)',
+		inputItems: transformStringBankToNum({
+			Potato: 10
+		}),
+		outputItems: transformStringBankToNum({
+			'Potatoes(10)': 1
+		})
+	},
+	{
+		name: 'Potato',
+		inputItems: transformStringBankToNum({
+			'Potatoes(10)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			Potato: 10
+		})
+	},
+	{
+		name: 'Onions(10)',
+		inputItems: transformStringBankToNum({
+			Onion: 10
+		}),
+		outputItems: transformStringBankToNum({
+			'Onions(10)': 1
+		})
+	},
+	{
+		name: 'Onion',
+		inputItems: transformStringBankToNum({
+			'Onions(10)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			Onion: 10
+		})
+	},
+	{
+		name: 'Cabbages(10)',
+		inputItems: transformStringBankToNum({
+			Cabbage: 10
+		}),
+		outputItems: transformStringBankToNum({
+			'Cabbages(10)': 1
+		})
+	},
+	{
+		name: 'Cabbage',
+		inputItems: transformStringBankToNum({
+			'Cabbages(10)': 1
+		}),
+		outputItems: transformStringBankToNum({
+			Cabbage: 10
+		})
+	}
 	/* {
 		name: 'Toxic blowpipe (empty)',
 		inputItems: {

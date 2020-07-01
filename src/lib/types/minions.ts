@@ -130,6 +130,7 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
+export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
@@ -144,7 +145,7 @@ export interface SkillingTickerTaskData {
 }
 
 export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
+	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions | TitheFarmActivityTaskOptions)[];
 }
 
 export type TickerTaskData =
@@ -171,6 +172,7 @@ export type MinionActivityTask =
 	| Tasks.BuryingActivity
 	| Tasks.OfferingActivity
 	| Tasks.FightCavesActivity
+	| Tasks.TitheFarmActivity
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity

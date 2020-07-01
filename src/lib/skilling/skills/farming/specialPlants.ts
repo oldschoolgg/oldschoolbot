@@ -10,13 +10,14 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Seaweed spore`)]: 1 },
 		outputCrop: itemID('Giant seaweed'),
 		name: `Seaweed`,
+		aliases: ['Seadweed'],
 		petChance: 7_500,
 		seedType: 'seaweed',
 		growthTime: 40,
 		numOfStages: 4,
 		chance1: 149,
 		chance99: 208,
-		chanceOfDeath: 17, // needs data
+		chanceOfDeath: 20,
 		protectionPayment: { [itemID('Numulite')]: 200 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -41,14 +42,15 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Teak seed`)]: 1 },
 		outputLogs: itemID('Teak logs'),
 		treeWoodcuttingLevel: 35,
-		name: `Teak`,
+		name: `Teak tree`,
+		aliases: ['Teak tree', 'teak', 'teaks'],
 		petChance: 5_000,
 		seedType: 'hardwood',
 		growthTime: 3_840,
 		numOfStages: 8,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 17, // needs data
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 15,
 		protectionPayment: { [itemID('Limpwurt root')]: 15 },
 		woodcuttingXp: 85,
 		needsChopForHarvest: true,
@@ -74,13 +76,14 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Grape seed`)]: 1, [itemID('Saltpetre')]: 1 },
 		outputCrop: itemID('Grapes'),
 		name: `Grape`,
+		aliases: ['Grape', 'Grapes'],
 		petChance: 385_426,
 		seedType: 'vine',
 		growthTime: 35,
 		numOfStages: 7,
-		chance1: 0, // needs data
-		chance99: 0, // needs data
-		chanceOfDeath: 0, // needs data
+		chance1: 139.8,
+		chance99: 206.36,
+		chanceOfDeath: 0,
 		protectionPayment: 0,
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -103,12 +106,13 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Jangerberry seed`)]: 1 },
 		outputCrop: itemID('Jangerberries'),
 		name: `Jangerberry`,
+		aliases: ['Jangerberry', 'Jangerberries'],
 		petChance: 28_104,
 		seedType: 'bush',
 		growthTime: 160,
 		numOfStages: 8,
-		chance1: 0, // needs data
-		chance99: 0, // needs data
+		chance1: 88.6,
+		chance99: 154.9,
 		chanceOfDeath: 17, // needs data
 		protectionPayment: { [itemID('Watermelon')]: 6 },
 		needsChopForHarvest: false,
@@ -136,13 +140,14 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Cactus seed`)]: 1 },
 		outputCrop: itemID('Cactus spine'),
 		name: `Cactus`,
+		aliases: ['Cactus'],
 		petChance: 7_000,
 		seedType: 'cactus',
 		growthTime: 560,
 		numOfStages: 7,
-		chance1: 62,
-		chance99: 177,
-		chanceOfDeath: 17, // needs data
+		chance1: -78.38,
+		chance99: 178.2,
+		chanceOfDeath: 15,
 		protectionPayment: { [itemID('Cadava berries')]: 6 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -167,14 +172,15 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Mahogany seed`)]: 1 },
 		outputLogs: itemID('Mahogany logs'),
 		treeWoodcuttingLevel: 50,
-		name: `Mahogany`,
+		name: `Mahogany tree`,
+		aliases: ['Mahogany tree', 'Mahogany'],
 		petChance: 5_000,
 		seedType: 'hardwood',
 		growthTime: 5_120,
 		numOfStages: 8,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 17, // needs data
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 12,
 		protectionPayment: { [itemID('Yanillian hops')]: 25 },
 		woodcuttingXp: 125,
 		needsChopForHarvest: true,
@@ -200,13 +206,14 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Whiteberry seed`)]: 1 },
 		outputCrop: itemID('White berries'),
 		name: `Whiteberry`,
+		aliases: ['Whiteberry', 'Whiteberries'],
 		petChance: 28_104,
 		seedType: 'bush',
 		growthTime: 160,
 		numOfStages: 8,
-		chance1: 0, // needs data
-		chance99: 0, // needs data
-		chanceOfDeath: 17, // needs data
+		chance1: 88.6,
+		chance99: 154.9,
+		chanceOfDeath: 15,
 		protectionPayment: { [itemID('Mushroom')]: 8 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -233,13 +240,14 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Potato cactus seed`)]: 1 },
 		outputCrop: itemID('Potato cactus'),
 		name: `Potato cactus`,
+		aliases: ['Potato cactus'],
 		petChance: 160_594,
 		seedType: 'cactus',
 		growthTime: 70,
 		numOfStages: 7,
-		chance1: 0, // needs data
-		chance99: 0, // needs data
-		chanceOfDeath: 17, // needs data
+		chance1: 88.6,
+		chance99: 154.9,
+		chanceOfDeath: 12,
 		protectionPayment: { [itemID('Snape grass')]: 8 },
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -257,6 +265,35 @@ const specialPlants: Plant[] = [
 		]
 	},
 	{
+		level: 65,
+		plantXp: 62,
+		checkXp: 12600,
+		harvestXp: 0,
+		inputItems: { [itemID(`Hespori seed`)]: 1 },
+		name: `Hespori`,
+		aliases: ['Hespori'],
+		petChance: 7_000,
+		seedType: 'hespori',
+		growthTime: 1920,
+		numOfStages: 4,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 0,
+		protectionPayment: {},
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: false,
+		defaultNumOfPatches: 1,
+		canPayFarmer: false,
+		canCompostPatch: false,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: []
+	},
+	{
 		level: 70,
 		plantXp: 120,
 		checkXp: 675,
@@ -264,13 +301,14 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Poison ivy seed`)]: 1 },
 		outputCrop: itemID('Poison ivy berries'),
 		name: `Poison ivy`,
+		aliases: ['Poison ivy'],
 		petChance: 28_104,
 		seedType: 'bush',
 		growthTime: 160,
 		numOfStages: 8,
-		chance1: 20, // needs data
-		chance99: 30, // needs data
-		chanceOfDeath: 0, // not possible
+		chance1: 88.6,
+		chance99: 154.9,
+		chanceOfDeath: 0,
 		protectionPayment: 0,
 		needsChopForHarvest: false,
 		fixedOutput: false,
@@ -297,14 +335,15 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Calquat tree seed`)]: 1 },
 		outputCrop: itemID('Calquat fruit'),
 		treeWoodcuttingLevel: 1,
-		name: `Calquat`,
+		name: `Calquat tree`,
+		aliases: ['Calquat tree', 'Calquat'],
 		petChance: 6_000,
 		seedType: 'calquat',
 		growthTime: 1_280,
 		numOfStages: 8,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 17, // needs data
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 17,
 		protectionPayment: { [itemID('Poison ivy berries')]: 8 },
 		needsChopForHarvest: true,
 		fixedOutput: true,
@@ -327,24 +366,32 @@ const specialPlants: Plant[] = [
 		harvestXp: 0,
 		inputItems: { [itemID(`Crystal acorn`)]: 1 },
 		outputCrop: itemID('Crystal shard'),
+		variableYield: true,
+		variableOutputAmount: [
+			['', 8, 10],
+			['compost', 10, 12],
+			['supercompost', 12, 14],
+			['ultracompost', 14, 16]
+		],
 		treeWoodcuttingLevel: 1,
-		name: `Crystal`,
+		name: `Crystal tree`,
+		aliases: ['Crystal tree', 'Crystal'],
 		petChance: 9_000,
 		seedType: 'crystal',
 		growthTime: 480,
 		numOfStages: 6,
-		chance1: 0, // needs data, possibly not needed
-		chance99: 0, // needs data, possibly not needed
-		chanceOfDeath: 0, // not possible
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 0,
 		protectionPayment: 0,
 		needsChopForHarvest: true,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
 		defaultNumOfPatches: 0,
-		canPayFarmer: true,
+		canPayFarmer: false,
 		canCompostPatch: true,
-		canCompostandPay: true,
+		canCompostandPay: false,
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [
 			[33, 1] // Prifddinas (1)
@@ -359,15 +406,20 @@ const specialPlants: Plant[] = [
 		harvestXp: 0,
 		inputItems: { [itemID(`Spirit seed`)]: 1 },
 		treeWoodcuttingLevel: 1,
-		name: `Spirit`,
+		name: `Spirit tree`,
+		aliases: ['Spirit tree', 'Spirit'],
 		petChance: 5_000,
 		seedType: 'spirit',
 		growthTime: 3_840,
 		numOfStages: 12,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 17, // needs data
-		protectionPayment: 0, // this takes like 3 items that is cba to code in
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 8,
+		protectionPayment: {
+			[itemID('Monkey nuts')]: 5,
+			[itemID('Monkey bar')]: 1,
+			[itemID('Ground tooth')]: 1
+		},
 		needsChopForHarvest: true,
 		fixedOutput: false,
 		givesLogs: false,
@@ -392,14 +444,15 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Celastrus seed`)]: 1 },
 		outputCrop: itemID('Celastrus bark'),
 		treeWoodcuttingLevel: 1,
-		name: `Celastrus`,
+		name: `Celastrus tree`,
+		aliases: ['Celastrus tree', 'Celastrus'],
 		petChance: 9_000,
 		seedType: 'celastrus',
 		growthTime: 800,
 		numOfStages: 5,
-		chance1: 0, // needs data
-		chance99: 0, // needs data
-		chanceOfDeath: 17, // needs data
+		chance1: -26.6,
+		chance99: 63,
+		chanceOfDeath: 15,
 		protectionPayment: { [itemID('Potato cactus')]: 8 },
 		needsChopForHarvest: true,
 		fixedOutput: false,
@@ -424,14 +477,15 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Redwood tree seed`)]: 1 },
 		outputLogs: itemID('Redwood logs'),
 		treeWoodcuttingLevel: 90,
-		name: `Redwood`,
+		name: `Redwood tree`,
+		aliases: ['Redwood tree', 'Redwood'],
 		petChance: 5_000,
 		seedType: 'redwood',
 		growthTime: 6_400,
-		numOfStages: 10,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 17, // needs data
+		numOfStages: 11,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 8,
 		protectionPayment: { [itemID('Dragonfruit')]: 6 },
 		woodcuttingXp: 380,
 		needsChopForHarvest: true,

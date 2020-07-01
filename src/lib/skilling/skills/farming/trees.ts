@@ -7,7 +7,8 @@ const trees: Plant[] = [
 		plantXp: 14,
 		checkXp: 467.3,
 		harvestXp: 0,
-		name: `Oak`,
+		name: `Oak tree`,
+		aliases: ['Oak tree', 'Oak'],
 		inputItems: { [itemID(`Acorn`)]: 1 },
 		outputLogs: itemID('Oak logs'),
 		treeWoodcuttingLevel: 15,
@@ -15,9 +16,9 @@ const trees: Plant[] = [
 		seedType: 'tree',
 		growthTime: 200,
 		numOfStages: 5,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 16 / 128, // estimate, needs data
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 16 / 128,
 		protectionPayment: { [itemID('Tomatoes(5)')]: 1 },
 		woodcuttingXp: 37.5,
 		needsChopForHarvest: true,
@@ -40,7 +41,8 @@ const trees: Plant[] = [
 		plantXp: 25,
 		checkXp: 1_456.5,
 		harvestXp: 0,
-		name: `Willow`,
+		name: `Willow tree`,
+		aliases: ['Willow tree', 'Willow'],
 		inputItems: { [itemID(`Willow seed`)]: 1 },
 		outputLogs: itemID('Willow logs'),
 		treeWoodcuttingLevel: 30,
@@ -48,9 +50,9 @@ const trees: Plant[] = [
 		seedType: 'tree',
 		growthTime: 280,
 		numOfStages: 7,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 14 / 128, // estimate, needs data
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 14 / 128,
 		protectionPayment: { [itemID('Apples(5)')]: 1 },
 		woodcuttingXp: 67.5,
 		needsChopForHarvest: true,
@@ -73,7 +75,8 @@ const trees: Plant[] = [
 		plantXp: 45,
 		checkXp: 3_403.4,
 		harvestXp: 0,
-		name: `Maple`,
+		name: `Maple tree`,
+		aliases: ['Maple tree', 'Maple'],
 		inputItems: { [itemID(`Maple seed`)]: 1 },
 		outputLogs: itemID('Maple logs'),
 		treeWoodcuttingLevel: 45,
@@ -81,8 +84,8 @@ const trees: Plant[] = [
 		seedType: 'tree',
 		growthTime: 320,
 		numOfStages: 8,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
+		chance1: 0,
+		chance99: 0,
 		chanceOfDeath: 12 / 128,
 		protectionPayment: { [itemID('Oranges(5)')]: 1 },
 		woodcuttingXp: 100,
@@ -106,7 +109,8 @@ const trees: Plant[] = [
 		plantXp: 81,
 		checkXp: 7_069.9,
 		harvestXp: 0,
-		name: `Yew`,
+		name: `Yew tree`,
+		aliases: ['Yew tree', 'Yew'],
 		inputItems: { [itemID(`Yew seed`)]: 1 },
 		outputLogs: itemID('Yew logs'),
 		treeWoodcuttingLevel: 60,
@@ -114,9 +118,9 @@ const trees: Plant[] = [
 		seedType: 'tree',
 		growthTime: 400,
 		numOfStages: 10,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
-		chanceOfDeath: 10 / 128, // estimate, needs data
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 10 / 128,
 		protectionPayment: { [itemID('Cactus spine')]: 10 },
 		woodcuttingXp: 175,
 		needsChopForHarvest: true,
@@ -139,7 +143,8 @@ const trees: Plant[] = [
 		plantXp: 145.4,
 		checkXp: 13_768.3,
 		harvestXp: 0,
-		name: `Magic`,
+		name: `Magic tree`,
+		aliases: ['Magic tree', 'Magic'],
 		inputItems: { [itemID(`Magic seed`)]: 1 },
 		outputLogs: itemID('Magic logs'),
 		treeWoodcuttingLevel: 75,
@@ -147,8 +152,8 @@ const trees: Plant[] = [
 		seedType: 'tree',
 		growthTime: 480,
 		numOfStages: 12,
-		chance1: 0, // not needed
-		chance99: 0, // not needed
+		chance1: 0,
+		chance99: 0,
 		chanceOfDeath: 8 / 128,
 		protectionPayment: { [itemID('Coconut')]: 25 },
 		woodcuttingXp: 250,

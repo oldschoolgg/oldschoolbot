@@ -33,21 +33,35 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const GP = msg.author.settings.get(UserSettings.GP);
-		const GPCost = buyable.gpCost * quantity;
-		if (GP < GPCost) {
-			throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
-		}
-		const QP = msg.author.settings.get(UserSettings.QP);
-		if (QP < buyable.qpRequired) {
-			throw `You need ${buyable.qpRequired} QP to purchase this item.`;
-		}
 
 		const outItems = multiplyBank(buyable.outputItems, quantity);
 		const itemString = await createReadableItemListFromBank(this.client, outItems);
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
+		let sellMsg: any;
+		let titheFarmPoints = 0;
+		let titheFarmPointsCost = 0;
+		let GPCost = 0;
+
+		if (buyable.titheFarmPoints) {
+			const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
+			titheFarmPointsCost = buyable.titheFarmPoints * quantity;
+			if (titheFarmPoints < titheFarmPointsCost) {
+				throw `You need ${buyable.titheFarmPoints} Tithe Farm points to purchase this item.`;
+			}
+			sellMsg = await msg.channel.send(
+				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${buyable.titheFarmPoints} Tithe Farm points.`
+			);
+		} else {
+			const GP = msg.author.settings.get(UserSettings.GP);
+			GPCost = buyable.gpCost * quantity;
+			if (GP < GPCost) {
+				throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
+			}
+			const QP = msg.author.settings.get(UserSettings.QP);
+			if (QP < buyable.qpRequired) {
+				throw `You need ${buyable.qpRequired} QP to purchase this item.`;
+			}
+			sellMsg = await msg.channel.send(
 				`${
 					msg.author
 				}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
@@ -74,6 +88,17 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (buyable.titheFarmPoints) {
+			await msg.author.settings.update(
+				UserSettings.Stats.TitheFarmPoints,
+				titheFarmPoints - titheFarmPointsCost
+			);
+			await msg.author.addItemsToBank(buyable.outputItems, true);
+
+			return msg.send(
+				`You purchased ${itemString} for ${buyable.titheFarmPoints} Tithe Farm points.`
+			);
+		}
 		await msg.author.removeGP(GPCost);
 		await msg.author.addItemsToBank(outItems, true);
 

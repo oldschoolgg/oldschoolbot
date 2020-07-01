@@ -39,6 +39,9 @@ export namespace UserSettings {
 
 		export const FightCavesAttempts = T<number>('stats.fightCavesAttempts');
 		export const FireCapesSacrificed = T<number>('stats.fireCapesSacrificed');
+
+		export const TitheFarmsCompleted = T<number>('stats.titheFarmsCompleted');
+		export const TitheFarmPoints = T<number>('stats.titheFarmPoints');
 	}
 
 	export namespace Minion {
@@ -88,5 +91,6 @@ export namespace UserSettings {
 		export const Redwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.redwood');
 		export const Crystal = T<PatchTypes.FarmingPatchTypes>('farmingpatches.crystal');
 		export const Celastrus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.celastrus');
+		export const Hespori = T<PatchTypes.FarmingPatchTypes>('farmingpatches.hespori');
 	}
 }
