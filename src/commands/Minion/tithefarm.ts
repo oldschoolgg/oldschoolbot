@@ -74,8 +74,6 @@ export default class extends BotCommand {
 
 		const [duration, debugStr] = this.determineDuration(msg.author);
 
-		const finishDate = Date.now() + 1000;
-
 		const data: TitheFarmActivityTaskOptions = {
 			minigameID: MinigameIDsEnum.TitheFarm,
 			userID: msg.author.id,
@@ -84,7 +82,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.TitheFarm,
 			id: rand(1, 10_000_000),
-			finishDate
+			finishDate: Date.now() + duration
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
