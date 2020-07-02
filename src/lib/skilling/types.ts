@@ -172,7 +172,7 @@ export interface Plant {
 	chance1: number;
 	chance99: number;
 	chanceOfDeath: number;
-	protectionPayment: Bank;
+	protectionPayment?: ItemBank;
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
