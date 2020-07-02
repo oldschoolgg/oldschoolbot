@@ -151,6 +151,7 @@ export default class extends BotCommand {
 		}
 
 		if (payment === true) {
+			if (!plants.protectionPayment) return;
 			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
 			for (const [itemID, qty] of requiredPayment) {
 				if (!bankHasItem(userBank, parseInt(itemID), qty * quantity)) {

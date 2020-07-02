@@ -77,7 +77,11 @@ export default class extends Task {
 
 		if (patchType.LastPayment === true) chanceOfDeathReduction = 0;
 
-		let loot = { [plant.inputItems]: quantity };
+		let loot = {
+			[itemID('Weeds')]: 0
+		};
+
+		delete loot[itemID('Weeds')];
 
 		if (patchType.IsHarvestable === false) {
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
@@ -102,8 +106,6 @@ export default class extends Task {
 			if (newLevel > currentFarmingLevel) {
 				str += `\n\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
-
-			delete loot[plant.inputItems];
 
 			if (Object.keys(loot).length > 0) {
 				str += `\n\nYou received: ${await createReadableItemListFromBank(
@@ -180,7 +182,7 @@ export default class extends Task {
 
 				if (quantity > patchType.LastQuantity) {
 					loot[plantToHarvest.outputCrop] = cropYield;
-					loot[6055] = quantity - patchType.LastQuantity; // weeds
+					loot[itemID('Weeds')] = quantity - patchType.LastQuantity;
 				} else {
 					loot[plantToHarvest.outputCrop] = cropYield;
 				}
@@ -291,8 +293,6 @@ export default class extends Task {
 			if (newWoodcuttingLevel > currentWoodcuttingLevel) {
 				str += `\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`;
 			}
-
-			delete loot[plant.inputItems];
 
 			if (
 				patchType.IsHarvestable &&
