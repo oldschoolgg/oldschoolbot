@@ -5,9 +5,10 @@ import { Time, Activity, Tasks } from '../../lib/constants';
 import { formatDuration, rand } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TitheFarmActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import itemID from '../../lib/util/itemID';
 
@@ -76,7 +77,7 @@ export default class extends BotCommand {
 		const finishDate = Date.now() + 1000;
 
 		const data: TitheFarmActivityTaskOptions = {
-			minigameID: 'TitheFarm',
+			minigameID: MinigameIDsEnum.TitheFarm,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,
