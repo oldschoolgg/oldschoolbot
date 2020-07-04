@@ -28,7 +28,7 @@
 		"random-js": "^2.1.0",
 		"rss-parser": "^3.8.0",
 		"snoostorm": "^1.2.2",
-		"snoowrap": "^1.19.0",
+		"snoowrap": "github:gc/snoowrap#master",
 		"threads": "^1.4.1",
 		"ts-toolbelt": "^6.9.9",
 		"twit": "^2.2.9",
