@@ -15,8 +15,18 @@ export default class extends Event {
 	}
 
 	private async _sendErrorChannel(message: KlasaMessage, command: Command, error: Error) {
-		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack || error}`);
 		let output: string;
+
+		if (error.name === 'AbortError') {
+			try {
+				return await message.send(
+					`Oops! I had a network issue trying to respond to your command. Please try again.`
+				);
+			} catch (_) {}
+		}
+
+		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack || error}`);
+
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {
 			output = [
 				`${inlineCodeblock('Command   ::')} ${command.path.slice(rootFolder.length)}`,

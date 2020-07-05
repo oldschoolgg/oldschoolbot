@@ -435,14 +435,19 @@ const zulrah = resolveItems([
 	'Magic fang',
 	'Serpentine visage',
 	'Uncut onyx',
+	'Onyx',
 	'Zul-andra teleport',
 	'Jar of swamp',
 	'Pet snakeling',
 	'Tanzanite helm',
 	'Magma helm',
+	'Toxic staff (uncharged)',
+	'Toxic staff of the dead',
 	'Toxic blowpipe',
+	'Toxic blowpipe (empty)',
 	'Uncharged toxic trident',
 	'Trident of the swamp',
+	'Serpentine helm (uncharged)',
 	'Serpentine helm'
 ]);
 
@@ -710,7 +715,8 @@ export const wintertodtItems = resolveItems([
 	'Warm gloves',
 	'Bruma torch',
 	'Burnt page',
-	'Tome of fire'
+	'Tome of fire',
+	'Dragon axe'
 ]);
 
 export const filterableTypes = [
@@ -746,12 +752,12 @@ export const filterableTypes = [
 	},
 	{
 		name: 'Cerberus',
-		aliases: ['cerb', 'ce'],
+		aliases: ['cerb', 'ce', 'cerberus'],
 		items: cerberus
 	},
 	{
 		name: 'Zulrah',
-		aliases: ['zul', 'zulr'],
+		aliases: ['zul', 'zulr', 'zulrah'],
 		items: zulrah
 	},
 	{
