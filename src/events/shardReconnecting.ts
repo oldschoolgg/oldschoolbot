@@ -9,7 +9,7 @@ export default class extends Event {
 		});
 	}
 
-	async run(error: Error) {
-		this.client.emit(Events.Log, `Shard Error: ${error}`);
+	async run(shardID: number) {
+		this.client.emit(Events.Log, `Shard Reconnecting: ${shardID}`);
 	}
 }
