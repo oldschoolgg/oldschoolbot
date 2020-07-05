@@ -28,7 +28,7 @@ export default class extends Task {
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		let baseBonus = 1;
-		let bonusXP = 0;
+		let bonusXP;
 		let plantXp = 0;
 		let harvestXp = 0;
 		let compostXp = 0;
@@ -87,6 +87,7 @@ export default class extends Task {
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
 			plantXp = quantity * (plant.plantXp + compostXp);
 			farmingXpReceived = plantXp + harvestXp + rakeXp;
+			bonusXP = 0;
 
 			loot[itemID('Weeds')] = quantity * 3;
 
@@ -274,6 +275,7 @@ export default class extends Task {
 			}
 			if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
 
+			bonusXP = 0;
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
 			if (bonusXP > 0) {
