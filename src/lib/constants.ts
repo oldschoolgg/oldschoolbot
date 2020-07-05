@@ -1,7 +1,4 @@
 import { join } from 'path';
-import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import { specialTradeables } from './util/itemIsTradeable';
 
 export const enum Time {
 	Millisecond = 1,
@@ -17,7 +14,8 @@ export const enum Channel {
 	Notifications = '469523207691436042',
 	ErrorLogs = '665678499578904596',
 	Suggestions = '668441710703149074',
-	GrandExchange = '682996313209831435'
+	GrandExchange = '682996313209831435',
+	Developers = '648196527294251020'
 }
 
 export const enum Roles {
@@ -216,17 +214,5 @@ export const enum PatronTierID {
 }
 
 export const MAX_QP = 275;
-
-export const TradeableItems = Items.filter(
-	item => (item as Item).tradeable || specialTradeables.includes(item.id)
-);
-
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace Mime {
-	export const enum Types {
-		ApplicationJson = 'application/json',
-		TextPlain = 'text/plain'
-	}
-}
 
 export const MIMIC_MONSTER_ID = 23184;

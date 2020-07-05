@@ -25,7 +25,7 @@ import * as pets from '../../../data/pets';
 import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import dailyRoll from '../../lib/dailyTable';
+import dailyRoll from '../../lib/simulation/dailyTable';
 
 const options = {
 	max: 1,
