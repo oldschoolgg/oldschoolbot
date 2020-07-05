@@ -74,7 +74,13 @@ export default class extends Task {
 		if (bankHasItem(loot, itemID('Phoenix'))) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.username}'s** minion, ${user.minionName}, just received a Phoenix!`
+				`${Emoji.Phoenix} **${user.username}'s** minion, ${
+					user.minionName
+				}, just received a Phoenix! Their Wintertodt KC is ${user.getMinigameScore(
+					MinigameIDsEnum.Wintertodt
+				) + quantity}, and their Firemaking level is ${user.skillLevel(
+					SkillsEnum.Firemaking
+				)}.`
 			);
 		}
 
