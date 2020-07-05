@@ -1,7 +1,7 @@
 import { KlasaMessage, Command, Event, util } from 'klasa';
 import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel, User } from 'discord.js';
 
-import { rootFolder, Channel, Emoji } from '../lib/constants';
+import { rootFolder, Channel, Emoji, Events } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
 
 export default class extends Event {
@@ -15,8 +15,18 @@ export default class extends Event {
 	}
 
 	private async _sendErrorChannel(message: KlasaMessage, command: Command, error: Error) {
-		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack || error}`);
 		let output: string;
+
+		if (error.name === 'AbortError') {
+			try {
+				return await message.send(
+					`Oops! I had a network issue trying to respond to your command. Please try again.`
+				);
+			} catch (_) {}
+		}
+
+		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack || error}`);
+
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {
 			output = [
 				`${inlineCodeblock('Command   ::')} ${command.path.slice(rootFolder.length)}`,
