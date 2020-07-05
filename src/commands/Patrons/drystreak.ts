@@ -26,14 +26,15 @@ export default class extends BotCommand {
 
 		const item = getOSItem(itemName);
 
+		const ironmanPart = msg.flagArgs.im ? 'AND "minion.ironman" = true' : '';
+		const query = `SELECT "id", "monsterScores"->>'${mon.id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "monsterScores"->>'${mon.id}' IS NOT NULL ${ironmanPart} ORDER BY ("monsterScores"->>'${mon.id}')::int DESC LIMIT 10;`;
+
 		const result = await this.client.query<
 			{
 				id: string;
 				KC: string;
 			}[]
-		>(
-			`SELECT "id", "monsterScores"->>'${mon.id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "monsterScores"->>'${mon.id}' IS NOT NULL ORDER BY ("monsterScores"->>'${mon.id}')::int DESC LIMIT 10;`
-		);
+		>(query);
 
 		if (result.length === 0) throw `No results found.`;
 
