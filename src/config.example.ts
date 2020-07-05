@@ -12,6 +12,7 @@ export const providerConfig: ProviderConfig | null = {
 	default: 'json'
 };
 export const production = require('os').platform() === 'linux';
+export const staging = false;
 
 export const twitchClientID: string | null = null;
 export const redditAppConfig: RedditAppConfig = null;
