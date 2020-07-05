@@ -28,7 +28,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [plantName:...string]',
+			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
 			usageDelim: ' '
 		});
 	}
@@ -132,7 +132,7 @@ export default class extends BotCommand {
 		const numOfPatches = calcNumOfPatches(plants, msg.author, questPoints);
 
 		if (numOfPatches === 0) {
-			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm <plant> --plants`';
+			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm --plants`';
 		}
 
 		// If no quantity provided, set it to the max PATCHES available.
