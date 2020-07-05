@@ -18,6 +18,8 @@ export default class extends Monitor {
 	async run(msg: KlasaMessage) {
 		if (msg.channel.id !== Channel.Developers) return;
 		if (msg.webhookID !== '721651397699043382') return;
+		if (!msg.embeds || !msg.embeds[0]) return;
+		if (!msg.embeds[0].title.includes('[oldschoolbot:staging]')) return;
 
 		try {
 			await util.exec('yarn');
