@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { formatDuration, rand } from '../../lib/util';
-import { Time, Activity, Tasks, MAX_QP } from '../../lib/constants';
+import { Time, Activity, Tasks, MAX_QP, Events } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -29,6 +29,11 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.minionIsBusy) {
+			this.client.emit(
+				Events.Log,
+				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] Questing`
+			);
+
 			return msg.send(msg.author.minionStatus);
 		}
 

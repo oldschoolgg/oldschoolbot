@@ -1,4 +1,6 @@
-export const enum SkillsEnum {
+import { ItemBank } from '../types';
+
+export enum SkillsEnum {
 	Agility = 'agility',
 	Cooking = 'cooking',
 	Fishing = 'fishing',
@@ -8,7 +10,10 @@ export const enum SkillsEnum {
 	Firemaking = 'firemaking',
 	Runecraft = 'runecraft',
 	Crafting = 'crafting',
-	Prayer = 'prayer'
+	Prayer = 'prayer',
+	Fletching = 'fletching',
+	Farming = 'farming',
+	Herblore = 'herblore'
 }
 
 export interface Ore {
@@ -27,7 +32,7 @@ export interface Bar {
 	xp: number;
 	id: number;
 	name: string;
-	inputOres: Bank;
+	inputOres: ItemBank;
 	/**
 	 * Chance that the ore will fail to smelt (i.e iron), out of 100
 	 */
@@ -88,10 +93,11 @@ export interface Cookable {
 	xp: number;
 	id: number;
 	name: string;
-	inputCookables: Bank;
+	inputCookables: ItemBank;
 	stopBurnAt: number;
 	stopBurnAtCG: number;
 	burntCookable: number;
+	healAmount?: number;
 }
 
 export interface SmithedBar {
@@ -99,7 +105,7 @@ export interface SmithedBar {
 	xp: number;
 	id: number;
 	name: string;
-	inputBars: Bank;
+	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
 }
@@ -109,8 +115,18 @@ export interface Craftable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: Bank;
+	inputItems: ItemBank;
 	tickRate: number;
+}
+
+export interface Fletchable {
+	name: string;
+	id: number;
+	level: number;
+	xp: number;
+	inputItems: ItemBank;
+	tickRate: number;
+	outputMultiple?: number;
 }
 
 export interface Bone {
@@ -119,3 +135,9 @@ export interface Bone {
 	name: string;
 	inputId: number;
 }
+
+export type LevelRequirements = Partial<
+	{
+		[key in SkillsEnum]: number;
+	}
+>;

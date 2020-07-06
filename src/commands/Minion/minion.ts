@@ -54,7 +54,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -146,10 +146,14 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.SacrificedValue,
 				'gear',
 				'stats',
-				'skills'
+				'skills',
+				'minion'
 			]);
 
-			await msg.author.settings.update(UserSettings.Minion.Ironman, true);
+			await msg.author.settings.update([
+				[UserSettings.Minion.Ironman, true],
+				[UserSettings.Minion.HasBought, true]
+			]);
 			return msg.send('You are now an ironman.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
@@ -204,6 +208,9 @@ ${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
 ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.author.settings
 			.get(UserSettings.Skills.Prayer)
 			.toLocaleString()} xp)
+${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
+			SkillsEnum.Fletching
+		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -429,6 +436,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
+	async fletch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		await this.client.commands
+			.get('fletch')!
+			.run(msg, [quantity, itemName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
 	async bury(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
 		await this.client.commands
 			.get('bury')!
@@ -472,6 +488,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		});
 	}
 
+	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		if (typeof quantity === 'string') {
 			name = quantity;
@@ -486,15 +503,19 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			);
 			return msg.send(msg.author.minionStatus);
 		}
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
 
 		if (!name) throw invalidMonster(msg.cmdPrefix);
 
-		const monster = findMonster(name);
-
+		const monster =
+			name === 'random'
+				? randomItemFromArray(
+						killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0])
+				  )
+				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
+
+		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
+		if (!hasReqs) throw reason;
 
 		const boosts = [];
 
@@ -517,9 +538,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToFinish);
 		}
-
-		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
 
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {

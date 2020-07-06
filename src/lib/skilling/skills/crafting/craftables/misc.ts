@@ -126,6 +126,14 @@ const Misc: Craftable[] = [
 		xp: 15,
 		inputItems: transformStringBankToNum({ Flax: 1 }),
 		tickRate: 3
+	},
+	{
+		name: 'Crossbow string',
+		id: itemID('Crossbow string'),
+		level: 10,
+		xp: 15,
+		inputItems: transformStringBankToNum({ Sinew: 1 }),
+		tickRate: 3
 	}
 ];
 

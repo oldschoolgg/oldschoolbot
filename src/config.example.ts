@@ -13,10 +13,6 @@ export const providerConfig: ProviderConfig | null = {
 };
 export const production = require('os').platform() === 'linux';
 
-export const clientSecret = '';
-export const clientID = '';
-export const KDHPort = null;
-
 export const twitchClientID: string | null = null;
 export const redditAppConfig: RedditAppConfig = null;
 export const twitterAppConfig: TwitterAppConfig = null;

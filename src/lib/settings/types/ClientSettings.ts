@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { Bank, ItemPriceCache, OSRSPoll, PetRecords as PetRecordsType } from '../../types';
+import { O } from 'ts-toolbelt';
+
+import {
+	Bank,
+	ItemPriceCache,
+	OSRSPoll,
+	PetRecords as PetRecordsType,
+	ItemBank
+} from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -20,5 +28,11 @@ export namespace ClientSettings {
 		export const DuelTaxBank = T<number>('economyStats.duelTaxBank');
 		export const DailiesAmount = T<number>('economyStats.dailiesAmount');
 		export const ItemSellTaxBank = T<number>('economyStats.itemSellTaxBank');
+		export const BankBgCostBank = T<O.Readonly<ItemBank>>('economyStats.bankBgCostBank');
+		export const SacrificedBank = T<O.Readonly<ItemBank>>('economyStats.sacrificedBank');
+
+		export const WintertodtCost = T<O.Readonly<ItemBank>>('economyStats.wintertodtCost');
+		export const WintertodtLoot = T<O.Readonly<ItemBank>>('economyStats.wintertodtLoot');
+		export const FightCavesCost = T<O.Readonly<ItemBank>>('economyStats.fightCavesCost');
 	}
 }

@@ -10,9 +10,16 @@ export default class extends Extendable {
 
 	async sendBankImage(
 		this: KlasaMessage,
-		{ bank, content, title }: { bank: Bank; content?: string; title?: string }
+		{
+			bank,
+			content,
+			title,
+			background
+		}: { bank: Bank; content?: string; title?: string; background?: number }
 	) {
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(bank, title);
+		const image = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(bank, title, true, { background: background ?? 1 });
 		return this.send(content, new MessageAttachment(image));
 	}
 }

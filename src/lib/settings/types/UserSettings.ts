@@ -19,6 +19,7 @@ export namespace UserSettings {
 	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');
 	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
+	export const MinigameScores = T<O.Readonly<ItemBank>>('minigameScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly number[]>('bitfield');
 	export const Badges = T<readonly number[]>('badges');
@@ -59,6 +60,7 @@ export namespace UserSettings {
 		export const Runecraft = T<number>(`skills.${SkillsEnum.Runecraft}`);
 		export const Crafting = T<number>(`skills.${SkillsEnum.Crafting}`);
 		export const Prayer = T<number>(`skills.${SkillsEnum.Prayer}`);
+		export const Fletching = T<number>(`skills.${SkillsEnum.Fletching}`);
 	}
 
 	export namespace Gear {

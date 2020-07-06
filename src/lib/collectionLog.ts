@@ -1,6 +1,7 @@
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
 import { gracefulItems } from './skilling/skills/runecraft';
+import { wintertodtItems } from './filterables';
 
 export const bosses = {
 	Zulrah: resolveItems([
@@ -1160,6 +1161,7 @@ export const capes = {
 		'Cooking hood',
 		'Crafting hood',
 		'Prayer hood',
+		'Fletching hood',
 		'Quest point hood'
 	]),
 	capes: resolveItems([
@@ -1172,6 +1174,7 @@ export const capes = {
 		'Cooking cape',
 		'Crafting cape',
 		'Prayer cape',
+		'Fletching cape',
 		'Quest point cape'
 	]),
 	'trimmed capes': resolveItems([
@@ -1184,6 +1187,7 @@ export const capes = {
 		'Cooking cape(t)',
 		'Crafting cape(t)',
 		'Prayer cape(t)',
+		'Fletching cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1225,7 +1229,12 @@ export const skillingLog = {
 		'Rock golem'
 	]),
 	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
-	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel'])
+	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
+	Firemaking: wintertodtItems
+};
+
+export const wintertodt = {
+	'': wintertodtItems
 };
 
 export const coxLog = {
@@ -1384,6 +1393,11 @@ export const collectionLogTypes = [
 		name: 'Chambers of Xeric',
 		aliases: ['raids', 'cox'],
 		items: coxLog
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['todt', 'wintertodt', 'wt'],
+		items: wintertodt
 	},
 	{
 		name: 'Misc',

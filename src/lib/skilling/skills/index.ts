@@ -11,6 +11,7 @@ import Agility from './agility';
 import Runecraft from './runecraft';
 import Crafting from './crafting/crafting';
 import Prayer from './prayer';
+import Fletching from './fletching/fletching';
 
 export type Skill =
 	| typeof Crafting
@@ -22,7 +23,8 @@ export type Skill =
 	| typeof Woodcutting
 	| typeof Firemaking
 	| typeof Runecraft
-	| typeof Prayer;
+	| typeof Prayer
+	| typeof Fletching;
 
 const Skills: Collection<string, Skill> = new Collection([
 	[SkillsEnum.Crafting, Crafting as Skill],
@@ -34,7 +36,8 @@ const Skills: Collection<string, Skill> = new Collection([
 	[SkillsEnum.Woodcutting, Woodcutting as Skill],
 	[SkillsEnum.Firemaking, Firemaking as Skill],
 	[SkillsEnum.Prayer, Prayer as Skill],
-	[SkillsEnum.Runecraft, Runecraft as Skill]
+	[SkillsEnum.Runecraft, Runecraft as Skill],
+	[SkillsEnum.Fletching, Fletching as Skill]
 ]);
 
 export default Skills;

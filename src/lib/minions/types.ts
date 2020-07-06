@@ -9,6 +9,7 @@ import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { Bank, ArrayItemsResolved } from '../types';
 import { PerkTier } from '../constants';
 import { MonsterActivityTaskOptions } from '../types/minions';
+import { LevelRequirements } from '../skilling/types';
 
 export interface BankBackground {
 	image: Image | null;
@@ -62,9 +63,16 @@ export interface KillableMonster {
 	 */
 	groupKillable?: true;
 	respawnTime?: number;
+	levelRequirements?: LevelRequirements;
+	uniques?: ArrayItemsResolved;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
 	leader: string;
 	users: string[];
+}
+
+export interface Minigame {
+	id: number;
+	name: string;
 }

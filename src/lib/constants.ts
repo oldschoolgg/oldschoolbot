@@ -73,7 +73,10 @@ export const enum Emoji {
 	EasterEgg = '<:easterEgg:695473553314938920>',
 	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
-	AnimatedFireCape = '<a:FireCape:394692985184583690>'
+	Phoenix = '<:Phoenix:324127378223792129>',
+	AnimatedFireCape = '<a:FireCape:394692985184583690>',
+	Fletching = '<:fletching:630911040544309258>',
+	Purple = '🟪'
 }
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
@@ -107,8 +110,10 @@ export const enum Tasks {
 	CraftingActivity = 'craftingActivity',
 	BuryingActivity = 'buryingActivity',
 	OfferingActivity = 'offeringActivity',
+	FletchingActivity = 'fletchingActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
+	WintertodtActivity = 'wintertodtActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -132,7 +137,9 @@ export const enum Activity {
 	Crafting = 'Crafting',
 	Burying = 'Burying',
 	Offering = 'Offering',
-	FightCaves = 'FightCaves'
+	FightCaves = 'FightCaves',
+	Wintertodt = 'Wintertodt',
+	Fletching = 'Fletching'
 }
 
 export const enum Events {
@@ -180,20 +187,32 @@ export const enum PerkTier {
 	/**
 	 * Tier 3 Patron
 	 */
-	Four = 4
+	Four = 4,
+	/**
+	 * Tier 4 Patron
+	 */
+	Five = 5,
+	/**
+	 * Tier 5 Patron
+	 */
+	Six = 6
 }
 
 export const enum BitField {
 	HasGivenBirthdayPresent = 1,
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
-	IsPatronTier3 = 4
+	IsPatronTier3 = 4,
+	IsPatronTier4 = 5,
+	IsPatronTier5 = 6
 }
 
 export const enum PatronTierID {
 	One = '4608201',
 	Two = '4608226',
-	Three = '4720356'
+	Three = '4720356',
+	Four = '5262065',
+	Five = '5262216'
 }
 
 export const MAX_QP = 275;

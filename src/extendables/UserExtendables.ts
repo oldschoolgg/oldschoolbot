@@ -18,6 +18,7 @@ import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { SkillsEnum } from '../lib/skilling/types';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import { production } from '../config';
+import { formatOrdinal } from '../lib/util/formatOrdinal';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -187,6 +188,18 @@ export default class extends Extendable {
 		);
 	}
 
+	public async incrementMinigameScore(this: User, minigameID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const currentMinigameScores = this.settings.get(UserSettings.MinigameScores);
+
+		this.log(`had Quantity[${amountToAdd}] Score added to Minigame[${minigameID}]`);
+
+		return this.settings.update(
+			UserSettings.MinigameScores,
+			addItemToBank(currentMinigameScores, minigameID, amountToAdd)
+		);
+	}
+
 	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
 		if (sync) await this.settings.sync(true);
 
@@ -232,11 +245,20 @@ export default class extends Extendable {
 
 		// If they just reached 99, send a server notification.
 		if (convertXPtoLVL(currentXP) < 99 && convertXPtoLVL(newXP) >= 99) {
+			const skillNameCased = toTitleCase(skillName);
+			const [usersWith] = await this.client.query<
+				{
+					count: string;
+				}[]
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
+
 			this.client.emit(
 				Events.ServerNotification,
 				`${skill.emoji} **${this.username}'s** minion, ${
 					this.minionName
-				}, just achieved level 99 in ${toTitleCase(skillName)}!`
+				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+					parseInt(usersWith.count) + 1
+				)} to get 99 ${skillNameCased}.`
 			);
 		}
 

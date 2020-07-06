@@ -16,7 +16,8 @@ import {
 	FiremakingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	OfferingActivityTaskOptions,
-	BuryingActivityTaskOptions
+	BuryingActivityTaskOptions,
+	FletchingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -36,6 +37,8 @@ import { Emoji, Activity, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
+import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -58,6 +61,7 @@ export default class extends Extendable {
 - Train woodcutting with \`+chop\`
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
+- Train fletching with \`+fletch\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -250,11 +254,23 @@ export default class extends Extendable {
 			}
 
 			case Activity.FightCaves: {
-				return `${this.minionName} is currently attempting the ${
-					Emoji.AnimatedFireCape
-				} **Fight caves** ${Emoji.TzRekJad}. ${formatDuration(
-					currentTask.duration
-				)} remaining.`;
+				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
+			}
+			case Activity.Fletching: {
+				const data = currentTask as FletchingActivityTaskOptions;
+				const fletchable = Fletching.Fletchables.find(
+					item => item.id === data.fletchableID
+				);
+
+				return `${this.minionName} is currently fletching ${data.quantity}x ${
+					fletchable!.name
+				}. ${formattedDuration} Your ${
+					Emoji.Fletching
+				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
+			}
+
+			case Activity.Wintertodt: {
+				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}
 		}
 	}
@@ -265,5 +281,9 @@ export default class extends Extendable {
 
 	getCL(this: KlasaUser, itemID: number) {
 		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
+	}
+
+	getMinigameScore(this: KlasaUser, id: MinigameIDsEnum) {
+		return this.settings.get(UserSettings.MinigameScores)[id] ?? 0;
 	}
 }

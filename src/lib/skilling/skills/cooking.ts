@@ -2,7 +2,7 @@ import itemID from '../../util/itemID';
 import { Emoji } from '../../constants';
 import { Cookable, SkillsEnum } from '../types';
 
-const cookables: Cookable[] = [
+export const Cookables: Cookable[] = [
 	{
 		level: 1,
 		xp: 30,
@@ -10,6 +10,16 @@ const cookables: Cookable[] = [
 		name: 'Beef',
 		inputCookables: { [itemID('Raw beef')]: 1 },
 		stopBurnAt: 31,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt meat')
+	},
+	{
+		level: 1,
+		xp: 3,
+		id: itemID('Sinew'),
+		name: 'Sinew',
+		inputCookables: { [itemID('Raw beef')]: 1 },
+		stopBurnAt: 1,
 		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt meat')
 	},
@@ -121,7 +131,8 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw tuna')]: 1 },
 		stopBurnAt: 63,
 		stopBurnAtCG: 1,
-		burntCookable: 367
+		burntCookable: 367,
+		healAmount: 10
 	},
 	{
 		level: 30,
@@ -151,7 +162,8 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw lobster')]: 1 },
 		stopBurnAt: 74,
 		stopBurnAtCG: 64,
-		burntCookable: itemID('Burnt lobster')
+		burntCookable: itemID('Burnt lobster'),
+		healAmount: 12
 	},
 	{
 		level: 43,
@@ -161,7 +173,8 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw bass')]: 1 },
 		stopBurnAt: 80,
 		stopBurnAtCG: 1,
-		burntCookable: 367
+		burntCookable: 367,
+		healAmount: 13
 	},
 	{
 		level: 45,
@@ -171,7 +184,8 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw swordfish')]: 1 },
 		stopBurnAt: 86,
 		stopBurnAtCG: 81,
-		burntCookable: itemID('Burnt swordfish')
+		burntCookable: itemID('Burnt swordfish'),
+		healAmount: 14
 	},
 	{
 		level: 62,
@@ -181,7 +195,8 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw monkfish')]: 1 },
 		stopBurnAt: 90,
 		stopBurnAtCG: 88,
-		burntCookable: itemID('Burnt monkfish')
+		burntCookable: itemID('Burnt monkfish'),
+		healAmount: 16
 	},
 	{
 		level: 80,
@@ -191,7 +206,8 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw shark')]: 1 },
 		stopBurnAt: 99,
 		stopBurnAtCG: 94,
-		burntCookable: itemID('Burnt shark')
+		burntCookable: itemID('Burnt shark'),
+		healAmount: 20
 	},
 	{
 		level: 84,
@@ -211,7 +227,8 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw dark crab')]: 1 },
 		stopBurnAt: 99,
 		stopBurnAtCG: 1,
-		burntCookable: itemID('Burnt dark crab')
+		burntCookable: itemID('Burnt dark crab'),
+		healAmount: 22
 	},
 	{
 		level: 91,
@@ -221,13 +238,14 @@ const cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw manta ray')]: 1 },
 		stopBurnAt: 99,
 		stopBurnAtCG: 1,
-		burntCookable: itemID('Burnt manta ray')
+		burntCookable: itemID('Burnt manta ray'),
+		healAmount: 22
 	}
 ];
 
 const Cooking = {
 	aliases: ['cooking', 'cook'],
-	Cookables: cookables,
+	Cookables,
 	id: SkillsEnum.Cooking,
 	emoji: Emoji.Cooking
 };

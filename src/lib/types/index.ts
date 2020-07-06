@@ -1,4 +1,5 @@
 import { KlasaUser } from 'klasa';
+import { SkillsEnum } from '../skilling/types';
 
 export interface Bank {
 	[key: number]: number;
@@ -153,3 +154,9 @@ export interface MakePartyOptions {
 	usersAllowed?: string[];
 	party?: boolean;
 }
+
+export type Skills = Partial<
+	{
+		[key in SkillsEnum]: number;
+	}
+>;

@@ -4,11 +4,19 @@ import { User } from 'discord.js';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { KillableMonster } from '../lib/minions/types';
 import { formatItemReqs } from '../lib/util/formatItemReqs';
-import { itemNameFromID } from '../lib/util';
+import { itemNameFromID, toTitleCase } from '../lib/util';
+import { Skills } from '../lib/types';
+import { SkillsEnum } from '../lib/skilling/types';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
+	}
+
+	public get rawSkills(this: User) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		return this.settings.get('skills').toJSON() as Skills;
 	}
 
 	public hasMonsterRequirements(this: User, monster: KillableMonster) {
@@ -35,6 +43,21 @@ export default class extends Extendable {
 						`You need ${itemsRequiredStr} to kill ${
 							monster.name
 						}. You're missing ${itemNameFromID(item)}.`
+					];
+				}
+			}
+		}
+
+		if (monster.levelRequirements) {
+			for (const [skillEnum, levelRequired] of Object.entries(monster.levelRequirements)) {
+				if (this.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
+					return [
+						false,
+						`You need level ${levelRequired} ${toTitleCase(skillEnum)} to kill ${
+							monster.name
+						}. Check https://www.oldschool.gg/oldschoolbot/minions?${toTitleCase(
+							skillEnum
+						)} for information on how to train this skill.`
 					];
 				}
 			}
