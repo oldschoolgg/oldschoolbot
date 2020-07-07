@@ -68,7 +68,7 @@ export default class extends Extendable {
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
 - Train fletching with \`+fletch\`
-- Train farming with \`+farm\`
+- Train farming with \`+farm\` or \`+harvest\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -298,6 +298,10 @@ export default class extends Extendable {
 				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
 					SkillsEnum.Farming
 				)}`;
+			}
+
+			case Activity.Wintertodt: {
+				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}
 		}
 	}
