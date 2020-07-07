@@ -104,6 +104,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	upgradeType: string;
 	patchType: any;
 	msg: KlasaMessage;
+	planting: boolean;
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {

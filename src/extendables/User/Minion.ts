@@ -83,7 +83,7 @@ export default class extends Extendable {
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
 - Train fletching with \`+fletch\`
-- Train farming with \`+farm\`
+- Train farming with \`+farm\` or \`+harvest\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -359,6 +359,10 @@ export default class extends Extendable {
 				const data = currentTask as PickpocketActivityTaskOptions;
 				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID)!;
 				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
+			}
+
+			case Activity.Wintertodt: {
+				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}
 		}
 	}

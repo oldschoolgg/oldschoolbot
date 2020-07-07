@@ -57,7 +57,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|farm|harvest|cancel] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -452,6 +452,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await this.client.commands
 			.get('farm')!
 			.run(msg, [quantity, seedName, upgradeType])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async harvest(msg: KlasaMessage, [seedType]: [string]) {
+		await this.client.commands
+			.get('harvest')!
+			.run(msg, [seedType])
 			.catch(err => {
 				throw err;
 			});
