@@ -38,6 +38,7 @@ export const enum Emoji {
 	Minion = '<:minion:660517408968146946>',
 	Fireworks = '🎆',
 	Tick = '✅',
+	RedX = '❌',
 	Search = '🔎',
 	FancyLoveheart = '💝',
 	Gift = '🎁',
@@ -74,8 +75,10 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
+	Farming = '<:farming:712129722116735017>',
+	Tangleroot = '<:tangleroot:324127378978635778>',
 	Purple = '🟪',
-	Farming = '<:farming:712129722116735017>'
+	Timer = '<:ehpclock:729733212527525888>'
 }
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
