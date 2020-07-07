@@ -22,7 +22,8 @@ export default class extends Task {
 		upgradeType,
 		userID,
 		channelID,
-		msg
+		msg,
+		planting
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -38,6 +39,7 @@ export default class extends Task {
 		let payStr = '';
 		let wcStr = '';
 		let rakeStr = '';
+		let plantingStr = '';
 		let alivePlants = 0;
 		let chopped = false;
 		let farmingXpReceived = 0;
@@ -46,7 +48,6 @@ export default class extends Task {
 		let lives = 3;
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
-		if (!plant) return;
 
 		const hasMagicSecateurs = await msg.author.hasItem(itemID('Magic secateurs'), 1);
 		if (hasMagicSecateurs) {
@@ -84,6 +85,8 @@ export default class extends Task {
 		delete loot[itemID('Weeds')];
 
 		if (patchType.IsHarvestable === false) {
+			if (!plant) return;
+
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
 			plantXp = quantity * (plant.plantXp + compostXp);
 			farmingXpReceived = plantXp + harvestXp + rakeXp;
@@ -145,7 +148,10 @@ export default class extends Task {
 
 			alivePlants = patchType.LastQuantity - quantityDead;
 
-			plantXp = patchType.LastQuantity * (plant.plantXp + compostXp);
+			if (planting) {
+				if (!plant) return;
+				plantXp = quantity * (plant.plantXp + compostXp);
+			}
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
 			if (plantToHarvest.givesCrops === true) {
@@ -159,13 +165,13 @@ export default class extends Task {
 					const plantChanceFactor =
 						Math.floor(
 							Math.floor(
-								plant.chance1 +
-									(plant.chance99 - plant.chance1) *
+								plantToHarvest.chance1 +
+									(plantToHarvest.chance99 - plantToHarvest.chance1) *
 										((user.skillLevel(SkillsEnum.Farming) - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = (plantChanceFactor + 1) / 256;
-					if (plant.seedType === 'bush') lives = 4;
+					if (plantToHarvest.seedType === 'bush') lives = 4;
 					cropYield = 0;
 					const livesHolder = lives;
 					for (let k = 0; k < alivePlants; k++) {
@@ -224,11 +230,9 @@ export default class extends Task {
 				}
 			}
 
-			if (plant.seedType === 'hespori') {
+			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill();
-				console.log('test');
-				console.log(hesporiLoot);
 				loot = hesporiLoot;
 			}
 
@@ -244,9 +248,14 @@ export default class extends Task {
 				deathStr = ` During your harvest, you found that ${quantityDead}/${patchType.LastQuantity} of your plants died.`;
 			}
 
-			let str = `${user}, ${user.minionName} finished planting ${quantity}x ${
-				plant.name
-			} and harvesting ${patchType.LastQuantity}x ${
+			if (planting) {
+				if (!plant) return;
+				plantingStr = `${user}, ${user.minionName} finished planting ${quantity}x ${
+					plant.name
+				} and `
+			} else plantingStr = `${user}, ${user.minionName} finished `;
+
+			let str = `${plantingStr}harvesting ${patchType.LastQuantity}x ${
 				plantToHarvest.name
 			}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health for a total of ${farmingXpReceived.toLocaleString()} Farming XP.${wcStr}\n`;
 

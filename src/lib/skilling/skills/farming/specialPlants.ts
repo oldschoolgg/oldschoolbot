@@ -10,7 +10,7 @@ const specialPlants: Plant[] = [
 		inputItems: { [itemID(`Seaweed spore`)]: 1 },
 		outputCrop: itemID('Giant seaweed'),
 		name: `Seaweed`,
-		aliases: ['Seadweed'],
+		aliases: ['Seaweed'],
 		petChance: 7_500,
 		seedType: 'seaweed',
 		growthTime: 40,

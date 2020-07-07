@@ -38,6 +38,7 @@ export const enum Emoji {
 	Dice = '<:dice:660128887111548957>',
 	Fireworks = '🎆',
 	Tick = '✅',
+	RedX = '❌',
 	Search = '🔎',
 	FancyLoveheart = '💝',
 	Gift = '🎁',
@@ -74,9 +75,12 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
+	Farming = '<:farming:712129722116735017>',
+	Tangleroot = '<:tangleroot:324127378978635778>',
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
 	Ely = '<:ely:784453586033049630>',
+	Timer = '<:ehpclock:729733212527525888>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -88,8 +92,7 @@ export const enum Emoji {
 	Hammer = '<:hammer:778418736595206184>',
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
-	Crab = '<:crab:778418736432021505>',
-	Farming = '<:farming:712129722116735017>'
+	Crab = '<:crab:778418736432021505>'
 }
 
 export const enum ReactionEmoji {

@@ -222,6 +222,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			upgradeType,
+			planting: true,
 			duration,
 			msg,
 			type: Activity.Farming,
