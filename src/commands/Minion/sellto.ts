@@ -118,7 +118,7 @@ export default class extends BotCommand {
 			);
 		} catch (err) {
 			buyerConfirmationMsg.edit(`Cancelling sale of ${itemDesc}.`);
-			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
+			return msg.channel.send(`Cancelling sale of ${itemDesc}.`);
 		}
 
 		try {
