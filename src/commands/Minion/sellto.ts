@@ -89,17 +89,20 @@ export default class extends BotCommand {
 			sellStr += `\n\nWarning: The bot would pay you more (${totalPrice.toLocaleString()} GP) for these items than you are selling them for!`;
 		}
 
-		const sellMsg = await msg.channel.send(sellStr);
+		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+			const sellMsg = await msg.channel.send(sellStr);
 
-		// Confirm the seller wants to sell
-		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				options
-			);
-		} catch (err) {
-			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
+			// Confirm the seller wants to sell
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					options
+				);
+			} catch (err) {
+				return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
+			}
 		}
 
 		// Confirm the buyer wants to buy
