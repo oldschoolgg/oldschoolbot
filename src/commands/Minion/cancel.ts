@@ -34,14 +34,14 @@ export default class extends BotCommand {
 		}
 
 		if (currentTask.type === Activity.GroupMonsterKilling) {
-			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if you left them!`;
+			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`;
 		}
 
 		const taskTicker = tickerTaskFromActivity(currentTask.type);
 
 		const cancelMsg = await msg.channel.send(
 			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
-				`They'll drop all their current loot to get back as fast as they can, so you won't receive any loot from this trip if you cancel it.`
+				`They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`
 		);
 
 		try {
