@@ -9,7 +9,6 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.ClueCompletion:
 			return Tasks.ClueTicker;
 		case Activity.GroupMonsterKilling:
-			return Tasks.MonsterKillingTicker;
 		case Activity.MonsterKilling:
 			return Tasks.MonsterKillingTicker;
 		case Activity.Fishing:
