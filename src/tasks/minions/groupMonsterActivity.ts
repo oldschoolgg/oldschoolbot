@@ -22,7 +22,7 @@ export default class extends Task {
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = addBankToBank(currentLoot ?? {}, loot);
 			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
-				? kcAmounts[userWhoGetsLoot]++
+				? ++kcAmounts[userWhoGetsLoot]
 				: 1;
 		}
 
