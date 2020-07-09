@@ -15,6 +15,7 @@
 		"chokidar": "^3.4.0",
 		"crystalmethlabs": "github:gc/crystalmethlabs",
 		"discord.js": "discordjs/discord.js#fe7df708e44e0280dfaf0f8e457b154781bb5140",
+		"emoji-regex": "^9.0.0",
 		"he": "^1.2.0",
 		"klasa": "github:dirigeants/klasa#916/head",
 		"klasa-decorators": "^0.0.1",
