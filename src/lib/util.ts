@@ -5,6 +5,9 @@ import { ScheduledTask, util, KlasaClient } from 'klasa';
 import { Client } from 'discord.js';
 import { nodeCrypto, integer, real, bool } from 'random-js';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const emojiRegex = require('emoji-regex');
+
 import { Tasks, Events } from './constants';
 import { Bank } from './types';
 import { channelIsSendable } from './util/channelIsSendable';
@@ -308,4 +311,10 @@ export async function queuedMessageSend(client: KlasaClient, channelID: string, 
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;
 	client.queuePromise(() => channel.send(str, { split: true }));
+}
+
+const rawEmojiRegex = emojiRegex();
+
+export function stripEmojis(str: string) {
+	return str.replace(rawEmojiRegex, '');
 }
