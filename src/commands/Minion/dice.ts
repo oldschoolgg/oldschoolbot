@@ -20,7 +20,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
-		if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
 		const roll = rand(1, 100);
 
 		const embed = new MessageEmbed()
@@ -31,6 +30,8 @@ export default class extends BotCommand {
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
+			if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
+
 			if (amount > 2_000_000_000) {
 				throw `You can only dice up to 2bil at a time!`;
 			}
