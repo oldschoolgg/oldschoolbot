@@ -40,6 +40,8 @@ export default class extends BotCommand {
 			throw `That user is busy right now.`;
 		}
 
+		await Promise.all([buyerMember.user.settings.sync(true), msg.author.settings.sync(true)]);
+
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}

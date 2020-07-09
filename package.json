@@ -1,9 +1,9 @@
 {
 	"scripts": {
 		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
-		"build": "tsc -p .",
+		"build": "yarn wipedist && tsc -p .",
 		"wipedist": "rimraf \"dist/\"",
-		"start": "yarn wipedist && yarn build && concurrently \"tsc -p . -w\" \"node dist/src\""
+		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\""
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
