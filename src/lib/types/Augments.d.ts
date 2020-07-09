@@ -127,7 +127,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns the KC the user has for this monster.
 		 */
-		getKC(minigame: Monster): number;
+		getKC(monster: Monster): number;
 		/**
 		 * Returns minigame score
 		 */

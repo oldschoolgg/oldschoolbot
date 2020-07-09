@@ -6,6 +6,7 @@ import { Util } from 'oldschooljs';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { Time, Events } from '../lib/constants';
 import getOSItem from '../lib/util/getOSItem';
+import { rand } from '../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -33,7 +34,7 @@ export default class extends Extendable {
 		if (
 			!needsToFetchAgain &&
 			currentItem &&
-			Date.now() - currentItem.fetchedAt < Time.Day * 7
+			Date.now() - currentItem.fetchedAt < Time.Day * rand(20, 50)
 		) {
 			return currentItem.price;
 		}

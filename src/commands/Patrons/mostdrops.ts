@@ -26,13 +26,12 @@ export default class extends BotCommand {
 
 		const item = getOSItem(itemName);
 
-		const ironmanPart = msg.flagArgs.im ? 'AND "minion.ironman" = true' : '';
-		const query = `SELECT "id", "monsterScores"->>'${mon.id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "monsterScores"->>'${mon.id}' IS NOT NULL ${ironmanPart} ORDER BY ("monsterScores"->>'${mon.id}')::int DESC LIMIT 10;`;
+		const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
 		const result = await this.client.query<
 			{
 				id: string;
-				KC: string;
+				qty: string;
 			}[]
 		>(query);
 
@@ -43,10 +42,10 @@ export default class extends BotCommand {
 		return msg.send(
 			`**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
 				.map(
-					({ id, KC }) =>
+					({ id, qty }) =>
 						// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 						// @ts-ignore
-						`${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`
+						`${command.getUsername(id) as string}: ${parseInt(qty).toLocaleString()}`
 				)
 				.join('\n')}`
 		);

@@ -1,11 +1,11 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Util, Items } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import itemIsTradeable, { specialTradeables } from '../../lib/util/itemIsTradeable';
 import cleanItemName from '../../lib/util/cleanItemName';
 import { GuildMember } from 'discord.js';
-import { Events, TradeableItems } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
 import { stringMatches } from '../../lib/util';
@@ -43,8 +43,10 @@ export default class extends BotCommand {
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
-		const osItem = TradeableItems.find(item =>
-			stringMatches(item.name, cleanItemName(itemName))
+		const osItem = Items.find(
+			item =>
+				stringMatches(item.name, cleanItemName(itemName)) &&
+				(specialTradeables.includes(item.id) || (item as Item).tradeable)
 		);
 		if (!osItem) throw `That item doesnt exist.`;
 		const tradeable = itemIsTradeable(osItem.id);
@@ -87,17 +89,20 @@ export default class extends BotCommand {
 			sellStr += `\n\nWarning: The bot would pay you more (${totalPrice.toLocaleString()} GP) for these items than you are selling them for!`;
 		}
 
-		const sellMsg = await msg.channel.send(sellStr);
+		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+			const sellMsg = await msg.channel.send(sellStr);
 
-		// Confirm the seller wants to sell
-		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				options
-			);
-		} catch (err) {
-			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
+			// Confirm the seller wants to sell
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					options
+				);
+			} catch (err) {
+				return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
+			}
 		}
 
 		// Confirm the buyer wants to buy
@@ -113,7 +118,7 @@ export default class extends BotCommand {
 			);
 		} catch (err) {
 			buyerConfirmationMsg.edit(`Cancelling sale of ${itemDesc}.`);
-			return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
+			return msg.channel.send(`Cancelling sale of ${itemDesc}.`);
 		}
 
 		try {

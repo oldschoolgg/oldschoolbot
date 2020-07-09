@@ -43,27 +43,30 @@ export default class extends BotCommand {
 
 		const itemString = await createReadableItemListFromBank(this.client, buyable.outputItems);
 
-		const sellMsg = await msg.channel.send(
-			`${
-				msg.author
-			}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
-				buyable.gpCost
-			)}.`
-		);
-
-		// Confirm the user wants to buy
-		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				}
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(
+				`${
+					msg.author
+				}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
+					buyable.gpCost
+				)}.`
 			);
-		} catch (err) {
-			return sellMsg.edit(`Cancelling purchase of ${toTitleCase(buyable.name)}.`);
+
+			// Confirm the user wants to buy
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					{
+						max: 1,
+						time: Time.Second * 15,
+						errors: ['time']
+					}
+				);
+			} catch (err) {
+				return sellMsg.edit(`Cancelling purchase of ${toTitleCase(buyable.name)}.`);
+			}
 		}
 
 		await msg.author.removeGP(buyable.gpCost);

@@ -108,23 +108,26 @@ export default class extends BotCommand {
 			}
 		}
 
-		const sellMsg = await msg.channel.send(
-			`${msg.author}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}.`
-		);
-
-		// Confirm the user wants to create the item(s)
-		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				}
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(
+				`${msg.author}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}.`
 			);
-		} catch (err) {
-			return sellMsg.edit(`Cancelling item creation.`);
+
+			// Confirm the user wants to create the item(s)
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					{
+						max: 1,
+						time: Time.Second * 15,
+						errors: ['time']
+					}
+				);
+			} catch (err) {
+				return sellMsg.edit(`Cancelling item creation.`);
+			}
 		}
 
 		await msg.author.settings.update(

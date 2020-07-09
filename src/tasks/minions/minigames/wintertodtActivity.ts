@@ -41,6 +41,7 @@ const PointsTable = new SimpleTable<number>()
 export default class extends Task {
 	async run({ userID, channelID, quantity }: WintertodtActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
 		const bank = user.settings.get(UserSettings.Bank);
@@ -74,7 +75,13 @@ export default class extends Task {
 		if (bankHasItem(loot, itemID('Phoenix'))) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.username}'s** minion, ${user.minionName}, just received a Phoenix!`
+				`${Emoji.Phoenix} **${user.username}'s** minion, ${
+					user.minionName
+				}, just received a Phoenix! Their Wintertodt KC is ${user.getMinigameScore(
+					MinigameIDsEnum.Wintertodt
+				) + quantity}, and their Firemaking level is ${user.skillLevel(
+					SkillsEnum.Firemaking
+				)}.`
 			);
 		}
 
@@ -91,6 +98,7 @@ export default class extends Task {
 		const wcXpToGive = Math.floor(numberOfRoots * (wcLvl * 0.3));
 		await user.addXP(SkillsEnum.Woodcutting, wcXpToGive);
 		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
+		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore(MinigameIDsEnum.Wintertodt, quantity);
@@ -106,11 +114,15 @@ export default class extends Task {
 		);
 
 		if (!channelIsSendable(channel)) return;
-		return channel.send(
-			`${user} ${
-				user.minionName
-			} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP and ${wcXpToGive.toLocaleString()} Woodcutting XP, you cut ${numberOfRoots}x Bruma roots.`,
-			new MessageAttachment(image)
-		);
+
+		let output = `${user} ${
+			user.minionName
+		} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP and ${wcXpToGive.toLocaleString()} Woodcutting XP, you cut ${numberOfRoots}x Bruma roots.`;
+
+		if (newLevel > currentLevel) {
+			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
+		}
+
+		return channel.send(output, new MessageAttachment(image));
 	}
 }
