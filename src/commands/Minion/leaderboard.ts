@@ -394,9 +394,6 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		if (2 > 1) {
-			throw `The collection log leaderboard is currently disabled.`;
-		}
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
