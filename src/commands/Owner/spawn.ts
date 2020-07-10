@@ -6,7 +6,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[number:int{1,10000000}] <itemname:...string>',
-			usageDelim: ' ',
+			usageDelim: ' '
 		});
 	}
 
