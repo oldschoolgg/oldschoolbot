@@ -5,7 +5,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import getOSItem from '../../lib/util/getOSItem';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 const options = {
 	max: 1,
@@ -17,24 +17,23 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] <itemname:...string>',
+			usage: '[quantity:int{1}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, itemName]: [number | undefined, string]) {
+	async run(msg: KlasaMessage, [quantity, item]: [number | undefined, Item[]]) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
-		const osItem = getOSItem(itemName);
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItem = item.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
-		if (!itemIsTradeable(osItem.id)) {
-			throw `That item isn't tradeable.`;
+		if (!osItem) {
+			throw `You don't have any of this item to sell, or it is not tradeable.`;
 		}
 
-		const numItemsHas = await msg.author.numberOfItemInBank(osItem.id);
-		if (numItemsHas === 0) throw `You don't have any of this item to sell!`;
-
+		const numItemsHas = userBank[osItem.id];
 		if (!quantity) {
 			quantity = numItemsHas;
 		}

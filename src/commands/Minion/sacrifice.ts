@@ -4,11 +4,11 @@ import { Util } from 'oldschooljs';
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import getOSItem from '../../lib/util/getOSItem';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { addItemToBank } from '../../lib/util';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 const options = {
 	max: 1,
@@ -20,14 +20,14 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] [itemname:...string]',
+			usage: '[quantity:int{1}] [item:...item]',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, itemName]: [number | undefined, string]) {
-		if (!itemName) {
+	async run(msg: KlasaMessage, [quantity, item]: [number | undefined, Item[]]) {
+		if (!item) {
 			return msg.send(
 				`Your current sacrificed amount is: ${msg.author.settings
 					.get(UserSettings.SacrificedValue)
@@ -35,25 +35,24 @@ export default class extends BotCommand {
 			);
 		}
 
-		const osItem = getOSItem(itemName);
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItem = item.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
-		if (!itemIsTradeable(osItem.id)) {
-			throw `That item isn't tradeable.`;
+		if (!osItem) {
+			throw `You don't have any of this item to sacrifice, or it is not tradeable.`;
 		}
 
-		const numItemsHas = await msg.author.numberOfItemInBank(osItem.id);
-		if (numItemsHas === 0) throw `You don't have any of this item.`;
-
+		const numItemsHas = userBank[osItem.id];
 		if (!quantity) {
 			quantity = numItemsHas;
 		}
 
-		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
-		const totalPrice = priceOfItem * quantity;
-
 		if (quantity > numItemsHas) {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
+
+		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
+		const totalPrice = priceOfItem * quantity;
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
