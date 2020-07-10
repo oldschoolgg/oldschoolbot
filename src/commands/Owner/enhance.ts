@@ -11,12 +11,12 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [amount, skillName]:[number, string]) {
+	async run(msg: KlasaMessage, [amount, skillName] : [number, string]) {
 		await msg.author.settings.sync(true);
 		
 		const currentXP = msg.author.settings.get(`skills.${skillName}`) as number;
 		
-		var newXP = await Math.min(200_000_000, currentXP + amount);
+		var newXP = Math.min(200_000_000, currentXP + amount);
 		if (newXP < 0) { 
 			await msg.author.settings.update(`skills.${skillName}`, 0);
 		} else {
