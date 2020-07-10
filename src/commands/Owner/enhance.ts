@@ -5,7 +5,7 @@ import { convertXPtoLVL } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['enhance','exp','xp'],
+			aliases: ['enhance', 'exp', 'xp'],
 			usage: '<amount:int{-200000000,200000000}> <skillName:string>',
 			usageDelim: ' '
 		});
@@ -14,7 +14,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [amount, skillName]:[number, string]) {
 		await msg.author.settings.sync(true);
 		
-		const currentXP=msg.author.settings.get(`skills.${skillName}`) as number;
+		const currentXP = msg.author.settings.get(`skills.${skillName}`) as number;
 		
 		var newXP = await Math.min(200_000_000, currentXP + amount);
 		if (newXP < 0) { 
