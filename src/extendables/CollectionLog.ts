@@ -8,6 +8,8 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
 	public get collectionLog(this: User) {
 		return this.settings.get(UserSettings.CollectionLogBank);
 	}

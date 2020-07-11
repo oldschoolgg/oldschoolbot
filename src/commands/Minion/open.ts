@@ -15,7 +15,7 @@ import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 
-const itemsToNotifyOf: number[] = Object.values(cluesRares)
+const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
 	.concat(
 		ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward)
