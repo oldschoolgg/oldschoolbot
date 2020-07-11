@@ -28,7 +28,10 @@ export default class extends SQLProvider {
 		formatDatatype: (name, datatype, def = null) =>
 			`"${name}" ${datatype}${def === null ? '' : ` NOT NULL DEFAULT ${def}`}`
 	})
-		.add('boolean', { type: 'BOOL', serializer: input => this.cBoolean(input as boolean) })
+		.add('boolean', {
+			type: 'BOOL',
+			serializer: input => this.cBoolean(input as boolean)
+		})
 		.add('integer', {
 			type: ({ maximum }) => (maximum !== null && maximum >= 2 ** 32 ? 'BIGINT' : 'INTEGER'),
 			serializer: input => this.cNumber(input as number | bigint)
@@ -252,6 +255,8 @@ export default class extends SQLProvider {
 	}
 
 	public run<T extends Submittable>(queryStream: T): T;
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2394
 	public run<R extends unknown[] = unknown[], I extends unknown[] = unknown[]>(
 		queryConfig: QueryArrayConfig<I>,
 		values?: I
@@ -290,6 +295,8 @@ export default class extends SQLProvider {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556
 		const results = await this.run(...sql);
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore 2339
 		return results.rows;
 	}
 
@@ -311,6 +318,8 @@ export default class extends SQLProvider {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556
 		const results = await this.run(...sql);
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore 2339
 		return results.rows[0] || null;
 	}
 

@@ -1,6 +1,6 @@
 import { Craftable } from '../../../types';
 import itemID from '../../../../util/itemID';
-import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
+import { resolveNameBank } from '../../../../util';
 
 const Glassblowing: Craftable[] = [
 	{
@@ -8,7 +8,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Beer glass'),
 		level: 1,
 		xp: 17.5,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	},
 	{
@@ -16,7 +16,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Empty candle lantern'),
 		level: 4,
 		xp: 19,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	},
 	{
@@ -24,7 +24,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Empty oil lamp'),
 		level: 12,
 		xp: 25,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	},
 	{
@@ -32,7 +32,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Vial'),
 		level: 33,
 		xp: 35,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	},
 	{
@@ -40,7 +40,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Fishbowl'),
 		level: 42,
 		xp: 42.5,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	},
 	{
@@ -48,7 +48,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Unpowered orb'),
 		level: 46,
 		xp: 52.5,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	},
 	{
@@ -56,7 +56,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Lantern lens'),
 		level: 49,
 		xp: 55,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	},
 	{
@@ -64,7 +64,7 @@ const Glassblowing: Craftable[] = [
 		id: itemID('Empty light orb'),
 		level: 87,
 		xp: 70,
-		inputItems: transformStringBankToNum({ 'Molten glass': 1 }),
+		inputItems: resolveNameBank({ 'Molten glass': 1 }),
 		tickRate: 3
 	}
 ];

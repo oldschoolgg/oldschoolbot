@@ -6,14 +6,14 @@ import {
 	formatDuration,
 	rand,
 	itemNameFromID,
-	removeItemFromBank
+	removeItemFromBank,
+	bankHasItem
 } from '../../lib/util';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import bankHasItem from '../../lib/util/bankHasItem';
 import Fletching from '../../lib/skilling/skills/fletching/fletching';
 import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
 

@@ -10,14 +10,14 @@ import {
 	rand,
 	percentChance,
 	removeBankFromBank,
-	addBankToBank
+	bankHasAllItemsFromBank,
+	addBanks
 } from '../../lib/util';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import mejJalImage from '../../lib/image/mejJalImage';
-import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -44,7 +44,7 @@ export default class extends BotCommand {
 
 		// Reduce time based on KC
 		const jadKC = user.getKC(TzTokJad);
-		const percentIncreaseFromKC = Math.floor(calcWhatPercent(Math.min(50, jadKC), 50)) / 2;
+		const percentIncreaseFromKC = Math.min(50, jadKC);
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 		debugStr += `${percentIncreaseFromKC}% from KC`;
 
@@ -61,21 +61,21 @@ export default class extends BotCommand {
 
 	determineChanceOfDeathPreJad(user: KlasaUser) {
 		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
-		let deathChance = 14 - attempts * 2;
+		let deathChance = Math.max(14 - attempts * 2, 5);
 
 		// -4% Chance of dying before Jad if you have SGS.
 		if (user.hasItemEquippedAnywhere(itemID('Saradomin godsword'))) {
 			deathChance -= 4;
 		}
 
-		return Math.max(deathChance, 5);
+		return deathChance;
 	}
 
 	determineChanceOfDeathInJad(user: KlasaUser) {
 		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
 		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
-		// Chance of death cannot be 100% or <5>%.
+		// Chance of death cannot be 100% or <5%.
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
@@ -159,14 +159,14 @@ export default class extends BotCommand {
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.FightCavesCost,
-			addBankToBank(
+			addBanks([
 				this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost),
 				fightCavesSupplies
-			)
+			])
 		);
 
 		const totalDeathChance = (
-			((100 - preJadDeathChance + 1) * (100 - jadDeathChance)) /
+			((100 - preJadDeathChance) * (100 - jadDeathChance)) /
 			100
 		).toFixed(1);
 

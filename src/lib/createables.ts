@@ -1,6 +1,6 @@
 import { Bank } from './types';
 import itemID from './util/itemID';
-import { transformStringBankToNum } from './util/transformStringBankToNum';
+import { resolveNameBank } from './util';
 
 interface Createable {
 	name: string;
@@ -573,13 +573,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Holy book',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Saradomin page 1': 1,
 			'Saradomin page 2': 1,
 			'Saradomin page 3': 1,
 			'Saradomin page 4': 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Holy book': 1
 		}),
 		agilityLevel: 35,
@@ -587,13 +587,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of balance',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Guthix page 1': 1,
 			'Guthix page 2': 1,
 			'Guthix page 3': 1,
 			'Guthix page 4': 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Book of balance': 1
 		}),
 		agilityLevel: 35,
@@ -601,13 +601,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Unholy book',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Zamorak page 1': 1,
 			'Zamorak page 2': 1,
 			'Zamorak page 3': 1,
 			'Zamorak page 4': 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Unholy book': 1
 		}),
 		agilityLevel: 35,
@@ -615,13 +615,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of law',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Armadyl page 1': 1,
 			'Armadyl page 2': 1,
 			'Armadyl page 3': 1,
 			'Armadyl page 4': 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Book of law': 1
 		}),
 		agilityLevel: 35,
@@ -629,13 +629,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of war',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Bandos page 1': 1,
 			'Bandos page 2': 1,
 			'Bandos page 3': 1,
 			'Bandos page 4': 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Book of war': 1
 		}),
 		agilityLevel: 35,
@@ -643,13 +643,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of darkness',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Ancient page 1': 1,
 			'Ancient page 2': 1,
 			'Ancient page 3': 1,
 			'Ancient page 4': 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Book of darkness': 1
 		}),
 		agilityLevel: 35,
@@ -657,22 +657,22 @@ const Createables: Createable[] = [
 	},
 	{
 		name: "Ava's accumulator",
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Steel arrow': 75
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			"Ava's accumulator": 1
 		}),
 		QPRequired: 30
 	},
 	{
 		name: "Ava's assembler",
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Mithril arrow': 75,
 			"Ava's accumulator": 1,
 			"Vorkath's head": 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205

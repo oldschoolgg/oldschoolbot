@@ -5,7 +5,7 @@ import { Monsters } from 'oldschooljs';
 import { SettingsEntry, StringKeyedBank } from '../../lib/types';
 import badges from '../../lib/badges';
 import { Time } from '../../lib/constants';
-import { stringMatches, toTitleCase, convertXPtoLVL } from '../../lib/util';
+import { stringMatches, toTitleCase, convertXPtoLVL, stripEmojis } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import Skills from '../../lib/skilling/skills';
@@ -141,11 +141,9 @@ export default class extends Command {
 		}
 
 		for (const user of arrayOfUsers) {
-			this.usernameCache.map.set(
-				user.id,
-				`${user.badges.map(num => badges[num]).join(' ')} ${this.getUsername(user.id) ||
-					'(Unknown)'}`
-			);
+			const rawName = this.client.users.get(user.id)?.username ?? '(Unknown)';
+			const rawBadges = user.badges.map(num => badges[num]).join(' ');
+			this.usernameCache.map.set(user.id, `${rawBadges} ${stripEmojis(rawName)}`);
 		}
 	}
 
@@ -396,9 +394,6 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		if (2 > 1) {
-			throw `The collection log leaderboard is currently disabled.`;
-		}
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
