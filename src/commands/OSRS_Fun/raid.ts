@@ -3,16 +3,13 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { addBankToBank } from '../../lib/util';
+import { addBanks } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { Util } from 'oldschooljs';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { coxLog } from '../../lib/collectionLog';
-import itemID from '../../lib/util/itemID';
 
-const itemsToShow = Object.values(coxLog)
-	.flat(Infinity)
-	.filter(i => i !== itemID('Dark relic'));
+const itemsToShow = Object.values(coxLog).flat(1);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -52,7 +49,7 @@ export default class extends BotCommand {
 				});
 
 				for (const lootBank of Object.values(singleRaidLoot)) {
-					loot = addBankToBank(loot, lootBank);
+					loot = addBanks([loot, lootBank]);
 				}
 			}
 
@@ -89,7 +86,7 @@ export default class extends BotCommand {
 			});
 
 			for (const [memberID, lootBank] of Object.entries(singleRaidLoot)) {
-				loot[memberID] = addBankToBank(loot[memberID] || {}, lootBank);
+				loot[memberID] = addBanks([loot[memberID] || {}, lootBank]);
 			}
 		}
 

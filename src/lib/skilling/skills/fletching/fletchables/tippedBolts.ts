@@ -1,6 +1,6 @@
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
-import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
+import { resolveNameBank } from '../../../../util';
 
 const TippedBolts: Fletchable[] = [
 	{
@@ -8,7 +8,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Opal bolts'),
 		level: 11,
 		xp: 1.6,
-		inputItems: transformStringBankToNum({ 'Opal bolt tips': 1, 'Bronze bolts': 1 }),
+		inputItems: resolveNameBank({ 'Opal bolt tips': 1, 'Bronze bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -16,7 +16,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Pearl bolts'),
 		level: 41,
 		xp: 3.2,
-		inputItems: transformStringBankToNum({ 'Pearl bolt tips': 1, 'Iron bolts': 1 }),
+		inputItems: resolveNameBank({ 'Pearl bolt tips': 1, 'Iron bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -24,7 +24,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Topaz bolts'),
 		level: 48,
 		xp: 4,
-		inputItems: transformStringBankToNum({ 'Topaz bolt tips': 1, 'Steel bolts': 1 }),
+		inputItems: resolveNameBank({ 'Topaz bolt tips': 1, 'Steel bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -32,7 +32,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Sapphire bolts'),
 		level: 56,
 		xp: 4.7,
-		inputItems: transformStringBankToNum({ 'Sapphire bolt tips': 1, 'Mithril bolts': 1 }),
+		inputItems: resolveNameBank({ 'Sapphire bolt tips': 1, 'Mithril bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -40,7 +40,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Emerald bolts'),
 		level: 58,
 		xp: 5.5,
-		inputItems: transformStringBankToNum({ 'Emerald bolt tips': 1, 'Mithril bolts': 1 }),
+		inputItems: resolveNameBank({ 'Emerald bolt tips': 1, 'Mithril bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -48,7 +48,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Ruby bolts'),
 		level: 63,
 		xp: 6.3,
-		inputItems: transformStringBankToNum({ 'Ruby bolt tips': 1, 'Adamant bolts': 1 }),
+		inputItems: resolveNameBank({ 'Ruby bolt tips': 1, 'Adamant bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -56,7 +56,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Diamond bolts'),
 		level: 65,
 		xp: 7,
-		inputItems: transformStringBankToNum({ 'Diamond bolt tips': 1, 'Adamant bolts': 1 }),
+		inputItems: resolveNameBank({ 'Diamond bolt tips': 1, 'Adamant bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -64,7 +64,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Dragonstone bolts'),
 		level: 71,
 		xp: 8.2,
-		inputItems: transformStringBankToNum({ 'Dragonstone bolt tips': 1, 'Runite bolts': 1 }),
+		inputItems: resolveNameBank({ 'Dragonstone bolt tips': 1, 'Runite bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -72,7 +72,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Onyx bolts'),
 		level: 73,
 		xp: 9.4,
-		inputItems: transformStringBankToNum({ 'Onyx bolt tips': 1, 'Runite bolts': 1 }),
+		inputItems: resolveNameBank({ 'Onyx bolt tips': 1, 'Runite bolts': 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -80,7 +80,7 @@ const TippedBolts: Fletchable[] = [
 		id: itemID('Amethyst broad bolts'),
 		level: 76,
 		xp: 10.6,
-		inputItems: transformStringBankToNum({ 'Amethyst bolt tips': 1, 'Broad bolts': 1 }),
+		inputItems: resolveNameBank({ 'Amethyst bolt tips': 1, 'Broad bolts': 1 }),
 		tickRate: 0.2
 	}
 ];

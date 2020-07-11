@@ -5,8 +5,13 @@ import { Misc } from 'oldschooljs';
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
-import { stringMatches, itemNameFromID, addBankToBank, roll } from '../../lib/util';
-import bankFromLootTableOutput from '../../lib/util/bankFromLootTableOutput';
+import {
+	stringMatches,
+	itemNameFromID,
+	roll,
+	addBanks,
+	bankFromLootTableOutput
+} from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -15,7 +20,7 @@ import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 
-const itemsToNotifyOf: number[] = Object.values(cluesRares)
+const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
 	.concat(
 		ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward)
@@ -72,7 +77,7 @@ export default class extends BotCommand {
 
 		let hadMimic = false;
 		if (clueTier.mimicChance && roll(clueTier.mimicChance)) {
-			loot = addBankToBank(Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot);
+			loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
 			opened += ' and defeated the Mimic inside';
 			hadMimic = true;
 		}

@@ -1,6 +1,6 @@
 import { Craftable } from '../../../types';
 import itemID from '../../../../util/itemID';
-import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
+import { resolveNameBank } from '../../../../util';
 
 const Dragonhide: Craftable[] = [
 	{
@@ -8,7 +8,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Green d'hide vambraces"),
 		level: 57,
 		xp: 62,
-		inputItems: transformStringBankToNum({ 'Green dragon leather': 1 }),
+		inputItems: resolveNameBank({ 'Green dragon leather': 1 }),
 		tickRate: 3
 	},
 	{
@@ -16,7 +16,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Green d'hide chaps"),
 		level: 60,
 		xp: 124,
-		inputItems: transformStringBankToNum({ 'Green dragon leather': 2 }),
+		inputItems: resolveNameBank({ 'Green dragon leather': 2 }),
 		tickRate: 3.5
 	},
 	{
@@ -24,7 +24,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Green d'hide shield"),
 		level: 62,
 		xp: 124,
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Green dragon leather': 2,
 			'Maple shield': 1,
 			'Steel nails': 15
@@ -36,7 +36,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Green d'hide body"),
 		level: 63,
 		xp: 186,
-		inputItems: transformStringBankToNum({ 'Green dragon leather': 3 }),
+		inputItems: resolveNameBank({ 'Green dragon leather': 3 }),
 		tickRate: 3.5
 	},
 	{
@@ -44,7 +44,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Blue d'hide vambraces"),
 		level: 66,
 		xp: 70,
-		inputItems: transformStringBankToNum({ 'Blue dragon leather': 1 }),
+		inputItems: resolveNameBank({ 'Blue dragon leather': 1 }),
 		tickRate: 3
 	},
 	{
@@ -52,7 +52,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Blue d'hide chaps"),
 		level: 68,
 		xp: 140,
-		inputItems: transformStringBankToNum({ 'Blue dragon leather': 2 }),
+		inputItems: resolveNameBank({ 'Blue dragon leather': 2 }),
 		tickRate: 3.5
 	},
 	{
@@ -60,7 +60,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Blue d'hide shield"),
 		level: 69,
 		xp: 140,
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Blue dragon leather': 2,
 			'Yew shield': 1,
 			'Mithril nails': 15
@@ -72,7 +72,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Blue d'hide body"),
 		level: 71,
 		xp: 210,
-		inputItems: transformStringBankToNum({ 'Blue dragon leather': 3 }),
+		inputItems: resolveNameBank({ 'Blue dragon leather': 3 }),
 		tickRate: 3.5
 	},
 	{
@@ -80,7 +80,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Red d'hide vambraces"),
 		level: 73,
 		xp: 78,
-		inputItems: transformStringBankToNum({ 'Red dragon leather': 1 }),
+		inputItems: resolveNameBank({ 'Red dragon leather': 1 }),
 		tickRate: 3
 	},
 	{
@@ -88,7 +88,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Red d'hide chaps"),
 		level: 75,
 		xp: 156,
-		inputItems: transformStringBankToNum({ 'Red dragon leather': 2 }),
+		inputItems: resolveNameBank({ 'Red dragon leather': 2 }),
 		tickRate: 3.5
 	},
 	{
@@ -96,7 +96,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Red d'hide shield"),
 		level: 76,
 		xp: 156,
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Red dragon leather': 2,
 			'Magic shield': 1,
 			'Adamantite nails': 15
@@ -108,7 +108,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Red d'hide body"),
 		level: 77,
 		xp: 234,
-		inputItems: transformStringBankToNum({ 'Red dragon leather': 3 }),
+		inputItems: resolveNameBank({ 'Red dragon leather': 3 }),
 		tickRate: 3.5
 	},
 	{
@@ -116,7 +116,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Black d'hide vambraces"),
 		level: 79,
 		xp: 86,
-		inputItems: transformStringBankToNum({ 'Black dragon leather': 1 }),
+		inputItems: resolveNameBank({ 'Black dragon leather': 1 }),
 		tickRate: 3
 	},
 	{
@@ -124,7 +124,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Black d'hide chaps"),
 		level: 82,
 		xp: 172,
-		inputItems: transformStringBankToNum({ 'Black dragon leather': 2 }),
+		inputItems: resolveNameBank({ 'Black dragon leather': 2 }),
 		tickRate: 3.5
 	},
 	{
@@ -132,7 +132,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Black d'hide shield"),
 		level: 83,
 		xp: 172,
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Black dragon leather': 2,
 			'Redwood shield': 1,
 			'Rune nails': 15
@@ -144,7 +144,7 @@ const Dragonhide: Craftable[] = [
 		id: itemID("Black d'hide body"),
 		level: 84,
 		xp: 258,
-		inputItems: transformStringBankToNum({ 'Black dragon leather': 3 }),
+		inputItems: resolveNameBank({ 'Black dragon leather': 3 }),
 		tickRate: 3.5
 	}
 ];

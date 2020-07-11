@@ -1,6 +1,6 @@
 import { Craftable } from '../../../types';
 import itemID from '../../../../util/itemID';
-import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
+import { resolveNameBank } from '../../../../util';
 
 const Built: Craftable[] = [
 	{
@@ -8,7 +8,7 @@ const Built: Craftable[] = [
 		id: itemID('Serpentine helm (uncharged)'),
 		level: 52,
 		xp: 120,
-		inputItems: transformStringBankToNum({ 'Serpentine visage': 1 }),
+		inputItems: resolveNameBank({ 'Serpentine visage': 1 }),
 		tickRate: 3
 	},
 	{
@@ -16,7 +16,7 @@ const Built: Craftable[] = [
 		id: itemID('Slayer helmet'),
 		level: 55,
 		xp: 0,
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Black mask': 1,
 			Earmuffs: 1,
 			Facemask: 1,
@@ -31,7 +31,7 @@ const Built: Craftable[] = [
 		id: itemID('Toxic staff (uncharged)'),
 		level: 59,
 		xp: 0,
-		inputItems: transformStringBankToNum({ 'Staff of the dead': 1, 'Magic fang': 1 }),
+		inputItems: resolveNameBank({ 'Staff of the dead': 1, 'Magic fang': 1 }),
 		tickRate: 3
 	},
 	{
@@ -39,7 +39,7 @@ const Built: Craftable[] = [
 		id: itemID('Uncharged toxic trident'),
 		level: 59,
 		xp: 0,
-		inputItems: transformStringBankToNum({ 'Uncharged trident': 1, 'Magic fang': 1 }),
+		inputItems: resolveNameBank({ 'Uncharged trident': 1, 'Magic fang': 1 }),
 		tickRate: 3
 	}
 ];

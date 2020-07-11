@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
+import { stringMatches, formatDuration, rand, bankHasItem } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Runecraft, {
@@ -13,7 +13,6 @@ import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { SkillsEnum } from '../../lib/skilling/types';
-import bankHasItem from '../../lib/util/bankHasItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

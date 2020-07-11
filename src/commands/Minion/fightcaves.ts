@@ -10,14 +10,14 @@ import {
 	rand,
 	percentChance,
 	removeBankFromBank,
-	addBankToBank
+	bankHasAllItemsFromBank,
+	addBanks
 } from '../../lib/util';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import mejJalImage from '../../lib/image/mejJalImage';
-import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -159,10 +159,10 @@ export default class extends BotCommand {
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.FightCavesCost,
-			addBankToBank(
+			addBanks([
 				this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost),
 				fightCavesSupplies
-			)
+			])
 		);
 
 		const totalDeathChance = (

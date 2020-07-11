@@ -1,6 +1,6 @@
 import { Craftable } from '../../../types';
 import itemID from '../../../../util/itemID';
-import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
+import { resolveNameBank } from '../../../../util';
 
 const Gems: Craftable[] = [
 	{
@@ -8,7 +8,7 @@ const Gems: Craftable[] = [
 		id: itemID('Opal'),
 		level: 1,
 		xp: 15,
-		inputItems: transformStringBankToNum({ 'Uncut opal': 1 }),
+		inputItems: resolveNameBank({ 'Uncut opal': 1 }),
 		tickRate: 2
 	},
 	{
@@ -16,7 +16,7 @@ const Gems: Craftable[] = [
 		id: itemID('Jade'),
 		level: 13,
 		xp: 20,
-		inputItems: transformStringBankToNum({ 'Uncut Jade': 1 }),
+		inputItems: resolveNameBank({ 'Uncut Jade': 1 }),
 		tickRate: 2
 	},
 	{
@@ -24,7 +24,7 @@ const Gems: Craftable[] = [
 		id: itemID('Red topaz'),
 		level: 16,
 		xp: 25,
-		inputItems: transformStringBankToNum({ 'Uncut red topaz': 1 }),
+		inputItems: resolveNameBank({ 'Uncut red topaz': 1 }),
 		tickRate: 2
 	},
 	{
@@ -32,7 +32,7 @@ const Gems: Craftable[] = [
 		id: itemID('Sapphire'),
 		level: 20,
 		xp: 50,
-		inputItems: transformStringBankToNum({ 'Uncut sapphire': 1 }),
+		inputItems: resolveNameBank({ 'Uncut sapphire': 1 }),
 		tickRate: 2
 	},
 	{
@@ -40,7 +40,7 @@ const Gems: Craftable[] = [
 		id: itemID('Emerald'),
 		level: 27,
 		xp: 67.5,
-		inputItems: transformStringBankToNum({ 'Uncut Emerald': 1 }),
+		inputItems: resolveNameBank({ 'Uncut Emerald': 1 }),
 		tickRate: 2
 	},
 	{
@@ -48,7 +48,7 @@ const Gems: Craftable[] = [
 		id: itemID('Ruby'),
 		level: 34,
 		xp: 85,
-		inputItems: transformStringBankToNum({ 'Uncut ruby': 1 }),
+		inputItems: resolveNameBank({ 'Uncut ruby': 1 }),
 		tickRate: 2
 	},
 	{
@@ -56,7 +56,7 @@ const Gems: Craftable[] = [
 		id: itemID('Diamond'),
 		level: 43,
 		xp: 107.5,
-		inputItems: transformStringBankToNum({ 'Uncut Diamond': 1 }),
+		inputItems: resolveNameBank({ 'Uncut Diamond': 1 }),
 		tickRate: 2
 	},
 	{
@@ -64,7 +64,7 @@ const Gems: Craftable[] = [
 		id: itemID('Dragonstone'),
 		level: 55,
 		xp: 137.5,
-		inputItems: transformStringBankToNum({ 'Uncut dragonstone': 1 }),
+		inputItems: resolveNameBank({ 'Uncut dragonstone': 1 }),
 		tickRate: 2
 	},
 	{
@@ -72,7 +72,7 @@ const Gems: Craftable[] = [
 		id: itemID('Onyx'),
 		level: 67,
 		xp: 167.5,
-		inputItems: transformStringBankToNum({ 'Uncut onyx': 1 }),
+		inputItems: resolveNameBank({ 'Uncut onyx': 1 }),
 		tickRate: 2
 	},
 	{
@@ -80,7 +80,7 @@ const Gems: Craftable[] = [
 		id: itemID('Zenyte'),
 		level: 89,
 		xp: 200,
-		inputItems: transformStringBankToNum({ 'Uncut zenyte': 1 }),
+		inputItems: resolveNameBank({ 'Uncut zenyte': 1 }),
 		tickRate: 2
 	}
 ];

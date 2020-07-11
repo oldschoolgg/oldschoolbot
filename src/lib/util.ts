@@ -9,8 +9,9 @@ import { nodeCrypto, integer, real, bool } from 'random-js';
 const emojiRegex = require('emoji-regex');
 
 import { Tasks, Events } from './constants';
-import { Bank } from './types';
 import { channelIsSendable } from './util/channelIsSendable';
+
+export * from 'oldschooljs/dist/util/index';
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -41,70 +42,6 @@ export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
 		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
 		canvasImage.src = imageBuffer;
 	});
-}
-
-export function removeItemFromBank(bank: Bank, itemID: number, amountToRemove = 1) {
-	const newBank = { ...bank };
-	const currentValue = bank[itemID];
-
-	// If they don't have this item in the bank, just return it.
-	if (typeof currentValue === 'undefined') return bank;
-
-	// If they will have 0 or less of this item afterwards, delete it entirely.
-	if (currentValue - amountToRemove <= 0) {
-		delete newBank[itemID];
-	} else {
-		newBank[itemID] = currentValue - amountToRemove;
-	}
-
-	return newBank;
-}
-
-export function removeBankFromBank(targetBank: Bank, bankToRemove: Bank) {
-	let newBank = { ...targetBank };
-
-	for (const [itemID, qty] of Object.entries(bankToRemove)) {
-		newBank = removeItemFromBank(newBank, parseInt(itemID), qty);
-	}
-
-	return newBank;
-}
-
-export function addItemToBank(bank: Bank, itemID: number, amountToAdd = 1) {
-	const newBank = { ...bank };
-
-	if (newBank[itemID]) newBank[itemID] += amountToAdd;
-	else newBank[itemID] = amountToAdd;
-
-	return newBank;
-}
-
-export function addBankToBank(fromBank: Bank, toBank: Bank) {
-	let newBank = { ...toBank };
-
-	for (const [itemID, quantity] of Object.entries(fromBank)) {
-		newBank = addItemToBank(newBank, parseInt(itemID), quantity);
-	}
-
-	return newBank;
-}
-
-export function addArrayOfItemsToBank(bank: Bank, items: number[]) {
-	let newBank = { ...bank };
-
-	for (const item of items) {
-		newBank = addItemToBank(newBank, item);
-	}
-
-	return newBank;
-}
-
-export function multiplyBankQuantity(bank: Bank, quantity: number) {
-	const newBank = { ...bank };
-	for (const [itemID] of Object.entries(newBank)) {
-		newBank[parseInt(itemID)] *= quantity;
-	}
-	return newBank;
 }
 
 export function randomItemFromArray<T>(array: T[]): T {
