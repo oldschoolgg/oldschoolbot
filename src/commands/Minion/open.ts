@@ -5,8 +5,13 @@ import { Misc } from 'oldschooljs';
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
-import { stringMatches, itemNameFromID, roll, addBanks } from '../../lib/util';
-import bankFromLootTableOutput from '../../lib/util/bankFromLootTableOutput';
+import {
+	stringMatches,
+	itemNameFromID,
+	roll,
+	addBanks,
+	bankFromLootTableOutput
+} from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
