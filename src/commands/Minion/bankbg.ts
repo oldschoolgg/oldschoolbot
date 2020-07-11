@@ -2,8 +2,12 @@ import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import BankImageTask from '../../tasks/bankImage';
-import { stringMatches, removeBankFromBank, addBankToBank } from '../../lib/util';
-import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
+import {
+	stringMatches,
+	removeBankFromBank,
+	bankHasAllItemsFromBank,
+	addBanks
+} from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -140,10 +144,10 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BankBgCostBank,
-			addBankToBank(
+			addBanks([
 				{ ...(selectedImage.itemCost ?? {}), '995': selectedImage.gpCost ?? 0 },
 				this.client.settings.get(ClientSettings.EconomyStats.BankBgCostBank)
-			)
+			])
 		);
 
 		return msg.send(`Your bank background is now **${selectedImage.name}**!`);

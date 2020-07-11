@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../constants';
-import resolveItems from '../../../util/resolveItems';
+import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import itemID from '../../../util/itemID';
 import { KillableMonster } from '../../types';
 
@@ -40,7 +40,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([
+		itemsRequired: deepResolveItems([
 			"Guthan's platebody",
 			"Guthan's chainskirt",
 			"Guthan's helm",
@@ -68,7 +68,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([
+		itemsRequired: deepResolveItems([
 			"Guthan's platebody",
 			"Guthan's chainskirt",
 			"Guthan's helm",
@@ -96,7 +96,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([
+		itemsRequired: deepResolveItems([
 			"Guthan's platebody",
 			"Guthan's chainskirt",
 			"Guthan's helm",
@@ -174,7 +174,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: resolveItems([["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']]),
+		itemsRequired: resolveItems(["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: {

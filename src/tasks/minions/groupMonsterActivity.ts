@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import { noOp, randomItemFromArray, addBankToBank, queuedMessageSend } from '../../lib/util';
+import { noOp, randomItemFromArray, queuedMessageSend, addBanks } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';
@@ -20,7 +20,7 @@ export default class extends Task {
 			const loot = monster.table.kill(1);
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
-			teamsLoot[userWhoGetsLoot] = addBankToBank(currentLoot ?? {}, loot);
+			teamsLoot[userWhoGetsLoot] = addBanks([currentLoot ?? {}, loot]);
 			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
 				? ++kcAmounts[userWhoGetsLoot]
 				: 1;

@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 import { KillableMonster } from '../../../types';
 import { Time } from 'oldschooljs/dist/constants';
-import resolveItems from '../../../../util/resolveItems';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 
 const killableBosses: KillableMonster[] = [
@@ -82,7 +82,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: resolveItems([
+		itemsRequired: deepResolveItems([
 			["Black d'hide body", "Karil's leathertop"],
 			["Black d'hide chaps", "Karil's leatherskirt"]
 		]),
@@ -135,7 +135,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: resolveItems([
+		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
 			['Armadyl crossbow', 'Rune crossbow'],
 			[

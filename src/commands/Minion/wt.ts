@@ -7,13 +7,13 @@ import {
 	reduceNumByPercent,
 	calcWhatPercent,
 	formatDuration,
-	addItemToBank
+	addItemToBank,
+	bankHasItem
 } from '../../lib/util';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import bankHasItem from '../../lib/util/bankHasItem';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import resolveItems from '../../lib/util/resolveItems';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		let durationPerTodt = Time.Minute * 7.3;
 
 		// Up to a 10% boost for 99 WC
-		const wcBoost = calcWhatPercent(wcLevel + 1, 100) / 10;
+		const wcBoost = (wcLevel + 1) / 10;
 		if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
 		durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
 

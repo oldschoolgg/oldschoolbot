@@ -8,6 +8,8 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [Message] });
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
 	get cmdPrefix(this: KlasaMessage) {
 		return this.guild ? this.guild.settings.get('prefix') : '+';
 	}

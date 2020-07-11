@@ -4,11 +4,10 @@ import { MessageAttachment } from 'discord.js';
 
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import { noOp, addBankToBank } from '../../../lib/util';
+import { noOp, addBanks, bankHasItem } from '../../../lib/util';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import bankHasItem from '../../../lib/util/bankHasItem';
 import itemID from '../../../lib/util/itemID';
 import { Emoji, Events } from '../../../lib/constants';
 import { ItemBank } from '../../../lib/types';
@@ -53,23 +52,20 @@ export default class extends Task {
 			const points = PointsTable.roll().item;
 			totalPoints += points;
 
-			loot = addBankToBank(
+			loot = addBanks([
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBankToBank(bank, loot),
+					itemsOwned: addBanks([bank, loot]),
 					skills: user.rawSkills
 				})
-			);
+			]);
 		}
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.WintertodtLoot,
-			addBankToBank(
-				this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot),
-				loot
-			)
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot), loot])
 		);
 
 		if (bankHasItem(loot, itemID('Phoenix'))) {

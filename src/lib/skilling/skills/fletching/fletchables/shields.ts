@@ -1,6 +1,6 @@
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
-import { transformStringBankToNum } from '../../../../util/transformStringBankToNum';
+import { resolveNameBank } from '../../../../util';
 
 const Shields: Fletchable[] = [
 	{
@@ -8,7 +8,7 @@ const Shields: Fletchable[] = [
 		id: itemID('Oak shield'),
 		level: 27,
 		xp: 50,
-		inputItems: transformStringBankToNum({ 'Oak logs': 2 }),
+		inputItems: resolveNameBank({ 'Oak logs': 2 }),
 		tickRate: 7
 	},
 	{
@@ -16,7 +16,7 @@ const Shields: Fletchable[] = [
 		id: itemID('Willow shield'),
 		level: 42,
 		xp: 83,
-		inputItems: transformStringBankToNum({ 'Willow logs': 2 }),
+		inputItems: resolveNameBank({ 'Willow logs': 2 }),
 		tickRate: 7
 	},
 	{
@@ -24,7 +24,7 @@ const Shields: Fletchable[] = [
 		id: itemID('Maple shield'),
 		level: 57,
 		xp: 116.5,
-		inputItems: transformStringBankToNum({ 'Maple logs': 2 }),
+		inputItems: resolveNameBank({ 'Maple logs': 2 }),
 		tickRate: 7
 	},
 	{
@@ -32,7 +32,7 @@ const Shields: Fletchable[] = [
 		id: itemID('Yew shield'),
 		level: 72,
 		xp: 150,
-		inputItems: transformStringBankToNum({ 'Yew logs': 2 }),
+		inputItems: resolveNameBank({ 'Yew logs': 2 }),
 		tickRate: 7
 	},
 	{
@@ -40,7 +40,7 @@ const Shields: Fletchable[] = [
 		id: itemID('Magic shield'),
 		level: 87,
 		xp: 183,
-		inputItems: transformStringBankToNum({ 'Magic logs': 2 }),
+		inputItems: resolveNameBank({ 'Magic logs': 2 }),
 		tickRate: 7
 	},
 	{
@@ -48,7 +48,7 @@ const Shields: Fletchable[] = [
 		id: itemID('Redwood shield'),
 		level: 92,
 		xp: 216,
-		inputItems: transformStringBankToNum({ 'Redwood logs': 2 }),
+		inputItems: resolveNameBank({ 'Redwood logs': 2 }),
 		tickRate: 7
 	}
 ];
