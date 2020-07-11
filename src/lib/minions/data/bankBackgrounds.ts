@@ -1,6 +1,6 @@
-import { transformStringBankToNum } from '../../util/transformStringBankToNum';
 import { BankBackground } from '../types';
 import { PerkTier } from '../../constants';
+import { resolveNameBank } from '../../util';
 
 const backgroundImages: BankBackground[] = [
 	{
@@ -46,7 +46,7 @@ const backgroundImages: BankBackground[] = [
 		name: 'Bandos',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: transformStringBankToNum({
+		collectionLogItemsNeeded: resolveNameBank({
 			'Armadyl hilt': 1,
 			'Zamorak hilt': 1,
 			'Bandos hilt': 1,
@@ -68,7 +68,7 @@ const backgroundImages: BankBackground[] = [
 			"Pet kree'arra": 1,
 			'Pet zilyana': 1
 		}),
-		itemCost: transformStringBankToNum({
+		itemCost: resolveNameBank({
 			'Armadyl godsword': 1,
 			'Zamorak godsword': 1,
 			'Bandos godsword': 1,
@@ -81,7 +81,7 @@ const backgroundImages: BankBackground[] = [
 		name: 'Corporeal Beast',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: transformStringBankToNum({
+		collectionLogItemsNeeded: resolveNameBank({
 			'Spirit shield': 4,
 			'Holy elixir': 4,
 			'Spectral sigil': 1,
@@ -89,7 +89,7 @@ const backgroundImages: BankBackground[] = [
 			'Elysian sigil': 1,
 			'Pet dark core': 1
 		}),
-		itemCost: transformStringBankToNum({
+		itemCost: resolveNameBank({
 			'Spectral spirit shield': 1,
 			'Arcane spirit shield': 1
 		}),
@@ -100,7 +100,7 @@ const backgroundImages: BankBackground[] = [
 		name: 'Casket',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: transformStringBankToNum({
+		collectionLogItemsNeeded: resolveNameBank({
 			'Large spade': 1,
 			'Clueless scroll': 1,
 			'Heavy casket': 1,

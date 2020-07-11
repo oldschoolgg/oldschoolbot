@@ -4,7 +4,7 @@ import { User, Util, TextChannel } from 'discord.js';
 import { Events, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
 import { Bank } from '../lib/types';
 import {
-	addBankToBank,
+	addBanks,
 	removeItemFromBank,
 	addItemToBank,
 	formatDuration,
@@ -132,9 +132,12 @@ export default class extends Extendable {
 
 		return this.settings.update(
 			UserSettings.Bank,
-			addBankToBank(items, {
-				...this.settings.get(UserSettings.Bank)
-			})
+			addBanks([
+				items,
+				{
+					...this.settings.get(UserSettings.Bank)
+				}
+			])
 		);
 	}
 
@@ -164,9 +167,12 @@ export default class extends Extendable {
 
 		return this.settings.update(
 			UserSettings.CollectionLogBank,
-			addBankToBank(items, {
-				...this.settings.get(UserSettings.CollectionLogBank)
-			})
+			addBanks([
+				items,
+				{
+					...this.settings.get(UserSettings.CollectionLogBank)
+				}
+			])
 		);
 	}
 

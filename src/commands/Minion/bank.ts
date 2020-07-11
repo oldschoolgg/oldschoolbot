@@ -4,12 +4,16 @@ import { createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { Items } from 'oldschooljs';
 
-import { generateHexColorForCashStack, formatItemStackQuantity, chunkObject } from '../../lib/util';
+import {
+	generateHexColorForCashStack,
+	formatItemStackQuantity,
+	chunkObject,
+	addBanks
+} from '../../lib/util';
 import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import addArrayOfBanks from '../../lib/util/addArrayOfBanks';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -86,7 +90,7 @@ export default class extends Command {
 				throw `This feature is available only to patrons.`;
 			}
 
-			const serverBank = addArrayOfBanks(
+			const serverBank = addBanks(
 				msg.guild.members.map(member => member.user.settings.get(UserSettings.Bank))
 			);
 

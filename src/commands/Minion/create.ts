@@ -5,13 +5,13 @@ import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	stringMatches,
-	addBankToBank,
 	removeBankFromBank,
-	multiplyBankQuantity
+	multiplyBank,
+	bankHasAllItemsFromBank,
+	addBanks
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Createables from '../../lib/createables';
-import { bankHasAllItemsFromBank } from '../../lib/util/bankHasAllItemsFromBank';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
@@ -78,8 +78,8 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.agilityLevel} agility to create this item.`;
 		}
 
-		const outItems = multiplyBankQuantity(createableItem.outputItems, quantity);
-		const inItems = multiplyBankQuantity(createableItem.inputItems, quantity);
+		const outItems = multiplyBank(createableItem.outputItems, quantity);
+		const inItems = multiplyBank(createableItem.inputItems, quantity);
 
 		const outputItemsString = await createReadableItemListFromBank(this.client, outItems);
 
@@ -132,7 +132,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(
 			UserSettings.Bank,
-			addBankToBank(outItems, removeBankFromBank(userBank, inItems))
+			addBanks([outItems, removeBankFromBank(userBank, inItems)])
 		);
 
 		if (!createableItem.noCl) msg.author.addItemsToCollectionLog(outItems);

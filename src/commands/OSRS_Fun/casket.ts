@@ -5,7 +5,7 @@ import { Misc } from 'oldschooljs';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { PerkTier } from '../../lib/constants';
-import { addBankToBank, roll } from '../../lib/util';
+import { addBanks, roll } from '../../lib/util';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -62,10 +62,7 @@ export default class extends Command {
 		if (clueTier.mimicChance) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(clueTier.mimicChance)) {
-					loot = addBankToBank(
-						Misc.Mimic.open(clueTier.name as 'master' | 'elite'),
-						loot
-					);
+					loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
 					mimicNumber++;
 				}
 			}
