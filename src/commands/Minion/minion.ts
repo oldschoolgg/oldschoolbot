@@ -4,27 +4,39 @@ import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	Tasks,
+	// Tasks,
 	Activity,
 	Emoji,
 	Time,
-	Events,
 	Color,
 	PerkTier,
 	MIMIC_MONSTER_ID
 } from '../../lib/constants';
-import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '../../lib/util';
+import {
+	formatDuration,
+	randomItemFromArray,
+	isWeekend,
+	itemNameFromID,
+	addItemToBank,
+	calcWhatPercent,
+	reduceNumByPercent
+} from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+// import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
+import bankHasItem from '../../lib/util/bankHasItem';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { Eatables } from '../../lib/minions/data/Eatables';
+import { maxDefenceStats } from '../../lib/gear/data/maxGearStats';
+import inverseOfAttackStat from '../../lib/gear/functions/inverseOfAttackStat';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -499,6 +511,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+		const bank = msg.author.settings.get(UserSettings.Bank);
+		const boosts = [];
+		const messages = [];
+
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -506,10 +522,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
-			this.client.emit(
-				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${name}`
-			);
+			msg.author.log(`[TTK-BUSY] ${quantity} ${name}`);
 			return msg.send(msg.author.minionStatus);
 		}
 
@@ -523,10 +536,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
-
-		const boosts = [];
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(
 			monster,
@@ -546,6 +558,69 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToFinish);
+		}
+
+		// Check food
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
+			messages.push(
+				`${monster.name} requires ${monster.healAmountNeeded}HP worth of food healing per kill.`
+			);
+			// Start off needing 1.5x more than normal food.
+			let { healAmountNeeded } = monster;
+			// Use down to 1x food based on defence stats of your gear.
+			const gearStats = msg.author.setupStats(monster.attackStyleToUse);
+
+			let totalPercentOfGearLevel = 0;
+			for (const style of monster.attackStylesUsed) {
+				const inverseStyle = inverseOfAttackStat(style);
+				const usersStyle = gearStats[inverseStyle];
+				const maxStyle = maxDefenceStats[inverseStyle]!;
+				const percent = Math.floor(calcWhatPercent(usersStyle, maxStyle));
+				console.log({ usersStyle, maxStyle, percent });
+				messages.push(`Your ${style} bonus is ${percent}% of the best (${maxStyle})`);
+				totalPercentOfGearLevel += percent;
+			}
+			totalPercentOfGearLevel = Math.floor(
+				Math.max(0, totalPercentOfGearLevel / monster.attackStylesUsed.length)
+			);
+			messages.push(
+				`Your ${monster.attackStyleToUse} gear is ${totalPercentOfGearLevel}% of the best`
+			);
+
+			healAmountNeeded = reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel);
+
+			messages.push(
+				`You use ${totalPercentOfGearLevel}% less food (of ${monster.healAmountNeeded}) because of your gear`
+			);
+
+			for (const food of Eatables) {
+				const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount!) * quantity;
+				if (!bankHasItem(bank, food.id, amountNeeded)) {
+					if (Eatables.indexOf(food) === Eatables.length - 1) {
+						throw `You don't have enough food to kill ${
+							monster.name
+						}! You can use these food items: ${Eatables.map(
+							i => `${i.name} (${Math.ceil(healAmountNeeded / i.healAmount!)})`
+						).join(', ')}.`;
+					}
+					continue;
+				}
+
+				messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
+				// await msg.author.removeItemFromBank(food.id, amountNeeded);
+
+				// Track this food cost in Economy Stats
+				await this.client.settings.update(
+					ClientSettings.EconomyStats.PVMCost,
+					addItemToBank(
+						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
+						food.id,
+						amountNeeded
+					)
+				);
+
+				break;
+			}
 		}
 
 		let duration = timeToFinish * quantity;
@@ -584,6 +659,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		if (messages.length > 0) {
+			response += `\n\n **Messages:** ${messages.join('\n')}.`;
 		}
 
 		return msg.send(response);

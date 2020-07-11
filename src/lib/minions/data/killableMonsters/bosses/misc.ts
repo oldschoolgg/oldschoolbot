@@ -5,6 +5,7 @@ import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
 import { bosses } from '../../../../collectionLog';
+import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -136,7 +137,10 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: bosses['Corp Beast']
+		uniques: bosses['Corp Beast'],
+		healAmountNeeded: 20 * 40,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Cerberus.id,
