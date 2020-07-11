@@ -16,11 +16,11 @@ jobs:
                 os: [ubuntu-latest, windows-latest]
 
         steps:
-         - name: Copy Configuration
+            - name: Copy Configuration
               run: |
-                pushd src &&
-                cp config.example.ts config.ts &&
-                popd
+                  pushd src &&
+                  cp config.example.ts config.ts &&
+                  popd
             - name: Checkout Project
               uses: actions/checkout@v2
             - name: Use Node.js ${{ matrix.node_version }}
