@@ -213,6 +213,6 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
-export const MAX_QP = 275;
+export const MAX_QP = 277;
 
 export const MIMIC_MONSTER_ID = 23184;
