@@ -7,13 +7,13 @@ import {
 	reduceNumByPercent,
 	calcWhatPercent,
 	formatDuration,
-	addItemToBank
+	addItemToBank,
+	bankHasItem
 } from '../../lib/util';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import bankHasItem from '../../lib/util/bankHasItem';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import resolveItems from '../../lib/util/resolveItems';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';

@@ -9,7 +9,6 @@ import { nodeCrypto, integer, real, bool } from 'random-js';
 const emojiRegex = require('emoji-regex');
 
 import { Tasks, Events } from './constants';
-import { Bank } from './types';
 import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';

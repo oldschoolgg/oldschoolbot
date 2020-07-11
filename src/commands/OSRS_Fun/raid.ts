@@ -3,7 +3,7 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { addBankToBank } from '../../lib/util';
+import { addBanks } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { Util } from 'oldschooljs';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
@@ -49,7 +49,7 @@ export default class extends BotCommand {
 				});
 
 				for (const lootBank of Object.values(singleRaidLoot)) {
-					loot = addBankToBank(loot, lootBank);
+					loot = addBanks([loot, lootBank]);
 				}
 			}
 
@@ -86,7 +86,7 @@ export default class extends BotCommand {
 			});
 
 			for (const [memberID, lootBank] of Object.entries(singleRaidLoot)) {
-				loot[memberID] = addBankToBank(loot[memberID] || {}, lootBank);
+				loot[memberID] = addBanks([loot[memberID] || {}, lootBank]);
 			}
 		}
 
