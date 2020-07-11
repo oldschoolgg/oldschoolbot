@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { KillableMonster } from '../../../types';
-import resolveItems from '../../../../util/resolveItems';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
 import { bosses } from '../../../../collectionLog';
@@ -95,7 +95,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems([
+		itemsRequired: deepResolveItems([
 			"Verac's flail",
 			"Verac's plateskirt",
 			["Black d'hide body", "Karil's leathertop"]
@@ -148,7 +148,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: resolveItems([
+		itemsRequired: deepResolveItems([
 			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
 			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
 			'Zamorakian spear'

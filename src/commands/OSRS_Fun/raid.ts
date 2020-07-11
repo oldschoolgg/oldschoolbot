@@ -8,11 +8,8 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import { Util } from 'oldschooljs';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { coxLog } from '../../lib/collectionLog';
-import itemID from '../../lib/util/itemID';
 
-const itemsToShow = Object.values(coxLog)
-	.flat(Infinity)
-	.filter(i => i !== itemID('Dark relic'));
+const itemsToShow = Object.values(coxLog).flat(1);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
