@@ -915,7 +915,7 @@ export const cluesMaster = {
 		'Ankou mask',
 		'Ankou top',
 		'Ankou gloves',
-		'Ankou leggings',
+		"Ankou's leggings",
 		'Ankou socks',
 		'Hood of darkness',
 		'Robe top of darkness',
