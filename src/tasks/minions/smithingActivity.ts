@@ -9,8 +9,15 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import Smithing from '../../lib/skilling/skills/smithing/smithing';
 
 export default class extends Task {
-	async run({ smithedBarID, quantity, userID, channelID }: SmithingActivityTaskOptions) {
+	async run({
+		smithedBarID,
+		quantity,
+		userID,
+		channelID,
+		duration
+	}: SmithingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
 		const SmithedBar = Smithing.SmithedBars.find(SmithedBar => SmithedBar.id === smithedBarID);

@@ -11,8 +11,15 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ runeID, essenceQuantity, userID, channelID }: RunecraftActivityTaskOptions) {
+	async run({
+		runeID,
+		essenceQuantity,
+		userID,
+		channelID,
+		duration
+	}: RunecraftActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Runecraft);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID);

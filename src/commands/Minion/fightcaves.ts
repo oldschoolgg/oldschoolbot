@@ -154,7 +154,6 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(

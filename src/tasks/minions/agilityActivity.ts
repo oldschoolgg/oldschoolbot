@@ -11,8 +11,9 @@ import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
-	async run({ courseID, quantity, userID, channelID }: AgilityActivityTaskOptions) {
+	async run({ courseID, quantity, userID, channelID, duration }: AgilityActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		const course = Agility.Courses.find(course => course.name === courseID);

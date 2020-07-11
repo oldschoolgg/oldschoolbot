@@ -9,8 +9,10 @@ import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import { SkillsEnum } from '../../../lib/skilling/types';
 
 export default class extends Task {
-	async run({ boneID, quantity, userID, channelID }: BuryingActivityTaskOptions) {
+	async run({ boneID, quantity, userID, channelID, duration }: BuryingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
+
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);

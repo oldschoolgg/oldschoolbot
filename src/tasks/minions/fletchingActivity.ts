@@ -9,8 +9,15 @@ import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import Fletching from '../../lib/skilling/skills/fletching/fletching';
 
 export default class extends Task {
-	async run({ fletchableID, quantity, userID, channelID }: FletchingActivityTaskOptions) {
+	async run({
+		fletchableID,
+		quantity,
+		userID,
+		channelID,
+		duration
+	}: FletchingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fletching);
 
 		const fletchableItem = Fletching.Fletchables.find(

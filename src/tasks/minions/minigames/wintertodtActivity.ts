@@ -38,8 +38,9 @@ const PointsTable = new SimpleTable<number>()
 	.add(850);
 
 export default class extends Task {
-	async run({ userID, channelID, quantity }: WintertodtActivityTaskOptions) {
+	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 

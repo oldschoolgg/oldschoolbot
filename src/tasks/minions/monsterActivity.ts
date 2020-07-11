@@ -13,9 +13,10 @@ import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity }: MonsterActivityTaskOptions) {
+	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
