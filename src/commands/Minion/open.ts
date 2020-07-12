@@ -178,7 +178,7 @@ export default class extends BotCommand {
 
 		/* Seed pack */
 		if (openable.name == 'Seed pack') {
-			var tier = msg.author.skillLevel(SkillsEnum.Fishing) as number;
+			var tier = msg.author.settings.get(UserSettings.FarmingContracts.FarmingContract);
 			if (tier > 0 && tier < 6) {
 				/* Roll amount variables */
 				var high = 0
@@ -186,13 +186,13 @@ export default class extends BotCommand {
 				var low = 0
 				
 				switch (tier) {
-					case (tier=1): {
+					case (1): {
 						high = 0
 						medium = rand(1,3)
 						low = 6 - medium
 						break;
 					}    
-					case (tier=2): {
+					case (2): {
 						var highroll = rand(1,11)
 						if (highroll == 1) {
 							high = 1
@@ -204,19 +204,19 @@ export default class extends BotCommand {
 						low = 7 - medium - high
 						break;
 					}        
-					case (tier=3): {
+					case (3): {
 						high = rand(0,1)
 						medium = rand(2,4)
 						low = 8 - medium - high
 						break;
 					}
-					case (tier=4): { 
+					case (4): { 
 						high = rand(1,2)
 						medium = rand(3,5)
 						low = 9 - medium - high
 						break;
 					}
-					case (tier=5): {
+					case (5): {
 						high = rand(1,3)
 						medium = rand(4,6)
 						low = 10 - medium - high
@@ -232,18 +232,14 @@ export default class extends BotCommand {
 			}
 		}
 		
-		/* Temp opens all keys */
-		var testTable = new LootTable();
-		testTable.every(currentTable,numItemsHas);
-		
-		const loot = await bankFromLootTableOutput(testTable.roll());
+		const loot = await bankFromLootTableOutput(currentTable.roll());
 		
 		await msg.author.removeItemFromBank(openable.itemID, numItemsHas);
 		
 		await msg.author.addItemsToBank(loot, true);
 		
 		return msg.send(
-			`${openable.emoji} You opened ${numItemsHas} ${openable.name} and received: ${
+			`${openable.emoji} You opened ${openable.name} and received: ${
 				Object.keys(loot).length > 0
 					? await createReadableItemListFromBank(this.client, loot)
 					: 'Nothing! Sad'
