@@ -89,7 +89,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Ensure they have the required items to create the item.
-		if (!bankHasAllItemsFromBank(userBank, inItems)) {
+		if (!bankHasAllItemsFromBank(inItems, userBank)) {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}.`;
 		}
 
