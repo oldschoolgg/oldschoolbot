@@ -16,6 +16,7 @@ import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEqu
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID);

@@ -135,7 +135,6 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 
 		const response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${
 			rune.name

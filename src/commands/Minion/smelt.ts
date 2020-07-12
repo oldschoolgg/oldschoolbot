@@ -109,7 +109,6 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now smelting ${quantity}x ${
 				bar.name

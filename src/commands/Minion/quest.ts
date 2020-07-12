@@ -68,7 +68,6 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 		let response = `${
 			msg.author.minionName
 		} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;

@@ -13,8 +13,9 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 
 export default class extends Task {
-	async run({ fishID, quantity, userID, channelID }: FishingActivityTaskOptions) {
+	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const currentAgilityLevel = user.skillLevel(SkillsEnum.Agility);
 

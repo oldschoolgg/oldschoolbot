@@ -110,7 +110,6 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now completing ${data.quantity}x ${
 				clueTier.name

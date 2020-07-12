@@ -9,8 +9,9 @@ import Crafting from '../../lib/skilling/skills/crafting/crafting';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 export default class extends Task {
-	async run({ craftableID, quantity, userID, channelID }: CraftingActivityTaskOptions) {
+	async run({ craftableID, quantity, userID, channelID, duration }: CraftingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
 
 		const Craft = Crafting.Craftables.find(craft => craft.id === craftableID);

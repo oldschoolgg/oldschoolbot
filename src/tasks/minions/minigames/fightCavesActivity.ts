@@ -33,6 +33,7 @@ export default class extends Task {
 		duration
 	}: FightCavesActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
 		const tokkulReward = rand(2000, 6000);

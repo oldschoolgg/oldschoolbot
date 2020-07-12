@@ -11,8 +11,9 @@ import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
-	async run({ barID, quantity, userID, channelID }: SmeltingActivityTaskOptions) {
+	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
 		const bar = Smelting.Bars.find(bar => bar.id === barID);
