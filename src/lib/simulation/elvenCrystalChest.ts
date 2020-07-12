@@ -2,16 +2,16 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 /* Dragonstone armour roll */
 const DragonStoneTable = new LootTable()
-    .add('Dragonstone full helm', 1, 1)
-    .add('Dragonstone platebody', 1, 1)
-    .add('Dragonstone platelegs', 1, 1)
-    .add('Dragonstone gauntlets', 1, 1)
-    .add('Dragonstone boots', 1, 1);
+	.add('Dragonstone full helm', 1, 1)
+	.add('Dragonstone platebody', 1, 1)
+	.add('Dragonstone platelegs', 1, 1)
+	.add('Dragonstone gauntlets', 1, 1)
+	.add('Dragonstone boots', 1, 1);
 
 const ElvenCrystalChestTable = new LootTable()
-	.oneIn(10000,'Uncut onyx')
-    .oneIn(500, DragonStoneTable)
-    .add(
+	.oneIn(10000, 'Uncut onyx')
+	.oneIn(500, DragonStoneTable)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Tooth half of key', 1],
@@ -28,8 +28,8 @@ const ElvenCrystalChestTable = new LootTable()
 		],
 		1,
 		32
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Uncut ruby', [10, 13]],
@@ -37,16 +37,16 @@ const ElvenCrystalChestTable = new LootTable()
 		],
 		1,
 		32
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Crystal key', 1]
 		],
 		1,
 		24
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Coins', [30000, 50000]],
@@ -54,33 +54,33 @@ const ElvenCrystalChestTable = new LootTable()
 		],
 		1,
 		20
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Crystal shard', [20, 30]]
 		],
 		1,
 		17
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Crystal shard', [4, 6]],
-            ['Rune platelegs', 1]
+			['Rune platelegs', 1]
 		],
 		1,
 		9
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Crystal shard', [4, 6]],
-            ['Rune plateskirt', 1]
+			['Rune plateskirt', 1]
 		],
 		1,
 		8
-    )
+	)
 	.add(
 		[
 			['Uncut dragonstone', 1],
@@ -116,8 +116,8 @@ const ElvenCrystalChestTable = new LootTable()
 		],
 		1,
 		12
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Runite ore', [7, 10]]
@@ -140,22 +140,22 @@ const ElvenCrystalChestTable = new LootTable()
 		],
 		1,
 		1
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Dragon plateskirt', 1]
 		],
 		1,
 		1
-    )
-    .add(
+	)
+	.add(
 		[
 			['Uncut dragonstone', 1],
 			['Shield left half', 1]
 		],
 		1,
 		1
-    );
-    
+	);
+
 export default ElvenCrystalChestTable;

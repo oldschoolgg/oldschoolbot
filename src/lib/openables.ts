@@ -11,7 +11,7 @@ import GrubbyChestTable from './simulation/grubbyChest';
 import OgreCoffinTable from './simulation/ogreCoffin';
 import BrimstoneChestTable from './simulation/brimstoneChest';
 import LarransBigChestTable from './simulation/larransBigChest';
-import LarransSmallChestTable from './simulation/larransSmallChest'; 
+import LarransSmallChestTable from './simulation/larransSmallChest';
 import BronzeHAMChestTable from './simulation/bronzeHAMChest';
 import SteelHAMChestTable from './simulation/steelHAMChest';
 import SilverHAMChestTable from './simulation/silverHAMChest';
@@ -69,7 +69,14 @@ const Openables: Openable[] = [
 	{
 		name: 'Elven crystal chest',
 		itemID: 23951,
-		aliases: ['elven chest', 'enhanced', 'enhanced crystal chest', 'enhanced crystal chest', 'elven chest', 'elven'],
+		aliases: [
+			'elven chest',
+			'enhanced',
+			'enhanced crystal chest',
+			'enhanced crystal chest',
+			'elven chest',
+			'elven'
+		],
 		table: ElvenCrystalChestTable,
 		emoji: Emoji.Casket,
 		qpRequired: 205
@@ -84,7 +91,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Sinister chest',
 		itemID: 993,
-		aliases: ['sinister chest','sinister'],
+		aliases: ['sinister chest', 'sinister'],
 		table: SinisterChestTable,
 		emoji: Emoji.Casket,
 		levelRequirements: {
@@ -94,7 +101,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Grubby chest',
 		itemID: 23499,
-		aliases: ['grubby chest','grubby'],
+		aliases: ['grubby chest', 'grubby'],
 		table: GrubbyChestTable,
 		emoji: Emoji.Casket
 		/*
@@ -107,7 +114,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Ogre coffin',
 		itemID: 4850,
-		aliases: ['ogre coffin','ogre chest','ogre coffin chest'],
+		aliases: ['ogre coffin', 'ogre chest', 'ogre coffin chest'],
 		table: OgreCoffinTable,
 		emoji: Emoji.Casket,
 		qpRequired: 5
@@ -115,7 +122,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Brimstone chest',
 		itemID: 23083,
-		aliases: ['brimstone chest','brimstone'],
+		aliases: ['brimstone chest', 'brimstone'],
 		table: BrimstoneChestTable,
 		emoji: Emoji.Casket,
 		bonuses: BrimstoneChestBonus
@@ -129,53 +136,54 @@ const Openables: Openable[] = [
 	{
 		name: "Larran's big chest",
 		itemID: 23490,
-		aliases: ['larran big chest','larrans big chest',"larran's big chest"],
+		aliases: ['larran big chest', 'larrans big chest', "larran's big chest"],
 		table: LarransBigChestTable,
 		emoji: Emoji.Casket,
 		bonuses: LarransBigChestBonus
-    },
+	},
 	{
 		name: "Larran's small chest",
 		itemID: 23490,
-		aliases: ['larran small chest','larrans small chest',"larran's small chest"],
+		aliases: ['larran small chest', 'larrans small chest', "larran's small chest"],
 		table: LarransSmallChestTable,
 		emoji: Emoji.Casket,
 		bonuses: LarransSmallChestBonus
 	},
 	{
-		name: "Bronze HAM chest",
+		name: 'Bronze HAM chest',
 		itemID: 8867,
-		aliases: ['Bronze','bronze ham chest',"bronze chest"],
+		aliases: ['Bronze', 'bronze ham chest', 'bronze chest'],
 		table: BronzeHAMChestTable,
 		emoji: Emoji.Casket
 	},
 	{
-		name: "Iron HAM chest",
+		name: 'Iron HAM chest',
 		itemID: 8869,
-		aliases: ['iron','iron ham chest',"iron chest"],
+		aliases: ['iron', 'iron ham chest', 'iron chest'],
 		table: IronHAMChestTable,
 		emoji: Emoji.Casket
 	},
 	{
-		name: "Silver HAM chest",
+		name: 'Silver HAM chest',
 		itemID: 8868,
-		aliases: ['silver','silver ham chest',"silver chest"],
+		aliases: ['silver', 'silver ham chest', 'silver chest'],
 		table: SilverHAMChestTable,
 		emoji: Emoji.Casket
 	},
 	{
-		name: "Steel HAM chest",
+		name: 'Steel HAM chest',
 		itemID: 8866,
-		aliases: ['steel','steel ham chest',"steel chest"],
+		aliases: ['steel', 'steel ham chest', 'steel chest'],
 		table: SteelHAMChestTable,
 		emoji: Emoji.Casket
 	},
 	{
-		name: "Seed pack",
+		name: 'Seed pack',
 		itemID: 22993,
 		aliases: ['seed pack'],
 		table: SeedPackTable,
 		emoji: Emoji.Casket
 	}
 ];
+
 export default Openables;

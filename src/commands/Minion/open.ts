@@ -1,7 +1,7 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 import { Misc } from 'oldschooljs';
-import { rand } from '../../util'
+// import { rand } from '../../util'
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
@@ -18,8 +18,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-import {
+
+// import LootTable from 'oldschooljs/dist/structures/LootTable';
+/* import {
 	LowSeedTable,
 	MediumSeedTable,
 	HighSeedTable,
@@ -30,9 +31,7 @@ const itemsToNotifyOf = Object.values(cluesRares)
 	.concat(
 		ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward)
 	)
-	.concat(
-		[itemID('Bloodhound')]
-	);
+	.concat([itemID('Bloodhound')]);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -126,13 +125,12 @@ export default class extends BotCommand {
 			new MessageAttachment(image, 'osbot.png')
 		);
 	}
-	
+
 	async nonClueOpen(msg: KlasaMessage, type: string) {
-		
 		const openable = Openables.find(thing =>
 			thing.aliases.some(alias => stringMatches(alias, type))
 		);
-		
+
 		if (!openable) {
 			throw `That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
 				tier => tier.name
@@ -145,54 +143,52 @@ export default class extends BotCommand {
 		if (!numItemsHas) {
 			throw `You don't have any to open!`;
 		}
-		
+
 		if (!msg.author.hasOpenableRequirements(openable)) {
 			throw `You don't have the requirements to open that!`;
 		}
-		
-		var currentTable = openable.table;
-		if (openable.bonuses) { 
-			var i=0;
+
+		const currentTable = openable.table;
+		if (openable.bonuses) {
+			let i = 0;
 			for (i; i < openable.bonuses.length; i++) {
-				var currentBonus = openable.bonuses[i] as BonusOpenables;	
-				if (currentBonus.skill == "fishing") {
+				const currentBonus = openable.bonuses[i] as BonusOpenables;
+				if (currentBonus.skill == 'fishing') {
 					var userLevel = msg.author.skillLevel(SkillsEnum.Fishing) as number;
-				} else if (currentBonus.skill == "cooking"){
+				} else if (currentBonus.skill == 'cooking') {
 					var userLevel = msg.author.skillLevel(SkillsEnum.Cooking) as number;
-				} else { 
+				} else {
 					throw `Error Locating Skill To Compare To`;
 				}
-				if (typeof currentBonus.req == "number") {
+				if (typeof currentBonus.req == 'number') {
 					if (userLevel >= currentBonus.req) {
-						currentTable.add(currentBonus.item,currentBonus.qty,currentBonus.weight);
+						currentTable.add(currentBonus.item, currentBonus.qty, currentBonus.weight);
 						await msg.author.log(`Added ${currentBonus.item} to the Loot Table`);
 					}
-				} else {
-					if (userLevel >= currentBonus.req[0] && userLevel <= currentBonus.req[1]) {
-						currentTable.add(currentBonus.item,currentBonus.qty,currentBonus.weight);
-						await msg.author.log(`Added ${currentBonus.item} to the Loot Table`);
-					}
+				} else if (userLevel >= currentBonus.req[0] && userLevel <= currentBonus.req[1]) {
+					currentTable.add(currentBonus.item, currentBonus.qty, currentBonus.weight);
+					await msg.author.log(`Added ${currentBonus.item} to the Loot Table`);
 				}
 			}
 		}
-
-		/* Seed pack */
+		/*
+		// Seed pack ''temp commented out until Andre commits''
 		if (openable.name == 'Seed pack') {
-			var tier = msg.author.skillLevel(SkillsEnum.Fishing) as number;
+			var tier = msg.author.settings.get(UserSettings.FarmingContracts.FarmingContract);
 			if (tier > 0 && tier < 6) {
-				/* Roll amount variables */
+				//Roll amount variables
 				var high = 0
 				var medium = 0
 				var low = 0
 				
 				switch (tier) {
-					case (tier=1): {
+					case (1): {
 						high = 0
 						medium = rand(1,3)
 						low = 6 - medium
 						break;
 					}    
-					case (tier=2): {
+					case (2): {
 						var highroll = rand(1,11)
 						if (highroll == 1) {
 							high = 1
@@ -204,46 +200,43 @@ export default class extends BotCommand {
 						low = 7 - medium - high
 						break;
 					}        
-					case (tier=3): {
+					case (3): {
 						high = rand(0,1)
 						medium = rand(2,4)
 						low = 8 - medium - high
 						break;
 					}
-					case (tier=4): { 
+					case (4): { 
 						high = rand(1,2)
 						medium = rand(3,5)
 						low = 9 - medium - high
 						break;
 					}
-					case (tier=5): {
+					case (5): {
 						high = rand(1,3)
 						medium = rand(4,6)
 						low = 10 - medium - high
 						break;
 					}
 				}
-				/* Low seed roll */
+				//Low seed roll
 				currentTable.every(LowSeedTable, low);
-				/* Medium seed roll */
+				//Medium seed roll
 				currentTable.every(MediumSeedTable, medium);
-				/* High seed roll */
+				//High seed roll
 				currentTable.every(HighSeedTable, high);
 			}
 		}
-		
-		/* Temp opens all keys */
-		var testTable = new LootTable();
-		testTable.every(currentTable,numItemsHas);
-		
-		const loot = await bankFromLootTableOutput(testTable.roll());
-		
+		*/
+
+		const loot = await bankFromLootTableOutput(currentTable.roll());
+
 		await msg.author.removeItemFromBank(openable.itemID, numItemsHas);
-		
+
 		await msg.author.addItemsToBank(loot, true);
-		
+
 		return msg.send(
-			`${openable.emoji} You opened ${numItemsHas} ${openable.name} and received: ${
+			`${openable.emoji} You opened ${openable.name} and received: ${
 				Object.keys(loot).length > 0
 					? await createReadableItemListFromBank(this.client, loot)
 					: 'Nothing! Sad'

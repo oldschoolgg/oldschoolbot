@@ -1,7 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-const CrystalChestTable = new LootTable({limit: 256})
-    .every('Uncut dragonstone')
+const CrystalChestTable = new LootTable({ limit: 256 })
+	.every('Uncut dragonstone')
 	.add(
 		[
 			['Spinach roll', 1],
@@ -64,6 +64,6 @@ const CrystalChestTable = new LootTable({limit: 256})
 	)
 	.add('Adamant sq shield', 1, 4)
 	.add('Rune platelegs', 1, 1)
-    .add('Rune plateskirt', 1, 1);
+	.add('Rune plateskirt', 1, 1);
 
 export default CrystalChestTable;

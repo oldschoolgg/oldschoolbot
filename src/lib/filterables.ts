@@ -368,10 +368,10 @@ const openables = resolveItems([
 	'Bronze key',
 	'Iron key',
 	'Steel key',
-	'Silver key', 
+	'Silver key',
 	'Grubby key',
-	`Larran's key`, 
-	'Brimstone key', 
+	`Larran's key`,
+	'Brimstone key',
 	'Ogre coffin key'
 ]);
 
