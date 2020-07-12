@@ -210,7 +210,7 @@ export default class extends BotCommand {
 			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 		}
 
-		const seedType:any = plants.seedType;
+		const seedType: any = plants.seedType;
 		const seedToPatch: PatchTypes.FarmingPatchTypes = seedType;
 		const getPatchType = resolvePatchTypeSetting(seedToPatch);
 		const patchType: any = msg.author.settings.get(getPatchType);
