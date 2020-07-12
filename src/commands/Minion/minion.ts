@@ -19,7 +19,8 @@ import {
 	itemNameFromID,
 	addItemToBank,
 	calcWhatPercent,
-	reduceNumByPercent
+	reduceNumByPercent,
+	bankHasItem
 } from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -32,7 +33,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
-import bankHasItem from '../../lib/util/bankHasItem';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Eatables } from '../../lib/minions/data/Eatables';
 import { maxDefenceStats } from '../../lib/gear/data/maxGearStats';
@@ -651,7 +651,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		// await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
