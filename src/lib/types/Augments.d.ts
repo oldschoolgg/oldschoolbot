@@ -125,6 +125,11 @@ declare module 'discord.js' {
 		 */
 		hasMonsterRequirements(monster: KillableMonster): [false, string] | [true];
 		/**
+		 * Returns a tuple where the first item is true/false if they have the requirements,
+		 * the second item is a string containing the reason they don't have the requirements.
+		 */
+		hasOpenableRequirements(openable: Openable): [false, string] | [true];
+		/**
 		 * Returns the KC the user has for this monster.
 		 */
 		getKC(monster: Monster): number;

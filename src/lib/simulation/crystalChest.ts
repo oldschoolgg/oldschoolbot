@@ -1,25 +1,23 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-const CrystalChestTable = new LootTable()
+const CrystalChestTable = new LootTable({limit: 256})
+    .every('Uncut dragonstone')
 	.add(
 		[
-			['Uncut dragonstone', 1],
 			['Spinach roll', 1],
 			['Coins', 2000]
 		],
 		1,
-		1
+		68
 	)
-	.add('Uncut dragonstone', 1)
 	.add(
 		[
-			['Uncut dragonstone', 1],
 			['Air rune', 50],
 			['Water rune', 50],
 			['Earth rune', 50],
 			['Fire rune', 50],
-			['Body rune', 10],
-			['Mind rune', 10],
+			['Body rune', 50],
+			['Mind rune', 50],
 			['Chaos rune', 10],
 			['Death rune', 10],
 			['Cosmic rune', 10],
@@ -27,76 +25,45 @@ const CrystalChestTable = new LootTable()
 			['Law rune', 10]
 		],
 		1,
-		1
+		24
 	)
 	.add(
 		[
-			['Uncut dragonstone', 1],
 			['Ruby', 2],
 			['Diamond', 2]
 		],
 		1,
-		1
+		24
 	)
+	.add('Runite bar', 3, 24)
+	.add('Iron ore', 150, 20)
+	.add('Coal', 100, 20)
 	.add(
 		[
-			['Uncut dragonstone', 1],
-			['Runite bar', 3]
-		],
-		1,
-		1
-	)
-	.add(
-		[
-			['Uncut dragonstone', 1],
-			['Iron ore', 150]
-		],
-		1,
-		1
-	)
-	.add(
-		[
-			['Uncut dragonstone', 1],
-			['Coal', 100]
-		],
-		1,
-		1
-	)
-	.add(
-		[
-			['Uncut dragonstone', 1],
 			['Raw swordfish', 5],
 			['Coins', 1000]
 		],
 		1,
-		1
+		16
 	)
 	.add(
 		[
-			['Uncut dragonstone', 1],
 			['Tooth half of key', 1],
 			['Coins', 750]
 		],
 		1,
-		1
+		10
 	)
 	.add(
 		[
-			['Uncut dragonstone', 1],
 			['Loop half of key', 1],
 			['Coins', 750]
 		],
 		1,
-		1
+		10
 	)
-	.add(
-		[
-			['Uncut dragonstone', 1],
-			['Adamant sq shield', 1]
-		],
-		1,
-		1
-	)
-	.add([['Uncut dragonstone'], ['Rune platelegs']], 1, 1);
+	.add('Adamant sq shield', 1, 4)
+	.add('Rune platelegs', 1, 1)
+    .add('Rune plateskirt', 1, 1);
 
 export default CrystalChestTable;

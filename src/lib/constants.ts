@@ -90,7 +90,7 @@ export const enum Color {
 	Orange = 16098851
 }
 
-export const SupportServer = '342983479501389826';
+export const SupportServer = '710111046031114362';
 
 export const enum Tasks {
 	AgilityActivity = 'agilityActivity',

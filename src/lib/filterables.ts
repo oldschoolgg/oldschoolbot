@@ -221,6 +221,7 @@ const fletching = resolveItems([
 	'Diamond bolt tips',
 	'Onyx bolt tips',
 	'Dragonstone bolt tips',
+	'Onyx bolt tips',
 	'Headless arrow',
 	'Bronze arrowtips',
 	'Iron arrowtips',
@@ -355,6 +356,25 @@ const gear = resolveItems([
 	...godwarsGear
 ]);
 
+const openables = resolveItems([
+	'Birthday present',
+	'Mystery box',
+	'Casket',
+	'Crystal key',
+	'Enhanced crystal key',
+	'Sinister key',
+	'Seed pack',
+	'Muddy key',
+	'Bronze key',
+	'Iron key',
+	'Steel key',
+	'Silver key', 
+	'Grubby key',
+	`Larran's key`, 
+	'Brimstone key', 
+	'Ogre coffin key'
+]);
+
 const cluesAndCaskets = resolveItems([
 	'Clue scroll (beginner)',
 	'Clue scroll (easy)',
@@ -367,7 +387,8 @@ const cluesAndCaskets = resolveItems([
 	'Reward casket (medium)',
 	'Reward casket (hard)',
 	'Reward casket (elite)',
-	'Reward casket (master)'
+	'Reward casket (master)',
+	...openables
 ]);
 
 const godwars = resolveItems([
@@ -725,6 +746,11 @@ export const filterableTypes = [
 		name: 'Clues and Caskets',
 		aliases: ['clues', 'caskets', 'cl', 'clue', 'casket', 'tt'],
 		items: cluesAndCaskets
+	},
+	{
+		name: 'Openables',
+		aliases: ['openables', 'keys'],
+		items: openables
 	},
 	{
 		name: 'God wars',
