@@ -3,6 +3,7 @@ import { User } from 'discord.js';
 
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { KillableMonster } from '../lib/minions/types';
+import { Openable } from '../lib/minions/types';
 import { formatItemReqs } from '../lib/util/formatItemReqs';
 import { itemNameFromID, toTitleCase } from '../lib/util';
 import { Skills } from '../lib/types';
@@ -57,6 +58,32 @@ export default class extends Extendable {
 						false,
 						`You need level ${levelRequired} ${toTitleCase(skillEnum)} to kill ${
 							monster.name
+						}. Check https://www.oldschool.gg/oldschoolbot/minions?${toTitleCase(
+							skillEnum
+						)} for information on how to train this skill.`
+					];
+				}
+			}
+		}
+
+		return [true];
+	}
+	
+	public hasOpenableRequirements(this: User, chest: Openable) {
+		if (chest.qpRequired && this.settings.get(UserSettings.QP) < chest.qpRequired) {
+			return [
+				false,
+				`You need ${chest.qpRequired} QP to kill ${chest.name}. You can get Quest Points through questing with \`+quest\``
+			];
+		}
+
+		if (chest.levelRequirements) {
+			for (const [skillEnum, levelRequired] of Object.entries(chest.levelRequirements)) {
+				if (this.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
+					return [
+						false,
+						`You need level ${levelRequired} ${toTitleCase(skillEnum)} to open ${
+							chest.name
 						}. Check https://www.oldschool.gg/oldschoolbot/minions?${toTitleCase(
 							skillEnum
 						)} for information on how to train this skill.`
