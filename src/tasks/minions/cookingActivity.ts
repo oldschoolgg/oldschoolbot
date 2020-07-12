@@ -12,8 +12,9 @@ import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables'
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ cookableID, quantity, userID, channelID }: CookingActivityTaskOptions) {
+	async run({ cookableID, quantity, userID, channelID, duration }: CookingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID);

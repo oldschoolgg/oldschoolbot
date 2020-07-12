@@ -141,7 +141,6 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name

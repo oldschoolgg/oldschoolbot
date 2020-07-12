@@ -216,6 +216,7 @@ const fletching = resolveItems([
 	'Emerald bolt tips',
 	'Ruby bolt tips',
 	'Diamond bolt tips',
+	'Onyx bolt tips',
 	'Dragonstone bolt tips',
 	'Headless arrow',
 	'Bronze arrowtips',

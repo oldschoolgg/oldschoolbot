@@ -9,8 +9,15 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends Task {
-	async run({ burnableID, quantity, userID, channelID }: FiremakingActivityTaskOptions) {
+	async run({
+		burnableID,
+		quantity,
+		userID,
+		channelID,
+		duration
+	}: FiremakingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		const Burn = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID);

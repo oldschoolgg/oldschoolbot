@@ -6,13 +6,14 @@ import { Events } from '../../lib/constants';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 
 export default class extends Task {
-	async run({ clueID, userID, channelID, quantity }: ClueActivityTaskOptions) {
+	async run({ clueID, userID, channelID, quantity, duration }: ClueActivityTaskOptions) {
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
-		if (!clueTier || !user) {
+		if (!clueTier) {
 			this.client.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
 			return;
 		}

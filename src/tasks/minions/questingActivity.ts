@@ -8,8 +8,9 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends Task {
-	async run({ userID, channelID }: QuestingActivityTaskOptions) {
+	async run({ userID, channelID, duration }: QuestingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentQP = user.settings.get(UserSettings.QP);
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp

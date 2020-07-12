@@ -125,7 +125,7 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
+
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${
 			log.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;

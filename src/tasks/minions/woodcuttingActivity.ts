@@ -13,8 +13,9 @@ import { SkillsEnum } from '../../lib/skilling/types';
 const WoodcuttingPet = itemID('Beaver');
 
 export default class extends Task {
-	async run({ logID, quantity, userID, channelID }: WoodcuttingActivityTaskOptions) {
+	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Woodcutting);
 
 		const Log = Woodcutting.Logs.find(Log => Log.id === logID);

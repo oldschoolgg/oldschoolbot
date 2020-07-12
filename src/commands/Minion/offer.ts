@@ -94,7 +94,6 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(bone.inputId, quantity);
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 		return msg.send(
 			`${msg.author.minionName} is now offering ${quantity}x ${
 				bone.name
