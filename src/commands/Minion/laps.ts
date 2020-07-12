@@ -74,7 +74,7 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.MinionDailyDuration(duration);
+		msg.author.incrementMinionDailyDuration(duration);
 
 		const response = `${msg.author.minionName} is now doing ${quantity}x ${
 			course.name
