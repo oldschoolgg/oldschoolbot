@@ -1,10 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import {
-	stringMatches,
-	formatDuration,
-	rand,
-} from '../../lib/util';
+import { stringMatches, formatDuration, rand } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
@@ -15,7 +11,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { PatchTypes } from '../../lib/farming';
-import { FarmingPatchTypes } from '../../lib/farming/types'
+import { FarmingPatchTypes } from '../../lib/farming/types';
 import itemID from '../../lib/util/itemID';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 
@@ -33,33 +29,32 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [seedType = '']: [string]) {
-
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const currentWoodcuttingLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		const currentDate = new Date().getTime();
 
-		const getSeedType:any = seedType;
+		const getSeedType: any = seedType;
 		const seedToPatch: PatchTypes.FarmingPatchTypes = getSeedType;
 		const getPatchType = resolvePatchTypeSetting(seedToPatch);
 		if (!getPatchType) {
 			let patchStr = '';
-			for (let patches in FarmingPatchTypes) {
+			for (const patches in FarmingPatchTypes) {
 				patchStr += `${patches}, `;
 			}
 			throw `That is not a valid patch type! The available patches are: ${patchStr}`;
 		}
 		const patchType: any = msg.author.settings.get(getPatchType);
 
-		let upgradeType = '';
+		const upgradeType = '';
 		let str = '';
 		let boostStr = '';
 		const timePerPatch = Time.Minute * 1.5;
 
 		// If no quantity provided, set it to the max PATCHES available.
 
-		let newBank = { ...userBank };
+		const newBank = { ...userBank };
 
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
 		let duration = timePerPatch * patchType.LastQuantity;
@@ -105,7 +100,7 @@ export default class extends BotCommand {
 
 		// If user does not have something already planted, just plant the new seeds.
 		if (patchType.PatchStage === 0) {
-			throw `There is nothing planted in this patch to harvest!`
+			throw `There is nothing planted in this patch to harvest!`;
 		} else if (patchType.PatchStage === 1) {
 			const storeHarvestablePlant = patchType.LastPlanted;
 			const planted = Farming.Plants.find(
