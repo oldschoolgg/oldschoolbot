@@ -93,4 +93,8 @@ export namespace UserSettings {
 		export const Celastrus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.celastrus');
 		export const Hespori = T<PatchTypes.FarmingPatchTypes>('farmingpatches.hespori');
 	}
+
+	export namespace FarmingContracts {
+		export const FarmingContract = T<number>('farmingContracts.farmingContract');
+	}
 }

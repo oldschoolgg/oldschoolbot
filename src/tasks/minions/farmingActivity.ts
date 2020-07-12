@@ -13,6 +13,7 @@ import itemID from '../../lib/util/itemID';
 import { rand } from 'oldschooljs/dist/util/util';
 import { calcYieldCrystal } from '../../lib/skilling/functions/calcsFarming';
 import bankHasItem from '../../lib/util/bankHasItem';
+import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 
 export default class extends Task {
 	async run({
@@ -98,7 +99,7 @@ export default class extends Task {
 				user.minionName
 			} finished raking ${quantity} patches and planting ${quantity}x ${
 				plant.name
-			}s.\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
+			}.\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
 			if (bonusXP > 0) {
 				str += ` You received an additional ${bonusXP.toLocaleString()} in bonus XP.`;
@@ -250,9 +251,7 @@ export default class extends Task {
 
 			if (planting) {
 				if (!plant) return;
-				plantingStr = `${user}, ${user.minionName} finished planting ${quantity}x ${
-					plant.name
-				} and `
+				plantingStr = `${user}, ${user.minionName} finished planting ${quantity}x ${plant.name} and `;
 			} else plantingStr = `${user}, ${user.minionName} finished `;
 
 			let str = `${plantingStr}harvesting ${patchType.LastQuantity}x ${
@@ -323,6 +322,29 @@ export default class extends Task {
 				);
 			}
 
+			const currentContract: any = msg.author.settings.get(
+				UserSettings.FarmingContracts.FarmingContract
+			);
+
+			let janeMessage;
+			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
+				const farmingContractUpdate = {
+					contractStatus: 0,
+					contractType: '',
+					plantToGrow: '',
+					seedPatchTier: currentContract.plantTier,
+					plantTier: 0
+				};
+
+				msg.author.settings.update(
+					UserSettings.FarmingContracts.FarmingContract,
+					farmingContractUpdate
+				);
+				loot[itemID('Seed pack')] = 1;
+
+				janeMessage = true;
+			}
+
 			if (Object.keys(loot).length > 0) {
 				str += `\nYou received: ${await createReadableItemListFromBank(
 					this.client,
@@ -338,6 +360,13 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 
 			channel.send(str);
+			if (janeMessage === true) {
+				return msg.send(
+					await guildmasterJaneImage(
+						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!`
+					)
+				);
+			}
 		}
 	}
 }

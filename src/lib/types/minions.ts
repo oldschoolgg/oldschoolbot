@@ -146,7 +146,11 @@ export interface SkillingTickerTaskData {
 }
 
 export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions | TitheFarmActivityTaskOptions)[];
+	subTasks: (
+		| FightCavesActivityTaskOptions
+		| WintertodtActivityTaskOptions
+		| TitheFarmActivityTaskOptions
+	)[];
 }
 
 export type TickerTaskData =
