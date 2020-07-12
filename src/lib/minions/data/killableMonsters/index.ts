@@ -174,7 +174,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: resolveItems(["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']),
+		itemsRequired: deepResolveItems([
+			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']
+		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: {
