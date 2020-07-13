@@ -1,17 +1,11 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { MessageAttachment } from 'discord.js';
-import { Misc } from 'oldschooljs';
+import { Misc, Openables } from 'oldschooljs';
+import Loot from 'oldschooljs/dist/structures/Loot';
 
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
-import Openables from '../../lib/openables';
-import {
-	stringMatches,
-	itemNameFromID,
-	roll,
-	addBanks,
-	bankFromLootTableOutput
-} from '../../lib/util';
+import botOpenables from '../../lib/openables';
+import { stringMatches, roll, addBanks } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -19,6 +13,7 @@ import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
+import { ClueTier } from '../../lib/minions/types';
 
 const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
@@ -27,14 +22,19 @@ const itemsToNotifyOf = Object.values(cluesRares)
 	)
 	.concat([itemID('Bloodhound')]);
 
-const allOpenables = [...Openables.map(i => i.itemID), ...ClueTiers.map(i => i.id)];
+const allOpenables = [
+	...Openables.map(i => i.id),
+	...ClueTiers.map(i => i.id),
+	...botOpenables.map(i => i.itemID)
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['clue'],
-			usage: '[name:string]',
+			usage: '[quantity:int] [name:...string]',
+			usageDelim: ' ',
 			oneAtTime: true
 		});
 	}
@@ -53,36 +53,53 @@ export default class extends BotCommand {
 		return `You have ${itemsAvailable}.`;
 	}
 
-	async run(msg: KlasaMessage, [tier]: [string | undefined]) {
-		if (!tier) {
+	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
+		if (!name) {
 			return msg.send(await this.showAvailable(msg));
 		}
 
-		const clueTier = ClueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());
-		if (!clueTier) {
-			return this.nonClueOpen(msg, tier);
+		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
+		if (clue) {
+			return this.clueOpen(msg, quantity, clue);
 		}
 
-		const hasCasket = await msg.author.hasItem(clueTier.id);
-		if (!hasCasket) {
-			throw `You don't have any ${
+		const osjsOpenable = Openables.find(openable =>
+			openable.aliases.some(alias => stringMatches(alias, name))
+		);
+		if (osjsOpenable) {
+			return this.osjsOpenablesOpen(msg, quantity, osjsOpenable);
+		}
+
+		return this.botOpenablesOpen(msg, quantity, name);
+	}
+
+	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
+		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
+			throw `You don't have enough ${
 				clueTier.name
 			} Caskets to open!\n\n However... ${await this.showAvailable(msg)}`;
 		}
 
-		await msg.author.removeItemFromBank(clueTier.id);
+		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
-		let loot = clueTier.table.open();
-		let opened = `You opened one of your ${clueTier.name} Clue Caskets`;
+		let loot = clueTier.table.open(quantity);
 
-		let hadMimic = false;
-		if (clueTier.mimicChance && roll(clueTier.mimicChance)) {
-			loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
-			opened += ' and defeated the Mimic inside';
-			hadMimic = true;
+		let mimicNumber = 0;
+		if (clueTier.mimicChance) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(clueTier.mimicChance)) {
+					loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
+					mimicNumber++;
+				}
+			}
 		}
 
-		const nthCasket = (msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + 1;
+		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${
+			quantity > 1 ? 's' : ''
+		} ${mimicNumber > 0 ? ` defeating ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
+
+		const nthCasket =
+			(msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
 
 		// If this tier has a milestone reward, and their new score meets the req, and
 		// they don't own it already, add it to the loot.
@@ -116,62 +133,85 @@ export default class extends BotCommand {
 
 		this.client.emit(
 			Events.Log,
-			`${msg.author.username}[${msg.author.id}] opened a ${clueTier.name} casket.`
-		);
-
-		const task = this.client.tasks.get('bankImage')!;
-
-		const image = await task.generateBankImage(
-			loot,
-			`You opened a ${clueTier.name} clue ${hadMimic ? 'with a mimic ' : ''}and received...`,
-			true,
-			{ showNewCL: 1 },
-			msg.author
+			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
 		await msg.author.addItemsToBank(loot, true);
 
-		msg.author.incrementClueScore(clueTier.id);
-		if (hadMimic) {
-			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID);
+		msg.author.incrementClueScore(clueTier.id, quantity);
+		if (mimicNumber > 0) {
+			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
-		return msg.send(
-			`You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
-			new MessageAttachment(image, 'osbot.png')
-		);
+		return msg.channel.sendBankImage({
+			bank: loot,
+			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
+			title: opened,
+			flags: { showNewCL: 1 },
+			user: msg.author
+		});
 	}
 
-	async nonClueOpen(msg: KlasaMessage, type: string) {
-		const openable = Openables.find(thing =>
-			thing.aliases.some(alias => stringMatches(alias, type))
+	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: any) {
+		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
+			throw `You don't have enough ${
+				osjsOpenable.name
+			} to open!\n\n However... ${await this.showAvailable(msg)}`;
+		}
+
+		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
+
+		const loot = osjsOpenable.open(quantity);
+
+		this.client.emit(
+			Events.Log,
+			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
-
-		if (!openable) {
-			throw `That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
-				tier => tier.name
-			).join(', ')}), or another non-clue thing (${Openables.map(thing => thing.name).join(
-				', '
-			)})`;
-		}
-
-		const hasItem = await msg.author.hasItem(openable.itemID);
-		if (!hasItem) {
-			throw `You don't have a ${itemNameFromID(openable.itemID)} to open!`;
-		}
-
-		await msg.author.removeItemFromBank(openable.itemID);
-
-		const loot = bankFromLootTableOutput(openable.table.roll());
 
 		await msg.author.addItemsToBank(loot, true);
 
-		return msg.send(
-			`${openable.emoji} You opened a ${openable.name} and received: ${
-				Object.keys(loot).length > 0
-					? await createReadableItemListFromBank(this.client, loot)
-					: 'Nothing! Sad'
-			}.`
+		return msg.channel.sendBankImage({
+			bank: loot,
+			title: `You opened ${quantity} ${osjsOpenable.name}`,
+			flags: { showNewCL: 1 },
+			user: msg.author
+		});
+	}
+
+	async botOpenablesOpen(msg: KlasaMessage, quantity: number, name: string) {
+		const botOpenable = botOpenables.find(thing =>
+			thing.aliases.some(alias => stringMatches(alias, name))
 		);
+
+		if (!botOpenable) {
+			throw `That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
+				tier => tier.name
+			).join(', ')}), or another non-clue thing (${botOpenables
+				.map(thing => thing.name)
+				.concat(Openables.map(thing => thing.name))
+				.join(', ')})`;
+		}
+
+		if (msg.author.numItemsInBankSync(botOpenable.itemID) < quantity) {
+			throw `You don't have enough ${
+				botOpenable.name
+			} to open!\n\n However... ${await this.showAvailable(msg)}`;
+		}
+
+		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
+
+		const loot = new Loot();
+		for (let i = 0; i < quantity; i++) {
+			loot.add(botOpenable.table.roll());
+		}
+
+		await msg.author.addItemsToBank(loot.values(), true);
+
+		return msg.channel.sendBankImage({
+			bank: loot.values(),
+			title: `You opened ${quantity} ${botOpenable.name}`,
+			flags: { showNewCL: 1 },
+			user: msg.author
+		});
 	}
 }
