@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
+import { saidYes, noOp, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -59,9 +59,13 @@ export default class extends Task {
 		}
 
 		const markOfGrace = itemID('Mark of grace');
-		const loot = {
+		let loot = {
 			[markOfGrace]: totalMarks
 		};
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[itemID('Mystery box')] = 1;
+		}
 
 		// Roll for pet
 		if (

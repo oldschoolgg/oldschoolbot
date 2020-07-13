@@ -4,6 +4,7 @@ import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { Events } from '../../lib/constants';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { itemID, roll, multiplyBank } from '../../lib/util';
 
 export default class extends Task {
 	async run({ clueID, userID, channelID, quantity, duration }: ClueActivityTaskOptions) {
@@ -24,7 +25,11 @@ export default class extends Task {
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
-		const loot = { [clueTier.id]: quantity };
+		let loot = { [clueTier.id]: quantity };
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[itemID('Mystery box')] = 1;
+		}
 		await user.addItemsToBank(loot, true);
 
 		this.client.emit(

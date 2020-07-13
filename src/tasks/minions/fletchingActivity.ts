@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
+import { saidYes, noOp, roll, itemID, multiplyBank } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -45,9 +45,14 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Fletching level is now ${newLevel}!`;
 		}
 
-		const loot = {
+		let loot = {
 			[fletchableItem.id]: quantity
 		};
+
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[itemID('Mystery box')] = 1;
+		}
 
 		await user.addItemsToBank(loot, true);
 

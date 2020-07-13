@@ -2,7 +2,7 @@ import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes } from '../../lib/util';
+import { noOp, saidYes, roll, itemID, multiplyBank } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -20,7 +20,11 @@ export default class extends Task {
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
-		const loot = monster.table.kill(quantity);
+		let loot = monster.table.kill(quantity);
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[itemID('Mystery box')] = 1;
+		}
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);

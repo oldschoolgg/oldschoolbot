@@ -6,7 +6,7 @@ import { UserSettings } from '../settings/types/UserSettings';
 
 export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 	if (user.client.owners.has(user)) {
-		return 10;
+		return PerkTier.Six;
 	}
 
 	const supportGuild = getSupportGuild(user.client);

@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, rand } from '../../lib/util';
+import { saidYes, noOp, rand, roll, multiplyBank } from '../../lib/util';
 import { Time, Emoji, Events } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -37,9 +37,14 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Woodcutting level is now ${newLevel}!`;
 		}
 
-		const loot = {
+		let loot = {
 			[Log.id]: quantity
 		};
+
+		if (roll(10)) {
+			loot = multiplyBank(loot, 4);
+			loot[itemID('Mystery box')] = 1;
+		}
 
 		// Roll for pet at 1.5x chance
 		if (Log.petChance && rand(1, Log.petChance * 1.5) < quantity) {

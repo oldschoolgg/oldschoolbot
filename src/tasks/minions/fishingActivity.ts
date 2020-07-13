@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, roll } from '../../lib/util';
+import { saidYes, noOp, roll, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -98,9 +98,14 @@ export default class extends Task {
 		if (fish.id === itemID('Raw karambwanji')) {
 			quantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		}
-		const loot = {
+		let loot = {
 			[fish.id]: quantity
 		};
+
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[itemID('Mystery box')] = 1;
+		}
 
 		// Add barbarian fish to loot
 		if (fish.name === 'Barbarian fishing') {

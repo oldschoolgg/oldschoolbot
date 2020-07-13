@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
+import { saidYes, noOp, roll, multiplyBank } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -57,9 +57,13 @@ export default class extends Task {
 			str += `\n\n${burnedAmount}x ${cookable.name} failed to cook.`;
 		}
 
-		const loot = {
+		let loot = {
 			[cookable.id]: quantity - burnedAmount
 		};
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[itemID('Mystery box')] = 1;
+		}
 
 		loot[cookable.burntCookable] = burnedAmount;
 

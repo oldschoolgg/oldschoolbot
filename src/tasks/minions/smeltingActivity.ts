@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
+import { saidYes, noOp, multiplyBank } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -9,6 +9,7 @@ import { rand } from 'oldschooljs/dist/util/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { roll } from '../../util';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
@@ -57,9 +58,14 @@ export default class extends Task {
 			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
 		}
 
-		const loot = {
+		let loot = {
 			[bar.id]: quantity
 		};
+
+		if (roll(10)) {
+			loot = multiplyBank(loot, 4);
+			loot[itemID('Mystery box')] = 1;
+		}
 
 		await user.addItemsToBank(loot, true);
 

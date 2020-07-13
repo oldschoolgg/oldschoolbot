@@ -4,7 +4,7 @@ import { MessageAttachment } from 'discord.js';
 
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import { noOp, addBanks, bankHasItem } from '../../../lib/util';
+import { noOp, addBanks, bankHasItem, roll, multiplyBank } from '../../../lib/util';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -61,6 +61,10 @@ export default class extends Task {
 					skills: user.rawSkills
 				})
 			]);
+		}
+		if (roll(10)) {
+			loot = multiplyBank(loot, 4);
+			loot[itemID('Mystery box')] = 1;
 		}
 
 		// Track this food cost in Economy Stats

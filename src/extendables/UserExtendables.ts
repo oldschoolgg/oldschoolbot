@@ -11,7 +11,6 @@ import {
 	convertXPtoLVL,
 	toTitleCase
 } from '../lib/util';
-import clueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -104,18 +103,6 @@ export default class extends Extendable {
 
 	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
 		await this.settings.sync(true);
-		for (const { scrollID } of clueTiers) {
-			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
-			if (!_items[scrollID]) continue;
-			const alreadyHasThisScroll = await this.hasItem(scrollID);
-			if (alreadyHasThisScroll) {
-				// If they already have this scroll in their bank, delete it from the loot.
-				delete _items[scrollID];
-			} else {
-				// If they dont have it in their bank, reset the amount to 1 incase they got more than 1 of the clue.
-				_items[scrollID] = 1;
-			}
-		}
 
 		const items = {
 			..._items

@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, roll } from '../../lib/util';
+import { saidYes, noOp, roll, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -43,9 +43,14 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Runecraft level is now ${newLevel}!`;
 		}
 
-		const loot = {
+		let loot = {
 			[rune.id]: runeQuantity
 		};
+
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[itemID('Mystery box')] = 1;
+		}
 
 		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
 			loot[itemID('Rift guardian')] = 1;

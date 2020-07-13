@@ -64,6 +64,10 @@ export default class extends Task {
 			[ore.id]: quantity
 		};
 
+		if (roll(10)) {
+			loot[itemID('Mystery box')] = 1;
+		}
+
 		// Roll for pet
 		if (ore.petChance && roll(ore.petChance - user.skillLevel(SkillsEnum.Mining) * 25)) {
 			loot[itemID('Rock golem')] = 1;

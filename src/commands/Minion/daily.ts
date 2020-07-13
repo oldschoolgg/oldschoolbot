@@ -26,6 +26,7 @@ import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const options = {
 	max: 1,
@@ -89,7 +90,8 @@ export default class DailyCommand extends BotCommand {
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 
-		const loot = dailyRoll(1, triviaCorrect);
+		const perkTier = getUsersPerkTier(msg.author);
+		const loot = dailyRoll(perkTier, triviaCorrect);
 
 		const bonuses = [];
 
@@ -108,7 +110,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (roll(73)) {
-			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.73);
+			loot[COINS_ID] = 0;
 			bonuses.push(Emoji.Joy);
 		}
 
@@ -122,7 +124,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (!triviaCorrect) {
-			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.4);
+			loot[COINS_ID] = 0;
 		}
 
 		// Ensure amount of GP is an integer

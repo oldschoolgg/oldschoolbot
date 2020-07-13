@@ -10,7 +10,8 @@ import {
 	itemNameFromID,
 	roll,
 	addBanks,
-	bankFromLootTableOutput
+	bankFromLootTableOutput,
+	rand
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
@@ -19,6 +20,8 @@ import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
+import { mysteryBox } from '../../lib/simulation/mysteryBox';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
@@ -27,7 +30,11 @@ const itemsToNotifyOf = Object.values(cluesRares)
 	)
 	.concat([itemID('Bloodhound')]);
 
-const allOpenables = [...Openables.map(i => i.itemID), ...ClueTiers.map(i => i.id)];
+const allOpenables = [
+	...Openables.map(i => i.itemID),
+	...ClueTiers.map(i => i.id),
+	itemID('Mystery box')
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -56,6 +63,33 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [tier]: [string | undefined]) {
 		if (!tier) {
 			return msg.send(await this.showAvailable(msg));
+		}
+
+		if (['mystery', 'mbox', 'mystery box'].some(alias => stringMatches(alias, tier))) {
+			const hasItem = await msg.author.hasItem(itemID('Mystery box'));
+			if (!hasItem) {
+				throw `You don't have a ${itemNameFromID(itemID('Mystery box'))} to open!`;
+			}
+
+			await msg.author.removeItemFromBank(itemID('Mystery box'));
+
+			const loot = mysteryBox(rand(1, getUsersPerkTier(msg.author)));
+
+			await msg.author.addItemsToBank(loot, true);
+
+			const task = this.client.tasks.get('bankImage')!;
+
+			const image = await task.generateBankImage(
+				loot,
+				`You opened a Mystery Box and received...`,
+				true,
+				{ showNewCL: 1 },
+				msg.author
+			);
+			return msg.send(
+				`You opened a Mystery Box 👻 and received...`,
+				new MessageAttachment(image, 'osbot.png')
+			);
 		}
 
 		const clueTier = ClueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());

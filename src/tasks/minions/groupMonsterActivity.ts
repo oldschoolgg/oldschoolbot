@@ -1,6 +1,14 @@
 import { Task } from 'klasa';
 
-import { noOp, randomItemFromArray, queuedMessageSend, addBanks } from '../../lib/util';
+import {
+	noOp,
+	randomItemFromArray,
+	queuedMessageSend,
+	addBanks,
+	roll,
+	itemID,
+	multiplyBank
+} from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';
@@ -17,7 +25,11 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = monster.table.kill(1);
+			let loot = monster.table.kill(1);
+			if (roll(10)) {
+				loot = multiplyBank(loot, 4);
+				loot[itemID('Mystery box')] = 1;
+			}
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = addBanks([currentLoot ?? {}, loot]);
