@@ -1,7 +1,10 @@
 import resolveItems from './util/resolveItems';
 import { warmGear } from '../commands/Minion/wt';
+<<<<<<< HEAD
 import { gracefulItems } from './skilling/skills/agility';
 import { Eatables } from './eatables';
+=======
+>>>>>>> 95a2f88... firemaking: give bonus exp for pyromancer pieces (#336)
 
 const barrows = resolveItems([
 	"Ahrim's hood",

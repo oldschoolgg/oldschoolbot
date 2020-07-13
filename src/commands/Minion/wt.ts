@@ -19,7 +19,11 @@ import resolveItems from '../../lib/util/resolveItems';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+<<<<<<< HEAD
 import { Eatables } from '../../lib/eatables';
+=======
+import { Eatables } from '../../lib/minions/data/Eatables';
+>>>>>>> 95a2f88... firemaking: give bonus exp for pyromancer pieces (#336)
 
 export const warmGear = resolveItems([
 	'Staff of fire',
