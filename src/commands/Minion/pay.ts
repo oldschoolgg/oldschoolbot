@@ -27,15 +27,6 @@ export default class extends BotCommand {
 		if (user.id === msg.author.id) throw `You can't send money to yourself.`;
 		if (user.bot) throw `You can't send money to a bot.`;
 
-		if (
-			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) < Time.Minute &&
-			this.client.production
-		) {
-			(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
-				`(${msg.author.sanitizedName})[${msg.author.id}] paid daily to (${user.sanitizedName})[${user.id}]`
-			);
-		}
-
 		await msg.author.removeGP(amount);
 		await user.addGP(amount);
 		this.client.emit(
