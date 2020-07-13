@@ -1,5 +1,6 @@
 import resolveItems from './util/resolveItems';
 import { warmGear } from '../commands/Minion/wt';
+import { gracefulItems } from './skilling/skills/agility';
 
 const barrows = resolveItems([
 	"Ahrim's hood",
@@ -660,16 +661,7 @@ const herblore = resolveItems([
 	...herbs
 ]);
 
-const agility = resolveItems([
-	'Mark of grace',
-	'Graceful hood',
-	'Graceful cape',
-	'Graceful gloves',
-	'Graceful boots',
-	'Graceful legs',
-	'Graceful top',
-	'Amylase crystal'
-]);
+const agility = resolveItems([...gracefulItems, 'Mark of grace', 'Amylase crystal']);
 
 const prayer = resolveItems([
 	'Ensouled goblin head',
