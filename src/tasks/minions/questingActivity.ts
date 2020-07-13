@@ -14,7 +14,7 @@ export default class extends Task {
 		const currentQP = user.settings.get(UserSettings.QP);
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
-		let qpRecieved = rand(1, 3);
+		let qpRecieved = rand(1, 30);
 		if (currentQP >= 200) {
 			qpRecieved = 1;
 		} else if (currentQP >= 100) {
