@@ -98,6 +98,9 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		boosts.push(`👻`);
+		duration *= 0.5;
+
 		const data: ClueActivityTaskOptions = {
 			clueID: clueTier.id,
 			userID: msg.author.id,
