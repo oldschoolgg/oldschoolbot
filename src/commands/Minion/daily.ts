@@ -24,7 +24,6 @@ import { Time, Emoji, SupportServer, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
 import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
