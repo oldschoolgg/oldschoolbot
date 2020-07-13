@@ -1,13 +1,12 @@
 import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
-import { User, Util, TextChannel } from 'discord.js';
+import { User, Util } from 'discord.js';
 
-import { Events, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
+import { Events, Emoji, Time, MAX_QP, PerkTier } from '../lib/constants';
 import { Bank } from '../lib/types';
 import {
 	addBanks,
 	removeItemFromBank,
 	addItemToBank,
-	formatDuration,
 	convertXPtoLVL,
 	toTitleCase
 } from '../lib/util';
@@ -16,7 +15,6 @@ import Skills from '../lib/skilling/skills';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { SkillsEnum } from '../lib/skilling/types';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
-import { production } from '../config';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
 
 export default class extends Extendable {
@@ -309,22 +307,8 @@ export default class extends Extendable {
 		return Time.Minute * 30;
 	}
 
-	public async incrementMinionDailyDuration(this: User, duration: number) {
-		await this.settings.sync(true);
-
-		const currentDuration = this.settings.get(UserSettings.Minion.DailyDuration);
-		const newDuration = currentDuration + duration;
-		if (newDuration > Time.Hour * 18) {
-			const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
-
-			this.log(log);
-			if (production) {
-				(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
-					`${this.sanitizedName} ${log}`
-				);
-			}
-		}
-
-		return this.settings.update(UserSettings.Minion.DailyDuration, newDuration);
-	}
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore
+	// eslint-disable-next-line
+	public async incrementMinionDailyDuration(this: User, duration: number) {}
 }
