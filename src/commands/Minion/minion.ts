@@ -473,6 +473,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
+		boosts.push(`👻`);
+		duration *= 0.6;
+
 		const data: MonsterActivityTaskOptions = {
 			monsterID: monster.id,
 			userID: msg.author.id,
