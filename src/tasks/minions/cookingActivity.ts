@@ -61,8 +61,10 @@ export default class extends Task {
 			[cookable.id]: quantity - burnedAmount
 		};
 		if (roll(10)) {
-			loot = multiplyBank(loot, 2);
-			loot[itemID('Mystery box')] = 1;
+			if (duration > Time.Minute * 10) {
+				loot = multiplyBank(loot, 2);
+				loot[itemID('Mystery box')] = 1;
+			}
 		}
 
 		loot[cookable.burntCookable] = burnedAmount;

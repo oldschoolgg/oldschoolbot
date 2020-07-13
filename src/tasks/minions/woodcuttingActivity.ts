@@ -40,12 +40,12 @@ export default class extends Task {
 		let loot = {
 			[Log.id]: quantity
 		};
-
 		if (roll(10)) {
-			loot = multiplyBank(loot, 4);
-			loot[itemID('Mystery box')] = 1;
+			if (duration > Time.Minute * 10) {
+				loot = multiplyBank(loot, 2);
+				loot[itemID('Mystery box')] = 1;
+			}
 		}
-
 		// Roll for pet at 1.5x chance
 		if (Log.petChance && rand(1, Log.petChance * 1.5) < quantity) {
 			loot[WoodcuttingPet!] = 1;

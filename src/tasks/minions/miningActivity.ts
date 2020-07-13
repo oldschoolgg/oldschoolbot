@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, rand } from '../../lib/util';
+import { saidYes, noOp, rand, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -60,12 +60,15 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
 		}
 
-		const loot = {
+		let loot = {
 			[ore.id]: quantity
 		};
 
 		if (roll(10)) {
-			loot[itemID('Mystery box')] = 1;
+			if (duration > Time.Minute * 10) {
+				loot = multiplyBank(loot, 2);
+				loot[itemID('Mystery box')] = 1;
+			}
 		}
 
 		// Roll for pet

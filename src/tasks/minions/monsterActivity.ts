@@ -22,8 +22,10 @@ export default class extends Task {
 
 		let loot = monster.table.kill(quantity);
 		if (roll(10)) {
-			loot = multiplyBank(loot, 2);
-			loot[itemID('Mystery box')] = 1;
+			if (duration > Time.Minute * 10) {
+				loot = multiplyBank(loot, 2);
+				loot[itemID('Mystery box')] = 1;
+			}
 		}
 		announceLoot(this.client, user, monster, quantity, loot);
 

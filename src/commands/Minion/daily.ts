@@ -105,10 +105,6 @@ export default class DailyCommand extends BotCommand {
 			bonuses.push(Emoji.OSBot);
 		}
 
-		if (msg.author.hasMinion) {
-			loot[COINS_ID] /= 1.5;
-		}
-
 		if (roll(73)) {
 			loot[COINS_ID] = 0;
 			bonuses.push(Emoji.Joy);
@@ -156,17 +152,6 @@ export default class DailyCommand extends BotCommand {
 			await user.settings.update(UserSettings.Pets, { ...userPets });
 
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
-		}
-
-		if (loot[COINS_ID] > 0) {
-			const dailiesAmount = this.client.settings.get(
-				ClientSettings.EconomyStats.DailiesAmount
-			);
-			const dividedAmount = loot[COINS_ID] / 1_000_000;
-			this.client.settings.update(
-				ClientSettings.EconomyStats.DailiesAmount,
-				Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
-			);
 		}
 
 		await user.addItemsToBank(loot, true);

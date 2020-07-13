@@ -48,8 +48,10 @@ export default class extends Task {
 		};
 
 		if (roll(10)) {
-			loot = multiplyBank(loot, 2);
-			loot[itemID('Mystery box')] = 1;
+			if (duration > Time.Minute * 10) {
+				loot = multiplyBank(loot, 2);
+				loot[itemID('Mystery box')] = 1;
+			}
 		}
 
 		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
