@@ -25,7 +25,6 @@ import * as pets from '../../../data/pets';
 import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const options = {
 	max: 1,
@@ -89,8 +88,7 @@ export default class DailyCommand extends BotCommand {
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 
-		const perkTier = getUsersPerkTier(msg.author);
-		const loot = dailyRoll(perkTier, triviaCorrect);
+		const loot = dailyRoll(3, triviaCorrect);
 
 		const bonuses = [];
 
