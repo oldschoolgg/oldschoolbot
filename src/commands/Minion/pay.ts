@@ -1,8 +1,7 @@
 import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
-import { TextChannel } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Events, Time, Channel } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {
