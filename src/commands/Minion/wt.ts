@@ -21,7 +21,20 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { Eatables } from '../../lib/minions/data/Eatables';
 
-const pyroPieces = resolveItems([
+export const warmGear = resolveItems([
+	'Staff of fire',
+	'Fire battlestaff',
+	'Lava battlestaff',
+	'Steam battlestaff',
+	'Smoke battlestaff',
+	'Mystic fire staff',
+	'Mystic lava staff',
+	'Mystic steam staff',
+	'Mystic smoke staff',
+	'Infernal axe',
+	'Infernal pickaxe',
+	'Bruma torch',
+	'Tome of fire',
 	'Pyromancer hood',
 	'Pyromancer garb',
 	'Pyromancer robe',
@@ -62,20 +75,24 @@ export default class extends BotCommand {
 
 		const baseHealAmountNeeded = 20 * 8;
 		let healAmountNeeded = baseHealAmountNeeded;
+		let warmGearAmount = 0;
 
-		for (const piece of pyroPieces) {
+		for (const piece of warmGear) {
 			if (hasItemEquipped(piece, msg.author.settings.get(UserSettings.Gear.Skilling))) {
-				healAmountNeeded -= 14;
-				durationPerTodt = reduceNumByPercent(durationPerTodt, 5);
+				warmGearAmount++;
 			}
+			if (warmGearAmount > 4) break;
 		}
+
+		healAmountNeeded -= warmGearAmount * 15;
+		durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
 		if (healAmountNeeded !== baseHealAmountNeeded) {
 			messages.push(
 				`${calcWhatPercent(
 					baseHealAmountNeeded - healAmountNeeded,
 					baseHealAmountNeeded
-				)}% less food for wearing Pyromancer pieces`
+				)}% less food for wearing warm gear`
 			);
 		}
 

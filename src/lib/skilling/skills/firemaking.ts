@@ -65,11 +65,19 @@ const burnables: Burnable[] = [
 	}
 ];
 
+const pyromancerItems: { [key: number]: number } = {
+	[itemID('Pyromancer hood')]: 0.4,
+	[itemID('Pyromancer garb')]: 0.8,
+	[itemID('Pyromancer robe')]: 0.6,
+	[itemID('Pyromancer boots')]: 0.2
+};
+
 const Firemaking = {
 	aliases: ['fm', 'firemaking'],
 	Burnables: burnables,
 	id: SkillsEnum.Firemaking,
-	emoji: Emoji.Firemaking
+	emoji: Emoji.Firemaking,
+	pyromancerItems
 };
 
 export default Firemaking;
