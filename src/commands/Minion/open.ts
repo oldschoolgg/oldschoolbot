@@ -10,8 +10,7 @@ import {
 	itemNameFromID,
 	roll,
 	addBanks,
-	bankFromLootTableOutput,
-	rand
+	bankFromLootTableOutput
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
@@ -21,7 +20,6 @@ import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { mysteryBox } from '../../lib/simulation/mysteryBox';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
@@ -73,7 +71,7 @@ export default class extends BotCommand {
 
 			await msg.author.removeItemFromBank(itemID('Mystery box'));
 
-			const loot = mysteryBox(rand(1, getUsersPerkTier(msg.author)));
+			const loot = mysteryBox(1);
 
 			await msg.author.addItemsToBank(loot, true);
 
