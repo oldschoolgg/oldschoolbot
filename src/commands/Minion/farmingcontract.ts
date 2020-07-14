@@ -16,7 +16,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<contractLevel:...string>',
-			usageDelim: ' '
+			usageDelim: ' ',
+			aliases: ['fc']
 		});
 	}
 
@@ -30,6 +31,21 @@ export default class extends BotCommand {
 		);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
+		if (contractLevel === 'completed') {
+			if (currentContract.contractsCompleted > 0) {
+				return msg.send(
+					await guildmasterJaneImage(
+						`I have checked my diary and you have completed a total of ${currentContract.contractsCompleted} farming contracts!`
+					)
+				);
+			}
+			return msg.send(
+				await guildmasterJaneImage(
+					`I tried to check my diary but you haven't completed any farming contracts yet...`
+				)
+			);
+		}
+
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
 			return msg.send(
 				await guildmasterJaneImage(
@@ -42,7 +58,9 @@ export default class extends BotCommand {
 			contractLevel !== 'easy' &&
 			contractLevel !== 'medium' &&
 			contractLevel !== 'hard' &&
-			contractLevel !== 'easier'
+			contractLevel !== 'easier' &&
+			contractLevel !== 'completed' &&
+			contractLevel !== 'current'
 		) {
 			return msg.send(
 				await guildmasterJaneImage(
@@ -87,7 +105,8 @@ export default class extends BotCommand {
 					contractType: newContractLevel,
 					plantToGrow,
 					plantTier,
-					seedPackTier: 0
+					seedPackTier: 0,
+					contractsCompleted: currentContract.contractsCompleted
 				};
 
 				msg.author.settings.update(
@@ -121,7 +140,8 @@ export default class extends BotCommand {
 			contractType: contractLevel,
 			plantToGrow,
 			plantTier,
-			seedPackTier: 0
+			seedPackTier: 0,
+			contractsCompleted: currentContract.contractsCompleted
 		};
 
 		msg.author.settings.update(
