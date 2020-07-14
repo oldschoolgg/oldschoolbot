@@ -4,7 +4,7 @@ import { resolveNameBank } from '../../../../util';
 
 const Built: Craftable[] = [
 	{
-		name: 'Serpentine helmet',
+		name: 'Serpentine helm (uncharged)',
 		id: itemID('Serpentine helm (uncharged)'),
 		level: 52,
 		xp: 120,
@@ -27,7 +27,7 @@ const Built: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Toxic staff of the dead',
+		name: 'Toxic staff (uncharged)',
 		id: itemID('Toxic staff (uncharged)'),
 		level: 59,
 		xp: 0,
@@ -35,7 +35,7 @@ const Built: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Trident of the swamp',
+		name: 'Uncharged toxic trident',
 		id: itemID('Uncharged toxic trident'),
 		level: 59,
 		xp: 0,
