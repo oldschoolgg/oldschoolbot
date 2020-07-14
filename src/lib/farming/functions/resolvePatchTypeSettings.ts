@@ -33,5 +33,7 @@ export default function resolvePatchTypeSetting(type: PatchTypes.FarmingPatchTyp
 			return UserSettings.FarmingPatches.Celastrus;
 		case PatchTypes.FarmingPatchTypes.Hespori:
 			return UserSettings.FarmingPatches.Hespori;
+		case PatchTypes.FarmingPatchTypes.Flower:
+			return UserSettings.FarmingPatches.Flower;
 	}
 }

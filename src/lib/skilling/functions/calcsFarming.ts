@@ -24,17 +24,22 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 	return numOfPatches;
 }
 
-export function calcYieldCrystal(plant: Plant, upgradeType: string) {
+export function calcVariableYield(plant: Plant, upgradeType: string, farmingLevel: number) {
 	if (!plant.variableYield) return;
-	if (!plant.variableOutputAmount) return;
 	let cropYield = 0;
-	for (let i = plant.variableOutputAmount.length; i > 0; i--) {
-		const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
-		if (upgradeType === upgradeTypeNeeded) {
-			cropYield = rand(min, max);
-			break;
+	if (plant.name === 'Crystal tree') {
+		if (!plant.variableOutputAmount) return;
+		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
+			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
+			if (upgradeType === upgradeTypeNeeded) {
+				cropYield = rand(min, max);
+				break;
+			}
 		}
+	} else if (plant.name === 'Limpwurt') {
+		cropYield = 3 + rand(1, Math.floor(farmingLevel / 10));
 	}
+
 	if (!cropYield) throw `error!`;
 	return cropYield;
 }

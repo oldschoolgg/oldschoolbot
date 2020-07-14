@@ -85,6 +85,7 @@ Client.defaultUserSchema
 			.add('crystal', 'any', { default: Farming.defaultPatches })
 			.add('celastrus', 'any', { default: Farming.defaultPatches })
 			.add('hespori', 'any', { default: Farming.defaultPatches })
+			.add('flower', 'any', { default: Farming.defaultPatches })
 	)
 	.add('farmingContracts', (folder: SchemaFolder) =>
 		folder.add('farmingContract', 'any', {
@@ -93,7 +94,8 @@ Client.defaultUserSchema
 				contractType: '',
 				plantToGrow: '',
 				plantTier: 0,
-				seedPackTier: 0
+				seedPackTier: 0,
+				contractsCompleted: 0
 			}
 		})
 	);
