@@ -48,9 +48,11 @@ export default class extends BotCommand {
 			if (titheFarmPoints < titheFarmPointsCost) {
 				throw `You need ${buyable.titheFarmPoints} Tithe Farm points to purchase this item.`;
 			}
-			sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${buyable.titheFarmPoints} Tithe Farm points.`
-			);
+			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+				sellMsg = await msg.channel.send(
+					`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${buyable.titheFarmPoints} Tithe Farm points.`
+				);
+			}
 		} else {
 			const GP = msg.author.settings.get(UserSettings.GP);
 			GPCost = buyable.gpCost * quantity;
