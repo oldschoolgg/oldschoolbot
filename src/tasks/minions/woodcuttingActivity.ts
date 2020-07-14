@@ -1,6 +1,7 @@
 import { Task, KlasaMessage } from 'klasa';
+import { roll } from 'oldschooljs/dist/util/util';
 
-import { saidYes, noOp, rand } from '../../lib/util';
+import { saidYes, noOp } from '../../lib/util';
 import { Time, Emoji, Events } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -9,8 +10,6 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
-
-const WoodcuttingPet = itemID('Beaver');
 
 export default class extends Task {
 	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
@@ -41,9 +40,12 @@ export default class extends Task {
 			[Log.id]: quantity
 		};
 
-		// Roll for pet at 1.5x chance
-		if (Log.petChance && rand(1, Log.petChance * 1.5) < quantity) {
-			loot[WoodcuttingPet!] = 1;
+		// roll for pet
+		if (
+			Log.petChance &&
+			roll((Log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)
+		) {
+			loot[itemID('Beaver')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,

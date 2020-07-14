@@ -1,4 +1,5 @@
 import resolveItems from './util/resolveItems';
+import { warmGear } from '../commands/Minion/wt';
 
 const barrows = resolveItems([
 	"Ahrim's hood",
@@ -820,5 +821,10 @@ export const filterableTypes = [
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
 		items: wintertodtItems
+	},
+	{
+		name: 'Warm gear',
+		aliases: ['warm gear', 'warm'],
+		items: warmGear
 	}
 ];
