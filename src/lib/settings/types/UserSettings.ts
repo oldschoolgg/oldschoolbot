@@ -92,6 +92,7 @@ export namespace UserSettings {
 		export const Crystal = T<PatchTypes.FarmingPatchTypes>('farmingpatches.crystal');
 		export const Celastrus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.celastrus');
 		export const Hespori = T<PatchTypes.FarmingPatchTypes>('farmingpatches.hespori');
+		export const Flower = T<PatchTypes.FarmingPatchTypes>('farmingpatches.flower');
 	}
 
 	export namespace FarmingContracts {
