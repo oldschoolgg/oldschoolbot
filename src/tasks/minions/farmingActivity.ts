@@ -11,7 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 import { rand } from 'oldschooljs/dist/util/util';
-import { calcYieldCrystal } from '../../lib/skilling/functions/calcsFarming';
+import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import bankHasItem from '../../lib/util/bankHasItem';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 
@@ -158,7 +158,11 @@ export default class extends Task {
 			if (plantToHarvest.givesCrops === true) {
 				if (!plantToHarvest.outputCrop) return;
 				if (plantToHarvest.variableYield) {
-					cropYield = calcYieldCrystal(plantToHarvest, patchType.LastUpgradeType);
+					cropYield = calcVariableYield(
+						plantToHarvest,
+						patchType.LastUpgradeType,
+						currentFarmingLevel
+					);
 				} else if (plantToHarvest.fixedOutput === true) {
 					if (!plantToHarvest.fixedOutputAmount) return;
 					cropYield = plantToHarvest.fixedOutputAmount;
@@ -195,7 +199,8 @@ export default class extends Task {
 					loot[plantToHarvest.outputCrop] = cropYield;
 				}
 
-				harvestXp = cropYield * plantToHarvest.harvestXp;
+				if (plantToHarvest.name === 'Limpwurt') harvestXp = plantToHarvest.harvestXp;
+				else harvestXp = cropYield * plantToHarvest.harvestXp;
 			}
 
 			if (plantToHarvest.needsChopForHarvest === true) {
@@ -326,6 +331,8 @@ export default class extends Task {
 				UserSettings.FarmingContracts.FarmingContract
 			);
 
+			const contractsCompleted: number = currentContract.contractsCompleted;
+
 			let janeMessage;
 			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
 				const farmingContractUpdate = {
@@ -333,7 +340,8 @@ export default class extends Task {
 					contractType: '',
 					plantToGrow: '',
 					seedPatchTier: currentContract.plantTier,
-					plantTier: 0
+					plantTier: 0,
+					contractsCompleted: contractsCompleted + 1
 				};
 
 				msg.author.settings.update(
@@ -363,7 +371,8 @@ export default class extends Task {
 			if (janeMessage === true) {
 				return msg.send(
 					await guildmasterJaneImage(
-						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!`
+						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${contractsCompleted +
+							1} farming contracts.`
 					)
 				);
 			}
