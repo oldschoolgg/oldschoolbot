@@ -14,8 +14,7 @@ export default class extends BotCommand {
 			description: 'Simulates dice rolls from Runescape.',
 			usage: '[amount:int{1}]',
 			requiredPermissions: ['EMBED_LINKS'],
-			oneAtTime: true,
-			ironCantUse: true
+			oneAtTime: true
 		});
 	}
 
