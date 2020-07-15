@@ -19,6 +19,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['tan'],
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
