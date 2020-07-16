@@ -44,13 +44,13 @@ export default class extends Command {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
 			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
-        }
+		}
 
-        if (tier < 1 || tier > 5) {
-            throw `The tier you gave is not a valid tier. The valid tiers are 1, 2, 3, 4 and 5.`
-        }
+		if (tier < 1 || tier > 5) {
+			throw `The tier you gave is not a valid tier. The valid tiers are 1, 2, 3, 4 and 5.`;
+		}
 
-		let loot = Openables.SeedPack.open(tier, quantity);
+		const loot = Openables.SeedPack.open(tier, quantity);
 
 		const opened = `You opened ${quantity} Seed pack${quantity > 1 ? 's' : ''}:`;
 
@@ -58,10 +58,7 @@ export default class extends Command {
 
 		const image = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				loot,
-				`Loot from ${quantity} Seed pack${quantity > 1 ? 's' : ''}:`
-			);
+			.generateBankImage(loot, `Loot from ${quantity} Seed pack${quantity > 1 ? 's' : ''}:`);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}

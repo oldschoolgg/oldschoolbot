@@ -47,19 +47,28 @@ export default class extends Command {
 		}
 
 		chestName.toLowerCase();
-		const chest = Openables.find(_chestName => _chestName.aliases.some(alias => alias.toLowerCase() === chestName) || _chestName.name === chestName);
+		const chest = Openables.find(
+			_chestName =>
+				_chestName.aliases.some(alias => alias.toLowerCase() === chestName) ||
+				_chestName.name === chestName
+		);
 
-		if (!chest || chest.id === Openables.SeedPack.id || chest.id === Openables.LuckyImp.id || chest.id === Openables.MysteryBox.id ) {
-			throw `Not a valid chest name. The valid chests are: Bronze HAM chest, Iron HAM chest, Silver HAM chest, Steel HAM chest, Crystal chest, Elven crystal chest, Grubby chest, Muddy chest, Ogre coffin, Sinister chest, Brimstone chest, Larran's big chest and Larran's small chest.`
+		if (
+			!chest ||
+			chest.id === Openables.SeedPack.id ||
+			chest.id === Openables.LuckyImp.id ||
+			chest.id === Openables.MysteryBox.id
+		) {
+			throw `Not a valid chest name. The valid chests are: Bronze HAM chest, Iron HAM chest, Silver HAM chest, Steel HAM chest, Crystal chest, Elven crystal chest, Grubby chest, Muddy chest, Ogre coffin, Sinister chest, Brimstone chest, Larran's big chest and Larran's small chest.`;
 		}
 		let loot;
 
-		switch(true) {
-			case (chest.id === Openables.BrimstoneChest.id): {
+		switch (true) {
+			case chest.id === Openables.BrimstoneChest.id: {
 				loot = Openables.BrimstoneChest.open(fishlvl, quantity);
 				break;
 			}
-			case (chest.id === Openables.LarransChest.id): {
+			case chest.id === Openables.LarransChest.id: {
 				loot = Openables.LarransChest.open(fishlvl, chestName, quantity);
 				break;
 			}

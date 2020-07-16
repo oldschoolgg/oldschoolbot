@@ -7,14 +7,14 @@ import { PerkTier } from '../../lib/constants';
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-            cooldown: 1,
-            aliases: ['mysterybox'],
+			cooldown: 1,
+			aliases: ['mysterybox'],
 			usage: '[quantity:int{1}]',
 			usageDelim: ' '
 		});
-    }
-    
-    determineLimit(user: KlasaUser) {
+	}
+
+	determineLimit(user: KlasaUser) {
 		if (this.client.owners.has(user)) {
 			return Infinity;
 		}
@@ -44,9 +44,9 @@ export default class extends Command {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
 			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
-        }
+		}
 
-		let loot = Openables.MysteryBox.open(quantity);
+		const loot = Openables.MysteryBox.open(quantity);
 
 		const opened = `You opened ${quantity} Mystery box${quantity > 1 ? 's' : ''}:`;
 

@@ -1,7 +1,5 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
-import { Misc } from 'oldschooljs';
-// import { rand } from '../../util'
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import Openables from '../../lib/openables';
@@ -136,107 +134,53 @@ export default class extends BotCommand {
 				tier => tier.name
 			).join(', ')}), or another non-clue thing (${Openables.map(thing => thing.name).join(
 				', '
-			)})`;
+			)}) except for lucky IMP`;
 		}
 
-		const numItemsHas = await msg.author.numberOfItemInBank(openable.itemID);
+		const numItemsHas = await msg.author.numberOfItemInBank(openable.id);
 		if (!numItemsHas) {
 			throw `You don't have any to open!`;
 		}
 
+		/* Look into putting restrictions here
 		if (!msg.author.hasOpenableRequirements(openable)) {
 			throw `You don't have the requirements to open that!`;
 		}
-
-		const currentTable = openable.table;
-		if (openable.bonuses) {
-			let i = 0;
-			for (i; i < openable.bonuses.length; i++) {
-				const currentBonus = openable.bonuses[i] as BonusOpenables;
-				if (currentBonus.skill == 'fishing') {
-					var userLevel = msg.author.skillLevel(SkillsEnum.Fishing) as number;
-				} else if (currentBonus.skill == 'cooking') {
-					var userLevel = msg.author.skillLevel(SkillsEnum.Cooking) as number;
-				} else {
-					throw `Error Locating Skill To Compare To`;
-				}
-				if (typeof currentBonus.req == 'number') {
-					if (userLevel >= currentBonus.req) {
-						currentTable.add(currentBonus.item, currentBonus.qty, currentBonus.weight);
-						await msg.author.log(`Added ${currentBonus.item} to the Loot Table`);
-					}
-				} else if (userLevel >= currentBonus.req[0] && userLevel <= currentBonus.req[1]) {
-					currentTable.add(currentBonus.item, currentBonus.qty, currentBonus.weight);
-					await msg.author.log(`Added ${currentBonus.item} to the Loot Table`);
-				}
-			}
-		}
-		/*
-		// Seed pack ''temp commented out until Andre commits''
-		if (openable.name == 'Seed pack') {
-			var tier = msg.author.settings.get(UserSettings.FarmingContracts.FarmingContract);
-			if (tier > 0 && tier < 6) {
-				//Roll amount variables
-				var high = 0
-				var medium = 0
-				var low = 0
-				
-				switch (tier) {
-					case (1): {
-						high = 0
-						medium = rand(1,3)
-						low = 6 - medium
-						break;
-					}    
-					case (2): {
-						var highroll = rand(1,11)
-						if (highroll == 1) {
-							high = 1
-						}
-						else {
-							high = 0
-						}
-						medium = rand(2,3)
-						low = 7 - medium - high
-						break;
-					}        
-					case (3): {
-						high = rand(0,1)
-						medium = rand(2,4)
-						low = 8 - medium - high
-						break;
-					}
-					case (4): { 
-						high = rand(1,2)
-						medium = rand(3,5)
-						low = 9 - medium - high
-						break;
-					}
-					case (5): {
-						high = rand(1,3)
-						medium = rand(4,6)
-						low = 10 - medium - high
-						break;
-					}
-				}
-				//Low seed roll
-				currentTable.every(LowSeedTable, low);
-				//Medium seed roll
-				currentTable.every(MediumSeedTable, medium);
-				//High seed roll
-				currentTable.every(HighSeedTable, high);
-			}
-		}
 		*/
+		const fishlvl = msg.author.skillLevel(SkillsEnum.Fishing) as number;
 
-		const loot = await bankFromLootTableOutput(currentTable.roll());
+		/* temp var tier = 5 until Andre commits farming
+		var tier = msg.author.settings.get(UserSettings.FarmingContracts.FarmingContract);
+        */
+		const tier = 5;
+		let loot;
+		openable.name.toLowerCase();
 
-		await msg.author.removeItemFromBank(openable.itemID, numItemsHas);
+		switch (true) {
+			case openable.id === Openables.BrimstoneChest.id: {
+				loot = Openables.BrimstoneChest.open(fishlvl);
+				break;
+			}
+			case openable.id === Openables.LarransChest.id: {
+				loot = Openables.LarransChest.open(fishlvl, openable.name);
+				break;
+			}
+			case openable.id === Openables.SeedPack.id: {
+				loot = Openables.SeedPack.open(tier);
+				break;
+			}
+			default: {
+				loot = openable.open(1, openable.name);
+				break;
+			}
+		}
+
+		await msg.author.removeItemFromBank(openable.id, 1);
 
 		await msg.author.addItemsToBank(loot, true);
 
 		return msg.send(
-			`${openable.emoji} You opened ${openable.name} and received: ${
+			`You opened ${openable.name} and received: ${
 				Object.keys(loot).length > 0
 					? await createReadableItemListFromBank(this.client, loot)
 					: 'Nothing! Sad'
