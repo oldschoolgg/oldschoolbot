@@ -107,7 +107,7 @@ export default class extends BotCommand {
 		}
 
 		const data: FletchingActivityTaskOptions = {
-			fletchableID: fletchableItem.id,
+			fletchableName: fletchableItem.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
