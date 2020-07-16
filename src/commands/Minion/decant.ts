@@ -1,9 +1,9 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Potions from '../../lib/minions/data/potions';
-import { stringMatches, addItemToBank } from '../../lib/util';
+import { addItemToBank, stringMatches } from '../../lib/util';
 import { ItemBank } from '../../lib/types';
 
 export default class extends BotCommand {
@@ -54,8 +54,13 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
+		const leftOverMessage =
+			dosesToGiveBack > 0
+				? `, with a ${potionToDecant.name}(${dosesToGiveBack}) left over.`
+				: '';
+
 		return msg.send(
-			`Decanted all your ${potionToDecant.name}'s, into ${totalDecantedPotions}x (4) doses, with a left-over ${potionToDecant.name}(${dosesToGiveBack}) left over.`
+			`Decanted all your ${potionToDecant.name}'s into ${totalDecantedPotions}x (4) doses${leftOverMessage}`
 		);
 	}
 }
