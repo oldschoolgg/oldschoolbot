@@ -5,7 +5,6 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Limit } from 'p-limit';
 import { Image } from 'canvas';
 import Monster from 'oldschooljs/dist/structures/Monster';
-
 import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions, Skills, ItemBank } from '.';
 import { SkillsEnum } from '../skilling/types';
