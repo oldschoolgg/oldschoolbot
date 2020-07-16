@@ -1,4 +1,4 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Items } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -41,7 +41,8 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
+					_msg =>
+						_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
 					options
 				);
 			} catch (err) {
