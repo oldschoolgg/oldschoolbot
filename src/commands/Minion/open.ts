@@ -10,7 +10,8 @@ import {
 	itemNameFromID,
 	roll,
 	addBanks,
-	bankFromLootTableOutput
+	bankFromLootTableOutput,
+	rand
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
@@ -104,7 +105,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id);
 
-		let loot = clueTier.table.open();
+		let loot = clueTier.table.open(rand(1, 3));
 		let opened = `You opened one of your ${clueTier.name} Clue Caskets`;
 
 		let hadMimic = false;
