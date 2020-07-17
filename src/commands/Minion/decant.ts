@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		newBank = addItemToBank(newBank, potionTiers[3], totalDecantedPotions);
 		if (dosesToGiveBack > 0) {
 			newBank = addItemToBank(newBank, potionTiers[dosesToGiveBack - 1]);
-			leftOverMessage = `, with a ${potionToDecant.name}(${dosesToGiveBack}) left over.`
+			leftOverMessage = `, with a ${potionToDecant.name}(${dosesToGiveBack}) left over.`;
 		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
