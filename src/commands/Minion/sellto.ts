@@ -2,7 +2,6 @@ import { KlasaMessage, CommandStore } from 'klasa';
 import { Util, Items } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import itemIsTradeable, { specialTradeables } from '../../lib/util/itemIsTradeable';
 import cleanItemName from '../../lib/util/cleanItemName';
 import { GuildMember } from 'discord.js';
 import { Events } from '../../lib/constants';
