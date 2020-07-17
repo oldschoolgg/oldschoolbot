@@ -82,7 +82,7 @@ export default class extends BotCommand {
 				loot,
 				`You opened a Mystery Box and received...`,
 				true,
-				{ showNewCL: 1 },
+				{ showNewCL: 1, names: 1 },
 				msg.author
 			);
 			return msg.send(
