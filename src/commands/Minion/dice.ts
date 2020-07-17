@@ -6,7 +6,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Image, Color, Emoji, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { rand } from '../../lib/util';
+import { rand, roll } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,7 +20,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
-		const roll = rand(1, 100);
+		const rolled = rand(1, 100);
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
@@ -28,24 +28,26 @@ export default class extends BotCommand {
 			.setTitle('Dice Roll');
 
 		if (!amount) {
-			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
+			embed.setDescription(`You rolled **${rolled}** on the percentile dice.`);
 		} else {
 			if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
 
-			if (amount > 2_000_000_000) {
-				throw `You can only dice up to 2bil at a time!`;
-			}
-
-			if (amount < 200_000) {
-				throw `You have to dice atleast 200k.`;
+			if (amount < 5_000_000) {
+				throw `You must dice atleast 5m.`;
 			}
 
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get(UserSettings.GP);
+
+			if (roll(10)) {
+				msg.channel.send();
+				amount = gp;
+			}
+
 			if (amount > gp) throw "You don't have enough GP.";
-			const won = roll >= 55;
+			const won = rolled >= 55;
 			let amountToAdd = won ? gp + amount : gp - amount;
-			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
+			if (rolled === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
 			await msg.author.settings.update(UserSettings.GP, amountToAdd);
 
@@ -65,9 +67,9 @@ export default class extends BotCommand {
 			}
 
 			embed.setDescription(
-				`${msg.author.username} rolled **${roll}** on the percentile dice, and you ${
+				`${msg.author.username} rolled **${rolled}** on the percentile dice, and you ${
 					won ? 'won' : 'lost'
-				} ${Util.toKMB(amountToAdd - gp)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
+				} ${Util.toKMB(amountToAdd - gp)} GP. ${rolled === 73 ? Emoji.Bpaptu : ''}`
 			);
 
 			if (amount >= 1_000_000_000) {
