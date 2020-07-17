@@ -441,6 +441,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 1
 		);
 
+		timeToFinish /= 2;
+
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 		if (monster.itemInBankBoosts) {
@@ -473,8 +475,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		boosts.push(`👻`);
-		duration *= 0.6;
+		boosts.push(`👻2x Boost`);
 
 		const data: MonsterActivityTaskOptions = {
 			monsterID: monster.id,
