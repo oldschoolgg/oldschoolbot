@@ -72,6 +72,12 @@ export default class extends BotCommand {
 
 			await msg.author.removeItemFromBank(itemID('Mystery box'));
 
+			if (roll(10)) {
+				return msg.send(
+					`You opened a Mystery Box and received.... Nothing <a:peepoLeaveFinger:705043374901690449>`
+				);
+			}
+
 			const loot = mysteryBox(1);
 
 			await msg.author.addItemsToBank(loot, true);
