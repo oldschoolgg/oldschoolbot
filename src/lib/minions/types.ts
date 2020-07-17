@@ -6,7 +6,7 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 
-import {Bank, ArrayItemsResolved, ItemBank} from '../types';
+import { Bank, ArrayItemsResolved, ItemBank } from '../types';
 import { PerkTier } from '../constants';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { LevelRequirements } from '../skilling/types';

@@ -5,7 +5,7 @@ import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
 import { bosses } from '../../../../collectionLog';
-import {resolveNameBank} from "oldschooljs/dist/util";
+import { resolveNameBank } from 'oldschooljs/dist/util';
 
 const killableBosses: KillableMonster[] = [
 	{
