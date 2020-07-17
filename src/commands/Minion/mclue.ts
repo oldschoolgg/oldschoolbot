@@ -47,10 +47,12 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		const [timeToFinish, percentReduced] = reducedClueTime(
+		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
 			msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1
 		);
+
+		timeToFinish /= 2;
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
@@ -98,8 +100,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		boosts.push(`👻`);
-		duration *= 0.5;
+		boosts.push(`👻 2x Boost`);
 
 		const data: ClueActivityTaskOptions = {
 			clueID: clueTier.id,
