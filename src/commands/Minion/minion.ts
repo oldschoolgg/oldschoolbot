@@ -25,6 +25,8 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
+import { bankHasAllItemsFromBank, multiplyBank, removeBankFromBank } from 'oldschooljs/dist/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -558,18 +560,27 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		if (monster.consumedItem) {
-			for (const itemID of monster.consumedItem) {
-				const itemsInBank = msg.author.numItemsInBankSync(itemID as number);
-				if (itemsInBank < quantity) {
-					throw `You only have enough ${itemNameFromID(
-						itemID as number
-					)} to kill ${itemsInBank} ${monster.name}`;
-				}
+			const consumedItems = multiplyBank(monster.consumedItem, quantity);
+
+			const consumedItemsString = await createReadableItemListFromBank(
+				this.client,
+				consumedItems
+			);
+
+			const userBank = msg.author.settings.get(UserSettings.Bank);
+
+			if (!bankHasAllItemsFromBank(userBank, consumedItems)) {
+				throw `You don't have the required items, you need: ${consumedItemsString}`;
 			}
 
-			monster.consumedItem.forEach(consumable => {
-				msg.author.removeItemFromBank(consumable as number, quantity as number);
-			});
+			console.log(userBank);
+
+			console.log(consumedItems);
+
+			await msg.author.settings.update(
+				UserSettings.Bank,
+				removeBankFromBank(userBank, consumedItems)
+			);
 		}
 
 		const randomAddedDuration = rand(1, 20);

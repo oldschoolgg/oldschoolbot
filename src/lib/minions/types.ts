@@ -6,7 +6,7 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 
-import { Bank, ArrayItemsResolved } from '../types';
+import {Bank, ArrayItemsResolved, ItemBank} from '../types';
 import { PerkTier } from '../constants';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { LevelRequirements } from '../skilling/types';
@@ -65,7 +65,7 @@ export interface KillableMonster {
 	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
-	consumedItem?: ArrayItemsResolved;
+	consumedItem?: ItemBank;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
