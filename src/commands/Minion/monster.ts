@@ -10,6 +10,7 @@ import { formatItemReqs } from '../../lib/util/formatItemReqs';
 import { formatItemBoosts } from '../../lib/util/formatItemBoosts';
 import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -54,6 +55,14 @@ export default class MinionCommand extends BotCommand {
 		}
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
 			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
+		}
+		if (monster.consumedItem) {
+			str.push(
+				`**Consumables required:** ${await createReadableItemListFromBank(
+					this.client,
+					monster.consumedItem
+				)}\n`
+			);
 		}
 		if (monster.itemInBankBoosts) {
 			str.push(`**Boosts:** ${formatItemBoosts(monster.itemInBankBoosts)}.\n`);
