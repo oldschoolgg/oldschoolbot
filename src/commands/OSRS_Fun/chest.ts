@@ -46,7 +46,7 @@ export default class extends Command {
 			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
 		}
 
-		chestName.toLowerCase();
+		chestName = chestName.toLowerCase();
 		const chest = Openables.find(
 			_chestName =>
 				_chestName.aliases.some(alias => alias.toLowerCase() === chestName) ||
@@ -69,7 +69,7 @@ export default class extends Command {
 				break;
 			}
 			case chest.id === Openables.LarransChest.id: {
-				if (chest.name.indexOf('big') > -1) {
+				if (chestName.includes('big')) {
 					loot = Openables.LarransChest.open(fishlvl, 'big', quantity);
 				} else {
 					loot = Openables.LarransChest.open(fishlvl, 'small', quantity);

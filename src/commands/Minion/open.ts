@@ -154,7 +154,7 @@ export default class extends BotCommand {
         */
 		const tier = 5;
 		let loot;
-		openable.name.toLowerCase();
+		openable.name = openable.name.toLowerCase();
 
 		switch (true) {
 			case openable.id === Openables.BrimstoneChest.id: {
@@ -162,7 +162,7 @@ export default class extends BotCommand {
 				break;
 			}
 			case openable.id === Openables.LarransChest.id: {
-				if (openable.name.indexOf('big') > -1) {
+				if (openable.name.includes('big')) {
 					loot = Openables.LarransChest.open(fishlvl, 'big', 1);
 				} else {
 					loot = Openables.LarransChest.open(fishlvl, 'small', 1);
