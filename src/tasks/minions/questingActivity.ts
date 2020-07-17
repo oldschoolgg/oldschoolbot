@@ -15,11 +15,6 @@ export default class extends Task {
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
 		let qpRecieved = rand(1, 30);
-		if (currentQP >= 200) {
-			qpRecieved = 1;
-		} else if (currentQP >= 100) {
-			qpRecieved = rand(1, 2);
-		}
 
 		// The minion could be at (MAX_QP - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
 		if (currentQP + qpRecieved > MAX_QP) {
