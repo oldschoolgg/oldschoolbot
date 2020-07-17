@@ -111,7 +111,7 @@ export default class extends Command {
 			const textBank = [];
 			for (const [id, qty] of Object.entries(bank)) {
 				textBank.push(
-					`${Items.get(parseInt(id))!.name}${
+					`${Items.get(parseInt(id))?.name ?? `WTF-${id}`}${
 						debug ? `[${id}]` : ''
 					}: ${qty.toLocaleString()}`
 				);
