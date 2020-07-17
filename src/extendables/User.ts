@@ -29,6 +29,27 @@ export default class extends Extendable {
 			];
 		}
 
+		if (monster.consumedItem) {
+			const consumedItemsStr = formatItemReqs(monster.consumedItem);
+			for (const item of monster.consumedItem) {
+				if (Array.isArray(item)) {
+					if (!item.some(itemReq => this.hasItemEquippedOrInBank(itemReq as number))) {
+						return [
+							false,
+							`You need these items to kill ${monster.name}: ${consumedItemsStr}`
+						];
+					}
+				} else if (!this.hasItemEquippedOrInBank(item)) {
+					return [
+						false,
+						`You need ${consumedItemsStr} to kill ${
+							monster.name
+						}. You're missing ${itemNameFromID(item)}`
+					];
+				}
+			}
+		}
+
 		if (monster.itemsRequired) {
 			const itemsRequiredStr = formatItemReqs(monster.itemsRequired);
 			for (const item of monster.itemsRequired) {

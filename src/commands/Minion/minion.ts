@@ -557,6 +557,21 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
+		if (monster.consumedItem) {
+			for (const itemID of monster.consumedItem) {
+				const itemsInBank = msg.author.numItemsInBankSync(itemID as number);
+				if (itemsInBank < quantity) {
+					throw `You only have enough ${itemNameFromID(
+						itemID as number
+					)} to kill ${itemsInBank} ${monster.name}`;
+				}
+			}
+
+			monster.consumedItem.forEach(consumable => {
+				msg.author.removeItemFromBank(consumable as number, quantity as number);
+			});
+		}
+
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 

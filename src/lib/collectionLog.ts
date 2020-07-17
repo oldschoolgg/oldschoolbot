@@ -144,7 +144,8 @@ export const bosses = {
 	'Chaos Ele': resolveItems(['Dragon pickaxe', 'Dragon 2h sword', 'Pet chaos elemental']),
 	'Chaos Fanatic': resolveItems(['Malediction shard 1', 'Odium shard 1', 'Pet chaos elemental']),
 	'Crazy Arch': resolveItems(['Malediction shard 2', 'Odium shard 2', 'Fedora']),
-	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"])
+	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"]),
+	Obor: resolveItems(['Hill giant club'])
 };
 export const pets = {
 	'Skilling Pets': resolveItems([
@@ -1279,7 +1280,8 @@ export const miscLog = {
 		'Book of darkness',
 		'Book of law'
 	]),
-	Tzhaar: resolveItems(['Fire cape'])
+	Tzhaar: resolveItems(['Fire cape']),
+	'Hill Giant': resolveItems(['Giant key'])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(

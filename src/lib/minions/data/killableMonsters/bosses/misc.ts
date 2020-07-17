@@ -163,6 +163,20 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		}
+	},
+	{
+		id: Monsters.Obor.id,
+		name: Monsters.Obor.name,
+		aliases: Monsters.Obor.aliases,
+		timeToFinish: Time.Second * 40,
+		table: Monsters.Obor,
+		emoji: '',
+		notifyDrops: resolveItems(['Hill giant club']),
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0,
+		consumedItem: [itemID('Giant key')]
 	}
 ];
 

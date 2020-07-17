@@ -312,6 +312,18 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0
+	},
+	{
+		id: Monsters.HillGiant.id,
+		name: Monsters.HillGiant.name,
+		aliases: Monsters.HillGiant.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.HillGiant,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
 	}
 ];
 
