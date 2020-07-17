@@ -7,6 +7,6 @@ import { Bank } from '../types';
 export default async function createReadableItemListFromBank(client: KlasaClient, itemBank: Bank) {
 	const items = await createTupleOfItemsFromBank(client, itemBank);
 	return items
-		.map(([name, qty]) => `${qty.toLocaleString()}x ${Items.get(name)!.name}`)
+		.map(([name, qty]) => `${qty.toLocaleString()}x ${Items.get(name)?.name ?? `WTF-${name}`}`)
 		.join(', ');
 }
