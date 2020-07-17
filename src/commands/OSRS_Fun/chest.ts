@@ -69,7 +69,11 @@ export default class extends Command {
 				break;
 			}
 			case chest.id === Openables.LarransChest.id: {
-				loot = Openables.LarransChest.open(fishlvl, chestName, quantity);
+				if (chest.name.indexOf('big') > -1) {
+					loot = Openables.LarransChest.open(fishlvl, 'big', quantity);
+				} else {
+					loot = Openables.LarransChest.open(fishlvl, 'small', quantity);
+				}
 				break;
 			}
 			default: {

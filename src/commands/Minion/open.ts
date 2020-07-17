@@ -162,7 +162,11 @@ export default class extends BotCommand {
 				break;
 			}
 			case openable.id === Openables.LarransChest.id: {
-				loot = Openables.LarransChest.open(fishlvl, openable.name);
+				if (openable.name.indexOf('big') > -1) {
+					loot = Openables.LarransChest.open(fishlvl, 'big', 1);
+				} else {
+					loot = Openables.LarransChest.open(fishlvl, 'small', 1);
+				}
 				break;
 			}
 			case openable.id === Openables.SeedPack.id: {
