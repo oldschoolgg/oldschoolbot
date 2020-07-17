@@ -38,6 +38,7 @@ import { Eatables } from '../../lib/minions/data/Eatables';
 import { maxDefenceStats } from '../../lib/gear/data/maxGearStats';
 import inverseOfAttackStat from '../../lib/gear/functions/inverseOfAttackStat';
 import { GearStats } from '../../lib/gear/types';
+import readableStatName from '../../lib/gear/functions/readableStatName';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -576,7 +577,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				if (!required) continue;
 				const has = gearStats[key];
 				if (has < required) {
-					throw `You don't have the requirements to kill ${monster.name}! Your ${key} stat is ${has}, but you need ${required}.`;
+					throw `You don't have the requirements to kill ${
+						monster.name
+					}! Your ${readableStatName(key)} stat is ${has}, but you need ${required}.`;
 				}
 			}
 			messages.push(`You use ${monster.attackStyleToUse} to kill ${monster.name}`);
