@@ -37,6 +37,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Eatables } from '../../lib/minions/data/Eatables';
 import { maxDefenceStats } from '../../lib/gear/data/maxGearStats';
 import inverseOfAttackStat from '../../lib/gear/functions/inverseOfAttackStat';
+import { GearStats } from '../../lib/gear/types';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -57,6 +58,8 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
+
+const { floor, ceil, max } = Math;
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -557,50 +560,61 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToFinish);
+			quantity = floor(msg.author.maxTripLength / timeToFinish);
 		}
 
 		// Check food
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			messages.push(
-				`${monster.name} requires ${monster.healAmountNeeded}HP worth of food healing per kill.`
+				`${quantity}x ${monster.name} requires ${monster.healAmountNeeded}HP worth of food healing per kill.`
 			);
-			// Start off needing 1.5x more than normal food.
 			let { healAmountNeeded } = monster;
-			// Use down to 1x food based on defence stats of your gear.
 			const gearStats = msg.author.setupStats(monster.attackStyleToUse);
-
+			const keys = Object.keys(gearStats) as (keyof GearStats)[];
+			for (const key of keys) {
+				const required = monster.minimumGearRequirements?.[key];
+				if (!required) continue;
+				const has = gearStats[key];
+				if (has < required) {
+					throw `You don't have the requirements to kill ${monster.name}! Your ${key} stat is ${has}, but you need ${required}.`;
+				}
+			}
+			messages.push(`You use ${monster.attackStyleToUse} to kill ${monster.name}`);
 			let totalPercentOfGearLevel = 0;
 			for (const style of monster.attackStylesUsed) {
 				const inverseStyle = inverseOfAttackStat(style);
 				const usersStyle = gearStats[inverseStyle];
 				const maxStyle = maxDefenceStats[inverseStyle]!;
-				const percent = Math.floor(calcWhatPercent(usersStyle, maxStyle));
-				console.log({ usersStyle, maxStyle, percent });
-				messages.push(`Your ${style} bonus is ${percent}% of the best (${maxStyle})`);
+				const percent = floor(calcWhatPercent(usersStyle, maxStyle));
+				messages.push(
+					`Your ${style} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`
+				);
 				totalPercentOfGearLevel += percent;
 			}
-			totalPercentOfGearLevel = Math.floor(
-				Math.max(0, totalPercentOfGearLevel / monster.attackStylesUsed.length)
+			totalPercentOfGearLevel = floor(
+				max(0, totalPercentOfGearLevel / monster.attackStylesUsed.length)
 			);
 			messages.push(
 				`Your ${monster.attackStyleToUse} gear is ${totalPercentOfGearLevel}% of the best`
 			);
 
-			healAmountNeeded = reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel);
+			healAmountNeeded = floor(
+				reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel / 2)
+			);
 
 			messages.push(
-				`You use ${totalPercentOfGearLevel}% less food (of ${monster.healAmountNeeded}) because of your gear`
+				`You use ${totalPercentOfGearLevel}% less food (${healAmountNeeded} instead of ${monster.healAmountNeeded}) because of your gear`
 			);
 
 			for (const food of Eatables) {
-				const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount!) * quantity;
+				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
 				if (!bankHasItem(bank, food.id, amountNeeded)) {
 					if (Eatables.indexOf(food) === Eatables.length - 1) {
 						throw `You don't have enough food to kill ${
 							monster.name
-						}! You can use these food items: ${Eatables.map(
-							i => `${i.name} (${Math.ceil(healAmountNeeded / i.healAmount!)})`
+						}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
+							quantity} per kill) You can use these food items: ${Eatables.map(
+							i => i.name
 						).join(', ')}.`;
 					}
 					continue;

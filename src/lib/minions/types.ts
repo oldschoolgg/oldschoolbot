@@ -10,7 +10,7 @@ import { Bank, ArrayItemsResolved } from '../types';
 import { PerkTier } from '../constants';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { LevelRequirements } from '../skilling/types';
-import { GearSetupTypes, AttackGearStat } from '../gear/types';
+import { GearSetupTypes, AttackGearStat, GearStat } from '../gear/types';
 
 export interface BankBackground {
 	image: Image | null;
@@ -72,6 +72,7 @@ export interface KillableMonster {
 	healAmountNeeded?: number;
 	attackStyleToUse?: GearSetupTypes;
 	attackStylesUsed?: AttackGearStat[];
+	minimumGearRequirements?: Partial<{ [key in GearStat]: number }>;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
