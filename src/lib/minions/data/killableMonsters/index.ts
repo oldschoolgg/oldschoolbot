@@ -317,7 +317,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.HillGiant.id,
 		name: Monsters.HillGiant.name,
 		aliases: Monsters.HillGiant.aliases,
-		timeToFinish: Time.Second * 6,
+		timeToFinish: Time.Second * 9,
 		table: Monsters.HillGiant,
 		emoji: '',
 		wildy: false,
