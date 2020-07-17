@@ -45,17 +45,8 @@ export default class extends BotCommand {
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
-		const osItem = Items.find(
-			item =>
-				stringMatches(item.name, cleanItemName(itemName)) &&
-				(specialTradeables.includes(item.id) || (item as Item).tradeable)
-		);
+		const osItem = Items.find(item => stringMatches(item.name, cleanItemName(itemName)));
 		if (!osItem) throw `That item doesnt exist.`;
-		const tradeable = itemIsTradeable(osItem.id);
-
-		if (!tradeable) {
-			throw `That item is not tradeable.`;
-		}
 
 		buyerMember.user.toggleBusy(true);
 		msg.author.toggleBusy(true);
