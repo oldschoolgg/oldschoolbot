@@ -29,12 +29,13 @@ export default class extends Extendable {
 		const currentItem = currentItems[itemID];
 
 		const osItem = getOSItem(itemID);
-		const needsToFetchAgain = osItem.tradeable_on_ge && currentItem.price === 0;
+		const needsToFetchAgain =
+			!currentItem || (osItem.tradeable_on_ge && currentItem.price === 0);
 
 		if (
 			!needsToFetchAgain &&
 			currentItem &&
-			Date.now() - currentItem.fetchedAt < Time.Day * rand(20, 50)
+			Date.now() - currentItem.fetchedAt < Time.Day * rand(20, 300)
 		) {
 			return currentItem.price;
 		}
