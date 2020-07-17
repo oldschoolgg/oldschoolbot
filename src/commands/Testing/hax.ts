@@ -15,6 +15,15 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		// Make 100% sure this command can never be used in prod
+		if (
+			this.client.production ||
+			!this.client.user ||
+			this.client.user.id === '303730326692429825'
+		) {
+			return;
+		}
+
 		const paths = Skills.map(sk => `skills.${sk.id}`);
 
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
