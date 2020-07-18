@@ -10,7 +10,8 @@ import {
 	Time,
 	Color,
 	PerkTier,
-	MIMIC_MONSTER_ID
+	MIMIC_MONSTER_ID,
+	Tasks
 } from '../../lib/constants';
 import {
 	formatDuration,
@@ -39,6 +40,7 @@ import { maxDefenceStats } from '../../lib/gear/data/maxGearStats';
 import inverseOfAttackStat from '../../lib/gear/functions/inverseOfAttackStat';
 import { GearStats } from '../../lib/gear/types';
 import readableStatName from '../../lib/gear/functions/readableStatName';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -567,7 +569,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		// Check food
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			messages.push(
-				`${quantity}x ${monster.name} requires ${monster.healAmountNeeded}HP worth of food healing per kill.`
+				`${quantity}x ${monster.name} requires ${monster.healAmountNeeded * quantity}HP (${
+					monster.healAmountNeeded
+				} per kill) worth of food healing per kill.`
 			);
 			let { healAmountNeeded } = monster;
 			const gearStats = msg.author.setupStats(monster.attackStyleToUse);
@@ -579,10 +583,12 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				if (has < required) {
 					throw `You don't have the requirements to kill ${
 						monster.name
-					}! Your ${readableStatName(key)} stat is ${has}, but you need ${required}.`;
+					}! Your ${readableStatName(key)} stat in your ${
+						monster.attackStyleToUse
+					} setup is ${has}, but you need ${required}.`;
 				}
 			}
-			messages.push(`You use ${monster.attackStyleToUse} to kill ${monster.name}`);
+
 			let totalPercentOfGearLevel = 0;
 			for (const style of monster.attackStylesUsed) {
 				const inverseStyle = inverseOfAttackStat(style);
@@ -596,9 +602,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			}
 			totalPercentOfGearLevel = floor(
 				max(0, totalPercentOfGearLevel / monster.attackStylesUsed.length)
-			);
-			messages.push(
-				`Your ${monster.attackStyleToUse} gear is ${totalPercentOfGearLevel}% of the best`
 			);
 
 			healAmountNeeded = floor(
@@ -624,7 +627,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				}
 
 				messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-				// await msg.author.removeItemFromBank(food.id, amountNeeded);
+				await msg.author.removeItemFromBank(food.id, amountNeeded);
 
 				// Track this food cost in Economy Stats
 				await this.client.settings.update(
@@ -668,7 +671,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			finishDate: Date.now() + duration
 		};
 
-		// await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
