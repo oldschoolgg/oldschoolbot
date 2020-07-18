@@ -573,10 +573,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				throw `You don't have the required items, you need: ${consumedItemsString}`;
 			}
 
-			console.log(userBank);
-
-			console.log(consumedItems);
-
 			await msg.author.settings.update(
 				UserSettings.Bank,
 				removeBankFromBank(userBank, consumedItems)
