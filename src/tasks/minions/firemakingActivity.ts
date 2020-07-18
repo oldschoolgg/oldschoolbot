@@ -7,6 +7,8 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 
 export default class extends Task {
 	async run({
@@ -24,7 +26,29 @@ export default class extends Task {
 
 		if (!Burn) return;
 
-		const xpReceived = quantity * Burn.xp;
+		let xpReceived = quantity * Burn.xp;
+		let bonusXP = 0;
+
+		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
+		if (
+			hasArrayOfItemsEquipped(
+				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
+				user.settings.get(UserSettings.Gear.Skilling)
+			)
+		) {
+			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
+			xpReceived += amountToAdd;
+			bonusXP += amountToAdd;
+		} else {
+			// For each pyromancer item, check if they have it, give its' XP boost if so.
+			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
+				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
+					xpReceived += amountToAdd;
+					bonusXP += amountToAdd;
+				}
+			}
+		}
 
 		await user.addXP(SkillsEnum.Firemaking, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
@@ -37,6 +61,9 @@ export default class extends Task {
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
+		}
+		if (bonusXP > 0) {
+			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
 		const channel = this.client.channels.get(channelID);

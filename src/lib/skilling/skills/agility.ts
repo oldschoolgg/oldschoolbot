@@ -93,6 +93,17 @@ const courses: Course[] = [
 	}
 ];
 
+export const gracefulItems = [
+	'Graceful hood',
+	'Graceful top',
+	'Graceful legs',
+	'Graceful gloves',
+	'Graceful boots',
+	'Graceful cape',
+	'Agility cape',
+	'Agility cape(t)'
+];
+
 const Agility = {
 	aliases: ['agility'],
 	Courses: courses,
