@@ -178,15 +178,6 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	essenceQuantity: number;
 }
 
-export const gracefulItems = [
-	'Graceful hood',
-	'Graceful top',
-	'Graceful legs',
-	'Graceful gloves',
-	'Graceful boots',
-	'Graceful cape'
-];
-
 const Runecraft = {
 	aliases: ['runecraft', 'runecrafting'],
 	Runes,

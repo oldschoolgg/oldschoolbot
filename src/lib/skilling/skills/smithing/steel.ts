@@ -6,7 +6,7 @@ const Steel: SmithedBar[] = [
 	{
 		name: 'Steel dagger',
 		level: 30,
-		xp: 25.0,
+		xp: 37.5,
 		id: itemID('Steel dagger'),
 		inputBars: { [itemID('Steel bar')]: 1 },
 		timeToUse: Time.Second * 3.4,

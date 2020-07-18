@@ -1,6 +1,6 @@
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
-import { gracefulItems } from './skilling/skills/runecraft';
+import { gracefulItems } from './skilling/skills/agility';
 import { wintertodtItems } from './filterables';
 
 export const bosses = {
