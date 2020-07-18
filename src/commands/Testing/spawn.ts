@@ -33,13 +33,9 @@ export default class extends BotCommand {
 
 		for (const setup of ['range', 'melee', 'mage', 'skilling']) {
 			if (msg.flagArgs[setup]) {
-				try {
-					// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-					// @ts-ignore
-					return this.client.commands.get('equip').run(msg, [setup, 1, osItem.name]);
-				} catch (err) {
-					throw err;
-				}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+				// @ts-ignore
+				return this.client.commands.get('equip').run(msg, [setup, 1, osItem.name]);
 			}
 		}
 		return msg.send(`Gave you ${qty}x ${osItem.name}.`);
