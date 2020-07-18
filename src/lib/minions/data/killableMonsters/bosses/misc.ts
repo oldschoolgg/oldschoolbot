@@ -137,6 +137,10 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
+		minimumGearRequirements: {
+			[GearStat.AttackStab]: 85,
+			[GearStat.DefenceCrush]: 150
+		},
 		uniques: bosses['Corp Beast'],
 		healAmountNeeded: 20 * 40,
 		attackStyleToUse: GearSetupTypes.Melee,
