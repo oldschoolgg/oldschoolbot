@@ -107,6 +107,12 @@ const backgroundImages: BankBackground[] = [
 			'Scroll sack': 1
 		}),
 		gpCost: 100_000_000
+	},
+	{
+		id: 11,
+		name: 'Relax',
+		image: null,
+		available: false
 	}
 ];
 
