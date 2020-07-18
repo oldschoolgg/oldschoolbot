@@ -1,8 +1,9 @@
 import { KlasaMessage, CommandStore } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Potions from '../../lib/minions/data/potions';
-import { addItemToBank, stringMatches } from '../../lib/util';
+import { stringMatches, addItemToBank } from '../../lib/util';
 import { ItemBank } from '../../lib/types';
 
 export default class extends BotCommand {
