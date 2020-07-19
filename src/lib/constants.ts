@@ -74,7 +74,8 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
-	Purple = '🟪'
+	Purple = '🟪',
+	Magic = '<:magic:630911040334331917>'
 }
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
@@ -109,6 +110,7 @@ export const enum Tasks {
 	BuryingActivity = 'buryingActivity',
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
+	EnchantingActivity = 'enchantingActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -137,7 +139,8 @@ export const enum Activity {
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
-	Fletching = 'Fletching'
+	Fletching = 'Fletching',
+	Enchanting = 'Enchanting'
 }
 
 export const enum Events {
