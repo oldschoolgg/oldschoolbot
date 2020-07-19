@@ -9,7 +9,7 @@ export default class extends Command {
 		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['seedpack'],
-			usage: '<tier:int{1}> <quantity:int{1}>',
+			usage: '[tier:int{1}] <quantity:int{1}>',
 			usageDelim: ' '
 		});
 	}
@@ -40,7 +40,7 @@ export default class extends Command {
 		return 50;
 	}
 
-	async run(msg: KlasaMessage, [tier = 1, quantity = 1]: [number, number]) {
+	async run(msg: KlasaMessage, [tier = 5, quantity = 1]: [number, number]) {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
 			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
@@ -50,7 +50,7 @@ export default class extends Command {
 			throw `The tier you gave is not a valid tier. The valid tiers are 1, 2, 3, 4 and 5.`;
 		}
 
-		const loot = Openables.SeedPack.open(tier, quantity);
+		const loot = Openables.SeedPack.open(quantity, { lvl: tier });
 
 		const opened = `You opened ${quantity} Seed pack${quantity > 1 ? 's' : ''}:`;
 

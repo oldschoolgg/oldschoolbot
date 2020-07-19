@@ -158,23 +158,23 @@ export default class extends BotCommand {
 
 		switch (true) {
 			case openable.id === Openables.BrimstoneChest.id: {
-				loot = Openables.BrimstoneChest.open(fishlvl);
+				loot = Openables.BrimstoneChest.open(1, { lvl: fishlvl });
 				break;
 			}
 			case openable.id === Openables.LarransChest.id: {
 				if (openable.name.includes('big')) {
-					loot = Openables.LarransChest.open(fishlvl, 'big', 1);
+					loot = Openables.LarransChest.open(1, { lvl: fishlvl, size: 'big' });
 				} else {
-					loot = Openables.LarransChest.open(fishlvl, 'small', 1);
+					loot = Openables.LarransChest.open(1, { lvl: fishlvl, size: 'small' });
 				}
 				break;
 			}
 			case openable.id === Openables.SeedPack.id: {
-				loot = Openables.SeedPack.open(tier);
+				loot = Openables.SeedPack.open(1, { lvl: tier });
 				break;
 			}
 			default: {
-				loot = openable.open(1, openable.name);
+				loot = openable.open(1, {});
 				break;
 			}
 		}

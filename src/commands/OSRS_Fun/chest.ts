@@ -40,7 +40,10 @@ export default class extends Command {
 		return 50;
 	}
 
-	async run(msg: KlasaMessage, [quantity = 1, fishlvl = 1, chestName]: [number, number, string]) {
+	async run(
+		msg: KlasaMessage,
+		[quantity = 1, fishlvl = 99, chestName]: [number, number, string]
+	) {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
 			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
@@ -65,19 +68,19 @@ export default class extends Command {
 
 		switch (true) {
 			case chest.id === Openables.BrimstoneChest.id: {
-				loot = Openables.BrimstoneChest.open(fishlvl, quantity);
+				loot = Openables.BrimstoneChest.open(quantity, { lvl: fishlvl });
 				break;
 			}
 			case chest.id === Openables.LarransChest.id: {
 				if (chestName.includes('big')) {
-					loot = Openables.LarransChest.open(fishlvl, 'big', quantity);
+					loot = Openables.LarransChest.open(quantity, { lvl: fishlvl, size: 'big' });
 				} else {
-					loot = Openables.LarransChest.open(fishlvl, 'small', quantity);
+					loot = Openables.LarransChest.open(quantity, { lvl: fishlvl, size: 'small' });
 				}
 				break;
 			}
 			default: {
-				loot = chest.open(quantity, chest);
+				loot = chest.open(quantity, {});
 				break;
 			}
 		}
