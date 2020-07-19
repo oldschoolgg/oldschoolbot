@@ -4,7 +4,12 @@ import { Course, SkillsEnum } from '../types';
 const courses: Course[] = [
 	{
 		name: 'Gnome Stronghold Agility Course',
-		aliases: ['gnome', 'gnome stronghold', 'gnome stronghold agility','gnome stronghold agility course'],
+		aliases: [
+			'gnome',
+			'gnome stronghold',
+			'gnome stronghold agility',
+			'gnome stronghold agility course'
+		],
 		level: 1,
 		xp: 88,
 		lapTime: 34,
@@ -12,7 +17,12 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Draynor Village Rooftop Course',
-		aliases: ['draynor', 'draynor village', 'draynor village rooftop', 'draynor village rooftop course'],
+		aliases: [
+			'draynor',
+			'draynor village',
+			'draynor village rooftop',
+			'draynor village rooftop course'
+		],
 		level: 10,
 		xp: 120,
 		marksPer60: 12,
@@ -57,7 +67,12 @@ const courses: Course[] = [
 	},
 	{
 		name: `Seers' Village Rooftop Course`,
-		aliases: ['seers', 'seers village', 'seers village rooftop', 'seers village rooftop course'],
+		aliases: [
+			'seers',
+			'seers village',
+			'seers village rooftop',
+			'seers village rooftop course'
+		],
 		level: 60,
 		xp: 570,
 		marksPer60: 12,
