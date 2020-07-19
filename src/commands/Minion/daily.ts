@@ -47,9 +47,9 @@ export default class DailyCommand extends BotCommand {
 		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
 		const difference = currentDate - lastVoteDate;
 
-		// If they have already claimed a daily in the past 12h
-		if (difference < Time.Hour * 12) {
-			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
+		// If they have already claimed a daily in the past 4h
+		if (difference < Time.Hour * 4) {
+			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 4));
 
 			return msg.send(
 				`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`
