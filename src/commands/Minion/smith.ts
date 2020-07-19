@@ -91,7 +91,7 @@ export default class extends BotCommand {
 		}
 
 		// Check the user has the required bars to smith these items.
-		// Multiplying the bars required by the quantity of items.
+		// Multiplying the bars required by the quantity of items..
 		for (const [barID, qty] of requiredBars) {
 			const id = parseInt(barID);
 			if (!bankHasItem(userBank, id, qty * quantity)) {
