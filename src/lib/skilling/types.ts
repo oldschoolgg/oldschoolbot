@@ -124,6 +124,18 @@ export interface Craftable {
 	tickRate: number;
 }
 
+export interface Castable {
+	name: string;
+	id?: number;
+	level: number;
+	xp: number;
+	baseMaxHit?: number;
+	category: string;
+	inputItems: ItemBank;
+	tickRate: number;
+	outputMultiple?: number;
+}
+
 export interface Fletchable {
 	name: string;
 	id: number;
