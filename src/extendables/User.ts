@@ -68,7 +68,7 @@ export default class extends Extendable {
 
 		return [true];
 	}
-	
+
 	public hasOpenableRequirements(this: User, chest: Openable) {
 		if (chest.qpRequired && this.settings.get(UserSettings.QP) < chest.qpRequired) {
 			return [

@@ -110,7 +110,7 @@ export const enum Tasks {
 	BuryingActivity = 'buryingActivity',
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
-	EnchantingActivity = 'enchantingActivity',
+	CastingActivity = 'castingActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -140,7 +140,7 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
-	Enchanting = 'Enchanting'
+	Casting = 'Casting'
 }
 
 export const enum Events {

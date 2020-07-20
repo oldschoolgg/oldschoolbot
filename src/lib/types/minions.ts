@@ -82,6 +82,12 @@ export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface CastingActivityTaskOptions extends ActivityTaskOptions {
+	castableName: string;
+	channelID: string;
+	quantity: number;
+}
+
 export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	channelID: string;
@@ -155,4 +161,5 @@ export type MinionActivityTask =
 	| Tasks.OfferingActivity
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
+	| Tasks.CastingActivity
 	| Tasks.WintertodtActivity;

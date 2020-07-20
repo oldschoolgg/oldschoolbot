@@ -1,11 +1,11 @@
 import { SkillsEnum } from '../../types';
 import { Emoji } from '../../../constants';
-// import craftables from './craftables/index';
+import castables from './castables/index';
 
 const Magic = {
 	aliases: ['magic', 'cast'],
-	//Craftables: craftables,
-	id: SkillsEnum.Crafting,
+	Castables: castables,
+	id: SkillsEnum.Magic,
 	emoji: Emoji.Magic
 };
 

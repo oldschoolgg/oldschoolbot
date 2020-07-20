@@ -13,7 +13,8 @@ export enum SkillsEnum {
 	Prayer = 'prayer',
 	Fletching = 'fletching',
 	Farming = 'farming',
-	Herblore = 'herblore'
+	Herblore = 'herblore',
+	Magic = 'magic'
 }
 
 export interface Ore {
@@ -128,7 +129,10 @@ export interface Castable {
 	name: string;
 	id?: number;
 	level: number;
-	xp: number;
+	magicxp: number;
+	prayerxp?: number;
+	farmingxp?: number;
+	craftingxp?: number;
 	baseMaxHit?: number;
 	category: string;
 	inputItems: ItemBank;

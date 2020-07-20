@@ -65,7 +65,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|cast|fletch|cancel] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -223,6 +223,9 @@ ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.autho
 ${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
 			SkillsEnum.Fletching
 		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
+${Emoji.Magic} Magic: ${msg.author.skillLevel(SkillsEnum.Magic)} (${msg.author.settings
+			.get(UserSettings.Skills.Magic)
+			.toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -470,6 +473,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		await this.client.commands
 			.get('offer')!
 			.run(msg, [quantity, boneName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async cast(msg: KlasaMessage, [quantity, castName]: [number, string]) {
+		await this.client.commands
+			.get('cast')!
+			.run(msg, [quantity, castName])
 			.catch(err => {
 				throw err;
 			});
