@@ -184,6 +184,24 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10_000 * 10
+	},
+	{
+		name: 'Mirror shield',
+		aliases: ['mirror shield'],
+		outputItems: {
+			[itemID('Mirror shield')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 5_000
+	},
+	{
+		name: "V's shield",
+		aliases: ["v's shield", 'vs shield', 'v shield'],
+		outputItems: {
+			[itemID("V's shield")]: 1
+		},
+		qpRequired: 77,
+		gpCost: 50_000
 	}
 ];
 

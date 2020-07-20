@@ -676,6 +676,17 @@ const Createables: Createable[] = [
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205
+	},
+	{
+		name: 'Neitiznot faceguard',
+		inputItems: resolveNameBank({
+			'Helm of neitiznot': 1,
+			'Basilisk jaw': 1
+		}),
+		outputItems: resolveNameBank({
+			'Neitiznot faceguard': 1
+		}),
+		QPRequired: 77 // 75 req for helm, 2 for exiles quest
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',

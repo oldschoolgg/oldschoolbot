@@ -1279,7 +1279,8 @@ export const miscLog = {
 		'Book of darkness',
 		'Book of law'
 	]),
-	Tzhaar: resolveItems(['Fire cape'])
+	Tzhaar: resolveItems(['Fire cape']),
+	'Basilisk Knight': resolveItems(['Basilisk jaw'])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(

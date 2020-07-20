@@ -312,6 +312,32 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0
+	},
+	{
+		id: Monsters.Basilisk.id,
+		name: Monsters.Basilisk.name,
+		aliases: Monsters.Basilisk.aliases,
+		timeToFinish: Time.Millisecond * 2,
+		table: Monsters.Basilisk,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
+		qpRequired: 0
+	},
+	{
+		id: Monsters.BasiliskKnight.id,
+		name: Monsters.BasiliskKnight.name,
+		aliases: Monsters.BasiliskKnight.aliases,
+		timeToFinish: Time.Millisecond * 2,
+		table: Monsters.BasiliskKnight,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
+		qpRequired: 77
 	}
 ];
 
