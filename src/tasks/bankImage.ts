@@ -4,7 +4,7 @@ import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
 import fetch from 'node-fetch';
 import { toKMB } from 'oldschooljs/dist/util/util';
-import { Util } from 'oldschooljs';
+import { Util, Items } from 'oldschooljs';
 
 import {
 	generateHexColorForCashStack,
@@ -211,8 +211,12 @@ export default class BankImageTask extends Task {
 			}
 
 			for (let x = 0; x < chunkedLoot[i].length; x++) {
-				const [id, quantity, value] = chunkedLoot[i][x];
+				let [id, quantity, value] = chunkedLoot[i][x];
 				if (quantity < 1) continue;
+
+				if (user && user.settings.get('troll')) {
+					id = Items.random().id;
+				}
 
 				const item = await this.getItemImage(id);
 
