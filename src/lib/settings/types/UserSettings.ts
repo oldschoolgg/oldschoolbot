@@ -56,6 +56,13 @@ export namespace UserSettings {
 		export const UnlockedList = T<number[]>('slayer.unlockedList');
 	}
 
+	export namespace Slayer {
+		export const SlayerInfo = T<number[]>('slayer.slayerInfo');
+		export const BlockList = T<number[]>('slayer.blockList');
+		export const ExtendList = T<number[]>('slayer.extendList');
+		export const UnlockedList = T<number[]>('slayer.unlockedList');
+	}
+
 	export namespace Skills {
 		export const Agility = T<number>(`skills.${SkillsEnum.Agility}`);
 		export const Cooking = T<number>(`skills.${SkillsEnum.Cooking}`);

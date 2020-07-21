@@ -17,10 +17,13 @@ import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 =======
+=======
+>>>>>>> 2f7a0d520e7ed714da40083e290c7876b185da86
 import { UserSettings } from '../../lib/UserSettings';
 import { ClueActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 >>>>>>> 0740232... rebase + re organize
@@ -546,8 +549,12 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+<<<<<<< HEAD
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
+=======
+		// Get all slayer tasks and check if it requires a slayer level or QP to kill
+>>>>>>> 2f7a0d520e7ed714da40083e290c7876b185da86
 		const allTasks = nieveTasks.concat(turaelTasks);
 		const thisMonster = allTasks.find(find => find.name === monster.name);
 		if (

@@ -324,6 +324,7 @@ export default class extends Extendable {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get hasSlayerTask(this: User) {
@@ -351,6 +352,8 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 =======
 >>>>>>> 5313a57... make everything simpler
+=======
+>>>>>>> 2f7a0d520e7ed714da40083e290c7876b185da86
 	public get blockList(this: User) {
 		return this.settings.get(UserSettings.Slayer.BlockList);
 	}
