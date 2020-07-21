@@ -33,10 +33,13 @@ export default class extends BotCommand {
 			quantity = numItemsHas;
 		}
 
+<<<<<<< HEAD
 		if (quantity > numItemsHas) {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
 
+=======
+>>>>>>> 1bb3ea9... drop: add --cf and --confirm flags (#393)
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const dropMsg = await msg.channel.send(
 				`${msg.author}, are you sure you want to drop ${quantity}x ${osItem.name}? This is irreversible, and you will lose the items permanently. Type \`drop\` to confirm.`
