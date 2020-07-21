@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 const turaelTasks = [
 	{
 		name: 'Banshee',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 20,
@@ -16,7 +16,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Bat',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 5
@@ -28,7 +28,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Bird',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		alternatives: [
 			'Chicken',
@@ -47,7 +47,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Black bear',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 13
@@ -70,7 +70,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Cave crawler',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 10,
@@ -94,7 +94,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Cow',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 5
@@ -105,8 +105,8 @@ const turaelTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Crawling Hands',
-		amount: [15, 20],
+		name: 'Crawling hand',
+		amount: [15, 50],
 
 		requirements: {
 			slayerLevel: 5
@@ -116,8 +116,8 @@ const turaelTasks = [
 		unlocked: true
 	},
 	{
-		name: 'Dog',
-		amount: [15, 20],
+		name: 'Guard dog',
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 15
@@ -129,7 +129,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Dwarf',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 6
@@ -141,7 +141,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Ghost',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 13
@@ -153,16 +153,16 @@ const turaelTasks = [
 	},
 	{
 		name: 'Goblin',
-		amount: [15, 20],
+		amount: [15, 50],
 
-		alternatives: ['Cave Goblin Guards', 'General Graardor'],
+		alternatives: ['Cave goblin guard', 'General Graardor'],
 		weight: 7,
 		ID: Monsters.Goblin.id,
 		unlocked: true
 	},
 	{
 		name: 'Icefiend',
-		amount: [15, 20],
+		amount: [15, 50],
 		requirements: {
 			combatLevel: 20
 		},
@@ -172,11 +172,10 @@ const turaelTasks = [
 	},
 	{
 		name: 'Kalphite worker',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
-			combatLevel: 15,
-			questPoints: 1
+			combatLevel: 15
 		},
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		weight: 6,
@@ -185,7 +184,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Lizard',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			slayerLevel: 22
@@ -208,7 +207,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Monkey',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		alternatives: [
 			'Karamjan Monkey',
@@ -224,8 +223,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Rat',
-		amount: [15, 20],
-		extendedAmount: [15, 20],
+		amount: [15, 50],
 		alternatives: ['Giant rat', 'Dungeon rat', 'Crypt rat', 'Brine rat'],
 		weight: 7,
 		ID: Monsters.Rat.id,
@@ -233,8 +231,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Scorpion',
-		amount: [15, 20],
-		extendedAmount: [15, 20],
+		amount: [15, 50],
 		requirements: {
 			combatLevel: 7
 		},
@@ -252,19 +249,19 @@ const turaelTasks = [
 	},
 	{
 		name: 'Skeleton',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 15
 		},
-		alternatives: ['Skeleton', "Vet'ion"],
+		alternatives: ['Skeleton mage', "Vet'ion", 'Skogre', 'Skeleton fremennik'],
 		weight: 7,
 		ID: Monsters.Skeleton.id,
 		unlocked: true
 	},
 	{
 		name: 'Spider',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		alternatives: [
 			'Giant spider',
@@ -280,7 +277,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Wolf',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 20
@@ -292,7 +289,7 @@ const turaelTasks = [
 	},
 	{
 		name: 'Zombie',
-		amount: [15, 20],
+		amount: [15, 50],
 
 		requirements: {
 			combatLevel: 10
