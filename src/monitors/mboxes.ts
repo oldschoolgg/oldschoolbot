@@ -47,7 +47,7 @@ export default class extends Monitor {
 				_msg => stringMatches(_msg.content, randomItem.name),
 				{
 					max: 1,
-					time: 8_000,
+					time: 14_000,
 					errors: ['time']
 				}
 			);
