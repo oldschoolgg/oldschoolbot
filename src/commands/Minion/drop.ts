@@ -34,17 +34,20 @@ export default class extends BotCommand {
 			throw `You don't have ${quantity}x ${osItem.name}.`;
 		}
 
-		const dropMsg = await msg.channel.send(
-			`${msg.author}, are you sure you want to drop ${quantity}x ${osItem.name}? This is irreversible, and you will lose the items permanently. Type \`drop\` to confirm.`
-		);
-
-		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
-				options
+		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+			const dropMsg = await msg.channel.send(
+				`${msg.author}, are you sure you want to drop ${quantity}x ${osItem.name}? This is irreversible, and you will lose the items permanently. Type \`drop\` to confirm.`
 			);
-		} catch (err) {
-			return dropMsg.edit(`Cancelling drop of ${quantity}x ${osItem.name}.`);
+
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
+					options
+				);
+			} catch (err) {
+				return dropMsg.edit(`Cancelling drop of ${quantity}x ${osItem.name}.`);
+			}
 		}
 
 		await msg.author.removeItemFromBank(osItem.id, quantity);
