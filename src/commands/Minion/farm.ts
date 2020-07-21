@@ -5,7 +5,8 @@ import {
 	formatDuration,
 	rand,
 	itemNameFromID,
-	removeItemFromBank
+	removeItemFromBank,
+	bankHasItem
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { Time, Activity, Tasks } from '../../lib/constants';
@@ -17,7 +18,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { PatchTypes } from '../../lib/farming';
-import bankHasItem from '../../lib/util/bankHasItem';
 import itemID from '../../lib/util/itemID';
 import { calcNumOfPatches } from '../../lib/skilling/functions/calcsFarming';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
@@ -68,8 +68,8 @@ export default class extends BotCommand {
 		const currentDate = new Date().getTime();
 
 		let payment = false;
-		let upgradeType = '';
-		let str = '';
+		let upgradeType: 'compost' | 'supercompost' | 'ultracompost' | '' = '';
+		let activityStr = '';
 		let upgradeStr = '';
 		let paymentStr = '';
 		let boostStr = '';
@@ -114,14 +114,14 @@ export default class extends BotCommand {
 			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
 		}
 		if (
-			plants.canCompostandPay === false &&
-			payment === true &&
-			upgradeType === ('supercompost' || 'ultracompost')
+			!plants.canCompostandPay &&
+			payment &&
+			(upgradeType === 'supercompost' || upgradeType === 'ultracompost')
 		) {
 			throw `You do not need to use compost if you are paying a nearby farmer to look over your trees.`;
 		}
 
-		if (plants.canCompostPatch === false && upgradeType !== '') {
+		if (!plants.canCompostPatch && upgradeType !== '') {
 			throw `There would be no point to add compost to your ${plants.name}s!`;
 		}
 
@@ -140,43 +140,10 @@ export default class extends BotCommand {
 			quantity = Math.min(Math.floor(msg.author.maxTripLength / timePerPatch), numOfPatches);
 		}
 
-		let newBank = { ...userBank };
-		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
-		for (const [seedID, qty] of requiredSeeds) {
-			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
-			} else if (bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
-				newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
-			}
+		if (quantity > numOfPatches) {
+			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 		}
 
-		if (payment === true) {
-			if (!plants.protectionPayment) return;
-			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
-			for (const [itemID, qty] of requiredPayment) {
-				if (!bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
-					throw `You don't have enough ${itemNameFromID(
-						parseInt(itemID)
-					)} to make payments to nearby farmers.`;
-				} else if (bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
-					newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
-				}
-			}
-		}
-
-		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
-			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
-			if (!hasCompostType) {
-				throw `You dont have ${quantity}x ${upgradeType}.`;
-			}
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
-		} else if (bankHasItem(userBank, itemID('compost'), quantity) && plants.canCompostPatch) {
-			upgradeType = 'compost';
-			upgradeStr += `You are treating all of your patches with compost. `;
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
-		}
-
-		// 1.5 mins per patch --> ex: 10 patches = 15 mins
 		let duration = timePerPatch * quantity;
 
 		// Reduce time if user has graceful equipped
@@ -206,9 +173,45 @@ export default class extends BotCommand {
 			numOfPatches)}.`;
 		}
 
-		if (quantity > numOfPatches) {
-			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
+		let newBank = { ...userBank };
+		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
+		for (const [seedID, qty] of requiredSeeds) {
+			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
+				throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
+			} else if (bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
+				newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
+			}
 		}
+
+		if (payment) {
+			if (!plants.protectionPayment) return;
+			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
+			for (const [itemID, qty] of requiredPayment) {
+				if (!bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
+					throw `You don't have enough ${itemNameFromID(
+						parseInt(itemID)
+					)} to make payments to nearby farmers.`;
+				} else if (bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
+					newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
+				}
+			}
+		}
+
+		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
+			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
+			if (!hasCompostType) {
+				throw `You dont have ${quantity}x ${upgradeType}.`;
+			}
+			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+		} else if (bankHasItem(userBank, itemID('compost'), quantity) && plants.canCompostPatch) {
+			upgradeType = 'compost';
+			upgradeStr += `You are treating all of your patches with compost. `;
+			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+		}
+
+		await msg.author.settings.update(UserSettings.Bank, newBank);
+
+		// 1.5 mins per patch --> ex: 10 patches = 15 mins
 
 		const seedType: any = plants.seedType;
 		const seedToPatch: PatchTypes.FarmingPatchTypes = seedType;
@@ -242,9 +245,9 @@ export default class extends BotCommand {
 				IsHarvestable: true
 			};
 
-			msg.author.settings.update(getPatchType, initialPatches);
+			await msg.author.settings.update(getPatchType, initialPatches);
 
-			str += `${msg.author.minionName} is now planting ${quantity}x ${
+			activityStr += `${msg.author.minionName} is now planting ${quantity}x ${
 				plants.name
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
 				duration
@@ -279,7 +282,7 @@ export default class extends BotCommand {
 					currentWoodcuttingLevel < planted.treeWoodcuttingLevel &&
 					GP < 200 * storeHarvestableQuantity
 				) {
-					throw `Your minion remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the 200GP per patch required to be able to harvest the currently planted trees.`;
+					throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the 200GP per patch required to be able to harvest the currently planted trees.`;
 				}
 			}
 
@@ -293,9 +296,9 @@ export default class extends BotCommand {
 				IsHarvestable: true
 			};
 
-			msg.author.settings.update(getPatchType, updatePatches);
+			await msg.author.settings.update(getPatchType, updatePatches);
 
-			str += `${
+			activityStr += `${
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}, and then planting ${quantity}x ${
 				plants.name
@@ -307,7 +310,6 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		msg.author.incrementMinionDailyDuration(duration);
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-		return msg.send(str);
+		return msg.send(activityStr);
 	}
 }

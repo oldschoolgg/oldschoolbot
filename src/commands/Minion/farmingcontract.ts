@@ -1,12 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { bankHasItem } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 import { getPlantToGrow } from '../../lib/skilling/functions/calcFarmingContracts';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import bankHasItem from '../../lib/util/bankHasItem';
 import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
