@@ -1,10 +1,9 @@
 import { Task } from 'klasa';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { MessageAttachment } from 'discord.js';
 
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import { noOp, addBanks, bankHasItem, roll, multiplyBank } from '../../../lib/util';
+import { noOp, addBanks, bankHasItem, roll, multiplyBank, rand } from '../../../lib/util';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -13,29 +12,6 @@ import { Emoji, Events } from '../../../lib/constants';
 import { ItemBank } from '../../../lib/types';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-
-const PointsTable = new SimpleTable<number>()
-	.add(420)
-	.add(470)
-	.add(500)
-	.add(505)
-	.add(510)
-	.add(520)
-	.add(550)
-	.add(560)
-	.add(590)
-	.add(600)
-	.add(620)
-	.add(650)
-	.add(660)
-	.add(670)
-	.add(680)
-	.add(700)
-	.add(720)
-	.add(740)
-	.add(750)
-	.add(780)
-	.add(850);
 
 export default class extends Task {
 	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
@@ -50,7 +26,7 @@ export default class extends Task {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.roll().item;
+			const points = rand(1000, 5_000);
 			totalPoints += points;
 
 			loot = addBanks([
