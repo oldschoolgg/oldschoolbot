@@ -26,6 +26,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		let newBank: ItemBank = { ...bank };
+		let leftOverMessage = '';
 
 		let totalDecantedDoses = 0;
 		const potionTiers = potionToDecant.items as number[];
@@ -50,12 +51,13 @@ export default class extends BotCommand {
 		newBank = addItemToBank(newBank, potionTiers[3], totalDecantedPotions);
 		if (dosesToGiveBack > 0) {
 			newBank = addItemToBank(newBank, potionTiers[dosesToGiveBack - 1]);
+			leftOverMessage = `, with a ${potionToDecant.name}(${dosesToGiveBack}) left over.`;
 		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(
-			`Decanted all your ${potionToDecant.name}'s, into ${totalDecantedPotions}x (4) doses, with a left-over ${potionToDecant.name}(${dosesToGiveBack}) left over.`
+			`Decanted all your ${potionToDecant.name}'s into ${totalDecantedPotions}x (4) doses${leftOverMessage}`
 		);
 	}
 }

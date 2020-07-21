@@ -4,7 +4,12 @@ import { Course, SkillsEnum } from '../types';
 const courses: Course[] = [
 	{
 		name: 'Gnome Stronghold Agility Course',
-		aliases: ['gnome stronghold', 'gnome'],
+		aliases: [
+			'gnome',
+			'gnome stronghold',
+			'gnome stronghold agility',
+			'gnome stronghold agility course'
+		],
 		level: 1,
 		xp: 88,
 		lapTime: 34,
@@ -12,7 +17,12 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Draynor Village Rooftop Course',
-		aliases: ['draynor'],
+		aliases: [
+			'draynor',
+			'draynor village',
+			'draynor village rooftop',
+			'draynor village rooftop course'
+		],
 		level: 10,
 		xp: 120,
 		marksPer60: 12,
@@ -21,7 +31,7 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Al Kharid Rooftop Course',
-		aliases: ['al kharid'],
+		aliases: ['al kharid', 'al kharid rooftop', 'al kharid rooftop course'],
 		level: 20,
 		xp: 180,
 		marksPer60: 8,
@@ -30,7 +40,7 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Varrock Rooftop Course',
-		aliases: ['varrock'],
+		aliases: ['varrock', 'varrock rooftop', 'varrock rooftop course'],
 		level: 30,
 		xp: 238,
 		marksPer60: 12,
@@ -39,7 +49,7 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Canifis Rooftop Course',
-		aliases: ['canifis'],
+		aliases: ['canifis', 'canifis rooftop', 'canifis rooftop course'],
 		level: 40,
 		xp: 240,
 		marksPer60: 19,
@@ -48,7 +58,7 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Falador Rooftop Course',
-		aliases: ['fally', 'falador'],
+		aliases: ['fally', 'falador', 'fally rooftop', 'falador rooftop', 'falador rooftop course'],
 		level: 50,
 		xp: 440,
 		marksPer60: 13,
@@ -57,7 +67,12 @@ const courses: Course[] = [
 	},
 	{
 		name: `Seers' Village Rooftop Course`,
-		aliases: ['seers', 'seers village'],
+		aliases: [
+			'seers',
+			'seers village',
+			'seers village rooftop',
+			'seers village rooftop course'
+		],
 		level: 60,
 		xp: 570,
 		marksPer60: 12,
@@ -66,7 +81,7 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Pollnivneach Rooftop Course',
-		aliases: ['pol', 'pollnivneach'],
+		aliases: ['pol', 'pollnivneach', 'pollnivneach rooftop', 'pollnivneach rooftop course'],
 		level: 70,
 		xp: 890,
 		marksPer60: 9,
@@ -75,7 +90,7 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Rellekka Rooftop Course',
-		aliases: ['rel', 'rellekka'],
+		aliases: ['rel', 'rellekka', 'rellekka rooftop', 'rellekka rooftop course'],
 		level: 80,
 		xp: 780,
 		marksPer60: 14,
@@ -84,7 +99,7 @@ const courses: Course[] = [
 	},
 	{
 		name: 'Ardougne Rooftop Course',
-		aliases: ['ardy', 'ardougne'],
+		aliases: ['ardy', 'ardougne', 'ardougne rooftop', 'ardougne rooftop course'],
 		level: 90,
 		xp: 793,
 		marksPer60: 22,

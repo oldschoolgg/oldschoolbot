@@ -1,6 +1,7 @@
 import resolveItems from './util/resolveItems';
 import { warmGear } from '../commands/Minion/wt';
 import { gracefulItems } from './skilling/skills/agility';
+import { Eatables } from './eatables';
 
 const barrows = resolveItems([
 	"Ahrim's hood",
@@ -689,16 +690,7 @@ const prayer = resolveItems([
 	...bones
 ]);
 
-const food = resolveItems([
-	'Tuna',
-	'Lobster',
-	'Bass',
-	'Swordfish',
-	'Monkfish',
-	'Shark',
-	'Dark crab',
-	'Manta ray'
-]);
+const food = resolveItems(Eatables.map(food => food.name));
 
 export const wintertodtItems = resolveItems([
 	'Phoenix',
