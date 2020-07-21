@@ -1,5 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
+import { bankHasItem } from '../../../lib/util';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import { saidYes, noOp, roll } from '../../../lib/util';
@@ -7,7 +8,6 @@ import itemID from '../../../lib/util/itemID';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Time, Events, Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import bankHasItem from '../../../lib/util/bankHasItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 
 export default class extends Task {

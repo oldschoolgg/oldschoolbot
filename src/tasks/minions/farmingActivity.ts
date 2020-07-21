@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { roll } from '../../lib/util';
+import { bankHasItem, roll } from '../../lib/util';
 import { Events, Emoji } from '../../lib/constants';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import Farming from '../../lib/skilling/skills/farming/farming';
@@ -12,7 +12,6 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import itemID from '../../lib/util/itemID';
 import { rand } from 'oldschooljs/dist/util/util';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import bankHasItem from '../../lib/util/bankHasItem';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 
 export default class extends Task {
@@ -236,12 +235,6 @@ export default class extends Task {
 				}
 			}
 
-			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementMonsterScore(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill();
-				loot = hesporiLoot;
-			}
-
 			if (quantity > patchType.LastQuantity) {
 				loot[6055] = (quantity - patchType.LastQuantity) * 3; // weeds
 				rakeXp = (quantity - patchType.LastQuantity) * 3 * 4;
@@ -309,7 +302,15 @@ export default class extends Task {
 				str += `\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`;
 			}
 
-			if (
+			let tangleroot = false;
+			if (plantToHarvest.seedType === 'hespori') {
+				await user.incrementMonsterScore(Monsters.Hespori.id);
+				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel});
+				loot = hesporiLoot;
+				if (((Object.keys(loot)).length) > 2) {
+					tangleroot = true;
+				}
+			} else if (
 				patchType.IsHarvestable &&
 				plantToHarvest.petChance &&
 				roll(
@@ -318,13 +319,17 @@ export default class extends Task {
 				)
 			) {
 				loot[itemID('Tangleroot')] = 1;
+				tangleroot = true;
+			}
+
+			if (tangleroot) {
 				str += '\n```diff';
-				str += `\n- You have a funny feeling you're being followed...`;
-				str += '```';
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.LastPlanted} at level ${currentFarmingLevel} Farming!`
-				);
+					str += `\n- You have a funny feeling you're being followed...`;
+					str += '```';
+					this.client.emit(
+						Events.ServerNotification,
+						`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.LastPlanted} at level ${currentFarmingLevel} Farming!`
+					);
 			}
 
 			const currentContract: any = msg.author.settings.get(

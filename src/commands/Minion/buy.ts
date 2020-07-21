@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		const outItems = multiplyBank(buyable.outputItems, quantity);
 		const itemString = await createReadableItemListFromBank(this.client, outItems);
 
-		let sellMsg: any;
+		let sellMsg;
 		let titheFarmPoints = 0;
 		let titheFarmPointsCost = 0;
 		let GPCost = 0;

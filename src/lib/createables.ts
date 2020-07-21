@@ -701,146 +701,146 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Tomatoes(5)',
-		inputItems: transformStringBankToNum({
-			Tomato: 5
+		inputItems: resolveNameBank({
+			'Tomato': 5
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Tomatoes(5)': 1
 		})
 	},
 	{
 		name: 'Tomato',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Tomatoes(5)': 1
 		}),
-		outputItems: transformStringBankToNum({
-			Tomato: 5
+		outputItems: resolveNameBank({
+			'Tomato': 5
 		})
 	},
 	{
 		name: 'Apples(5)',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Cooking apple': 5
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Apples(5)': 1
 		})
 	},
 	{
 		name: 'Cooking apple',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Apples(5)': 1
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Cooking Apple': 5
 		})
 	},
 	{
 		name: 'Bananas(5)',
-		inputItems: transformStringBankToNum({
-			Banana: 5
+		inputItems: resolveNameBank({
+			'Banana': 5
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Bananas(5)': 1
 		})
 	},
 	{
 		name: 'Banana',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Bananas(5)': 1
 		}),
-		outputItems: transformStringBankToNum({
-			Banana: 5
+		outputItems: resolveNameBank({
+			'Banana': 5
 		})
 	},
 	{
 		name: 'Strawberries(5)',
-		inputItems: transformStringBankToNum({
-			Strawberry: 5
+		inputItems: resolveNameBank({
+			'Strawberry': 5
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Strawberries(5)': 1
 		})
 	},
 	{
 		name: 'Strawberry',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Strawberries(5)': 1
 		}),
-		outputItems: transformStringBankToNum({
-			Strawberry: 5
+		outputItems: resolveNameBank({
+			'Strawberry': 5
 		})
 	},
 	{
 		name: 'Oranges(5)',
-		inputItems: transformStringBankToNum({
-			Orange: 5
+		inputItems: resolveNameBank({
+			'Orange': 5
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Oranges(5)': 1
 		})
 	},
 	{
 		name: 'Orange',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Oranges(5)': 1
 		}),
-		outputItems: transformStringBankToNum({
-			Orange: 5
+		outputItems: resolveNameBank({
+			'Orange': 5
 		})
 	},
 	{
 		name: 'Potatoes(10)',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			Potato: 10
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Potatoes(10)': 1
 		})
 	},
 	{
 		name: 'Potato',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Potatoes(10)': 1
 		}),
-		outputItems: transformStringBankToNum({
-			Potato: 10
+		outputItems: resolveNameBank({
+			'Potato': 10
 		})
 	},
 	{
 		name: 'Onions(10)',
-		inputItems: transformStringBankToNum({
-			Onion: 10
+		inputItems: resolveNameBank({
+			'Onion': 10
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Onions(10)': 1
 		})
 	},
 	{
 		name: 'Onion',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Onions(10)': 1
 		}),
-		outputItems: transformStringBankToNum({
-			Onion: 10
+		outputItems: resolveNameBank({
+			'Onion': 10
 		})
 	},
 	{
 		name: 'Cabbages(10)',
-		inputItems: transformStringBankToNum({
-			Cabbage: 10
+		inputItems: resolveNameBank({
+			'Cabbage': 10
 		}),
-		outputItems: transformStringBankToNum({
+		outputItems: resolveNameBank({
 			'Cabbages(10)': 1
 		})
 	},
 	{
 		name: 'Cabbage',
-		inputItems: transformStringBankToNum({
+		inputItems: resolveNameBank({
 			'Cabbages(10)': 1
 		}),
-		outputItems: transformStringBankToNum({
-			Cabbage: 10
+		outputItems: resolveNameBank({
+			'Cabbage': 10
 		})
 	}
 	/* {
