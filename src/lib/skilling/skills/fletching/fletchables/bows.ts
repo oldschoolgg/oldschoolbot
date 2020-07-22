@@ -54,7 +54,7 @@ const Bows: Fletchable[] = [
 	{
 		name: 'Oak longbow (u)',
 		id: itemID('Oak longbow (u)'),
-		level: 20,
+		level: 25,
 		xp: 25,
 		inputItems: resolveNameBank({ 'Oak logs': 1 }),
 		tickRate: 3
@@ -62,7 +62,7 @@ const Bows: Fletchable[] = [
 	{
 		name: 'Oak longbow',
 		id: itemID('Oak longbow'),
-		level: 20,
+		level: 25,
 		xp: 25,
 		inputItems: resolveNameBank({ 'Oak longbow (u)': 1, 'Bow string': 1 }),
 		tickRate: 2
