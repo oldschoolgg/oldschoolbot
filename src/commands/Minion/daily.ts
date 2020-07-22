@@ -60,8 +60,12 @@ export default class DailyCommand extends BotCommand {
 
 		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 
+		const question = msg.author.settings.get('troll')
+			? `||${trivia.q.split('').join('||')}||`
+			: trivia.q;
+
 		await msg.channel.send(
-			`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${trivia.q}`
+			`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${question}`
 		);
 		try {
 			const collected = await msg.channel.awaitMessages(
