@@ -13,7 +13,8 @@ export enum SkillsEnum {
 	Prayer = 'prayer',
 	Fletching = 'fletching',
 	Farming = 'farming',
-	Herblore = 'herblore'
+	Herblore = 'herblore',
+	Slayer = 'slayer'
 }
 
 export interface Ore {
@@ -139,6 +140,31 @@ export interface Bone {
 	xp: number;
 	name: string;
 	inputId: number;
+}
+
+export interface Task {
+	name: string;
+	amount: number[];
+	extendedAmount?: number | number[];
+	weight: number;
+	alternatives?: string | string[];
+	Id: number | number[];
+	combatLvl?: number;
+	slayerLvl?: number;
+	wilderness?: number;
+	unlocked?: boolean;
+}
+
+export interface SlayerMaster {
+	name: string;
+	aliases: string[];
+	tasks: Task[];
+	bossTasks?: Task[];
+	masterId: number;
+	basePoints: number;
+	combatLvl?: number;
+	slayerLvl?: number;
+	questPoints?: number;
 }
 
 export type LevelRequirements = Partial<
