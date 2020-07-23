@@ -136,12 +136,12 @@ const duradelTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//PLACEHOLDER, NOT RIGHT
+		//All the bosses in "Like a boss", seperate file.
 		name: 'Boss',
-		amount: [3, 35],
-		alternatives: ['Boss'],
-		weight: 8,
-		Id: Monsters.Vorkath.id,
+		amount: [],
+		alternatives: 'boss',
+		weight: 12,
+		Id: [],
 		unlocked: false
 	},
 	{

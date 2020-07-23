@@ -1,9 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
 import { Time } from 'oldschooljs/dist/constants';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings//types/UserSettings';
 import { Monsters } from 'oldschooljs';
 
 const slayerShopItems = [

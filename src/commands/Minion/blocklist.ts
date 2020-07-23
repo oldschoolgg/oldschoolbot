@@ -1,10 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
-
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
 import nieveTasks from '../../lib/skilling/skills/slayer/tasks/nieveTasks';
-import { UserSettings } from '../../lib/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import turaelTasks from '../../lib/skilling/skills/slayer/tasks/turaelTasks';
 
 const options = {
@@ -84,7 +83,7 @@ export default class extends BotCommand {
 
 		// Block list removal
 		if (msg.flagArgs.unblock) {
-			if (!userBlockList.includes(task[0].Id)) {
+			if (!userBlockList.includes(task)) {
 				throw `That task isn't on your block list.`;
 			}
 			msg.send(

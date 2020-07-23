@@ -18,7 +18,6 @@ export enum SkillsEnum {
 	Firemaking = 'firemaking',
 	Runecraft = 'runecraft',
 	Crafting = 'crafting',
-	Prayer = 'prayer',
 	Fletching = 'fletching',
 	Farming = 'farming',
 	Herblore = 'herblore'
@@ -151,7 +150,7 @@ export interface Bone {
 
 export interface Task {
 	name: string;
-	amount: number | number[];
+	amount: number[];
 	extendedAmount?: number | number[];
 	weight: number;
 	alternatives?: string | string[];
@@ -160,6 +159,18 @@ export interface Task {
 	slayerLvl?: number;
 	wilderness?: number;
 	unlocked?: boolean;
+}
+
+export interface SlayerMaster {
+	name: string;
+	aliases: string[];
+	tasks: Task[];
+	bossTasks?: Task[];
+	masterId: number;
+	basePoints: number;
+	combatLvl?: number;
+	slayerLvl?: number;
+	questPoints?: number;
 }
 
 export type LevelRequirements = Partial<

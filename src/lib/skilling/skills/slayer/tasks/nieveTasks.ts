@@ -131,12 +131,12 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//PLACEHOLDER, NOT RIGHT
+		//All the bosses in "Like a boss", seperate file.
 		name: 'Boss',
-		amount: [3, 35],
-		alternatives: ['Boss'],
+		amount: [],
+		alternatives: 'boss',
 		weight: 8,
-		Id: Monsters.Vorkath.id,
+		Id: [],
 		unlocked: false
 	},
 	{
