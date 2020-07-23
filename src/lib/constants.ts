@@ -74,6 +74,7 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
+	Slayer = '<:slayer:630911040560824330>',
 	Purple = '🟪'
 }
 export const enum ReactionEmoji {
