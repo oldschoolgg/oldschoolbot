@@ -281,7 +281,7 @@ export default class extends Extendable {
 				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
 			}
 			case Activity.TitheFarm: {
-				return `${this.minionName} is currently attempting the **Tithe Farm**. ${formattedDuration}`;
+				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
 			}
 
 			case Activity.Fletching: {
@@ -304,6 +304,7 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
 
 			case Activity.Farming: {
 				const data = currentTask as FarmingActivityTaskOptions;
