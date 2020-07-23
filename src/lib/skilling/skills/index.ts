@@ -12,7 +12,7 @@ import Runecraft from './runecraft';
 import Crafting from './crafting/crafting';
 import Prayer from './prayer';
 import Fletching from './fletching/fletching';
-import Slayer from './slayer/slayer'
+import Slayer from './slayer/slayer';
 
 export type Skill =
 	| typeof Crafting

@@ -5,15 +5,15 @@ import { SkillsEnum, Task } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
 
 type SlayerInfo = {
-    hasTask: Boolean;
-    task: Task;
+	hasTask: Boolean;
+	task: Task;
 	taskQuantity: number | null;
 	remainingQuantity: number | null;
-    currentMaster: number | null;
-    slayerPoints: number;
-    streak: number;
-    wildyStreak: number;
-}
+	currentMaster: number | null;
+	slayerPoints: number;
+	streak: number;
+	wildyStreak: number;
+};
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
