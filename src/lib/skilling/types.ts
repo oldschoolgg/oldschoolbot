@@ -153,7 +153,7 @@ export interface Plant {
 	harvestXp: number;
 	name: string;
 	aliases: string[];
-	inputItems: Bank;
+	inputItems: ItemBank;
 	outputCrop?: number;
 	outputLogs?: number;
 	treeWoodcuttingLevel?: number;
