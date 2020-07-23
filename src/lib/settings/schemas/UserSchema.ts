@@ -36,13 +36,6 @@ Client.defaultUserSchema
 			.add('extendList', 'integer', { array: true, default: [] })
 			.add('unlockedList', 'integer', { array: true, default: [] })
 	)
-	.add('slayer', folder =>
-		folder
-			.add('slayerInfo', 'integer', { array: true, default: [] })
-			.add('blockList', 'integer', { array: true, default: [] })
-			.add('extendList', 'integer', { array: true, default: [] })
-			.add('unlockedList', 'integer', { array: true, default: [] })
-	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
 			.add('deaths', 'integer', { default: 0 })
