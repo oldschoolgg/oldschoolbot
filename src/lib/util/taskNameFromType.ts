@@ -36,8 +36,6 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.OfferingActivity;
 		case Activity.FightCaves:
 			return Tasks.FightCavesActivity;
-		case Activity.TitheFarm:
-			return Tasks.TitheFarmActivity;
 		case Activity.Fletching:
 			return Tasks.FletchingActivity;
 		case Activity.Wintertodt:
@@ -62,5 +60,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.PickpocketActivity;
 		case Activity.Farming:
 			return Tasks.FarmingActivity;
+		case Activity.TitheFarm:
+			return Tasks.TitheFarmActivity;
 	}
 }
