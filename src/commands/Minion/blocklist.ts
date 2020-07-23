@@ -3,9 +3,9 @@ import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
-import nieveTasks from '../../lib/slayer/nieveTasks';
+import nieveTasks from '../../lib/skilling/skills/slayer/tasks/nieveTasks';
 import { UserSettings } from '../../lib/UserSettings';
-import turaelTasks from '../../lib/slayer/turaelTasks';
+import turaelTasks from '../../lib/skilling/skills/slayer/tasks/turaelTasks';
 
 const options = {
 	max: 1,
@@ -59,7 +59,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
 				arrayAction: 'overwrite'
 			});
-			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].ID, {
+			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].Id, {
 				arrayAction: 'add'
 			});
 			return msg.send(
@@ -84,7 +84,7 @@ export default class extends BotCommand {
 
 		// Block list removal
 		if (msg.flagArgs.unblock) {
-			if (!userBlockList.includes(task[0].ID)) {
+			if (!userBlockList.includes(task[0].Id)) {
 				throw `That task isn't on your block list.`;
 			}
 			msg.send(
@@ -101,7 +101,7 @@ export default class extends BotCommand {
 				throw `Cancelling block list removal of ${taskname}.`;
 			}
 
-			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].ID, {
+			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].Id, {
 				arrayAction: 'remove'
 			});
 			throw `The task **${taskname}** has been **removed** from your block list`;
@@ -131,10 +131,10 @@ export default class extends BotCommand {
 			if (msg.author.slayerInfo[4] < 100) {
 				throw `It costs 100 slayer points to block a task and you only have ${msg.author.slayerInfo[4]}.`;
 			}
-			if (userBlockList.includes(task[0].ID)) {
+			if (userBlockList.includes(task[0].Id)) {
 				throw `That task is already on your block list`;
 			}
-			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].ID, {
+			await msg.author.settings.update(UserSettings.Slayer.BlockList, task[0].Id, {
 				arrayAction: 'add'
 			});
 			const newSlayerPoints = msg.author.slayerInfo[4] - 100;

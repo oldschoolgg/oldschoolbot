@@ -1,5 +1,5 @@
-import nieveTasks from './nieveTasks';
-import turaelTasks from './turaelTasks';
+import nieveTasks from './tasks/nieveTasks';
+import turaelTasks from './tasks/turaelTasks';
 
 const slayerMasters = [
 	{

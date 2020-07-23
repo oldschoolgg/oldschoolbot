@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import slayerMasters from '../../lib/slayer/slayerMasters';
+import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, rand, determineCombatLevel } from '../../lib/util';
-import nieveTasks from '../../lib/slayer/nieveTasks';
+import nieveTasks from '../../lib/skilling/skills/slayer/tasks/nieveTasks';
 import { UserSettings } from '../../lib/UserSettings';
 import { Monsters } from 'oldschooljs';
-import bossTasks from '../../lib/slayer/bossTasks';
-import turaelTasks from '../../lib/slayer/turaelTasks';
+import bossTasks from '../../lib/skilling/skills/slayer/bossTasks';
+import turaelTasks from '../../lib/skilling/skills/slayer/tasks/turaelTasks';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 const options = {
@@ -138,7 +138,7 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 		// Filter by slayer level
 		const filteredByLevel = listOfTasks.tasks.filter(
 			task =>
-				Monsters.get(task.ID)?.data.slayerLevelRequired! <=
+				Monsters.get(task.Id)?.data.slayerLevelRequired! <=
 				msg.author.skillLevel(SkillsEnum.Slayer)
 		);
 
@@ -147,7 +147,7 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 
 		// Filter by block list
 		const filteredBlockedTasks = filteredLockedTasks.filter(
-			task => !msg.author.blockList.includes(task.ID)
+			task => !msg.author.blockList.includes(task.Id)
 		);
 		// Filter by quest point requirements ------ FIX THIS @@@@@@@@@
 		const filteredByQP = filteredBlockedTasks.filter(task => !task.requirements?.questPoints!);
@@ -156,7 +156,7 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 		const filteredBlockedByDefault = filteredByQP.filter(task => task.unlocked === true);
 
 		const filteredByUnlocked = filteredBlockedByDefault.filter(task =>
-			msg.author.unlockedList.includes(task.ID)
+			msg.author.unlockedList.includes(task.Id)
 		);
 
 		const filteredTasks = filteredBlockedByDefault.concat(filteredByUnlocked);
@@ -208,7 +208,7 @@ You're only ${userCombatLevel} combat, and ${msg.author.skillLevel(SkillsEnum.Sl
 				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
 				const newInfo = [
 					1,
-					slayerMonster.ID,
+					slayerMonster.Id,
 					quantity,
 					master.masterID,
 					msg.author.slayerInfo[4] ?? 0,

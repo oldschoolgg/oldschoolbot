@@ -1,6 +1,8 @@
 import { Monsters } from 'oldschooljs';
+import { Task } from '../../../types';
 
-const turaelTasks = [
+// Edit all tasks to fit the Task interface and include all IDs of alternatives.
+const turaelTasks: Task[] = [
 	{
 		name: 'Banshee',
 		amount: [15, 50],
@@ -11,7 +13,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Twisted Banshee'],
 		weight: 8,
-		ID: Monsters.Banshee.id,
+		Id: Monsters.Banshee.id,
 		unlocked: true
 	},
 	{
@@ -23,7 +25,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Giant bat', 'Deathwing'],
 		weight: 7,
-		ID: Monsters.Bat.id,
+		Id: Monsters.Bat.id,
 		unlocked: true
 	},
 	{
@@ -42,7 +44,7 @@ const turaelTasks = [
 			'Duckling'
 		],
 		weight: 6,
-		ID: 1,
+		Id: 1,
 		unlocked: true
 	},
 	{
@@ -54,7 +56,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Grizzly bear cub', 'Bear cub', 'Grizzly bear', 'Callisto'],
 		weight: 7,
-		ID: Monsters.Bear.id,
+		Id: Monsters.Bear.id,
 		unlocked: true
 	},
 	{
@@ -65,7 +67,7 @@ const turaelTasks = [
 			slayerLevel: 7
 		},
 		weight: 8,
-		ID: Monsters.CaveBug.id,
+		Id: Monsters.CaveBug.id,
 		unlocked: true
 	},
 	{
@@ -77,7 +79,7 @@ const turaelTasks = [
 			slayerLevel: 10
 		},
 		weight: 8,
-		ID: Monsters.CaveCrawler.id,
+		Id: Monsters.CaveCrawler.id,
 		unlocked: true
 	},
 	{
@@ -89,7 +91,7 @@ const turaelTasks = [
 			slayerLevel: 17
 		},
 		weight: 8,
-		ID: Monsters.CaveSlime.id,
+		Id: Monsters.CaveSlime.id,
 		unlocked: true
 	},
 	{
@@ -101,7 +103,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Cow calf', 'Undead cow'],
 		weight: 8,
-		ID: Monsters.Cow.id,
+		Id: Monsters.Cow.id,
 		unlocked: true
 	},
 	{
@@ -112,7 +114,7 @@ const turaelTasks = [
 			slayerLevel: 5
 		},
 		weight: 8,
-		ID: Monsters.CrawlingHand.id,
+		Id: Monsters.CrawlingHand.id,
 		unlocked: true
 	},
 	{
@@ -124,7 +126,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Jackal', 'Wild dog', 'Reanimated dog'],
 		weight: 7,
-		ID: Monsters.GuardDog.id,
+		Id: Monsters.GuardDog.id,
 		unlocked: true
 	},
 	{
@@ -136,7 +138,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Black Guard', 'Chaos Dwarf', 'Dwarf gang member'],
 		weight: 7,
-		ID: Monsters.Dwarf.id,
+		Id: Monsters.Dwarf.id,
 		unlocked: true
 	},
 	{
@@ -148,7 +150,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Tortured soul'],
 		weight: 7,
-		ID: Monsters.Ghost.id,
+		Id: Monsters.Ghost.id,
 		unlocked: true
 	},
 	{
@@ -157,7 +159,7 @@ const turaelTasks = [
 
 		alternatives: ['Cave goblin guard', 'General Graardor'],
 		weight: 7,
-		ID: Monsters.Goblin.id,
+		Id: Monsters.Goblin.id,
 		unlocked: true
 	},
 	{
@@ -167,7 +169,7 @@ const turaelTasks = [
 			combatLevel: 20
 		},
 		weight: 8,
-		ID: Monsters.Icefiend.id,
+		Id: Monsters.Icefiend.id,
 		unlocked: true
 	},
 	{
@@ -179,7 +181,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		weight: 6,
-		ID: Monsters.KalphiteWorker.id,
+		Id: Monsters.KalphiteWorker.id,
 		unlocked: true
 	},
 	{
@@ -191,7 +193,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Small Lizard', 'Desert Lizard', 'Sulphur Lizard'],
 		weight: 8,
-		ID: Monsters.Lizard.id,
+		Id: Monsters.Lizard.id,
 		unlocked: true
 	},
 	{
@@ -202,7 +204,7 @@ const turaelTasks = [
 			combatLevel: 7
 		},
 		weight: 7,
-		ID: Monsters.Minotaur.id,
+		Id: Monsters.Minotaur.id,
 		unlocked: true
 	},
 	{
@@ -218,7 +220,7 @@ const turaelTasks = [
 			'Tortured Gorilla'
 		],
 		weight: 6,
-		ID: Monsters.Monkey.id,
+		Id: Monsters.Monkey.id,
 		unlocked: true
 	},
 	{
@@ -226,7 +228,7 @@ const turaelTasks = [
 		amount: [15, 50],
 		alternatives: ['Giant rat', 'Dungeon rat', 'Crypt rat', 'Brine rat'],
 		weight: 7,
-		ID: Monsters.Rat.id,
+		Id: Monsters.Rat.id,
 		unlocked: true
 	},
 	{
@@ -244,7 +246,7 @@ const turaelTasks = [
 			'Reanimated scorpion'
 		],
 		weight: 7,
-		ID: Monsters.Scorpion.id,
+		Id: Monsters.Scorpion.id,
 		unlocked: true
 	},
 	{
@@ -256,7 +258,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Skeleton mage', "Vet'ion", 'Skogre', 'Skeleton fremennik'],
 		weight: 7,
-		ID: Monsters.Skeleton.id,
+		Id: Monsters.Skeleton.id,
 		unlocked: true
 	},
 	{
@@ -272,7 +274,7 @@ const turaelTasks = [
 			'Venenatis'
 		],
 		weight: 6,
-		ID: Monsters.Spider.id,
+		Id: Monsters.Spider.id,
 		unlocked: true
 	},
 	{
@@ -284,7 +286,7 @@ const turaelTasks = [
 		},
 		alternatives: ['Big Wolf', 'Desert Wolf', 'Ice wolf', 'Jungle wolf', 'White wolf'],
 		weight: 7,
-		ID: Monsters.Wolf.id,
+		Id: Monsters.Wolf.id,
 		unlocked: true
 	},
 	{
@@ -305,7 +307,7 @@ const turaelTasks = [
 			'Vorkath'
 		],
 		weight: 7,
-		ID: Monsters.Zombie.id,
+		Id: Monsters.Zombie.id,
 		unlocked: true
 	}
 ];

@@ -15,7 +15,7 @@ import { SkillsEnum } from '../../lib/types';
 import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/monsters/index';
 import { SkillsEnum } from '../../lib/skilling/types';
-import taskBoost from '../../lib/slayer/taskBoost';
+import taskBoost from '../../lib/skilling/skills/slayer/taskBoost';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, slayerTask }: MonsterActivityTaskOptions) {
