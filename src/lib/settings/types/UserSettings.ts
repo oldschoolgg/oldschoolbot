@@ -4,8 +4,8 @@ import { GearTypes } from '../../gear';
 import { SkillsEnum, Task } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
 
-type SlayerInfo = {
-	hasTask: Boolean;
+interface SlayerInfo {
+	hasTask: boolean;
 	task: Task;
 	taskQuantity: number | null;
 	remainingQuantity: number | null;
@@ -13,7 +13,7 @@ type SlayerInfo = {
 	slayerPoints: number;
 	streak: number;
 	wildyStreak: number;
-};
+}
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 

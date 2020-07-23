@@ -1,10 +1,10 @@
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
-//Handle extended amounts??
+// Handle extended amounts??
 const vannakaTasks: Task[] = [
 	{
-		//Deviant spectre not added in monsters. Quest locked?
+		// Deviant spectre not added in monsters. Quest locked?
 		name: 'Aberrant spectre',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -16,7 +16,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Greater abyssal and abyssal sire not added in monsters.
+		// Greater abyssal and abyssal sire not added in monsters.
 		name: 'Abyssal demon',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -28,7 +28,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Dark ankou not added in monsters.
+		// Dark ankou not added in monsters.
 		name: 'Ankou',
 		amount: [25, 35],
 		extendedAmount: [90, 150],
@@ -39,7 +39,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Twisted banshee not added in monsters, quest lock?
+		// Twisted banshee not added in monsters, quest lock?
 		name: 'Banshee',
 		amount: [60, 120],
 		weight: 6,
@@ -50,7 +50,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Defence lvl?
+		// Defence lvl?
 		name: 'Basilisk',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -63,7 +63,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock? Mutaed bloodveld not added in monsters.
+		// Quest lock? Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -75,7 +75,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Baby, Brutal blue dragon not added in monsters.
+		// Quest lock, Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [60, 120],
 		weight: 7,
@@ -90,7 +90,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?
+		// Quest lock?
 		name: 'Brine rat',
 		amount: [60, 120],
 		weight: 7,
@@ -100,7 +100,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Not added in monsters.
+		// Quest lock, Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [30, 50],
 		weight: 7,
@@ -135,7 +135,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Defencelvl? Not added to monsters.
+		// Defencelvl? Not added to monsters.
 		name: 'Cockatrice',
 		amount: [60, 120],
 		weight: 8,
@@ -146,7 +146,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?
+		// Quest lock?
 		name: 'Crawling Hand',
 		amount: [60, 120],
 		weight: 6,
@@ -155,7 +155,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Crocodile',
 		amount: [60, 120],
 		weight: 6,
@@ -164,7 +164,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock? Dagannoth spawn and fledgeling not added to monsters.
+		// Quest lock? Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [60, 120],
 		weight: 7,
@@ -187,7 +187,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?
+		// Quest lock?
 		name: 'Dust devil',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -198,7 +198,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Earth warrior',
 		amount: [40, 80],
 		weight: 6,
@@ -207,7 +207,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Most elves not added to monsters.
+		// Quest lock, Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [40, 100],
 		weight: 7,
@@ -230,7 +230,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, not added to monsters.
+		// Quest lock, not added to monsters.
 		name: 'Fever spider',
 		amount: [60, 120],
 		weight: 7,
@@ -248,7 +248,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?, Grotesque Guardians not added to monsters.
+		// Quest lock?, Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -260,7 +260,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Ghoul',
 		amount: [10, 40],
 		weight: 7,
@@ -269,7 +269,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//No green dragons added in monsters. Quest lock?
+		// No green dragons added in monsters. Quest lock?
 		name: 'Green dragon',
 		amount: [40, 80],
 		weight: 6,
@@ -279,7 +279,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Firemaking?
+		// Not added in monsters. Firemaking?
 		name: 'Harpie Bug Swarm',
 		amount: [60, 120],
 		weight: 8,
@@ -290,7 +290,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?, Not added in monsters, Cerberus unlocked??
+		// Revenant cave?, Not added in monsters, Cerberus unlocked??
 		name: 'Hellhound',
 		amount: [40, 80],
 		weight: 7,
@@ -305,7 +305,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Hill Giant',
 		amount: [60, 120],
 		weight: 7,
@@ -315,7 +315,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Hobgoblin',
 		amount: [60, 120],
 		weight: 7,
@@ -324,7 +324,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?, Not added in monsters
+		// Revenant cave?, Not added in monsters
 		name: 'Ice giant',
 		amount: [40, 80],
 		weight: 7,
@@ -333,7 +333,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Ice warrior',
 		amount: [60, 120],
 		weight: 7,
@@ -342,7 +342,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Infernal Mage',
 		amount: [60, 120],
 		weight: 8,
@@ -352,7 +352,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Jelly',
 		amount: [60, 120],
 		weight: 8,
@@ -363,7 +363,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest locked.
+		// Not added in monsters. Quest locked.
 		name: 'Jungle horror',
 		amount: [60, 120],
 		weight: 8,
@@ -387,7 +387,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Killerwatt',
 		amount: [30, 80],
 		weight: 6,
@@ -421,7 +421,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave? ,Not added in monsters
+		// Revenant cave? ,Not added in monsters
 		name: 'Lesser demon',
 		amount: [60, 120],
 		weight: 7,
@@ -431,7 +431,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Mogre',
 		amount: [60, 120],
 		weight: 7,
@@ -441,7 +441,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 7,
@@ -451,7 +451,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Wildy? Not added in monsters
+		// Wildy? Not added in monsters
 		name: 'Moss giant',
 		amount: [60, 120],
 		weight: 7,
@@ -483,7 +483,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Otherworldly being',
 		amount: [60, 120],
 		weight: 8,
@@ -492,7 +492,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Pyrefiend',
 		amount: [60, 120],
 		weight: 8,
@@ -502,7 +502,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Rockslug',
 		amount: [60, 120],
 		weight: 7,
@@ -529,7 +529,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock
+		// Not added in monsters. Quest lock
 		name: 'Sea Snake',
 		amount: [60, 120],
 		weight: 6,
@@ -540,7 +540,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock
+		// Not added in monsters. Quest lock
 		name: 'Shadow warrior',
 		amount: [40, 80],
 		weight: 8,
@@ -549,7 +549,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
+		// Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [60, 120],
 		extendedAmount: [180, 250],
@@ -561,7 +561,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock
+		// Not added in monsters. Quest lock
 		name: 'Terror dog',
 		amount: [20, 45],
 		weight: 6,
@@ -571,7 +571,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Ice troll and troll general Not added in monsters.
+		// Ice troll and troll general Not added in monsters.
 		name: 'Mountain troll',
 		amount: [60, 120],
 		weight: 7,
@@ -590,7 +590,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters. Quest lock?
 		name: 'Feral Vampyre',
 		amount: [10, 20],
 		extendedAmount: [200, 250],
@@ -606,7 +606,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Defence lvl?
+		// Defence lvl?
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 6,
@@ -617,7 +617,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added to monsters. Quest lock.
+		// Not added to monsters. Quest lock.
 		name: 'Werewolf',
 		amount: [40, 80],
 		weight: 7,

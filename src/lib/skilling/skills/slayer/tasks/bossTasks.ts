@@ -3,7 +3,7 @@ import { Task } from '../../../types';
 
 const bossTasks: Task[] = [
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Abyssal sire',
 		amount: [3, 35],
 		weight: 1,
@@ -11,7 +11,7 @@ const bossTasks: Task[] = [
 		slayerLvl: 85
 	},
 	{
-		//Not added to monsters
+		// Not added to monsters
 		name: 'Alchemical hydra',
 		amount: [3, 35],
 		weight: 1,
@@ -92,7 +92,7 @@ const bossTasks: Task[] = [
 		Id: Monsters.GiantMole.id
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Grotesque guardians',
 		amount: [3, 35],
 		weight: 1,
@@ -118,7 +118,7 @@ const bossTasks: Task[] = [
 		Id: Monsters.KingBlackDragon.id
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Kraken',
 		amount: [3, 35],
 		weight: 1,
@@ -132,7 +132,7 @@ const bossTasks: Task[] = [
 		Id: Monsters.Kreearra.id
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Sarachnis',
 		amount: [3, 35],
 		weight: 1,
@@ -145,7 +145,7 @@ const bossTasks: Task[] = [
 		Id: Monsters.Scorpia.id
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Thermonuclear smoke devil',
 		amount: [3, 35],
 		weight: 1,

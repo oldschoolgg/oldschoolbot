@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
-//Larrans keys??
+// Larrans keys??
 const krystiliaTasks: Task[] = [
 	{
 		name: 'Ankou',
@@ -12,17 +12,17 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Add Armadylian guard as option? Agility/Strength lock in future?
+		// Add Armadylian guard as option? Agility/Strength lock in future?
 		name: 'Aviansie',
 		amount: [80, 150],
 		weight: 7,
 		//	alternatives: 'Armadylian guard',
-		Id: [Monsters.Aviansie.id /*, Monsters.Armadylianguard.id*/],
+		Id: [Monsters.Aviansie.id /* , Monsters.Armadylianguard.id*/],
 		wilderness: 27,
 		unlocked: false
 	},
 	{
-		//Different bandits and droprates? None of them added in monsters
+		// Different bandits and droprates? None of them added in monsters
 		name: 'Bandit',
 		amount: [75, 125],
 		weight: 4,
@@ -32,7 +32,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Grizzly bear not added in monsters
+		// Grizzly bear not added in monsters
 		name: 'Grizzly bear',
 		amount: [50, 100],
 		weight: 6,
@@ -42,7 +42,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Black demon reventant caves?
+		// Black demon reventant caves?
 		name: 'Black demon',
 		amount: [100, 150],
 		weight: 7,
@@ -51,7 +51,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Black dragon reventant caves?
+		// Black dragon reventant caves?
 		name: 'Black dragon',
 		amount: [5, 20],
 		weight: 4,
@@ -60,7 +60,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Black Knight not added in monsters
+		// Black Knight not added in monsters
 		name: 'Black Knight',
 		amount: [75, 125],
 		weight: 3,
@@ -69,7 +69,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future?
+		// Agility/Strength lock in future?
 		name: 'Bloodveld',
 		amount: [90, 140],
 		weight: 4,
@@ -78,7 +78,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Neither added in monsters
+		// Neither added in monsters
 		name: 'Chaos druid',
 		amount: [50, 85],
 		weight: 5,
@@ -88,7 +88,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Two combat lvls, not added in monsters
+		// Two combat lvls, not added in monsters
 		name: 'Dark warrior',
 		amount: [70, 125],
 		weight: 4,
@@ -97,7 +97,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters
+		// Not added in monsters
 		name: 'Earth warrior',
 		amount: [75, 130],
 		weight: 6,
@@ -106,7 +106,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters
+		// Not added in monsters
 		name: 'Ent',
 		amount: [35, 60],
 		weight: 5,
@@ -115,7 +115,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters, wildy?
+		// Not added in monsters, wildy?
 		name: 'Fire giant',
 		amount: [100, 150],
 		weight: 7,
@@ -124,7 +124,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?
+		// Revenant cave?
 		name: 'Greater demon',
 		amount: [100, 150],
 		weight: 8,
@@ -133,7 +133,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?, Not added in monsters
+		// Revenant cave?, Not added in monsters
 		name: 'Green dragon',
 		amount: [60, 100],
 		weight: 4,
@@ -142,7 +142,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?, Not added in monsters
+		// Revenant cave?, Not added in monsters
 		name: 'Hellhound',
 		amount: [70, 123],
 		weight: 7,
@@ -156,7 +156,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Wilderness drops?, Not added in monsters
+		// Wilderness drops?, Not added in monsters
 		name: 'Hill Giant',
 		amount: [100, 150],
 		weight: 3,
@@ -165,7 +165,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?, Not added in monsters
+		// Revenant cave?, Not added in monsters
 		name: 'Ice giant',
 		amount: [100, 160],
 		weight: 6,
@@ -174,7 +174,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters
+		// Not added in monsters
 		name: 'Ice warrior',
 		amount: [100, 150],
 		weight: 7,
@@ -183,7 +183,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters
+		// Not added in monsters
 		name: 'Lava dragon',
 		amount: [35, 60],
 		weight: 3,
@@ -192,7 +192,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave? ,Not added in monsters
+		// Revenant cave? ,Not added in monsters
 		name: 'Lesser demon',
 		amount: [80, 120],
 		weight: 6,
@@ -201,7 +201,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters
+		// Not added in monsters
 		name: 'Magic axe',
 		amount: [70, 125],
 		weight: 7,
@@ -210,7 +210,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters
+		// Not added in monsters
 		name: 'Mammoth',
 		amount: [75, 125],
 		weight: 6,
@@ -219,7 +219,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Wildy? Not added in monsters
+		// Wildy? Not added in monsters
 		name: 'Moss giant',
 		amount: [100, 150],
 		weight: 4,
@@ -228,7 +228,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Wildy? Not added in monsters
+		// Wildy? Not added in monsters
 		name: 'Pirate',
 		amount: [75, 125],
 		weight: 3,
@@ -237,7 +237,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters
+		// Not added in monsters
 		name: 'Revenant dragon',
 		amount: [40, 100],
 		weight: 5,
@@ -270,7 +270,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Two combats? Not added in monsters
+		// Two combats? Not added in monsters
 		name: 'Rogue',
 		amount: [75, 125],
 		weight: 5,
@@ -279,7 +279,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//King scorpion not added in monsters, scorpia offsprings/guardians count.
+		// King scorpion not added in monsters, scorpia offsprings/guardians count.
 		name: 'Scorpion',
 		amount: [60, 100],
 		weight: 6,
@@ -289,7 +289,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//More skeletons with different loots, Not added in monsters.
+		// More skeletons with different loots, Not added in monsters.
 		name: 'Skeleton',
 		amount: [60, 100],
 		weight: 5,
@@ -304,7 +304,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Giant spider and deadly red spider not added in monsters,
+		// Giant spider and deadly red spider not added in monsters,
 		name: 'Spider',
 		amount: [60, 100],
 		weight: 6,
@@ -319,7 +319,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future? Quest lock?
+		// Agility/Strength lock in future? Quest lock?
 		name: 'Spiritual ranger',
 		amount: [100, 150],
 		weight: 6,

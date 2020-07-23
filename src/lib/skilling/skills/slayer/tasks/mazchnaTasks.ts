@@ -3,7 +3,7 @@ import { Task } from '../../../types';
 
 const mazchnaTasks: Task[] = [
 	{
-		//Twisted Banshee not added in monsters. Quest lock?
+		// Twisted Banshee not added in monsters. Quest lock?
 		name: 'Banshee',
 		amount: [40, 70],
 		weight: 8,
@@ -14,7 +14,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Giant bat not added in monsters.
+		// Giant bat not added in monsters.
 		name: 'Bat',
 		amount: [40, 70],
 		weight: 7,
@@ -24,7 +24,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Wrong name on Black bear in Monsters? Rest of bears except callisto not added in monsters.
+		// Wrong name on Black bear in Monsters? Rest of bears except callisto not added in monsters.
 		name: 'Black bear',
 		amount: [40, 70],
 		weight: 6,
@@ -40,7 +40,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Catablepon',
 		amount: [20, 30],
 		weight: 8,
@@ -75,7 +75,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Defence lvl? Not added in monsters.
+		// Defence lvl? Not added in monsters.
 		name: 'Cockatrice',
 		amount: [40, 70],
 		weight: 8,
@@ -86,7 +86,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?
+		// Quest lock?
 		name: 'Crawling hand',
 		amount: [40, 70],
 		weight: 8,
@@ -110,7 +110,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not all dogs are added in monsters.
+		// Not all dogs are added in monsters.
 		name: 'Guard dog',
 		amount: [40, 70],
 		weight: 7,
@@ -125,7 +125,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Earth warrior',
 		amount: [40, 70],
 		weight: 6,
@@ -134,7 +134,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Flesh Crawler',
 		amount: [15, 25],
 		weight: 7,
@@ -143,7 +143,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Tortured soul added in monsters.
+		// Tortured soul added in monsters.
 		name: 'Ghost',
 		amount: [40, 70],
 		weight: 7,
@@ -153,7 +153,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Ghoul',
 		amount: [10, 20],
 		weight: 7,
@@ -162,7 +162,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Hill Giant',
 		amount: [40, 70],
 		weight: 7,
@@ -172,7 +172,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Hobgoblin',
 		amount: [40, 70],
 		weight: 7,
@@ -181,7 +181,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Ice warrior',
 		amount: [40, 70],
 		weight: 7,
@@ -205,7 +205,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Killerwatt',
 		amount: [30, 80],
 		weight: 6,
@@ -215,7 +215,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Mogre',
 		amount: [40, 70],
 		weight: 8,
@@ -225,7 +225,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Pyrefiend',
 		amount: [40, 70],
 		weight: 8,
@@ -235,7 +235,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Rockslug',
 		amount: [40, 70],
 		weight: 8,
@@ -287,7 +287,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not all skeletons added in monsters. And different types under 'Skeleton'.
+		// Not all skeletons added in monsters. And different types under 'Skeleton'.
 		name: 'Skeleton',
 		amount: [40, 70],
 		weight: 7,
@@ -302,7 +302,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters. Quest lock?
 		name: 'Feral Vampyre',
 		amount: [10, 20],
 		weight: 6,
@@ -317,7 +317,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Defence lvl?
+		// Defence lvl?
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 7,
@@ -328,7 +328,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Most wolfs not added to monsters.
+		// Most wolfs not added to monsters.
 		name: 'Wolf',
 		amount: [40, 70],
 		weight: 7,
@@ -345,7 +345,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Most alternative zombies not added, different zombie combat lvls different drops?
+		// Most alternative zombies not added, different zombie combat lvls different drops?
 		name: 'Zombie',
 		amount: [40, 70],
 		weight: 7,

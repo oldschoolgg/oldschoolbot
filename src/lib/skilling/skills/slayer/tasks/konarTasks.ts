@@ -1,10 +1,10 @@
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
-//Handle extended amounts?? Brimstone keys?
+// Handle extended amounts?? Brimstone keys?
 const konarTasks: Task[] = [
 	{
-		//Deviant spectre not added in monsters.
+		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -16,7 +16,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Greater abyssal and abyssal sire not added in monsters.
+		// Greater abyssal and abyssal sire not added in monsters.
 		name: 'Abyssal demon',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -28,7 +28,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Adamant Dragon',
 		amount: [3, 6],
 		extendedAmount: [20, 30],
@@ -46,7 +46,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future? Count Kreeerra guards?
+		// Agility/Strength lock in future? Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [120, 170],
 		extendedAmount: [130, 250],
@@ -56,7 +56,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Defence lvl?
+		// Defence lvl?
 		name: 'Basilisk',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -69,7 +69,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Some demons not added in monsters.
+		// Some demons not added in monsters.
 		name: 'Black Demon',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -80,7 +80,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock. Mutaed bloodveld not added in monsters.
+		// Quest lock. Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -92,7 +92,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Baby, Brutal blue dragon not added in monsters.
+		// Quest lock, Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [120, 170],
 		weight: 8,
@@ -102,7 +102,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//All the bosses in "Like a boss", seperate file.
+		// All the bosses in "Like a boss", seperate file.
 		name: 'Boss',
 		amount: [],
 		alternatives: 'boss',
@@ -111,7 +111,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Brine rat',
 		amount: [120, 170],
 		weight: 2,
@@ -121,7 +121,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Not added in monsters.
+		// Quest lock, Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [30, 50],
 		extendedAmount: [30, 50],
@@ -131,7 +131,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Kraken not added to monsters, Magelvl?
+		// Kraken not added to monsters, Magelvl?
 		name: 'Cave kraken',
 		amount: [80, 100],
 		extendedAmount: [150, 200],
@@ -144,7 +144,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock. Dagannoth spawn and fledgeling not added to monsters.
+		// Quest lock. Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [120, 170],
 		weight: 8,
@@ -167,7 +167,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Dark beast',
 		amount: [10, 15],
 		extendedAmount: [100, 150],
@@ -186,7 +186,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Dust devil',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -205,7 +205,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
+		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
 		name: 'Spitting wyvern',
 		amount: [15, 30],
 		extendedAmount: [55, 75],
@@ -222,7 +222,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?, Grotesque Guardians not added to monsters.
+		// Quest lock?, Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -234,7 +234,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Skotizo demons not added to monsters.
+		// Skotizo demons not added to monsters.
 		name: 'Greater demon',
 		amount: [120, 170],
 		extendedAmount: [150, 223],
@@ -245,7 +245,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Cerberus unlocked??
+		// Cerberus unlocked??
 		name: 'Hellhound',
 		amount: [120, 170],
 		weight: 8,
@@ -255,7 +255,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Hydra',
 		amount: [125, 190],
 		weight: 10,
@@ -265,7 +265,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Iron dragon',
 		amount: [30, 50],
 		extendedAmount: [60, 100],
@@ -275,7 +275,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Jelly',
 		amount: [120, 170],
 		weight: 6,
@@ -310,7 +310,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Lizardman brute not added in monsters.
+		// Lizardman brute not added in monsters.
 		name: 'Lizardman',
 		amount: [90, 110],
 		weight: 8,
@@ -319,7 +319,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Quest lock?
+		// Quest lock?
 		name: 'Mithril Dragon',
 		amount: [3, 6],
 		extendedAmount: [20, 40],
@@ -328,7 +328,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Ancient Zygomite not added to monsters, Quest lock.
+		// Ancient Zygomite not added to monsters, Quest lock.
 		name: 'Zygomite',
 		amount: [10, 25],
 		weight: 2,
@@ -351,7 +351,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, baby /brute red dragon not added to monsters.
+		// Quest lock, baby /brute red dragon not added to monsters.
 		name: 'Red Dragon',
 		amount: [30, 50],
 		weight: 5,
@@ -360,7 +360,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Rune Dragon',
 		amount: [3, 6],
 		extendedAmount: [30, 60],
@@ -369,7 +369,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Skeletal Wyvern',
 		amount: [5, 12],
 		extendedAmount: [50, 70],
@@ -380,7 +380,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Thermonuclear Smoke devil not added to monsters.
+		// Thermonuclear Smoke devil not added to monsters.
 		name: 'Smoke Devil',
 		amount: [120, 170],
 		weight: 7,
@@ -391,7 +391,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Lots of missing trolls in monsters.
+		// Lots of missing trolls in monsters.
 		name: 'Mountain troll',
 		amount: [120, 170],
 		weight: 6,
@@ -418,7 +418,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters. Quest lock?
 		name: 'Feral Vampyre',
 		amount: [100, 160],
 		extendedAmount: [200, 250],
@@ -433,7 +433,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Not added to monsters.
+		// Not added to monsters.
 		name: 'Waterfiend',
 		amount: [120, 170],
 		weight: 2,

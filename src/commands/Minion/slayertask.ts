@@ -76,7 +76,7 @@ export default class extends BotCommand {
 		if (msg.author.slayerInfo[0] === 1) {
 			const mon = Monsters.get(msg.author.slayerInfo[1]);
 			if (!mon) throw `WTF`;
-			let str = `You already have a slayer task of ${msg.author.slayerInfo[2]}x ${mon.name}.\n`;
+			const str = `You already have a slayer task of ${msg.author.slayerInfo[2]}x ${mon.name}.\n`;
 			/*
 			const allTasks = nieveTasks.concat(turaelTasks);
 			const currentTask = allTasks.find(monster =>

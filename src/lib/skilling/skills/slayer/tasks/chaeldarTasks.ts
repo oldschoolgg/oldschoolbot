@@ -1,10 +1,10 @@
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
-//Handle extended amounts??
+// Handle extended amounts??
 const chaeldarTasks: Task[] = [
 	{
-		//Deviant spectre not added in monsters. Quest locked.
+		// Deviant spectre not added in monsters. Quest locked.
 		name: 'Aberrant spectre',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -16,7 +16,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Greater abyssal and abyssal sire not added in monsters. Quest locked.
+		// Greater abyssal and abyssal sire not added in monsters. Quest locked.
 		name: 'Abyssal demon',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -28,7 +28,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future? Count Kreeerra guards?
+		// Agility/Strength lock in future? Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [110, 170],
 		extendedAmount: [130, 250],
@@ -38,7 +38,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Twisted banshee not added in monsters, quest lock.
+		// Twisted banshee not added in monsters, quest lock.
 		name: 'Banshee',
 		amount: [110, 170],
 		weight: 5,
@@ -49,7 +49,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Defence lvl?
+		// Defence lvl?
 		name: 'Basilisk',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -62,7 +62,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Some demons not added in monsters.
+		// Some demons not added in monsters.
 		name: 'Black Demon',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -79,7 +79,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock. Mutaed bloodveld not added in monsters.
+		// Quest lock. Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -91,7 +91,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Baby, Brutal blue dragon not added in monsters.
+		// Quest lock, Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [110, 170],
 		weight: 8,
@@ -106,7 +106,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?
+		// Quest lock?
 		name: 'Brine rat',
 		amount: [110, 170],
 		weight: 7,
@@ -116,7 +116,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Not added in monsters.
+		// Quest lock, Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [10, 20],
 		extendedAmount: [30, 50],
@@ -135,7 +135,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock
+		// Quest lock
 		name: 'Cave horror',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -146,7 +146,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Kraken not added to monsters, Magelvl?
+		// Kraken not added to monsters, Magelvl?
 		name: 'Cave kraken',
 		amount: [30, 50],
 		extendedAmount: [150, 200],
@@ -168,7 +168,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Defencelvl? Not added to monsters.
+		// Defencelvl? Not added to monsters.
 		name: 'Cockatrice',
 		amount: [110, 170],
 		weight: 6,
@@ -179,7 +179,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock. Dagannoth spawn and fledgeling not added to monsters.
+		// Quest lock. Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [110, 170],
 		weight: 11,
@@ -202,7 +202,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Dust devil',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -213,7 +213,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Most elves not added to monsters.
+		// Quest lock, Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [110, 170],
 		weight: 8,
@@ -238,7 +238,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, not added to monsters.
+		// Quest lock, not added to monsters.
 		name: 'Fever spider',
 		amount: [110, 170],
 		weight: 7,
@@ -256,7 +256,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
+		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
 		name: 'Spitting wyvern',
 		amount: [10, 20],
 		extendedAmount: [55, 75],
@@ -273,7 +273,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?, Grotesque Guardians not added to monsters.
+		// Quest lock?, Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -285,7 +285,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave? Some demons not added to monsters.
+		// Revenant cave? Some demons not added to monsters.
 		name: 'Greater demon',
 		amount: [110, 170],
 		extendedAmount: [150, 250],
@@ -301,7 +301,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Firemaking?
+		// Not added in monsters. Firemaking?
 		name: 'Harpie Bug Swarm',
 		amount: [110, 170],
 		weight: 6,
@@ -312,7 +312,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?, Not added in monsters, Cerberus unlocked??
+		// Revenant cave?, Not added in monsters, Cerberus unlocked??
 		name: 'Hellhound',
 		amount: [110, 170],
 		weight: 9,
@@ -327,7 +327,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock?
+		// Not added in monsters. Quest lock?
 		name: 'Infernal Mage',
 		amount: [110, 170],
 		weight: 7,
@@ -337,7 +337,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Iron dragon',
 		amount: [25, 45],
 		extendedAmount: [60, 100],
@@ -347,7 +347,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Jelly',
 		amount: [110, 170],
 		weight: 10,
@@ -358,7 +358,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest locked.
+		// Not added in monsters. Quest locked.
 		name: 'Jungle horror',
 		amount: [110, 170],
 		weight: 10,
@@ -391,7 +391,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave? ,Not added in monsters
+		// Revenant cave? ,Not added in monsters
 		name: 'Lesser demon',
 		amount: [110, 170],
 		weight: 9,
@@ -401,7 +401,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Lizardman brute not added in monsters.
+		// Lizardman brute not added in monsters.
 		name: 'Lizardman',
 		amount: [70, 90],
 		weight: 8,
@@ -425,7 +425,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock.
+		// Not added in monsters. Quest lock.
 		name: 'Mogre',
 		amount: [110, 170],
 		weight: 6,
@@ -435,7 +435,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock.
+		// Not added in monsters. Quest lock.
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 6,
@@ -445,7 +445,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Ancient Zygomite not added to monsters, Quest lock.
+		// Ancient Zygomite not added to monsters, Quest lock.
 		name: 'Zygomite',
 		amount: [8, 15],
 		weight: 7,
@@ -468,7 +468,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Pyrefiend',
 		amount: [110, 170],
 		weight: 6,
@@ -478,7 +478,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'Rockslug',
 		amount: [110, 170],
 		weight: 5,
@@ -488,7 +488,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters. Quest lock
+		// Not added in monsters. Quest lock
 		name: 'Shadow warrior',
 		amount: [110, 170],
 		weight: 8,
@@ -497,7 +497,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Skeletal Wyvern',
 		amount: [10, 20],
 		extendedAmount: [50, 70],
@@ -508,7 +508,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
+		// Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [110, 170],
 		extendedAmount: [180, 250],
@@ -520,7 +520,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Ice troll and troll general Not added in monsters.
+		// Ice troll and troll general Not added in monsters.
 		name: 'Mountain troll',
 		amount: [110, 170],
 		weight: 11,
@@ -539,7 +539,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'TzHaar-Ket',
 		amount: [90, 150],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
@@ -548,7 +548,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters. Quest lock?
 		name: 'Feral Vampyre',
 		amount: [80, 120],
 		extendedAmount: [200, 250],
@@ -563,7 +563,7 @@ const chaeldarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Defence lvl?
+		// Defence lvl?
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 6,

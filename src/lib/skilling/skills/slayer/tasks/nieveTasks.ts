@@ -1,10 +1,10 @@
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
-//Handle extended amounts??
+// Handle extended amounts??
 const nieveTasks: Task[] = [
 	{
-		//Deviant spectre not added in monsters.
+		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -16,7 +16,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Greater abyssal and abyssal sire not added in monsters.
+		// Greater abyssal and abyssal sire not added in monsters.
 		name: 'Abyssal demon',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -28,7 +28,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Adamant Dragon',
 		amount: [3, 7],
 		extendedAmount: [20, 30],
@@ -37,7 +37,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Dark ankou not added in monsters.
+		// Dark ankou not added in monsters.
 		name: 'Ankou',
 		amount: [50, 90],
 		extendedAmount: [90, 150],
@@ -48,7 +48,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future? Count Kreeerra guards?
+		// Agility/Strength lock in future? Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [120, 185],
 		extendedAmount: [130, 250],
@@ -58,7 +58,7 @@ const nieveTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Defence lvl?
+		// Defence lvl?
 		name: 'Basilisk',
 		amount: [120, 180],
 		extendedAmount: [200, 250],
@@ -71,7 +71,7 @@ const nieveTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Some demons not added in monsters.
+		// Some demons not added in monsters.
 		name: 'Black Demon',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -88,7 +88,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock. Baby,Brutal black dragon not added.
+		// Quest lock. Baby,Brutal black dragon not added.
 		name: 'Black Dragon',
 		amount: [10, 20],
 		extendedAmount: [40, 60],
@@ -104,7 +104,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock. Mutaed bloodveld not added in monsters.
+		// Quest lock. Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -116,7 +116,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Baby, Brutal blue dragon not added in monsters.
+		// Quest lock, Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [120, 185],
 		weight: 4,
@@ -131,7 +131,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//All the bosses in "Like a boss", seperate file.
+		// All the bosses in "Like a boss", seperate file.
 		name: 'Boss',
 		amount: [],
 		alternatives: 'boss',
@@ -140,7 +140,7 @@ const nieveTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Brine rat',
 		amount: [120, 185],
 		weight: 3,
@@ -150,7 +150,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock
+		// Quest lock
 		name: 'Cave horror',
 		amount: [120, 180],
 		extendedAmount: [200, 250],
@@ -161,7 +161,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Kraken not added to monsters, Magelvl?
+		// Kraken not added to monsters, Magelvl?
 		name: 'Cave kraken',
 		amount: [100, 120],
 		extendedAmount: [150, 200],
@@ -174,7 +174,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock. Dagannoth spawn and fledgeling not added to monsters.
+		// Quest lock. Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [120, 185],
 		weight: 8,
@@ -197,7 +197,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Dark beast',
 		amount: [10, 20],
 		extendedAmount: [100, 150],
@@ -216,7 +216,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Dust devil',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -227,7 +227,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, Most elves not added to monsters.
+		// Quest lock, Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [60, 90],
 		weight: 4,
@@ -260,7 +260,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
+		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
 		name: 'Spitting wyvern',
 		amount: [20, 60],
 		extendedAmount: [55, 75],
@@ -277,7 +277,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock?, Grotesque Guardians not added to monsters.
+		// Quest lock?, Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -289,7 +289,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave? Some demons not added to monsters.
+		// Revenant cave? Some demons not added to monsters.
 		name: 'Greater demon',
 		amount: [120, 185],
 		extendedAmount: [150, 250],
@@ -305,7 +305,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Revenant cave?, Not added in monsters, Cerberus unlocked??
+		// Revenant cave?, Not added in monsters, Cerberus unlocked??
 		name: 'Hellhound',
 		amount: [120, 185],
 		weight: 8,
@@ -320,7 +320,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Iron dragon',
 		amount: [30, 60],
 		extendedAmount: [60, 100],
@@ -354,7 +354,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Lizardman brute not added in monsters.
+		// Lizardman brute not added in monsters.
 		name: 'Lizardman',
 		amount: [90, 120],
 		weight: 8,
@@ -363,7 +363,7 @@ const nieveTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Lots of not added minions not added in monsters. Quest lock.
+		// Lots of not added minions not added in monsters. Quest lock.
 		name: 'Scarab mage',
 		amount: [30, 60],
 		extendedAmount: [130, 170],
@@ -388,7 +388,7 @@ const nieveTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Ancient Zygomite not added to monsters, Quest lock.
+		// Ancient Zygomite not added to monsters, Quest lock.
 		name: 'Zygomite',
 		amount: [10, 25],
 		weight: 2,
@@ -411,7 +411,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock, baby /brute red dragon not added to monsters.
+		// Quest lock, baby /brute red dragon not added to monsters.
 		name: 'Red Dragon',
 		amount: [30, 80],
 		weight: 5,
@@ -420,7 +420,7 @@ const nieveTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Rune Dragon',
 		amount: [3, 6],
 		extendedAmount: [30, 60],
@@ -429,7 +429,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Skeletal Wyvern',
 		amount: [5, 15],
 		extendedAmount: [50, 70],
@@ -440,7 +440,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Thermonuclear Smoke devil not added to monsters.
+		// Thermonuclear Smoke devil not added to monsters.
 		name: 'Smoke Devil',
 		amount: [120, 185],
 		weight: 7,
@@ -451,7 +451,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
+		// Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [120, 185],
 		extendedAmount: [180, 250],
@@ -463,7 +463,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Steel Dragon',
 		amount: [30, 60],
 		extendedAmount: [40, 60],
@@ -473,7 +473,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Quest lock.
+		// Quest lock.
 		name: 'Suqah',
 		amount: [120, 185],
 		extendedAmount: [180, 250],
@@ -483,7 +483,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Ice troll and troll general Not added in monsters.
+		// Ice troll and troll general Not added in monsters.
 		name: 'Mountain troll',
 		amount: [120, 185],
 		weight: 6,
@@ -502,7 +502,7 @@ const nieveTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
+		// Not added in monsters.
 		name: 'TzHaar-Ket',
 		amount: [110, 180],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
@@ -511,7 +511,7 @@ const nieveTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		//No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters. Quest lock?
 		name: 'Feral Vampyre',
 		amount: [110, 170],
 		extendedAmount: [200, 250],

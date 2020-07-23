@@ -1,5 +1,6 @@
 import { SlayerMaster } from '../../types';
-//Calculates the amount of slayerPoints awarded with current streak.
+
+// Calculates the amount of slayerPoints awarded with current streak.
 export default function streakPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];

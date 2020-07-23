@@ -31,7 +31,7 @@ const slayerMasters: SlayerMaster[] = [
 		masterId: 3,
 		basePoints: 2,
 		combatLvl: 20,
-		questPoints: 5 //Not right amount, Priest in Peril.
+		questPoints: 5 // Not right amount, Priest in Peril.
 	},
 	{
 		name: 'Vannaka',
@@ -48,13 +48,13 @@ const slayerMasters: SlayerMaster[] = [
 		masterId: 5,
 		basePoints: 10,
 		combatLvl: 70,
-		questPoints: 5 //Not right amount, Lost City.
+		questPoints: 5 // Not right amount, Lost City.
 	},
 	{
 		name: 'Konar quo Maten',
 		aliases: ['konar quo maten', 'konar', 'ko', 'kon', 'kona'],
 		tasks: konarTasks,
-		bossTasks: bossTasks,
+		bossTasks,
 		masterId: 6,
 		basePoints: 14,
 		combatLvl: 75
@@ -63,7 +63,7 @@ const slayerMasters: SlayerMaster[] = [
 		name: 'Nieve',
 		aliases: ['nieve', 'steve', 'ni', 'nie', 'niev'],
 		tasks: nieveTasks,
-		bossTasks: bossTasks,
+		bossTasks,
 		masterId: 7,
 		basePoints: 15,
 		combatLvl: 85
@@ -72,7 +72,7 @@ const slayerMasters: SlayerMaster[] = [
 		name: 'Duradel',
 		aliases: ['duradel', 'du', 'dur', 'dura', 'duradaddy'],
 		tasks: duradelTasks,
-		bossTasks: bossTasks,
+		bossTasks,
 		masterId: 8,
 		basePoints: 15,
 		combatLvl: 100,
