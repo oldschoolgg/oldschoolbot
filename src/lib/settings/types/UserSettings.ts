@@ -1,8 +1,19 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
-import { SkillsEnum } from '../../skilling/types';
+import { SkillsEnum, Task } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
+
+type SlayerInfo = {
+    hasTask: Boolean;
+    task: Task;
+	taskQuantity: number | null;
+	remainingQuantity: number | null;
+    currentMaster: number | null;
+    slayerPoints: number;
+    streak: number;
+    wildyStreak: number;
+}
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -47,6 +58,13 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
+	}
+
+	export namespace Slayer {
+		export const SlayerInfo = T<SlayerInfo>('slayer.slayerInfo');
+		export const BlockList = T<Task[]>('slayer.blockList');
+		export const ExtendList = T<Task[]>('slayer.extendList');
+		export const UnlockedList = T<Task[]>('slayer.unlockedList');
 	}
 
 	export namespace Skills {
