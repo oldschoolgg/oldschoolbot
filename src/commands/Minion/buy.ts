@@ -37,10 +37,10 @@ export default class extends BotCommand {
 		const outItems = multiplyBank(buyable.outputItems, quantity);
 		const itemString = await createReadableItemListFromBank(this.client, outItems);
 
-		let sellMsg;
 		let titheFarmPoints = 0;
 		let titheFarmPointsCost = 0;
 		let GPCost = 0;
+		let purchaseMsg;
 
 		if (buyable.titheFarmPoints) {
 			const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
@@ -48,11 +48,8 @@ export default class extends BotCommand {
 			if (titheFarmPoints < titheFarmPointsCost) {
 				throw `You need ${buyable.titheFarmPoints} Tithe Farm points to purchase this item.`;
 			}
-			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-				sellMsg = await msg.channel.send(
-					`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${buyable.titheFarmPoints} Tithe Farm points.`
-				);
-			}
+			purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
+
 		} else {
 			const GP = msg.author.settings.get(UserSettings.GP);
 			GPCost = buyable.gpCost * quantity;
@@ -63,12 +60,14 @@ export default class extends BotCommand {
 			if (QP < buyable.qpRequired) {
 				throw `You need ${buyable.qpRequired} QP to purchase this item.`;
 			}
-			sellMsg = await msg.channel.send(
+			purchaseMsg = `${itemString} for ${toKMB(GPCost)}`;
+		}
+
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(
 				`${
 					msg.author
-				}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
-					GPCost
-				)}.`
+				}, say \`confirm\` to confirm that you want to purchase ${purchaseMsg}.`
 			);
 
 			// Confirm the user wants to buy
