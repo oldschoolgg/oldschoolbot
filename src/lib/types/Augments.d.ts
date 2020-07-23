@@ -96,6 +96,8 @@ declare module 'discord.js' {
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
+		addSlayerPoints(amount: number): Promise<SettingsUpdateResult>;
+		removeSlayerPoints(amount: number): Promise<SettingsUpdateResult>;
 		skillLevel(skillName: SkillsEnum): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
