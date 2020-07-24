@@ -26,7 +26,7 @@ export default class extends BotCommand {
 		if (msg.author.minionIsBusy) {
 			return msg.send(msg.author.minionStatus);
 		}
-		const userBlockList = msg.author.blockList;
+		const { blockList: userBlockList, slayerInfo } = msg.author;
 
 		// Block if their current task matches the block request
 		const task = Slayer.AllTasks.find(task => stringMatches(task.name, taskname));
