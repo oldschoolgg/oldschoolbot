@@ -179,12 +179,14 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 				const minQuantity = slayerMonster.amount[0];
 				const maxQuantity = slayerMonster.amount[1];
 				const quantity = Math.floor(rand(minQuantity, maxQuantity));
-				const newSlayerInfo = msg.author.slayerInfo;
-				newSlayerInfo.hasTask = true;
-				newSlayerInfo.currentTask = slayerMonster;
-				newSlayerInfo.quantityTask = quantity;
-				newSlayerInfo.remainingQuantity = quantity;
-				newSlayerInfo.currentMaster = master.masterId;
+				const newSlayerInfo = {
+					...msg.author.slayerInfo,
+					hasTask: true,
+					currentTask: slayerMonster,
+					quantityTask: quantity,
+					remainingQuantity: quantity,
+					currentMaster: master.masterId
+				};
 				await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 					arrayAction: 'overwrite'
 				});
