@@ -27,6 +27,9 @@ export default class extends BotCommand {
 			return msg.send(msg.author.minionStatus);
 		}
 		const { blockList: userBlockList, slayerInfo } = msg.author;
+		if (typeof slayerInfo === 'undefined') {
+			throw "Your minion have never done any slayer, visit a Slayer Master";
+		}
 
 		// Block if their current task matches the block request
 		const task = Slayer.AllTasks.find(task => stringMatches(task.name, taskname));

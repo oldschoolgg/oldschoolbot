@@ -28,22 +28,31 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
-		// This is pure bullshit.
-		const newSlayerInfo = msg.author.slayerInfo;
-		if (msg.author.slayerInfo === null) {
-			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+		const { slayerInfo, settings } = msg.author;
+		if (typeof slayerInfo === 'undefined' || typeof slayerInfo.hasTask === 'undefined') {
+			const newSlayerInfo = {
+				hasTask: false,
+				currentTask: null,
+				quantityTask: null,
+				remainingQuantity: null,
+				currentMaster: null,
+				slayerPoints: 0,
+				streak: 0,
+				wildyStreak: 0
+			};
+			await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 				arrayAction: 'overwrite'
 			});
 		}
-		if (msg.author.slayerInfo.hasTask && slayermaster === 'cancel') {
+		if (slayerInfo.hasTask && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
 			}
-			if (msg.author.slayerInfo.slayerPoints < 30) {
+			if (slayerInfo.slayerPoints < 30) {
 				return msg.send(`You need 30 Slayer Points to cancel your task.`);
 			}
 			msg.send(
-				`Are you sure you'd like to cancel your current task of ${msg.author.slayerInfo.currentTask?.name}x ${msg.author.slayerInfo.quantityTask}? It will cost 30 slayer points and your current total is ${msg.author.slayerInfo.slayerPoints}. Say \`confirm\` to continue.`
+				`Are you sure you'd like to cancel your current task of ${slayerInfo.currentTask?.name}x ${slayerInfo.quantityTask}? It will cost 30 slayer points and your current total is ${slayerInfo.slayerPoints}. Say \`confirm\` to continue.`
 			);
 			try {
 				await msg.channel.awaitMessages(
@@ -53,32 +62,33 @@ export default class extends BotCommand {
 					options
 				);
 			} catch (err) {
-				throw `Cancelled request to cancel ${msg.author.slayerInfo.currentTask?.name} slayer task.`;
+				throw `Cancelled request to cancel ${slayerInfo.currentTask?.name} slayer task.`;
 			}
-			const newSlayerInfo = msg.author.slayerInfo;
-			newSlayerInfo.hasTask = false;
-			newSlayerInfo.currentTask = null;
-			newSlayerInfo.quantityTask = null;
-			newSlayerInfo.remainingQuantity = null;
-			if (msg.author.slayerInfo.currentMaster === 2) {
+			const newSlayerInfo = {
+				...slayerInfo,
+				hasTask: false,
+				currentTask: null,
+				quantityTask: null,
+				remainingQuantity: null,
+				slayerPoints: slayerInfo.slayerPoints - 30
+			};
+			if (slayerInfo.currentMaster === 2) {
 				newSlayerInfo.wildyStreak = 0;
 			} else {
 				newSlayerInfo.streak = 0;
 			}
 			newSlayerInfo.currentMaster = null;
-			newSlayerInfo.slayerPoints = msg.author.slayerInfo.slayerPoints - 30;
-
-			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+			await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 				arrayAction: 'overwrite'
 			});
 			return msg.send(`Successfully cancelled task`);
 		}
 
 		// If they already have a slayer task tell them what it is
-		if (msg.author.slayerInfo.hasTask) {
+		if (slayerInfo.hasTask) {
 			const { currentTask } = msg.author.slayerInfo;
 			if (!currentTask) throw `WTF`;
-			let str = `You already have a slayer task of ${msg.author.slayerInfo.quantityTask}x ${currentTask.name}.\n`;
+			let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${currentTask.name}.\n`;
 			if (currentTask?.alternatives) {
 				str += `You can also kill these monsters: ${currentTask?.alternatives}!`;
 				const re = /\,/gi;
@@ -116,14 +126,14 @@ export default class extends BotCommand {
 		if (
 			(master.combatLvl && master.combatLvl > userCombatLevel) ||
 			(master.slayerLvl && master.slayerLvl > msg.author.skillLevel(SkillsEnum.Slayer)) ||
-			(master.questPoints && master.questPoints > msg.author.settings.get(UserSettings.QP))
+			(master.questPoints && master.questPoints > settings.get(UserSettings.QP))
 		) {
 			throw `You need a combat level of ${master.combatLvl}, a slayer level of ${
 				master.slayerLvl
 			} and ${master.questPoints} quest points to use this master! 
 You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 				SkillsEnum.Slayer
-			)} slayer and ${msg.author.settings.get(UserSettings.QP)} questpoints.`;
+			)} slayer and ${settings.get(UserSettings.QP)} questpoints.`;
 		}
 		let filteredTaskList;
 		// Filter by slayer level
@@ -180,14 +190,14 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 				const maxQuantity = slayerMonster.amount[1];
 				const quantity = Math.floor(rand(minQuantity, maxQuantity));
 				const newSlayerInfo = {
-					...msg.author.slayerInfo,
+					...slayerInfo,
 					hasTask: true,
 					currentTask: slayerMonster,
 					quantityTask: quantity,
 					remainingQuantity: quantity,
 					currentMaster: master.masterId
 				};
-				await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+				await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 					arrayAction: 'overwrite'
 				});
 				return msg.send(`Your new slayer task is ${quantity}x ${slayerMonster.name}`);
