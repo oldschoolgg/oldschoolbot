@@ -165,7 +165,7 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 		for (let i = 0; i < filteredTaskList.length; i++) {
 			number -= filteredTaskList[i].weight;
 			if (number <= 0) {
-				let slayerMonster = filteredTaskList[i];
+				const slayerMonster = filteredTaskList[i];
 				/*
 				if (slayerMonster.name === 'Boss') {
 					const filteredBossTasks = bossTasks.filter(
