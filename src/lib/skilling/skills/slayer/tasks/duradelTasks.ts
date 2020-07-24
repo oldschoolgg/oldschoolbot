@@ -10,7 +10,7 @@ const duradelTasks: Task[] = [
 		extendedAmount: [200, 250],
 		weight: 7,
 		alternatives: 'Deviant Spectre',
-		Id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
+		Id: [Monsters.AberrantSpectre.id /*Monsters.DeviantSpectre.id*/],
 		combatLvl: 65,
 		slayerLvl: 60,
 		unlocked: true
@@ -23,10 +23,12 @@ const duradelTasks: Task[] = [
 		weight: 12,
 		alternatives: ['Abyssal sire', 'Greater abyssal demon', 'Reanimated abyssal'],
 		Id: [
-			Monsters.AbyssalDemon.id,
+			Monsters.AbyssalDemon
+				.id /*,
 			Monsters.AbyssalSire.id,
 			Monsters.GreaterAbyssalDemon.id,
 			Monsters.ReanimatedAbyssal
+			*/
 		],
 		combatLvl: 85,
 		slayerLvl: 85,
@@ -48,7 +50,7 @@ const duradelTasks: Task[] = [
 		extendedAmount: [90, 150],
 		weight: 5,
 		alternatives: 'Dark Ankou',
-		Id: [Monsters.Ankou.id, Monsters.DarkAnkou.id],
+		Id: [Monsters.Ankou.id /*, Monsters.DarkAnkou.id*/],
 		combatLvl: 40,
 		unlocked: true
 	},
@@ -59,7 +61,7 @@ const duradelTasks: Task[] = [
 		extendedAmount: [130, 250],
 		weight: 8,
 		alternatives: "Kree'arra, 'Reanimated aviansie",
-		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id, Monsters.ReanimatedAviansie],
+		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id /*, Monsters.ReanimatedAviansie*/],
 		unlocked: false
 	},
 	{
@@ -83,11 +85,13 @@ const duradelTasks: Task[] = [
 		weight: 8,
 		alternatives: ['Demonic Gorilla', 'Balfrug Kreeyath', 'Porazdir', 'Skotizo'],
 		Id: [
-			Monsters.BlackDemon.id,
+			Monsters.BlackDemon
+				.id /*,
 			Monsters.DemonicGorilla.id,
 			Monsters.BalfrugKreeyath.id,
 			Monsters.Porazdir.id,
 			Monsters.Skotizo.id
+			*/
 		],
 		combatLvl: 80,
 		unlocked: true
@@ -100,10 +104,12 @@ const duradelTasks: Task[] = [
 		weight: 9,
 		alternatives: ['Baby Black Dragon', 'King Black Dragon', 'Brutal Black Dragon'],
 		Id: [
-			Monsters.BlackDragon.id,
+			Monsters.BlackDragon
+				.id /*,
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
 			Monsters.KingBlackDragon.id
+			*/
 		],
 		combatLvl: 80,
 		unlocked: true
@@ -115,7 +121,7 @@ const duradelTasks: Task[] = [
 		extendedAmount: [200, 250],
 		weight: 8,
 		alternatives: 'Mutated Bloodveld',
-		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
+		Id: [Monsters.Bloodveld.id /*, Monsters.MutatedBloodveld.id*/],
 		combatLvl: 50,
 		slayerLvl: 50,
 		unlocked: true
@@ -127,10 +133,12 @@ const duradelTasks: Task[] = [
 		weight: 4,
 		alternatives: ['Baby Blue Dragon', 'Brutal Blue Dragon', 'Vorkath'],
 		Id: [
-			Monsters.BlueDragon.id,
+			Monsters.BlueDragon
+				.id /*,
 			Monsters.BabyBlueDragon.id,
 			Monsters.BrutalBlueDragon.id,
 			Monsters.Vorkath.id
+			*/
 		],
 		combatLvl: 65,
 		unlocked: true
@@ -162,7 +170,7 @@ const duradelTasks: Task[] = [
 		extendedAmount: [150, 200],
 		weight: 9,
 		alternatives: 'Kraken',
-		Id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		Id: [Monsters.CaveKraken.id /*, Monsters.Kraken.id*/],
 		combatLvl: 80,
 		slayerLvl: 87,
 		//  mageLvl: 50,
@@ -181,12 +189,14 @@ const duradelTasks: Task[] = [
 			'Dagannoth Prime'
 		],
 		Id: [
-			Monsters.Dagannoth.id,
+			Monsters.Dagannoth
+				.id /*,
 			Monsters.DagannothSpawn.id,
 			Monsters.DagannothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
+			*/
 		],
 		combatLvl: 75,
 		unlocked: true
@@ -235,13 +245,15 @@ const duradelTasks: Task[] = [
 			'Reanimated elf'
 		],
 		Id: [
-			Monsters.ElfWarrior.id,
+			Monsters.ElfWarrior
+				.id /*,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
 			Monsters.Mourner.id,
 			Monsters.PrifddinasGuard.id,
 			Monsters.ReanimatedElf.id
+			*/
 		],
 		combatLvl: 70,
 		unlocked: true
@@ -262,10 +274,12 @@ const duradelTasks: Task[] = [
 		weight: 5,
 		alternatives: ['Taloned Wyvern', 'Long-tailed Wyvern', 'Ancient Wyvern'],
 		Id: [
+			/*
 			Monsters.SpittingWyvern.id,
 			Monsters.TalonedWyvern.id,
 			Monsters.LongTailedWyvern.id,
 			Monsters.AncientWyvern.id
+			*/
 		],
 		combatLvl: 60,
 		slayerLvl: 66,
@@ -278,7 +292,7 @@ const duradelTasks: Task[] = [
 		extendedAmount: [200, 250],
 		weight: 8,
 		alternatives: 'Grotesque Guardians',
-		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
+		Id: [Monsters.Gargoyle.id /*, Monsters.GrotesqueGuardians.id*/],
 		combatLvl: 80,
 		slayerLvl: 75,
 		unlocked: true
@@ -292,9 +306,10 @@ const duradelTasks: Task[] = [
 		alternatives: ["K'ril Tsutsaroth", 'Tstanon Karlak', 'Skotizo'],
 		Id: [
 			Monsters.GreaterDemon.id,
-			Monsters.KrilTsutsaroth,
+			Monsters.KrilTsutsaroth.id /*,
 			Monsters.TstanonKarlak.id,
 			Monsters.Skotizo.id
+			*/
 		],
 		combatLvl: 70,
 		unlocked: true
@@ -307,9 +322,11 @@ const duradelTasks: Task[] = [
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound.id,
-			Monsters.Cerberus.id,
+			Monsters.Cerberus
+				.id /*,
 			Monsters.SkeletonHellhound.id,
 			Monsters.GreaterSkeletonHellhound.id
+			*/
 		],
 		combatLvl: 75,
 		unlocked: true
@@ -332,8 +349,10 @@ const duradelTasks: Task[] = [
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		Id: [
 			Monsters.KalphiteWorker.id,
+			/*
 			Monsters.KalphiteSolider.id,
 			Monsters.KalphiteGuardian.id,
+			*/
 			Monsters.KalphiteQueen.id
 		],
 		combatLvl: 15,
@@ -354,7 +373,7 @@ const duradelTasks: Task[] = [
 		amount: [130, 210],
 		weight: 10,
 		alternatives: ['Lizardman brute', 'Lizardman Shaman'],
-		Id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman],
+		Id: [Monsters.Lizardman.id, /*Monsters.LizardmanBrute.id,*/ Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
@@ -371,7 +390,7 @@ const duradelTasks: Task[] = [
 		amount: [20, 30],
 		weight: 2,
 		alternatives: 'Ancient Zygomite',
-		Id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
+		Id: [Monsters.Zygomite.id /*, Monsters.AncientZygomite.id*/],
 		combatLvl: 60,
 		slayerLvl: 57,
 		unlocked: true
@@ -383,7 +402,7 @@ const duradelTasks: Task[] = [
 		extendedAmount: [200, 250],
 		weight: 9,
 		alternatives: 'Greater Nechryael',
-		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
+		Id: [Monsters.Nechryael.id /*, Monsters.GreaterNechryael.id*/],
 		combatLvl: 85,
 		slayerLvl: 80,
 		unlocked: true
@@ -394,7 +413,7 @@ const duradelTasks: Task[] = [
 		amount: [30, 65],
 		weight: 8,
 		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
-		Id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BruteRedDragon.id],
+		Id: [Monsters.RedDragon.id /*,Monsters.BabyRedDragon.id, Monsters.BruteRedDragon.id*/],
 		unlocked: false
 	},
 	{
@@ -423,7 +442,7 @@ const duradelTasks: Task[] = [
 		amount: [130, 200],
 		weight: 9,
 		alternatives: 'Thermonuclear Smoke Devil',
-		Id: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
+		Id: [Monsters.SmokeDevil.id /*, Monsters.ThermonuclearSmokeDevil.id*/],
 		combatLvl: 75,
 		slayerLvl: 93,
 		unlocked: true
@@ -467,10 +486,12 @@ const duradelTasks: Task[] = [
 		weight: 6,
 		alternatives: ['Ice troll', 'Troll general', 'Reanimated troll'],
 		Id: [
-			Monsters.MountainTroll.id,
+			Monsters.MountainTroll
+				.id /*,
 			Monsters.IceTroll.id,
 			Monsters.TrollGeneral.id,
 			Monsters.ReanimatedTroll.id
+			*/
 		],
 		combatLvl: 60,
 		unlocked: true
@@ -481,7 +502,7 @@ const duradelTasks: Task[] = [
 		amount: [130, 199],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
 		weight: 10,
-		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id, Monsters.TzKalZuk.id],
+		Id: [/*Monsters.TzHaarKet.id,*/ Monsters.TzTokJad.id /*, Monsters.TzKalZuk.id*/],
 		unlocked: false
 	},
 	{
@@ -492,10 +513,12 @@ const duradelTasks: Task[] = [
 		weight: 8,
 		alternatives: ['Vampyre Juvinate', 'Vyrewatch', 'Vyrewatch Sentinel'],
 		Id: [
+			/*
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
 			Monsters.VyrewatchSentinel.id
+			*/
 		],
 		unlocked: false
 	},
@@ -504,7 +527,7 @@ const duradelTasks: Task[] = [
 		name: 'Waterfiend',
 		amount: [130, 200],
 		weight: 2,
-		Id: Monsters.Waterfiend.id,
+		Id: [] /*Monsters.Waterfiend.id*/,
 		combatLvl: 75,
 		unlocked: true
 	},

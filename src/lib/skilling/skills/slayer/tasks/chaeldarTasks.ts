@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
@@ -584,3 +585,4 @@ const chaeldarTasks: Task[] = [
 ];
 
 export default chaeldarTasks;
+*/

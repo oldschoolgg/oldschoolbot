@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
@@ -376,3 +377,4 @@ const mazchnaTasks: Task[] = [
 ];
 
 export default mazchnaTasks;
+*/

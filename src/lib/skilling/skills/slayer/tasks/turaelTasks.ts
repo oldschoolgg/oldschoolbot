@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
@@ -313,3 +314,4 @@ const turaelTasks: Task[] = [
 ];
 
 export default turaelTasks;
+*/

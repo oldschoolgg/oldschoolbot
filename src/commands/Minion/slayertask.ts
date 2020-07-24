@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, rand /*,determineCombatLevel*/ } from '../../lib/util';
+import { stringMatches, rand /* ,determineCombatLevel*/ } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import bossTasks from '../../lib/skilling/skills/slayer/tasks/bossTasks';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -76,7 +76,7 @@ export default class extends BotCommand {
 
 		// If they already have a slayer task tell them what it is
 		if (msg.author.slayerInfo.hasTask) {
-			const task = msg.author.slayerInfo.task;
+			const { task } = msg.author.slayerInfo;
 			if (!task) throw `WTF`;
 			let str = `You already have a slayer task of ${msg.author.slayerInfo.taskQuantity}x ${task.name}.\n`;
 			if (task?.alternatives) {

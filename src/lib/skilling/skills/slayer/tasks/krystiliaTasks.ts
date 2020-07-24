@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { Task } from '../../../types';
 
@@ -17,7 +18,7 @@ const krystiliaTasks: Task[] = [
 		amount: [80, 150],
 		weight: 7,
 		//	alternatives: 'Armadylian guard',
-		Id: [Monsters.Aviansie.id /* , Monsters.Armadylianguard.id*/],
+		Id: [Monsters.Aviansie.id, Monsters.Armadylianguard.id],
 		wilderness: 27,
 		unlocked: false
 	},
@@ -395,3 +396,4 @@ const krystiliaTasks: Task[] = [
 ];
 
 export default krystiliaTasks;
+*/

@@ -1,3 +1,4 @@
+/*
 import turaelTasks from './tasks/turaelTasks';
 import krystiliaTasks from './tasks/krystiliaTasks';
 import mazchnaTasks from './tasks/mazchnaTasks';
@@ -5,11 +6,13 @@ import vannakaTasks from './tasks/vannakaTasks';
 import chaeldarTasks from './tasks/chaeldarTasks';
 import konarTasks from './tasks/konarTasks';
 import nieveTasks from './tasks/nieveTasks';
-import duradelTasks from './tasks/duradelTasks';
 import bossTasks from './tasks/bossTasks';
+*/
+import duradelTasks from './tasks/duradelTasks';
 import { SlayerMaster } from '../../types';
 
 const slayerMasters: SlayerMaster[] = [
+	/*
 	{
 		name: 'Turael',
 		aliases: ['turael', 'tu', 'tur', 'tura', 'turry'],
@@ -67,12 +70,12 @@ const slayerMasters: SlayerMaster[] = [
 		masterId: 7,
 		basePoints: 15,
 		combatLvl: 85
-	},
+	},*/
 	{
 		name: 'Duradel',
 		aliases: ['duradel', 'du', 'dur', 'dura', 'duradaddy'],
 		tasks: duradelTasks,
-		bossTasks,
+		//	bossTasks,
 		masterId: 8,
 		basePoints: 15,
 		combatLvl: 100,
