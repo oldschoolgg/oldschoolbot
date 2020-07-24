@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
 import { Time } from 'oldschooljs/dist/constants';
-import { UserSettings } from '../../lib/settings//types/UserSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Monsters } from 'oldschooljs';
 
 const slayerShopItems = [
@@ -58,7 +58,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [unlockname = '']: [string]) {
 		await msg.author.settings.sync(true);
-
+		msg.author.slayerInfo.slayerPoints;
 		if (unlockname === 'bal') {
 			throw `Your current Slayer Points balance is: ${msg.author.slayerInfo.slayerPoints}`;
 		}
@@ -71,10 +71,11 @@ export default class extends BotCommand {
 		if (unlock.slayerPointsRequired > msg.author.slayerInfo.slayerPoints) {
 			throw `You need ${unlock.slayerPointsRequired} slayer points to purchase that.`;
 		}
-
+		/*
 		if (msg.author.unlockedList.includes(unlock.ID)) {
 			throw `You already have that unlocked, why would you want to buy it again?`;
 		}
+		*/
 
 		const sellMsg = await msg.channel.send(
 			`${msg.author}, say \`confirm\` to confirm that you want to purchase the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points.

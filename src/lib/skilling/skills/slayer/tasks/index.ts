@@ -1,4 +1,4 @@
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 /*
 import bossTasks from './bossTasks';
 import chaeldarTasks from './chaeldarTasks';
@@ -11,7 +11,7 @@ import vannakaTasks from './vannakaTasks';
 */
 import duradelTasks from './duradelTasks';
 
-const allTasks: Task[] = [
+const allTasks: SlayerTask[] = [
 	/*
 	...bossTasks,
 	...chaeldarTasks,

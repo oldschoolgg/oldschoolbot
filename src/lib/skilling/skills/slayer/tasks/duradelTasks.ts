@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 
 // Handle extended amounts??
-const duradelTasks: Task[] = [
+const duradelTasks: SlayerTask[] = [
 	{
 		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',

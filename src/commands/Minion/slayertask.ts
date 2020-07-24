@@ -43,7 +43,7 @@ export default class extends BotCommand {
 				return msg.send(`You need 30 Slayer Points to cancel your task.`);
 			}
 			msg.send(
-				`Are you sure you'd like to cancel your current task of ${msg.author.slayerInfo.task.name}x ${msg.author.slayerInfo.taskQuantity}? It will cost 30 slayer points and your current total is ${msg.author.slayerInfo.slayerPoints}. Say \`confirm\` to continue.`
+				`Are you sure you'd like to cancel your current task of ${msg.author.slayerInfo.currentTask?.name}x ${msg.author.slayerInfo.quantityTask}? It will cost 30 slayer points and your current total is ${msg.author.slayerInfo.slayerPoints}. Say \`confirm\` to continue.`
 			);
 			try {
 				await msg.channel.awaitMessages(
@@ -53,12 +53,12 @@ export default class extends BotCommand {
 					options
 				);
 			} catch (err) {
-				throw `Cancelled request to cancel ${msg.author.slayerInfo.task.name} slayer task.`;
+				throw `Cancelled request to cancel ${msg.author.slayerInfo.currentTask?.name} slayer task.`;
 			}
 			const newSlayerInfo = msg.author.slayerInfo;
 			newSlayerInfo.hasTask = false;
-			newSlayerInfo.task = null;
-			newSlayerInfo.taskQuantity = null;
+			newSlayerInfo.currentTask = null;
+			newSlayerInfo.quantityTask = null;
 			newSlayerInfo.remainingQuantity = null;
 			if (msg.author.slayerInfo.currentMaster === 2) {
 				newSlayerInfo.wildyStreak = 0;
@@ -76,11 +76,11 @@ export default class extends BotCommand {
 
 		// If they already have a slayer task tell them what it is
 		if (msg.author.slayerInfo.hasTask) {
-			const { task } = msg.author.slayerInfo;
-			if (!task) throw `WTF`;
-			let str = `You already have a slayer task of ${msg.author.slayerInfo.taskQuantity}x ${task.name}.\n`;
-			if (task?.alternatives) {
-				str += `You can also kill these monsters: ${task?.alternatives}!`;
+			const { currentTask } = msg.author.slayerInfo;
+			if (!currentTask) throw `WTF`;
+			let str = `You already have a slayer task of ${msg.author.slayerInfo.quantityTask}x ${currentTask.name}.\n`;
+			if (currentTask?.alternatives) {
+				str += `You can also kill these monsters: ${currentTask?.alternatives}!`;
 				const re = /\,/gi;
 				return msg.send(str.replace(re, `, `));
 			}
@@ -181,8 +181,8 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 				const quantity = Math.floor(rand(minQuantity, maxQuantity));
 				const newSlayerInfo = msg.author.slayerInfo;
 				newSlayerInfo.hasTask = true;
-				newSlayerInfo.task = slayerMonster;
-				newSlayerInfo.taskQuantity = quantity;
+				newSlayerInfo.currentTask = slayerMonster;
+				newSlayerInfo.quantityTask = quantity;
 				newSlayerInfo.remainingQuantity = quantity;
 				newSlayerInfo.currentMaster = master.masterId;
 				await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {

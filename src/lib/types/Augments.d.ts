@@ -8,7 +8,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions, Skills, ItemBank } from '.';
-import { SkillsEnum } from '../skilling/types';
+import { SkillsEnum, SlayerTask } from '../skilling/types';
 import { KillableMonster } from '../minions/types';
 import { UserFullGearSetup, GearSetupTypes, GearStats } from '../gear/types';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -156,9 +156,9 @@ declare module 'discord.js' {
 		 * locked from being targeted in an economy command by another (duel, sellto, etc)
 		 */
 		slayerInfo: SlayerInfo;
-		blockList: Task[];
-		extendList: Task[];
-		unlockedList: Task[];
+		blockList: SlayerTask[];
+		extendList: SlayerTask[];
+		unlockedList: SlayerTask[];
 		isBusy: boolean;
 		minionIsBusy: boolean;
 		minionStatus: string;
@@ -171,8 +171,8 @@ declare module 'discord.js' {
 
 	interface SlayerInfo {
 		hasTask: boolean;
-		task: Task;
-		taskQuantity: number | null;
+		currentTask: SlayerTask | null;
+		quantityTask: number | null;
 		remainingQuantity: number | null;
 		currentMaster: number | null;
 		slayerPoints: number;

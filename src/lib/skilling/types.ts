@@ -142,7 +142,7 @@ export interface Bone {
 	inputId: number;
 }
 
-export interface Task {
+export interface SlayerTask {
 	name: string;
 	amount: number[];
 	extendedAmount?: number | number[];
@@ -158,8 +158,8 @@ export interface Task {
 export interface SlayerMaster {
 	name: string;
 	aliases: string[];
-	tasks: Task[];
-	bossTasks?: Task[];
+	tasks: SlayerTask[];
+	bossTasks?: SlayerTask[];
 	masterId: number;
 	basePoints: number;
 	combatLvl?: number;

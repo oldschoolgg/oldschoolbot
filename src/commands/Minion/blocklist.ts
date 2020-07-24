@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		// Block if their current task matches the block request
 		const task = Slayer.AllTasks.find(task => stringMatches(task.name, taskname));
 		// If the task theyre trying to block is an actual task, continue
-		if (taskname.toLowerCase() === msg.author.slayerInfo.task.name) {
+		if (taskname.toLowerCase() === msg.author.slayerInfo.currentTask?.name) {
 			if (userBlockList.length >= 5) {
 				throw `You already have a full block list`;
 			}
@@ -51,8 +51,8 @@ export default class extends BotCommand {
 			}
 			const newSlayerInfo = msg.author.slayerInfo;
 			newSlayerInfo.hasTask = false;
-			newSlayerInfo.task = null;
-			newSlayerInfo.taskQuantity = null;
+			newSlayerInfo.currentTask = null;
+			newSlayerInfo.quantityTask = null;
 			newSlayerInfo.remainingQuantity = null;
 			newSlayerInfo.currentMaster = null;
 			newSlayerInfo.slayerPoints = msg.author.slayerInfo.slayerPoints - 100;
@@ -80,7 +80,7 @@ export default class extends BotCommand {
 			}
 			throw str;
 		}
-
+		/* Look over
 		// Block list removal
 		if (msg.flagArgs.unblock) {
 			if (!userBlockList.includes(task)) {
@@ -105,5 +105,6 @@ export default class extends BotCommand {
 			});
 			throw `The task **${taskname}** has been **removed** from your block list`;
 		}
+		*/
 	}
 }

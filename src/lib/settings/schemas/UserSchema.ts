@@ -32,9 +32,9 @@ Client.defaultUserSchema
 	.add('slayer', folder =>
 		folder
 			.add('slayerInfo', 'any', { default: {} })
-			.add('blockList', 'Task', { array: true, default: [] })
-			.add('extendList', 'Task', { array: true, default: [] })
-			.add('unlockedList', 'Task', { array: true, default: [] })
+			.add('blockList', 'any', { array: true, default: [] })
+			.add('extendList', 'any', { array: true, default: [] })
+			.add('unlockedList', 'any', { array: true, default: [] })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
