@@ -155,6 +155,10 @@ declare module 'discord.js' {
 		 * If they are currently locked into a economy command, or
 		 * locked from being targeted in an economy command by another (duel, sellto, etc)
 		 */
+		slayerInfo: SlayerInfo;
+		blockList: Task[];
+		extendList: Task[];
+		unlockedList: Task[];
 		isBusy: boolean;
 		minionIsBusy: boolean;
 		minionStatus: string;
@@ -163,6 +167,17 @@ declare module 'discord.js' {
 		isIronman: boolean;
 		maxTripLength: number;
 		rawSkills: Skills;
+	}
+
+	interface SlayerInfo {
+		hasTask: boolean;
+		task: Task;
+		taskQuantity: number | null;
+		remainingQuantity: number | null;
+		currentMaster: number | null;
+		slayerPoints: number;
+		streak: number;
+		wildyStreak: number;
 	}
 
 	interface TextChannel {

@@ -56,19 +56,19 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [unlockname]: [string]) {
+	async run(msg: KlasaMessage, [unlockname = '']: [string]) {
 		await msg.author.settings.sync(true);
 
 		if (unlockname === 'bal') {
-			throw `Your current Slayer Points balance is: ${msg.author.slayerInfo[4]}`;
+			throw `Your current Slayer Points balance is: ${msg.author.slayerInfo.slayerPoints}`;
 		}
-		const unlock = slayerShopItems.find(item => stringMatches(unlockname, item.name));
+		const unlock = slayerShopItems.find(item => stringMatches(item.name, unlockname));
 		if (!unlock) {
 			throw `That's not a valid unlock. Valid unlocks are ${slayerShopItems
 				.map(unlock => unlock.name)
 				.join(`, `)}.`;
 		}
-		if (unlock.slayerPointsRequired > msg.author.slayerInfo[4]) {
+		if (unlock.slayerPointsRequired > msg.author.slayerInfo.slayerPoints) {
 			throw `You need ${unlock.slayerPointsRequired} slayer points to purchase that.`;
 		}
 
@@ -78,7 +78,7 @@ export default class extends BotCommand {
 
 		const sellMsg = await msg.channel.send(
 			`${msg.author}, say \`confirm\` to confirm that you want to purchase the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points.
-You currently have ${msg.author.slayerInfo[4]} slayer points.`
+You currently have ${msg.author.slayerInfo.slayerPoints} slayer points.`
 		);
 		// Confirm the user wants to buy
 		try {
@@ -98,20 +98,12 @@ You currently have ${msg.author.slayerInfo[4]} slayer points.`
 		await msg.author.settings.update(UserSettings.Slayer.UnlockedList, unlock.ID, {
 			arrayAction: 'add'
 		});
-
-		const newQuantity = msg.author.slayerInfo[4] - unlock.slayerPointsRequired;
-		const newInfo = [
-			msg.author.slayerInfo[0],
-			msg.author.slayerInfo[1],
-			msg.author.slayerInfo[2],
-			msg.author.slayerInfo[3],
-			newQuantity,
-			msg.author.slayerInfo[5]
-		];
-		await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+		const newSlayerInfo = msg.author.slayerInfo;
+		newSlayerInfo.slayerPoints = msg.author.slayerInfo.slayerPoints - unlock.slayerPointsRequired;
+		await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 			arrayAction: 'overwrite'
 		});
 		msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerInfo[4]}`);
+Your new total is ${msg.author.slayerInfo.slayerPoints}`);
 	}
 }

@@ -6,7 +6,7 @@ import { O } from 'ts-toolbelt';
 
 interface SlayerInfo {
 	hasTask: boolean;
-	task: Task;
+	task: Task | null;
 	taskQuantity: number | null;
 	remainingQuantity: number | null;
 	currentMaster: number | null;

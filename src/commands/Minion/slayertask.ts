@@ -1,9 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, rand, determineCombatLevel } from '../../lib/util';
+import { stringMatches, rand/*,determineCombatLevel*/} from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Monsters } from 'oldschooljs';
 import bossTasks from '../../lib/skilling/skills/slayer/tasks/bossTasks';
 import { SkillsEnum } from '../../lib/skilling/types';
 
@@ -29,28 +28,25 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
-		const baseInfo = [0, 0, 0, 0, 0, 0];
-		if (msg.author.slayerInfo.length === 0) {
-			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, baseInfo, {
+		// This is pure bullshit.
+		const newSlayerInfo = msg.author.slayerInfo;
+		if (msg.author.slayerInfo === null) {
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 				arrayAction: 'overwrite'
 			});
 		}
-		if (msg.author.slayerInfo[0] === 1 && slayermaster === 'cancel') {
+		if (msg.author.slayerInfo.hasTask && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
 			}
-			if (msg.author.slayerInfo[4] < 30) {
+			if (msg.author.slayerInfo.slayerPoints < 30) {
 				return msg.send(`You need 30 Slayer Points to cancel your task.`);
 			}
 			msg.send(
 				`Are you sure you'd like to cancel your current task of ${
-					msg.author.slayerInfo[2]
-				}x ${
-					Monsters.get(msg.author.slayerInfo[1])?.name
-				}? It will cost 30 slayer points and your current total is ${
-					msg.author.slayerInfo[4]
-				}. Say \`confirm\` to continue.`
-			);
+					msg.author.slayerInfo.task.name
+				}x ${msg.author.slayerInfo.taskQuantity}? It will cost 30 slayer points and your current total is ${
+					msg.author.slayerInfo.slayerPoints}. Say \`confirm\` to continue.`);
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
@@ -59,34 +55,38 @@ export default class extends BotCommand {
 					options
 				);
 			} catch (err) {
-				throw `Cancelled request to cancel ${
-					Monsters.get(msg.author.slayerInfo[1])?.name
-				} slayer task.`;
+				throw `Cancelled request to cancel ${msg.author.slayerInfo.task.name} slayer task.`;
 			}
-			const newSlayerPoints = msg.author.slayerInfo[4] - 30;
-			// Has task, Slayer task, Slayer task quantity, Current slayer master, Slayer points
-			const newInfo = [0, 0, 0, 0, msg.author.slayerInfo[5], newSlayerPoints];
-			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+			const newSlayerInfo = msg.author.slayerInfo;
+			newSlayerInfo.hasTask = false;
+			newSlayerInfo.task = null;
+			newSlayerInfo.taskQuantity = null;
+			newSlayerInfo.remainingQuantity = null;
+			if (msg.author.slayerInfo.currentMaster === 2) {
+				newSlayerInfo.wildyStreak = 0;
+			}
+			else {
+				newSlayerInfo.streak = 0;
+			}
+			newSlayerInfo.currentMaster = null;
+			newSlayerInfo.slayerPoints = msg.author.slayerInfo.slayerPoints - 30;
+
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 				arrayAction: 'overwrite'
 			});
 			return msg.send(`Successfully cancelled task`);
 		}
 
 		// If they already have a slayer task tell them what it is
-		if (msg.author.slayerInfo[0] === 1) {
-			const mon = Monsters.get(msg.author.slayerInfo[1]);
-			if (!mon) throw `WTF`;
-			const str = `You already have a slayer task of ${msg.author.slayerInfo[2]}x ${mon.name}.\n`;
-			/*
-			const allTasks = nieveTasks.concat(turaelTasks);
-			const currentTask = allTasks.find(monster =>
-				stringMatches(Monsters.get(msg.author.slayerInfo[1])!.name, monster.name)
-			);
-			if (currentTask?.alternatives) {
-				str += `You can also kill these monsters: ${currentTask?.alternatives}!`;
+		if (msg.author.slayerInfo.hasTask) {
+			const task = msg.author.slayerInfo.task;
+			if (!task) throw `WTF`;
+			let str = `You already have a slayer task of ${msg.author.slayerInfo.taskQuantity}x ${task.name}.\n`;
+			if (task?.alternatives) {
+				str += `You can also kill these monsters: ${task?.alternatives}!`;
 				const re = /\,/gi;
 				return msg.send(str.replace(re, `, `));
-			} */
+			}
 			throw str;
 		}
 
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 		if (!listOfTasks) {
 			throw `WTF`;
 		}
-
+		/* For future
 		const userCombatLevel = determineCombatLevel(
 			msg.author.skillLevel(SkillsEnum.Prayer),
 			msg.author.skillLevel(SkillsEnum.Hitpoints),
@@ -114,6 +114,8 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Magic),
 			msg.author.skillLevel(SkillsEnum.Range)
 		);
+		*/
+		const userCombatLevel = 126;
 		if (
 			(master.combatLvl && master.combatLvl > userCombatLevel) ||
 			(master.slayerLvl && master.slayerLvl > msg.author.skillLevel(SkillsEnum.Slayer)) ||
@@ -178,16 +180,13 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 				const minQuantity = slayerMonster.amount[0];
 				const maxQuantity = slayerMonster.amount[1];
 				const quantity = Math.floor(rand(minQuantity, maxQuantity));
-				// Has task, Slayer task ID, Slayer task quantity, Current slayer master, Slayer points
-				const newInfo = [
-					1,
-					slayerMonster,
-					quantity,
-					master,
-					msg.author.slayerInfo[4],
-					msg.author.slayerInfo[5]
-				];
-				await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newInfo, {
+				const newSlayerInfo = msg.author.slayerInfo;
+				newSlayerInfo.hasTask = true;
+				newSlayerInfo.task = slayerMonster;
+				newSlayerInfo.taskQuantity = quantity;
+				newSlayerInfo.remainingQuantity = quantity;
+				newSlayerInfo.currentMaster = master.masterId;
+				await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 					arrayAction: 'overwrite'
 				});
 				return msg.send(`Your new slayer task is ${quantity}x ${slayerMonster.name}`);

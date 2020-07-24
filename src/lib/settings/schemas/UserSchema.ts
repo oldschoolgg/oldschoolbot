@@ -29,6 +29,13 @@ Client.defaultUserSchema
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
 	)
+	.add('slayer', folder =>
+	folder
+		.add('slayerInfo', 'any', { default: {} })
+		.add('blockList', 'Task', { array: true, default: [] })
+		.add('extendList', 'Task', { array: true, default: [] })
+		.add('unlockedList', 'Task', { array: true, default: [] })
+)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
 			.add('deaths', 'integer', { default: 0 })
