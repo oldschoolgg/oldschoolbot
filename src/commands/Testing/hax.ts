@@ -3,7 +3,7 @@ import { KlasaMessage, CommandStore } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import Skills from '../../lib/skilling/skills';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Eatables } from '../../lib/minions/data/Eatables';
+import { Eatables } from '../../lib/eatables';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

@@ -10,8 +10,8 @@ import {
 	Time,
 	Color,
 	PerkTier,
-	MIMIC_MONSTER_ID,
-	Tasks
+	MIMIC_MONSTER_ID
+	// Tasks
 } from '../../lib/constants';
 import {
 	formatDuration,
@@ -35,12 +35,13 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { Eatables } from '../../lib/minions/data/Eatables';
 import { maxDefenceStats } from '../../lib/gear/data/maxGearStats';
 import inverseOfAttackStat from '../../lib/gear/functions/inverseOfAttackStat';
 import { GearStats } from '../../lib/gear/types';
 import readableStatName from '../../lib/gear/functions/readableStatName';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+// import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Eatables } from '../../lib/eatables';
+import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -568,49 +569,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// Check food
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-			messages.push(
-				`${quantity}x ${monster.name} requires ${monster.healAmountNeeded * quantity}HP (${
-					monster.healAmountNeeded
-				} per kill) worth of food healing per kill.`
-			);
-			let { healAmountNeeded } = monster;
-			const gearStats = msg.author.setupStats(monster.attackStyleToUse);
-			const keys = Object.keys(gearStats) as (keyof GearStats)[];
-			for (const key of keys) {
-				const required = monster.minimumGearRequirements?.[key];
-				if (!required) continue;
-				const has = gearStats[key];
-				if (has < required) {
-					throw `You don't have the requirements to kill ${
-						monster.name
-					}! Your ${readableStatName(key)} stat in your ${
-						monster.attackStyleToUse
-					} setup is ${has}, but you need ${required}.`;
-				}
-			}
-
-			let totalPercentOfGearLevel = 0;
-			for (const style of monster.attackStylesUsed) {
-				const inverseStyle = inverseOfAttackStat(style);
-				const usersStyle = gearStats[inverseStyle];
-				const maxStyle = maxDefenceStats[inverseStyle]!;
-				const percent = floor(calcWhatPercent(usersStyle, maxStyle));
-				messages.push(
-					`Your ${style} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`
-				);
-				totalPercentOfGearLevel += percent;
-			}
-			totalPercentOfGearLevel = floor(
-				max(0, totalPercentOfGearLevel / monster.attackStylesUsed.length)
-			);
-
-			healAmountNeeded = floor(
-				reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel / 2)
-			);
-
-			messages.push(
-				`You use ${totalPercentOfGearLevel}% less food (${healAmountNeeded} instead of ${monster.healAmountNeeded}) because of your gear`
-			);
+			const healAmountNeeded = calculateMonsterFood(monster, msg.author);
 
 			for (const food of Eatables) {
 				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
@@ -671,7 +630,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		// await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
