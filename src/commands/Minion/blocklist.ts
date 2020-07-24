@@ -49,13 +49,15 @@ export default class extends BotCommand {
 			} catch (err) {
 				throw `Cancelling block list addition of ${taskname}.`;
 			}
-			const newSlayerInfo = msg.author.slayerInfo;
-			newSlayerInfo.hasTask = false;
-			newSlayerInfo.currentTask = null;
-			newSlayerInfo.quantityTask = null;
-			newSlayerInfo.remainingQuantity = null;
-			newSlayerInfo.currentMaster = null;
-			newSlayerInfo.slayerPoints = msg.author.slayerInfo.slayerPoints - 100;
+			const newSlayerInfo = {
+					...slayerInfo,
+					hasTask: false,
+					currentTask: null,
+					quantityTask: null,
+					remainingQuantity: null,
+					currentMaster: null,
+					slayerPoints: slayerInfo.slayerPoints - 100,
+			};
 			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 				arrayAction: 'overwrite'
 			});
