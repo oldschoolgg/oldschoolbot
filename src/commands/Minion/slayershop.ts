@@ -58,9 +58,9 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [unlockname = '']: [string]) {
 		await msg.author.settings.sync(true);
-		msg.author.slayerInfo.slayerPoints;
+		const { slayerInfo } = msg.author;
 		if (unlockname === 'bal') {
-			throw `Your current Slayer Points balance is: ${msg.author.slayerInfo.slayerPoints}`;
+			throw `Your current Slayer Points balance is: ${slayerInfo.slayerPoints}`;
 		}
 		const unlock = slayerShopItems.find(item => stringMatches(item.name, unlockname));
 		if (!unlock) {
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 				.map(unlock => unlock.name)
 				.join(`, `)}.`;
 		}
-		if (unlock.slayerPointsRequired > msg.author.slayerInfo.slayerPoints) {
+		if (unlock.slayerPointsRequired > slayerInfo.slayerPoints) {
 			throw `You need ${unlock.slayerPointsRequired} slayer points to purchase that.`;
 		}
 		/*
@@ -79,7 +79,7 @@ export default class extends BotCommand {
 
 		const sellMsg = await msg.channel.send(
 			`${msg.author}, say \`confirm\` to confirm that you want to purchase the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points.
-You currently have ${msg.author.slayerInfo.slayerPoints} slayer points.`
+You currently have ${slayerInfo.slayerPoints} slayer points.`
 		);
 		// Confirm the user wants to buy
 		try {
@@ -99,13 +99,14 @@ You currently have ${msg.author.slayerInfo.slayerPoints} slayer points.`
 		await msg.author.settings.update(UserSettings.Slayer.UnlockedList, unlock.ID, {
 			arrayAction: 'add'
 		});
-		const newSlayerInfo = msg.author.slayerInfo;
-		newSlayerInfo.slayerPoints =
-			msg.author.slayerInfo.slayerPoints - unlock.slayerPointsRequired;
+		const newSlayerInfo = {
+			...slayerInfo,
+			slayerPoints: slayerInfo.slayerPoints - unlock.slayerPointsRequired
+		};
 		await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 			arrayAction: 'overwrite'
 		});
 		msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${msg.author.slayerInfo.slayerPoints}`);
+Your new total is ${slayerInfo.slayerPoints}`);
 	}
 }
