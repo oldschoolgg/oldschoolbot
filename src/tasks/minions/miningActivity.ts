@@ -1,7 +1,7 @@
-import { Task, KlasaMessage } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 
-import { saidYes, noOp, rand } from '../../lib/util';
-import { Time, Events, Emoji } from '../../lib/constants';
+import { noOp, rand, saidYes } from '../../lib/util';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { roll } from 'oldschooljs/dist/util/util';

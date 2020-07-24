@@ -1,15 +1,14 @@
 import { Image } from 'canvas';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask, util, KlasaClient } from 'klasa';
+import { KlasaClient, ScheduledTask, util } from 'klasa';
 import { Client } from 'discord.js';
-import { nodeCrypto, integer, real, bool } from 'random-js';
+import { bool, integer, nodeCrypto, real } from 'random-js';
+import { Events, Tasks } from './constants';
+import { channelIsSendable } from './util/channelIsSendable';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
-
-import { Tasks, Events } from './constants';
-import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';
 
@@ -174,6 +173,7 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }
+
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;

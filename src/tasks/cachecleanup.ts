@@ -1,4 +1,4 @@
-import { Task, TaskStore, Colors } from 'klasa';
+import { Colors, Task, TaskStore } from 'klasa';
 import { SnowflakeUtil } from 'discord.js';
 
 import { Time } from '../lib/constants';

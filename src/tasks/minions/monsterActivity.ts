@@ -1,7 +1,7 @@
-import { Task, KlasaMessage } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
-import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
+import { Emoji, Events, PerkTier, Time } from '../../lib/constants';
 import { noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';

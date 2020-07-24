@@ -5,20 +5,20 @@ import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	formatDuration,
+	noOp,
 	percentChance,
 	rand,
-	noOp,
-	calcWhatPercent,
-	calcPercentOfNum,
-	removeItemFromBank,
-	formatDuration
+	removeItemFromBank
 } from '../../../lib/util';
 import mejJalImage from '../../../lib/image/mejJalImage';
 import itemID from '../../../lib/util/itemID';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
-import { Events, Emoji } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 const TokkulID = itemID('Tokkul');

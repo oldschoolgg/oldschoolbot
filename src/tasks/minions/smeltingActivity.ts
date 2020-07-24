@@ -1,6 +1,6 @@
-import { Task, KlasaMessage } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
+import { noOp, saidYes } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';

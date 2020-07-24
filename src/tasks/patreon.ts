@@ -1,10 +1,10 @@
-import { Task, ArrayActions, KlasaUser } from 'klasa';
+import { ArrayActions, KlasaUser, Task } from 'klasa';
 import fetch from 'node-fetch';
 import { TextChannel } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
 import { Patron } from '../lib/types';
-import { PatronTierID, BitField, Time, BadgesEnum, Channel, PerkTier } from '../lib/constants';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { patreonConfig } from '../config';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';

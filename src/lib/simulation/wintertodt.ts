@@ -9,7 +9,7 @@ import itemID from '../util/itemID';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
 import resolveItems from '../util/resolveItems';
-import { randomItemFromArray, calcPercentOfNum, convertXPtoLVL } from '../util';
+import { calcPercentOfNum, convertXPtoLVL, randomItemFromArray } from '../util';
 import { normal } from '../util/normal';
 
 interface WintertodtCrateOptions {
@@ -20,6 +20,7 @@ interface WintertodtCrateOptions {
 
 type WintertodtTableSlot = [number, [number, number]];
 type WintertodtTable = WintertodtTableSlot[];
+
 function todtTable(table: [string, [number, number]][]): WintertodtTable {
 	return table.map(slot => [itemID(slot[0]), slot[1]]);
 }

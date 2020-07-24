@@ -1,10 +1,10 @@
-import { Task, KlasaMessage } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
-import { Time, Events, Emoji } from '../../lib/constants';
+import { noOp, saidYes } from '../../lib/util';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { roll, rand } from 'oldschooljs/dist/util/util';
+import { rand, roll } from 'oldschooljs/dist/util/util';
 import Agility from '../../lib/skilling/skills/agility';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';

@@ -1,7 +1,7 @@
 import { Event, EventStore } from 'klasa';
 import { TextChannel } from 'discord.js';
 
-import { Events, Channel } from '../lib/constants';
+import { Channel, Events } from '../lib/constants';
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {

@@ -51,20 +51,20 @@ function rand(min, max) {
 const twitchAPIRequestOptions = {
 	headers: {
 		Accept: 'application/vnd.twitchtv.v5+json',
-		'Client-ID': twitchClientID ?? ''
-	}
+		'Client-ID': twitchClientID ?? '',
+	},
 };
 
 async function resolveTwitchUsersFromNames(names) {
 	return await fetch(
 		`https://api.twitch.tv/kraken/users?login=${names.map(encodeURIComponent).join(',')}`,
-		twitchAPIRequestOptions
+		twitchAPIRequestOptions,
 	)
-		.then(response => response.json())
-		.then(res => res.users || [])
-		.catch(err => {
-			throw err;
-		});
+	.then(response => response.json())
+	.then(res => res.users || [])
+	.catch(err => {
+		throw err;
+	});
 }
 
 function toTitleCase(str) {
@@ -100,12 +100,12 @@ const formatDuration = ms => {
 	const time = {
 		day: Math.floor(ms / 86400000),
 		hour: Math.floor(ms / 3600000) % 24,
-		minute: Math.floor(ms / 60000) % 60
+		minute: Math.floor(ms / 60000) % 60,
 	};
 	return Object.entries(time)
-		.filter(val => val[1] !== 0)
-		.map(([key, val]) => `${val} ${key}${val !== 1 ? 's' : ''}`)
-		.join(', ');
+				 .filter(val => val[1] !== 0)
+				 .map(([key, val]) => `${val} ${key}${val !== 1 ? 's' : ''}`)
+				 .join(', ');
 };
 
 module.exports = {
@@ -121,5 +121,5 @@ module.exports = {
 	toTitleCase,
 	cmlErrorCheck,
 	flatten,
-	formatDuration
+	formatDuration,
 };

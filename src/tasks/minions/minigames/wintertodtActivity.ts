@@ -4,7 +4,7 @@ import { MessageAttachment } from 'discord.js';
 
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import { noOp, addBanks, bankHasItem } from '../../../lib/util';
+import { addBanks, bankHasItem, noOp } from '../../../lib/util';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';

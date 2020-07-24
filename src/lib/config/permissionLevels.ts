@@ -1,4 +1,4 @@
-import { PermissionLevels, KlasaMessage } from 'klasa';
+import { KlasaMessage, PermissionLevels } from 'klasa';
 import { Permissions } from 'discord.js';
 
 import { PermissionLevelsEnum } from '../constants';

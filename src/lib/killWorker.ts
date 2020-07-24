@@ -1,6 +1,6 @@
 import { expose } from 'threads';
 import { Monsters } from 'oldschooljs';
-
+import { KillWorkerOptions } from './types';
 import sarachnis = require('../../data/monsters/sarachnis');
 import lavaDragon = require('../../data/monsters/lavaDragon');
 import brutalBlackDragon = require('../../data/monsters/brutalBlackDragon');
@@ -19,7 +19,6 @@ import wintertodt = require('../../data/monsters/wintertodt');
 import kraken = require('../../data/monsters/kraken');
 import obor = require('../../data/monsters/obor');
 import bryophyta = require('../../data/monsters/bryophyta');
-import { KillWorkerOptions } from './types';
 
 export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();

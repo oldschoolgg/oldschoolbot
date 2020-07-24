@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
 
-import { Tasks, Activity } from '../constants';
+import { Activity, Tasks } from '../constants';
 import { ActivityTaskOptions } from '../types/minions';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 

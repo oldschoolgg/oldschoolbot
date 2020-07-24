@@ -1,4 +1,4 @@
-import { Task, util, TaskStore, KlasaUser } from 'klasa';
+import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
@@ -7,14 +7,14 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import { Util } from 'oldschooljs';
 
 import {
-	generateHexColorForCashStack,
+	addArrayOfNumbers,
 	canvasImageFromBuffer,
 	formatItemStackQuantity,
-	saveCtx,
+	generateHexColorForCashStack,
+	itemNameFromID,
 	restoreCtx,
-	addArrayOfNumbers,
-	stringMatches,
-	itemNameFromID
+	saveCtx,
+	stringMatches
 } from '../lib/util';
 import { Bank } from '../lib/types';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';

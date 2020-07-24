@@ -76,6 +76,7 @@ export const enum Emoji {
 	Fletching = '<:fletching:630911040544309258>',
 	Purple = '🟪'
 }
+
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',

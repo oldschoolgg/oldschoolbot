@@ -43,7 +43,9 @@ export interface Pet {
 	type: string;
 	altNames: string[];
 	bossKeys?: string[];
+
 	finish?(): number;
+
 	formatFinish(num: number): string;
 }
 

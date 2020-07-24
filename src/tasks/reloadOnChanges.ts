@@ -1,5 +1,5 @@
-import { sep, extname, basename, join } from 'path';
-import { Task, TaskStore, Stopwatch, Piece } from 'klasa';
+import { basename, extname, join, sep } from 'path';
+import { Piece, Stopwatch, Task, TaskStore } from 'klasa';
 import { watch } from 'chokidar';
 
 const nodeModules = `${sep}node_modules${sep}`;

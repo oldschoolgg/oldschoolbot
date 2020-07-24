@@ -1,7 +1,7 @@
-import { Task, KlasaMessage } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 
-import { saidYes, noOp, rand } from '../../lib/util';
-import { Time, MAX_QP } from '../../lib/constants';
+import { noOp, rand, saidYes } from '../../lib/util';
+import { MAX_QP, Time } from '../../lib/constants';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';

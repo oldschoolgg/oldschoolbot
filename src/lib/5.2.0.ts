@@ -2,7 +2,7 @@
 import { Pool } from 'pg';
 import { mergeDefault } from '@klasa/utils';
 import { join } from 'path';
-import { readJSON, outputJSON } from 'fs-nextra';
+import { outputJSON, readJSON } from 'fs-nextra';
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
 

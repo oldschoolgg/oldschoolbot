@@ -1,6 +1,6 @@
 import { KlasaUser } from 'klasa';
 
-import { Roles, PerkTier, BitField } from '../constants';
+import { BitField, PerkTier, Roles } from '../constants';
 import getSupportGuild from './getSupportGuild';
 import { UserSettings } from '../settings/types/UserSettings';
 

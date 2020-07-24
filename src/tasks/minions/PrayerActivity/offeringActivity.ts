@@ -1,6 +1,6 @@
-import { Task, KlasaMessage } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 
-import { saidYes, noOp, rand, roll } from '../../../lib/util';
+import { noOp, rand, roll, saidYes } from '../../../lib/util';
 import { Time } from '../../../lib/constants';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
@@ -48,7 +48,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			bone.name
-		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers , 
+		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers ,
 			you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;

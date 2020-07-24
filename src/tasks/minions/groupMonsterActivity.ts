@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import { noOp, randomItemFromArray, queuedMessageSend, addBanks } from '../../lib/util';
+import { addBanks, noOp, queuedMessageSend, randomItemFromArray } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';

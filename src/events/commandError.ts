@@ -1,7 +1,7 @@
-import { KlasaMessage, Command, Event, util } from 'klasa';
+import { Command, Event, KlasaMessage, util } from 'klasa';
 import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel, User } from 'discord.js';
 
-import { rootFolder, Channel, Emoji } from '../lib/constants';
+import { Channel, Emoji, rootFolder } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
 
 export default class extends Event {

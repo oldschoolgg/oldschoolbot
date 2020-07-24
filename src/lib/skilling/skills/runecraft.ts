@@ -1,5 +1,5 @@
 import { Emoji, Time } from '../../constants';
-import { SkillsEnum, Rune } from '../types';
+import { Rune, SkillsEnum } from '../types';
 import itemID from '../../util/itemID';
 import { ActivityTaskOptions } from '../../types/minions';
 
