@@ -1,3 +1,4 @@
+/*
 import ava from 'ava';
 
 import { stripEmojis } from '../src/lib/util';
@@ -18,3 +19,4 @@ ava('getOSItem', test => {
 		test.is(err, 'That item doesnt exist.');
 	}
 });
+*/

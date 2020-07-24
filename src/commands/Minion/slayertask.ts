@@ -3,7 +3,7 @@ import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, rand /* ,determineCombatLevel*/ } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import bossTasks from '../../lib/skilling/skills/slayer/tasks/bossTasks';
+// import bossTasks from '../../lib/skilling/skills/slayer/tasks/bossTasks';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 const options = {
@@ -166,6 +166,7 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 			number -= filteredTaskList[i].weight;
 			if (number <= 0) {
 				let slayerMonster = filteredTaskList[i];
+				/*
 				if (slayerMonster.name === 'Boss') {
 					const filteredBossTasks = bossTasks.filter(
 						task =>
@@ -174,6 +175,7 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 					);
 					slayerMonster = filteredBossTasks[rand(0, filteredBossTasks.length)];
 				}
+				*/
 				const minQuantity = slayerMonster.amount[0];
 				const maxQuantity = slayerMonster.amount[1];
 				const quantity = Math.floor(rand(minQuantity, maxQuantity));
