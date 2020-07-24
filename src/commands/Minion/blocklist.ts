@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Slayer from '../../lib/skilling/skills/slayer/slayer'
+import Slayer from '../../lib/skilling/skills/slayer/slayer';
 
 const options = {
 	max: 1,

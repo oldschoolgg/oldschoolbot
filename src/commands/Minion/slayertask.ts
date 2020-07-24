@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, rand/*,determineCombatLevel*/} from '../../lib/util';
+import { stringMatches, rand /*,determineCombatLevel*/ } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import bossTasks from '../../lib/skilling/skills/slayer/tasks/bossTasks';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -43,10 +43,8 @@ export default class extends BotCommand {
 				return msg.send(`You need 30 Slayer Points to cancel your task.`);
 			}
 			msg.send(
-				`Are you sure you'd like to cancel your current task of ${
-					msg.author.slayerInfo.task.name
-				}x ${msg.author.slayerInfo.taskQuantity}? It will cost 30 slayer points and your current total is ${
-					msg.author.slayerInfo.slayerPoints}. Say \`confirm\` to continue.`);
+				`Are you sure you'd like to cancel your current task of ${msg.author.slayerInfo.task.name}x ${msg.author.slayerInfo.taskQuantity}? It will cost 30 slayer points and your current total is ${msg.author.slayerInfo.slayerPoints}. Say \`confirm\` to continue.`
+			);
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
@@ -64,8 +62,7 @@ export default class extends BotCommand {
 			newSlayerInfo.remainingQuantity = null;
 			if (msg.author.slayerInfo.currentMaster === 2) {
 				newSlayerInfo.wildyStreak = 0;
-			}
-			else {
+			} else {
 				newSlayerInfo.streak = 0;
 			}
 			newSlayerInfo.currentMaster = null;

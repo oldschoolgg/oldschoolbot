@@ -99,7 +99,8 @@ You currently have ${msg.author.slayerInfo.slayerPoints} slayer points.`
 			arrayAction: 'add'
 		});
 		const newSlayerInfo = msg.author.slayerInfo;
-		newSlayerInfo.slayerPoints = msg.author.slayerInfo.slayerPoints - unlock.slayerPointsRequired;
+		newSlayerInfo.slayerPoints =
+			msg.author.slayerInfo.slayerPoints - unlock.slayerPointsRequired;
 		await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 			arrayAction: 'overwrite'
 		});
