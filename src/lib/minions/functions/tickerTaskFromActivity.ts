@@ -28,6 +28,7 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Alching:
 		case Activity.Sawmill:
 		case Activity.Pickpocket:
+		case Activity.Farming:
 			return Tasks.SkillingTicker;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
@@ -37,6 +38,7 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Sepulchre:
 		case Activity.Zalcano:
 		case Activity.FishingTrawler:
+		case Activity.TitheFarm:
 			return Tasks.MinigameTicker;
 		default: {
 			throw new Error(`Unrecognized activity`);
