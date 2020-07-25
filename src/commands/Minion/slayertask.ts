@@ -76,7 +76,7 @@ export default class extends BotCommand {
 		if (!master) {
 			throw `That's not a valid slayer master. Valid masters are ${slayerMasters
 				.map(master => master.name)
-				.join(', ')}.`;
+				.join(', ')} or if you like to cancel a task do \`${msg.cmdPrefix}slayertask cancel\`.`;
 		}
 
 		/* For future
@@ -143,10 +143,11 @@ export default class extends BotCommand {
 			}
 			throw str;
 		}
+		console.log(msg.author.skillLevel(SkillsEnum.Slayer))
 		if (
-			(master.combatLvl && master.combatLvl > userCombatLevel) ||
-			(master.slayerLvl && master.slayerLvl > msg.author.skillLevel(SkillsEnum.Slayer)) ||
-			(master.questPoints && master.questPoints > settings.get(UserSettings.QP))
+			(master.combatLvl! > userCombatLevel) ||
+			(master.slayerLvl! > msg.author.skillLevel(SkillsEnum.Slayer)) ||
+			(master.questPoints! > settings.get(UserSettings.QP))
 		) {
 			throw `You need a combat level of ${master.combatLvl}, a slayer level of ${
 				master.slayerLvl

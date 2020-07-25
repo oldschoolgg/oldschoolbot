@@ -1,4 +1,4 @@
-import { SlayerMaster } from '../../types';
+import { SlayerMaster } from '../../../types';
 
 // Calculates the amount of slayerPoints awarded with current streak.
 export default function streakPoints(currentStreak: number, master: SlayerMaster) {
