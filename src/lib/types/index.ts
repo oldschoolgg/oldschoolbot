@@ -153,6 +153,7 @@ export interface MakePartyOptions {
 	message: string;
 	usersAllowed?: string[];
 	party?: boolean;
+	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
 }
 
 export type Skills = Partial<

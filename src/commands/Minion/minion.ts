@@ -4,14 +4,13 @@ import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	// Tasks,
+	Tasks,
 	Activity,
 	Emoji,
 	Time,
 	Color,
 	PerkTier,
 	MIMIC_MONSTER_ID
-	// Tasks
 } from '../../lib/constants';
 import {
 	formatDuration,
@@ -19,8 +18,6 @@ import {
 	isWeekend,
 	itemNameFromID,
 	addItemToBank,
-	calcWhatPercent,
-	reduceNumByPercent,
 	bankHasItem
 } from '../../lib/util';
 import { rand } from '../../util';
@@ -28,18 +25,13 @@ import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-// import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { maxDefenceStats } from '../../lib/gear/data/maxGearStats';
-import inverseOfAttackStat from '../../lib/gear/functions/inverseOfAttackStat';
-import { GearStats } from '../../lib/gear/types';
-import readableStatName from '../../lib/gear/functions/readableStatName';
-// import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { Eatables } from '../../lib/eatables';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 
@@ -63,7 +55,7 @@ const patMessages = [
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
 
-const { floor, ceil, max } = Math;
+const { floor, ceil } = Math;
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -520,7 +512,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const boosts = [];
-		const messages = [];
+		let messages: string[] = [];
 
 		if (typeof quantity === 'string') {
 			name = quantity;
@@ -569,7 +561,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// Check food
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-			const healAmountNeeded = calculateMonsterFood(monster, msg.author);
+			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
+			messages = messages.concat(foodMessages);
 
 			for (const food of Eatables) {
 				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
@@ -630,7 +623,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			finishDate: Date.now() + duration
 		};
 
-		// await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		if (1 > 2) await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
@@ -641,7 +634,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		if (messages.length > 0) {
-			response += `\n\n **Messages:** ${messages.join('\n')}.`;
+			response += `\n\n**Messages:** ${messages.join('\n')}.`;
 		}
 
 		return msg.send(response);
