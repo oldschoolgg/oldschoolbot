@@ -5,6 +5,7 @@ export enum FarmingPatchTypes {
 	Allotment = 'allotment',
 	Cactus = 'cactus',
 	Bush = 'bush',
+	Flower = 'flower',
 	Spirit = 'spirit',
 	Hardwood = 'hardwood',
 	Seaweed = 'seaweed',
@@ -13,6 +14,5 @@ export enum FarmingPatchTypes {
 	Redwood = 'redwood',
 	Crystal = 'crystal',
 	Celastrus = 'celastrus',
-	Hespori = 'hespori',
-	Flower = 'flower'
+	Hespori = 'hespori'
 }

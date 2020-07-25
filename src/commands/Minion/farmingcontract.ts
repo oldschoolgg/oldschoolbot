@@ -109,7 +109,7 @@ export default class extends BotCommand {
 					contractsCompleted: currentContract.contractsCompleted
 				};
 
-				msg.author.settings.update(
+				await msg.author.settings.update(
 					UserSettings.FarmingContracts.FarmingContract,
 					farmingContractUpdate
 				);
@@ -144,7 +144,7 @@ export default class extends BotCommand {
 			contractsCompleted: currentContract.contractsCompleted
 		};
 
-		msg.author.settings.update(
+		await msg.author.settings.update(
 			UserSettings.FarmingContracts.FarmingContract,
 			farmingContractUpdate
 		);

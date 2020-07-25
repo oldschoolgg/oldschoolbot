@@ -30,9 +30,9 @@ export default class extends BotCommand {
 		let contentStr = '';
 		let finalStr = '';
 
-		for (const patches in FarmingPatchTypes) {
-			const patchType: FarmingPatchTypes =
-				FarmingPatchTypes[patches as keyof typeof FarmingPatchTypes];
+		const patchArray = Object.values(FarmingPatchTypes);
+		for (let i = 0; i < patchArray.length; i++) {
+			const patchType = patchArray[i];
 
 			baseStr = `**${toTitleCase(patchType)} patch:** `;
 
