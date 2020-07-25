@@ -5,8 +5,6 @@ import { Canvas } from 'canvas-constructor';
 registerFont('./resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
 const textBoxFile = fs.readFileSync('./resources/images/textbox.png');
-// const mejJalChatHead = fs.readFileSync('./resources/images/mejJal.png');
-// const guildmasterJaneHead = fs.readFileSync('./guildmasterJaneImage.png');
 
 const ChatHeads: { [key: string]: any } = {
 	Jad: fs.readFileSync('./resources/images/mejJal.png'),

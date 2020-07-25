@@ -131,7 +131,9 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
-export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
+export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {
+	msg: KlasaMessage;
+}
 
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];

@@ -214,7 +214,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: `Farmer's strawhat`,
-		aliases: ['Farmers strawhat', 'farmers hat', `farmer's hat`],
+		aliases: ['farmers strawhat', 'farmers hat'],
 		outputItems: {
 			[itemID(`Farmer's strawhat`)]: 1
 		},
@@ -224,7 +224,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: `Farmer's jacket`,
-		aliases: ['Farmers jacket'],
+		aliases: ['farmers jacket'],
 		outputItems: {
 			[itemID(`Farmer's jacket`)]: 1
 		},
@@ -234,7 +234,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: `Farmer's shirt`,
-		aliases: ['Farmers shirt'],
+		aliases: ['farmers shirt'],
 		outputItems: {
 			[itemID(`Farmer's shirt`)]: 1
 		},
@@ -244,7 +244,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: `Farmer's boro trousers`,
-		aliases: ['Farmers trousers', 'farmers bottoms', `farmer's trousers`],
+		aliases: ['farmers trousers', 'farmers bottoms', `farmers legs`],
 		outputItems: {
 			[itemID(`Farmer's boro trousers`)]: 1
 		},
@@ -254,7 +254,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: `Farmer's boots`,
-		aliases: ['Farmers boots'],
+		aliases: ['farmers boots'],
 		outputItems: {
 			[itemID(`Farmer's boots`)]: 1
 		},
