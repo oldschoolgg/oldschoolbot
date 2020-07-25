@@ -305,7 +305,6 @@ export default class extends BotCommand {
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 		return msg.send(str);

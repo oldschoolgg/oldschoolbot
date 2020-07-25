@@ -11,7 +11,7 @@ import bankHasItem from '../../../lib/util/bankHasItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
-	async run({ userID, channelID }: TitheFarmActivityTaskOptions) {
+	async run({ userID, channelID, duration, msg }: TitheFarmActivityTaskOptions) {
 		const baseHarvest = 85;
 		let lootStr = '';
 
@@ -106,6 +106,8 @@ export default class extends Task {
 
 		if (!channelIsSendable(channel)) return;
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${lootStr}\n\n${user.minionName} asks if you'd like them to do another game.`;
+
+		msg.author.incrementMinionDailyDuration(duration);
 
 		this.client.queuePromise(() => {
 			channel.send(returnStr);
