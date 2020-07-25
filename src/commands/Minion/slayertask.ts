@@ -4,6 +4,8 @@ import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, rand /* ,determineCombatLevel*/ } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import filterTasks from '../../lib/skilling/skills/slayer/slayerFunctions/filterTasks';
+import taskPicker from '../../lib/skilling/skills/slayer/slayerFunctions/taskPicker';
 
 const options = {
 	max: 1,
@@ -24,11 +26,14 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [slayermaster = '']: [string]) {
 		await msg.author.settings.sync(true);
+		// Temp maxed combat stats
+		const userCombatLevel = 126;
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
-		const slayerInfo = msg.author.settings.get(UserSettings.Slayer.SlayerInfo);
 		const { settings } = msg.author;
+		const slayerInfo = settings.get(UserSettings.Slayer.SlayerInfo);
+		const extendList = settings.get(UserSettings.Slayer.ExtendList);
 		if (slayerInfo.hasTask && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
@@ -76,21 +81,10 @@ export default class extends BotCommand {
 		if (!master) {
 			throw `That's not a valid slayer master. Valid masters are ${slayerMasters
 				.map(master => master.name)
-				.join(', ')} or if you like to cancel a task do \`${msg.cmdPrefix}slayertask cancel\`.`;
+				.join(', ')} or if you like to cancel a task do \`${
+				msg.cmdPrefix
+			}slayertask cancel\`.`;
 		}
-
-		/* For future
-		const userCombatLevel = determineCombatLevel(
-			msg.author.skillLevel(SkillsEnum.Prayer),
-			msg.author.skillLevel(SkillsEnum.Hitpoints),
-			msg.author.skillLevel(SkillsEnum.Defence),
-			msg.author.skillLevel(SkillsEnum.Strength),
-			msg.author.skillLevel(SkillsEnum.Attack),
-			msg.author.skillLevel(SkillsEnum.Magic),
-			msg.author.skillLevel(SkillsEnum.Range)
-		);
-		*/
-		const userCombatLevel = 126;
 
 		if (slayerInfo.hasTask && master.masterId === 1) {
 			if (master.tasks.some(task => task.name === slayerInfo.currentTask?.name)) {
@@ -109,11 +103,18 @@ export default class extends BotCommand {
 			} catch (err) {
 				throw `Cancelled request to replace ${slayerInfo.currentTask?.name} slayer task.`;
 			}
-			// Filter which tasks that can be assigned.
-			// Weight and random task function. generates a task
-			const randomedTask = master.tasks[1]; // Placeholder
-			const minQuantity = randomedTask.amount[0];
-			const maxQuantity = randomedTask.amount[1];
+			const filteredTasks = filterTasks(msg, master);
+			const randomedTask = taskPicker(msg, filteredTasks);
+			let minQuantity = randomedTask.amount[0];
+			let maxQuantity = randomedTask.amount[1];
+
+			// Check if the task is extended
+			for (const extendedTask of extendList) {
+				if (randomedTask.name === extendedTask.name) {
+					minQuantity = randomedTask.extendedAmount![0];
+					maxQuantity = randomedTask.extendedAmount![1];
+				}
+			}
 			const quantity = Math.floor(rand(minQuantity, maxQuantity));
 			const newSlayerInfo = {
 				...slayerInfo,
@@ -143,11 +144,10 @@ export default class extends BotCommand {
 			}
 			throw str;
 		}
-		console.log(msg.author.skillLevel(SkillsEnum.Slayer))
 		if (
-			(master.combatLvl! > userCombatLevel) ||
-			(master.slayerLvl! > msg.author.skillLevel(SkillsEnum.Slayer)) ||
-			(master.questPoints! > settings.get(UserSettings.QP))
+			master.combatLvl! > userCombatLevel ||
+			master.slayerLvl! > msg.author.skillLevel(SkillsEnum.Slayer) ||
+			master.questPoints! > settings.get(UserSettings.QP)
 		) {
 			throw `You need a combat level of ${master.combatLvl}, a slayer level of ${
 				master.slayerLvl
@@ -156,73 +156,32 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 				SkillsEnum.Slayer
 			)} slayer and ${settings.get(UserSettings.QP)} questpoints.`;
 		}
-		let filteredTaskList;
-		// Filter by slayer level
-		filteredTaskList = master.tasks.filter(
-			task => task.slayerLvl && task.slayerLvl <= msg.author.skillLevel(SkillsEnum.Slayer)
-		);
-		// Filter by combat level
-		filteredTaskList = filteredTaskList.filter(
-			task => task.combatLvl && task.combatLvl <= userCombatLevel
-		);
-		// Filter by questpoints, not implemented
-		/*
-		filteredTaskList = filteredTaskList.filter(
-			task =>
-				task.QP && task.QP <= msg.author.settings.get(UserSettings.QP)
-				
-		);
-		*/
-		// Filter by default unlock
-		filteredTaskList = filteredTaskList.filter(task => task.unlocked === true);
-		// Filter by block list (Make Task based)
-		/*
-		filteredTaskList = filteredTaskList.filter(task => !msg.author.blockList.includes(task));
-		*/
-		// Filter by unlocks (Make Task based)
-		/*
-		const filteredByUnlocked = listOfTasks.filter(task => msg.author.unlockedList.includes(task));
-		filteredTasks = filteredTasks.concat(filteredByUnlocked);
-		*/
 
-		let totalweight = 0;
-		for (let i = 0; i < filteredTaskList.length; i++) {
-			totalweight += filteredTaskList[i].weight;
-		}
-		if (filteredTaskList.length === 0) {
-			throw `You don't have a high enough Slayer level to get a task from that Master.`;
-		}
-		let number = rand(1, totalweight);
-		for (let i = 0; i < filteredTaskList.length; i++) {
-			number -= filteredTaskList[i].weight;
-			if (number <= 0) {
-				const slayerMonster = filteredTaskList[i];
-				/*
-				if (slayerMonster.name === 'Boss') {
-					const filteredBossTasks = bossTasks.filter(
-						task =>
-							task.slayerLvl &&
-							task.slayerLvl <= msg.author.skillLevel(SkillsEnum.Slayer)
-					);
-					slayerMonster = filteredBossTasks[rand(0, filteredBossTasks.length)];
-				}
-				*/
-				const minQuantity = slayerMonster.amount[0];
-				const maxQuantity = slayerMonster.amount[1];
-				const quantity = Math.floor(rand(minQuantity, maxQuantity));
-				const newSlayerInfo = {
-					...slayerInfo,
-					hasTask: true,
-					currentTask: slayerMonster,
-					quantityTask: quantity,
-					remainingQuantity: quantity,
-					currentMaster: master.masterId
-				};
-				await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
-					arrayAction: 'overwrite'
-				});
-				return msg.send(`Your new slayer task is ${quantity}x ${slayerMonster.name}`);
+		const filteredTasks = filterTasks(msg, master);
+		const randomedTask = taskPicker(msg, filteredTasks);
+		let minQuantity = randomedTask.amount[0];
+		let maxQuantity = randomedTask.amount[1];
+
+		// Check if the task is extended
+		for (const extendedTask of extendList) {
+			if (randomedTask.name === extendedTask.name) {
+				minQuantity = randomedTask.extendedAmount![0];
+				maxQuantity = randomedTask.extendedAmount![1];
 			}
 		}
+		const quantity = Math.floor(rand(minQuantity, maxQuantity));
+		const newSlayerInfo = {
+			...slayerInfo,
+			hasTask: true,
+			currentTask: randomedTask,
+			quantityTask: quantity,
+			remainingQuantity: quantity,
+			currentMaster: master.masterId
+		};
+
+		await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+			arrayAction: 'overwrite'
+		});
+		return msg.send(`Your new slayer task is ${quantity}x ${randomedTask.name}`);
 	}
 }

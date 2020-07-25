@@ -145,7 +145,7 @@ export interface Bone {
 export interface SlayerTask {
 	name: string;
 	amount: number[];
-	extendedAmount?: number | number[];
+	extendedAmount?: number[];
 	weight: number;
 	alternatives?: string | string[];
 	Id: number | number[];
