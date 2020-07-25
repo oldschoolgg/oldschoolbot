@@ -1,13 +1,12 @@
 import { SlayerMaster } from '../../../types';
 import { UserSettings } from '../../../../../lib/settings/types/UserSettings';
 import { KlasaMessage } from 'klasa';
-import /* ,determineCombatLevel*/ '../../../../util';
+// import {determineCombatLevel} '../../../../util';
 import { SkillsEnum } from '../../../../skilling/types';
 
 // Filters out the tasks the user can be assigned from a certain slayermaster.
 export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	const { settings, skillLevel } = msg.author;
-	settings.sync(true);
 	const blockList = settings.get(UserSettings.Slayer.BlockList);
 	const unlockedList = settings.get(UserSettings.Slayer.UnlockedList);
 
@@ -37,7 +36,7 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 		}
 	}
 
-	// Removes blocked tasks
+	// Removes blocked tasks 
 	for (const blockedTask of blockList) {
 		filteredTaskList = filteredTaskList.filter(task => task.name !== blockedTask.name);
 	}

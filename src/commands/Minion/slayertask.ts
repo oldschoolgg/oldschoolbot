@@ -111,8 +111,7 @@ export default class extends BotCommand {
 			// Check if the task is extended
 			for (const extendedTask of extendList) {
 				if (randomedTask.name === extendedTask.name) {
-					minQuantity = randomedTask.extendedAmount![0];
-					maxQuantity = randomedTask.extendedAmount![1];
+					[minQuantity, maxQuantity] = randomedTask.extendedAmount!;
 				}
 			}
 			const quantity = Math.floor(rand(minQuantity, maxQuantity));
@@ -158,6 +157,7 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 		}
 
 		const filteredTasks = filterTasks(msg, master);
+		console.log(filteredTasks);
 		const randomedTask = taskPicker(msg, filteredTasks);
 		let minQuantity = randomedTask.amount[0];
 		let maxQuantity = randomedTask.amount[1];
@@ -165,8 +165,7 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 		// Check if the task is extended
 		for (const extendedTask of extendList) {
 			if (randomedTask.name === extendedTask.name) {
-				minQuantity = randomedTask.extendedAmount![0];
-				maxQuantity = randomedTask.extendedAmount![1];
+				[minQuantity, maxQuantity] = randomedTask.extendedAmount!;
 			}
 		}
 		const quantity = Math.floor(rand(minQuantity, maxQuantity));
