@@ -28,24 +28,8 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
-		const tempSlayerInfo = msg.author.settings.get(UserSettings.Slayer.SlayerInfo);
-		if (!tempSlayerInfo) {
-			const newSlayerInfo = {
-				hasTask: false,
-				currentTask: null,
-				quantityTask: null,
-				remainingQuantity: null,
-				currentMaster: null,
-				slayerPoints: 0,
-				streak: 0,
-				wildyStreak: 0
-			};
-			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
-				arrayAction: 'overwrite'
-			});
-		}
-		await msg.author.settings.sync(true);
-		const { slayerInfo, settings } = msg.author;
+		const slayerInfo = msg.author.settings.get(UserSettings.Slayer.SlayerInfo);
+		const { settings } = msg.author;
 		if (slayerInfo.hasTask && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
@@ -88,11 +72,10 @@ export default class extends BotCommand {
 
 		// If they already have a slayer task tell them what it is
 		if (slayerInfo.hasTask) {
-			const { currentTask } = msg.author.slayerInfo;
-			if (!currentTask) throw `WTF`;
-			let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${currentTask.name}.\n`;
-			if (currentTask?.alternatives) {
-				str += `You can also kill these monsters: ${currentTask?.alternatives}!`;
+			if (!slayerInfo.currentTask) throw `WTF`;
+			let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\n`;
+			if (slayerInfo.currentTask?.alternatives) {
+				str += `You can also kill these monsters: ${slayerInfo.currentTask?.alternatives}!`;
 				const re = /\,/gi;
 				return msg.send(str.replace(re, `, `));
 			}
