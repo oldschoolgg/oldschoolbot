@@ -1,38 +1,36 @@
 /*
 import { Monsters } from 'oldschooljs';
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 
 // Edit all tasks to fit the Task interface and include all IDs of alternatives.
-const turaelTasks: Task[] = [
+const turaelTasks: SlayerTask[] = [
 	{
+		// Twisted Banshee missing in monsters.
 		name: 'Banshee',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 20,
-			slayerLevel: 15
-		},
-		alternatives: ['Twisted Banshee'],
 		weight: 8,
-		Id: Monsters.Banshee.id,
+		alternatives: 'Twisted Banshee',
+		Id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
+		combatLvl: 20,
+		slayerLvl: 15,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
+		// Giant bat and deathwing missing in monsters.
 		name: 'Bat',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 5
-		},
-		alternatives: ['Giant bat', 'Deathwing'],
 		weight: 7,
-		Id: Monsters.Bat.id,
+		alternatives: ['Giant bat', 'Deathwing'],
+		Id: [Monsters.Bat.id, Monsters.GiantBat.id, Monsters.Deathwing.id],
+		combatLvl: 5,
 		unlocked: true
 	},
 	{
+		// All birds missing in monsters.
 		name: 'Bird',
 		amount: [15, 50],
-
+		weight: 6,
 		alternatives: [
 			'Chicken',
 			'Mounted terrorbird',
@@ -44,174 +42,180 @@ const turaelTasks: Task[] = [
 			'Duck',
 			'Duckling'
 		],
-		weight: 6,
-		Id: 1,
+		Id: [
+			Monsters.Chicken.id,
+			Monsters.MountedTerrorbird.id,
+			Monsters.Terrorbird.id,
+			Monsters.Rooster.id,
+			Monsters.ChompyBird.id,
+			Monsters.Seagull.id,
+			Monsters.Penguin.id,
+			Monsters.Duck.id,
+			Monsters.Duckling.id
+		],
 		unlocked: true
 	},
 	{
+		// Is Monsters.Bear.id === BlackBear? Lots bears missing in monsters.
 		name: 'Black bear',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 13
-		},
-		alternatives: ['Grizzly bear cub', 'Bear cub', 'Grizzly bear', 'Callisto'],
 		weight: 7,
-		Id: Monsters.Bear.id,
+		alternatives: ['Grizzly bear cub', 'Bear cub', 'Grizzly bear', 'Callisto'],
+		Id: [
+			Monsters.BlackBear.id,
+			Monsters.GrizzlyBearCub.id,
+			Monsters.BearCub.id,
+			Monsters.GrizzlyBear.id,
+			Monsters.Callisto.id
+		],
+		combatLvl: 13,
 		unlocked: true
 	},
 	{
 		name: 'Cave bug',
 		amount: [10, 20],
-
-		requirements: {
-			slayerLevel: 7
-		},
 		weight: 8,
 		Id: Monsters.CaveBug.id,
+		slayerLvl: 7,
 		unlocked: true
 	},
 	{
 		name: 'Cave crawler',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 10,
-			slayerLevel: 10
-		},
 		weight: 8,
 		Id: Monsters.CaveCrawler.id,
+		combatLvl: 10,
+		slayerLvl: 10,
 		unlocked: true
 	},
 	{
 		name: 'Cave slime',
 		amount: [10, 20],
-
-		requirements: {
-			combatLevel: 15,
-			slayerLevel: 17
-		},
 		weight: 8,
 		Id: Monsters.CaveSlime.id,
+		combatLvl: 15,
+		slayerLvl: 17,
 		unlocked: true
 	},
 	{
+		// CowCalf and UndeadCow missing in monsters.
 		name: 'Cow',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 5
-		},
-		alternatives: ['Cow calf', 'Undead cow'],
 		weight: 8,
-		Id: Monsters.Cow.id,
+		alternatives: ['Cow calf', 'Undead cow'],
+		Id: [Monsters.Cow.id, Monsters.CowCalf.id, Monsters.UndeadCow.id],
+		combatLvl: 5,
 		unlocked: true
 	},
 	{
 		name: 'Crawling hand',
 		amount: [15, 50],
-
-		requirements: {
-			slayerLevel: 5
-		},
 		weight: 8,
 		Id: Monsters.CrawlingHand.id,
+		slayerLvl: 5,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
+		// Not all dogs are added in monsters.
 		name: 'Guard dog',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 15
-		},
-		alternatives: ['Jackal', 'Wild dog', 'Reanimated dog'],
 		weight: 7,
-		Id: Monsters.GuardDog.id,
+		alternatives: ['Jackal', 'Wild dog', 'Reanimated dog'],
+		Id: [
+			Monsters.GuardDog.id,
+			Monsters.Jackal.id,
+			Monsters.WildDog.id,
+			Monsters.ReanimatedDog.id
+		],
+		combatLvl: 15,
 		unlocked: true
 	},
 	{
+		// Most dwards not added in monsters.
 		name: 'Dwarf',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 6
-		},
-		alternatives: ['Black Guard', 'Chaos Dwarf', 'Dwarf gang member'],
 		weight: 7,
-		Id: Monsters.Dwarf.id,
+		alternatives: ['Black Guard', 'Chaos Dwarf', 'Dwarf gang member'],
+		Id: [
+			Monsters.Dwarf.id,
+			Monsters.BlackGuard.id,
+			Monsters.ChaosDwarf.id,
+			Monsters.DwarfGangMember.id
+		],
+		combatLvl: 6,
 		unlocked: true
 	},
 	{
+		// Tortured soul not added in monsters.
 		name: 'Ghost',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 13
-		},
-		alternatives: ['Tortured soul'],
 		weight: 7,
-		Id: Monsters.Ghost.id,
+		alternatives: 'Tortured soul',
+		Id: [Monsters.Ghost.id, Monsters.TorturedSoul.id],
+		combatLvl: 13,
 		unlocked: true
 	},
 	{
+		// Cavegoblin guard not added, generalgraddor multiple goblin kills?
 		name: 'Goblin',
 		amount: [15, 50],
-
-		alternatives: ['Cave goblin guard', 'General Graardor'],
 		weight: 7,
-		Id: Monsters.Goblin.id,
+		alternatives: ['Cave goblin guard', 'General Graardor'],
+		Id: [Monsters.Goblin.id, Monsters.CaveGoblinGuard.id, Monsters.GeneralGraardor.id],
 		unlocked: true
 	},
 	{
 		name: 'Icefiend',
 		amount: [15, 50],
-		requirements: {
-			combatLevel: 20
-		},
 		weight: 8,
 		Id: Monsters.Icefiend.id,
+		combatLvl: 20,
 		unlocked: true
 	},
 	{
+		// KalphSolider and Guardian not added in monsters.
 		name: 'Kalphite worker',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 15
-		},
-		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		weight: 6,
-		Id: Monsters.KalphiteWorker.id,
+		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
+		Id: [
+			Monsters.KalphiteWorker.id,
+			Monsters.KalphiteSolider.id,
+			Monsters.KalphiteGuardian.id,
+			Monsters.KalphiteQueen.id
+		],
+		combatLvl: 15,
 		unlocked: true
 	},
 	{
+		// Sulphur locked behind 44 slayer, All not added in monsters.
 		name: 'Lizard',
 		amount: [15, 50],
-
-		requirements: {
-			slayerLevel: 22
-		},
-		alternatives: ['Small Lizard', 'Desert Lizard', 'Sulphur Lizard'],
 		weight: 8,
-		Id: Monsters.Lizard.id,
+		alternatives: ['Small Lizard', 'Desert Lizard', 'Sulphur Lizard'],
+		Id: [
+			Monsters.Lizard.id,
+			Monsters.SmallLizard.id,
+			Monsters.DesertLizard.id,
+			Monsters.SulphurLizard.id
+		],
+		slayerLvl: 22,
 		unlocked: true
 	},
 	{
 		name: 'Minotaur',
 		amount: [10, 20],
-
-		requirements: {
-			combatLevel: 7
-		},
 		weight: 7,
 		Id: Monsters.Minotaur.id,
+		combatLvl: 7,
 		unlocked: true
 	},
 	{
+		// Most monkeys not added in monsters.
 		name: 'Monkey',
 		amount: [15, 50],
-
+		weight: 6,
 		alternatives: [
 			'Karamjan Monkey',
 			'Monkey Guard',
@@ -220,24 +224,37 @@ const turaelTasks: Task[] = [
 			'Demonic Gorilla',
 			'Tortured Gorilla'
 		],
-		weight: 6,
-		Id: Monsters.Monkey.id,
+		Id: [
+			Monsters.Monkey.id,
+			Monsters.KaramjanMonkey.id,
+			Monsters.MonkeyGuard.id,
+			Monsters.MonkeyArcher.id,
+			Monsters.MonkeyZombie.id,
+			Monsters.DemonicGorilla.id,
+			Monsters.TorturedGorilla.id
+		],
 		unlocked: true
 	},
 	{
+		// Most rats not added in monsters.
 		name: 'Rat',
 		amount: [15, 50],
-		alternatives: ['Giant rat', 'Dungeon rat', 'Crypt rat', 'Brine rat'],
 		weight: 7,
-		Id: Monsters.Rat.id,
+		alternatives: ['Giant rat', 'Dungeon rat', 'Crypt rat', 'Brine rat'],
+		Id: [
+			Monsters.Rat.id,
+			Monsters.GiantRat.id,
+			Monsters.DungeonRat.id,
+			Monsters.CryptRat.id,
+			Monsters.BrineRat.id
+		],
 		unlocked: true
 	},
 	{
+		// Lots of scorpions not added in monsters.
 		name: 'Scorpion',
 		amount: [15, 50],
-		requirements: {
-			combatLevel: 7
-		},
+		weight: 7,
 		alternatives: [
 			'King Scorpion',
 			'Poison Scorpion',
@@ -246,26 +263,38 @@ const turaelTasks: Task[] = [
 			'Lobstrosity',
 			'Reanimated scorpion'
 		],
-		weight: 7,
-		Id: Monsters.Scorpion.id,
+		Id: [
+			Monsters.Scorpion.id,
+			Monsters.KingScorpion.id,
+			Monsters.PoisionScorpion.id,
+			Monsters.PitScorpion.id,
+			Monsters.Scorpia.id,
+			Monsters.Lobstrosity.id,
+			Monsters.ReanimatedScorpion.id
+		],
+		combatLvl: 7,
 		unlocked: true
 	},
 	{
+		// Not all skeletons added in monsters. And different types under 'Skeleton'.
 		name: 'Skeleton',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 15
-		},
-		alternatives: ['Skeleton mage', "Vet'ion", 'Skogre', 'Skeleton fremennik'],
 		weight: 7,
-		Id: Monsters.Skeleton.id,
+		alternatives: ['Skeleton mage', "Vet'ion", 'Skogre', 'Skeleton fremennik'],
+		Id: [
+			Monsters.SkeletonMage.id,
+			Monsters.Vetion.id,
+			Monsters.Skogre.id,
+			Monsters.SkeletonFremennik.id
+		],
+		combatLvl: 15,
 		unlocked: true
 	},
 	{
+		// Most spiders not added in monsters.
 		name: 'Spider',
 		amount: [15, 50],
-
+		weight: 6,
 		alternatives: [
 			'Giant spider',
 			'Shadow spider',
@@ -274,29 +303,39 @@ const turaelTasks: Task[] = [
 			'Temple Spider',
 			'Venenatis'
 		],
-		weight: 6,
-		Id: Monsters.Spider.id,
+		Id: [
+			Monsters.Spider.id,
+			Monsters.GiantSpider.id,
+			Monsters.ShadowSpider.id,
+			Monsters.GiantCryptSpider.id,
+			Monsters.Sarachnis.id,
+			Monsters.TempleSpider.id,
+			Monsters.Venenatis.id
+		],
 		unlocked: true
 	},
 	{
+		// Most wolfs not added to monsters.
 		name: 'Wolf',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 20
-		},
-		alternatives: ['Big Wolf', 'Desert Wolf', 'Ice wolf', 'Jungle wolf', 'White wolf'],
 		weight: 7,
-		Id: Monsters.Wolf.id,
+		alternatives: ['Big Wolf', 'Desert Wolf', 'Ice wolf', 'Jungle wolf', 'White wolf'],
+		Id: [
+			Monsters.Wolf.id,
+			Monsters.BigWolf.id,
+			Monsters.DesertWolf.id,
+			Monsters.IceWolf.id,
+			Monsters.JungleWolf.id,
+			Monsters.WhiteWolf.id
+		],
+		combatLvl: 20,
 		unlocked: true
 	},
 	{
+		// Most alternative zombies not added, different zombie combat lvls different drops?
 		name: 'Zombie',
 		amount: [15, 50],
-
-		requirements: {
-			combatLevel: 10
-		},
+		weight: 7,
 		alternatives: [
 			'Monkey Zombie',
 			'Undead chicken',
@@ -307,8 +346,18 @@ const turaelTasks: Task[] = [
 			'Zogre',
 			'Vorkath'
 		],
-		weight: 7,
-		Id: Monsters.Zombie.id,
+		Id: [
+			Monsters.Zombie.id,
+			Monsters.MonkeyZombie.id,
+			Monsters.UndeadChicken.id,
+			Monsters.UndeadCow.id,
+			Monsters.UndeadDruid.id,
+			Monsters.UndeadOne.id,
+			Monsters.ZombieRat.id,
+			Monsters.Zogre.id,
+			Monsters.Vorkath.id
+		],
+		combatLvl: 10,
 		unlocked: true
 	}
 ];

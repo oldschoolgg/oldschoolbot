@@ -151,6 +151,11 @@ export interface SlayerTask {
 	Id: number | number[];
 	combatLvl?: number;
 	slayerLvl?: number;
+	agiStrLvl?: number;
+	defenceLvl?: number;
+	magicLvl?: number;
+	firemakingLvl?: number;
+	questPoints?: number;
 	wilderness?: number;
 	unlocked?: boolean;
 }

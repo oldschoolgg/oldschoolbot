@@ -1,11 +1,11 @@
 /*
 import { Monsters } from 'oldschooljs';
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 
 // Handle extended amounts??
-const vannakaTasks: Task[] = [
+const vannakaTasks: SlayerTask[] = [
 	{
-		// Deviant spectre not added in monsters. Quest locked?
+		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -14,6 +14,7 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLvl: 65,
 		slayerLvl: 60,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -40,7 +41,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Twisted banshee not added in monsters, quest lock?
+		// Twisted banshee not added in monsters.
 		name: 'Banshee',
 		amount: [60, 120],
 		weight: 6,
@@ -48,10 +49,10 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLvl: 20,
 		slayerLvl: 15,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Defence lvl?
 		name: 'Basilisk',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -60,11 +61,11 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLvl: 40,
 		slayerLvl: 40,
-		//  defenceLvl: 20,
+		defenceLvl: 20,
 		unlocked: true
 	},
 	{
-		// Quest lock? Mutaed bloodveld not added in monsters.
+		// Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -73,10 +74,11 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLvl: 50,
 		slayerLvl: 50,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Quest lock, Baby, Brutal blue dragon not added in monsters.
+		// Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [60, 120],
 		weight: 7,
@@ -88,25 +90,27 @@ const vannakaTasks: Task[] = [
 			Monsters.Vorkath.id
 		],
 		combatLvl: 65,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
-		// Quest lock?
 		name: 'Brine rat',
 		amount: [60, 120],
 		weight: 7,
 		Id: Monsters.BrineRat.id,
 		combatLvl: 45,
 		slayerLvl: 47,
+		questPoints: 4,
 		unlocked: true
 	},
 	{
-		// Quest lock, Not added in monsters.
+		//Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [30, 50],
 		weight: 7,
 		Id: Monsters.BronzeDragon.id,
 		combatLvl: 75,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -136,23 +140,23 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Defencelvl? Not added to monsters.
+		// Not added to monsters.
 		name: 'Cockatrice',
 		amount: [60, 120],
 		weight: 8,
 		Id: Monsters.Cockatrice.id,
 		combatLvl: 25,
 		slayerLvl: 25,
-		//  defenceLvl: 20,
+		defenceLvl: 20,
 		unlocked: true
 	},
 	{
-		// Quest lock?
 		name: 'Crawling Hand',
 		amount: [60, 120],
 		weight: 6,
 		Id: Monsters.CrawlingHand.id,
 		slayerLvl: 5,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -165,7 +169,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock? Dagannoth spawn and fledgeling not added to monsters.
+		//Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [60, 120],
 		weight: 7,
@@ -185,10 +189,10 @@ const vannakaTasks: Task[] = [
 			Monsters.DagannothPrime.id
 		],
 		combatLvl: 75,
+		questPoints: 2,
 		unlocked: true
 	},
 	{
-		// Quest lock?
 		name: 'Dust devil',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -196,6 +200,7 @@ const vannakaTasks: Task[] = [
 		Id: Monsters.DustDevil.id,
 		combatLvl: 70,
 		slayerLvl: 65,
+		questPoints: 12,
 		unlocked: true
 	},
 	{
@@ -208,7 +213,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock, Most elves not added to monsters.
+		//Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [40, 100],
 		weight: 7,
@@ -228,16 +233,18 @@ const vannakaTasks: Task[] = [
 			Monsters.PrifddinasGuard.id
 		],
 		combatLvl: 70,
+		questPoints: 12,
 		unlocked: true
 	},
 	{
-		// Quest lock, not added to monsters.
+		// Not added to monsters.
 		name: 'Fever spider',
 		amount: [60, 120],
 		weight: 7,
 		Id: Monsters.FeverSpider.id,
 		combatLvl: 40,
 		slayerLvl: 42,
+		questPoints: 7,
 		unlocked: true
 	},
 	{
@@ -249,7 +256,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock?, Grotesque Guardians not added to monsters.
+		//Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -258,36 +265,39 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLvl: 80,
 		slayerLvl: 75,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Ghoul',
 		amount: [10, 40],
 		weight: 7,
 		Id: Monsters.Ghoul.id,
 		combatLvl: 25,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// No green dragons added in monsters. Quest lock?
+		// No green dragons added in monsters.
 		name: 'Green dragon',
 		amount: [40, 80],
 		weight: 6,
 		alternatives: ['Baby Green dragon', 'Brutal Green dragon'],
 		Id: [Monsters.GreenDragon.id, Monsters.BabyGreenDragon.id, Monsters.BrutalGreenDragon.id],
 		combatLvl: 52,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Firemaking?
+		// Not added in monsters.
 		name: 'Harpie Bug Swarm',
 		amount: [60, 120],
 		weight: 8,
 		Id: Monsters.HarpieBugSwarm.id,
 		combatLvl: 45,
 		slayerLvl: 33,
-		//  firemakingLvl: 33,
+		firemakingLvl: 33,
 		unlocked: true
 	},
 	{
@@ -343,13 +353,14 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Infernal Mage',
 		amount: [60, 120],
 		weight: 8,
 		Id: Monsters.InfernalMage.id,
 		combatLvl: 40,
 		slayerLvl: 45,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -364,12 +375,13 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest locked.
+		// Not added in monsters.
 		name: 'Jungle horror',
 		amount: [60, 120],
 		weight: 8,
 		Id: Monsters.JungleHorror.id,
 		combatLvl: 65,
+		questPoints: 11,
 		unlocked: true
 	},
 	{
@@ -388,13 +400,14 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Killerwatt',
 		amount: [30, 80],
 		weight: 6,
 		Id: Monsters.Killerwatt.id,
 		combatLvl: 50,
 		slayerLvl: 37,
+		questPoints: 4,
 		unlocked: true
 	},
 	{
@@ -432,7 +445,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Mogre',
 		amount: [60, 120],
 		weight: 7,
@@ -442,17 +455,18 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 7,
 		Id: Monsters.Molanisk.id,
 		combatLvl: 50,
 		slayerLvl: 39,
+		questPoints: 8,
 		unlocked: true
 	},
 	{
-		// Wildy? Not added in monsters
+		// Wildy droprate? Not added in monsters
 		name: 'Moss giant',
 		amount: [60, 120],
 		weight: 7,
@@ -462,7 +476,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters, Quest lock?
+		// Greater Nechryael not added in monsters
 		name: 'Nechryael',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -471,6 +485,7 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLvl: 85,
 		slayerLvl: 80,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -484,12 +499,13 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Otherworldly being',
 		amount: [60, 120],
 		weight: 8,
 		Id: Monsters.OtherworldlyBeing.id,
 		combatLvl: 40,
+		questPoints: 3,
 		unlocked: true
 	},
 	{
@@ -530,7 +546,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock
+		// Not added in monsters.
 		name: 'Sea Snake',
 		amount: [60, 120],
 		weight: 6,
@@ -538,19 +554,21 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.SeaSnake.id, Monsters.SeaSnakeHatchling.id, Monsters.SeaSnakeYoung.id],
 		combatLvl: 50,
 		slayerLvl: 40,
+		questPoints: 60,
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock
+		// Not added in monsters.
 		name: 'Shadow warrior',
 		amount: [40, 80],
 		weight: 8,
 		Id: Monsters.ShadowWarrior.id,
-		combatLvl: 60,
+		combatLvl: 57,
+		questPoints: 111,
 		unlocked: true
 	},
 	{
-		// Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
+		// Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [60, 120],
 		extendedAmount: [180, 250],
@@ -559,16 +577,19 @@ const vannakaTasks: Task[] = [
 		Id: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		combatLvl: 60,
 		slayerLvl: 63,
+		agiStrLvl: 60,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock
+		// Not added in monsters.
 		name: 'Terror dog',
 		amount: [20, 45],
 		weight: 6,
 		Id: Monsters.TerrorDog.id,
 		combatLvl: 60,
 		slayerLvl: 40,
+		questPoints: 3,
 		unlocked: true
 	},
 	{
@@ -591,7 +612,7 @@ const vannakaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters.
 		name: 'Feral Vampyre',
 		amount: [10, 20],
 		extendedAmount: [200, 250],
@@ -604,26 +625,27 @@ const vannakaTasks: Task[] = [
 			Monsters.VyrewatchSentinel.id
 		],
 		combatLvl: 35,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Defence lvl?
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 6,
 		Id: Monsters.WallBeast.id,
 		combatLvl: 30,
 		slayerLvl: 35,
-		//	defenceLvl: 5,
+		defenceLvl: 5,
 		unlocked: true
 	},
 	{
-		// Not added to monsters. Quest lock.
+		// Not added to monsters.
 		name: 'Werewolf',
 		amount: [40, 80],
 		weight: 7,
 		Id: Monsters.WereWolf.id,
 		combatLvl: 60,
+		questPoints: 1,
 		unlocked: true
 	}
 ];

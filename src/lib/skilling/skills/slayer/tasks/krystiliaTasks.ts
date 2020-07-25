@@ -1,9 +1,9 @@
 /*
 import { Monsters } from 'oldschooljs';
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 
 // Larrans keys??
-const krystiliaTasks: Task[] = [
+const krystiliaTasks: SlayerTask[] = [
 	{
 		name: 'Ankou',
 		amount: [40, 130],
@@ -13,12 +13,13 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Add Armadylian guard as option? Agility/Strength lock in future?
+		// Add Armadylian guard as option?
 		name: 'Aviansie',
 		amount: [80, 150],
 		weight: 7,
 		//	alternatives: 'Armadylian guard',
 		Id: [Monsters.Aviansie.id, Monsters.Armadylianguard.id],
+		agiStrLvl: 60,
 		wilderness: 27,
 		unlocked: false
 	},
@@ -70,11 +71,11 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Agility/Strength lock in future?
 		name: 'Bloodveld',
 		amount: [90, 140],
 		weight: 4,
 		Id: Monsters.Bloodveld.id,
+		agiStrLvl: 60,
 		wilderness: 27,
 		unlocked: true
 	},
@@ -116,7 +117,7 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters, wildy?
+		// Not added in monsters, wildy drops?
 		name: 'Fire giant',
 		amount: [100, 150],
 		weight: 7,
@@ -320,12 +321,13 @@ const krystiliaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Agility/Strength lock in future? Quest lock?
 		name: 'Spiritual ranger',
 		amount: [100, 150],
 		weight: 6,
 		alternatives: ['Spiritual warrior', 'Spiritual mage'],
 		Id: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		agiStrLvl: 60,
+		questPoints: 1,
 		wilderness: 26,
 		unlocked: true
 	},

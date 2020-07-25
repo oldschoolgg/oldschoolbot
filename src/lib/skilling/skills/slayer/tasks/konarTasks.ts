@@ -1,9 +1,9 @@
 /*
 import { Monsters } from 'oldschooljs';
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 
 // Handle extended amounts?? Brimstone keys?
-const konarTasks: Task[] = [
+const konarTasks: SlayerTask[] = [
 	{
 		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
@@ -29,17 +29,17 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Adamant Dragon',
 		amount: [3, 6],
 		extendedAmount: [20, 30],
 		weight: 5,
 		Id: Monsters.AdamantDragon.id,
+		questPoints: 205,
 		unlocked: true
 	},
 	{
 		name: 'Ankou',
-		amount: 50,
+		amount: [50, 50],
 		extendedAmount: [90, 150],
 		weight: 5,
 		Id: Monsters.Ankou.id,
@@ -47,17 +47,17 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Agility/Strength lock in future? Count Kreeerra guards?
+		// Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [120, 170],
 		extendedAmount: [130, 250],
 		weight: 6,
 		alternatives: "Kree'arra",
 		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
+		agiStrLvl: 60,
 		unlocked: false
 	},
 	{
-		// Defence lvl?
 		name: 'Basilisk',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -66,7 +66,7 @@ const konarTasks: Task[] = [
 		Id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLvl: 40,
 		slayerLvl: 40,
-		//  defenceLvl: 20,
+		defenceLvl: 20,
 		unlocked: false
 	},
 	{
@@ -81,7 +81,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock. Mutaed bloodveld not added in monsters.
+		// Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -90,16 +90,18 @@ const konarTasks: Task[] = [
 		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLvl: 50,
 		slayerLvl: 50,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Quest lock, Baby, Brutal blue dragon not added in monsters.
+		// Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [120, 170],
 		weight: 8,
 		alternatives: ['Baby Blue Dragon', 'Brutal Blue Dragon'],
 		Id: [Monsters.BlueDragon.id, Monsters.BabyBlueDragon.id, Monsters.BrutalBlueDragon.id],
 		combatLvl: 65,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -112,27 +114,28 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		// Quest lock.
 		name: 'Brine rat',
 		amount: [120, 170],
 		weight: 2,
 		Id: Monsters.BrineRat.id,
 		combatLvl: 45,
 		slayerLvl: 47,
+		questPoints: 4,
 		unlocked: true
 	},
 	{
-		// Quest lock, Not added in monsters.
+		// Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [30, 50],
 		extendedAmount: [30, 50],
 		weight: 5,
 		Id: Monsters.BronzeDragon.id,
 		combatLvl: 75,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
-		// Kraken not added to monsters, Magelvl?
+		// Kraken not added to monsters.
 		name: 'Cave kraken',
 		amount: [80, 100],
 		extendedAmount: [150, 200],
@@ -141,11 +144,11 @@ const konarTasks: Task[] = [
 		Id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLvl: 80,
 		slayerLvl: 87,
-		//  mageLvl: 50,
+		magicLvl: 50,
 		unlocked: true
 	},
 	{
-		// Quest lock. Dagannoth spawn and fledgeling not added to monsters.
+		// Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [120, 170],
 		weight: 8,
@@ -165,10 +168,10 @@ const konarTasks: Task[] = [
 			Monsters.DagannothPrime.id
 		],
 		combatLvl: 75,
+		questPoints: 2,
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Dark beast',
 		amount: [10, 15],
 		extendedAmount: [100, 150],
@@ -176,6 +179,7 @@ const konarTasks: Task[] = [
 		Id: Monsters.DarkBeast.id,
 		combatLvl: 90,
 		slayerLvl: 90,
+		questPoints: 24,
 		unlocked: true
 	},
 	{
@@ -187,7 +191,6 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Dust devil',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -195,6 +198,7 @@ const konarTasks: Task[] = [
 		Id: Monsters.DustDevil.id,
 		combatLvl: 70,
 		slayerLvl: 65,
+		questPoints: 12,
 		unlocked: true
 	},
 	{
@@ -206,7 +210,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
+		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns?.
 		name: 'Spitting wyvern',
 		amount: [15, 30],
 		extendedAmount: [55, 75],
@@ -220,10 +224,11 @@ const konarTasks: Task[] = [
 		],
 		combatLvl: 60,
 		slayerLvl: 66,
+		questPoints: 3,
 		unlocked: true
 	},
 	{
-		// Quest lock?, Grotesque Guardians not added to monsters.
+		// Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -232,6 +237,7 @@ const konarTasks: Task[] = [
 		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLvl: 80,
 		slayerLvl: 75,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -266,13 +272,13 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Iron dragon',
 		amount: [30, 50],
 		extendedAmount: [60, 100],
 		weight: 5,
 		Id: Monsters.IronDragon.id,
 		combatLvl: 80,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -320,7 +326,6 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		// Quest lock?
 		name: 'Mithril Dragon',
 		amount: [3, 6],
 		extendedAmount: [20, 40],
@@ -329,7 +334,7 @@ const konarTasks: Task[] = [
 		unlocked: false
 	},
 	{
-		// Ancient Zygomite not added to monsters, Quest lock.
+		// Ancient Zygomite not added to monsters.
 		name: 'Zygomite',
 		amount: [10, 25],
 		weight: 2,
@@ -337,10 +342,11 @@ const konarTasks: Task[] = [
 		Id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLvl: 60,
 		slayerLvl: 57,
+		questPoints: 3,
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters, Quest lock.
+		// Greater Nechryael not added in monsters.
 		name: 'Nechryael',
 		amount: 110,
 		extendedAmount: [200, 250],
@@ -349,28 +355,29 @@ const konarTasks: Task[] = [
 		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLvl: 85,
 		slayerLvl: 80,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Quest lock, baby /brute red dragon not added to monsters.
+		// Baby/brute red dragon not added to monsters.
 		name: 'Red Dragon',
 		amount: [30, 50],
 		weight: 5,
 		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
 		Id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BruteRedDragon.id],
+		questPoints: 34,
 		unlocked: false
 	},
 	{
-		// Quest lock.
 		name: 'Rune Dragon',
 		amount: [3, 6],
 		extendedAmount: [30, 60],
 		weight: 5,
 		Id: Monsters.RuneDragon.id,
+		questPoints: 205,
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Skeletal Wyvern',
 		amount: [5, 12],
 		extendedAmount: [50, 70],
@@ -378,6 +385,7 @@ const konarTasks: Task[] = [
 		Id: Monsters.SkeletalWyvern.id,
 		combatLvl: 70,
 		slayerLvl: 72,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -419,7 +427,7 @@ const konarTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters.
 		name: 'Feral Vampyre',
 		amount: [100, 160],
 		extendedAmount: [200, 250],
@@ -431,6 +439,8 @@ const konarTasks: Task[] = [
 			Monsters.Vyrewatch.id,
 			Monsters.VyrewatchSentinel.id
 		],
+		combatLvl: 35,
+		questPoints: 1,
 		unlocked: false
 	},
 	{

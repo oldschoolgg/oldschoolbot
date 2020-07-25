@@ -30,7 +30,7 @@ export default class extends BotCommand {
 		// If the task theyre trying to block is an actual task, continue
 		if (action.toLowerCase() === 'block') {
 			if (!slayerInfo.hasTask) {
-				throw `You currently don't have a task to block. Visit a Slayer Master.`
+				throw `You currently don't have a task to block. Visit a Slayer Master.`;
 			}
 			if (userBlockList.length >= 5) {
 				throw `You already have a full block list`;
@@ -38,7 +38,9 @@ export default class extends BotCommand {
 			if (slayerInfo.slayerPoints < 100) {
 				throw `You need 100 slayer points to block that task and you only have ${slayerInfo.slayerPoints}`;
 			}
-			msg.send(`Are you sure you'd like to block ${slayerInfo.currentTask?.name}? Say \`confirm\` to continue.`);
+			msg.send(
+				`Are you sure you'd like to block ${slayerInfo.currentTask?.name}? Say \`confirm\` to continue.`
+			);
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
@@ -49,9 +51,13 @@ export default class extends BotCommand {
 			} catch (err) {
 				throw `Cancelling block list addition of ${slayerInfo.currentTask?.name}.`;
 			}
-			await msg.author.settings.update(UserSettings.Slayer.BlockList, slayerInfo.currentTask, {
-				arrayAction: 'add'
-			});
+			await msg.author.settings.update(
+				UserSettings.Slayer.BlockList,
+				slayerInfo.currentTask,
+				{
+					arrayAction: 'add'
+				}
+			);
 			const newSlayerInfo = {
 				...slayerInfo,
 				hasTask: false,
@@ -65,7 +71,8 @@ export default class extends BotCommand {
 				arrayAction: 'overwrite'
 			});
 			return msg.send(
-				`The task has been **added** to your block list. You have ${slayerInfo.slayerPoints - 100} Slayer Points left. Your current task has also been cancelled.`
+				`The task has been **added** to your block list. You have ${slayerInfo.slayerPoints -
+					100} Slayer Points left. Your current task has also been cancelled.`
 			);
 		}
 
@@ -82,7 +89,7 @@ export default class extends BotCommand {
 			str = str.replace(/,\s*$/, '');
 			throw str;
 		}
-		// Needs to pass in task name. 
+		// Needs to pass in task name.
 		// Block list removal
 		/*
 		if (action == 'unblock') {

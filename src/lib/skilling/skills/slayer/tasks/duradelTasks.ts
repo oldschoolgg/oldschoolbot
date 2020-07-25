@@ -13,6 +13,7 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.AberrantSpectre.id /* Monsters.DeviantSpectre.id*/],
 		combatLvl: 65,
 		slayerLvl: 60,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -32,15 +33,16 @@ const duradelTasks: SlayerTask[] = [
 		],
 		combatLvl: 85,
 		slayerLvl: 85,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Adamant Dragon',
 		amount: [4, 9],
 		extendedAmount: [20, 30],
 		weight: 2,
 		Id: Monsters.AdamantDragon.id,
+		questPoints: 205,
 		unlocked: true
 	},
 	{
@@ -55,17 +57,17 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Agility/Strength lock in future? Count Kreeerra guards?
+		// Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [120, 200],
 		extendedAmount: [130, 250],
 		weight: 8,
 		alternatives: "Kree'arra, 'Reanimated aviansie",
 		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id /* , Monsters.ReanimatedAviansie*/],
+		agiStrLvl: 60,
 		unlocked: false
 	},
 	{
-		// Defence lvl?
 		name: 'Basilisk',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -74,7 +76,7 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLvl: 40,
 		slayerLvl: 40,
-		//  defenceLvl: 20,
+		defenceLvl: 20,
 		unlocked: false
 	},
 	{
@@ -97,7 +99,7 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock. Baby,Brutal black dragon not added.
+		// Baby,Brutal black dragon not added.
 		name: 'Black Dragon',
 		amount: [10, 20],
 		extendedAmount: [40, 60],
@@ -112,10 +114,11 @@ const duradelTasks: SlayerTask[] = [
 			*/
 		],
 		combatLvl: 80,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
-		// Quest lock. Mutaed bloodveld not added in monsters.
+		// Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -124,10 +127,11 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.Bloodveld.id /* , Monsters.MutatedBloodveld.id*/],
 		combatLvl: 50,
 		slayerLvl: 50,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Quest lock, Baby, Brutal blue dragon not added in monsters.
+		// Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [110, 170],
 		weight: 4,
@@ -141,6 +145,7 @@ const duradelTasks: SlayerTask[] = [
 			*/
 		],
 		combatLvl: 65,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -153,7 +158,6 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Quest lock
 		name: 'Cave horror',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -161,10 +165,11 @@ const duradelTasks: SlayerTask[] = [
 		Id: Monsters.CaveHorror.id,
 		combatLvl: 85,
 		slayerLvl: 58,
+		questPoints: 11,
 		unlocked: true
 	},
 	{
-		// Kraken not added to monsters, Magelvl?
+		// Kraken not added to monsters
 		name: 'Cave kraken',
 		amount: [100, 120],
 		extendedAmount: [150, 200],
@@ -173,11 +178,11 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.CaveKraken.id /* , Monsters.Kraken.id*/],
 		combatLvl: 80,
 		slayerLvl: 87,
-		//  mageLvl: 50,
+		magicLvl: 50,
 		unlocked: true
 	},
 	{
-		// Quest lock. Dagannoth spawn and fledgeling not added to monsters.
+		// Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [130, 200],
 		weight: 9,
@@ -199,10 +204,10 @@ const duradelTasks: SlayerTask[] = [
 			*/
 		],
 		combatLvl: 75,
+		questPoints: 2,
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Dark beast',
 		amount: [10, 20],
 		extendedAmount: [100, 150],
@@ -210,6 +215,7 @@ const duradelTasks: SlayerTask[] = [
 		Id: Monsters.DarkBeast.id,
 		combatLvl: 90,
 		slayerLvl: 90,
+		questPoints: 24,
 		unlocked: true
 	},
 	{
@@ -221,7 +227,6 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Dust devil',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -229,10 +234,11 @@ const duradelTasks: SlayerTask[] = [
 		Id: Monsters.DustDevil.id,
 		combatLvl: 70,
 		slayerLvl: 65,
+		questPoints: 12,
 		unlocked: true
 	},
 	{
-		// Quest lock, Most elves not added to monsters.
+		// Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [100, 170],
 		weight: 4,
@@ -256,6 +262,7 @@ const duradelTasks: SlayerTask[] = [
 			*/
 		],
 		combatLvl: 70,
+		questPoints: 12,
 		unlocked: true
 	},
 	{
@@ -267,7 +274,7 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns? Quest lock.
+		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns?
 		name: 'Spitting wyvern',
 		amount: [20, 60],
 		extendedAmount: [55, 75],
@@ -283,10 +290,11 @@ const duradelTasks: SlayerTask[] = [
 		],
 		combatLvl: 60,
 		slayerLvl: 66,
+		questPoints: 3,
 		unlocked: true
 	},
 	{
-		// Quest lock?, Grotesque Guardians not added to monsters.
+		// Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -295,6 +303,7 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.Gargoyle.id /* , Monsters.GrotesqueGuardians.id*/],
 		combatLvl: 80,
 		slayerLvl: 75,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -332,13 +341,13 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Iron dragon',
 		amount: [40, 60],
 		extendedAmount: [60, 100],
 		weight: 5,
 		Id: Monsters.IronDragon.id,
 		combatLvl: 80,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
@@ -385,7 +394,7 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Ancient Zygomite not added to monsters, Quest lock.
+		// Ancient Zygomite not added to monsters.
 		name: 'Zygomite',
 		amount: [20, 30],
 		weight: 2,
@@ -393,10 +402,11 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.Zygomite.id /* , Monsters.AncientZygomite.id*/],
 		combatLvl: 60,
 		slayerLvl: 57,
+		questPoints: 3,
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters, Quest lock.
+		// Greater Nechryael not added in monsters.
 		name: 'Nechryael',
 		amount: [110, 200],
 		extendedAmount: [200, 250],
@@ -405,28 +415,29 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.Nechryael.id /* , Monsters.GreaterNechryael.id*/],
 		combatLvl: 85,
 		slayerLvl: 80,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Quest lock, baby /brute red dragon not added to monsters.
+		// Baby /brute red dragon not added to monsters.
 		name: 'Red Dragon',
 		amount: [30, 65],
 		weight: 8,
 		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
 		Id: [Monsters.RedDragon.id /* ,Monsters.BabyRedDragon.id, Monsters.BruteRedDragon.id*/],
+		questPoints: 34,
 		unlocked: false
 	},
 	{
-		// Quest lock.
 		name: 'Rune Dragon',
 		amount: [3, 8],
 		extendedAmount: [30, 60],
 		weight: 2,
 		Id: Monsters.RuneDragon.id,
+		questPoints: 205,
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Skeletal Wyvern',
 		amount: [20, 40],
 		extendedAmount: [50, 70],
@@ -434,6 +445,7 @@ const duradelTasks: SlayerTask[] = [
 		Id: Monsters.SkeletalWyvern.id,
 		combatLvl: 70,
 		slayerLvl: 72,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -448,7 +460,7 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Agility/Strength lock in future? Quest lock? Different slayer lvls for warrior(68) and mage(83).
+		// Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [130, 200],
 		extendedAmount: [180, 250],
@@ -457,26 +469,28 @@ const duradelTasks: SlayerTask[] = [
 		Id: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		combatLvl: 60,
 		slayerLvl: 63,
+		agiStrLvl: 60,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Steel Dragon',
 		amount: [10, 20],
 		extendedAmount: [40, 60],
 		weight: 7,
 		Id: Monsters.SteelDragon.id,
 		combatLvl: 85,
+		questPoints: 34,
 		unlocked: true
 	},
 	{
-		// Quest lock.
 		name: 'Suqah',
 		amount: [60, 90],
 		extendedAmount: [180, 250],
 		weight: 8,
 		Id: Monsters.Suqah.id,
 		combatLvl: 85,
+		questPoints: 12,
 		unlocked: true
 	},
 	{
@@ -506,7 +520,7 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters.
 		name: 'Feral Vampyre',
 		amount: [100, 210],
 		extendedAmount: [200, 250],
@@ -520,6 +534,8 @@ const duradelTasks: SlayerTask[] = [
 			Monsters.VyrewatchSentinel.id
 			*/
 		],
+		combatLvl: 35,
+		questPoints: 1,
 		unlocked: false
 	},
 	{

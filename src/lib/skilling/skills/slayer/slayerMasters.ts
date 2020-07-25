@@ -34,7 +34,7 @@ const slayerMasters: SlayerMaster[] = [
 		masterId: 3,
 		basePoints: 2,
 		combatLvl: 20,
-		questPoints: 5 // Not right amount, Priest in Peril.
+		questPoints: 1
 	},
 	{
 		name: 'Vannaka',
@@ -51,7 +51,7 @@ const slayerMasters: SlayerMaster[] = [
 		masterId: 5,
 		basePoints: 10,
 		combatLvl: 70,
-		questPoints: 5 // Not right amount, Lost City.
+		questPoints: 3
 	},
 	{
 		name: 'Konar quo Maten',

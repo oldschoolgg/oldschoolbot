@@ -15,7 +15,7 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<slayermaster:...string>',
+			usage: '[slayermaster:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 1,
@@ -23,7 +23,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [slayermaster]: [string]) {
+	async run(msg: KlasaMessage, [slayermaster = '']: [string]) {
 		await msg.author.settings.sync(true);
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;

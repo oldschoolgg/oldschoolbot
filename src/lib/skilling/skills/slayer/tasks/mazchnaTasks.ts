@@ -1,10 +1,10 @@
 /*
 import { Monsters } from 'oldschooljs';
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 
-const mazchnaTasks: Task[] = [
+const mazchnaTasks: SlayerTask[] = [
 	{
-		// Twisted Banshee not added in monsters. Quest lock?
+		// Twisted Banshee not added in monsters.
 		name: 'Banshee',
 		amount: [40, 70],
 		weight: 8,
@@ -12,15 +12,16 @@ const mazchnaTasks: Task[] = [
 		Id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLvl: 20,
 		slayerLvl: 15,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Giant bat not added in monsters.
+		// Giant bat and deathwing missing in monsters.
 		name: 'Bat',
 		amount: [40, 70],
 		weight: 7,
-		alternatives: 'Giant bat',
-		Id: [Monsters.Bat.id, Monsters.GiantBat.id],
+		alternatives: ['Giant bat', 'Deathwing'],
+		Id: [Monsters.Bat.id, Monsters.GiantBat.id, Monsters.Deathwing.id],
 		combatLvl: 5,
 		unlocked: true
 	},
@@ -76,23 +77,23 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Defence lvl? Not added in monsters.
+		//Not added in monsters.
 		name: 'Cockatrice',
 		amount: [40, 70],
 		weight: 8,
 		Id: Monsters.Cockatrice.id,
 		combatLvl: 25,
 		slayerLvl: 25,
-		//  defenceLvl: 20,
+		defenceLvl: 20,
 		unlocked: true
 	},
 	{
-		// Quest lock?
 		name: 'Crawling hand',
 		amount: [40, 70],
 		weight: 8,
 		Id: Monsters.CrawlingHand.id,
 		slayerLvl: 5,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -144,7 +145,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Tortured soul added in monsters.
+		// Tortured soul not added in monsters.
 		name: 'Ghost',
 		amount: [40, 70],
 		weight: 7,
@@ -154,12 +155,13 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Ghoul',
 		amount: [10, 20],
 		weight: 7,
 		Id: Monsters.Ghoul.id,
 		combatLvl: 25,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
@@ -206,17 +208,18 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Killerwatt',
 		amount: [30, 80],
 		weight: 6,
 		Id: Monsters.Killerwatt.id,
 		combatLvl: 50,
 		slayerLvl: 37,
+		questPoints: 4,
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Quest lock?
+		// Not added in monsters.
 		name: 'Mogre',
 		amount: [40, 70],
 		weight: 8,
@@ -303,7 +306,7 @@ const mazchnaTasks: Task[] = [
 		unlocked: true
 	},
 	{
-		// No Vampyres added in monsters. Quest lock?
+		// No Vampyres added in monsters.
 		name: 'Feral Vampyre',
 		amount: [10, 20],
 		weight: 6,
@@ -315,17 +318,17 @@ const mazchnaTasks: Task[] = [
 			Monsters.VyrewatchSentinel.id
 		],
 		combatLvl: 35,
+		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Defence lvl?
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 7,
 		Id: Monsters.WallBeast.id,
 		combatLvl: 30,
 		slayerLvl: 35,
-		//	defenceLvl: 5,
+		defenceLvl: 5,
 		unlocked: true
 	},
 	{
