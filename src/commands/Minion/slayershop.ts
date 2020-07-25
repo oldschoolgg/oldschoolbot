@@ -59,8 +59,8 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [unlockname = '']: [string]) {
 		await msg.author.settings.sync(true);
 		const { slayerInfo } = msg.author;
-		if (typeof slayerInfo === 'undefined') {
-			throw "Your minion have never done any slayer, visit a Slayer Master";
+		if (!slayerInfo) {
+			throw 'Your minion have never done any slayer, visit a Slayer Master';
 		}
 		if (unlockname === 'bal') {
 			throw `Your current Slayer Points balance is: ${slayerInfo.slayerPoints}`;

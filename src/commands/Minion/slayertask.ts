@@ -28,8 +28,8 @@ export default class extends BotCommand {
 		if (!msg.author.hasMinion) {
 			throw `You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`;
 		}
-		const { slayerInfo, settings } = msg.author;
-		if (typeof slayerInfo === 'undefined' || typeof slayerInfo.hasTask === 'undefined') {
+		const tempSlayerInfo = msg.author.settings.get(UserSettings.Slayer.SlayerInfo);
+		if (!tempSlayerInfo) {
 			const newSlayerInfo = {
 				hasTask: false,
 				currentTask: null,
@@ -40,10 +40,12 @@ export default class extends BotCommand {
 				streak: 0,
 				wildyStreak: 0
 			};
-			await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+			await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 				arrayAction: 'overwrite'
 			});
 		}
+		await msg.author.settings.sync(true);
+		const { slayerInfo, settings } = msg.author;
 		if (slayerInfo.hasTask && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);

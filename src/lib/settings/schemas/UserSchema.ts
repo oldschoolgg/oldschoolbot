@@ -2,6 +2,7 @@ import { Client, SchemaFolder } from 'klasa';
 
 import Gear from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
+import defaultSlayerInfo from '../../skilling/skills/slayer/defaultSlayerInfo';
 
 Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
@@ -31,7 +32,7 @@ Client.defaultUserSchema
 	)
 	.add('slayer', folder =>
 		folder
-			.add('slayerInfo', 'any', { default: {} })
+			.add('slayerInfo', 'any', { default: defaultSlayerInfo })
 			.add('blockList', 'any', { array: true, default: [] })
 			.add('extendList', 'any', { array: true, default: [] })
 			.add('unlockedList', 'any', { array: true, default: [] })
