@@ -3,7 +3,6 @@ import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
 import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, rand /* ,determineCombatLevel*/ } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-// import bossTasks from '../../lib/skilling/skills/slayer/tasks/bossTasks';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 const options = {
@@ -70,18 +69,6 @@ export default class extends BotCommand {
 			return msg.send(`Successfully cancelled task`);
 		}
 
-		// If they already have a slayer task tell them what it is
-		if (slayerInfo.hasTask) {
-			if (!slayerInfo.currentTask) throw `WTF`;
-			let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\n`;
-			if (slayerInfo.currentTask?.alternatives) {
-				str += `You can also kill these monsters: ${slayerInfo.currentTask?.alternatives}!`;
-				const re = /\,/gi;
-				return msg.send(str.replace(re, `, `));
-			}
-			throw str;
-		}
-
 		// Figure out what master they're using
 		const master = slayerMasters.find(master =>
 			master.aliases.some(alias => stringMatches(alias, slayermaster))
@@ -91,11 +78,7 @@ export default class extends BotCommand {
 				.map(master => master.name)
 				.join(', ')}.`;
 		}
-		// Get that masters list of tasks
-		const listOfTasks = master.tasks;
-		if (!listOfTasks) {
-			throw `WTF`;
-		}
+
 		/* For future
 		const userCombatLevel = determineCombatLevel(
 			msg.author.skillLevel(SkillsEnum.Prayer),
@@ -108,6 +91,58 @@ export default class extends BotCommand {
 		);
 		*/
 		const userCombatLevel = 126;
+
+		if (slayerInfo.hasTask && master.masterId === 1) {
+			if (master.tasks.some(task => task.name === slayerInfo.currentTask?.name)) {
+				throw `I'm not gonna replace my own tasks.`;
+			}
+			msg.send(
+				`Are you sure you'd like to replace your current task of ${slayerInfo.currentTask?.name} x ${slayerInfo.quantityTask}? It will be replaced with a easier task from Turael, WARNING: Your task streak will also end. Current streak is ${slayerInfo.streak}. Say \`confirm\` to continue.`
+			);
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					options
+				);
+			} catch (err) {
+				throw `Cancelled request to replace ${slayerInfo.currentTask?.name} slayer task.`;
+			}
+			// Filter which tasks that can be assigned.
+			// Weight and random task function. generates a task
+			const randomedTask = master.tasks[1]; // Placeholder
+			const minQuantity = randomedTask.amount[0];
+			const maxQuantity = randomedTask.amount[1];
+			const quantity = Math.floor(rand(minQuantity, maxQuantity));
+			const newSlayerInfo = {
+				...slayerInfo,
+				hasTask: true,
+				currentTask: randomedTask,
+				quantityTask: quantity,
+				remainingQuantity: quantity,
+				currentMaster: master.masterId,
+				streak: 0
+			};
+			await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+				arrayAction: 'overwrite'
+			});
+			return msg.send(
+				`Your new slayer task is ${quantity}x ${randomedTask.name} and the previous task got canceled.`
+			);
+		}
+
+		// If they already have a slayer task tell them what it is
+		if (slayerInfo.hasTask) {
+			if (!slayerInfo.currentTask) throw `WTF`;
+			let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\n`;
+			if (slayerInfo.currentTask?.alternatives) {
+				str += `You can also kill these monsters: ${slayerInfo.currentTask?.alternatives}!`;
+				const re = /\,/gi;
+				return msg.send(str.replace(re, `, `));
+			}
+			throw str;
+		}
 		if (
 			(master.combatLvl && master.combatLvl > userCombatLevel) ||
 			(master.slayerLvl && master.slayerLvl > msg.author.skillLevel(SkillsEnum.Slayer)) ||
@@ -122,7 +157,7 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 		}
 		let filteredTaskList;
 		// Filter by slayer level
-		filteredTaskList = listOfTasks.filter(
+		filteredTaskList = master.tasks.filter(
 			task => task.slayerLvl && task.slayerLvl <= msg.author.skillLevel(SkillsEnum.Slayer)
 		);
 		// Filter by combat level
