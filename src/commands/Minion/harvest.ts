@@ -30,7 +30,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [seedType = '']: [string]) {
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const currentWoodcuttingLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		const currentDate = new Date().getTime();
@@ -48,13 +47,9 @@ export default class extends BotCommand {
 		const patchType: any = msg.author.settings.get(getPatchType);
 
 		const upgradeType = '';
-		let str = '';
+		let returnMessageStr = '';
 		let boostStr = '';
 		const timePerPatch = Time.Minute * 1.5;
-
-		// If no quantity provided, set it to the max PATCHES available.
-
-		const newBank = { ...userBank };
 
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
 		let duration = timePerPatch * patchType.LastQuantity;
@@ -147,7 +142,7 @@ export default class extends BotCommand {
 
 			msg.author.settings.update(getPatchType, updatePatches);
 
-			str += `${
+			returnMessageStr += `${
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}.\nIt'll take around ${formatDuration(
 				duration
@@ -155,9 +150,7 @@ export default class extends BotCommand {
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
-		msg.author.incrementMinionDailyDuration(duration);
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-		return msg.send(str);
+		return msg.send(returnMessageStr);
 	}
 }

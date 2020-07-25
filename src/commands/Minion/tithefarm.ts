@@ -80,13 +80,13 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: 1,
 			duration,
+			msg,
 			type: Activity.TitheFarm,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
-		msg.author.incrementMinionDailyDuration(1000);
 
 		return msg.send(
 			`Your minion is off completing a round of the Tithe Farm. It'll take ${formatDuration(

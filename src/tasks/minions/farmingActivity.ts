@@ -23,7 +23,8 @@ export default class extends Task {
 		userID,
 		channelID,
 		msg,
-		planting
+		planting,
+		duration
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -371,6 +372,8 @@ export default class extends Task {
 
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
+
+			msg.author.incrementMinionDailyDuration(duration);
 
 			channel.send(str);
 			if (janeMessage === true) {
