@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
-
+// import { SkillsEnum } from '../../lib/skilling/types';
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
 import { noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -11,14 +11,86 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import streakPoints from '../../lib/skilling/skills/slayer/slayerFunctions/streakPoints';
+import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
+
 		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
+
+		// Checks if part of current slayer task
+		const slayerInfo = await user.settings.get(UserSettings.Slayer.SlayerInfo);
+		//	const currentLevel = user.skillLevel(SkillsEnum.Slayer);
+		let onSlayer = false;
+		//	let completedTask = null;
+		
+		//Need to check for alternative monsters on current task
+		/*
+		for (const taskAlias of slayerInfo.currentTask.Id) {
+			taskAlias === monster.id
+			alsoSlayerTask = true;
+		}
+		*/
+		if (slayerInfo.hasTask && (monster.name === slayerInfo.currentTask?.name || alsoSlayerTask) ) {
+			onSlayer = true;
+			const quantityLeft = slayerInfo.remainingQuantity! - quantity;
+			/*
+			let xpReceived = quantity * monster.slayerXp;
+			await user.addXP(SkillsEnum.Slayer, xpReceived);
+			const newLevel = user.skillLevel(SkillsEnum.Slayer);
+			*/
+			if (quantityLeft > 0) {
+				const newSlayerInfo = {
+					...slayerInfo,
+					remainingQuantity: quantityLeft
+				};
+				await user.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+					arrayAction: 'overwrite'
+				});
+			} else {
+				//		completedTask = slayerInfo.currentTask;
+				if (slayerInfo.currentMaster === 2) {
+					const currentSlayerMaster = slayerMasters.find(master => master.masterId === 2);
+					const newSlayerInfo = {
+						hasTask: false,
+						currentTask: null,
+						quantityTask: null,
+						remainingQuantity: null,
+						currentMaster: null,
+						slayerPoints:
+							slayerInfo.slayerPoints +
+							streakPoints(slayerInfo.wildyStreak, currentSlayerMaster!),
+						wildyStreak: slayerInfo.wildyStreak++
+					};
+					await user.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+						arrayAction: 'overwrite'
+					});
+				} else {
+					const currentSlayerMaster = slayerMasters.find(
+						master => master.masterId === slayerInfo.currentMaster
+					);
+					const newSlayerInfo = {
+						hasTask: false,
+						currentTask: null,
+						quantityTask: null,
+						remainingQuantity: null,
+						currentMaster: null,
+						slayerPoints:
+							slayerInfo.slayerPoints +
+							streakPoints(slayerInfo.streak, currentSlayerMaster!),
+						wildyStreak: slayerInfo.streak++
+					};
+					await user.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+						arrayAction: 'overwrite'
+					});
+				}
+			}
+		}
 
 		const loot = monster.table.kill(quantity);
 		announceLoot(this.client, user, monster, quantity, loot);
@@ -46,6 +118,18 @@ export default class extends Task {
 			quantity} ${
 			user.minionName
 		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+
+		if (onSlayer) {
+			/*
+			str += `\n\n you also received ${xpReceived.toLocaleString()} Slayer XP.!`
+			if (newLevel > currentLevel) {
+				str += `\n\n${user.minionName}'s Slayer level is now ${newLevel}!`;
+			}
+			if (completedTask !== null) {
+				str += `\n\n${user.minionName} also completed the task ${completedTask}!`;
+			}
+			*/
+		}
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
