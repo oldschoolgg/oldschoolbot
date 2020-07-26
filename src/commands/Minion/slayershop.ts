@@ -3,52 +3,14 @@ import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches } from '../../lib/util';
 import { Time } from 'oldschooljs/dist/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Monsters } from 'oldschooljs';
-
-const slayerShopItems = [
-	{
-		name: 'Aviansie',
-		slayerPointsRequired: 80,
-		ID: Monsters.AberrantSpectre.id
-	},
-	{
-		name: 'Basilisk',
-		slayerPointsRequired: 80,
-		ID: Monsters.Basilisk.id
-	},
-	{
-		name: 'Boss',
-		slayerPointsRequired: 200,
-		ID: Monsters.Vorkath.id
-	},
-	{
-		name: 'Lizardman',
-		slayerPointsRequired: 75,
-		ID: Monsters.Lizardman.id
-	},
-	{
-		name: 'Mithril dragon',
-		slayerPointsRequired: 80,
-		ID: Monsters.MithrilDragon.id
-	},
-	{
-		name: 'Red dragon',
-		slayerPointsRequired: 50,
-		ID: Monsters.RedDragon.id
-	}
-	/*
-	{
-		name: 'TzHaar',
-		slayerPointsRequired: 100,
-		ID: Monsters.TzHaarKet.id
-	}
-	*/
-];
+import slayerShopUnlock from '../../lib/skilling/skills/slayer/slayerShopRewards/slayerShopUnlock';
+import slayerShopExtend from '../../lib/skilling/skills/slayer/slayerShopRewards/slayerShopExtend';
+import slayerShopBuy from '../../lib/skilling/skills/slayer/slayerShopRewards/slayerShopBuy';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<unlockname:...string>',
+			usage: '<shop:string> [item:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 1,
@@ -56,13 +18,23 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [unlockname = '']: [string]) {
+	async run(msg: KlasaMessage, [shop = '', item = '']: [string, string]) {
 		await msg.author.settings.sync(true);
 		const slayerInfo = msg.author.settings.get(UserSettings.Slayer.SlayerInfo);
-		if (unlockname === 'bal') {
+		const extendList = msg.author.settings.get(UserSettings.Slayer.ExtendList);
+		const unlockedList = msg.author.settings.get(UserSettings.Slayer.UnlockedList);
+		if (shop === 'bal') {
 			throw `Your current Slayer Points balance is: ${slayerInfo.slayerPoints}`;
 		}
-		const unlock = slayerShopItems.find(item => stringMatches(item.name, unlockname));
+		if (shop === 'extend') {
+			for (const extendedItem of slayerShopExtend) {
+				if (extendedItem.name === item) {
+					// Make extendedList into SlayerShopItem array on UserSettings
+					extendList.concat(extendedItem);
+				}
+			}
+		}
+		const unlock = slayerShopItems.find(item => stringMatches(item.name, shop));
 		if (!unlock) {
 			throw `That's not a valid unlock. Valid unlocks are ${slayerShopItems
 				.map(unlock => unlock.name)

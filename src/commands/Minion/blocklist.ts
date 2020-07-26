@@ -11,7 +11,7 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<action:...string>',
+			usage: '[action:string] [task:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 1,
@@ -19,7 +19,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [action = '']: [string]) {
+	async run(msg: KlasaMessage, [action = '', taskname = '']: [string, string]) {
 		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
 			return msg.send(msg.author.minionStatus);
@@ -89,32 +89,31 @@ export default class extends BotCommand {
 			str = str.replace(/,\s*$/, '');
 			throw str;
 		}
-		// Needs to pass in task name.
-		// Block list removal
-		/*
-		if (action == 'unblock') {
-			if (!userBlockList.includes(task)) {
-				throw `That task isn't on your block list.`;
-			}
-			msg.send(
-				`Are you sure you'd like to unblock ${taskname}? Say \`confirm\` to continue.`
-			);
-			try {
-				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
-					options
-				);
-			} catch (err) {
-				throw `Cancelling block list removal of ${taskname}.`;
-			}
 
-			await msg.author.settings.update(UserSettings.Slayer.BlockList, task, {
-				arrayAction: 'remove'
-			});
-			throw `The task **${taskname}** has been **removed** from your block list`;
+		// Block list removal
+		if (action === 'unblock') {
+			for (const task of userBlockList) {
+				if (task.name === taskname) {
+					msg.send(
+						`Are you sure you'd like to unblock ${taskname}? Say \`confirm\` to continue.`
+					);
+					try {
+						await msg.channel.awaitMessages(
+							_msg =>
+								_msg.author.id === msg.author.id &&
+								_msg.content.toLowerCase() === 'confirm',
+							options
+						);
+					} catch (err) {
+						throw `Cancelling block list removal of ${taskname}.`;
+					}
+					await msg.author.settings.update(UserSettings.Slayer.BlockList, task, {
+						arrayAction: 'remove'
+					});
+					throw `The task **${taskname}** has been **removed** from your block list`;
+				}
+			}
+			throw `That task isn't on your block list.`;
 		}
-		*/
 	}
 }

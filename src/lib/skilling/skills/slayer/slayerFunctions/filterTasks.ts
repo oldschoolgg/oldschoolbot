@@ -43,16 +43,16 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	filteredTaskList = filteredTaskList.filter(task => task !== undefined);
 
 	// Filter by combat level
-	for (let i= 0; i < filteredTaskList.length; i++) {
+	for (let i = 0; i < filteredTaskList.length; i++) {
 		if (filteredTaskList[i].combatLvl! > userCombatLevel) {
 			delete filteredTaskList[i];
 		}
 	}
 	filteredTaskList = filteredTaskList.filter(task => task !== undefined);
-//	filteredTaskList = filteredTaskList.filter(task => task.combatLvl! <= userCombatLevel);
+	//	filteredTaskList = filteredTaskList.filter(task => task.combatLvl! <= userCombatLevel);
 
 	// Filter by slayer level
-	for (let i= 0; i < filteredTaskList.length; i++) {
+	for (let i = 0; i < filteredTaskList.length; i++) {
 		if (filteredTaskList[i].slayerLvl! > msg.author.skillLevel(SkillsEnum.Slayer)) {
 			delete filteredTaskList[i];
 		}
@@ -65,8 +65,13 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	*/
 
 	// Filter by agility/strength level
-	for (let i= 0; i < filteredTaskList.length; i++) {
-		if (filteredTaskList[i].agiStrLvl! > (msg.author.skillLevel(SkillsEnum.Agility) /* || msg.author.skillLevel(SkillsEnum.Strength)*/)) {
+	for (let i = 0; i < filteredTaskList.length; i++) {
+		if (
+			filteredTaskList[i].agiStrLvl! >
+			msg.author.skillLevel(
+				SkillsEnum.Agility
+			) /* || msg.author.skillLevel(SkillsEnum.Strength)*/
+		) {
 			delete filteredTaskList[i];
 		}
 	}
@@ -79,25 +84,25 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	);
 	*/
 	// Filter by defence level
-	for (let i= 0; i < filteredTaskList.length; i++) {
+	for (let i = 0; i < filteredTaskList.length; i++) {
 		if (filteredTaskList[i].defenceLvl! > userDefenceLvl) {
 			delete filteredTaskList[i];
 		}
 	}
 	filteredTaskList = filteredTaskList.filter(task => task !== undefined);
-//	filteredTaskList = filteredTaskList.filter(task => task.defenceLvl! <= userDefenceLvl);
+	//	filteredTaskList = filteredTaskList.filter(task => task.defenceLvl! <= userDefenceLvl);
 
 	// Filter by magic level
-	for (let i= 0; i < filteredTaskList.length; i++) {
+	for (let i = 0; i < filteredTaskList.length; i++) {
 		if (filteredTaskList[i].magicLvl! > userMagicLvl) {
 			delete filteredTaskList[i];
 		}
 	}
 	filteredTaskList = filteredTaskList.filter(task => task !== undefined);
-//	filteredTaskList = filteredTaskList.filter(task => task.magicLvl! <= userMagicLvl);
+	//	filteredTaskList = filteredTaskList.filter(task => task.magicLvl! <= userMagicLvl);
 
 	// Filter by firemaking level
-	for (let i= 0; i < filteredTaskList.length; i++) {
+	for (let i = 0; i < filteredTaskList.length; i++) {
 		if (filteredTaskList[i].firemakingLvl! > msg.author.skillLevel(SkillsEnum.Firemaking)) {
 			delete filteredTaskList[i];
 		}
@@ -110,7 +115,7 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	*/
 
 	// Filter by questpoints
-	for (let i= 0; i < filteredTaskList.length; i++) {
+	for (let i = 0; i < filteredTaskList.length; i++) {
 		if (filteredTaskList[i].questPoints! > settings.get(UserSettings.QP)) {
 			delete filteredTaskList[i];
 		}

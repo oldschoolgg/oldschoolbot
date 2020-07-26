@@ -172,6 +172,13 @@ export interface SlayerMaster {
 	questPoints?: number;
 }
 
+export interface SlayerShopItem {
+	name: string;
+	alias?: string;
+	itemAmount?: number;
+	slayerPointsRequired: number;
+}
+
 export type LevelRequirements = Partial<
 	{
 		[key in SkillsEnum]: number;

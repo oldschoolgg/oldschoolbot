@@ -1,7 +1,7 @@
 /* import { Monsters } from 'oldschooljs';
-import { Task } from '../../../types';
+import { SlayerTask } from '../../../types';
 
-const bossTasks: Task[] = [
+const bossTasks: SlayerTask[] = [
 	{
 		// Not added to monsters.
 		name: 'Abyssal sire',
