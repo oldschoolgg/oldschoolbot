@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { Bank } from '../../lib/types';
+import itemID from '../../lib/util/itemID';
 import { Time } from 'oldschooljs/dist/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import slayerShopUnlock from '../../lib/skilling/skills/slayer/slayerShopRewards/slayerShopUnlock';
@@ -10,7 +11,7 @@ import slayerShopBuy from '../../lib/skilling/skills/slayer/slayerShopRewards/sl
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<shop:string> [item:...string]',
+			usage: '[shop:string] [item:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 1,
@@ -23,62 +24,181 @@ export default class extends BotCommand {
 		const slayerInfo = msg.author.settings.get(UserSettings.Slayer.SlayerInfo);
 		const extendList = msg.author.settings.get(UserSettings.Slayer.ExtendList);
 		const unlockedList = msg.author.settings.get(UserSettings.Slayer.UnlockedList);
+		shop = shop.toLowerCase();
+
+		// Show current Slayer points
 		if (shop === 'bal') {
 			throw `Your current Slayer Points balance is: ${slayerInfo.slayerPoints}`;
 		}
+
+		// Use of the SlayerShopExtend
 		if (shop === 'extend') {
 			for (const extendedItem of slayerShopExtend) {
-				if (extendedItem.name === item) {
-					// Make extendedList into SlayerShopItem array on UserSettings
-					extendList.concat(extendedItem);
+				if (extendedItem.name.toLowerCase() === item.toLowerCase()) {
+					if (extendedItem.slayerPointsRequired > slayerInfo.slayerPoints) {
+						throw `You need ${extendedItem.slayerPointsRequired} slayer points to purchase ${extendedItem.name}.`;
+					}
+					if (extendList.includes(extendedItem)) {
+						throw `You already have ${extendedItem.name} extended.`;
+					}
+					const sellMsg = await msg.channel.send(
+						`${msg.author}, say \`confirm\` to confirm that you want to purchase the ability to extend ${extendedItem.name} for ${extendedItem.slayerPointsRequired} slayer points.
+			You currently have ${slayerInfo.slayerPoints} slayer points.`
+					);
+					// Confirm the user wants to buy
+					try {
+						await msg.channel.awaitMessages(
+							_msg =>
+								_msg.author.id === msg.author.id &&
+								_msg.content.toLowerCase() === 'confirm',
+							{
+								max: 1,
+								time: Time.Second * 10,
+								errors: ['time']
+							}
+						);
+					} catch (err) {
+						return sellMsg.edit(
+							`Cancelling purchase of extending ${extendedItem.name}.`
+						);
+					}
+					await msg.author.settings.update(UserSettings.Slayer.ExtendList, extendedItem, {
+						arrayAction: 'add'
+					});
+					const newSlayerInfo = {
+						...slayerInfo,
+						slayerPoints: slayerInfo.slayerPoints - extendedItem.slayerPointsRequired
+					};
+					await msg.author.settings.update(
+						UserSettings.Slayer.SlayerInfo,
+						newSlayerInfo,
+						{
+							arrayAction: 'overwrite'
+						}
+					);
+					return msg.send(
+						`The extension of ${
+							extendedItem.name
+						} has been **added** to your extension list. You have ${slayerInfo.slayerPoints -
+							extendedItem.slayerPointsRequired} Slayer Points left.`
+					);
 				}
 			}
+			throw `That's not a valid extension. Valid extensions are ${slayerShopExtend
+				.map(extend => extend.name)
+				.join(`, `)}.`;
 		}
-		const unlock = slayerShopItems.find(item => stringMatches(item.name, shop));
-		if (!unlock) {
-			throw `That's not a valid unlock. Valid unlocks are ${slayerShopItems
+
+		// Use of the SlayerShopUnlock
+		if (shop === 'unlock') {
+			for (const unlockItem of slayerShopUnlock) {
+				if (unlockItem.name.toLowerCase() === item.toLowerCase()) {
+					if (unlockItem.slayerPointsRequired > slayerInfo.slayerPoints) {
+						throw `You need ${unlockItem.slayerPointsRequired} slayer points to purchase ${unlockItem.name}.`;
+					}
+					if (unlockedList.includes(unlockItem)) {
+						throw `You already have ${unlockItem.name} unlocked.`;
+					}
+					const sellMsg = await msg.channel.send(
+						`${msg.author}, say \`confirm\` to confirm that you want to purchase the ability to unlock ${unlockItem.name} for ${unlockItem.slayerPointsRequired} slayer points.
+			You currently have ${slayerInfo.slayerPoints} slayer points.`
+					);
+					// Confirm the user wants to buy
+					try {
+						await msg.channel.awaitMessages(
+							_msg =>
+								_msg.author.id === msg.author.id &&
+								_msg.content.toLowerCase() === 'confirm',
+							{
+								max: 1,
+								time: Time.Second * 10,
+								errors: ['time']
+							}
+						);
+					} catch (err) {
+						return sellMsg.edit(`Cancelling purchase of unlocking ${unlockItem.name}.`);
+					}
+					await msg.author.settings.update(UserSettings.Slayer.UnlockedList, unlockItem, {
+						arrayAction: 'add'
+					});
+					const newSlayerInfo = {
+						...slayerInfo,
+						slayerPoints: slayerInfo.slayerPoints - unlockItem.slayerPointsRequired
+					};
+					await msg.author.settings.update(
+						UserSettings.Slayer.SlayerInfo,
+						newSlayerInfo,
+						{
+							arrayAction: 'overwrite'
+						}
+					);
+					return msg.send(
+						`The extension of ${
+							unlockItem.name
+						} has been **added** to your unlocked list. You have ${slayerInfo.slayerPoints -
+							unlockItem.slayerPointsRequired} Slayer Points left.`
+					);
+				}
+			}
+			throw `That's not a valid unlock. Valid unlocks are ${slayerShopUnlock
 				.map(unlock => unlock.name)
 				.join(`, `)}.`;
 		}
-		if (unlock.slayerPointsRequired > slayerInfo.slayerPoints) {
-			throw `You need ${unlock.slayerPointsRequired} slayer points to purchase that.`;
-		}
-		/*
-		if (msg.author.unlockedList.includes(unlock.ID)) {
-			throw `You already have that unlocked, why would you want to buy it again?`;
-		}
-		*/
 
-		const sellMsg = await msg.channel.send(
-			`${msg.author}, say \`confirm\` to confirm that you want to purchase the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points.
-You currently have ${slayerInfo.slayerPoints} slayer points.`
-		);
-		// Confirm the user wants to buy
-		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: Time.Second * 10,
-					errors: ['time']
+		// Use of the SlayerShopBuy
+		if (shop === 'buy') {
+			for (const buyItem of slayerShopBuy) {
+				if (buyItem.name.toLowerCase() === item.toLowerCase()) {
+					if (buyItem.slayerPointsRequired > slayerInfo.slayerPoints) {
+						throw `You need ${buyItem.slayerPointsRequired} slayer points to purchase ${buyItem.name}.`;
+					}
+					const sellMsg = await msg.channel.send(
+						`${msg.author}, say \`confirm\` to confirm that you want to purchase ${buyItem.name} x ${buyItem.itemAmount} for ${buyItem.slayerPointsRequired} slayer points.
+			You currently have ${slayerInfo.slayerPoints} slayer points.`
+					);
+					// Confirm the user wants to buy
+					try {
+						await msg.channel.awaitMessages(
+							_msg =>
+								_msg.author.id === msg.author.id &&
+								_msg.content.toLowerCase() === 'confirm',
+							{
+								max: 1,
+								time: Time.Second * 10,
+								errors: ['time']
+							}
+						);
+					} catch (err) {
+						return sellMsg.edit(
+							`Cancelling purchase of ${buyItem.name} x ${buyItem.itemAmount}.`
+						);
+					}
+					const itemBought: Bank = { [itemID(buyItem.name)]: buyItem.itemAmount! };
+					await msg.author.addItemsToBank(itemBought, true);
+					const newSlayerInfo = {
+						...slayerInfo,
+						slayerPoints: slayerInfo.slayerPoints - buyItem.slayerPointsRequired
+					};
+					await msg.author.settings.update(
+						UserSettings.Slayer.SlayerInfo,
+						newSlayerInfo,
+						{
+							arrayAction: 'overwrite'
+						}
+					);
+					return msg.send(
+						`${
+							buyItem.name
+						} has been **added** to your bank. You have ${slayerInfo.slayerPoints -
+							buyItem.slayerPointsRequired} Slayer Points left.`
+					);
 				}
-			);
-		} catch (err) {
-			return sellMsg.edit(`Cancelling purchase of ability to kill ${unlock.name}.`);
+			}
+			throw `I don't recognize that item, the items you can buy are: ${slayerShopBuy
+				.map(buy => buy.name)
+				.join(`, `)}.`;
 		}
 
-		await msg.author.settings.update(UserSettings.Slayer.UnlockedList, unlock.ID, {
-			arrayAction: 'add'
-		});
-		const newSlayerInfo = {
-			...slayerInfo,
-			slayerPoints: slayerInfo.slayerPoints - unlock.slayerPointsRequired
-		};
-		await msg.author.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
-			arrayAction: 'overwrite'
-		});
-		msg.send(`You purchased the ability to kill ${unlock.name} for ${unlock.slayerPointsRequired} slayer points! 
-Your new total is ${slayerInfo.slayerPoints}`);
+		throw `The valid slayershop commands are \`${msg.cmdPrefix}slayershop bal\`, \`${msg.cmdPrefix}slayershop extend\`, \`${msg.cmdPrefix}slayershop unlock\` and \`${msg.cmdPrefix}slayershop buy\`.`;
 	}
 }

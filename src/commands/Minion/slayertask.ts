@@ -110,7 +110,7 @@ export default class extends BotCommand {
 
 			// Check if the task is extended
 			for (const extendedTask of extendList) {
-				if (randomedTask.name === extendedTask.name) {
+				if (randomedTask.name === extendedTask.alias) {
 					[minQuantity, maxQuantity] = randomedTask.extendedAmount!;
 				}
 			}
@@ -163,7 +163,7 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 
 		// Check if the task is extended
 		for (const extendedTask of extendList) {
-			if (randomedTask.name === extendedTask.name) {
+			if (randomedTask.name === extendedTask.alias) {
 				[minQuantity, maxQuantity] = randomedTask.extendedAmount!;
 			}
 		}

@@ -2,7 +2,7 @@ import { SlayerShopItem } from '../../../types';
 
 const slayerShopBuy: SlayerShopItem[] = [
 	{
-		name: 'Slayer ring',
+		name: 'Slayer ring (8)',
 		itemAmount: 1,
 		slayerPointsRequired: 75
 	},

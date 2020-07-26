@@ -31,7 +31,8 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	// Adds unlockedTasks to filteredTasks if current SlayerMaster can assign that task.
 	for (const unlockedTask of unlockedList) {
 		if (master.tasks.some(task => task.name === unlockedTask.name)) {
-			filteredTaskList.concat(unlockedTask);
+			const matchedTask = master.tasks.find(task => task.name === unlockedTask.name);
+			filteredTaskList.concat(matchedTask!);
 		}
 	}
 	filteredTaskList = filteredTaskList.filter(task => task !== undefined);

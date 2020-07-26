@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
-import { SkillsEnum, SlayerTask } from '../../skilling/types';
+import { SkillsEnum, SlayerTask, SlayerShopItem } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
 
 interface SlayerInfo {
@@ -63,8 +63,8 @@ export namespace UserSettings {
 	export namespace Slayer {
 		export const SlayerInfo = T<SlayerInfo>('slayer.slayerInfo');
 		export const BlockList = T<SlayerTask[]>('slayer.blockList');
-		export const ExtendList = T<SlayerTask[]>('slayer.extendList');
-		export const UnlockedList = T<SlayerTask[]>('slayer.unlockedList');
+		export const ExtendList = T<SlayerShopItem[]>('slayer.extendList');
+		export const UnlockedList = T<SlayerShopItem[]>('slayer.unlockedList');
 	}
 
 	export namespace Skills {

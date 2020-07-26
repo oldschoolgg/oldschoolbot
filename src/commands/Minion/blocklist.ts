@@ -113,7 +113,11 @@ export default class extends BotCommand {
 					throw `The task **${taskname}** has been **removed** from your block list`;
 				}
 			}
-			throw `That task isn't on your block list.`;
+			throw `That task isn't on your block list. Tasks on your block list are: ${userBlockList
+				.map(blocked => blocked.name)
+				.join(`, `)}.`;
 		}
+
+		throw `The valid blocklist commands are \`${msg.cmdPrefix}blocklist block\`, \`${msg.cmdPrefix}blocklist show\` and \`${msg.cmdPrefix}blocklist unblock\`.`;
 	}
 }
