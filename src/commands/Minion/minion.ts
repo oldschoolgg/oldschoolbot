@@ -141,6 +141,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.GP,
 				UserSettings.QP,
 				UserSettings.MonsterScores,
+				UserSettings.MinigameScores,
 				UserSettings.ClueScores,
 				UserSettings.BankBackground,
 				UserSettings.SacrificedValue,
