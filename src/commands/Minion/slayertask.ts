@@ -79,11 +79,21 @@ export default class extends BotCommand {
 			master.aliases.some(alias => stringMatches(alias, slayermaster))
 		);
 		if (!master) {
+			if (slayerInfo.hasTask) {
+				if (!slayerInfo.currentTask) throw `WTF`;
+				let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\nIf you like to cancel a task do \`${
+					msg.cmdPrefix
+				}slayertask cancel\` or visit Turael for a easier task.\n`;
+				if (slayerInfo.currentTask?.alternatives) {
+					str += `You can also kill these monsters: ${slayerInfo.currentTask?.alternatives}!`;
+					const re = /\,/gi;
+					return msg.send(str.replace(re, `, `));
+				}
+				throw str;
+			}
 			throw `That's not a valid slayer master. Valid masters are ${slayerMasters
 				.map(master => master.name)
-				.join(', ')} or if you like to cancel a task do \`${
-				msg.cmdPrefix
-			}slayertask cancel\`.`;
+				.join(', ')}.`;
 		}
 
 		if (slayerInfo.hasTask && master.masterId === 1) {

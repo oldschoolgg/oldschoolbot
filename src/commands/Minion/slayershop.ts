@@ -33,12 +33,24 @@ export default class extends BotCommand {
 
 		// Use of the SlayerShopExtend
 		if (shop === 'extend') {
+			if (item.toLowerCase() === 'show') {
+				let str = 'Your current extension list: ';
+				if (extendList.length === 0) {
+					throw `You have a empty extension list.`;
+				}
+				for (let i = 0; i < extendList.length; i++) {
+					const extendName = extendList[i].name;
+					str += `${extendName}, `;
+				}
+				str = str.replace(/,\s*$/, '');
+				throw str;
+			}
 			for (const extendedItem of slayerShopExtend) {
 				if (extendedItem.name.toLowerCase() === item.toLowerCase()) {
 					if (extendedItem.slayerPointsRequired > slayerInfo.slayerPoints) {
 						throw `You need ${extendedItem.slayerPointsRequired} slayer points to purchase ${extendedItem.name}.`;
 					}
-					if (extendList.includes(extendedItem)) {
+					if (extendList.some(extend => extend.name === extendedItem.name)) {
 						throw `You already have ${extendedItem.name} extended.`;
 					}
 					const sellMsg = await msg.channel.send(
@@ -91,12 +103,24 @@ export default class extends BotCommand {
 
 		// Use of the SlayerShopUnlock
 		if (shop === 'unlock') {
+			if (item.toLowerCase() === 'show') {
+				let str = 'Your current unlock list: ';
+				if (unlockedList.length === 0) {
+					throw `You have a empty unlock list.`;
+				}
+				for (let i = 0; i < unlockedList.length; i++) {
+					const unlockedName = unlockedList[i].name;
+					str += `${unlockedName}, `;
+				}
+				str = str.replace(/,\s*$/, '');
+				throw str;
+			}
 			for (const unlockItem of slayerShopUnlock) {
 				if (unlockItem.name.toLowerCase() === item.toLowerCase()) {
 					if (unlockItem.slayerPointsRequired > slayerInfo.slayerPoints) {
 						throw `You need ${unlockItem.slayerPointsRequired} slayer points to purchase ${unlockItem.name}.`;
 					}
-					if (unlockedList.includes(unlockItem)) {
+					if (unlockedList.some(unlock => unlock.name === unlockItem.name)) {
 						throw `You already have ${unlockItem.name} unlocked.`;
 					}
 					const sellMsg = await msg.channel.send(
