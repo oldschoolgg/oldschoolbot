@@ -61,6 +61,19 @@ export default class extends BotCommand {
 		if (fletchableItem.outputMultiple) {
 			sets = 'sets of';
 		}
+		// Check if the person purchade the ability to fletch broad arrows/bolts
+		const unlockedList = msg.author.settings.get(UserSettings.Slayer.UnlockedList);
+		if (fletchableItem.name === 'Broad arrows' || fletchableItem.name === 'Broad bolts') {
+			let ok = true;
+			for (const unlockItem of unlockedList) {
+				if (unlockItem.name === 'Broader fletching') {
+					ok = false;
+				}
+			}
+			if (ok) {
+				throw `${msg.author.minionName} needs Broader fletching to fletch ${fletchableItem.name}.`;
+			}
+		}
 
 		if (msg.author.skillLevel(SkillsEnum.Fletching) < fletchableItem.level) {
 			throw `${msg.author.minionName} needs ${fletchableItem.level} Fletching to fletch ${fletchableItem.name}.`;

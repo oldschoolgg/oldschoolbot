@@ -184,6 +184,233 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10_000 * 10
+	},
+	{
+		name: 'Enchanted gem',
+		aliases: ['enchanted', 'gem'],
+		outputItems: {
+			[itemID('Enchanted gem')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Leaf-bladed spear',
+		aliases: ['leafbladed spear', 'leaf spear'],
+		outputItems: {
+			[itemID('Leaf-bladed spear')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 250_000
+	},
+	{
+		name: 'Leaf-bladed sword',
+		aliases: ['leafbladed sword', 'leaf sword'],
+		outputItems: {
+			[itemID('Leaf-bladed sword')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 250_000
+	},
+	{
+		name: 'Leaf-bladed battleaxe',
+		aliases: ['leafbladed axe', 'leaf axe'],
+		outputItems: {
+			[itemID('Leaf-bladed battleaxe')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 250_000
+	},
+	{
+		name: 'Mirror shield',
+		aliases: ['mirror'],
+		outputItems: {
+			[itemID('Mirror shield')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Bag of salt',
+		aliases: ['bag of salt', 'salt bag'],
+		outputItems: {
+			[itemID('Bag of salt')]: 1000
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: '	Fungicide spray 10',
+		aliases: ['Fungicide spray', 'fungi spray'],
+		outputItems: {
+			[itemID('Fungicide spray 10')]: 10
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Fishing explosive',
+		aliases: ['fishing explosive'],
+		outputItems: {
+			[itemID('Fishing explosive')]: 300
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Unlit bug lantern',
+		aliases: ['unlit bug latern'],
+		outputItems: {
+			[itemID('Unlit bug latern')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Rock hammer',
+		aliases: ['rock hammer'],
+		outputItems: {
+			[itemID('Rock hammer')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Rock thrownhammer',
+		aliases: ['rock throwhammer'],
+		outputItems: {
+			[itemID('Rock thrownhammer')]: 100
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Face mask',
+		aliases: ['face'],
+		outputItems: {
+			[itemID('Face mask')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Broad arrows',
+		aliases: ['broad arrows'],
+		outputItems: {
+			[itemID('Broad arrows')]: 500
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Broad bolts',
+		aliases: ['broad bolts'],
+		outputItems: {
+			[itemID('Broad bolts')]: 500
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		// Limit?
+		name: 'Broad arrowheads',
+		aliases: ['broad arrowheads'],
+		outputItems: {
+			[itemID('Broad arrowheads')]: 500
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		// Limit?
+		name: 'Unfinished broad bolts',
+		aliases: ['unf broad bolts'],
+		outputItems: {
+			[itemID('Unfinished broad bolts')]: 500
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Earmuffs',
+		aliases: ['earmuff'],
+		outputItems: {
+			[itemID('Earmuffs')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Nose peg',
+		aliases: ['nose'],
+		outputItems: {
+			[itemID('Nose peg')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Spiny helmet',
+		aliases: ['spiny'],
+		outputItems: {
+			[itemID('Spiny helmet')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Insulated boots',
+		aliases: ['insulated boots'],
+		outputItems: {
+			[itemID('Insulated boots')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Slayer gloves',
+		aliases: ['slay gloves'],
+		outputItems: {
+			[itemID('Slayer gloves')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Slayer bell',
+		aliases: ['slay bell'],
+		outputItems: {
+			[itemID('Slayer bell')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: "Slayer's staff",
+		aliases: ['slayer staff'],
+		outputItems: {
+			[itemID("Slayer's staff")]: 1
+		},
+		qpRequired: 0,
+		gpCost: 250_000
+	},
+	{
+		name: 'Witchwood icon',
+		aliases: ['witchwood'],
+		outputItems: {
+			[itemID('Witchwood icon')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
+		name: 'Boots of stone',
+		aliases: ['stone boots'],
+		outputItems: {
+			[itemID('Boots of stone')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 100_000
 	}
 ];
 
