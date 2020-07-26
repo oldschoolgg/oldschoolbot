@@ -17,7 +17,6 @@ export default function taskPicker(msg: KlasaMessage, filteredTasks: SlayerTask[
 	for (let i = 0; i < filteredTasks.length; i++) {
 		totalweight += filteredTasks[i].weight;
 	}
-
 	// Random number between 1 and the total weighting
 	const randomWeight = rand(1, totalweight);
 
@@ -34,7 +33,7 @@ export default function taskPicker(msg: KlasaMessage, filteredTasks: SlayerTask[
 	}
 
 	const task = filteredTasks[result];
-	/* Temp disabled
+	/* Temp disabled, need to look over how the filter with "!" works.
     if (task.name === 'Boss') {
         const filteredBossTasks = bossTasks.filter(task => task.slayerLvl! <= skillLevel(SkillsEnum.Slayer));
         task = filteredBossTasks[rand(0, filteredBossTasks.length)];

@@ -157,7 +157,6 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 		}
 
 		const filteredTasks = filterTasks(msg, master);
-		console.log(filteredTasks);
 		const randomedTask = taskPicker(msg, filteredTasks);
 		let minQuantity = randomedTask.amount[0];
 		let maxQuantity = randomedTask.amount[1];
