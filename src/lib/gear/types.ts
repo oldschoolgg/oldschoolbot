@@ -55,7 +55,7 @@ export interface GearStats {
 	prayer: number;
 }
 
-export type AttackGearStat =
+export type OffenceGearStat =
 	| GearStat.AttackMagic
 	| GearStat.AttackRanged
 	| GearStat.AttackSlash

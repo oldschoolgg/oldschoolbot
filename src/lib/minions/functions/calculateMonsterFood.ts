@@ -4,9 +4,9 @@ import { O } from 'ts-toolbelt';
 import { KillableMonster } from '../types';
 import { GearStats } from '../../gear/types';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
-import inverseOfAttackStat from '../../gear/functions/inverseOfAttackStat';
-import { maxDefenceStats } from '../../gear/data/maxGearStats';
+import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
 import readableStatName from '../../gear/functions/readableStatName';
+import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 
 const { floor, max } = Math;
 
@@ -37,20 +37,31 @@ export default function calculateMonsterFood(
 	}
 
 	let totalPercentOfGearLevel = 0;
+	let totalOffensivePercent = 0;
 	for (const style of attackStylesUsed) {
-		const inverseStyle = inverseOfAttackStat(style);
+		const inverseStyle = inverseOfOffenceStat(style);
 		const usersStyle = gearStats[inverseStyle];
 		const maxStyle = maxDefenceStats[inverseStyle]!;
 		const percent = floor(calcWhatPercent(usersStyle, maxStyle));
 		messages.push(
-			`Your ${style} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`
+			`Your ${inverseStyle} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`
 		);
 		totalPercentOfGearLevel += percent;
+
+		totalOffensivePercent += floor(calcWhatPercent(gearStats[style], maxOffenceStats[style]));
 	}
 
 	totalPercentOfGearLevel = floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length));
+	totalOffensivePercent = floor(max(0, totalOffensivePercent / attackStylesUsed.length));
 
+	messages.push(
+		`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`
+	);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
+	messages.push(
+		`You use ${floor(totalOffensivePercent / 3)}% less food because of your offensive stats.`
+	);
+	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent / 3));
 
 	messages.push(
 		`You use ${totalPercentOfGearLevel}% less food (${healAmountNeeded} instead of ${monster.healAmountNeeded}) because of your gear`
