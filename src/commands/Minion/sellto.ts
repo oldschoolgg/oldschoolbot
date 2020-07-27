@@ -1,14 +1,12 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Util, Items } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import itemIsTradeable, { specialTradeables } from '../../lib/util/itemIsTradeable';
-import cleanItemName from '../../lib/util/cleanItemName';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { GuildMember } from 'discord.js';
 import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
-import { stringMatches } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -21,7 +19,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 20,
 			usage:
-				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> <itemname:...string>',
+				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true
@@ -30,7 +28,7 @@ export default class extends BotCommand {
 
 	async run(
 		msg: KlasaMessage,
-		[buyerMember, price, quantity, itemName]: [GuildMember, number, number, string]
+		[buyerMember, price, quantity, item]: [GuildMember, number, number, Item[]]
 	) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		if (buyerMember.user.isIronman) throw `Iron players can't be sold items.`;
@@ -45,16 +43,12 @@ export default class extends BotCommand {
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
-		const osItem = Items.find(
-			item =>
-				stringMatches(item.name, cleanItemName(itemName)) &&
-				(specialTradeables.includes(item.id) || (item as Item).tradeable)
-		);
-		if (!osItem) throw `That item doesnt exist.`;
-		const tradeable = itemIsTradeable(osItem.id);
 
-		if (!tradeable) {
-			throw `That item is not tradeable.`;
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItem = item.find(i => userBank[i.id] && itemIsTradeable(i.id));
+
+		if (!osItem) {
+			throw `You don't have any of this item to sell, or it is not tradeable.`;
 		}
 
 		buyerMember.user.toggleBusy(true);
