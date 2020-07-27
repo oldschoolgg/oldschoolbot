@@ -184,7 +184,7 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10_000 * 10
-	},
+	}	/*,
 	{
 		name: 'Enchanted gem',
 		aliases: ['enchanted', 'gem'],
@@ -412,6 +412,7 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 100_000
 	}
+	*/
 ];
 
 export default Buyables;

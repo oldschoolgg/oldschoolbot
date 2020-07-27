@@ -34,6 +34,7 @@ export default class extends BotCommand {
 		const { settings } = msg.author;
 		const slayerInfo = settings.get(UserSettings.Slayer.SlayerInfo);
 		const extendList = settings.get(UserSettings.Slayer.ExtendList);
+
 		if (slayerInfo.hasTask && slayermaster === 'cancel') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
@@ -94,7 +95,7 @@ export default class extends BotCommand {
 				.join(', ')}.`;
 		}
 
-		if (slayerInfo.hasTask && master.masterId === 1) {
+		if (slayerInfo.hasTask && master.masterId === 1 && slayerInfo.currentMaster !==2) {
 			if (master.tasks.some(task => task.name === slayerInfo.currentTask?.name)) {
 				throw `I'm not gonna replace my own tasks.`;
 			}
@@ -136,7 +137,7 @@ export default class extends BotCommand {
 				arrayAction: 'overwrite'
 			});
 			return msg.send(
-				`Your new slayer task is ${quantity}x ${randomedTask.name} and the previous task got canceled.`
+				`Your new slayer task is ${quantity} x ${randomedTask.name} and the previous task got canceled.`
 			);
 		}
 

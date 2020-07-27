@@ -1,9 +1,10 @@
 import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
-// import { SkillsEnum } from '../../lib/skilling/types';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
 import { noOp, saidYes } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { Monsters } from 'oldschooljs';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -18,32 +19,34 @@ export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
+		const currentMonsterData = Monsters.find(mon => mon.id === monsterID)?.data;
 
 		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		// Checks if part of current slayer task
-		const slayerInfo = await user.settings.get(UserSettings.Slayer.SlayerInfo);
-		//	const currentLevel = user.skillLevel(SkillsEnum.Slayer);
+		const slayerInfo = user.settings.get(UserSettings.Slayer.SlayerInfo);
+		const currentLevel = user.skillLevel(SkillsEnum.Slayer);
 		let onSlayer = false;
-		//	let completedTask = null;
-		
-		//Need to check for alternative monsters on current task
+		let completedTask = null;
+		let xpReceived = 0;
+		let slayerPointsReceived = 0;
+		let newLevel = 0;
+
+		// Need to check for alternative monsters on current task
 		/*
 		for (const taskAlias of slayerInfo.currentTask.Id) {
 			taskAlias === monster.id
 			alsoSlayerTask = true;
 		}
 		*/
-		if (slayerInfo.hasTask && (monster.name === slayerInfo.currentTask?.name || alsoSlayerTask) ) {
+		if (slayerInfo.hasTask && monster.name === slayerInfo.currentTask?.name) {
 			onSlayer = true;
 			const quantityLeft = slayerInfo.remainingQuantity! - quantity;
-			/*
-			let xpReceived = quantity * monster.slayerXp;
+			xpReceived = quantity * currentMonsterData!.slayerXP;
 			await user.addXP(SkillsEnum.Slayer, xpReceived);
-			const newLevel = user.skillLevel(SkillsEnum.Slayer);
-			*/
+			newLevel = user.skillLevel(SkillsEnum.Slayer);
 			if (quantityLeft > 0) {
 				const newSlayerInfo = {
 					...slayerInfo,
@@ -53,19 +56,20 @@ export default class extends Task {
 					arrayAction: 'overwrite'
 				});
 			} else {
-				//		completedTask = slayerInfo.currentTask;
+				xpReceived = slayerInfo.remainingQuantity! * currentMonsterData!.slayerXP;
+				completedTask = slayerInfo.currentTask;
 				if (slayerInfo.currentMaster === 2) {
 					const currentSlayerMaster = slayerMasters.find(master => master.masterId === 2);
+					slayerPointsReceived = streakPoints(slayerInfo.wildyStreak, currentSlayerMaster!)
 					const newSlayerInfo = {
+						...slayerInfo,
 						hasTask: false,
 						currentTask: null,
 						quantityTask: null,
 						remainingQuantity: null,
 						currentMaster: null,
-						slayerPoints:
-							slayerInfo.slayerPoints +
-							streakPoints(slayerInfo.wildyStreak, currentSlayerMaster!),
-						wildyStreak: slayerInfo.wildyStreak++
+						slayerPoints: slayerInfo.slayerPoints + slayerPointsReceived,
+						wildyStreak: slayerInfo.wildyStreak + 1
 					};
 					await user.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 						arrayAction: 'overwrite'
@@ -74,16 +78,16 @@ export default class extends Task {
 					const currentSlayerMaster = slayerMasters.find(
 						master => master.masterId === slayerInfo.currentMaster
 					);
+					slayerPointsReceived = streakPoints(slayerInfo.streak, currentSlayerMaster!)
 					const newSlayerInfo = {
+						...slayerInfo,
 						hasTask: false,
 						currentTask: null,
 						quantityTask: null,
 						remainingQuantity: null,
 						currentMaster: null,
-						slayerPoints:
-							slayerInfo.slayerPoints +
-							streakPoints(slayerInfo.streak, currentSlayerMaster!),
-						wildyStreak: slayerInfo.streak++
+						slayerPoints: slayerInfo.slayerPoints + slayerPointsReceived,
+						streak: slayerInfo.streak + 1
 					};
 					await user.settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 						arrayAction: 'overwrite'
@@ -120,15 +124,14 @@ export default class extends Task {
 		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		if (onSlayer) {
-			/*
-			str += `\n\n you also received ${xpReceived.toLocaleString()} Slayer XP.!`
+			str += `\n\n You also received ${xpReceived.toLocaleString()} Slayer XP!`;
 			if (newLevel > currentLevel) {
 				str += `\n\n${user.minionName}'s Slayer level is now ${newLevel}!`;
 			}
 			if (completedTask !== null) {
-				str += `\n\n${user.minionName} also completed the task ${completedTask}!`;
+				str += `\n\n${user.minionName} also completed the task ${completedTask.name} and received ${slayerPointsReceived.toLocaleString()} Slayer points!`;
+				// Add milestones for streaks? and leaderboard for longest streak?
 			}
-			*/
 		}
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
