@@ -94,6 +94,13 @@ export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
+	itemName: string;
+	quantity: number;
+	channelID: string;
+	alchValue: number;
+}
+
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }

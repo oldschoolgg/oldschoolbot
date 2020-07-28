@@ -271,6 +271,12 @@ export default class extends Extendable {
 			case Activity.Wintertodt: {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}
+
+			case Activity.Alching: {
+				const data = currentTask as AlchingActivityTaskOptions;
+
+				return `${this.minionName} is currently alching ${data.quantity}x ${data.itemName}. ${formattedDuration}`;
+			}
 		}
 	}
 

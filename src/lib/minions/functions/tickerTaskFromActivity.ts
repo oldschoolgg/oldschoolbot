@@ -25,6 +25,7 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Woodcutting:
 		case Activity.Fletching:
 		case Activity.Crafting:
+		case Activity.Alching:
 			return Tasks.SkillingTicker;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:

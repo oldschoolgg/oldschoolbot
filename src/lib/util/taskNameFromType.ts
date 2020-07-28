@@ -40,5 +40,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FletchingActivity;
 		case Activity.Wintertodt:
 			return Tasks.WintertodtActivity;
+		case Activity.Alching:
+			return Tasks.AlchingActivity;
 	}
 }
