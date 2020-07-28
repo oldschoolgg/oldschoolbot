@@ -4,20 +4,21 @@ import { User } from 'discord.js';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { formatDuration } from '../../util';
 import {
-	MonsterActivityTaskOptions,
-	ClueActivityTaskOptions,
-	CraftingActivityTaskOptions,
 	AgilityActivityTaskOptions,
+	AlchingActivityTaskOptions,
+	BuryingActivityTaskOptions,
+	ClueActivityTaskOptions,
 	CookingActivityTaskOptions,
+	CraftingActivityTaskOptions,
+	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
+	FletchingActivityTaskOptions,
 	MiningActivityTaskOptions,
+	MonsterActivityTaskOptions,
+	OfferingActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	FiremakingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions,
-	OfferingActivityTaskOptions,
-	BuryingActivityTaskOptions,
-	FletchingActivityTaskOptions
+	WoodcuttingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -33,7 +34,7 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
-import { Emoji, Activity, Time } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
