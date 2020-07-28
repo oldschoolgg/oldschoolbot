@@ -8,23 +8,32 @@ import {
 	Activity,
 	Emoji,
 	Time,
-	Events,
 	Color,
 	PerkTier,
 	MIMIC_MONSTER_ID
 } from '../../lib/constants';
-import { formatDuration, randomItemFromArray, isWeekend, itemNameFromID } from '../../lib/util';
+import {
+	formatDuration,
+	randomItemFromArray,
+	isWeekend,
+	itemNameFromID,
+	addItemToBank,
+	bankHasItem
+} from '../../lib/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { SkillsEnum } from '../../lib/skilling/types';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Eatables } from '../../lib/eatables';
+import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -45,6 +54,8 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
+
+const { floor, ceil } = Math;
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -500,6 +511,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+		const bank = msg.author.settings.get(UserSettings.Bank);
+		const boosts = [];
+		let messages: string[] = [];
+
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -507,10 +522,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
-			this.client.emit(
-				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] ${quantity} ${name}`
-			);
+			msg.author.log(`[TTK-BUSY] ${quantity} ${name}`);
 			return msg.send(msg.author.minionStatus);
 		}
 
@@ -524,10 +536,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
-
-		const boosts = [];
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(
 			monster,
@@ -546,7 +557,43 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToFinish);
+			quantity = floor(msg.author.maxTripLength / timeToFinish);
+		}
+
+		// Check food
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
+			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
+			messages = messages.concat(foodMessages);
+
+			for (const food of Eatables) {
+				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
+				if (!bankHasItem(bank, food.id, amountNeeded)) {
+					if (Eatables.indexOf(food) === Eatables.length - 1) {
+						throw `You don't have enough food to kill ${
+							monster.name
+						}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
+							quantity} per kill) You can use these food items: ${Eatables.map(
+							i => i.name
+						).join(', ')}.`;
+					}
+					continue;
+				}
+
+				messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
+				await msg.author.removeItemFromBank(food.id, amountNeeded);
+
+				// Track this food cost in Economy Stats
+				await this.client.settings.update(
+					ClientSettings.EconomyStats.PVMCost,
+					addItemToBank(
+						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
+						food.id,
+						amountNeeded
+					)
+				);
+
+				break;
+			}
 		}
 
 		let duration = timeToFinish * quantity;
@@ -585,6 +632,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		if (messages.length > 0) {
+			response += `\n\n**Messages:** ${messages.join('\n')}.`;
 		}
 
 		return msg.send(response);
