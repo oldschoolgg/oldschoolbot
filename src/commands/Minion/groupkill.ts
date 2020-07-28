@@ -24,12 +24,12 @@ export default class extends BotCommand {
 
 	calcDurQty(users: KlasaUser[], monster: KillableMonster, quantity: number | undefined) {
 		const perKillTime = reducedTimeForGroup(users, monster);
-		const maxQty = Math.floor(users[0].maxTripLength / (perKillTime + monster.respawnTime!));
+		const maxQty = Math.floor(users[0].maxTripLength / perKillTime);
 		if (!quantity) quantity = maxQty;
 		if (quantity > maxQty) {
 			throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
 		}
-		const duration = maxQty * (perKillTime + monster.respawnTime!) - monster.respawnTime!;
+		const duration = quantity * perKillTime - monster.respawnTime!;
 		return [quantity, duration, perKillTime];
 	}
 
@@ -99,9 +99,7 @@ export default class extends BotCommand {
 				monster.name
 			}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 				monster.timeToFinish
-			)}, and waiting ${formatDuration(
-				monster.respawnTime!
-			)} between kills. - the total trip will take ${formatDuration(duration)}`
+			)}- the total trip will take ${formatDuration(duration)}`
 		);
 	}
 
