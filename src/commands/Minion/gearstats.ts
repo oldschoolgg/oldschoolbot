@@ -11,7 +11,6 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			usage: '<melee|range|magic>'
 		});
-		this.enabled = !this.client.production;
 	}
 
 	async run(msg: KlasaMessage, [style]: [GearSetupTypes]) {

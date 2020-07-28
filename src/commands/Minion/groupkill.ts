@@ -160,7 +160,7 @@ export default class extends BotCommand {
 			users: users.map(u => u.id)
 		};
 
-		if (1 > 2) await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

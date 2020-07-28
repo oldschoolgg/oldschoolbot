@@ -624,7 +624,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			finishDate: Date.now() + duration
 		};
 
-		if (1 > 2) await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
