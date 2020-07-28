@@ -64,7 +64,7 @@ export default class extends BotCommand {
         }
         str += '\nYour current unlock list: ';
         if (unlockList.length === 0) {
-            throw `is empty.`;
+            str += `is empty.`;
         }
         for (let i = 0; i < unlockList.length; i++) {
             const unlockedName = unlockList[i].name;
