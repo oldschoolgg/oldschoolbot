@@ -57,7 +57,7 @@ export default function calculateMonsterFood(
 	);
 	totalOffensivePercent = Math.min(
 		floor(max(0, totalOffensivePercent / attackStylesUsed.length)),
-		20
+		50
 	);
 
 	messages.push(
@@ -65,13 +65,13 @@ export default function calculateMonsterFood(
 	);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
 	messages.push(
-		`You use ${floor(totalOffensivePercent / 3)}% less food because of your offensive stats.`
+		`You use ${floor(totalOffensivePercent)}% less food because of your offensive stats.`
 	);
-	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent / 3));
+	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
 	messages.push(
 		`You use ${totalPercentOfGearLevel +
-			totalOffensivePercent / 3}% less food (${healAmountNeeded} instead of ${
+			totalOffensivePercent}% less food (${healAmountNeeded} instead of ${
 			monster.healAmountNeeded
 		}) because of your gear`
 	);
