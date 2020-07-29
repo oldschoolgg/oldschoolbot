@@ -169,6 +169,7 @@ declare module 'discord.js' {
 			content?: string;
 			title?: string;
 			background?: number;
+			flags?: Record<string, string | number>;
 		}): Promise<KlasaMessage>;
 	}
 
@@ -178,6 +179,7 @@ declare module 'discord.js' {
 			content?: string;
 			title?: string;
 			background?: number;
+			flags?: Record<string, string | number>;
 		}): Promise<KlasaMessage>;
 	}
 }

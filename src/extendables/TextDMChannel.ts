@@ -14,12 +14,19 @@ export default class extends Extendable {
 			bank,
 			content,
 			title,
-			background
-		}: { bank: Bank; content?: string; title?: string; background?: number }
+			background,
+			flags
+		}: {
+			bank: Bank;
+			content?: string;
+			title?: string;
+			background?: number;
+			flags?: Record<string, string>;
+		}
 	) {
 		const image = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(bank, title, true, { background: background ?? 1 });
+			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags });
 		return this.send(content, new MessageAttachment(image));
 	}
 }
