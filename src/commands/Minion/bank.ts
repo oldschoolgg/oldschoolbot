@@ -8,7 +8,8 @@ import {
 	generateHexColorForCashStack,
 	formatItemStackQuantity,
 	chunkObject,
-	addBanks
+	addBanks,
+	addItemToBank
 } from '../../lib/util';
 import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
@@ -56,12 +57,29 @@ export default class extends Command {
 	// @ts-ignore
 	async run(msg: KlasaMessage, [pageNumberOrItemName = 1]: [number | string]) {
 		await msg.author.settings.sync(true);
-		const coins: number = msg.author.settings.get(UserSettings.GP);
-		const _bank: Bank = msg.author.settings.get(UserSettings.Bank);
+		const coins = msg.author.settings.get(UserSettings.GP);
+		const _bank = msg.author.settings.get(UserSettings.Bank);
 
 		const bank: Bank = { ..._bank, 995: coins };
 
 		if (typeof pageNumberOrItemName === 'string') {
+			if (pageNumberOrItemName.includes(',')) {
+				const arrItemNameOrID = pageNumberOrItemName.split(',');
+				let view = {};
+				for (const nameOrID of arrItemNameOrID) {
+					try {
+						const item = getOSItem(nameOrID);
+						view = addItemToBank(view, item.id, bank[item.id] ?? 0);
+					} catch (_) {}
+				}
+				if (Object.keys(view).length === 0) {
+					throw `You have none of those items!`;
+				}
+				return msg.channel.sendBankImage({
+					bank: view,
+					title: 'Partial Bank View'
+				});
+			}
 			const item = getOSItem(pageNumberOrItemName);
 			return msg.send(`You have ${(bank[item.id] ?? 0).toLocaleString()}x ${item.name}.`);
 		}
