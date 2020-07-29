@@ -8,13 +8,11 @@ import {
 	generateHexColorForCashStack,
 	formatItemStackQuantity,
 	chunkObject,
-	addBanks,
 	addItemToBank
 } from '../../lib/util';
 import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -97,33 +95,6 @@ export default class extends Command {
 			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;
 		}
 
-		const task = this.client.tasks.get('bankImage');
-
-		if (msg.flagArgs.server && msg.guild) {
-			if (getUsersPerkTier(msg.author) < 100) {
-				throw `This feature is currently disabled.`;
-			}
-
-			if (getUsersPerkTier(msg.author) < 2) {
-				throw `This feature is available only to patrons.`;
-			}
-
-			const serverBank = addBanks(
-				msg.guild.members.map(member => member.user.settings.get(UserSettings.Bank))
-			);
-
-			const image = await task!.generateBankImage(
-				serverBank,
-				`Bank Of All Users in ${msg.guild.name}`,
-				true,
-				{
-					...msg.flagArgs
-				}
-			);
-
-			return msg.send(new MessageAttachment(image, 'osbot.png'));
-		}
-
 		if (msg.flagArgs.text) {
 			const debug = Boolean(msg.flagArgs.debug);
 			const textBank = [];
@@ -164,46 +135,36 @@ export default class extends Command {
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
 
 		if (bankKeys.length < 57) {
-			const image = await task!.generateBankImage(
+			return msg.channel.sendBankImage({
 				bank,
-				`${msg.author.username}'s Bank - Page 1 of 1`,
-				true,
-				{
-					...msg.flagArgs
-				},
-				msg.author
-			);
-			return msg.send(new MessageAttachment(image, 'osbot.png'));
+				title: `${msg.author.username}'s Bank - Page 1 of 1`,
+				flags: msg.flagArgs,
+				background: msg.author.settings.get(UserSettings.BankBackground)
+			});
 		}
 
 		const chunkedObject = chunkObject(bank, 56);
 		const bankPage = chunkedObject[pageNumberOrItemName - 1];
 
 		if (!bankPage) throw "You don't have any items on that page!";
-		const image = await task!.generateBankImage(
+
+		if (msg.flagArgs.full) {
+			return msg.channel.sendBankImage({
+				bank,
+				title: `${msg.author.username}'s Bank`,
+				flags: msg.flagArgs,
+				background: msg.author.settings.get(UserSettings.BankBackground)
+			});
+		}
+
+		return msg.channel.sendBankImage({
 			bank,
-			`${msg.author.username}'s Bank - Page ${pageNumberOrItemName} of ${chunkedObject.length}`,
-			true,
-			{
+			title: `${msg.author.username}'s Bank - Page ${pageNumberOrItemName} of ${chunkedObject.length}`,
+			flags: {
 				...msg.flagArgs,
 				page: pageNumberOrItemName - 1
 			},
-			msg.author
-		);
-
-		if (msg.flagArgs.full) {
-			const image = await task!.generateBankImage(
-				bank,
-				`${msg.author.username}'s Bank`,
-				true,
-				{
-					...msg.flagArgs
-				}
-			);
-
-			return msg.send(new MessageAttachment(image, 'osbot.png'));
-		}
-
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+			background: msg.author.settings.get(UserSettings.BankBackground)
+		});
 	}
 }
