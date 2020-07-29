@@ -20,7 +20,7 @@
 		"he": "^1.2.0",
 		"klasa": "github:dirigeants/klasa#916/head",
 		"klasa-decorators": "^0.0.1",
-		"lodash": "^4.17.15",
+		"lodash": "^4.17.19",
 		"markovchain": "^1.0.2",
 		"moment": "^2.27.0",
 		"node-fetch": "^2.6.0",
