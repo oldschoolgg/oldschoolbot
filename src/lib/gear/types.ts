@@ -12,6 +12,23 @@ export enum GearSetupTypes {
 	Skilling = 'skilling'
 }
 
+export enum GearStat {
+	AttackStab = 'attack_stab',
+	AttackSlash = 'attack_slash',
+	AttackCrush = 'attack_crush',
+	AttackMagic = 'attack_magic',
+	AttackRanged = 'attack_ranged',
+	DefenceStab = 'defence_stab',
+	DefenceSlash = 'defence_slash',
+	DefenceCrush = 'defence_crush',
+	DefenceMagic = 'defence_magic',
+	DefenceRanged = 'defence_ranged',
+	MeleeStrength = 'melee_strength',
+	RangedStrength = 'ranged_strength',
+	MagicDamage = 'magic_damage',
+	Prayer = 'prayer'
+}
+
 export interface GearSlotItem {
 	item: number;
 	quantity: number;
@@ -37,3 +54,17 @@ export interface GearStats {
 	magic_damage: number;
 	prayer: number;
 }
+
+export type OffenceGearStat =
+	| GearStat.AttackMagic
+	| GearStat.AttackRanged
+	| GearStat.AttackSlash
+	| GearStat.AttackStab
+	| GearStat.AttackCrush;
+
+export type DefenceGearStat =
+	| GearStat.DefenceMagic
+	| GearStat.DefenceRanged
+	| GearStat.DefenceSlash
+	| GearStat.DefenceStab
+	| GearStat.DefenceCrush;

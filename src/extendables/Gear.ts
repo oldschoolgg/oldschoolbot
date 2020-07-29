@@ -5,6 +5,7 @@ import itemID from '../lib/util/itemID';
 import { GearSetupTypes, UserFullGearSetup } from '../lib/gear/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import itemInSlot from '../lib/gear/functions/itemInSlot';
+import { sumOfSetupStats } from '../lib/gear/functions/sumOfSetupStats';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -38,5 +39,9 @@ export default class extends Extendable {
 		const [normalWeapon] = itemInSlot(gear, EquipmentSlot.Weapon);
 		const [twoHandedWeapon] = itemInSlot(gear, EquipmentSlot.TwoHanded);
 		return normalWeapon === null ? twoHandedWeapon : normalWeapon;
+	}
+
+	public setupStats(this: User, setup: GearSetupTypes) {
+		return sumOfSetupStats(this.rawGear()[setup]);
 	}
 }

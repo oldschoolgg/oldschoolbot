@@ -10,7 +10,7 @@ import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions, Skills, ItemBank } from '.';
 import { SkillsEnum } from '../skilling/types';
 import { KillableMonster } from '../minions/types';
-import { UserFullGearSetup, GearSetupTypes } from '../gear/types';
+import { UserFullGearSetup, GearSetupTypes, GearStats } from '../gear/types';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 
@@ -142,6 +142,7 @@ declare module 'discord.js' {
 		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
 		allItemsOwned(): ItemBank;
+		setupStats(setup: GearSetupTypes): GearStats;
 		/**
 		 * Returns this users Collection Log bank.
 		 */

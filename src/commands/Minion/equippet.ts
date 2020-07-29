@@ -1,11 +1,11 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import getOSItem from '../../lib/util/getOSItem';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { pets } from '../../lib/collectionLog';
 import { removeItemFromBank } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 const allPetIDs = Object.values(pets).flat(Infinity);
 
@@ -15,20 +15,16 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<itemName:string>'
+			usage: '(item:...item)'
 		});
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [itemName]: [string]): Promise<KlasaMessage> {
-		const petItem = getOSItem(itemName);
-		if (!allPetIDs.includes(petItem.id)) {
-			throw `That's not a pet.`;
-		}
-
-		const hasThisItem = await msg.author.hasItem(petItem.id);
-		if (!hasThisItem) {
-			throw `You don't have this pet in your bank! Sad.`;
+	async run(msg: KlasaMessage, [item]: [Item[]]): Promise<KlasaMessage> {
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const petItem = item.find(i => userBank[i.id] && allPetIDs.includes(i.id));
+		if (!petItem) {
+			throw `That's not a pet, or you do not own this pet.`;
 		}
 
 		const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
