@@ -131,8 +131,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw tuna')]: 1 },
 		stopBurnAt: 63,
 		stopBurnAtCG: 1,
-		burntCookable: 367,
-		healAmount: 10
+		burntCookable: 367
 	},
 	{
 		level: 30,
@@ -162,8 +161,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw lobster')]: 1 },
 		stopBurnAt: 74,
 		stopBurnAtCG: 64,
-		burntCookable: itemID('Burnt lobster'),
-		healAmount: 12
+		burntCookable: itemID('Burnt lobster')
 	},
 	{
 		level: 43,
@@ -173,8 +171,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw bass')]: 1 },
 		stopBurnAt: 80,
 		stopBurnAtCG: 1,
-		burntCookable: 367,
-		healAmount: 13
+		burntCookable: 367
 	},
 	{
 		level: 45,
@@ -184,8 +181,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw swordfish')]: 1 },
 		stopBurnAt: 86,
 		stopBurnAtCG: 81,
-		burntCookable: itemID('Burnt swordfish'),
-		healAmount: 14
+		burntCookable: itemID('Burnt swordfish')
 	},
 	{
 		level: 62,
@@ -195,8 +191,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw monkfish')]: 1 },
 		stopBurnAt: 90,
 		stopBurnAtCG: 88,
-		burntCookable: itemID('Burnt monkfish'),
-		healAmount: 16
+		burntCookable: itemID('Burnt monkfish')
 	},
 	{
 		level: 80,
@@ -206,8 +201,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw shark')]: 1 },
 		stopBurnAt: 99,
 		stopBurnAtCG: 94,
-		burntCookable: itemID('Burnt shark'),
-		healAmount: 20
+		burntCookable: itemID('Burnt shark')
 	},
 	{
 		level: 84,
@@ -227,8 +221,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw dark crab')]: 1 },
 		stopBurnAt: 99,
 		stopBurnAtCG: 1,
-		burntCookable: itemID('Burnt dark crab'),
-		healAmount: 22
+		burntCookable: itemID('Burnt dark crab')
 	},
 	{
 		level: 91,
@@ -238,8 +231,7 @@ export const Cookables: Cookable[] = [
 		inputCookables: { [itemID('Raw manta ray')]: 1 },
 		stopBurnAt: 99,
 		stopBurnAtCG: 1,
-		burntCookable: itemID('Burnt manta ray'),
-		healAmount: 22
+		burntCookable: itemID('Burnt manta ray')
 	}
 ];
 

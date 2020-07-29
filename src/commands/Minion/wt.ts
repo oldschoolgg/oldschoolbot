@@ -19,7 +19,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { Eatables } from '../../lib/minions/data/Eatables';
+import { Eatables } from '../../lib/eatables';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -100,7 +100,7 @@ export default class extends BotCommand {
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {
-			const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount!) * quantity;
+			const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount) * quantity;
 			if (!bankHasItem(bank, food.id, amountNeeded)) {
 				if (Eatables.indexOf(food) === Eatables.length - 1) {
 					throw `You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
