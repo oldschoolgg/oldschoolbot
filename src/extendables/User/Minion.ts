@@ -2,7 +2,7 @@ import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import { User } from 'discord.js';
 
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import { formatDuration } from '../../util';
+import { formatDuration, rand } from '../../util';
 import {
 	MonsterActivityTaskOptions,
 	ClueActivityTaskOptions,
@@ -69,10 +69,16 @@ export default class extends Extendable {
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();
-		const formattedDuration =
+		let formattedDuration =
 			durationRemaining < Time.Minute
 				? `They're on their way back now!`
 				: `Approximately ${formatDuration(durationRemaining)} remaining.`;
+
+		if (this.settings.get('troll')) {
+			formattedDuration = `Approximately ${formatDuration(
+				rand(Time.Minute, Time.Minute * 1200)
+			)} remaining.`;
+		}
 
 		switch (currentTask.type) {
 			case Activity.MonsterKilling: {
