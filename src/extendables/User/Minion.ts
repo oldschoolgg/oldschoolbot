@@ -20,7 +20,6 @@ import {
 	FletchingActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	FarmingActivityTaskOptions
-
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -299,10 +298,6 @@ export default class extends Extendable {
 				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
 					SkillsEnum.Farming
 				)}`;
-			}
-
-			case Activity.Wintertodt: {
-				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}
 		}
 	}

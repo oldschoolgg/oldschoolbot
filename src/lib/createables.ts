@@ -702,7 +702,7 @@ const Createables: Createable[] = [
 	{
 		name: 'Tomatoes(5)',
 		inputItems: resolveNameBank({
-			'Tomato': 5
+			Tomato: 5
 		}),
 		outputItems: resolveNameBank({
 			'Tomatoes(5)': 1
@@ -714,7 +714,7 @@ const Createables: Createable[] = [
 			'Tomatoes(5)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Tomato': 5
+			Tomato: 5
 		})
 	},
 	{
@@ -738,7 +738,7 @@ const Createables: Createable[] = [
 	{
 		name: 'Bananas(5)',
 		inputItems: resolveNameBank({
-			'Banana': 5
+			Banana: 5
 		}),
 		outputItems: resolveNameBank({
 			'Bananas(5)': 1
@@ -750,13 +750,13 @@ const Createables: Createable[] = [
 			'Bananas(5)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Banana': 5
+			Banana: 5
 		})
 	},
 	{
 		name: 'Strawberries(5)',
 		inputItems: resolveNameBank({
-			'Strawberry': 5
+			Strawberry: 5
 		}),
 		outputItems: resolveNameBank({
 			'Strawberries(5)': 1
@@ -768,13 +768,13 @@ const Createables: Createable[] = [
 			'Strawberries(5)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Strawberry': 5
+			Strawberry: 5
 		})
 	},
 	{
 		name: 'Oranges(5)',
 		inputItems: resolveNameBank({
-			'Orange': 5
+			Orange: 5
 		}),
 		outputItems: resolveNameBank({
 			'Oranges(5)': 1
@@ -786,7 +786,7 @@ const Createables: Createable[] = [
 			'Oranges(5)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Orange': 5
+			Orange: 5
 		})
 	},
 	{
@@ -804,13 +804,13 @@ const Createables: Createable[] = [
 			'Potatoes(10)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Potato': 10
+			Potato: 10
 		})
 	},
 	{
 		name: 'Onions(10)',
 		inputItems: resolveNameBank({
-			'Onion': 10
+			Onion: 10
 		}),
 		outputItems: resolveNameBank({
 			'Onions(10)': 1
@@ -822,13 +822,13 @@ const Createables: Createable[] = [
 			'Onions(10)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Onion': 10
+			Onion: 10
 		})
 	},
 	{
 		name: 'Cabbages(10)',
 		inputItems: resolveNameBank({
-			'Cabbage': 10
+			Cabbage: 10
 		}),
 		outputItems: resolveNameBank({
 			'Cabbages(10)': 1
@@ -840,7 +840,7 @@ const Createables: Createable[] = [
 			'Cabbages(10)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Cabbage': 10
+			Cabbage: 10
 		})
 	}
 	/* {

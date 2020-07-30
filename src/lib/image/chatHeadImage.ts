@@ -6,7 +6,7 @@ registerFont('./resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
 const textBoxFile = fs.readFileSync('./resources/images/textbox.png');
 
-const ChatHeads: { [key: string]: any } = {
+const ChatHeads: { [key: string]: Buffer } = {
 	Jad: fs.readFileSync('./resources/images/mejJal.png'),
 	GuildmasterJane: fs.readFileSync('./resources/images/guildmasterJaneImage.png')
 };

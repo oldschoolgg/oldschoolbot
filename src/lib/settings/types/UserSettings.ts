@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
-import { PatchTypes } from '../../farming';
 import { SkillsEnum } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
+import { PatchTypes } from '../../farming';
+import { FarmingPatchTypes } from '../../farming/types';
+import defaultContracts from '../../farming/defaultContracts';
+import defaultTitheFarm from '../../farming/defaultTitheFarm';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -40,8 +43,7 @@ export namespace UserSettings {
 		export const FightCavesAttempts = T<number>('stats.fightCavesAttempts');
 		export const FireCapesSacrificed = T<number>('stats.fireCapesSacrificed');
 
-		export const TitheFarmsCompleted = T<number>('stats.titheFarmsCompleted');
-		export const TitheFarmPoints = T<number>('stats.titheFarmPoints');
+		export const TitheFarmStats = T<typeof defaultTitheFarm>('stats.titheFarmStats');
 	}
 
 	export namespace Minion {
@@ -77,25 +79,45 @@ export namespace UserSettings {
 	}
 
 	export namespace FarmingPatches {
-		export const Herb = T<PatchTypes.FarmingPatchTypes>('farmingpatches.herb');
-		export const FruitTree = T<PatchTypes.FarmingPatchTypes>('farmingpatches.fruittree');
-		export const Tree = T<PatchTypes.FarmingPatchTypes>('farmingpatches.tree');
-		export const Allotment = T<PatchTypes.FarmingPatchTypes>('farmingpatches.allotment');
-		export const Cactus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.cactus');
-		export const Bush = T<PatchTypes.FarmingPatchTypes>('farmingpatches.bush');
-		export const Spirit = T<PatchTypes.FarmingPatchTypes>('farmingpatches.spirit');
-		export const Hardwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.hardwood');
-		export const Seaweed = T<PatchTypes.FarmingPatchTypes>('farmingpatches.seaweed');
-		export const Vine = T<PatchTypes.FarmingPatchTypes>('farmingpatches.vine');
-		export const Calquat = T<PatchTypes.FarmingPatchTypes>('farmingpatches.calquat');
-		export const Redwood = T<PatchTypes.FarmingPatchTypes>('farmingpatches.redwood');
-		export const Crystal = T<PatchTypes.FarmingPatchTypes>('farmingpatches.crystal');
-		export const Celastrus = T<PatchTypes.FarmingPatchTypes>('farmingpatches.celastrus');
-		export const Hespori = T<PatchTypes.FarmingPatchTypes>('farmingpatches.hespori');
-		export const Flower = T<PatchTypes.FarmingPatchTypes>('farmingpatches.flower');
+		export const Herb = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Herb}`);
+		export const FruitTree = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.FruitTree}`
+		);
+		export const Tree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Tree}`);
+		export const Allotment = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Allotment}`
+		);
+		export const Cactus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Cactus}`);
+		export const Bush = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Bush}`);
+		export const Spirit = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Spirit}`);
+		export const Hardwood = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Hardwood}`
+		);
+		export const Seaweed = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Seaweed}`
+		);
+		export const Vine = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Vine}`);
+		export const Calquat = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Calquat}`
+		);
+		export const Redwood = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Redwood}`
+		);
+		export const Crystal = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Crystal}`
+		);
+		export const Celastrus = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Celastrus}`
+		);
+		export const Hespori = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Hespori}`
+		);
+		export const Flower = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Flower}`);
 	}
 
 	export namespace FarmingContracts {
-		export const FarmingContract = T<number>('farmingContracts.farmingContract');
+		export const FarmingContract = T<typeof defaultContracts>(
+			'farmingContracts.farmingContract'
+		);
 	}
 }

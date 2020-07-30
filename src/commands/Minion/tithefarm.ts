@@ -9,8 +9,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import itemID from '../../lib/util/itemID';
+import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,28 +26,17 @@ export default class extends BotCommand {
 		let boostStr = '';
 
 		// Reduce time based on tithe farm completions
-		const completedTitheFarms = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
+		const titheFarmStats = user.settings.get(UserSettings.Stats.TitheFarmStats);
+		const { titheFarmsCompleted } = titheFarmStats;
 		const percentIncreaseFromCompletions =
-			Math.floor(Math.min(60, completedTitheFarms) / 3) / 100;
+			Math.floor(Math.min(60, titheFarmsCompleted) / 3) / 100;
 		baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 		boostStr += `**Boosts**: ${Math.floor(
 			percentIncreaseFromCompletions * 100
 		)}% from Tithe Farms completed.`;
 
 		// Reduce time if user has graceful equipped
-		if (
-			hasArrayOfItemsEquipped(
-				[
-					'Graceful hood',
-					'Graceful top',
-					'Graceful legs',
-					'Graceful gloves',
-					'Graceful boots',
-					'Graceful cape'
-				].map(itemID),
-				user.settings.get(UserSettings.Gear.Skilling)
-			)
-		) {
+		if (hasGracefulEquipped(user.settings.get(UserSettings.Gear.Skilling))) {
 			nonGracefulTimeAddition = 0;
 			boostStr += ' 10% from graceful outfit.';
 		}
@@ -62,7 +50,8 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
+		const titheFarmStats = msg.author.settings.get(UserSettings.Stats.TitheFarmStats);
+		const { titheFarmPoints } = titheFarmStats;
 
 		if (msg.flagArgs.points) {
 			return msg.send(`You have ${titheFarmPoints} Tithe Farm points.`);

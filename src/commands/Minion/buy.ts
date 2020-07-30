@@ -39,11 +39,14 @@ export default class extends BotCommand {
 
 		let titheFarmPoints = 0;
 		let titheFarmPointsCost = 0;
+		let titheFarmsCompleted = 0;
 		let GPCost = 0;
-		let purchaseMsg;
+		let purchaseMsg = '';
 
 		if (buyable.titheFarmPoints) {
-			const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
+			const titheFarmStats = msg.author.settings.get(UserSettings.Stats.TitheFarmStats);
+			titheFarmPoints = titheFarmStats.titheFarmPoints;
+			titheFarmsCompleted = titheFarmStats.titheFarmsCompleted;
 			titheFarmPointsCost = buyable.titheFarmPoints * quantity;
 			if (titheFarmPoints < titheFarmPointsCost) {
 				throw `You need ${buyable.titheFarmPoints} Tithe Farm points to purchase this item.`;
@@ -65,9 +68,7 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to confirm that you want to purchase ${purchaseMsg}.`
+				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${purchaseMsg}.`
 			);
 
 			// Confirm the user wants to buy
@@ -90,9 +91,14 @@ export default class extends BotCommand {
 		}
 
 		if (buyable.titheFarmPoints) {
+			const updatedTitheFarmStats = {
+				titheFarmsCompleted: titheFarmsCompleted as number,
+				titheFarmPoints: (titheFarmPoints - buyable.titheFarmPoints) as number
+			};
+
 			await msg.author.settings.update(
-				UserSettings.Stats.TitheFarmPoints,
-				titheFarmPoints - titheFarmPointsCost
+				UserSettings.Stats.TitheFarmStats,
+				updatedTitheFarmStats
 			);
 			await msg.author.addItemsToBank(buyable.outputItems, true);
 
