@@ -14,7 +14,8 @@ import {
 	restoreCtx,
 	addArrayOfNumbers,
 	stringMatches,
-	itemNameFromID
+	itemNameFromID,
+	randomItemFromArray
 } from '../lib/util';
 import { Bank } from '../lib/types';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
@@ -215,7 +216,7 @@ export default class BankImageTask extends Task {
 				if (quantity < 1) continue;
 
 				if (user && user.settings.get('troll')) {
-					id = Items.random().id;
+					id = randomItemFromArray([4012, 2130, 7147]);
 				}
 
 				const item = await this.getItemImage(id);
