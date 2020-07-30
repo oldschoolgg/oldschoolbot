@@ -4,21 +4,21 @@ import { User } from 'discord.js';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { formatDuration } from '../../util';
 import {
-	AgilityActivityTaskOptions,
-	AlchingActivityTaskOptions,
-	BuryingActivityTaskOptions,
-	ClueActivityTaskOptions,
-	CookingActivityTaskOptions,
-	CraftingActivityTaskOptions,
-	FiremakingActivityTaskOptions,
-	FishingActivityTaskOptions,
-	FletchingActivityTaskOptions,
-	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
-	OfferingActivityTaskOptions,
+	ClueActivityTaskOptions,
+	CraftingActivityTaskOptions,
+	AgilityActivityTaskOptions,
+	CookingActivityTaskOptions,
+	FishingActivityTaskOptions,
+	MiningActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	FiremakingActivityTaskOptions,
+	WoodcuttingActivityTaskOptions,
+	OfferingActivityTaskOptions,
+	BuryingActivityTaskOptions,
+	FletchingActivityTaskOptions,
+	AlchingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';

@@ -144,23 +144,23 @@ export type TickerTaskData =
 	| MinigameTickerTaskData;
 
 export type MinionActivityTask =
-	| Tasks.AgilityActivity
-	| Tasks.AlchingActivity
-	| Tasks.BuryingActivity
-	| Tasks.ClueActivity
-	| Tasks.CookingActivity
 	| Tasks.CraftingActivity
-	| Tasks.FightCavesActivity
-	| Tasks.FiremakingActivity
-	| Tasks.FishingActivity
-	| Tasks.FletchingActivity
-	| Tasks.GroupMonsterActivity
-	| Tasks.MiningActivity
+	| Tasks.AgilityActivity
+	| Tasks.CookingActivity
 	| Tasks.MonsterActivity
-	| Tasks.OfferingActivity
-	| Tasks.QuestingActivity
-	| Tasks.RunecraftActivity
+	| Tasks.GroupMonsterActivity
+	| Tasks.ClueActivity
+	| Tasks.FishingActivity
+	| Tasks.MiningActivity
 	| Tasks.SmeltingActivity
 	| Tasks.SmithingActivity
+	| Tasks.WoodcuttingActivity
+	| Tasks.RunecraftActivity
+	| Tasks.FiremakingActivity
+	| Tasks.QuestingActivity
+	| Tasks.BuryingActivity
+	| Tasks.OfferingActivity
+	| Tasks.FightCavesActivity
+	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
-	| Tasks.WoodcuttingActivity;
+	| Tasks.AlchingActivity;

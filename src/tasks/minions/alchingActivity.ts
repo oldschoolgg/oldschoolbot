@@ -7,18 +7,26 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Time } from '../../lib/constants';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 
-const { id: bryophytasStaffId } = getOSItem("Bryophyta's staff");
+const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export default class extends Task {
-	async run({ itemName, quantity, channelID, alchValue, userID }: AlchingActivityTaskOptions) {
-		let savedRunes = 0;
+	async run({
+		itemName,
+		quantity,
+		channelID,
+		alchValue,
+		userID,
+		duration
+	}: AlchingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
+		await user.incrementMinionDailyDuration(duration);
 		await user.addGP(alchValue);
 
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
+		let savedRunes = 0;
 		if (hasItemEquipped(bryophytasStaffId, user.settings.get(UserSettings.Gear.Skilling))) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(15)) savedRunes++;
@@ -29,7 +37,7 @@ export default class extends Task {
 					'Nature rune': savedRunes
 				});
 
-				user.addItemsToBank(returnedRunes);
+				await user.addItemsToBank(returnedRunes);
 			}
 		}
 

@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = item.find(i => userBank[i.id] && i.highalch);
 		if (!osItem) {
-			throw `'You don't have any of this item to alch'`;
+			throw `'You don't have any of this item to alch.'`;
 		}
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
@@ -135,7 +135,6 @@ export default class extends BotCommand {
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 
-		await msg.author.incrementMinionDailyDuration(duration);
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 
 		const response = `${msg.author.minionName} is now alching ${quantity}x ${
