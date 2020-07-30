@@ -12,8 +12,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { PatchTypes } from '../../lib/farming';
 import { FarmingPatchTypes } from '../../lib/farming/types';
-import itemID from '../../lib/util/itemID';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -52,22 +51,10 @@ export default class extends BotCommand {
 		const timePerPatch = Time.Minute * 1.5;
 
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
-		let duration = timePerPatch * patchType.LastQuantity;
+		let duration = timePerPatch * patchType.lastQuantity;
 
 		// Reduce time if user has graceful equipped
-		if (
-			hasArrayOfItemsEquipped(
-				[
-					'Graceful hood',
-					'Graceful top',
-					'Graceful legs',
-					'Graceful gloves',
-					'Graceful boots',
-					'Graceful cape'
-				].map(itemID),
-				msg.author.settings.get(UserSettings.Gear.Skilling)
-			)
-		) {
+		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
 			boostStr += '\n\n**Boosts**: 10% for Graceful.';
 			duration *= 0.9;
 		}
@@ -79,13 +66,13 @@ export default class extends BotCommand {
 		}
 
 		const data: FarmingActivityTaskOptions = {
-			plantsName: patchType.LastPlanted,
+			plantsName: patchType.lastPlanted,
 			patchType,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			upgradeType,
 			duration,
-			quantity: patchType.LastQuantity,
+			quantity: patchType.lastQuantity,
 			planting: false,
 			msg,
 			type: Activity.Farming,
@@ -94,10 +81,10 @@ export default class extends BotCommand {
 		};
 
 		// If user does not have something already planted, just plant the new seeds.
-		if (patchType.PatchStage === 0) {
+		if (patchType.patchStage === 0) {
 			throw `There is nothing planted in this patch to harvest!`;
-		} else if (patchType.PatchStage === 1) {
-			const storeHarvestablePlant = patchType.LastPlanted;
+		} else if (patchType.patchStage === 1) {
+			const storeHarvestablePlant = patchType.lastPlanted;
 			const planted = Farming.Plants.find(
 				plants =>
 					stringMatches(plants.name, storeHarvestablePlant) ||
@@ -107,7 +94,7 @@ export default class extends BotCommand {
 				throw `This error shouldn't happen. Just to clear possible undefined error`;
 			}
 
-			const lastPlantTime: number = patchType.PlantTime;
+			const lastPlantTime: number = patchType.plantTime;
 			const difference = currentDate - lastPlantTime;
 			// initiate a cooldown feature for each of the seed types.
 			/* allows for a run of specific seed type to only be possible until the
@@ -118,9 +105,9 @@ export default class extends BotCommand {
 				)}!`;
 			}
 
-			const storeHarvestableQuantity = patchType.LastQuantity;
+			const storeHarvestableQuantity = patchType.lastQuantity;
 
-			if (planted.needsChopForHarvest === true) {
+			if (planted.needsChopForHarvest) {
 				if (!planted.treeWoodcuttingLevel) return;
 				if (
 					currentWoodcuttingLevel < planted.treeWoodcuttingLevel &&
@@ -131,13 +118,12 @@ export default class extends BotCommand {
 			}
 
 			const updatePatches = {
-				LastPlanted: '',
-				PatchStage: 0,
-				PlantTime: 0,
-				LastQuantity: 0,
-				LastUpgradeType: '',
-				LastPayment: '',
-				IsHarvestable: false
+				lastPlanted: '',
+				patchStage: false,
+				plantTime: 0,
+				lastQuantity: 0,
+				lastUpgradeType: '',
+				lastPayment: ''
 			};
 
 			msg.author.settings.update(getPatchType, updatePatches);

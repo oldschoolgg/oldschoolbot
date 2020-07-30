@@ -78,7 +78,7 @@ const hardPlants = [
 
 export function getPlantToGrow(user: KlasaUser, contractLevel: string) {
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
-	let contractType: any = [];
+	let contractType: (string | number)[][] = [];
 	if (contractLevel === 'easy') contractType = easyPlants;
 	if (contractLevel === 'medium') contractType = mediumPlants;
 	if (contractLevel === 'hard') contractType = hardPlants;
@@ -92,5 +92,6 @@ export function getPlantToGrow(user: KlasaUser, contractLevel: string) {
 	const plantFromContract = contractType[rand(0, contractType.length - 1)];
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
-	return [plantToGrow, tier];
+
+	return [plantToGrow as string, tier as number];
 }

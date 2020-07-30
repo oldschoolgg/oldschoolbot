@@ -1,8 +1,8 @@
 import { Task, KlasaMessage } from 'klasa';
 
+import { bankHasItem, saidYes, noOp, roll } from '../../../lib/util';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import { saidYes, noOp, roll } from '../../../lib/util';
 import itemID from '../../../lib/util/itemID';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Time, Events, Emoji } from '../../../lib/constants';
@@ -19,16 +19,18 @@ export default class extends Task {
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
-		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
-		const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
+		const titheFarmStats = user.settings.get(UserSettings.Stats.TitheFarmStats);
+		const { titheFarmsCompleted } = titheFarmStats;
+		const { titheFarmPoints } = titheFarmStats;
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		const determinePoints = determineHarvest - 74;
 
-		await user.settings.update(UserSettings.Stats.TitheFarmsCompleted, titheFarmsCompleted + 1);
-		await user.settings.update(
-			UserSettings.Stats.TitheFarmPoints,
-			titheFarmPoints + determinePoints
-		);
+		const updatedTitheFarmStats = {
+			titheFarmsCompleted: (titheFarmsCompleted + 1) as number,
+			titheFarmPoints: (titheFarmPoints + determinePoints) as number
+		};
+
+		await user.settings.update(UserSettings.Stats.TitheFarmStats, updatedTitheFarmStats);
 
 		let fruit = '';
 		let fruitXp = 0;

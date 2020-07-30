@@ -1,7 +1,7 @@
 import { PatchTypes } from '..';
 import { UserSettings } from '../../settings/types/UserSettings';
 
-export default function resolvePatchTypeSetting(type: PatchTypes.FarmingPatchTypes) {
+export default function resolvePatchTypeSetting(type: string) {
 	switch (type) {
 		case PatchTypes.FarmingPatchTypes.Herb:
 			return UserSettings.FarmingPatches.Herb;
