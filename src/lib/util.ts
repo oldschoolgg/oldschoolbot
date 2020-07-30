@@ -183,6 +183,11 @@ export function rand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
 }
 
+export function round(value = 1, precision = 1) {
+	const multiplier = Math.pow(10, precision || 0);
+	return Math.round(value * multiplier) / multiplier;
+}
+
 export function randFloat(min: number, max: number) {
 	return real(min, max)(nodeCrypto);
 }

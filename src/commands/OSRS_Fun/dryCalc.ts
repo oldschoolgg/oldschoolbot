@@ -1,4 +1,5 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { round } from '../../lib/util';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,9 +28,4 @@ export default class extends Command {
 
 		return msg.send(output);
 	}
-}
-
-function round(value = 1, precision = 1) {
-	const multiplier = Math.pow(10, precision || 0);
-	return Math.round(value * multiplier) / multiplier;
 }
