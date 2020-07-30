@@ -223,9 +223,9 @@ ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.autho
 ${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
 			SkillsEnum.Fletching
 		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
-${Emoji.Slayer} Slayer: ${msg.author.skillLevel(
-			SkillsEnum.Slayer
-		)} (${msg.author.settings.get(UserSettings.Skills.Slayer).toLocaleString()} xp)
+${Emoji.Slayer} Slayer: ${msg.author.skillLevel(SkillsEnum.Slayer)} (${msg.author.settings
+			.get(UserSettings.Skills.Slayer)
+			.toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}

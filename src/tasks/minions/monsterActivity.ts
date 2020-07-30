@@ -60,7 +60,10 @@ export default class extends Task {
 				completedTask = slayerInfo.currentTask;
 				if (slayerInfo.currentMaster === 2) {
 					const currentSlayerMaster = slayerMasters.find(master => master.masterId === 2);
-					slayerPointsReceived = streakPoints(slayerInfo.wildyStreak, currentSlayerMaster!)
+					slayerPointsReceived = streakPoints(
+						slayerInfo.wildyStreak,
+						currentSlayerMaster!
+					);
 					const newSlayerInfo = {
 						...slayerInfo,
 						hasTask: false,
@@ -78,7 +81,7 @@ export default class extends Task {
 					const currentSlayerMaster = slayerMasters.find(
 						master => master.masterId === slayerInfo.currentMaster
 					);
-					slayerPointsReceived = streakPoints(slayerInfo.streak, currentSlayerMaster!)
+					slayerPointsReceived = streakPoints(slayerInfo.streak, currentSlayerMaster!);
 					const newSlayerInfo = {
 						...slayerInfo,
 						hasTask: false,
@@ -129,7 +132,9 @@ export default class extends Task {
 				str += `\n\n${user.minionName}'s Slayer level is now ${newLevel}!`;
 			}
 			if (completedTask !== null) {
-				str += `\n\n${user.minionName} also completed the task ${completedTask.name} and received ${slayerPointsReceived.toLocaleString()} Slayer points!`;
+				str += `\n\n${user.minionName} also completed the task ${
+					completedTask.name
+				} and received ${slayerPointsReceived.toLocaleString()} Slayer points!`;
 				// Add milestones for streaks? and leaderboard for longest streak?
 			}
 		}

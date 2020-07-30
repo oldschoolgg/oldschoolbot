@@ -95,7 +95,7 @@ export default class extends BotCommand {
 				.join(', ')}.`;
 		}
 
-		if (slayerInfo.hasTask && master.masterId === 1 && slayerInfo.currentMaster !==2) {
+		if (slayerInfo.hasTask && master.masterId === 1 && slayerInfo.currentMaster !== 2) {
 			if (master.tasks.some(task => task.name === slayerInfo.currentTask?.name)) {
 				throw `I'm not gonna replace my own tasks.`;
 			}
