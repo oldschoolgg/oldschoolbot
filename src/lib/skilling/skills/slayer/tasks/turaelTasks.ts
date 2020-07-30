@@ -3,7 +3,6 @@ import { SlayerTask } from '../../../types';
 
 const turaelTasks: SlayerTask[] = [
 	{
-		// Twisted Banshee missing in monsters.
 		name: 'Banshee',
 		amount: [15, 50],
 		weight: 8,
@@ -15,7 +14,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Giant bat and deathwing missing in monsters.
 		name: 'Bat',
 		amount: [15, 50],
 		weight: 7,
@@ -25,13 +23,12 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// All birds missing in monsters.
 		name: 'Bird',
 		amount: [15, 50],
 		weight: 6,
 		alternatives: [
 			'Chicken',
-			'Mounted terrorbird',
+			'Mounted terrorbird gnome',
 			'Terrorbird',
 			'Rooster',
 			'Chompy bird',
@@ -43,7 +40,7 @@ const turaelTasks: SlayerTask[] = [
 		Id: [
 			/*
 			Monsters.Chicken.id,
-			Monsters.MountedTerrorbird.id,
+			Monsters.MountedTerrorbirdGnome.id,
 			Monsters.Terrorbird.id,
 			Monsters.Rooster.id,
 			Monsters.ChompyBird.id,
@@ -56,7 +53,7 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Is Monsters.Bear.id === BlackBear? Lots bears missing in monsters.
+		// Is Monsters.Bear.id === BlackBear?
 		name: 'Black bear',
 		amount: [15, 50],
 		weight: 7,
@@ -100,7 +97,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// CowCalf and UndeadCow missing in monsters.
 		name: 'Cow',
 		amount: [15, 50],
 		weight: 8,
@@ -119,7 +115,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not all dogs are added in monsters.
 		name: 'Guard dog',
 		amount: [15, 50],
 		weight: 7,
@@ -136,7 +131,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Most dwards not added in monsters.
 		name: 'Dwarf',
 		amount: [15, 50],
 		weight: 7,
@@ -153,7 +147,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Tortured soul not added in monsters.
 		name: 'Ghost',
 		amount: [15, 50],
 		weight: 7,
@@ -163,7 +156,7 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Cavegoblin guard not added, generalgraddor multiple goblin kills?
+		// generalgraddor multiple goblin kills?
 		name: 'Goblin',
 		amount: [15, 50],
 		weight: 7,
@@ -180,7 +173,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// KalphSolider and Guardian not added in monsters.
 		name: 'Kalphite worker',
 		amount: [15, 50],
 		weight: 6,
@@ -196,7 +188,7 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Sulphur locked behind 44 slayer, All not added in monsters.
+		// Sulphur should be locked behind 44 slayer.
 		name: 'Lizard',
 		amount: [15, 50],
 		weight: 8,
@@ -221,12 +213,10 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Most monkeys not added in monsters.
 		name: 'Monkey',
 		amount: [15, 50],
 		weight: 6,
 		alternatives: [
-			'Karamjan Monkey',
 			'Monkey Guard',
 			'Monkey Archer',
 			'Monkey Zombie',
@@ -236,7 +226,6 @@ const turaelTasks: SlayerTask[] = [
 		Id: [
 			Monsters.Monkey
 				.id /* ,
-			Monsters.KaramjanMonkey.id,
 			Monsters.MonkeyGuard.id,
 			Monsters.MonkeyArcher.id,
 			Monsters.MonkeyZombie.id,
@@ -247,22 +236,21 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Most rats not added in monsters.
 		name: 'Rat',
 		amount: [15, 50],
 		weight: 7,
-		alternatives: ['Giant rat', 'Dungeon rat', 'Crypt rat', 'Brine rat'],
+		alternatives: ['Giant rat', 'Dungeon rat', 'Crypt rat', 'Zombie rat', 'Brine rat'],
 		Id: [
 			Monsters.Rat.id /* ,
 			Monsters.GiantRat.id,
 			Monsters.DungeonRat.id,
-			Monsters.CryptRat.id*/,
+			Monsters.CryptRat.id,
+			Monsters.ZombieRat.id*/,	
 			Monsters.BrineRat.id
 		],
 		unlocked: true
 	},
 	{
-		// Lots of scorpions not added in monsters.
 		name: 'Scorpion',
 		amount: [15, 50],
 		weight: 7,
@@ -289,12 +277,13 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not all skeletons added in monsters. And different types under 'Skeleton'.
+		// Can be different types under 'Skeleton' in future maybe.
 		name: 'Skeleton',
 		amount: [15, 50],
 		weight: 7,
 		alternatives: ['Skeleton mage', "Vet'ion", 'Skogre', 'Skeleton fremennik'],
 		Id: [
+			Monsters.Skeleton.id,
 			//	Monsters.SkeletonMage.id,
 			Monsters.Vetion.id /* ,
 			Monsters.Skogre.id,
@@ -305,7 +294,7 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Most spiders not added in monsters.
+		// Sarachnis not added in monsters yet.
 		name: 'Spider',
 		amount: [15, 50],
 		weight: 6,
@@ -330,7 +319,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Most wolfs not added to monsters.
 		name: 'Wolf',
 		amount: [15, 50],
 		weight: 7,
@@ -349,7 +337,7 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Most alternative zombies not added, different zombie combat lvls different drops?
+		// In future different zombie combat lvls different drops?
 		name: 'Zombie',
 		amount: [15, 50],
 		weight: 7,
