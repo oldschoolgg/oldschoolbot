@@ -213,7 +213,7 @@ export default class extends BotCommand {
 			msg,
 			type: Activity.Farming,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 5000
+			finishDate: Date.now() + duration
 		};
 
 		// If user does not have something already planted, just plant the new seeds.
@@ -245,16 +245,16 @@ export default class extends BotCommand {
 				throw `This error shouldn't happen. Just to clear possible undefined error`;
 			}
 
-			// const lastPlantTime: number = patchType.plantTime;
-			// const difference = currentDate - lastPlantTime;
+			const lastPlantTime: number = patchType.plantTime;
+			const difference = currentDate - lastPlantTime;
 			// initiate a cooldown feature for each of the seed types.
 			/* allows for a run of specific seed type to only be possible until the
 				previous run's plants has grown.*/
-			// if (difference < planted.growthTime * Time.Minute) {
-			//	throw `Please come back when your crops have finished growing in ${formatDuration(
-			//	lastPlantTime + plants.growthTime * Time.Minute - currentDate
-			// )}!`;
-			// }
+			if (difference < planted.growthTime * Time.Minute) {
+				throw `Please come back when your crops have finished growing in ${formatDuration(
+					lastPlantTime + plants.growthTime * Time.Minute - currentDate
+				)}!`;
+			}
 
 			const storeHarvestableQuantity = patchType.lastQuantity;
 
