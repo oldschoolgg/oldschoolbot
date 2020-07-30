@@ -25,10 +25,10 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 }
 
 export function calcVariableYield(plant: Plant, upgradeType: string, farmingLevel: number) {
-	if (!plant.variableYield) return;
+	if (!plant.variableYield) return 0;
 	let cropYield = 0;
 	if (plant.name === 'Crystal tree') {
-		if (!plant.variableOutputAmount) return;
+		if (!plant.variableOutputAmount) return 0;
 		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
 			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
 			if (upgradeType === upgradeTypeNeeded) {
@@ -40,6 +40,6 @@ export function calcVariableYield(plant: Plant, upgradeType: string, farmingLeve
 		cropYield = 3 + rand(1, Math.floor(farmingLevel / 10));
 	}
 
-	if (!cropYield) throw `error!`;
+	if (!cropYield) return 0;
 	return cropYield;
 }

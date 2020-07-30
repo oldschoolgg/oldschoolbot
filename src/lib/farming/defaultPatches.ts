@@ -1,14 +1,15 @@
+import { PatchData } from './types';
+
 /**
  * The default patch information when farming is not yet trained.
  */
-const defaultPatches = {
-	LastPlanted: '',
-	PatchStage: 0,
-	PlantTime: 0,
-	LastQuantity: 0,
-	LastUpgradeType: '',
-	LastPayment: false,
-	IsHarvestable: false
+const defaultPatches: PatchData = {
+	lastPlanted: '',
+	patchStage: false,
+	plantTime: 0,
+	lastQuantity: 0,
+	lastUpgradeType: '',
+	lastPayment: false
 };
 
 export default defaultPatches;

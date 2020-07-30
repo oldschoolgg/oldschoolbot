@@ -46,18 +46,19 @@ export default class extends Task {
 		let chopped = false;
 		let farmingXpReceived = 0;
 		let chanceOfDeathReduction = 1;
-		let cropYield: any;
+		let cropYield = 0;
 		let lives = 3;
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
 
-		const hasMagicSecateurs = await msg.author.hasItem(itemID('Magic secateurs'), 1);
-		if (hasMagicSecateurs) {
+		if (msg.author.hasItem(itemID('Magic secateurs'), 1)) {
 			baseBonus += 0.1;
 		}
-		const hasFarmingCape = await msg.author.hasItem(itemID('Farming cape'), 1);
-		const hasFarmingCapeTrimmed = await msg.author.hasItem(itemID('Farming cape(t)'), 1);
-		if (hasFarmingCape || hasFarmingCapeTrimmed) {
+
+		if (
+			msg.author.hasItem(itemID('Farming cape'), 1) ||
+			msg.author.hasItem(itemID('Farming cape(t)'), 1)
+		) {
 			baseBonus += 0.05;
 		}
 
@@ -67,18 +68,18 @@ export default class extends Task {
 
 		// initial lives = 3. Compost, super, ultra, increases lives by 1 respectively and reduces chanceofdeath as well.
 		// Payment = 0% chance of death
-		if (patchType.LastUpgradeType === 'compost') {
+		if (patchType.lastUpgradeType === 'compost') {
 			lives += 1;
 			chanceOfDeathReduction = 1 / 2;
-		} else if (patchType.LastUpgradeType === 'supercompost') {
+		} else if (patchType.lastUpgradeType === 'supercompost') {
 			lives += 2;
 			chanceOfDeathReduction = 1 / 5;
-		} else if (patchType.LastUpgradeType === 'ultracompost') {
+		} else if (patchType.lastUpgradeType === 'ultracompost') {
 			lives += 3;
 			chanceOfDeathReduction = 1 / 10;
 		}
 
-		if (patchType.LastPayment === true) chanceOfDeathReduction = 0;
+		if (patchType.lastPayment) chanceOfDeathReduction = 0;
 
 		let loot = {
 			[itemID('Weeds')]: 0
@@ -86,7 +87,7 @@ export default class extends Task {
 
 		delete loot[itemID('Weeds')];
 
-		if (patchType.IsHarvestable === false) {
+		if (!patchType.patchStage) {
 			if (!plant) return;
 
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
@@ -128,14 +129,14 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 
 			channel.send(str);
-		} else if (patchType.IsHarvestable === true) {
+		} else if (patchType.patchStage) {
 			const plantToHarvest = Farming.Plants.find(
-				plant => plant.name === patchType.LastPlanted
+				plant => plant.name === patchType.lastPlanted
 			);
 			if (!plantToHarvest) return;
 
 			let quantityDead = 0;
-			for (let i = 0; i < patchType.LastQuantity; i++) {
+			for (let i = 0; i < patchType.lastQuantity; i++) {
 				for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 					const checkIfDied = Math.random();
 					if (
@@ -148,7 +149,7 @@ export default class extends Task {
 				}
 			}
 
-			alivePlants = patchType.LastQuantity - quantityDead;
+			alivePlants = patchType.lastQuantity - quantityDead;
 
 			if (planting) {
 				if (!plant) return;
@@ -156,15 +157,15 @@ export default class extends Task {
 			}
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
-			if (plantToHarvest.givesCrops === true) {
+			if (plantToHarvest.givesCrops) {
 				if (!plantToHarvest.outputCrop) return;
 				if (plantToHarvest.variableYield) {
 					cropYield = calcVariableYield(
 						plantToHarvest,
-						patchType.LastUpgradeType,
+						patchType.lastUpgradeType,
 						currentFarmingLevel
 					);
-				} else if (plantToHarvest.fixedOutput === true) {
+				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;
 					cropYield = plantToHarvest.fixedOutputAmount;
 				} else {
@@ -193,9 +194,9 @@ export default class extends Task {
 					}
 				}
 
-				if (quantity > patchType.LastQuantity) {
+				if (quantity > patchType.lastQuantity) {
 					loot[plantToHarvest.outputCrop] = cropYield;
-					loot[itemID('Weeds')] = quantity - patchType.LastQuantity;
+					loot[itemID('Weeds')] = quantity - patchType.lastQuantity;
 				} else {
 					loot[plantToHarvest.outputCrop] = cropYield;
 				}
@@ -204,7 +205,7 @@ export default class extends Task {
 				else harvestXp = cropYield * plantToHarvest.harvestXp;
 			}
 
-			if (plantToHarvest.needsChopForHarvest === true) {
+			if (plantToHarvest.needsChopForHarvest) {
 				if (!plantToHarvest.treeWoodcuttingLevel) return;
 				if (currentWoodcuttingLevel >= plantToHarvest.treeWoodcuttingLevel) chopped = true;
 				else {
@@ -219,7 +220,7 @@ export default class extends Task {
 
 					harvestXp = 0;
 				}
-				if (plantToHarvest.givesLogs === true && chopped === true) {
+				if (plantToHarvest.givesLogs && chopped) {
 					if (!plantToHarvest.outputLogs) return;
 					if (!plantToHarvest.woodcuttingXp) return;
 					const amountOfLogs = rand(5, 10);
@@ -229,7 +230,7 @@ export default class extends Task {
 					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
 
 					harvestXp = 0;
-				} else if (plantToHarvest.givesCrops === true && chopped === true) {
+				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
 					loot[plantToHarvest.outputCrop] = cropYield * alivePlants;
 
@@ -237,22 +238,16 @@ export default class extends Task {
 				}
 			}
 
-			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementMonsterScore(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill();
-				loot = hesporiLoot;
-			}
-
-			if (quantity > patchType.LastQuantity) {
-				loot[6055] = (quantity - patchType.LastQuantity) * 3; // weeds
-				rakeXp = (quantity - patchType.LastQuantity) * 3 * 4;
+			if (quantity > patchType.lastQuantity) {
+				loot[6055] = (quantity - patchType.lastQuantity) * 3; // weeds
+				rakeXp = (quantity - patchType.lastQuantity) * 3 * 4;
 				rakeStr += ` ${rakeXp} XP for raking, `;
 			}
 
 			farmingXpReceived = plantXp + harvestXp + checkHealthXp + rakeXp;
 			let deathStr = '';
 			if (quantityDead > 0) {
-				deathStr = ` During your harvest, you found that ${quantityDead}/${patchType.LastQuantity} of your plants died.`;
+				deathStr = ` During your harvest, you found that ${quantityDead}/${patchType.lastQuantity} of your plants died.`;
 			}
 
 			if (planting) {
@@ -260,7 +255,7 @@ export default class extends Task {
 				plantingStr = `${user}, ${user.minionName} finished planting ${quantity}x ${plant.name} and `;
 			} else plantingStr = `${user}, ${user.minionName} finished `;
 
-			let str = `${plantingStr}harvesting ${patchType.LastQuantity}x ${
+			let str = `${plantingStr}harvesting ${patchType.lastQuantity}x ${
 				plantToHarvest.name
 			}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health for a total of ${farmingXpReceived.toLocaleString()} Farming XP.${wcStr}\n`;
 
@@ -310,8 +305,16 @@ export default class extends Task {
 				str += `\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`;
 			}
 
-			if (
-				patchType.IsHarvestable &&
+			let tangleroot = false;
+			if (plantToHarvest.seedType === 'hespori') {
+				await user.incrementMonsterScore(Monsters.Hespori.id);
+				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
+				loot = hesporiLoot;
+				if (Object.keys(loot).length > 2) {
+					tangleroot = true;
+				}
+			} else if (
+				patchType.patchStage &&
 				plantToHarvest.petChance &&
 				roll(
 					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
@@ -324,25 +327,25 @@ export default class extends Task {
 				str += '```';
 				this.client.emit(
 					Events.ServerNotification,
-					`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.LastPlanted} at level ${currentFarmingLevel} Farming!`
+					`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);
 			}
 
-			const currentContract: any = msg.author.settings.get(
+			const currentContract = msg.author.settings.get(
 				UserSettings.FarmingContracts.FarmingContract
 			);
 
-			const contractsCompleted: number = currentContract.contractsCompleted;
+			const { contractsCompleted } = currentContract;
 
 			let janeMessage;
 			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
 				const farmingContractUpdate = {
-					contractStatus: 0,
-					contractType: '',
-					plantToGrow: '',
-					seedPatchTier: currentContract.plantTier,
-					plantTier: 0,
-					contractsCompleted: contractsCompleted + 1
+					contractStatus: false as boolean,
+					contractType: '' as 'easy' | 'medium' | 'hard' | '',
+					plantToGrow: '' as string,
+					seedPatchTier: currentContract.plantTier as 0 | 1 | 2 | 3 | 4 | 5,
+					plantTier: 0 as 0 | 1 | 2 | 3 | 4 | 5,
+					contractsCompleted: (contractsCompleted + 1) as number
 				};
 
 				msg.author.settings.update(
@@ -371,7 +374,7 @@ export default class extends Task {
 			msg.author.incrementMinionDailyDuration(duration);
 
 			channel.send(str);
-			if (janeMessage === true) {
+			if (janeMessage) {
 				return msg.send(
 					await guildmasterJaneImage(
 						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${contractsCompleted +

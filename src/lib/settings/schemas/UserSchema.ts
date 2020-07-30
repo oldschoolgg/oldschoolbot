@@ -3,6 +3,9 @@ import { Client, SchemaFolder } from 'klasa';
 import Gear from '../../gear';
 import Farming from '../../farming';
 import { SkillsEnum } from '../../skilling/types';
+import { FarmingPatchTypes } from '../../farming/types';
+import defaultContracts from '../../farming/index';
+import defaultTitheFarm from '../../farming/defaultTitheFarm';
 
 Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
@@ -41,8 +44,7 @@ Client.defaultUserSchema
 			.add('duelWins', 'integer', { default: 0 })
 			.add('fightCavesAttempts', 'integer', { default: 0 })
 			.add('fireCapesSacrificed', 'integer', { default: 0 })
-			.add('titheFarmsCompleted', 'integer', { default: 0 })
-			.add('titheFarmPoints', 'integer', { default: 0 })
+			.add('titheFarmStats', 'any', { default: defaultTitheFarm })
 	)
 	.add('skills', (folder: SchemaFolder) =>
 		folder
@@ -68,34 +70,25 @@ Client.defaultUserSchema
 			.add('misc', 'any', { default: Gear.defaultGear })
 			.add('skilling', 'any', { default: Gear.defaultGear })
 	)
-	.add('farmingpatches', (folder: SchemaFolder) =>
+	.add('farmingPatches', (folder: SchemaFolder) =>
 		folder
-			.add('herb', 'any', { default: Farming.defaultPatches })
-			.add('fruittree', 'any', { default: Farming.defaultPatches })
-			.add('tree', 'any', { default: Farming.defaultPatches })
-			.add('allotment', 'any', { default: Farming.defaultPatches })
-			.add('cactus', 'any', { default: Farming.defaultPatches })
-			.add('bush', 'any', { default: Farming.defaultPatches })
-			.add('spirit', 'any', { default: Farming.defaultPatches })
-			.add('hardwood', 'any', { default: Farming.defaultPatches })
-			.add('seaweed', 'any', { default: Farming.defaultPatches })
-			.add('vine', 'any', { default: Farming.defaultPatches })
-			.add('calquat', 'any', { default: Farming.defaultPatches })
-			.add('redwood', 'any', { default: Farming.defaultPatches })
-			.add('crystal', 'any', { default: Farming.defaultPatches })
-			.add('celastrus', 'any', { default: Farming.defaultPatches })
-			.add('hespori', 'any', { default: Farming.defaultPatches })
-			.add('flower', 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Herb, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.FruitTree, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Tree, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Allotment, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Cactus, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Bush, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Spirit, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Hardwood, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Seaweed, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Vine, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Calquat, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Redwood, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Crystal, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Celastrus, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Hespori, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Flower, 'any', { default: Farming.defaultPatches })
 	)
 	.add('farmingContracts', (folder: SchemaFolder) =>
-		folder.add('farmingContract', 'any', {
-			default: {
-				contractStatus: 0,
-				contractType: '',
-				plantToGrow: '',
-				plantTier: 0,
-				seedPackTier: 0,
-				contractsCompleted: 0
-			}
-		})
+		folder.add('farmingContract', 'any', { default: defaultContracts })
 	);

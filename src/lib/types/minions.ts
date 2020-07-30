@@ -1,6 +1,8 @@
 import { Activity, Tasks } from '../constants';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { KlasaMessage } from 'klasa';
+import { PatchTypes } from '../farming';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -102,7 +104,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 	quantity: number;
 	upgradeType: string;
-	patchType: any;
+	patchType: PatchTypes.PatchData;
 	msg: KlasaMessage;
 	planting: boolean;
 }

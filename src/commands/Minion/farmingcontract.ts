@@ -23,13 +23,32 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [contractLevel]: [string]) {
+	async run(
+		msg: KlasaMessage,
+		[contractLevel]: ['completed' | 'easy' | 'medium' | 'hard' | 'easier' | 'current']
+	) {
 		await msg.author.settings.sync(true);
 		const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
-		const currentContract: any = msg.author.settings.get(
+		const currentContract = msg.author.settings.get(
 			UserSettings.FarmingContracts.FarmingContract
 		);
+
 		const userBank = msg.author.settings.get(UserSettings.Bank);
+
+		if (
+			contractLevel !== 'easy' &&
+			contractLevel !== 'medium' &&
+			contractLevel !== 'hard' &&
+			contractLevel !== 'easier' &&
+			contractLevel !== 'completed' &&
+			contractLevel !== 'current'
+		) {
+			return msg.send(
+				await guildmasterJaneImage(
+					`Are you a melon? Say 'easy', 'medium', or 'hard' for a contract. Say 'current' to see your current contract. Say 'easier' for an easier contract level. Say 'completed' to see how many contracts you've completed.`
+				)
+			);
+		}
 
 		if (contractLevel === 'completed') {
 			if (currentContract.contractsCompleted > 0) {
@@ -54,22 +73,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (
-			contractLevel !== 'easy' &&
-			contractLevel !== 'medium' &&
-			contractLevel !== 'hard' &&
-			contractLevel !== 'easier' &&
-			contractLevel !== 'completed' &&
-			contractLevel !== 'current'
-		) {
-			return msg.send(
-				await guildmasterJaneImage(
-					`Are you a melon? The applicable contract levels are easy, medium, and hard.`
-				)
-			);
-		}
-
-		if (currentContract.contractStatus === 0 && contractLevel === 'easier') {
+		if (currentContract.contractStatus && contractLevel === 'easier') {
 			return msg.send(
 				await guildmasterJaneImage(
 					`You currently don't have a contract, so you can't ask for something easier!`
@@ -93,20 +97,27 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (currentContract.contractStatus === 1) {
+		if (currentContract.contractStatus) {
 			if (contractLevel === 'easier') {
+				if (currentContract.contractType === 'easy') {
+					return msg.send(
+						await guildmasterJaneImage(
+							`Pardon me, but you already have the easiest contract level available!`
+						)
+					);
+				}
 				const newContractLevel = 'easy';
 				const plantInformation = getPlantToGrow(msg.author, newContractLevel);
 				const plantToGrow = plantInformation[0];
 				const plantTier = plantInformation[1];
 
 				const farmingContractUpdate = {
-					contractStatus: 1,
-					contractType: newContractLevel,
-					plantToGrow,
-					plantTier,
-					seedPackTier: 0,
-					contractsCompleted: currentContract.contractsCompleted
+					contractStatus: true as boolean,
+					contractType: newContractLevel as 'easy' | 'medium' | 'hard' | '',
+					plantToGrow: plantToGrow as string | number,
+					plantTier: plantTier as string | number,
+					seedPackTier: 0 as 0 | 1 | 2 | 3 | 4 | 5,
+					contractsCompleted: currentContract.contractsCompleted as number
 				};
 
 				await msg.author.settings.update(
@@ -120,6 +131,7 @@ export default class extends BotCommand {
 					)
 				);
 			}
+
 			let easierStr = '';
 			if (currentContract.contractType !== 'easy') {
 				easierStr = `\nYou can request an easier contract if you'd like.`;
@@ -131,12 +143,21 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (contractLevel === 'current' || contractLevel === 'easier') return;
+
 		const plantInformation = getPlantToGrow(msg.author, contractLevel);
 		const plantToGrow = plantInformation[0];
 		const plantTier = plantInformation[1];
 
-		const farmingContractUpdate = {
-			contractStatus: 1,
+		const farmingContractUpdate: {
+			contractStatus: boolean;
+			contractType: 'easy' | 'medium' | 'hard' | '';
+			plantToGrow: string | number;
+			plantTier: string | number;
+			seedPackTier: 0 | 1 | 2 | 3 | 4 | 5;
+			contractsCompleted: number;
+		} = {
+			contractStatus: true,
 			contractType: contractLevel,
 			plantToGrow,
 			plantTier,

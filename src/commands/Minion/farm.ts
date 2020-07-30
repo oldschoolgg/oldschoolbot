@@ -16,11 +16,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
-import { PatchTypes } from '../../lib/farming';
-import bankHasItem from '../../lib/util/bankHasItem';
 import itemID from '../../lib/util/itemID';
 import { calcNumOfPatches } from '../../lib/skilling/functions/calcsFarming';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -110,7 +108,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${plants.level} Farming to plant ${plants.name}.`;
 		}
 
-		if (plants.canPayFarmer === false && payment === true) {
+		if (!plants.canPayFarmer && payment) {
 			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
 		}
 		if (
@@ -125,7 +123,7 @@ export default class extends BotCommand {
 			throw `There would be no point to add compost to your ${plants.name}s!`;
 		}
 
-		if (plants.canPayFarmer === false && payment === true) {
+		if (!plants.canPayFarmer && payment) {
 			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
 		}
 
@@ -138,6 +136,27 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
 			quantity = Math.min(Math.floor(msg.author.maxTripLength / timePerPatch), numOfPatches);
+		}
+
+		if (quantity > numOfPatches) {
+			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
+		}
+
+		let duration = timePerPatch * quantity;
+
+		// Reduce time if user has graceful equipped
+		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+			boostStr += '\n\n**Boosts**: 10% for Graceful.';
+			duration *= 0.9;
+		}
+
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount of ${
+				plants.name
+			} you can plant is ${(Math.floor(msg.author.maxTripLength / timePerPatch),
+			numOfPatches)}.`;
 		}
 
 		let newBank = { ...userBank };
@@ -176,44 +195,11 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
 		}
 
-		// 1.5 mins per patch --> ex: 10 patches = 15 mins
-		let duration = timePerPatch * quantity;
+		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		// Reduce time if user has graceful equipped
-		if (
-			hasArrayOfItemsEquipped(
-				[
-					'Graceful hood',
-					'Graceful top',
-					'Graceful legs',
-					'Graceful gloves',
-					'Graceful boots',
-					'Graceful cape'
-				].map(itemID),
-				msg.author.settings.get(UserSettings.Gear.Skilling)
-			)
-		) {
-			boostStr += '\n\n**Boosts**: 10% for Graceful.';
-			duration *= 0.9;
-		}
-
-		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				plants.name
-			} you can plant is ${(Math.floor(msg.author.maxTripLength / timePerPatch),
-			numOfPatches)}.`;
-		}
-
-		if (quantity > numOfPatches) {
-			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
-		}
-
-		const seedType: any = plants.seedType;
-		const seedToPatch: PatchTypes.FarmingPatchTypes = seedType;
-		const getPatchType = resolvePatchTypeSetting(seedToPatch);
-		const patchType: any = msg.author.settings.get(getPatchType);
+		const getPatchType = resolvePatchTypeSetting(plants.seedType);
+		if (!getPatchType) return;
+		const patchType = msg.author.settings.get(getPatchType);
 
 		const data: FarmingActivityTaskOptions = {
 			plantsName: plants.name,
@@ -227,19 +213,18 @@ export default class extends BotCommand {
 			msg,
 			type: Activity.Farming,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
+			finishDate: Date.now() + 5000
 		};
 
 		// If user does not have something already planted, just plant the new seeds.
-		if (patchType.PatchStage === 0) {
+		if (!patchType.patchStage) {
 			const initialPatches = {
-				LastPlanted: plants.name,
-				PatchStage: 1,
-				PlantTime: currentDate,
-				LastQuantity: quantity,
-				LastUpgradeType: upgradeType,
-				LastPayment: payment,
-				IsHarvestable: true
+				lastPlanted: plants.name,
+				patchStage: true,
+				plantTime: currentDate,
+				lastQuantity: quantity,
+				lastUpgradeType: upgradeType,
+				lastPayment: payment
 			};
 
 			msg.author.settings.update(getPatchType, initialPatches);
@@ -249,8 +234,8 @@ export default class extends BotCommand {
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
 				duration
 			)} to finish. ${boostStr}`;
-		} else if (patchType.PatchStage === 1) {
-			const storeHarvestablePlant = patchType.LastPlanted;
+		} else if (patchType.patchStage) {
+			const storeHarvestablePlant = patchType.lastPlanted;
 			const planted = Farming.Plants.find(
 				plants =>
 					stringMatches(plants.name, storeHarvestablePlant) ||
@@ -260,20 +245,20 @@ export default class extends BotCommand {
 				throw `This error shouldn't happen. Just to clear possible undefined error`;
 			}
 
-			const lastPlantTime: number = patchType.PlantTime;
-			const difference = currentDate - lastPlantTime;
+			// const lastPlantTime: number = patchType.plantTime;
+			// const difference = currentDate - lastPlantTime;
 			// initiate a cooldown feature for each of the seed types.
 			/* allows for a run of specific seed type to only be possible until the
 				previous run's plants has grown.*/
-			if (difference < planted.growthTime * Time.Minute) {
-				throw `Please come back when your crops have finished growing in ${formatDuration(
-					lastPlantTime + plants.growthTime * Time.Minute - currentDate
-				)}!`;
-			}
+			// if (difference < planted.growthTime * Time.Minute) {
+			//	throw `Please come back when your crops have finished growing in ${formatDuration(
+			//	lastPlantTime + plants.growthTime * Time.Minute - currentDate
+			// )}!`;
+			// }
 
-			const storeHarvestableQuantity = patchType.LastQuantity;
+			const storeHarvestableQuantity = patchType.lastQuantity;
 
-			if (planted.needsChopForHarvest === true) {
+			if (planted.needsChopForHarvest) {
 				if (!planted.treeWoodcuttingLevel) return;
 				if (
 					currentWoodcuttingLevel < planted.treeWoodcuttingLevel &&
@@ -284,13 +269,12 @@ export default class extends BotCommand {
 			}
 
 			const updatePatches = {
-				LastPlanted: plants.name,
-				PatchStage: 1,
-				PlantTime: currentDate,
-				LastQuantity: quantity,
-				LastUpgradeType: upgradeType,
-				LastPayment: payment,
-				IsHarvestable: true
+				lastPlanted: plants.name,
+				patchStage: true,
+				plantTime: currentDate,
+				lastQuantity: quantity,
+				lastUpgradeType: upgradeType,
+				lastPayment: payment
 			};
 
 			msg.author.settings.update(getPatchType, updatePatches);

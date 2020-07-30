@@ -6,7 +6,6 @@ import { Time, Emoji } from '../../lib/constants';
 import Farming from '../../lib/skilling/skills/farming/farming';
 import { requiresMinion } from '../../lib/minions/decorators';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
-import { PatchTypes } from '../../lib/farming';
 import { FarmingPatchTypes } from '../../lib/farming/types';
 
 export default class extends BotCommand {
@@ -36,34 +35,33 @@ export default class extends BotCommand {
 
 			baseStr = `**${toTitleCase(patchType)} patch:** `;
 
-			const seedType: any = patchType;
-			const seedToPatch: PatchTypes.FarmingPatchTypes = seedType;
-			const getPatchType = resolvePatchTypeSetting(seedToPatch);
-			const patch: any = msg.author.settings.get(getPatchType);
+			const getPatchType = resolvePatchTypeSetting(patchType);
+			if (!getPatchType) return;
+			const patch = msg.author.settings.get(getPatchType);
 
-			if (patch.LastPlanted) {
+			if (patch.lastPlanted) {
 				const plant = Farming.Plants.find(plants =>
 					plants.aliases.some(
 						alias =>
-							stringMatches(alias, patch.LastPlanted) ||
-							stringMatches(alias.split(' ')[0], patch.LastPlanted)
+							stringMatches(alias, patch.lastPlanted) ||
+							stringMatches(alias.split(' ')[0], patch.lastPlanted)
 					)
 				);
 
-				if (!plant) throw `ERRORRRRRRR`;
+				if (!plant) return;
 
-				const lastPlantTime: number = patch.PlantTime;
+				const lastPlantTime: number = patch.plantTime;
 				const difference = currentDate - lastPlantTime;
 				if (difference < plant.growthTime * Time.Minute) {
 					emojiStr = `${Emoji.Timer} `;
-					contentStr = `Your ${patch.LastQuantity}x ${
+					contentStr = `Your ${patch.lastQuantity}x ${
 						plant.name
 					} will be ready to harvest in ${formatDuration(
 						lastPlantTime + plant.growthTime * Time.Minute - currentDate
 					)}!`;
 				} else {
 					emojiStr = `${Emoji.Tick} `;
-					contentStr = `Your ${patch.LastQuantity}x ${plant.name} is ready to be harvested!`;
+					contentStr = `Your ${patch.lastQuantity}x ${plant.name} is ready to be harvested!`;
 				}
 			} else {
 				emojiStr = `${Emoji.RedX} `;
