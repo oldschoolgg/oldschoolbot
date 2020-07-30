@@ -1,6 +1,7 @@
 import { Bank } from './types';
 import itemID from './util/itemID';
 import { MAX_QP } from './constants';
+import { resolveNameBank } from './util';
 
 interface Buyable {
 	name: string;
@@ -184,6 +185,15 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10
+	},
+	{
+		name: 'Shield right half',
+		aliases: ['shield right half', 'right shield'],
+		outputItems: resolveNameBank({
+			'Shield right half': 1
+		}),
+		qpRequired: 111,
+		gpCost: 750_000
 	}
 ];
 

@@ -676,6 +676,18 @@ const Createables: Createable[] = [
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205
+	},
+	{
+		name: 'Dragon sq shield',
+		inputItems: resolveNameBank({
+			'Shield right half': 1,
+			'Shield left half': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon sq shield': 1
+		}),
+		QPRequired: 111,
+		smithingLevel: 60
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',
