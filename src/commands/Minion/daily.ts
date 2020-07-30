@@ -22,7 +22,7 @@ const { triviaQuestions } = JSON.parse(
 import { BotCommand } from '../../lib/BotCommand';
 import { Time, Emoji, SupportServer, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
-import { isWeekend, formatDuration, roll, stringMatches } from '../../lib/util';
+import { isWeekend, formatDuration, roll, stringMatches, rand } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 
@@ -49,8 +49,10 @@ export default class DailyCommand extends BotCommand {
 
 		// If they have already claimed a daily in the past 4h
 		if (difference < Time.Hour * 4) {
-			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 4));
-
+			let duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 4));
+			if (msg.author.settings.get('troll')) {
+				duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * rand(0, 500)));
+			}
 			return msg.send(
 				`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`
 			);
