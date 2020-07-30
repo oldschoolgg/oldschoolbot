@@ -22,3 +22,4 @@ export const patreonConfig: PatreonConfig = null;
 export const customClientOptions: KlasaClientOptions = {
 	prefix: '-'
 };
+export const sentryDSN: string | null = null;

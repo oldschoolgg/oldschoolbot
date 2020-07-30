@@ -1,5 +1,6 @@
 import { KlasaMessage, Command, Event, util } from 'klasa';
 import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel, User } from 'discord.js';
+import * as Sentry from '@sentry/node';
 
 import { rootFolder, Channel, Emoji } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
@@ -26,6 +27,7 @@ export default class extends Event {
 		}
 
 		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack || error}`);
+		Sentry.captureException(error);
 
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {
 			output = [

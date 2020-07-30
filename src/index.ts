@@ -1,9 +1,16 @@
 import { Client, KlasaClientOptions } from 'klasa';
 import { Client as TagsClient } from '@kcp/tags';
 import pLimit from 'p-limit';
+import * as Sentry from '@sentry/node';
 
 import { clientOptions, clientProperties } from './lib/config/config';
-import { botToken } from './config';
+import { botToken, sentryDSN } from './config';
+
+if (sentryDSN) {
+	Sentry.init({
+		dsn: sentryDSN
+	});
+}
 
 Client.use(TagsClient);
 
