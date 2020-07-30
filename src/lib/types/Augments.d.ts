@@ -170,6 +170,7 @@ declare module 'discord.js' {
 			title?: string;
 			background?: number;
 			flags?: Record<string, string | number>;
+			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
 	}
 
@@ -180,6 +181,7 @@ declare module 'discord.js' {
 			title?: string;
 			background?: number;
 			flags?: Record<string, string | number>;
+			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
 	}
 }
