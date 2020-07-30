@@ -55,14 +55,14 @@ export default class extends BotCommand {
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
 
-		if (!quantity) {
-			quantity = userBank[osItem.id];
-		}
-
 		const maxCasts = Math.min(
 			Math.floor(msg.author.maxTripLength / timePerAlch),
 			userBank[osItem.id]
 		);
+
+		if (!quantity) {
+			quantity = maxCasts;
+		}
 
 		if (quantity * timePerAlch > msg.author.maxTripLength) {
 			throw `The max number of alchs you can do is ${maxCasts}!`;
