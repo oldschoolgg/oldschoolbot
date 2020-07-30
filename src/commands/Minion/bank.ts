@@ -67,7 +67,9 @@ export default class extends Command {
 				for (const nameOrID of arrItemNameOrID) {
 					try {
 						const item = getOSItem(nameOrID);
-						view = addItemToBank(view, item.id, bank[item.id] ?? 0);
+						if (bank[item.id]) {
+							view = addItemToBank(view, item.id, bank[item.id]);
+						}
 					} catch (_) {}
 				}
 				if (Object.keys(view).length === 0) {
