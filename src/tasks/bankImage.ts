@@ -4,7 +4,7 @@ import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
 import fetch from 'node-fetch';
 import { toKMB } from 'oldschooljs/dist/util/util';
-import { Util, Items } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 
 import {
 	generateHexColorForCashStack,
