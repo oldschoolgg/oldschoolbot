@@ -103,10 +103,12 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	plantsName: string;
 	channelID: string;
 	quantity: number;
-	upgradeType: string;
+	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | '';
 	patchType: PatchTypes.PatchData;
+	getPatchType: string;
 	msg: KlasaMessage;
 	planting: boolean;
+	currentDate: number;
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {

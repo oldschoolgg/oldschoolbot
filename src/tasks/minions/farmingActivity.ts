@@ -14,18 +14,21 @@ import { rand } from 'oldschooljs/dist/util/util';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import bankHasItem from '../../lib/util/bankHasItem';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
+import { PatchTypes } from '../../lib/farming';
 
 export default class extends Task {
 	async run({
 		plantsName,
 		patchType,
+		getPatchType,
 		quantity,
 		upgradeType,
 		userID,
 		channelID,
 		msg,
 		planting,
-		duration
+		duration,
+		currentDate
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -123,6 +126,17 @@ export default class extends Task {
 
 			await user.addItemsToBank(loot, true);
 
+			const updatePatches = {
+				lastPlanted: plant.name,
+				patchStage: true,
+				plantTime: currentDate,
+				lastQuantity: quantity,
+				lastUpgradeType: upgradeType,
+				lastPayment: patchType.lastPayment
+			};
+
+			await msg.author.settings.update(getPatchType, updatePatches);
+
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
 			const channel = this.client.channels.get(channelID);
@@ -134,6 +148,7 @@ export default class extends Task {
 				plant => plant.name === patchType.lastPlanted
 			);
 			if (!plantToHarvest) return;
+			if (!plant) return;
 
 			let quantityDead = 0;
 			for (let i = 0; i < patchType.lastQuantity; i++) {
@@ -152,7 +167,6 @@ export default class extends Task {
 			alivePlants = patchType.lastQuantity - quantityDead;
 
 			if (planting) {
-				if (!plant) return;
 				plantXp = quantity * (plant.plantXp + compostXp);
 			}
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
@@ -251,7 +265,6 @@ export default class extends Task {
 			}
 
 			if (planting) {
-				if (!plant) return;
 				plantingStr = `${user}, ${user.minionName} finished planting ${quantity}x ${plant.name} and `;
 			} else plantingStr = `${user}, ${user.minionName} finished `;
 
@@ -330,6 +343,29 @@ export default class extends Task {
 					`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);
 			}
+
+			let updatePatches: PatchTypes.PatchData;
+			if (planting) {
+				updatePatches = {
+					lastPlanted: plant.name,
+					patchStage: true,
+					plantTime: currentDate,
+					lastQuantity: quantity,
+					lastUpgradeType: upgradeType,
+					lastPayment: patchType.lastPayment
+				};
+			} else {
+				updatePatches = {
+					lastPlanted: '',
+					patchStage: false,
+					plantTime: 0,
+					lastQuantity: 0,
+					lastUpgradeType: '',
+					lastPayment: false
+				};
+			}
+
+			await msg.author.settings.update(getPatchType, updatePatches);
 
 			const currentContract = msg.author.settings.get(
 				UserSettings.FarmingContracts.FarmingContract
