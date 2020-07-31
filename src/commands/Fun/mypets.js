@@ -1,6 +1,5 @@
 const { Command } = require('klasa');
 const pets = require('../../../data/pets');
-const { queuedMessageSend } = require('../../lib/util');
 
 module.exports = class extends Command {
 	constructor(...args) {
@@ -23,6 +22,6 @@ module.exports = class extends Command {
 			return formatted.push(`${pet.emoji} ${pet.name}: ${userPets[id]}`);
 		});
 
-		return queuedMessageSend(this.client, msg.channel.id, formatted.join('\n'));
+		return msg.send(formatted.join('\n'), { split: true });
 	}
 };
