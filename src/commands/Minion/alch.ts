@@ -132,7 +132,7 @@ export default class extends BotCommand {
 		);
 
 		const data: AlchingActivityTaskOptions = {
-			itemName: osItem.name,
+			itemID: osItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
