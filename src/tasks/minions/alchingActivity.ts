@@ -71,7 +71,8 @@ export default class extends Task {
 						user.log(`continued trip of alching ${quantity}x ${item.name}`);
 						this.client.commands
 							.get('alch')!
-							.run(response as KlasaMessage, [quantity, [item]]);
+							.run(response as KlasaMessage, [quantity, [item]])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);
