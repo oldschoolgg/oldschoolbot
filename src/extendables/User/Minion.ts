@@ -17,7 +17,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	BuryingActivityTaskOptions,
-	FletchingActivityTaskOptions
+	FletchingActivityTaskOptions,
+	AlchingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -33,7 +34,7 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
-import { Emoji, Activity, Time } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -269,6 +270,12 @@ export default class extends Extendable {
 
 			case Activity.Wintertodt: {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
+			}
+
+			case Activity.Alching: {
+				const data = currentTask as AlchingActivityTaskOptions;
+
+				return `${this.minionName} is currently alching ${data.quantity}x ${data.itemName}. ${formattedDuration}`;
 			}
 		}
 	}
