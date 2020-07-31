@@ -255,3 +255,8 @@ const rawEmojiRegex = emojiRegex();
 export function stripEmojis(str: string) {
 	return str.replace(rawEmojiRegex, '');
 }
+
+export function round(value = 1, precision = 1) {
+	const multiplier = Math.pow(10, precision || 0);
+	return Math.round(value * multiplier) / multiplier;
+}

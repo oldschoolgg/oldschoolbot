@@ -1,6 +1,7 @@
 import { Bank } from './types';
 import itemID from './util/itemID';
 import { MAX_QP } from './constants';
+import { resolveNameBank } from './util';
 
 interface Buyable {
 	name: string;
@@ -141,22 +142,22 @@ const Buyables: Buyable[] = [
 		gpCost: 2_500_000
 	},
 	{
-		name: 'Huge Fishing Bait Pack',
+		name: 'Fishing Bait',
 		aliases: ['fishing bait'],
 		outputItems: {
-			[itemID('Fishing bait')]: 10_000
+			[itemID('Fishing bait')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 10_000 * 5
+		gpCost: 5
 	},
 	{
-		name: 'Huge Jug Pack',
+		name: 'Jug of Water',
 		aliases: ['jug of water', 'jugs of water'],
 		outputItems: {
-			[itemID('Jug of water')]: 500
+			[itemID('Jug of water')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 500 * 100
+		gpCost: 100
 	},
 	{
 		name: "Iban's staff",
@@ -177,13 +178,22 @@ const Buyables: Buyable[] = [
 		gpCost: 2_000_000
 	},
 	{
-		name: 'Feather pack',
+		name: 'Feather',
 		aliases: ['feather'],
 		outputItems: {
-			[itemID('Feather')]: 10_000
+			[itemID('Feather')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 10_000 * 10
+		gpCost: 10
+	},
+	{
+		name: 'Shield right half',
+		aliases: ['shield right half', 'right shield'],
+		outputItems: resolveNameBank({
+			'Shield right half': 1
+		}),
+		qpRequired: 111,
+		gpCost: 750_000
 	}
 ];
 
