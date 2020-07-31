@@ -20,9 +20,9 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, item]: [number, Item[]]) {
+	async run(msg: KlasaMessage, [quantity, itemArray]: [number, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id]);
+		const osItem = itemArray.find(i => userBank[i.id]);
 
 		if (!osItem) {
 			throw `You don't have any of this item to drop!`;

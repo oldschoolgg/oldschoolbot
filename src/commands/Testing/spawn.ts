@@ -17,7 +17,7 @@ export default class extends BotCommand {
 		this.enabled = !this.client.production;
 	}
 
-	async run(msg: KlasaMessage, [qty = 1, item]: [number, Item[]]) {
+	async run(msg: KlasaMessage, [qty = 1, itemArray]: [number, Item[]]) {
 		// Make 100% sure this command can never be used in prod
 		if (
 			this.client.production ||
@@ -29,13 +29,13 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.all) {
 			const items: Bank = {};
-			item.forEach(i => (items[i.id] = qty));
+			itemArray.forEach(i => (items[i.id] = qty));
 			await msg.author.addItemsToBank(items);
 			const itemsString = await createReadableItemListFromBank(this.client, items);
 			return msg.send(`Gave you ${itemsString}.`);
 		}
 
-		const osItem = item[0];
+		const osItem = itemArray[0];
 		await msg.author.addItemsToBank({ [osItem.id]: qty });
 
 		for (const setup of ['range', 'melee', 'mage', 'skilling']) {
