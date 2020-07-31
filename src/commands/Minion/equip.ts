@@ -25,7 +25,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, quantity = 1, item]: [GearTypes.GearSetupTypes, number, Item[]]
+		[gearType, quantity = 1, itemArray]: [GearTypes.GearSetupTypes, number, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
 			throw `${msg.author.minionName} is currently out on a trip, so you can't change their gear!`;
@@ -33,7 +33,7 @@ export default class extends BotCommand {
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const itemToEquip = item.find(
+		const itemToEquip = itemArray.find(
 			i => userBank[i.id] >= quantity && i.equipable_by_player && i.equipment
 		);
 

@@ -20,9 +20,9 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [item]: [Item[]]): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage, [itemArray]: [Item[]]): Promise<KlasaMessage> {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const petItem = item.find(i => userBank[i.id] && allPetIDs.includes(i.id));
+		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {
 			throw `That's not a pet, or you do not own this pet.`;
 		}

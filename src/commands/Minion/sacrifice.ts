@@ -26,8 +26,8 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, item]: [number | undefined, Item[]]) {
-		if (!item) {
+	async run(msg: KlasaMessage, [quantity, itemArray]: [number | undefined, Item[]]) {
+		if (!itemArray) {
 			return msg.send(
 				`Your current sacrificed amount is: ${msg.author.settings
 					.get(UserSettings.SacrificedValue)
@@ -36,7 +36,7 @@ export default class extends BotCommand {
 		}
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && itemIsTradeable(i.id));
+		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
 		if (!osItem) {
 			throw `You don't have any of this item to sacrifice, or it is not tradeable.`;
