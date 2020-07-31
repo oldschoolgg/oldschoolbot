@@ -28,7 +28,7 @@ export default class extends BotCommand {
 
 	async run(
 		msg: KlasaMessage,
-		[buyerMember, price, quantity, item]: [GuildMember, number, number, Item[]]
+		[buyerMember, price, quantity, itemArray]: [GuildMember, number, number, Item[]]
 	) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		if (buyerMember.user.isIronman) throw `Iron players can't be sold items.`;
@@ -45,7 +45,7 @@ export default class extends BotCommand {
 		}
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && itemIsTradeable(i.id));
+		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
 		if (!osItem) {
 			throw `You don't have any of this item to sell, or it is not tradeable.`;

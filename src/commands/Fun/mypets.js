@@ -22,6 +22,6 @@ module.exports = class extends Command {
 			return formatted.push(`${pet.emoji} ${pet.name}: ${userPets[id]}`);
 		});
 
-		return msg.send(formatted.join('\n'));
+		return msg.send(formatted.join('\n'), { split: true });
 	}
 };

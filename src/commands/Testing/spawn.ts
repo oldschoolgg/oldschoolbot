@@ -1,20 +1,23 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import getOSItem from '../../lib/util/getOSItem';
+import { Item } from 'oldschooljs/dist/meta/types';
+import { Bank } from '../../lib/types';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { Emoji } from '../../lib/constants';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[number:int{1,100}] <itemname:...string>',
+			usage: '[qty:integer{1,1000000}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
 		this.enabled = !this.client.production;
 	}
 
-	async run(msg: KlasaMessage, [qtyOrName, itemNamePossible]: [number, number | undefined]) {
+	async run(msg: KlasaMessage, [qty = 1, itemArray]: [number, Item[]]) {
 		// Make 100% sure this command can never be used in prod
 		if (
 			this.client.production ||
@@ -24,20 +27,30 @@ export default class extends BotCommand {
 			return;
 		}
 
-		const qty = typeof qtyOrName === 'number' ? qtyOrName : 1;
-		const itemName =
-			typeof qtyOrName === 'string' ? qtyOrName : itemNamePossible ?? 'Bunny feet';
+		if (msg.flagArgs.all) {
+			const items: Bank = {};
+			for (const item of itemArray) {
+				items[item.id] = qty;
+			}
+			await msg.author.addItemsToBank(items);
+			const itemsString = await createReadableItemListFromBank(this.client, items);
+			return msg.send(`Gave you ${itemsString}.`);
+		}
 
-		const osItem = getOSItem(itemName);
+		const osItem = itemArray[0];
 		await msg.author.addItemsToBank({ [osItem.id]: qty });
 
 		for (const setup of ['range', 'melee', 'mage', 'skilling']) {
 			if (msg.flagArgs[setup]) {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-				// @ts-ignore
-				return this.client.commands.get('equip').run(msg, [setup, 1, osItem.name]);
+				try {
+					await this.client.commands.get('equip')!.run(msg, [setup, 1, [osItem]]);
+					return msg.send(`Equipped 1x ${osItem.name} to your ${setup} setup.`);
+				} catch (err) {
+					return msg.send(`Failed to equip item. Equip it yourself ${Emoji.PeepoNoob}`);
+				}
 			}
 		}
+
 		return msg.send(`Gave you ${qty}x ${osItem.name}.`);
 	}
 }

@@ -8,7 +8,10 @@ import { stringMatches } from '../lib/util';
 export default class extends Argument {
 	async run(itemName: string) {
 		// guarantee all characters are numbers
-		if (parseInt(itemName).toString().length === itemName.length) {
+		if (
+			!isNaN(parseInt(itemName)) &&
+			parseInt(itemName).toString().length === itemName.length
+		) {
 			return [getOSItem(parseInt(itemName))];
 		}
 

@@ -24,10 +24,10 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, item]: [number | undefined, Item[]]) {
+	async run(msg: KlasaMessage, [quantity, itemArray]: [number | undefined, Item[]]) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && itemIsTradeable(i.id));
+		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
 		if (!osItem) {
 			throw `You don't have any of this item to sell, or it is not tradeable.`;

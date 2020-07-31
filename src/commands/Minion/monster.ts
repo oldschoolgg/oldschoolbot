@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { formatDuration, itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID, calcWhatPercent } from '../../lib/util';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -10,6 +10,7 @@ import { formatItemReqs } from '../../lib/util/formatItemReqs';
 import { formatItemBoosts } from '../../lib/util/formatItemBoosts';
 import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
+import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -43,6 +44,7 @@ export default class MinionCommand extends BotCommand {
 				ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 			}
 		}
+		const maxCanKill = Math.floor(msg.author.maxTripLength / timeToFinish);
 
 		const QP = msg.author.settings.get(UserSettings.QP);
 
@@ -55,6 +57,19 @@ export default class MinionCommand extends BotCommand {
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
 			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
 		}
+
+		if (monster.healAmountNeeded) {
+			str.push(`**Healing Required:** ${monster.healAmountNeeded}hp per kill`);
+			const [hpNeededPerKill] = calculateMonsterFood(monster, msg.author);
+			str.push(
+				`With your current gear you only need ${hpNeededPerKill}hp (${100 -
+					calcWhatPercent(
+						hpNeededPerKill,
+						monster.healAmountNeeded
+					)}% less)\n ${hpNeededPerKill * maxCanKill}hp for a full trip.\n`
+			);
+		}
+
 		if (monster.itemInBankBoosts) {
 			str.push(`**Boosts:** ${formatItemBoosts(monster.itemInBankBoosts)}.\n`);
 			if (totalItemBoost) {
@@ -66,7 +81,6 @@ export default class MinionCommand extends BotCommand {
 			}
 		}
 
-		const maxCanKill = Math.floor(msg.author.maxTripLength / timeToFinish);
 		str.push(
 			`The normal time to kill ${monster.name} is ${formatDuration(monster.timeToFinish)}.`
 		);
