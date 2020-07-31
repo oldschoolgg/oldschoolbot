@@ -53,7 +53,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && i.highalch);
+		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
 			throw `You don't have any of this item to alch.`;
 		}
