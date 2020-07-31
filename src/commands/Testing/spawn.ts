@@ -29,7 +29,9 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.all) {
 			const items: Bank = {};
-			itemArray.forEach(i => (items[i.id] = qty));
+			for (const item of itemArray) {
+				items[item.id] = qty;
+			}
 			await msg.author.addItemsToBank(items);
 			const itemsString = await createReadableItemListFromBank(this.client, items);
 			return msg.send(`Gave you ${itemsString}.`);
