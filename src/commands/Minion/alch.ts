@@ -5,18 +5,19 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import resolveItems from '../../lib/util/resolveItems';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import {
 	bankHasAllItemsFromBank,
 	formatDuration,
 	removeBankFromBank,
-	resolveNameBank
+	resolveNameBank,
+	itemID
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { rand } from '../../util';
+import { minionNotBusy } from '../../lib/minions/decorators';
 
 const options = {
 	max: 1,
@@ -37,21 +38,30 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Tome of fire'
 ]);
 
+const unalchables = [itemID('Nature rune'), itemID('Fire rune')];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] (item:...item)',
-			usageDelim: ' '
+			usage: '[quantity:int{1}] <item:...item>',
+			usageDelim: ' ',
+			oneAtTime: true
 		});
 	}
 
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && i.highalch);
+		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			throw `'You don't have any of this item to alch.'`;
+			throw `You don't have any of this item to alch.`;
 		}
+
+		if (unalchables.some(item => item === osItem.id)) {
+			throw `This item cannot be alched.`;
+		}
+
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
 
@@ -72,9 +82,7 @@ export default class extends BotCommand {
 		let fireRuneCost = quantity * 5;
 
 		for (const runeProvider of unlimitedFireRuneProviders) {
-			if (
-				hasItemEquipped(runeProvider, msg.author.settings.get(UserSettings.Gear.Skilling))
-			) {
+			if (msg.author.hasItemEquippedAnywhere(runeProvider)) {
 				fireRuneCost = 0;
 				break;
 			}
@@ -99,9 +107,11 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const alchMessage = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to alch ${quantity} ${
-					osItem.name
-				} for ${alchValue.toLocaleString()} (${Util.toKMB(alchValue)})`
+				`${msg.author}, say \`confirm\` to alch ${quantity} ${osItem.name} (${Util.toKMB(
+					alchValue
+				)}). This will take approximately ${formatDuration(
+					duration
+				)}, and consume ${quantity}x Nature runes.`
 			);
 
 			try {
@@ -112,7 +122,7 @@ export default class extends BotCommand {
 					options
 				);
 			} catch (err) {
-				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}`);
+				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}.`);
 			}
 		}
 

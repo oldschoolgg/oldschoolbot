@@ -44,18 +44,19 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
+		const saved =
+			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 		const responses = [
 			`${user}, ${
 				user.minionName
 			} has finished alching ${quantity}x ${itemName}! ${alchValue.toLocaleString()}gp (${toKMB(
 				alchValue
-			)}) has been added to your bank`,
-			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes` : '',
+			)}) has been added to your bank. ${saved}`,
 			`${user.minionName} asks if you'd like them to do another of the same trip.`
 		];
 
 		this.client.queuePromise(() => {
-			channel.send(responses.join('. '));
+			channel.send(responses.join('\n'));
 			channel
 				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
 					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
