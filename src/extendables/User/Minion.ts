@@ -39,6 +39,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { itemNameFromID } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -275,7 +276,9 @@ export default class extends Extendable {
 			case Activity.Alching: {
 				const data = currentTask as AlchingActivityTaskOptions;
 
-				return `${this.minionName} is currently alching ${data.quantity}x ${data.itemName}. ${formattedDuration}`;
+				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
+					data.itemID
+				)}. ${formattedDuration}`;
 			}
 		}
 	}
