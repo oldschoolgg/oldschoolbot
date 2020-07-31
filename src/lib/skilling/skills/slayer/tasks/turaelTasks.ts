@@ -6,7 +6,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Banshee',
 		amount: [15, 50],
 		weight: 8,
-		alternatives: 'Twisted Banshee',
+		alternatives: ['Twisted Banshee'],
 		Id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLvl: 20,
 		slayerLvl: 15,
@@ -69,7 +69,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Cave bug',
 		amount: [10, 20],
 		weight: 8,
-		Id: Monsters.CaveBug.id,
+		Id: [Monsters.CaveBug.id],
 		slayerLvl: 7,
 		unlocked: true
 	},
@@ -77,7 +77,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Cave crawler',
 		amount: [15, 50],
 		weight: 8,
-		Id: Monsters.CaveCrawler.id,
+		Id: [Monsters.CaveCrawler.id],
 		combatLvl: 10,
 		slayerLvl: 10,
 		unlocked: true
@@ -86,7 +86,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Cave slime',
 		amount: [10, 20],
 		weight: 8,
-		Id: Monsters.CaveSlime.id,
+		Id: [Monsters.CaveSlime.id],
 		combatLvl: 15,
 		slayerLvl: 17,
 		unlocked: true
@@ -104,7 +104,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Crawling hand',
 		amount: [15, 50],
 		weight: 8,
-		Id: Monsters.CrawlingHand.id,
+		Id: [Monsters.CrawlingHand.id],
 		slayerLvl: 5,
 		questPoints: 1,
 		unlocked: true
@@ -141,7 +141,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Ghost',
 		amount: [15, 50],
 		weight: 7,
-		alternatives: 'Tortured soul',
+		alternatives: ['Tortured soul'],
 		Id: [Monsters.Ghost.id, Monsters.TorturedSoul.id],
 		combatLvl: 13,
 		unlocked: true
@@ -159,7 +159,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Icefiend',
 		amount: [15, 50],
 		weight: 8,
-		Id: Monsters.Icefiend.id,
+		Id: [Monsters.Icefiend.id],
 		combatLvl: 20,
 		unlocked: true
 	},
@@ -196,7 +196,7 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Minotaur',
 		amount: [10, 20],
 		weight: 7,
-		Id: Monsters.Minotaur.id,
+		Id: [Monsters.Minotaur.id],
 		combatLvl: 7,
 		unlocked: true
 	},

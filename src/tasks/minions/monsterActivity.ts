@@ -33,15 +33,17 @@ export default class extends Task {
 		let xpReceived = 0;
 		let slayerPointsReceived = 0;
 		let newLevel = 0;
+		let alsoSlayerTask = false;
 
-		// Need to check for alternative monsters on current task
-		/*
-		for (const taskAlias of slayerInfo.currentTask.Id) {
-			taskAlias === monster.id
-			alsoSlayerTask = true;
+		// Checking for alternative monsters on current task.
+		for (let tempMonstID of slayerInfo.currentTask?.Id!) {
+			if (tempMonstID === monsterID) {
+				alsoSlayerTask = true;
+				break;
+			}
 		}
-		*/
-		if (slayerInfo.hasTask && monster.name === slayerInfo.currentTask?.name) {
+
+		if (slayerInfo.hasTask && (monster.name.toLowerCase() === slayerInfo.currentTask?.name.toLowerCase() || alsoSlayerTask) ) {
 			onSlayer = true;
 			const quantityLeft = slayerInfo.remainingQuantity! - quantity;
 			xpReceived = quantity * currentMonsterData!.slayerXP;

@@ -1,0 +1,694 @@
+import { Monsters } from 'oldschooljs';
+import { KillableMonster } from '../../../types';
+import resolveItems from '../../../../util/resolveItems';
+import itemID from '../../../../util/itemID';
+import { Time } from '../../../../constants';
+// import { GearSetupTypes, GearStat } from '../../../../gear/types';
+
+const killableBosses: KillableMonster[] = [
+    {
+		id: Monsters.Banshee.id,
+		name: Monsters.Banshee.name,
+		aliases: Monsters.Banshee.aliases,
+		timeToFinish: Time.Second * 22,
+		table: Monsters.Banshee,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems(['Earmuffs']),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+			slayer: 15
+		}
+    },
+    {
+		id: Monsters.Bat.id,
+		name: Monsters.Bat.name,
+		aliases: Monsters.Bat.aliases,
+		timeToFinish: Time.Second * 8,
+		table: Monsters.Bat,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+		}
+    },
+    {
+		id: Monsters.Bird.id,
+		name: Monsters.Bird.name,
+		aliases: Monsters.Bird.aliases,
+		timeToFinish: Time.Second * 5,
+		table: Monsters.Bird,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+		}
+    },
+    {
+		id: Monsters.BlackBear.id,
+		name: Monsters.BlackBear.name,
+		aliases: Monsters.BlackBear.aliases,
+		timeToFinish: Time.Second * 25,
+		table: Monsters.Bird,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+		}
+    },
+    {
+		id: Monsters.CaveBug.id,
+		name: Monsters.CaveBug.name,
+		aliases: Monsters.CaveBug.aliases,
+		timeToFinish: Time.Second * 5,
+		table: Monsters.CaveBug,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems(['Spiny helmet']),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 7
+		}
+    },
+    {
+		id: Monsters.CaveCrawler.id,
+		name: Monsters.CaveCrawler.name,
+		aliases: Monsters.CaveCrawler.aliases,
+		timeToFinish: Time.Second * 22,
+		table: Monsters.CaveCrawler,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 10
+		}
+    },  
+    {
+		id: Monsters.CaveSlime.id,
+		name: Monsters.CaveSlime.name,
+		aliases: Monsters.CaveSlime.aliases,
+		timeToFinish: Time.Second * 25,
+		table: Monsters.CaveSlime,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems(['Spiny helmet']),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 17
+		}
+    },
+    {
+		id: Monsters.CrawlingHand.id,
+		name: Monsters.CrawlingHand.name,
+		aliases: Monsters.CrawlingHand.aliases,
+		timeToFinish: Time.Second * 15,
+		table: Monsters.CrawlingHand,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    }, 
+    {
+		id: Monsters.GuardDog.id,
+		name: Monsters.GuardDog.name,
+		aliases: Monsters.GuardDog.aliases,
+		timeToFinish: Time.Second * 49,
+		table: Monsters.GuardDog,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    }, 
+    {
+		id: Monsters.Ghost.id,
+		name: Monsters.Ghost.name,
+		aliases: Monsters.Ghost.aliases,
+		timeToFinish: Time.Second * 25,
+		table: Monsters.Ghost,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    }, 
+    {
+		id: Monsters.Icefiend.id,
+		name: Monsters.Icefiend.name,
+		aliases: Monsters.Icefiend.aliases,
+		timeToFinish: Time.Second * 15,
+		table: Monsters.Icefiend,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    },  
+    {
+		id: Monsters.KalphiteWorker.id,
+		name: Monsters.KalphiteWorker.name,
+		aliases: Monsters.KalphiteWorker.aliases,
+		timeToFinish: Time.Second * 40,
+		table: Monsters.KalphiteWorker,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    },
+    {
+		id: Monsters.Lizard.id,
+		name: Monsters.Lizard.name,
+		aliases: Monsters.Lizard.aliases,
+		timeToFinish: Time.Second * 40,
+		table: Monsters.Lizard,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    }, 
+    {
+		id: Monsters.Minotaur.id,
+		name: Monsters.Minotaur.name,
+		aliases: Monsters.Minotaur.aliases,
+		timeToFinish: Time.Second * 10,
+		table: Monsters.Minotaur,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    },  
+    {
+		id: Monsters.Monkey.id,
+		name: Monsters.Monkey.name,
+		aliases: Monsters.Monkey.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.Monkey,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    },  
+    {
+		id: Monsters.Rat.id,
+		name: Monsters.Rat.name,
+		aliases: Monsters.Rat.aliases,
+		timeToFinish: Time.Second * 2,
+		table: Monsters.Rat,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+	},  
+	{
+		id: Monsters.Scorpion.id,
+		name: Monsters.Scorpion.name,
+		aliases: Monsters.Scorpion.aliases,
+		timeToFinish: Time.Second * 17,
+		table: Monsters.Scorpion,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 0
+		}
+    },  
+    	{
+		id: Monsters.Spider.id,
+		name: Monsters.Spider.name,
+		aliases: Monsters.Spider.aliases,
+		timeToFinish: Time.Second * 2,
+		table: Monsters.Spider,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    },  
+    {
+		id: Monsters.Wolf.id,
+		name: Monsters.Wolf.name,
+		aliases: Monsters.Wolf.aliases,
+		timeToFinish: Time.Second * 10,
+		table: Monsters.Wolf,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 5
+		},
+		levelRequirements: {
+            slayer: 5
+		}
+    }  
+     /*,
+	{
+		id: Monsters.Barrows.id,
+		name: Monsters.Barrows.name,
+		aliases: Monsters.Barrows.aliases,
+		timeToFinish: Time.Minute * 4.15,
+		table: Monsters.Barrows,
+		emoji: '<:Dharoks_helm:403038864199122947>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 4,
+		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Barrows gloves')]: 2,
+			[itemID("Iban's staff")]: 5
+		},
+		levelRequirements: {
+			prayer: 43
+		}
+	},
+	{
+		id: Monsters.DagannothPrime.id,
+		name: Monsters.DagannothPrime.name,
+		aliases: Monsters.DagannothPrime.aliases,
+		timeToFinish: Time.Minute * 1.9,
+		table: Monsters.DagannothPrime,
+		emoji: '<:Pet_dagannoth_prime:324127376877289474>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		itemsRequired: deepResolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Armadyl chestplate', "Karil's leathertop"],
+			['Armadyl chainskirt', "Karil's leatherskirt"]
+		]),
+		notifyDrops: resolveItems(['Pet dagannoth prime']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Armadyl chestplate')]: 2,
+			[itemID('Armadyl chainskirt')]: 2
+		},
+		levelRequirements: {
+			prayer: 43
+		}
+	},
+	{
+		id: Monsters.DagannothRex.id,
+		name: Monsters.DagannothRex.name,
+		aliases: Monsters.DagannothRex.aliases,
+		timeToFinish: Time.Minute * 1.9,
+		table: Monsters.DagannothRex,
+		emoji: '<:Pet_dagannoth_rex:324127377091330049>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		itemsRequired: deepResolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Bandos chestplate', "Torag's platebody"],
+			['Bandos tassets', "Torag's platelegs"]
+		]),
+		notifyDrops: resolveItems(['Pet dagannoth rex']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Occult necklace')]: 5,
+			[itemID("Iban's staff")]: 5
+		},
+		levelRequirements: {
+			prayer: 43
+		}
+	},
+	{
+		id: Monsters.DagannothSupreme.id,
+		name: Monsters.DagannothSupreme.name,
+		aliases: Monsters.DagannothSupreme.aliases,
+		timeToFinish: Time.Minute * 1.9,
+		table: Monsters.DagannothSupreme,
+		emoji: '<:Pet_dagannoth_supreme:324127377066164245>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		itemsRequired: deepResolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Bandos chestplate', "Torag's platebody"],
+			['Bandos tassets', "Torag's platelegs"]
+		]),
+		notifyDrops: resolveItems(['Pet dagannoth supreme']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Bandos chestplate')]: 2,
+			[itemID('Bandos tassets')]: 2,
+			[itemID('Saradomin godsword')]: 2
+		},
+		levelRequirements: {
+			prayer: 43
+		}
+	},
+	{
+		id: Monsters.Man.id,
+		name: Monsters.Man.name,
+		aliases: Monsters.Man.aliases,
+		timeToFinish: Time.Second * 4.7,
+		table: Monsters.Man,
+		emoji: '🧍‍♂️',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Guard.id,
+		name: Monsters.Guard.name,
+		aliases: Monsters.Guard.aliases,
+		timeToFinish: Time.Second * 7.4,
+		table: Monsters.Guard,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Woman.id,
+		name: Monsters.Woman.name,
+		aliases: Monsters.Woman.aliases,
+		timeToFinish: Time.Second * 4.69,
+		table: Monsters.Woman,
+		emoji: '🧍‍♀️',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Goblin.id,
+		name: Monsters.Goblin.name,
+		aliases: Monsters.Goblin.aliases,
+		timeToFinish: Time.Second * 4.7,
+		table: Monsters.Goblin,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		notifyDrops: resolveItems(['Goblin champion scroll']),
+		qpRequired: 0
+	},
+	{
+		id: Monsters.LizardmanShaman.id,
+		name: Monsters.LizardmanShaman.name,
+		aliases: Monsters.LizardmanShaman.aliases,
+		timeToFinish: Time.Minute * 1.1,
+		table: Monsters.LizardmanShaman,
+		emoji: '<:Dragon_warhammer:405998717154623488>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems([
+			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']
+		]),
+		notifyDrops: resolveItems(['Dragon warhammer']),
+		qpRequired: 30,
+		itemInBankBoosts: {
+			[itemID('Ring of the gods')]: 3
+		},
+		levelRequirements: {
+			prayer: 43
+		}
+	},
+	{
+		id: Monsters.Lizardman.id,
+		name: Monsters.Lizardman.name,
+		aliases: Monsters.Lizardman.aliases,
+		timeToFinish: Time.Second * 20,
+		table: Monsters.Lizardman,
+		emoji: '<:Xerics_talisman_inert:456176488669249539>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 3,
+		qpRequired: 30
+	},
+	{
+		id: Monsters.GreaterDemon.id,
+		name: Monsters.GreaterDemon.name,
+		aliases: Monsters.GreaterDemon.aliases,
+		timeToFinish: Time.Second * 25,
+		table: Monsters.GreaterDemon,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Cow.id,
+		name: Monsters.Cow.name,
+		aliases: Monsters.Cow.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.Cow,
+		emoji: '🐮',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Skeleton.id,
+		name: Monsters.Skeleton.name,
+		aliases: Monsters.Skeleton.aliases,
+		timeToFinish: Time.Second * 9,
+		table: Monsters.Skeleton,
+		emoji: '☠️',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		notifyDrops: resolveItems(['Skeleton champion scroll']),
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Zombie.id,
+		name: Monsters.Zombie.name,
+		aliases: Monsters.Zombie.aliases,
+		timeToFinish: Time.Second * 9,
+		table: Monsters.Zombie,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		notifyDrops: resolveItems(['Zombie champion scroll']),
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Rat.id,
+		name: Monsters.Rat.name,
+		aliases: Monsters.Rat.aliases,
+		timeToFinish: Time.Second * 1.5,
+		table: Monsters.Rat,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.FireGiant.id,
+		name: Monsters.FireGiant.name,
+		aliases: Monsters.FireGiant.aliases,
+		timeToFinish: Time.Second * 16,
+		table: Monsters.FireGiant,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		notifyDrops: resolveItems(['Giant champion scroll']),
+		qpRequired: 0
+	},
+	{
+		id: Monsters.BlueDragon.id,
+		name: Monsters.BlueDragon.name,
+		aliases: Monsters.BlueDragon.aliases,
+		timeToFinish: Time.Second * 40,
+		table: Monsters.BlueDragon,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		itemsRequired: resolveItems(['Anti-dragon shield']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Zamorakian spear')]: 10
+		}
+	},
+	{
+		id: Monsters.Ankou.id,
+		name: Monsters.Ankou.name,
+		aliases: Monsters.Ankou.aliases,
+		timeToFinish: Time.Second * 15,
+		table: Monsters.Ankou,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
+	},
+	{
+		id: Monsters.Dwarf.id,
+		name: Monsters.Dwarf.name,
+		aliases: Monsters.Dwarf.aliases,
+		timeToFinish: Time.Second * 6,
+		table: Monsters.Dwarf,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0
+    }
+    */
+];
+
+export default killableBosses;

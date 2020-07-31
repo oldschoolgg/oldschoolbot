@@ -147,8 +147,8 @@ export interface SlayerTask {
 	amount: number[];
 	extendedAmount?: number[];
 	weight: number;
-	alternatives?: string | string[];
-	Id: number | number[];
+	alternatives?: string[];
+	Id: number[];
 	combatLvl?: number;
 	slayerLvl?: number;
 	agiStrLvl?: number;
