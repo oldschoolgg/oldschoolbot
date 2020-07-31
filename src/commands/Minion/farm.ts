@@ -204,6 +204,7 @@ export default class extends BotCommand {
 		const data: FarmingActivityTaskOptions = {
 			plantsName: plants.name,
 			patchType,
+			getPatchType,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -211,6 +212,7 @@ export default class extends BotCommand {
 			planting: true,
 			duration,
 			msg,
+			currentDate,
 			type: Activity.Farming,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
@@ -218,18 +220,7 @@ export default class extends BotCommand {
 
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchStage) {
-			const initialPatches = {
-				lastPlanted: plants.name,
-				patchStage: true,
-				plantTime: currentDate,
-				lastQuantity: quantity,
-				lastUpgradeType: upgradeType,
-				lastPayment: payment
-			};
-
-			msg.author.settings.update(getPatchType, initialPatches);
-
-			str += `${msg.author.minionName} is now planting ${quantity}x ${
+			activityStr += `${msg.author.minionName} is now planting ${quantity}x ${
 				plants.name
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
 				duration
@@ -247,8 +238,8 @@ export default class extends BotCommand {
 
 			const lastPlantTime: number = patchType.plantTime;
 			const difference = currentDate - lastPlantTime;
-			// initiate a cooldown feature for each of the seed types.
-			/* allows for a run of specific seed type to only be possible until the
+			/* initiate a cooldown feature for each of the seed types.
+				allows for a run of specific seed type to only be possible until the
 				previous run's plants has grown.*/
 			if (difference < planted.growthTime * Time.Minute) {
 				throw `Please come back when your crops have finished growing in ${formatDuration(
@@ -268,18 +259,7 @@ export default class extends BotCommand {
 				}
 			}
 
-			const updatePatches = {
-				lastPlanted: plants.name,
-				patchStage: true,
-				plantTime: currentDate,
-				lastQuantity: quantity,
-				lastUpgradeType: upgradeType,
-				lastPayment: payment
-			};
-
-			msg.author.settings.update(getPatchType, updatePatches);
-
-			str += `${
+			activityStr += `${
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}, and then planting ${quantity}x ${
 				plants.name
