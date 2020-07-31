@@ -205,6 +205,7 @@ export default class extends BotCommand {
 		const data: FarmingActivityTaskOptions = {
 			plantsName: plants.name,
 			patchType,
+			getPatchType,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -212,6 +213,7 @@ export default class extends BotCommand {
 			planting: true,
 			duration,
 			msg,
+			currentDate,
 			type: Activity.Farming,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
@@ -219,17 +221,6 @@ export default class extends BotCommand {
 
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchStage) {
-			const initialPatches = {
-				lastPlanted: plants.name,
-				patchStage: true,
-				plantTime: currentDate,
-				lastQuantity: quantity,
-				lastUpgradeType: upgradeType,
-				lastPayment: payment
-			};
-
-			await msg.author.settings.update(getPatchType, initialPatches);
-
 			activityStr += `${msg.author.minionName} is now planting ${quantity}x ${
 				plants.name
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
@@ -248,8 +239,8 @@ export default class extends BotCommand {
 
 			const lastPlantTime: number = patchType.plantTime;
 			const difference = currentDate - lastPlantTime;
-			// initiate a cooldown feature for each of the seed types.
-			/* allows for a run of specific seed type to only be possible until the
+			/* initiate a cooldown feature for each of the seed types.
+				allows for a run of specific seed type to only be possible until the
 				previous run's plants has grown.*/
 			if (difference < planted.growthTime * Time.Minute) {
 				throw `Please come back when your crops have finished growing in ${formatDuration(
@@ -268,17 +259,6 @@ export default class extends BotCommand {
 					throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the 200GP per patch required to be able to harvest the currently planted trees.`;
 				}
 			}
-
-			const updatePatches = {
-				lastPlanted: plants.name,
-				patchStage: true,
-				plantTime: currentDate,
-				lastQuantity: quantity,
-				lastUpgradeType: upgradeType,
-				lastPayment: payment
-			};
-
-			await msg.author.settings.update(getPatchType, updatePatches);
 
 			activityStr += `${
 				msg.author.minionName
