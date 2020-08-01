@@ -4,7 +4,6 @@ import { SlayerTask } from '../../../types';
 // Handle extended amounts??
 const duradelTasks: SlayerTask[] = [
 	{
-		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -46,7 +45,7 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Dark ankou not added in monsters.
+		// Dark ankou from skotizo?
 		name: 'Ankou',
 		amount: [50, 80],
 		extendedAmount: [90, 150],
@@ -118,7 +117,6 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -182,7 +180,6 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [130, 200],
 		weight: 9,
@@ -238,7 +235,6 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [100, 170],
 		weight: 4,
@@ -247,7 +243,6 @@ const duradelTasks: SlayerTask[] = [
 			'Elf Archer',
 			'Iorwerth Warrior',
 			'Mourner',
-			'PrifddinasGuard',
 			'Reanimated elf'
 		],
 		Id: [
@@ -324,7 +319,7 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave?, Not added in monsters, Cerberus unlocked??
+		// Revenant cave?, skeleton dogs from vetion?
 		name: 'Hellhound',
 		amount: [130, 200],
 		weight: 10,
@@ -351,7 +346,6 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// KalphSolider and Guardian not added in monsters.
 		name: 'Kalphite worker',
 		amount: [130, 200],
 		weight: 9,
@@ -520,7 +514,6 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// No Vampyres added in monsters.
 		name: 'Feral Vampyre',
 		amount: [100, 210],
 		extendedAmount: [200, 250],

@@ -1,16 +1,13 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
-// Handle extended amounts??
 const vannakaTasks: SlayerTask[] = [
 	{
-		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 8,
-		alternatives: 'Deviant Spectre',
+		alternatives: ['Deviant Spectre'],
 		Id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLvl: 65,
 		slayerLvl: 60,
@@ -18,7 +15,7 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater abyssal and abyssal sire not added in monsters.
+		// Abyssal sire in another PR?
 		name: 'Abyssal demon',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -30,22 +27,21 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Dark ankou not added in monsters.
+		// Dark ankou part of skotizo?
 		name: 'Ankou',
 		amount: [25, 35],
 		extendedAmount: [90, 150],
 		weight: 7,
-		alternatives: 'Dark Ankou',
+		alternatives: ['Dark Ankou'],
 		Id: [Monsters.Ankou.id, Monsters.DarkAnkou.id],
 		combatLvl: 40,
 		unlocked: true
 	},
 	{
-		// Twisted banshee not added in monsters.
 		name: 'Banshee',
 		amount: [60, 120],
 		weight: 6,
-		alternatives: 'Twisted Banshee',
+		alternatives: ['Twisted Banshee'],
 		Id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLvl: 20,
 		slayerLvl: 15,
@@ -57,7 +53,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 8,
-		alternatives: 'Basilisk Knight',
+		alternatives: ['Basilisk Knight'],
 		Id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLvl: 40,
 		slayerLvl: 40,
@@ -65,12 +61,11 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 8,
-		alternatives: 'Mutated Bloodveld',
+		alternatives: ['Mutated Bloodveld'],
 		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLvl: 50,
 		slayerLvl: 50,
@@ -78,7 +73,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [60, 120],
 		weight: 7,
@@ -97,18 +91,17 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Brine rat',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.BrineRat.id,
+		Id: [Monsters.BrineRat.id],
 		combatLvl: 45,
 		slayerLvl: 47,
 		questPoints: 4,
 		unlocked: true
 	},
 	{
-		//Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [30, 50],
 		weight: 7,
-		Id: Monsters.BronzeDragon.id,
+		Id: [Monsters.BronzeDragon.id],
 		combatLvl: 75,
 		questPoints: 34,
 		unlocked: true
@@ -117,7 +110,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Cave bug',
 		amount: [10, 20],
 		weight: 7,
-		Id: Monsters.CaveBug.id,
+		Id: [Monsters.CaveBug.id],
 		slayerLvl: 7,
 		unlocked: true
 	},
@@ -125,7 +118,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Cave crawler',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.CaveCrawler.id,
+		Id: [Monsters.CaveCrawler.id],
 		combatLvl: 10,
 		slayerLvl: 10,
 		unlocked: true
@@ -134,17 +127,16 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Cave slime',
 		amount: [10, 20],
 		weight: 7,
-		Id: Monsters.CaveSlime.id,
+		Id: [Monsters.CaveSlime.id],
 		combatLvl: 15,
 		slayerLvl: 17,
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Cockatrice',
 		amount: [60, 120],
 		weight: 8,
-		Id: Monsters.Cockatrice.id,
+		Id: [Monsters.Cockatrice.id],
 		combatLvl: 25,
 		slayerLvl: 25,
 		defenceLvl: 20,
@@ -154,22 +146,20 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Crawling Hand',
 		amount: [60, 120],
 		weight: 6,
-		Id: Monsters.CrawlingHand.id,
+		Id: [Monsters.CrawlingHand.id],
 		slayerLvl: 5,
 		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Crocodile',
 		amount: [60, 120],
 		weight: 6,
-		Id: Monsters.Crocodile.id,
+		Id: [Monsters.Crocodile.id],
 		combatLvl: 50,
 		unlocked: true
 	},
 	{
-		//Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [60, 120],
 		weight: 7,
@@ -197,7 +187,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 8,
-		Id: Monsters.DustDevil.id,
+		Id: [Monsters.DustDevil.id],
 		combatLvl: 70,
 		slayerLvl: 65,
 		questPoints: 12,
@@ -208,12 +198,11 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Earth warrior',
 		amount: [40, 80],
 		weight: 6,
-		Id: Monsters.EarthWarrior.id,
+		Id: [Monsters.EarthWarrior.id],
 		combatLvl: 35,
 		unlocked: true
 	},
 	{
-		//Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [40, 100],
 		weight: 7,
@@ -221,8 +210,7 @@ const vannakaTasks: SlayerTask[] = [
 			'Iorwerth Archer',
 			'Elf Archer',
 			'Iorwerth Warrior',
-			'Mourner',
-			'PrifddinasGuard'
+			'Mourner'
 		],
 		Id: [
 			Monsters.ElfWarrior.id,
@@ -230,18 +218,16 @@ const vannakaTasks: SlayerTask[] = [
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
 			Monsters.Mourner.id,
-			Monsters.PrifddinasGuard.id
 		],
 		combatLvl: 70,
 		questPoints: 12,
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Fever spider',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.FeverSpider.id,
+		Id: [Monsters.FeverSpider.id],
 		combatLvl: 40,
 		slayerLvl: 42,
 		questPoints: 7,
@@ -251,7 +237,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Fire giant',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.FireGiant.id,
+		Id: [Monsters.FireGiant.id],
 		combatLvl: 65,
 		unlocked: true
 	},
@@ -261,7 +247,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 5,
-		alternatives: 'Grotesque Guardians',
+		alternatives: ['Grotesque Guardians'],
 		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLvl: 80,
 		slayerLvl: 75,
@@ -269,17 +255,15 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Ghoul',
 		amount: [10, 40],
 		weight: 7,
-		Id: Monsters.Ghoul.id,
+		Id: [Monsters.Ghoul.id],
 		combatLvl: 25,
 		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// No green dragons added in monsters.
 		name: 'Green dragon',
 		amount: [40, 80],
 		weight: 6,
@@ -290,18 +274,17 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Harpie Bug Swarm',
 		amount: [60, 120],
 		weight: 8,
-		Id: Monsters.HarpieBugSwarm.id,
+		Id: [Monsters.HarpieBugSwarm.id],
 		combatLvl: 45,
 		slayerLvl: 33,
 		firemakingLvl: 33,
 		unlocked: true
 	},
 	{
-		// Revenant cave?, Not added in monsters, Cerberus unlocked??
+		// Skeleton dogs summoned by vetion
 		name: 'Hellhound',
 		amount: [40, 80],
 		weight: 7,
@@ -316,7 +299,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Hill Giant',
 		amount: [60, 120],
 		weight: 7,
@@ -326,11 +308,10 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Hobgoblin',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.Hobgoblin.id,
+		Id: [Monsters.Hobgoblin.id],
 		combatLvl: 20,
 		unlocked: true
 	},
@@ -339,16 +320,15 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Ice giant',
 		amount: [40, 80],
 		weight: 7,
-		Id: Monsters.IceGiant.id,
+		Id: [Monsters.IceGiant.id],
 		combatLvl: 50,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Ice warrior',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.IceWarrior.id,
+		Id: [Monsters.IceWarrior.id],
 		combatLvl: 45,
 		unlocked: true
 	},
@@ -357,7 +337,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Infernal Mage',
 		amount: [60, 120],
 		weight: 8,
-		Id: Monsters.InfernalMage.id,
+		Id: [Monsters.InfernalMage.id],
 		combatLvl: 40,
 		slayerLvl: 45,
 		questPoints: 1,
@@ -385,7 +365,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// KalphSolider and Guardian not added in monsters.
 		name: 'Kalphite worker',
 		amount: [60, 120],
 		weight: 7,
@@ -400,11 +379,10 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Killerwatt',
 		amount: [30, 80],
 		weight: 6,
-		Id: Monsters.Killerwatt.id,
+		Id: [Monsters.Killerwatt.id],
 		combatLvl: 50,
 		slayerLvl: 37,
 		questPoints: 4,
@@ -414,13 +392,13 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Kurask',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.Kurask.id,
+		Id: [Monsters.Kurask.id],
 		combatLvl: 65,
 		slayerLvl: 70,
 		unlocked: true
 	},
 	{
-		// Sulphur locked behind 44 slayer, All not added in monsters.
+		// Sulphur locked behind 44 slayer
 		name: 'Lizard',
 		amount: [60, 120],
 		weight: 7,
@@ -439,17 +417,16 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Lesser demon',
 		amount: [60, 120],
 		weight: 7,
-		alternatives: "Zakl'n Gritch",
+		alternatives: ["Zakl'n Gritch"],
 		Id: [Monsters.LesserDemon.id, Monsters.ZaklnGritch.id],
 		combatLvl: 60,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Mogre',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.Mogre.id,
+		Id: [Monsters.Mogre.id],
 		combatLvl: 30,
 		slayerLvl: 32,
 		unlocked: true
@@ -459,7 +436,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 7,
-		Id: Monsters.Molanisk.id,
+		Id: [Monsters.Molanisk.id],
 		combatLvl: 50,
 		slayerLvl: 39,
 		questPoints: 8,
@@ -470,7 +447,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Moss giant',
 		amount: [60, 120],
 		weight: 7,
-		alternatives: 'Bryophyta',
+		alternatives: ['Bryophyta'],
 		Id: [Monsters.MossGiant.id, Monsters.Bryophyta.id],
 		combatLvl: 40,
 		unlocked: true
@@ -481,7 +458,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 5,
-		alternatives: 'Greater Nechryael',
+		alternatives: ['Greater Nechryael'],
 		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLvl: 85,
 		slayerLvl: 80,
@@ -503,7 +480,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Otherworldly being',
 		amount: [60, 120],
 		weight: 8,
-		Id: Monsters.OtherworldlyBeing.id,
+		Id: [Monsters.OtherworldlyBeing.id],
 		combatLvl: 40,
 		questPoints: 3,
 		unlocked: true
@@ -513,23 +490,21 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Pyrefiend',
 		amount: [60, 120],
 		weight: 8,
-		Id: Monsters.Pyrefiend.id,
+		Id: [Monsters.Pyrefiend.id],
 		combatLvl: 25,
 		slayerLvl: 30,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Rockslug',
 		amount: [60, 120],
 		weight: 7,
-		Id: Monsters.Rockslug.id,
+		Id: [Monsters.Rockslug.id],
 		combatLvl: 20,
 		slayerLvl: 20,
 		unlocked: true
 	},
 	{
-		// None of the shades added in monsters.
 		name: 'Shade',
 		amount: [60, 120],
 		weight: 8,
@@ -606,13 +581,12 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Turoth',
 		amount: [60, 120],
 		weight: 8,
-		Id: Monsters.Turoth.id,
+		Id: [Monsters.Turoth.id],
 		combatLvl: 60,
 		slayerLvl: 55,
 		unlocked: true
 	},
 	{
-		// No Vampyres added in monsters.
 		name: 'Feral Vampyre',
 		amount: [10, 20],
 		extendedAmount: [200, 250],
@@ -632,7 +606,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 6,
-		Id: Monsters.WallBeast.id,
+		Id: [Monsters.WallBeast.id],
 		combatLvl: 30,
 		slayerLvl: 35,
 		defenceLvl: 5,
@@ -643,7 +617,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Werewolf',
 		amount: [40, 80],
 		weight: 7,
-		Id: Monsters.WereWolf.id,
+		Id: [Monsters.WereWolf.id],
 		combatLvl: 60,
 		questPoints: 1,
 		unlocked: true
@@ -651,4 +625,3 @@ const vannakaTasks: SlayerTask[] = [
 ];
 
 export default vannakaTasks;
-*/

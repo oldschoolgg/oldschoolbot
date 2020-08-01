@@ -1,16 +1,14 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
-// Handle extended amounts?? Brimstone keys?
+//Brimstone keys?
 const konarTasks: SlayerTask[] = [
 	{
-		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
 		weight: 6,
-		alternatives: 'Deviant Spectre',
+		alternatives: ['Deviant Spectre'],
 		Id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLvl: 65,
 		slayerLvl: 60,
@@ -33,7 +31,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [3, 6],
 		extendedAmount: [20, 30],
 		weight: 5,
-		Id: Monsters.AdamantDragon.id,
+		Id: [Monsters.AdamantDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -42,7 +40,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [50, 50],
 		extendedAmount: [90, 150],
 		weight: 5,
-		Id: Monsters.Ankou.id,
+		Id: [Monsters.Ankou.id],
 		combatLvl: 40,
 		unlocked: true
 	},
@@ -52,7 +50,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [120, 170],
 		extendedAmount: [130, 250],
 		weight: 6,
-		alternatives: "Kree'arra",
+		alternatives: ["Kree'arra"],
 		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		agiStrLvl: 60,
 		unlocked: false
@@ -62,7 +60,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 5,
-		alternatives: 'Basilisk Knight',
+		alternatives: ['Basilisk Knight'],
 		Id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLvl: 40,
 		slayerLvl: 40,
@@ -75,18 +73,17 @@ const konarTasks: SlayerTask[] = [
 		amount: [120, 170],
 		extendedAmount: [200, 250],
 		weight: 9,
-		alternatives: 'Skotizo',
+		alternatives: ['Skotizo'],
 		Id: [Monsters.BlackDemon.id, Monsters.Skotizo.id],
 		combatLvl: 80,
 		unlocked: true
 	},
 	{
-		// Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
 		weight: 9,
-		alternatives: 'Mutated Bloodveld',
+		alternatives: ['Mutated Bloodveld'],
 		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLvl: 50,
 		slayerLvl: 50,
@@ -94,7 +91,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [120, 170],
 		weight: 8,
@@ -108,7 +104,7 @@ const konarTasks: SlayerTask[] = [
 		// All the bosses in "Like a boss", seperate file.
 		name: 'Boss',
 		amount: [],
-		alternatives: 'boss',
+		alternatives: ['boss'],
 		weight: 8,
 		Id: [],
 		unlocked: false
@@ -117,19 +113,18 @@ const konarTasks: SlayerTask[] = [
 		name: 'Brine rat',
 		amount: [120, 170],
 		weight: 2,
-		Id: Monsters.BrineRat.id,
+		Id: [Monsters.BrineRat.id],
 		combatLvl: 45,
 		slayerLvl: 47,
 		questPoints: 4,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [30, 50],
 		extendedAmount: [30, 50],
 		weight: 5,
-		Id: Monsters.BronzeDragon.id,
+		Id: [Monsters.BronzeDragon.id],
 		combatLvl: 75,
 		questPoints: 34,
 		unlocked: true
@@ -140,7 +135,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [80, 100],
 		extendedAmount: [150, 200],
 		weight: 9,
-		alternatives: 'Kraken',
+		alternatives: ['Kraken'],
 		Id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLvl: 80,
 		slayerLvl: 87,
@@ -148,7 +143,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [120, 170],
 		weight: 8,
@@ -176,7 +170,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [10, 15],
 		extendedAmount: [100, 150],
 		weight: 5,
-		Id: Monsters.DarkBeast.id,
+		Id: [Monsters.DarkBeast.id],
 		combatLvl: 90,
 		slayerLvl: 90,
 		questPoints: 24,
@@ -186,7 +180,7 @@ const konarTasks: SlayerTask[] = [
 		name: 'Drake',
 		amount: [75, 138],
 		weight: 10,
-		Id: Monsters.Drake.id,
+		Id: [Monsters.Drake.id],
 		combatLvl: 84,
 		unlocked: true
 	},
@@ -195,7 +189,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [120, 170],
 		extendedAmount: [200, 250],
 		weight: 6,
-		Id: Monsters.DustDevil.id,
+		Id: [Monsters.DustDevil.id],
 		combatLvl: 70,
 		slayerLvl: 65,
 		questPoints: 12,
@@ -205,7 +199,7 @@ const konarTasks: SlayerTask[] = [
 		name: 'Fire giant',
 		amount: [120, 170],
 		weight: 9,
-		Id: Monsters.FireGiant.id,
+		Id: [Monsters.FireGiant.id],
 		combatLvl: 65,
 		unlocked: true
 	},
@@ -233,7 +227,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [120, 170],
 		extendedAmount: [200, 250],
 		weight: 6,
-		alternatives: 'Grotesque Guardians',
+		alternatives: ['Grotesque Guardians'],
 		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLvl: 80,
 		slayerLvl: 75,
@@ -246,17 +240,16 @@ const konarTasks: SlayerTask[] = [
 		amount: [120, 170],
 		extendedAmount: [150, 223],
 		weight: 7,
-		alternatives: 'Skotizo',
+		alternatives: ['Skotizo'],
 		Id: [Monsters.GreaterDemon.id, Monsters.Skotizo.id],
 		combatLvl: 75,
 		unlocked: true
 	},
 	{
-		// Cerberus unlocked??
 		name: 'Hellhound',
 		amount: [120, 170],
 		weight: 8,
-		alternatives: 'Cerberus',
+		alternatives: ['Cerberus'],
 		Id: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLvl: 75,
 		unlocked: true
@@ -266,7 +259,7 @@ const konarTasks: SlayerTask[] = [
 		name: 'Hydra',
 		amount: [125, 190],
 		weight: 10,
-		alternatives: 'Alchemical Hydra',
+		alternatives: ['Alchemical Hydra'],
 		Id: [Monsters.Hydra.id, Monsters.AlchemicalHydra.id],
 		slayerLvl: 95,
 		unlocked: true
@@ -276,7 +269,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [30, 50],
 		extendedAmount: [60, 100],
 		weight: 5,
-		Id: Monsters.IronDragon.id,
+		Id: [Monsters.IronDragon.id],
 		combatLvl: 80,
 		questPoints: 34,
 		unlocked: true
@@ -286,14 +279,13 @@ const konarTasks: SlayerTask[] = [
 		name: 'Jelly',
 		amount: [120, 170],
 		weight: 6,
-		alternatives: 'Warped Jelly',
+		alternatives: ['Warped Jelly'],
 		Id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLvl: 57,
 		slayerLvl: 52,
 		unlocked: true
 	},
 	{
-		// KalphSolider and Guardian not added in monsters.
 		name: 'Kalphite worker',
 		amount: [120, 170],
 		weight: 9,
@@ -311,7 +303,7 @@ const konarTasks: SlayerTask[] = [
 		name: 'Kurask',
 		amount: [120, 170],
 		weight: 3,
-		Id: Monsters.Kurask.id,
+		Id: [Monsters.Kurask.id],
 		combatLvl: 65,
 		slayerLvl: 70,
 		unlocked: true
@@ -330,7 +322,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [3, 6],
 		extendedAmount: [20, 40],
 		weight: 5,
-		Id: Monsters.MithrilDragon.id,
+		Id: [Monsters.MithrilDragon.id],
 		unlocked: false
 	},
 	{
@@ -338,7 +330,7 @@ const konarTasks: SlayerTask[] = [
 		name: 'Zygomite',
 		amount: [10, 25],
 		weight: 2,
-		alternatives: 'Ancient Zygomite',
+		alternatives: ['Ancient Zygomite'],
 		Id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLvl: 60,
 		slayerLvl: 57,
@@ -348,10 +340,10 @@ const konarTasks: SlayerTask[] = [
 	{
 		// Greater Nechryael not added in monsters.
 		name: 'Nechryael',
-		amount: 110,
+		amount: [110, 110],
 		extendedAmount: [200, 250],
 		weight: 7,
-		alternatives: 'Greater Nechryael',
+		alternatives: ['Greater Nechryael'],
 		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLvl: 85,
 		slayerLvl: 80,
@@ -373,7 +365,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [3, 6],
 		extendedAmount: [30, 60],
 		weight: 5,
-		Id: Monsters.RuneDragon.id,
+		Id: [Monsters.RuneDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -382,7 +374,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [5, 12],
 		extendedAmount: [50, 70],
 		weight: 5,
-		Id: Monsters.SkeletalWyvern.id,
+		Id: [Monsters.SkeletalWyvern.id],
 		combatLvl: 70,
 		slayerLvl: 72,
 		questPoints: 1,
@@ -393,7 +385,7 @@ const konarTasks: SlayerTask[] = [
 		name: 'Smoke Devil',
 		amount: [120, 170],
 		weight: 7,
-		alternatives: 'Thermonuclear Smoke Devil',
+		alternatives: ['Thermonuclear Smoke Devil'],
 		Id: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
 		combatLvl: 75,
 		slayerLvl: 93,
@@ -421,13 +413,12 @@ const konarTasks: SlayerTask[] = [
 		name: 'Turoth',
 		amount: [120, 170],
 		weight: 3,
-		Id: Monsters.Turoth.id,
+		Id: [Monsters.Turoth.id],
 		combatLvl: 60,
 		slayerLvl: 55,
 		unlocked: true
 	},
 	{
-		// No Vampyres added in monsters.
 		name: 'Feral Vampyre',
 		amount: [100, 160],
 		extendedAmount: [200, 250],
@@ -448,7 +439,7 @@ const konarTasks: SlayerTask[] = [
 		name: 'Waterfiend',
 		amount: [120, 170],
 		weight: 2,
-		Id: Monsters.Waterfiend.id,
+		Id: [Monsters.Waterfiend.id],
 		combatLvl: 75,
 		unlocked: true
 	},
@@ -456,11 +447,10 @@ const konarTasks: SlayerTask[] = [
 		name: 'Wyrm',
 		amount: [125, 190],
 		weight: 10,
-		Id: Monsters.Wyrm.id,
+		Id: [Monsters.Wyrm.id],
 		slayerLvl: 62,
 		unlocked: true
 	}
 ];
 
 export default konarTasks;
-*/

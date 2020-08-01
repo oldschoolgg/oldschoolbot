@@ -1,16 +1,13 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
-// Handle extended amounts??
 const chaeldarTasks: SlayerTask[] = [
 	{
-		// Deviant spectre not added in monsters.
 		name: 'Aberrant spectre',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 8,
-		alternatives: 'Deviant Spectre',
+		alternatives: ['Deviant Spectre'],
 		Id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLvl: 65,
 		slayerLvl: 60,
@@ -36,7 +33,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [130, 250],
 		weight: 9,
-		alternatives: "Kree'arra",
+		alternatives: ["Kree'arra"],
 		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		agiStrLvl: 60,
 		unlocked: false
@@ -46,7 +43,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Banshee',
 		amount: [110, 170],
 		weight: 5,
-		alternatives: 'Twisted Banshee',
+		alternatives: ['Twisted Banshee'],
 		Id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLvl: 20,
 		slayerLvl: 15,
@@ -58,7 +55,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 7,
-		alternatives: 'Basilisk Knight',
+		alternatives: ['Basilisk Knight'],
 		Id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLvl: 40,
 		slayerLvl: 40,
@@ -83,12 +80,11 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Mutaed bloodveld not added in monsters.
 		name: 'Bloodveld',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 8,
-		alternatives: 'Mutated Bloodveld',
+		alternatives: ['Mutated Bloodveld'],
 		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLvl: 50,
 		slayerLvl: 50,
@@ -96,7 +92,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [110, 170],
 		weight: 8,
@@ -115,19 +110,18 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Brine rat',
 		amount: [110, 170],
 		weight: 7,
-		Id: Monsters.BrineRat.id,
+		Id: [Monsters.BrineRat.id],
 		combatLvl: 45,
 		slayerLvl: 47,
 		questPoints: 4,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Bronze Dragon',
 		amount: [10, 20],
 		extendedAmount: [30, 50],
 		weight: 11,
-		Id: Monsters.BronzeDragon.id,
+		Id: [Monsters.BronzeDragon.id],
 		combatLvl: 75,
 		questPoints: 34,
 		unlocked: true
@@ -136,7 +130,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Cave crawler',
 		amount: [110, 170],
 		weight: 5,
-		Id: Monsters.CaveCrawler.id,
+		Id: [Monsters.CaveCrawler.id],
 		combatLvl: 10,
 		slayerLvl: 10,
 		unlocked: true
@@ -146,7 +140,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 10,
-		Id: Monsters.CaveHorror.id,
+		Id: [Monsters.CaveHorror.id],
 		combatLvl: 85,
 		slayerLvl: 58,
 		questPoints: 11,
@@ -158,7 +152,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [30, 50],
 		extendedAmount: [150, 200],
 		weight: 12,
-		alternatives: 'Kraken',
+		alternatives: ['Kraken'],
 		Id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLvl: 80,
 		slayerLvl: 87,
@@ -169,24 +163,22 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Cave slime',
 		amount: [10, 20],
 		weight: 6,
-		Id: Monsters.CaveSlime.id,
+		Id: [Monsters.CaveSlime.id],
 		combatLvl: 15,
 		slayerLvl: 17,
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Cockatrice',
 		amount: [110, 170],
 		weight: 6,
-		Id: Monsters.Cockatrice.id,
+		Id: [Monsters.Cockatrice.id],
 		combatLvl: 25,
 		slayerLvl: 25,
 		defenceLvl: 20,
 		unlocked: true
 	},
 	{
-		// Quest lock. Dagannoth spawn and fledgeling not added to monsters.
 		name: 'Dagannoth',
 		amount: [110, 170],
 		weight: 11,
@@ -214,14 +206,13 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 9,
-		Id: Monsters.DustDevil.id,
+		Id: [Monsters.DustDevil.id],
 		combatLvl: 70,
 		slayerLvl: 65,
 		questPoints: 12,
 		unlocked: true
 	},
 	{
-		// Most elves not added to monsters.
 		name: 'Elf warrior',
 		amount: [110, 170],
 		weight: 8,
@@ -230,7 +221,6 @@ const chaeldarTasks: SlayerTask[] = [
 			'Elf Archer',
 			'Iorwerth Warrior',
 			'Mourner',
-			'PrifddinasGuard',
 			'Reanimated elf'
 		],
 		Id: [
@@ -247,7 +237,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Fever spider',
 		amount: [110, 170],
 		weight: 7,
@@ -261,7 +250,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Fire giant',
 		amount: [110, 170],
 		weight: 12,
-		Id: Monsters.FireGiant.id,
+		Id: [Monsters.FireGiant.id],
 		combatLvl: 65,
 		unlocked: true
 	},
@@ -289,7 +278,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 11,
-		alternatives: 'Grotesque Guardians',
+		alternatives: ['Grotesque Guardians'],
 		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLvl: 80,
 		slayerLvl: 75,
@@ -313,18 +302,17 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Harpie Bug Swarm',
 		amount: [110, 170],
 		weight: 6,
-		Id: Monsters.HarpieBugSwarm.id,
+		Id: [Monsters.HarpieBugSwarm.id],
 		combatLvl: 45,
 		slayerLvl: 33,
 		firemakingLvl: 33,
 		unlocked: true
 	},
 	{
-		// Revenant cave?, Not added in monsters, Cerberus unlocked??
+		// Skeleton dogs vetion?
 		name: 'Hellhound',
 		amount: [110, 170],
 		weight: 9,
@@ -354,7 +342,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [25, 45],
 		extendedAmount: [60, 100],
 		weight: 12,
-		Id: Monsters.IronDragon.id,
+		Id: [Monsters.IronDragon.id],
 		combatLvl: 80,
 		questPoints: 34,
 		unlocked: true
@@ -364,7 +352,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Jelly',
 		amount: [110, 170],
 		weight: 10,
-		alternatives: 'Warped Jelly',
+		alternatives: ['Warped Jelly'],
 		Id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLvl: 57,
 		slayerLvl: 52,
@@ -375,13 +363,12 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Jungle horror',
 		amount: [110, 170],
 		weight: 10,
-		Id: Monsters.JungleHorror.id,
+		Id: [Monsters.JungleHorror.id],
 		combatLvl: 65,
 		questPoints: 11,
 		unlocked: true
 	},
 	{
-		// KalphSolider and Guardian not added in monsters.
 		name: 'Kalphite worker',
 		amount: [110, 170],
 		weight: 11,
@@ -399,7 +386,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Kurask',
 		amount: [110, 170],
 		weight: 12,
-		Id: Monsters.Kurask.id,
+		Id: [Monsters.Kurask.id],
 		combatLvl: 65,
 		slayerLvl: 70,
 		unlocked: true
@@ -409,7 +396,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Lesser demon',
 		amount: [110, 170],
 		weight: 9,
-		alternatives: "Zakl'n Gritch",
+		alternatives: ["Zakl'n Gritch"],
 		Id: [Monsters.LesserDemon.id, Monsters.ZaklnGritch.id],
 		combatLvl: 60,
 		unlocked: true
@@ -424,7 +411,7 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Sulphur locked behind 44 slayer, All not added in monsters.
+		// Sulphur locked behind 44 slayer
 		name: 'Lizard',
 		amount: [110, 170],
 		weight: 5,
@@ -439,11 +426,10 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Mogre',
 		amount: [110, 170],
 		weight: 6,
-		Id: Monsters.Mogre.id,
+		Id: [Monsters.Mogre.id],
 		combatLvl: 30,
 		slayerLvl: 32,
 		unlocked: true
@@ -453,7 +439,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 6,
-		Id: Monsters.Molanisk.id,
+		Id: [Monsters.Molanisk.id],
 		combatLvl: 50,
 		slayerLvl: 39,
 		questPoints: 8,
@@ -464,7 +450,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Zygomite',
 		amount: [8, 15],
 		weight: 7,
-		alternatives: 'Ancient Zygomite',
+		alternatives: ['Ancient Zygomite'],
 		Id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLvl: 60,
 		slayerLvl: 57,
@@ -477,7 +463,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 12,
-		alternatives: 'Greater Nechryael',
+		alternatives: ['Greater Nechryael'],
 		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLvl: 85,
 		slayerLvl: 80,
@@ -485,21 +471,19 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Pyrefiend',
 		amount: [110, 170],
 		weight: 6,
-		Id: Monsters.Pyrefiend.id,
+		Id: [Monsters.Pyrefiend.id],
 		combatLvl: 25,
 		slayerLvl: 30,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Rockslug',
 		amount: [110, 170],
 		weight: 5,
-		Id: Monsters.Rockslug.id,
+		Id: [Monsters.Rockslug.id],
 		combatLvl: 20,
 		slayerLvl: 20,
 		unlocked: true
@@ -509,7 +493,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Shadow warrior',
 		amount: [110, 170],
 		weight: 8,
-		Id: Monsters.ShadowWarrior.id,
+		Id: [Monsters.ShadowWarrior.id],
 		combatLvl: 60,
 		questPoints: 111,
 		unlocked: true
@@ -519,7 +503,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [10, 20],
 		extendedAmount: [50, 70],
 		weight: 7,
-		Id: Monsters.SkeletalWyvern.id,
+		Id: [Monsters.SkeletalWyvern.id],
 		combatLvl: 70,
 		slayerLvl: 72,
 		questPoints: 1,
@@ -553,7 +537,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Turoth',
 		amount: [110, 170],
 		weight: 10,
-		Id: Monsters.Turoth.id,
+		Id: [Monsters.Turoth.id],
 		combatLvl: 60,
 		slayerLvl: 55,
 		unlocked: true
@@ -568,7 +552,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// No Vampyres added in monsters. Quest lock?
 		name: 'Feral Vampyre',
 		amount: [80, 120],
 		extendedAmount: [200, 250],
@@ -588,7 +571,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 6,
-		Id: Monsters.WallBeast.id,
+		Id: [Monsters.WallBeast.id],
 		combatLvl: 30,
 		slayerLvl: 35,
 		defenceLvl: 5,
@@ -598,11 +581,11 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Wyrm',
 		amount: [60, 120],
 		weight: 6,
-		Id: Monsters.Wyrm.id,
+		Id: [Monsters.Wyrm.id],
 		slayerLvl: 62,
 		unlocked: true
 	}
 ];
 
 export default chaeldarTasks;
-*/
+

@@ -1,4 +1,3 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -8,17 +7,16 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Ankou',
 		amount: [40, 130],
 		weight: 6,
-		Id: Monsters.Ankou.id,
+		Id: [Monsters.Ankou.id],
 		wilderness: 31,
 		unlocked: true
 	},
 	{
-		// Add Armadylian guard as option?
 		name: 'Aviansie',
 		amount: [80, 150],
 		weight: 7,
-		//	alternatives: 'Armadylian guard',
-		Id: [Monsters.Aviansie.id, Monsters.Armadylianguard.id],
+		alternatives: ['Armadylian guard'],
+		Id: [Monsters.Aviansie.id, Monsters.ArmadylianGuard.id],
 		agiStrLvl: 60,
 		wilderness: 27,
 		unlocked: false
@@ -28,13 +26,12 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Bandit',
 		amount: [75, 125],
 		weight: 4,
-		alternatives: 'Guard Bandit',
+		alternatives: ['Guard Bandit'],
 		Id: [Monsters.Bandit.id, Monsters.GuardBandit.id],
 		wilderness: 20,
 		unlocked: true
 	},
 	{
-		// Grizzly bear not added in monsters
 		name: 'Grizzly bear',
 		amount: [50, 100],
 		weight: 6,
@@ -48,7 +45,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Black demon',
 		amount: [100, 150],
 		weight: 7,
-		Id: Monsters.BlackDemon.id,
+		Id: [Monsters.BlackDemon.id],
 		wilderness: 18,
 		unlocked: true
 	},
@@ -57,7 +54,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Black dragon',
 		amount: [5, 20],
 		weight: 4,
-		Id: Monsters.BlackDragon.id,
+		Id: [Monsters.BlackDragon.id],
 		wilderness: 40,
 		unlocked: true
 	},
@@ -66,7 +63,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Black Knight',
 		amount: [75, 125],
 		weight: 3,
-		Id: Monsters.BlackKnight.id,
+		Id: [Monsters.BlackKnight.id],
 		wilderness: 37,
 		unlocked: true
 	},
@@ -74,7 +71,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Bloodveld',
 		amount: [90, 140],
 		weight: 4,
-		Id: Monsters.Bloodveld.id,
+		Id: [Monsters.Bloodveld.id],
 		agiStrLvl: 60,
 		wilderness: 27,
 		unlocked: true
@@ -84,7 +81,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Chaos druid',
 		amount: [50, 85],
 		weight: 5,
-		alternatives: 'Elder Chaos druid',
+		alternatives: ['Elder Chaos druid'],
 		Id: [Monsters.ChaosDruid.id, Monsters.ElderChaosDruid.id],
 		wilderness: 6,
 		unlocked: true
@@ -94,7 +91,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Dark warrior',
 		amount: [70, 125],
 		weight: 4,
-		Id: Monsters.DarkWarrior.id,
+		Id: [Monsters.DarkWarrior.id],
 		wilderness: 14,
 		unlocked: true
 	},
@@ -103,7 +100,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Earth warrior',
 		amount: [75, 130],
 		weight: 6,
-		Id: Monsters.EarthWarrior.id,
+		Id: [Monsters.EarthWarrior.id],
 		wilderness: 8,
 		unlocked: true
 	},
@@ -112,7 +109,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Ent',
 		amount: [35, 60],
 		weight: 5,
-		Id: Monsters.Ent.id,
+		Id: [Monsters.Ent.id],
 		wilderness: 16,
 		unlocked: true
 	},
@@ -121,7 +118,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Fire giant',
 		amount: [100, 150],
 		weight: 7,
-		Id: Monsters.FireGiant.id,
+		Id: [Monsters.FireGiant.id],
 		wilderness: 53,
 		unlocked: true
 	},
@@ -130,21 +127,21 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Greater demon',
 		amount: [100, 150],
 		weight: 8,
-		Id: Monsters.GreaterDemon.id,
+		Id: [Monsters.GreaterDemon.id],
 		wilderness: 36,
 		unlocked: true
 	},
 	{
-		// Revenant cave?, Not added in monsters
+		// Revenant cave?
 		name: 'Green dragon',
 		amount: [60, 100],
 		weight: 4,
-		Id: Monsters.GreenDragon.id,
+		Id: [Monsters.GreenDragon.id],
 		wilderness: 25,
 		unlocked: true
 	},
 	{
-		// Revenant cave?, Not added in monsters
+		// Revenant cave?, skeleton dogs from vetion?
 		name: 'Hellhound',
 		amount: [70, 123],
 		weight: 7,
@@ -162,7 +159,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Hill Giant',
 		amount: [100, 150],
 		weight: 3,
-		Id: Monsters.HillGiant.id,
+		Id: [Monsters.HillGiant.id],
 		wilderness: 35,
 		unlocked: true
 	},
@@ -171,7 +168,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Ice giant',
 		amount: [100, 160],
 		weight: 6,
-		Id: Monsters.IceGiant.id,
+		Id: [Monsters.IceGiant.id],
 		wilderness: 42,
 		unlocked: true
 	},
@@ -180,7 +177,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Ice warrior',
 		amount: [100, 150],
 		weight: 7,
-		Id: Monsters.IceWarrior.id,
+		Id: [Monsters.IceWarrior.id],
 		wilderness: 49,
 		unlocked: true
 	},
@@ -189,7 +186,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Lava dragon',
 		amount: [35, 60],
 		weight: 3,
-		Id: Monsters.LavaDragon.id,
+		Id: [Monsters.LavaDragon.id],
 		wilderness: 39,
 		unlocked: true
 	},
@@ -198,7 +195,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Lesser demon',
 		amount: [80, 120],
 		weight: 6,
-		Id: Monsters.LesserDemon.id,
+		Id: [Monsters.LesserDemon.id],
 		wilderness: 34,
 		unlocked: true
 	},
@@ -207,7 +204,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Magic axe',
 		amount: [70, 125],
 		weight: 7,
-		Id: Monsters.MagicAxe.id,
+		Id: [Monsters.MagicAxe.id],
 		wilderness: 55,
 		unlocked: true
 	},
@@ -216,7 +213,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Mammoth',
 		amount: [75, 125],
 		weight: 6,
-		Id: Monsters.Mammoth.id,
+		Id: [Monsters.Mammoth.id],
 		wilderness: 10,
 		unlocked: true
 	},
@@ -225,7 +222,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Moss giant',
 		amount: [100, 150],
 		weight: 4,
-		Id: Monsters.MossGiant.id,
+		Id: [Monsters.MossGiant.id],
 		wilderness: 35,
 		unlocked: true
 	},
@@ -234,7 +231,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Pirate',
 		amount: [75, 125],
 		weight: 3,
-		Id: Monsters.Pirate.id,
+		Id: [Monsters.Pirate.id],
 		wilderness: 54,
 		unlocked: true
 	},
@@ -276,12 +273,12 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Rogue',
 		amount: [75, 125],
 		weight: 5,
-		Id: Monsters.Rogue.id,
+		Id: [Monsters.Rogue.id],
 		wilderness: 52,
 		unlocked: true
 	},
 	{
-		// King scorpion not added in monsters, scorpia offsprings/guardians count.
+		// scorpia offsprings/guardians count.
 		name: 'Scorpion',
 		amount: [60, 100],
 		weight: 6,
@@ -291,7 +288,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// More skeletons with different loots, Not added in monsters.
+		// More skeletons with different loots
 		name: 'Skeleton',
 		amount: [60, 100],
 		weight: 5,
@@ -306,7 +303,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Giant spider and deadly red spider not added in monsters,
+		// Deadly red spider not added in monsters,
 		name: 'Spider',
 		amount: [60, 100],
 		weight: 6,
@@ -335,7 +332,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Zombie',
 		amount: [75, 125],
 		weight: 3,
-		Id: Monsters.Zombie.id,
+		Id: [Monsters.Zombie.id],
 		wilderness: 38,
 		unlocked: true
 	},
@@ -343,7 +340,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Chaos Fanatic',
 		amount: [3, 35],
 		weight: 8,
-		Id: Monsters.ChaosFanatic.id,
+		Id: [Monsters.ChaosFanatic.id],
 		wilderness: 41,
 		unlocked: false
 	},
@@ -351,7 +348,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Crazy archaeologist',
 		amount: [3, 35],
 		weight: 8,
-		Id: Monsters.CrazyArchaeologist.id,
+		Id: [Monsters.CrazyArchaeologist.id],
 		wilderness: 23,
 		unlocked: false
 	},
@@ -359,7 +356,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Scorpia',
 		amount: [3, 35],
 		weight: 8,
-		Id: Monsters.Scorpia.id,
+		Id: [Monsters.Scorpia.id],
 		wilderness: 53,
 		unlocked: false
 	},
@@ -367,7 +364,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Chaos Elemental',
 		amount: [3, 35],
 		weight: 8,
-		Id: Monsters.ChaosElemental.id,
+		Id: [Monsters.ChaosElemental.id],
 		wilderness: 53,
 		unlocked: false
 	},
@@ -375,7 +372,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Callisto',
 		amount: [3, 35],
 		weight: 8,
-		Id: Monsters.Callisto.id,
+		Id: [Monsters.Callisto.id],
 		wilderness: 42,
 		unlocked: false
 	},
@@ -383,7 +380,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Venenatis',
 		amount: [3, 35],
 		weight: 8,
-		Id: Monsters.Venenatis.id,
+		Id: [Monsters.Venenatis.id],
 		wilderness: 28,
 		unlocked: false
 	},
@@ -391,11 +388,10 @@ const krystiliaTasks: SlayerTask[] = [
 		name: "Vet'ion",
 		amount: [3, 35],
 		weight: 8,
-		Id: Monsters.Vetion.id,
+		Id: [Monsters.Vetion.id],
 		wilderness: 35,
 		unlocked: false
 	}
 ];
 
 export default krystiliaTasks;
-*/
