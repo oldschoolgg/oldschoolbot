@@ -95,7 +95,7 @@ export function toTitleCase(str: string) {
 	return splitStr.join(' ');
 }
 
-export function cleanString(str: string) {
+export function cleanString(str = '') {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
