@@ -18,13 +18,14 @@ const { ceil } = Math;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<mass|party> [quantity:int] <monster:string> [users:...user]',
+			usage: '[quantity:int] <monster:string>',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
 			subcommands: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			aliases: ['mass']
 		});
 	}
 
