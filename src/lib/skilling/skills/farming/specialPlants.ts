@@ -33,7 +33,9 @@ const specialPlants: Plant[] = [
 			[3, 2] // Underwater Fossil Island (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: []
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 26,
@@ -68,7 +70,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 1] // Farming Guild
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 5
 	},
 	{
 		level: 35,
@@ -102,7 +106,9 @@ const specialPlants: Plant[] = [
 			[3, 3] // Fossil Island (3)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: []
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 7,
+		timePerHarvest: 10
 	},
 	{
 		level: 36,
@@ -131,7 +137,9 @@ const specialPlants: Plant[] = [
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: []
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 2,
+		timePerHarvest: 15
 	},
 	{
 		level: 48,
@@ -165,7 +173,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 1] // Farming Guild Low (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 55,
@@ -197,7 +207,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 1] // Farming Guide Low (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 55,
@@ -231,7 +243,9 @@ const specialPlants: Plant[] = [
 			[3, 3] // Fossil Island (3)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: []
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 7,
+		timePerHarvest: 10
 	},
 	{
 		level: 59,
@@ -265,7 +279,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 1] // Farming Guild Low (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 64,
@@ -297,7 +313,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 1] // Farming Guide Low (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 65,
@@ -326,7 +344,9 @@ const specialPlants: Plant[] = [
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: []
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 90
 	},
 	{
 		level: 70,
@@ -359,7 +379,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 1] // Farming Guild Low (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 72,
@@ -391,7 +413,9 @@ const specialPlants: Plant[] = [
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: []
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 74,
@@ -430,7 +454,9 @@ const specialPlants: Plant[] = [
 			[33, 1] // Prifddinas (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: []
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 5
 	},
 	{
 		level: 83,
@@ -467,7 +493,9 @@ const specialPlants: Plant[] = [
 		additionalPatchesByFarmLvl: [
 			[91, 1], // Plant up to 2 seeds at lvl 91
 			[99, 4] // Plant in all patches at lvl 99
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 1
 	},
 	{
 		level: 85,
@@ -500,7 +528,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guild High (1)
-		]
+		],
+		timePerPatchTravel: 10,
+		timePerHarvest: 10
 	},
 	{
 		level: 90,
@@ -534,7 +564,9 @@ const specialPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guild High (1)
-		]
+		],
+		timePerPatchTravel: 10,
+		timePerHarvest: 15
 	}
 ];
 

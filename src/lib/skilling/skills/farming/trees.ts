@@ -35,7 +35,9 @@ const trees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guild Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 30,
@@ -69,7 +71,9 @@ const trees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guild Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 45,
@@ -103,7 +107,9 @@ const trees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guild Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 60,
@@ -137,7 +143,9 @@ const trees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guild Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 75,
@@ -171,7 +179,9 @@ const trees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guild Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	}
 ];
 

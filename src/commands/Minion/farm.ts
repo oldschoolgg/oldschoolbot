@@ -71,7 +71,6 @@ export default class extends BotCommand {
 		let upgradeStr = '';
 		let paymentStr = '';
 		let boostStr = '';
-		const timePerPatch = Time.Minute * 1.5;
 
 		if (typeof quantity === 'string') {
 			plantName = quantity;
@@ -90,6 +89,14 @@ export default class extends BotCommand {
 				plants => plants.name
 			).join(', ')}. *Make sure you are not attempting to farm 0 crops.*`;
 		}
+
+		const getPatchType = resolvePatchTypeSetting(plants.seedType);
+		if (!getPatchType) return;
+		const patchType = msg.author.settings.get(getPatchType);
+
+		const timePerPatchTravel = Time.Second * plants.timePerPatchTravel;
+		const timePerPatchHarvest = Time.Second * plants.timePerHarvest;
+		const timePerPatchPlant = Time.Second * 5;
 
 		if (msg.flagArgs.supercompost) {
 			upgradeType = 'supercompost';
@@ -135,14 +142,21 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
-			quantity = Math.min(Math.floor(msg.author.maxTripLength / timePerPatch), numOfPatches);
+			quantity = Math.min(Math.floor(msg.author.maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)), numOfPatches);
 		}
 
 		if (quantity > numOfPatches) {
 			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 		}
 
-		let duration = timePerPatch * quantity;
+		let duration:number;
+		if (patchType.patchStage) {
+			duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
+			if (quantity > patchType.lastQuantity) {
+				duration += (quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
+			}
+		}
+		else duration = quantity * (timePerPatchTravel + timePerPatchPlant);
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
@@ -155,7 +169,7 @@ export default class extends BotCommand {
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
 				plants.name
-			} you can plant is ${(Math.floor(msg.author.maxTripLength / timePerPatch),
+			} you can plant is ${(Math.floor(msg.author.maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
 			numOfPatches)}.`;
 		}
 
@@ -197,10 +211,6 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		const getPatchType = resolvePatchTypeSetting(plants.seedType);
-		if (!getPatchType) return;
-		const patchType = msg.author.settings.get(getPatchType);
-
 		const data: FarmingActivityTaskOptions = {
 			plantsName: plants.name,
 			patchType,
@@ -232,9 +242,7 @@ export default class extends BotCommand {
 					stringMatches(plants.name, storeHarvestablePlant) ||
 					stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
 			);
-			if (!planted) {
-				throw `This error shouldn't happen. Just to clear possible undefined error`;
-			}
+			if (!planted) throw `This error shouldn't happen. Just to clear possible undefined error`;
 
 			const lastPlantTime: number = patchType.plantTime;
 			const difference = currentDate - lastPlantTime;
