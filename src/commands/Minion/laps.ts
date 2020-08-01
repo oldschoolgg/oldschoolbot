@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Agility,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + 1
+			finishDate: Date.now() + duration
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
