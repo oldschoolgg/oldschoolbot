@@ -202,4 +202,6 @@ export interface Plant {
 	canCompostandPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
+	timePerPatchTravel: number;
+	timePerHarvest: number;
 }

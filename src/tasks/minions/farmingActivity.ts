@@ -34,7 +34,7 @@ export default class extends Task {
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		let baseBonus = 1;
-		let bonusXP;
+		let bonusXP = 0;
 		let plantXp = 0;
 		let harvestXp = 0;
 		let compostXp = 0;
@@ -51,6 +51,8 @@ export default class extends Task {
 		let chanceOfDeathReduction = 1;
 		let cropYield = 0;
 		let lives = 3;
+		let bonusXpMultiplier = 0;
+		let farmersPiecesCheck = 0;
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
 
@@ -84,6 +86,30 @@ export default class extends Task {
 
 		if (patchType.lastPayment) chanceOfDeathReduction = 0;
 
+		// check bank for farmer's items
+		const userBank = user.settings.get(UserSettings.Bank);
+
+		if (bankHasItem(userBank, itemID(`Farmer's strawhat`), 1)) {
+			bonusXpMultiplier += 0.004;
+			farmersPiecesCheck += 1;
+		}
+		if (
+			bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
+			bankHasItem(userBank, itemID(`Farmer's shirt`), 1)
+		) {
+			bonusXpMultiplier += 0.008;
+			farmersPiecesCheck += 1;
+		}
+		if (bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1)) {
+			bonusXpMultiplier += 0.006;
+			farmersPiecesCheck += 1;
+		}
+		if (bankHasItem(userBank, itemID(`Farmer's boots`), 1)) {
+			bonusXpMultiplier += 0.002;
+			farmersPiecesCheck += 1;
+		}
+		if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
+
 		let loot = {
 			[itemID('Weeds')]: 0
 		};
@@ -96,7 +122,6 @@ export default class extends Task {
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
 			plantXp = quantity * (plant.plantXp + compostXp);
 			farmingXpReceived = plantXp + harvestXp + rakeXp;
-			bonusXP = 0;
 
 			loot[itemID('Weeds')] = quantity * 3;
 
@@ -106,6 +131,7 @@ export default class extends Task {
 				plant.name
 			}.\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
+			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 			if (bonusXP > 0) {
 				str += ` You received an additional ${bonusXP.toLocaleString()} in bonus XP.`;
 			}
@@ -129,7 +155,7 @@ export default class extends Task {
 			const updatePatches = {
 				lastPlanted: plant.name,
 				patchStage: true,
-				plantTime: currentDate,
+				plantTime: currentDate + duration,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: patchType.lastPayment
@@ -272,32 +298,6 @@ export default class extends Task {
 				plantToHarvest.name
 			}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health for a total of ${farmingXpReceived.toLocaleString()} Farming XP.${wcStr}\n`;
 
-			// check bank for farmer's items
-			const userBank = user.settings.get(UserSettings.Bank);
-			let bonusXpMultiplier = 0;
-			let farmersPiecesCheck = 0;
-			if (bankHasItem(userBank, itemID(`Farmer's strawhat`), 1)) {
-				bonusXpMultiplier += 0.004;
-				farmersPiecesCheck += 1;
-			}
-			if (
-				bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
-				bankHasItem(userBank, itemID(`Farmer's shirt`), 1)
-			) {
-				bonusXpMultiplier += 0.008;
-				farmersPiecesCheck += 1;
-			}
-			if (bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1)) {
-				bonusXpMultiplier += 0.006;
-				farmersPiecesCheck += 1;
-			}
-			if (bankHasItem(userBank, itemID(`Farmer's boots`), 1)) {
-				bonusXpMultiplier += 0.002;
-				farmersPiecesCheck += 1;
-			}
-			if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
-
-			bonusXP = 0;
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
 			if (bonusXP > 0) {
@@ -349,7 +349,7 @@ export default class extends Task {
 				updatePatches = {
 					lastPlanted: plant.name,
 					patchStage: true,
-					plantTime: currentDate,
+					plantTime: currentDate + duration,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: patchType.lastPayment

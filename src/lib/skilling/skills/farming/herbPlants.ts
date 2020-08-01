@@ -37,7 +37,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 14,
@@ -73,7 +75,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 19,
@@ -109,7 +113,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 26,
@@ -145,7 +151,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 32,
@@ -181,7 +189,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 38,
@@ -217,7 +227,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 44,
@@ -253,7 +265,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 50,
@@ -289,7 +303,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 56,
@@ -325,7 +341,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 62,
@@ -361,7 +379,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 67,
@@ -397,7 +417,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 73,
@@ -433,7 +455,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 79,
@@ -469,7 +493,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 85,
@@ -505,7 +531,9 @@ const herbPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[65, 1] // Farming Guide Med (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	}
 ];
 

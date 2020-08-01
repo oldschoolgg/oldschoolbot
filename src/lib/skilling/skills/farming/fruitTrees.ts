@@ -38,7 +38,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 33,
@@ -75,7 +77,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 39,
@@ -112,7 +116,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 42,
@@ -149,7 +155,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 51,
@@ -186,7 +194,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 57,
@@ -223,7 +233,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 68,
@@ -260,7 +272,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 81,
@@ -297,7 +311,9 @@ const fruitTrees: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[85, 1] // Farming Guide High (1)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	}
 ];
 
