@@ -37,7 +37,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20,
 	},
 	{
 		level: 5,
@@ -73,7 +75,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
 	},
 	{
 		level: 7,
@@ -109,7 +113,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
 	},
 	{
 		level: 12,
@@ -145,7 +151,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
 	},
 	{
 		level: 20,
@@ -181,7 +189,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
 	},
 	{
 		level: 31,
@@ -217,7 +227,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
 	},
 	{
 		level: 47,
@@ -253,7 +265,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
 	},
 	{
 		level: 61,
@@ -289,7 +303,9 @@ const allotmentPlants: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[45, 2] // Farming Guide Low (2)
-		]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 20
 	}
 ];
 
