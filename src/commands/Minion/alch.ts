@@ -44,18 +44,18 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] <item:...item>',
+			usage: '[quantity:int{1}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
 	}
 
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
+	async run(msg: KlasaMessage, [quantity = null, itemArray]: [number | null, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
+		const osItem = itemArray.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			throw `You don't have any of this item to alch.`;
+			throw `You don't have any of this item to alch, or it is untradeable.`;
 		}
 
 		if (unalchables.some(item => item === osItem.id)) {
