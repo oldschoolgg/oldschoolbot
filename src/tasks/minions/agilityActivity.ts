@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
+import { saidYes, noOp, addItemToBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -9,6 +9,7 @@ import Agility from '../../lib/skilling/skills/agility';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends Task {
 	async run({ courseID, quantity, userID, channelID, duration }: AgilityActivityTaskOptions) {
@@ -45,6 +46,15 @@ export default class extends Task {
 
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
+		await user.settings.update(
+			UserSettings.LapsScores,
+			addItemToBank(
+				user.settings.get(UserSettings.LapsScores),
+				course.id,
+				quantity - lapsFailed
+			)
+		);
+
 		await user.addXP(SkillsEnum.Agility, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Agility);
 
@@ -62,6 +72,17 @@ export default class extends Task {
 		const loot = {
 			[markOfGrace]: totalMarks
 		};
+
+		if (course.id === 6) {
+			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id] ?? 0;
+			for (const monkey of Agility.MonkeyBackpacks) {
+				if (currentLapCount < monkey.lapsRequired) break;
+				if (!user.hasItemEquippedOrInBank(monkey.id)) {
+					loot[monkey.id] = 1;
+					str += `\nYou received the ${monkey.name} monkey backpack!`;
+				}
+			}
+		}
 
 		// Roll for pet
 		if (
