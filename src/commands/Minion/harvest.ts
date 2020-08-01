@@ -46,10 +46,20 @@ export default class extends BotCommand {
 		const upgradeType = '';
 		let returnMessageStr = '';
 		let boostStr = '';
-		const timePerPatch = Time.Minute * 1.5;
+
+		const storeHarvestablePlant = patchType.lastPlanted;
+		const planted = Farming.Plants.find(
+			plants =>
+				stringMatches(plants.name, storeHarvestablePlant) ||
+				stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
+		);
+		if (!planted) throw `This error shouldn't happen. Just to clear possible undefined error`;
+
+		const timePerPatchTravel = Time.Second * planted.timePerPatchTravel;
+		const timePerPatchHarvest = Time.Second * planted.timePerHarvest;
 
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
-		let duration = timePerPatch * patchType.lastQuantity;
+		let duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
