@@ -1,12 +1,21 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
+import { GearTypes } from '../../gear';
 import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
+import hasItemEquipped from '../../gear/functions/hasItemEquipped';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { KillableMonster } from '../types';
 
 const { floor, max } = Math;
+const specialReducers = [
+	{
+		name: 'Elysian Spirit Shield',
+		id: 12817,
+		foodReductionPercent: 17.5
+	}
+];
 
 export default function calculateMonsterFood(
 	monster: O.Readonly<KillableMonster>,
@@ -52,6 +61,18 @@ export default function calculateMonsterFood(
 		`You use ${floor(totalOffensivePercent)}% less food because of your offensive stats.`
 	);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
+
+	const userGear = user.rawGear()[attackStyleToUse] as GearTypes.GearSetup;
+	for (const reducer of specialReducers) {
+		if (hasItemEquipped(reducer.id, userGear)) {
+			messages.push(
+				`You use ${reducer.foodReductionPercent}% less food because you are wearing ${reducer.name}.`
+			);
+			healAmountNeeded = floor(
+				reduceNumByPercent(healAmountNeeded, reducer.foodReductionPercent)
+			);
+		}
+	}
 
 	messages.push(
 		`You use ${100 -
