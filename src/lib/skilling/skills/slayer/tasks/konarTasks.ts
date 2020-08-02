@@ -15,7 +15,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater abyssal and abyssal sire not added in monsters.
 		name: 'Abyssal demon',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -68,7 +67,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Some demons not added in monsters.
 		name: 'Black Demon',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -130,7 +128,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Kraken not added to monsters.
 		name: 'Cave kraken',
 		amount: [80, 100],
 		extendedAmount: [150, 200],
@@ -235,7 +232,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Skotizo demons not added to monsters.
 		name: 'Greater demon',
 		amount: [120, 170],
 		extendedAmount: [150, 223],
@@ -255,7 +251,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Hydra',
 		amount: [125, 190],
 		weight: 10,
@@ -275,7 +270,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Jelly',
 		amount: [120, 170],
 		weight: 6,
@@ -309,7 +303,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Lizardman brute not added in monsters.
 		name: 'Lizardman',
 		amount: [90, 110],
 		weight: 8,
@@ -326,7 +319,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Ancient Zygomite not added to monsters.
 		name: 'Zygomite',
 		amount: [10, 25],
 		weight: 2,
@@ -338,7 +330,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters.
 		name: 'Nechryael',
 		amount: [110, 110],
 		extendedAmount: [200, 250],
@@ -351,7 +342,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Baby/brute red dragon not added to monsters.
 		name: 'Red Dragon',
 		amount: [30, 50],
 		weight: 5,
@@ -392,19 +382,13 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Lots of missing trolls in monsters.
 		name: 'Mountain troll',
 		amount: [120, 170],
 		weight: 6,
-		alternatives: ['Troll general', 'Thrower troll', 'Pee Hat', 'Kraka', 'Rock', 'Stick'],
+		alternatives: ['Troll general'],
 		Id: [
 			Monsters.MountainTroll.id,
 			Monsters.TrollGeneral.id,
-			Monsters.ThrowerTroll.id,
-			Monsters.PeeHat.id,
-			Monsters.Kraka.id,
-			Monsters.Rock.id,
-			Monsters.Stick.id
 		],
 		combatLvl: 60,
 		unlocked: true
@@ -435,7 +419,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Not added to monsters.
 		name: 'Waterfiend',
 		amount: [120, 170],
 		weight: 2,

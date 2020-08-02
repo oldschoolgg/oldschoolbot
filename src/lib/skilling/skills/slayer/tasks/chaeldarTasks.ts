@@ -15,7 +15,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater abyssal and abyssal sire not added in monsters.
 		name: 'Abyssal demon',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -39,7 +38,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Twisted banshee not added in monsters
 		name: 'Banshee',
 		amount: [110, 170],
 		weight: 5,
@@ -63,7 +61,7 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Some demons not added in monsters.
+		// Balfrug is part of kril?
 		name: 'Black Demon',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -147,7 +145,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Kraken not added to monsters
 		name: 'Cave kraken',
 		amount: [30, 50],
 		extendedAmount: [150, 200],
@@ -229,7 +226,6 @@ const chaeldarTasks: SlayerTask[] = [
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
 			Monsters.Mourner.id,
-			Monsters.PrifddinasGuard.id,
 			Monsters.ReanimatedElf.id
 		],
 		combatLvl: 70,
@@ -240,7 +236,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Fever spider',
 		amount: [110, 170],
 		weight: 7,
-		Id: Monsters.FeverSpider.id,
+		Id: [Monsters.FeverSpider.id],
 		combatLvl: 40,
 		slayerLvl: 42,
 		questPoints: 7,
@@ -286,7 +282,7 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave? Some demons not added to monsters.
+		// Revenant cave in future? TstanonKarlak part of kril?
 		name: 'Greater demon',
 		amount: [110, 170],
 		extendedAmount: [150, 250],
@@ -327,11 +323,10 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Infernal Mage',
 		amount: [110, 170],
 		weight: 7,
-		Id: Monsters.InfernalMage.id,
+		Id: [Monsters.InfernalMage.id],
 		combatLvl: 40,
 		slayerLvl: 45,
 		questPoints: 1,
@@ -348,7 +343,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Jelly',
 		amount: [110, 170],
 		weight: 10,
@@ -359,7 +353,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Jungle horror',
 		amount: [110, 170],
 		weight: 10,
@@ -392,7 +385,7 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave? ,Not added in monsters
+		// Revenant cave? ZakInGritch part of kril?
 		name: 'Lesser demon',
 		amount: [110, 170],
 		weight: 9,
@@ -402,7 +395,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Lizardman brute not added in monsters.
 		name: 'Lizardman',
 		amount: [70, 90],
 		weight: 8,
@@ -435,7 +427,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 6,
@@ -446,7 +437,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Ancient Zygomite not added to monsters.
 		name: 'Zygomite',
 		amount: [8, 15],
 		weight: 7,
@@ -458,7 +448,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters.
 		name: 'Nechryael',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -489,7 +478,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Shadow warrior',
 		amount: [110, 170],
 		weight: 8,
@@ -524,7 +512,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Ice troll and troll general Not added in monsters.
 		name: 'Mountain troll',
 		amount: [110, 170],
 		weight: 11,
@@ -542,13 +529,12 @@ const chaeldarTasks: SlayerTask[] = [
 		slayerLvl: 55,
 		unlocked: true
 	},
-	{
-		// Not added in monsters.
+	{   // Infernal cave 
 		name: 'TzHaar-Ket',
 		amount: [90, 150],
-		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
+		alternatives: ['TzTok-Jad', 'TzKal-Zuk', 'Reanimated TzHaar'],
 		weight: 8,
-		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id, Monsters.TzKalZuk.id],
+		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id, Monsters.TzKalZuk.id, Monsters.ReanimatedTzHaar.id],
 		unlocked: false
 	},
 	{
@@ -588,4 +574,3 @@ const chaeldarTasks: SlayerTask[] = [
 ];
 
 export default chaeldarTasks;
-

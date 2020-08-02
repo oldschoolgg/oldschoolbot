@@ -22,7 +22,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Different bandits and droprates? None of them added in monsters
 		name: 'Bandit',
 		amount: [75, 125],
 		weight: 4,
@@ -35,13 +34,13 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Grizzly bear',
 		amount: [50, 100],
 		weight: 6,
-		alternatives: 'Callisto',
+		alternatives: ['Callisto'],
 		Id: [Monsters.Grizzlybear.id, Monsters.Callisto.id],
 		wilderness: 20,
 		unlocked: true
 	},
 	{
-		// Black demon reventant caves?
+		// reventant cave in future?
 		name: 'Black demon',
 		amount: [100, 150],
 		weight: 7,
@@ -50,7 +49,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Black dragon reventant caves?
+		// reventant cave in future?
 		name: 'Black dragon',
 		amount: [5, 20],
 		weight: 4,
@@ -59,7 +58,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Black Knight not added in monsters
 		name: 'Black Knight',
 		amount: [75, 125],
 		weight: 3,
@@ -77,7 +75,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Neither added in monsters
 		name: 'Chaos druid',
 		amount: [50, 85],
 		weight: 5,
@@ -87,7 +84,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Two combat lvls, not added in monsters
 		name: 'Dark warrior',
 		amount: [70, 125],
 		weight: 4,
@@ -96,7 +92,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
 		name: 'Earth warrior',
 		amount: [75, 130],
 		weight: 6,
@@ -105,7 +100,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
+		// WC dependent loottable, not added
 		name: 'Ent',
 		amount: [35, 60],
 		weight: 5,
@@ -114,7 +109,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters, wildy drops?
 		name: 'Fire giant',
 		amount: [100, 150],
 		weight: 7,
@@ -155,7 +149,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Wilderness drops?, Not added in monsters
 		name: 'Hill Giant',
 		amount: [100, 150],
 		weight: 3,
@@ -164,7 +157,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave?, Not added in monsters
+		// Revenant cave in future?
 		name: 'Ice giant',
 		amount: [100, 160],
 		weight: 6,
@@ -173,7 +166,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
 		name: 'Ice warrior',
 		amount: [100, 150],
 		weight: 7,
@@ -182,7 +174,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
 		name: 'Lava dragon',
 		amount: [35, 60],
 		weight: 3,
@@ -191,7 +182,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave? ,Not added in monsters
+		// Revenant cave in future?
 		name: 'Lesser demon',
 		amount: [80, 120],
 		weight: 6,
@@ -200,7 +191,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
 		name: 'Magic axe',
 		amount: [70, 125],
 		weight: 7,
@@ -218,7 +208,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Wildy? Not added in monsters
 		name: 'Moss giant',
 		amount: [100, 150],
 		weight: 4,
@@ -227,7 +216,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Wildy? Not added in monsters
 		name: 'Pirate',
 		amount: [75, 125],
 		weight: 3,
@@ -269,7 +257,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Two combats? Not added in monsters
 		name: 'Rogue',
 		amount: [75, 125],
 		weight: 5,
@@ -303,7 +290,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Deadly red spider not added in monsters,
 		name: 'Spider',
 		amount: [60, 100],
 		weight: 6,

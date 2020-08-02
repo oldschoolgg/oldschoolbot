@@ -15,7 +15,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater abyssal and abyssal sire not added in monsters.
 		name: 'Abyssal demon',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -71,7 +70,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Some demons not added in monsters.
 		name: 'Black Demon',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -88,7 +86,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Baby,Brutal black dragon not added.
 		name: 'Black Dragon',
 		amount: [10, 20],
 		extendedAmount: [40, 60],
@@ -162,7 +159,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Kraken not added to monsters
 		name: 'Cave kraken',
 		amount: [100, 120],
 		extendedAmount: [150, 200],
@@ -291,7 +287,7 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave? Some demons not added to monsters.
+		// Revenant cave? tstanonkarlak part of kril?
 		name: 'Greater demon',
 		amount: [120, 185],
 		extendedAmount: [150, 250],
@@ -355,7 +351,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Lizardman brute not added in monsters.
 		name: 'Lizardman',
 		amount: [90, 120],
 		weight: 8,
@@ -364,7 +359,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Lots of not added minions not added in monsters.
 		name: 'Scarab mage',
 		amount: [30, 60],
 		extendedAmount: [130, 170],
@@ -390,7 +384,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Ancient Zygomite not added to monsters.
 		name: 'Zygomite',
 		amount: [10, 25],
 		weight: 2,
@@ -402,7 +395,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters
 		name: 'Nechryael',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
@@ -415,7 +407,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Baby /brute red dragon not added to monsters.
 		name: 'Red Dragon',
 		amount: [30, 80],
 		weight: 5,
@@ -490,7 +481,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Ice troll and troll general Not added in monsters.
 		name: 'Mountain troll',
 		amount: [120, 185],
 		weight: 6,
@@ -509,7 +499,7 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
+		// infernal cave not added.
 		name: 'TzHaar-Ket',
 		amount: [110, 180],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],

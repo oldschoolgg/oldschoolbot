@@ -194,7 +194,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Earth warrior',
 		amount: [40, 80],
 		weight: 6,
@@ -316,7 +315,7 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave?, Not added in monsters
+		// Revenant cave in future?
 		name: 'Ice giant',
 		amount: [40, 80],
 		weight: 7,
@@ -333,7 +332,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Infernal Mage',
 		amount: [60, 120],
 		weight: 8,
@@ -344,22 +342,20 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Jelly',
 		amount: [60, 120],
 		weight: 8,
-		alternatives: 'Warped Jelly',
+		alternatives: ['Warped Jelly'],
 		Id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLvl: 57,
 		slayerLvl: 52,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Jungle horror',
 		amount: [60, 120],
 		weight: 8,
-		Id: Monsters.JungleHorror.id,
+		Id: [Monsters.JungleHorror.id],
 		combatLvl: 65,
 		questPoints: 11,
 		unlocked: true
@@ -413,7 +409,7 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave? ,Not added in monsters
+		// Revenant cave in future? Kril body guard, count in kril?
 		name: 'Lesser demon',
 		amount: [60, 120],
 		weight: 7,
@@ -432,7 +428,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 7,
@@ -443,7 +438,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Wildy droprate? Not added in monsters
 		name: 'Moss giant',
 		amount: [60, 120],
 		weight: 7,
@@ -453,7 +447,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters
 		name: 'Nechryael',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -466,7 +459,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
 		name: 'Ogre',
 		amount: [60, 120],
 		weight: 7,
@@ -476,7 +468,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Otherworldly being',
 		amount: [60, 120],
 		weight: 8,
@@ -486,7 +477,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Pyrefiend',
 		amount: [60, 120],
 		weight: 8,
@@ -521,19 +511,17 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
-		name: 'Sea Snake',
+		name: 'Giant Sea Snake',
 		amount: [60, 120],
 		weight: 6,
 		alternatives: ['Sea Snake Hatchling', 'Sea Snake Young'],
-		Id: [Monsters.SeaSnake.id, Monsters.SeaSnakeHatchling.id, Monsters.SeaSnakeYoung.id],
+		Id: [Monsters.GiantSeaSnake.id, Monsters.SeaSnakeHatchling.id, Monsters.SeaSnakeYoung.id],
 		combatLvl: 50,
 		slayerLvl: 40,
 		questPoints: 60,
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Shadow warrior',
 		amount: [40, 80],
 		weight: 8,
@@ -557,18 +545,16 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters.
 		name: 'Terror dog',
 		amount: [20, 45],
 		weight: 6,
-		Id: Monsters.TerrorDog.id,
+		Id: [Monsters.TerrorDog.id],
 		combatLvl: 60,
 		slayerLvl: 40,
 		questPoints: 3,
 		unlocked: true
 	},
 	{
-		// Ice troll and troll general Not added in monsters.
 		name: 'Mountain troll',
 		amount: [60, 120],
 		weight: 7,
@@ -613,7 +599,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added to monsters.
 		name: 'Werewolf',
 		amount: [40, 80],
 		weight: 7,
