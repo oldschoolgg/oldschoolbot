@@ -17,7 +17,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import itemID from '../../lib/util/itemID';
-import { calcNumOfPatches } from '../../lib/skilling/functions/calcsFarming';
+import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 
 export default class extends BotCommand {
@@ -35,27 +35,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, plantName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.plants) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Farming.Plants.map(
-						plant =>
-							`${plant.seedType}: ${plant.name} -- lvl ${
-								plant.level
-							}: ${Object.entries(plant.inputItems)
-								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-								.join(', ')}\n	Default # of patches: ${
-								plant.defaultNumOfPatches
-							}\n${plant.additionalPatchesByFarmLvl.map(
-								entry =>
-									`	| Farming Level: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
-							)} ${plant.additionalPatchesByQP.map(
-								entry =>
-									`	| Quest Points: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
-							)} `
-					).join('\n')
-				),
-				`Farming Plants.txt`
-			);
+			return returnListOfPlants(msg);
 		}
 
 		await msg.author.settings.sync(true);
