@@ -34,13 +34,15 @@ export default class extends BotCommand {
 
 		const getPatchType = resolvePatchTypeSetting(seedType);
 		if (!getPatchType) {
-			let patchStr = [];
+			const patchStr: string[] = [];
 			const patchArray = Object.values(FarmingPatchTypes);
 			for (let i = 0; i < patchArray.length; i++) {
 				const patches = patchArray[i];
 				patchStr.push(`${patches}`);
 			}
-			throw `That is not a valid patch type! The available patches are: ${patchStr.join(', ')}.`;
+			throw `That is not a valid patch type! The available patches are: ${patchStr.join(
+				', '
+			)}.`;
 		}
 
 		const patchType = msg.author.settings.get(getPatchType);
