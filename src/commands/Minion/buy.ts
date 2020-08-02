@@ -52,7 +52,6 @@ export default class extends BotCommand {
 				throw `You need ${buyable.titheFarmPoints} Tithe Farm points to purchase this item.`;
 			}
 			purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
-
 		} else {
 			const GP = msg.author.settings.get(UserSettings.GP);
 			GPCost = buyable.gpCost * quantity;
