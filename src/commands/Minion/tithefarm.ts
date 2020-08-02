@@ -19,11 +19,11 @@ export default class extends BotCommand {
 		});
 	}
 
-	determineDuration(user: KlasaUser): [number, string] {
+	determineDuration(user: KlasaUser): [number, string[]] {
 		let baseTime = Time.Second * 1538;
 		let nonGracefulTimeAddition = Time.Second * 123;
 
-		let boostStr = '';
+		const boostStr = [];
 
 		// Reduce time based on tithe farm completions
 		const titheFarmStats = user.settings.get(UserSettings.Stats.TitheFarmStats);
@@ -31,14 +31,16 @@ export default class extends BotCommand {
 		const percentIncreaseFromCompletions =
 			Math.floor(Math.min(60, titheFarmsCompleted) / 3) / 100;
 		baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
-		boostStr += `**Boosts**: ${Math.floor(
-			percentIncreaseFromCompletions * 100
-		)}% from Tithe Farms completed.`;
+		boostStr.push(
+			`**Boosts**: ${Math.floor(
+				percentIncreaseFromCompletions * 100
+			)}% from Tithe Farms completed`
+		);
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(user.settings.get(UserSettings.Gear.Skilling))) {
 			nonGracefulTimeAddition = 0;
-			boostStr += ' 10% from graceful outfit.';
+			boostStr.push('10% from graceful outfit');
 		}
 
 		const totalTime = baseTime + nonGracefulTimeAddition;
@@ -61,7 +63,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs 34 Farming to use the Tithe Farm!`;
 		}
 
-		const [duration, debugStr] = this.determineDuration(msg.author);
+		const [duration, boostStr] = this.determineDuration(msg.author);
 
 		const data: TitheFarmActivityTaskOptions = {
 			minigameID: MinigameIDsEnum.TitheFarm,
@@ -80,7 +82,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`Your minion is off completing a round of the Tithe Farm. It'll take ${formatDuration(
 				duration
-			)} to finish.\n\n${debugStr}`
+			)} to finish.\n\n${boostStr.join(', ')}`
 		);
 	}
 }
