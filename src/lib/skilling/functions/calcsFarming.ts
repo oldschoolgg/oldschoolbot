@@ -1,7 +1,8 @@
-import { KlasaUser } from 'klasa';
+import { KlasaUser, KlasaMessage } from 'klasa';
 
+import { rand, itemNameFromID } from '../../util';
 import { Plant, SkillsEnum } from '../types';
-import { rand } from 'oldschooljs/dist/util/util';
+import Farming from '../../skilling/skills/farming/farming';
 
 export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 	let numOfPatches = plant.defaultNumOfPatches;
@@ -42,4 +43,28 @@ export function calcVariableYield(plant: Plant, upgradeType: string, farmingLeve
 
 	if (!cropYield) return 0;
 	return cropYield;
+}
+
+export function returnListOfPlants(msg: KlasaMessage) {
+	return msg.channel.sendFile(
+		Buffer.from(
+			Farming.Plants.map(
+				plant =>
+					`${plant.seedType}: ${plant.name} -- lvl ${plant.level}: ${Object.entries(
+						plant.inputItems
+					)
+						.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+						.join(', ')}\n	Default # of patches: ${
+						plant.defaultNumOfPatches
+					}\n${plant.additionalPatchesByFarmLvl.map(
+						entry =>
+							`	| Farming Level: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
+					)} ${plant.additionalPatchesByQP.map(
+						entry =>
+							`	| Quest Points: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
+					)} `
+			).join('\n')
+		),
+		`Farming Plants.txt`
+	);
 }
