@@ -1,6 +1,7 @@
 import { Monitor, MonitorStore, KlasaMessage, util } from 'klasa';
 
 import { Channel } from '../lib/constants';
+import { staging } from '../config';
 
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
@@ -11,6 +12,7 @@ export default class extends Monitor {
 			ignoreEdits: true,
 			ignoreSelf: true
 		});
+		this.enabled = staging;
 	}
 
 	async run(msg: KlasaMessage) {
