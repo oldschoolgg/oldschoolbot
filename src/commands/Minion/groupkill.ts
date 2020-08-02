@@ -23,7 +23,6 @@ export default class extends BotCommand {
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
-			subcommands: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			aliases: ['mass']
 		});
@@ -69,7 +68,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	@ironsCantUse
-	async mass(msg: KlasaMessage, [inputQuantity, monsterName]: [number | undefined, string]) {
+	async run(msg: KlasaMessage, [inputQuantity, monsterName]: [number | undefined, string]) {
 		const monster = findMonster(monsterName);
 		if (!monster) throw `That monster doesn't exist!`;
 		if (!monster.groupKillable) throw `This monster can't be killed in groups!`;

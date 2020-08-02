@@ -74,7 +74,7 @@ export default class extends Task {
 		};
 
 		if (course.id === 6) {
-			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id] ?? 0;
+			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
 				if (!user.hasItemEquippedOrInBank(monkey.id)) {
