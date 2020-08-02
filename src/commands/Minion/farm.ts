@@ -70,7 +70,7 @@ export default class extends BotCommand {
 		let str = '';
 		let upgradeStr = '';
 		let paymentStr = '';
-		let boostStr = '';
+		const boostStr = [];
 
 		if (typeof quantity === 'string') {
 			plantName = quantity;
@@ -142,25 +142,33 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
-			quantity = Math.min(Math.floor(msg.author.maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)), numOfPatches);
+			quantity = Math.min(
+				Math.floor(
+					msg.author.maxTripLength /
+						(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
+				),
+				numOfPatches
+			);
 		}
 
 		if (quantity > numOfPatches) {
 			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 		}
 
-		let duration:number;
+		let duration: number;
 		if (patchType.patchStage) {
-			duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
+			duration =
+				patchType.lastQuantity *
+				(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
 			if (quantity > patchType.lastQuantity) {
-				duration += (quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
+				duration +=
+					(quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
 			}
-		}
-		else duration = quantity * (timePerPatchTravel + timePerPatchPlant);
+		} else duration = quantity * (timePerPatchTravel + timePerPatchPlant);
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			boostStr += '\n\n**Boosts**: 10% for Graceful.';
+			boostStr.push('**Boosts**: 10% for Graceful');
 			duration *= 0.9;
 		}
 
@@ -169,7 +177,10 @@ export default class extends BotCommand {
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount of ${
 				plants.name
-			} you can plant is ${(Math.floor(msg.author.maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
+			} you can plant is ${(Math.floor(
+				msg.author.maxTripLength /
+					(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
+			),
 			numOfPatches)}.`;
 		}
 
@@ -234,7 +245,7 @@ export default class extends BotCommand {
 				plants.name
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
 				duration
-			)} to finish. ${boostStr}`;
+			)} to finish.\n\n${boostStr.join(', ')}`;
 		} else if (patchType.patchStage) {
 			const storeHarvestablePlant = patchType.lastPlanted;
 			const planted = Farming.Plants.find(
@@ -242,7 +253,8 @@ export default class extends BotCommand {
 					stringMatches(plants.name, storeHarvestablePlant) ||
 					stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
 			);
-			if (!planted) throw `This error shouldn't happen. Just to clear possible undefined error`;
+			if (!planted)
+				throw `This error shouldn't happen. Just to clear possible undefined error`;
 
 			const lastPlantTime: number = patchType.plantTime;
 			const difference = currentDate - lastPlantTime;
@@ -273,7 +285,7 @@ export default class extends BotCommand {
 				plants.name
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
 				duration
-			)} to finish. ${boostStr}`;
+			)} to finish.\n\n${boostStr.join(' ')}`;
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);

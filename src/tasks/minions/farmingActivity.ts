@@ -91,22 +91,22 @@ export default class extends Task {
 
 		if (bankHasItem(userBank, itemID(`Farmer's strawhat`), 1)) {
 			bonusXpMultiplier += 0.004;
-			farmersPiecesCheck += 1;
+			farmersPiecesCheck++;
 		}
 		if (
 			bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
 			bankHasItem(userBank, itemID(`Farmer's shirt`), 1)
 		) {
 			bonusXpMultiplier += 0.008;
-			farmersPiecesCheck += 1;
+			farmersPiecesCheck++;
 		}
 		if (bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1)) {
 			bonusXpMultiplier += 0.006;
-			farmersPiecesCheck += 1;
+			farmersPiecesCheck++;
 		}
 		if (bankHasItem(userBank, itemID(`Farmer's boots`), 1)) {
 			bonusXpMultiplier += 0.002;
-			farmersPiecesCheck += 1;
+			farmersPiecesCheck++;
 		}
 		if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
 
