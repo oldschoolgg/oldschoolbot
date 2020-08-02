@@ -78,6 +78,13 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.agilityLevel} agility to create this item.`;
 		}
 
+		if (
+			createableItem.fishingLevel &&
+			msg.author.skillLevel(SkillsEnum.Fishing) < createableItem.fishingLevel
+		) {
+			throw `You need ${createableItem.fishingLevel} fishing to create this item.`;
+		}
+
 		const outItems = multiplyBank(createableItem.outputItems, quantity);
 		const inItems = multiplyBank(createableItem.inputItems, quantity);
 

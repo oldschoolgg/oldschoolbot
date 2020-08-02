@@ -13,6 +13,7 @@ interface Createable {
 	prayerLevel?: number;
 	agilityLevel?: number;
 	fletchingLevel?: number;
+	fishingLevel?:number;
 	QPRequired?: number;
 	noCl?: boolean;
 }
@@ -676,6 +677,30 @@ const Createables: Createable[] = [
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205
+	},
+	{
+		name: "Zamorakian hasta",
+		inputItems: resolveNameBank({
+			'Zamorakian spear': 1 
+		}),
+		outputItems: resolveNameBank({
+			"Zamorakian hasta": 1
+		}),
+		fishingLevel: 55,
+		smithingLevel: 5
+		
+	},
+	{
+		name: "Zamorakian spear",
+		inputItems: resolveNameBank({
+			'Zamorakian hasta': 1 
+		}),
+		outputItems: resolveNameBank({
+			"Zamorakian spear": 1
+		}),
+		fishingLevel: 55,
+		smithingLevel: 5
+		
 	},
 	{
 		name: 'Dragon sq shield',
