@@ -51,7 +51,7 @@ export default class extends BotCommand {
 		let activityStr = '';
 		let upgradeStr = '';
 		let paymentStr = '';
-		const boostStr:string[] = [];
+		const boostStr: string[] = [];
 
 		if (typeof quantity === 'string') {
 			plantName = quantity;
