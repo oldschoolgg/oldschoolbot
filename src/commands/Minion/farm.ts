@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		let str = '';
 		let upgradeStr = '';
 		let paymentStr = '';
-		const boostStr = [];
+		const boostStr:string[] = [];
 
 		if (typeof quantity === 'string') {
 			plantName = quantity;
@@ -80,15 +80,15 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.supercompost) {
 			upgradeType = 'supercompost';
-			upgradeStr += `You are treating all of your patches with supercompost. `;
+			upgradeStr = `You are treating all of your patches with supercompost. `;
 		}
 		if (msg.flagArgs.ultracompost) {
 			upgradeType = 'ultracompost';
-			upgradeStr += `You are treating all of your patches with ultracompost. `;
+			upgradeStr = `You are treating all of your patches with ultracompost. `;
 		}
 		if (msg.flagArgs.pay) {
 			payment = true;
-			paymentStr += `You are paying a nearby farmer to look after your patches. `;
+			paymentStr = `You are paying a nearby farmer to look after your patches. `;
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Farming) < plants.level) {
@@ -196,7 +196,7 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
 		} else if (bankHasItem(userBank, itemID('compost'), quantity) && plants.canCompostPatch) {
 			upgradeType = 'compost';
-			upgradeStr += `You are treating all of your patches with compost. `;
+			upgradeStr = `You are treating all of your patches with compost. `;
 			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
 		}
 
