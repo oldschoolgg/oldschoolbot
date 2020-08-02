@@ -45,7 +45,7 @@ export default class extends BotCommand {
 
 		const upgradeType = '';
 		let returnMessageStr = '';
-		let boostStr = '';
+		const boostStr = [];
 
 		const storeHarvestablePlant = patchType.lastPlanted;
 		const planted = Farming.Plants.find(
@@ -63,7 +63,7 @@ export default class extends BotCommand {
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			boostStr += '\n\n**Boosts**: 10% for Graceful.';
+			boostStr.push('**Boosts**: 10% for Graceful');
 			duration *= 0.9;
 		}
 
@@ -131,7 +131,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}.\nIt'll take around ${formatDuration(
 				duration
-			)} to finish. ${boostStr}`;
+			)} to finish.\n\n${boostStr.join(' ')}`;
 		}
 
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
