@@ -39,7 +39,7 @@ const allotmentPlants: Plant[] = [
 			[45, 2] // Farming Guide Low (2)
 		],
 		timePerPatchTravel: 20,
-		timePerHarvest: 20,
+		timePerHarvest: 20
 	},
 	{
 		level: 5,
