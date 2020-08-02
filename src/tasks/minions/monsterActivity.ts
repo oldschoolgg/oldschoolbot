@@ -36,14 +36,18 @@ export default class extends Task {
 		let alsoSlayerTask = false;
 
 		// Checking for alternative monsters on current task.
-		for (let tempMonstID of slayerInfo.currentTask?.Id!) {
+		for (const tempMonstID of slayerInfo.currentTask?.Id!) {
 			if (tempMonstID === monsterID) {
 				alsoSlayerTask = true;
 				break;
 			}
 		}
 
-		if (slayerInfo.hasTask && (monster.name.toLowerCase() === slayerInfo.currentTask?.name.toLowerCase() || alsoSlayerTask) ) {
+		if (
+			slayerInfo.hasTask &&
+			(monster.name.toLowerCase() === slayerInfo.currentTask?.name.toLowerCase() ||
+				alsoSlayerTask)
+		) {
 			onSlayer = true;
 			const quantityLeft = slayerInfo.remainingQuantity! - quantity;
 			xpReceived = quantity * currentMonsterData!.slayerXP;

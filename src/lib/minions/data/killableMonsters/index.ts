@@ -6,7 +6,7 @@ import itemID from '../../../util/itemID';
 import { KillableMonster } from '../../types';
 
 import bosses from './bosses';
-import slayerMonsters from './slayerMonsters'
+import slayerMonsters from './slayerMonsters';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,

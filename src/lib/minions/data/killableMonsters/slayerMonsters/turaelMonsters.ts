@@ -6,7 +6,7 @@ import { Time } from '../../../../constants';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const killableBosses: KillableMonster[] = [
-    {
+	{
 		id: Monsters.Banshee.id,
 		name: Monsters.Banshee.name,
 		aliases: Monsters.Banshee.aliases,
@@ -25,8 +25,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 15
 		}
-    },
-    {
+	},
+	{
 		id: Monsters.Bat.id,
 		name: Monsters.Bat.name,
 		aliases: Monsters.Bat.aliases,
@@ -42,10 +42,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
 		},
-		levelRequirements: {
-		}
-    },
-    {
+		levelRequirements: {}
+	},
+	{
 		id: Monsters.Bird.id,
 		name: Monsters.Bird.name,
 		aliases: Monsters.Bird.aliases,
@@ -61,10 +60,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
 		},
-		levelRequirements: {
-		}
-    },
-    {
+		levelRequirements: {}
+	},
+	{
 		id: Monsters.BlackBear.id,
 		name: Monsters.BlackBear.name,
 		aliases: Monsters.BlackBear.aliases,
@@ -80,10 +78,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
 		},
-		levelRequirements: {
-		}
-    },
-    {
+		levelRequirements: {}
+	},
+	{
 		id: Monsters.CaveBug.id,
 		name: Monsters.CaveBug.name,
 		aliases: Monsters.CaveBug.aliases,
@@ -100,10 +97,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 7
+			slayer: 7
 		}
-    },
-    {
+	},
+	{
 		id: Monsters.CaveCrawler.id,
 		name: Monsters.CaveCrawler.name,
 		aliases: Monsters.CaveCrawler.aliases,
@@ -120,10 +117,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 10
+			slayer: 10
 		}
-    },  
-    {
+	},
+	{
 		id: Monsters.CaveSlime.id,
 		name: Monsters.CaveSlime.name,
 		aliases: Monsters.CaveSlime.aliases,
@@ -140,10 +137,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 17
+			slayer: 17
 		}
-    },
-    {
+	},
+	{
 		id: Monsters.CrawlingHand.id,
 		name: Monsters.CrawlingHand.name,
 		aliases: Monsters.CrawlingHand.aliases,
@@ -160,10 +157,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    }, 
-    {
+	},
+	{
 		id: Monsters.GuardDog.id,
 		name: Monsters.GuardDog.name,
 		aliases: Monsters.GuardDog.aliases,
@@ -180,10 +177,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    }, 
-    {
+	},
+	{
 		id: Monsters.Ghost.id,
 		name: Monsters.Ghost.name,
 		aliases: Monsters.Ghost.aliases,
@@ -200,10 +197,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    }, 
-    {
+	},
+	{
 		id: Monsters.Icefiend.id,
 		name: Monsters.Icefiend.name,
 		aliases: Monsters.Icefiend.aliases,
@@ -220,10 +217,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    },  
-    {
+	},
+	{
 		id: Monsters.KalphiteWorker.id,
 		name: Monsters.KalphiteWorker.name,
 		aliases: Monsters.KalphiteWorker.aliases,
@@ -240,10 +237,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    },
-    {
+	},
+	{
 		id: Monsters.Lizard.id,
 		name: Monsters.Lizard.name,
 		aliases: Monsters.Lizard.aliases,
@@ -260,10 +257,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    }, 
-    {
+	},
+	{
 		id: Monsters.Minotaur.id,
 		name: Monsters.Minotaur.name,
 		aliases: Monsters.Minotaur.aliases,
@@ -280,10 +277,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    },  
-    {
+	},
+	{
 		id: Monsters.Monkey.id,
 		name: Monsters.Monkey.name,
 		aliases: Monsters.Monkey.aliases,
@@ -300,10 +297,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    },  
-    {
+	},
+	{
 		id: Monsters.Rat.id,
 		name: Monsters.Rat.name,
 		aliases: Monsters.Rat.aliases,
@@ -320,9 +317,9 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-	},  
+	},
 	{
 		id: Monsters.Scorpion.id,
 		name: Monsters.Scorpion.name,
@@ -340,10 +337,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 0
+			slayer: 0
 		}
-    },  
-    	{
+	},
+	{
 		id: Monsters.Spider.id,
 		name: Monsters.Spider.name,
 		aliases: Monsters.Spider.aliases,
@@ -360,10 +357,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    },  
-    {
+	},
+	{
 		id: Monsters.Wolf.id,
 		name: Monsters.Wolf.name,
 		aliases: Monsters.Wolf.aliases,
@@ -380,10 +377,10 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
-            slayer: 5
+			slayer: 5
 		}
-    }  
-     /*,
+	}
+	/* ,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,

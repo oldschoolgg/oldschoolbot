@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -381,3 +382,4 @@ const krystiliaTasks: SlayerTask[] = [
 ];
 
 export default krystiliaTasks;
+*/

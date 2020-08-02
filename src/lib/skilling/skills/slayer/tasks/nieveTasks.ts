@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -534,3 +535,4 @@ const nieveTasks: SlayerTask[] = [
 ];
 
 export default nieveTasks;
+*/

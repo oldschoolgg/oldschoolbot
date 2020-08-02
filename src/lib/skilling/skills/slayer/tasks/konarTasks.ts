@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -437,3 +438,4 @@ const konarTasks: SlayerTask[] = [
 ];
 
 export default konarTasks;
+*/

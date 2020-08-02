@@ -1,3 +1,4 @@
+/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -610,3 +611,4 @@ const vannakaTasks: SlayerTask[] = [
 ];
 
 export default vannakaTasks;
+*/

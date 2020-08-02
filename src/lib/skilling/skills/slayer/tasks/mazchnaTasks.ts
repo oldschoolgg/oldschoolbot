@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+/* import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
 const mazchnaTasks: SlayerTask[] = [
@@ -356,3 +356,4 @@ const mazchnaTasks: SlayerTask[] = [
 ];
 
 export default mazchnaTasks;
+*/
