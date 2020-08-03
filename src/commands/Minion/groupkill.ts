@@ -59,7 +59,7 @@ export default class extends BotCommand {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
 
-			if (!hasEnoughFoodForMonster(monster, user, quantity) && 1 > 2) {
+			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity)) {
 				throw `${user.username} doesn't have enough food.`;
 			}
 		}
@@ -99,7 +99,7 @@ export default class extends BotCommand {
 						return [true, err];
 					}
 
-					if (!hasEnoughFoodForMonster(monster, user, 2) && 1 > 2) {
+					if (!hasEnoughFoodForMonster(monster, user, 2)) {
 						return [true, "you don't have enough food."];
 					}
 				}
