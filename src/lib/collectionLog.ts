@@ -1,6 +1,6 @@
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
-import { gracefulItems } from './skilling/skills/agility';
+import Agility, { gracefulItems } from './skilling/skills/agility';
 import { wintertodtItems } from './filterables';
 
 export const bosses = {
@@ -1230,6 +1230,7 @@ export const skillingLog = {
 	]),
 	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
 	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
+	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
 	Firemaking: wintertodtItems
 };
 

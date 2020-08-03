@@ -62,7 +62,7 @@ const killableBosses: KillableMonster[] = [
 		uniques: [...bosses.Saradomin, ...bosses.Shards],
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		attackStylesUsed: [GearStat.AttackRanged],
 		minimumGearRequirements: {
 			[GearStat.AttackRanged]: 30 + 17 + 69 + 7
 		}
@@ -118,7 +118,7 @@ const killableBosses: KillableMonster[] = [
 		uniques: [...bosses.Zammy, ...bosses.Shards],
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackSlash],
+		attackStylesUsed: [GearStat.AttackSlash],
 		minimumGearRequirements: {
 			[GearStat.DefenceSlash]: 200,
 			[GearStat.AttackStab]: 80
