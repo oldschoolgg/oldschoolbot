@@ -154,19 +154,6 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
-		id: Monsters.Goblin.id,
-		name: Monsters.Goblin.name,
-		aliases: Monsters.Goblin.aliases,
-		timeToFinish: Time.Second * 4.7,
-		table: Monsters.Goblin,
-		emoji: '',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Goblin champion scroll']),
-		qpRequired: 0
-	},
-	{
 		id: Monsters.LizardmanShaman.id,
 		name: Monsters.LizardmanShaman.name,
 		aliases: Monsters.LizardmanShaman.aliases,
@@ -213,56 +200,6 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
-		id: Monsters.Cow.id,
-		name: Monsters.Cow.name,
-		aliases: Monsters.Cow.aliases,
-		timeToFinish: Time.Second * 6,
-		table: Monsters.Cow,
-		emoji: '🐮',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Skeleton.id,
-		name: Monsters.Skeleton.name,
-		aliases: Monsters.Skeleton.aliases,
-		timeToFinish: Time.Second * 9,
-		table: Monsters.Skeleton,
-		emoji: '☠️',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Skeleton champion scroll']),
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Zombie.id,
-		name: Monsters.Zombie.name,
-		aliases: Monsters.Zombie.aliases,
-		timeToFinish: Time.Second * 9,
-		table: Monsters.Zombie,
-		emoji: '',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Zombie champion scroll']),
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Rat.id,
-		name: Monsters.Rat.name,
-		aliases: Monsters.Rat.aliases,
-		timeToFinish: Time.Second * 1.5,
-		table: Monsters.Rat,
-		emoji: '',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
 		id: Monsters.FireGiant.id,
 		name: Monsters.FireGiant.name,
 		aliases: Monsters.FireGiant.aliases,
@@ -297,18 +234,6 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Ankou.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.Ankou,
-		emoji: '',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Dwarf.id,
-		name: Monsters.Dwarf.name,
-		aliases: Monsters.Dwarf.aliases,
-		timeToFinish: Time.Second * 6,
-		table: Monsters.Dwarf,
 		emoji: '',
 		wildy: false,
 		canBeKilled: false,

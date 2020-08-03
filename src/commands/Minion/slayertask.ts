@@ -95,13 +95,21 @@ export default class extends BotCommand {
 				.join(', ')}.`;
 		}
 
-		if (slayerInfo.hasTask && master.masterId === 1 && slayerInfo.currentMaster !== 2) {
+		if (slayerInfo.hasTask && master.masterId === 1) {
 			if (master.tasks.some(task => task.name === slayerInfo.currentTask?.name)) {
 				throw `I'm not gonna replace my own tasks.`;
 			}
-			msg.send(
-				`Are you sure you'd like to replace your current task of ${slayerInfo.currentTask?.name} x ${slayerInfo.quantityTask}? It will be replaced with a easier task from Turael, WARNING: Your task streak will also end. Current streak is ${slayerInfo.streak}. Say \`confirm\` to continue.`
-			);
+			if (slayerInfo.currentMaster === 2) {
+				msg.send(
+					`Are you sure you'd like to replace your current task of ${slayerInfo.currentTask?.name} x ${slayerInfo.quantityTask}? It will be replaced with a easier task from Turael, WARNING: Your WILDY task streak will also end. Current streak is ${slayerInfo.wildyStreak}. Say \`confirm\` to continue.`
+				);
+			}
+			else {
+				msg.send(
+					`Are you sure you'd like to replace your current task of ${slayerInfo.currentTask?.name} x ${slayerInfo.quantityTask}? It will be replaced with a easier task from Turael, WARNING: Your task streak will also end. Current streak is ${slayerInfo.streak}. Say \`confirm\` to continue.`
+				);
+			}
+
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
@@ -124,18 +132,34 @@ export default class extends BotCommand {
 				}
 			}
 			const quantity = Math.floor(rand(minQuantity, maxQuantity));
-			const newSlayerInfo = {
-				...slayerInfo,
-				hasTask: true,
-				currentTask: randomedTask,
-				quantityTask: quantity,
-				remainingQuantity: quantity,
-				currentMaster: master.masterId,
-				streak: 0
-			};
-			await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
-				arrayAction: 'overwrite'
-			});
+			if (slayerInfo.currentMaster === 2) {
+				const newSlayerInfo = {
+					...slayerInfo,
+					hasTask: true,
+					currentTask: randomedTask,
+					quantityTask: quantity,
+					remainingQuantity: quantity,
+					currentMaster: master.masterId,
+					wildyStreak: 0
+				};
+				await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+					arrayAction: 'overwrite'
+				});
+			}
+			else {
+				const newSlayerInfo = {
+					...slayerInfo,
+					hasTask: true,
+					currentTask: randomedTask,
+					quantityTask: quantity,
+					remainingQuantity: quantity,
+					currentMaster: master.masterId,
+					streak: 0
+				};
+				await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+					arrayAction: 'overwrite'
+				});
+			}
 			return msg.send(
 				`Your new slayer task is ${quantity} x ${randomedTask.name} and the previous task got canceled.`
 			);
