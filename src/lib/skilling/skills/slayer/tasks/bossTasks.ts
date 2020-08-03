@@ -175,4 +175,3 @@ const bossTasks: SlayerTask[] = [
 ];
 
 export default bossTasks;
-

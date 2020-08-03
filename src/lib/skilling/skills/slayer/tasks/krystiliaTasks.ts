@@ -141,7 +141,8 @@ const krystiliaTasks: SlayerTask[] = [
 		weight: 7,
 		alternatives: ['Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
-			Monsters.Hellhound.id/*,
+			Monsters.Hellhound
+				.id /* ,
 			Monsters.SkeletonHellhound.id,
 			Monsters.GreaterSkeletonHellhound.id */
 		],
@@ -279,9 +280,10 @@ const krystiliaTasks: SlayerTask[] = [
 		weight: 5,
 		alternatives: ['Skeleton Hellhound', 'Greater Skeleton Hellhound', "Vet'ion"],
 		Id: [
-			Monsters.Skeleton.id,/*
+			Monsters.Skeleton
+				.id /*
 			Monsters.SkeletonHellHound.id,
-			Monsters.GreaterSkeletonHellhound.id,*/
+			Monsters.GreaterSkeletonHellhound.id,*/,
 			Monsters.Vetion.id
 		],
 		wilderness: 28,

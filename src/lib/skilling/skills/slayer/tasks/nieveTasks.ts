@@ -42,7 +42,7 @@ const nieveTasks: SlayerTask[] = [
 		extendedAmount: [90, 150],
 		weight: 5,
 		alternatives: ['Dark Ankou'],
-		Id: [Monsters.Ankou.id/*, Monsters.DarkAnkou.id*/],
+		Id: [Monsters.Ankou.id /* , Monsters.DarkAnkou.id*/],
 		combatLvl: 40,
 		unlocked: true
 	},
@@ -69,7 +69,8 @@ const nieveTasks: SlayerTask[] = [
 		defenceLvl: 20,
 		unlocked: false
 	},
-	{   //Count balfrug from kril?
+	{
+		// Count balfrug from kril?
 		name: 'Black Demon',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -78,7 +79,7 @@ const nieveTasks: SlayerTask[] = [
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
-	//		Monsters.BalfrugKreeyath.id,
+			//		Monsters.BalfrugKreeyath.id,
 			Monsters.Porazdir.id,
 			Monsters.Skotizo.id
 		],
@@ -293,7 +294,7 @@ const nieveTasks: SlayerTask[] = [
 		Id: [
 			Monsters.GreaterDemon.id,
 			Monsters.KrilTsutsaroth.id,
-//			Monsters.TstanonKarlak.id,
+			//			Monsters.TstanonKarlak.id,
 			Monsters.Skotizo.id
 		],
 		combatLvl: 70,
@@ -307,7 +308,8 @@ const nieveTasks: SlayerTask[] = [
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound.id,
-			Monsters.Cerberus.id/*,
+			Monsters.Cerberus
+				.id /* ,
 			Monsters.SkeletonHellhound.id,
 			Monsters.GreaterSkeletonHellhound.id */
 		],
@@ -499,7 +501,7 @@ const nieveTasks: SlayerTask[] = [
 		amount: [110, 180],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
 		weight: 10,
-		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id/*, Monsters.TzKalZuk.id*/],
+		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id /* , Monsters.TzKalZuk.id*/],
 		unlocked: false
 	},
 	{

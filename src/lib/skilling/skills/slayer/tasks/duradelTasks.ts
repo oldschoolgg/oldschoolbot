@@ -20,11 +20,7 @@ const duradelTasks: SlayerTask[] = [
 		extendedAmount: [200, 250],
 		weight: 12,
 		alternatives: ['Abyssal sire', 'Reanimated abyssal'],
-		Id: [
-			Monsters.AbyssalDemon.id,
-			Monsters.AbyssalSire.id,
-			Monsters.ReanimatedAbyssal.id
-		],
+		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, Monsters.ReanimatedAbyssal.id],
 		combatLvl: 85,
 		slayerLvl: 85,
 		questPoints: 1,
@@ -57,7 +53,7 @@ const duradelTasks: SlayerTask[] = [
 		extendedAmount: [130, 250],
 		weight: 8,
 		alternatives: ["Kree'arra", 'Reanimated aviansie'],
-		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id/*, Monsters.ReanimatedAviansie*/],
+		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id /* , Monsters.ReanimatedAviansie*/],
 		agiStrLvl: 60,
 		unlocked: false
 	},
@@ -73,7 +69,8 @@ const duradelTasks: SlayerTask[] = [
 		defenceLvl: 20,
 		unlocked: false
 	},
-	{   // Count balfrug from kril?
+	{
+		// Count balfrug from kril?
 		name: 'Black Demon',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
@@ -82,7 +79,7 @@ const duradelTasks: SlayerTask[] = [
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
-	//		Monsters.BalfrugKreeyath.id,
+			//		Monsters.BalfrugKreeyath.id,
 			Monsters.Porazdir.id,
 			Monsters.Skotizo.id
 		],
@@ -229,8 +226,7 @@ const duradelTasks: SlayerTask[] = [
 			'Reanimated elf'
 		],
 		Id: [
-			Monsters.ElfWarrior
-				.id,
+			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
@@ -288,9 +284,8 @@ const duradelTasks: SlayerTask[] = [
 		Id: [
 			Monsters.GreaterDemon.id,
 			Monsters.KrilTsutsaroth.id,
-	//		Monsters.TstanonKarlak.id,
+			//		Monsters.TstanonKarlak.id,
 			Monsters.Skotizo.id
-
 		],
 		combatLvl: 70,
 		unlocked: true
@@ -462,8 +457,7 @@ const duradelTasks: SlayerTask[] = [
 		weight: 6,
 		alternatives: ['Ice troll', 'Troll general', 'Reanimated troll'],
 		Id: [
-			Monsters.MountainTroll
-				.id,
+			Monsters.MountainTroll.id,
 			Monsters.IceTroll.id,
 			Monsters.TrollGeneral.id,
 			Monsters.ReanimatedTroll.id

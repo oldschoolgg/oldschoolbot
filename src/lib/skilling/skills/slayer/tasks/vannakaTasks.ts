@@ -32,7 +32,7 @@ const vannakaTasks: SlayerTask[] = [
 		extendedAmount: [90, 150],
 		weight: 7,
 		alternatives: ['Dark Ankou'],
-		Id: [Monsters.Ankou.id/*, Monsters.DarkAnkou.id*/],
+		Id: [Monsters.Ankou.id /* , Monsters.DarkAnkou.id*/],
 		combatLvl: 40,
 		unlocked: true
 	},
@@ -204,18 +204,13 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Elf warrior',
 		amount: [40, 100],
 		weight: 7,
-		alternatives: [
-			'Iorwerth Archer',
-			'Elf Archer',
-			'Iorwerth Warrior',
-			'Mourner'
-		],
+		alternatives: ['Iorwerth Archer', 'Elf Archer', 'Iorwerth Warrior', 'Mourner'],
 		Id: [
 			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
-			Monsters.Mourner.id,
+			Monsters.Mourner.id
 		],
 		combatLvl: 70,
 		questPoints: 12,
@@ -288,7 +283,8 @@ const vannakaTasks: SlayerTask[] = [
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound.id,
-			Monsters.Cerberus.id/*,
+			Monsters.Cerberus
+				.id /* ,
 			Monsters.SkeletonHellhound.id,
 			Monsters.GreaterSkeletonHellhound.id */
 		],
@@ -411,7 +407,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		weight: 7,
 		alternatives: ["Zakl'n Gritch"],
-		Id: [Monsters.LesserDemon.id/*, Monsters.ZaklnGritch.id*/],
+		Id: [Monsters.LesserDemon.id /* , Monsters.ZaklnGritch.id*/],
 		combatLvl: 60,
 		unlocked: true
 	},
@@ -606,4 +602,3 @@ const vannakaTasks: SlayerTask[] = [
 ];
 
 export default vannakaTasks;
-

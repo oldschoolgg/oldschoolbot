@@ -54,7 +54,7 @@ const slayerMasters: SlayerMaster[] = [
 		name: 'Konar quo Maten',
 		aliases: ['konar quo maten', 'konar', 'ko', 'kon', 'kona'],
 		tasks: konarTasks,
-		bossTasks: bossTasks,
+		bossTasks,
 		masterId: 6,
 		basePoints: 14,
 		combatLvl: 75
@@ -63,7 +63,7 @@ const slayerMasters: SlayerMaster[] = [
 		name: 'Nieve',
 		aliases: ['nieve', 'steve', 'ni', 'nie', 'niev'],
 		tasks: nieveTasks,
-		bossTasks: bossTasks,
+		bossTasks,
 		masterId: 7,
 		basePoints: 15,
 		combatLvl: 85
@@ -72,7 +72,7 @@ const slayerMasters: SlayerMaster[] = [
 		name: 'Duradel',
 		aliases: ['duradel', 'du', 'dur', 'dura', 'duradaddy'],
 		tasks: duradelTasks,
-		bossTasks: bossTasks,
+		bossTasks,
 		masterId: 8,
 		basePoints: 15,
 		combatLvl: 100,

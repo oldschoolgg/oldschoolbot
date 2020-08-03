@@ -5,7 +5,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['expadd', 'xpadd'],
+			aliases: ['spadd', 'addsp'],
 			usage: '[amount:int{-200000000,200000000}] [skillName:string]',
 			usageDelim: ' '
 		});
@@ -34,15 +34,14 @@ export default class extends BotCommand {
 				arrayAction: 'overwrite'
 			});
 			return msg.send(`Your current SlayerPoints is now ${newSP}`);
-		} else {
-			const newSlayerInfo = {
-				...slayerInfo,
-				slayerPoints: newSP
-			};
-			await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
-				arrayAction: 'overwrite'
-			});
-			return msg.send(`Your current SlayerPoints is now ${newSP}`);
 		}
+		const newSlayerInfo = {
+			...slayerInfo,
+			slayerPoints: newSP
+		};
+		await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
+			arrayAction: 'overwrite'
+		});
+		return msg.send(`Your current SlayerPoints is now ${newSP}`);
 	}
 }

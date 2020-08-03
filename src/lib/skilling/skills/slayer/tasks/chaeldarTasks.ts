@@ -70,9 +70,9 @@ const chaeldarTasks: SlayerTask[] = [
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
-	//		Monsters.BalfrugKreeyath.id,
+			//		Monsters.BalfrugKreeyath.id,
 			Monsters.Porazdir.id,
-			Monsters.Skotizo.id 
+			Monsters.Skotizo.id
 		],
 		combatLvl: 80,
 		unlocked: true
@@ -187,8 +187,8 @@ const chaeldarTasks: SlayerTask[] = [
 			'Dagannoth Prime'
 		],
 		Id: [
-			Monsters.Dagannoth.id, 
-			Monsters.DagannothSpawn.id, 
+			Monsters.Dagannoth.id,
+			Monsters.DagannothSpawn.id,
 			Monsters.DagganothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
@@ -289,7 +289,7 @@ const chaeldarTasks: SlayerTask[] = [
 		Id: [
 			Monsters.GreaterDemon.id,
 			Monsters.KrilTsutsaroth.id,
-	//		Monsters.TstanonKarlak.id,
+			//		Monsters.TstanonKarlak.id,
 			Monsters.Skotizo.id
 		],
 		combatLvl: 70,
@@ -313,7 +313,8 @@ const chaeldarTasks: SlayerTask[] = [
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound.id,
-			Monsters.Cerberus.id/* ,
+			Monsters.Cerberus
+				.id /* ,
 			Monsters.SkeletonHellhound.id,
 			Monsters.GreaterSkeletonHellhound.id */
 		],
@@ -388,7 +389,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		weight: 9,
 		alternatives: ["Zakl'n Gritch"],
-		Id: [Monsters.LesserDemon.id/*, Monsters.ZaklnGritch.id*/],
+		Id: [Monsters.LesserDemon.id /* , Monsters.ZaklnGritch.id*/],
 		combatLvl: 60,
 		unlocked: true
 	},
@@ -532,7 +533,9 @@ const chaeldarTasks: SlayerTask[] = [
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk', 'Reanimated TzHaar'],
 		weight: 8,
 		Id: [
-			Monsters.TzHaarKet.id, Monsters.TzTokJad.id,/*Monsters.TzKalZuk.id,*/ Monsters.ReanimatedTzHaar.id
+			Monsters.TzHaarKet.id,
+			Monsters.TzTokJad.id,
+			/* Monsters.TzKalZuk.id,*/ Monsters.ReanimatedTzHaar.id
 		],
 		unlocked: false
 	},

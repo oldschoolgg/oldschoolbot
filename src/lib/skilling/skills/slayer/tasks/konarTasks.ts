@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
-//Brimstone keys?
+// Brimstone keys?
 const konarTasks: SlayerTask[] = [
 	{
 		name: 'Aberrant spectre',
@@ -383,10 +383,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [120, 170],
 		weight: 6,
 		alternatives: ['Troll general'],
-		Id: [
-			Monsters.MountainTroll.id,
-			Monsters.TrollGeneral.id,
-		],
+		Id: [Monsters.MountainTroll.id, Monsters.TrollGeneral.id],
 		combatLvl: 60,
 		unlocked: true
 	},

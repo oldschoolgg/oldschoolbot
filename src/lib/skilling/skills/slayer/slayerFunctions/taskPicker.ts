@@ -1,11 +1,11 @@
-import { /* SkillsEnum,*/ SlayerTask } from '../../../../skilling/types';
+import { SkillsEnum, SlayerTask } from '../../../../skilling/types';
 import { KlasaMessage } from 'klasa';
-// import bossTasks from '../tasks/bossTasks'
+import bossTasks from '../tasks/bossTasks';
 import { rand } from '../../../../util';
 
 // Filters out the tasks the user can be assigned from a certain slayermaster.
 export default function taskPicker(msg: KlasaMessage, filteredTasks: SlayerTask[]) {
-	const { settings /* ,skillLevel*/ } = msg.author;
+	const { settings } = msg.author;
 	settings.sync(true);
 
 	if (filteredTasks.length === 0) {
@@ -32,13 +32,23 @@ export default function taskPicker(msg: KlasaMessage, filteredTasks: SlayerTask[
 		}
 	}
 
-	const task = filteredTasks[result];
-	/* Temp disabled, need to look over how the filter with "!" works.
-    if (task.name === 'Boss') {
-        const filteredBossTasks = bossTasks.filter(task => task.slayerLvl! <= skillLevel(SkillsEnum.Slayer));
-        task = filteredBossTasks[rand(0, filteredBossTasks.length)];
-    }
-    */
+	let task = filteredTasks[result];
+	// If boss task, loop again
+	if (task.name === 'Boss') {
+		// Filter boss tasks by slayer level
+		for (let i = 0; i < bossTasks.length; i++) {
+			if (bossTasks[i].slayerLvl! > msg.author.skillLevel(SkillsEnum.Slayer)) {
+				delete bossTasks[i];
+			}
+		}
+		const filteredBossTasks = bossTasks.filter(task => task !== undefined);
+		/*
+		filteredTaskList = filteredTaskList.filter(
+			task => task.slayerLvl! <= msg.author.skillLevel(SkillsEnum.Slayer)
+		);
+		*/
+		task = filteredBossTasks[rand(0, filteredBossTasks.length)];
+	}
 
 	return task;
 }
