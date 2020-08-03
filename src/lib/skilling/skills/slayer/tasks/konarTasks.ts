@@ -1,4 +1,3 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -20,8 +19,8 @@ const konarTasks: SlayerTask[] = [
 		amount: [120, 170],
 		extendedAmount: [200, 250],
 		weight: 9,
-		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
-		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, Monsters.GreaterAbyssalDemon.id],
+		alternatives: ['Abyssal sire'],
+		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLvl: 85,
 		slayerLvl: 85,
 		unlocked: true
@@ -154,7 +153,7 @@ const konarTasks: SlayerTask[] = [
 		Id: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DagannothFledgeling.id,
+			Monsters.DagganothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -202,17 +201,16 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns?.
 		name: 'Spitting wyvern',
 		amount: [15, 30],
 		extendedAmount: [55, 75],
 		weight: 9,
 		alternatives: ['Taloned Wyvern', 'Long-tailed Wyvern', 'Ancient Wyvern'],
 		Id: [
-			Monsters.SpittingWyvern.id,
-			Monsters.TalonedWyvern.id,
-			Monsters.LongTailedWyvern.id,
-			Monsters.AncientWyvern.id
+			Monsters.FossilIslandWyvernAncient.id,
+			Monsters.FossilIslandWyvernLongTailed.id,
+			Monsters.FossilIslandWyvernSpitting.id,
+			Monsters.FossilIslandWyvernTaloned.id
 		],
 		combatLvl: 60,
 		slayerLvl: 66,
@@ -220,7 +218,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [120, 170],
 		extendedAmount: [200, 250],
@@ -287,7 +284,7 @@ const konarTasks: SlayerTask[] = [
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		Id: [
 			Monsters.KalphiteWorker.id,
-			Monsters.KalphiteSolider.id,
+			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
 			Monsters.KalphiteQueen.id
 		],
@@ -308,7 +305,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [90, 110],
 		weight: 8,
 		alternatives: ['Lizardman brute', 'Lizardman Shaman'],
-		Id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman],
+		Id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
@@ -347,7 +344,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [30, 50],
 		weight: 5,
 		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
-		Id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BruteRedDragon.id],
+		Id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
 		questPoints: 34,
 		unlocked: false
 	},
@@ -372,7 +369,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Thermonuclear Smoke devil not added to monsters.
 		name: 'Smoke Devil',
 		amount: [120, 170],
 		weight: 7,
@@ -438,4 +434,3 @@ const konarTasks: SlayerTask[] = [
 ];
 
 export default konarTasks;
-*/

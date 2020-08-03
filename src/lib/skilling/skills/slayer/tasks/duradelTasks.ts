@@ -1,7 +1,6 @@
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
-// Handle extended amounts??
 const duradelTasks: SlayerTask[] = [
 	{
 		name: 'Aberrant spectre',
@@ -9,26 +8,22 @@ const duradelTasks: SlayerTask[] = [
 		extendedAmount: [200, 250],
 		weight: 7,
 		alternatives: ['Deviant Spectre'],
-		Id: [Monsters.AberrantSpectre.id /* Monsters.DeviantSpectre.id*/],
+		Id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLvl: 65,
 		slayerLvl: 60,
 		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Greater abyssal and abyssal sire not added in monsters.
 		name: 'Abyssal demon',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
 		weight: 12,
-		alternatives: ['Abyssal sire', 'Greater abyssal demon', 'Reanimated abyssal'],
+		alternatives: ['Abyssal sire', 'Reanimated abyssal'],
 		Id: [
-			Monsters.AbyssalDemon
-				.id /* ,
+			Monsters.AbyssalDemon.id,
 			Monsters.AbyssalSire.id,
-			Monsters.GreaterAbyssalDemon.id,
-			Monsters.ReanimatedAbyssal
-			*/
+			Monsters.ReanimatedAbyssal.id
 		],
 		combatLvl: 85,
 		slayerLvl: 85,
@@ -56,13 +51,13 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Count Kreeerra guards?
+		// Count Kreeerra guards? didn't add reanimated aviansie yet
 		name: 'Aviansie',
 		amount: [120, 200],
 		extendedAmount: [130, 250],
 		weight: 8,
 		alternatives: ["Kree'arra", 'Reanimated aviansie'],
-		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id /* , Monsters.ReanimatedAviansie*/],
+		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id/*, Monsters.ReanimatedAviansie*/],
 		agiStrLvl: 60,
 		unlocked: false
 	},
@@ -78,39 +73,33 @@ const duradelTasks: SlayerTask[] = [
 		defenceLvl: 20,
 		unlocked: false
 	},
-	{
-		// Some demons not added in monsters.
+	{   // Count balfrug from kril?
 		name: 'Black Demon',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
 		weight: 8,
 		alternatives: ['Demonic Gorilla', 'Balfrug Kreeyath', 'Porazdir', 'Skotizo'],
 		Id: [
-			Monsters.BlackDemon
-				.id /* ,
+			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
-			Monsters.BalfrugKreeyath.id,
+	//		Monsters.BalfrugKreeyath.id,
 			Monsters.Porazdir.id,
 			Monsters.Skotizo.id
-			*/
 		],
 		combatLvl: 80,
 		unlocked: true
 	},
 	{
-		// Baby,Brutal black dragon not added.
 		name: 'Black Dragon',
 		amount: [10, 20],
 		extendedAmount: [40, 60],
 		weight: 9,
 		alternatives: ['Baby Black Dragon', 'King Black Dragon', 'Brutal Black Dragon'],
 		Id: [
-			Monsters.BlackDragon
-				.id /* ,
+			Monsters.BlackDragon.id,
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
 			Monsters.KingBlackDragon.id
-			*/
 		],
 		combatLvl: 80,
 		questPoints: 34,
@@ -122,25 +111,22 @@ const duradelTasks: SlayerTask[] = [
 		extendedAmount: [200, 250],
 		weight: 8,
 		alternatives: ['Mutated Bloodveld'],
-		Id: [Monsters.Bloodveld.id /* , Monsters.MutatedBloodveld.id*/],
+		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLvl: 50,
 		slayerLvl: 50,
 		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Baby, Brutal blue dragon not added in monsters.
 		name: 'Blue Dragon',
 		amount: [110, 170],
 		weight: 4,
 		alternatives: ['Baby Blue Dragon', 'Brutal Blue Dragon', 'Vorkath'],
 		Id: [
-			Monsters.BlueDragon
-				.id /* ,
+			Monsters.BlueDragon.id,
 			Monsters.BabyBlueDragon.id,
 			Monsters.BrutalBlueDragon.id,
 			Monsters.Vorkath.id
-			*/
 		],
 		combatLvl: 65,
 		questPoints: 34,
@@ -167,13 +153,12 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Kraken not added to monsters
 		name: 'Cave kraken',
 		amount: [100, 120],
 		extendedAmount: [150, 200],
 		weight: 9,
 		alternatives: ['Kraken'],
-		Id: [Monsters.CaveKraken.id /* , Monsters.Kraken.id*/],
+		Id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLvl: 80,
 		slayerLvl: 87,
 		magicLvl: 50,
@@ -191,14 +176,12 @@ const duradelTasks: SlayerTask[] = [
 			'Dagannoth Prime'
 		],
 		Id: [
-			Monsters.Dagannoth
-				.id /* ,
+			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DagannothFledgeling.id,
+			Monsters.DagganothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
-			*/
 		],
 		combatLvl: 75,
 		questPoints: 2,
@@ -247,14 +230,12 @@ const duradelTasks: SlayerTask[] = [
 		],
 		Id: [
 			Monsters.ElfWarrior
-				.id /* ,
+				.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
 			Monsters.Mourner.id,
-			Monsters.PrifddinasGuard.id,
 			Monsters.ReanimatedElf.id
-			*/
 		],
 		combatLvl: 70,
 		questPoints: 12,
@@ -269,19 +250,16 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns?
 		name: 'Spitting wyvern',
 		amount: [20, 60],
 		extendedAmount: [55, 75],
 		weight: 5,
 		alternatives: ['Taloned Wyvern', 'Long-tailed Wyvern', 'Ancient Wyvern'],
 		Id: [
-			/*
-			Monsters.SpittingWyvern.id,
-			Monsters.TalonedWyvern.id,
-			Monsters.LongTailedWyvern.id,
-			Monsters.AncientWyvern.id
-			*/
+			Monsters.FossilIslandWyvernAncient.id,
+			Monsters.FossilIslandWyvernLongTailed.id,
+			Monsters.FossilIslandWyvernSpitting.id,
+			Monsters.FossilIslandWyvernTaloned.id
 		],
 		combatLvl: 60,
 		slayerLvl: 66,
@@ -289,20 +267,19 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [130, 200],
 		extendedAmount: [200, 250],
 		weight: 8,
 		alternatives: ['Grotesque Guardians'],
-		Id: [Monsters.Gargoyle.id /* , Monsters.GrotesqueGuardians.id*/],
+		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLvl: 80,
 		slayerLvl: 75,
 		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Revenant cave? Some demons not added to monsters.
+		// Revenant cave? count tstanon from kril?
 		name: 'Greater demon',
 		amount: [130, 200],
 		extendedAmount: [150, 250],
@@ -310,10 +287,10 @@ const duradelTasks: SlayerTask[] = [
 		alternatives: ["K'ril Tsutsaroth", 'Tstanon Karlak', 'Skotizo'],
 		Id: [
 			Monsters.GreaterDemon.id,
-			Monsters.KrilTsutsaroth.id /* ,
-			Monsters.TstanonKarlak.id,
+			Monsters.KrilTsutsaroth.id,
+	//		Monsters.TstanonKarlak.id,
 			Monsters.Skotizo.id
-			*/
+
 		],
 		combatLvl: 70,
 		unlocked: true
@@ -352,10 +329,8 @@ const duradelTasks: SlayerTask[] = [
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		Id: [
 			Monsters.KalphiteWorker.id,
-			/*
-			Monsters.KalphiteSolider.id,
+			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			*/
 			Monsters.KalphiteQueen.id
 		],
 		combatLvl: 15,
@@ -371,12 +346,11 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Lizardman brute not added in monsters.
 		name: 'Lizardman',
 		amount: [130, 210],
 		weight: 10,
 		alternatives: ['Lizardman brute', 'Lizardman Shaman'],
-		Id: [Monsters.Lizardman.id, /* Monsters.LizardmanBrute.id,*/ Monsters.LizardmanShaman.id],
+		Id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
@@ -388,37 +362,34 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: false
 	},
 	{
-		// Ancient Zygomite not added to monsters.
 		name: 'Zygomite',
 		amount: [20, 30],
 		weight: 2,
 		alternatives: ['Ancient Zygomite'],
-		Id: [Monsters.Zygomite.id /* , Monsters.AncientZygomite.id*/],
+		Id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLvl: 60,
 		slayerLvl: 57,
 		questPoints: 3,
 		unlocked: true
 	},
 	{
-		// Greater Nechryael not added in monsters.
 		name: 'Nechryael',
 		amount: [110, 200],
 		extendedAmount: [200, 250],
 		weight: 9,
 		alternatives: ['Greater Nechryael'],
-		Id: [Monsters.Nechryael.id /* , Monsters.GreaterNechryael.id*/],
+		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLvl: 85,
 		slayerLvl: 80,
 		questPoints: 1,
 		unlocked: true
 	},
 	{
-		// Baby /brute red dragon not added to monsters.
 		name: 'Red Dragon',
 		amount: [30, 65],
 		weight: 8,
 		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
-		Id: [Monsters.RedDragon.id /* ,Monsters.BabyRedDragon.id, Monsters.BruteRedDragon.id*/],
+		Id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
 		questPoints: 34,
 		unlocked: false
 	},
@@ -443,18 +414,16 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Thermonuclear Smoke devil not added to monsters.
 		name: 'Smoke Devil',
 		amount: [130, 200],
 		weight: 9,
 		alternatives: ['Thermonuclear Smoke Devil'],
-		Id: [Monsters.SmokeDevil.id /* , Monsters.ThermonuclearSmokeDevil.id*/],
+		Id: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
 		combatLvl: 75,
 		slayerLvl: 93,
 		unlocked: true
 	},
 	{
-		// Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [130, 200],
 		extendedAmount: [180, 250],
@@ -488,29 +457,27 @@ const duradelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Ice troll and troll general Not added in monsters.
 		name: 'Mountain troll',
 		amount: [130, 200],
 		weight: 6,
 		alternatives: ['Ice troll', 'Troll general', 'Reanimated troll'],
 		Id: [
 			Monsters.MountainTroll
-				.id /* ,
+				.id,
 			Monsters.IceTroll.id,
 			Monsters.TrollGeneral.id,
 			Monsters.ReanimatedTroll.id
-			*/
 		],
 		combatLvl: 60,
 		unlocked: true
 	},
 	{
-		// Not added in monsters. Extra Chance of major slayer xp from fight/infernal caves.
+		// Extra Chance of major slayer xp from fight/infernal caves.
 		name: 'TzHaar-Ket',
 		amount: [130, 199],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
 		weight: 10,
-		Id: [/* Monsters.TzHaarKet.id,*/ Monsters.TzTokJad.id /* , Monsters.TzKalZuk.id*/],
+		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id /* , Monsters.TzKalZuk.id*/],
 		unlocked: false
 	},
 	{
@@ -520,23 +487,20 @@ const duradelTasks: SlayerTask[] = [
 		weight: 8,
 		alternatives: ['Vampyre Juvinate', 'Vyrewatch', 'Vyrewatch Sentinel'],
 		Id: [
-			/*
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
 			Monsters.VyrewatchSentinel.id
-			*/
 		],
 		combatLvl: 35,
 		questPoints: 1,
 		unlocked: false
 	},
 	{
-		// Not added to monsters.
 		name: 'Waterfiend',
 		amount: [130, 200],
 		weight: 2,
-		Id: [] /* Monsters.Waterfiend.id*/,
+		Id: [Monsters.Waterfiend.id],
 		combatLvl: 75,
 		unlocked: true
 	},

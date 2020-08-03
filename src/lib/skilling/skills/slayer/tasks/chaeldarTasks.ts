@@ -8,7 +8,7 @@ const chaeldarTasks: SlayerTask[] = [
 		extendedAmount: [200, 250],
 		weight: 8,
 		alternatives: ['Deviant Spectre'],
-		Id: [Monsters.AberrantSpectre.id /* , Monsters.DeviantSpectre.id*/],
+		Id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLvl: 65,
 		slayerLvl: 60,
 		questPoints: 1,
@@ -20,9 +20,7 @@ const chaeldarTasks: SlayerTask[] = [
 		extendedAmount: [200, 250],
 		weight: 12,
 		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
-		Id: [
-			Monsters.AbyssalDemon.id /* , Monsters.AbyssalSire.id, Monsters.GreaterAbyssalDemon.id*/
-		],
+		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLvl: 85,
 		slayerLvl: 85,
 		questPoints: 1,
@@ -71,11 +69,10 @@ const chaeldarTasks: SlayerTask[] = [
 		alternatives: ['Demonic Gorilla', 'Balfrug Kreeyath', 'Porazdir', 'Skotizo'],
 		Id: [
 			Monsters.BlackDemon.id,
-			Monsters.DemonicGorilla
-				.id /* ,
-			Monsters.BalfrugKreeyath.id,
+			Monsters.DemonicGorilla.id,
+	//		Monsters.BalfrugKreeyath.id,
 			Monsters.Porazdir.id,
-			Monsters.Skotizo.id */
+			Monsters.Skotizo.id 
 		],
 		combatLvl: 80,
 		unlocked: true
@@ -86,7 +83,7 @@ const chaeldarTasks: SlayerTask[] = [
 		extendedAmount: [200, 250],
 		weight: 8,
 		alternatives: ['Mutated Bloodveld'],
-		Id: [Monsters.Bloodveld.id /* , Monsters.MutatedBloodveld.id*/],
+		Id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLvl: 50,
 		slayerLvl: 50,
 		questPoints: 1,
@@ -98,9 +95,9 @@ const chaeldarTasks: SlayerTask[] = [
 		weight: 8,
 		alternatives: ['Baby Blue Dragon', 'Brutal Blue Dragon', 'Vorkath'],
 		Id: [
-			Monsters.BlueDragon.id /* ,
+			Monsters.BlueDragon.id,
 			Monsters.BabyBlueDragon.id,
-			Monsters.BrutalBlueDragon.id*/,
+			Monsters.BrutalBlueDragon.id,
 			Monsters.Vorkath.id
 		],
 		combatLvl: 65,
@@ -122,9 +119,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [10, 20],
 		extendedAmount: [30, 50],
 		weight: 11,
-		Id: [
-			/* Monsters.BronzeDragon.id*/
-		],
+		Id: [Monsters.BronzeDragon.id],
 		combatLvl: 75,
 		questPoints: 34,
 		unlocked: true
@@ -155,7 +150,7 @@ const chaeldarTasks: SlayerTask[] = [
 		extendedAmount: [150, 200],
 		weight: 12,
 		alternatives: ['Kraken'],
-		Id: [Monsters.CaveKraken.id /* , Monsters.Kraken.id*/],
+		Id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLvl: 80,
 		slayerLvl: 87,
 		magicLvl: 50,
@@ -174,9 +169,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Cockatrice',
 		amount: [110, 170],
 		weight: 6,
-		Id: [
-			/* Monsters.Cockatrice.id*/
-		],
+		Id: [Monsters.Cockatrice.id],
 		combatLvl: 25,
 		slayerLvl: 25,
 		defenceLvl: 20,
@@ -194,9 +187,9 @@ const chaeldarTasks: SlayerTask[] = [
 			'Dagannoth Prime'
 		],
 		Id: [
-			Monsters.Dagannoth.id /*
-			Monsters.DagannothSpawn.id,
-			Monsters.DagannothFledgeling.id,*/,
+			Monsters.Dagannoth.id, 
+			Monsters.DagannothSpawn.id, 
+			Monsters.DagganothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -228,13 +221,12 @@ const chaeldarTasks: SlayerTask[] = [
 			'Reanimated elf'
 		],
 		Id: [
-			Monsters.ElfWarrior
-				.id /* ,
+			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
 			Monsters.Mourner.id,
-			Monsters.ReanimatedElf.id */
+			Monsters.ReanimatedElf.id
 		],
 		combatLvl: 70,
 		questPoints: 12,
@@ -244,9 +236,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Fever spider',
 		amount: [110, 170],
 		weight: 7,
-		Id: [
-			/* Monsters.FeverSpider.id*/
-		],
+		Id: [Monsters.FeverSpider.id],
 		combatLvl: 40,
 		slayerLvl: 42,
 		questPoints: 7,
@@ -278,13 +268,12 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 11,
 		alternatives: ['Grotesque Guardians'],
-		Id: [Monsters.Gargoyle.id /* , Monsters.GrotesqueGuardians.id*/],
+		Id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLvl: 80,
 		slayerLvl: 75,
 		questPoints: 1,
@@ -299,9 +288,9 @@ const chaeldarTasks: SlayerTask[] = [
 		alternatives: ["K'ril Tsutsaroth", 'Tstanon Karlak', 'Skotizo'],
 		Id: [
 			Monsters.GreaterDemon.id,
-			Monsters.KrilTsutsaroth.id /* ,
-			Monsters.TstanonKarlak.id,
-			Monsters.Skotizo.id */
+			Monsters.KrilTsutsaroth.id,
+	//		Monsters.TstanonKarlak.id,
+			Monsters.Skotizo.id
 		],
 		combatLvl: 70,
 		unlocked: true
@@ -310,9 +299,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Harpie Bug Swarm',
 		amount: [110, 170],
 		weight: 6,
-		Id: [
-			/* Monsters.HarpieBugSwarm.id*/
-		],
+		Id: [Monsters.HarpieBugSwarm.id],
 		combatLvl: 45,
 		slayerLvl: 33,
 		firemakingLvl: 33,
@@ -326,8 +313,7 @@ const chaeldarTasks: SlayerTask[] = [
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound.id,
-			Monsters.Cerberus
-				.id /* ,
+			Monsters.Cerberus.id/* ,
 			Monsters.SkeletonHellhound.id,
 			Monsters.GreaterSkeletonHellhound.id */
 		],
@@ -338,9 +324,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Infernal Mage',
 		amount: [110, 170],
 		weight: 7,
-		Id: [
-			/* Monsters.InfernalMage.id*/
-		],
+		Id: [Monsters.InfernalMage.id],
 		combatLvl: 40,
 		slayerLvl: 45,
 		questPoints: 1,
@@ -361,9 +345,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		weight: 10,
 		alternatives: ['Warped Jelly'],
-		Id: [
-			/* Monsters.Jelly.id, Monsters.WarpedJelly.id*/
-		],
+		Id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLvl: 57,
 		slayerLvl: 52,
 		unlocked: true
@@ -372,9 +354,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Jungle horror',
 		amount: [110, 170],
 		weight: 10,
-		Id: [
-			/* Monsters.JungleHorror.id*/
-		],
+		Id: [Monsters.JungleHorror.id],
 		combatLvl: 65,
 		questPoints: 11,
 		unlocked: true
@@ -408,9 +388,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		weight: 9,
 		alternatives: ["Zakl'n Gritch"],
-		Id: [
-			/* Monsters.LesserDemon.id, Monsters.ZaklnGritch.id*/
-		],
+		Id: [Monsters.LesserDemon.id/*, Monsters.ZaklnGritch.id*/],
 		combatLvl: 60,
 		unlocked: true
 	},
@@ -419,11 +397,10 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [70, 90],
 		weight: 8,
 		alternatives: ['Lizardman brute', 'Lizardman Shaman'],
-		Id: [Monsters.Lizardman.id, /* Monsters.LizardmanBrute.id,*/ Monsters.LizardmanShaman.id],
+		Id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
-		// Sulphur locked behind 44 slayer
 		name: 'Lizard',
 		amount: [110, 170],
 		weight: 5,
@@ -441,9 +418,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Mogre',
 		amount: [110, 170],
 		weight: 6,
-		Id: [
-			/* Monsters.Mogre.id*/
-		],
+		Id: [Monsters.Mogre.id],
 		combatLvl: 30,
 		slayerLvl: 32,
 		unlocked: true
@@ -452,9 +427,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Molanisk',
 		amount: [39, 50],
 		weight: 6,
-		Id: [
-			/* Monsters.Molanisk.id*/
-		],
+		Id: [Monsters.Molanisk.id],
 		combatLvl: 50,
 		slayerLvl: 39,
 		questPoints: 8,
@@ -465,7 +438,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [8, 15],
 		weight: 7,
 		alternatives: ['Ancient Zygomite'],
-		Id: [Monsters.Zygomite.id /* , Monsters.AncientZygomite.id*/],
+		Id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLvl: 60,
 		slayerLvl: 57,
 		questPoints: 3,
@@ -477,7 +450,7 @@ const chaeldarTasks: SlayerTask[] = [
 		extendedAmount: [200, 250],
 		weight: 12,
 		alternatives: ['Greater Nechryael'],
-		Id: [Monsters.Nechryael.id /* , Monsters.GreaterNechryael.id*/],
+		Id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLvl: 85,
 		slayerLvl: 80,
 		questPoints: 1,
@@ -487,9 +460,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Pyrefiend',
 		amount: [110, 170],
 		weight: 6,
-		Id: [
-			/* Monsters.Pyrefiend.id*/
-		],
+		Id: [Monsters.Pyrefiend.id],
 		combatLvl: 25,
 		slayerLvl: 30,
 		unlocked: true
@@ -498,9 +469,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Rockslug',
 		amount: [110, 170],
 		weight: 5,
-		Id: [
-			/* Monsters.Rockslug.id*/
-		],
+		Id: [Monsters.Rockslug.id],
 		combatLvl: 20,
 		slayerLvl: 20,
 		unlocked: true
@@ -509,9 +478,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Shadow warrior',
 		amount: [110, 170],
 		weight: 8,
-		Id: [
-			/* Monsters.ShadowWarrior.id*/
-		],
+		Id: [Monsters.ShadowWarrior.id],
 		combatLvl: 60,
 		questPoints: 111,
 		unlocked: true
@@ -528,7 +495,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [110, 170],
 		extendedAmount: [180, 250],
@@ -546,7 +512,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		weight: 11,
 		alternatives: ['Ice troll', 'Troll general'],
-		Id: [Monsters.MountainTroll.id /* , Monsters.IceTroll.id, Monsters.TrollGeneral.id*/],
+		Id: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
 		combatLvl: 60,
 		unlocked: true
 	},
@@ -566,7 +532,7 @@ const chaeldarTasks: SlayerTask[] = [
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk', 'Reanimated TzHaar'],
 		weight: 8,
 		Id: [
-			/* Monsters.TzHaarKet.id, Monsters.TzTokJad.id, Monsters.TzKalZuk.id, Monsters.ReanimatedTzHaar.id*/
+			Monsters.TzHaarKet.id, Monsters.TzTokJad.id,/*Monsters.TzKalZuk.id,*/ Monsters.ReanimatedTzHaar.id
 		],
 		unlocked: false
 	},
@@ -577,12 +543,10 @@ const chaeldarTasks: SlayerTask[] = [
 		weight: 6,
 		alternatives: ['Vampyre Juvinate', 'Vyrewatch', 'Vyrewatch Sentinel'],
 		Id: [
-			/*
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
 			Monsters.VyrewatchSentinel.id
-			*/
 		],
 		combatLvl: 35,
 		questPoints: 1,
@@ -592,9 +556,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Wall beast',
 		amount: [10, 20],
 		weight: 6,
-		Id: [
-			/* Monsters.WallBeast.id*/
-		],
+		Id: [Monsters.WallBeast.id],
 		combatLvl: 30,
 		slayerLvl: 35,
 		defenceLvl: 5,

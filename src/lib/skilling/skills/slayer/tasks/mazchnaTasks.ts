@@ -1,4 +1,4 @@
-/* import { Monsters } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
 const mazchnaTasks: SlayerTask[] = [
@@ -91,7 +91,6 @@ const mazchnaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Sulphur locked behind 44 slayer.
 		name: 'Lizard',
 		amount: [40, 70],
 		weight: 8,
@@ -158,7 +157,7 @@ const mazchnaTasks: SlayerTask[] = [
 		amount: [40, 70],
 		weight: 7,
 		alternatives: ['Obor', 'Cyclops'],
-		Id: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclops.id],
+		Id: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclopse.id],
 		combatLvl: 25,
 		unlocked: true
 	},
@@ -185,7 +184,7 @@ const mazchnaTasks: SlayerTask[] = [
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		Id: [
 			Monsters.KalphiteWorker.id,
-			Monsters.KalphiteSolider.id,
+			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
 			Monsters.KalphiteQueen.id
 		],
@@ -356,4 +355,3 @@ const mazchnaTasks: SlayerTask[] = [
 ];
 
 export default mazchnaTasks;
-*/

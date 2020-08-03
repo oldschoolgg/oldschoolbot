@@ -1,4 +1,3 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -16,13 +15,12 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Abyssal sire in another PR?
 		name: 'Abyssal demon',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 5,
 		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
-		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, Monsters.GreaterAbyssalDemon.id],
+		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLvl: 85,
 		slayerLvl: 85,
 		unlocked: true
@@ -34,7 +32,7 @@ const vannakaTasks: SlayerTask[] = [
 		extendedAmount: [90, 150],
 		weight: 7,
 		alternatives: ['Dark Ankou'],
-		Id: [Monsters.Ankou.id, Monsters.DarkAnkou.id],
+		Id: [Monsters.Ankou.id/*, Monsters.DarkAnkou.id*/],
 		combatLvl: 40,
 		unlocked: true
 	},
@@ -174,7 +172,7 @@ const vannakaTasks: SlayerTask[] = [
 		Id: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DagannothFledgeling.id,
+			Monsters.DagganothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -242,7 +240,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		//Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [60, 120],
 		extendedAmount: [200, 250],
@@ -291,9 +288,9 @@ const vannakaTasks: SlayerTask[] = [
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound.id,
-			Monsters.Cerberus.id,
+			Monsters.Cerberus.id/*,
 			Monsters.SkeletonHellhound.id,
-			Monsters.GreaterSkeletonHellhound.id
+			Monsters.GreaterSkeletonHellhound.id */
 		],
 		combatLvl: 75,
 		unlocked: true
@@ -303,7 +300,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		weight: 7,
 		alternatives: ['Obor', 'Cyclops'],
-		Id: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclops.id],
+		Id: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclopse.id],
 		combatLvl: 25,
 		unlocked: true
 	},
@@ -368,7 +365,7 @@ const vannakaTasks: SlayerTask[] = [
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		Id: [
 			Monsters.KalphiteWorker.id,
-			Monsters.KalphiteSolider.id,
+			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
 			Monsters.KalphiteQueen.id
 		],
@@ -395,7 +392,6 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Sulphur locked behind 44 slayer
 		name: 'Lizard',
 		amount: [60, 120],
 		weight: 7,
@@ -415,7 +411,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		weight: 7,
 		alternatives: ["Zakl'n Gritch"],
-		Id: [Monsters.LesserDemon.id, Monsters.ZaklnGritch.id],
+		Id: [Monsters.LesserDemon.id/*, Monsters.ZaklnGritch.id*/],
 		combatLvl: 60,
 		unlocked: true
 	},
@@ -472,7 +468,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Otherworldly being',
 		amount: [60, 120],
 		weight: 8,
-		Id: [Monsters.OtherworldlyBeing.id],
+		Id: [Monsters.Otherworldlybeing.id],
 		combatLvl: 40,
 		questPoints: 3,
 		unlocked: true
@@ -526,13 +522,12 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Shadow warrior',
 		amount: [40, 80],
 		weight: 8,
-		Id: Monsters.ShadowWarrior.id,
+		Id: [Monsters.ShadowWarrior.id],
 		combatLvl: 57,
 		questPoints: 111,
 		unlocked: true
 	},
 	{
-		// Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [60, 120],
 		extendedAmount: [180, 250],
@@ -603,7 +598,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Werewolf',
 		amount: [40, 80],
 		weight: 7,
-		Id: [Monsters.WereWolf.id],
+		Id: [Monsters.Werewolf.id],
 		combatLvl: 60,
 		questPoints: 1,
 		unlocked: true
@@ -611,4 +606,4 @@ const vannakaTasks: SlayerTask[] = [
 ];
 
 export default vannakaTasks;
-*/
+

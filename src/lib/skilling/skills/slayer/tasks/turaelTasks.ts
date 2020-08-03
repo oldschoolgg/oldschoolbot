@@ -178,7 +178,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Sulphur should be locked behind 44 slayer.
 		name: 'Lizard',
 		amount: [15, 50],
 		weight: 8,
@@ -277,7 +276,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Sarachnis not added in monsters yet.
 		name: 'Spider',
 		amount: [15, 50],
 		weight: 6,
@@ -294,7 +292,7 @@ const turaelTasks: SlayerTask[] = [
 			Monsters.GiantSpider.id,
 			Monsters.ShadowSpider.id,
 			Monsters.GiantCryptSpider.id,
-			//	Monsters.Sarachnis.id,
+			Monsters.Sarachnis.id,
 			Monsters.TempleSpider.id,
 			Monsters.Venenatis.id
 		],

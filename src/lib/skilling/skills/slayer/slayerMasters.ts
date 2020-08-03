@@ -1,11 +1,11 @@
 import turaelTasks from './tasks/turaelTasks';
-// import krystiliaTasks from './tasks/krystiliaTasks';
-// import mazchnaTasks from './tasks/mazchnaTasks';
-// import vannakaTasks from './tasks/vannakaTasks';
+import krystiliaTasks from './tasks/krystiliaTasks';
+import mazchnaTasks from './tasks/mazchnaTasks';
+import vannakaTasks from './tasks/vannakaTasks';
 import chaeldarTasks from './tasks/chaeldarTasks';
-// import konarTasks from './tasks/konarTasks';
-// import nieveTasks from './tasks/nieveTasks';
-// import bossTasks from './tasks/bossTasks';
+import konarTasks from './tasks/konarTasks';
+import nieveTasks from './tasks/nieveTasks';
+import bossTasks from './tasks/bossTasks';
 import duradelTasks from './tasks/duradelTasks';
 import { SlayerMaster } from '../../types';
 
@@ -16,7 +16,7 @@ const slayerMasters: SlayerMaster[] = [
 		tasks: turaelTasks,
 		masterId: 1,
 		basePoints: 0
-	} /*
+	},
 	{
 		name: 'Krystilia',
 		aliases: ['krystilia', 'kr', 'kry', 'krys', 'krysti'],
@@ -40,7 +40,7 @@ const slayerMasters: SlayerMaster[] = [
 		masterId: 4,
 		basePoints: 4,
 		combatLvl: 40
-	},*/,
+	},
 	{
 		name: 'Chaeldar',
 		aliases: ['chaeldar', 'ch', 'cha', 'chael'],
@@ -49,12 +49,12 @@ const slayerMasters: SlayerMaster[] = [
 		basePoints: 10,
 		combatLvl: 70,
 		questPoints: 3
-	} /*
+	},
 	{
 		name: 'Konar quo Maten',
 		aliases: ['konar quo maten', 'konar', 'ko', 'kon', 'kona'],
 		tasks: konarTasks,
-	//	bossTasks,
+		bossTasks: bossTasks,
 		masterId: 6,
 		basePoints: 14,
 		combatLvl: 75
@@ -63,16 +63,16 @@ const slayerMasters: SlayerMaster[] = [
 		name: 'Nieve',
 		aliases: ['nieve', 'steve', 'ni', 'nie', 'niev'],
 		tasks: nieveTasks,
-	//	bossTasks,
+		bossTasks: bossTasks,
 		masterId: 7,
 		basePoints: 15,
 		combatLvl: 85
-	},*/,
+	},
 	{
 		name: 'Duradel',
 		aliases: ['duradel', 'du', 'dur', 'dura', 'duradaddy'],
 		tasks: duradelTasks,
-		//	bossTasks,
+		bossTasks: bossTasks,
 		masterId: 8,
 		basePoints: 15,
 		combatLvl: 100,

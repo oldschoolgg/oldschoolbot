@@ -1,4 +1,3 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -20,8 +19,8 @@ const nieveTasks: SlayerTask[] = [
 		amount: [120, 185],
 		extendedAmount: [200, 250],
 		weight: 9,
-		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
-		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, Monsters.GreaterAbyssalDemon.id],
+		alternatives: ['Abyssal sire'],
+		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLvl: 85,
 		slayerLvl: 85,
 		questPoints: 1,
@@ -43,7 +42,7 @@ const nieveTasks: SlayerTask[] = [
 		extendedAmount: [90, 150],
 		weight: 5,
 		alternatives: ['Dark Ankou'],
-		Id: [Monsters.Ankou.id, Monsters.DarkAnkou.id],
+		Id: [Monsters.Ankou.id/*, Monsters.DarkAnkou.id*/],
 		combatLvl: 40,
 		unlocked: true
 	},
@@ -70,7 +69,7 @@ const nieveTasks: SlayerTask[] = [
 		defenceLvl: 20,
 		unlocked: false
 	},
-	{
+	{   //Count balfrug from kril?
 		name: 'Black Demon',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -79,7 +78,7 @@ const nieveTasks: SlayerTask[] = [
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
-			Monsters.BalfrugKreeyath.id,
+	//		Monsters.BalfrugKreeyath.id,
 			Monsters.Porazdir.id,
 			Monsters.Skotizo.id
 		],
@@ -185,7 +184,7 @@ const nieveTasks: SlayerTask[] = [
 		Id: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
-			Monsters.DagannothFledgeling.id,
+			Monsters.DagganothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
 			Monsters.DagannothPrime.id
@@ -241,7 +240,6 @@ const nieveTasks: SlayerTask[] = [
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
 			Monsters.Mourner.id,
-			Monsters.PrifddinasGuard.id,
 			Monsters.ReanimatedElf.id
 		],
 		combatLvl: 70,
@@ -257,17 +255,16 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Check Monsters.FossilIslandWyvernAncient.id, seperate wyverns?
 		name: 'Spitting wyvern',
 		amount: [20, 60],
 		extendedAmount: [55, 75],
 		weight: 5,
 		alternatives: ['Taloned Wyvern', 'Long-tailed Wyvern', 'Ancient Wyvern'],
 		Id: [
-			Monsters.SpittingWyvern.id,
-			Monsters.TalonedWyvern.id,
-			Monsters.LongTailedWyvern.id,
-			Monsters.AncientWyvern.id
+			Monsters.FossilIslandWyvernAncient.id,
+			Monsters.FossilIslandWyvernLongTailed.id,
+			Monsters.FossilIslandWyvernSpitting.id,
+			Monsters.FossilIslandWyvernTaloned.id
 		],
 		combatLvl: 60,
 		slayerLvl: 66,
@@ -275,7 +272,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Grotesque Guardians not added to monsters.
 		name: 'Gargoyle',
 		amount: [120, 185],
 		extendedAmount: [200, 250],
@@ -296,8 +292,8 @@ const nieveTasks: SlayerTask[] = [
 		alternatives: ["K'ril Tsutsaroth", 'Tstanon Karlak', 'Skotizo'],
 		Id: [
 			Monsters.GreaterDemon.id,
-			Monsters.KrilTsutsaroth,
-			Monsters.TstanonKarlak.id,
+			Monsters.KrilTsutsaroth.id,
+//			Monsters.TstanonKarlak.id,
 			Monsters.Skotizo.id
 		],
 		combatLvl: 70,
@@ -311,9 +307,9 @@ const nieveTasks: SlayerTask[] = [
 		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound.id,
-			Monsters.Cerberus.id,
+			Monsters.Cerberus.id/*,
 			Monsters.SkeletonHellhound.id,
-			Monsters.GreaterSkeletonHellhound.id
+			Monsters.GreaterSkeletonHellhound.id */
 		],
 		combatLvl: 75,
 		unlocked: true
@@ -335,7 +331,7 @@ const nieveTasks: SlayerTask[] = [
 		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		Id: [
 			Monsters.KalphiteWorker.id,
-			Monsters.KalphiteSolider.id,
+			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
 			Monsters.KalphiteQueen.id
 		],
@@ -356,7 +352,7 @@ const nieveTasks: SlayerTask[] = [
 		amount: [90, 120],
 		weight: 8,
 		alternatives: ['Lizardman brute', 'Lizardman Shaman'],
-		Id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman],
+		Id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
@@ -412,7 +408,7 @@ const nieveTasks: SlayerTask[] = [
 		amount: [30, 80],
 		weight: 5,
 		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
-		Id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BruteRedDragon.id],
+		Id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
 		questPoints: 34,
 		unlocked: false
 	},
@@ -437,7 +433,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Thermonuclear Smoke devil not added to monsters.
 		name: 'Smoke Devil',
 		amount: [120, 185],
 		weight: 7,
@@ -448,7 +443,6 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Different slayer lvls for warrior(68) and mage(83).
 		name: 'Spiritual ranger',
 		amount: [120, 185],
 		extendedAmount: [180, 250],
@@ -505,7 +499,7 @@ const nieveTasks: SlayerTask[] = [
 		amount: [110, 180],
 		alternatives: ['TzTok-Jad', 'TzKal-Zuk'],
 		weight: 10,
-		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id, Monsters.TzKalZuk.id],
+		Id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id/*, Monsters.TzKalZuk.id*/],
 		unlocked: false
 	},
 	{
@@ -535,4 +529,3 @@ const nieveTasks: SlayerTask[] = [
 ];
 
 export default nieveTasks;
-*/

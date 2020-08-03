@@ -1,4 +1,3 @@
-/*
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
@@ -36,7 +35,7 @@ const krystiliaTasks: SlayerTask[] = [
 		amount: [50, 100],
 		weight: 6,
 		alternatives: ['Callisto'],
-		Id: [Monsters.Grizzlybear.id, Monsters.Callisto.id],
+		Id: [Monsters.GrizzlyBear.id, Monsters.Callisto.id],
 		wilderness: 20,
 		unlocked: true
 	},
@@ -101,7 +100,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// WC dependent loottable, not added
+		// WC dependent loottable in future?
 		name: 'Ent',
 		amount: [35, 60],
 		weight: 5,
@@ -142,9 +141,9 @@ const krystiliaTasks: SlayerTask[] = [
 		weight: 7,
 		alternatives: ['Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
-			Monsters.Hellhound.id,
+			Monsters.Hellhound.id/*,
 			Monsters.SkeletonHellhound.id,
-			Monsters.GreaterSkeletonHellhound.id
+			Monsters.GreaterSkeletonHellhound.id */
 		],
 		wilderness: 36,
 		unlocked: true
@@ -200,7 +199,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
 		name: 'Mammoth',
 		amount: [75, 125],
 		weight: 6,
@@ -225,7 +223,6 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Not added in monsters
 		name: 'Revenant dragon',
 		amount: [40, 100],
 		weight: 5,
@@ -276,15 +273,15 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// More skeletons with different loots
+		// More skeletons with different loots, count dogs during vetion?
 		name: 'Skeleton',
 		amount: [60, 100],
 		weight: 5,
 		alternatives: ['Skeleton Hellhound', 'Greater Skeleton Hellhound', "Vet'ion"],
 		Id: [
-			Monsters.Skeleton.id,
+			Monsters.Skeleton.id,/*
 			Monsters.SkeletonHellHound.id,
-			Monsters.GreaterSkeletonHellhound.id,
+			Monsters.GreaterSkeletonHellhound.id,*/
 			Monsters.Vetion.id
 		],
 		wilderness: 28,
@@ -382,4 +379,3 @@ const krystiliaTasks: SlayerTask[] = [
 ];
 
 export default krystiliaTasks;
-*/
