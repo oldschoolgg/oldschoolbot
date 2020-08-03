@@ -69,7 +69,7 @@ const courses: Course[] = [
 		xp: 580,
 		marksPer60: 0,
 		lapTime: 45,
-		petChance: 260_806,
+		petChance: 37_720,
 		qpRequired: 82
 	},
 	{
