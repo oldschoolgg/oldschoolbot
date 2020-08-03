@@ -59,7 +59,7 @@ export default class extends BotCommand {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
 
-			if (!hasEnoughFoodForMonster(monster, user, quantity)) {
+			if (!hasEnoughFoodForMonster(monster, user, quantity) && 1 > 2) {
 				throw `${user.username} doesn't have enough food.`;
 			}
 		}
@@ -92,14 +92,16 @@ export default class extends BotCommand {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
 
-				try {
-					calculateMonsterFood(monster, user);
-				} catch (err) {
-					return [true, err];
-				}
+				if (1 > 2) {
+					try {
+						calculateMonsterFood(monster, user);
+					} catch (err) {
+						return [true, err];
+					}
 
-				if (!hasEnoughFoodForMonster(monster, user, 2)) {
-					return [true, "you don't have enough food."];
+					if (!hasEnoughFoodForMonster(monster, user, 2) && 1 > 2) {
+						return [true, "you don't have enough food."];
+					}
 				}
 
 				return [false];
@@ -112,38 +114,40 @@ export default class extends BotCommand {
 
 		this.checkReqs(users, monster, quantity);
 
-		for (const user of users) {
-			let [healAmountNeeded] = calculateMonsterFood(monster, user);
+		if (1 > 2) {
+			for (const user of users) {
+				let [healAmountNeeded] = calculateMonsterFood(monster, user);
 
-			healAmountNeeded = Math.ceil(healAmountNeeded / users.length);
+				healAmountNeeded = Math.ceil(healAmountNeeded / users.length);
 
-			for (const food of Eatables) {
-				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-				if (user.numItemsInBankSync(food.id) < amountNeeded) {
-					if (Eatables.indexOf(food) === Eatables.length - 1) {
-						throw `You don't have enough food to kill ${
-							monster.name
-						}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-							quantity} per kill) You can use these food items: ${Eatables.map(
-							i => i.name
-						).join(', ')}.`;
+				for (const food of Eatables) {
+					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
+					if (user.numItemsInBankSync(food.id) < amountNeeded) {
+						if (Eatables.indexOf(food) === Eatables.length - 1) {
+							throw `You don't have enough food to kill ${
+								monster.name
+							}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
+								quantity} per kill) You can use these food items: ${Eatables.map(
+								i => i.name
+							).join(', ')}.`;
+						}
+						continue;
 					}
-					continue;
+
+					await user.removeItemFromBank(food.id, amountNeeded);
+
+					// Track this food cost in Economy Stats
+					await this.client.settings.update(
+						ClientSettings.EconomyStats.PVMCost,
+						addItemToBank(
+							this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
+							food.id,
+							amountNeeded
+						)
+					);
+
+					break;
 				}
-
-				await user.removeItemFromBank(food.id, amountNeeded);
-
-				// Track this food cost in Economy Stats
-				await this.client.settings.update(
-					ClientSettings.EconomyStats.PVMCost,
-					addItemToBank(
-						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-						food.id,
-						amountNeeded
-					)
-				);
-
-				break;
 			}
 		}
 
