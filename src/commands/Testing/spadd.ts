@@ -6,12 +6,12 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['spadd', 'addsp'],
-			usage: '[amount:int{-200000000,200000000}] [skillName:string]',
+			usage: '[amount:int{-200000000,200000000}]',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg: KlasaMessage, [amount, skillName]: [number, string]) {
+	async run(msg: KlasaMessage, [amount]: [number]) {
 		// Make 100% sure this command can never be used in prod
 		if (
 			this.client.production ||
