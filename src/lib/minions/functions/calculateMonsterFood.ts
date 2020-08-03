@@ -53,12 +53,9 @@ export default function calculateMonsterFood(
 
 	totalPercentOfGearLevel = Math.min(
 		floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)),
-		75
+		85
 	);
-	totalOffensivePercent = Math.min(
-		floor(max(0, totalOffensivePercent / attackStylesUsed.length)),
-		50
-	);
+	totalOffensivePercent = floor(max(0, totalOffensivePercent / attackStylesUsed.length)) / 2;
 
 	messages.push(
 		`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`

@@ -12,8 +12,7 @@ export default class extends Monitor {
 		if (
 			!msg.guild ||
 			msg.guild.id !== SupportServer ||
-			msg.channel.id !== Channel.GrandExchange ||
-			!msg.content
+			(msg.channel.id !== Channel.GrandExchange && msg.channel.id !== '738780181946171493')
 		) {
 			return;
 		}

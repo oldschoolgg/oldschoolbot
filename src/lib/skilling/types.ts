@@ -70,6 +70,7 @@ export interface Fish {
 }
 
 export interface Course {
+	id: number;
 	name: string;
 	level: number;
 	xp: number;
@@ -77,6 +78,7 @@ export interface Course {
 	lapTime: number;
 	petChance: number;
 	aliases: string[];
+	qpRequired?: number;
 }
 
 export interface Rune {

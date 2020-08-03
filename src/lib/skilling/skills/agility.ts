@@ -3,6 +3,7 @@ import { Course, SkillsEnum } from '../types';
 
 const courses: Course[] = [
 	{
+		id: 1,
 		name: 'Gnome Stronghold Agility Course',
 		aliases: [
 			'gnome',
@@ -16,6 +17,7 @@ const courses: Course[] = [
 		petChance: 35_609
 	},
 	{
+		id: 2,
 		name: 'Draynor Village Rooftop Course',
 		aliases: [
 			'draynor',
@@ -30,6 +32,7 @@ const courses: Course[] = [
 		petChance: 33_005
 	},
 	{
+		id: 3,
 		name: 'Al Kharid Rooftop Course',
 		aliases: ['al kharid', 'al kharid rooftop', 'al kharid rooftop course'],
 		level: 20,
@@ -39,6 +42,7 @@ const courses: Course[] = [
 		petChance: 26_648
 	},
 	{
+		id: 4,
 		name: 'Varrock Rooftop Course',
 		aliases: ['varrock', 'varrock rooftop', 'varrock rooftop course'],
 		level: 30,
@@ -48,6 +52,7 @@ const courses: Course[] = [
 		petChance: 24_410
 	},
 	{
+		id: 5,
 		name: 'Canifis Rooftop Course',
 		aliases: ['canifis', 'canifis rooftop', 'canifis rooftop course'],
 		level: 40,
@@ -57,6 +62,18 @@ const courses: Course[] = [
 		petChance: 36_842
 	},
 	{
+		id: 6,
+		name: 'Ape Atoll Agility Course',
+		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape'],
+		level: 48,
+		xp: 580,
+		marksPer60: 0,
+		lapTime: 45,
+		petChance: 37_720,
+		qpRequired: 82
+	},
+	{
+		id: 7,
 		name: 'Falador Rooftop Course',
 		aliases: ['fally', 'falador', 'fally rooftop', 'falador rooftop', 'falador rooftop course'],
 		level: 50,
@@ -66,6 +83,7 @@ const courses: Course[] = [
 		petChance: 26_806
 	},
 	{
+		id: 8,
 		name: `Seers' Village Rooftop Course`,
 		aliases: [
 			'seers',
@@ -80,6 +98,7 @@ const courses: Course[] = [
 		petChance: 35_205
 	},
 	{
+		id: 9,
 		name: 'Pollnivneach Rooftop Course',
 		aliases: ['pol', 'pollnivneach', 'pollnivneach rooftop', 'pollnivneach rooftop course'],
 		level: 70,
@@ -89,6 +108,7 @@ const courses: Course[] = [
 		petChance: 33_422
 	},
 	{
+		id: 10,
 		name: 'Rellekka Rooftop Course',
 		aliases: ['rel', 'rellekka', 'rellekka rooftop', 'rellekka rooftop course'],
 		level: 80,
@@ -98,6 +118,7 @@ const courses: Course[] = [
 		petChance: 31_063
 	},
 	{
+		id: 11,
 		name: 'Ardougne Rooftop Course',
 		aliases: ['ardy', 'ardougne', 'ardougne rooftop', 'ardougne rooftop course'],
 		level: 90,
@@ -119,9 +140,43 @@ export const gracefulItems = [
 	'Agility cape(t)'
 ];
 
+export const MonkeyBackpacks = [
+	{
+		id: 24862,
+		name: 'Karamjan monkey',
+		lapsRequired: 100
+	},
+	{
+		id: 24863,
+		name: 'Zombie monkey',
+		lapsRequired: 250
+	},
+	{
+		id: 24864,
+		name: 'Maniacal monkey',
+		lapsRequired: 500
+	},
+	{
+		id: 24865,
+		name: 'Skeleton monkey',
+		lapsRequired: 1000
+	},
+	{
+		id: 24866,
+		name: 'Kruk jr',
+		lapsRequired: 1500
+	},
+	{
+		id: 24867,
+		name: 'Princely monkey',
+		lapsRequired: 2000
+	}
+];
+
 const Agility = {
 	aliases: ['agility'],
 	Courses: courses,
+	MonkeyBackpacks,
 	id: SkillsEnum.Agility,
 	emoji: Emoji.Agility
 };

@@ -20,6 +20,7 @@ export namespace UserSettings {
 	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const MinigameScores = T<O.Readonly<ItemBank>>('minigameScores');
+	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly number[]>('bitfield');
 	export const Badges = T<readonly number[]>('badges');
