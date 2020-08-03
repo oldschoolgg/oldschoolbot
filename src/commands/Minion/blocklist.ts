@@ -77,7 +77,7 @@ export default class extends BotCommand {
 		}
 
 		// Show them their block list if requested
-		if (action === 'show') {
+		if (action.toLowerCase() === 'show') {
 			let str = 'Your current block list: ';
 			if (userBlockList.length === 0) {
 				throw `You don't have any blocked tasks yet`;
@@ -91,9 +91,9 @@ export default class extends BotCommand {
 		}
 
 		// Block list removal
-		if (action === 'unblock') {
+		if (action.toLowerCase() === 'unblock') {
 			for (const task of userBlockList) {
-				if (task.name === taskname) {
+				if (task.name.toLowerCase() === taskname.toLowerCase()) {
 					msg.send(
 						`Are you sure you'd like to unblock ${taskname}? Say \`confirm\` to continue.`
 					);
