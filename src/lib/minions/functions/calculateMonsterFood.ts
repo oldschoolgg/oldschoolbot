@@ -51,7 +51,7 @@ export default function calculateMonsterFood(
 		totalOffensivePercent += floor(calcWhatPercent(gearStats[style], maxOffenceStats[style]));
 	}
 
-	totalPercentOfGearLevel = 
+	totalPercentOfGearLevel = Math.min(
 		floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)),
 		85
 	);
