@@ -1,3 +1,3 @@
-import turaelMonsters from './turaelMonsters';
+import TuraelMonsters from './turaelMonsters';
 
-export default [...turaelMonsters];
+export default [...TuraelMonsters];
