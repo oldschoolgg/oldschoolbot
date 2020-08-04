@@ -9,7 +9,8 @@ const Gems: Craftable[] = [
 		level: 1,
 		xp: 15,
 		inputItems: resolveNameBank({ 'Uncut opal': 1 }),
-		tickRate: 2
+		tickRate: 2,
+		crushChance: [122 / (98 * 256), 129 / 256]
 	},
 	{
 		name: 'Jade',
@@ -17,7 +18,8 @@ const Gems: Craftable[] = [
 		level: 13,
 		xp: 20,
 		inputItems: resolveNameBank({ 'Uncut Jade': 1 }),
-		tickRate: 2
+		tickRate: 2,
+		crushChance: [145 / (98 * 256), 101 / 256]
 	},
 	{
 		name: 'Red topaz',
@@ -25,7 +27,8 @@ const Gems: Craftable[] = [
 		level: 16,
 		xp: 25,
 		inputItems: resolveNameBank({ 'Uncut red topaz': 1 }),
-		tickRate: 2
+		tickRate: 2,
+		crushChance: [150 / (98 * 256), 91 / 256]
 	},
 	{
 		name: 'Sapphire',
