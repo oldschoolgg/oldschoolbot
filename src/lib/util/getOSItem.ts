@@ -15,7 +15,10 @@ export default function getOSItem(itemName: string | number): Item {
 		identifier = itemName;
 	} else {
 		const parsed = parseInt(itemName);
-		identifier = isNaN(parsed) ? cleanItemName(itemName) : parsed;
+		identifier =
+			!isNaN(parsed) && parsed.toString().length === itemName.length
+				? parsed
+				: cleanItemName(itemName);
 	}
 
 	const osItem = Items.get(identifier) as Item | undefined;
