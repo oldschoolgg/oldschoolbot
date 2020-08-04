@@ -8,11 +8,9 @@ import { stringMatches } from '../lib/util';
 export default class extends Argument {
 	async run(itemName: string) {
 		// guarantee all characters are numbers
-		if (
-			!isNaN(parseInt(itemName)) &&
-			parseInt(itemName).toString().length === itemName.length
-		) {
-			return [getOSItem(parseInt(itemName))];
+		const parsed = parseInt(itemName);
+		if (!isNaN(parsed) && parsed.toString().length === itemName.length) {
+			return [getOSItem(parsed)];
 		}
 
 		const osItems = Items.filter(i => stringMatches(i.name, itemName)).array() as Item[];
