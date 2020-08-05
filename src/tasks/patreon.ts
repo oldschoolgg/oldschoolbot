@@ -8,6 +8,7 @@ import { PatronTierID, BitField, Time, BadgesEnum, Channel, PerkTier } from '../
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { patreonConfig } from '../config';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import backgroundImages from '../lib/minions/data/bankBackgrounds';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`
@@ -68,7 +69,10 @@ export default class extends Task {
 		);
 
 		// Remove patron bank background
-		if (user.settings.get(UserSettings.BankBackground) === 3) {
+		const bg = backgroundImages.find(
+			bg => bg.id === user.settings.get(UserSettings.BankBackground)
+		);
+		if (bg?.perkTierNeeded) {
 			await user.settings.update(UserSettings.BankBackground, 1);
 		}
 	}
