@@ -82,7 +82,7 @@ export default class extends BotCommand {
 		if (!master) {
 			if (slayerInfo.hasTask) {
 				if (!slayerInfo.currentTask) throw `WTF`;
-				let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\nIf you like to cancel a task do \`${msg.cmdPrefix}slayertask cancel\` or visit Turael for a easier task.\n`;
+				let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\nRemaining to slay: ${slayerInfo.remainingQuantity}.\nIf you like to cancel a task do \`${msg.cmdPrefix}slayertask cancel\` or visit Turael for a easier task.\n`;
 				if (slayerInfo.currentTask?.alternatives) {
 					str += `You can also kill these monsters: ${slayerInfo.currentTask?.alternatives}!`;
 					const re = /\,/gi;
