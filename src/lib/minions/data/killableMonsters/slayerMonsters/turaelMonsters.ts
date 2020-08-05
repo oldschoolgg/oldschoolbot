@@ -16,9 +16,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			['Earmuffs', 'Slayer helmet']
-		]),
+		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -37,7 +35,7 @@ const TuraelMonsters: KillableMonster[] = [
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 2,
+		difficultyRating: 1,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
@@ -146,9 +144,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			['Spiny helmet', 'Slayer helmet']
-		]),
+		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -168,9 +164,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([
-			['Antidote++(4)', 'Antipoison(4)']
-		]),
+		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -208,9 +202,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			['Spiny helmet', 'Slayer helmet']
-		]),
+		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -266,9 +258,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			['Ogre bow', 'Comp ogre bow']
-		]),
+		itemsRequired: deepResolveItems([['Ogre bow', 'Comp ogre bow']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 3,
 		levelRequirements: {}
@@ -761,9 +751,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([
-			['Antidote++(4)', 'Antipoison(4)']
-		]),
+		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -782,9 +770,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([
-			['Antidote++(4)', 'Antipoison(4)']
-		]),
+		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -861,15 +847,20 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([
-			['Merfolk trident', 'Trident of the seas', 'Trident of the swamp', 'Brine sabre', 'Magic secateurs']
+			[
+				'Merfolk trident',
+				'Trident of the seas',
+				'Trident of the swamp',
+				'Brine sabre',
+				'Magic secateurs'
+			]
 		]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 10,
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
 		},
-		levelRequirements: {
-		}
+		levelRequirements: {}
 	},
 	{
 		id: Monsters.Minotaur.id,
@@ -1025,9 +1016,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			['Antidote++(4)', 'Antipoison(4)']
-		]),
+		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -1051,9 +1040,9 @@ const TuraelMonsters: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 1
 		},
-		levelRequirements: {
-		}
-	},/*
+		levelRequirements: {}
+	},
+	/*
 	{
 		id: Monsters.ReanimatedDog.id,
 		name: Monsters.ReanimatedDog.name,
@@ -1094,7 +1083,7 @@ const TuraelMonsters: KillableMonster[] = [
 			slayer: 5
 		}
 	},
-	*/{
+	*/ {
 		id: Monsters.Rooster.id,
 		name: Monsters.Rooster.name,
 		aliases: Monsters.Rooster.aliases,
@@ -1128,8 +1117,7 @@ const TuraelMonsters: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
 		},
-		levelRequirements: {
-		}
+		levelRequirements: {}
 	},
 	{
 		id: Monsters.Seagull.id,
@@ -1232,10 +1220,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([
-			'Comp ogre bow',
-			'Sanfew serum(4)'
-		]),
+		itemsRequired: deepResolveItems(['Comp ogre bow', 'Sanfew serum(4)']),
 		notifyDrops: resolveItems([]),
 		qpRequired: 5,
 		itemInBankBoosts: {
@@ -1380,8 +1365,7 @@ const TuraelMonsters: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
 		},
-		levelRequirements: {
-		}
+		levelRequirements: {}
 	},
 	{
 		id: Monsters.TwistedBanshee.id,
@@ -1393,9 +1377,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([
-			['Earmuffs', 'Slayer helmet']
-		]),
+		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -1539,10 +1521,7 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([
-			'Comp ogre bow',
-			'Sanfew serum (4)'
-		]),
+		itemsRequired: deepResolveItems(['Comp ogre bow', 'Sanfew serum (4)']),
 		notifyDrops: resolveItems([]),
 		qpRequired: 5,
 		itemInBankBoosts: {

@@ -166,10 +166,133 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Spectral spirit shield')]: 10,
 			[itemID('Bandos chestplate')]: 5,
-			[itemID('Bandos tassets')]: 5
+			[itemID('Bandos tassets')]: 5,
+			[itemID('Slayer helmet')]: 10
+		},
+		levelRequirements: {
+			prayer: 43,
+			slayer: 91
+		}
+	},
+	{
+		id: Monsters.AbyssalSire.id,
+		name: Monsters.AbyssalSire.name,
+		aliases: Monsters.AbyssalSire.aliases,
+		timeToFinish: Time.Minute * 2.8,
+		table: Monsters.AbyssalSire,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems(['Bandos chestplate', 'Bandos tassets']),
+		notifyDrops: resolveItems([]),
+		qpRequired: 4,
+		itemInBankBoosts: {
+			[itemID('Dragon warhammer')]: 5,
+			[itemID('Scythe of vitur')]: 5,
+			[itemID('Arclight')]: 10,
+			[itemID('Slayer helmet')]: 10
+		},
+		levelRequirements: {
+			prayer: 43,
+			slayer: 85
+		}
+	},
+	{
+		id: Monsters.AlchemicalHydra.id,
+		name: Monsters.AlchemicalHydra.name,
+		aliases: Monsters.AlchemicalHydra.aliases,
+		timeToFinish: Time.Minute * 3.2,
+		table: Monsters.AlchemicalHydra,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 7,
+		itemsRequired: deepResolveItems([
+			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
+			['Toxic blowpipe (empty)', 'Toxic blowpipe'],
+			'Armadyl chainskirt',
+			'Armadyl chestplate'
+		]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Twisted bow')]: 15,
+			[itemID('Ring of the gods')]: 3,
+			[itemID('Slayer helmet')]: 10
+		},
+		levelRequirements: {
+			prayer: 43,
+			slayer: 95
+		}
+	},
+	{
+		id: Monsters.GrotesqueGuardians.id,
+		name: Monsters.GrotesqueGuardians.name,
+		aliases: Monsters.GrotesqueGuardians.aliases,
+		timeToFinish: Time.Minute * 2.5,
+		table: Monsters.GrotesqueGuardians,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems([
+			['Toxic blowpipe (empty)', 'Toxic blowpipe'],
+			'Abyssal whip',
+			['Armadyl chainskirt', "Karil's leatherskirt"],
+			['Armadyl chestplate', "Karil's leathertop"]
+		]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 10,
+			[itemID('Saradomin godsword')]: 5
+		},
+		levelRequirements: {
+			prayer: 43,
+			slayer: 75
+		}
+	},
+	{
+		id: Monsters.Sarachnis.id,
+		name: Monsters.Sarachnis.name,
+		aliases: Monsters.Sarachnis.aliases,
+		timeToFinish: Time.Minute * 1.75,
+		table: Monsters.Sarachnis,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		itemsRequired: deepResolveItems(["Karil's leatherskirt", "Karil's leathertop", 'Knife']),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 10
 		},
 		levelRequirements: {
 			prayer: 43
+		}
+	},
+	{
+		id: Monsters.ThermonuclearSmokeDevil.id,
+		name: Monsters.ThermonuclearSmokeDevil.name,
+		aliases: Monsters.ThermonuclearSmokeDevil.aliases,
+		timeToFinish: Time.Minute * 1.2,
+		table: Monsters.ThermonuclearSmokeDevil,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		itemsRequired: deepResolveItems(["Ahrim's robeskirt", "Ahrim's robetop"]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 10,
+			[itemID('Occult necklace')]: 5
+		},
+		levelRequirements: {
+			prayer: 49,
+			slayer: 93
 		}
 	}
 ];

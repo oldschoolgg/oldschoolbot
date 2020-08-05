@@ -103,8 +103,7 @@ export default class extends BotCommand {
 				msg.send(
 					`Are you sure you'd like to replace your current task of ${slayerInfo.currentTask?.name} x ${slayerInfo.quantityTask}? It will be replaced with a easier task from Turael, WARNING: Your WILDY task streak will also end. Current streak is ${slayerInfo.wildyStreak}. Say \`confirm\` to continue.`
 				);
-			}
-			else {
+			} else {
 				msg.send(
 					`Are you sure you'd like to replace your current task of ${slayerInfo.currentTask?.name} x ${slayerInfo.quantityTask}? It will be replaced with a easier task from Turael, WARNING: Your task streak will also end. Current streak is ${slayerInfo.streak}. Say \`confirm\` to continue.`
 				);
@@ -145,8 +144,7 @@ export default class extends BotCommand {
 				await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 					arrayAction: 'overwrite'
 				});
-			}
-			else {
+			} else {
 				const newSlayerInfo = {
 					...slayerInfo,
 					hasTask: true,
