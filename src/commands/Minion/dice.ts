@@ -40,7 +40,6 @@ export default class extends BotCommand {
 			const gp = msg.author.settings.get(UserSettings.GP);
 
 			if (roll(10)) {
-				msg.channel.send();
 				amount = gp;
 			}
 
