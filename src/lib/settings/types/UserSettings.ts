@@ -13,7 +13,7 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
-	export const PestControlPoints = T<number>('pestControlPoints');
+	export const CommendationPoints = T<number>('commendationPoints');
 	export const Bank = T<O.Readonly<ItemBank>>('bank');
 	export const BankBackground = T<number>('bankBackground');
 	export const Pets = T<O.Readonly<ItemBank>>('pets');

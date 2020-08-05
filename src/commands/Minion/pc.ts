@@ -31,12 +31,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity]: [null | number | string]) {
 		await msg.author.settings.sync(true);
 		if (msg.flagArgs.points) {
-			const points = msg.author.settings.get(UserSettings.PestControlPoints);
+			const points = msg.author.settings.get(UserSettings.CommendationPoints);
 
 			return msg.channel.send(`You have ${points} commendation points`);
 		}
 		if (msg.flagArgs.max) {
-			await msg.author.settings.update(UserSettings.PestControlPoints, 4000);
+			await msg.author.settings.update(UserSettings.CommendationPoints, 4000);
 
 			return msg.channel.send('MAX BOI!');
 		}

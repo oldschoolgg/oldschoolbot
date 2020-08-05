@@ -36,7 +36,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const GPCost = buyable.gpCost * quantity;
-		const PCPoints = await msg.author.settings.get(UserSettings.PestControlPoints);
+		const PCPoints = await msg.author.settings.get(UserSettings.CommendationPoints);
 		const PCCost = buyable.pcCost ? buyable.pcCost * quantity : 0;
 		if (GP < GPCost) {
 			throw `You need ${toKMB(GPCost)} GP to purchase this item.`;

@@ -88,24 +88,24 @@ export default class extends Extendable {
 
 	public async addPCPoints(this: User, amount: number) {
 		await this.settings.sync(true);
-		const currentPCPoints = this.settings.get(UserSettings.PestControlPoints);
+		const currentPCPoints = this.settings.get(UserSettings.CommendationPoints);
 		this.log(
 			`had ${amount} commendation points added. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints + amount}]`
 		);
 
-		return this.settings.update(UserSettings.PestControlPoints, currentPCPoints + amount);
+		return this.settings.update(UserSettings.CommendationPoints, currentPCPoints + amount);
 	}
 
 	public async removePCPoints(this: User, amount: number) {
 		await this.settings.sync(true);
-		const currentPCPoints = this.settings.get(UserSettings.PestControlPoints);
+		const currentPCPoints = this.settings.get(UserSettings.CommendationPoints);
 		if (currentPCPoints < amount)
 			throw `${this.sanitizedName} doesn't have enough commendation points.`;
 		this.log(
 			`had ${amount} commendation points removed. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints -
 				amount}]`
 		);
-		return this.settings.update(UserSettings.PestControlPoints, currentPCPoints - amount);
+		return this.settings.update(UserSettings.CommendationPoints, currentPCPoints - amount);
 	}
 
 	public async addQP(this: User, amount: number) {
