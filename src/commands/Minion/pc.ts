@@ -35,11 +35,6 @@ export default class extends BotCommand {
 
 			return msg.channel.send(`You have ${points} commendation points`);
 		}
-		if (msg.flagArgs.max) {
-			await msg.author.settings.update(UserSettings.CommendationPoints, 4000);
-
-			return msg.channel.send('MAX BOI!');
-		}
 
 		const { maxTripLength, minionName } = msg.author;
 
