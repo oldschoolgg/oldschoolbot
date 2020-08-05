@@ -1,4 +1,4 @@
-import {Activity, Tasks} from '../constants';
+import { Activity, Tasks } from '../constants';
 
 export function taskNameFromType(activityType: Activity) {
 	switch (activityType) {
