@@ -90,7 +90,7 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentPCPoints = this.settings.get(UserSettings.PestControlPoints);
 		this.log(
-			`had ${amount} pest control points added. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints + amount}]`
+			`had ${amount} commendation points added. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints + amount}]`
 		);
 
 		return this.settings.update(UserSettings.PestControlPoints, currentPCPoints + amount);
@@ -100,9 +100,9 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentPCPoints = this.settings.get(UserSettings.PestControlPoints);
 		if (currentPCPoints < amount)
-			throw `${this.sanitizedName} doesn't have enough pest control points.`;
+			throw `${this.sanitizedName} doesn't have enough commendation points.`;
 		this.log(
-			`had ${amount} pest control points removed. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints -
+			`had ${amount} commendation points removed. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints -
 				amount}]`
 		);
 		return this.settings.update(UserSettings.PestControlPoints, currentPCPoints - amount);

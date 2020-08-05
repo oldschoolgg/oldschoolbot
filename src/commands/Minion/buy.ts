@@ -47,7 +47,7 @@ export default class extends BotCommand {
 		}
 
 		if (buyable.pcCost && PCPoints < PCCost) {
-			throw `You need ${PCCost} pest control points to purchase this item`;
+			throw `You need ${PCCost} commendation points to purchase this item`;
 		}
 
 		if (buyable.requiredItems) {
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 			const priceString = buyable.pcCost
-				? `${PCCost} pest control points`
+				? `${PCCost} commendation points`
 				: `${toKMB(GPCost)}`;
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${priceString}.`
@@ -97,7 +97,7 @@ export default class extends BotCommand {
 
 		if (buyable.pcCost) {
 			await msg.author.removePCPoints(PCCost);
-			purchaseString = `You purchased ${itemString} for ${PCCost} pest control points`;
+			purchaseString = `You purchased ${itemString} for ${PCCost} commendation points`;
 		}
 		await msg.author.removeGP(GPCost);
 		await msg.author.addItemsToBank(outItems, true);

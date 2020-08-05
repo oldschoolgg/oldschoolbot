@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
 import { Time } from 'oldschooljs/dist/constants';
 import { formatDuration } from '../../lib/util';
 import { rand } from '../../util';
@@ -22,17 +22,18 @@ export default class extends BotCommand {
 			cooldown: 3,
 			usage: '[quantity:int{1}]',
 			aliases: ['pestcontrol', 'pest-control'],
-			description: 'Pest control!'
+			oneAtTime: true
 		});
 	}
 
 	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity]: [null | number | string]) {
 		await msg.author.settings.sync(true);
 		if (msg.flagArgs.points) {
 			const points = msg.author.settings.get(UserSettings.PestControlPoints);
 
-			return msg.channel.send(`You have ${points} pest control points`);
+			return msg.channel.send(`You have ${points} commendation points`);
 		}
 		if (msg.flagArgs.max) {
 			await msg.author.settings.update(UserSettings.PestControlPoints, 4000);
@@ -42,20 +43,14 @@ export default class extends BotCommand {
 
 		const { maxTripLength, minionName } = msg.author;
 
-		// const pcGames = 400;
 		const pcGames = msg.author.getMinigameScore(MinigameIDsEnum.PestControl);
-		// const pcGames = msg.author.settings.get(UserSettings.PestControlGames);
-
 		const selectedLanders = landers.filter(({ gamesRequired }) => pcGames >= gamesRequired);
-
-		console.log(selectedLanders);
 
 		if (!selectedLanders.length) {
 			throw 'WTF?';
 		}
 
 		const { timeToFinish, points, name: landerName } = selectedLanders.reverse()[0];
-
 		const maxPossibleGames: number = Math.floor(
 			msg.author.maxTripLength / timeToFinish
 		) as number;
@@ -73,7 +68,6 @@ export default class extends BotCommand {
 		}
 
 		const randomAddedDuration = rand(1, 20);
-
 		duration += (randomAddedDuration * duration) / 100;
 
 		const data: PestControlActivityTaskOptions = {
@@ -98,25 +92,5 @@ export default class extends BotCommand {
 		)} to finish`;
 
 		return msg.send(response);
-		//
-		// await msg.channel.send(typeof quantity);
-		//
-		//
-		// await msg.channel.send(`Quantity: ${quantity}`);
-		// await msg.channel.send(`Lander: ${lander}`);
-		//
-		// let landerString = landers.map(({ name }) => name);
-		// await msg.channel.send(landerString);
-		//
-		//
-		// console.log(
-		// 	lander,
-		// 	landers.map(({ name }) => name),
-		// 	landers.map(({ name }) => name).indexOf(lander)
-		// );
-		//
-		// if (!landers.map(({ name }) => name).includes(lander)) {
-		// 	await msg.channel.send('???');
-		// }
 	}
 }
