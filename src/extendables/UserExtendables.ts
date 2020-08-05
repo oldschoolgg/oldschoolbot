@@ -86,26 +86,33 @@ export default class extends Extendable {
 		return this.settings.update(UserSettings.GP, currentGP + amount);
 	}
 
-	public async addPCPoints(this: User, amount: number) {
+	public async addCommendationPoints(this: User, amount: number) {
 		await this.settings.sync(true);
-		const currentPCPoints = this.settings.get(UserSettings.CommendationPoints);
+		const currentCommendationPoints = this.settings.get(UserSettings.CommendationPoints);
 		this.log(
-			`had ${amount} commendation points added. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints + amount}]`
-		);
-
-		return this.settings.update(UserSettings.CommendationPoints, currentPCPoints + amount);
-	}
-
-	public async removePCPoints(this: User, amount: number) {
-		await this.settings.sync(true);
-		const currentPCPoints = this.settings.get(UserSettings.CommendationPoints);
-		if (currentPCPoints < amount)
-			throw `${this.sanitizedName} doesn't have enough commendation points.`;
-		this.log(
-			`had ${amount} commendation points removed. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints -
+			`had ${amount} commendation points added. BeforeBalance[${currentCommendationPoints}] NewBalance[${currentCommendationPoints +
 				amount}]`
 		);
-		return this.settings.update(UserSettings.CommendationPoints, currentPCPoints - amount);
+
+		return this.settings.update(
+			UserSettings.CommendationPoints,
+			currentCommendationPoints + amount
+		);
+	}
+
+	public async removeCommendationPoints(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentCommendationPoints = this.settings.get(UserSettings.CommendationPoints);
+		if (currentCommendationPoints < amount)
+			throw `${this.sanitizedName} doesn't have enough commendation points.`;
+		this.log(
+			`had ${amount} commendation points removed. BeforeBalance[${currentCommendationPoints}] NewBalance[${currentCommendationPoints -
+				amount}]`
+		);
+		return this.settings.update(
+			UserSettings.CommendationPoints,
+			currentCommendationPoints - amount
+		);
 	}
 
 	public async addQP(this: User, amount: number) {

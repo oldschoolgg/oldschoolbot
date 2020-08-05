@@ -99,8 +99,8 @@ declare module 'discord.js' {
 		skillLevel(skillName: SkillsEnum): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
-		addPCPoints(amount: number): Promise<SettingsUpdateResult>;
-		removePCPoints(amount: number): Promise<SettingsUpdateResult>;
+		addCommendationPoints(amount: number): Promise<SettingsUpdateResult>;
+		removeCommendationPoints(amount: number): Promise<SettingsUpdateResult>;
 		/**
 		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
 		 * @param itemID The item ID.

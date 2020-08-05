@@ -10,7 +10,7 @@ interface Buyable {
 	qpRequired: number;
 	gpCost: number;
 	aliases?: string[];
-	pcCost?: number;
+	commendationPoints?: number;
 }
 
 const Buyables: Buyable[] = [
@@ -205,7 +205,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 150
+		commendationPoints: 150
 	},
 	{
 		name: 'Void seal',
@@ -215,7 +215,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 10
+		commendationPoints: 10
 	},
 	{
 		name: 'Void knight mace',
@@ -225,7 +225,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 250
+		commendationPoints: 250
 	},
 	{
 		name: 'Void knight robe',
@@ -235,7 +235,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 250
+		commendationPoints: 250
 	},
 	{
 		name: 'Void knight top',
@@ -245,7 +245,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 250
+		commendationPoints: 250
 	},
 	{
 		name: 'Void melee helm ',
@@ -255,7 +255,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 200
+		commendationPoints: 200
 	},
 	{
 		name: 'Void mage helm ',
@@ -265,7 +265,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 200
+		commendationPoints: 200
 	},
 	{
 		name: 'Void ranger helm ',
@@ -275,7 +275,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 200
+		commendationPoints: 200
 	},
 	{
 		name: 'Elite void robe',
@@ -288,7 +288,7 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 0,
-		pcCost: 200
+		commendationPoints: 200
 	}
 ];
 

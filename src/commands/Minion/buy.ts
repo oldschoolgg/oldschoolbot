@@ -36,8 +36,8 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const GPCost = buyable.gpCost * quantity;
-		const PCPoints = await msg.author.settings.get(UserSettings.CommendationPoints);
-		const PCCost = buyable.pcCost ? buyable.pcCost * quantity : 0;
+		const commendationPoints = await msg.author.settings.get(UserSettings.CommendationPoints);
+		const commendationCost = buyable.commendationPoints ? buyable.commendationPoints * quantity : 0;
 		if (GP < GPCost) {
 			throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
 		}
@@ -46,8 +46,8 @@ export default class extends BotCommand {
 			throw `You need ${buyable.qpRequired} QP to purchase this item.`;
 		}
 
-		if (buyable.pcCost && PCPoints < PCCost) {
-			throw `You need ${PCCost} commendation points to purchase this item`;
+		if (buyable.commendationPoints && commendationPoints < commendationCost) {
+			throw `You need ${commendationCost} commendation points to purchase this item`;
 		}
 
 		if (buyable.requiredItems) {
@@ -67,8 +67,8 @@ export default class extends BotCommand {
 		const itemString = await createReadableItemListFromBank(this.client, outItems);
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const priceString = buyable.pcCost
-				? `${PCCost} commendation points`
+			const priceString = buyable.commendationPoints
+				? `${commendationCost} commendation points`
 				: `${toKMB(GPCost)}`;
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${priceString}.`
@@ -95,9 +95,9 @@ export default class extends BotCommand {
 
 		let purchaseString = `You purchased ${itemString} for ${toKMB(GPCost)}.`;
 
-		if (buyable.pcCost) {
-			await msg.author.removePCPoints(PCCost);
-			purchaseString = `You purchased ${itemString} for ${PCCost} commendation points`;
+		if (buyable.commendationPoints) {
+			await msg.author.removeCommendationPoints(commendationCost);
+			purchaseString = `You purchased ${itemString} for ${commendationCost} commendation points`;
 		}
 		await msg.author.removeGP(GPCost);
 		await msg.author.addItemsToBank(outItems, true);
