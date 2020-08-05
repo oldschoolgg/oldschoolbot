@@ -1,4 +1,4 @@
-import { Activity, Tasks } from '../constants';
+import {Activity, Tasks} from '../constants';
 
 export function taskNameFromType(activityType: Activity) {
 	switch (activityType) {
@@ -42,5 +42,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.PestControl:
+			return Tasks.PestControlActivity;
 	}
 }

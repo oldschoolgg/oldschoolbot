@@ -113,6 +113,7 @@ export const enum Tasks {
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
+	PestControlActivity = 'pestControlActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -139,7 +140,8 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
-	Alching = 'Alching'
+	Alching = 'Alching',
+	PestControl = 'PestControl'
 }
 
 export const enum Events {
@@ -218,3 +220,5 @@ export const enum PatronTierID {
 export const MAX_QP = 277;
 
 export const MIMIC_MONSTER_ID = 23184;
+
+export const MAX_PEST_CONTROL_POINTS = 4000;

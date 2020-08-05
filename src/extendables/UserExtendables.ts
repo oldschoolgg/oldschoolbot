@@ -86,6 +86,28 @@ export default class extends Extendable {
 		return this.settings.update(UserSettings.GP, currentGP + amount);
 	}
 
+	public async addPCPoints(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentPCPoints = this.settings.get(UserSettings.PestControlPoints);
+		this.log(
+			`had ${amount} pest control points added. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints + amount}]`
+		);
+
+		return this.settings.update(UserSettings.PestControlPoints, currentPCPoints + amount);
+	}
+
+	public async removePCPoints(this: User, amount: number) {
+		await this.settings.sync(true);
+		const currentPCPoints = this.settings.get(UserSettings.PestControlPoints);
+		if (currentPCPoints < amount)
+			throw `${this.sanitizedName} doesn't have enough pest control points.`;
+		this.log(
+			`had ${amount} pest control points removed. BeforeBalance[${currentPCPoints}] NewBalance[${currentPCPoints -
+				amount}]`
+		);
+		return this.settings.update(UserSettings.PestControlPoints, currentPCPoints - amount);
+	}
+
 	public async addQP(this: User, amount: number) {
 		await this.settings.sync(true);
 		const currentQP = this.settings.get(UserSettings.QP);

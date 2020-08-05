@@ -280,6 +280,10 @@ export default class extends Extendable {
 					data.itemID
 				)}. ${formattedDuration}`;
 			}
+
+			case Activity.PestControl: {
+				return `${this.minionName} is currently playing pest control. ${formattedDuration}`;
+			}
 		}
 	}
 

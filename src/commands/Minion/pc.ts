@@ -1,0 +1,122 @@
+import { CommandStore, KlasaMessage } from 'klasa';
+import { BotCommand } from '../../lib/BotCommand';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { requiresMinion } from '../../lib/minions/decorators';
+import { Time } from 'oldschooljs/dist/constants';
+import { formatDuration } from '../../lib/util';
+import { rand } from '../../util';
+import { PestControlActivityTaskOptions } from '../../lib/types/minions';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { Activity, Tasks } from '../../lib/constants';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+const landers = [
+	{ name: 'novice', points: 3, gamesRequired: 0, timeToFinish: Time.Minute * 4.5 },
+	{ name: 'intermediate', points: 4, gamesRequired: 100, timeToFinish: Time.Minute * 3.1 },
+	{ name: 'veteran', points: 5, gamesRequired: 200, timeToFinish: Time.Minute * 2 }
+];
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			cooldown: 3,
+			usage: '[quantity:int{1}]',
+			aliases: ['pestcontrol', 'pest-control'],
+			description: 'Pest control!'
+		});
+	}
+
+	@requiresMinion
+	async run(msg: KlasaMessage, [quantity]: [null | number | string]) {
+		await msg.author.settings.sync(true);
+		if (msg.flagArgs.points) {
+			const points = msg.author.settings.get(UserSettings.PestControlPoints);
+
+			return msg.channel.send(`You have ${points} pest control points`);
+		}
+		if (msg.flagArgs.max) {
+			await msg.author.settings.update(UserSettings.PestControlPoints, 4000);
+
+			return msg.channel.send('MAX BOI!');
+		}
+
+		const { maxTripLength, minionName } = msg.author;
+
+		// const pcGames = 400;
+		const pcGames = msg.author.getMinigameScore(MinigameIDsEnum.PestControl);
+		// const pcGames = msg.author.settings.get(UserSettings.PestControlGames);
+
+		const selectedLanders = landers.filter(({ gamesRequired }) => pcGames >= gamesRequired);
+
+		console.log(selectedLanders);
+
+		if (!selectedLanders.length) {
+			throw 'WTF?';
+		}
+
+		const { timeToFinish, points, name: landerName } = selectedLanders.reverse()[0];
+
+		const maxPossibleGames: number = Math.floor(
+			msg.author.maxTripLength / timeToFinish
+		) as number;
+
+		if (quantity === null || quantity === undefined) {
+			quantity = maxPossibleGames;
+		}
+
+		let duration = timeToFinish * (quantity as number);
+
+		if (duration > msg.author.maxTripLength) {
+			throw `${minionName} can't play pest control for longer than ${formatDuration(
+				maxTripLength
+			)}, try a lower quantity. The highest amount you can do for the ${landerName} lander is ${maxPossibleGames}`;
+		}
+
+		const randomAddedDuration = rand(1, 20);
+
+		duration += (randomAddedDuration * duration) / 100;
+
+		const data: PestControlActivityTaskOptions = {
+			quantity: quantity as number,
+			duration,
+			id: rand(1, 10_000_000),
+			finishDate: Date.now() + 10,
+			// finishDate: Date.now() + duration,
+			pointsPerGame: points,
+			minigameID: MinigameIDsEnum.PestControl,
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			type: Activity.PestControl
+		};
+
+		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+
+		const response = `${minionName} is now completing ${
+			data.quantity
+		} ${landerName} pest control games, it'll take around ${formatDuration(
+			duration
+		)} to finish`;
+
+		return msg.send(response);
+		//
+		// await msg.channel.send(typeof quantity);
+		//
+		//
+		// await msg.channel.send(`Quantity: ${quantity}`);
+		// await msg.channel.send(`Lander: ${lander}`);
+		//
+		// let landerString = landers.map(({ name }) => name);
+		// await msg.channel.send(landerString);
+		//
+		//
+		// console.log(
+		// 	lander,
+		// 	landers.map(({ name }) => name),
+		// 	landers.map(({ name }) => name).indexOf(lander)
+		// );
+		//
+		// if (!landers.map(({ name }) => name).includes(lander)) {
+		// 	await msg.channel.send('???');
+		// }
+	}
+}

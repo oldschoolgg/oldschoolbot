@@ -5,10 +5,12 @@ import { resolveNameBank } from './util';
 
 interface Buyable {
 	name: string;
+	requiredItems?: Bank;
 	outputItems: Bank;
 	qpRequired: number;
 	gpCost: number;
 	aliases?: string[];
+	pcCost?: number;
 }
 
 const Buyables: Buyable[] = [
@@ -194,6 +196,99 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 111,
 		gpCost: 750_000
+	},
+	{
+		name: 'Void knight gloves',
+		aliases: ['void knight gloves', 'void gloves'],
+		outputItems: resolveNameBank({
+			'Void knight gloves': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 150
+	},
+	{
+		name: 'Void seal',
+		aliases: ['void knight seal', 'void seal'],
+		outputItems: resolveNameBank({
+			'Void seal(8)': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 10
+	},
+	{
+		name: 'Void knight mace',
+		aliases: ['void knight mace', 'void mace'],
+		outputItems: resolveNameBank({
+			'Void knight mace': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 250
+	},
+	{
+		name: 'Void knight robe',
+		aliases: ['void knight robe', 'void robe', 'void bottom'],
+		outputItems: resolveNameBank({
+			'Void knight robe': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 250
+	},
+	{
+		name: 'Void knight top',
+		aliases: ['void knight top', 'void top'],
+		outputItems: resolveNameBank({
+			'Void knight top': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 250
+	},
+	{
+		name: 'Void melee helm ',
+		aliases: ['void melee helm', 'void melee'],
+		outputItems: resolveNameBank({
+			'Void melee helm': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 200
+	},
+	{
+		name: 'Void mage helm ',
+		aliases: ['void mage helm', 'void mage'],
+		outputItems: resolveNameBank({
+			'Void mage helm': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 200
+	},
+	{
+		name: 'Void ranger helm ',
+		aliases: ['void ranger helm', 'void range helm', 'void range'],
+		outputItems: resolveNameBank({
+			'Void ranger helm': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 200
+	},
+	{
+		name: 'Elite void robe',
+		aliases: ['elite void robe', 'elite robe', 'elite bottom'],
+		requiredItems: resolveNameBank({
+			'Void knight robe': 1,
+		}),
+		outputItems: resolveNameBank({
+			'Elite void robe': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		pcCost: 200
 	}
 ];
 

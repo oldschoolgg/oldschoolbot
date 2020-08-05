@@ -121,6 +121,11 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
+export interface PestControlActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	pointsPerGame: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -134,7 +139,11 @@ export interface SkillingTickerTaskData {
 }
 
 export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
+	subTasks: (
+		| FightCavesActivityTaskOptions
+		| WintertodtActivityTaskOptions
+		| PestControlActivityTaskOptions
+	)[];
 }
 
 export type TickerTaskData =
@@ -163,4 +172,5 @@ export type MinionActivityTask =
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity;
+	| Tasks.AlchingActivity
+	| Tasks.PestControlActivity;

@@ -7,6 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { stringMatches, toTitleCase, multiplyBank } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Buyables from '../../lib/buyables';
+import { bankHasAllItemsFromBank } from 'oldschooljs/dist/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -35,6 +36,8 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const GPCost = buyable.gpCost * quantity;
+		const PCPoints = await msg.author.settings.get(UserSettings.PestControlPoints);
+		const PCCost = buyable.pcCost ? buyable.pcCost * quantity : 0;
 		if (GP < GPCost) {
 			throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
 		}
@@ -43,16 +46,32 @@ export default class extends BotCommand {
 			throw `You need ${buyable.qpRequired} QP to purchase this item.`;
 		}
 
+		if (buyable.pcCost && PCPoints < PCCost) {
+			throw `You need ${PCCost} pest control points to purchase this item`;
+		}
+
+		if (buyable.requiredItems) {
+			const userBank = msg.author.settings.get(UserSettings.Bank);
+			const requiredItems = multiplyBank(buyable.requiredItems, quantity);
+			const requiredItemsStr = await createReadableItemListFromBank(
+				this.client,
+				requiredItems
+			);
+
+			if (!bankHasAllItemsFromBank(userBank, requiredItems)) {
+				throw `You don't have the required items, you need ${requiredItemsStr}`;
+			}
+		}
+
 		const outItems = multiplyBank(buyable.outputItems, quantity);
 		const itemString = await createReadableItemListFromBank(this.client, outItems);
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const priceString = buyable.pcCost
+				? `${PCCost} pest control points`
+				: `${toKMB(GPCost)}`;
 			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
-					GPCost
-				)}.`
+				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${priceString}.`
 			);
 
 			// Confirm the user wants to buy
@@ -74,9 +93,15 @@ export default class extends BotCommand {
 			}
 		}
 
+		let purchaseString = `You purchased ${itemString} for ${toKMB(GPCost)}.`;
+
+		if (buyable.pcCost) {
+			await msg.author.removePCPoints(PCCost);
+			purchaseString = `You purchased ${itemString} for ${PCCost} pest control points`;
+		}
 		await msg.author.removeGP(GPCost);
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${itemString} for ${toKMB(GPCost)}.`);
+		return msg.send(purchaseString);
 	}
 }
