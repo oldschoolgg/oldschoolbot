@@ -1,11 +1,11 @@
-import { Monsters } from 'oldschooljs';
+import {Monsters} from 'oldschooljs';
 
-import { KillableMonster } from '../../../types';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import {KillableMonster} from '../../../types';
+import resolveItems, {deepResolveItems} from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
-import { Time } from '../../../../constants';
-import { bosses } from '../../../../collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import {Time} from '../../../../constants';
+import {bosses} from '../../../../collectionLog';
+import {GearSetupTypes, GearStat} from '../../../../gear/types';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -48,7 +48,11 @@ const killableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
 		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
+			[itemID('Dragon warhammer')]: 10,
+			[itemID('Elite void top')]: 10,
+			[itemID('Elite void robe')]: 10,
+			[itemID('Void knight gloves')]: 10,
+			[itemID('Void ranger helm')]: 10
 		},
 		levelRequirements: {
 			prayer: 43
