@@ -7,7 +7,8 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { stringMatches, toTitleCase, multiplyBank } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Buyables from '../../lib/buyables';
-import { bankHasAllItemsFromBank } from 'oldschooljs/dist/util';
+import { bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
+import { Bank } from '../../lib/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -37,7 +38,11 @@ export default class extends BotCommand {
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const GPCost = buyable.gpCost * quantity;
 		const commendationPoints = await msg.author.settings.get(UserSettings.CommendationPoints);
-		const commendationCost = buyable.commendationPoints ? buyable.commendationPoints * quantity : 0;
+		const commendationCost = buyable.commendationPoints
+			? buyable.commendationPoints * quantity
+			: 0;
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const requiredItems = multiplyBank(buyable.requiredItems ?? ({} as Bank), quantity);
 		if (GP < GPCost) {
 			throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
 		}
@@ -51,8 +56,6 @@ export default class extends BotCommand {
 		}
 
 		if (buyable.requiredItems) {
-			const userBank = msg.author.settings.get(UserSettings.Bank);
-			const requiredItems = multiplyBank(buyable.requiredItems, quantity);
 			const requiredItemsStr = await createReadableItemListFromBank(
 				this.client,
 				requiredItems
@@ -98,6 +101,12 @@ export default class extends BotCommand {
 		if (buyable.commendationPoints) {
 			await msg.author.removeCommendationPoints(commendationCost);
 			purchaseString = `You purchased ${itemString} for ${commendationCost} commendation points`;
+		}
+		if (buyable.requiredItems) {
+			await msg.author.settings.update(
+				UserSettings.Bank,
+				removeBankFromBank(userBank, requiredItems)
+			);
 		}
 		await msg.author.removeGP(GPCost);
 		await msg.author.addItemsToBank(outItems, true);

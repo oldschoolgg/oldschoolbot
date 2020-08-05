@@ -281,10 +281,23 @@ const Buyables: Buyable[] = [
 		name: 'Elite void robe',
 		aliases: ['elite void robe', 'elite robe', 'elite bottom'],
 		requiredItems: resolveNameBank({
-			'Void knight robe': 1,
+			'Void knight robe': 1
 		}),
 		outputItems: resolveNameBank({
 			'Elite void robe': 1
+		}),
+		qpRequired: 0,
+		gpCost: 0,
+		commendationPoints: 200
+	},
+	{
+		name: 'Elite void top',
+		aliases: ['elite void top', 'elite top', 'elite top'],
+		requiredItems: resolveNameBank({
+			'Void knight top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Elite void top': 1
 		}),
 		qpRequired: 0,
 		gpCost: 0,
