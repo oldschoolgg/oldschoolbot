@@ -10,7 +10,7 @@ import {
 	formatDuration,
 	removeBankFromBank,
 	resolveNameBank,
-	itemID
+	addBanks
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -38,28 +38,22 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Tome of fire'
 ]);
 
-const unalchables = [itemID('Nature rune'), itemID('Fire rune')];
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] <item:...item>',
+			usage: '[quantity:int{1}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
 	}
 
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
+	async run(msg: KlasaMessage, [quantity = null, itemArray]: [number | null, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
+		const osItem = itemArray.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			throw `You don't have any of this item to alch.`;
-		}
-
-		if (unalchables.some(item => item === osItem.id)) {
-			throw `This item cannot be alched.`;
+			throw `You don't have any of this item to alch, or it is untradeable.`;
 		}
 
 		// 5 tick action
@@ -89,12 +83,13 @@ export default class extends BotCommand {
 		}
 
 		const alchValue = quantity * osItem.highalch;
-
-		const consumedItems = resolveNameBank({
-			...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-			'Nature rune': quantity,
-			[osItem.name]: quantity
-		});
+		const consumedItems = addBanks([
+			resolveNameBank({
+				...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
+				'Nature rune': quantity
+			}),
+			{ [osItem.id]: quantity }
+		]);
 
 		const consumedItemsString = await createReadableItemListFromBank(
 			this.client,

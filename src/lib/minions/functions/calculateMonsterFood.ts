@@ -7,8 +7,17 @@ import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
 import readableStatName from '../../gear/functions/readableStatName';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
+import hasItemEquipped from '../../gear/functions/hasItemEquipped';
+import { GearTypes } from '../../gear';
 
 const { floor, max } = Math;
+const specialReducers = [
+	{
+		name: 'Elysian Spirit Shield',
+		id: 12817,
+		foodReductionPercent: 17.5
+	}
+];
 
 export default function calculateMonsterFood(
 	monster: O.Readonly<KillableMonster>,
@@ -56,6 +65,20 @@ export default function calculateMonsterFood(
 		85
 	);
 	totalOffensivePercent = floor(max(0, totalOffensivePercent / attackStylesUsed.length)) / 2;
+
+	const userGear = user.rawGear()[attackStyleToUse] as GearTypes.GearSetup;
+	for (const reducer of specialReducers) {
+		if (hasItemEquipped(reducer.id, userGear)) {
+			{
+				messages.push(
+					`You use ${reducer.foodReductionPercent}% less food because you are wearing ${reducer.name}.`
+				);
+				healAmountNeeded = floor(
+					reduceNumByPercent(healAmountNeeded, reducer.foodReductionPercent)
+				);
+			}
+		}
+	}
 
 	messages.push(
 		`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`
