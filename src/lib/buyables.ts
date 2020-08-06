@@ -184,7 +184,7 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 10_000 * 10
-	} /* ,
+	},
 	{
 		name: 'Enchanted gem',
 		aliases: ['enchanted', 'gem'],
@@ -199,24 +199,6 @@ const Buyables: Buyable[] = [
 		aliases: ['leafbladed spear', 'leaf spear'],
 		outputItems: {
 			[itemID('Leaf-bladed spear')]: 1
-		},
-		qpRequired: 0,
-		gpCost: 250_000
-	},
-	{
-		name: 'Leaf-bladed sword',
-		aliases: ['leafbladed sword', 'leaf sword'],
-		outputItems: {
-			[itemID('Leaf-bladed sword')]: 1
-		},
-		qpRequired: 0,
-		gpCost: 250_000
-	},
-	{
-		name: 'Leaf-bladed battleaxe',
-		aliases: ['leafbladed axe', 'leaf axe'],
-		outputItems: {
-			[itemID('Leaf-bladed battleaxe')]: 1
 		},
 		qpRequired: 0,
 		gpCost: 250_000
@@ -259,9 +241,9 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Unlit bug lantern',
-		aliases: ['unlit bug latern'],
+		aliases: ['unlit bug lantern'],
 		outputItems: {
-			[itemID('Unlit bug latern')]: 1
+			[itemID('Unlit bug lantern')]: 1
 		},
 		qpRequired: 0,
 		gpCost: 100_000
@@ -412,7 +394,6 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 100_000
 	}
-	*/
 ];
 
 export default Buyables;

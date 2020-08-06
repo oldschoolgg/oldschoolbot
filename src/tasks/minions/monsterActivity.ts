@@ -136,14 +136,24 @@ export default class extends Task {
 
 		if (onSlayer) {
 			str += `\n\n You also received ${xpReceived.toLocaleString()} Slayer XP!`;
+			if (slayerInfo.remainingQuantity! - quantity > 0) {
+				str += `  You still need to kill ${slayerInfo.remainingQuantity! -
+					quantity} more to complete your task.`;
+			}
 			if (newLevel > currentLevel) {
 				str += `\n\n${user.minionName}'s Slayer level is now ${newLevel}!`;
 			}
 			if (completedTask !== null) {
 				str += `\n\n${user.minionName} also completed the task ${
 					completedTask.name
-				} and received ${slayerPointsReceived.toLocaleString()} Slayer points!`;
+				} and received ${slayerPointsReceived.toLocaleString()} Slayer points! You now got ${slayerInfo.slayerPoints! +
+					slayerPointsReceived} Slayer points in total.`;
 				// Add milestones for streaks? and leaderboard for longest streak?
+				if (slayerInfo.currentMaster === 2) {
+					str += ` You are on a ${slayerInfo.wildyStreak + 1} wildy task streak!`;
+				} else {
+					str += ` You are on a ${slayerInfo.streak + 1} task streak!`;
+				}
 			}
 		}
 

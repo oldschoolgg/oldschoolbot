@@ -408,7 +408,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Skotizo.id,
 		name: Monsters.Skotizo.name,
 		aliases: Monsters.Skotizo.aliases,
-		timeToFinish: Time.Minute * 160,
+		timeToFinish: Time.Second * 160,
 		table: Monsters.Skotizo,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,

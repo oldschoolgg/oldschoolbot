@@ -20,7 +20,8 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 1,
-			altProtection: true
+			altProtection: true,
+			aliases: ['st', 'slayer']
 		});
 	}
 

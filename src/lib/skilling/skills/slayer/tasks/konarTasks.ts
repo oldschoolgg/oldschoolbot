@@ -178,7 +178,7 @@ const konarTasks: SlayerTask[] = [
 		amount: [75, 138],
 		weight: 10,
 		Id: [Monsters.Drake.id],
-		combatLvl: 84,
+		slayerLvl: 84,
 		unlocked: true
 	},
 	{

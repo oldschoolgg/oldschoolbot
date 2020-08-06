@@ -200,7 +200,7 @@ const duradelTasks: SlayerTask[] = [
 		amount: [50, 110],
 		weight: 8,
 		Id: [Monsters.Drake.id],
-		combatLvl: 84,
+		slayerLvl: 84,
 		unlocked: true
 	},
 	{

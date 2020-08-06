@@ -210,7 +210,7 @@ const nieveTasks: SlayerTask[] = [
 		amount: [30, 95],
 		weight: 7,
 		Id: [Monsters.Drake.id],
-		combatLvl: 84,
+		slayerLvl: 84,
 		unlocked: true
 	},
 	{
