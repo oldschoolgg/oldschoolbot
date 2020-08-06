@@ -323,6 +323,26 @@ const MazchnaMonsters: KillableMonster[] = [
 		}
 	},
 	{
+		id: Monsters.Pyrelord.id,
+		name: Monsters.Pyrelord.name,
+		aliases: Monsters.Pyrelord.aliases,
+		timeToFinish: Time.Second * 46,
+		table: Monsters.Pyrelord,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: deepResolveItems(["Black d'hide body", "Black d'hide chaps"]),
+		notifyDrops: resolveItems([]),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Slayer helmet')]: 10
+		},
+		levelRequirements: {
+			slayer: 30
+		}
+	},
+	{
 		id: Monsters.RiylShade.id,
 		name: Monsters.RiylShade.name,
 		aliases: Monsters.RiylShade.aliases,
