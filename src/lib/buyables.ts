@@ -194,6 +194,15 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 111,
 		gpCost: 750_000
+	},
+	{
+		name: 'Ball of wool',
+		aliases: ['wool ball', 'ball wool'],
+		outputItems: {
+			[itemID('Ball of wool')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 200
 	}
 ];
 
