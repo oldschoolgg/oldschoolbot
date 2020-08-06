@@ -323,7 +323,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantDarkBeast.id,
@@ -335,7 +335,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantDemon.id,
@@ -347,7 +347,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantDragon.id,
@@ -359,7 +359,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantGoblin.id,
@@ -371,7 +371,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantHellhound.id,
@@ -383,7 +383,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantHobgoblin.id,
@@ -395,7 +395,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantImp.id,
@@ -407,7 +407,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantKnight.id,
@@ -419,7 +419,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantOrk.id,
@@ -431,7 +431,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RevenantPyrefiend.id,
@@ -443,7 +443,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		qpRequired: 0,
+		qpRequired: 0
 	}
 ];
 
