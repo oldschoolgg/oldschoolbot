@@ -214,7 +214,8 @@ const mazchnaTasks: SlayerTask[] = [
 		name: 'Pyrefiend',
 		amount: [40, 70],
 		weight: 8,
-		Id: [Monsters.Pyrefiend.id],
+		alternatives: ['Pyrelord'],
+		Id: [Monsters.Pyrefiend.id, Monsters.Pyrelord.id],
 		combatLvl: 25,
 		slayerLvl: 30,
 		unlocked: true
