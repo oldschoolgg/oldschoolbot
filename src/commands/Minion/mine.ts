@@ -13,6 +13,7 @@ import { Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
 import { SkillsEnum } from '../../lib/skilling/types';
 
 const pickaxes = [
@@ -48,6 +49,23 @@ const gloves = [
 		reductionPercent: 2
 	}
 ];
+
+const amulets = resolveItems([
+	'Amulet of glory (t)',
+	'Amulet of glory (t6)',
+	'Amulet of glory (t5)',
+	'Amulet of glory (t4)',
+	'Amulet of glory (t3)',
+	'Amulet of glory (t2)',
+	'Amulet of glory (t1)',
+	'Amulet of glory',
+	'Amulet of glory(6)',
+	'Amulet of glory(5)',
+	'Amulet of glory(4)',
+	'Amulet of glory(3)',
+	'Amulet of glory(2)',
+	'Amulet of glory(1)'
+]);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -110,6 +128,16 @@ export default class extends BotCommand {
 				if (msg.author.hasItemEquippedAnywhere(glove.id)) {
 					timeToMine = Math.floor(timeToMine * ((100 - glove.reductionPercent) / 100));
 					boosts.push(`${glove.reductionPercent}% for ${itemNameFromID(glove.id)}`);
+					break;
+				}
+			}
+		}
+		// Check if the user got a amulet of glory
+		if (ore.name.toLowerCase() === 'gem rock') {
+			for (const amulet of amulets) {
+				if (msg.author.hasItemEquippedAnywhere(amulet)) {
+					timeToMine = Math.floor(timeToMine / 2);
+					boosts.push(`50% for ${itemNameFromID(amulet)}`);
 					break;
 				}
 			}

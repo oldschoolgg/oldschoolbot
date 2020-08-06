@@ -1,6 +1,16 @@
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Ore, SkillsEnum } from '../types';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
+const GemRockTable = new LootTable()
+	.add('Uncut opal', 1, 60)
+	.add('Uncut jade', 1, 30)
+	.add('Uncut red topaz', 1, 15)
+	.add('Uncut sapphire', 1, 9)
+	.add('Uncut emerald', 1, 5)
+	.add('Uncut ruby', 1, 5)
+	.add('Uncut diamond', 1, 4);
 
 const ores: Ore[] = [
 	{
@@ -66,6 +76,15 @@ const ores: Ore[] = [
 		respawnTime: 4,
 		petChance: 300_000,
 		nuggets: true
+	},
+	{
+		level: 40,
+		xp: 65,
+		id: 1625,
+		name: 'Gem rock',
+		respawnTime: 6,
+		petChance: 211_886,
+		gems: GemRockTable
 	},
 	{
 		level: 55,

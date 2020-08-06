@@ -8,10 +8,10 @@ import { roll } from 'oldschooljs/dist/util/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Mining from '../../lib/skilling/skills/mining';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import Loot from 'oldschooljs/dist/structures/Loot';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -60,16 +60,14 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
 		}
 
-		const loot = {
-			[ore.id]: quantity
-		};
+		const loot = new Loot();
 
 		// Roll for pet
 		if (
 			ore.petChance &&
 			roll((ore.petChance - user.skillLevel(SkillsEnum.Mining) * 25) / quantity)
 		) {
-			loot[itemID('Rock golem')] = 1;
+			loot.add('Rock golem');
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,
@@ -81,7 +79,7 @@ export default class extends Task {
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
-			loot[12012] = numberOfNuggets;
+			loot.add('Golden nugget', numberOfNuggets);
 		} else if (numberOfMinutes > 10 && ore.minerals) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
@@ -89,16 +87,26 @@ export default class extends Task {
 			}
 
 			if (numberOfMinerals > 0) {
-				loot[21341] = numberOfMinerals;
+				loot.add('Unidentified minerals', numberOfMinerals);
 			}
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		if (ore.gems) {
+			for (let i = 0; i < quantity; i++) {
+				loot.add(ore.gems.roll());
+			}
+		} else {
+			loot.add(ore.id, quantity);
+		}
+		str += `\n\nYou received: ${await createReadableItemListFromBank(
+			this.client,
+			loot.values()
+		)}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank(loot.values(), true);
 
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
