@@ -1,7 +1,8 @@
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Ore, SkillsEnum } from '../types';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
@@ -40,10 +41,10 @@ const ores: Ore[] = [
 	},
 	{
 		level: 15,
-		xp: 48,
+		xp: 35,
 		id: 440,
 		name: 'Iron ore',
-		respawnTime: 0.2,
+		respawnTime: -0.2,
 		petChance: 750_000,
 		clueScrollChance: 741_600
 	},
@@ -75,7 +76,7 @@ const ores: Ore[] = [
 	},
 	{
 		level: 40,
-		xp: 45,
+		xp: 65,
 		id: 444,
 		name: 'Gold ore',
 		respawnTime: 4,
