@@ -1,4 +1,5 @@
 import { ItemBank } from '../types';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -25,6 +26,7 @@ export interface Ore {
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
+	gems?: LootTable;
 }
 
 export interface Bar {
