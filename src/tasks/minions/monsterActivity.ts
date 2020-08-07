@@ -2,7 +2,7 @@ import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes } from '../../lib/util';
+import { noOp, saidYes, roll, addBanks } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Monsters } from 'oldschooljs';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -14,7 +14,6 @@ import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import streakPoints from '../../lib/skilling/skills/slayer/slayerFunctions/streakPoints';
 import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
-import { roll, addBanks } from '../../lib/util';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
