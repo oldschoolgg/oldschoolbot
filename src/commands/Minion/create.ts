@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) throw `That's not a valid item you can create.`;
 
-		if (typeof quantity !== 'number' || createableItem.cantHaveItems) {
+		if (!quantity || createableItem.cantHaveItems) {
 			quantity = 1;
 		}
 
