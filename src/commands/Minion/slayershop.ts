@@ -98,7 +98,7 @@ export default class extends BotCommand {
 			}
 			throw `That's not a valid extension. Valid extensions are ${slayerShopExtend
 				.map(extend => extend.name)
-				.join(`, `)}.`;
+				.join(`, `)}.\nFor more information go to <https://oldschool.runescape.wiki/w/Slayer_reward_point>`;
 		}
 
 		// Use of the SlayerShopUnlock
@@ -166,7 +166,7 @@ export default class extends BotCommand {
 			}
 			throw `That's not a valid unlock. Valid unlocks are ${slayerShopUnlock
 				.map(unlock => unlock.name)
-				.join(`, `)}.`;
+				.join(`, `)}.\nFor more information go to <https://oldschool.runescape.wiki/w/Slayer_reward_point>`;
 		}
 
 		// Use of the SlayerShopBuy

@@ -36,9 +36,7 @@ import { Eatables } from '../../lib/eatables';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 
 const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are: ${killableMonsters
-		.map(mon => mon.name)
-		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
+	`That isn't a valid monster, to see the monsters available do \`${prefix}minion kill --monsters\`.`;
 
 const hasNoMinion = (prefix: string) =>
 	`You don't have a minion yet. You can buy one by typing \`${prefix}minion buy\`.`;
@@ -519,6 +517,19 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		const boosts = [];
 		let messages: string[] = [];
 
+		//Add more information into text file
+		if (msg.flagArgs.monsters) {
+			return msg.channel.sendFile(
+				Buffer.from(
+					killableMonsters.map(
+						mon =>
+							`${mon.name}`
+					).join('\n')
+				),
+				`Available monsters.txt`
+			);
+		}
+
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -539,6 +550,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				  )
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
+
 		// Check if slayer only monster
 		if (
 			monster.slayerOnly &&
