@@ -53,7 +53,9 @@ export interface KillableMonster {
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	qpRequired: number;
-
+	superiorTable?: {
+		kill(quantity: number): Bank;
+	};
 	/**
 	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
 	 * this monster.

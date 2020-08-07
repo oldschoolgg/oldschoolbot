@@ -24,7 +24,8 @@ const TuraelMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 15
-		}
+		},
+		superiorTable: Monsters.ScreamingBanshee
 	},
 	{
 		id: Monsters.Bat.id,
@@ -172,7 +173,8 @@ const TuraelMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 10
-		}
+		},
+		superiorTable: Monsters.ChasmCrawler
 	},
 	{
 		id: Monsters.CaveGoblinGuard.id,
@@ -317,7 +319,8 @@ const TuraelMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 5
-		}
+		},
+		superiorTable: Monsters.CrushingHand
 	},
 	{
 		id: Monsters.CryptRat.id,
@@ -1385,7 +1388,8 @@ const TuraelMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 15
-		}
+		},
+		superiorTable: Monsters.ScreamingTwistedBanshee
 	},
 	{
 		id: Monsters.UndeadChicken.id,

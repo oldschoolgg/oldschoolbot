@@ -78,7 +78,8 @@ const KonarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 90
-		}
+		},
+		superiorTable: Monsters.NightBeast
 	},
 	{
 		id: Monsters.Drake.id,
@@ -100,7 +101,8 @@ const KonarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 84
-		}
+		},
+		superiorTable: Monsters.GuardianDrake
 	},
 	{
 		id: Monsters.Hydra.id,
@@ -122,7 +124,8 @@ const KonarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 95
-		}
+		},
+		superiorTable: Monsters.ColossalHydra
 	},
 	{
 		id: Monsters.MithrilDragon.id,
@@ -196,7 +199,8 @@ const KonarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 93
-		}
+		},
+		superiorTable: Monsters.NuclearSmokeDevil
 	},
 	{
 		id: Monsters.Waterfiend.id,

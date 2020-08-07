@@ -86,7 +86,8 @@ const ChaeldarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 58
-		}
+		},
+		superiorTable: Monsters.CaveAbomination
 	},
 	{
 		id: Monsters.CaveKraken.id,
@@ -463,7 +464,8 @@ const ChaeldarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 62
-		}
+		},
+		superiorTable: Monsters.ShadowWyrm
 	},
 	{
 		id: Monsters.Zygomite.id,

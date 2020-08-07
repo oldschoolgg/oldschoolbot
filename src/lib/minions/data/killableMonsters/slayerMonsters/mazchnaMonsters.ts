@@ -60,7 +60,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 25
-		}
+		},
+		superiorTable: Monsters.Cockathrice
 	},
 	{
 		id: Monsters.Cyclopse.id,
@@ -320,7 +321,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 30
-		}
+		},
+		superiorTable: Monsters.FlamingPyrelord
 	},
 	{
 		id: Monsters.Pyrelord.id,
@@ -340,7 +342,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 30
-		}
+		},
+		superiorTable: Monsters.InfernalPyrelord
 	},
 	{
 		id: Monsters.RiylShade.id,
@@ -378,7 +381,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 20
-		}
+		},
+		superiorTable: Monsters.GiantRockslug
 	},
 	{
 		id: Monsters.Shade.id,

@@ -14,6 +14,7 @@ import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import streakPoints from '../../lib/skilling/skills/slayer/slayerFunctions/streakPoints';
 import slayerMasters from '../../lib/skilling/skills/slayer/slayerMasters';
+import { roll, addBanks } from '../../lib/util';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
@@ -27,11 +28,13 @@ export default class extends Task {
 
 		// Checks if part of current slayer task
 		const slayerInfo = user.settings.get(UserSettings.Slayer.SlayerInfo);
+		const unlockList = user.settings.get(UserSettings.Slayer.UnlockedList)
 		const currentLevel = user.skillLevel(SkillsEnum.Slayer);
 		let onSlayer = false;
 		let completedTask = null;
 		let xpReceived = 0;
 		let slayerPointsReceived = 0;
+		let superiorQuantity = 0;
 		let newLevel = 0;
 		let alsoSlayerTask = false;
 
@@ -52,9 +55,35 @@ export default class extends Task {
 		) {
 			onSlayer = true;
 			const quantityLeft = slayerInfo.remainingQuantity! - quantity;
+
 			xpReceived = quantity * currentMonsterData!.slayerXP;
 			await user.addXP(SkillsEnum.Slayer, xpReceived);
 			newLevel = user.skillLevel(SkillsEnum.Slayer);
+
+			//Checks if current monster got superior version
+			if (monster.superiorTable) {
+				//Checks if the user got the superiors unlocked and rolls according to quantity left on task
+				for (let unlock of unlockList) {
+					if (unlock.name.toLowerCase() === 'bigger and badder') {
+						if (quantityLeft <= 0) {
+							for (let i = 0; i < slayerInfo.remainingQuantity!; i++) {
+								if(roll(200)) {
+									superiorQuantity++;
+								}
+							}
+						}
+						else {
+							for (let i = 0; i < quantity; i++) {
+								if(roll(200)) {
+									superiorQuantity++;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+
 			if (quantityLeft > 0) {
 				const newSlayerInfo = {
 					...slayerInfo,
@@ -107,7 +136,12 @@ export default class extends Task {
 			}
 		}
 
-		const loot = monster.table.kill(quantity);
+		let loot = monster.table.kill(quantity - superiorQuantity);
+
+		if (monster.superiorTable) {
+			loot = addBanks([monster.superiorTable.kill(superiorQuantity), loot]);
+		}
+
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);
@@ -126,11 +160,11 @@ export default class extends Task {
 			Events.Log,
 			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
 		);
-
+			//Track amount of superior versions recieved?
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
 		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
-			quantity} ${
+			quantity}, You also got ${superiorQuantity} superiors. ${
 			user.minionName
 		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 

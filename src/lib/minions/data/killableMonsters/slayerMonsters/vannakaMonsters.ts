@@ -24,7 +24,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 60
-		}
+		},
+		superiorTable: Monsters.AbhorrentSpectre
 	},
 	{
 		id: Monsters.AbyssalDemon.id,
@@ -44,7 +45,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 85
-		}
+		},
+		superiorTable: Monsters.GreaterAbyssalDemon
 	},
 	{
 		id: Monsters.Ankou.id,
@@ -118,7 +120,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 40
-		}
+		},
+		superiorTable: Monsters.MonstrousBasilisk
 	},
 	{
 		id: Monsters.BasiliskKnight.id,
@@ -138,7 +141,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 60
-		}
+		},
+		superiorTable: Monsters.BasiliskSentinel
 	},
 	{
 		id: Monsters.Bloodveld.id,
@@ -158,7 +162,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 50
-		}
+		},
+		superiorTable: Monsters.InsatiableBloodveld
 	},
 	{
 		id: Monsters.BlueDragon.id,
@@ -342,7 +347,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 60
-		}
+		},
+		superiorTable: Monsters.RepugnantSpectre
 	},
 	{
 		id: Monsters.DustDevil.id,
@@ -362,7 +368,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 65
-		}
+		},
+		superiorTable: Monsters.ChokeDevil
 	},
 	{
 		id: Monsters.ElfArcher.id,
@@ -454,7 +461,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 75
-		}
+		},
+		superiorTable: Monsters.MarbleGargoyle
 	},
 	{
 		id: Monsters.GiantSeaSnake.id,
@@ -495,7 +503,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 80
-		}
+		},
+		superiorTable: Monsters.Nechryarch
 	},
 	{
 		id: Monsters.GreenDragon.id,
@@ -608,7 +617,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 45
-		}
+		},
+		superiorTable: Monsters.MalevolentMage
 	},
 	{
 		id: Monsters.IorwerthArcher.id,
@@ -664,7 +674,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 52
-		}
+		},
+		superiorTable: Monsters.VitreousJelly
 	},
 	{
 		id: Monsters.JungleHorror.id,
@@ -704,7 +715,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 70
-		}
+		},
+		superiorTable: Monsters.KingKurask
 	},
 	{
 		id: Monsters.LesserDemon.id,
@@ -816,7 +828,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 50
-		}
+		},
+		superiorTable: Monsters.InsatiableMutatedBloodveld
 	},
 	{
 		id: Monsters.Nechryael.id,
@@ -837,7 +850,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 80
-		}
+		},
+		superiorTable: Monsters.Nechryarch
 	},
 	{
 		id: Monsters.Ogre.id,
@@ -1143,7 +1157,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 55
-		}
+		},
+		superiorTable: Monsters.SpikedTuroth
 	},
 	{
 		id: Monsters.WarpedJelly.id,
@@ -1166,7 +1181,8 @@ const VannakaMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 52
-		}
+		},
+		superiorTable: Monsters.VitreousWarpedJelly
 	},
 	{
 		id: Monsters.Werewolf.id,
