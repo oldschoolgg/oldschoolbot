@@ -82,7 +82,7 @@ export default class extends BotCommand {
 		if (createableItem.unlockListName) {
 			let unlocked = false;
 			for (const unlock of unlockList) {
-				if (unlock.name.toLowerCase() === createableItem.unlockListName) {
+				if (unlock.name.toLowerCase() === createableItem.unlockListName.toLowerCase()) {
 					unlocked = true;
 					break;
 				}
