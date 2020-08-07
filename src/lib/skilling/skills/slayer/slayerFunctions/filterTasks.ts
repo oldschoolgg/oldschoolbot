@@ -46,7 +46,9 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	// Removes Wyverns if Stop the Wyvern is unlocked
 	for (const unlock of unlockedList) {
 		if (unlock.name.toLowerCase() === 'stop the wyvern') {
-			filteredTaskList = filteredTaskList.filter(task => task.name.toLowerCase() !== 'stop the wyvern');
+			filteredTaskList = filteredTaskList.filter(
+				task => task.name.toLowerCase() !== 'stop the wyvern'
+			);
 			break;
 		}
 	}

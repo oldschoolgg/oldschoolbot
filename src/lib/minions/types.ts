@@ -53,10 +53,29 @@ export interface KillableMonster {
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	qpRequired: number;
+	/**
+	 * If the monster got a superior version.
+	 */
+	superiorId?: number;
+	superiorName?: string;
 	superiorTable?: {
 		kill(quantity: number): Bank;
 	};
+	/**
+	 * Whether or not this monster can only be killed on task and slayer boost.
+	 */
 	slayerOnly?: boolean;
+	slayerHelmBoost?: number;
+	/**
+	 * Whether or not this monster can be cannoned.
+	 */
+	cannonballs?: number;
+	cannonBoost?: number;
+	/**
+	 * Whether or not this monster can be Ice Barraged.
+	 */
+	barrageAmount?: number;
+	barrageBoost?: number;
 	/**
 	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
 	 * this monster.

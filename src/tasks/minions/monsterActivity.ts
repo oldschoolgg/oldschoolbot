@@ -53,11 +53,11 @@ export default class extends Task {
 				alsoSlayerTask)
 		) {
 			onSlayer = true;
-			//Handle Double trouble unlock
+			// Handle Double trouble unlock
 			let doubleTrouble = 0;
 			if (monster.name.toLowerCase() === 'grotesque guardians') {
-				for (let unlock of unlockList) {
-					if(unlock.name.toLowerCase() === 'double trouble') {
+				for (const unlock of unlockList) {
+					if (unlock.name.toLowerCase() === 'double trouble') {
 						doubleTrouble = quantity;
 						break;
 					}

@@ -240,6 +240,7 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
+			['Rock hammer', 'Rock thrownhammer', 'Granite hammer'],
 			['Toxic blowpipe (empty)', 'Toxic blowpipe'],
 			'Abyssal whip',
 			['Armadyl chainskirt', "Karil's leatherskirt"],
