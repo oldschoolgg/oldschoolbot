@@ -222,6 +222,15 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000
 	},
 	{
+		name: 'Ice cooler',
+		aliases: ['ice cooler'],
+		outputItems: {
+			[itemID('Ice cooler')]: 1000
+		},
+		qpRequired: 0,
+		gpCost: 100_000
+	},
+	{
 		name: '	Fungicide spray 10',
 		aliases: ['Fungicide spray', 'fungi spray'],
 		outputItems: {
@@ -294,7 +303,6 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000
 	},
 	{
-		// Limit?
 		name: 'Broad arrowheads',
 		aliases: ['broad arrowheads'],
 		outputItems: {
@@ -304,7 +312,6 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000
 	},
 	{
-		// Limit?
 		name: 'Unfinished broad bolts',
 		aliases: ['unf broad bolts'],
 		outputItems: {
