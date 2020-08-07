@@ -15,6 +15,7 @@ interface Createable {
 	fletchingLevel?: number;
 	QPRequired?: number;
 	noCl?: boolean;
+	unlockListName?: string;
 }
 
 const Createables: Createable[] = [
@@ -520,7 +521,6 @@ const Createables: Createable[] = [
 		cantHaveItems: {
 			[itemID('Giant pouch')]: 1
 		},
-
 		craftingLevel: 30
 	},
 	// Spirit Shields
@@ -676,8 +676,219 @@ const Createables: Createable[] = [
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205
+	},
+	// Slayer helmets
+	{
+		name: 'Slayer helmet',
+		inputItems: resolveNameBank({
+			'Black mask': 1,
+			Earmuffs: 1,
+			Facemask: 1,
+			'Nose peg': 1,
+			'Spiny helmet': 1,
+			'Enchanted gem': 1
+		}),
+		outputItems: resolveNameBank({
+			'Slayer helmet': 1
+		}),
+		craftingLevel: 55,
+		unlockListName: 'Malevolent masquerade'
+	},
+	{
+		name: 'Slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Black mask (i)': 1,
+			Earmuffs: 1,
+			Facemask: 1,
+			'Nose peg': 1,
+			'Spiny helmet': 1,
+			'Enchanted gem': 1
+		}),
+		outputItems: resolveNameBank({
+			'Slayer helmet (i)': 1
+		}),
+		craftingLevel: 55,
+		unlockListName: 'Malevolent masquerade'
+	},
+	{
+		name: 'Black slayer helmet',
+		inputItems: resolveNameBank({
+			'Slayer helmet': 1,
+			'Kbd heads': 1
+		}),
+		outputItems: resolveNameBank({
+			'Black slayer helmet': 1
+		}),
+		unlockListName: 'King black bonnet'
+	},
+	{
+		name: 'Black slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Slayer helmet (i)': 1,
+			'Kbd heads': 1
+		}),
+		outputItems: resolveNameBank({
+			'Black slayer helmet (i)': 1
+		}),
+		unlockListName: 'King black bonnet'
+	},
+	{
+		name: 'Green slayer helmet',
+		inputItems: resolveNameBank({
+			'Slayer helmet': 1,
+			'Kq head': 1
+		}),
+		outputItems: resolveNameBank({
+			'Green slayer helmet': 1
+		}),
+		unlockListName: 'Kalphite khat'
+	},
+	{
+		name: 'Green slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Slayer helmet (i)': 1,
+			'Kq head': 1
+		}),
+		outputItems: resolveNameBank({
+			'Green slayer helmet (i)': 1
+		}),
+		unlockListName: 'Kalphite khat'
+	},
+	{
+		name: 'Red slayer helmet',
+		inputItems: resolveNameBank({
+			'Slayer helmet': 1,
+			'Abyssal head': 1
+		}),
+		outputItems: resolveNameBank({
+			'Red slayer helmet': 1
+		}),
+		unlockListName: 'Unholy helmet'
+	},
+	{
+		name: 'Red slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Slayer helmet (i)': 1,
+			'Abyssal head': 1
+		}),
+		outputItems: resolveNameBank({
+			'Red slayer helmet (i)': 1
+		}),
+		unlockListName: 'Unholy helmet'
+	},
+	{
+		name: 'Purple slayer helmet',
+		inputItems: resolveNameBank({
+			'Slayer helmet': 1,
+			'Dark claw': 1
+		}),
+		outputItems: resolveNameBank({
+			'Purple slayer helmet': 1
+		}),
+		unlockListName: 'Dark Mantle'
+	},
+	{
+		name: 'Purple slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Slayer helmet (i)': 1,
+			'Dark claw': 1
+		}),
+		outputItems: resolveNameBank({
+			'Purple slayer helmet (i)': 1
+		}),
+		unlockListName: 'Dark Mantle'
+	},
+	{
+		name: 'Turquoise slayer helmet',
+		inputItems: resolveNameBank({
+			'Slayer helmet': 1,
+			"Vorkath's head": 1
+		}),
+		outputItems: resolveNameBank({
+			'Turquoise slayer helmet': 1
+		}),
+		unlockListName: 'Undead Head'
+	},
+	{
+		name: 'Turquoise slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Slayer helmet (i)': 1,
+			"Vorkath's head": 1
+		}),
+		outputItems: resolveNameBank({
+			'Turquoise slayer helmet (i)': 1
+		}),
+		unlockListName: 'Undead Head'
+	},
+	{
+		name: 'Hydra slayer helmet',
+		inputItems: resolveNameBank({
+			'Slayer helmet': 1,
+			'Alchemical hydra heads': 1
+		}),
+		outputItems: resolveNameBank({
+			'Hydra slayer helmet': 1
+		}),
+		unlockListName: 'Use more head'
+	},
+	{
+		name: 'Hydra slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Slayer helmet (i)': 1,
+			'Alchemical hydra heads': 1
+		}),
+		outputItems: resolveNameBank({
+			'Hydra slayer helmet (i)': 1
+		}),
+		unlockListName: 'Use more head'
+	},
+	{
+		name: 'Twisted slayer helmet',
+		inputItems: resolveNameBank({
+			'Slayer helmet': 1,
+			'Twisted horns': 1
+		}),
+		outputItems: resolveNameBank({
+			'Twisted slayer helmet': 1
+		}),
+		unlockListName: 'Twisted Vision'
+	},
+	{
+		name: 'Twisted slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Slayer helmet (i)': 1,
+			'Twisted horns': 1
+		}),
+		outputItems: resolveNameBank({
+			'Twisted slayer helmet (i)': 1
+		}),
+		unlockListName: 'Twisted Vision'
+	},
+	{
+		name: 'Slayer ring',
+		inputItems: resolveNameBank({
+			'Enchanted gem': 1,
+			'Gold bar': 1
+		}),
+		outputItems: resolveNameBank({
+			'Slayer ring (8)': 1
+		}),
+		craftingLevel: 75,
+		unlockListName: 'Ring bling'
+	},
+	{
+		name: 'Slayer ring (eternal)',
+		inputItems: resolveNameBank({
+			'Eternal gem': 1,
+			'Gold bar': 1
+		}),
+		outputItems: resolveNameBank({
+			'Slayer ring (eternal)': 1
+		}),
+		craftingLevel: 75,
+		unlockListName: 'Ring bling'
 	}
-	/* {
+	/* , {
 		name: 'Toxic blowpipe (empty)',
 		inputItems: {
 			[itemID('Toxic blowpipe')]: 1

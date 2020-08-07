@@ -28,7 +28,7 @@ export default class extends Task {
 
 		// Checks if part of current slayer task
 		const slayerInfo = user.settings.get(UserSettings.Slayer.SlayerInfo);
-		const unlockList = user.settings.get(UserSettings.Slayer.UnlockedList)
+		const unlockList = user.settings.get(UserSettings.Slayer.UnlockedList);
 		const currentLevel = user.skillLevel(SkillsEnum.Slayer);
 		let onSlayer = false;
 		let completedTask = null;
@@ -60,21 +60,20 @@ export default class extends Task {
 			await user.addXP(SkillsEnum.Slayer, xpReceived);
 			newLevel = user.skillLevel(SkillsEnum.Slayer);
 
-			//Checks if current monster got superior version
+			// Checks if current monster got superior version
 			if (monster.superiorTable) {
-				//Checks if the user got the superiors unlocked and rolls according to quantity left on task
-				for (let unlock of unlockList) {
+				// Checks if the user got the superiors unlocked and rolls according to quantity left on task
+				for (const unlock of unlockList) {
 					if (unlock.name.toLowerCase() === 'bigger and badder') {
 						if (quantityLeft <= 0) {
 							for (let i = 0; i < slayerInfo.remainingQuantity!; i++) {
-								if(roll(200)) {
+								if (roll(200)) {
 									superiorQuantity++;
 								}
 							}
-						}
-						else {
+						} else {
 							for (let i = 0; i < quantity; i++) {
-								if(roll(200)) {
+								if (roll(200)) {
 									superiorQuantity++;
 								}
 							}
@@ -160,7 +159,7 @@ export default class extends Task {
 			Events.Log,
 			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
 		);
-			//Track amount of superior versions recieved?
+		// Track amount of superior versions recieved?
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
 		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +

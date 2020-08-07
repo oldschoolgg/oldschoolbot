@@ -78,6 +78,20 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.agilityLevel} agility to create this item.`;
 		}
 
+		const unlockList = msg.author.settings.get(UserSettings.Slayer.UnlockedList);
+		if (createableItem.unlockListName) {
+			let unlocked = false;
+			for (const unlock of unlockList) {
+				if (unlock.name.toLowerCase() === createableItem.unlockListName) {
+					unlocked = true;
+					break;
+				}
+			}
+			if (!unlocked) {
+				throw `You need ${createableItem.unlockListName} unlocked to create this item.`;
+			}
+		}
+
 		const outItems = multiplyBank(createableItem.outputItems, quantity);
 		const inItems = multiplyBank(createableItem.inputItems, quantity);
 
