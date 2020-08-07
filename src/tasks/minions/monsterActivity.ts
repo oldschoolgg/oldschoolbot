@@ -53,7 +53,17 @@ export default class extends Task {
 				alsoSlayerTask)
 		) {
 			onSlayer = true;
-			const quantityLeft = slayerInfo.remainingQuantity! - quantity;
+			//Handle Double trouble unlock
+			let doubleTrouble = 0;
+			if (monster.name.toLowerCase() === 'grotesque guardians') {
+				for (let unlock of unlockList) {
+					if(unlock.name.toLowerCase() === 'double trouble') {
+						doubleTrouble = quantity;
+						break;
+					}
+				}
+			}
+			const quantityLeft = slayerInfo.remainingQuantity! - quantity - doubleTrouble;
 
 			xpReceived = quantity * currentMonsterData!.slayerXP;
 			await user.addXP(SkillsEnum.Slayer, xpReceived);

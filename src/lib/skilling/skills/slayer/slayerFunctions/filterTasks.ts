@@ -43,6 +43,14 @@ export default function filterTasks(msg: KlasaMessage, master: SlayerMaster) {
 	}
 	filteredTaskList = filteredTaskList.filter(task => task !== undefined);
 
+	// Removes Wyverns if Stop the Wyvern is unlocked
+	for (const unlock of unlockedList) {
+		if (unlock.name.toLowerCase() === 'stop the wyvern') {
+			filteredTaskList = filteredTaskList.filter(task => task.name.toLowerCase() !== 'stop the wyvern');
+			break;
+		}
+	}
+	filteredTaskList = filteredTaskList.filter(task => task !== undefined);
 	// Filter by combat level
 	for (let i = 0; i < filteredTaskList.length; i++) {
 		if (filteredTaskList[i].combatLvl! > userCombatLevel) {
