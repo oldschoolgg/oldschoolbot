@@ -56,6 +56,7 @@ export interface KillableMonster {
 	superiorTable?: {
 		kill(quantity: number): Bank;
 	};
+	slayerOnly?: boolean;
 	/**
 	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
 	 * this monster.

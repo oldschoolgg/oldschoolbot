@@ -172,7 +172,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43,
 			slayer: 91
-		}
+		},
+		slayerOnly: true
 	},
 	{
 		id: Monsters.AbyssalSire.id,
@@ -196,7 +197,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43,
 			slayer: 85
-		}
+		},
+		slayerOnly: true
 	},
 	{
 		id: Monsters.AlchemicalHydra.id,
@@ -224,7 +226,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43,
 			slayer: 95
-		}
+		},
+		slayerOnly: true
 	},
 	{
 		id: Monsters.GrotesqueGuardians.id,
@@ -251,7 +254,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43,
 			slayer: 75
-		}
+		},
+		slayerOnly: true
 	},
 	{
 		id: Monsters.Sarachnis.id,
@@ -293,7 +297,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 49,
 			slayer: 93
-		}
+		},
+		slayerOnly: true
 	}
 ];
 

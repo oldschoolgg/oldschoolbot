@@ -515,6 +515,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		const bank = msg.author.settings.get(UserSettings.Bank);
+		const slayerInfo = msg.author.settings.get(UserSettings.Slayer.SlayerInfo);
 		const boosts = [];
 		let messages: string[] = [];
 
@@ -538,6 +539,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				  )
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
+		//Check if slayer only monster
+		if (monster.slayerOnly && slayerInfo.currentTask?.name.toLowerCase() !== monster.name.toLowerCase()) {
+			throw `You can only kill ${monster.name} while on task!`;
+		}
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);

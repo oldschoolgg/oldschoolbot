@@ -107,7 +107,8 @@ const ChaeldarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 87
-		}
+		},
+		slayerOnly: true
 	},
 	{
 		id: Monsters.FossilIslandWyvernAncient.id,
@@ -276,7 +277,8 @@ const ChaeldarMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			slayer: 87
-		}
+		},
+		slayerOnly: true
 	},
 	{
 		id: Monsters.Lizardman.id,

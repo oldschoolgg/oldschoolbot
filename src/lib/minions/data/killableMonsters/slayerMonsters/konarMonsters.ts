@@ -200,6 +200,7 @@ const KonarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 93
 		},
+		slayerOnly: true,
 		superiorTable: Monsters.NuclearSmokeDevil
 	},
 	{
