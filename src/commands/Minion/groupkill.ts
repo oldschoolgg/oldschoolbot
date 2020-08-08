@@ -79,7 +79,7 @@ export default class extends BotCommand {
 				healAmountNeeded = Math.ceil(healAmountNeeded / numberOfUsers);
 
 				for (const food of Eatables) {
-					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
+					const amountNeeded = ceil(healAmountNeeded / food.healAmount) * quantity;
 					if (user.numItemsInBankSync(food.id) < amountNeeded) {
 						if (Eatables.indexOf(food) === Eatables.length - 1) {
 							checkReqsState = false;
@@ -93,11 +93,11 @@ export default class extends BotCommand {
 							);
 						}
 
-						foodId = food.id;
-						amountOfFoodNeeded = amountNeeded;
 						continue;
 					}
 
+					foodId = food.id;
+					amountOfFoodNeeded = amountNeeded;
 					break;
 				}
 			}
