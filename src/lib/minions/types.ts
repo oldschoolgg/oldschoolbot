@@ -5,7 +5,6 @@ import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
 import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
-
 import { Bank, ArrayItemsResolved } from '../types';
 import { PerkTier } from '../constants';
 import { MonsterActivityTaskOptions } from '../types/minions';
@@ -51,6 +50,7 @@ export interface KillableMonster {
 	canBeKilled: boolean;
 	difficultyRating: number;
 	itemsRequired?: ArrayItemsResolved;
+	consumedItem?: string;
 	notifyDrops?: ArrayItemsResolved;
 	qpRequired: number;
 	/**
@@ -67,12 +67,12 @@ export interface KillableMonster {
 	slayerOnly?: boolean;
 	slayerHelmBoost?: number;
 	/**
-	 * Whether or not this monster can be cannoned.
+	 * Whether or not this monster can be killed with a Dwarf Cannon.
 	 */
 	cannonballs?: number;
 	cannonBoost?: number;
 	/**
-	 * Whether or not this monster can be Ice Barraged.
+	 * Whether or not this monster can be killed with Ice Barrage.
 	 */
 	barrageAmount?: number;
 	barrageBoost?: number;

@@ -424,6 +424,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 			[itemID('Slayer helmet')]: 15,
 			[itemID('Arclight')]: 10
 		},
+		consumedItem: 'Dark totem',
 		levelRequirements: {}
 	},
 	{

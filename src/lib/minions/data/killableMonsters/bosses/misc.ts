@@ -300,6 +300,36 @@ const killableBosses: KillableMonster[] = [
 			slayer: 93
 		},
 		slayerOnly: true
+	},
+	{
+		id: Monsters.Obor.id,
+		name: Monsters.Obor.name,
+		aliases: Monsters.Obor.aliases,
+		timeToFinish: Time.Minute * 1.25,
+		table: Monsters.Obor,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems(['Giant key']),
+		notifyDrops: resolveItems(['Hill giant club']),
+		qpRequired: 0,
+		consumedItem: 'Giant key'
+	},
+	{
+		id: Monsters.Bryophyta.id,
+		name: Monsters.Bryophyta.name,
+		aliases: Monsters.Bryophyta.aliases,
+		timeToFinish: Time.Minute * 1.32,
+		table: Monsters.Bryophyta,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		itemsRequired: resolveItems(['Mossy key']),
+		notifyDrops: resolveItems(["Bryophyta's essence"]),
+		qpRequired: 0,
+		consumedItem: 'Mossy key'
 	}
 ];
 

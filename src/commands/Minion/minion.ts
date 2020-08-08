@@ -21,6 +21,7 @@ import {
 	bankHasItem
 } from '../../lib/util';
 import { rand } from '../../util';
+import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -569,10 +570,22 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		// Checking for alternative monsters on current task.
+		let alsoSlayerTask = false;
+		if (slayerInfo.hasTask) {
+			for (const tempMonstID of slayerInfo.currentTask?.Id!) {
+				if (tempMonstID === monster.id) {
+					alsoSlayerTask = true;
+					break;
+				}
+			}
+		}
+
 		// Check if slayer only monster
 		if (
 			monster.slayerOnly &&
-			slayerInfo.currentTask?.name.toLowerCase() !== monster.name.toLowerCase()
+			slayerInfo.currentTask?.name.toLowerCase() !== monster.name.toLowerCase() &&
+			!alsoSlayerTask
 		) {
 			throw `You can only kill ${monster.name} while on task!`;
 		}
@@ -595,17 +608,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 			}
 		}
-
-		// Checking for alternative monsters on current task.
-		let alsoSlayerTask = false;
-		if (slayerInfo.hasTask) {
-			for (const tempMonstID of slayerInfo.currentTask?.Id!) {
-				if (tempMonstID === monster.id) {
-					alsoSlayerTask = true;
-					break;
-				}
-			}
-		}
 		// Check if killing monster on task and if user got any slayer helmet
 		if (
 			slayerInfo.hasTask &&
@@ -614,249 +616,267 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		) {
 			for (const helmet of slayerHelmets) {
 				if (msg.author.hasItemEquippedAnywhere(helmet)) {
-					timeToFinish *= (100 - monster.slayerHelmBoost!) / 100;
-					boosts.push(`${monster.slayerHelmBoost}% for ${itemNameFromID(helmet)}`);
-					break;
-				}
-			}
-
-			// Check if unlocked Duly noted in slayer shop and on mithril dragon task
-			if (
-				monster.name.toLowerCase() === 'mithril dragon' &&
-				slayerInfo.currentTask?.name.toLowerCase() === 'mithril dragon'
-			) {
-				for (const unlock of unlockList) {
-					if (unlock.name.toLowerCase() === 'duly noted') {
-						timeToFinish *= (100 - 3) / 100;
-						boosts.push(`3% for unlocking Duly noted`);
+					if (monster.slayerHelmBoost) {
+						timeToFinish *= (100 - monster.slayerHelmBoost) / 100;
+						boosts.push(`${monster.slayerHelmBoost}% for ${itemNameFromID(helmet)}`);
 						break;
 					}
 				}
 			}
-
-			// Check if gargoyle, if Gargoyle smasher is unlocked
-			if (
-				monster.name.toLowerCase() === 'gargoyle' ||
-				monster.name.toLowerCase() === 'grotesque guardians'
-			) {
-				for (const unlock of unlockList) {
-					if (unlock.name.toLowerCase() === 'gargoyle smasher') {
-						timeToFinish *= (100 - 3) / 100;
-						boosts.push(`3% for unlocking Gargoyle smasher`);
-						break;
-					}
-				}
-			}
-
-			// If no quantity provided, set it to the max.
-			if (quantity === null) {
-				quantity = floor(msg.author.maxTripLength / timeToFinish);
-			}
-
-			// Check food
-			if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-				const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-				messages = messages.concat(foodMessages);
-
-				for (const food of Eatables) {
-					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-					if (!bankHasItem(bank, food.id, amountNeeded)) {
-						if (Eatables.indexOf(food) === Eatables.length - 1) {
-							throw `You don't have enough food to kill ${
-								monster.name
-							}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-								quantity} per kill) You can use these food items: ${Eatables.map(
-								i => i.name
-							).join(', ')}.`;
-						}
-						continue;
-					}
-
-					messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-					await msg.author.removeItemFromBank(food.id, amountNeeded);
-
-					// Track this food cost in Economy Stats
-					await this.client.settings.update(
-						ClientSettings.EconomyStats.PVMCost,
-						addItemToBank(
-							this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-							food.id,
-							amountNeeded
-						)
-					);
-
-					break;
-				}
-			}
-
-			let duration = timeToFinish * quantity;
-			if (duration > msg.author.maxTripLength) {
-				throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
-			}
-
-			const randomAddedDuration = rand(1, 20);
-			duration += (randomAddedDuration * duration) / 100;
-
-			// Check if Rockslug, if Slug salter is unlocked and if got consumables
-			if (monster.name.toLowerCase() === 'rockslug') {
-				// Checks if brine sabre isn't equipped or bank
-				if (!msg.author.hasItemEquippedOrInBank(11037)) {
-					if (!bankHasItem(bank, 4161, quantity)) {
-						throw `You don't have enough Bag of salt to kill ${quantity} x ${monster.name}, which require 1 x Bag of salt per kill! You need atleast ${quantity} Bag of salt for this trip. Either lower the amount of kills or buy Bag of salt.`;
-					}
-					messages.push(`Removed ${quantity}x Bag of salt's from your bank`);
-					await msg.author.removeItemFromBank(4161, quantity);
-				}
-				for (const unlock of unlockList) {
-					if (unlock.name.toLowerCase() === 'slug salter') {
-						duration *= 98;
-						boosts.push(`2% for unlocking Slug salter`);
-						break;
-					}
-				}
-			}
-
-			// Check if Lizard, if Reptile freezer is unlocked and if got consumables
-			if (
-				monster.name.toLowerCase() === 'lizard' ||
-				monster.name.toLowerCase() === 'small lizard' ||
-				monster.name.toLowerCase() === 'desert lizard'
-			) {
-				if (!bankHasItem(bank, 6696, quantity)) {
-					throw `You don't have enough Ice cooler to kill ${quantity} x ${monster.name}, which require 1 x Ice cooler per kill! You need atleast ${quantity} Ice cooler for this trip. Either lower the amount of kills or buy Ice cooler.`;
-				}
-				messages.push(`Removed ${quantity}x Ice cooler's from your bank`);
-				await msg.author.removeItemFromBank(6696, quantity);
-
-				for (const unlock of unlockList) {
-					if (unlock.name.toLowerCase() === 'reptile freezer') {
-						duration *= 98;
-						boosts.push(`2% for unlocking Reptile freezer`);
-						break;
-					}
-				}
-			}
-
-			// Check if zygomites, if 'Shroom sprayer is unlocked and if got consumables
-			if (
-				monster.name.toLowerCase() === 'zygomite' ||
-				monster.name.toLowerCase() === 'ancient zygomite'
-			) {
-				if (!bankHasItem(bank, 7421, quantity)) {
-					throw `You don't have enough Fungicide spray 10 to kill ${quantity} x ${monster.name}, which require 1 x Fungicide spray 10 per kill! You need atleast ${quantity} Fungicide spray 10 for this trip. Either lower the amount of kills or buy Fungicide spray 10.`;
-				}
-				messages.push(`Removed ${quantity}x Fungicide spray 10's from your bank`);
-				await msg.author.removeItemFromBank(7421, quantity);
-
-				for (const unlock of unlockList) {
-					if (unlock.name.toLowerCase() === "'shroom sprayer") {
-						duration *= 98;
-						boosts.push(`2% for unlocking 'Shroom sprayer`);
-						break;
-					}
-				}
-			}
-
-			// Check if flag cannon and monster can be killed with Dwarf cannon
-			if (msg.flagArgs.cannon) {
-				if (msg.flagArgs.barrage) {
-					throw `You can not use --cannon and --barrage at same time.`;
-				}
-				if (!monster.cannonballs) {
-					throw `${monster.name} can't be killed with a Dwarf cannon. Skip the --cannon.`;
-				}
-				if (!bankHasItem(bank, 12863, 1)) {
-					throw `You don't have a Dwarf cannon set to kill ${monster.name}! You can buy one by typing \`${msg.cmdPrefix}buy Dwarf cannon set\``;
-				}
-				if (!bankHasItem(bank, 2, quantity * monster.cannonballs)) {
-					throw `You don't have enough cannonballs to kill ${quantity} x ${
-						monster.name
-					}, which require ${monster.cannonballs}x per kill! You need atleast ${quantity *
-						monster.cannonballs} cannonballs for this trip. Either lower the amount of kills or buy cannonballs.`;
-				}
-				messages.push(
-					`Removed ${quantity * monster.cannonballs}x cannonball's from your bank`
-				);
-				await msg.author.removeItemFromBank(2, quantity * monster.cannonballs);
-				boosts.push(`${monster.cannonBoost}% for using cannon`);
-				duration *= (100 - monster.cannonBoost!) / 100;
-			}
-
-			// Check if flag barrage and monster can be killed with Ice Barraging
-			if (msg.flagArgs.barrage) {
-				if (msg.flagArgs.cannon) {
-					throw `You can not use --barrage and --cannon at same time.`;
-				}
-				if (!monster.barrageAmount) {
-					throw `${monster.name} can't be killed with Ice Barrage. Skip the --barrage.`;
-				}
-				if (
-					!bankHasItem(bank, 555, quantity * monster.barrageAmount * 6) ||
-					!bankHasItem(bank, 565, quantity * monster.barrageAmount * 2) ||
-					!bankHasItem(bank, 560, quantity * monster.barrageAmount * 4)
-				) {
-					throw `You don't have enough Ice Barrage casts to kill ${quantity} x ${
-						monster.name
-					}, which require ${monster.barrageAmount *
-						6}x Water rune, ${monster.barrageAmount *
-						2}x Blood rune and ${monster.barrageAmount *
-						4}x Death rune per kill! You need atleast ${quantity *
-						monster.barrageAmount *
-						6} Water rune, ${quantity *
-						monster.barrageAmount *
-						2} Blood rune and ${quantity *
-						monster.barrageAmount *
-						4} Death rune for this trip. Either lower the amount of kills or buy more runes.`;
-				}
-				messages.push(
-					`Removed ${quantity * monster.barrageAmount * 6}x Water rune's, ${quantity *
-						monster.barrageAmount *
-						2}x Blood rune's and ${quantity *
-						monster.barrageAmount *
-						4}x Blood rune's from your bank`
-				);
-				await msg.author.removeItemFromBank(555, quantity * monster.barrageAmount * 6);
-				await msg.author.removeItemFromBank(565, quantity * monster.barrageAmount * 2);
-				await msg.author.removeItemFromBank(560, quantity * monster.barrageAmount * 4);
-				boosts.push(`${monster.barrageBoost}% for using Ice Barrage`);
-				duration *= (100 - monster.barrageBoost!) / 100;
-			}
-
-			if (isWeekend()) {
-				boosts.push(`10% for Weekend`);
-				duration *= 0.9;
-			}
-
-			const data: MonsterActivityTaskOptions = {
-				monsterID: monster.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.MonsterKilling,
-				id: rand(1, 10_000_000),
-				finishDate: Date.now() + duration
-			};
-
-			await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-
-			let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
-				monster.name
-			}, it'll take around ${formatDuration(duration)} to finish.`;
-
-			if (boosts.length > 0) {
-				response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
-			}
-
-			if (messages.length > 0) {
-				response += `\n\n**Messages:** ${messages.join('\n')}.`;
-			}
-
-			return msg.send(response);
 		}
+		// Check if unlocked Duly noted in slayer shop and on mithril dragon task
+		if (
+			monster.name.toLowerCase() === 'mithril dragon' &&
+			slayerInfo.currentTask?.name.toLowerCase() === 'mithril dragon'
+		) {
+			for (const unlock of unlockList) {
+				if (unlock.name.toLowerCase() === 'duly noted') {
+					timeToFinish *= (100 - 3) / 100;
+					boosts.push(`3% for unlocking Duly noted`);
+					break;
+				}
+			}
+		}
+
+		// Check if gargoyle, if Gargoyle smasher is unlocked
+		if (
+			monster.name.toLowerCase() === 'gargoyle' ||
+			monster.name.toLowerCase() === 'grotesque guardians'
+		) {
+			for (const unlock of unlockList) {
+				if (unlock.name.toLowerCase() === 'gargoyle smasher') {
+					timeToFinish *= (100 - 3) / 100;
+					boosts.push(`3% for unlocking Gargoyle smasher`);
+					break;
+				}
+			}
+		}
+
+		// If no quantity provided, set it to the max.
+		if (quantity === null) {
+			quantity = floor(msg.author.maxTripLength / timeToFinish);
+		}
+
+		// Makes sure that slayer only monsters can't be killed past task quantity
+		if (monster.slayerOnly) {
+			if (quantity > slayerInfo.remainingQuantity!) {
+				quantity = slayerInfo.remainingQuantity!;
+			}
+		}
+
+		// Check food
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
+			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
+			messages = messages.concat(foodMessages);
+
+			for (const food of Eatables) {
+				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
+				if (!bankHasItem(bank, food.id, amountNeeded)) {
+					if (Eatables.indexOf(food) === Eatables.length - 1) {
+						throw `You don't have enough food to kill ${
+							monster.name
+						}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
+							quantity} per kill) You can use these food items: ${Eatables.map(
+							i => i.name
+						).join(', ')}.`;
+					}
+					continue;
+				}
+
+				messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
+				await msg.author.removeItemFromBank(food.id, amountNeeded);
+
+				// Track this food cost in Economy Stats
+				await this.client.settings.update(
+					ClientSettings.EconomyStats.PVMCost,
+					addItemToBank(
+						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
+						food.id,
+						amountNeeded
+					)
+				);
+
+				break;
+			}
+		}
+
+		// Check if the monster consumes any items upon entry
+		if (monster.consumedItem) {
+			if (bankHasItem(bank, itemID(monster.consumedItem), quantity)) {
+				messages.push(`Removed ${quantity}x ${monster.consumedItem}'s from your bank`);
+				await msg.author.removeItemFromBank(itemID(monster.consumedItem), quantity);
+			}
+			else { 
+				quantity = bank[itemID(monster.consumedItem)];
+				messages.push(`Removed ${quantity}x ${monster.consumedItem}'s from your bank`);
+				await msg.author.removeItemFromBank(itemID(monster.consumedItem), quantity);
+			}
+		}
+
+		let duration = timeToFinish * quantity;
+		if (duration > msg.author.maxTripLength) {
+			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${
+				monster.name
+			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
+		}
+
+		const randomAddedDuration = rand(1, 20);
+		duration += (randomAddedDuration * duration) / 100;
+
+		// Check if Rockslug, if Slug salter is unlocked and if got consumables
+		if (monster.name.toLowerCase() === 'rockslug') {
+			// Checks if brine sabre isn't equipped or bank
+			if (!msg.author.hasItemEquippedOrInBank(11037)) {
+				if (!bankHasItem(bank, 4161, quantity)) {
+					throw `You don't have enough Bag of salt to kill ${quantity} x ${monster.name}, which require 1 x Bag of salt per kill! You need atleast ${quantity} Bag of salt for this trip. Either lower the amount of kills or buy Bag of salt.`;
+				}
+				messages.push(`Removed ${quantity}x Bag of salt's from your bank`);
+				await msg.author.removeItemFromBank(4161, quantity);
+			}
+			for (const unlock of unlockList) {
+				if (unlock.name.toLowerCase() === 'slug salter') {
+					duration *= 98;
+					boosts.push(`2% for unlocking Slug salter`);
+					break;
+				}
+			}
+		}
+
+		// Check if Lizard, if Reptile freezer is unlocked and if got consumables
+		if (
+			monster.name.toLowerCase() === 'lizard' ||
+			monster.name.toLowerCase() === 'small lizard' ||
+			monster.name.toLowerCase() === 'desert lizard'
+		) {
+			if (!bankHasItem(bank, 6696, quantity)) {
+				throw `You don't have enough Ice cooler to kill ${quantity} x ${monster.name}, which require 1 x Ice cooler per kill! You need atleast ${quantity} Ice cooler for this trip. Either lower the amount of kills or buy Ice cooler.`;
+			}
+			messages.push(`Removed ${quantity}x Ice cooler's from your bank`);
+			await msg.author.removeItemFromBank(6696, quantity);
+
+			for (const unlock of unlockList) {
+				if (unlock.name.toLowerCase() === 'reptile freezer') {
+					duration *= 98;
+					boosts.push(`2% for unlocking Reptile freezer`);
+					break;
+				}
+			}
+		}
+
+		// Check if zygomites, if 'Shroom sprayer is unlocked and if got consumables
+		if (
+			monster.name.toLowerCase() === 'zygomite' ||
+			monster.name.toLowerCase() === 'ancient zygomite'
+		) {
+			if (!bankHasItem(bank, 7421, quantity)) {
+				throw `You don't have enough Fungicide spray 10 to kill ${quantity} x ${monster.name}, which require 1 x Fungicide spray 10 per kill! You need atleast ${quantity} Fungicide spray 10 for this trip. Either lower the amount of kills or buy Fungicide spray 10.`;
+			}
+			messages.push(`Removed ${quantity}x Fungicide spray 10's from your bank`);
+			await msg.author.removeItemFromBank(7421, quantity);
+
+			for (const unlock of unlockList) {
+				if (unlock.name.toLowerCase() === "'shroom sprayer") {
+					duration *= 98;
+					boosts.push(`2% for unlocking 'Shroom sprayer`);
+					break;
+				}
+			}
+		}
+
+		// Check if flag cannon and monster can be killed with Dwarf cannon
+		if (msg.flagArgs.cannon) {
+			if (msg.flagArgs.barrage) {
+				throw `You can not use --cannon and --barrage at same time.`;
+			}
+			if (!monster.cannonballs) {
+				throw `${monster.name} can't be killed with a Dwarf cannon. Skip the --cannon.`;
+			}
+			if (!bankHasItem(bank, 12863, 1)) {
+				throw `You don't have a Dwarf cannon set to kill ${monster.name}! You can buy one by typing \`${msg.cmdPrefix}buy Dwarf cannon set\``;
+			}
+			if (!bankHasItem(bank, 2, quantity * monster.cannonballs)) {
+				throw `You don't have enough cannonballs to kill ${quantity} x ${
+					monster.name
+				}, which require ${monster.cannonballs}x per kill! You need atleast ${quantity *
+					monster.cannonballs} cannonballs for this trip. Either lower the amount of kills or buy cannonballs.`;
+			}
+			messages.push(`Removed ${quantity * monster.cannonballs}x cannonball's from your bank`);
+			await msg.author.removeItemFromBank(2, quantity * monster.cannonballs);
+			boosts.push(`${monster.cannonBoost}% for using cannon`);
+			duration *= (100 - monster.cannonBoost!) / 100;
+		}
+
+		// Check if flag barrage and monster can be killed with Ice Barraging
+		if (msg.flagArgs.barrage) {
+			if (msg.flagArgs.cannon) {
+				throw `You can not use --barrage and --cannon at same time.`;
+			}
+			if (!monster.barrageAmount) {
+				throw `${monster.name} can't be killed with Ice Barrage. Skip the --barrage.`;
+			}
+			if (
+				!bankHasItem(bank, 555, quantity * monster.barrageAmount * 6) ||
+				!bankHasItem(bank, 565, quantity * monster.barrageAmount * 2) ||
+				!bankHasItem(bank, 560, quantity * monster.barrageAmount * 4)
+			) {
+				throw `You don't have enough Ice Barrage casts to kill ${quantity} x ${
+					monster.name
+				}, which require ${monster.barrageAmount * 6}x Water rune, ${monster.barrageAmount *
+					2}x Blood rune and ${monster.barrageAmount *
+					4}x Death rune per kill! You need atleast ${quantity *
+					monster.barrageAmount *
+					6} Water rune, ${quantity *
+					monster.barrageAmount *
+					2} Blood rune and ${quantity *
+					monster.barrageAmount *
+					4} Death rune for this trip. Either lower the amount of kills or buy more runes.`;
+			}
+			messages.push(
+				`Removed ${quantity * monster.barrageAmount * 6}x Water rune's, ${quantity *
+					monster.barrageAmount *
+					2}x Blood rune's and ${quantity *
+					monster.barrageAmount *
+					4}x Blood rune's from your bank`
+			);
+			await msg.author.removeItemFromBank(555, quantity * monster.barrageAmount * 6);
+			await msg.author.removeItemFromBank(565, quantity * monster.barrageAmount * 2);
+			await msg.author.removeItemFromBank(560, quantity * monster.barrageAmount * 4);
+			boosts.push(`${monster.barrageBoost}% for using Ice Barrage`);
+			duration *= (100 - monster.barrageBoost!) / 100;
+		}
+
+		if (isWeekend()) {
+			boosts.push(`10% for Weekend`);
+			duration *= 0.9;
+		}
+
+		const data: MonsterActivityTaskOptions = {
+			monsterID: monster.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.MonsterKilling,
+			id: rand(1, 10_000_000),
+			finishDate: Date.now() + duration
+		};
+
+		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+
+		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
+			monster.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		if (messages.length > 0) {
+			response += `\n\n**Messages:** ${messages.join('\n')}.`;
+		}
+
+		return msg.send(response);
 	}
 }

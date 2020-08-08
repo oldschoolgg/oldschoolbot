@@ -97,9 +97,9 @@ export default class extends Task {
 			if (slayerInfo.currentMaster === 6) {
 				let brimstoneChance;
 				if (currentMonsterData!.combatLevel > 100) {
-					brimstoneChance = (120 - currentMonsterData!.combatLevel / 5);
+					brimstoneChance = 120 - currentMonsterData!.combatLevel / 5;
 				} else {
-					brimstoneChance = (100 + ((currentMonsterData!.combatLevel - 100) ^ 2) / 5);
+					brimstoneChance = 100 + ((currentMonsterData!.combatLevel - 100) ^ 2) / 5;
 				}
 				if (quantityLeft <= 0) {
 					for (let i = 0; i < slayerInfo.remainingQuantity!; i++) {
@@ -120,9 +120,9 @@ export default class extends Task {
 			if (slayerInfo.currentMaster === 2) {
 				let larransChance;
 				if (currentMonsterData!.combatLevel > 80) {
-					larransChance = (-(5 / 27) * currentMonsterData!.combatLevel + 115);
+					larransChance = -(5 / 27) * currentMonsterData!.combatLevel + 115;
 				} else {
-					larransChance = ((3 / 10) * ((80 - currentMonsterData!.combatLevel) ^ 2) + 100);
+					larransChance = (3 / 10) * ((80 - currentMonsterData!.combatLevel) ^ 2) + 100;
 				}
 				if (quantityLeft <= 0) {
 					for (let i = 0; i < slayerInfo.remainingQuantity!; i++) {
