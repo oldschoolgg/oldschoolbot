@@ -41,7 +41,6 @@ export default class extends BotCommand {
 
 	async checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
 		// Check if every user has the requirements for this monster.
-		const removedUsers: string[] = [];
 		const removedReasonStr: string[] = [];
 		const numberOfUsers = users.length;
 		let foodId = 0;
@@ -105,7 +104,6 @@ export default class extends BotCommand {
 			if (!checkReqsState) {
 				users.splice(users.indexOf(user), 1);
 				user.send(removedReasonStr.join(', '));
-				removedUsers.push(user.username);
 			} else {
 				await user.removeItemFromBank(foodId, amountOfFoodNeeded);
 
