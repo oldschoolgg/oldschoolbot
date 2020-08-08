@@ -705,8 +705,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			if (bankHasItem(bank, itemID(monster.consumedItem), quantity)) {
 				messages.push(`Removed ${quantity}x ${monster.consumedItem}'s from your bank`);
 				await msg.author.removeItemFromBank(itemID(monster.consumedItem), quantity);
-			}
-			else { 
+			} else {
 				quantity = bank[itemID(monster.consumedItem)];
 				messages.push(`Removed ${quantity}x ${monster.consumedItem}'s from your bank`);
 				await msg.author.removeItemFromBank(itemID(monster.consumedItem), quantity);
