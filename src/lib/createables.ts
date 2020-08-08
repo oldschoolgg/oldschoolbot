@@ -887,6 +887,17 @@ const Createables: Createable[] = [
 		}),
 		craftingLevel: 75,
 		unlockListName: 'Ring bling'
+	},
+	{
+		name: 'Dark totem',
+		inputItems: resolveNameBank({
+			'Dark totem top': 1,
+			'Dark totem middle': 1,
+			'Dark totem base': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dark totem': 1
+		})
 	}
 	/* , {
 		name: 'Toxic blowpipe (empty)',

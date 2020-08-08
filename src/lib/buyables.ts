@@ -400,6 +400,15 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 0,
 		gpCost: 100_000
+	},
+	{
+		name: 'Dwarf cannon set',
+		aliases: ['dwarf cannon', 'cannon'],
+		outputItems: {
+			[itemID('Dwarf cannon set')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 5_000_000
 	}
 ];
 
