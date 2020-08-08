@@ -231,7 +231,7 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000
 	},
 	{
-		name: '	Fungicide spray 10',
+		name: 'Fungicide spray 10',
 		aliases: ['Fungicide spray', 'fungi spray'],
 		outputItems: {
 			[itemID('Fungicide spray 10')]: 10

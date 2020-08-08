@@ -2,7 +2,7 @@ import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes, roll, addBanks } from '../../lib/util';
+import { noOp, saidYes, roll, addBanks, addItemToBank } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Monsters } from 'oldschooljs';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -34,6 +34,8 @@ export default class extends Task {
 		let xpReceived = 0;
 		let slayerPointsReceived = 0;
 		let superiorQuantity = 0;
+		let brimstoneKeys = 0;
+		let larransKeys = 0;
 		let newLevel = 0;
 		let alsoSlayerTask = false;
 
@@ -91,6 +93,51 @@ export default class extends Task {
 					}
 				}
 			}
+			// Check if konar task and rewards brimstone keys depending on monster combat lvl
+			if (slayerInfo.currentMaster === 6) {
+				let brimstoneChance;
+				if (currentMonsterData!.combatLevel > 100) {
+					brimstoneChance = (120 - currentMonsterData!.combatLevel / 5);
+				} else {
+					brimstoneChance = (100 + ((currentMonsterData!.combatLevel - 100) ^ 2) / 5);
+				}
+				if (quantityLeft <= 0) {
+					for (let i = 0; i < slayerInfo.remainingQuantity!; i++) {
+						if (roll(brimstoneChance)) {
+							brimstoneKeys++;
+						}
+					}
+				} else {
+					for (let i = 0; i < quantity; i++) {
+						if (roll(brimstoneChance)) {
+							brimstoneKeys++;
+						}
+					}
+				}
+			}
+
+			// Check if Krystilia task and rewards larrans keys depending on monster combat lvl
+			if (slayerInfo.currentMaster === 2) {
+				let larransChance;
+				if (currentMonsterData!.combatLevel > 80) {
+					larransChance = (-(5 / 27) * currentMonsterData!.combatLevel + 115);
+				} else {
+					larransChance = ((3 / 10) * ((80 - currentMonsterData!.combatLevel) ^ 2) + 100);
+				}
+				if (quantityLeft <= 0) {
+					for (let i = 0; i < slayerInfo.remainingQuantity!; i++) {
+						if (roll(larransChance)) {
+							larransKeys++;
+						}
+					}
+				} else {
+					for (let i = 0; i < quantity; i++) {
+						if (roll(larransChance)) {
+							larransKeys++;
+						}
+					}
+				}
+			}
 
 			if (quantityLeft > 0) {
 				const newSlayerInfo = {
@@ -145,6 +192,10 @@ export default class extends Task {
 		}
 
 		let loot = monster.table.kill(quantity - superiorQuantity);
+		// Adds amount of brimstone keys from tasks if any
+		loot = addItemToBank(loot, 23083, brimstoneKeys);
+		// Adds amount of larrans keys from tasks
+		loot = addItemToBank(loot, 23490, larransKeys);
 
 		if (monster.superiorTable) {
 			loot = addBanks([monster.superiorTable.kill(superiorQuantity), loot]);
