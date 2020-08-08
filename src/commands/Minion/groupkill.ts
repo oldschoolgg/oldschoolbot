@@ -39,28 +39,85 @@ export default class extends BotCommand {
 		return [quantity, duration, perKillTime];
 	}
 
-	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
+	async checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
 		// Check if every user has the requirements for this monster.
+		const removedUsers: string[] = [];
+		const removedReasonStr: string[] = [];
+		const numberOfUsers = users.length;
+		let foodId = 0;
+		let amountOfFoodNeeded = 0;
+
 		for (const user of users) {
+			let checkReqsState = true;
 			if (!user.hasMinion) {
-				throw `${user.username} doesn't have a minion, so they can't join!`;
+				checkReqsState = false;
+				removedReasonStr.push(
+					`${user.username} doesn't have a minion, so they can't join!`
+				);
 			}
 
 			if (user.minionIsBusy) {
-				throw `${user.username} is busy right now and can't join!`;
+				checkReqsState = false;
+				removedReasonStr.push(`${user.username} is busy right now and can't join!`);
 			}
 
 			if (user.isIronman) {
-				throw `${user.username} is an ironman, so they can't join!`;
+				checkReqsState = false;
+				removedReasonStr.push(`${user.username} is an ironman, so they can't join!`);
 			}
 
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 			if (!hasReqs) {
-				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
+				checkReqsState = false;
+				removedReasonStr.push(
+					`${user.username} doesn't have the requirements for this monster: ${reason}`
+				);
 			}
 
-			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity)) {
-				throw `${user.username} doesn't have enough food.`;
+			if (1 > 2) {
+				let [healAmountNeeded] = calculateMonsterFood(monster, user);
+				healAmountNeeded = Math.ceil(healAmountNeeded / numberOfUsers);
+
+				for (const food of Eatables) {
+					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
+					if (user.numItemsInBankSync(food.id) < amountNeeded) {
+						if (Eatables.indexOf(food) === Eatables.length - 1) {
+							checkReqsState = false;
+							removedReasonStr.push(
+								`${user.username} doesn't have enough food to kill ${
+									monster.name
+								} in this sized mass! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
+									quantity} per kill) You can use these food items: ${Eatables.map(
+									i => i.name
+								).join(', ')}.`
+							);
+						}
+
+						foodId = food.id;
+						amountOfFoodNeeded = amountNeeded;
+						continue;
+					}
+
+					break;
+				}
+			}
+
+			if (!checkReqsState) {
+				users.splice(users.indexOf(user), 1);
+				user.send(removedReasonStr.join(', '));
+				removedUsers.push(user.username);
+			} else {
+				await user.removeItemFromBank(foodId, amountOfFoodNeeded);
+
+				// Track this food cost in Economy Stats
+				await this.client.settings.update(
+					ClientSettings.EconomyStats.PVMCost,
+					addItemToBank(
+						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
+						foodId,
+						amountOfFoodNeeded
+					)
+				);
 			}
 		}
 	}
@@ -113,43 +170,6 @@ export default class extends BotCommand {
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
 
 		this.checkReqs(users, monster, quantity);
-
-		if (1 > 2) {
-			for (const user of users) {
-				let [healAmountNeeded] = calculateMonsterFood(monster, user);
-
-				healAmountNeeded = Math.ceil(healAmountNeeded / users.length);
-
-				for (const food of Eatables) {
-					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-					if (user.numItemsInBankSync(food.id) < amountNeeded) {
-						if (Eatables.indexOf(food) === Eatables.length - 1) {
-							throw `You don't have enough food to kill ${
-								monster.name
-							}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-								quantity} per kill) You can use these food items: ${Eatables.map(
-								i => i.name
-							).join(', ')}.`;
-						}
-						continue;
-					}
-
-					await user.removeItemFromBank(food.id, amountNeeded);
-
-					// Track this food cost in Economy Stats
-					await this.client.settings.update(
-						ClientSettings.EconomyStats.PVMCost,
-						addItemToBank(
-							this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-							food.id,
-							amountNeeded
-						)
-					);
-
-					break;
-				}
-			}
-		}
 
 		const data: GroupMonsterActivityTaskOptions = {
 			monsterID: monster.id,
