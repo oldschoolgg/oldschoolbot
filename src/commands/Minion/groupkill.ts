@@ -41,12 +41,13 @@ export default class extends BotCommand {
 
 	async checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
 		// Check if every user has the requirements for this monster.
-		const removedReasonStr: string[] = [];
 		const numberOfUsers = users.length;
+		let removedReasonStr: string[];
 		let foodId = 0;
 		let amountOfFoodNeeded = 0;
 
 		for (const user of users) {
+			removedReasonStr = [];
 			let checkReqsState = true;
 			if (!user.hasMinion) {
 				checkReqsState = false;
