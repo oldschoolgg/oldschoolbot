@@ -179,6 +179,30 @@ const backgroundImages: BankBackground[] = [
 		name: 'RS3',
 		image: null,
 		available: false
+	},
+	{
+		id: 24,
+		name: 'ps4',
+		image: null,
+		available: false
+	},
+	{
+		id: 25,
+		name: 'mac',
+		image: null,
+		available: false
+	},
+	{
+		id: 26,
+		name: 'weeb',
+		image: null,
+		available: false
+	},
+	{
+		id: 27,
+		name: 'kpop',
+		image: null,
+		available: false
 	}
 ];
 
