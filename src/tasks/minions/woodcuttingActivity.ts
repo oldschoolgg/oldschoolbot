@@ -1,7 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
-import { roll } from 'oldschooljs/dist/util/util';
 
-import { saidYes, noOp, rand, roll, multiplyBank } from '../../lib/util';
+import { saidYes, noOp, roll, multiplyBank } from '../../lib/util';
 import { Time, Emoji, Events } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
