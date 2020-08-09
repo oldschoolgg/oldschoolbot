@@ -6,11 +6,10 @@ import { Activity, Tasks } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import itemID from '../../lib/util/itemID';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -78,19 +77,7 @@ export default class extends BotCommand {
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
-		if (
-			hasArrayOfItemsEquipped(
-				[
-					'Graceful hood',
-					'Graceful top',
-					'Graceful legs',
-					'Graceful gloves',
-					'Graceful boots',
-					'Graceful cape'
-				].map(itemID),
-				msg.author.settings.get(UserSettings.Gear.Skilling)
-			)
-		) {
+		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
 			boosts.push(`10% for Graceful`);
 			duration *= 0.9;
 		}

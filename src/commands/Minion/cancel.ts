@@ -51,7 +51,7 @@ export default class extends BotCommand {
 				options
 			);
 		} catch (err) {
-			return cancelMsg.edit(`Halting cancelation of minion task.`);
+			return cancelMsg.edit(`Halting cancellation of minion task.`);
 		}
 
 		await removeSubTasksFromActivityTask(this.client, taskTicker, [currentTask.id]);

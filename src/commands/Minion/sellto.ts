@@ -2,7 +2,6 @@ import { KlasaMessage, CommandStore } from 'klasa';
 import { Util, Items } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import cleanItemName from '../../lib/util/cleanItemName';
 import { GuildMember } from 'discord.js';
 import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -20,7 +19,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 20,
 			usage:
-				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> <itemname:...string>',
+				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true
@@ -29,7 +28,7 @@ export default class extends BotCommand {
 
 	async run(
 		msg: KlasaMessage,
-		[buyerMember, price, quantity, itemName]: [GuildMember, number, number, string]
+		[buyerMember, price, quantity, itemArray]: [GuildMember, number, number, Item[]]
 	) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		if (buyerMember.user.isIronman) throw `Iron players can't be sold items.`;
@@ -44,7 +43,7 @@ export default class extends BotCommand {
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
-		const osItem = Items.find(item => stringMatches(item.name, cleanItemName(itemName)));
+		const osItem = Items.find(item => stringMatches(item.name, itemArray[0].name));
 		if (!osItem) throw `That item doesnt exist.`;
 
 		buyerMember.user.toggleBusy(true);

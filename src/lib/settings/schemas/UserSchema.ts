@@ -19,6 +19,7 @@ Client.defaultUserSchema
 	.add('monsterScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
 	.add('minigameScores', 'any', { default: {} })
+	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
 	.add('troll', 'boolean', { default: false })
 	.add('minion', folder =>

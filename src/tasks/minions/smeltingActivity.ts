@@ -20,7 +20,7 @@ export default class extends Task {
 		const bar = Smelting.Bars.find(bar => bar.id === barID);
 		if (!bar) return;
 
-		// If this bar has a chance of failing to smith, calculate that here.
+		// If this bar has a chance of failing to smelt, calculate that here.
 		const oldQuantity = quantity;
 		if (bar.chanceOfFail > 0) {
 			let newQuantity = 0;
@@ -44,7 +44,7 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		let str = `${user}, ${user.minionName} finished smithing ${quantity}x ${
+		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${
 			bar.name
 		}, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName

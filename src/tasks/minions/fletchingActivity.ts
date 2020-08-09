@@ -10,7 +10,7 @@ import Fletching from '../../lib/skilling/skills/fletching/fletching';
 
 export default class extends Task {
 	async run({
-		fletchableID,
+		fletchableName,
 		quantity,
 		userID,
 		channelID,
@@ -21,7 +21,7 @@ export default class extends Task {
 		const currentLevel = user.skillLevel(SkillsEnum.Fletching);
 
 		const fletchableItem = Fletching.Fletchables.find(
-			fletchable => fletchable.id === fletchableID
+			fletchable => fletchable.name === fletchableName
 		);
 
 		if (!fletchableItem) return;

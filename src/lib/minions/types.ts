@@ -10,6 +10,7 @@ import { Bank, ArrayItemsResolved } from '../types';
 import { PerkTier } from '../constants';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { LevelRequirements } from '../skilling/types';
+import { GearSetupTypes, OffenceGearStat, GearStat } from '../gear/types';
 
 export interface BankBackground {
 	image: Image | null;
@@ -65,6 +66,13 @@ export interface KillableMonster {
 	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
+	/**
+	 * How much healing (health points restored) is needed per kill.
+	 */
+	healAmountNeeded?: number;
+	attackStyleToUse?: GearSetupTypes;
+	attackStylesUsed?: OffenceGearStat[];
+	minimumGearRequirements?: Partial<{ [key in GearStat]: number }>;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {

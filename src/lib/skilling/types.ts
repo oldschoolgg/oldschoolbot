@@ -70,6 +70,7 @@ export interface Fish {
 }
 
 export interface Course {
+	id: number;
 	name: string;
 	level: number;
 	xp: number;
@@ -77,6 +78,7 @@ export interface Course {
 	lapTime: number;
 	petChance: number;
 	aliases: string[];
+	qpRequired?: number;
 }
 
 export interface Rune {
@@ -97,7 +99,12 @@ export interface Cookable {
 	stopBurnAt: number;
 	stopBurnAtCG: number;
 	burntCookable: number;
-	healAmount?: number;
+}
+
+export interface Eatable {
+	name: string;
+	id: number;
+	healAmount: number;
 }
 
 export interface SmithedBar {

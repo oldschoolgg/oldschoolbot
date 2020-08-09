@@ -1,15 +1,25 @@
 import { KlasaUser } from 'klasa';
 
 import { KillableMonster } from '../types';
-import { calcPercentOfNum } from '../../util';
+import reducedTimeFromKC from './reducedTimeFromKC';
+import { UserSettings } from '../../settings/types/UserSettings';
 
 export default function reducedTimeForGroup(users: KlasaUser[], monster: KillableMonster) {
-	let perKillTime = monster.timeToFinish;
+	let reductionMultiplier = 0;
 
-	// Monster is 40% faster to kill per user in the group.
-	for (let i = 1; i < users.length; i++) {
-		perKillTime -= calcPercentOfNum(40, perKillTime);
+	for (let i = 0; i < users.length; i++) {
+		const userKc = users[i].settings.get(UserSettings.MonsterScores)[monster.id] ?? 1;
+		const [, userKcReduction] = reducedTimeFromKC(monster, userKc);
+		let userItemBoost = 0;
+		if (monster.itemInBankBoosts) {
+			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
+				if (!users[i].hasItemEquippedOrInBank(parseInt(itemID))) continue;
+				userItemBoost += boostAmount;
+			}
+		}
+		// 1 per user, i/15 for incentive to group (more people compounding i bonus), then add the users kc and item boost percent
+		reductionMultiplier += 1 + i / 15 + userKcReduction / 100 + userItemBoost / 100;
 	}
 
-	return perKillTime;
+	return Math.max(Math.floor(monster.timeToFinish / reductionMultiplier), monster.respawnTime!);
 }

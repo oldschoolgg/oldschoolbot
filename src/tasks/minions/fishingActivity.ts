@@ -32,7 +32,7 @@ export default class extends Task {
 				if (
 					roll(255 / (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 70 &&
-					user.skillLevel(SkillsEnum.Agility) >= 48
+					user.skillLevel(SkillsEnum.Agility) >= 45
 				) {
 					xpReceived += 80;
 					agilityXpReceived += 7;

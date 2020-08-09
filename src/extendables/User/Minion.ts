@@ -17,7 +17,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	BuryingActivityTaskOptions,
-	FletchingActivityTaskOptions
+	FletchingActivityTaskOptions,
+	AlchingActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -33,12 +34,12 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
-import { Emoji, Activity, Time } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import Fletching from '../../lib/skilling/skills/fletching/fletching';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { itemNameFromID } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -266,12 +267,9 @@ export default class extends Extendable {
 			}
 			case Activity.Fletching: {
 				const data = currentTask as FletchingActivityTaskOptions;
-				const fletchable = Fletching.Fletchables.find(
-					item => item.id === data.fletchableID
-				);
 
 				return `${this.minionName} is currently fletching ${data.quantity}x ${
-					fletchable!.name
+					data.fletchableName
 				}. ${formattedDuration} Your ${
 					Emoji.Fletching
 				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
@@ -279,6 +277,14 @@ export default class extends Extendable {
 
 			case Activity.Wintertodt: {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
+			}
+
+			case Activity.Alching: {
+				const data = currentTask as AlchingActivityTaskOptions;
+
+				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
+					data.itemID
+				)}. ${formattedDuration}`;
 			}
 		}
 	}

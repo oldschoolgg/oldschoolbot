@@ -4,15 +4,12 @@ import { BotCommand } from '../../lib/BotCommand';
 import { stringMatches, formatDuration, rand, bankHasItem } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Runecraft, {
-	RunecraftActivityTaskOptions,
-	gracefulItems
-} from '../../lib/skilling/skills/runecraft';
+import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { SkillsEnum } from '../../lib/skilling/types';
+import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -66,12 +63,7 @@ export default class extends BotCommand {
 
 		let { tripLength } = rune;
 		const boosts = [];
-		if (
-			hasArrayOfItemsEquipped(
-				gracefulItems.map(itemID),
-				msg.author.settings.get(UserSettings.Gear.Skilling)
-			)
-		) {
+		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
 			tripLength -= rune.tripLength * 0.1;
 			boosts.push(`10% for Graceful`);
 		}

@@ -77,7 +77,7 @@ export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
-	fletchableID: number;
+	fletchableName: string;
 	channelID: string;
 	quantity: number;
 }
@@ -92,6 +92,13 @@ export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	channelID: string;
 	quantity: number;
+}
+
+export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
+	itemID: number;
+	quantity: number;
+	channelID: string;
+	alchValue: number;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
@@ -155,4 +162,5 @@ export type MinionActivityTask =
 	| Tasks.OfferingActivity
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
-	| Tasks.WintertodtActivity;
+	| Tasks.WintertodtActivity
+	| Tasks.AlchingActivity;
