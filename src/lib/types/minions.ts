@@ -1,6 +1,7 @@
 import { Activity, Tasks } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
+import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -133,8 +134,20 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
+export interface RaidsActivityTaskOptions extends ActivityTaskOptions {
+	channelID: string;
+	quantity: number;
+	partyLeaderID: string;
+	team: TeamMember[];
+	challengeMode: boolean;
+}
+
 export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
+	subTasks: (
+		| FightCavesActivityTaskOptions
+		| WintertodtActivityTaskOptions
+		| RaidsActivityTaskOptions
+	)[];
 }
 
 export type TickerTaskData =
@@ -163,4 +176,5 @@ export type MinionActivityTask =
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity;
+	| Tasks.AlchingActivity
+	| Tasks.RaidsActivity;
