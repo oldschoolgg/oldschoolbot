@@ -19,26 +19,26 @@ export default class extends Command {
 	}
 
 	async run(message: KlasaMessage, [contestants = []]: [KlasaUser[]]): Promise<KlasaMessage> {
-		const autoFilled = message.flagArgs.autofill;
-
-		if (autoFilled) {
+		// auto fill using authors from the last 100 messages if none are given to the command
+		if (contestants.length === 0) {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
 
 			for (const { author } of messages.values()) {
 				if (author && !contestants.includes(author)) contestants.push(author);
 			}
-		} else if (contestants.length === 0) {
-			throw `Please specify some players for Last Man Standing, like so: \`${message.guild!.settings.get(
-				GuildSettings.Prefix
-			)}lms @Bob @Mark @Jim @Kyra\``;
 		}
 
 		const filtered = new Set(contestants);
 		if (filtered.size !== contestants.length) throw 'I am sorry, but a user cannot play twice.';
 		if (this.playing.has(message.channel.id))
 			throw 'I am sorry, but there is a game in progress in this channel, try again when it finishes.';
-		if (filtered.size < 2 || filtered.size > 48)
-			throw `I am sorry but the amount of players is less than 4 or greater than 48.`;
+		if (filtered.size < 4) {
+			throw `Please specify some players for Last Man Standing, like so: \`${message.guild!.settings.get(
+				GuildSettings.Prefix
+			)}lms @Bob @Mark @Jim @Kyra\`, you need at least 4 contestants`;
+		} else if (filtered.size > 48) {
+			throw `I am sorry but the amount of players can be no greater than 48.`;
+		}
 		this.playing.add(message.channel.id);
 
 		let gameMessage: KlasaMessage | null = null;
@@ -76,6 +76,7 @@ export default class extends Command {
 
 		// The match finished with one remaining player
 		const winner = game.contestants.values().next().value;
+		this.playing.delete(message.channel.id);
 		return message.send(`And the Last Man Standing is... ${winner.username}!`);
 	}
 
