@@ -57,7 +57,7 @@ const randomPatMessage = (minionName: string) =>
 
 const { floor, ceil } = Math;
 
-const slayerHelmets = resolveItems([
+const BmaskSlayerHelmets = resolveItems([
 	'Black mask',
 	'Black mask (i)',
 	'Slayer helmet',
@@ -614,7 +614,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			(monster.name.toLowerCase() === slayerInfo.currentTask?.name.toLowerCase() ||
 				alsoSlayerTask)
 		) {
-			for (const helmet of slayerHelmets) {
+			for (const helmet of BmaskSlayerHelmets) {
 				if (msg.author.hasItemEquippedAnywhere(helmet)) {
 					if (monster.slayerHelmBoost) {
 						timeToFinish *= (100 - monster.slayerHelmBoost) / 100;
