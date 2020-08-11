@@ -3,6 +3,7 @@ import { KillableMonster } from '../../../types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
+import { NosePegSlayerHelmets, FaceMaskSlayerHelmets } from '../../../../skilling/skills/slayer/slayerHelmets';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const VannakaMonsters: KillableMonster[] = [
@@ -16,15 +17,14 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Nose peg', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([NosePegSlayerHelmets]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 11
-		},
 		levelRequirements: {
 			slayer: 60
 		},
+		slayerHelmBoost: 11,
+		superiorName: Monsters.AbhorrentSpectre.name,
+		superiorId: Monsters.AbhorrentSpectre.id,
 		superiorTable: Monsters.AbhorrentSpectre
 	},
 	{
@@ -37,16 +37,17 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Abyssal head', 'Abyssal dagger']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 15
-		},
 		levelRequirements: {
 			slayer: 85
 		},
-		superiorTable: Monsters.GreaterAbyssalDemon
+		slayerHelmBoost: 15,
+		superiorName:  Monsters.GreaterAbyssalDemon.name,
+		superiorId:  Monsters.GreaterAbyssalDemon.id,
+		superiorTable: Monsters.GreaterAbyssalDemon,
+		barrageAmount: 8,
+		barrageBoost: 40
 	},
 	{
 		id: Monsters.Ankou.id,
@@ -55,16 +56,13 @@ const VannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.Ankou,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 4,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.BabyBlueDragon.id,
@@ -76,13 +74,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 3,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.BabyGreenDragon.id,
@@ -91,16 +86,13 @@ const VannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 17,
 		table: Monsters.BabyGreenDragon,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: true,
+		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 3,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.Basilisk.id,
@@ -113,14 +105,14 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Basilisk head']),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 40
 		},
+		slayerHelmBoost: 10,
+		superiorName: Monsters.MonstrousBasilisk.name,
+		superiorId: Monsters.MonstrousBasilisk.id,
 		superiorTable: Monsters.MonstrousBasilisk
 	},
 	{
@@ -133,15 +125,15 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
+		notifyDrops: resolveItems(['Basilisk head', 'Basilisk jaw']),
 		qpRequired: 120,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 60
 		},
+		slayerHelmBoost: 12,
+		superiorName: Monsters.BasiliskSentinel.name,
+		superiorId: Monsters.BasiliskSentinel.id,
 		superiorTable: Monsters.BasiliskSentinel
 	},
 	{
@@ -154,16 +146,16 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 50
 		},
-		superiorTable: Monsters.InsatiableBloodveld
+		slayerHelmBoost: 10,
+		superiorName: Monsters.InsatiableBloodveld.name,
+		superiorId: Monsters.InsatiableBloodveld.id,
+		superiorTable: Monsters.InsatiableBloodveld,
+		cannonballs: 4,
+		cannonBoost: 15
 	},
 	{
 		id: Monsters.BlueDragon.id,
@@ -178,9 +170,11 @@ const VannakaMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Zamorakian spear')]: 10,
-			[itemID('Slayer helmet')]: 10
-		}
+			[itemID('Dragon hunter crossbow')]: 10
+		},
+		slayerHelmBoost: 10,
+		cannonballs: 4,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.BrineRat.id,
@@ -192,15 +186,13 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 3,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 47
-		}
+		},
+		slayerHelmBoost: 10,
+		cannonballs: 6,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.BronzeDragon.id,
@@ -213,12 +205,10 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 8,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.BrutalBlueDragon.id,
@@ -231,12 +221,12 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.BrutalGreenDragon.id,
@@ -249,12 +239,8 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.Crocodile.id,
@@ -267,31 +253,28 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Waterskin(4)']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 5,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Dagannoth.id,
 		name: Monsters.Dagannoth.name,
 		aliases: Monsters.Dagannoth.aliases,
-		timeToFinish: Time.Second * 12,
+		timeToFinish: Time.Second * 26,
 		table: Monsters.Dagannoth,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 2,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10,
 			[itemID('Dragonbone necklace')]: 2
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		barrageAmount: 7,
+		barrageBoost: 30
 	},
 	{
 		id: Monsters.DagannothSpawn.id,
@@ -303,13 +286,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 2,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 7
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 7,
+		barrageAmount: 4,
+		barrageBoost: 40
 	},
 	{
 		id: Monsters.DagganothFledgeling.id,
@@ -321,13 +301,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 2,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
+		barrageAmount: 8,
+		barrageBoost: 40
 	},
 	{
 		id: Monsters.DeviantSpectre.id,
@@ -339,15 +316,14 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Nose peg', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([NosePegSlayerHelmets]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 60
 		},
+		slayerHelmBoost: 12,
+		superiorName: Monsters.RepugnantSpectre.name,
+		superiorId: Monsters.RepugnantSpectre.id,
 		superiorTable: Monsters.RepugnantSpectre
 	},
 	{
@@ -360,16 +336,18 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([FaceMaskSlayerHelmets]),
+		notifyDrops: resolveItems(['Dragon chainbody', 'Dust battlestaff']),
 		qpRequired: 4,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 65
 		},
-		superiorTable: Monsters.ChokeDevil
+		slayerHelmBoost: 10,
+		superiorName: Monsters.ChokeDevil.name,
+		superiorId: Monsters.ChokeDevil.id,
+		superiorTable: Monsters.ChokeDevil,
+		barrageAmount: 5,
+		barrageBoost: 50
 	},
 	{
 		id: Monsters.ElfArcher.id,
@@ -381,13 +359,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		qpRequired: 22,
+		slayerHelmBoost: 10,
+		cannonballs: 5,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.ElfWarrior.id,
@@ -399,13 +374,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		qpRequired: 22,
+		slayerHelmBoost: 10,
+		cannonballs: 5,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.FeverSpider.id,
@@ -417,15 +389,14 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: resolveItems(['Slayer gloves']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
 		levelRequirements: {
 			slayer: 42
-		}
+		},
+		slayerHelmBoost: 8,
+		cannonballs: 3,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.FireGiant.id,
@@ -434,14 +405,14 @@ const VannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 16,
 		table: Monsters.FireGiant,
 		emoji: '',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		}
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.Gargoyle.id,
@@ -454,35 +425,27 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([['Rock hammer', 'Rock thrownhammer', 'Granite hammer']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 75
 		},
+		slayerHelmBoost: 12,
+		superiorName: Monsters.MarbleGargoyle.name,
+		superiorId: Monsters.MarbleGargoyle.id,
 		superiorTable: Monsters.MarbleGargoyle
 	},
 	{
 		id: Monsters.GiantSeaSnake.id,
 		name: Monsters.GiantSeaSnake.name,
 		aliases: Monsters.GiantSeaSnake.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 55,
 		table: Monsters.GiantSeaSnake,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
-		canBeKilled: true,
+		canBeKilled: false,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Antidote++(4)']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {
-			slayer: 40
-		}
 	},
 	{
 		id: Monsters.GreaterNechryael.id,
@@ -494,17 +457,19 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 13,
 			[itemID('Arclight')]: 10
 		},
 		levelRequirements: {
 			slayer: 80
 		},
-		superiorTable: Monsters.Nechryarch
+		slayerHelmBoost: 13,
+		superiorName: Monsters.Nechryarch.name,
+		superiorId: Monsters.Nechryarch.id,
+		superiorTable: Monsters.Nechryarch,
+		barrageAmount: 12,
+		barrageBoost: 50
 	},
 	{
 		id: Monsters.GreenDragon.id,
@@ -517,12 +482,10 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 4,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.HarpieBugSwarm.id,
@@ -535,15 +498,14 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Lit bug lantern']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 33,
 			firemaking: 33
-		}
+		},
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.Hellhound.id,
@@ -555,13 +517,11 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Smouldering stone']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 14
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 14,
+		cannonballs: 5,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.IceGiant.id,
@@ -570,16 +530,14 @@ const VannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 27,
 		table: Monsters.IceGiant,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
+		cannonballs: 5,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.IceTroll.id,
@@ -591,13 +549,13 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
+			[itemID('Neitiznot shield')]: 7
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 8,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.InfernalMage.id,
@@ -609,15 +567,13 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
 		levelRequirements: {
 			slayer: 45
 		},
+		slayerHelmBoost: 8,
+		superiorName: Monsters.MalevolentMage.name,
+		superiorId: Monsters.MalevolentMage.id,
 		superiorTable: Monsters.MalevolentMage
 	},
 	{
@@ -630,13 +586,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		qpRequired: 12,
+		slayerHelmBoost: 10,
+		cannonballs: 7,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.IorwerthWarrior.id,
@@ -648,13 +601,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		qpRequired: 12,
+		slayerHelmBoost: 10,
+		cannonballs: 7,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Jelly.id,
@@ -666,16 +616,16 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 52
 		},
-		superiorTable: Monsters.VitreousJelly
+		slayerHelmBoost: 10,
+		superiorName: Monsters.VitreousJelly.name,
+		superiorId: Monsters.VitreousJelly.id,
+		superiorTable: Monsters.VitreousJelly,
+		barrageAmount: 4,
+		barrageBoost: 40
 	},
 	{
 		id: Monsters.JungleHorror.id,
@@ -687,13 +637,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 20,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 7
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 7,
+		cannonballs: 3,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.Kurask.id,
@@ -708,14 +655,14 @@ const VannakaMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Leaf-bladed spear', 'Leaf-bladed battleaxe', 'Leaf-bladed sword']
 		]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Kurask head']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 70
 		},
+		slayerHelmBoost: 10,
+		superiorName: Monsters.KingKurask.name,
+		superiorId: Monsters.KingKurask.id,
 		superiorTable: Monsters.KingKurask
 	},
 	{
@@ -725,16 +672,13 @@ const VannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 22,
 		table: Monsters.LesserDemon,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.Molanisk.id,
@@ -747,14 +691,11 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Slayer bell']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
 		levelRequirements: {
 			slayer: 39
-		}
+		},
+		slayerHelmBoost: 8
 	},
 	{
 		id: Monsters.MossGiant.id,
@@ -763,16 +704,13 @@ const VannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 30,
 		table: Monsters.MossGiant,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 7,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.MountainTroll.id,
@@ -784,13 +722,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 4,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Mourner.id,
@@ -802,13 +737,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 4
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 4,
+		cannonballs: 2,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.MutatedBloodveld.id,
@@ -820,16 +752,16 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
+		qpRequired: 8,
 		levelRequirements: {
 			slayer: 50
 		},
-		superiorTable: Monsters.InsatiableMutatedBloodveld
+		slayerHelmBoost: 12,
+		superiorName: Monsters.InsatiableMutatedBloodveld.name,
+		superiorId: Monsters.InsatiableMutatedBloodveld.id,
+		superiorTable: Monsters.InsatiableMutatedBloodveld,
+		cannonballs: 12,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Nechryael.id,
@@ -841,17 +773,19 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 13,
 			[itemID('Arclight')]: 10
 		},
 		levelRequirements: {
 			slayer: 80
 		},
-		superiorTable: Monsters.Nechryarch
+		slayerHelmBoost: 12,
+		superiorName: Monsters.Nechryarch.name,
+		superiorId: Monsters.Nechryarch.id,
+		superiorTable: Monsters.Nechryarch,
+		barrageAmount: 5,
+		barrageBoost: 40
 	},
 	{
 		id: Monsters.Ogre.id,
@@ -863,13 +797,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 3,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.OgressShaman.id,
@@ -881,13 +812,8 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.OgressWarrior.id,
@@ -899,13 +825,8 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Otherworldlybeing.id,
@@ -917,13 +838,8 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8
 	},
 	/*
 	{
@@ -998,12 +914,10 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Antidote++(4)']),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		qpRequired: 57,
+		slayerHelmBoost: 10,
+		cannonballs: 3,
+		cannonBoost: 15
 	},
 	{
 		id: Monsters.SeaSnakeYoung.id,
@@ -1016,12 +930,10 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Antidote++(4)']),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		qpRequired: 57,
+		slayerHelmBoost: 10,
+		cannonballs: 5,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.ShadowWarrior.id,
@@ -1033,13 +945,10 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		qpRequired: 111,
+		slayerHelmBoost: 10,
+		cannonballs: 4,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.SpiritualMage.id,
@@ -1051,13 +960,12 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
+		levelRequirements: {
+			agility: 60,
+			slayer: 83
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.SpiritualRanger.id,
@@ -1069,15 +977,12 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
+			agility: 60,
 			slayer: 63
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.SpiritualWarrior.id,
@@ -1089,15 +994,12 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
+			agility: 60,
 			slayer: 68
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.TerrorDog.id,
@@ -1110,14 +1012,11 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Slayer ring (8)']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
 		levelRequirements: {
 			slayer: 40
-		}
+		},
+		slayerHelmBoost: 8
 	},
 	{
 		id: Monsters.TrollGeneral.id,
@@ -1129,13 +1028,8 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.Turoth.id,
@@ -1150,14 +1044,16 @@ const VannakaMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Leaf-bladed spear', 'Leaf-bladed battleaxe', 'Leaf-bladed sword']
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
+			[itemID('Leaf-bladed battleaxe')]: 5
 		},
 		levelRequirements: {
 			slayer: 55
 		},
+		slayerHelmBoost: 10,
+		superiorName: Monsters.SpikedTuroth.name,
+		superiorId: Monsters.SpikedTuroth.id,
 		superiorTable: Monsters.SpikedTuroth
 	},
 	{
@@ -1174,15 +1070,16 @@ const VannakaMonsters: KillableMonster[] = [
 			["Black d'hide body", "Karil's leathertop"],
 			["Black d'hide chaps", "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 52
 		},
-		superiorTable: Monsters.VitreousWarpedJelly
+		slayerHelmBoost: 10,
+		superiorName: Monsters.VitreousWarpedJelly.name,
+		superiorId: Monsters.VitreousWarpedJelly.id,
+		superiorTable: Monsters.VitreousWarpedJelly,
+		barrageAmount: 8,
+		barrageBoost: 40
 	},
 	{
 		id: Monsters.Werewolf.id,
@@ -1194,13 +1091,11 @@ const VannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
+			[itemID('Wolfbane')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	}
 ];
 

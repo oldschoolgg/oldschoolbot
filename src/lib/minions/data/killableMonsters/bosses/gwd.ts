@@ -29,6 +29,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
+		slayerHelmBoost: 10,
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
@@ -60,6 +61,7 @@ const killableBosses: KillableMonster[] = [
 			agility: 70
 		},
 		uniques: [...bosses.Saradomin, ...bosses.Shards],
+		slayerHelmBoost: 10,
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
@@ -88,6 +90,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		uniques: [...bosses.Arma, ...bosses.Shards],
+		slayerHelmBoost: 10,
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackSlash],
@@ -116,6 +119,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		uniques: [...bosses.Zammy, ...bosses.Shards],
+		slayerHelmBoost: 10,
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackSlash],

@@ -1,8 +1,9 @@
 import { Monsters } from 'oldschooljs';
 import { KillableMonster } from '../../../types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import itemID from '../../../../util/itemID';
+// import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
+import { SpinyHelmetSlayerHelmets } from '../../../../skilling/skills/slayer/slayerHelmets';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const MazchnaMonsters: KillableMonster[] = [
@@ -16,13 +17,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 4,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Catablepon.id,
@@ -34,13 +30,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 7
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 7
 	},
 	{
 		id: Monsters.Cockatrice.id,
@@ -53,14 +44,13 @@ const MazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
 		levelRequirements: {
 			slayer: 25
 		},
+		slayerHelmBoost: 8,
+		superiorName: Monsters.Cockathrice.name,
+		superiorId: Monsters.Cockathrice.id,
 		superiorTable: Monsters.Cockathrice
 	},
 	{
@@ -73,13 +63,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.EarthWarrior.id,
@@ -91,15 +76,13 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
 		levelRequirements: {
 			agility: 15
-		}
+		},
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -111,13 +94,10 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 3,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.FiyrShade.id,
@@ -129,13 +109,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 4,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.FleshCrawler.id,
@@ -147,13 +122,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.Ghoul.id,
@@ -165,13 +135,10 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 6,
+		cannonballs: 3,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.HillGiant.id,
@@ -183,31 +150,25 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		barrageAmount: 3,
+		barrageBoost: 30
 	},
 	{
 		id: Monsters.Hobgoblin.id,
 		name: Monsters.Hobgoblin.name,
 		aliases: Monsters.Hobgoblin.aliases,
-		timeToFinish: Time.Second * 22,
+		timeToFinish: Time.Second * 27,
 		table: Monsters.Hobgoblin,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.IceWarrior.id,
@@ -219,13 +180,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8
 	},
 	{
 		id: Monsters.Killerwatt.id,
@@ -238,14 +194,11 @@ const MazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: resolveItems(['Insulated boots']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 4,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
 		levelRequirements: {
 			slayer: 37
-		}
+		},
+		slayerHelmBoost: 8
 	},
 	{
 		id: Monsters.LoarShade.id,
@@ -257,13 +210,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 4,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Mogre.id,
@@ -276,14 +224,13 @@ const MazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Fishing explosive']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 10,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 32
-		}
+		},
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 15
 	},
 	{
 		id: Monsters.PhrinShade.id,
@@ -295,13 +242,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 4,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Pyrefiend.id,
@@ -313,15 +255,14 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems(["Black d'hide body", "Black d'hide chaps"]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: resolveItems(["Black d'hide body", "Black d'hide chaps"]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 30
 		},
+		slayerHelmBoost: 10,
+		superiorName: Monsters.FlamingPyrelord.name,
+		superiorId: Monsters.FlamingPyrelord.id,
 		superiorTable: Monsters.FlamingPyrelord
 	},
 	{
@@ -334,16 +275,17 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems(["Black d'hide body", "Black d'hide chaps"]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: resolveItems(["Black d'hide body", "Black d'hide chaps"]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 30
 		},
-		superiorTable: Monsters.InfernalPyrelord
+		slayerHelmBoost: 10,
+		superiorName: Monsters.InfernalPyrelord.name,
+		superiorId: Monsters.InfernalPyrelord.id,
+		superiorTable: Monsters.InfernalPyrelord,
+		cannonballs: 4,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.RiylShade.id,
@@ -355,13 +297,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 4,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Rockslug.id,
@@ -374,14 +311,13 @@ const MazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([['Bag of salt', 'Brine sabre']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 7
-		},
 		levelRequirements: {
 			slayer: 20
 		},
+		slayerHelmBoost: 7,
+		superiorName: Monsters.GiantRockslug.name,
+		superiorId: Monsters.GiantRockslug.id,
 		superiorTable: Monsters.GiantRockslug
 	},
 	{
@@ -394,13 +330,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.VampyreJuvinate.id,
@@ -412,13 +343,9 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([['Ivandis flail', 'Blisterwood flail', 'Dark bow']]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 7
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 7
 	},
 	{
 		id: Monsters.Vyrewatch.id,
@@ -431,12 +358,8 @@ const MazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([['Ivandis flail', 'Blisterwood flail', 'Dark bow']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.VyrewatchSentinel.id,
@@ -449,12 +372,9 @@ const MazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([['Ivandis flail', 'Blisterwood flail', 'Dark bow']]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Blood shard']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 13
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 13
 	},
 	{
 		id: Monsters.WallBeast.id,
@@ -466,15 +386,12 @@ const MazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([SpinyHelmetSlayerHelmets]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 35
-		}
+		},
+		slayerHelmBoost: 10
 	}
 ];
 

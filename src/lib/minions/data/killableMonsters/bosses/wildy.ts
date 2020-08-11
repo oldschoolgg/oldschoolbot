@@ -26,7 +26,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
 			[itemID('Berserker ring')]: 2
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -48,7 +49,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 3
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -70,7 +72,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 3
-		}
+		},
+		slayerHelmBoost: 10,
+		cannonballs: 20,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -91,7 +96,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Archers ring')]: 3,
 			[itemID('Barrows gloves')]: 3
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -108,7 +114,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID("Karil's leathertop")]: 3,
 			[itemID("Karil's leatherskirt")]: 3
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -123,7 +130,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 10
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -155,7 +163,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Armadyl crossbow')]: 10
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -171,7 +180,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 10
-		}
+		},
+		slayerHelmBoost: 10
 	}
 ];
 

@@ -32,7 +32,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Vorkath.id,
@@ -52,7 +53,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -84,7 +86,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.KalphiteQueen.id,
@@ -108,7 +111,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -137,6 +141,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
+		slayerHelmBoost: 10,
 		minimumGearRequirements: {
 			[GearStat.AttackStab]: 85,
 			[GearStat.DefenceCrush]: 150
@@ -166,13 +171,13 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Spectral spirit shield')]: 10,
 			[itemID('Bandos chestplate')]: 5,
-			[itemID('Bandos tassets')]: 5,
-			[itemID('Slayer helmet')]: 10
+			[itemID('Bandos tassets')]: 5
 		},
 		levelRequirements: {
 			prayer: 43,
 			slayer: 91
 		},
+		slayerHelmBoost: 10,
 		slayerOnly: true
 	},
 	{
@@ -186,18 +191,17 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems(['Bandos chestplate', 'Bandos tassets']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 4,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 5,
 			[itemID('Scythe of vitur')]: 5,
-			[itemID('Arclight')]: 10,
-			[itemID('Slayer helmet')]: 10
+			[itemID('Arclight')]: 10
 		},
 		levelRequirements: {
 			prayer: 43,
 			slayer: 85
 		},
+		slayerHelmBoost: 10,
 		slayerOnly: true
 	},
 	{
@@ -216,17 +220,17 @@ const killableBosses: KillableMonster[] = [
 			'Armadyl chainskirt',
 			'Armadyl chestplate'
 		]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Jar of chemicals', 'Ikkle hydra']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Twisted bow')]: 15,
-			[itemID('Ring of the gods')]: 3,
-			[itemID('Slayer helmet')]: 10
+			[itemID('Ring of the gods')]: 3
 		},
 		levelRequirements: {
 			prayer: 43,
 			slayer: 95
 		},
+		slayerHelmBoost: 10,
 		slayerOnly: true
 	},
 	{
@@ -246,16 +250,16 @@ const killableBosses: KillableMonster[] = [
 			['Armadyl chainskirt', "Karil's leatherskirt"],
 			['Armadyl chestplate', "Karil's leathertop"]
 		]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Noon', 'Jar of stone']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10,
 			[itemID('Saradomin godsword')]: 5
 		},
 		levelRequirements: {
 			prayer: 43,
 			slayer: 75
 		},
+		slayerHelmBoost: 10,
 		slayerOnly: true
 	},
 	{
@@ -269,14 +273,15 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems(["Karil's leatherskirt", "Karil's leathertop", 'Knife']),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
+			[itemID('Abyssal bludgeon')]: 10
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.ThermonuclearSmokeDevil.id,
@@ -289,16 +294,16 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems(["Ahrim's robeskirt", "Ahrim's robetop"]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Pet smoke devil']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10,
 			[itemID('Occult necklace')]: 5
 		},
 		levelRequirements: {
 			prayer: 49,
 			slayer: 93
 		},
+		slayerHelmBoost: 10,
 		slayerOnly: true
 	},
 	{
@@ -314,7 +319,8 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: resolveItems(['Giant key']),
 		notifyDrops: resolveItems(['Hill giant club']),
 		qpRequired: 0,
-		consumedItem: 'Giant key'
+		consumedItem: 'Giant key',
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Bryophyta.id,
@@ -329,7 +335,8 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: resolveItems(['Mossy key']),
 		notifyDrops: resolveItems(["Bryophyta's essence"]),
 		qpRequired: 0,
-		consumedItem: 'Mossy key'
+		consumedItem: 'Mossy key',
+		slayerHelmBoost: 10
 	}
 ];
 

@@ -505,11 +505,11 @@ const vannakaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Giant Sea Snake',
+		name: 'Sea Snake Hatchling',
 		amount: [60, 120],
 		weight: 6,
-		alternatives: ['Sea Snake Hatchling', 'Sea Snake Young'],
-		Id: [Monsters.GiantSeaSnake.id, Monsters.SeaSnakeHatchling.id, Monsters.SeaSnakeYoung.id],
+		alternatives: ['Sea Snake Young'],
+		Id: [Monsters.SeaSnakeHatchling.id, Monsters.SeaSnakeYoung.id],
 		combatLvl: 50,
 		slayerLvl: 40,
 		questPoints: 60,

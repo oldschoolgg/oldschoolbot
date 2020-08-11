@@ -17,14 +17,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Fungicide spray 10']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 57
-		}
+		},
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.Aviansie.id,
@@ -36,13 +33,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
+		levelRequirements: {
+			agility: 60
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.BlackDemon.id,
@@ -54,13 +49,10 @@ const ChaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
+		cannonballs: 5,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -79,15 +71,16 @@ const ChaeldarMonsters: KillableMonster[] = [
 			"Guthan's platebody",
 			"Guthan's helm"
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 20,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 58
 		},
-		superiorTable: Monsters.CaveAbomination
+		slayerHelmBoost: 12,
+		superiorName: Monsters.CaveAbomination.name,
+		superiorId: Monsters.CaveAbomination.id,
+		superiorTable: Monsters.CaveAbomination,
+		cannonballs: 6,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.CaveKraken.id,
@@ -99,15 +92,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 87
 		},
+		slayerHelmBoost: 10,
 		slayerOnly: true
 	},
 	{
@@ -129,14 +118,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 				'Ancient wyvern shield'
 			]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 2,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 82
-		}
+		},
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.FossilIslandWyvernLongTailed.id,
@@ -157,14 +143,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 				'Ancient wyvern shield'
 			]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 2,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 66
-		}
+		},
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.FossilIslandWyvernSpitting.id,
@@ -185,14 +168,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 				'Ancient wyvern shield'
 			]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 2,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 66
-		}
+		},
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.FossilIslandWyvernTaloned.id,
@@ -213,14 +193,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 				'Ancient wyvern shield'
 			]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 2,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 66
-		}
+		},
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.GreaterDemon.id,
@@ -232,13 +209,10 @@ const ChaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
+		cannonballs: 6,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.IronDragon.id,
@@ -251,12 +225,12 @@ const ChaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.Kraken.id,
@@ -272,12 +246,10 @@ const ChaeldarMonsters: KillableMonster[] = [
 			['Trident of the seas', 'Trident of the seas (full)', 'Uncharged trident']
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 87
 		},
+		slayerHelmBoost: 12,
 		slayerOnly: true
 	},
 	{
@@ -291,9 +263,9 @@ const ChaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 30,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		}
+		slayerHelmBoost: 6,
+		cannonballs: 4,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.LizardmanBrute.id,
@@ -306,9 +278,9 @@ const ChaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 30,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		}
+		slayerHelmBoost: 6,
+		cannonballs: 6,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
@@ -326,18 +298,20 @@ const ChaeldarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: {
-			[itemID('Ring of the gods')]: 3,
-			[itemID('Slayer helmet')]: 6
+			[itemID('Ring of the gods')]: 3
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 6,
+		cannonballs: 6,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.Porazdir.id,
 		name: Monsters.Porazdir.name,
 		aliases: Monsters.Porazdir.aliases,
-		timeToFinish: Time.Minute * 5,
+		timeToFinish: Time.Minute * 13,
 		table: Monsters.Porazdir,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -351,12 +325,8 @@ const ChaeldarMonsters: KillableMonster[] = [
 				'Toxic staff of the dead'
 			]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet (i)')]: 15
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 15
 	} /*
 	{
 		id: Monsters.ReanimateTzHaar.id,
@@ -398,14 +368,12 @@ const ChaeldarMonsters: KillableMonster[] = [
 				'Ancient wyvern shield'
 			]
 		]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
 		levelRequirements: {
 			slayer: 72
-		}
+		},
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.Skotizo.id,
@@ -418,14 +386,12 @@ const ChaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Dark totem']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 15,
 			[itemID('Arclight')]: 10
 		},
 		consumedItem: 'Dark totem',
-		levelRequirements: {}
+		slayerHelmBoost: 15
 	},
 	{
 		id: Monsters.TzHaarKet.id,
@@ -437,13 +403,8 @@ const ChaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Wyrm.id,
@@ -461,13 +422,15 @@ const ChaeldarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8,
 			[itemID('Dragon hunter crossbow')]: 3,
 			[itemID('Dragon hunter lance')]: 3
 		},
 		levelRequirements: {
 			slayer: 62
 		},
+		slayerHelmBoost: 8,
+		superiorName: Monsters.ShadowWyrm.name,
+		superiorId: Monsters.ShadowWyrm.id,
 		superiorTable: Monsters.ShadowWyrm
 	},
 	{
@@ -481,14 +444,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: resolveItems(['Fungicide spray 10']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 3,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 57
-		}
+		},
+		slayerHelmBoost: 10
 	}
 ];
 

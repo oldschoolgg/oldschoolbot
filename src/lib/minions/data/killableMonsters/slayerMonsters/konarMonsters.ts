@@ -3,6 +3,7 @@ import { KillableMonster } from '../../../types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
+import { FaceMaskSlayerHelmets } from '../../../../skilling/skills/slayer/slayerHelmets';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const KonarMonsters: KillableMonster[] = [
@@ -16,13 +17,12 @@ const KonarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		itemsRequired: resolveItems(['Anti-dragon shield', 'Antidote++(4)']),
 		qpRequired: 205,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 15
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 15
 	},
 	{
 		id: Monsters.BabyRedDragon.id,
@@ -34,13 +34,11 @@ const KonarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.BrutalRedDragon.id,
@@ -53,12 +51,12 @@ const KonarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 14
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 14
 	},
 	{
 		id: Monsters.DarkBeast.id,
@@ -70,16 +68,16 @@ const KonarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 14
-		},
 		levelRequirements: {
 			slayer: 90
 		},
-		superiorTable: Monsters.NightBeast
+		slayerHelmBoost: 14,
+		superiorName: Monsters.NightBeast.name,
+		superiorId: Monsters.NightBeast.id,
+		superiorTable: Monsters.NightBeast,
+		cannonballs: 10,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Drake.id,
@@ -92,16 +90,19 @@ const KonarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: deepResolveItems([
-			['Boots of stone', 'Boots of brimstone', 'Granite boots']
+			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
+			'Anti-dragon shield'
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
+			[itemID('Dragon hunter lance')]: 10
 		},
 		levelRequirements: {
 			slayer: 84
 		},
+		slayerHelmBoost: 12,
+		superiorName: Monsters.GuardianDrake.name,
+		superiorId: Monsters.GuardianDrake.id,
 		superiorTable: Monsters.GuardianDrake
 	},
 	{
@@ -115,17 +116,23 @@ const KonarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			['Boots of stone', 'Boots of brimstone', 'Granite boots']
+			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
+			'Antidote++(4)'
 		]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Hydra tail']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 15
+			[itemID('Dragon hunter lance')]: 10
 		},
 		levelRequirements: {
 			slayer: 95
 		},
-		superiorTable: Monsters.ColossalHydra
+		slayerHelmBoost: 15,
+		superiorName: Monsters.ColossalHydra.name,
+		superiorId: Monsters.ColossalHydra.id,
+		superiorTable: Monsters.ColossalHydra,
+		cannonballs: 12,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.MithrilDragon.id,
@@ -138,12 +145,12 @@ const KonarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Dragon full helm']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
 	},
 	{
 		id: Monsters.RedDragon.id,
@@ -156,12 +163,10 @@ const KonarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 13
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 13,
+		cannonballs: 7,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.RuneDragon.id,
@@ -173,13 +178,13 @@ const KonarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
+		itemsRequired: resolveItems(['Anti-dragon shield', 'Insulated boots']),
+		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
+		qpRequired: 205,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 13
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 13
 	},
 	{
 		id: Monsters.SmokeDevil.id,
@@ -191,17 +196,21 @@ const KonarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet', 'Slayer helmet (i)']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([FaceMaskSlayerHelmets]),
+		notifyDrops: resolveItems(['Dragon chainbody']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 13
-		},
 		levelRequirements: {
 			slayer: 93
 		},
+		slayerHelmBoost: 13,
 		slayerOnly: true,
-		superiorTable: Monsters.NuclearSmokeDevil
+		superiorName: Monsters.NuclearSmokeDevil.name,
+		superiorId: Monsters.NuclearSmokeDevil.id,
+		superiorTable: Monsters.NuclearSmokeDevil,
+		cannonballs: 8,
+		cannonBoost: 35,
+		barrageAmount: 8,
+		barrageBoost: 35
 	},
 	{
 		id: Monsters.Waterfiend.id,
@@ -213,13 +222,11 @@ const KonarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Mist battlestaff']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
+		cannonballs: 6,
+		cannonBoost: 30
 	}
 ];
 

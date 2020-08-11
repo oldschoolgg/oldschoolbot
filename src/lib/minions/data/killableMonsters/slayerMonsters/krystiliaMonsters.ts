@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 import { KillableMonster } from '../../../types';
 import resolveItems from '../../../../util/resolveItems';
-import itemID from '../../../../util/itemID';
+// import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
@@ -16,13 +16,8 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: false,
 		difficultyRating: 4,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Bandit.id,
@@ -34,13 +29,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 6,
+		cannonballs: 3,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.BlackKnight.id,
@@ -52,13 +44,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 5,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.ChaosDruid.id,
@@ -70,13 +59,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 6,
+		cannonballs: 3,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.DarkWarrior.id,
@@ -88,13 +74,11 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 30
+
 	},
 	{
 		id: Monsters.DeadlyRedSpider.id,
@@ -106,13 +90,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.ElderChaosDruid.id,
@@ -124,13 +105,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 8,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Ent.id,
@@ -143,12 +121,8 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Dragon axe', 'Rune axe']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8
 	},
 	{
 		id: Monsters.GuardBandit.id,
@@ -160,13 +134,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.LavaDragon.id,
@@ -179,12 +150,11 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
+		cannonballs: 6,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.MagicAxe.id,
@@ -197,14 +167,11 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Lockpick']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			// theiving: 23
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Mammoth.id,
@@ -216,12 +183,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
+		cannonballs: 7,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Pirate.id,
@@ -234,9 +199,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		}
+		slayerHelmBoost: 8
 	},
 	{
 		id: Monsters.RevenantCyclops.id,
@@ -249,9 +212,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantDarkBeast.id,
@@ -264,9 +225,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantDemon.id,
@@ -279,9 +238,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantDragon.id,
@@ -294,9 +251,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantGoblin.id,
@@ -309,9 +264,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantHellhound.id,
@@ -324,9 +277,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantHobgoblin.id,
@@ -339,9 +290,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantImp.id,
@@ -354,9 +303,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantKnight.id,
@@ -369,9 +316,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantOrk.id,
@@ -384,9 +329,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.RevenantPyrefiend.id,
@@ -399,9 +342,7 @@ const KrystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Rogue.id,
@@ -413,13 +354,10 @@ const KrystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 6,
+		cannonballs: 4,
+		cannonBoost: 35
 	}
 ];
 
