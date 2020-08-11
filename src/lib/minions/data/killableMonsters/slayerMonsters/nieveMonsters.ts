@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 import { KillableMonster } from '../../../types';
-import resolveItems from '../../../../util/resolveItems';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
@@ -10,19 +10,19 @@ const NieveMonsters: KillableMonster[] = [
 		id: Monsters.BabyBlackDragon.id,
 		name: Monsters.BabyBlackDragon.name,
 		aliases: Monsters.BabyBlackDragon.aliases,
-		timeToFinish: Time.Second * 40,
+		timeToFinish: Time.Second * 30,
 		table: Monsters.BabyBlackDragon,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.BlackDragon.id,
@@ -35,12 +35,13 @@ const NieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 13
+			[itemID('Dragon hunter lance')]: 15
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 13,
+		cannonballs: 15,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,
@@ -52,15 +53,23 @@ const NieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([
+			['Anti-dragon shield', 'Dragonfire shield', 'Dragonfire ward'],
+			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
+			['Armadyl chestplate', "Karil's leathertop"],
+			['Armadyl chainskirt', "Karil's leatherskirt"]
+		]),
+		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 14
+			[itemID('Dragon hunter crossbow')]: 10
 		},
-		levelRequirements: {}
+		levelRequirements: {
+			prayer: 43
+		},
+		slayerHelmBoost: 14
 	},
-	{
+	{	//Disabled until futher
 		id: Monsters.GiantScarab.id,
 		name: Monsters.GiantScarab.name,
 		aliases: Monsters.GiantScarab.aliases,
@@ -68,7 +77,7 @@ const NieveMonsters: KillableMonster[] = [
 		table: Monsters.GiantScarab,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
-		canBeKilled: true,
+		canBeKilled: false,
 		difficultyRating: 6,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
@@ -89,13 +98,10 @@ const NieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 14
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 14,
+		cannonballs: 12,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.ScarabMage.id,
@@ -107,14 +113,10 @@ const NieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10,
-			[itemID('Keris')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 7,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Scarabs.id,
@@ -126,13 +128,10 @@ const NieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 8
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 8,
+		cannonballs: 4,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.ScarabSwarm.id,
@@ -144,13 +143,10 @@ const NieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 6,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.SteelDragon.id,
@@ -163,12 +159,17 @@ const NieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		notifyDrops: resolveItems([]),
+		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 11
+			[itemID('Dragon hunter lance')]: 10
 		},
-		levelRequirements: {}
+		levelRequirements: {
+			prayer: 43
+		},
+		slayerHelmBoost: 11,
+		cannonballs: 8,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Suqah.id,
@@ -180,13 +181,10 @@ const NieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 4,
+		cannonBoost: 25
 	}
 ];
 

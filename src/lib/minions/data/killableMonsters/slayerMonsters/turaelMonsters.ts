@@ -3,6 +3,7 @@ import { KillableMonster } from '../../../types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
+import { EarMuffsSlayerHelmets, SpinyHelmetSlayerHelmets } from '../../../../skilling/skills/slayer/slayerHelmets';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const TuraelMonsters: KillableMonster[] = [
@@ -16,16 +17,15 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([EarMuffsSlayerHelmets]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		},
 		levelRequirements: {
 			slayer: 15
 		},
-		superiorTable: Monsters.ScreamingBanshee
+		superiorName: Monsters.ScreamingBanshee.name,
+		superiorId: Monsters.ScreamingBanshee.id,
+		superiorTable: Monsters.ScreamingBanshee,
+		slayerHelmBoost: 6
 	},
 	{
 		id: Monsters.Bat.id,
@@ -37,13 +37,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 1,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.BearCub.id,
@@ -55,13 +52,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 6
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.BigWolf.id,
@@ -73,13 +67,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 6,
+		cannonballs: 4,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Bird.id,
@@ -91,13 +82,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 1,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.BlackBear.id,
@@ -109,13 +97,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.BlackGuard.id,
@@ -127,13 +110,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.CaveBug.id,
@@ -145,15 +123,12 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([SpinyHelmetSlayerHelmets]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
 		levelRequirements: {
 			slayer: 7
-		}
+		},
+		slayerHelmBoost: 2
 	},
 	{
 		id: Monsters.CaveCrawler.id,
@@ -166,14 +141,13 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 10
 		},
+		slayerHelmBoost: 5,
+		superiorName: Monsters.ChasmCrawler.name,
+		superiorId: Monsters.ChasmCrawler.id,
 		superiorTable: Monsters.ChasmCrawler
 	},
 	{
@@ -186,13 +160,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 8,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
 	},
 	{
 		id: Monsters.CaveSlime.id,
@@ -204,15 +173,16 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
+		itemsRequired: deepResolveItems([SpinyHelmetSlayerHelmets, ['Antidote++(4)', 'Antipoison(4)']]),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
 		},
 		levelRequirements: {
 			slayer: 17
-		}
+		},
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.ChaosDwarf.id,
@@ -224,13 +194,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Chicken.id,
@@ -242,13 +209,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.ChompyBird.id,
@@ -261,9 +225,7 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([['Ogre bow', 'Comp ogre bow']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 3,
-		levelRequirements: {}
 	},
 	{
 		id: Monsters.Cow.id,
@@ -275,13 +237,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 2, 
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.CowCalf.id,
@@ -293,13 +252,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 1,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.CrawlingHand.id,
@@ -311,15 +267,13 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 5
 		},
+		slayerHelmBoost: 5,
+		superiorName: Monsters.CrushingHand.name,
+		superiorId: Monsters.CrushingHand.id,
 		superiorTable: Monsters.CrushingHand
 	},
 	{
@@ -332,13 +286,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.Deathwing.id,
@@ -350,13 +299,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 111,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.DemonicGorilla.id,
@@ -376,15 +322,14 @@ const TuraelMonsters: KillableMonster[] = [
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 175,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 15,
 			[itemID('Arclight')]: 20
 		},
 		levelRequirements: {
 			slayer: 69
-		}
+		},
+		slayerHelmBoost: 15
 	},
 	{
 		id: Monsters.DesertLizard.id,
@@ -397,14 +342,13 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: resolveItems(['Ice cooler']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 22
-		}
+		},
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.DesertWolf.id,
@@ -416,13 +360,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Duck.id,
@@ -434,11 +375,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Duckling.id,
@@ -450,11 +390,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.DungeonRat.id,
@@ -466,13 +405,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Dwarf.id,
@@ -484,13 +420,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 2,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.DwarfGangMember.id,
@@ -502,13 +435,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Ghost.id,
@@ -520,13 +450,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.GiantBat.id,
@@ -538,13 +465,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.GiantCryptSpider.id,
@@ -556,13 +480,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.GiantRat.id,
@@ -574,13 +493,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.GiantSpider.id,
@@ -592,13 +508,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -610,13 +523,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.GrizzlyBear.id,
@@ -625,16 +535,13 @@ const TuraelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.GrizzlyBear,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.GrizzlyBearCub.id,
@@ -646,13 +553,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 1,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.GuardDog.id,
@@ -664,13 +568,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.Icefiend.id,
@@ -682,13 +583,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2
 	},
 	{
 		id: Monsters.IceWolf.id,
@@ -700,13 +596,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Jackal.id,
@@ -718,13 +609,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.JungleWolf.id,
@@ -736,13 +624,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		}
 	},
 	{
 		id: Monsters.KalphiteGuardian.id,
@@ -755,13 +640,10 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10,
-			[itemID('Keris')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 10,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.KalphiteSoldier.id,
@@ -774,13 +656,10 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10,
-			[itemID('Keris')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
+		cannonballs: 5,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.KalphiteWorker.id,
@@ -793,13 +672,10 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10,
-			[itemID('Keris')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 50
 	},
 	{
 		id: Monsters.KingScorpion.id,
@@ -808,16 +684,13 @@ const TuraelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.KingScorpion,
 		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
+		wildy: true,
 		canBeKilled: true,
-		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+		difficultyRating: 3,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.Lizard.id,
@@ -830,14 +703,13 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: resolveItems(['Ice cooler']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 22
-		}
+		},
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 25
 	},
 	{
 		id: Monsters.Lobstrosity.id,
@@ -858,12 +730,8 @@ const TuraelMonsters: KillableMonster[] = [
 				'Magic secateurs'
 			]
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 10,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.Minotaur.id,
@@ -875,13 +743,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1
 	},
 	{
 		id: Monsters.Monkey.id,
@@ -893,13 +756,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 2,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.MonkeyArcher.id,
@@ -911,13 +771,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 20,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.MonkeyGuard.id,
@@ -929,13 +784,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 20,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 7
 	},
 	{
 		id: Monsters.MonkeyZombie.id,
@@ -947,13 +797,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 20,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 7
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 7
 	},
 	{
 		id: Monsters.MountedTerrorBirdGnome.id,
@@ -965,13 +810,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Penguin.id,
@@ -983,13 +825,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.PitScorpion.id,
@@ -1001,13 +840,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.PoisonScorpion.id,
@@ -1020,12 +856,10 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Rat.id,
@@ -1037,13 +871,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 50
 	},
 	/*
 	{
@@ -1059,9 +890,6 @@ const TuraelMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 5
 		}
@@ -1079,9 +907,6 @@ const TuraelMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 5
 		}
@@ -1096,13 +921,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.Scorpion.id,
@@ -1114,13 +936,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Seagull.id,
@@ -1132,13 +951,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.ShadowSpider.id,
@@ -1150,14 +966,11 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5,
 			[itemID('Spectral spirit shield')]: 3
 		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.Skeleton.id,
@@ -1169,13 +982,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.SkeletonFremennik.id,
@@ -1187,13 +997,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.SkeletonMage.id,
@@ -1205,13 +1012,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 35
 	},
 	{
 		id: Monsters.Skogre.id,
@@ -1224,12 +1028,8 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems(['Comp ogre bow', 'Sanfew serum(4)']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 5,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.SmallLizard.id,
@@ -1242,14 +1042,13 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: resolveItems(['Ice cooler']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
 		levelRequirements: {
 			slayer: 22
-		}
+		},
+		slayerHelmBoost: 2,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Spider.id,
@@ -1261,13 +1060,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1,
+		cannonballs: 1,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.SulphurLizard.id,
@@ -1282,14 +1078,11 @@ const TuraelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Boots of stone', 'Boots of brimstone', 'Granite boots']
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
 		levelRequirements: {
 			slayer: 44
-		}
+		},
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.TempleSpider.id,
@@ -1301,13 +1094,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10,
 	},
 	{
 		id: Monsters.TerrorBird.id,
@@ -1319,13 +1107,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.TorturedGorilla.id,
@@ -1342,15 +1127,14 @@ const TuraelMonsters: KillableMonster[] = [
 			["Verac's plateskirt", 'Bandos tassets'],
 			['Abyssal whip', 'Dragon scimitar']
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 175,
 		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 15,
 			[itemID('Arclight')]: 20
 		},
 		levelRequirements: {
 			slayer: 69
-		}
+		},
+		slayerHelmBoost: 15
 	},
 	{
 		id: Monsters.TorturedSoul.id,
@@ -1362,13 +1146,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.TwistedBanshee.id,
@@ -1383,12 +1162,12 @@ const TuraelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
 		levelRequirements: {
 			slayer: 15
 		},
+		slayerHelmBoost: 10,
+		superiorName: Monsters.ScreamingTwistedBanshee.name,
+		superiorId: Monsters.ScreamingTwistedBanshee.id,
 		superiorTable: Monsters.ScreamingTwistedBanshee
 	},
 	{
@@ -1401,13 +1180,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1
 	},
 	{
 		id: Monsters.UndeadCow.id,
@@ -1420,10 +1194,7 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1
 	},
 	{
 		id: Monsters.UndeadDruid.id,
@@ -1435,13 +1206,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 12
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 12,
 	},
 	{
 		id: Monsters.UndeadOne.id,
@@ -1453,13 +1219,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.WhiteWolf.id,
@@ -1471,13 +1232,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 3,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.WildDog.id,
@@ -1489,13 +1247,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 7
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 7,
+		cannonballs: 3,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.Wolf.id,
@@ -1507,13 +1262,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 2
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 2,
+		cannonballs: 2,
+		cannonBoost: 40
 	},
 	{
 		id: Monsters.Zogre.id,
@@ -1526,12 +1278,8 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems(['Comp ogre bow', 'Sanfew serum (4)']),
-		notifyDrops: resolveItems([]),
 		qpRequired: 5,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Zombie.id,
@@ -1543,13 +1291,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 5,
+		cannonballs: 2,
+		cannonBoost: 30
 	},
 	{
 		id: Monsters.ZombieRat.id,
@@ -1561,13 +1306,8 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 32,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 1
-		},
-		levelRequirements: {}
+		slayerHelmBoost: 1
 	}
 ];
 
