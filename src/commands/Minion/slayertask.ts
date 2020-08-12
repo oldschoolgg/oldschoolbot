@@ -36,15 +36,15 @@ export default class extends BotCommand {
 		const slayerInfo = settings.get(UserSettings.Slayer.SlayerInfo);
 		const extendList = settings.get(UserSettings.Slayer.ExtendList);
 
-		if (slayerInfo.hasTask && slayermaster === 'cancel') {
+		if (slayerInfo.hasTask && slayermaster.toLowerCase() === 'skip') {
 			if (msg.author.minionIsBusy) {
 				return msg.send(msg.author.minionStatus);
 			}
 			if (slayerInfo.slayerPoints < 30) {
-				return msg.send(`You need 30 Slayer Points to cancel your task.`);
+				return msg.send(`You need 30 Slayer Points to skip your task.`);
 			}
 			msg.send(
-				`Are you sure you'd like to cancel your current task of ${slayerInfo.currentTask?.name}x ${slayerInfo.quantityTask}? It will cost 30 slayer points and your current total is ${slayerInfo.slayerPoints}. Say \`confirm\` to continue.`
+				`Are you sure you'd like to skip your current task of ${slayerInfo.currentTask?.name}x ${slayerInfo.quantityTask}? It will cost 30 slayer points and your current total is ${slayerInfo.slayerPoints}. Say \`confirm\` to continue.`
 			);
 			try {
 				await msg.channel.awaitMessages(
@@ -54,26 +54,21 @@ export default class extends BotCommand {
 					options
 				);
 			} catch (err) {
-				throw `Cancelled request to cancel ${slayerInfo.currentTask?.name} slayer task.`;
+				throw `Cancelled request to skip ${slayerInfo.currentTask?.name} slayer task.`;
 			}
 			const newSlayerInfo = {
 				...slayerInfo,
 				hasTask: false,
 				currentTask: null,
 				quantityTask: null,
+				currentMaster: null,
 				remainingQuantity: null,
 				slayerPoints: slayerInfo.slayerPoints - 30
 			};
-			if (slayerInfo.currentMaster === 2) {
-				newSlayerInfo.wildyStreak = 0;
-			} else {
-				newSlayerInfo.streak = 0;
-			}
-			newSlayerInfo.currentMaster = null;
 			await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 				arrayAction: 'overwrite'
 			});
-			return msg.send(`Successfully cancelled task`);
+			return msg.send(`Successfully skipped task`);
 		}
 
 		// Figure out what master they're using
@@ -83,7 +78,7 @@ export default class extends BotCommand {
 		if (!master) {
 			if (slayerInfo.hasTask) {
 				if (!slayerInfo.currentTask) throw `WTF`;
-				let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\nRemaining to slay: ${slayerInfo.remainingQuantity}.\nIf you like to cancel a task do \`${msg.cmdPrefix}slayertask cancel\` or visit Turael for a easier task.\n`;
+				let str = `You already have a slayer task of ${slayerInfo.quantityTask}x ${slayerInfo.currentTask.name}.\nRemaining to slay: ${slayerInfo.remainingQuantity}.\nIf you like to skip a task do \`${msg.cmdPrefix}slayertask skip\` or visit Turael for a easier task.\n`;
 				if (slayerInfo.currentTask?.alternatives) {
 					str += `You can also kill these monsters: ${slayerInfo.currentTask?.alternatives}!`;
 					const re = /\,/gi;
@@ -159,9 +154,12 @@ export default class extends BotCommand {
 					arrayAction: 'overwrite'
 				});
 			}
-			return msg.send(
-				`Your new slayer task is ${quantity} x ${randomedTask.name} and the previous task got canceled.`
-			);
+			let str = `Your new slayer task is ${quantity} x ${randomedTask.name} and the previous task got canceled.\n`;
+			if (randomedTask.alternatives) {
+				str += `You can also kill these monsters: ${randomedTask.alternatives}!`;
+			}
+			const re = /\,/gi;
+			return msg.send(str.replace(re, `, `));
 		}
 
 		// If they already have a slayer task tell them what it is
@@ -185,7 +183,7 @@ export default class extends BotCommand {
 			} and ${master.questPoints} quest points to use this master! 
 You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 				SkillsEnum.Slayer
-			)} slayer and ${settings.get(UserSettings.QP)} questpoints.`;
+			)} slayer and ${settings.get(UserSettings.QP) ?? 0} questpoints.`;
 		}
 
 		const filteredTasks = filterTasks(msg, master);
@@ -212,6 +210,11 @@ You're only ${userCombatLevel} combat, ${msg.author.skillLevel(
 		await settings.update(UserSettings.Slayer.SlayerInfo, newSlayerInfo, {
 			arrayAction: 'overwrite'
 		});
-		return msg.send(`Your new slayer task is ${quantity}x ${randomedTask.name}`);
+		let str = `Your new slayer task is ${quantity}x ${randomedTask.name}.\n`;
+		if (randomedTask.alternatives) {
+			str += `You can also kill these monsters: ${randomedTask.alternatives}!`;
+		}
+		const re = /\,/gi;
+		return msg.send(str.replace(re, `, `));
 	}
 }

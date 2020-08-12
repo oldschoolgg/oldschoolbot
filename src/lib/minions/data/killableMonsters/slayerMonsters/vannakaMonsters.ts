@@ -3,7 +3,10 @@ import { KillableMonster } from '../../../types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
-import { NosePegSlayerHelmets, FaceMaskSlayerHelmets } from '../../../../skilling/skills/slayer/slayerHelmets';
+import {
+	NosePegSlayerHelmets,
+	FaceMaskSlayerHelmets
+} from '../../../../skilling/skills/slayer/slayerHelmets';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const VannakaMonsters: KillableMonster[] = [
@@ -43,8 +46,8 @@ const VannakaMonsters: KillableMonster[] = [
 			slayer: 85
 		},
 		slayerHelmBoost: 15,
-		superiorName:  Monsters.GreaterAbyssalDemon.name,
-		superiorId:  Monsters.GreaterAbyssalDemon.id,
+		superiorName: Monsters.GreaterAbyssalDemon.name,
+		superiorId: Monsters.GreaterAbyssalDemon.id,
 		superiorTable: Monsters.GreaterAbyssalDemon,
 		barrageAmount: 8,
 		barrageBoost: 40
@@ -445,7 +448,7 @@ const VannakaMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Antidote++(4)']),
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GreaterNechryael.id,

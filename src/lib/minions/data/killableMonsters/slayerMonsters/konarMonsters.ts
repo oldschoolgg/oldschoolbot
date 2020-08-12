@@ -150,7 +150,7 @@ const KonarMonsters: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Dragon hunter lance')]: 10
 		},
-		slayerHelmBoost: 12,
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.RedDragon.id,

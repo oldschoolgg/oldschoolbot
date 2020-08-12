@@ -3,7 +3,10 @@ import { KillableMonster } from '../../../types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
-import { EarMuffsSlayerHelmets, SpinyHelmetSlayerHelmets } from '../../../../skilling/skills/slayer/slayerHelmets';
+import {
+	EarMuffsSlayerHelmets,
+	SpinyHelmetSlayerHelmets
+} from '../../../../skilling/skills/slayer/slayerHelmets';
 // import { GearSetupTypes, GearStat } from '../../../../gear/types';
 
 const TuraelMonsters: KillableMonster[] = [
@@ -161,7 +164,7 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		qpRequired: 8,
-		slayerHelmBoost: 5,
+		slayerHelmBoost: 5
 	},
 	{
 		id: Monsters.CaveSlime.id,
@@ -173,7 +176,10 @@ const TuraelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([SpinyHelmetSlayerHelmets, ['Antidote++(4)', 'Antipoison(4)']]),
+		itemsRequired: deepResolveItems([
+			SpinyHelmetSlayerHelmets,
+			['Antidote++(4)', 'Antipoison(4)']
+		]),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Slayer helmet')]: 5
@@ -225,7 +231,7 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([['Ogre bow', 'Comp ogre bow']]),
-		qpRequired: 3,
+		qpRequired: 3
 	},
 	{
 		id: Monsters.Cow.id,
@@ -239,7 +245,7 @@ const TuraelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		slayerHelmBoost: 2,
-		cannonballs: 2, 
+		cannonballs: 2,
 		cannonBoost: 40
 	},
 	{
@@ -1095,7 +1101,7 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		qpRequired: 0,
-		slayerHelmBoost: 10,
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.TerrorBird.id,
@@ -1207,7 +1213,7 @@ const TuraelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
-		slayerHelmBoost: 12,
+		slayerHelmBoost: 12
 	},
 	{
 		id: Monsters.UndeadOne.id,

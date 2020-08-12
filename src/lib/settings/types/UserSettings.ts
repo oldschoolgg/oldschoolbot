@@ -1,19 +1,9 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
+import { SlayerInfo } from '../../skilling/skills/slayer/defaultSlayerInfo';
 import { SkillsEnum, SlayerTask, SlayerShopItem } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
-
-interface SlayerInfo {
-	hasTask: boolean;
-	currentTask: SlayerTask | null;
-	quantityTask: number | null;
-	remainingQuantity: number | null;
-	currentMaster: number | null;
-	slayerPoints: number;
-	streak: number;
-	wildyStreak: number;
-}
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 

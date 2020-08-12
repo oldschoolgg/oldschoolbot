@@ -69,7 +69,8 @@ const NieveMonsters: KillableMonster[] = [
 		},
 		slayerHelmBoost: 14
 	},
-	{	//Disabled until futher
+	{
+		// Disabled until futher
 		id: Monsters.GiantScarab.id,
 		name: Monsters.GiantScarab.name,
 		aliases: Monsters.GiantScarab.aliases,

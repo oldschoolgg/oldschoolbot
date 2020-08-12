@@ -220,14 +220,20 @@ export default class extends Task {
 			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
 		);
 		// Track amount of superior versions recieved?
-		let str = `${user}, ${user.minionName} finished killing ${quantity - superiorQuantity} ${monster.name}. Your ${
+		let str = `${user}, ${user.minionName} finished killing ${quantity - superiorQuantity} ${
 			monster.name
-		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
-			quantity - superiorQuantity}.`;
+		}. Your ${monster.name} KC is now ${(user.settings.get(UserSettings.MonsterScores)[
+			monster.id
+		] ?? 0) +
+			quantity -
+			superiorQuantity}.`;
 		if (superiorQuantity > 0) {
-			str += ` You also got ${superiorQuantity}x ${monster.superiorName}. Your ${monster.superiorName} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.superiorId!] ?? 0) + superiorQuantity}.`;
+			str += ` You also got ${superiorQuantity}x ${monster.superiorName}. Your ${
+				monster.superiorName
+			} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.superiorId!] ??
+				0) + superiorQuantity}.`;
 		}
-		str +=	` ${user.minionName} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+		str += ` ${user.minionName} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
 
 		if (onSlayer) {
 			str += `\n\n You also received ${xpReceived.toLocaleString()} Slayer XP!`;
@@ -266,7 +272,7 @@ export default class extends Task {
 		}
 
 		user.incrementMonsterScore(monsterID, quantity - superiorQuantity);
-		if (superiorQuantity > 0 ) {
+		if (superiorQuantity > 0) {
 			user.incrementMonsterScore(monster.superiorId!, superiorQuantity);
 		}
 		const channel = this.client.channels.get(channelID);

@@ -77,4 +77,3 @@ export const SpinyHelmetSlayerHelmets = [
 	'Twisted slayer helmet',
 	'Twisted slayer helmet (i)'
 ];
-

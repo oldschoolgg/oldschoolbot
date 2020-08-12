@@ -30,17 +30,18 @@ export default class extends BotCommand {
 		let str = `SLAYERINFO:`;
 		if (slayerInfo.hasTask) {
 			if (!slayerInfo.currentTask) throw `WTF`;
-			str += `\nYou got a slayer task of ${slayerInfo.quantityTask} x ${slayerInfo.currentTask.name} from ${master?.name}, remaining to slay is ${slayerInfo.remainingQuantity}.\nIf you like to cancel a task do \`${msg.cmdPrefix}slayertask cancel\` or visit Turael for a easier task.`;
+			str += `\nYou got a slayer task of ${slayerInfo.quantityTask} x ${slayerInfo.currentTask.name} from ${master?.name}. Remaining to slay: ${slayerInfo.remainingQuantity}.\nIf you like to skip a task do \`${msg.cmdPrefix}slayertask skip\` or visit Turael for a easier task.`;
 			if (slayerInfo.currentTask?.alternatives) {
 				str += `\nYou can also kill these monsters: ${slayerInfo.currentTask?.alternatives}!`;
 				const re = /\,/gi;
-				str.replace(re, `, `);
+				str = str.replace(re, `, `);
 			}
 		} else {
 			str += `\nYou don't got a slayer task, visit a slayer master.`;
 		}
-		str += `\nYour current Slayer Points balance is: ${slayerInfo.slayerPoints}.`;
-		str += `\nYour current normal slayer streak is ${slayerInfo.streak} and wildy slayer streak is ${slayerInfo.wildyStreak}.`;
+		str += `\nYour current Slayer Points balance is: ${slayerInfo.slayerPoints ?? 0}.`;
+		str += `\nYour current normal slayer streak is ${slayerInfo.streak ??
+			0} and wildy slayer streak is ${slayerInfo.wildyStreak ?? 0}.`;
 
 		str += '\nYour current block list: ';
 		if (blockList.length === 0) {

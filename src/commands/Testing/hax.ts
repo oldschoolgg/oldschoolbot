@@ -4,6 +4,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import Skills from '../../lib/skilling/skills';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Eatables } from '../../lib/eatables';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -34,8 +35,25 @@ export default class extends BotCommand {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			loot[item.id] = 1000;
+			break;
 		}
+		// Slayer items
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		loot[itemID('Death rune')] = 1_000_000;
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		loot[itemID('Blood rune')] = 1_000_000;
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		loot[itemID('Water rune')] = 1_000_000;
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// @ts-ignore
+		loot[itemID('Cannonball')] = 1_000_000;
+
 		msg.author.addItemsToBank(loot);
-		return msg.send(`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all eatable foods`);
+		return msg.send(
+			`Gave you 99 in all skills, 1b GP, 250 QP, 1k eatable food, ice barrage runes and cannonballs`
+		);
 	}
 }

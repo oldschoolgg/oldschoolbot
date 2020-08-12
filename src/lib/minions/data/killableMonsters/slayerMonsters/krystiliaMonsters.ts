@@ -78,7 +78,6 @@ const KrystiliaMonsters: KillableMonster[] = [
 		slayerHelmBoost: 8,
 		cannonballs: 4,
 		cannonBoost: 30
-
 	},
 	{
 		id: Monsters.DeadlyRedSpider.id,

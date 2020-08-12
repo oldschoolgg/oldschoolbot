@@ -1,6 +1,6 @@
 import { SlayerTask } from '../../types';
 
-interface SlayerInfo {
+export interface SlayerInfo {
 	hasTask: boolean;
 	currentTask: SlayerTask | null;
 	quantityTask: number | null;
