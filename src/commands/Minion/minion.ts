@@ -38,7 +38,7 @@ import { Eatables } from '../../lib/eatables';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 
 const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, to see the monsters available do \`${prefix}minion kill --monsters\`.`;
+	`That isn't a valid monster, to see the monsters available do \`${prefix}minion kill --monsters\`. You can also cannon/barrage monsters by typing \`${prefix}minion kill "monstername" --cannon and or --barrage\` `;
 
 const hasNoMinion = (prefix: string) =>
 	`You don't have a minion yet. You can buy one by typing \`${prefix}minion buy\`.`;
@@ -608,7 +608,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 			}
 		}
-		// Check if killing monster on task and if user got any slayer helmet
+		// Check if killing monster on task and if user wear any slayer helmet
 		if (
 			slayerInfo.hasTask &&
 			(monster.name.toLowerCase() === slayerInfo.currentTask?.name.toLowerCase() ||
@@ -786,9 +786,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// Check if flag cannon and monster can be killed with Dwarf cannon
 		if (msg.flagArgs.cannon) {
-			if (msg.flagArgs.barrage) {
-				throw `You can not use --cannon and --barrage at same time.`;
-			}
 			if (!monster.cannonballs) {
 				throw `${monster.name} can't be killed with a Dwarf cannon. Skip the --cannon.`;
 			}
@@ -809,9 +806,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// Check if flag barrage and monster can be killed with Ice Barraging
 		if (msg.flagArgs.barrage) {
-			if (msg.flagArgs.cannon) {
-				throw `You can not use --barrage and --cannon at same time.`;
-			}
 			if (!monster.barrageAmount) {
 				throw `${monster.name} can't be killed with Ice Barrage. Skip the --barrage.`;
 			}
@@ -837,7 +831,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 					monster.barrageAmount *
 					2}x Blood rune's and ${quantity *
 					monster.barrageAmount *
-					4}x Blood rune's from your bank`
+					4}x Death rune's from your bank`
 			);
 			await msg.author.removeItemFromBank(555, quantity * monster.barrageAmount * 6);
 			await msg.author.removeItemFromBank(565, quantity * monster.barrageAmount * 2);
