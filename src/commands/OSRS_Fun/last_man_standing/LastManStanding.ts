@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { chunk, sleep } from '@klasa/utils';
 import LastManStandingUsage, { LMS_BLOODBATH, LMS_DAY, LMS_NIGHT } from './LastManStandingUsage';
-import { KlasaMessage, Language, CommandStore, Command, KlasaUser } from 'klasa';
+import { KlasaMessage, CommandStore, Command, KlasaUser } from 'klasa';
 import { GuildSettings } from '../../../lib/settings/types/GuildSettings';
+import { noOp } from '../../../lib/util';
+import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 
 export default class extends Command {
 	public readonly playing: Set<string> = new Set();
@@ -19,6 +21,17 @@ export default class extends Command {
 	}
 
 	async run(message: KlasaMessage, [contestants = []]: [KlasaUser[]]): Promise<KlasaMessage> {
+		if (message.flagArgs.points) {
+			const points = message.author.getMinigameScore(MinigameIDsEnum.LMS_points);
+			return message.send(
+				`You currently have ${points} reward points for Last Man Standing.`
+			);
+		}
+		if (message.flagArgs.wins) {
+			const wins = message.author.getMinigameScore(MinigameIDsEnum.LMS_wins);
+			return message.send(`You have ${wins} wins in Last Man Standing.`);
+		}
+
 		// auto fill using authors from the last 100 messages if none are given to the command
 		if (contestants.length === 0) {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
@@ -46,6 +59,7 @@ export default class extends Command {
 			bloodbath: true,
 			sun: true,
 			contestants: this.shuffle([...filtered]),
+			killTally: {},
 			turn: 0
 		});
 
@@ -56,7 +70,7 @@ export default class extends Command {
 
 			// Main logic of the game
 			const { results, deaths } = this.makeResultEvents(game, events);
-			const texts = this.buildTexts(message.language, game, results, deaths);
+			const texts = this.buildTexts(game, results, deaths);
 
 			// Ask for the user to proceed:
 			for (const text of texts) {
@@ -76,16 +90,20 @@ export default class extends Command {
 
 		// The match finished with one remaining player
 		const winner = game.contestants.values().next().value;
+		winner.incrementMinigameScore(MinigameIDsEnum.LMS_wins, 1);
 		this.playing.delete(message.channel.id);
+		for (let [userID, killAmount] of Object.entries(game.killTally)) {
+			if (winner.id === userID) {
+				killAmount *= 3;
+			}
+			const user = await this.client.users.fetch(userID).catch(noOp);
+			if (!user) continue;
+			user.incrementMinigameScore(MinigameIDsEnum.LMS_points, killAmount);
+		}
 		return message.send(`And the Last Man Standing is... ${winner.username}!`);
 	}
 
-	private buildTexts(
-		language: Language,
-		game: LastManStandingGame,
-		results: string[],
-		deaths: KlasaUser[]
-	) {
+	private buildTexts(game: LastManStandingGame, results: string[], deaths: KlasaUser[]) {
 		const header = game.bloodbath
 			? 'Bloodbath'
 			: game.sun
@@ -132,6 +150,7 @@ export default class extends Command {
 	private makeResultEvents(game: LastManStandingGame, events: readonly LastManStandingUsage[]) {
 		const results = [] as string[];
 		const deaths = [] as KlasaUser[];
+		let amountDied = 0;
 		let maxDeaths = this.calculateMaxDeaths(game);
 
 		const turn = new Set([...game.contestants]);
@@ -139,6 +158,7 @@ export default class extends Command {
 			// If the player already had its turn, skip
 			if (!turn.has(contestant)) continue;
 
+			amountDied = 0;
 			// Pick a valid event
 			const event = this.pick(events, turn.size, maxDeaths);
 
@@ -154,8 +174,18 @@ export default class extends Command {
 			for (const death of event.deaths) {
 				game.contestants.delete(pickedcontestants[death]);
 				deaths.push(pickedcontestants[death]);
-				maxDeaths--;
+				amountDied++;
 			}
+			for (const killer of event.killers) {
+				const killerId = pickedcontestants[killer].id;
+				if (game.killTally[killerId]) {
+					game.killTally[killerId] += amountDied;
+				} else {
+					game.killTally[killerId] = amountDied;
+				}
+			}
+
+			maxDeaths -= amountDied;
 
 			// Push the result of this match
 			results.push(event.display(...pickedcontestants));
@@ -198,5 +228,6 @@ export interface LastManStandingGame {
 	bloodbath: boolean;
 	sun: boolean;
 	contestants: Set<KlasaUser>;
+	killTally: { [key: string]: number };
 	turn: number;
 }
