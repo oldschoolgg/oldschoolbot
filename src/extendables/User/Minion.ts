@@ -18,7 +18,8 @@ import {
 	OfferingActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	FletchingActivityTaskOptions,
-	AlchingActivityTaskOptions
+	AlchingActivityTaskOptions,
+	BankstandActivityTaskOptions
 } from '../../lib/types/minions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -285,6 +286,12 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Bankstanding: {
+				const data = currentTask as BankstandActivityTaskOptions;
+
+				return `${this.minionName} is currently bankstanding at ${data.bankID}. ${formattedDuration}`;
 			}
 		}
 	}

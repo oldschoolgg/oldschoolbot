@@ -102,6 +102,11 @@ export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	alchValue: number;
 }
 
+export interface BankstandActivityTaskOptions extends ActivityTaskOptions {
+	bankID: string;
+	channelID: string;
+}
+
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 }
@@ -177,4 +182,5 @@ export type MinionActivityTask =
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity
+	| Tasks.BankstandingActivity
 	| Tasks.RaidsActivity;

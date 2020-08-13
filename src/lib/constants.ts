@@ -113,6 +113,7 @@ export const enum Tasks {
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
+	BankstandingActivity = 'bankstandingActivity',
 	RaidsActivity = 'raidsActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -141,6 +142,7 @@ export const enum Activity {
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
 	Alching = 'Alching',
+	Bankstanding = 'Bankstanding',
 	Raids = 'Raids'
 }
 
