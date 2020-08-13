@@ -12,7 +12,7 @@ export default class LastManStandingUsage {
 
 	public display(...values: KlasaUser[]) {
 		return this.parts
-			.map(part => (typeof part === 'number' ? values[part].username : part))
+			.map(part => (typeof part === 'number' ? `**${values[part].username}**` : part))
 			.join('');
 	}
 
