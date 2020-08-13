@@ -10,7 +10,7 @@ const NieveMonsters: KillableMonster[] = [
 		id: Monsters.BabyBlackDragon.id,
 		name: Monsters.BabyBlackDragon.name,
 		aliases: Monsters.BabyBlackDragon.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 20,
 		table: Monsters.BabyBlackDragon,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -21,7 +21,7 @@ const NieveMonsters: KillableMonster[] = [
 			[itemID('Dragon hunter lance')]: 10
 		},
 		slayerHelmBoost: 8,
-		cannonballs: 4,
+		cannonballs: 3,
 		cannonBoost: 35
 	},
 	{
@@ -40,7 +40,7 @@ const NieveMonsters: KillableMonster[] = [
 			[itemID('Dragon hunter lance')]: 15
 		},
 		slayerHelmBoost: 13,
-		cannonballs: 15,
+		cannonballs: 8,
 		cannonBoost: 35
 	},
 	{
@@ -93,7 +93,7 @@ const NieveMonsters: KillableMonster[] = [
 		id: Monsters.LocustRider.id,
 		name: Monsters.LocustRider.name,
 		aliases: Monsters.LocustRider.aliases,
-		timeToFinish: Time.Second * 74,
+		timeToFinish: Time.Second * 25,
 		table: Monsters.LocustRider,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -101,14 +101,14 @@ const NieveMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		slayerHelmBoost: 14,
-		cannonballs: 12,
+		cannonballs: 7,
 		cannonBoost: 30
 	},
 	{
 		id: Monsters.ScarabMage.id,
 		name: Monsters.ScarabMage.name,
 		aliases: Monsters.ScarabMage.aliases,
-		timeToFinish: Time.Second * 45,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.ScarabMage,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -123,7 +123,7 @@ const NieveMonsters: KillableMonster[] = [
 		id: Monsters.Scarabs.id,
 		name: Monsters.Scarabs.name,
 		aliases: Monsters.Scarabs.aliases,
-		timeToFinish: Time.Second * 25,
+		timeToFinish: Time.Second * 5,
 		table: Monsters.Scarabs,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -131,14 +131,14 @@ const NieveMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		slayerHelmBoost: 8,
-		cannonballs: 4,
-		cannonBoost: 30
+		cannonballs: 2,
+		cannonBoost: 20
 	},
 	{
 		id: Monsters.ScarabSwarm.id,
 		name: Monsters.ScarabSwarm.name,
 		aliases: Monsters.ScarabSwarm.aliases,
-		timeToFinish: Time.Second * 32,
+		timeToFinish: Time.Second * 8,
 		table: Monsters.ScarabSwarm,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -153,7 +153,7 @@ const NieveMonsters: KillableMonster[] = [
 		id: Monsters.SteelDragon.id,
 		name: Monsters.SteelDragon.name,
 		aliases: Monsters.SteelDragon.aliases,
-		timeToFinish: Time.Second * 45,
+		timeToFinish: Time.Second * 63,
 		table: Monsters.SteelDragon,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -176,7 +176,7 @@ const NieveMonsters: KillableMonster[] = [
 		id: Monsters.Suqah.id,
 		name: Monsters.Suqah.name,
 		aliases: Monsters.Suqah.aliases,
-		timeToFinish: Time.Second * 20,
+		timeToFinish: Time.Second * 19,
 		table: Monsters.Suqah,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -184,8 +184,8 @@ const NieveMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		slayerHelmBoost: 10,
-		cannonballs: 4,
-		cannonBoost: 25
+		cannonballs: 7,
+		cannonBoost: 35
 	}
 ];
 

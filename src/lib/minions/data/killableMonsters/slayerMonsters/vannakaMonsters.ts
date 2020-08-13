@@ -34,7 +34,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.AbyssalDemon.id,
 		name: Monsters.AbyssalDemon.name,
 		aliases: Monsters.AbyssalDemon.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 26,
 		table: Monsters.AbyssalDemon,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -143,7 +143,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.Bloodveld.id,
 		name: Monsters.Bloodveld.name,
 		aliases: Monsters.Bloodveld.aliases,
-		timeToFinish: Time.Second * 32,
+		timeToFinish: Time.Second * 27,
 		table: Monsters.Bloodveld,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -265,7 +265,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.Dagannoth.id,
 		name: Monsters.Dagannoth.name,
 		aliases: Monsters.Dagannoth.aliases,
-		timeToFinish: Time.Second * 26,
+		timeToFinish: Time.Second * 12,
 		table: Monsters.Dagannoth,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -276,8 +276,8 @@ const VannakaMonsters: KillableMonster[] = [
 			[itemID('Dragonbone necklace')]: 2
 		},
 		slayerHelmBoost: 10,
-		barrageAmount: 7,
-		barrageBoost: 30
+		barrageAmount: 2,
+		barrageBoost: 50
 	},
 	{
 		id: Monsters.DagannothSpawn.id,
@@ -333,7 +333,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.DustDevil.id,
 		name: Monsters.DustDevil.name,
 		aliases: Monsters.DustDevil.aliases,
-		timeToFinish: Time.Second * 19,
+		timeToFinish: Time.Second * 18,
 		table: Monsters.DustDevil,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -349,7 +349,7 @@ const VannakaMonsters: KillableMonster[] = [
 		superiorName: Monsters.ChokeDevil.name,
 		superiorId: Monsters.ChokeDevil.id,
 		superiorTable: Monsters.ChokeDevil,
-		barrageAmount: 5,
+		barrageAmount: 2,
 		barrageBoost: 50
 	},
 	{
@@ -405,7 +405,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.FireGiant.id,
 		name: Monsters.FireGiant.name,
 		aliases: Monsters.FireGiant.aliases,
-		timeToFinish: Time.Second * 16,
+		timeToFinish: Time.Second * 19,
 		table: Monsters.FireGiant,
 		emoji: '',
 		wildy: true,
@@ -454,7 +454,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.GreaterNechryael.id,
 		name: Monsters.GreaterNechryael.name,
 		aliases: Monsters.GreaterNechryael.aliases,
-		timeToFinish: Time.Second * 90,
+		timeToFinish: Time.Second * 38,
 		table: Monsters.GreaterNechryael,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -471,7 +471,7 @@ const VannakaMonsters: KillableMonster[] = [
 		superiorName: Monsters.Nechryarch.name,
 		superiorId: Monsters.Nechryarch.id,
 		superiorTable: Monsters.Nechryarch,
-		barrageAmount: 12,
+		barrageAmount: 3,
 		barrageBoost: 50
 	},
 	{
@@ -514,7 +514,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.Hellhound.id,
 		name: Monsters.Hellhound.name,
 		aliases: Monsters.Hellhound.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 26,
 		table: Monsters.Hellhound,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -523,7 +523,7 @@ const VannakaMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Smouldering stone']),
 		qpRequired: 0,
 		slayerHelmBoost: 14,
-		cannonballs: 5,
+		cannonballs: 4,
 		cannonBoost: 30
 	},
 	{
@@ -546,7 +546,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.IceTroll.id,
 		name: Monsters.IceTroll.name,
 		aliases: Monsters.IceTroll.aliases,
-		timeToFinish: Time.Second * 40,
+		timeToFinish: Time.Second * 35,
 		table: Monsters.IceTroll,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -557,7 +557,7 @@ const VannakaMonsters: KillableMonster[] = [
 			[itemID('Neitiznot shield')]: 7
 		},
 		slayerHelmBoost: 10,
-		cannonballs: 8,
+		cannonballs: 4,
 		cannonBoost: 50
 	},
 	{
@@ -749,13 +749,13 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.MutatedBloodveld.id,
 		name: Monsters.MutatedBloodveld.name,
 		aliases: Monsters.MutatedBloodveld.aliases,
-		timeToFinish: Time.Second * 50,
+		timeToFinish: Time.Second * 25,
 		table: Monsters.MutatedBloodveld,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 8,
+		qpRequired: 105,
 		levelRequirements: {
 			slayer: 50
 		},
@@ -763,14 +763,14 @@ const VannakaMonsters: KillableMonster[] = [
 		superiorName: Monsters.InsatiableMutatedBloodveld.name,
 		superiorId: Monsters.InsatiableMutatedBloodveld.id,
 		superiorTable: Monsters.InsatiableMutatedBloodveld,
-		cannonballs: 12,
+		cannonballs: 5,
 		cannonBoost: 35
 	},
 	{
 		id: Monsters.Nechryael.id,
 		name: Monsters.Nechryael.name,
 		aliases: Monsters.Nechryael.aliases,
-		timeToFinish: Time.Second * 70,
+		timeToFinish: Time.Second * 27,
 		table: Monsters.Nechryael,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -787,8 +787,6 @@ const VannakaMonsters: KillableMonster[] = [
 		superiorName: Monsters.Nechryarch.name,
 		superiorId: Monsters.Nechryarch.id,
 		superiorTable: Monsters.Nechryarch,
-		barrageAmount: 5,
-		barrageBoost: 40
 	},
 	{
 		id: Monsters.Ogre.id,
@@ -1063,7 +1061,7 @@ const VannakaMonsters: KillableMonster[] = [
 		id: Monsters.WarpedJelly.id,
 		name: Monsters.WarpedJelly.name,
 		aliases: Monsters.WarpedJelly.aliases,
-		timeToFinish: Time.Second * 35,
+		timeToFinish: Time.Second * 19,
 		table: Monsters.WarpedJelly,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -1081,7 +1079,7 @@ const VannakaMonsters: KillableMonster[] = [
 		superiorName: Monsters.VitreousWarpedJelly.name,
 		superiorId: Monsters.VitreousWarpedJelly.id,
 		superiorTable: Monsters.VitreousWarpedJelly,
-		barrageAmount: 8,
+		barrageAmount: 3,
 		barrageBoost: 40
 	},
 	{

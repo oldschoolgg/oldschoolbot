@@ -51,7 +51,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		slayerHelmBoost: 12,
-		cannonballs: 5,
+		cannonballs: 6,
 		cannonBoost: 30
 	},
 	{
@@ -211,14 +211,14 @@ const ChaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		slayerHelmBoost: 12,
-		cannonballs: 6,
+		cannonballs: 5,
 		cannonBoost: 30
 	},
 	{
 		id: Monsters.IronDragon.id,
 		name: Monsters.IronDragon.name,
 		aliases: Monsters.IronDragon.aliases,
-		timeToFinish: Time.Second * 80,
+		timeToFinish: Time.Second * 46,
 		table: Monsters.IronDragon,
 		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
@@ -236,7 +236,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Kraken.id,
 		name: Monsters.Kraken.name,
 		aliases: Monsters.Kraken.aliases,
-		timeToFinish: Time.Second * 95,
+		timeToFinish: Time.Second * 90,
 		table: Monsters.Kraken,
 		emoji: '',
 		wildy: false,
@@ -419,7 +419,6 @@ const ChaeldarMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Boots of stone', 'Boots of brimstone', 'Granite boots']
 		]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon hunter crossbow')]: 3,
