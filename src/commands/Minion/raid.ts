@@ -612,6 +612,8 @@ export default class extends BotCommand {
 
 		this.checkReqs(users);
 
+		this.checkReqs(users);
+
 		const data: RaidsActivityTaskOptions = {
 			duration,
 			challengeMode: false,
