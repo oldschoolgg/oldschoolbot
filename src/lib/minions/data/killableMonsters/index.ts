@@ -30,7 +30,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -58,7 +59,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -86,7 +88,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -115,7 +118,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		slayerHelmBoost: 10
 	},
 	{
 		id: Monsters.Man.id,
