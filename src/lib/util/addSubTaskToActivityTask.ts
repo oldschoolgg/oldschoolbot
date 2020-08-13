@@ -1,7 +1,7 @@
 import { Client } from 'discord.js';
 
 import { Tasks, Activity } from '../constants';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskOptions, RaidsActivityTaskOptions } from '../types/minions';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 
 export default function addSubTaskToActivityTask(
@@ -18,6 +18,12 @@ export default function addSubTaskToActivityTask(
 			if (
 				subTask.type === Activity.GroupMonsterKilling &&
 				(subTask as GroupMonsterActivityTaskOptions).users.includes(subTaskToAdd.userID)
+			) {
+				return true;
+			}
+			if (
+				subTask.type === Activity.Raids &&
+				(subTask as RaidsActivityTaskOptions).users.includes(subTaskToAdd.userID)
 			) {
 				return true;
 			}
