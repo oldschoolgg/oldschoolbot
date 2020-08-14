@@ -53,10 +53,25 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		const duration =
+		let duration;
+		if (users.length <= 10) {
+			duration =
 			Time.Minute * 20 +
 			(Time.Minute * 40 - users.length * (Time.Minute * 3)) +
 			rand(Time.Minute * 2, Time.Minute * 10);
+		}
+		else if (users.length <= 20) {
+			duration =
+			Time.Minute * 20 +
+			(Time.Minute * 35 - users.length * (Time.Minute * 2)) +
+			rand(Time.Minute * 2, Time.Minute * 10);
+		}
+		else {
+			duration =
+			Time.Minute * 20 +
+			(Time.Minute * 35 - users.length * (Time.Minute * 1)) +
+			rand(Time.Minute * 2, Time.Minute * 10);
+		}
 
 		this.checkReqs(users);
 
