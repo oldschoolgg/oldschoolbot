@@ -19,7 +19,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 12,
-		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
+		alternatives: ['Abyssal sire'],
 		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLvl: 85,
 		slayerLvl: 85,
@@ -27,7 +27,6 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [110, 170],
 		extendedAmount: [130, 250],
@@ -61,12 +60,12 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Balfrug is part of kril?
+		// Balfrug count as part of kril?
 		name: 'Black Demon',
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 10,
-		alternatives: ['Demonic Gorilla', 'Balfrug Kreeyath', 'Porazdir', 'Skotizo'],
+		alternatives: ['Demonic Gorilla', /*'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
@@ -217,16 +216,16 @@ const chaeldarTasks: SlayerTask[] = [
 			'Iorwerth Archer',
 			'Elf Archer',
 			'Iorwerth Warrior',
-			'Mourner',
-			'Reanimated elf'
+			'Mourner' /*,
+			'Reanimated elf'*/
 		],
 		Id: [
 			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
-			Monsters.Mourner.id,
-			Monsters.ReanimatedElf.id
+			Monsters.Mourner.id /*,
+			Monsters.ReanimatedElf.id*/
 		],
 		combatLvl: 70,
 		questPoints: 12,
@@ -280,18 +279,13 @@ const chaeldarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave in future? TstanonKarlak part of kril?
+		// Revenant cave in future?
 		name: 'Greater demon',
 		amount: [110, 170],
 		extendedAmount: [150, 250],
 		weight: 9,
-		alternatives: ["K'ril Tsutsaroth", 'Tstanon Karlak', 'Skotizo'],
-		Id: [
-			Monsters.GreaterDemon.id,
-			Monsters.KrilTsutsaroth.id,
-			//		Monsters.TstanonKarlak.id,
-			Monsters.Skotizo.id
-		],
+		alternatives: ["K'ril Tsutsaroth", 'Skotizo'],
+		Id: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
 		combatLvl: 70,
 		unlocked: true
 	},
@@ -310,7 +304,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Hellhound',
 		amount: [110, 170],
 		weight: 9,
-		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
+		alternatives: ['Cerberus' /*, 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
 		Id: [
 			Monsters.Hellhound.id,
 			Monsters.Cerberus
@@ -388,7 +382,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Lesser demon',
 		amount: [110, 170],
 		weight: 9,
-		alternatives: ["Zakl'n Gritch"],
+		//	alternatives: ["Zakl'n Gritch"],
 		Id: [Monsters.LesserDemon.id /* , Monsters.ZaklnGritch.id*/],
 		combatLvl: 60,
 		unlocked: true
@@ -531,12 +525,12 @@ const chaeldarTasks: SlayerTask[] = [
 		// Infernal cave
 		name: 'TzHaar-Ket',
 		amount: [90, 150],
-		alternatives: ['TzTok-Jad', 'TzKal-Zuk', 'Reanimated TzHaar'],
+		alternatives: ['TzTok-Jad', 'TzKal-Zuk' /*, 'Reanimated TzHaar'*/],
 		weight: 8,
 		Id: [
 			Monsters.TzHaarKet.id,
-			Monsters.TzTokJad.id,
-			/* Monsters.TzKalZuk.id,*/ Monsters.ReanimatedTzHaar.id
+			Monsters.TzTokJad.id
+			/* Monsters.TzKalZuk.id, Monsters.ReanimatedTzHaar.id*/
 		],
 		unlocked: false
 	},

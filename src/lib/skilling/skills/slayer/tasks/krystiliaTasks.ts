@@ -1,7 +1,6 @@
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
-// Larrans keys??
 const krystiliaTasks: SlayerTask[] = [
 	{
 		name: 'Ankou',
@@ -139,7 +138,7 @@ const krystiliaTasks: SlayerTask[] = [
 		name: 'Hellhound',
 		amount: [70, 123],
 		weight: 7,
-		alternatives: ['Skeleton Hellhound', 'Greater Skeleton Hellhound'],
+		//		alternatives: ['Skeleton Hellhound', 'Greater Skeleton Hellhound'],
 		Id: [
 			Monsters.Hellhound
 				.id /* ,
@@ -264,7 +263,7 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// scorpia offsprings/guardians count.
+		// scorpia offsprings/guardians count?
 		name: 'Scorpion',
 		amount: [60, 100],
 		weight: 6,
@@ -274,18 +273,12 @@ const krystiliaTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// More skeletons with different loots, count dogs during vetion?
+		// More skeletons with different loots
 		name: 'Skeleton',
 		amount: [60, 100],
 		weight: 5,
-		alternatives: ['Skeleton Hellhound', 'Greater Skeleton Hellhound', "Vet'ion"],
-		Id: [
-			Monsters.Skeleton
-				.id /*
-			Monsters.SkeletonHellHound.id,
-			Monsters.GreaterSkeletonHellhound.id,*/,
-			Monsters.Vetion.id
-		],
+		alternatives: ["Vet'ion"],
+		Id: [Monsters.Skeleton.id, Monsters.Vetion.id],
 		wilderness: 28,
 		unlocked: true
 	},

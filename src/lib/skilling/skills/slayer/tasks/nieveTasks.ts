@@ -41,13 +41,12 @@ const nieveTasks: SlayerTask[] = [
 		amount: [50, 90],
 		extendedAmount: [90, 150],
 		weight: 5,
-		alternatives: ['Dark Ankou'],
+		//		alternatives: ['Dark Ankou'],
 		Id: [Monsters.Ankou.id /* , Monsters.DarkAnkou.id*/],
 		combatLvl: 40,
 		unlocked: true
 	},
 	{
-		// Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [120, 185],
 		extendedAmount: [130, 250],
@@ -75,7 +74,7 @@ const nieveTasks: SlayerTask[] = [
 		amount: [120, 185],
 		extendedAmount: [200, 250],
 		weight: 9,
-		alternatives: ['Demonic Gorilla', 'Balfrug Kreeyath', 'Porazdir', 'Skotizo'],
+		alternatives: ['Demonic Gorilla', /*'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
@@ -232,16 +231,16 @@ const nieveTasks: SlayerTask[] = [
 			'Iorwerth Archer',
 			'Elf Archer',
 			'Iorwerth Warrior',
-			'Mourner',
-			'Reanimated elf'
+			'Mourner' /*,
+			'Reanimated elf'*/
 		],
 		Id: [
 			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
-			Monsters.Mourner.id,
-			Monsters.ReanimatedElf.id
+			Monsters.Mourner.id /*,
+			Monsters.ReanimatedElf.id*/
 		],
 		combatLvl: 70,
 		questPoints: 12,
@@ -285,18 +284,13 @@ const nieveTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave? tstanonkarlak part of kril?
+		// Revenant cave?
 		name: 'Greater demon',
 		amount: [120, 185],
 		extendedAmount: [150, 250],
 		weight: 7,
-		alternatives: ["K'ril Tsutsaroth", 'Tstanon Karlak', 'Skotizo'],
-		Id: [
-			Monsters.GreaterDemon.id,
-			Monsters.KrilTsutsaroth.id,
-			//			Monsters.TstanonKarlak.id,
-			Monsters.Skotizo.id
-		],
+		alternatives: ["K'ril Tsutsaroth", 'Skotizo'],
+		Id: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
 		combatLvl: 70,
 		unlocked: true
 	},
@@ -305,7 +299,7 @@ const nieveTasks: SlayerTask[] = [
 		name: 'Hellhound',
 		amount: [120, 185],
 		weight: 8,
-		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
+		alternatives: ['Cerberus' /*, 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
 		Id: [
 			Monsters.Hellhound.id,
 			Monsters.Cerberus

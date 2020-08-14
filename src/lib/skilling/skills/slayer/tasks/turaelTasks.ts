@@ -113,12 +113,12 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Guard dog',
 		amount: [15, 50],
 		weight: 7,
-		alternatives: ['Jackal', 'Wild dog', 'Reanimated dog'],
+		alternatives: ['Jackal', 'Wild dog' /*, 'Reanimated dog'*/],
 		Id: [
 			Monsters.GuardDog.id,
 			Monsters.Jackal.id,
-			Monsters.WildDog.id,
-			Monsters.ReanimatedDog.id
+			Monsters.WildDog.id /*,
+			Monsters.ReanimatedDog.id*/
 		],
 		combatLvl: 15,
 		unlocked: true
@@ -147,7 +147,6 @@ const turaelTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// generalgraddor multiple goblin kills?
 		name: 'Goblin',
 		amount: [15, 50],
 		weight: 7,
@@ -244,8 +243,8 @@ const turaelTasks: SlayerTask[] = [
 			'Poison Scorpion',
 			'Pit Scorpion',
 			'Scorpia',
-			'Lobstrosity',
-			'Reanimated scorpion'
+			'Lobstrosity' /*,
+			'Reanimated scorpion'*/
 		],
 		Id: [
 			Monsters.Scorpion.id,
@@ -253,8 +252,8 @@ const turaelTasks: SlayerTask[] = [
 			Monsters.PoisonScorpion.id,
 			Monsters.PitScorpion.id,
 			Monsters.Scorpia.id,
-			Monsters.Lobstrosity.id,
-			Monsters.ReanimatedScorpion.id
+			Monsters.Lobstrosity.id /*,
+			Monsters.ReanimatedScorpion.id*/
 		],
 		combatLvl: 7,
 		unlocked: true

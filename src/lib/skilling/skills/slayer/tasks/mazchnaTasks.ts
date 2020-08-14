@@ -108,12 +108,12 @@ const mazchnaTasks: SlayerTask[] = [
 		name: 'Guard dog',
 		amount: [40, 70],
 		weight: 7,
-		alternatives: ['Jackal', 'Wild dog', 'Reanimated dog'],
+		alternatives: ['Jackal', 'Wild dog' /*, 'Reanimated dog'*/],
 		Id: [
 			Monsters.GuardDog.id,
 			Monsters.Jackal.id,
-			Monsters.WildDog.id,
-			Monsters.ReanimatedDog.id
+			Monsters.WildDog.id /*,
+			Monsters.ReanimatedDog.id */
 		],
 		combatLvl: 15,
 		unlocked: true
@@ -238,8 +238,8 @@ const mazchnaTasks: SlayerTask[] = [
 			'Poison Scorpion',
 			'Pit Scorpion',
 			'Scorpia',
-			'Lobstrosity',
-			'Reanimated scorpion'
+			'Lobstrosity' /*,
+			'Reanimated scorpion' */
 		],
 		Id: [
 			Monsters.Scorpion.id,
@@ -247,8 +247,8 @@ const mazchnaTasks: SlayerTask[] = [
 			Monsters.PoisonScorpion.id,
 			Monsters.PitScorpion.id,
 			Monsters.Scorpia.id,
-			Monsters.Lobstrosity.id,
-			Monsters.ReanimatedScorpion.id
+			Monsters.Lobstrosity.id /*,
+			Monsters.ReanimatedScorpion.id*/
 		],
 		combatLvl: 7,
 		unlocked: true

@@ -1,7 +1,6 @@
 import { Monsters } from 'oldschooljs';
 import { SlayerTask } from '../../../types';
 
-// Brimstone keys?
 const konarTasks: SlayerTask[] = [
 	{
 		name: 'Aberrant spectre',
@@ -44,7 +43,6 @@ const konarTasks: SlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Count Kreeerra guards?
 		name: 'Aviansie',
 		amount: [120, 170],
 		extendedAmount: [130, 250],

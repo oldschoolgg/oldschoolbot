@@ -56,16 +56,45 @@ export default class extends Task {
 		) {
 			onSlayer = true;
 			// Handle Double trouble unlock
-			let doubleTrouble = 0;
+			let extraKills = 0;
 			if (monster.name.toLowerCase() === 'grotesque guardians') {
 				for (const unlock of unlockList) {
 					if (unlock.name.toLowerCase() === 'double trouble') {
-						doubleTrouble = quantity;
+						extraKills = quantity;
 						break;
 					}
 				}
 			}
-			const quantityLeft = slayerInfo.remainingQuantity! - quantity - doubleTrouble;
+			//Handle Graador to count as serveral goblins
+			if (
+				monster.id === Monsters.GeneralGraardor.id &&
+				slayerInfo.currentTask?.name.toLowerCase() === 'goblin'
+			) {
+				extraKills = 3 * quantity;
+			}
+			//Handle Vetion to count as serveral skeletons
+			if (
+				monster.id === Monsters.Vetion.id &&
+				slayerInfo.currentTask?.name.toLowerCase() === 'skeleton'
+			) {
+				extraKills = 4 * quantity;
+			}
+			//Handle Kree'arra to count as serveral Aviance
+			if (
+				monster.id === Monsters.Kreearra.id &&
+				slayerInfo.currentTask?.name.toLowerCase() === 'aviansie'
+			) {
+				extraKills = 3 * quantity;
+			}
+			//Handle Kril to count as serveral Greater demon
+			if (
+				monster.id === Monsters.KrilTsutsaroth.id &&
+				slayerInfo.currentTask?.name.toLowerCase() === 'greater demon'
+			) {
+				extraKills = quantity;
+			}
+
+			const quantityLeft = slayerInfo.remainingQuantity! - quantity - extraKills;
 
 			xpReceived = quantity * currentMonsterData!.slayerXP;
 			await user.addXP(SkillsEnum.Slayer, xpReceived);

@@ -786,7 +786,7 @@ const VannakaMonsters: KillableMonster[] = [
 		slayerHelmBoost: 12,
 		superiorName: Monsters.Nechryarch.name,
 		superiorId: Monsters.Nechryarch.id,
-		superiorTable: Monsters.Nechryarch,
+		superiorTable: Monsters.Nechryarch
 	},
 	{
 		id: Monsters.Ogre.id,

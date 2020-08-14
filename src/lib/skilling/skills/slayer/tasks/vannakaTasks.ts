@@ -19,7 +19,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [60, 120],
 		extendedAmount: [200, 250],
 		weight: 5,
-		alternatives: ['Abyssal sire', 'Greater abyssal demon'],
+		alternatives: ['Abyssal sire'],
 		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLvl: 85,
 		slayerLvl: 85,
@@ -31,7 +31,7 @@ const vannakaTasks: SlayerTask[] = [
 		amount: [25, 35],
 		extendedAmount: [90, 150],
 		weight: 7,
-		alternatives: ['Dark Ankou'],
+		//		alternatives: ['Dark Ankou'],
 		Id: [Monsters.Ankou.id /* , Monsters.DarkAnkou.id*/],
 		combatLvl: 40,
 		unlocked: true
@@ -280,7 +280,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Hellhound',
 		amount: [40, 80],
 		weight: 7,
-		alternatives: ['Cerberus', 'Skeleton Hellhound', 'Greater Skeleton Hellhound'],
+		alternatives: ['Cerberus', "Vet'ion"],
 		Id: [
 			Monsters.Hellhound.id,
 			Monsters.Cerberus
@@ -406,7 +406,7 @@ const vannakaTasks: SlayerTask[] = [
 		name: 'Lesser demon',
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ["Zakl'n Gritch"],
+		//		alternatives: ["Zakl'n Gritch"],
 		Id: [Monsters.LesserDemon.id /* , Monsters.ZaklnGritch.id*/],
 		combatLvl: 60,
 		unlocked: true

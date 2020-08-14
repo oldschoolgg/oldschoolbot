@@ -115,7 +115,6 @@ const bossTasks: SlayerTask[] = [
 		Id: [Monsters.KingBlackDragon.id]
 	},
 	{
-		// Not added to monsters.
 		name: 'Kraken',
 		amount: [3, 35],
 		weight: 1,
@@ -129,7 +128,6 @@ const bossTasks: SlayerTask[] = [
 		Id: [Monsters.Kreearra.id]
 	},
 	{
-		// Not added to monsters.
 		name: 'Sarachnis',
 		amount: [3, 35],
 		weight: 1,
