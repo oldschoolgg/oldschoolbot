@@ -65,7 +65,7 @@ const chaeldarTasks: SlayerTask[] = [
 		amount: [110, 170],
 		extendedAmount: [200, 250],
 		weight: 10,
-		alternatives: ['Demonic Gorilla', /*'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
+		alternatives: ['Demonic Gorilla', /* 'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
@@ -216,7 +216,7 @@ const chaeldarTasks: SlayerTask[] = [
 			'Iorwerth Archer',
 			'Elf Archer',
 			'Iorwerth Warrior',
-			'Mourner' /*,
+			'Mourner' /* ,
 			'Reanimated elf'*/
 		],
 		Id: [
@@ -224,7 +224,7 @@ const chaeldarTasks: SlayerTask[] = [
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
-			Monsters.Mourner.id /*,
+			Monsters.Mourner.id /* ,
 			Monsters.ReanimatedElf.id*/
 		],
 		combatLvl: 70,
@@ -304,7 +304,7 @@ const chaeldarTasks: SlayerTask[] = [
 		name: 'Hellhound',
 		amount: [110, 170],
 		weight: 9,
-		alternatives: ['Cerberus' /*, 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
+		alternatives: ['Cerberus' /* , 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
 		Id: [
 			Monsters.Hellhound.id,
 			Monsters.Cerberus
@@ -525,7 +525,7 @@ const chaeldarTasks: SlayerTask[] = [
 		// Infernal cave
 		name: 'TzHaar-Ket',
 		amount: [90, 150],
-		alternatives: ['TzTok-Jad', 'TzKal-Zuk' /*, 'Reanimated TzHaar'*/],
+		alternatives: ['TzTok-Jad', 'TzKal-Zuk' /* , 'Reanimated TzHaar'*/],
 		weight: 8,
 		Id: [
 			Monsters.TzHaarKet.id,

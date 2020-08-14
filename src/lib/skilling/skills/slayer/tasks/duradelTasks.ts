@@ -19,8 +19,11 @@ const duradelTasks: SlayerTask[] = [
 		amount: [130, 200],
 		extendedAmount: [200, 250],
 		weight: 12,
-		alternatives: ['Abyssal sire' /*, 'Reanimated abyssal'*/],
-		Id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id /*, Monsters.ReanimatedAbyssal.id*/],
+		alternatives: ['Abyssal sire' /* , 'Reanimated abyssal'*/],
+		Id: [
+			Monsters.AbyssalDemon.id,
+			Monsters.AbyssalSire.id /* , Monsters.ReanimatedAbyssal.id*/
+		],
 		combatLvl: 85,
 		slayerLvl: 85,
 		questPoints: 1,
@@ -52,7 +55,7 @@ const duradelTasks: SlayerTask[] = [
 		amount: [120, 200],
 		extendedAmount: [130, 250],
 		weight: 8,
-		alternatives: ["Kree'arra" /*, 'Reanimated aviansie'*/],
+		alternatives: ["Kree'arra" /* , 'Reanimated aviansie'*/],
 		Id: [Monsters.Aviansie.id, Monsters.Kreearra.id /* , Monsters.ReanimatedAviansie*/],
 		agiStrLvl: 60,
 		unlocked: false
@@ -75,7 +78,7 @@ const duradelTasks: SlayerTask[] = [
 		amount: [130, 200],
 		extendedAmount: [200, 250],
 		weight: 8,
-		alternatives: ['Demonic Gorilla', /*'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
+		alternatives: ['Demonic Gorilla', /* 'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
@@ -222,7 +225,7 @@ const duradelTasks: SlayerTask[] = [
 			'Iorwerth Archer',
 			'Elf Archer',
 			'Iorwerth Warrior',
-			'Mourner' /*,
+			'Mourner' /* ,
 			'Reanimated elf'*/
 		],
 		Id: [
@@ -230,7 +233,7 @@ const duradelTasks: SlayerTask[] = [
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
-			Monsters.Mourner.id /*,
+			Monsters.Mourner.id /* ,
 			Monsters.ReanimatedElf.id*/
 		],
 		combatLvl: 70,
@@ -290,7 +293,7 @@ const duradelTasks: SlayerTask[] = [
 		name: 'Hellhound',
 		amount: [130, 200],
 		weight: 10,
-		alternatives: ['Cerberus' /*, 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
+		alternatives: ['Cerberus' /* , 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
 		Id: [
 			Monsters.Hellhound.id,
 			Monsters.Cerberus
@@ -450,11 +453,11 @@ const duradelTasks: SlayerTask[] = [
 		name: 'Mountain troll',
 		amount: [130, 200],
 		weight: 6,
-		alternatives: ['Ice troll', 'Troll general' /*, 'Reanimated troll'*/],
+		alternatives: ['Ice troll', 'Troll general' /* , 'Reanimated troll'*/],
 		Id: [
 			Monsters.MountainTroll.id,
 			Monsters.IceTroll.id,
-			Monsters.TrollGeneral.id /*,
+			Monsters.TrollGeneral.id /* ,
 			Monsters.ReanimatedTroll.id*/
 		],
 		combatLvl: 60,

@@ -74,7 +74,7 @@ const nieveTasks: SlayerTask[] = [
 		amount: [120, 185],
 		extendedAmount: [200, 250],
 		weight: 9,
-		alternatives: ['Demonic Gorilla', /*'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
+		alternatives: ['Demonic Gorilla', /* 'Balfrug Kreeyath',*/ 'Porazdir', 'Skotizo'],
 		Id: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
@@ -231,7 +231,7 @@ const nieveTasks: SlayerTask[] = [
 			'Iorwerth Archer',
 			'Elf Archer',
 			'Iorwerth Warrior',
-			'Mourner' /*,
+			'Mourner' /* ,
 			'Reanimated elf'*/
 		],
 		Id: [
@@ -239,7 +239,7 @@ const nieveTasks: SlayerTask[] = [
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
 			Monsters.IorwerthWarrior.id,
-			Monsters.Mourner.id /*,
+			Monsters.Mourner.id /* ,
 			Monsters.ReanimatedElf.id*/
 		],
 		combatLvl: 70,
@@ -299,7 +299,7 @@ const nieveTasks: SlayerTask[] = [
 		name: 'Hellhound',
 		amount: [120, 185],
 		weight: 8,
-		alternatives: ['Cerberus' /*, 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
+		alternatives: ['Cerberus' /* , 'Skeleton Hellhound', 'Greater Skeleton Hellhound'*/],
 		Id: [
 			Monsters.Hellhound.id,
 			Monsters.Cerberus

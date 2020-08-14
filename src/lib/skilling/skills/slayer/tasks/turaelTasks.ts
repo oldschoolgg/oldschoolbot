@@ -113,11 +113,11 @@ const turaelTasks: SlayerTask[] = [
 		name: 'Guard dog',
 		amount: [15, 50],
 		weight: 7,
-		alternatives: ['Jackal', 'Wild dog' /*, 'Reanimated dog'*/],
+		alternatives: ['Jackal', 'Wild dog' /* , 'Reanimated dog'*/],
 		Id: [
 			Monsters.GuardDog.id,
 			Monsters.Jackal.id,
-			Monsters.WildDog.id /*,
+			Monsters.WildDog.id /* ,
 			Monsters.ReanimatedDog.id*/
 		],
 		combatLvl: 15,
@@ -243,7 +243,7 @@ const turaelTasks: SlayerTask[] = [
 			'Poison Scorpion',
 			'Pit Scorpion',
 			'Scorpia',
-			'Lobstrosity' /*,
+			'Lobstrosity' /* ,
 			'Reanimated scorpion'*/
 		],
 		Id: [
@@ -252,7 +252,7 @@ const turaelTasks: SlayerTask[] = [
 			Monsters.PoisonScorpion.id,
 			Monsters.PitScorpion.id,
 			Monsters.Scorpia.id,
-			Monsters.Lobstrosity.id /*,
+			Monsters.Lobstrosity.id /* ,
 			Monsters.ReanimatedScorpion.id*/
 		],
 		combatLvl: 7,
