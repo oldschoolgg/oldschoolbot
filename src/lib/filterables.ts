@@ -3,6 +3,153 @@ import { warmGear } from '../commands/Minion/wt';
 import { gracefulItems } from './skilling/skills/agility';
 import { Eatables } from './eatables';
 
+const ores = resolveItems([
+	'Copper ore',
+	'Tin ore',
+	'Iron ore',
+	'Blurite ore',
+	'Iron ore',
+	'Silver ore',
+	'Coal',
+	'Elemental ore',
+	'Gold ore',
+	'Mithril ore',
+	'Lovakite ore',
+	'Adamantite ore',
+	'Runite ore'
+]);
+
+const bars = resolveItems([
+	"Bronze bar",
+	"Blurite bar",
+	"Iron bar",
+	"Elemental metal",
+	"Steel bar",
+	"Primed bar",
+	"Primed mind bar",
+	"Lovakite bar",
+	"Mithril bar",
+	"Adamantite bar",
+	"Runite bar"
+]);
+
+const smithingMisc = resolveItems([
+	"Shield left half",
+	"Shield right half",
+	"Dragon metal shard",
+	"Dragon metal slice",
+	"Godsword blade",
+	"Godsword shards 1 & 2",
+	"Godsword shards 1 & 3",
+	"Godsword shards 2 & 3",
+	"Godsword shard 1",
+	"Godsword shard 2",
+	"Godsword shard 3",
+	"Armadyl hilt",
+	"Bandos hilt",
+	"Saradomin hilt",
+	"Zamorak hilt",
+	"Arcane sigil",
+	"Spectral sigil",
+	"Elysian sigil",
+	"Blessed Spirit Shield",
+	"Smouldering stone",
+	"Dragon metal lump",
+	"Draconic visage",
+	"Skeletal visage",
+	"Wyvern visage"
+]);
+
+const crafting = resolveItems([
+	'Wool',
+	"Ball of wool",
+	"Leather",
+	"Unfired pot",
+	"Soft clay",
+	"Clay",
+	"Molten glass",
+	"Silver bar",
+	"Gold bar",
+	"Buttons",
+	"Clockwork",
+	"Thread",
+	"Needle",
+	"Unfired pie dish",
+	"Unfired bowl",
+	"Flax",
+	"Sinew",
+	"Damaged monkey tail",
+	"Xerician fabric",
+	"Fresh crab shell",
+	"Fresh crab claw",
+	"Blamish myre shell",
+	"Blamish red shell",
+	"Blamish ochre shell",
+	"Blamish blue shell",
+	"Blamish bark shell",
+	"Blamish myre shell",
+	"Blamish red shell",
+	"Blamish ochre shell",
+	"Blamish blue shell",
+	"Unstrung symbol",
+	"Unstrung emblem",
+	"Steel bar",
+	"Steel studs",
+	"Unfired plant pot",
+	"Magic roots",
+	"Oak roots",
+	"Willow roots",
+	"Maple roots",
+	"Yew roots",
+	"Jute fibre",
+	"Unfired pot lid",
+	"Hard leather",
+	"Hair",
+	"Kebbit claws",
+	"Willow branch",
+	"Rabbit foot",
+	"Oak shield",
+	"Bronze nails",
+	"Cured yak-hide",
+	"Snakeskin",
+	"Serpentine visage",
+	"Battlestaff",
+	"Water orb",
+	"Willow shield",
+	"Iron nails",
+	"Maple shield",
+	"Steel nails",
+	"Yew shield",
+	"Mithril nails",
+	"Magic shield",
+	"Adamantite nails",
+	"Redwood shield",
+	"Rune nails",
+	"Green dragonhide",
+	"Green dragon leather",
+	"Earth orb",
+	"Magic fang",
+	"Fire orb",
+	"Air orb",
+	"Blue dragonhide",
+	"Blue dragon leather",
+	"Red dragonhide",
+	"Red dragon leather",
+	"Black dragonhide",
+	"Black dragon leather",
+	"Crystal shard",
+	"Cave goblin wire",
+	"Sinew",
+	"Sinew",
+	...gems
+]);
+
+const smithing = resolveItems([
+	...ores,
+	...bars,
+	...smithingMisc
+]);
+
 const barrows = resolveItems([
 	"Ahrim's hood",
 	"Ahrim's robetop",
@@ -170,17 +317,28 @@ const bones = resolveItems([
 
 const gems = resolveItems([
 	'Uncut sapphire',
+	'Uncut opal',
+	'Uncut jade',
+	'Uncut red topaz',
+	'Uncut sapphire',
 	'Uncut emerald',
 	'Uncut ruby',
 	'Uncut diamond',
 	'Uncut dragonstone',
+	'Amethyst',
 	'Uncut onyx',
 	'Sapphire',
+	'Opal',
+	'Jade',
+	'Red topaz',
 	'Emerald',
 	'Ruby',
 	'Diamond',
 	'Dragonstone',
-	'Onyx'
+	'Onyx',
+	'Zenyte',
+	'Uncut zenyte',
+	'Zenyte shard'
 ]);
 
 const fletching = resolveItems([
@@ -270,32 +428,7 @@ const fletching = resolveItems([
 
 const skilling = resolveItems([
 	'Rune essence',
-	'Copper ore',
-	'Tin ore',
-	'Iron ore',
-	'Silver ore',
 	'Pure essence',
-	'Coal',
-	'Gold ore',
-	'Mithril ore',
-	'Adamantite ore',
-	'Runite ore',
-	'Bronze bar',
-	'Iron bar',
-	'Silver bar',
-	'Steel bar',
-	'Gold bar',
-	'Mithril bar',
-	'Adamantite bar',
-	'Runite bar',
-	'Green dragonhide',
-	'Blue dragonhide',
-	'Red dragonhide',
-	'Black dragonhide',
-	'Green dragon leather',
-	'Blue dragon leather',
-	'Red dragon leather',
-	'Black dragon leather',
 	'Ashes',
 	'Cactus spine',
 	'Crushed nest',
@@ -317,7 +450,11 @@ const skilling = resolveItems([
 	...fletching,
 	...seeds,
 	...bones,
-	...gems
+	...gems,
+	...bars,
+	...ores,
+	...smithingMisc,
+	...crafting
 ]);
 
 const godwarsGear = resolveItems([
@@ -706,6 +843,16 @@ export const wintertodtItems = resolveItems([
 ]);
 
 export const filterableTypes = [
+	{
+		name: 'Smithing',
+		aliases: ['smithing', 'smith', 'sm'],
+		items: smithing
+	},
+	{
+		name: 'Crafting',
+		aliases: ['crafting', 'craft', 'cr'],
+		items: crafting
+	},
 	{
 		name: 'Barrows',
 		aliases: ['barrows', 'br'],
