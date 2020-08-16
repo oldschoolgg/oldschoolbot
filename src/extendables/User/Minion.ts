@@ -273,6 +273,30 @@ export default class extends Extendable {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}
 
+			case Activity.AnimatedArmouring: {
+				return `${this.minionName} is currently fighting animated armour in the Warriors' Guild. ${formattedDuration}`;
+			}
+
+			case Activity.DummyRooming: {
+				return `${this.minionName} is currently whacking dummies in the Warriors' Guild. ${formattedDuration}`;
+			}
+
+			case Activity.CatapultRooming: {
+				return `${this.minionName} is currently blocking catapult shots in the Warriors' Guild. ${formattedDuration}`;
+			}
+
+			case Activity.ShotputRooming: {
+				return `${this.minionName} is currently throwing shot puts in the Warriors' Guild. ${formattedDuration}`;
+			}
+
+			case Activity.JimmyChallenge: {
+				return `${this.minionName} is currently balancing kegs on their head in the Warriors' Guild. ${formattedDuration}`;
+			}
+
+			case Activity.Cyclopes: {
+				return `${this.minionName} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
+			}
+
 			case Activity.Alching: {
 				const data = currentTask as AlchingActivityTaskOptions;
 

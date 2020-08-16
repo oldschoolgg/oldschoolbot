@@ -161,15 +161,15 @@ export interface SkillingTickerTaskData {
 
 export interface MinigameTickerTaskData {
 	subTasks: (
-		FightCavesActivityTaskOptions | 
-		WintertodtActivityTaskOptions |
-		AnimatedArmourActivityTaskOptions |
-		DummyRoomActivityTaskOptions |
-		CatapultRoomActivityTaskOptions |
-		ShotputRoomActivityTaskOptions |
-		JimmyChallengeActivityTaskOptions |
-		CyclopsActivityTaskOptions
-		)[];
+		| FightCavesActivityTaskOptions
+		| WintertodtActivityTaskOptions
+		| AnimatedArmourActivityTaskOptions
+		| DummyRoomActivityTaskOptions
+		| CatapultRoomActivityTaskOptions
+		| ShotputRoomActivityTaskOptions
+		| JimmyChallengeActivityTaskOptions
+		| CyclopsActivityTaskOptions
+	)[];
 }
 
 export type TickerTaskData =

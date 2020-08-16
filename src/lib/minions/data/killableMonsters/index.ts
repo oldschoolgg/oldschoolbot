@@ -312,6 +312,18 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0
+	},
+	{
+		id: Monsters.Cyclopse.id,
+		name: Monsters.Cyclopse.name,
+		aliases: Monsters.Cyclopse.aliases,
+		timeToFinish: Time.Second * 35,
+		table: Monsters.Cyclopse,
+		emoji: '<:fishing:630911040091193356>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		qpRequired: 0
 	}
 ];
 

@@ -7,14 +7,20 @@ import { Armours } from '../../../commands/Minion/warriorsguild';
 import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
-	async run({armourID, userID, channelID, quantity, duration }: AnimatedArmourActivityTaskOptions) {
+	async run({
+		armourID,
+		userID,
+		channelID,
+		quantity,
+		duration
+	}: AnimatedArmourActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 		const armour = Armours.find(armour => armour.name === armourID);
 		let str = '';
 
-		if(!armour) {
+		if (!armour) {
 			throw `WTF!`;
 		}
 
@@ -25,17 +31,20 @@ export default class extends Task {
 		if (armour.breakChance1) {
 			let killsBeforeBreak = 0;
 			for (let i = 0; i < quantity; i++) {
-				if(roll(armour.breakChance1)) {
+				if (roll(armour.breakChance1)) {
 					break;
 				}
 				killsBeforeBreak++;
 			}
 			if (killsBeforeBreak !== quantity) {
-				str = `You killed ${killsBeforeBreak}x animated ${armour.name} armour before a armour piece broke and recieved ${killsBeforeBreak * armour.tokens}x Warrior guild token.`;
+				str = `${user}, ${user.minionName} finished killing ${killsBeforeBreak}x animated ${
+					armour.name
+				} armour before a armour piece broke and received ${killsBeforeBreak *
+					armour.tokens}x Warrior guild tokens.`;
 				const loot = {
-					[8851]: killsBeforeBreak * armour.tokens
+					8851: killsBeforeBreak * armour.tokens
 				};
-		
+
 				await user.addItemsToBank(loot, true);
 
 				str += `\nRemoved the following broken armour from bank: `;
@@ -52,35 +61,37 @@ export default class extends Task {
 					await user.removeItemFromBank(itemID(fullhelm), 1);
 				}
 				if (armour.breakChance3) {
-					if(roll(armour.breakChance3)) {
-						str += `, ` + fullhelm;
+					if (roll(armour.breakChance3)) {
+						str += `, ${fullhelm}`;
 						await user.removeItemFromBank(itemID(fullhelm), 1);
 					}
 					if (roll(armour.breakChance2)) {
-						str += `, ` + platelegs;
+						str += `, ${platelegs}`;
 						await user.removeItemFromBank(itemID(platelegs), 1);
 					}
 				}
-			}
-			else {
-				str = `You killed ${quantity}x animated ${armour.name} armour and recieved ${killsBeforeBreak * armour.tokens}x Warrior guild token.`;
+			} else {
+				str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${
+					armour.name
+				} armour and received ${killsBeforeBreak * armour.tokens}x Warrior guild tokens.`;
 				const loot = {
-					[8851]: killsBeforeBreak * armour.tokens
+					8851: killsBeforeBreak * armour.tokens
 				};
-		
+
 				await user.addItemsToBank(loot, true);
 			}
-		}
-		else {
-			str = `You killed ${quantity}x animated ${armour.name} armour and recieved ${quantity * armour.tokens}x Warrior guild token.`;
+		} else {
+			str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${
+				armour.name
+			} armour and received ${quantity * armour.tokens}x Warrior guild tokens.`;
 			const loot = {
-				[8851]: quantity * armour.tokens
+				8851: quantity * armour.tokens
 			};
-	
+
 			await user.addItemsToBank(loot, true);
 		}
 
-		//TODO: Combat calculations in future depending on HP
+		// TODO: Combat calculations in future depending on HP
 
 		if (!channelIsSendable(channel)) return;
 
