@@ -8,7 +8,6 @@ const ores = resolveItems([
 	'Tin ore',
 	'Iron ore',
 	'Blurite ore',
-	'Iron ore',
 	'Silver ore',
 	'Coal',
 	'Elemental ore',
