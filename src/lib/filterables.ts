@@ -313,7 +313,6 @@ const bones = resolveItems([
 ]);
 
 const gems = resolveItems([
-	'Uncut sapphire',
 	'Uncut opal',
 	'Uncut jade',
 	'Uncut red topaz',
