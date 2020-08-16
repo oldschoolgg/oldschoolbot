@@ -59,6 +59,31 @@ const smithingMisc = resolveItems([
 	"Wyvern visage"
 ]);
 
+const gems = resolveItems([
+	'Uncut opal',
+	'Uncut jade',
+	'Uncut red topaz',
+	'Uncut sapphire',
+	'Uncut emerald',
+	'Uncut ruby',
+	'Uncut diamond',
+	'Uncut dragonstone',
+	'Amethyst',
+	'Uncut onyx',
+	'Sapphire',
+	'Opal',
+	'Jade',
+	'Red topaz',
+	'Emerald',
+	'Ruby',
+	'Diamond',
+	'Dragonstone',
+	'Onyx',
+	'Zenyte',
+	'Uncut zenyte',
+	'Zenyte shard'
+]);
+
 const crafting = resolveItems([
 	'Wool',
 	"Ball of wool",
@@ -310,31 +335,6 @@ const bones = resolveItems([
 	'Wyrm bones',
 	'Wyvern bones',
 	'Zogre bones'
-]);
-
-const gems = resolveItems([
-	'Uncut opal',
-	'Uncut jade',
-	'Uncut red topaz',
-	'Uncut sapphire',
-	'Uncut emerald',
-	'Uncut ruby',
-	'Uncut diamond',
-	'Uncut dragonstone',
-	'Amethyst',
-	'Uncut onyx',
-	'Sapphire',
-	'Opal',
-	'Jade',
-	'Red topaz',
-	'Emerald',
-	'Ruby',
-	'Diamond',
-	'Dragonstone',
-	'Onyx',
-	'Zenyte',
-	'Uncut zenyte',
-	'Zenyte shard'
 ]);
 
 const fletching = resolveItems([
