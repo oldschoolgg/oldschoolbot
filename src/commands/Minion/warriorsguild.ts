@@ -5,22 +5,18 @@ import {
 	stringMatches,
 	formatDuration,
 	rand,
-	roll,
 	itemNameFromID,
-	removeItemFromBank,
 	bankHasItem
 } from '../../lib/util';
-import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import { Time, Activity, Tasks} from '../../lib/constants';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { AnimatedArmourActivityTaskOptions, DummyRoomActivityTaskOptions, CatapultRoomActivityTaskOptions, ShotputRoomActivityTaskOptions, JimmyChallengeActivityTaskOptions, CyclopsActivityTaskOptions} from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 //import { SkillsEnum } from '../../lib/skilling/types';
-import { ItemBank } from '../../lib/types';
-import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
 import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
 
-const Armours = [
+export const Armours = [
 	{
 	name: 'bronze',
 	timeToFinish: Time.Second * 6,
@@ -63,18 +59,6 @@ const Armours = [
 	},
 ];
 
-const weaponCombination = [
-	{
-	weapon1: 'longsword',
-	weapon2: 'warhammer'
-	},
-	{
-	weapon1: 'mace',
-	weapon2: 'battleaxe'
-	}
-];
-
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -94,6 +78,20 @@ export default class extends BotCommand {
 		action = action.toLowerCase();
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
+
+		// For future
+		/*
+		if (msg.author.skillLevel(SkillsEnum.Attack) !== 99 || msg.author.skillLevel(SkillsEnum.Strength) !== 99 || (msg.author.skillLevel(SkillsEnum.Attack) + msg.author.skillLevel(SkillsEnum.Strength)) < 130) {
+			throw `You need 99 Attack or Strength or a combined attack and strength lvl of 130 to enter the Warriors' guild.`;
+		}
+		*/
+
+		//Temp for now 
+		const attack = 99;
+		const strength = 99;
+		if (attack !== 99 || strength !== 99 || (attack + strength) < 130) {
+			throw `You need 99 Attack or Strength or a combined attack and strength lvl of 130 to enter the Warriors' guild.`;
+		}
 
 		if (minigame === 'animation') {
 			const armour = Armours.find(armour =>
@@ -126,14 +124,15 @@ export default class extends BotCommand {
 				}
 
 				const data: AnimatedArmourActivityTaskOptions = {
-					ArmourID: armour.name,
+					minigameID: 6185,
+					armourID: armour.name,
 					userID: msg.author.id,
 					channelID: msg.channel.id,
 					quantity,
 					duration,
-					type: Activity.AnimatedArmour,
+					type: Activity.AnimatedArmouring,
 					id: rand(1, 10_000_000),
-					finishDate: Date.now() + duration
+					finishDate: Date.now() + duration / 36000
 				};
 
 				await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
@@ -150,25 +149,22 @@ export default class extends BotCommand {
 		}
 
 		if (minigame === 'dummy') {
-			let armour = Armours[1];
+			let gotCombo = false;
 			for (const tier of Armours) {
-				armour = tier;
 				const longsword = tier.name.concat(' longsword');
 				const warhammer = tier.name.concat(' warhammer');
 				const mace = tier.name.concat(' mace');
 				const battleaxe = tier.name.concat(' battleaxe');
 				const requiredWeapons1 = resolveItems([longsword, warhammer]);
 				const requiredWeapons2 = resolveItems([mace, battleaxe]);
-
-				for (const weapon1 of requiredWeapons1) {
-					if (!bankHasItem(userBank, weapon1, 1)) {
-						for (const weapon2 of requiredWeapons2) {
-							if (!bankHasItem(userBank, weapon2, 1)) {
-								throw `You don't have the required weapon combination to enter the dummy room! You require either ${tier.name} longsword + warhammer or mace + battleaxe.`;
-							}
-						}
-					}
-				}
+				
+				if ((bankHasItem(userBank, requiredWeapons1[0], 1) && bankHasItem(userBank, requiredWeapons1[1], 1)) || (bankHasItem(userBank, requiredWeapons2[0], 1) && bankHasItem(userBank, requiredWeapons2[1], 1))) {
+					gotCombo = true;
+					break;
+				}	
+			}
+			if (!gotCombo) {
+				throw `You don't have the required weapon combination to enter the dummy room! You require either a longsword + warhammer or mace + battleaxe of same metal tier. For example: bronze longsword + bronze warhammer.`;
 			}
 
 			// If no quantity provided, set it to the max.
@@ -185,14 +181,14 @@ export default class extends BotCommand {
 			}
 
 			const data: DummyRoomActivityTaskOptions = {
-				tierID: armour.name,
+				minigameID: 823,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.DummyRoom,
+				type: Activity.DummyRooming,
 				id: rand(1, 10_000_000),
-				finishDate: Date.now() + duration
+				finishDate: Date.now() + duration / 36000
 			};
 
 			await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
@@ -217,14 +213,14 @@ export default class extends BotCommand {
 			}
 
 			const data: CatapultRoomActivityTaskOptions = {
-				catapultID: 'catapult',
+				minigameID: 671,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.CatapultRoom,
+				type: Activity.CatapultRooming,
 				id: rand(1, 10_000_000),
-				finishDate: Date.now() + duration
+				finishDate: Date.now() + duration / 36000
 			};
 
 			await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
@@ -251,15 +247,16 @@ export default class extends BotCommand {
 				)}, try a lower quantity. The highest amount of shot puts that can be thrown is ${Math.floor(msg.author.maxTripLength / (Time.Second * 36))}.`;
 			}
 
-			const data: ShotPutRoomActivityTaskOptions = {
+			const data: ShotputRoomActivityTaskOptions = {
+				minigameID: 8857,
 				shotputID: action,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.ShotPutRoom,
+				type: Activity.ShotputRooming,
 				id: rand(1, 10_000_000),
-				finishDate: Date.now() + duration
+				finishDate: Date.now() + duration / 36000
 			};
 
 			await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
@@ -284,14 +281,14 @@ export default class extends BotCommand {
 			}
 
 			const data: JimmyChallengeActivityTaskOptions = {
-				jimmyID: 'keg',
+				minigameID: 4286,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,
 				duration,
 				type: Activity.JimmyChallenge,
 				id: rand(1, 10_000_000),
-				finishDate: Date.now() + duration
+				finishDate: Date.now() + duration / 36000
 			};
 
 			await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
@@ -309,60 +306,44 @@ export default class extends BotCommand {
 
 			// If no quantity provided, set it to the max.
 			if (quantity === null) {
-				quantity = Math.floor(msg.author.maxTripLength / (Time.Second * 7));
+				quantity = Math.floor(msg.author.maxTripLength / (Time.Second * 30));
 			}
 
-			const duration = Time.Second * 7 * quantity;
+			const duration = Time.Second * 30 * quantity;
 
 			if (duration > msg.author.maxTripLength) {
 				throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of kegs that can be balanced is ${Math.floor(msg.author.maxTripLength / (Time.Second * 7))}.`;
+				)}, try a lower quantity. The highest amount of cyclopes that can be killed is ${Math.floor(msg.author.maxTripLength / (Time.Second * 30))}.`;
 			}
 
+			if (!bankHasItem(userBank, 8851, Math.floor((duration / Time.Minute) * 10 + 10)) && !bankHasItem(userBank, 9747, 1)) {
+				throw `You don't have enough Warrior guild tokens to kill cyclopes for ${formatDuration(duration)}, try a lower quantity. You need atleast ${Math.floor((duration / Time.Minute) * 10 + 10)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
+			};
 
+			const data: CyclopsActivityTaskOptions = {
+				minigameID: 2097,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Cyclopes,
+				id: rand(1, 10_000_000),
+				finishDate: Date.now() + duration / 36000
+			};
+
+			await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+
+			let response = `${msg.author.minionName} is now off to kill ${quantity}x cyclopes, it'll take around ${formatDuration(duration)} to finish.`;
+			//Check if attack cape
+			if (!bankHasItem(userBank, 9747, 1)) {
+				response += `\n${Math.floor((duration / Time.Minute) * 10 + 10)} Warrior guild tokens was also removed from the bank.`;
+				await msg.author.removeItemFromBank(8851, Math.floor((duration / Time.Minute) * 10 + 10));
+			}
+
+			return msg.send(response);
 		}
-	}
 
-
-
-
-/*
-				//Move this to AnimationActivity
-				if (armour.breakChance1) {
-					let killsBeforeBreak = 0;
-					for (let i = 0; i < kills; i++) {
-						if(roll(armour.breakChance1)) {
-							break;
-						}
-						killsBeforeBreak++;
-					}
-					let str = `You killed ${killsBeforeBreak} before a armour piece broke and recieved ${killsBeforeBreak * armour.tokens}x Warrior guild token.`;
-
-					str += `\nRemoved the following broken armour: `;
-					if (armour.name === 'bronze') {
-						str += platebody;
-						await msg.author.removeItemFromBank(itemID(platebody), 1);
-					}
-					if (armour.name === 'iron') {
-						str += platelegs;
-						await msg.author.removeItemFromBank(itemID(platelegs), 1);
-					}
-					if (armour.name === 'steel') {
-						str += fullhelm;
-						await msg.author.removeItemFromBank(itemID(fullhelm), 1);
-					}
-					if (armour.breakChance3) {
-						if(roll(armour.breakChance3)) {
-							str += `, ` + fullhelm;
-							await msg.author.removeItemFromBank(itemID(fullhelm), 1);
-						}
-						if (roll(armour.breakChance2)) {
-							str += `, ` + platelegs;
-							await msg.author.removeItemFromBank(itemID(platelegs), 1);
-						}
-					}
-				}
-*/
+		throw `That isn't a valid Warriors's guild minigame, the possible minigames are animation, dummy, catapult, shotput, jimmy or cyclops. For example, \`${msg.cmdPrefix}warriorsguild animation 5 bronze\``;
 	}
 }

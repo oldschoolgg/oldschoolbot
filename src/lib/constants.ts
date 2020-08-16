@@ -112,6 +112,12 @@ export const enum Tasks {
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
+	AnimatedArmourActivity = 'animatedArmourActivity',
+	DummyRoomActivity = 'dummyRoomActivity',
+	CatapultRoomActivity = 'catapultRoomActivity',
+	ShotputRoomActivity = 'shotputRoomActivity',
+	JimmyChallengeActivity = 'jimmyChallengeActivity',
+	CyclopsActivity = 'cyclopsActivity',
 	AlchingActivity = 'alchingActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -139,7 +145,13 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
-	Alching = 'Alching'
+	Alching = 'Alching',
+	AnimatedArmouring = 'AnimatedArmouring',
+	DummyRooming = 'DummyRooming',
+	CatapultRooming = 'CatapultRooming',
+	ShotputRooming = 'ShotputRooming',
+	JimmyChallenge = 'JimmyChallenge',
+	Cyclopes = 'Cyclopes'
 }
 
 export const enum Events {

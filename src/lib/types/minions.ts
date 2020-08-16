@@ -121,6 +121,32 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
+export interface AnimatedArmourActivityTaskOptions extends MinigameActivityTaskOptions {
+	armourID: string;
+	quantity: number;
+}
+
+export interface DummyRoomActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
+export interface CatapultRoomActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
+export interface ShotputRoomActivityTaskOptions extends MinigameActivityTaskOptions {
+	shotputID: string;
+	quantity: number;
+}
+
+export interface JimmyChallengeActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
+export interface CyclopsActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -134,7 +160,16 @@ export interface SkillingTickerTaskData {
 }
 
 export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
+	subTasks: (
+		FightCavesActivityTaskOptions | 
+		WintertodtActivityTaskOptions |
+		AnimatedArmourActivityTaskOptions |
+		DummyRoomActivityTaskOptions |
+		CatapultRoomActivityTaskOptions |
+		ShotputRoomActivityTaskOptions |
+		JimmyChallengeActivityTaskOptions |
+		CyclopsActivityTaskOptions
+		)[];
 }
 
 export type TickerTaskData =
@@ -163,4 +198,10 @@ export type MinionActivityTask =
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
+	| Tasks.AnimatedArmourActivity
+	| Tasks.DummyRoomActivity
+	| Tasks.CatapultRoomActivity
+	| Tasks.ShotputRoomActivity
+	| Tasks.JimmyChallengeActivity
+	| Tasks.CyclopsActivity
 	| Tasks.AlchingActivity;

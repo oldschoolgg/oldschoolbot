@@ -40,6 +40,18 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FletchingActivity;
 		case Activity.Wintertodt:
 			return Tasks.WintertodtActivity;
+		case Activity.AnimatedArmouring:
+			return Tasks.AnimatedArmourActivity;
+		case Activity.DummyRooming:
+			return Tasks.DummyRoomActivity;
+		case Activity.CatapultRooming:
+			return Tasks.CatapultRoomActivity;
+		case Activity.ShotputRooming:
+			return Tasks.ShotputRoomActivity;
+		case Activity.JimmyChallenge:
+			return Tasks.JimmyChallengeActivity;
+		case Activity.Cyclopes:
+			return Tasks.CyclopsActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
 	}
