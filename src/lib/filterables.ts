@@ -138,8 +138,6 @@ const crafting = resolveItems([
 	"Black dragon leather",
 	"Crystal shard",
 	"Cave goblin wire",
-	"Sinew",
-	"Sinew",
 	...gems
 ]);
 
