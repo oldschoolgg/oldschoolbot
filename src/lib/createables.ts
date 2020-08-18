@@ -688,6 +688,100 @@ const Createables: Createable[] = [
 		}),
 		QPRequired: 111,
 		smithingLevel: 60
+	},
+	{
+		name: 'Dwarf cannon set',
+		inputItems: {
+			[itemID('Cannon barrels')]: 1,
+			[itemID('Cannon base')]: 1,
+			[itemID('Cannon furnace')]: 1,
+			[itemID('Cannon stand')]: 1
+		},
+		outputItems: {
+			[itemID('Dwarf cannon set')]: 1
+		}
+	},
+	{
+		name: 'Dwarf cannon',
+		inputItems: {
+			[itemID('Dwarf cannon set')]: 1
+		},
+		outputItems: {
+			[itemID('Cannon barrels')]: 1,
+			[itemID('Cannon base')]: 1,
+			[itemID('Cannon furnace')]: 1,
+			[itemID('Cannon stand')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Dagon'hai robes set",
+		inputItems: {
+			[itemID("Dagon'hai hat")]: 1,
+			[itemID("Dagon'hai robe top")]: 1,
+			[itemID("Dagon'hai robe bottom")]: 1
+		},
+		outputItems: {
+			[itemID("Dagon'hai robes set")]: 1
+		}
+	},
+	{
+		name: "Dagon'hai",
+		inputItems: {
+			[itemID("Dagon'hai robes set")]: 1
+		},
+		outputItems: {
+			[itemID("Dagon'hai hat")]: 1,
+			[itemID("Dagon'hai robe top")]: 1,
+			[itemID("Dagon'hai robe bottom")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Justiciar armour set',
+		inputItems: {
+			[itemID('Justiciar faceguard')]: 1,
+			[itemID('Justiciar chestguard')]: 1,
+			[itemID('Justiciar legguards')]: 1
+		},
+		outputItems: {
+			[itemID('Justiciar armour set')]: 1
+		}
+	},
+	{
+		name: 'Justiciar',
+		inputItems: {
+			[itemID('Justiciar armour set')]: 1
+		},
+		outputItems: {
+			[itemID('Justiciar faceguard')]: 1,
+			[itemID('Justiciar chestguard')]: 1,
+			[itemID('Justiciar legguards')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Inquisitor's armour set",
+		inputItems: {
+			[itemID("Inquisitor's great helm")]: 1,
+			[itemID("Inquisitor's hauberk")]: 1,
+			[itemID("Inquisitor's plateskirt")]: 1
+		},
+		outputItems: {
+			[itemID("Inquisitor's armour set")]: 1
+		}
+	},
+	{
+		name: "Inquisitor's",
+		inputItems: {
+			[itemID("Inquisitor's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Inquisitor's great helm")]: 1,
+			[itemID("Inquisitor's hauberk")]: 1,
+			[itemID("Inquisitor's plateskirt")]: 1
+		},
+		noCl: true
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',
