@@ -219,14 +219,14 @@ const Openables: Openable[] = [
 	{
 		name: 'Tradeables Mystery box',
 		itemID: 6199,
-		aliases: ['mystery', 'mystery box', 'tradeables mystery box'],
+		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
 		table: () => getRandomItem(true),
 		emoji: Emoji.MysteryBox
 	},
 	{
 		name: 'Holiday Item Mystery box',
 		itemID: 3713,
-		aliases: ['rares mystery box', 'rmb'],
+		aliases: ['holiday mystery box', 'hmb', 'holiday'],
 		table: HolidayItems,
 		emoji: Emoji.MysteryBox
 	},
