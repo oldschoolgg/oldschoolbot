@@ -23,7 +23,6 @@ export default class extends BotCommand {
 			const duration = formatDuration(Date.now() - (lastDate + Time.Hour * 24));
 			return msg.send(`You can give another box in ${duration}.`);
 		}
-		console.log({ currentDate });
 		await msg.author.settings.update(UserSettings.LastGivenBox, currentDate);
 
 		const box = roll(10) ? getRandomMysteryBox() : itemID('Mystery box');
