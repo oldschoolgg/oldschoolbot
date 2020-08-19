@@ -22,8 +22,8 @@ export default class extends Task {
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		let loot = monster.table.kill(quantity);
-		if (roll(1)) {
-			if (1 || duration > Time.Minute * 10) {
+		if (roll(10)) {
+			if (duration > Time.Minute * 14) {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
 			}
