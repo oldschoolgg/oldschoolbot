@@ -4,23 +4,30 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Color } from '../../lib/constants';
+import { Color, PerkTier, Time } from '../../lib/constants';
 import { stringMatches, resolveNameBank } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			permissionLevel: 10
+			perkTier: PerkTier.Four,
+			cooldown: Time.Minute * 45
 		});
 	}
 
 	async run(msg: KlasaMessage) {
+		if (msg.author.id !== '157797566833098752' && msg.channel.id !== '732207379818479756') {
+			return msg.send(`You can only use this in the BSO channel.`);
+		}
+
 		const randomItem = Items.filter(i => (i as Item).tradeable_on_ge).random() as Item;
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
 			.setThumbnail(`https://static.runelite.net/cache/item/icon/${randomItem.id}.png`)
-			.setTitle('Tell me what this item is called, for a Mystery Box!')
+			.setTitle(
+				`${msg.author.username} has spawned a Mystery Box. Tell me what this item is called, for a Mystery Box!`
+			)
 			.setDescription(randomItem.examine);
 
 		await msg.channel.send(embed);

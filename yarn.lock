@@ -3743,10 +3743,10 @@ observable-fns@^0.5.1:
   resolved "https://registry.yarnpkg.com/observable-fns/-/observable-fns-0.5.1.tgz#9b56478690dd0fa8603e3a7e7d2975d88bca0904"
   integrity sha512-wf7g4Jpo1Wt2KIqZKLGeiuLOEMqpaOZ5gJn7DmSdqXgTdxRwSdBhWegQQpPteQ2gZvzCKqNNpwb853wcpA0j7A==
 
-oldschooljs@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.2.2.tgz#8d755f3e6b3e3513c538cb89a62c7546fe7e0860"
-  integrity sha512-IRYPeZPUbr1KnnGQMhCvEzSjJYWRAbl/o5IVWArvwkBwVTbLx8ejNzAUmYF4ZGuohv8FlMk4OLVhzNV1xR4mmg==
+oldschooljs@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.3.4.tgz#3523155847914260a30b1caace92a7c61afbef2d"
+  integrity sha512-PNc0csRr3VI0boEVd/yCsfSXywo7zfy3gD0MNbON5250uha+4fQiKbN6iEwxMv+dZcO2BV+O9sjeHJuqlVK5XQ==
   dependencies:
     jsdom "^16.0.1"
     node-fetch "^2.6.0"

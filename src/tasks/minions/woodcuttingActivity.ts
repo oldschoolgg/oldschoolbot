@@ -9,6 +9,7 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends Task {
 	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
@@ -42,7 +43,7 @@ export default class extends Task {
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
-				loot[itemID('Mystery box')] = 1;
+				loot[getRandomMysteryBox()] = 1;
 			}
 		}
 

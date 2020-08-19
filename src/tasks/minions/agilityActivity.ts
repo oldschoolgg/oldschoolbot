@@ -10,6 +10,7 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends Task {
 	async run({ courseID, quantity, userID, channelID, duration }: AgilityActivityTaskOptions) {
@@ -74,7 +75,7 @@ export default class extends Task {
 		};
 		if (roll(10)) {
 			loot = multiplyBank(loot, 2);
-			loot[itemID('Mystery box')] = 1;
+			loot[getRandomMysteryBox()] = 1;
 		}
 
 		if (course.id === 6) {

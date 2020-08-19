@@ -10,6 +10,7 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import { SkillsEnum } from '../../lib/skilling/types';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import itemID from '../../lib/util/itemID';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID, duration }: CookingActivityTaskOptions) {
@@ -63,7 +64,7 @@ export default class extends Task {
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
-				loot[itemID('Mystery box')] = 1;
+				loot[getRandomMysteryBox()] = 1;
 			}
 		}
 

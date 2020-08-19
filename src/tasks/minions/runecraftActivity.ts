@@ -9,6 +9,7 @@ import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skil
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import { SkillsEnum } from '../../lib/skilling/types';
 import itemID from '../../lib/util/itemID';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends Task {
 	async run({
@@ -50,7 +51,7 @@ export default class extends Task {
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
-				loot[itemID('Mystery box')] = 1;
+				loot[getRandomMysteryBox()] = 1;
 			}
 		}
 
