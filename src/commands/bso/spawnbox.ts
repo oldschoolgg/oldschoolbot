@@ -5,13 +5,15 @@ import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Color, PerkTier, Time } from '../../lib/constants';
-import { stringMatches, resolveNameBank } from '../../lib/util';
+import { stringMatches, roll, itemID } from '../../lib/util';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			perkTier: PerkTier.Four,
-			cooldown: Time.Minute * 45
+			cooldown: Time.Minute * 45,
+			oneAtTime: true
 		});
 	}
 
@@ -43,7 +45,8 @@ export default class extends BotCommand {
 			);
 
 			const winner = collected.first()?.author!;
-			await winner.addItemsToBank(resolveNameBank({ 'Mystery box': 1 }));
+			const box = roll(10) ? getRandomMysteryBox() : itemID('Mystery box');
+			await winner.addItemsToBank({ [box]: 1 });
 			return msg.channel.send(
 				`Congratulations, ${winner}! You got it. I've given you: **1x Mystery box**.`
 			);

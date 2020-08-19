@@ -15,6 +15,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
+		if (user.id === msg.author.id) throw `You can't give boxes to yourself!`;
 		const currentDate = Date.now();
 		const lastDate = msg.author.settings.get(UserSettings.LastGivenBox);
 		const difference = currentDate - lastDate;
