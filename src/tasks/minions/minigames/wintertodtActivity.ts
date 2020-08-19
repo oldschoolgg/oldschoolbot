@@ -14,6 +14,7 @@ import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { getRandomMysteryBox } from '../../../lib/openables';
 
 export default class extends Task {
 	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
@@ -42,7 +43,7 @@ export default class extends Task {
 		}
 		if (roll(10)) {
 			loot = multiplyBank(loot, 4);
-			loot[itemID('Mystery box')] = 1;
+			loot[getRandomMysteryBox()] = 1;
 		}
 
 		// Track this food cost in Economy Stats

@@ -5,7 +5,7 @@ import Loot from 'oldschooljs/dist/structures/Loot';
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import botOpenables from '../../lib/openables';
-import { stringMatches, roll, addBanks } from '../../lib/util';
+import { stringMatches, roll, addBanks, itemNameFromID } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -22,12 +22,7 @@ const itemsToNotifyOf = Object.values(cluesRares)
 	)
 	.concat([itemID('Bloodhound')]);
 
-const allOpenables = [
-	...Openables.map(i => i.id),
-	...ClueTiers.map(i => i.id),
-	...botOpenables.map(i => i.itemID),
-	itemID('Mystery box')
-];
+const allOpenables = [...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID)];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -49,9 +44,12 @@ export default class extends BotCommand {
 		if (Object.keys(available).length === 0) {
 			return `You have no openable items.`;
 		}
-
-		const itemsAvailable = await createReadableItemListFromBank(this.client, available);
-		return `You have ${itemsAvailable}.`;
+		const name = (key: string) =>
+			botOpenables.find(i => i.itemID === parseInt(key))?.name ||
+			itemNameFromID(parseInt(key));
+		return `You have ${Object.entries(available)
+			.map(([key, value]) => `${value}x ${name(key)}`)
+			.join(', ')}.`;
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
@@ -62,13 +60,6 @@ export default class extends BotCommand {
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
-		}
-
-		const osjsOpenable = Openables.find(openable =>
-			openable.aliases.some(alias => stringMatches(alias, name))
-		);
-		if (osjsOpenable) {
-			return this.osjsOpenablesOpen(msg, quantity, osjsOpenable);
 		}
 
 		return this.botOpenablesOpen(msg, quantity, name);
@@ -153,32 +144,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: any) {
-		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
-			throw `You don't have enough ${
-				osjsOpenable.name
-			} to open!\n\n However... ${await this.showAvailable(msg)}`;
-		}
-
-		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
-
-		const loot = osjsOpenable.open(quantity);
-
-		this.client.emit(
-			Events.Log,
-			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
-		);
-
-		await msg.author.addItemsToBank(loot, true);
-
-		return msg.channel.sendBankImage({
-			bank: loot,
-			title: `You opened ${quantity} ${osjsOpenable.name}`,
-			flags: { showNewCL: 1 },
-			user: msg.author
-		});
-	}
-
 	async botOpenablesOpen(msg: KlasaMessage, quantity: number, name: string) {
 		const botOpenable = botOpenables.find(thing =>
 			thing.aliases.some(alias => stringMatches(alias, name))
@@ -203,7 +168,11 @@ export default class extends BotCommand {
 
 		const loot = new Loot();
 		for (let i = 0; i < quantity; i++) {
-			loot.add(botOpenable.table.roll());
+			if (typeof botOpenable.table === 'function') {
+				loot.add(botOpenable.table());
+			} else {
+				loot.add(botOpenable.table.roll());
+			}
 		}
 
 		await msg.author.addItemsToBank(loot.values(), true);

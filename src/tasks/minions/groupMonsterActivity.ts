@@ -6,7 +6,6 @@ import {
 	queuedMessageSend,
 	addBanks,
 	roll,
-	itemID,
 	multiplyBank
 } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -16,6 +15,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { Emoji } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends Task {
 	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {
@@ -28,7 +28,7 @@ export default class extends Task {
 			let loot = monster.table.kill(1);
 			if (roll(10)) {
 				loot = multiplyBank(loot, 4);
-				loot[itemID('Mystery box')] = 1;
+				loot[getRandomMysteryBox()] = 1;
 			}
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];

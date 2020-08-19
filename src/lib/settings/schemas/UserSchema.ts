@@ -13,6 +13,7 @@ Client.defaultUserSchema
 	.add('badges', 'integer', { array: true, default: [] })
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
+	.add('lastGivenBoxx', 'integer', { default: 1, maximum: Number.MAX_SAFE_INTEGER })
 	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })

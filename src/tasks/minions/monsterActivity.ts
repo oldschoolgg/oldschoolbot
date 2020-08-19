@@ -2,7 +2,7 @@ import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes, roll, itemID, multiplyBank } from '../../lib/util';
+import { noOp, saidYes, roll, multiplyBank } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -11,6 +11,7 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
@@ -21,10 +22,10 @@ export default class extends Task {
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		let loot = monster.table.kill(quantity);
-		if (roll(10)) {
-			if (duration > Time.Minute * 10) {
+		if (roll(1)) {
+			if (1 || duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
-				loot[itemID('Mystery box')] = 1;
+				loot[getRandomMysteryBox()] = 1;
 			}
 		}
 		announceLoot(this.client, user, monster, quantity, loot);

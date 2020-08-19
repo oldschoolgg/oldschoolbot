@@ -39,6 +39,9 @@ export default class extends BotCommand {
 			const gp = msg.author.settings.get(UserSettings.GP);
 
 			if (roll(10)) {
+				await msg.channel.send(
+					`${msg.author.minionName} ignores your amount and decides to gamble your entire cash stack!`
+				);
 				amount = gp;
 			}
 

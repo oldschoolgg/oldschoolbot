@@ -1,12 +1,13 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, roll, itemID, multiplyBank } from '../../lib/util';
+import { saidYes, noOp, roll, multiplyBank } from '../../lib/util';
 import { Time } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import Smithing from '../../lib/skilling/skills/smithing/smithing';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends Task {
 	async run({
@@ -46,7 +47,7 @@ export default class extends Task {
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
-				loot[itemID('Mystery box')] = 1;
+				loot[getRandomMysteryBox()] = 1;
 			}
 		}
 
