@@ -4,7 +4,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Color, PerkTier, Time } from '../../lib/constants';
+import { Color, PerkTier } from '../../lib/constants';
 import { stringMatches, roll, itemID } from '../../lib/util';
 import { getRandomMysteryBox } from '../../lib/openables';
 
