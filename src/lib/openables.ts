@@ -263,9 +263,9 @@ export function getRandomMysteryBox() {
 	return MysteryBoxes.roll()[0].item;
 }
 
-let allItemsIDs = (Openables.map(
+let allItemsIDs = Openables.map(
 	i => (typeof i.table !== 'function' && i.table.allItems) || []
-).flat(Infinity) as number[]).concat(Openables.map(i => i.itemID));
+).flat(Infinity) as number[];
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [...Object.values(coxLog).flat(Infinity)] as number[];
 
