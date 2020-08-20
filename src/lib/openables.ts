@@ -274,8 +274,8 @@ function getRandomItem(tradeables: boolean): number {
 		if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
 			return false;
 		}
-
-		return (i as Item).tradeable === tradeables;
+		
+		return (i as Item).tradeable_on_ge === tradeables;
 	}).random().id;
 }
 
