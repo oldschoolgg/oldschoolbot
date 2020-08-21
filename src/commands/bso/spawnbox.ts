@@ -5,7 +5,7 @@ import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Color, PerkTier } from '../../lib/constants';
-import { stringMatches, roll, itemID } from '../../lib/util';
+import { stringMatches, roll, itemID, rand } from '../../lib/util';
 import { getRandomMysteryBox } from '../../lib/openables';
 
 export default class extends BotCommand {
@@ -38,13 +38,22 @@ export default class extends BotCommand {
 			const collected = await msg.channel.awaitMessages(
 				_msg => stringMatches(_msg.content, randomItem.name),
 				{
-					max: 1,
+					max: 5,
 					time: 14_000,
-					errors: ['time']
+					errors: ['false']
 				}
 			);
 
-			const winner = collected.first()?.author!;
+			const users = [];
+			let i = 0;
+			for (const [k, v] of collected) {
+				k;
+				users[i] = v.author;
+				i++;
+			}
+			const uniqueUsers = [...new Set(users)];
+
+			const winner = uniqueUsers[rand(0, uniqueUsers.length - 1)];
 			const box = roll(10) ? getRandomMysteryBox() : itemID('Mystery box');
 			await winner.addItemsToBank({ [box]: 1 });
 			return msg.channel.send(
