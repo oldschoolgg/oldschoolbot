@@ -2,6 +2,7 @@ import resolveItems from './util/resolveItems';
 import { warmGear } from '../commands/Minion/wt';
 import { gracefulItems } from './skilling/skills/agility';
 import { Eatables } from './eatables';
+import Crafting from './skilling/skills/crafting/crafting';
 
 const ores = resolveItems([
 	`Copper ore`,
@@ -84,87 +85,9 @@ const gems = resolveItems([
 	`Zenyte shard`
 ]);
 
-const crafting = resolveItems([
-	`Wool`,
-	`Ball of wool`,
-	`Leather`,
-	`Unfired pot`,
-	`Soft clay`,
-	`Clay`,
-	`Molten glass`,
-	`Silver bar`,
-	`Gold bar`,
-	`Buttons`,
-	`Clockwork`,
-	`Thread`,
-	`Needle`,
-	`Unfired pie dish`,
-	`Unfired bowl`,
-	`Flax`,
-	`Sinew`,
-	`Damaged monkey tail`,
-	`Xerician fabric`,
-	`Fresh crab shell`,
-	`Fresh crab claw`,
-	`Blamish myre shell`,
-	`Blamish red shell`,
-	`Blamish ochre shell`,
-	`Blamish blue shell`,
-	`Blamish bark shell`,
-	`Blamish myre shell`,
-	`Blamish red shell`,
-	`Blamish ochre shell`,
-	`Blamish blue shell`,
-	`Unstrung symbol`,
-	`Unstrung emblem`,
-	`Steel bar`,
-	`Steel studs`,
-	`Unfired plant pot`,
-	`Magic roots`,
-	`Oak roots`,
-	`Willow roots`,
-	`Maple roots`,
-	`Yew roots`,
-	`Jute fibre`,
-	`Unfired pot lid`,
-	`Hard leather`,
-	`Hair`,
-	`Kebbit claws`,
-	`Willow branch`,
-	`Rabbit foot`,
-	`Oak shield`,
-	`Bronze nails`,
-	`Cured yak-hide`,
-	`Snakeskin`,
-	`Serpentine visage`,
-	`Battlestaff`,
-	`Water orb`,
-	`Willow shield`,
-	`Iron nails`,
-	`Maple shield`,
-	`Steel nails`,
-	`Yew shield`,
-	`Mithril nails`,
-	`Magic shield`,
-	`Adamantite nails`,
-	`Redwood shield`,
-	`Rune nails`,
-	`Green dragonhide`,
-	`Green dragon leather`,
-	`Earth orb`,
-	`Magic fang`,
-	`Fire orb`,
-	`Air orb`,
-	`Blue dragonhide`,
-	`Blue dragon leather`,
-	`Red dragonhide`,
-	`Red dragon leather`,
-	`Black dragonhide`,
-	`Black dragon leather`,
-	`Crystal shard`,
-	`Cave goblin wire`,
-	...gems
-]);
+const craftingItems = Crafting.Craftables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
+
+const craftingItemsSet = [...new Set(craftingItems)];
 
 const smithing = resolveItems([...ores, ...bars, ...smithingMisc]);
 
@@ -446,7 +369,7 @@ const skilling = resolveItems([
 	...bars,
 	...ores,
 	...smithingMisc,
-	...crafting
+	...craftingItemsSet
 ]);
 
 const godwarsGear = resolveItems([
@@ -843,7 +766,7 @@ export const filterableTypes = [
 	{
 		name: 'Crafting',
 		aliases: ['crafting', 'craft', 'cr'],
-		items: crafting
+		items: craftingItemsSet
 	},
 	{
 		name: 'Barrows',
