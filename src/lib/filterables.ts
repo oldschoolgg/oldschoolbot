@@ -59,7 +59,6 @@ const smithingMisc = resolveItems([
 	`Wyvern visage`
 ]);
 
-
 const gems = resolveItems([
 	`Uncut opal`,
 	`Uncut jade`,
@@ -165,14 +164,9 @@ const crafting = resolveItems([
 	`Crystal shard`,
 	`Cave goblin wire`,
 	...gems
-
 ]);
 
-const smithing = resolveItems([
-	...ores,
-	...bars,
-	...smithingMisc
-]);
+const smithing = resolveItems([...ores, ...bars, ...smithingMisc]);
 
 const barrows = resolveItems([
 	"Ahrim's hood",
