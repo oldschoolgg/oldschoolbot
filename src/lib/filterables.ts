@@ -3,6 +3,7 @@ import { warmGear } from '../commands/Minion/wt';
 import { gracefulItems } from './skilling/skills/agility';
 import { Eatables } from './eatables';
 import Crafting from './skilling/skills/crafting/crafting';
+import Fletching from './skilling/skills/fletching/fletching';
 
 const ores = resolveItems([
 	`Copper ore`,
@@ -256,90 +257,9 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const fletching = resolveItems([
-	'Logs',
-	'Oak logs',
-	'Willow logs',
-	'Teak logs',
-	'Maple logs',
-	'Mahogany logs',
-	'Yew logs',
-	'Magic logs',
-	'Redwood logs',
-	'Bronze dart tip',
-	'Iron dart tip',
-	'Steel dart tip',
-	'Mithril dart tip',
-	'Adamant dart tip',
-	'Rune dart tip',
-	'Dragon dart tip',
-	'Feather',
-	'Bronze bolts (unf)',
-	'Blurite bolts (unf)',
-	'Iron bolts (unf)',
-	'Silver bolts (unf)',
-	'Steel bolts (unf)',
-	'Mithril bolts (unf)',
-	'Adamant bolts (unf)',
-	'Runite bolts (unf)',
-	'Dragon bolts (unf)',
-	'Unfinished broad bolts',
-	'Opal bolt tips',
-	'Jade bolt tips',
-	'Pearl bolt tips',
-	'Topaz bolt tips',
-	'Sapphire bolt tips',
-	'Emerald bolt tips',
-	'Ruby bolt tips',
-	'Diamond bolt tips',
-	'Onyx bolt tips',
-	'Dragonstone bolt tips',
-	'Headless arrow',
-	'Bronze arrowtips',
-	'Iron arrowtips',
-	'Steel arrowtips',
-	'Mithril arrowtips',
-	'Broad arrowheads',
-	'Adamant arrowtips',
-	'Rune arrowtips',
-	'Amethyst arrowtips',
-	'Dragon arrowtips',
-	'Arrow shaft',
-	'Shortbow (u)',
-	'Longbow (u)',
-	'Oak shortbow (u)',
-	'Oak longbow (u)',
-	'Willow shortbow (u)',
-	'Willow longbow (u)',
-	'Maple shortbow (u)',
-	'Maple longbow (u)',
-	'Yew shortbow (u)',
-	'Yew longbow (u)',
-	'Magic shortbow (u)',
-	'Magic longbow (u)',
-	'Bow string',
-	'Crossbow string',
-	'Flax',
-	'Sinew',
-	'Tanzanite fang',
-	'Celastrus bark',
-	'Wooden stock',
-	'Oak stock',
-	'Willow stock',
-	'Teak stock',
-	'Maple stock',
-	'Mahogany stock',
-	'Yew stock',
-	'Magic stock',
-	'Bronze limbs',
-	'Blurite limbs',
-	'Iron limbs',
-	'Steel limbs',
-	'Mithril limbs',
-	'Adamantite limbs',
-	'Runite limbs',
-	'Dragon limbs'
-]);
+const fletchingItems = Fletching.Fletchables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
+
+const fletchingItemsSet = [...new Set(fletchingItems)];
 
 const skilling = resolveItems([
 	'Rune essence',
@@ -362,7 +282,7 @@ const skilling = resolveItems([
 	'Raw shark',
 	'Grapes',
 	'Feather',
-	...fletching,
+	...fletchingItemsSet,
 	...seeds,
 	...bones,
 	...gems,
@@ -836,7 +756,7 @@ export const filterableTypes = [
 	{
 		name: 'Fletching',
 		aliases: ['fletching', 'fletch'],
-		items: fletching
+		items: fletchingItemsSet
 	},
 	{
 		name: 'Agility',
