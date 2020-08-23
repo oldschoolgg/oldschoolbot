@@ -62,16 +62,7 @@ const smithingMisc = resolveItems([
 ]);
 
 const gems = resolveItems([
-	`Uncut opal`,
-	`Uncut jade`,
-	`Uncut red topaz`,
-	`Uncut sapphire`,
-	`Uncut emerald`,
-	`Uncut ruby`,
-	`Uncut diamond`,
-	`Uncut dragonstone`,
 	`Amethyst`,
-	`Uncut onyx`,
 	`Sapphire`,
 	`Opal`,
 	`Jade`,
@@ -82,7 +73,6 @@ const gems = resolveItems([
 	`Dragonstone`,
 	`Onyx`,
 	`Zenyte`,
-	`Uncut zenyte`,
 	`Zenyte shard`
 ]);
 
