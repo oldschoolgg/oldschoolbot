@@ -688,6 +688,17 @@ const Createables: Createable[] = [
 		}),
 		QPRequired: 111,
 		smithingLevel: 60
+	},
+	{
+		name: 'Coconut milk',
+		inputItems: resolveNameBank({
+			Vial: 1,
+			Coconut: 1
+		}),
+		outputItems: resolveNameBank({
+			'Coconut milk': 1,
+			'Coconut shell': 1
+		})
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',

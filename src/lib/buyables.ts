@@ -214,6 +214,24 @@ const Buyables: Buyable[] = [
 		gpCost: 10
 	},
 	{
+		name: 'Vial',
+		aliases: ['vial'],
+		outputItems: resolveNameBank({
+			Vial: 1
+		}),
+		qpRequired: 0,
+		gpCost: 10
+	},
+	{
+		name: 'Cup of hot water',
+		aliases: ['cup of hot water', 'hot water'],
+		outputItems: resolveNameBank({
+			'Cup of hot water': 1
+		}),
+		qpRequired: 0,
+		gpCost: 1500
+	},
+	{
 		name: 'Chocolate bar',
 		aliases: ['chocolate bar', 'chocolate'],
 		outputItems: resolveNameBank({
