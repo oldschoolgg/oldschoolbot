@@ -88,7 +88,7 @@ const gems = resolveItems([
 
 const craftingItems = Crafting.Craftables.flatMap(item =>
 	Object.keys(item.inputItems).map(key => parseInt(key))
-	);
+);
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -261,7 +261,7 @@ const bones = resolveItems([
 
 const fletchingItems = Fletching.Fletchables.flatMap(item =>
 	Object.keys(item.inputItems).map(key => parseInt(key))
-	);
+);
 
 const fletchingItemsSet = [...new Set(fletchingItems)];
 
