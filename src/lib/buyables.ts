@@ -194,6 +194,33 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 111,
 		gpCost: 750_000
+	},
+	{
+		name: 'Eye of newt',
+		aliases: ['eye of newt', 'newt eye'],
+		outputItems: resolveNameBank({
+			'Eye of newt': 1
+		}),
+		qpRequired: 0,
+		gpCost: 100
+	},
+	{
+		name: 'Vial of water',
+		aliases: ['vial of water'],
+		outputItems: resolveNameBank({
+			'Vial of water': 1
+		}),
+		qpRequired: 0,
+		gpCost: 10
+	},
+	{
+		name: 'Chocolate bar',
+		aliases: ['chocolate bar', 'chocolate'],
+		outputItems: resolveNameBank({
+			'Chocolate bar': 1
+		}),
+		qpRequired: 0,
+		gpCost: 200
 	}
 ];
 
