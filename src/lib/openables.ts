@@ -275,7 +275,7 @@ function getRandomItem(tradeables: boolean): number {
 			return false;
 		}
 
-		return (i as Item).tradeable === tradeables;
+		return (i as Item).tradeable_on_ge === tradeables;
 	}).random().id;
 }
 
