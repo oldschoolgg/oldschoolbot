@@ -141,161 +141,21 @@ const Createables: Createable[] = [
 			[itemID('Crystal key')]: 1
 		}
 	},
-	{
-		name: "Verac's armour set",
-		inputItems: {
-			[itemID("Verac's helm")]: 1,
-			[itemID("Verac's brassard")]: 1,
-			[itemID("Verac's plateskirt")]: 1,
-			[itemID("Verac's flail")]: 1
-		},
-		outputItems: {
-			[itemID("Verac's armour set")]: 1
-		}
-	},
-	{
-		name: 'Veracs',
-		inputItems: {
-			[itemID("Verac's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Verac's helm")]: 1,
-			[itemID("Verac's brassard")]: 1,
-			[itemID("Verac's plateskirt")]: 1,
-			[itemID("Verac's flail")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Dharok's armour set",
-		inputItems: {
-			[itemID("Dharok's helm")]: 1,
-			[itemID("Dharok's platebody")]: 1,
-			[itemID("Dharok's platelegs")]: 1,
-			[itemID("Dharok's greataxe")]: 1
-		},
-		outputItems: {
-			[itemID("Dharok's armour set")]: 1
-		}
-	},
-	{
-		name: 'Dharoks',
-		inputItems: {
-			[itemID("Dharok's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Dharok's helm")]: 1,
-			[itemID("Dharok's platebody")]: 1,
-			[itemID("Dharok's platelegs")]: 1,
-			[itemID("Dharok's greataxe")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Guthan's armour set",
-		inputItems: {
-			[itemID("Guthan's helm")]: 1,
-			[itemID("Guthan's platebody")]: 1,
-			[itemID("Guthan's chainskirt")]: 1,
-			[itemID("Guthan's warspear")]: 1
-		},
-		outputItems: {
-			[itemID("Guthan's armour set")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Guthans',
-		inputItems: {
-			[itemID("Guthan's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Guthan's helm")]: 1,
-			[itemID("Guthan's platebody")]: 1,
-			[itemID("Guthan's chainskirt")]: 1,
-			[itemID("Guthan's warspear")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Ahrim's armour set",
-		inputItems: {
-			[itemID("Ahrim's hood")]: 1,
-			[itemID("Ahrim's robetop")]: 1,
-			[itemID("Ahrim's robeskirt")]: 1,
-			[itemID("Ahrim's staff")]: 1
-		},
-		outputItems: {
-			[itemID("Ahrim's armour set")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Ahrims',
-		inputItems: {
-			[itemID("Ahrim's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Ahrim's hood")]: 1,
-			[itemID("Ahrim's robetop")]: 1,
-			[itemID("Ahrim's robeskirt")]: 1,
-			[itemID("Ahrim's staff")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Torag's armour set",
-		inputItems: {
-			[itemID("Torag's helm")]: 1,
-			[itemID("Torag's platebody")]: 1,
-			[itemID("Torag's platelegs")]: 1,
-			[itemID("Torag's hammers")]: 1
-		},
-		outputItems: {
-			[itemID("Torag's armour set")]: 1
-		}
-	},
-	{
-		name: 'Torags',
-		inputItems: {
-			[itemID("Torag's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Torag's helm")]: 1,
-			[itemID("Torag's platebody")]: 1,
-			[itemID("Torag's platelegs")]: 1,
-			[itemID("Torag's hammers")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Karil's armour set",
-		inputItems: {
-			[itemID("Karil's coif")]: 1,
-			[itemID("Karil's leathertop")]: 1,
-			[itemID("Karil's leatherskirt")]: 1,
-			[itemID("Karil's crossbow")]: 1
-		},
-		outputItems: {
-			[itemID("Karil's armour set")]: 1
-		}
-	},
-	{
-		name: 'Karils',
-		inputItems: {
-			[itemID("Karil's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Karil's coif")]: 1,
-			[itemID("Karil's leathertop")]: 1,
-			[itemID("Karil's leatherskirt")]: 1,
-			[itemID("Karil's crossbow")]: 1
-		},
-		noCl: true
-	},
 	/**
 	 * Prospector outfit
 	 */
+	{
+		name: 'Prospector',
+		inputItems: {
+			[itemID('Golden nugget')]: 180
+		},
+		outputItems: {
+			[itemID('Prospector helmet')]: 1,
+			[itemID('Prospector jacket')]: 1,
+			[itemID('Prospector legs')]: 1,
+			[itemID('Prospector boots')]: 1
+		}
+	},
 	{
 		name: 'Prospector helmet',
 		outputItems: {
@@ -690,15 +550,2554 @@ const Createables: Createable[] = [
 		smithingLevel: 60
 	},
 	{
-		name: 'Dwarf cannon set',
+		name: 'Avernic defender',
 		inputItems: {
-			[itemID('Cannon barrels')]: 1,
-			[itemID('Cannon base')]: 1,
-			[itemID('Cannon furnace')]: 1,
-			[itemID('Cannon stand')]: 1
+			[itemID('Avernic defender hilt')]: 1,
+			[itemID('Dragon defender')]: 1
 		},
 		outputItems: {
-			[itemID('Dwarf cannon set')]: 1
+			[itemID('Avernic defender')]: 1
+		}
+	},
+	{
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
+		},
+		outputItems: {
+			[itemID('Kodai wand')]: 1
+		}
+	},
+	// Melee armour sets
+	// bronze
+	{
+		name: 'Bronze (lg)',
+		inputItems: {
+			[itemID('Bronze set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze full helm')]: 1,
+			[itemID('Bronze platebody')]: 1,
+			[itemID('Bronze platelegs')]: 1,
+			[itemID('Bronze kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bronze set (lg)',
+		inputItems: {
+			[itemID('Bronze full helm')]: 1,
+			[itemID('Bronze platebody')]: 1,
+			[itemID('Bronze platelegs')]: 1,
+			[itemID('Bronze kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Bronze (sk)',
+		inputItems: {
+			[itemID('Bronze set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze full helm')]: 1,
+			[itemID('Bronze platebody')]: 1,
+			[itemID('Bronze plateskirt')]: 1,
+			[itemID('Bronze kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bronze set (sk)',
+		inputItems: {
+			[itemID('Bronze full helm')]: 1,
+			[itemID('Bronze platebody')]: 1,
+			[itemID('Bronze plateskirt')]: 1,
+			[itemID('Bronze kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Bronze trimmed (lg)',
+		inputItems: {
+			[itemID('Bronze trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze full helm (t)')]: 1,
+			[itemID('Bronze platebody (t)')]: 1,
+			[itemID('Bronze platelegs (t)')]: 1,
+			[itemID('Bronze kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bronze trimmed set (lg)',
+		inputItems: {
+			[itemID('Bronze full helm (t)')]: 1,
+			[itemID('Bronze platebody (t)')]: 1,
+			[itemID('Bronze platelegs (t)')]: 1,
+			[itemID('Bronze kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Bronze trimmed (sk)',
+		inputItems: {
+			[itemID('Bronze trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze full helm (t)')]: 1,
+			[itemID('Bronze platebody (t)')]: 1,
+			[itemID('Bronze plateskirt (t)')]: 1,
+			[itemID('Bronze kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bronze trimmed set (sk)',
+		inputItems: {
+			[itemID('Bronze full helm (t)')]: 1,
+			[itemID('Bronze platebody (t)')]: 1,
+			[itemID('Bronze plateskirt (t)')]: 1,
+			[itemID('Bronze kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Bronze gold-trimmed (lg)',
+		inputItems: {
+			[itemID('Bronze gold-trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze full helm (g)')]: 1,
+			[itemID('Bronze platebody (g)')]: 1,
+			[itemID('Bronze platelegs (g)')]: 1,
+			[itemID('Bronze kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bronze gold-trimmed set (lg)',
+		inputItems: {
+			[itemID('Bronze full helm (g)')]: 1,
+			[itemID('Bronze platebody (g)')]: 1,
+			[itemID('Bronze platelegs (g)')]: 1,
+			[itemID('Bronze kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze gold-trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Bronze gold-trimmed (sk)',
+		inputItems: {
+			[itemID('Bronze gold-trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze full helm (g)')]: 1,
+			[itemID('Bronze platebody (g)')]: 1,
+			[itemID('Bronze plateskirt (g)')]: 1,
+			[itemID('Bronze kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bronze gold-trimmed set (sk)',
+		inputItems: {
+			[itemID('Bronze full helm (g)')]: 1,
+			[itemID('Bronze platebody (g)')]: 1,
+			[itemID('Bronze plateskirt (g)')]: 1,
+			[itemID('Bronze kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze gold-trimmed set (sk)')]: 1
+		}
+	},
+	// iron
+	{
+		name: 'Iron (lg)',
+		inputItems: {
+			[itemID('Iron set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron full helm')]: 1,
+			[itemID('Iron platebody')]: 1,
+			[itemID('Iron platelegs')]: 1,
+			[itemID('Iron kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Iron set (lg)',
+		inputItems: {
+			[itemID('Iron full helm')]: 1,
+			[itemID('Iron platebody')]: 1,
+			[itemID('Iron platelegs')]: 1,
+			[itemID('Iron kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Iron set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Iron (sk)',
+		inputItems: {
+			[itemID('Iron set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron full helm')]: 1,
+			[itemID('Iron platebody')]: 1,
+			[itemID('Iron plateskirt')]: 1,
+			[itemID('Iron kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Iron set (sk)',
+		inputItems: {
+			[itemID('Iron full helm')]: 1,
+			[itemID('Iron platebody')]: 1,
+			[itemID('Iron plateskirt')]: 1,
+			[itemID('Iron kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Iron set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Iron trimmed (lg)',
+		inputItems: {
+			[itemID('Iron trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron full helm (t)')]: 1,
+			[itemID('Iron platebody (t)')]: 1,
+			[itemID('Iron platelegs (t)')]: 1,
+			[itemID('Iron kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Iron trimmed set (lg)',
+		inputItems: {
+			[itemID('Iron full helm (t)')]: 1,
+			[itemID('Iron platebody (t)')]: 1,
+			[itemID('Iron platelegs (t)')]: 1,
+			[itemID('Iron kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Iron trimmed (sk)',
+		inputItems: {
+			[itemID('Iron trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron full helm (t)')]: 1,
+			[itemID('Iron platebody (t)')]: 1,
+			[itemID('Iron plateskirt (t)')]: 1,
+			[itemID('Iron kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Iron trimmed set (sk)',
+		inputItems: {
+			[itemID('Iron full helm (t)')]: 1,
+			[itemID('Iron platebody (t)')]: 1,
+			[itemID('Iron plateskirt (t)')]: 1,
+			[itemID('Iron kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Iron gold-trimmed (lg)',
+		inputItems: {
+			[itemID('Iron gold-trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron full helm (g)')]: 1,
+			[itemID('Iron platebody (g)')]: 1,
+			[itemID('Iron platelegs (g)')]: 1,
+			[itemID('Iron kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Iron gold-trimmed set (lg)',
+		inputItems: {
+			[itemID('Iron full helm (g)')]: 1,
+			[itemID('Iron platebody (g)')]: 1,
+			[itemID('Iron platelegs (g)')]: 1,
+			[itemID('Iron kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron gold-trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Iron gold-trimmed (sk)',
+		inputItems: {
+			[itemID('Iron gold-trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron full helm (g)')]: 1,
+			[itemID('Iron platebody (g)')]: 1,
+			[itemID('Iron plateskirt (g)')]: 1,
+			[itemID('Iron kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Iron gold-trimmed set (sk)',
+		inputItems: {
+			[itemID('Iron full helm (g)')]: 1,
+			[itemID('Iron platebody (g)')]: 1,
+			[itemID('Iron plateskirt (g)')]: 1,
+			[itemID('Iron kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron gold-trimmed set (sk)')]: 1
+		}
+	},
+	// steel
+	{
+		name: 'Steel (lg)',
+		inputItems: {
+			[itemID('Steel set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel full helm')]: 1,
+			[itemID('Steel platebody')]: 1,
+			[itemID('Steel platelegs')]: 1,
+			[itemID('Steel kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Steel set (lg)',
+		inputItems: {
+			[itemID('Steel full helm')]: 1,
+			[itemID('Steel platebody')]: 1,
+			[itemID('Steel platelegs')]: 1,
+			[itemID('Steel kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Steel set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Steel (sk)',
+		inputItems: {
+			[itemID('Steel set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel full helm')]: 1,
+			[itemID('Steel platebody')]: 1,
+			[itemID('Steel plateskirt')]: 1,
+			[itemID('Steel kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Steel set (sk)',
+		inputItems: {
+			[itemID('Steel full helm')]: 1,
+			[itemID('Steel platebody')]: 1,
+			[itemID('Steel plateskirt')]: 1,
+			[itemID('Steel kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Steel set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Steel trimmed (lg)',
+		inputItems: {
+			[itemID('Steel trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel full helm (t)')]: 1,
+			[itemID('Steel platebody (t)')]: 1,
+			[itemID('Steel platelegs (t)')]: 1,
+			[itemID('Steel kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Steel trimmed set (lg)',
+		inputItems: {
+			[itemID('Steel full helm (t)')]: 1,
+			[itemID('Steel platebody (t)')]: 1,
+			[itemID('Steel platelegs (t)')]: 1,
+			[itemID('Steel kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Steel trimmed (sk)',
+		inputItems: {
+			[itemID('Steel trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel full helm (t)')]: 1,
+			[itemID('Steel platebody (t)')]: 1,
+			[itemID('Steel plateskirt (t)')]: 1,
+			[itemID('Steel kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Steel trimmed set (sk)',
+		inputItems: {
+			[itemID('Steel full helm (t)')]: 1,
+			[itemID('Steel platebody (t)')]: 1,
+			[itemID('Steel plateskirt (t)')]: 1,
+			[itemID('Steel kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Steel gold-trimmed (lg)',
+		inputItems: {
+			[itemID('Steel gold-trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel full helm (g)')]: 1,
+			[itemID('Steel platebody (g)')]: 1,
+			[itemID('Steel platelegs (g)')]: 1,
+			[itemID('Steel kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Steel gold-trimmed set (lg)',
+		inputItems: {
+			[itemID('Steel full helm (g)')]: 1,
+			[itemID('Steel platebody (g)')]: 1,
+			[itemID('Steel platelegs (g)')]: 1,
+			[itemID('Steel kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel gold-trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Steel gold-trimmed (sk)',
+		inputItems: {
+			[itemID('Steel gold-trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel full helm (g)')]: 1,
+			[itemID('Steel platebody (g)')]: 1,
+			[itemID('Steel plateskirt (g)')]: 1,
+			[itemID('Steel kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Steel gold-trimmed set (sk)',
+		inputItems: {
+			[itemID('Steel full helm (g)')]: 1,
+			[itemID('Steel platebody (g)')]: 1,
+			[itemID('Steel plateskirt (g)')]: 1,
+			[itemID('Steel kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel gold-trimmed set (sk)')]: 1
+		}
+	},
+	// black
+	{
+		name: 'Black (lg)',
+		inputItems: {
+			[itemID('Black set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Black full helm')]: 1,
+			[itemID('Black platebody')]: 1,
+			[itemID('Black platelegs')]: 1,
+			[itemID('Black kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Black set (lg)',
+		inputItems: {
+			[itemID('Black full helm')]: 1,
+			[itemID('Black platebody')]: 1,
+			[itemID('Black platelegs')]: 1,
+			[itemID('Black kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Black set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Black (sk)',
+		inputItems: {
+			[itemID('Black set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Black full helm')]: 1,
+			[itemID('Black platebody')]: 1,
+			[itemID('Black plateskirt')]: 1,
+			[itemID('Black kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Black set (sk)',
+		inputItems: {
+			[itemID('Black full helm')]: 1,
+			[itemID('Black platebody')]: 1,
+			[itemID('Black plateskirt')]: 1,
+			[itemID('Black kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Black set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Black trimmed (lg)',
+		inputItems: {
+			[itemID('Black trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Black full helm (t)')]: 1,
+			[itemID('Black platebody (t)')]: 1,
+			[itemID('Black platelegs (t)')]: 1,
+			[itemID('Black kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Black trimmed set (lg)',
+		inputItems: {
+			[itemID('Black full helm (t)')]: 1,
+			[itemID('Black platebody (t)')]: 1,
+			[itemID('Black platelegs (t)')]: 1,
+			[itemID('Black kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Black trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Black trimmed (sk)',
+		inputItems: {
+			[itemID('Black trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Black full helm (t)')]: 1,
+			[itemID('Black platebody (t)')]: 1,
+			[itemID('Black plateskirt (t)')]: 1,
+			[itemID('Black kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Black trimmed set (sk)',
+		inputItems: {
+			[itemID('Black full helm (t)')]: 1,
+			[itemID('Black platebody (t)')]: 1,
+			[itemID('Black plateskirt (t)')]: 1,
+			[itemID('Black kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Black trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Black gold-trimmed (lg)',
+		inputItems: {
+			[itemID('Black gold-trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Black full helm (g)')]: 1,
+			[itemID('Black platebody (g)')]: 1,
+			[itemID('Black platelegs (g)')]: 1,
+			[itemID('Black kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Black gold-trimmed set (lg)',
+		inputItems: {
+			[itemID('Black full helm (g)')]: 1,
+			[itemID('Black platebody (g)')]: 1,
+			[itemID('Black platelegs (g)')]: 1,
+			[itemID('Black kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Black gold-trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Black gold-trimmed (sk)',
+		inputItems: {
+			[itemID('Black gold-trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Black full helm (g)')]: 1,
+			[itemID('Black platebody (g)')]: 1,
+			[itemID('Black plateskirt (g)')]: 1,
+			[itemID('Black kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Black gold-trimmed set (sk)',
+		inputItems: {
+			[itemID('Black full helm (g)')]: 1,
+			[itemID('Black platebody (g)')]: 1,
+			[itemID('Black plateskirt (g)')]: 1,
+			[itemID('Black kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Black gold-trimmed set (sk)')]: 1
+		}
+	},
+	// mithril
+	{
+		name: 'Mithril (lg)',
+		inputItems: {
+			[itemID('Mithril set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril full helm')]: 1,
+			[itemID('Mithril platebody')]: 1,
+			[itemID('Mithril platelegs')]: 1,
+			[itemID('Mithril kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mithril set (lg)',
+		inputItems: {
+			[itemID('Mithril full helm')]: 1,
+			[itemID('Mithril platebody')]: 1,
+			[itemID('Mithril platelegs')]: 1,
+			[itemID('Mithril kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Mithril (sk)',
+		inputItems: {
+			[itemID('Mithril set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril full helm')]: 1,
+			[itemID('Mithril platebody')]: 1,
+			[itemID('Mithril plateskirt')]: 1,
+			[itemID('Mithril kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mithril set (sk)',
+		inputItems: {
+			[itemID('Mithril full helm')]: 1,
+			[itemID('Mithril platebody')]: 1,
+			[itemID('Mithril plateskirt')]: 1,
+			[itemID('Mithril kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Mithril trimmed (lg)',
+		inputItems: {
+			[itemID('Mithril trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril full helm (t)')]: 1,
+			[itemID('Mithril platebody (t)')]: 1,
+			[itemID('Mithril platelegs (t)')]: 1,
+			[itemID('Mithril kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mithril trimmed set (lg)',
+		inputItems: {
+			[itemID('Mithril full helm (t)')]: 1,
+			[itemID('Mithril platebody (t)')]: 1,
+			[itemID('Mithril platelegs (t)')]: 1,
+			[itemID('Mithril kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Mithril trimmed (sk)',
+		inputItems: {
+			[itemID('Mithril trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril full helm (t)')]: 1,
+			[itemID('Mithril platebody (t)')]: 1,
+			[itemID('Mithril plateskirt (t)')]: 1,
+			[itemID('Mithril kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mithril trimmed set (sk)',
+		inputItems: {
+			[itemID('Mithril full helm (t)')]: 1,
+			[itemID('Mithril platebody (t)')]: 1,
+			[itemID('Mithril plateskirt (t)')]: 1,
+			[itemID('Mithril kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Mithril gold-trimmed (lg)',
+		inputItems: {
+			[itemID('Mithril gold-trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril full helm (g)')]: 1,
+			[itemID('Mithril platebody (g)')]: 1,
+			[itemID('Mithril platelegs (g)')]: 1,
+			[itemID('Mithril kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mithril gold-trimmed set (lg)',
+		inputItems: {
+			[itemID('Mithril full helm (g)')]: 1,
+			[itemID('Mithril platebody (g)')]: 1,
+			[itemID('Mithril platelegs (g)')]: 1,
+			[itemID('Mithril kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril gold-trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Mithril gold-trimmed (sk)',
+		inputItems: {
+			[itemID('Mithril gold-trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril full helm (g)')]: 1,
+			[itemID('Mithril platebody (g)')]: 1,
+			[itemID('Mithril plateskirt (g)')]: 1,
+			[itemID('Mithril kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mithril gold-trimmed set (sk)',
+		inputItems: {
+			[itemID('Mithril full helm (g)')]: 1,
+			[itemID('Mithril platebody (g)')]: 1,
+			[itemID('Mithril plateskirt (g)')]: 1,
+			[itemID('Mithril kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril gold-trimmed set (sk)')]: 1
+		}
+	},
+	// adamant
+	{
+		name: 'Adamant (lg)',
+		inputItems: {
+			[itemID('Adamant set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant full helm')]: 1,
+			[itemID('Adamant platebody')]: 1,
+			[itemID('Adamant platelegs')]: 1,
+			[itemID('Adamant kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Adamant set (lg)',
+		inputItems: {
+			[itemID('Adamant full helm')]: 1,
+			[itemID('Adamant platebody')]: 1,
+			[itemID('Adamant platelegs')]: 1,
+			[itemID('Adamant kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Adamant (sk)',
+		inputItems: {
+			[itemID('Adamant set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant full helm')]: 1,
+			[itemID('Adamant platebody')]: 1,
+			[itemID('Adamant plateskirt')]: 1,
+			[itemID('Adamant kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Adamant set (sk)',
+		inputItems: {
+			[itemID('Adamant full helm')]: 1,
+			[itemID('Adamant platebody')]: 1,
+			[itemID('Adamant plateskirt')]: 1,
+			[itemID('Adamant kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Adamant trimmed (lg)',
+		inputItems: {
+			[itemID('Adamant trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant full helm (t)')]: 1,
+			[itemID('Adamant platebody (t)')]: 1,
+			[itemID('Adamant platelegs (t)')]: 1,
+			[itemID('Adamant kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Adamant trimmed set (lg)',
+		inputItems: {
+			[itemID('Adamant full helm (t)')]: 1,
+			[itemID('Adamant platebody (t)')]: 1,
+			[itemID('Adamant platelegs (t)')]: 1,
+			[itemID('Adamant kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Adamant trimmed (sk)',
+		inputItems: {
+			[itemID('Adamant trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant full helm (t)')]: 1,
+			[itemID('Adamant platebody (t)')]: 1,
+			[itemID('Adamant plateskirt (t)')]: 1,
+			[itemID('Adamant kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Adamant trimmed set (sk)',
+		inputItems: {
+			[itemID('Adamant full helm (t)')]: 1,
+			[itemID('Adamant platebody (t)')]: 1,
+			[itemID('Adamant plateskirt (t)')]: 1,
+			[itemID('Adamant kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Adamant gold-trimmed (lg)',
+		inputItems: {
+			[itemID('Adamant gold-trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant full helm (g)')]: 1,
+			[itemID('Adamant platebody (g)')]: 1,
+			[itemID('Adamant platelegs (g)')]: 1,
+			[itemID('Adamant kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Adamant gold-trimmed set (lg)',
+		inputItems: {
+			[itemID('Adamant full helm (g)')]: 1,
+			[itemID('Adamant platebody (g)')]: 1,
+			[itemID('Adamant platelegs (g)')]: 1,
+			[itemID('Adamant kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant gold-trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Adamant gold-trimmed (sk)',
+		inputItems: {
+			[itemID('Adamant gold-trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant full helm (g)')]: 1,
+			[itemID('Adamant platebody (g)')]: 1,
+			[itemID('Adamant plateskirt (g)')]: 1,
+			[itemID('Adamant kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Adamant gold-trimmed set (sk)',
+		inputItems: {
+			[itemID('Adamant full helm (g)')]: 1,
+			[itemID('Adamant platebody (g)')]: 1,
+			[itemID('Adamant plateskirt (g)')]: 1,
+			[itemID('Adamant kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant gold-trimmed set (sk)')]: 1
+		}
+	},
+	// rune
+	{
+		name: 'Rune (lg)',
+		inputItems: {
+			[itemID('Rune armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune full helm')]: 1,
+			[itemID('Rune platebody')]: 1,
+			[itemID('Rune platelegs')]: 1,
+			[itemID('Rune kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Rune set (lg)',
+		inputItems: {
+			[itemID('Rune full helm')]: 1,
+			[itemID('Rune platebody')]: 1,
+			[itemID('Rune platelegs')]: 1,
+			[itemID('Rune kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Rune armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Rune (sk)',
+		inputItems: {
+			[itemID('Rune armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune full helm')]: 1,
+			[itemID('Rune platebody')]: 1,
+			[itemID('Rune plateskirt')]: 1,
+			[itemID('Rune kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Rune set (sk)',
+		inputItems: {
+			[itemID('Rune full helm')]: 1,
+			[itemID('Rune platebody')]: 1,
+			[itemID('Rune plateskirt')]: 1,
+			[itemID('Rune kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Rune armour set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Rune trimmed (lg)',
+		inputItems: {
+			[itemID('Rune trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune full helm (t)')]: 1,
+			[itemID('Rune platebody (t)')]: 1,
+			[itemID('Rune platelegs (t)')]: 1,
+			[itemID('Rune kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Rune trimmed set (lg)',
+		inputItems: {
+			[itemID('Rune full helm (t)')]: 1,
+			[itemID('Rune platebody (t)')]: 1,
+			[itemID('Rune platelegs (t)')]: 1,
+			[itemID('Rune kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Rune trimmed (sk)',
+		inputItems: {
+			[itemID('Rune trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune full helm (t)')]: 1,
+			[itemID('Rune platebody (t)')]: 1,
+			[itemID('Rune plateskirt (t)')]: 1,
+			[itemID('Rune kiteshield (t)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Rune trimmed set (sk)',
+		inputItems: {
+			[itemID('Rune full helm (t)')]: 1,
+			[itemID('Rune platebody (t)')]: 1,
+			[itemID('Rune plateskirt (t)')]: 1,
+			[itemID('Rune kiteshield (t)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Rune gold-trimmed (lg)',
+		inputItems: {
+			[itemID('Rune gold-trimmed set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune full helm (g)')]: 1,
+			[itemID('Rune platebody (g)')]: 1,
+			[itemID('Rune platelegs (g)')]: 1,
+			[itemID('Rune kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Rune gold-trimmed set (lg)',
+		inputItems: {
+			[itemID('Rune full helm (g)')]: 1,
+			[itemID('Rune platebody (g)')]: 1,
+			[itemID('Rune platelegs (g)')]: 1,
+			[itemID('Rune kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune gold-trimmed set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Rune gold-trimmed (sk)',
+		inputItems: {
+			[itemID('Rune gold-trimmed set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune full helm (g)')]: 1,
+			[itemID('Rune platebody (g)')]: 1,
+			[itemID('Rune plateskirt (g)')]: 1,
+			[itemID('Rune kiteshield (g)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Rune gold-trimmed set (sk)',
+		inputItems: {
+			[itemID('Rune full helm (g)')]: 1,
+			[itemID('Rune platebody (g)')]: 1,
+			[itemID('Rune plateskirt (g)')]: 1,
+			[itemID('Rune kiteshield (g)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune gold-trimmed set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Gilded (lg)',
+		inputItems: {
+			[itemID('Gilded armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Gilded full helm')]: 1,
+			[itemID('Gilded platebody')]: 1,
+			[itemID('Gilded platelegs')]: 1,
+			[itemID('Gilded kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Gilded set (lg)',
+		inputItems: {
+			[itemID('Gilded full helm')]: 1,
+			[itemID('Gilded platebody')]: 1,
+			[itemID('Gilded platelegs')]: 1,
+			[itemID('Gilded kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Gilded armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Gilded (sk)',
+		inputItems: {
+			[itemID('Gilded armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Gilded full helm')]: 1,
+			[itemID('Gilded platebody')]: 1,
+			[itemID('Gilded plateskirt')]: 1,
+			[itemID('Gilded kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Gilded set (sk)',
+		inputItems: {
+			[itemID('Gilded full helm')]: 1,
+			[itemID('Gilded platebody')]: 1,
+			[itemID('Gilded plateskirt')]: 1,
+			[itemID('Gilded kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Gilded armour set (sk)')]: 1
+		}
+	},
+	// rune god armours
+	{
+		name: 'Guthix (lg)',
+		inputItems: {
+			[itemID('Guthix armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix full helm')]: 1,
+			[itemID('Guthix platebody')]: 1,
+			[itemID('Guthix platelegs')]: 1,
+			[itemID('Guthix kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Guthix set (lg)',
+		inputItems: {
+			[itemID('Guthix full helm')]: 1,
+			[itemID('Guthix platebody')]: 1,
+			[itemID('Guthix platelegs')]: 1,
+			[itemID('Guthix kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Guthix (sk)',
+		inputItems: {
+			[itemID('Guthix armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix full helm')]: 1,
+			[itemID('Guthix platebody')]: 1,
+			[itemID('Guthix plateskirt')]: 1,
+			[itemID('Guthix kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Guthix set (sk)',
+		inputItems: {
+			[itemID('Guthix full helm')]: 1,
+			[itemID('Guthix platebody')]: 1,
+			[itemID('Guthix plateskirt')]: 1,
+			[itemID('Guthix kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix armour set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Saradomin (lg)',
+		inputItems: {
+			[itemID('Saradomin armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin full helm')]: 1,
+			[itemID('Saradomin platebody')]: 1,
+			[itemID('Saradomin platelegs')]: 1,
+			[itemID('Saradomin kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Saradomin set (lg)',
+		inputItems: {
+			[itemID('Saradomin full helm')]: 1,
+			[itemID('Saradomin platebody')]: 1,
+			[itemID('Saradomin platelegs')]: 1,
+			[itemID('Saradomin kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Saradomin (sk)',
+		inputItems: {
+			[itemID('Saradomin armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin full helm')]: 1,
+			[itemID('Saradomin platebody')]: 1,
+			[itemID('Saradomin plateskirt')]: 1,
+			[itemID('Saradomin kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Saradomin set (sk)',
+		inputItems: {
+			[itemID('Saradomin full helm')]: 1,
+			[itemID('Saradomin platebody')]: 1,
+			[itemID('Saradomin plateskirt')]: 1,
+			[itemID('Saradomin kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin armour set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Zamorak (lg)',
+		inputItems: {
+			[itemID('Zamorak armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak full helm')]: 1,
+			[itemID('Zamorak platebody')]: 1,
+			[itemID('Zamorak platelegs')]: 1,
+			[itemID('Zamorak kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Zamorak set (lg)',
+		inputItems: {
+			[itemID('Zamorak full helm')]: 1,
+			[itemID('Zamorak platebody')]: 1,
+			[itemID('Zamorak platelegs')]: 1,
+			[itemID('Zamorak kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Zamorak (sk)',
+		inputItems: {
+			[itemID('Zamorak armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak full helm')]: 1,
+			[itemID('Zamorak platebody')]: 1,
+			[itemID('Zamorak plateskirt')]: 1,
+			[itemID('Zamorak kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Zamorak set (sk)',
+		inputItems: {
+			[itemID('Zamorak full helm')]: 1,
+			[itemID('Zamorak platebody')]: 1,
+			[itemID('Zamorak plateskirt')]: 1,
+			[itemID('Zamorak kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak armour set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Ancient (lg)',
+		inputItems: {
+			[itemID('Ancient rune armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient full helm')]: 1,
+			[itemID('Ancient platebody')]: 1,
+			[itemID('Ancient platelegs')]: 1,
+			[itemID('Ancient kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Ancient set (lg)',
+		inputItems: {
+			[itemID('Ancient full helm')]: 1,
+			[itemID('Ancient platebody')]: 1,
+			[itemID('Ancient platelegs')]: 1,
+			[itemID('Ancient kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient rune armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Ancient (sk)',
+		inputItems: {
+			[itemID('Ancient rune armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient full helm')]: 1,
+			[itemID('Ancient platebody')]: 1,
+			[itemID('Ancient plateskirt')]: 1,
+			[itemID('Ancient kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Ancient set (sk)',
+		inputItems: {
+			[itemID('Ancient full helm')]: 1,
+			[itemID('Ancient platebody')]: 1,
+			[itemID('Ancient plateskirt')]: 1,
+			[itemID('Ancient kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient rune armour set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Armadyl (lg)',
+		inputItems: {
+			[itemID('Armadyl rune armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl full helm')]: 1,
+			[itemID('Armadyl platebody')]: 1,
+			[itemID('Armadyl platelegs')]: 1,
+			[itemID('Armadyl kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Armadyl set (lg)',
+		inputItems: {
+			[itemID('Armadyl full helm')]: 1,
+			[itemID('Armadyl platebody')]: 1,
+			[itemID('Armadyl platelegs')]: 1,
+			[itemID('Armadyl kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl rune armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Armadyl (sk)',
+		inputItems: {
+			[itemID('Armadyl rune armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl full helm')]: 1,
+			[itemID('Armadyl platebody')]: 1,
+			[itemID('Armadyl plateskirt')]: 1,
+			[itemID('Armadyl kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Armadyl set (sk)',
+		inputItems: {
+			[itemID('Armadyl full helm')]: 1,
+			[itemID('Armadyl platebody')]: 1,
+			[itemID('Armadyl plateskirt')]: 1,
+			[itemID('Armadyl kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl rune armour set (sk)')]: 1
+		}
+	},
+	{
+		name: 'Bandos (lg)',
+		inputItems: {
+			[itemID('Bandos rune armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos full helm')]: 1,
+			[itemID('Bandos platebody')]: 1,
+			[itemID('Bandos platelegs')]: 1,
+			[itemID('Bandos kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bandos set (lg)',
+		inputItems: {
+			[itemID('Bandos full helm')]: 1,
+			[itemID('Bandos platebody')]: 1,
+			[itemID('Bandos platelegs')]: 1,
+			[itemID('Bandos kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos rune armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Bandos (sk)',
+		inputItems: {
+			[itemID('Bandos rune armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos full helm')]: 1,
+			[itemID('Bandos platebody')]: 1,
+			[itemID('Bandos plateskirt')]: 1,
+			[itemID('Bandos kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bandos set (sk)',
+		inputItems: {
+			[itemID('Bandos full helm')]: 1,
+			[itemID('Bandos platebody')]: 1,
+			[itemID('Bandos plateskirt')]: 1,
+			[itemID('Bandos kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos rune armour set (sk)')]: 1
+		}
+	},
+	// dragon
+	{
+		name: 'Dragon (lg)',
+		inputItems: {
+			[itemID('Dragon armour set (lg)')]: 1
+		},
+		outputItems: {
+			[itemID('Dragon full helm')]: 1,
+			[itemID('Dragon platebody')]: 1,
+			[itemID('Dragon platelegs')]: 1,
+			[itemID('Dragon kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Dragon set (lg)',
+		inputItems: {
+			[itemID('Dragon full helm')]: 1,
+			[itemID('Dragon platebody')]: 1,
+			[itemID('Dragon platelegs')]: 1,
+			[itemID('Dragon kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Dragon armour set (lg)')]: 1
+		}
+	},
+	{
+		name: 'Dragon (sk)',
+		inputItems: {
+			[itemID('Dragon armour set (sk)')]: 1
+		},
+		outputItems: {
+			[itemID('Dragon full helm')]: 1,
+			[itemID('Dragon platebody')]: 1,
+			[itemID('Dragon plateskirt')]: 1,
+			[itemID('Dragon kiteshield')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Dragon set (sk)',
+		inputItems: {
+			[itemID('Dragon full helm')]: 1,
+			[itemID('Dragon platebody')]: 1,
+			[itemID('Dragon plateskirt')]: 1,
+			[itemID('Dragon kiteshield')]: 1
+		},
+		outputItems: {
+			[itemID('Dragon armour set (sk)')]: 1
+		}
+	},
+	// barrows
+	{
+		name: 'Veracs',
+		inputItems: {
+			[itemID("Verac's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Verac's helm")]: 1,
+			[itemID("Verac's brassard")]: 1,
+			[itemID("Verac's plateskirt")]: 1,
+			[itemID("Verac's flail")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Verac's armour set",
+		inputItems: {
+			[itemID("Verac's helm")]: 1,
+			[itemID("Verac's brassard")]: 1,
+			[itemID("Verac's plateskirt")]: 1,
+			[itemID("Verac's flail")]: 1
+		},
+		outputItems: {
+			[itemID("Verac's armour set")]: 1
+		}
+	},
+	{
+		name: 'Dharoks',
+		inputItems: {
+			[itemID("Dharok's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Dharok's helm")]: 1,
+			[itemID("Dharok's platebody")]: 1,
+			[itemID("Dharok's platelegs")]: 1,
+			[itemID("Dharok's greataxe")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Dharok's armour set",
+		inputItems: {
+			[itemID("Dharok's helm")]: 1,
+			[itemID("Dharok's platebody")]: 1,
+			[itemID("Dharok's platelegs")]: 1,
+			[itemID("Dharok's greataxe")]: 1
+		},
+		outputItems: {
+			[itemID("Dharok's armour set")]: 1
+		}
+	},
+	{
+		name: 'Guthans',
+		inputItems: {
+			[itemID("Guthan's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Guthan's helm")]: 1,
+			[itemID("Guthan's platebody")]: 1,
+			[itemID("Guthan's chainskirt")]: 1,
+			[itemID("Guthan's warspear")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Guthan's armour set",
+		inputItems: {
+			[itemID("Guthan's helm")]: 1,
+			[itemID("Guthan's platebody")]: 1,
+			[itemID("Guthan's chainskirt")]: 1,
+			[itemID("Guthan's warspear")]: 1
+		},
+		outputItems: {
+			[itemID("Guthan's armour set")]: 1
+		}
+	},
+	{
+		name: 'Ahrims',
+		inputItems: {
+			[itemID("Ahrim's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Ahrim's hood")]: 1,
+			[itemID("Ahrim's robetop")]: 1,
+			[itemID("Ahrim's robeskirt")]: 1,
+			[itemID("Ahrim's staff")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Ahrim's armour set",
+		inputItems: {
+			[itemID("Ahrim's hood")]: 1,
+			[itemID("Ahrim's robetop")]: 1,
+			[itemID("Ahrim's robeskirt")]: 1,
+			[itemID("Ahrim's staff")]: 1
+		},
+		outputItems: {
+			[itemID("Ahrim's armour set")]: 1
+		}
+	},
+	{
+		name: 'Torags',
+		inputItems: {
+			[itemID("Torag's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Torag's helm")]: 1,
+			[itemID("Torag's platebody")]: 1,
+			[itemID("Torag's platelegs")]: 1,
+			[itemID("Torag's hammers")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Torag's armour set",
+		inputItems: {
+			[itemID("Torag's helm")]: 1,
+			[itemID("Torag's platebody")]: 1,
+			[itemID("Torag's platelegs")]: 1,
+			[itemID("Torag's hammers")]: 1
+		},
+		outputItems: {
+			[itemID("Torag's armour set")]: 1
+		}
+	},
+	{
+		name: 'Karils',
+		inputItems: {
+			[itemID("Karil's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Karil's coif")]: 1,
+			[itemID("Karil's leathertop")]: 1,
+			[itemID("Karil's leatherskirt")]: 1,
+			[itemID("Karil's crossbow")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Karil's armour set",
+		inputItems: {
+			[itemID("Karil's coif")]: 1,
+			[itemID("Karil's leathertop")]: 1,
+			[itemID("Karil's leatherskirt")]: 1,
+			[itemID("Karil's crossbow")]: 1
+		},
+		outputItems: {
+			[itemID("Karil's armour set")]: 1
+		}
+	},
+	// inquisitor
+	{
+		name: "Inquisitor's",
+		inputItems: {
+			[itemID("Inquisitor's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Inquisitor's great helm")]: 1,
+			[itemID("Inquisitor's hauberk")]: 1,
+			[itemID("Inquisitor's plateskirt")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Inquisitor's armour set",
+		inputItems: {
+			[itemID("Inquisitor's great helm")]: 1,
+			[itemID("Inquisitor's hauberk")]: 1,
+			[itemID("Inquisitor's plateskirt")]: 1
+		},
+		outputItems: {
+			[itemID("Inquisitor's armour set")]: 1
+		}
+	},
+	// justiciar
+	{
+		name: 'Justiciar',
+		inputItems: {
+			[itemID('Justiciar armour set')]: 1
+		},
+		outputItems: {
+			[itemID('Justiciar faceguard')]: 1,
+			[itemID('Justiciar chestguard')]: 1,
+			[itemID('Justiciar legguards')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Justiciar armour set',
+		inputItems: {
+			[itemID('Justiciar faceguard')]: 1,
+			[itemID('Justiciar chestguard')]: 1,
+			[itemID('Justiciar legguards')]: 1
+		},
+		outputItems: {
+			[itemID('Justiciar armour set')]: 1
+		}
+	},
+	// obsidian
+	{
+		name: 'Obsidian armour',
+		inputItems: {
+			[itemID('Obsidian armour set')]: 1
+		},
+		outputItems: {
+			[itemID('Obsidian helmet')]: 1,
+			[itemID('Obsidian platebody')]: 1,
+			[itemID('Obsidian platelegs')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Obsidian armour set',
+		inputItems: {
+			[itemID('Obsidian helmet')]: 1,
+			[itemID('Obsidian platebody')]: 1,
+			[itemID('Obsidian platelegs')]: 1
+		},
+		outputItems: {
+			[itemID('Obsidian armour set')]: 1
+		}
+	},
+	// dragonstone
+	{
+		name: 'Dragonstone armour',
+		inputItems: {
+			[itemID('Dragonstone armour set')]: 1
+		},
+		outputItems: {
+			[itemID('Dragonstone full helm')]: 1,
+			[itemID('Dragonstone platebody')]: 1,
+			[itemID('Dragonstone platelegs')]: 1,
+			[itemID('Dragonstone gauntlets')]: 1,
+			[itemID('Dragonstone boots')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Dragonstone armour set',
+		inputItems: {
+			[itemID('Dragonstone full helm')]: 1,
+			[itemID('Dragonstone platebody')]: 1,
+			[itemID('Dragonstone platelegs')]: 1,
+			[itemID('Dragonstone gauntlets')]: 1,
+			[itemID('Dragonstone boots')]: 1
+		},
+		outputItems: {
+			[itemID('Dragonstone armour set')]: 1
+		}
+	},
+	// temple knight
+	{
+		name: 'Initiate',
+		inputItems: {
+			[itemID('Initiate harness m')]: 1
+		},
+		outputItems: {
+			[itemID('Initiate sallet')]: 1,
+			[itemID('Initiate hauberk')]: 1,
+			[itemID('Initiate cuisse')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Initiate set',
+		inputItems: {
+			[itemID('Initiate sallet')]: 1,
+			[itemID('Initiate hauberk')]: 1,
+			[itemID('Initiate cuisse')]: 1
+		},
+		outputItems: {
+			[itemID('Initiate harness m')]: 1
+		}
+	},
+	{
+		name: 'Proselyte (lg)',
+		inputItems: {
+			[itemID('Proselyte harness m')]: 1
+		},
+		outputItems: {
+			[itemID('Proselyte sallet')]: 1,
+			[itemID('Proselyte hauberk')]: 1,
+			[itemID('Proselyte cuisse')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Proselyte set (lg)',
+		inputItems: {
+			[itemID('Proselyte sallet')]: 1,
+			[itemID('Proselyte hauberk')]: 1,
+			[itemID('Proselyte cuisse')]: 1
+		},
+		outputItems: {
+			[itemID('Proselyte harness m')]: 1
+		}
+	},
+	{
+		name: 'Proselyte (sk)',
+		inputItems: {
+			[itemID('Proselyte harness f')]: 1
+		},
+		outputItems: {
+			[itemID('Proselyte sallet')]: 1,
+			[itemID('Proselyte hauberk')]: 1,
+			[itemID('Proselyte tasset')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Proselyte set (sk)',
+		inputItems: {
+			[itemID('Proselyte sallet')]: 1,
+			[itemID('Proselyte hauberk')]: 1,
+			[itemID('Proselyte tasset')]: 1
+		},
+		outputItems: {
+			[itemID('Proselyte harness f')]: 1
+		}
+	},
+	// range sets
+	// dragonhide
+	{
+		name: 'Green dragonhide',
+		inputItems: {
+			[itemID('Green dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID("Green d'hide body")]: 1,
+			[itemID("Green d'hide chaps")]: 1,
+			[itemID("Green d'hide vambraces")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Green dragonhide set',
+		inputItems: {
+			[itemID("Green d'hide body")]: 1,
+			[itemID("Green d'hide chaps")]: 1,
+			[itemID("Green d'hide vambraces")]: 1
+		},
+		outputItems: {
+			[itemID('Green dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Blue dragonhide',
+		inputItems: {
+			[itemID('Blue dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID("Blue d'hide body")]: 1,
+			[itemID("Blue d'hide chaps")]: 1,
+			[itemID("Blue d'hide vambraces")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Blue dragonhide set',
+		inputItems: {
+			[itemID("Blue d'hide body")]: 1,
+			[itemID("Blue d'hide chaps")]: 1,
+			[itemID("Blue d'hide vambraces")]: 1
+		},
+		outputItems: {
+			[itemID('Blue dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Red dragonhide',
+		inputItems: {
+			[itemID('Red dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID("Red d'hide body")]: 1,
+			[itemID("Red d'hide chaps")]: 1,
+			[itemID("Red d'hide vambraces")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Red dragonhide set',
+		inputItems: {
+			[itemID("Red d'hide body")]: 1,
+			[itemID("Red d'hide chaps")]: 1,
+			[itemID("Red d'hide vambraces")]: 1
+		},
+		outputItems: {
+			[itemID('Red dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Black dragonhide',
+		inputItems: {
+			[itemID('Black dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID("Black d'hide body")]: 1,
+			[itemID("Black d'hide chaps")]: 1,
+			[itemID("Black d'hide vambraces")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Black dragonhide set',
+		inputItems: {
+			[itemID("Black d'hide body")]: 1,
+			[itemID("Black d'hide chaps")]: 1,
+			[itemID("Black d'hide vambraces")]: 1
+		},
+		outputItems: {
+			[itemID('Black dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Gilded dragonhide',
+		inputItems: {
+			[itemID('Gilded dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID("Gilded d'hide body")]: 1,
+			[itemID("Gilded d'hide chaps")]: 1,
+			[itemID("Gilded d'hide vambraces")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Gilded dragonhide set',
+		inputItems: {
+			[itemID("Gilded d'hide body")]: 1,
+			[itemID("Gilded d'hide chaps")]: 1,
+			[itemID("Gilded d'hide vambraces")]: 1
+		},
+		outputItems: {
+			[itemID('Gilded dragonhide set')]: 1
+		}
+	},
+	// blessed dragonhide
+	{
+		name: 'Guthix dragonhide',
+		inputItems: {
+			[itemID('Guthix dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix coif')]: 1,
+			[itemID("Guthix d'hide body")]: 1,
+			[itemID('Guthix chaps')]: 1,
+			[itemID('Guthix bracers')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Guthix dragonhide set',
+		inputItems: {
+			[itemID('Guthix coif')]: 1,
+			[itemID("Guthix d'hide body")]: 1,
+			[itemID('Guthix chaps')]: 1,
+			[itemID('Guthix bracers')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Saradomin dragonhide',
+		inputItems: {
+			[itemID('Saradomin dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin coif')]: 1,
+			[itemID("Saradomin d'hide body")]: 1,
+			[itemID('Saradomin chaps')]: 1,
+			[itemID('Saradomin bracers')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Saradomin dragonhide set',
+		inputItems: {
+			[itemID('Saradomin coif')]: 1,
+			[itemID("Saradomin d'hide body")]: 1,
+			[itemID('Saradomin chaps')]: 1,
+			[itemID('Saradomin bracers')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Zamorak dragonhide',
+		inputItems: {
+			[itemID('Zamorak dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak coif')]: 1,
+			[itemID("Zamorak d'hide body")]: 1,
+			[itemID('Zamorak chaps')]: 1,
+			[itemID('Zamorak bracers')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Zamorak dragonhide set',
+		inputItems: {
+			[itemID('Zamorak coif')]: 1,
+			[itemID("Zamorak d'hide body")]: 1,
+			[itemID('Zamorak chaps')]: 1,
+			[itemID('Zamorak bracers')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Ancient dragonhide',
+		inputItems: {
+			[itemID('Ancient dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient coif')]: 1,
+			[itemID("Ancient d'hide body")]: 1,
+			[itemID('Ancient chaps')]: 1,
+			[itemID('Ancient bracers')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Ancient dragonhide set',
+		inputItems: {
+			[itemID('Ancient coif')]: 1,
+			[itemID("Ancient d'hide body")]: 1,
+			[itemID('Ancient chaps')]: 1,
+			[itemID('Ancient bracers')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Armadyl dragonhide',
+		inputItems: {
+			[itemID('Armadyl dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl coif')]: 1,
+			[itemID("Armadyl d'hide body")]: 1,
+			[itemID('Armadyl chaps')]: 1,
+			[itemID('Armadyl bracers')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Armadyl dragonhide set',
+		inputItems: {
+			[itemID('Armadyl coif')]: 1,
+			[itemID("Armadyl d'hide body")]: 1,
+			[itemID('Armadyl chaps')]: 1,
+			[itemID('Armadyl bracers')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl dragonhide set')]: 1
+		}
+	},
+	{
+		name: 'Bandos dragonhide',
+		inputItems: {
+			[itemID('Bandos dragonhide set')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos coif')]: 1,
+			[itemID("Bandos d'hide body")]: 1,
+			[itemID('Bandos chaps')]: 1,
+			[itemID('Bandos bracers')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Bandos dragonhide set',
+		inputItems: {
+			[itemID('Bandos coif')]: 1,
+			[itemID("Bandos d'hide body")]: 1,
+			[itemID('Bandos chaps')]: 1,
+			[itemID('Bandos bracers')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos dragonhide set')]: 1
+		}
+	},
+	// mage sets
+	{
+		name: 'Mystic (blue)',
+		inputItems: {
+			[itemID('Mystic set (blue)')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic hat')]: 1,
+			[itemID('Mystic robe top')]: 1,
+			[itemID('Mystic robe bottom')]: 1,
+			[itemID('Mystic gloves')]: 1,
+			[itemID('Mystic boots')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mystic set (blue)',
+		inputItems: {
+			[itemID('Mystic hat')]: 1,
+			[itemID('Mystic robe top')]: 1,
+			[itemID('Mystic robe bottom')]: 1,
+			[itemID('Mystic gloves')]: 1,
+			[itemID('Mystic boots')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic set (blue)')]: 1
+		}
+	},
+	{
+		name: 'Mystic (dark)',
+		inputItems: {
+			[itemID('Mystic set (dark)')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic hat (dark)')]: 1,
+			[itemID('Mystic robe top (dark)')]: 1,
+			[itemID('Mystic robe bottom (dark)')]: 1,
+			[itemID('Mystic gloves (dark)')]: 1,
+			[itemID('Mystic boots (dark)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mystic set (dark)',
+		inputItems: {
+			[itemID('Mystic hat (dark)')]: 1,
+			[itemID('Mystic robe top (dark)')]: 1,
+			[itemID('Mystic robe bottom (dark)')]: 1,
+			[itemID('Mystic gloves (dark)')]: 1,
+			[itemID('Mystic boots (dark)')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic set (dark)')]: 1
+		}
+	},
+	{
+		name: 'Mystic (light)',
+		inputItems: {
+			[itemID('Mystic set (light)')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic hat (light)')]: 1,
+			[itemID('Mystic robe top (light)')]: 1,
+			[itemID('Mystic robe bottom (light)')]: 1,
+			[itemID('Mystic gloves (light)')]: 1,
+			[itemID('Mystic boots (light)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mystic set (light)',
+		inputItems: {
+			[itemID('Mystic hat (light)')]: 1,
+			[itemID('Mystic robe top (light)')]: 1,
+			[itemID('Mystic robe bottom (light)')]: 1,
+			[itemID('Mystic gloves (light)')]: 1,
+			[itemID('Mystic boots (light)')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic set (light)')]: 1
+		}
+	},
+	{
+		name: 'Mystic (dusk)',
+		inputItems: {
+			[itemID('Mystic set (dusk)')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic hat (dusk)')]: 1,
+			[itemID('Mystic robe top (dusk)')]: 1,
+			[itemID('Mystic robe bottom (dusk)')]: 1,
+			[itemID('Mystic gloves (dusk)')]: 1,
+			[itemID('Mystic boots (dusk)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Mystic set (dusk)',
+		inputItems: {
+			[itemID('Mystic hat (dusk)')]: 1,
+			[itemID('Mystic robe top (dusk)')]: 1,
+			[itemID('Mystic robe bottom (dusk)')]: 1,
+			[itemID('Mystic gloves (dusk)')]: 1,
+			[itemID('Mystic boots (dusk)')]: 1
+		},
+		outputItems: {
+			[itemID('Mystic set (dusk)')]: 1
+		}
+	},
+	{
+		name: "Dagon'hai",
+		inputItems: {
+			[itemID("Dagon'hai robes set")]: 1
+		},
+		outputItems: {
+			[itemID("Dagon'hai hat")]: 1,
+			[itemID("Dagon'hai robe top")]: 1,
+			[itemID("Dagon'hai robe bottom")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Dagon'hai robes set",
+		inputItems: {
+			[itemID("Dagon'hai hat")]: 1,
+			[itemID("Dagon'hai robe top")]: 1,
+			[itemID("Dagon'hai robe bottom")]: 1
+		},
+		outputItems: {
+			[itemID("Dagon'hai robes set")]: 1
+		}
+	},
+	{
+		name: 'Ancestral robes',
+		inputItems: {
+			[itemID('Ancestral robes set')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral hat')]: 1,
+			[itemID('Ancestral robe top')]: 1,
+			[itemID('Ancestral robe bottom')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Ancestral robes set',
+		inputItems: {
+			[itemID('Ancestral hat')]: 1,
+			[itemID('Ancestral robe top')]: 1,
+			[itemID('Ancestral robe bottom')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral robes set')]: 1
+		}
+	},
+	// god books
+	{
+		name: 'Book of balance pages',
+		inputItems: {
+			[itemID('Book of balance page set')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix page 1')]: 1,
+			[itemID('Guthix page 2')]: 1,
+			[itemID('Guthix page 3')]: 1,
+			[itemID('Guthix page 4')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Book of balance page set',
+		inputItems: {
+			[itemID('Guthix page 1')]: 1,
+			[itemID('Guthix page 2')]: 1,
+			[itemID('Guthix page 3')]: 1,
+			[itemID('Guthix page 4')]: 1
+		},
+		outputItems: {
+			[itemID('Book of balance page set')]: 1
+		}
+	},
+	{
+		name: 'Holy book pages',
+		inputItems: {
+			[itemID('Holy book page set')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin page 1')]: 1,
+			[itemID('Saradomin page 2')]: 1,
+			[itemID('Saradomin page 3')]: 1,
+			[itemID('Saradomin page 4')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Holy book page set',
+		inputItems: {
+			[itemID('Saradomin page 1')]: 1,
+			[itemID('Saradomin page 2')]: 1,
+			[itemID('Saradomin page 3')]: 1,
+			[itemID('Saradomin page 4')]: 1
+		},
+		outputItems: {
+			[itemID('Holy book page set')]: 1
+		}
+	},
+	{
+		name: 'Unholy book pages',
+		inputItems: {
+			[itemID('Unholy book page set')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak page 1')]: 1,
+			[itemID('Zamorak page 2')]: 1,
+			[itemID('Zamorak page 3')]: 1,
+			[itemID('Zamorak page 4')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unholy book page set',
+		inputItems: {
+			[itemID('Zamorak page 1')]: 1,
+			[itemID('Zamorak page 2')]: 1,
+			[itemID('Zamorak page 3')]: 1,
+			[itemID('Zamorak page 4')]: 1
+		},
+		outputItems: {
+			[itemID('Unholy book page set')]: 1
+		}
+	},
+	{
+		name: 'Book of darkness pages',
+		inputItems: {
+			[itemID('Book of darkness page set')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient page 1')]: 1,
+			[itemID('Ancient page 2')]: 1,
+			[itemID('Ancient page 3')]: 1,
+			[itemID('Ancient page 4')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Book of darkness page set',
+		inputItems: {
+			[itemID('Ancient page 1')]: 1,
+			[itemID('Ancient page 2')]: 1,
+			[itemID('Ancient page 3')]: 1,
+			[itemID('Ancient page 4')]: 1
+		},
+		outputItems: {
+			[itemID('Book of darkness page set')]: 1
+		}
+	},
+	{
+		name: 'Book of law pages',
+		inputItems: {
+			[itemID('Book of law page set')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl page 1')]: 1,
+			[itemID('Armadyl page 2')]: 1,
+			[itemID('Armadyl page 3')]: 1,
+			[itemID('Armadyl page 4')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Book of law page set',
+		inputItems: {
+			[itemID('Armadyl page 1')]: 1,
+			[itemID('Armadyl page 2')]: 1,
+			[itemID('Armadyl page 3')]: 1,
+			[itemID('Armadyl page 4')]: 1
+		},
+		outputItems: {
+			[itemID('Book of law page set')]: 1
+		}
+	},
+	{
+		name: 'Book of war pages',
+		inputItems: {
+			[itemID('Book of war page set')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos page 1')]: 1,
+			[itemID('Bandos page 2')]: 1,
+			[itemID('Bandos page 3')]: 1,
+			[itemID('Bandos page 4')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Book of war page set',
+		inputItems: {
+			[itemID('Bandos page 1')]: 1,
+			[itemID('Bandos page 2')]: 1,
+			[itemID('Bandos page 3')]: 1,
+			[itemID('Bandos page 4')]: 1
+		},
+		outputItems: {
+			[itemID('Book of war page set')]: 1
+		}
+	},
+	// twisted relichunter
+	{
+		name: 'Twisted relichunter (t1) armour',
+		inputItems: {
+			[itemID('Twisted relichunter (t1) armour set')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted hat (t1)')]: 1,
+			[itemID('Twisted coat (t1)')]: 1,
+			[itemID('Twisted trousers (t1)')]: 1,
+			[itemID('Twisted boots (t1)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Twisted relichunter (t1) armour set',
+		inputItems: {
+			[itemID('Twisted hat (t1)')]: 1,
+			[itemID('Twisted coat (t1)')]: 1,
+			[itemID('Twisted trousers (t1)')]: 1,
+			[itemID('Twisted boots (t1)')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted relichunter (t1) armour set')]: 1
+		}
+	},
+	{
+		name: 'Twisted relichunter (t2) armour',
+		inputItems: {
+			[itemID('Twisted relichunter (t2) armour set')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted hat (t2)')]: 1,
+			[itemID('Twisted coat (t2)')]: 1,
+			[itemID('Twisted trousers (t2)')]: 1,
+			[itemID('Twisted boots (t2)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Twisted relichunter (t2) armour set',
+		inputItems: {
+			[itemID('Twisted hat (t2)')]: 1,
+			[itemID('Twisted coat (t2)')]: 1,
+			[itemID('Twisted trousers (t2)')]: 1,
+			[itemID('Twisted boots (t2)')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted relichunter (t2) armour set')]: 1
+		}
+	},
+	{
+		name: 'Twisted relichunter (t3) armour',
+		inputItems: {
+			[itemID('Twisted relichunter (t3) armour set')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted hat (t3)')]: 1,
+			[itemID('Twisted coat (t3)')]: 1,
+			[itemID('Twisted trousers (t3)')]: 1,
+			[itemID('Twisted boots (t3)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Twisted relichunter (t3) armour set',
+		inputItems: {
+			[itemID('Twisted hat (t3)')]: 1,
+			[itemID('Twisted coat (t3)')]: 1,
+			[itemID('Twisted trousers (t3)')]: 1,
+			[itemID('Twisted boots (t3)')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted relichunter (t3) armour set')]: 1
+		}
+	},
+	// holiday
+	{
+		name: 'Partyhats',
+		inputItems: {
+			[itemID('Partyhat set')]: 1
+		},
+		outputItems: {
+			[itemID('Red partyhat')]: 1,
+			[itemID('Yellow partyhat')]: 1,
+			[itemID('Green partyhat')]: 1,
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Purple partyhat')]: 1,
+			[itemID('White partyhat')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Partyhat set',
+		inputItems: {
+			[itemID('Red partyhat')]: 1,
+			[itemID('Yellow partyhat')]: 1,
+			[itemID('Green partyhat')]: 1,
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Purple partyhat')]: 1,
+			[itemID('White partyhat')]: 1
+		},
+		outputItems: {
+			[itemID('Partyhat set')]: 1
+		}
+	},
+	{
+		name: 'Halloween masks',
+		inputItems: {
+			[itemID('Halloween mask set')]: 1
+		},
+		outputItems: {
+			[itemID('Red halloween mask')]: 1,
+			[itemID('Green halloween mask')]: 1,
+			[itemID('Blue halloween mask')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Halloween mask set',
+		inputItems: {
+			[itemID('Red halloween mask')]: 1,
+			[itemID('Green halloween mask')]: 1,
+			[itemID('Blue halloween mask')]: 1
+		},
+		outputItems: {
+			[itemID('Halloween mask set')]: 1
+		}
+	},
+	// misc
+	{
+		name: 'Combat potions',
+		inputItems: {
+			[itemID('Combat potion set')]: 1
+		},
+		outputItems: {
+			[itemID('Attack potion(4)')]: 1,
+			[itemID('Strength potion(4)')]: 1,
+			[itemID('Defence potion(4)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Combat potion set',
+		inputItems: {
+			[itemID('Attack potion(4)')]: 1,
+			[itemID('Strength potion(4)')]: 1,
+			[itemID('Defence potion(4)')]: 1
+		},
+		outputItems: {
+			[itemID('Combat potion set')]: 1
+		}
+	},
+	{
+		name: 'Super potions',
+		inputItems: {
+			[itemID('Super potion set')]: 1
+		},
+		outputItems: {
+			[itemID('Super attack(4)')]: 1,
+			[itemID('Super strength(4)')]: 1,
+			[itemID('Super defence(4)')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Super potion set',
+		inputItems: {
+			[itemID('Super attack(4)')]: 1,
+			[itemID('Super strength(4)')]: 1,
+			[itemID('Super defence(4)')]: 1
+		},
+		outputItems: {
+			[itemID('Super potion set')]: 1
 		}
 	},
 	{
@@ -715,73 +3114,16 @@ const Createables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: "Dagon'hai robes set",
+		name: 'Dwarf cannon set',
 		inputItems: {
-			[itemID("Dagon'hai hat")]: 1,
-			[itemID("Dagon'hai robe top")]: 1,
-			[itemID("Dagon'hai robe bottom")]: 1
+			[itemID('Cannon barrels')]: 1,
+			[itemID('Cannon base')]: 1,
+			[itemID('Cannon furnace')]: 1,
+			[itemID('Cannon stand')]: 1
 		},
 		outputItems: {
-			[itemID("Dagon'hai robes set")]: 1
+			[itemID('Dwarf cannon set')]: 1
 		}
-	},
-	{
-		name: "Dagon'hai",
-		inputItems: {
-			[itemID("Dagon'hai robes set")]: 1
-		},
-		outputItems: {
-			[itemID("Dagon'hai hat")]: 1,
-			[itemID("Dagon'hai robe top")]: 1,
-			[itemID("Dagon'hai robe bottom")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Justiciar armour set',
-		inputItems: {
-			[itemID('Justiciar faceguard')]: 1,
-			[itemID('Justiciar chestguard')]: 1,
-			[itemID('Justiciar legguards')]: 1
-		},
-		outputItems: {
-			[itemID('Justiciar armour set')]: 1
-		}
-	},
-	{
-		name: 'Justiciar',
-		inputItems: {
-			[itemID('Justiciar armour set')]: 1
-		},
-		outputItems: {
-			[itemID('Justiciar faceguard')]: 1,
-			[itemID('Justiciar chestguard')]: 1,
-			[itemID('Justiciar legguards')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Inquisitor's armour set",
-		inputItems: {
-			[itemID("Inquisitor's great helm")]: 1,
-			[itemID("Inquisitor's hauberk")]: 1,
-			[itemID("Inquisitor's plateskirt")]: 1
-		},
-		outputItems: {
-			[itemID("Inquisitor's armour set")]: 1
-		}
-	},
-	{
-		name: "Inquisitor's",
-		inputItems: {
-			[itemID("Inquisitor's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Inquisitor's great helm")]: 1,
-			[itemID("Inquisitor's hauberk")]: 1,
-			[itemID("Inquisitor's plateskirt")]: 1
-		},
-		noCl: true
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',
