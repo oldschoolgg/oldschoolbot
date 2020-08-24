@@ -212,7 +212,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Crystal chest',
 		itemID: 989,
-		aliases: ['crystal chest'],
+		aliases: ['crystal chest', 'crystal key'],
 		table: CrystalChestTable,
 		emoji: Emoji.Casket
 	},
@@ -226,7 +226,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Holiday Item Mystery box',
 		itemID: 3713,
-		aliases: ['holiday mystery box', 'hmb', 'holiday'],
+		aliases: ['holiday mystery box', 'hmb', 'holiday', 'holiday item mystery box', 'himb'],
 		table: HolidayItems,
 		emoji: Emoji.MysteryBox
 	},
