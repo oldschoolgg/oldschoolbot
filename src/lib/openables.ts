@@ -212,7 +212,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Crystal chest',
 		itemID: 989,
-		aliases: ['crystal chest'],
+		aliases: ['crystal chest', 'crystal key'],
 		table: CrystalChestTable,
 		emoji: Emoji.Casket
 	},
