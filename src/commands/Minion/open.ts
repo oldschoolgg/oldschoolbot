@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		}
 
 		const itemsAvailable = await createReadableItemListFromBank(this.client, available);
-		return `You can open ${itemsAvailable}.`;
+		return `You have ${itemsAvailable}.`;
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
