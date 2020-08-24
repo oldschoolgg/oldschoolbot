@@ -47,7 +47,7 @@ export default class extends BotCommand {
 		const name = (key: string) =>
 			botOpenables.find(i => i.itemID === parseInt(key))?.name ||
 			itemNameFromID(parseInt(key));
-		return `You have ${Object.entries(available)
+		return `You can open ${Object.entries(available)
 			.map(([key, value]) => `${value}x ${name(key)}`)
 			.join(', ')}.`;
 	}
