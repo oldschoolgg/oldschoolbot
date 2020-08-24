@@ -226,7 +226,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Holiday Item Mystery box',
 		itemID: 3713,
-		aliases: ['holiday mystery box', 'hmb', 'holiday'],
+		aliases: ['holiday mystery box', 'hmb', 'holiday', 'holiday item mystery box', 'himb'],
 		table: HolidayItems,
 		emoji: Emoji.MysteryBox
 	},
