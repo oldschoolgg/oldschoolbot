@@ -29,6 +29,7 @@ Client.defaultUserSchema
 			.add('hasBought', 'boolean', { default: false })
 			.add('dailyDuration', 'integer', { default: 0 })
 			.add('ironman', 'boolean', { default: false })
+			.add('lockedGambling', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
 	)

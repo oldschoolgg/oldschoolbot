@@ -47,6 +47,7 @@ export namespace UserSettings {
 		export const HasBought = T<boolean>('minion.hasBought');
 		export const DailyDuration = T<number>('minion.dailyDuration');
 		export const Ironman = T<boolean>('minion.ironman');
+		export const lockedGambling = T<boolean>('minion.lockGambling');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 	}

@@ -159,6 +159,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
+		lockedGambling: boolean;
 		maxTripLength: number;
 		rawSkills: Skills;
 	}

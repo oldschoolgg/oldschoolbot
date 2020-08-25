@@ -43,6 +43,12 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.Minion.Ironman);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
+	public get lockedGambling(this: User) {
+		return this.settings.get(UserSettings.Minion.lockedGambling);
+	}
+
 	/**
 	 * Toggle whether this user is busy or not, this adds another layer of locking the user
 	 * from economy actions.

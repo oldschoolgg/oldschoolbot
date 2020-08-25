@@ -32,6 +32,7 @@ export interface SettingsEntry {
 		name?: string;
 		hasBought: boolean;
 		ironman: boolean;
+		lockedGamble: boolean;
 	};
 }
 
