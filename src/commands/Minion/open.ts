@@ -142,7 +142,9 @@ export default class extends BotCommand {
 			bank: loot,
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.${
 				newQuantity > quantity
-					? ` You also received ${newQuantity - quantity} extra rolls on your rewards!`
+					? ` You also received ${newQuantity - quantity} extra roll${
+							newQuantity - quantity > 1 ? 's' : ''
+					  } on your rewards!`
 					: ``
 			}`,
 			title: opened,
