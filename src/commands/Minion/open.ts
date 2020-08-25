@@ -1,11 +1,10 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 import { Misc, Openables } from 'oldschooljs';
 import Loot from 'oldschooljs/dist/structures/Loot';
-
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import botOpenables from '../../lib/openables';
-import { stringMatches, roll, addBanks, itemNameFromID } from '../../lib/util';
+import { stringMatches, roll, addBanks, itemNameFromID, rand } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -14,6 +13,7 @@ import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { ClueTier } from '../../lib/minions/types';
+import { ItemBank } from '../../lib/types';
 
 const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
@@ -74,8 +74,13 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
-		const newQuantity = Math.floor(Math.random() * (quantity * 3 - quantity + 1) + quantity);
-		let loot = clueTier.table.open(newQuantity);
+		let extraClueRolls = 0;
+		let loot: ItemBank = {};
+		for (let i = 0; i < quantity; i++) {
+			const roll = rand(1, 3);
+			extraClueRolls += roll - 1;
+			loot = addBanks([clueTier.table.open(roll), loot]);
+		}
 
 		let mimicNumber = 0;
 		if (clueTier.mimicChance) {
@@ -136,15 +141,15 @@ export default class extends BotCommand {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
-		console.log(newQuantity);
+		console.log(extraClueRolls);
 
 		return msg.channel.sendBankImage({
 			bank: loot,
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.${
-				newQuantity > quantity
-					? ` You also received ${newQuantity - quantity} extra roll${
-							newQuantity - quantity > 1 ? 's' : ''
-					  } on your rewards!`
+				extraClueRolls > 0
+					? ` You also received ${extraClueRolls} extra roll${
+							extraClueRolls > 1 ? 's' : ''
+					  } from your casket${quantity > 1 ? 's' : ''}!`
 					: ``
 			}`,
 			title: opened,
