@@ -148,24 +148,9 @@ Type \`confirm\` if you understand the above information, and want to lock your 
 					errors: ['time']
 				}
 			);
-
-			if (msg.author.settings.get(UserSettings.GP) < 19_000_000) {
-				throw `You don't have enough gold to lock your account from gambling. You need atleast ${toKMB(
-					19_000_000
-				)} GP.`;
-			}
-
-			msg.author.log(
-				`just locked account from gambling, previous settings: ${JSON.stringify(
-					msg.author.settings.toJSON()
-				)}`
-			);
 			await msg.author.removeGP(19_000_000);
 
-			await msg.author.settings.update([
-				[UserSettings.Minion.lockedGambling, true],
-				[UserSettings.Minion.HasBought, true]
-			]);
+			await msg.author.settings.update([[UserSettings.Minion.lockedGambling, true]]);
 			return msg.send('You are now locked from gambling.');
 		} catch (err) {
 			return msg.channel.send('Cancelled the request to lock gambling.');
