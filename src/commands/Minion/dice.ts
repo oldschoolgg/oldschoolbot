@@ -31,6 +31,8 @@ export default class extends BotCommand {
 		} else {
 			if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
 
+			if (msg.author.lockedGambling) throw `You're locked from gambling and cant play dice.`;
+
 			if (amount < 5_000_000) {
 				throw `You must dice atleast 5m.`;
 			}

@@ -20,6 +20,7 @@ import {
 	addItemToBank,
 	bankHasItem
 } from '../../lib/util';
+import { toKMB } from 'oldschooljs/dist/util/util';
 import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -65,7 +66,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|light|fish|laps|cook|smelt|craft|bury|offer|fletch|lockgamble|cancel] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -77,6 +78,98 @@ export default class MinionCommand extends BotCommand {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 		return msg.send(msg.author.minionStatus);
+	}
+
+	async lockgamble(msg: KlasaMessage) {
+		if (!msg.author.hasMinion) {
+			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		if (msg.author.minionIsBusy) {
+			return msg.send(msg.author.minionStatus);
+		}
+
+		/**
+		 * If the user is locked from gambling already, lets ask them if they want to gamble again.
+		 */
+		if (msg.author.lockedGambling) {
+			await msg.send(
+				`Would you like to gamble again? You can only blame yourself if you confirm. Please say \`lovegambling\` to confirm.`
+			);
+			try {
+				await msg.channel.awaitMessages(
+					answer =>
+						answer.author.id === msg.author.id &&
+						answer.content.toLowerCase() === 'lovegambling',
+					{
+						max: 1,
+						time: 15000,
+						errors: ['time']
+					}
+				);
+				await msg.author.settings.update(UserSettings.Minion.lockedGambling, false);
+				return msg.send('You are no longer locked from gambling.');
+			} catch (err) {
+				return msg.channel.send('Cancelled the request to remove the gambling lock.');
+			}
+		}
+
+		if (msg.author.settings.get(UserSettings.GP) < 20_000_000) {
+			throw `This command costs 1M GP to use and 19M to confirm. You need atleast ${toKMB(
+				20_000_000
+			)} GP to lock your account from gambling.`;
+		}
+
+		await msg.author.removeGP(1_000_000);
+
+		await msg.send(
+			`Are you sure you want to lock your account from gambling?
+
+:warning: **Read the following text before confirming. This is your only warning. ** :warning:
+
+The following things will be COMPLETELY locked from your account. Dice, duel and bankdice. If you type \`confirm\`, they will all be locked.
+
+Since this isn't meant to be a troll command 1M has been taken from your account. And another 19M is taken upon confirming:
+	- You will no longer be able to use the  \`+dice amount\`
+	- You will no longer be able to use \`+duel\` or \`+bankdice\`
+	- You can choose to unlock gambling at any time, but the responsability of gambling is always your own.
+
+Type \`confirm\` if you understand the above information, and want to lock your minion from gambling now.`
+		);
+
+		try {
+			await msg.channel.awaitMessages(
+				answer =>
+					answer.author.id === msg.author.id &&
+					answer.content.toLowerCase() === 'confirm',
+				{
+					max: 1,
+					time: 15000,
+					errors: ['time']
+				}
+			);
+
+			if (msg.author.settings.get(UserSettings.GP) < 19_000_000) {
+				throw `You don't have enough gold to lock your account from gambling. You need atleast ${toKMB(
+					19_000_000
+				)} GP.`;
+			}
+
+			msg.author.log(
+				`just locked account from gambling, previous settings: ${JSON.stringify(
+					msg.author.settings.toJSON()
+				)}`
+			);
+			await msg.author.removeGP(19_000_000);
+
+			await msg.author.settings.update([
+				[UserSettings.Minion.lockedGambling, true],
+				[UserSettings.Minion.HasBought, true]
+			]);
+			return msg.send('You are now locked from gambling.');
+		} catch (err) {
+			return msg.channel.send('Cancelled the request to lock gambling.');
+		}
 	}
 
 	async pat(msg: KlasaMessage) {
