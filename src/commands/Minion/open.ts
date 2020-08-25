@@ -5,7 +5,7 @@ import Loot from 'oldschooljs/dist/structures/Loot';
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import botOpenables from '../../lib/openables';
-import { stringMatches, roll, addBanks, itemNameFromID, rand } from '../../lib/util';
+import { stringMatches, roll, addBanks, itemNameFromID } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -74,7 +74,8 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
-		let loot = clueTier.table.open(quantity * rand(1, 3));
+		const newQuantity = Math.floor(Math.random() * (quantity * 3 - quantity + 1) + quantity);
+		let loot = clueTier.table.open(newQuantity);
 
 		let mimicNumber = 0;
 		if (clueTier.mimicChance) {
@@ -135,9 +136,15 @@ export default class extends BotCommand {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
+		console.log(newQuantity);
+
 		return msg.channel.sendBankImage({
 			bank: loot,
-			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
+			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.${
+				newQuantity > quantity
+					? ` You also received ${newQuantity - quantity} extra rolls on your rewards!`
+					: ``
+			}`,
 			title: opened,
 			flags: { showNewCL: 1 },
 			user: msg.author
