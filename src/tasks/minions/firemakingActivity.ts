@@ -84,7 +84,8 @@ export default class extends Task {
 						user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.inputLogs}]`);
 						this.client.commands
 							.get('light')!
-							.run(response as KlasaMessage, [quantity, Burn.name]);
+							.run(response as KlasaMessage, [quantity, Burn.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);

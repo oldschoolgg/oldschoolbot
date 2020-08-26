@@ -145,7 +145,8 @@ export default class extends Task {
 
 						this.client.commands
 							.get('minion')!
-							.kill(response as KlasaMessage, [quantity, monster.name]);
+							.kill(response as KlasaMessage, [quantity, monster.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);

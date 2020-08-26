@@ -89,7 +89,8 @@ export default class extends Task {
 
 						this.client.commands
 							.get('rc')!
-							.run(response as KlasaMessage, [essenceQuantity, rune.name]);
+							.run(response as KlasaMessage, [essenceQuantity, rune.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);

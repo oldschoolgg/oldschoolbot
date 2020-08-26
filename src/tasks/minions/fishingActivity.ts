@@ -197,7 +197,8 @@ export default class extends Task {
 
 						this.client.commands
 							.get('fish')!
-							.run(response as KlasaMessage, [quantity, fish.name]);
+							.run(response as KlasaMessage, [quantity, fish.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);

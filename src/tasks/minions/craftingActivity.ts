@@ -65,7 +65,8 @@ export default class extends Task {
 						user.log(`continued trip of ${quantity}x ${Craft.name}[${Craft.id}]`);
 						this.client.commands
 							.get('craft')!
-							.run(response as KlasaMessage, [quantity, Craft.name]);
+							.run(response as KlasaMessage, [quantity, Craft.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);

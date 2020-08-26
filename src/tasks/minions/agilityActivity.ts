@@ -146,7 +146,8 @@ export default class extends Task {
 
 						this.client.commands
 							.get('laps')!
-							.run(response as KlasaMessage, [quantity, course.aliases[0]]);
+							.run(response as KlasaMessage, [quantity, course.aliases[0]])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);

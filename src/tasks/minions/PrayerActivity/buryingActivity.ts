@@ -53,7 +53,8 @@ export default class extends Task {
 						user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
 						this.client.commands
 							.get('bury')!
-							.run(response as KlasaMessage, [quantity, bone.name]);
+							.run(response as KlasaMessage, [quantity, bone.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);
