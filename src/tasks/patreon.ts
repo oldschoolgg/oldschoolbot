@@ -115,9 +115,13 @@ export default class extends Task {
 
 				result.push(`${user.username}[${patron.patreonID}] was given Tier ${i + 1}.`);
 				channel.send(
+<<<<<<< HEAD
 					`Giving T${i + 1} patron perks to ${user.username}[${
 						patron.patreonID
 					}] PatreonID[${patron.patreonID}]`
+=======
+					`Removing patron perks from ${user.username}[${patron.patreonID}] PatreonID[${patron.patreonID}]`
+>>>>>>> b6851c1... Misc updates (#555)
 				);
 				await user.settings.update(UserSettings.BitField, bitFieldId, {
 					arrayAction: ArrayActions.Add

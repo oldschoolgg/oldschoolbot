@@ -30,9 +30,35 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
+<<<<<<< HEAD
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
 			return this.client.commands.get('bury')!.run(res, [quantity, bone.name]);
+=======
+		const channel = this.client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
+
+		this.client.queuePromise(() => {
+			channel.send(str);
+			channel
+				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
+					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
+					max: 1
+				})
+				.then(messages => {
+					const response = messages.first();
+
+					if (response) {
+						if (response.author.minionIsBusy) return;
+						user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
+						this.client.commands
+							.get('bury')!
+							.run(response as KlasaMessage, [quantity, bone.name])
+							.catch(err => channel.send(err));
+					}
+				})
+				.catch(noOp);
+>>>>>>> b6851c1... Misc updates (#555)
 		});
 	}
 }

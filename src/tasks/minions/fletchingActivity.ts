@@ -56,9 +56,37 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
+<<<<<<< HEAD
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`);
 			return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
+=======
+		const channel = this.client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
+
+		this.client.queuePromise(() => {
+			channel.send(str);
+			channel
+				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
+					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
+					max: 1
+				})
+				.then(messages => {
+					const response = messages.first();
+
+					if (response) {
+						if (response.author.minionIsBusy) return;
+						user.log(
+							`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`
+						);
+						this.client.commands
+							.get('fletch')!
+							.run(response as KlasaMessage, [quantity, fletchableItem.name])
+							.catch(err => channel.send(err));
+					}
+				})
+				.catch(noOp);
+>>>>>>> b6851c1... Misc updates (#555)
 		});
 	}
 }

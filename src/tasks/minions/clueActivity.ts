@@ -68,6 +68,15 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
+<<<<<<< HEAD
 		handleTripFinish(this.client, user, channelID, str);
+=======
+		const channel = this.client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
+
+		this.client.queuePromise(() => {
+			channel.send(str).catch(err => channel.send(err));
+		});
+>>>>>>> b6851c1... Misc updates (#555)
 	}
 }
