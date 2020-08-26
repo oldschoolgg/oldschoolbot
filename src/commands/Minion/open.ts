@@ -141,8 +141,6 @@ export default class extends BotCommand {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
-		console.log(extraClueRolls);
-
 		return msg.channel.sendBankImage({
 			bank: loot,
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.${
