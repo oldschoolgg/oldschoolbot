@@ -36,7 +36,7 @@ export default class extends Task {
 		if (!channelIsSendable(channel)) return;
 
 		this.client.queuePromise(() => {
-			channel.send(str);
+			channel.send(str).catch(err => channel.send(err));
 		});
 	}
 }

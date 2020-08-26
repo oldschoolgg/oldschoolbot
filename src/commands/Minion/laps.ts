@@ -24,19 +24,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (!quantity) {
-			const entries = Object.entries(
-				msg.author.settings.get(UserSettings.LapsScores)
-			).map(arr => [parseInt(arr[0]), arr[1]]);
-			if (entries.length === 0) {
-				throw `You haven't done any laps yet! Sad.`;
-			}
-			const data = entries.map(
-				([id, qty]) => `${Agility.Courses.find(c => c.id === id)!.name}: ${qty}`
-			);
-			return msg.send(data.join('\n'));
-		}
-
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
