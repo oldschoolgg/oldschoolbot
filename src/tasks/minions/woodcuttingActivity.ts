@@ -75,7 +75,8 @@ export default class extends Task {
 						user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
 						this.client.commands
 							.get('chop')!
-							.run(response as KlasaMessage, [quantity, Log.name]);
+							.run(response as KlasaMessage, [quantity, Log.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);

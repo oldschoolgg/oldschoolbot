@@ -87,7 +87,8 @@ export default class extends Task {
 
 					this.client.commands
 						.get('cook')!
-						.run(response as KlasaMessage, [quantity, cookable.name]);
+						.run(response as KlasaMessage, [quantity, cookable.name])
+						.catch(err => channel.send(err));
 				}
 			})
 			.catch(noOp);

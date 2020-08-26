@@ -83,7 +83,8 @@ export default class extends Task {
 
 					this.client.commands
 						.get('smelt')!
-						.run(response as KlasaMessage, [oldQuantity, bar.name]);
+						.run(response as KlasaMessage, [oldQuantity, bar.name])
+						.catch(err => channel.send(err));
 				}
 			})
 			.catch(noOp);
