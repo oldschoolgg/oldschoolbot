@@ -70,8 +70,7 @@ export default class extends Task {
 
 		loot[cookable.burntCookable] = burnedAmount;
 
-		const minutesInTrip = duration / 60 / 60;
-
+		const minutesInTrip = Math.ceil(duration / 1000 / 60);
 		for (let i = 0; i < minutesInTrip; i++) {
 			if (roll(6000)) {
 				loot[itemID('Remy')] = 1;
