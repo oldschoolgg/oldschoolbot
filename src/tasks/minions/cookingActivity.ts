@@ -70,6 +70,16 @@ export default class extends Task {
 
 		loot[cookable.burntCookable] = burnedAmount;
 
+		const minutesInTrip = duration / 60 / 60;
+
+		for (let i = 0; i < minutesInTrip; i++) {
+			if (roll(6000)) {
+				loot[itemID('Remy')] = 1;
+				str += `\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.`;
+				break;
+			}
+		}
+
 		str += `\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
 		await user.addItemsToBank(loot, true);

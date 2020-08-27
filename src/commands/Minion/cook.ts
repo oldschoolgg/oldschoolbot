@@ -58,10 +58,14 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
+		const hasRemy = msg.author.hasItemEquippedAnywhere(itemID('Remy'));
+
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
 		if (cookable.id === itemID('Jug of wine')) {
 			timeToCookSingleCookable /= 1.6;
+		} else if (hasRemy) {
+			timeToCookSingleCookable /= 2;
 		}
 
 		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);

@@ -8,6 +8,27 @@ import { itemID, itemNameFromID, removeDuplicatesFromArray } from './util';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { coxLog } from './collectionLog';
+import getOSItem from './util/getOSItem';
+import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { cleanString } from 'oldschooljs/dist/util';
+
+function setCustomItem(id: number, name: string, baseItem: Item, newItemData?: Partial<Item>) {
+	Items.set(id, {
+		...baseItem,
+		...newItemData,
+		name,
+		id
+	});
+	const cleanName = cleanString(name);
+	itemNameMap.set(cleanName, id);
+}
+setTimeout(() => {
+	setCustomItem(19939, 'Untradeable Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(6199, 'Tradeable Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(3062, 'Pet Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(3713, 'Holiday Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(5507, 'Remy', getOSItem("Chef's hat"));
+}, 5000);
 
 interface Openable {
 	name: string;
@@ -224,7 +245,7 @@ const Openables: Openable[] = [
 		emoji: Emoji.MysteryBox
 	},
 	{
-		name: 'Holiday Item Mystery box',
+		name: 'Holiday Mystery box',
 		itemID: 3713,
 		aliases: ['holiday mystery box', 'hmb', 'holiday', 'holiday item mystery box', 'himb'],
 		table: HolidayItems,
