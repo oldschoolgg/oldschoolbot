@@ -18,6 +18,7 @@ interface Openable {
 }
 
 const HolidayItems = new LootTable()
+	.oneIn(100, 'Halloween mask set')
 	.add('Chicken head')
 	.add('Chicken wings')
 	.add('Chicken legs')
@@ -185,6 +186,7 @@ const PetsTable = new LootTable()
 	.add('Youngllef');
 
 const PartyhatTable = new LootTable()
+	.oneIn(100, 'Partyhat set')
 	.oneIn(50, 'Black partyhat')
 	.oneIn(20, 'Rainbow partyhat')
 	.add('Red Partyhat')
@@ -274,8 +276,11 @@ function getRandomItem(tradeables: boolean): number {
 		if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
 			return false;
 		}
-
-		if (!tradeables) return !(i as Item).tradeable && !(i as Item).duplicate;
+		if (!tradeables) {
+			// remove item id 0 (Dwarf remains) to avoid possible bank problems and only allow items that are
+			// not trade-able or duplicates to be dropped
+			return (i as Item).id !== 0 && !(i as Item).tradeable && !(i as Item).duplicate;
+		}
 		return (i as Item).tradeable_on_ge;
 	}).random().id;
 }
