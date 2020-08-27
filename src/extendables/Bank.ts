@@ -4,7 +4,7 @@ import { User } from 'discord.js';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { GearTypes } from '../lib/gear';
 import { ItemBank } from '../lib/types';
-import { addItemToBank } from '../lib/util';
+import { addItemToBank, getItemIdsAndAlts } from '../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -34,13 +34,12 @@ export default class extends Extendable {
 
 	public numItemsInBankSync(this: User, itemID: number) {
 		const bank = this.settings.get(UserSettings.Bank);
-
-		const result = bank[itemID];
-
-		if (typeof result !== 'undefined') {
-			return result;
+		for (const possibleItemID of getItemIdsAndAlts(itemID)) {
+			const result = bank[possibleItemID];
+			if (typeof result !== 'undefined') {
+				return result;
+			}
 		}
-
 		return 0;
 	}
 

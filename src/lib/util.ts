@@ -10,6 +10,7 @@ const emojiRegex = require('emoji-regex');
 
 import { Tasks, Events } from './constants';
 import { channelIsSendable } from './util/channelIsSendable';
+import Ornaments from './ornaments';
 
 export * from 'oldschooljs/dist/util/index';
 
@@ -174,6 +175,7 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }
+
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
@@ -259,4 +261,16 @@ export function stripEmojis(str: string) {
 export function round(value = 1, precision = 1) {
 	const multiplier = Math.pow(10, precision || 0);
 	return Math.round(value * multiplier) / multiplier;
+}
+
+/**
+ * Returns the selected ID and all the possible IDs of the ornaments this ID can transform into.
+ * @param itemID Item ID
+ */
+export function getItemIdsAndAlts(itemID: number) {
+	const result = [itemID];
+	Ornaments.forEach(ornament => {
+		if (ornament.baseItem === itemID) result.push(ornament.ornatedItem);
+	});
+	return result;
 }

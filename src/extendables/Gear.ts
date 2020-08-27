@@ -1,4 +1,4 @@
-import { Extendable, SettingsFolder, ExtendableStore } from 'klasa';
+import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 import { User } from 'discord.js';
 
 import itemID from '../lib/util/itemID';
@@ -6,6 +6,7 @@ import { GearSetupTypes, UserFullGearSetup } from '../lib/gear/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import itemInSlot from '../lib/gear/functions/itemInSlot';
 import { sumOfSetupStats } from '../lib/gear/functions/sumOfSetupStats';
+import { getItemIdsAndAlts } from '../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -13,18 +14,18 @@ export default class extends Extendable {
 	}
 
 	public rawGear(this: User) {
-		const gear = (this.settings.get('gear') as SettingsFolder).toJSON() as UserFullGearSetup;
-
-		return gear;
+		return (this.settings.get('gear') as SettingsFolder).toJSON() as UserFullGearSetup;
 	}
 
 	public hasItemEquippedAnywhere(this: User, itemID: number) {
 		const gear = this.rawGear();
+		const itemIDs = getItemIdsAndAlts(itemID);
 		for (const setup of Object.values(gear)) {
-			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === itemID);
+			const thisItemEquipped = Object.values(setup).find(setup => {
+				return itemIDs.includes(setup?.item as number);
+			});
 			if (thisItemEquipped) return true;
 		}
-
 		return false;
 	}
 
