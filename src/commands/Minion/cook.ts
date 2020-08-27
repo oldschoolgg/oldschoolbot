@@ -133,7 +133,11 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now cooking ${quantity}x ${
 				cookable.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			}, it'll take around ${formatDuration(duration)} to finish. ${
+				hasRemy
+					? `\n<:remy:748491189925183638> Remy jumps on your head to join you on your cooking trip!`
+					: ''
+			}`
 		);
 	}
 }

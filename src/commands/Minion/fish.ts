@@ -6,7 +6,8 @@ import {
 	formatDuration,
 	rand,
 	itemNameFromID,
-	calcPercentOfNum
+	calcPercentOfNum,
+	itemID
 } from '../../lib/util';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { Time, Activity, Tasks } from '../../lib/constants';
@@ -65,10 +66,15 @@ export default class extends BotCommand {
 		}
 
 		// If no quantity provided, set it to the max.
-		const scaledTimePerFish =
+		let scaledTimePerFish =
 			Time.Second *
 			fish.timePerFish *
 			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
+
+		const hasShelldon = msg.author.hasItemEquippedAnywhere(itemID('Shelldon'));
+		if (hasShelldon) {
+			scaledTimePerFish /= 2;
+		}
 
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
@@ -114,7 +120,11 @@ export default class extends BotCommand {
 
 		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish. ${
+			hasShelldon
+				? '\n<:shelldon:748496988407988244> You pick up Shelldon in your hands to help you fish!'
+				: ''
+		}`;
 
 		return msg.send(response);
 	}

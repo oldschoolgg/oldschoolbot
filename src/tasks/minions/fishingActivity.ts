@@ -155,6 +155,15 @@ export default class extends Task {
 			loot[fish.bigFish] = 1;
 		}
 
+		const minutesInTrip = Math.ceil(duration / 1000 / 60);
+		for (let i = 0; i < minutesInTrip; i++) {
+			if (roll(1)) {
+				loot[itemID('Shelldon')] = 1;
+				str += `\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!`;
+				break;
+			}
+		}
+
 		await user.addItemsToBank(loot, true);
 
 		const channel = this.client.channels.get(channelID);
