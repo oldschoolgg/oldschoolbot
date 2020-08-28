@@ -1,4 +1,6 @@
 import itemID from './util/itemID';
+import getOSItem from './util/getOSItem';
+import { cleanString } from 'oldschooljs/dist/util';
 
 interface Ornaments {
 	baseItem: number;
@@ -198,64 +200,64 @@ const Ornaments: Ornaments[] = [
 	{
 		baseItem: itemID('Dragon pickaxe'),
 		ornamentName: itemID('Dragon pickaxe upgrade kit'),
-		ornatedItem: 14767, // Dragon pickaxe (upgraded)
-		ornatedItemAliases: ['Dragon pickaxe (upgraded)', 'Dragon pickaxe upgraded'],
+		ornatedItem: 12797, // Dragon pickaxe (upgraded)
+		ornatedItemAliases: ['Dragon pickaxe upgraded'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Steam battlestaff'),
 		ornamentName: itemID('Steam staff upgrade kit'),
 		ornatedItem: 12795, // Steam battlestaff (or)
-		ornatedItemAliases: ['Steam battlestaff (or)', 'Steam battlestaff or'],
+		ornatedItemAliases: ['Steam battlestaff or'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Lava battlestaff'),
 		ornamentName: itemID('Lava staff upgrade kit'),
 		ornatedItem: 21198, // Lava battlestaff (or)
-		ornatedItemAliases: ['Lava battlestaff (or)', 'Lava battlestaff or'],
+		ornatedItemAliases: ['Lava battlestaff or'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Odium ward'),
 		ornamentName: itemID('Ward upgrade kit'),
 		ornatedItem: 12807, // Odium ward (or)
-		ornatedItemAliases: ['Odium ward (or)', 'Odium ward or'],
+		ornatedItemAliases: ['Odium ward or'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Malediction ward'),
 		ornamentName: itemID('Ward upgrade kit'),
 		ornatedItem: 12806, // Malediction ward (or)
-		ornatedItemAliases: ['Malediction ward (or)', 'Malediction ward or'],
+		ornatedItemAliases: ['Malediction ward or'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('Green dark bow paint'),
 		ornatedItem: 12765, // Dark bow (green)
-		ornatedItemAliases: ['Dark bow (green)', 'Dark bow green'],
+		ornatedItemAliases: ['Dark bow green'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('Blue dark bow paint'),
 		ornatedItem: 12766, // Dark bow (blue)
-		ornatedItemAliases: ['Dark bow (blue)', 'Dark bow blue'],
+		ornatedItemAliases: ['Dark bow blue'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('Yellow dark bow paint'),
 		ornatedItem: 12767, // Dark bow (yellow)
-		ornatedItemAliases: ['Dark bow (yellow)', 'Dark bow yellow'],
+		ornatedItemAliases: ['Dark bow yellow'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('White dark bow paint'),
 		ornatedItem: 12768, // Dark bow (white)
-		ornatedItemAliases: ['Dark bow (white)', 'Dark bow white'],
+		ornatedItemAliases: ['Dark bow white'],
 		returnOrnament: false
 	},
 	{
@@ -274,28 +276,28 @@ const Ornaments: Ornaments[] = [
 		baseItem: itemID('Granite maul'),
 		ornamentName: itemID('Granite clamp'),
 		ornatedItem: 12848, // Granite maul (or)
-		ornatedItemAliases: ['Granite maul (or)', 'Granite maul or'],
+		ornatedItemAliases: ['Granite maul or'],
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Rune scimitar'),
 		ornamentName: itemID('Rune scimitar ornament kit (guthix)'),
 		ornatedItem: 23330, // Rune scimitar (guthix)
-		ornatedItemAliases: ['Rune scimitar (guthix)', 'Rune scimitar guthix'],
+		ornatedItemAliases: ['Rune scimitar guthix'],
 		returnOrnament: true
 	},
 	{
 		baseItem: itemID('Rune scimitar'),
 		ornamentName: itemID('Rune scimitar ornament kit (saradomin)'),
 		ornatedItem: 23332, // Rune scimitar (saradomin)
-		ornatedItemAliases: ['Rune scimitar (saradomin)', 'Rune scimitar saradomin'],
+		ornatedItemAliases: ['Rune scimitar saradomin'],
 		returnOrnament: true
 	},
 	{
 		baseItem: itemID('Rune scimitar'),
 		ornamentName: itemID('Rune scimitar ornament kit (zamorak)'),
 		ornatedItem: 23334, // Rune scimitar (zamorak)
-		ornatedItemAliases: ['Rune scimitar (zamorak)', 'Rune scimitar zamorak'],
+		ornatedItemAliases: ['Rune scimitar zamorak'],
 		returnOrnament: true
 	},
 	{
@@ -305,5 +307,12 @@ const Ornaments: Ornaments[] = [
 		returnOrnament: true
 	}
 ];
+
+// makes sure that all ornaments have aliases when they are not custom made, to make it easier for their creation
+Ornaments.forEach(o => {
+	if (!o.ornatedItemAliases) {
+		o.ornatedItemAliases = [cleanString(getOSItem(o.ornatedItem).name)];
+	}
+});
 
 export default Ornaments;

@@ -5,6 +5,7 @@ import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromAct
 import runActivityTask from '../../lib/util/runActivityTask';
 import { SkillingTickerTaskData } from '../../lib/types/minions';
 import { taskNameFromType } from '../../lib/util/taskNameFromType';
+import { instantTrips } from '../../config';
 
 export default class extends Task {
 	async run(data: SkillingTickerTaskData) {
@@ -13,7 +14,7 @@ export default class extends Task {
 
 		for (const skillingTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			if (skillingTaskData.finishDate > now) break;
+			if (skillingTaskData.finishDate > (instantTrips ? Infinity : now)) break;
 
 			runActivityTask(this.client, taskNameFromType(skillingTaskData.type), skillingTaskData);
 
