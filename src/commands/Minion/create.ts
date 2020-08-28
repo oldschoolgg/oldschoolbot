@@ -13,6 +13,8 @@ import {
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Createables from '../../lib/createables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import Ornaments from '../../lib/ornaments';
+import { cleanString } from 'oldschooljs/dist/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,6 +29,24 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		itemName = itemName.toLowerCase();
+
+		if (
+			Ornaments.find(i => {
+				if (
+					i.ornatedItemAliases &&
+					i.ornatedItemAliases.some(a => stringMatches(a, cleanString(itemName)))
+				) {
+					return i;
+				}
+			})
+		) {
+			// is ornament
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			return this.client.commands
+				.get('ornament')
+				.run(msg, [msg.flagArgs.remove ? 'remove' : 'create', quantity, itemName]);
+		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) throw `That's not a valid item you can create.`;

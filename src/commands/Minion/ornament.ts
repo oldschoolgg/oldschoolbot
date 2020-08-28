@@ -17,7 +17,7 @@ import { cleanString } from 'oldschooljs/dist/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[create|remove] (itemName:...string)',
+			usage: '[create|remove] [quantity:int{1}] <itemName:...string>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -39,7 +39,10 @@ export default class extends BotCommand {
 			.join(', ');
 	}
 
-	async run(msg: KlasaMessage, [option = 'create', itemName]: [string, string]) {
+	async run(
+		msg: KlasaMessage,
+		[option = 'create', quantity = 1, itemName]: [string, number, string]
+	) {
 		const ornamentItem = Ornaments.find(i => {
 			if (
 				i.ornatedItemAliases &&
@@ -53,12 +56,12 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		let itemsToRemove;
-		let itemsToAdd;
-		if (option === 'create') {
+		let itemsToRemove = {};
+		let itemsToAdd = {};
+		if (option === 'create' && !msg.flagArgs.remove) {
 			itemsToRemove = addBanks([
-				{ [ornamentItem.baseItem]: 1 },
-				{ [ornamentItem.ornamentName]: 1 }
+				{ [ornamentItem.baseItem]: quantity },
+				{ [ornamentItem.ornamentName]: quantity }
 			]);
 			if (!bankHasAllItemsFromBank(userBank, itemsToRemove)) {
 				throw `You don't have the required items to create this item. You need: ${await this.createReadableItems(
@@ -66,22 +69,22 @@ export default class extends BotCommand {
 					itemsToRemove
 				)}.`;
 			} else {
-				itemsToAdd = { [ornamentItem.ornatedItem]: 1 };
+				itemsToAdd = { [ornamentItem.ornatedItem]: quantity };
 			}
-		} else {
-			itemsToRemove = { [ornamentItem.ornatedItem]: 1 };
-			if (!bankHasAllItemsFromBank(userBank, { [ornamentItem.ornatedItem]: 1 })) {
+		} else if (option === 'remove' || msg.flagArgs.remove) {
+			itemsToRemove = { [ornamentItem.ornatedItem]: quantity };
+			if (!bankHasAllItemsFromBank(userBank, itemsToRemove)) {
 				throw `You don't have the required items to create this item. You need: ${await this.createReadableItems(
 					this.client,
 					itemsToRemove
 				)}.`;
 			} else if (ornamentItem.returnOrnament) {
 				itemsToAdd = addBanks([
-					{ [ornamentItem.baseItem]: 1 },
-					{ [ornamentItem.ornamentName]: 1 }
+					{ [ornamentItem.baseItem]: quantity },
+					{ [ornamentItem.ornamentName]: quantity }
 				]);
 			} else {
-				itemsToAdd = { [ornamentItem.baseItem]: 1 };
+				itemsToAdd = { [ornamentItem.baseItem]: quantity };
 			}
 		}
 		const itemsToAddString = await this.createReadableItems(this.client, itemsToAdd);
