@@ -14,7 +14,6 @@ export default class extends Task {
 
 		for (const minigameTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			// if (minigameTaskData.finishDate > now) break;
 			if (minigameTaskData.finishDate > (instantTrips ? Infinity : now)) break;
 
 			await runActivityTask(
