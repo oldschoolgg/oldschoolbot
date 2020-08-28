@@ -30,22 +30,23 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		itemName = itemName.toLowerCase();
 
+		// if is ornament, run ornaments.ts
 		if (
-			Ornaments.find(i => {
+			Ornaments.find(ornamentItem => {
 				if (
-					i.ornatedItemAliases &&
-					i.ornatedItemAliases.some(a => stringMatches(a, cleanString(itemName)))
+					ornamentItem.ornatedItemAliases &&
+					ornamentItem.ornatedItemAliases.some(ornamentAlias =>
+						stringMatches(ornamentAlias, cleanString(itemName))
+					)
 				) {
-					return i;
+					return ornamentItem;
 				}
 			})
 		) {
-			// is ornament
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			return this.client.commands
+			const _result = this.client.commands
 				.get('ornament')
-				.run(msg, [msg.flagArgs.remove ? 'remove' : 'create', quantity, itemName]);
+				?.run(msg, [msg.flagArgs.remove ? 'remove' : 'create', quantity, itemName]);
+			if (_result) return _result;
 		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
