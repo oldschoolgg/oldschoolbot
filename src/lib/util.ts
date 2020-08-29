@@ -7,9 +7,10 @@ import { nodeCrypto, integer, real, bool } from 'random-js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
-
 import { Tasks, Events } from './constants';
 import { channelIsSendable } from './util/channelIsSendable';
+import getOSItem from './util/getOSItem';
+import { addBanks } from 'oldschooljs/dist/util';
 
 export * from 'oldschooljs/dist/util/index';
 
@@ -174,6 +175,7 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }
+
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
@@ -259,4 +261,32 @@ export function stripEmojis(str: string) {
 export function round(value = 1, precision = 1) {
 	const multiplier = Math.pow(10, precision || 0);
 	return Math.round(value * multiplier) / multiplier;
+}
+
+/**
+ * Returns an ItemBank from the items define on the string. If userBank is define, it'll default the quantity,
+ * if not set, to the max amount the user has on the bank.
+ * @example getItemsAndQuantityFromStringList('50 salmon, 50 manta ray, 20 salmon, cake, monkfish')
+ * @param items
+ * @param userBank
+ * @return ItemBank[] The string in a ItemBank variable
+ */
+export async function getItemsAndQuantityFromStringList(items: string, userBank: ItemBank = {}) {
+	let bankItems: ItemBank = {};
+	for (let item of items.split(',')) {
+		item = item.trim();
+		let [itemQty, ...itemNameArray] = item.split(' ');
+		if (!Number(itemQty)) {
+			itemNameArray.unshift(itemQty);
+			itemQty = '';
+		}
+		const _item = getOSItem(itemNameArray.join(' '));
+		bankItems = addBanks([
+			{
+				[_item.id]: Number(itemQty) ? parseInt(itemQty) : userBank[_item.id] ?? 1
+			},
+			bankItems
+		]);
+	}
+	return bankItems;
 }
