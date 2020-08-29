@@ -200,64 +200,55 @@ const Ornaments: Ornaments[] = [
 	{
 		baseItem: itemID('Dragon pickaxe'),
 		ornamentName: itemID('Dragon pickaxe upgrade kit'),
-		ornatedItem: 12797, // Dragon pickaxe (upgraded)
-		ornatedItemAliases: ['Dragon pickaxe upgraded'],
+		ornatedItem: itemID('Dragon pickaxe upgraded'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Steam battlestaff'),
 		ornamentName: itemID('Steam staff upgrade kit'),
-		ornatedItem: 12795, // Steam battlestaff (or)
-		ornatedItemAliases: ['Steam battlestaff or'],
+		ornatedItem: itemID('Steam battlestaff or'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Lava battlestaff'),
 		ornamentName: itemID('Lava staff upgrade kit'),
-		ornatedItem: 21198, // Lava battlestaff (or)
-		ornatedItemAliases: ['Lava battlestaff or'],
+		ornatedItem: itemID('Lava battlestaff or'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Odium ward'),
 		ornamentName: itemID('Ward upgrade kit'),
-		ornatedItem: 12807, // Odium ward (or)
-		ornatedItemAliases: ['Odium ward or'],
+		ornatedItem: itemID('Odium ward or'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Malediction ward'),
 		ornamentName: itemID('Ward upgrade kit'),
-		ornatedItem: 12806, // Malediction ward (or)
-		ornatedItemAliases: ['Malediction ward or'],
+		ornatedItem: itemID('Malediction ward or'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('Green dark bow paint'),
-		ornatedItem: 12765, // Dark bow (green)
-		ornatedItemAliases: ['Dark bow green'],
+		ornatedItem: itemID('Dark bow green'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('Blue dark bow paint'),
-		ornatedItem: 12766, // Dark bow (blue)
-		ornatedItemAliases: ['Dark bow blue'],
+		ornatedItem: itemID('Dark bow blue'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('Yellow dark bow paint'),
-		ornatedItem: 12767, // Dark bow (yellow)
-		ornatedItemAliases: ['Dark bow yellow'],
+		ornatedItem: itemID('Dark bow yellow'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Dark bow'),
 		ornamentName: itemID('White dark bow paint'),
-		ornatedItem: 12768, // Dark bow (white)
-		ornatedItemAliases: ['Dark bow white'],
+		ornatedItem: itemID('Dark bow white'),
 		returnOrnament: false
 	},
 	{
@@ -275,29 +266,25 @@ const Ornaments: Ornaments[] = [
 	{
 		baseItem: itemID('Granite maul'),
 		ornamentName: itemID('Granite clamp'),
-		ornatedItem: 12848, // Granite maul (or)
-		ornatedItemAliases: ['Granite maul or'],
+		ornatedItem: itemID('Granite maul or'),
 		returnOrnament: false
 	},
 	{
 		baseItem: itemID('Rune scimitar'),
 		ornamentName: itemID('Rune scimitar ornament kit (guthix)'),
-		ornatedItem: 23330, // Rune scimitar (guthix)
-		ornatedItemAliases: ['Rune scimitar guthix'],
+		ornatedItem: itemID('Rune scimitar guthix'),
 		returnOrnament: true
 	},
 	{
 		baseItem: itemID('Rune scimitar'),
 		ornamentName: itemID('Rune scimitar ornament kit (saradomin)'),
-		ornatedItem: 23332, // Rune scimitar (saradomin)
-		ornatedItemAliases: ['Rune scimitar saradomin'],
+		ornatedItem: itemID('Rune scimitar saradomin'),
 		returnOrnament: true
 	},
 	{
 		baseItem: itemID('Rune scimitar'),
 		ornamentName: itemID('Rune scimitar ornament kit (zamorak)'),
-		ornatedItem: 23334, // Rune scimitar (zamorak)
-		ornatedItemAliases: ['Rune scimitar zamorak'],
+		ornatedItem: itemID('Rune scimitar zamorak'),
 		returnOrnament: true
 	},
 	{
