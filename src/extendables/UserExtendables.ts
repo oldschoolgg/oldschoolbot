@@ -230,6 +230,16 @@ export default class extends Extendable {
 		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number);
 	}
 
+	public totalLevel(this: User, returnXP = false) {
+		let totalLevel = 0;
+		for (const _skill of Object.values(SkillsEnum)) {
+			totalLevel += returnXP
+				? (this.settings.get(`skills.${_skill}`) as number) ?? 0
+				: convertXPtoLVL((this.settings.get(`skills.${_skill}`) as number) ?? 0);
+		}
+		return totalLevel;
+	}
+
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;

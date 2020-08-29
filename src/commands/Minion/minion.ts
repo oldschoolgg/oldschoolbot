@@ -223,6 +223,9 @@ ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.autho
 ${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
 			SkillsEnum.Fletching
 		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
+${Emoji.Total} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
+			.totalLevel(true)
+			.toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
