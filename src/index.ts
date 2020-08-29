@@ -5,6 +5,8 @@ import * as Sentry from '@sentry/node';
 
 import { clientOptions, clientProperties } from './lib/config/config';
 import { botToken, sentryDSN } from './config';
+import { initCustomItems } from './lib/customItems';
+initCustomItems();
 
 if (sentryDSN) {
 	Sentry.init({
