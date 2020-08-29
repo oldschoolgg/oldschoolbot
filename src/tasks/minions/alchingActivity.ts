@@ -46,6 +46,12 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
+		let gotLamb = false;
+		if (duration > Time.Minute * 20 && roll(200)) {
+			gotLamb = true;
+			user.addItemsToBank({ 9619: 1 });
+		}
+
 		const saved =
 			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 		const responses = [
@@ -56,7 +62,11 @@ export default class extends Task {
 			)}) has been added to your bank. ${saved}`,
 			`${user.minionName} asks if you'd like them to do another of the same trip.`
 		];
-
+		if (gotLamb) {
+			responses.push(
+				`<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.`
+			);
+		}
 		this.client.queuePromise(() => {
 			channel.send(responses.join('\n'));
 			channel
