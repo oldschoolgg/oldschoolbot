@@ -65,6 +65,19 @@ export default class extends Task {
 			[ore.id]: quantity
 		};
 
+		if (user.equippedPet() === itemID('Doug')) {
+			for (const randOre of Mining.Ores.sort(() => 0.5 - Math.random()).slice(
+				0,
+				rand(2, 5)
+			)) {
+				const qty = rand(1, 100);
+				const amountToAdd = randOre.xp * qty;
+				xpReceived += amountToAdd;
+				bonusXP += amountToAdd;
+				loot[randOre.id] = qty;
+			}
+		}
+
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
@@ -98,6 +111,15 @@ export default class extends Task {
 
 			if (numberOfMinerals > 0) {
 				loot[21341] = numberOfMinerals;
+			}
+		}
+
+		const minutesInTrip = Math.ceil(duration / Time.Minute);
+		for (let i = 0; i < minutesInTrip; i++) {
+			if (roll(3000)) {
+				loot[itemID('Doug')] = 1;
+				str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
+				break;
 			}
 		}
 

@@ -58,7 +58,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
-		const hasRemy = msg.author.hasItemEquippedAnywhere(itemID('Remy'));
+		const hasRemy = msg.author.equippedPet() === itemID('Remy');
 
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
@@ -135,7 +135,7 @@ export default class extends BotCommand {
 				cookable.name
 			}, it'll take around ${formatDuration(duration)} to finish. ${
 				hasRemy
-					? `\n<:remy:748491189925183638> Remy jumps on your head to join you on your cooking trip!`
+					? `\n<:remy:748491189925183638> Remy jumps on your minions' head to help them with their cooking!`
 					: ''
 			}`
 		);
