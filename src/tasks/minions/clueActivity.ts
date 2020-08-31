@@ -48,7 +48,7 @@ export default class extends Task {
 			loot = multiplyBank(loot, 2);
 			loot[getRandomMysteryBox()] = 1;
 		}
-		if (user.equippedPet() === itemID('Zippy') && roll(2)) {
+		if (user.equippedPet() === itemID('Zippy')) {
 			let bonusLoot = {};
 			for (let i = 0; i < rand(1, 4); i++) {
 				const { item } = possibleFound.roll()[0];
