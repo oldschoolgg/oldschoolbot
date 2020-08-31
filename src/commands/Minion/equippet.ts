@@ -9,7 +9,17 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import resolveItems from '../../lib/util/resolveItems';
 
 const allPetIDs = [
-	...resolveItems(['Doug', 'Zippy', 'Shelldon', 'Remy', 'Lil Lamb']),
+	...resolveItems([
+		'Doug',
+		'Zippy',
+		'Shelldon',
+		'Remy',
+		'Lil Lamb',
+		'Harry',
+		'Klik',
+		'Wintertoad',
+		'Scruffy'
+	]),
 	Object.values(pets)
 ].flat(Infinity);
 

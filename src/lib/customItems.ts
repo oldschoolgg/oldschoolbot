@@ -25,4 +25,8 @@ export function initCustomItems() {
 	setCustomItem(9620, 'Doug', getOSItem('Herbi'));
 	setCustomItem(9619, 'Lil Lamb', getOSItem('Herbi'));
 	setCustomItem(10092, 'Zippy', getOSItem('Herbi'));
+	setCustomItem(9058, 'Harry', getOSItem('Herbi'));
+	setCustomItem(10329, 'Wintertoad', getOSItem('Herbi'));
+	setCustomItem(3469, 'Klik', getOSItem('Herbi'));
+	setCustomItem(21313, 'Scruffy', getOSItem('Herbi'));
 }
