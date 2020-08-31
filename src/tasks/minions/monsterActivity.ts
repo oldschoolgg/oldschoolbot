@@ -3,7 +3,7 @@ import { MessageAttachment } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes, roll, multiplyBank, itemID } from '../../lib/util';
+import { noOp, saidYes, roll, multiplyBank, itemID, rand } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -43,6 +43,14 @@ export default class extends Task {
 					break;
 				}
 			}
+		}
+
+		let bananas = 0;
+		if (user.equippedPet() === itemID('Harry')) {
+			for (let i = 0; i < minutes; i++) {
+				bananas += rand(1, 3);
+			}
+			loot[itemID('Banana')] = bananas;
 		}
 
 		announceLoot(this.client, user, monster, quantity, loot);
@@ -87,6 +95,11 @@ export default class extends Task {
 		if (gotKlik) {
 			str += `\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.`;
 		}
+
+		if (bananas > 0) {
+			str += `\n\n <:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
+		}
+
 		user.incrementMonsterScore(monsterID, quantity);
 
 		const channel = this.client.channels.get(channelID);
