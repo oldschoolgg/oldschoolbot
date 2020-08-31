@@ -1,8 +1,9 @@
 import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Monsters } from 'oldschooljs';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes, roll, multiplyBank } from '../../lib/util';
+import { noOp, saidYes, roll, multiplyBank, itemID } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -12,10 +13,13 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const fullMonster = Monsters.get(monsterID);
+		if (!fullMonster) throw 'No full monster';
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 
@@ -28,6 +32,19 @@ export default class extends Task {
 				loot[getRandomMysteryBox()] = 1;
 			}
 		}
+
+		let gotKlik = false;
+		const minutes = Math.ceil(duration / Time.Minute);
+		if (fullMonster.data.attributes.includes(MonsterAttribute.Dragon)) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(1500)) {
+					gotKlik = true;
+					loot[itemID('Klik')] = 1;
+					break;
+				}
+			}
+		}
+
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);
@@ -67,6 +84,9 @@ export default class extends Task {
 			}
 		}
 
+		if (gotKlik) {
+			str += `\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.`;
+		}
 		user.incrementMonsterScore(monsterID, quantity);
 
 		const channel = this.client.channels.get(channelID);
