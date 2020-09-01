@@ -242,5 +242,5 @@ export const LMS_ROUND = [
 	"{1K} kills {2D} with a Statius's warhammer.",
 	'{1K} and {2K} track down and kill {3D}.',
 	'{1K} tracks down and kills {2D}.',
-	'{1K} repeatedly stabs {2D} to death with Dragon daggers.',
+	'{1K} repeatedly stabs {2D} to death with Dragon daggers.'
 ].map(string => new LastManStandingUsage(string));
