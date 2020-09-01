@@ -232,12 +232,11 @@ export default class extends Extendable {
 
 	public totalLevel(this: User, returnXP = false) {
 		let totalLevel = 0;
-		Skills.forEach(
-			_skill =>
-				(totalLevel += returnXP
-					? (this.settings.get(`skills.${_skill.id}`) as number) ?? 0
-					: this.skillLevel(_skill.id) ?? 0)
-		);
+		for (const _skill of Skills) {
+			totalLevel += returnXP
+				? (this.settings.get(`skills.${_skill[1].id}`) as number) ?? 0
+				: this.skillLevel(_skill[1].id) ?? 0;
+		}
 		return totalLevel;
 	}
 
