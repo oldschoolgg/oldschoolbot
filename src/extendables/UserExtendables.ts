@@ -1,14 +1,14 @@
-import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
-import { User, Util, TextChannel } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
+import { TextChannel, User, Util } from 'discord.js';
 
-import { Events, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
+import { Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
 import { Bank } from '../lib/types';
 import {
 	addBanks,
-	removeItemFromBank,
 	addItemToBank,
-	formatDuration,
 	convertXPtoLVL,
+	formatDuration,
+	removeItemFromBank,
 	toTitleCase
 } from '../lib/util';
 import clueTiers from '../lib/minions/data/clueTiers';
@@ -232,11 +232,12 @@ export default class extends Extendable {
 
 	public totalLevel(this: User, returnXP = false) {
 		let totalLevel = 0;
-		for (const _skill of Object.values(SkillsEnum)) {
-			totalLevel += returnXP
-				? (this.settings.get(`skills.${_skill}`) as number) ?? 0
-				: convertXPtoLVL((this.settings.get(`skills.${_skill}`) as number) ?? 0);
-		}
+		Skills.forEach(
+			_skill =>
+				(totalLevel += returnXP
+					? (this.settings.get(`skills.${_skill.id}`) as number) ?? 0
+					: this.skillLevel(_skill.id) ?? 0)
+		);
 		return totalLevel;
 	}
 
