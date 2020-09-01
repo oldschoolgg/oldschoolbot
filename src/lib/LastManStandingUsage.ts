@@ -1,5 +1,3 @@
-import { KlasaUser } from 'klasa';
-
 export default class LastManStandingUsage {
 	public contestants = 0;
 	public deaths: Set<number> = new Set();
@@ -10,9 +8,9 @@ export default class LastManStandingUsage {
 		this.parse(usage);
 	}
 
-	public display(...values: KlasaUser[]) {
+	public display(...values: string[]) {
 		return this.parts
-			.map(part => (typeof part === 'number' ? `**${values[part].username}**` : part))
+			.map(part => (typeof part === 'number' ? `**${values[part]}**` : part))
 			.join('');
 	}
 
