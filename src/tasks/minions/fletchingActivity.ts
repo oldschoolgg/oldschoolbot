@@ -71,7 +71,8 @@ export default class extends Task {
 						);
 						this.client.commands
 							.get('fletch')!
-							.run(response as KlasaMessage, [quantity, fletchableItem.name]);
+							.run(response as KlasaMessage, [quantity, fletchableItem.name])
+							.catch(err => channel.send(err));
 					}
 				})
 				.catch(noOp);
