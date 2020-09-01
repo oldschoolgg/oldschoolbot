@@ -6,7 +6,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			cooldown: 2,
-			aliases: ['lms', 'bh'],
+			aliases: ['bh'],
 			description: 'Shows the BH & LMS scores of an account.',
 			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS']

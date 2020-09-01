@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { chunk, sleep } from '@klasa/utils';
 import LastManStandingUsage, {
-	LMS_BLOODBATH,
-	LMS_DAY,
-	LMS_NIGHT
+	LMS_PREP,
+	LMS_FINAL,
+	LMS_ROUND
 } from '../../lib/LastManStandingUsage';
 import { KlasaMessage, CommandStore, Command } from 'klasa';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
@@ -23,7 +23,7 @@ export default class extends Command {
 	}
 
 	async run(message: KlasaMessage, [contestants = []]: [string[]]): Promise<KlasaMessage> {
-		// auto fill using authors from the last 100 messages if none are given to the command
+		// auto fill using authors from the last 100 messages, if none are given to the command
 		if (contestants.length === 0) {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
 
@@ -48,16 +48,16 @@ export default class extends Command {
 
 		let gameMessage: KlasaMessage | null = null;
 		const game: LastManStandingGame = Object.seal({
-			bloodbath: true,
-			sun: true,
+			prep: true,
+			final: false,
 			contestants: this.shuffle([...filtered]),
-			turn: 0
+			round: 0
 		});
 
 		while (game.contestants.size > 1) {
-			// If it's not bloodbath and it became the day, increase the turn
-			if (!game.bloodbath && game.sun) ++game.turn;
-			const events = game.bloodbath ? LMS_BLOODBATH : game.sun ? LMS_DAY : LMS_NIGHT;
+			// If it's not prep, increase the round
+			if (!game.prep) ++game.round;
+			const events = game.prep ? LMS_PREP : game.final ? LMS_FINAL : LMS_ROUND;
 
 			// Main logic of the game
 			const { results, deaths } = this.makeResultEvents(game, events);
@@ -75,8 +75,8 @@ export default class extends Command {
 				gameMessage.delete();
 			}
 
-			if (game.bloodbath) game.bloodbath = false;
-			else game.sun = !game.sun;
+			if (game.prep) game.prep = false;
+			else if (game.contestants.size < 4) game.final = true;
 		}
 
 		// The match finished with one remaining player
@@ -86,15 +86,15 @@ export default class extends Command {
 	}
 
 	private buildTexts(game: LastManStandingGame, results: string[], deaths: string[]) {
-		const header = game.bloodbath
-			? 'Bloodbath'
-			: game.sun
-			? `Day ${game.turn}`
-			: `Night ${game.turn}`;
+		const header = game.prep
+			? 'Preparation'
+			: game.final
+			? `Finals, Round: ${game.round}`
+			: `Round: ${game.round}`;
 		const death = deaths.length
-			? `${`**${deaths.length} cannon ${
-					deaths.length === 1 ? 'shot' : 'shots'
-			  } can be heard in the distance.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
+			? `${`**${deaths.length} new gravestone${
+					deaths.length === 1 ? ' litters' : 's litter'
+			  } the battlefield.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
 			: '';
 		const panels = chunk(results, 5);
 
@@ -112,10 +112,10 @@ export default class extends Command {
 		return events[Math.floor(Math.random() * events.length)];
 	}
 
-	private pickcontestants(contestant: string, turn: Set<string>, amount: number) {
+	private pickcontestants(contestant: string, round: Set<string>, amount: number) {
 		if (amount === 0) return [];
 		if (amount === 1) return [contestant];
-		const array = [...turn];
+		const array = [...round];
 		array.splice(array.indexOf(contestant), 1);
 
 		let m = array.length;
@@ -130,34 +130,30 @@ export default class extends Command {
 	private makeResultEvents(game: LastManStandingGame, events: readonly LastManStandingUsage[]) {
 		const results = [] as string[];
 		const deaths = [] as string[];
-		let amountDied = 0;
 		let maxDeaths = this.calculateMaxDeaths(game);
 
-		const turn = new Set([...game.contestants]);
+		const round = new Set([...game.contestants]);
 		for (const contestant of game.contestants) {
-			// If the player already had its turn, skip
-			if (!turn.has(contestant)) continue;
+			// If the player already had its round, skip
+			if (!round.has(contestant)) continue;
 
-			amountDied = 0;
 			// Pick a valid event
-			const event = this.pick(events, turn.size, maxDeaths);
+			const event = this.pick(events, round.size, maxDeaths);
 
 			// Pick the contestants
-			const pickedcontestants = this.pickcontestants(contestant, turn, event.contestants);
+			const pickedcontestants = this.pickcontestants(contestant, round, event.contestants);
 
 			// Delete all the picked contestants from this round
 			for (const picked of pickedcontestants) {
-				turn.delete(picked);
+				round.delete(picked);
 			}
 
 			// Kill all the unfortunate contestants
 			for (const death of event.deaths) {
 				game.contestants.delete(pickedcontestants[death]);
 				deaths.push(pickedcontestants[death]);
-				amountDied++;
+				maxDeaths--;
 			}
-
-			maxDeaths -= amountDied;
 
 			// Push the result of this match
 			results.push(event.display(...pickedcontestants));
@@ -176,29 +172,24 @@ export default class extends Command {
 	}
 
 	private calculateMaxDeaths(game: LastManStandingGame) {
-		// If there are more than 16 contestants, perform a large blood bath
-		return game.contestants.size >= 16
-			? // For 16 people, 4 die, 36 -> 6, and so on keeps the game interesting.
-			  // If it's in bloodbath, perform 50% more deaths.
-			  Math.ceil(Math.sqrt(game.contestants.size) * (game.bloodbath ? 1.5 : 1))
-			: // If there are more than 7 contestants, proceed to kill them in 4 or more.
+		return game.prep // have 0 deaths during the preparation phase
+			? 0
+			: // For 16 people, 5 die, 36 -> 7, and so on keeps the game interesting.
+			game.contestants.size >= 16
+			? Math.ceil(Math.sqrt(game.contestants.size) + 1)
+			: // If there are more than 7 contestants, proceed to kill them in 4s.
 			game.contestants.size > 7
-			? // If it's a bloodbath, perform mass death (12 -> 7), else eliminate 4.
-			  game.bloodbath
-				? Math.ceil(
-						Math.min(game.contestants.size - 3, Math.sqrt(game.contestants.size) * 2)
-				  )
-				: 4
-			: // If there are 4 contestants, eliminate 2, else 1 (3 -> 2, 2 -> 1)
-			game.contestants.size === 4
+			? 4
+			: // If there are more than 3 contestants, eliminate 2, else 1 (3 -> 2, 2 -> 1)
+			game.contestants.size > 3
 			? 2
 			: 1;
 	}
 }
 
 export interface LastManStandingGame {
-	bloodbath: boolean;
-	sun: boolean;
+	prep: boolean;
+	final: boolean;
 	contestants: Set<string>;
-	turn: number;
+	round: number;
 }
