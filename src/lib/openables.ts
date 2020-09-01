@@ -18,7 +18,6 @@ interface Openable {
 }
 
 const HolidayItems = new LootTable()
-	.oneIn(100, 'Halloween mask set')
 	.add('Chicken head')
 	.add('Chicken wings')
 	.add('Chicken legs')
@@ -186,7 +185,6 @@ const PetsTable = new LootTable()
 	.add('Youngllef');
 
 const PartyhatTable = new LootTable()
-	.oneIn(100, 'Partyhat set')
 	.oneIn(50, 'Black partyhat')
 	.oneIn(20, 'Rainbow partyhat')
 	.add('Red Partyhat')
