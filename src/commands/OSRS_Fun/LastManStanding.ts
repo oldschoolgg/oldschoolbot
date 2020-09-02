@@ -82,7 +82,7 @@ export default class extends Command {
 		// The match finished with one remaining player
 		const winner = game.contestants.values().next().value;
 		this.playing.delete(message.channel.id);
-		return message.send(`And the Last Man Standing is... ${winner}!`);
+		return message.send(`And the Last Man Standing is... **${winner}**!`);
 	}
 
 	private buildTexts(game: LastManStandingGame, results: string[], deaths: string[]) {

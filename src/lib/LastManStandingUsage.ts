@@ -133,7 +133,7 @@ export const LMS_ROUND = [
 	'{1D} cannot handle the circumstances and runs off into the fog.',
 	"{1K} bashes {2D}'s head with a Granite maul several times.",
 	'{1K} exsanguinates {2D} with a Ghrazi Rapier.',
-	"{1K} plunges a Dragon dagger in {2D}'s abdomen.",
+	"{1K} plunges a Dragon dagger into {2D}'s abdomen.",
 	'{1K} sets {2D} on fire with an Infernal cape.',
 	'{1D} falls into a pit and dies.',
 	'{1K} stabs {2D} while their back is turned.',
