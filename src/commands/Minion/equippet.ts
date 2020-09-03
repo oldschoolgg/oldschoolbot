@@ -18,7 +18,8 @@ const allPetIDs = [
 		'Harry',
 		'Klik',
 		'Wintertoad',
-		'Scruffy'
+		'Scruffy',
+		'Zak'
 	]),
 	Object.values(pets)
 ].flat(Infinity);
