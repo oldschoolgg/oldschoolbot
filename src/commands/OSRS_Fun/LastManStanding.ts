@@ -36,7 +36,8 @@ export default class extends Command {
 			filtered = new Set(splitContestants);
 		}
 
-		if (filtered.size !== splitContestants.length) throw 'I am sorry, but a user cannot play twice.';
+		if (filtered.size !== splitContestants.length)
+			throw 'I am sorry, but a user cannot play twice.';
 		if (this.playing.has(message.channel.id))
 			throw 'I am sorry, but there is a game in progress in this channel, try again when it finishes.';
 		if (filtered.size < 4) {
