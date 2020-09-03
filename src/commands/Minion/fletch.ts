@@ -7,7 +7,8 @@ import {
 	rand,
 	itemNameFromID,
 	removeItemFromBank,
-	bankHasItem
+	bankHasItem,
+	itemID
 } from '../../lib/util';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
@@ -76,6 +77,12 @@ export default class extends BotCommand {
 			timeToFletchSingleItem = fletchableItem.tickRate * Time.Second * 0.6;
 		}
 
+		let hasScruffy = false;
+		if (msg.author.equippedPet() === itemID('Scruffy')) {
+			timeToFletchSingleItem /= 2;
+			hasScruffy = true;
+		}
+
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToFletchSingleItem);
@@ -129,7 +136,11 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now Fletching ${quantity} ${sets} ${
 				fletchableItem.name
-			}s, it'll take around ${formatDuration(duration)} to finish.`
+			}s, it'll take around ${formatDuration(duration)} to finish. ${
+				hasScruffy
+					? '\n<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy.'
+					: ''
+			}`
 		);
 	}
 }

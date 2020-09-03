@@ -12,6 +12,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { Cookables } from '../../lib/skilling/skills/cooking';
 
 export default class extends Task {
 	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
@@ -102,6 +103,15 @@ export default class extends Task {
 		let loot = {
 			[fish.id]: quantity
 		};
+
+		if (user.equippedPet() === itemID('Klik')) {
+			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
+			if (cookedFish) {
+				delete loot[fish.id];
+				loot[cookedFish.id] = quantity;
+				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!`;
+			}
+		}
 
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {

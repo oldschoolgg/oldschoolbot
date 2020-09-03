@@ -71,7 +71,7 @@ export default class extends BotCommand {
 			fish.timePerFish *
 			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
 
-		const hasShelldon = msg.author.hasItemEquippedAnywhere(itemID('Shelldon'));
+		const hasShelldon = msg.author.equippedPet() === itemID('Shelldon');
 		if (hasShelldon) {
 			scaledTimePerFish /= 2;
 		}
@@ -122,7 +122,7 @@ export default class extends BotCommand {
 			fish.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${
 			hasShelldon
-				? '\n<:shelldon:748496988407988244> You pick up Shelldon in your hands to help you fish!'
+				? `\n<:shelldon:748496988407988244> ${msg.author.minionName} picks up Shelldon to help them fish!`
 				: ''
 		}`;
 

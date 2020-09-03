@@ -194,7 +194,6 @@ export const pets = {
 		'Pet smoke devil',
 		'Ikkle hydra'
 	]),
-	space2: [],
 	Other: resolveItems([
 		'Bloodhound',
 		'Herbi',

@@ -141,6 +141,7 @@ declare module 'discord.js' {
 		 */
 		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
+		equippedPet(): number | null;
 		allItemsOwned(): ItemBank;
 		setupStats(setup: GearSetupTypes): GearStats;
 		/**

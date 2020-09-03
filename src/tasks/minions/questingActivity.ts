@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, rand } from '../../lib/util';
+import { saidYes, noOp, rand, roll } from '../../lib/util';
 import { Time, MAX_QP } from '../../lib/constants';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -33,6 +33,11 @@ export default class extends Task {
 		}
 
 		await user.addQP(qpRecieved);
+
+		if (roll(80)) {
+			str += `\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!`;
+			user.addItemsToBank({ 10092: 1 });
+		}
 
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
