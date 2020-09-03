@@ -91,7 +91,10 @@ export default class extends Task {
 			const userBadges = user.settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
-			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33) {
+			if (
+				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
+				patron.patronStatus !== 'active_patron'
+			) {
 				if (getUsersPerkTier(user) < PerkTier.Two) continue;
 				result.push(
 					`${user.username}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
