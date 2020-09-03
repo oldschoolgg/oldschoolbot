@@ -92,7 +92,7 @@ export const LMS_FINAL = [
 	'{1} travels to higher ground.',
 	'{1} forces {2} to eat pant.',
 	'{1} searches for a bloody chest.',
-	'{1} uses their bloodier key and recieves a full inventory of food.',
+	'{1} uses their bloodier key and receives a full inventory of food.',
 	'{1K} forces {2D} to eat pant. {2D} chokes and dies.',
 	"{1K} throws a dragon knife into {2D}'s head.",
 	'{1D} begs for {2K} to kill them. They reluctantly oblige, killing {1D}.',
@@ -121,7 +121,8 @@ export const LMS_FINAL = [
 	"{1K} stabs {2D} in the back with a Vesta's longsword.",
 	'{1K} kills {2D} with a Ghrazi rapier.',
 	'{1D} Talks about how good they are while fighting {2K} and is promptly stacked out by {2K}',
-	'{1K} repeatedly stabs {2D} to death with Draggon dagger.'
+	'{1K} repeatedly stabs {2D} to death with Draggon dagger.',
+	'{1D} is found to be using an auto-prayer client and is banned mid game'
 ].map(string => new LastManStandingUsage(string));
 
 export const LMS_ROUND = [
@@ -151,6 +152,8 @@ export const LMS_ROUND = [
 	'{1K} throws a Chinchompa, killing {2D}, and {3D}.',
 	'{1K} throws a Chinchompa, killing {2D}, {3D}, and {4D}.',
 	'{1K} throws a Chinchompa, killing {2D}, {3D}, {4D} and {5D}.',
+	'{1D} trips over a chinchompa while running away from {2}, blowing themself up.',
+	'{1D} trips over a chinchompa while running away from {2D}, blowing them both up.',
 	'{1K} kills {2D} as they try to run away.',
 	'{1D}, {2D}, {3D}, and {4D} form a suicide pact, and run off into the fog.',
 	'{1K} kills {2D} with a Dragon thrownaxe.',
@@ -184,11 +187,11 @@ export const LMS_ROUND = [
 	'{1} looks at the night sky.',
 	'{1} defeats {2} in a fight, but spares their life.',
 	'{1} begs for {2} to kill them. They refuse, keeping {1} alive.',
-	'{1} receives a Dragon hatchet from an unknown sponsor.',
-	'{1} receives a combat potion from an unknown sponsor.',
-	'{1} receives a bag of potions from an unknown sponsor.',
-	'{1} receives food from an unknown sponsor.',
-	'{1} receives a chinchompa from an unknown sponsor.',
+	'{1} finds a Dragon hatchet in a chest.',
+	'{1} finds a combat potion in a chest.',
+	'{1} finds a bag of potions in a chest.',
+	'{1} finds food in a chest.',
+	'{1} finds a chinchompa in a chest.',
 	'{1} questions their sanity.',
 	'{1} forces {2} to eat pant.',
 	'{1K} forces {2D} to eat pant. {2D} chokes and dies.',
