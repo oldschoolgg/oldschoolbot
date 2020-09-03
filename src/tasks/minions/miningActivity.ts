@@ -13,6 +13,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { getRandomMysteryBox } from '../../lib/openables';
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -120,6 +121,18 @@ export default class extends Task {
 				loot[itemID('Doug')] = 1;
 				str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
 				break;
+			}
+		}
+
+		const hasKlik = user.equippedPet() === itemID('Klik');
+		if (hasKlik) {
+			const smeltedOre = Smelting.Bars.find(
+				o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1
+			);
+			if (smeltedOre) {
+				delete loot[ore.id];
+				loot[smeltedOre.id] = quantity;
+				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!`;
 			}
 		}
 
