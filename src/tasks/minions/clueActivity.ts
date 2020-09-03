@@ -52,7 +52,7 @@ export default class extends Task {
 			let bonusLoot = {};
 			for (let i = 0; i < rand(1, 4); i++) {
 				const { item } = possibleFound.roll()[0];
-				bonusLoot = addItemToBank(loot, item);
+				bonusLoot = addItemToBank(bonusLoot, item);
 			}
 			loot = addBanks([loot, bonusLoot]);
 			str += `\n\nZippy has found these items for you: ${await createReadableItemListFromBank(
