@@ -16,25 +16,27 @@ export default class extends Command {
 			requiredPermissions: ['READ_MESSAGE_HISTORY'],
 			cooldown: 1,
 			description: 'Simulates a game of last man standing',
-			usage: '[user:string{,50}] [...]',
-			usageDelim: ',',
+			usage: '[contestants:string]',
+			usageDelim: '',
 			flagSupport: true
 		});
 	}
 
-	async run(message: KlasaMessage, [contestants = []]: [string[]]): Promise<KlasaMessage> {
+	async run(message: KlasaMessage, [contestants]: [string]): Promise<KlasaMessage> {
+		let filtered = new Set<string>();
+		const splitContestants = contestants.split(',');
 		// auto fill using authors from the last 100 messages, if none are given to the command
 		if (contestants.length === 0) {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
 
 			for (const { author } of messages.values()) {
-				if (author && !contestants.includes(author.username))
-					contestants.push(author.username);
+				if (author && !filtered.has(author.username)) filtered.add(author.username);
 			}
+		} else {
+			filtered = new Set(splitContestants);
 		}
 
-		const filtered = new Set(contestants);
-		if (filtered.size !== contestants.length) throw 'I am sorry, but a user cannot play twice.';
+		if (filtered.size !== splitContestants.length) throw 'I am sorry, but a user cannot play twice.';
 		if (this.playing.has(message.channel.id))
 			throw 'I am sorry, but there is a game in progress in this channel, try again when it finishes.';
 		if (filtered.size < 4) {
