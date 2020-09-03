@@ -1,7 +1,6 @@
 import { KlasaMessage, CommandStore } from 'klasa';
 import { Misc, Openables } from 'oldschooljs';
 import Loot from 'oldschooljs/dist/structures/Loot';
-
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
 import botOpenables from '../../lib/openables';
@@ -14,6 +13,7 @@ import itemID from '../../lib/util/itemID';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { ClueTier } from '../../lib/minions/types';
+import { ItemBank } from '../../lib/types';
 
 const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
@@ -74,7 +74,13 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
-		let loot = clueTier.table.open(quantity * rand(1, 3));
+		let extraClueRolls = 0;
+		let loot: ItemBank = {};
+		for (let i = 0; i < quantity; i++) {
+			const roll = rand(1, 3);
+			extraClueRolls += roll - 1;
+			loot = addBanks([clueTier.table.open(roll), loot]);
+		}
 
 		let mimicNumber = 0;
 		if (clueTier.mimicChance) {
@@ -137,7 +143,13 @@ export default class extends BotCommand {
 
 		return msg.channel.sendBankImage({
 			bank: loot,
-			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
+			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.${
+				extraClueRolls > 0
+					? ` You also received ${extraClueRolls} extra roll${
+							extraClueRolls > 1 ? 's' : ''
+					  } from your casket${quantity > 1 ? 's' : ''}!`
+					: ``
+			}`,
 			title: opened,
 			flags: { showNewCL: 1 },
 			user: msg.author
