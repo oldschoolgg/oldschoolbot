@@ -7,7 +7,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { addItemToBank } from '../../lib/util';
+import { addItemToBank, roll, itemID } from '../../lib/util';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 const options = {
@@ -82,6 +82,11 @@ export default class extends BotCommand {
 			);
 		}
 
+		const gotHammy = totalPrice >= 51_530_000 && roll(140);
+		if (gotHammy) {
+			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 });
+		}
+
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
@@ -112,6 +117,9 @@ export default class extends BotCommand {
 				);
 				break;
 			}
+		}
+		if (gotHammy) {
+			str += `\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.`;
 		}
 
 		return msg.send(
