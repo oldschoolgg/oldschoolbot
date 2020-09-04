@@ -5,6 +5,7 @@ import runActivityTask from '../../../lib/util/runActivityTask';
 import { Tasks } from '../../../lib/constants';
 import removeSubTasksFromActivityTask from '../../../lib/util/removeSubTasksFromActivityTask';
 import { taskNameFromType } from '../../../lib/util/taskNameFromType';
+import { instantTrips, production } from '../../../config';
 
 export default class extends Task {
 	async run(data: MinigameTickerTaskData) {
@@ -13,7 +14,7 @@ export default class extends Task {
 
 		for (const minigameTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			if (minigameTaskData.finishDate > now) break;
+			if (minigameTaskData.finishDate > (instantTrips && !production ? Infinity : now)) break;
 
 			await runActivityTask(
 				this.client,
