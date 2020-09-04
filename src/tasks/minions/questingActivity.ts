@@ -46,20 +46,8 @@ export default class extends Task {
 				? undefined
 				: res => {
 						user.log(`continued trip of Questing.`);
-<<<<<<< HEAD
 						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
 				  }
 		);
-=======
-
-						this.client.commands
-							.get('quest')!
-							.run(response as KlasaMessage, [])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
-		});
->>>>>>> b6851c1... Misc updates (#555)
 	}
 }
