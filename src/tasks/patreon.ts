@@ -28,7 +28,6 @@ patreonApiURL.search = new URLSearchParams([
 	],
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
-
 const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.One, BitField.IsPatronTier1],
 	[PatronTierID.Two, BitField.IsPatronTier2],
@@ -92,7 +91,10 @@ export default class extends Task {
 			const userBadges = user.settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
-			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33) {
+			if (
+				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
+				patron.patronStatus !== 'active_patron'
+			) {
 				const perkTier = getUsersPerkTier(user);
 				if (perkTier < PerkTier.Two) continue;
 				result.push(
@@ -113,7 +115,9 @@ export default class extends Task {
 
 				result.push(`${user.username}[${patron.patreonID}] was given Tier ${i + 1}.`);
 				channel.send(
-					`Giving patron perks from ${user.username}[${patron.patreonID}] PatreonID[${patron.patreonID}]`
+					`Giving T${i + 1} patron perks to ${user.username}[${
+						patron.patreonID
+					}] PatreonID[${patron.patreonID}]`
 				);
 				await user.settings.update(UserSettings.BitField, bitFieldId, {
 					arrayAction: ArrayActions.Add
