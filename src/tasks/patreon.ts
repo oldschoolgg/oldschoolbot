@@ -28,7 +28,6 @@ patreonApiURL.search = new URLSearchParams([
 	],
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
-
 const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.One, BitField.IsPatronTier1],
 	[PatronTierID.Two, BitField.IsPatronTier2],
@@ -115,7 +114,9 @@ export default class extends Task {
 
 				result.push(`${user.username}[${patron.patreonID}] was given Tier ${i + 1}.`);
 				channel.send(
-					`Giving patron perks from ${user.username}[${patron.patreonID}] PatreonID[${patron.patreonID}]`
+					`Giving T${i + 1} patron perks to ${user.username}[${
+						patron.patreonID
+					}] PatreonID[${patron.patreonID}]`
 				);
 				await user.settings.update(UserSettings.BitField, bitFieldId, {
 					arrayAction: ArrayActions.Add
