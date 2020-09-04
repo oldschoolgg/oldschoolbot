@@ -66,12 +66,14 @@ export default class extends Task {
 			[ore.id]: quantity
 		};
 
-		if (user.equippedPet() === itemID('Doug')) {
+		const numberOfMinutes = duration / Time.Minute;
+
+		if (user.equippedPet() === itemID('Doug') && numberOfMinutes >= 7) {
 			for (const randOre of Mining.Ores.sort(() => 0.5 - Math.random()).slice(
 				0,
-				rand(2, 5)
+				rand(1, Math.floor(numberOfMinutes / 7))
 			)) {
-				const qty = rand(1, 100);
+				const qty = rand(1, numberOfMinutes * 2.5);
 				const amountToAdd = randOre.xp * qty;
 				xpReceived += amountToAdd;
 				bonusXP += amountToAdd;
@@ -98,8 +100,6 @@ export default class extends Task {
 				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
 			);
 		}
-
-		const numberOfMinutes = duration / Time.Minute;
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
