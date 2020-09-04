@@ -24,7 +24,7 @@ export default class extends Command {
 		let filtered = new Set<string>();
 		const splitContestants = contestants?.split(',') ?? [];
 		// Autofill using authors from the last 100 messages, if none are given to the command
-		if (splitContestants.length === 0 || contestants === 'auto') {
+		if (contestants === 'auto') {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
 
 			for (const { author } of messages.values()) {
