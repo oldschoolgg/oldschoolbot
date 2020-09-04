@@ -102,7 +102,8 @@ export default class extends Command {
 		const panels = chunk(results, 5);
 
 		const texts = panels.map(
-			panel => `__**${header}:**__\n\n${panel.map(text => `- ${text}`).join('\n')}`
+			panel =>
+				`**Last Man Standing ${header}:**\n\n${panel.map(text => `- ${text}`).join('\n')}`
 		);
 		if (deaths.length) texts.push(`${death}`);
 		return texts;
