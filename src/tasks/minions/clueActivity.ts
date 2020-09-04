@@ -44,21 +44,21 @@ export default class extends Task {
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
 		let loot = { [clueTier.id]: quantity };
-		if (roll(10)) {
-			loot = multiplyBank(loot, 2);
-			loot[getRandomMysteryBox()] = 1;
-		}
 		if (user.equippedPet() === itemID('Zippy')) {
 			let bonusLoot = {};
-			for (let i = 0; i < rand(1, 4); i++) {
+			for (let i = 0; i < rand(quantity, quantity * 4); i++) {
 				const { item } = possibleFound.roll()[0];
-				bonusLoot = addItemToBank(loot, item);
+				bonusLoot = addItemToBank(bonusLoot, item);
 			}
 			loot = addBanks([loot, bonusLoot]);
 			str += `\n\nZippy has found these items for you: ${await createReadableItemListFromBank(
 				this.client,
 				bonusLoot
 			)}`;
+		}
+		if (roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[getRandomMysteryBox()] = 1;
 		}
 		await user.addItemsToBank(loot, true);
 
