@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { chunk, sleep } from '@klasa/utils';
 import LastManStandingUsage, {
 	LMS_PREP,
@@ -6,7 +5,6 @@ import LastManStandingUsage, {
 	LMS_ROUND
 } from '../../lib/LastManStandingUsage';
 import { KlasaMessage, CommandStore, Command } from 'klasa';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
 export default class extends Command {
 	public readonly playing: Set<string> = new Set();
@@ -22,11 +20,11 @@ export default class extends Command {
 		});
 	}
 
-	async run(message: KlasaMessage, [contestants]: [string]): Promise<KlasaMessage> {
+	async run(message: KlasaMessage, [contestants]: [string | undefined]): Promise<KlasaMessage> {
 		let filtered = new Set<string>();
-		const splitContestants = contestants.split(',');
-		// auto fill using authors from the last 100 messages, if none are given to the command
-		if (contestants.length === 0) {
+		const splitContestants = contestants?.split(',') ?? [];
+		// Autofill using authors from the last 100 messages, if none are given to the command
+		if (splitContestants.length === 0 || contestants === 'auto') {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
 
 			for (const { author } of messages.values()) {
@@ -34,19 +32,23 @@ export default class extends Command {
 			}
 		} else {
 			filtered = new Set(splitContestants);
+			if (filtered.size !== splitContestants.length) {
+				throw 'I am sorry, but a user cannot play twice.';
+			}
+
+			if (filtered.size < 4) {
+				throw `Please specify atleast 4 players for Last Man Standing, like so: \`${message.cmdPrefix}lms Alex, Kyra, Magna, Rick\`, or type \`${message.cmdPrefix}lms auto\` to automatically pick people from the chat.`;
+			}
+
+			if (filtered.size > 48) {
+				throw `I am sorry but the amount of players can be no greater than 48.`;
+			}
 		}
 
-		if (filtered.size !== splitContestants.length)
-			throw 'I am sorry, but a user cannot play twice.';
-		if (this.playing.has(message.channel.id))
-			throw 'I am sorry, but there is a game in progress in this channel, try again when it finishes.';
-		if (filtered.size < 4) {
-			throw `Please specify some players for Last Man Standing, like so: \`${message.guild!.settings.get(
-				GuildSettings.Prefix
-			)}lms Bob, Mark, Jim, Kyra\`, you need at least 4 contestants`;
-		} else if (filtered.size > 48) {
-			throw `I am sorry but the amount of players can be no greater than 48.`;
+		if (this.playing.has(message.channel.id)) {
+			throw 'There is a game in progress in this channel already, try again when it finishes.';
 		}
+
 		this.playing.add(message.channel.id);
 
 		let gameMessage: KlasaMessage | null = null;
