@@ -73,7 +73,7 @@ export default class extends Task {
 				0,
 				rand(1, Math.floor(numberOfMinutes / 7))
 			)) {
-				const qty = rand(1, numberOfMinutes * 2.5);
+				const qty = rand(1, numberOfMinutes * 3);
 				const amountToAdd = randOre.xp * qty;
 				xpReceived += amountToAdd;
 				bonusXP += amountToAdd;
