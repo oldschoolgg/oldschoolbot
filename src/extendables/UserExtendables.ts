@@ -309,7 +309,7 @@ export default class extends Extendable {
 		if (perkTier === PerkTier.Three) return Time.Minute * 36 * timeMultiplier;
 		if (perkTier >= PerkTier.Four) return Time.Minute * 40 * timeMultiplier;
 
-		return Time.Minute * 30;
+		return Time.Minute * 30 * timeMultiplier;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
