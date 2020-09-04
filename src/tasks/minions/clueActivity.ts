@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { Events } from '../../lib/constants';
+import { Events, Time } from '../../lib/constants';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { roll, multiplyBank, addItemToBank, itemID, rand, addBanks } from '../../lib/util';
 import { getRandomMysteryBox } from '../../lib/openables';
@@ -12,6 +12,8 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 const possibleFound = new LootTable()
 	.add('Reward casket (beginner)')
 	.add('Reward casket (beginner)')
+	.add('Reward casket (beginner)')
+	.add('Reward casket (easy)')
 	.add('Reward casket (easy)')
 	.add('Reward casket (easy)')
 	.add('Reward casket (medium)')
@@ -19,7 +21,6 @@ const possibleFound = new LootTable()
 	.add('Reward casket (hard)')
 	.add('Reward casket (elite)')
 	.add('Reward casket (master)')
-	.add('Tradeable Mystery Box')
 	.add('Tradeable Mystery Box')
 	.add('Tradeable Mystery Box')
 	.add('Untradeable Mystery Box');
@@ -48,7 +49,7 @@ export default class extends Task {
 			loot = multiplyBank(loot, 2);
 			loot[getRandomMysteryBox()] = 1;
 		}
-		if (user.equippedPet() === itemID('Zippy')) {
+		if (user.equippedPet() === itemID('Zippy') && duration > Time.Minute * 10) {
 			let bonusLoot = {};
 			for (let i = 0; i < rand(1, 4); i++) {
 				const { item } = possibleFound.roll()[0];
