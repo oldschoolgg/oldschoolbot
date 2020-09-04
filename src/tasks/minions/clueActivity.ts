@@ -36,13 +36,16 @@ interface ZippyClueWeight {
 	[key: string]: number;
 }
 
+// Commented how the weight affects the extra rewards for 30 minute trips
+// Weight based on trips without any bonuses
+// 1/500 becomes 1/100 if CL is complete
 const zippyClueWeight: ZippyClueWeight = {
-	Beginner: 1,
-	Easy: 2,
-	Medium: 2,
-	Hard: 4,
-	Elite: 6,
-	Master: 9
+	Beginner: 1, // Roll: 13 to 13 | Avg: 13 | 1/10: 26 | 1/500: 52 | Box: 1/26 | Rolls/Box[MaxTrip]: 1/27[18]
+	Easy: 2, //     Roll: 9  to 18 | Avg: 13 | 1/10: 26 | 1/500: 52 | Box: 1/24 | Rolls/Box[MaxTrip]: 1/24[16]
+	Medium: 2, //   Roll: 6  to 12 | Avg: 9  | 1/10: 18 | 1/500: 36 | Box: 1/24 | Rolls/Box[MaxTrip]: 1/24[16]
+	Hard: 3, //     Roll: 4  to 12 | Avg: 8  | 1/10: 16 | 1/500: 32 | Box: 1/20 | Rolls/Box[MaxTrip]: 1/21[14]
+	Elite: 5, //    Roll: 3  to 15 | Avg: 9  | 1/10: 18 | 1/500: 36 | Box: 1/14 | Rolls/Box[MaxTrip]: 1/15[10]
+	Master: 7 //    Roll: 3  to 21 | Avg: 12 | 1/10: 24 | 1/500: 48 | Box: 1/8  | Rolls/Box[MaxTrip]: 1/9[6]
 };
 
 export default class extends Task {
@@ -100,7 +103,11 @@ export default class extends Task {
 			let bonusLoot = {};
 			const maxRolls = rand(quantity, quantity * zippyClueWeight[clueTier.name]);
 			for (let i = 0; i < maxRolls; i++) {
-				const { item } = roll(9)
+				// detects if the clue should reward a mystery box or not. The better the clue,
+				// more often it'll get here.
+				const { item } = roll(
+					Math.ceil((10 - zippyClueWeight[clueTier.name]) * (timeCheck ? 2 : 3))
+				)
 					? possibleFoundMysteryBox.roll()[0]
 					: possibleFound.roll().filter(i => i.item >= clueTier.id)[0] ?? {
 							item: clueTier.id,
