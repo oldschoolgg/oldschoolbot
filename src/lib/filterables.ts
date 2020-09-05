@@ -4,6 +4,17 @@ import { gracefulItems } from './skilling/skills/agility';
 import { Eatables } from './eatables';
 import Crafting from './skilling/skills/crafting/crafting';
 import Fletching from './skilling/skills/fletching/fletching';
+import {
+	cluesAll,
+	cluesBeginner,
+	cluesEasy,
+	cluesElite,
+	cluesHard,
+	cluesMaster,
+	cluesMedium,
+	cluesShared,
+	wintertodt
+} from './collectionLog';
 
 const ores = resolveItems([
 	`Copper ore`,
@@ -658,19 +669,6 @@ const prayer = resolveItems([
 
 const food = resolveItems(Eatables.map(food => food.name));
 
-export const wintertodtItems = resolveItems([
-	'Phoenix',
-	'Pyromancer hood',
-	'Pyromancer garb',
-	'Pyromancer robe',
-	'Pyromancer boots',
-	'Warm gloves',
-	'Bruma torch',
-	'Burnt page',
-	'Tome of fire',
-	'Dragon axe'
-]);
-
 export const filterableTypes = [
 	{
 		name: 'Smithing',
@@ -780,11 +778,51 @@ export const filterableTypes = [
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: wintertodtItems
+		items: Object.entries(wintertodt).flat(Infinity)
 	},
 	{
 		name: 'Warm gear',
 		aliases: ['warm gear', 'warm'],
 		items: warmGear
+	},
+	{
+		name: 'Beginner Clues',
+		aliases: ['clues beginner', 'beginner clues'],
+		items: Object.entries(cluesBeginner).flat(Infinity)
+	},
+	{
+		name: 'Easy Clues',
+		aliases: ['clues easy', 'easy clues'],
+		items: Object.entries(cluesEasy).flat(Infinity)
+	},
+	{
+		name: 'Medium Clues',
+		aliases: ['clues medium', 'medium clues'],
+		items: Object.entries(cluesMedium).flat(Infinity)
+	},
+	{
+		name: 'Hard Clues',
+		aliases: ['clues hard', 'hard clues'],
+		items: Object.entries(cluesHard).flat(Infinity)
+	},
+	{
+		name: 'Elite Clues',
+		aliases: ['clues elite', 'elite clues'],
+		items: Object.entries(cluesElite).flat(Infinity)
+	},
+	{
+		name: 'Master Clues',
+		aliases: ['clues master', 'master clues'],
+		items: Object.entries(cluesMaster).flat(Infinity)
+	},
+	{
+		name: 'All Clues',
+		aliases: ['clues all', 'all clues'],
+		items: Object.entries(cluesAll).flat(Infinity)
+	},
+	{
+		name: 'Clues Shared',
+		aliases: ['clues shared', 'shared clues'],
+		items: Object.entries(cluesShared).flat(Infinity)
 	}
 ];
