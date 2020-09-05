@@ -434,6 +434,18 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Divine spirit shield',
+		inputItems: {
+			[itemID('Blessed spirit shield')]: 1,
+			[itemID('Divine sigil')]: 1
+		},
+		outputItems: {
+			[itemID('Divine spirit shield')]: 1
+		},
+		prayerLevel: 90,
+		smithingLevel: 85
+	},
+	{
 		name: 'Holy book',
 		inputItems: resolveNameBank({
 			'Saradomin page 1': 1,
