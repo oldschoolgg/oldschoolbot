@@ -34,7 +34,7 @@ export default class extends Task {
 
 		await user.addQP(qpRecieved);
 
-		if (roll(80)) {
+		if (roll(180)) {
 			str += `\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!`;
 			user.addItemsToBank({ 10092: 1 });
 		}

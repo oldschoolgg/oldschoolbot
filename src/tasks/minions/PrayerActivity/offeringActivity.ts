@@ -55,7 +55,7 @@ export default class extends Task {
 		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip. ${
-			bonusXP
+			user.equippedPet() === itemID('Lil Lamb')
 				? `The RuneScape gods bless you with ${bonusXP.toLocaleString()} extra XP for you raising the young lamb.`
 				: ''
 		}`;

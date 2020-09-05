@@ -8,7 +8,8 @@ import {
 	removeItemFromBank,
 	addItemToBank,
 	convertXPtoLVL,
-	toTitleCase
+	toTitleCase,
+	itemID
 } from '../lib/util';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
@@ -298,10 +299,15 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
+		let timeMultiplier = 1;
+		if (this.equippedPet() === itemID('Zak')) {
+			timeMultiplier = 1.4;
+		}
+
 		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) return Time.Minute * 33;
-		if (perkTier === PerkTier.Three) return Time.Minute * 36;
-		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
+		if (perkTier === PerkTier.Two) return Time.Minute * 33 * timeMultiplier;
+		if (perkTier === PerkTier.Three) return Time.Minute * 36 * timeMultiplier;
+		if (perkTier >= PerkTier.Four) return Time.Minute * 40 * timeMultiplier;
 
 		return Time.Minute * 30;
 	}
