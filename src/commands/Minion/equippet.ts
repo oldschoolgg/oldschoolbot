@@ -8,7 +8,7 @@ import { removeItemFromBank } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import resolveItems from '../../lib/util/resolveItems';
 
-const allPetIDs = [
+export const allPetIDs = [
 	...resolveItems([
 		'Doug',
 		'Zippy',
