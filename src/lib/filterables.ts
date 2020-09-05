@@ -12,6 +12,7 @@ import {
 	cluesHard,
 	cluesMaster,
 	cluesMedium,
+	cluesRares,
 	cluesShared,
 	wintertodt
 } from './collectionLog';
@@ -778,7 +779,7 @@ export const filterableTypes = [
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: Object.entries(wintertodt).flat(Infinity)
+		items: Object.values(wintertodt).flat(Infinity)
 	},
 	{
 		name: 'Warm gear',
@@ -788,41 +789,46 @@ export const filterableTypes = [
 	{
 		name: 'Beginner Clues',
 		aliases: ['clues beginner', 'beginner clues'],
-		items: Object.entries(cluesBeginner).flat(Infinity)
+		items: Object.values(cluesBeginner).flat(Infinity)
 	},
 	{
 		name: 'Easy Clues',
 		aliases: ['clues easy', 'easy clues'],
-		items: Object.entries(cluesEasy).flat(Infinity)
+		items: Object.values(cluesEasy).flat(Infinity)
 	},
 	{
 		name: 'Medium Clues',
 		aliases: ['clues medium', 'medium clues'],
-		items: Object.entries(cluesMedium).flat(Infinity)
+		items: Object.values(cluesMedium).flat(Infinity)
 	},
 	{
 		name: 'Hard Clues',
 		aliases: ['clues hard', 'hard clues'],
-		items: Object.entries(cluesHard).flat(Infinity)
+		items: Object.values(cluesHard).flat(Infinity)
 	},
 	{
 		name: 'Elite Clues',
 		aliases: ['clues elite', 'elite clues'],
-		items: Object.entries(cluesElite).flat(Infinity)
+		items: Object.values(cluesElite).flat(Infinity)
 	},
 	{
 		name: 'Master Clues',
 		aliases: ['clues master', 'master clues'],
-		items: Object.entries(cluesMaster).flat(Infinity)
+		items: Object.values(cluesMaster).flat(Infinity)
 	},
 	{
 		name: 'All Clues',
 		aliases: ['clues all', 'all clues'],
-		items: Object.entries(cluesAll).flat(Infinity)
+		items: Object.values(cluesAll).flat(Infinity)
 	},
 	{
 		name: 'Clues Shared',
 		aliases: ['clues shared', 'shared clues'],
-		items: Object.entries(cluesShared).flat(Infinity)
+		items: Object.values(cluesShared).flat(Infinity)
+	},
+	{
+		name: 'Clues Rares',
+		aliases: ['clues rares', 'rares clues'],
+		items: Object.values(cluesRares).flat(Infinity)
 	}
 ];
