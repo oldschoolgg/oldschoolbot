@@ -19,22 +19,22 @@ const pickaxes = [
 	{
 		id: itemID('3rd age pickaxe'),
 		reductionPercent: 13,
-		mineLvl: 61
+		miningLvl: 61
 	},
 	{
 		id: itemID('Gilded pickaxe'),
 		reductionPercent: 11,
-		mineLvl: 41
+		miningLvl: 41
 	},
 	{
 		id: itemID('Infernal pickaxe'),
 		reductionPercent: 10,
-		mineLvl: 61
+		miningLvl: 61
 	},
 	{
 		id: itemID('Dragon pickaxe'),
 		reductionPercent: 6,
-		mineLvl: 61
+		miningLvl: 61
 	}
 ];
 
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 		for (const pickaxe of pickaxes) {
 			if (
 				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
-				msg.author.skillLevel(SkillsEnum.Mining) >= pickaxe.mineLvl
+				msg.author.skillLevel(SkillsEnum.Mining) >= pickaxe.miningLvl
 			) {
 				timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
 				boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
