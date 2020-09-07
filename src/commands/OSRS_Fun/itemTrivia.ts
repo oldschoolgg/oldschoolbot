@@ -10,15 +10,14 @@ import { stringMatches } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-            aliases: ['it', 'itemtrivia'],
-            description: 'Trivia with item images',
+			aliases: ['it', 'itemtrivia'],
+			description: 'Trivia with item images',
 			cooldown: 1,
 			oneAtTime: true
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-
 		const randomItem = Items.filter(i => (i as Item).tradeable_on_ge).random() as Item;
 
 		const embed = new MessageEmbed()
