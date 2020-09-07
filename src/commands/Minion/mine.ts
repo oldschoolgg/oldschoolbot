@@ -18,19 +18,23 @@ import { SkillsEnum } from '../../lib/skilling/types';
 const pickaxes = [
 	{
 		id: itemID('3rd age pickaxe'),
-		reductionPercent: 13
+		reductionPercent: 13,
+		mineLvl: 61
 	},
 	{
 		id: itemID('Gilded pickaxe'),
-		reductionPercent: 11
+		reductionPercent: 11,
+		mineLvl: 41
 	},
 	{
 		id: itemID('Infernal pickaxe'),
-		reductionPercent: 10
+		reductionPercent: 10,
+		mineLvl: 61
 	},
 	{
 		id: itemID('Dragon pickaxe'),
-		reductionPercent: 6
+		reductionPercent: 6,
+		mineLvl: 61
 	}
 ];
 
@@ -97,15 +101,17 @@ export default class extends BotCommand {
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
-		if (msg.author.skillLevel(SkillsEnum.Mining) >= 61) {
-			for (const pickaxe of pickaxes) {
-				if (msg.author.hasItemEquippedOrInBank(pickaxe.id)) {
-					timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
-					boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
-					break;
-				}
+		for (const pickaxe of pickaxes) {
+			if (
+				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
+				msg.author.skillLevel(SkillsEnum.Mining) >= pickaxe.mineLvl
+			) {
+				timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
+				boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
+				break;
 			}
-
+		}
+		if (msg.author.skillLevel(SkillsEnum.Mining) >= 60) {
 			for (const glove of gloves) {
 				if (msg.author.hasItemEquippedAnywhere(glove.id)) {
 					timeToMine = Math.floor(timeToMine * ((100 - glove.reductionPercent) / 100));
