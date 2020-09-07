@@ -1066,7 +1066,7 @@ ${lootMSG.join('\n')}`);
 				theDrops.forEach((value, key, map) =>
 					loot.push(`${value.theKC} ${value.dup} duplicates`)
 				);
-				return msg.send(`It took you **${kc.toLocaleString()}** kills to finish the Chambers of Xeric <:Olmlet:660445938493423647> ${loot.join('\n')}`);
+				return msg.send(`It took you **${kc.toLocaleString()}** kills to finish the Chambers of Xeric <:Olmlet:324127376873357316> ${loot.join('\n')}`);
 			// end of chambers of xeric finish command
 			case 'VORKATH': {
 				const lootMSG = [];
