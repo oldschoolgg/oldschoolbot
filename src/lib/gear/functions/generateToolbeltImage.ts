@@ -113,8 +113,7 @@ export async function generateToolbeltImage(client: KlasaClient, toolBelt: Bank)
 
 	for (const id of Object.keys(toolBelt)) {
 		const image = await client.tasks.get('bankImage')!.getItemImage(parseInt(id));
-		let [x, y] = slotCoordinates[parseInt(id)];
-		if (typeof [x, y] === 'undefined') [x, y] = [-100, -100];
+		const [x, y] = slotCoordinates[parseInt(id)];
 
 		ctx.drawImage(
 			image,
