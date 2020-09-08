@@ -20,6 +20,7 @@ export interface SettingsEntry {
 	autoupdate?: boolean;
 	badges?: string[];
 	bank?: Bank;
+	toolbelt?: Bank;
 	clueScores?: Bank;
 	monsterScores?: Bank;
 	collectionLog?: number[];

@@ -44,6 +44,18 @@ export default class extends Extendable {
 		return 0;
 	}
 
+	public numItemsInToolbeltSync(this: User, itemID: number) {
+		const toolbelt = this.settings.get(UserSettings.Toolbelt);
+
+		const result = toolbelt[itemID];
+
+		if (typeof result !== 'undefined') {
+			return result;
+		}
+
+		return 0;
+	}
+
 	public allItemsOwned(this: User): ItemBank {
 		let totalBank = { ...this.settings.get(UserSettings.Bank) };
 

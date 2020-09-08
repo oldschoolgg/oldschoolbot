@@ -30,7 +30,11 @@ export default class extends Extendable {
 
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
-		return this.hasItemEquippedAnywhere(id) || this.numItemsInBankSync(id) > 0;
+		return (
+			this.hasItemEquippedAnywhere(id) ||
+			this.numItemsInBankSync(id) > 0 ||
+			this.numItemsInToolbeltSync(id) > 0
+		);
 	}
 
 	public equippedWeapon(this: User, setup: GearSetupTypes) {

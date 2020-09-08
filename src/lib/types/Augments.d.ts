@@ -120,6 +120,11 @@ declare module 'discord.js' {
 		 */
 		numItemsInBankSync(itemID: number): number;
 		/**
+		 * Returns how many of the item the user has in their toolbelt.
+		 * @param itemID The item ID.
+		 */
+		numItemsInToolbeltSync(itemID: number): number;
+		/**
 		 * Returns a tuple where the first item is true/false if they have the requirements,
 		 * the second item is a string containing the reason they don't have the requirements.
 		 */

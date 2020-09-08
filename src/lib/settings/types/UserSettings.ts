@@ -14,6 +14,7 @@ export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
 	export const Bank = T<O.Readonly<ItemBank>>('bank');
+	export const Toolbelt = T<O.Readonly<ItemBank>>('toolbelt');
 	export const BankBackground = T<number>('bankBackground');
 	export const Pets = T<O.Readonly<ItemBank>>('pets');
 	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');

@@ -15,6 +15,7 @@ Client.defaultUserSchema
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
 	.add('bank', 'any', { default: {} })
+	.add('toolbelt', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })

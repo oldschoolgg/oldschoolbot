@@ -55,6 +55,7 @@ interface User {
 	badges?: readonly number[];
 	lastDailyTimestamp?: number;
 	bank?: object;
+	toolbelt?: object;
 	collectionLogBank?: object;
 	monsterScores?: object;
 	clueScores?: object;
@@ -121,6 +122,7 @@ export interface RawUserSettings {
 	badges: readonly number[];
 	lastDailyTimestamp: string;
 	bank: object;
+	toolbelt: object;
 	collectionLogBank: object;
 	monsterScores: object;
 	clueScores: object;
@@ -146,6 +148,7 @@ export const UserSettingsSchema = /* sql */ `
 		"bitfield"             SMALLINT[]   DEFAULT ARRAY[]::SMALLINT[] NOT NULL,
 		"lastDailyTimestamp"   BIGINT       DEFAULT 0                   NOT NULL,
 		"bank"                 JSON         DEFAULT '{}'::JSON          NOT NULL,
+		"toolbelt"             JSON         DEFAULT '{}'::JSON          NOT NULL,
 		"collectionLogBank"    JSON         DEFAULT '{}'::JSON          NOT NULL,
 		"monsterScores"        JSON         DEFAULT '{}'::JSON          NOT NULL,
 		"clueScores"           JSON         DEFAULT '{}'::JSON          NOT NULL,
@@ -369,6 +372,7 @@ async function migrateUsers() {
 			badges: entry.badges || [],
 			lastDailyTimestamp: entry.lastDailyTimestamp || 0,
 			bank: entry.bank || {},
+			toolbelt: entry.toolbelt || {},
 			collectionLogBank: entry.collectionLogBank || {},
 			monsterScores: entry.monsterScores || {},
 			clueScores: entry.clueScores || {},
