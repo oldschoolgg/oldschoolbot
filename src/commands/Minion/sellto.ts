@@ -13,7 +13,7 @@ import { bankHasAllItemsFromBank } from '../../lib/util';
 
 const options = {
 	max: 1,
-	time: 2000,
+	time: 20000,
 	errors: ['time']
 };
 
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 			throw `You don't have **${await createReadableItemListFromBank(
 				this.client,
 				youDontHave
-			)}** or they are not tradeable.`;
+			)}**.`;
 		}
 		const itemsForSaleString = await createReadableItemListFromBank(this.client, itemsForSale);
 		let sellStr = `${
@@ -158,8 +158,8 @@ export default class extends BotCommand {
 		try {
 			// rechecking if seller still has the items and the buying still has the gp
 			if (
-				bankHasAllItemsFromBank(sellerBank, itemsForSale) ||
-				buyerMember.user.settings.get(UserSettings.GP) < price
+				!(await bankHasAllItemsFromBank(sellerBank, itemsForSale)) ||
+				(await buyerMember.user.settings.get(UserSettings.GP)) < price
 			) {
 				return msg.send(`One of you lacks the required GP or items to make this trade.`);
 			}
@@ -183,8 +183,8 @@ export default class extends BotCommand {
 			return msg.send(`Fatal error occurred. Please seek help in the support server.`);
 		}
 		msg.author.log(
-			`sold ${itemsForSaleString} itemID[${Object.values(items)
-				.map(i => i.possibilities.map(_i => _i.name))
+			`sold ${itemsForSaleString} itemID[${Object.keys(itemsForSale)
+				.map(_i => `${_i[0]}:${_i[1]}`)
 				.join(',')}] to ${buyerMember.user.sanitizedName} for ${price}`
 		);
 
