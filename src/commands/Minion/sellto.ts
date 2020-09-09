@@ -9,6 +9,7 @@ import { ItemList } from '../../lib/minions/types';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { Util } from 'oldschooljs';
 import { Events } from '../../lib/constants';
+import { bankHasAllItemsFromBank } from '../../lib/util';
 
 /**
  * Returns an ItemBank from the items define on the string. Defaults to 1.
@@ -78,22 +79,28 @@ export default class extends BotCommand {
 	}
 
 	async sell(msg: KlasaMessage, buyerMember: GuildMember, price: number, items: ItemList[]) {
+		const sellerBank = msg.author.settings.get(UserSettings.Bank);
 		let priceBotPays = 0;
 		let youDontHave: ItemBank = {};
 		let itemsForSale: ItemBank = {};
 		for (const item of items) {
-			priceBotPays += Math.floor((await this.client.fetchItemPrice(item.item.id)) * 0.8);
-			if (!(await msg.author.hasItem(item.item.id, item.qty))) {
-				youDontHave = addBanks([youDontHave, { [item.item.id]: Number(item.qty) }]);
+			const osItem = item.possibilities.find(
+				i => sellerBank[i.id] && i.tradeable && !itemsForSale[i.id]
+			);
+			if (!osItem) {
+				youDontHave = addBanks([youDontHave, { [item.possibilities[0].id]: item.qty }]);
 			} else {
-				itemsForSale = addBanks([itemsForSale, { [item.item.id]: Number(item.qty) }]);
+				priceBotPays +=
+					Math.floor((await this.client.fetchItemPrice(osItem.id)) * 0.8) *
+					Number(item.qty);
+				itemsForSale = addBanks([itemsForSale, { [osItem.id]: item.qty }]);
 			}
 		}
 		if (Object.values(youDontHave).length > 0) {
 			throw `You don't have **${await createReadableItemListFromBank(
 				this.client,
 				youDontHave
-			)}**`;
+			)}** or they are not tradeable.`;
 		}
 		const itemsForSaleString = await createReadableItemListFromBank(this.client, itemsForSale);
 		let sellStr = `${
@@ -105,7 +112,7 @@ export default class extends BotCommand {
 		}.`;
 
 		if (priceBotPays > price) {
-			sellStr += `\n\nWarning: The bot would pay you more (**${priceBotPays.toLocaleString()}** GP) for these items than you are selling them for!`;
+			sellStr += `\n\n**WARNING**: The bot would pay you more (**${priceBotPays.toLocaleString()}** GP) for these items than you are selling them for!`;
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -119,7 +126,7 @@ export default class extends BotCommand {
 						_msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
-						time: 1000,
+						time: 20000,
 						errors: ['time']
 					}
 				);
@@ -143,7 +150,7 @@ export default class extends BotCommand {
 					_msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
 				{
 					max: 1,
-					time: 1000,
+					time: 20000,
 					errors: ['time']
 				}
 			);
@@ -154,14 +161,8 @@ export default class extends BotCommand {
 
 		try {
 			// rechecking if seller still has the items and the buying still has the gp
-			youDontHave = {};
-			for (const item of items) {
-				if (!(await msg.author.hasItem(item.item.id, item.qty))) {
-					youDontHave = addBanks([youDontHave, { [item.item.id]: item.qty }]);
-				}
-			}
 			if (
-				Object.values(youDontHave).length > 0 ||
+				bankHasAllItemsFromBank(sellerBank, itemsForSale) ||
 				buyerMember.user.settings.get(UserSettings.GP) < price
 			) {
 				return msg.send(`One of you lacks the required GP or items to make this trade.`);
@@ -170,7 +171,6 @@ export default class extends BotCommand {
 			await buyerMember.user.removeGP(price);
 			await msg.author.addGP(price);
 
-			const sellerBank = msg.author.settings.get(UserSettings.Bank);
 			const buyerBank = buyerMember.user.settings.get(UserSettings.Bank);
 			// remove items from seller
 			await msg.author.settings.update(
@@ -178,7 +178,6 @@ export default class extends BotCommand {
 				addBanks([removeBankFromBank(sellerBank, itemsForSale)])
 			);
 			// add items to buying
-			console.log({ buyerBank, itemsForSale });
 			await buyerMember.user.settings.update(
 				UserSettings.Bank,
 				addBanks([buyerBank, itemsForSale])
@@ -189,7 +188,7 @@ export default class extends BotCommand {
 		}
 		msg.author.log(
 			`sold ${itemsForSaleString} itemID[${Object.values(items)
-				.map(i => i.item.id)
+				.map(i => i.possibilities.map(_i => _i.name))
 				.join(',')}] to ${buyerMember.user.sanitizedName} for ${price}`
 		);
 

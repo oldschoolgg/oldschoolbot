@@ -11,7 +11,7 @@ import { PerkTier } from '../constants';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { LevelRequirements } from '../skilling/types';
 import { GearSetupTypes, OffenceGearStat, GearStat } from '../gear/types';
-import {Item} from "oldschooljs/dist/meta/types";
+import { Item } from 'oldschooljs/dist/meta/types';
 
 export interface BankBackground {
 	image: Image | null;
@@ -88,5 +88,5 @@ export interface Minigame {
 
 export interface ItemList {
 	qty: number;
-	item: Item;
+	possibilities: Item[];
 }

@@ -1,5 +1,4 @@
 import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
-import getOSItem from '../lib/util/getOSItem';
 import { ItemList } from '../lib/minions/types';
 import { Util } from 'oldschooljs';
 // import getOSItem from '../lib/util/getOSItem';
@@ -62,10 +61,13 @@ export default class extends Argument {
 				itemName.unshift(itemQty);
 				itemQty = 1;
 			}
-			if (Boolean(itemName.join(' '))) {
+			const itemNameFinal = itemName.join(' ');
+			if (Boolean(itemNameFinal)) {
 				_toReturnItems.push({
-					qty: itemQty,
-					item: getOSItem(itemName.join(' '))
+					qty: Number(itemQty),
+					possibilities: await this.store
+						.get('item')!
+						.run(itemNameFinal, possible, message)
 				});
 			}
 		}
