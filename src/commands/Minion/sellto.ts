@@ -84,9 +84,7 @@ export default class extends BotCommand {
 		let youDontHave: ItemBank = {};
 		let itemsForSale: ItemBank = {};
 		for (const item of items) {
-			const osItem = item.possibilities.find(
-				i => sellerBank[i.id] && i.tradeable && !itemsForSale[i.id]
-			);
+			const osItem = item.possibilities.find(i => sellerBank[i.id] && !itemsForSale[i.id]);
 			if (!osItem) {
 				youDontHave = addBanks([youDontHave, { [item.possibilities[0].id]: item.qty }]);
 			} else {
