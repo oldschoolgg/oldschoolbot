@@ -1,6 +1,6 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, rand, roll } from '../../../lib/util';
+import { saidYes, noOp, rand, roll, itemID } from '../../../lib/util';
 import { Time } from '../../../lib/constants';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
@@ -41,17 +41,24 @@ export default class extends Task {
 		const bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
 		const newQuantity = quantity - bonesLost + bonesSaved;
 
-		const xpReceived = newQuantity * bone.xp * XPMod;
+		let xpReceived = newQuantity * bone.xp * XPMod;
+		const bonusXP = xpReceived * rand(2, 4) - xpReceived;
+		if (user.equippedPet() === itemID('Lil Lamb')) {
+			xpReceived += bonusXP;
+		}
 
 		await user.addXP(SkillsEnum.Prayer, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			bone.name
-		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers , 
-			you also received ${xpReceived.toLocaleString()} XP. ${
+		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP. ${
 			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		} asks if you'd like them to do another of the same trip. ${
+			user.equippedPet() === itemID('Lil Lamb')
+				? `The RuneScape gods bless you with ${bonusXP.toLocaleString()} extra XP for you raising the young lamb.`
+				: ''
+		}`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;

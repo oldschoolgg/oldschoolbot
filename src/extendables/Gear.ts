@@ -6,6 +6,7 @@ import { GearSetupTypes, UserFullGearSetup } from '../lib/gear/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import itemInSlot from '../lib/gear/functions/itemInSlot';
 import { sumOfSetupStats } from '../lib/gear/functions/sumOfSetupStats';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -43,5 +44,9 @@ export default class extends Extendable {
 
 	public setupStats(this: User, setup: GearSetupTypes) {
 		return sumOfSetupStats(this.rawGear()[setup]);
+	}
+
+	public equippedPet(this: User) {
+		return this.settings.get(UserSettings.Minion.EquippedPet);
 	}
 }

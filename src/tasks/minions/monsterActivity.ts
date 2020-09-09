@@ -1,8 +1,9 @@
 import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Monsters } from 'oldschooljs';
 
 import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes, roll, multiplyBank } from '../../lib/util';
+import { noOp, saidYes, roll, multiplyBank, itemID, rand } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -12,10 +13,13 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const fullMonster = Monsters.get(monsterID);
+		if (!fullMonster) throw 'No full monster';
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 
@@ -28,6 +32,27 @@ export default class extends Task {
 				loot[getRandomMysteryBox()] = 1;
 			}
 		}
+
+		let gotKlik = false;
+		const minutes = Math.ceil(duration / Time.Minute);
+		if (fullMonster.data.attributes.includes(MonsterAttribute.Dragon)) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(2500)) {
+					gotKlik = true;
+					loot[itemID('Klik')] = 1;
+					break;
+				}
+			}
+		}
+
+		let bananas = 0;
+		if (user.equippedPet() === itemID('Harry')) {
+			for (let i = 0; i < minutes; i++) {
+				bananas += rand(1, 3);
+			}
+			loot[itemID('Banana')] = bananas;
+		}
+
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);
@@ -65,6 +90,14 @@ export default class extends Task {
 			} else {
 				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc \``;
 			}
+		}
+
+		if (gotKlik) {
+			str += `\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.`;
+		}
+
+		if (bananas > 0) {
+			str += `\n\n <:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
 		}
 
 		user.incrementMonsterScore(monsterID, quantity);

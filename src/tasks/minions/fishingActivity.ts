@@ -12,6 +12,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { Cookables } from '../../lib/skilling/skills/cooking';
 
 export default class extends Task {
 	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
@@ -103,6 +104,15 @@ export default class extends Task {
 			[fish.id]: quantity
 		};
 
+		if (user.equippedPet() === itemID('Klik')) {
+			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
+			if (cookedFish) {
+				delete loot[fish.id];
+				loot[cookedFish.id] = quantity;
+				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!`;
+			}
+		}
+
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
@@ -157,9 +167,7 @@ export default class extends Task {
 
 		const minutesInTrip = Math.ceil(duration / 1000 / 60);
 		for (let i = 0; i < minutesInTrip; i++) {
-			const chance = user.hasItemEquippedAnywhere(itemID('Shelldon')) ? 10_000 : 7000;
-
-			if (roll(chance)) {
+			if (roll(3000)) {
 				loot[itemID('Shelldon')] = 1;
 				str += `\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!`;
 				break;

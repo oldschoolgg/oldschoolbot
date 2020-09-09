@@ -146,6 +146,10 @@ export default class extends BotCommand {
 			ore.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
+		if (msg.author.equippedPet() === itemID('Doug')) {
+			response += `\n<:doug:748892864813203591> Doug joins you on your mining trip!`;
+		}
+
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
 		}

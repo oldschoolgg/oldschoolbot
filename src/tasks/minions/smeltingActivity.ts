@@ -11,6 +11,7 @@ import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { roll } from '../../util';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
@@ -66,6 +67,17 @@ export default class extends Task {
 		if (roll(10)) {
 			loot = multiplyBank(loot, 4);
 			loot[getRandomMysteryBox()] = 1;
+		}
+
+		const numMinutes = duration / Time.Minute;
+		if (user.settings.get(UserSettings.QP) > 10) {
+			for (let i = 0; i < numMinutes; i++) {
+				if (roll(4500)) {
+					str += `\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him 'Zak'.`;
+					loot[itemID('Zak')] = 1;
+					break;
+				}
+			}
 		}
 
 		await user.addItemsToBank(loot, true);

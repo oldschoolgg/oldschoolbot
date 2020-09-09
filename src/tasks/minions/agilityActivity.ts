@@ -89,6 +89,27 @@ export default class extends Task {
 			}
 		}
 
+		const minutes = duration / Time.Minute;
+		if (course.id === 4) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(1200)) {
+					loot[itemID('Scruffy')] = 1;
+					str += `\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.`;
+					break;
+				}
+			}
+		}
+
+		if (course.id === 11) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(1200)) {
+					loot[itemID('Harry')] = 1;
+					str += `\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.`;
+					break;
+				}
+			}
+		}
+
 		// Roll for pet
 		if (
 			course.petChance &&
