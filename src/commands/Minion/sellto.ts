@@ -11,6 +11,12 @@ import { Util } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { bankHasAllItemsFromBank } from '../../lib/util';
 
+const options = {
+	max: 1,
+	time: 2000,
+	errors: ['time']
+};
+
 /**
  * Returns an ItemBank from the items define on the string. Defaults to 1.
  * @example getItemsAndQuantityFromStringList('50 salmon, 50 manta ray, 20 salmon, cake, monkfish')
@@ -122,11 +128,7 @@ export default class extends BotCommand {
 					_msg =>
 						_msg.author.id === msg.author.id &&
 						_msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 20000,
-						errors: ['time']
-					}
+					options
 				);
 			} catch (err) {
 				return sellMsg.edit(`Cancelling sale of **${itemsForSaleString}**.`);
@@ -146,11 +148,7 @@ export default class extends BotCommand {
 			await msg.channel.awaitMessages(
 				_msg =>
 					_msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
-				{
-					max: 1,
-					time: 20000,
-					errors: ['time']
-				}
+				options
 			);
 		} catch (err) {
 			await buyerConfirmationMsg.edit(`Cancelling sale of ${itemsForSaleString}.`);
