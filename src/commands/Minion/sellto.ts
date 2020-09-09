@@ -183,7 +183,7 @@ export default class extends BotCommand {
 			return msg.send(`Fatal error occurred. Please seek help in the support server.`);
 		}
 		msg.author.log(
-			`sold ${itemsForSaleString} itemID[${Object.keys(itemsForSale)
+			`sold ${itemsForSaleString} itemID[${Object.entries(itemsForSale)
 				.map(_i => `${_i[0]}:${_i[1]}`)
 				.join(',')}] to ${buyerMember.user.sanitizedName} for ${price}`
 		);
