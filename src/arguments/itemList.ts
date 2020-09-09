@@ -21,16 +21,16 @@ export default class extends Argument {
 	 * @return ToReturn[]
 	 */
 	async run(arg: string, possible: Possible, message: KlasaMessage): Promise<any> {
-		let args = [];
-		let usageDelim = '';
+		let args: string[] = [];
+		let usageDelim = ' ';
 		let paramsToRemove = 0;
 		if (message) {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore 2341
-			args = message.prompter?.args;
+			args = message.prompter?.args ?? [];
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore 2341
-			usageDelim = message.prompter?.usage.usageDelim;
+			usageDelim = message.prompter?.usage.usageDelim ?? ' ';
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore 2341
 			paramsToRemove = (message.prompter ? message.prompter.usage.parsedUsage.length : 1) - 1;
