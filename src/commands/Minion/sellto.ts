@@ -1,25 +1,46 @@
-import { KlasaMessage, CommandStore } from 'klasa';
-import { Util, Items } from 'oldschooljs';
-
+import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { GuildMember } from 'discord.js';
-import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
-import { stringMatches } from '../../lib/util';
+import { ItemBank } from '../../lib/types';
+import getOSItem from '../../lib/util/getOSItem';
+import { addBanks, removeBankFromBank } from 'oldschooljs/dist/util';
+import { ItemList } from '../../lib/minions/types';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { Util } from 'oldschooljs';
+import { Events } from '../../lib/constants';
 
-const options = {
-	max: 1,
-	time: 20000,
-	errors: ['time']
-};
+/**
+ * Returns an ItemBank from the items define on the string. Defaults to 1.
+ * @example getItemsAndQuantityFromStringList('50 salmon, 50 manta ray, 20 salmon, cake, monkfish')
+ * @param items
+ * @return ItemBank[] The string in a ItemBank variable
+ */
+export async function getItemsAndQuantityFromStringList(items: string) {
+	let bankItems: ItemBank = {};
+	for (let item of items.split(',')) {
+		item = item.trim();
+		let [itemQty, ...itemNameArray] = item.split(' ');
+		if (!Number(itemQty)) {
+			itemNameArray.unshift(itemQty);
+			itemQty = '';
+		}
+		const _item = getOSItem(itemNameArray.join(' '));
+		bankItems = addBanks([
+			{
+				[_item.id]: Number(itemQty) ? parseInt(itemQty) : 1
+			},
+			bankItems
+		]);
+	}
+	return bankItems;
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 20,
-			usage:
-				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
+			usage: '<member:member> <price:int{0,100000000000}> <item:...itemList>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true
@@ -28,7 +49,8 @@ export default class extends BotCommand {
 
 	async run(
 		msg: KlasaMessage,
-		[buyerMember, price, quantity, itemArray]: [GuildMember, number, number, Item[]]
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		[buyerMember, price, items]: [GuildMember, number, ItemList[]]
 	) {
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		if (buyerMember.user.isIronman) throw `Iron players can't be sold items.`;
@@ -43,41 +65,47 @@ export default class extends BotCommand {
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
-		const osItem = Items.find(item => stringMatches(item.name, itemArray[0].name));
-		if (!osItem) throw `That item doesnt exist.`;
 
 		buyerMember.user.toggleBusy(true);
 		msg.author.toggleBusy(true);
+
 		try {
-			await this.sell(msg, buyerMember, price, quantity, osItem);
+			await this.sell(msg, buyerMember, price, items);
 		} finally {
 			buyerMember.user.toggleBusy(false);
 			msg.author.toggleBusy(false);
 		}
 	}
 
-	async sell(
-		msg: KlasaMessage,
-		buyerMember: GuildMember,
-		price: number,
-		quantity: number,
-		osItem: Item | PartialItem
-	) {
-		const hasItem = await msg.author.hasItem(osItem.id, quantity);
-		if (!hasItem) {
-			throw `You dont have ${quantity}x ${osItem.name}.`;
+	async sell(msg: KlasaMessage, buyerMember: GuildMember, price: number, items: ItemList[]) {
+		let priceBotPays = 0;
+		let youDontHave: ItemBank = {};
+		let itemsForSale: ItemBank = {};
+		for (const item of items) {
+			priceBotPays += Math.floor((await this.client.fetchItemPrice(item.item.id)) * 0.8);
+			if (!(await msg.author.hasItem(item.item.id, item.qty))) {
+				youDontHave = addBanks([youDontHave, { [item.item.id]: Number(item.qty) }]);
+			} else {
+				itemsForSale = addBanks([itemsForSale, { [item.item.id]: Number(item.qty) }]);
+			}
 		}
+		if (Object.values(youDontHave).length > 0) {
+			throw `You don't have **${await createReadableItemListFromBank(
+				this.client,
+				youDontHave
+			)}**`;
+		}
+		const itemsForSaleString = await createReadableItemListFromBank(this.client, itemsForSale);
+		let sellStr = `${
+			msg.author
+		}, say \`confirm\` to confirm that you want to sell **${itemsForSaleString}** to \`${
+			buyerMember.user.username
+		}#${buyerMember.user.discriminator}\` for ${
+			price > 0 ? `a *total* of ${Util.toKMB(price)} GP (${price.toLocaleString()})` : 'free'
+		}.`;
 
-		const itemDesc = `${quantity}x ${osItem.name}`;
-		const priceDesc = `${Util.toKMB(price)} GP (${price.toLocaleString()})`;
-
-		let sellStr = `${msg.author}, say \`confirm\` to confirm that you want to sell ${itemDesc} to \`${buyerMember.user.username}#${buyerMember.user.discriminator}\` for a *total* of ${priceDesc}.`;
-
-		const priceOfItemBotPays = await this.client.fetchItemPrice(osItem.id);
-		const totalPrice = Math.floor(priceOfItemBotPays * quantity * 0.8);
-
-		if (totalPrice > price) {
-			sellStr += `\n\nWarning: The bot would pay you more (${totalPrice.toLocaleString()} GP) for these items than you are selling them for!`;
+		if (priceBotPays > price) {
+			sellStr += `\n\nWarning: The bot would pay you more (**${priceBotPays.toLocaleString()}** GP) for these items than you are selling them for!`;
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -89,32 +117,51 @@ export default class extends BotCommand {
 					_msg =>
 						_msg.author.id === msg.author.id &&
 						_msg.content.toLowerCase() === 'confirm',
-					options
+					{
+						max: 1,
+						time: 1000,
+						errors: ['time']
+					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling sale of ${itemDesc}.`);
+				return sellMsg.edit(`Cancelling sale of **${itemsForSaleString}**.`);
 			}
 		}
 
 		// Confirm the buyer wants to buy
 		const buyerConfirmationMsg = await msg.channel.send(
-			`${buyerMember}, do you wish to buy ${itemDesc} from \`${msg.author.username}#${msg.author.discriminator}\` for ${priceDesc}? Say \`buy\` to confirm.`
+			`${buyerMember}, do you wish to buy ${itemsForSaleString} from \`${
+				msg.author.username
+			}#${msg.author.discriminator}\` for ${
+				price > 0 ? `${Util.toKMB(price)} GP (${price.toLocaleString()})` : 'free'
+			}? Say \`buy\` to confirm.`
 		);
 
 		try {
 			await msg.channel.awaitMessages(
 				_msg =>
 					_msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
-				options
+				{
+					max: 1,
+					time: 1000,
+					errors: ['time']
+				}
 			);
 		} catch (err) {
-			buyerConfirmationMsg.edit(`Cancelling sale of ${itemDesc}.`);
-			return msg.channel.send(`Cancelling sale of ${itemDesc}.`);
+			await buyerConfirmationMsg.edit(`Cancelling sale of ${itemsForSaleString}.`);
+			return msg.channel.send(`Cancelling sale of ${itemsForSaleString}.`);
 		}
 
 		try {
+			// rechecking if seller still has the items and the buying still has the gp
+			youDontHave = {};
+			for (const item of items) {
+				if (!(await msg.author.hasItem(item.item.id, item.qty))) {
+					youDontHave = addBanks([youDontHave, { [item.item.id]: item.qty }]);
+				}
+			}
 			if (
-				!(await msg.author.hasItem(osItem.id, quantity, false)) ||
+				Object.values(youDontHave).length > 0 ||
 				buyerMember.user.settings.get(UserSettings.GP) < price
 			) {
 				return msg.send(`One of you lacks the required GP or items to make this trade.`);
@@ -123,17 +170,29 @@ export default class extends BotCommand {
 			await buyerMember.user.removeGP(price);
 			await msg.author.addGP(price);
 
-			await msg.author.removeItemFromBank(osItem.id, quantity);
-			await buyerMember.user.addItemsToBank({ [osItem.id]: quantity });
+			const sellerBank = msg.author.settings.get(UserSettings.Bank);
+			const buyerBank = buyerMember.user.settings.get(UserSettings.Bank);
+			// remove items from seller
+			await msg.author.settings.update(
+				UserSettings.Bank,
+				addBanks([removeBankFromBank(sellerBank, itemsForSale)])
+			);
+			// add items to buying
+			console.log({ buyerBank, itemsForSale });
+			await buyerMember.user.settings.update(
+				UserSettings.Bank,
+				addBanks([buyerBank, itemsForSale])
+			);
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
 			return msg.send(`Fatal error occurred. Please seek help in the support server.`);
 		}
-
 		msg.author.log(
-			`sold ${itemDesc} itemID[${osItem.id}] to ${buyerMember.user.sanitizedName} for ${price}`
+			`sold ${itemsForSaleString} itemID[${Object.values(items)
+				.map(i => i.item.id)
+				.join(',')}] to ${buyerMember.user.sanitizedName} for ${price}`
 		);
 
-		return msg.send(`Sale of ${itemDesc} complete!`);
+		return msg.send(`Sale of **${itemsForSaleString}** complete!`);
 	}
 }
