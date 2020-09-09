@@ -6,6 +6,8 @@ import itemID from '../../../../util/itemID';
 import { Time } from '../../../../constants';
 import { bosses } from '../../../../collectionLog';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { CorporealBeastTable } from '../../../../simulation/Corp';
+import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -114,7 +116,12 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.CorporealBeast.id,
 		name: Monsters.CorporealBeast.name,
 		aliases: Monsters.CorporealBeast.aliases,
-		table: Monsters.CorporealBeast,
+		table: new SimpleMonster({
+			id: 319,
+			name: 'Corporeal Beast',
+			table: CorporealBeastTable,
+			aliases: ['corporeal beast', 'corp']
+		}),
 		timeToFinish: Time.Minute * 18,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,

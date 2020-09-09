@@ -49,6 +49,7 @@ export const bosses = {
 		'Spectral sigil',
 		'Arcane sigil',
 		'Elysian sigil',
+		'Divine sigil',
 		'Pet dark core'
 	]),
 	Cerberus: resolveItems([

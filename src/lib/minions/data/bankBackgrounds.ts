@@ -211,6 +211,12 @@ const backgroundImages: BankBackground[] = [
 		name: 'cerb',
 		image: null,
 		available: false
+	},
+	{
+		id: 29,
+		name: 'Cab',
+		image: null,
+		available: false
 	}
 ];
 
