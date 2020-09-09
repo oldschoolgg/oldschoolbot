@@ -21,20 +21,20 @@ export default class extends Argument {
 	 * @return ToReturn[]
 	 */
 	async run(arg: string, possible: Possible, message: KlasaMessage): Promise<any> {
-		const {
+		let args = [];
+		let usageDelim = '';
+		let paramsToRemove = 0;
+		if (message) {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			args,
+			// @ts-ignore 2341
+			args = message.prompter?.args;
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			usage: { usageDelim }
-		} = // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			message.prompter;
-		const paramsToRemove =
+			// @ts-ignore 2341
+			usageDelim = message.prompter?.usage.usageDelim;
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			(message.prompter ? message.prompter.usage.parsedUsage.length : 1) - 1;
+			// @ts-ignore 2341
+			paramsToRemove = (message.prompter ? message.prompter.usage.parsedUsage.length : 1) - 1;
+		}
 		// remove unnecessary params
 		// remove the previous parameters from the args list
 		args.splice(0, paramsToRemove);
@@ -50,16 +50,16 @@ export default class extends Argument {
 			if (!Number(itemQty)) {
 				// check if it a KMB valid number
 				if (itemQty.replace(/[0-9,_.kmb]/gi, '').length === 0) {
-					itemQty = Util.fromKMB(itemQty);
+					itemQty = Util.fromKMB(itemQty).toString();
 				} else {
 					// otherwise it is part of the item
 					itemName.unshift(itemQty);
-					itemQty = 1;
+					itemQty = '1';
 				}
 			}
 			if (itemName.length === 0) {
 				itemName.unshift(itemQty);
-				itemQty = 1;
+				itemQty = '1';
 			}
 			const itemNameFinal = itemName.join(' ');
 			if (Boolean(itemNameFinal)) {
