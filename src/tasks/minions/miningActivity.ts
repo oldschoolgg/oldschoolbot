@@ -13,6 +13,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { getRandomMysteryBox } from '../../lib/openables';
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -65,6 +66,21 @@ export default class extends Task {
 			[ore.id]: quantity
 		};
 
+		const numberOfMinutes = duration / Time.Minute;
+
+		if (user.equippedPet() === itemID('Doug') && numberOfMinutes >= 7) {
+			for (const randOre of Mining.Ores.sort(() => 0.5 - Math.random()).slice(
+				0,
+				rand(1, Math.floor(numberOfMinutes / 7))
+			)) {
+				const qty = rand(1, numberOfMinutes * 3);
+				const amountToAdd = randOre.xp * qty;
+				xpReceived += amountToAdd;
+				bonusXP += amountToAdd;
+				loot[randOre.id] = qty;
+			}
+		}
+
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
@@ -85,8 +101,6 @@ export default class extends Task {
 			);
 		}
 
-		const numberOfMinutes = duration / Time.Minute;
-
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
 			loot[12012] = numberOfNuggets;
@@ -98,6 +112,27 @@ export default class extends Task {
 
 			if (numberOfMinerals > 0) {
 				loot[21341] = numberOfMinerals;
+			}
+		}
+
+		const minutesInTrip = Math.ceil(duration / Time.Minute);
+		for (let i = 0; i < minutesInTrip; i++) {
+			if (roll(3000)) {
+				loot[itemID('Doug')] = 1;
+				str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
+				break;
+			}
+		}
+
+		const hasKlik = user.equippedPet() === itemID('Klik');
+		if (hasKlik) {
+			const smeltedOre = Smelting.Bars.find(
+				o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1
+			);
+			if (smeltedOre) {
+				delete loot[ore.id];
+				loot[smeltedOre.id] = quantity;
+				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!`;
 			}
 		}
 

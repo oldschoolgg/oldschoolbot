@@ -49,6 +49,7 @@ export const bosses = {
 		'Spectral sigil',
 		'Arcane sigil',
 		'Elysian sigil',
+		'Divine sigil',
 		'Pet dark core'
 	]),
 	Cerberus: resolveItems([
@@ -194,7 +195,6 @@ export const pets = {
 		'Pet smoke devil',
 		'Ikkle hydra'
 	]),
-	space2: [],
 	Other: resolveItems([
 		'Bloodhound',
 		'Herbi',

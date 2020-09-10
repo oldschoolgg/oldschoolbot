@@ -1,13 +1,29 @@
 import { KlasaMessage, CommandStore } from 'klasa';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { pets } from '../../lib/collectionLog';
 import { removeItemFromBank } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Item } from 'oldschooljs/dist/meta/types';
+import resolveItems from '../../lib/util/resolveItems';
 
-const allPetIDs = Object.values(pets).flat(Infinity);
+const allPetIDs = [
+	...resolveItems([
+		'Doug',
+		'Zippy',
+		'Shelldon',
+		'Remy',
+		'Lil Lamb',
+		'Harry',
+		'Klik',
+		'Wintertoad',
+		'Scruffy',
+		'Zak',
+		'Hammy'
+	]),
+	Object.values(pets)
+].flat(Infinity);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -42,8 +58,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);
 
-		return msg.send(
-			`${msg.author.minionName} takes their ${petItem.name} from their bank, and puts it down to follow them.`
-		);
+		return msg.send(`${msg.author.minionName} has equipped a ${petItem.name}!`);
 	}
 }

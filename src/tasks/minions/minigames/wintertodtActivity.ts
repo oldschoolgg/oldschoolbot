@@ -8,7 +8,7 @@ import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import itemID from '../../../lib/util/itemID';
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji, Events, Time } from '../../../lib/constants';
 import { ItemBank } from '../../../lib/types';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -44,6 +44,12 @@ export default class extends Task {
 		if (roll(10)) {
 			loot = multiplyBank(loot, 4);
 			loot[getRandomMysteryBox()] = 1;
+		}
+
+		let gotToad = false;
+		if (roll(100) && duration > Time.Minute * 20) {
+			gotToad = true;
+			loot[itemID('Wintertoad')] = 1;
 		}
 
 		// Track this food cost in Economy Stats
@@ -130,6 +136,9 @@ export default class extends Task {
 			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 
+		if (gotToad) {
+			output += `\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!`;
+		}
 		return channel.send(output, new MessageAttachment(image));
 	}
 }
