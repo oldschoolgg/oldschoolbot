@@ -1,84 +1,99 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Util } from 'oldschooljs';
-
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import minionIcons from '../../lib/minions/data/minionIcons';
+import { removeBankFromBank, roll } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { addBanks } from 'oldschooljs/dist/util';
+import { Util } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { addItemToBank } from '../../lib/util';
-import { Item } from 'oldschooljs/dist/meta/types';
-
-const options = {
-	max: 1,
-	time: 10000,
-	errors: ['time']
-};
+import minionIcons from '../../lib/minions/data/minionIcons';
+import itemID from '../../lib/util/itemID';
+import { ItemList } from '../../lib/minions/types';
+import { ItemBank } from '../../lib/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] [item:...item]',
+			usage: '<item:...itemList>',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, itemArray]: [number | undefined, Item[]]) {
-		if (!itemArray) {
+	async run(msg: KlasaMessage, [items]: [ItemList[]]) {
+		if (!items) {
 			return msg.send(
 				`Your current sacrificed amount is: ${msg.author.settings
 					.get(UserSettings.SacrificedValue)
 					.toLocaleString()}. You can see the icons you can unlock here: <https://www.oldschool.gg/oldschoolbot/minions?Minion%20Icons>`
 			);
 		}
-
+		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
-		if (!osItem) {
-			throw `You don't have any of this item to sacrifice, or it is not tradeable.`;
+		let youDontHave: ItemBank = {};
+		let itemsForSacrifice: ItemBank = {};
+		let totalPrice = 0;
+
+		for (const item of items) {
+			const osItem = item.possibilities.find(
+				i =>
+					userBank[i.id] &&
+					i.tradeable_on_ge &&
+					(!itemsForSacrifice[i.id] || !itemsForSacrifice[i.id])
+			);
+			const itemQTY = !item.qtyInformed && osItem ? userBank[osItem.id] : item.qty;
+			if (!osItem || userBank[osItem.id] < itemQTY) {
+				youDontHave = addBanks([youDontHave, { [item.possibilities[0].id]: itemQTY }]);
+			} else {
+				totalPrice += (await this.client.fetchItemPrice(osItem.id)) * itemQTY;
+				itemsForSacrifice = addBanks([itemsForSacrifice, { [osItem.id]: itemQTY }]);
+			}
 		}
 
-		const numItemsHas = userBank[osItem.id];
-		if (!quantity) {
-			quantity = numItemsHas;
+		if (Object.entries(youDontHave).length > 0) {
+			throw `The following items are not tradeable or you don't own: **${await createReadableItemListFromBank(
+				this.client,
+				youDontHave
+			)}**. Untradeable items can not be sacrificed.`;
 		}
 
-		if (quantity > numItemsHas) {
-			throw `You dont have ${quantity}x ${osItem.name}.`;
-		}
-
-		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
-		const totalPrice = priceOfItem * quantity;
+		const toSacrificeString = await createReadableItemListFromBank(
+			this.client,
+			itemsForSacrifice
+		);
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to sacrifice ${quantity} ${
-					osItem.name
-				}, this will add ${totalPrice.toLocaleString()} (${Util.toKMB(
-					totalPrice
-				)}) to your sacrificed amount.`
+				`${
+					msg.author
+				}, say \`confirm\` to sacrifice **${await createReadableItemListFromBank(
+					this.client,
+					itemsForSacrifice
+				)}**, this will add **${totalPrice.toLocaleString()}** to your sacrificed amount.`
 			);
-
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
 						_msg.author.id === msg.author.id &&
 						_msg.content.toLowerCase() === 'confirm',
-					options
+					{
+						max: 1,
+						time: 10000,
+						errors: ['time']
+					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling sacrifice of ${quantity}x ${osItem.name}.`);
+				return sellMsg.edit(`Cancelling sacrifice of **${toSacrificeString}**.`);
 			}
 		}
 
-		if (priceOfItem > 50_000_000) {
+		if (totalPrice > 50_000_000) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${msg.author.username} just sacrificed ${quantity}x ${osItem.name}!`
+				`${msg.author.username} just sacrificed ${toSacrificeString}!`
 			);
 		}
 
@@ -88,20 +103,26 @@ export default class extends BotCommand {
 		}
 
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
-
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
-		await msg.author.removeItemFromBank(osItem.id, quantity);
+		await msg.author.settings.update(
+			UserSettings.Bank,
+			addBanks([removeBankFromBank(userBank, itemsForSacrifice)])
+		);
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.SacrificedBank,
-			addItemToBank(
-				this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
-				osItem.id,
-				quantity
-			)
+			addBanks([
+				itemsForSacrifice,
+				this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank)
+			])
 		);
-
-		msg.author.log(`sacrificed Quantity[${quantity}] ItemID[${osItem.id}] for ${totalPrice}`);
+		msg.author.log(
+			`sacrificed Quantity[${Object.values(itemsForSacrifice)
+				.map(qty => `${qty}`)
+				.join(',')}] ItemID[${Object.keys(itemsForSacrifice)
+				.map(id => `${id}`)
+				.join(',')}] for ${totalPrice}`
+		);
 
 		let str = '';
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
@@ -123,9 +144,10 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(
-			`You sacrificed ${quantity}x ${
-				osItem.name
-			}, with a value of ${totalPrice.toLocaleString()}gp (${Util.toKMB(
+			`You sacrificed ${await createReadableItemListFromBank(
+				this.client,
+				itemsForSacrifice
+			)}, with a value of ${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
 			)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`
 		);
