@@ -31,4 +31,6 @@ export function initCustomItems() {
 	setCustomItem(21313, 'Scruffy', getOSItem('Herbi'));
 	setCustomItem(9057, 'Zak', getOSItem('Herbi'));
 	setCustomItem(8441, 'Hammy', getOSItem('Herbi'));
+	setCustomItem(12592, 'Divine sigil', getOSItem('Elysian sigil'));
+	setCustomItem(3454, 'Divine spirit shield', getOSItem('Elysian spirit shield'));
 }
