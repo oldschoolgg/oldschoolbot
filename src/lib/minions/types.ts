@@ -88,5 +88,6 @@ export interface Minigame {
 
 export interface ItemList {
 	qty: number;
+	qtyInformed: boolean;
 	possibilities: Item[];
 }

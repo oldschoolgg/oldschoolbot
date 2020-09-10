@@ -1,9 +1,6 @@
 import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
 import { ItemList } from '../lib/minions/types';
 import { Util } from 'oldschooljs';
-// import getOSItem from '../lib/util/getOSItem';
-// import { addBanks } from 'oldschooljs/dist/util';
-// import { ItemBank } from '../lib/types';
 
 /**
  * Returns an ItemBank from the items define on the string. Defaults qty to 1.
@@ -36,7 +33,6 @@ export default class extends Argument {
 			paramsToRemove = (message.prompter ? message.prompter.usage.parsedUsage.length : 1) - 1;
 		}
 		// remove unnecessary params
-		// remove the previous parameters from the args list
 		args.splice(0, paramsToRemove);
 		const joinedItems = args
 			.join(usageDelim)
@@ -45,6 +41,7 @@ export default class extends Argument {
 			.split(',');
 		const _toReturnItems: ItemList[] = [];
 		for (let i = 0; i < joinedItems.length; i++) {
+			let qtdInformed = true;
 			let [itemQty, ...itemName] = joinedItems[i].trim().split(' ');
 			// if qty is not a direct number...
 			if (!Number(itemQty)) {
@@ -55,16 +52,19 @@ export default class extends Argument {
 					// otherwise it is part of the item
 					itemName.unshift(itemQty);
 					itemQty = '1';
+					qtdInformed = false;
 				}
 			}
 			if (itemName.length === 0) {
 				itemName.unshift(itemQty);
 				itemQty = '1';
+				qtdInformed = false;
 			}
 			const itemNameFinal = itemName.join(' ');
 			if (Boolean(itemNameFinal)) {
 				_toReturnItems.push({
 					qty: Number(itemQty),
+					qtyInformed: qtdInformed,
 					possibilities: await this.store
 						.get('item')!
 						.run(itemNameFinal, possible, message)
