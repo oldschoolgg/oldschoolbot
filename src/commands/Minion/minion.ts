@@ -31,9 +31,9 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
 import findMonster from '../../lib/minions/functions/findMonster';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { Eatables } from '../../lib/eatables';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import { publish } from '../../lib/pgBoss';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -629,7 +629,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		// await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await publish('monsterTicker', data, 10000, Tasks.MonsterActivity);
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name
