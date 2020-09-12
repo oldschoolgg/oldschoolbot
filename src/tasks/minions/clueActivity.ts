@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { Events, Time } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { roll, multiplyBank, addItemToBank, itemID, rand, addBanks } from '../../lib/util';
 import { getRandomMysteryBox } from '../../lib/openables';
@@ -49,7 +49,7 @@ export default class extends Task {
 			loot = multiplyBank(loot, 2);
 			loot[getRandomMysteryBox()] = 1;
 		}
-		if (user.equippedPet() === itemID('Zippy') && duration > Time.Minute * 10) {
+		if (user.equippedPet() === itemID('Zippy')) {
 			let bonusLoot = {};
 			for (let i = 0; i < rand(1, 4); i++) {
 				const { item } = possibleFound.roll()[0];
