@@ -162,8 +162,23 @@ export default class BankImageTask extends Task {
 			}
 		}
 
-		// Sorting
+		// Sorting by value
 		items = items.sort((a, b) => b[2] - a[2]);
+
+		// Sorting by favorites
+		if (user) {
+			const favorites = user.settings.get(UserSettings.FavoriteItems);
+			if (favorites.length > 0) {
+				// Sort favorited items to the front
+				items = items.sort((a, b) => {
+					const aFav = favorites.includes(a[0]);
+					const bFav = favorites.includes(b[0]);
+					if (aFav && bFav) return 0;
+					if (aFav) return -1;
+					return 1;
+				});
+			}
+		}
 
 		// Paging
 		const { page } = flags;
@@ -175,7 +190,6 @@ export default class BankImageTask extends Task {
 		}
 
 		// Draw Bank Title
-
 		ctx.textAlign = 'center';
 		ctx.font = '16px RuneScape Bold 12';
 
