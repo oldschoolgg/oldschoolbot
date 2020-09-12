@@ -115,7 +115,7 @@ export default class extends BotCommand {
 			bar.id === itemID('Gold bar') &&
 			msg.author.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
 		) {
-			goldGauntletMessage = `\n\n **Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.`;
+			goldGauntletMessage = `\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.`;
 		}
 
 		return msg.send(
