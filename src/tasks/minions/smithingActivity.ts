@@ -73,7 +73,7 @@ export default class extends Task {
 
 					this.client.commands
 						.get('smith')!
-						.run(response as KlasaMessage, [SmithedBar.name])
+						.run(response as KlasaMessage, [quantity, SmithedBar.name])
 						.catch(err => channel.send(err));
 				}
 			})
