@@ -5,7 +5,8 @@ import {
 	stringMatches,
 	formatDuration,
 	rand,
-	itemNameFromID
+	itemNameFromID,
+	reduceNumByPercent
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
@@ -97,7 +98,7 @@ export default class extends BotCommand {
 				msg.author.hasItemEquippedOrInBank(axe.id) &&
 				msg.author.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl
 			) {
-				timetoChop = Math.floor(timetoChop * ((100 - axe.reductionPercent) / 100));
+				timetoChop = reduceNumByPercent(timetoChop, axe.reductionPercent);
 				boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
 				break;
 			}

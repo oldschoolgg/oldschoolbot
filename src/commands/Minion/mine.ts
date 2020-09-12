@@ -6,7 +6,8 @@ import {
 	stringMatches,
 	formatDuration,
 	rand,
-	itemNameFromID
+	itemNameFromID,
+	reduceNumByPercent
 } from '../../lib/util';
 import Mining from '../../lib/skilling/skills/mining';
 import { Activity, Tasks } from '../../lib/constants';
@@ -106,7 +107,7 @@ export default class extends BotCommand {
 				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
 				msg.author.skillLevel(SkillsEnum.Mining) >= pickaxe.miningLvl
 			) {
-				timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
+				timeToMine = reduceNumByPercent(timeToMine, pickaxe.reductionPercent);
 				boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
 				break;
 			}
@@ -114,7 +115,7 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Mining) >= 60) {
 			for (const glove of gloves) {
 				if (msg.author.hasItemEquippedAnywhere(glove.id)) {
-					timeToMine = Math.floor(timeToMine * ((100 - glove.reductionPercent) / 100));
+					timeToMine = reduceNumByPercent(timeToMine, glove.reductionPercent);
 					boosts.push(`${glove.reductionPercent}% for ${itemNameFromID(glove.id)}`);
 					break;
 				}
