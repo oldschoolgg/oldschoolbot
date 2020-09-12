@@ -1,5 +1,7 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
+import { cleanMentions } from '../../lib/util';
+
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -8,6 +10,8 @@ export default class extends Command {
 	}
 
 	async run(msg: KlasaMessage, [name]: [string]) {
-		return msg.send(`${name} loves you ${Math.floor(Math.random() * 100) + 1}%!`);
+		return msg.send(
+			`${cleanMentions(msg.guild, name)} loves you ${Math.floor(Math.random() * 100) + 1}%!`
+		);
 	}
 }
