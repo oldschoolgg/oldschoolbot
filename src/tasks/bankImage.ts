@@ -145,11 +145,13 @@ export default class BankImageTask extends Task {
 
 		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
 
+		let partial = false;
+		let partialValue = 0;
 		const totalValue = addArrayOfNumbers(items.map(i => i[2]));
-
 		// Filtering
 		const searchQuery = flags.search || flags.s;
 		if (searchQuery && typeof searchQuery === 'string') {
+			partial = true;
 			items = filterItemTupleByQuery(searchQuery, items);
 		}
 
@@ -158,6 +160,7 @@ export default class BankImageTask extends Task {
 			if (
 				filterableTypes.some(type => type.aliases.some(alias => stringMatches(alias, flag)))
 			) {
+				partial = true;
 				items = filterByCategory(flag, items);
 			}
 		}
@@ -180,8 +183,19 @@ export default class BankImageTask extends Task {
 			}
 		}
 
+		if (partial) {
+			partialValue = addArrayOfNumbers(items.map(i => i[2]));
+		}
+
+		// get page flag to show the current page, full and showNewCL to avoid showing page n of y
+		const { page, full, showNewCL } = flags;
+		if (!showNewCL && !full && Object.entries(flags).length > 0) {
+			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
+				util.chunk(items, 56).length
+			}`;
+		}
+
 		// Paging
-		const { page } = flags;
 		if (typeof page === 'number') {
 			const chunked = util.chunk(items, 56);
 			const pageLoot = chunked[page];
@@ -194,7 +208,7 @@ export default class BankImageTask extends Task {
 		ctx.font = '16px RuneScape Bold 12';
 
 		if (showValue) {
-			title += ` (Value: ${toKMB(totalValue)})`;
+			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
 		}
 
 		ctx.fillStyle = '#000000';
@@ -215,9 +229,7 @@ export default class BankImageTask extends Task {
 				const state = saveCtx(ctx);
 				const temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
 				canvas.height += itemSize + (i === chunkedLoot.length ? 0 : spacer);
-
-				const ptrn = ctx.createPattern(this.repeatingImage, 'repeat');
-				ctx.fillStyle = ptrn;
+				ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 				ctx.putImageData(temp, 0, 0);
@@ -400,8 +412,7 @@ export default class BankImageTask extends Task {
 				const temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
 				canvas.height += itemSize + spacer;
 
-				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
-				ctx.fillStyle = ptrn;
+				ctx.fillStyle = ctx.createPattern(repeaterImage, 'repeat');
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 				ctx.putImageData(temp, 0, 0);
