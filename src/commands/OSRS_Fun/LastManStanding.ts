@@ -33,7 +33,7 @@ export default class extends Command {
 
 			for (const { author } of messages.values()) {
 				const name = cleanMentions(message.guild, author.username);
-				if (author && !filtered.has(name)) filtered.add(name);
+				if (!filtered.has(name)) filtered.add(name);
 			}
 		} else {
 			filtered = new Set(splitContestants);
