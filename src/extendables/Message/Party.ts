@@ -127,7 +127,7 @@ async function _setup(
 					case ReactionEmoji.Stop: {
 						if (user === options.leader) {
 							reject(
-								`The leader ${options.leader.username} cancelled this ${
+								`The leader (${options.leader.username}) cancelled this ${
 									options.party ? 'party' : 'mass'
 								}!`
 							);
