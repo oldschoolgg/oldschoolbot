@@ -2,7 +2,7 @@ import { Image } from 'canvas';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask, util, KlasaClient } from 'klasa';
-import { Client } from 'discord.js';
+import { Client, Guild } from 'discord.js';
 import { nodeCrypto, integer, real, bool } from 'random-js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -10,7 +10,6 @@ const emojiRegex = require('emoji-regex');
 
 import { Tasks, Events } from './constants';
 import { channelIsSendable } from './util/channelIsSendable';
-import { Guild } from 'discord.js';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
