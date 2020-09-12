@@ -231,11 +231,16 @@ export default class extends Extendable {
 	}
 
 	public totalLevel(this: User, returnXP = false) {
+		const allXPValues = Object.values(
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			this.settings.get('skills').toJSON() as Skills
+		) as number[];
 		let totalLevel = 0;
-		for (const _skill of Skills) {
-			totalLevel += returnXP
-				? (this.settings.get(`skills.${_skill[1].id}`) as number) ?? 0
-				: this.skillLevel(_skill[1].id) ?? 0;
+		if (allXPValues) {
+			for (const xp of allXPValues) {
+				totalLevel += returnXP ? convertXPtoLVL(xp) : xp;
+			}
 		}
 		return totalLevel;
 	}
