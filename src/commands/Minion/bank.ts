@@ -155,7 +155,8 @@ export default class extends Command {
 				bank,
 				title: `${msg.author.username}'s Bank`,
 				flags: msg.flagArgs,
-				background: msg.author.settings.get(UserSettings.BankBackground)
+				background: msg.author.settings.get(UserSettings.BankBackground),
+				user: msg.author
 			});
 		}
 
@@ -166,7 +167,8 @@ export default class extends Command {
 				...msg.flagArgs,
 				page: pageNumberOrItemName - 1
 			},
-			background: msg.author.settings.get(UserSettings.BankBackground)
+			background: msg.author.settings.get(UserSettings.BankBackground),
+			user: msg.author
 		});
 	}
 }
