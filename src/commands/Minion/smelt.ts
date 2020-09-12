@@ -7,7 +7,8 @@ import {
 	rand,
 	itemNameFromID,
 	removeItemFromBank,
-	bankHasItem
+	bankHasItem,
+	itemID
 } from '../../lib/util';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
@@ -109,10 +110,18 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
+		let goldGauntletMessage = ``;
+		if (
+			bar.id === itemID('Gold bar') &&
+			msg.author.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
+		) {
+			goldGauntletMessage = `\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.`;
+		}
+
 		return msg.send(
 			`${msg.author.minionName} is now smelting ${quantity}x ${
 				bar.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			}, it'll take around ${formatDuration(duration)} to finish.${goldGauntletMessage}`
 		);
 	}
 }
