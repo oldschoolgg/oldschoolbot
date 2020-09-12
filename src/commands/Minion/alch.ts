@@ -13,11 +13,11 @@ import {
 	itemID
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { rand } from '../../util';
 import { minionNotBusy } from '../../lib/minions/decorators';
+import { publish } from '../../lib/pgBoss';
 
 const options = {
 	max: 1,
@@ -143,7 +143,7 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.AlchingActivity);
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 

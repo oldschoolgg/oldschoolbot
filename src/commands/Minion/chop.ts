@@ -1,5 +1,4 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-
 import {
 	determineScaledLogTime,
 	stringMatches,
@@ -10,11 +9,11 @@ import {
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { publish } from '../../lib/pgBoss';
 
 const axes = [
 	{
@@ -124,7 +123,7 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.WoodcuttingActivity);
 
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${
 			log.name

@@ -10,12 +10,12 @@ import {
 	bankHasItem
 } from '../../lib/util';
 import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -123,7 +123,7 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.CookingActivity);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(

@@ -16,7 +16,6 @@ import {
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import mejJalImage from '../../lib/image/mejJalImage';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
@@ -25,6 +24,7 @@ import itemID from '../../lib/util/itemID';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { publish } from '../../lib/pgBoss';
 
 const { TzTokJad } = Monsters;
 
@@ -153,7 +153,7 @@ export default class extends BotCommand {
 			preJadDeathTime
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+		await publish(this.client, Tasks.MinigameTicker, data, Tasks.FightCavesActivity);
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(

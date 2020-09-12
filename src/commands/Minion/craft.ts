@@ -12,9 +12,9 @@ import {
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Time, Activity, Tasks } from '../../lib/constants';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Crafting from '../../lib/skilling/skills/crafting/crafting';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -141,7 +141,7 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.CraftingActivity);
 
 		return msg.send(
 			`${msg.author.minionName} is now crafting ${quantity}x ${

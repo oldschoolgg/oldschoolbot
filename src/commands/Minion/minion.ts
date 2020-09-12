@@ -629,8 +629,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			finishDate: Date.now() + duration
 		};
 
-		// await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-		await publish('monsterTicker', data, 10000, Tasks.MonsterActivity);
+		await publish(this.client, Tasks.MonsterKillingTicker, data, Tasks.MonsterActivity);
 
 		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
 			monster.name

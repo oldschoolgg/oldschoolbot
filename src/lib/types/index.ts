@@ -1,5 +1,6 @@
 import { KlasaUser } from 'klasa';
 import { SkillsEnum } from '../skilling/types';
+import { ActivityTaskOptions } from './minions';
 
 export interface Bank {
 	[key: number]: number;
@@ -161,3 +162,10 @@ export type Skills = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export interface PgBossJobs {
+	[key: string]: {
+		userID: string;
+		task: ActivityTaskOptions;
+	};
+}
