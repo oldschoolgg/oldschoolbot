@@ -103,7 +103,17 @@ export default class extends Task {
 		user.incrementMonsterScore(monsterID, quantity);
 
 		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
+		if (!channelIsSendable(channel)) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			console.log(`Returning because ${channel.name} cant send`);
+			return;
+		}
+
+		const perkTier = getUsersPerkTier(user);
+		const continuationChar = perkTier > PerkTier.Two ? 'y' : randomItemFromArray(charsWithoutC);
+
+		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
 		const perkTier = getUsersPerkTier(user);
 		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
