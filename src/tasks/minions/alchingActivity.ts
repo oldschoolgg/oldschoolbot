@@ -1,14 +1,12 @@
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { KlasaMessage, Task } from 'klasa';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { Task } from 'klasa';
 import { resolveNameBank, toKMB } from 'oldschooljs/dist/util';
-import { noOp, roll, saidYes } from '../../lib/util';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { Time } from '../../lib/constants';
+import { roll } from '../../lib/util';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemID from '../../lib/util/itemID';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
@@ -43,9 +41,6 @@ export default class extends Task {
 			}
 		}
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
 		const saved =
 			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 		const responses = [
@@ -53,29 +48,12 @@ export default class extends Task {
 				item.name
 			}! ${alchValue.toLocaleString()}gp (${toKMB(
 				alchValue
-			)}) has been added to your bank. ${saved}`,
-			`${user.minionName} asks if you'd like them to do another of the same trip.`
+			)}) has been added to your bank. ${saved}`
 		];
 
-		this.client.queuePromise(() => {
-			channel.send(responses.join('\n'));
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response && !response.author.minionIsBusy) {
-						user.log(`continued trip of alching ${quantity}x ${item.name}`);
-						this.client.commands
-							.get('alch')!
-							.run(response as KlasaMessage, [quantity, [item]])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, responses.join('\n'), res => {
+			user.log(`continued trip of alching ${quantity}x ${item.name}`);
+			this.client.commands.get('alch')!.run(res, [quantity, [item]]);
 		});
 	}
 }
