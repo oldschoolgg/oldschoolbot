@@ -218,3 +218,5 @@ export const enum PatronTierID {
 export const MAX_QP = 277;
 
 export const MIMIC_MONSTER_ID = 23184;
+
+export const alphaNumericalChars = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
