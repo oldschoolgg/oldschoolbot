@@ -1,14 +1,12 @@
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { KlasaMessage, Task } from 'klasa';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { Task } from 'klasa';
 import { resolveNameBank, toKMB } from 'oldschooljs/dist/util';
-import { noOp, roll, saidYes } from '../../lib/util';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { Time } from '../../lib/constants';
+import { roll } from '../../lib/util';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemID from '../../lib/util/itemID';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
@@ -59,8 +57,7 @@ export default class extends Task {
 				item.name
 			}! ${alchValue.toLocaleString()}gp (${toKMB(
 				alchValue
-			)}) has been added to your bank. ${saved}`,
-			`${user.minionName} asks if you'd like them to do another of the same trip.`
+			)}) has been added to your bank. ${saved}`
 		];
 		if (gotLamb) {
 			responses.push(

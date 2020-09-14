@@ -1,13 +1,11 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
 import { saidYes, noOp, rand, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { roll } from 'oldschooljs/dist/util/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Mining from '../../lib/skilling/skills/mining';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -54,9 +52,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${
 			ore.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
@@ -143,32 +139,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
-						user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
-
-						this.client.commands
-							.get('mine')!
-							.run(response as KlasaMessage, [quantity, ore.name])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
+			return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
 		});
 	}
 }
