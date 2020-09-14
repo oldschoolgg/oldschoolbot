@@ -12,6 +12,7 @@ const { port, user, password, database } = providerConfig!.postgres!;
 
 export default class extends Task {
 	async init() {
+		if (this.client.orm) return;
 		this.client.orm = await createConnection({
 			type: 'postgres',
 			host: 'localhost',
@@ -61,17 +62,29 @@ export default class extends Task {
 	}
 
 	async analyticsTick() {
+		const [numberOfMinions, totalSacrificed, numberOfIronmen] = (
+			await Promise.all(
+				[
+					`SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;`,
+					`SELECT SUM ("sacrificedValue") AS count FROM users;`,
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`
+				].map(query => this.client.query(query))
+			)
+		).map((result: any) => parseInt(result[0].count)) as number[];
+
 		const taskCounts = this.calculateMinionTaskCounts();
-		const x = {
+
+		await AnalyticsTable.insert({
 			guildsCount: this.client.guilds.size,
 			membersCount: this.client.guilds.reduce((acc, curr) => (acc += curr.memberCount), 0),
 			timestamp: Math.floor(Date.now() / 1000),
 			clueTasksCount: taskCounts.clueTicker,
 			minigameTasksCount: taskCounts.minigameTicker,
 			monsterTasksCount: taskCounts.monsterKillingTicker,
-			skillingTasksCount: taskCounts.skillingTicker
-		};
-
-		await AnalyticsTable.insert(x);
+			skillingTasksCount: taskCounts.skillingTicker,
+			ironMinionsCount: numberOfIronmen,
+			minionsCount: numberOfMinions,
+			totalSacrificed
+		});
 	}
 }
