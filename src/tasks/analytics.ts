@@ -27,9 +27,9 @@ export default class extends Task {
 		const boss = new PgBoss({ ...providerConfig?.postgres });
 		boss.on('error', error => console.error(error));
 		await boss.start();
-		await boss.schedule('analytics', `* * * * *`);
+		await boss.schedule('analytics', `*/20 * * * *`);
 		await boss.subscribe('analytics', async job => {
-			this.analyticsTick();
+			await this.analyticsTick();
 			job.done();
 		});
 	}
