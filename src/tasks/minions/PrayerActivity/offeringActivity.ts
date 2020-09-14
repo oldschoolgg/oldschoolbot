@@ -1,12 +1,10 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { saidYes, noOp, rand, roll } from '../../../lib/util';
-import { Time } from '../../../lib/constants';
+import { rand, roll } from '../../../lib/util';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import Prayer from '../../../lib/skilling/skills/prayer';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({ boneID, quantity, userID, channelID, duration }: OfferingActivityTaskOptions) {
@@ -48,38 +46,15 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			bone.name
-		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers , 
-			you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-						user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
-						this.client.commands
-							.get('offer')!
-							.run(response as KlasaMessage, [quantity, bone.name])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
+			return this.client.commands.get('offer')!.run(res, [quantity, bone.name]);
 		});
 	}
 }

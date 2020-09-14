@@ -24,7 +24,7 @@
 		"lodash": "^4.17.19",
 		"markovchain": "^1.0.2",
 		"moment": "^2.27.0",
-		"node-fetch": "^2.6.0",
+		"node-fetch": "^2.6.1",
 		"oldschooljs": "^1.2.2",
 		"p-limit": "^2.3.0",
 		"pg": "^8.3.3",
