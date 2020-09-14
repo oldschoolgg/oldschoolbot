@@ -1,11 +1,10 @@
 import { Task, KlasaMessage } from 'klasa';
 
-import { saidYes, noOp, rand } from '../../lib/util';
-import { Time, MAX_QP } from '../../lib/constants';
+import { rand } from '../../lib/util';
+import { MAX_QP } from '../../lib/constants';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({ userID, channelID, duration }: QuestingActivityTaskOptions) {
@@ -31,40 +30,24 @@ export default class extends Task {
 		} finished questing, you received ${qpRecieved.toLocaleString()} QP. Your current QP is ${currentQP +
 			qpRecieved}.`;
 
-		if (currentQP + qpRecieved >= MAX_QP) {
+		const hasMaxQP = currentQP + qpRecieved >= MAX_QP;
+		if (hasMaxQP) {
 			str += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
-		} else {
-			str += ` ${user.minionName} asks if you'd like them to do another of the same trip.`;
 		}
 
 		await user.addQP(qpRecieved);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str).catch(noOp);
-			if (currentQP + qpRecieved >= MAX_QP) return;
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			hasMaxQP
+				? undefined
+				: res => {
 						user.log(`continued trip of Questing.`);
-
-						this.client.commands
-							.get('quest')!
-							.run(response as KlasaMessage, [])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
-		});
+						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
+				  }
+		);
 	}
 }
