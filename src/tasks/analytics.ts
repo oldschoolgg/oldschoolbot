@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 import { createConnection } from 'typeorm';
-import PgBoss from 'pg-boss';
+import * as PgBoss from 'pg-boss';
 
 import { providerConfig } from '../config';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
@@ -12,15 +12,6 @@ const { port, user, password, database } = providerConfig!.postgres!;
 
 export default class extends Task {
 	async init() {
-		const boss = new PgBoss({ ...providerConfig?.postgres });
-		boss.on('error', error => console.error(error));
-		await boss.start();
-		await boss.schedule('analytics', `* * * * *`);
-		await boss.subscribe('analytics', async job => {
-			this.analyticsTick();
-			job.done();
-		});
-
 		this.client.orm = await createConnection({
 			type: 'postgres',
 			host: 'localhost',
@@ -29,8 +20,16 @@ export default class extends Task {
 			password,
 			database,
 			entities: [AnalyticsTable],
-			synchronize: false,
-			logging: true
+			synchronize: true
+		});
+
+		const boss = new PgBoss({ ...providerConfig?.postgres });
+		boss.on('error', error => console.error(error));
+		await boss.start();
+		await boss.schedule('analytics', `* * * * *`);
+		await boss.subscribe('analytics', async job => {
+			this.analyticsTick();
+			job.done();
 		});
 	}
 
@@ -47,15 +46,30 @@ export default class extends Task {
 		};
 		for (const task of this.client.schedule.tasks.filter(activityTaskFilter)) {
 			const taskData = task.data as TickerTaskData;
-			minionTaskCounts[task.taskName] = taskData.subTasks.length;
+			const taskName = task.taskName as
+				| Tasks.ClueTicker
+				| Tasks.MinigameTicker
+				| Tasks.MonsterKillingTicker
+				| Tasks.SkillingTicker;
+			if (minionTaskCounts[taskName] !== 0) {
+				console.log(taskName);
+				console.error('wtf');
+			}
+			minionTaskCounts[taskName] = taskData.subTasks.length;
 		}
+		return minionTaskCounts;
 	}
 
 	async analyticsTick() {
+		const taskCounts = this.calculateMinionTaskCounts();
 		const x = {
 			guildsCount: this.client.guilds.size,
 			membersCount: this.client.guilds.reduce((acc, curr) => (acc += curr.memberCount), 0),
-			timestamp: Math.floor(Date.now() / 1000)
+			timestamp: Math.floor(Date.now() / 1000),
+			clueTasksCount: taskCounts.clueTicker,
+			minigameTasksCount: taskCounts.minigameTicker,
+			monsterTasksCount: taskCounts.monsterKillingTicker,
+			skillingTasksCount: taskCounts.skillingTicker
 		};
 
 		await AnalyticsTable.insert(x);

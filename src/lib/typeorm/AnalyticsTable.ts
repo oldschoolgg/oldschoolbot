@@ -10,4 +10,16 @@ export class AnalyticsTable extends BaseEntity {
 
 	@Column({ type: 'bigint' })
 	public membersCount!: number;
+
+	@Column({ type: 'int' })
+	public clueTasksCount!: number;
+
+	@Column({ type: 'int' })
+	public minigameTasksCount!: number;
+
+	@Column({ type: 'int' })
+	public monsterTasksCount!: number;
+
+	@Column({ type: 'int' })
+	public skillingTasksCount!: number;
 }
