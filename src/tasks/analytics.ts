@@ -62,12 +62,13 @@ export default class extends Task {
 	}
 
 	async analyticsTick() {
-		const [numberOfMinions, totalSacrificed, numberOfIronmen] = (
+		const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
 			await Promise.all(
 				[
 					`SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;`,
 					`SELECT SUM ("sacrificedValue") AS count FROM users;`,
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`,
+					`SELECT SUM ("GP") AS count FROM users;`
 				].map(query => this.client.query(query))
 			)
 		).map((result: any) => parseInt(result[0].count)) as number[];
@@ -84,7 +85,8 @@ export default class extends Task {
 			skillingTasksCount: taskCounts.skillingTicker,
 			ironMinionsCount: numberOfIronmen,
 			minionsCount: numberOfMinions,
-			totalSacrificed
+			totalSacrificed,
+			totalGP
 		});
 	}
 }

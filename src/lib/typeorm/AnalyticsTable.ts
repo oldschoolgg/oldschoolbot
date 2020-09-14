@@ -31,4 +31,7 @@ export class AnalyticsTable extends BaseEntity {
 
 	@Column({ type: 'bigint', nullable: true })
 	public totalSacrificed!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public totalGP!: number;
 }
