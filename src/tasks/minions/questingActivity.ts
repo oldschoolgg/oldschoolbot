@@ -46,7 +46,7 @@ export default class extends Task {
 				? undefined
 				: res => {
 						user.log(`continued trip of Questing.`);
-						this.client.commands.get('quest')!.run(res as KlasaMessage, []);
+						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
 				  }
 		);
 	}

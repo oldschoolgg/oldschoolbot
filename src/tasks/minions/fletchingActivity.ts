@@ -48,7 +48,7 @@ export default class extends Task {
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`);
-			this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
+			return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
 		});
 	}
 }

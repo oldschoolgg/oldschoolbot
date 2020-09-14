@@ -63,51 +63,58 @@ export default class extends Task {
 		user.incrementMonsterScore(monsterID, quantity);
 
 		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
+		if (!channelIsSendable(channel)) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			console.log(`Returning because ${channel.name} cant send`);
+			return;
+		}
 
 		const perkTier = getUsersPerkTier(user);
 		const continuationChar = perkTier > PerkTier.Two ? 'y' : randomItemFromArray(charsWithoutC);
 
 		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
-		this.client.queuePromise(async () => {
+		this.client.queuePromise(() => {
 			channel.send(str, new MessageAttachment(image));
-			const messages = await channel.awaitMessages(
-				(msg: KlasaMessage) => {
-					if (msg.author !== user) return false;
-					return (
-						(perkTier > PerkTier.One && msg.content.toLowerCase() === 'c') ||
-						msg.content.toLowerCase() === continuationChar
-					);
-				},
-				{
-					time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				}
-			);
+			channel
+				.awaitMessages(
+					(msg: KlasaMessage) => {
+						if (msg.author !== user) return false;
+						return (
+							(perkTier > PerkTier.One && msg.content.toLowerCase() === 'c') ||
+							msg.content.toLowerCase() === continuationChar
+						);
+					},
+					{
+						time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
+						max: 1
+					}
+				)
+				.then(messages => {
+					const response = messages.first();
 
-			const response = messages.first();
+					if (response) {
+						if (response.author.minionIsBusy) return;
 
-			if (response) {
-				if (response.author.minionIsBusy) return;
+						if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
+							(this.client.commands.get(
+								'minion'
+							) as MinionCommand).clue(response as KlasaMessage, [
+								1,
+								clueTiersReceived[0].name
+							]);
+							return;
+						}
 
-				if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
-					(this.client.commands.get(
-						'minion'
-					) as MinionCommand).clue(response as KlasaMessage, [
-						1,
-						clueTiersReceived[0].name
-					]);
-					return;
-				}
+						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
 
-				user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
-
-				this.client.commands
-					.get('minion')!
-					.kill(response as KlasaMessage, [quantity, monster.name])
-					.catch(err => channel.send(err));
-			}
+						this.client.commands
+							.get('minion')!
+							.kill(response as KlasaMessage, [quantity, monster.name])
+							.catch(err => channel.send(err));
+					}
+				});
 		});
 	}
 }

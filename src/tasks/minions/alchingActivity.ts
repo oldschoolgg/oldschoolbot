@@ -53,7 +53,7 @@ export default class extends Task {
 
 		handleTripFinish(this.client, user, channelID, responses.join('\n'), res => {
 			user.log(`continued trip of alching ${quantity}x ${item.name}`);
-			this.client.commands.get('alch')!.run(res, [quantity, [item]]);
+			return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
 		});
 	}
 }

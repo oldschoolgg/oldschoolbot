@@ -11,7 +11,7 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
-	onContinue?: (message: KlasaMessage) => void,
+	onContinue?: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>,
 	attachment?: Buffer
 ) {
 	const channel = client.channels.get(channelID);
@@ -24,26 +24,28 @@ export async function handleTripFinish(
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
 
-	client.queuePromise(async () => {
+	client.queuePromise(() => {
 		channel.send(message, attachment ? new MessageAttachment(attachment) : undefined);
 
 		if (!onContinue) return;
 
-		const messages = await channel.awaitMessages(
-			mes => mes.author === user && mes.content?.toLowerCase() === continuationChar,
-			{
-				time: perkTier > PerkTier.Two ? Time.Minute * 10 : Time.Minute * 2,
-				max: 1
-			}
-		);
-
-		const response = messages.first();
-		if (response && !user.minionIsBusy) {
-			try {
-				onContinue(response as KlasaMessage);
-			} catch (err) {
-				channel.send(err);
-			}
-		}
+		channel
+			.awaitMessages(
+				mes => mes.author === user && mes.content?.toLowerCase() === continuationChar,
+				{
+					time: perkTier > PerkTier.Two ? Time.Minute * 10 : Time.Minute * 2,
+					max: 1
+				}
+			)
+			.then(async messages => {
+				const response = messages.first();
+				if (response && !user.minionIsBusy) {
+					try {
+						await onContinue(response as KlasaMessage);
+					} catch (err) {
+						channel.send(err);
+					}
+				}
+			});
 	});
 }
