@@ -1,8 +1,8 @@
 import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 
-import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
-import { noOp, saidYes } from '../../lib/util';
+import { Events, Time, Emoji, PerkTier, alphaNumericalChars } from '../../lib/constants';
+import { randomItemFromArray } from '../../lib/util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -11,6 +11,8 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import MinionCommand from '../../commands/Minion/minion';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+
+const charsWithoutC = alphaNumericalChars.filter(char => char !== 'c');
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
@@ -43,9 +45,7 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
 		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
-			quantity} ${
-			user.minionName
-		} asks if you'd like them to do another trip of ${quantity} ${monster.name}.`;
+			quantity}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
@@ -65,51 +65,49 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
-		this.client.queuePromise(() => {
+		const perkTier = getUsersPerkTier(user);
+		const continuationChar = perkTier > PerkTier.Two ? 'y' : randomItemFromArray(charsWithoutC);
+
+		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
+
+		this.client.queuePromise(async () => {
 			channel.send(str, new MessageAttachment(image));
-			channel
-				.awaitMessages(
-					(msg: KlasaMessage) => {
-						if (msg.author !== user) return false;
-						return (
-							(getUsersPerkTier(user) > PerkTier.One &&
-								msg.content.toLowerCase() === 'c') ||
-							saidYes(msg.content)
-						);
-					},
-					{
-						time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-						max: 1
-					}
-				)
-				.then(messages => {
-					const response = messages.first();
+			const messages = await channel.awaitMessages(
+				(msg: KlasaMessage) => {
+					if (msg.author !== user) return false;
+					return (
+						(perkTier > PerkTier.One && msg.content.toLowerCase() === 'c') ||
+						msg.content.toLowerCase() === continuationChar
+					);
+				},
+				{
+					time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
+					max: 1
+				}
+			);
 
-					if (response) {
-						if (response.author.minionIsBusy) return;
+			const response = messages.first();
 
-						if (
-							getUsersPerkTier(user) > PerkTier.One &&
-							response.content.toLowerCase() === 'c'
-						) {
-							(this.client.commands.get(
-								'minion'
-							) as MinionCommand).clue(response as KlasaMessage, [
-								1,
-								clueTiersReceived[0].name
-							]);
-							return;
-						}
+			if (response) {
+				if (response.author.minionIsBusy) return;
 
-						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+				if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
+					(this.client.commands.get(
+						'minion'
+					) as MinionCommand).clue(response as KlasaMessage, [
+						1,
+						clueTiersReceived[0].name
+					]);
+					return;
+				}
 
-						this.client.commands
-							.get('minion')!
-							.kill(response as KlasaMessage, [quantity, monster.name])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
+				user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+
+				this.client.commands
+					.get('minion')!
+					.kill(response as KlasaMessage, [quantity, monster.name])
+					.catch(err => channel.send(err));
+			}
 		});
 	}
 }
