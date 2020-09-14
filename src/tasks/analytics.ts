@@ -52,10 +52,7 @@ export default class extends Task {
 				| Tasks.MinigameTicker
 				| Tasks.MonsterKillingTicker
 				| Tasks.SkillingTicker;
-			if (minionTaskCounts[taskName] !== 0) {
-				console.log(taskName);
-				console.error('wtf');
-			}
+
 			minionTaskCounts[taskName] = taskData.subTasks.length;
 		}
 		return minionTaskCounts;
