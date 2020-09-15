@@ -110,16 +110,6 @@ export default class extends Task {
 
 		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
-		const perkTier = getUsersPerkTier(user);
-		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
-
-		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
-
-		const perkTier = getUsersPerkTier(user);
-		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
-
-		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
-
 		this.client.queuePromise(() => {
 			channel.send(str, new MessageAttachment(image));
 			channel

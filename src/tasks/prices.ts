@@ -3,10 +3,6 @@ import { Items } from 'oldschooljs';
 
 import { initCustomItems } from '../lib/customItems';
 
-import { initCustomItems } from '../lib/customItems';
-
-import { initCustomItems } from '../lib/customItems';
-
 export default class extends Task {
 	async init() {
 		initCustomItems();
