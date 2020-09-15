@@ -2,8 +2,13 @@ import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
+<<<<<<< HEAD
 import { Events, Time, Emoji, PerkTier, alphaNumericalChars } from '../../lib/constants';
 import { roll, multiplyBank, itemID, rand, randomItemFromArray } from '../../lib/util';
+=======
+import { Events, Time, Emoji, PerkTier } from '../../lib/constants';
+import { noOp, saidYes, roll, multiplyBank, itemID, rand } from '../../lib/util';
+>>>>>>> 1dafe847dcd863f7547f2696c1b38b888af9ed56
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -104,6 +109,11 @@ export default class extends Task {
 
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
+
+		const perkTier = getUsersPerkTier(user);
+		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
+
+		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
 		const perkTier = getUsersPerkTier(user);
 		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
