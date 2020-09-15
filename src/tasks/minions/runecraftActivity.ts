@@ -1,15 +1,14 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { saidYes, noOp, roll, multiplyBank } from '../../lib/util';
+import { roll, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import { SkillsEnum } from '../../lib/skilling/types';
 import itemID from '../../lib/util/itemID';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({
@@ -36,9 +35,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${
 			rune.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Runecraft level is now ${newLevel}!`;
@@ -68,31 +65,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
-						user.log(`continued trip of ${runeQuantity}x ${rune.name}[${rune.id}]`);
-
-						this.client.commands
-							.get('rc')!
-							.run(response as KlasaMessage, [essenceQuantity, rune.name]);
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${runeQuantity}x ${rune.name}[${rune.id}]`);
+			return this.client.commands.get('rc')!.run(res, [essenceQuantity, rune.name]);
 		});
 	}
 }

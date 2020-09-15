@@ -2,7 +2,7 @@ import { Image } from 'canvas';
 import Items from 'oldschooljs/dist/structures/Items';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ScheduledTask, util, KlasaClient } from 'klasa';
-import { Client } from 'discord.js';
+import { Client, Guild } from 'discord.js';
 import { nodeCrypto, integer, real, bool } from 'random-js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -12,6 +12,33 @@ import { Tasks, Events } from './constants';
 import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';
+export { Util } from 'discord.js';
+
+const zeroWidthSpace = '\u200b';
+
+export function cleanMentions(guild: Guild | null, input: string) {
+	return input
+		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
+		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
+			switch (type) {
+				case '@':
+				case '@!': {
+					const tag = guild?.client.users.get(id);
+					return tag ? `@${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
+				}
+				case '@&': {
+					const role = guild?.roles.get(id);
+					return role ? `@${role.name}` : match;
+				}
+				case '#': {
+					const channel = guild?.channels.get(id);
+					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
+				}
+				default:
+					return `<${type}${zeroWidthSpace}${id}>`;
+			}
+		});
+}
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
