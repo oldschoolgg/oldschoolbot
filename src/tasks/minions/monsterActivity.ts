@@ -71,7 +71,7 @@ export default class extends Task {
 		}
 
 		const perkTier = getUsersPerkTier(user);
-		const continuationChar = perkTier > PerkTier.Two ? 'y' : randomItemFromArray(charsWithoutC);
+		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
 
 		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
