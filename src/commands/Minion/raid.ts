@@ -582,7 +582,7 @@ export default class extends BotCommand {
 		// Gives experienced players a small time boost to raid
 		let teamKCBoost = 0;
 		for (const user of users) {
-			teamKCBoost = Math.floor(user.getMinigameScore(6969) / 10);
+			teamKCBoost += Math.floor(user.getMinigameScore(6969) / 10);
 		}
 
 		let duration;
@@ -619,7 +619,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			type: Activity.Raids,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration / 36000,
+			finishDate: Date.now() + duration,
 			users: users.map(u => u.id),
 			team: users.map(u => ({
 				id: u.id,
