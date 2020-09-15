@@ -88,7 +88,7 @@ export default class extends Task {
 			if (getUsersPerkTier(user) > PerkTier.One) {
 				str += `\n\nSay \`c\` if you want to complete this ${clueTiersReceived[0].name} clue now.`;
 			} else {
-				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc \``;
+				str += `\n\nYou can get your minion to complete them using \`=minion clue easy/medium/etc \``;
 			}
 		}
 
@@ -106,7 +106,7 @@ export default class extends Task {
 		if (!channelIsSendable(channel)) return;
 
 		const perkTier = getUsersPerkTier(user);
-		const continuationChar = perkTier > PerkTier.Two ? 'y' : randomItemFromArray(charsWithoutC);
+		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
 
 		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
