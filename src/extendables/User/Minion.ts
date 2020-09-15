@@ -56,18 +56,18 @@ export default class extends Extendable {
 			return `${this.minionName} is currently doing nothing.
 
 - Visit <https://www.oldschool.gg/oldschoolbot/minions> for extensive information on minions.
-- Use \`+minion setname [name]\` to change your minions' name.
-- You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
-- Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
-- Train mining with \`+mine\`
-- Train smithing with \`+smelt\` or \`+smith\`
-- Train prayer with \`+bury\` or \`+offer\`
-- Train woodcutting with \`+chop\`
-- Train firemaking with \`+light\`
-- Train crafting with \`+craft\`
-- Train fletching with \`+fletch\`
-- Gain quest points with \`+quest\`
-- Pat your minion with \`+minion pat\``;
+- Use \`=minion setname [name]\` to change your minions' name.
+- You can assign ${this.minionName} to kill monsters for loot using \`=minion kill\`.
+- Do clue scrolls with \`=minion clue easy\` (complete 1 easy clue)
+- Train mining with \`=mine\`
+- Train smithing with \`=smelt\` or \`=smith\`
+- Train prayer with \`=bury\` or \`=offer\`
+- Train woodcutting with \`=chop\`
+- Train firemaking with \`=light\`
+- Train crafting with \`=craft\`
+- Train fletching with \`=fletch\`
+- Gain quest points with \`=quest\`
+- Pat your minion with \`=minion pat\``;
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();

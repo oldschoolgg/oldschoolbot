@@ -11,7 +11,7 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get cmdPrefix(this: KlasaMessage) {
-		return this.guild ? this.guild.settings.get('prefix') : '+';
+		return this.guild ? this.guild.settings.get('prefix') : '=';
 	}
 
 	async sendLarge(
