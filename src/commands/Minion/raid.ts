@@ -621,7 +621,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			type: Activity.Raids,
 			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration / 36000,
+			finishDate: Date.now() + duration,
 			users: users.map(u => u.id),
 			team: users.map(u => ({
 				id: u.id,
