@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.GP, amountToAdd);
 
 			const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DicingBank);
-			const dividedAmount = (dicingBank + (won ? -amount : amount)) / 1_000_000;
+			const dividedAmount = (won ? -amount : amount) / 1_000_000;
 			this.client.settings.update(
 				ClientSettings.EconomyStats.DicingBank,
 				Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)

@@ -77,7 +77,7 @@ export default class extends Command {
 				}
 				return msg.channel.sendBankImage({
 					bank: view,
-					title: 'Partial Bank View'
+					title: `${msg.author.username}'s Bank`
 				});
 			}
 			const item = getOSItem(pageNumberOrItemName);
@@ -139,7 +139,7 @@ export default class extends Command {
 		if (bankKeys.length < 57) {
 			return msg.channel.sendBankImage({
 				bank,
-				title: `${msg.author.username}'s Bank - Page 1 of 1`,
+				title: `${msg.author.username}'s Bank`,
 				flags: msg.flagArgs,
 				background: msg.author.settings.get(UserSettings.BankBackground),
 				user: msg.author
@@ -163,7 +163,7 @@ export default class extends Command {
 
 		return msg.channel.sendBankImage({
 			bank,
-			title: `${msg.author.username}'s Bank - Page ${pageNumberOrItemName} of ${chunkedObject.length}`,
+			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,
 				page: pageNumberOrItemName - 1

@@ -40,7 +40,7 @@ expose({
 				return (
 					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
 					`*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>, ` +
-					`or 100,000 by nitro boosting the support server.*`
+					`or 50,000 by nitro boosting the support server.*`
 				);
 			}
 
