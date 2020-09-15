@@ -5,13 +5,13 @@ import {
 	formatDuration,
 	queuedMessageSend,
 	roll,
-	itemID,
 	multiplyBank
 } from '../../lib/util';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { getRandomMysteryBox } from '../../lib/openables';
 
 const uniques = [
 	21034,
@@ -59,7 +59,7 @@ export default class extends Task {
 			user.incrementMinigameScore(MinigameIDsEnum.ChambersOfXeric, 1);
 			if (roll(10)) {
 				userLoot = multiplyBank(userLoot, 2);
-				userLoot[itemID('Mystery box')] = 1;
+				userLoot[getRandomMysteryBox()] = 1;
 			}
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
