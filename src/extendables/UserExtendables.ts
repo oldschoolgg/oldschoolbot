@@ -46,51 +46,6 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.Minion.Ironman);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-	// @ts-ignore 2784
-	public get badges(this: User) {
-		const username = this.settings.get(UserSettings.RSN);
-		if (!username) return '';
-		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
-	}
-
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-	// @ts-ignore 2784
-	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.client, this);
-		return Boolean(usersTask);
-	}
-
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-	// @ts-ignore 2784
-	public get minionName(this: User): string {
-		const name = this.settings.get(UserSettings.Minion.Name);
-		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
-
-		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
-
-		return name
-			? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**`
-			: `${prefix} ${icon} Your minion`;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-	// @ts-ignore 2784
-	public get hasMinion(this: User) {
-		return this.settings.get(UserSettings.Minion.HasBought);
-	}
-
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-	// @ts-ignore 2784
-	public get maxTripLength(this: User) {
-		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) return Time.Minute * 33;
-		if (perkTier === PerkTier.Three) return Time.Minute * 36;
-		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
-
-		return Time.Minute * 30;
-	}
-
 	/**
 	 * Toggle whether this user is busy or not, this adds another layer of locking the user
 	 * from economy actions.
@@ -333,6 +288,51 @@ export default class extends Extendable {
 		}
 
 		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
+	public get badges(this: User) {
+		const username = this.settings.get(UserSettings.RSN);
+		if (!username) return '';
+		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
+	public get minionIsBusy(this: User): boolean {
+		const usersTask = getActivityOfUser(this.client, this);
+		return Boolean(usersTask);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
+	public get minionName(this: User): string {
+		const name = this.settings.get(UserSettings.Minion.Name);
+		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
+
+		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
+
+		return name
+			? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**`
+			: `${prefix} ${icon} Your minion`;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
+	public get hasMinion(this: User) {
+		return this.settings.get(UserSettings.Minion.HasBought);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+	// @ts-ignore 2784
+	public get maxTripLength(this: User) {
+		const perkTier = getUsersPerkTier(this);
+		if (perkTier === PerkTier.Two) return Time.Minute * 33;
+		if (perkTier === PerkTier.Three) return Time.Minute * 36;
+		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
+
+		return Time.Minute * 30;
 	}
 
 	public async incrementMinionDailyDuration(this: User, duration: number) {
