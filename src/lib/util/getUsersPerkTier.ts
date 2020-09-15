@@ -21,7 +21,8 @@ export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 	const member = supportGuild.members.get(user.id);
 	if (
 		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3) ||
-		(member && [Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID)))
+		(member && [Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID))) ||
+		user.settings.get(UserSettings.Badges).includes(0)
 	) {
 		return PerkTier.Four;
 	}
