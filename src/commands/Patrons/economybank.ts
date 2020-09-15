@@ -1,8 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-
 import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier, Time } from '../../lib/constants';
 import { ItemBank } from '../../lib/types';
+
+const IGNORE_LESS_THEN = 0;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,7 +24,7 @@ export default class extends BotCommand {
 				cross join json_each_text(bank)
 				${msg.flagArgs.im ? ` where users."minion.ironman" = true ` : ``}
 				group by key
-			 ) s`;
+			 ) s where itemQTY >= ${Boolean(Number(IGNORE_LESS_THEN)) ? IGNORE_LESS_THEN : 0}`;
 		const queryBank = await this.client.query<{ banks: ItemBank }[]>(query);
 		return msg.channel.sendBankImage({
 			bank: queryBank[0].banks,
