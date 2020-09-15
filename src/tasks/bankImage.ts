@@ -196,7 +196,6 @@ export default class BankImageTask extends Task {
 		}
 
 		// get page flag to show the current page, full and showNewCL to avoid showing page n of y
-		console.log(flags);
 		const { page, full, showNewCL } = flags;
 		if (
 			!showNewCL &&
