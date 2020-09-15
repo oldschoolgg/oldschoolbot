@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
-import { Time, Activity, Tasks } from '../../lib/constants';
+import { formatDuration, rand, stringMatches } from '../../lib/util';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -93,7 +93,7 @@ export default class extends BotCommand {
 		// Remove the logs from their bank.
 		await msg.author.removeItemFromBank(log.inputLogs, quantity);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.FiremakingActivity);
 
 		return msg.send(
 			`${msg.author.minionName} is now lighting ${quantity}x ${

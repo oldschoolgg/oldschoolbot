@@ -3,15 +3,14 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import {
-	rand,
-	reduceNumByPercent,
+	addItemToBank,
+	bankHasItem,
 	calcWhatPercent,
 	formatDuration,
-	addItemToBank,
-	bankHasItem
+	rand,
+	reduceNumByPercent
 } from '../../lib/util';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
@@ -20,6 +19,7 @@ import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { Eatables } from '../../lib/eatables';
+import { publish } from '../../lib/pgBoss';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -139,7 +139,7 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+		await publish(this.client, Tasks.MinigameTicker, data, Tasks.WintertodtActivity);
 
 		return msg.send(
 			`${

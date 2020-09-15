@@ -2,19 +2,19 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	stringMatches,
+	bankHasItem,
 	formatDuration,
-	rand,
 	itemNameFromID,
+	rand,
 	removeItemFromBank,
-	bankHasItem
+	stringMatches
 } from '../../lib/util';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Activity, Events, Tasks, Time } from '../../lib/constants';
 import Smithing from '../../lib/skilling/skills/smithing/smithing';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -127,7 +127,8 @@ export default class extends BotCommand {
 			usedbars = qty * quantity;
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.SmithingActivity);
+
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(

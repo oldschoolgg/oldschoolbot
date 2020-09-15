@@ -38,7 +38,7 @@ export async function publish(
 	const jobID = await boss.publish(
 		`osbot_${channel}`,
 		{ ...data, activity },
-		{ startAfter: instantTrips ? 0 : data.duration / Time.Second }
+		{ startAfter: instantTrips ? 10 : data.duration / Time.Second }
 	);
 	if (typeof jobID !== 'string') {
 		throw `It was not possible to start this trip at this time. Please, try again.`;

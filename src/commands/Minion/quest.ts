@@ -1,11 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { formatDuration, rand } from '../../lib/util';
-import { Time, Activity, Tasks, MAX_QP, Events } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Activity, Events, MAX_QP, Tasks, Time } from '../../lib/constants';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -54,7 +54,8 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.QuestingActivity);
+
 		let response = `${
 			msg.author.minionName
 		} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;

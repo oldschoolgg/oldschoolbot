@@ -1,15 +1,15 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand, isWeekend } from '../../lib/util';
+import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -96,7 +96,8 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
+		await publish(this.client, Tasks.ClueTicker, data, Tasks.ClueActivity);
+
 		return msg.send(
 			`${msg.author.minionName} is now completing ${data.quantity}x ${
 				clueTier.name

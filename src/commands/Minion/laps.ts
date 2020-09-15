@@ -1,14 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
+import { formatDuration, rand, stringMatches } from '../../lib/util';
 import Agility from '../../lib/skilling/skills/agility';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -73,7 +73,8 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.AgilityActivity);
+
 		msg.author.incrementMinionDailyDuration(duration);
 
 		const response = `${msg.author.minionName} is now doing ${quantity}x ${

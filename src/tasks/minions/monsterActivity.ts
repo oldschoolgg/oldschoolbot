@@ -82,7 +82,7 @@ export default class extends Task {
 						max: 1
 					}
 				)
-				.then(messages => {
+				.then(async messages => {
 					const response = messages.first();
 
 					if (response) {

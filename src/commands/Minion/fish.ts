@@ -2,18 +2,18 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	stringMatches,
+	calcPercentOfNum,
 	formatDuration,
-	rand,
 	itemNameFromID,
-	calcPercentOfNum
+	rand,
+	stringMatches
 } from '../../lib/util';
 import Fishing from '../../lib/skilling/skills/fishing';
-import { Time, Activity, Tasks } from '../../lib/constants';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -110,7 +110,7 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(fish.bait, quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.FishingActivity);
 
 		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name

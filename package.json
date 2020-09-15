@@ -2,6 +2,7 @@
 	"scripts": {
 		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
 		"build": "yarn wipedist && tsc -p .",
+		"dev": "yarn wipedist && tsc -p . -w",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\"",
 		"test": "yarn build && ava"
@@ -36,7 +37,9 @@
 		"ts-toolbelt": "^6.9.9",
 		"twit": "^2.2.9",
 		"utf-8-validate": "^5.0.2",
-		"zlib-sync": "^0.1.7"
+		"zlib-sync": "^0.1.7",
+		"pg-boss": "^5.0.8",
+		"typeorm": "^0.2.25"
 	},
 	"devDependencies": {
 		"@ava/typescript": "^1.1.1",

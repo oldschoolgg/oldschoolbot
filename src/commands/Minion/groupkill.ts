@@ -1,17 +1,17 @@
-import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { minionNotBusy, requiresMinion, ironsCantUse } from '../../lib/minions/decorators';
+import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
-import { Activity, Tasks, Emoji } from '../../lib/constants';
-import { rand, formatDuration, addItemToBank } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { reducedTimeForGroup, findMonster } from '../../lib/minions/functions';
+import { Activity, Emoji, Tasks } from '../../lib/constants';
+import { addItemToBank, formatDuration, rand } from '../../lib/util';
+import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import { Eatables } from '../../lib/eatables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
+import { publish } from '../../lib/pgBoss';
 
 const { ceil } = Math;
 
@@ -164,7 +164,8 @@ export default class extends BotCommand {
 			users: users.map(u => u.id)
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.GroupMonsterActivity);
+
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

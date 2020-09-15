@@ -2,21 +2,21 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	stringMatches,
+	bankHasItem,
 	formatDuration,
-	rand,
 	itemNameFromID,
+	rand,
 	removeItemFromBank,
-	bankHasItem
+	stringMatches
 } from '../../lib/util';
-import { Time, Activity, Tasks, Events } from '../../lib/constants';
+import { Activity, Events, Tasks, Time } from '../../lib/constants';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
-import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -106,7 +106,8 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.SmeltingActivity);
+
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(

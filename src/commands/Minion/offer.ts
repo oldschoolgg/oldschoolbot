@@ -1,14 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
-import { Time, Activity, Tasks } from '../../lib/constants';
+import { formatDuration, rand, stringMatches } from '../../lib/util';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -93,7 +93,8 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(bone.inputId, quantity);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.OfferingActivity);
+
 		return msg.send(
 			`${msg.author.minionName} is now offering ${quantity}x ${
 				bone.name

@@ -3,17 +3,17 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import {
 	determineScaledOreTime,
-	stringMatches,
 	formatDuration,
+	itemNameFromID,
 	rand,
-	itemNameFromID
+	stringMatches
 } from '../../lib/util';
 import Mining from '../../lib/skilling/skills/mining';
 import { Activity, Tasks } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { publish } from '../../lib/pgBoss';
 
 const pickaxes = [
 	{
@@ -140,7 +140,7 @@ export default class extends BotCommand {
 			finishDate: Date.now() + duration
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await publish(this.client, Tasks.SkillingTicker, data, Tasks.MiningActivity);
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name
