@@ -3,7 +3,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier, Time } from '../../lib/constants';
 import { ItemBank } from '../../lib/types';
 
-const IGNORE_LESS_THEN = 0;
+const IGNORE_LESS_THEN = 10;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
