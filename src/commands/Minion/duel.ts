@@ -35,9 +35,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
 		if (!amount) {
 			return msg.send(
-				`${Math.random() >= 0.5 ? msg.author : user} won the duel with ${Math.floor(
-					Math.random() * 30 + 1
-				)} HP remaining.`
+				`${
+					Math.random() >= 0.5 ? msg.author.username : user.username
+				} won the duel with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`
 			);
 		}
 

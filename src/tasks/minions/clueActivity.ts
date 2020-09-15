@@ -3,11 +3,11 @@ import { Task } from 'klasa';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { Events, Time } from '../../lib/constants';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { roll, multiplyBank, addItemToBank, itemID, rand, addBanks } from '../../lib/util';
 import { getRandomMysteryBox } from '../../lib/openables';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const possibleFound = new LootTable()
 	.add('Reward casket (beginner)')
@@ -68,11 +68,6 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-		});
+		handleTripFinish(this.client, user, channelID, str);
 	}
 }
