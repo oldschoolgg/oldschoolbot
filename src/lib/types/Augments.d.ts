@@ -176,6 +176,7 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
+		assertCanManageMessages(): void;
 	}
 
 	interface DMChannel {
@@ -187,6 +188,7 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
+		assertCanManageMessages(): void;
 	}
 }
 
