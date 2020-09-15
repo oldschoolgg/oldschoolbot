@@ -1,12 +1,6 @@
 import { Task } from 'klasa';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import {
-	noOp,
-	formatDuration,
-	queuedMessageSend,
-	roll,
-	multiplyBank
-} from '../../lib/util';
+import { noOp, formatDuration, queuedMessageSend, roll, multiplyBank } from '../../lib/util';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
