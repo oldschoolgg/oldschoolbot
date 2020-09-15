@@ -24,7 +24,7 @@ export default class extends BotCommand {
 				cross join json_each_text(bank)
 				${msg.flagArgs.im ? ` where users."minion.ironman" = true ` : ``}
 				group by key
-			 ) s where itemQTY >= ${Boolean(Number(IGNORE_LESS_THEN)) ? IGNORE_LESS_THEN : 0}`;
+			 ) s where itemQTY >= ${!Number(IGNORE_LESS_THEN) ? 0 : IGNORE_LESS_THEN}`;
 		const queryBank = await this.client.query<{ banks: ItemBank }[]>(query);
 		return msg.channel.sendBankImage({
 			bank: queryBank[0].banks,
