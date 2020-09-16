@@ -10,7 +10,8 @@ export default class extends Command {
 		super(store, file, directory, {
 			description: 'Get information on a mentioned user.',
 			usage: '[Member:member]',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			runIn: ['text']
 		});
 	}
 
