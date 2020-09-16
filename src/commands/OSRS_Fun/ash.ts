@@ -1,14 +1,6 @@
-const { Command } = require('klasa');
+import { CommandStore, KlasaMessage } from 'klasa';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, { description: 'Random Mod Ash gif.' });
-	}
-
-	async run(msg) {
-		return msg.send(links[Math.floor(Math.random() * links.length)]);
-	}
-};
+import { BotCommand } from '../../lib/BotCommand';
 
 const links = [
 	'http://i.imgur.com/d88EtsT.gifv',
@@ -32,3 +24,15 @@ const links = [
 	'https://gfycat.com/timelylivebanteng',
 	'https://gfycat.com/favorablebossyflyinglemur'
 ];
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			description: 'Shows a random gif of Mod Ash.'
+		});
+	}
+
+	async run(msg: KlasaMessage) {
+		return msg.send(links[Math.floor(Math.random() * links.length)]);
+	}
+}
