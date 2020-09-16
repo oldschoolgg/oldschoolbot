@@ -179,11 +179,6 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
-"@skyra/decorators@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@skyra/decorators/-/decorators-2.3.0.tgz#bfd7f95c764c0f2791aa18b47a3f5a620e638eae"
-  integrity sha512-40z/OAje4j1OsjnHYfgBu6/L/PSIJ9riGqO2baGZj3Z6PKA3hd4fQQQe4w2CXu2zBnV7Bawu17kQtWnq/ma/rg==
-
 "@snyk/cli-interface@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@snyk/cli-interface/-/cli-interface-1.5.0.tgz#b9dbe6ebfb86e67ffabf29d4e0d28a52670ac456"
