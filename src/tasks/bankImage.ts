@@ -234,8 +234,14 @@ export default class BankImageTask extends Task {
 			ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
 			ctx.fillRect(0, 326, canvas.width, canvas.height);
 		}
-		ctx.drawImage(this.borderImageTop, 0, 0, canvas.width, 5);
-		ctx.drawImage(this.borderImageBottom, 0, canvas.height - 5, canvas.width, 5);
+		ctx.drawImage(this.borderImageTop, 0, 0, canvas.width, this.borderImageTop?.height!);
+		ctx.drawImage(
+			this.borderImageBottom,
+			0,
+			canvas.height - this.borderImageBottom?.height!,
+			canvas.width,
+			this.borderImageBottom?.height!
+		);
 		ctx.fillStyle = ctx.createPattern(this.borderImage, 'repeat');
 		ctx.fillRect(0, 5, canvas.width, canvas.height - 10);
 
@@ -465,7 +471,14 @@ export default class BankImageTask extends Task {
 			}
 			row++;
 		}
-
+		// draw the bottom border
+		ctx.drawImage(
+			this.borderImageBottom,
+			0,
+			canvas.height - this.borderImageBottom?.height!,
+			canvas.width,
+			this.borderImageBottom?.height!
+		);
 		return canvas.toBuffer();
 	}
 }
