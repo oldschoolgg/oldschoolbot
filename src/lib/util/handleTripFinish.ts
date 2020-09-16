@@ -19,7 +19,7 @@ export async function handleTripFinish(
 
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar =
-		perkTier > PerkTier.Two ? 'y' : randomItemFromArray(alphaNumericalChars);
+		perkTier > PerkTier.One ? 'y' : randomItemFromArray(alphaNumericalChars);
 	if (onContinue) {
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
@@ -33,7 +33,7 @@ export async function handleTripFinish(
 			.awaitMessages(
 				mes => mes.author === user && mes.content?.toLowerCase() === continuationChar,
 				{
-					time: perkTier > PerkTier.Two ? Time.Minute * 10 : Time.Minute * 2,
+					time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
 					max: 1
 				}
 			)
