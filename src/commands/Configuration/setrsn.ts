@@ -20,7 +20,7 @@ export default class extends Command {
 
 		if (!newRSN && !RSN) {
 			return msg.sendLocale('RSN_NOT_SET', [
-				msg.guild!.settings.get(GuildSettings.Prefix) ?? '+'
+				msg.guild?.settings.get(GuildSettings.Prefix) ?? '+'
 			]);
 		}
 
