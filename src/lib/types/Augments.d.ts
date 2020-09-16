@@ -191,9 +191,3 @@ declare module 'discord.js' {
 		assertCanManageMessages(): void;
 	}
 }
-
-declare module 'klasa-dashboard-hooks' {
-	interface AuthData {
-		user_id: string;
-	}
-}
