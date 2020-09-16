@@ -17,7 +17,11 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [[imageBuffer]]) {
+	async run(msg, [res]) {
+		if (!res) {
+			throw `No image found.`;
+		}
+		const [imageBuffer] = res;
 		const BG = new Image();
 		BG.src = bg;
 
