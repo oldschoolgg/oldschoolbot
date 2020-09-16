@@ -233,9 +233,9 @@ export default class BankImageTask extends Task {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
 		ctx.drawImage(bgImage!.image, 0, 0, bgImage.image!.width, bgImage.image!.height);
-		if (canvasHeight > 331 && bankBackgroundID !== 1) {
+		if (canvasHeight > 331) {
 			ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
-			ctx.fillRect(0, 326, canvas.width, canvas.height);
+			ctx.fillRect(0, bankBackgroundID === 1 ? 326 : 331, canvas.width, canvas.height);
 		}
 		// Draws the top border
 		ctx.drawImage(this.borderImageTop, 0, 0, canvas.width, this.borderImageTop?.height!);
