@@ -22,7 +22,7 @@ const { triviaQuestions } = JSON.parse(
 import { BotCommand } from '../../lib/BotCommand';
 import { Time, Emoji, SupportServer, COINS_ID } from '../../lib/constants';
 import * as pets from '../../../data/pets';
-import { isWeekend, formatDuration, roll, stringMatches, rand } from '../../lib/util';
+import { isWeekend, formatDuration, roll, stringMatches, rand, itemID } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 
@@ -142,6 +142,12 @@ export default class DailyCommand extends BotCommand {
 		let dmStr = `${bonuses.join('')} **${
 			Emoji.Diango
 		} Diango says..** That's ${correct}! ${reward}\n`;
+
+		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
+		if (triviaCorrect && hasSkipper) {
+			loot[COINS_ID] *= 1.5;
+			dmStr += `\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!`;
+		}
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];

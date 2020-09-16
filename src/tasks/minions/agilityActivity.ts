@@ -107,6 +107,16 @@ export default class extends Task {
 			}
 		}
 
+		if (course.id === 12) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(1200)) {
+					loot[itemID('Skipper')] = 1;
+					str += `\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.`;
+					break;
+				}
+			}
+		}
+
 		// Roll for pet
 		if (
 			course.petChance &&

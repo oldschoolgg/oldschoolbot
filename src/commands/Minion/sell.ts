@@ -6,6 +6,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { itemID } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -45,7 +46,9 @@ export default class extends BotCommand {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
 
-		if (totalPrice > 3) {
+		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
+
+		if (totalPrice > 3 && !hasSkipper) {
 			totalPrice = Math.floor(totalPrice * 0.8);
 		}
 
@@ -88,7 +91,11 @@ export default class extends BotCommand {
 		return msg.send(
 			`Sold ${quantity}x ${osItem.name} for ${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
-			)})`
+			)})${
+				hasSkipper
+					? `\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you weren't charged any tax on the sale!`
+					: ''
+			}`
 		);
 	}
 }
