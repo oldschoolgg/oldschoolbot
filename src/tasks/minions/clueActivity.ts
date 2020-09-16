@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { Events } from '../../lib/constants';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({ clueID, userID, channelID, quantity, duration }: ClueActivityTaskOptions) {
@@ -32,11 +32,6 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-		});
+		handleTripFinish(this.client, user, channelID, str);
 	}
 }

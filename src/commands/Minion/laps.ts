@@ -7,6 +7,8 @@ import { Activity, Tasks, Time } from '../../lib/constants';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -14,20 +16,14 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' '
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -45,6 +41,10 @@ export default class extends BotCommand {
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
 			throw `${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`;
+		}
+
+		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
+			throw `You need atleast ${course.qpRequired} Quest Points to do this course.`;
 		}
 
 		// If no quantity provided, set it to the max.

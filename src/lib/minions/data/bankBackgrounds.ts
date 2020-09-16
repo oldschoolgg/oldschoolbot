@@ -39,7 +39,9 @@ const backgroundImages: BankBackground[] = [
 		id: 6,
 		name: 'Barrows',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Six,
+		gpCost: 100_000_000
 	},
 	{
 		id: 7,

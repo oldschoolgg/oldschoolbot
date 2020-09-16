@@ -58,7 +58,7 @@ export default class MinionCommand extends BotCommand {
 			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
 		}
 
-		if (monster.healAmountNeeded) {
+		if (monster.healAmountNeeded && 1 > 2) {
 			str.push(`**Healing Required:** ${monster.healAmountNeeded}hp per kill`);
 			const [hpNeededPerKill] = calculateMonsterFood(monster, msg.author);
 			str.push(

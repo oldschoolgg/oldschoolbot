@@ -5,6 +5,8 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Limit } from 'p-limit';
 import { Image } from 'canvas';
 import Monster from 'oldschooljs/dist/structures/Monster';
+import { Connection } from 'typeorm';
+import PgBoss from 'pg-boss';
 
 import { CustomGet } from '../settings/types/UserSettings';
 import { Bank, MakePartyOptions, Skills, ItemBank } from '.';
@@ -16,6 +18,8 @@ import { MinigameIDsEnum } from '../minions/data/minigames';
 
 declare module 'klasa' {
 	interface KlasaClient {
+		public boss: PgBoss;
+		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
 		public queuePromise: Limit;
@@ -172,6 +176,7 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
+		assertCanManageMessages(): void;
 	}
 
 	interface DMChannel {
@@ -183,6 +188,7 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
+		assertCanManageMessages(): void;
 	}
 }
 
