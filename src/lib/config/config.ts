@@ -6,13 +6,7 @@ import { providerConfig, twitchClientID, customClientOptions, production } from 
 
 const clientProperties = {
 	twitchClientID,
-	production,
-	timePeriods: {
-		day: 86400,
-		week: 604800,
-		month: 2628000,
-		year: 525667 * 60
-	}
+	production
 };
 
 const clientOptions: KlasaClientOptions = {
