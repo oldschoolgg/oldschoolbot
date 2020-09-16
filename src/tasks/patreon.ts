@@ -8,6 +8,7 @@ import { PatronTierID, BitField, Time, BadgesEnum, Channel, PerkTier } from '../
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { patreonConfig } from '../config';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import backgroundImages from '../lib/minions/data/bankBackgrounds';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`
@@ -27,7 +28,6 @@ patreonApiURL.search = new URLSearchParams([
 	],
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
-
 const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.One, BitField.IsPatronTier1],
 	[PatronTierID.Two, BitField.IsPatronTier2],
@@ -68,12 +68,16 @@ export default class extends Task {
 		);
 
 		// Remove patron bank background
-		if (user.settings.get(UserSettings.BankBackground) === 3) {
+		const bg = backgroundImages.find(
+			bg => bg.id === user.settings.get(UserSettings.BankBackground)
+		);
+		if (bg?.perkTierNeeded) {
 			await user.settings.update(UserSettings.BankBackground, 1);
 		}
 	}
 
 	async run() {
+		const channel = this.client.channels.get(Channel.ErrorLogs) as TextChannel;
 		const fetchedPatrons = await this.fetchPatrons();
 		const result = [];
 		for (const patron of fetchedPatrons) {
@@ -87,10 +91,17 @@ export default class extends Task {
 			const userBadges = user.settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
-			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33) {
-				if (getUsersPerkTier(user) < PerkTier.Two) continue;
+			if (
+				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
+				patron.patronStatus !== 'active_patron'
+			) {
+				const perkTier = getUsersPerkTier(user);
+				if (perkTier < PerkTier.Two) continue;
 				result.push(
 					`${user.username}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
+				);
+				channel.send(
+					`Removing T${perkTier} patron perks from ${user.username}[${patron.patreonID}] PatreonID[${patron.patreonID}]`
 				);
 				this.removePerks(user);
 				continue;
@@ -103,6 +114,11 @@ export default class extends Task {
 				if (userBitfield.includes(bitFieldId)) continue;
 
 				result.push(`${user.username}[${patron.patreonID}] was given Tier ${i + 1}.`);
+				channel.send(
+					`Giving T${i + 1} patron perks to ${user.username}[${
+						patron.patreonID
+					}] PatreonID[${patron.patreonID}]`
+				);
 				await user.settings.update(UserSettings.BitField, bitFieldId, {
 					arrayAction: ArrayActions.Add
 				});
@@ -121,10 +137,7 @@ export default class extends Task {
 			}
 		}
 
-		(this.client.channels.get(Channel.ErrorLogs) as TextChannel).sendFile(
-			Buffer.from(result.join('\n')),
-			'patreon.txt'
-		);
+		channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
 
 		this.client.tasks.get('badges')?.run();
 	}

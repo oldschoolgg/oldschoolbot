@@ -194,7 +194,7 @@ const Buyables: Buyable[] = [
 			'Shield right half': 1
 		}),
 		qpRequired: 111,
-		gpCost: 750_000
+		gpCost: 1_000_000
 	},
 	{
 		name: 'Compost',

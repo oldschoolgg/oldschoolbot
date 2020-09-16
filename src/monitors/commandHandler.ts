@@ -102,13 +102,17 @@ export default class extends Monitor {
 					message.params,
 					argumentError
 				);
+			} finally {
+				if (message.command!.oneAtTime) {
+					setTimeout(
+						() => this.client.oneCommandAtATimeCache.delete(message.author.id),
+						1500
+					);
+				}
 			}
 		} catch (response) {
 			return this.client.emit('commandInhibited', message, message.command, response);
 		}
 		if (this.client.options.typing) message.channel.stopTyping();
-		if (message.command!.oneAtTime) {
-			setTimeout(() => this.client.oneCommandAtATimeCache.delete(message.author.id), 1500);
-		}
 	}
 }
