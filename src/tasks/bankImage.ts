@@ -170,7 +170,7 @@ export default class BankImageTask extends Task {
 			}
 		}
 
-		// remove items that has 0 qty
+		// Remove items that has 0 qty
 		items = items.filter(i => i[1] > 0);
 
 		// Sorting by value
@@ -195,7 +195,7 @@ export default class BankImageTask extends Task {
 			partialValue = addArrayOfNumbers(items.map(i => i[2]));
 		}
 
-		// get page flag to show the current page, full and showNewCL to avoid showing page n of y
+		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const { page, full, showNewCL } = flags;
 		if (
 			!showNewCL &&
@@ -216,13 +216,16 @@ export default class BankImageTask extends Task {
 			items = pageLoot;
 		}
 
+		// Calculates the total height of the canvas and create it. If the height is below
+		// the minimum, set it to the minimum
 		const canvasHeight = Math.floor(
 			Math.ceil(items.length / 8) * Math.floor((itemSize + spacer / 2) * 1.08)
 		);
 		const canvas = createCanvas(
 			488,
-			canvasHeight <= 331 ? 331 : canvasHeight + itemSize + itemSize / 2
+			canvasHeight <= 331 ? 331 : Math.floor(canvasHeight + itemSize * 1.5)
 		);
+
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
 		ctx.imageSmoothingEnabled = false;
@@ -230,11 +233,13 @@ export default class BankImageTask extends Task {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
 		ctx.drawImage(bgImage!.image, 0, 0, bgImage.image!.width, bgImage.image!.height);
-		if (canvasHeight > 331) {
+		if (canvasHeight > 331 && bankBackgroundID !== 1) {
 			ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
 			ctx.fillRect(0, 326, canvas.width, canvas.height);
 		}
+		// Draws the top border
 		ctx.drawImage(this.borderImageTop, 0, 0, canvas.width, this.borderImageTop?.height!);
+		// Draws the bottom border at the end of the canvas minus the height of the border image
 		ctx.drawImage(
 			this.borderImageBottom,
 			0,
@@ -243,7 +248,14 @@ export default class BankImageTask extends Task {
 			this.borderImageBottom?.height!
 		);
 		ctx.fillStyle = ctx.createPattern(this.borderImage, 'repeat');
-		ctx.fillRect(0, 5, canvas.width, canvas.height - 10);
+		// Draw the repeat border - Removes the height of both the bottom and top border from the total
+		// height this needs to repeat and make is starts after the border top
+		ctx.fillRect(
+			0,
+			this.borderImageTop?.height!,
+			canvas.width,
+			canvas.height - this.borderImageBottom?.height! - this.borderImageTop?.height!
+		);
 
 		// Draw Bank Title
 		ctx.textAlign = 'center';
@@ -264,21 +276,17 @@ export default class BankImageTask extends Task {
 		ctx.fillStyle = '#494034';
 		ctx.font = '16px OSRSFontCompact';
 
-		// init item position
 		let xLoc = 0;
 		let yLoc = 0;
 		for (let i = 0; i < items.length; i++) {
 			if (i % 8 === 0) yLoc += Math.floor((itemSize + spacer / 2) * 1.08);
 			xLoc = Math.floor(spacer + (i % 8) * ((canvas.width - 40) / 8) + distanceFromSide);
 			const [id, quantity, value] = items[i];
-			// get item image
 			const item = await this.getItemImage(id);
-			// warns if the image doesnt exists
 			if (!item) {
 				this.client.emit(Events.Warn, `Item with ID[${id}] has no item image.`);
 				continue;
 			}
-			// draw the item
 			ctx.drawImage(
 				item,
 				xLoc + (itemSize - item.width) / 2,
@@ -286,7 +294,8 @@ export default class BankImageTask extends Task {
 				item.width,
 				item.height
 			);
-			// check if new cl item
+
+			// Check if new cl item
 			const isNewCLItem =
 				flags.showNewCL &&
 				currentCL &&
@@ -294,7 +303,8 @@ export default class BankImageTask extends Task {
 				allCollectionLogItems.includes(id);
 			const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
-			// draw qty shadow
+
+			// Draw qty shadow
 			ctx.fillStyle = '#000000';
 			fillTextXTimesInCtx(
 				ctx,
@@ -302,7 +312,8 @@ export default class BankImageTask extends Task {
 				xLoc + distanceFromSide - 18 + 1,
 				yLoc + distanceFromTop - 24 + 1
 			);
-			// draw qty
+
+			// Draw qty
 			ctx.fillStyle = quantityColor;
 			fillTextXTimesInCtx(
 				ctx,
@@ -310,7 +321,8 @@ export default class BankImageTask extends Task {
 				xLoc + distanceFromSide - 18,
 				yLoc + distanceFromTop - 24
 			);
-			// check for names flag and draw its shadow and name
+
+			// Check for names flag and draw its shadow and name
 			if (flags.names) {
 				const __name = `${itemNameFromID(id)!
 					.replace('Grimy', 'Grmy')
@@ -330,7 +342,8 @@ export default class BankImageTask extends Task {
 					yLoc + distanceFromTop
 				);
 			}
-			// check for sv flag and draw its shadow and value
+
+			// Check for sv flag and draw its shadow and value
 			if ((flags.showvalue || flags.sv) && !flags.names) {
 				const formattedValue = Util.toKMB(value);
 				ctx.fillStyle = 'black';
@@ -471,7 +484,7 @@ export default class BankImageTask extends Task {
 			}
 			row++;
 		}
-		// draw the bottom border
+		// Draw the bottom border
 		ctx.drawImage(
 			this.borderImageBottom,
 			0,
