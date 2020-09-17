@@ -1,39 +1,39 @@
-import { CommandStore, KlasaMessage, util } from 'klasa';
-import { Util, Monsters } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage, util } from 'klasa';
+import { Monsters, Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	Tasks,
 	Activity,
-	Emoji,
-	Time,
 	Color,
+	Emoji,
+	MIMIC_MONSTER_ID,
 	PerkTier,
-	MIMIC_MONSTER_ID
+	Tasks,
+	Time
 } from '../../lib/constants';
-import {
-	formatDuration,
-	randomItemFromArray,
-	isWeekend,
-	itemNameFromID,
-	addItemToBank,
-	bankHasItem
-} from '../../lib/util';
-import { rand } from '../../util';
+import { Eatables } from '../../lib/eatables';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { SkillsEnum } from '../../lib/skilling/types';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
-import findMonster from '../../lib/minions/functions/findMonster';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { Eatables } from '../../lib/eatables';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import findMonster from '../../lib/minions/functions/findMonster';
+import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import {
+	addItemToBank,
+	bankHasItem,
+	formatDuration,
+	isWeekend,
+	itemNameFromID,
+	randomItemFromArray
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { rand } from '../../util';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters

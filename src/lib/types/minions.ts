@@ -1,6 +1,6 @@
 import { Activity, Tasks } from '../constants';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
+import { GroupMonsterActivityTaskOptions } from '../minions/types';
 
 export interface ActivityTaskOptions {
 	type: Activity;

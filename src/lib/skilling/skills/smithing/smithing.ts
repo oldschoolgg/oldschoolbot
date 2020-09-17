@@ -1,11 +1,11 @@
-import { SkillsEnum, SmithedBar } from '../../types';
 import { Emoji } from '../../../constants';
+import { SkillsEnum, SmithedBar } from '../../types';
+import Adamant from './adamant';
 import Bronze from './bronze';
 import Iron from './iron';
-import Steel from './steel';
 import Mithril from './mithril';
-import Adamant from './adamant';
 import Rune from './rune';
+import Steel from './steel';
 
 const smithedBars: SmithedBar[] = [...Bronze, ...Iron, ...Steel, ...Mithril, ...Adamant, ...Rune];
 

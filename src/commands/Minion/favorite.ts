@@ -1,4 +1,4 @@
-import { CommandStore, KlasaMessage, ArrayActions } from 'klasa';
+import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';

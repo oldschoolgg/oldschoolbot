@@ -1,13 +1,13 @@
-import { Extendable, ExtendableStore, KlasaClient, SQLProvider } from 'klasa';
+import * as Sentry from '@sentry/node';
 import { Client } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaClient, SQLProvider } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
-import * as Sentry from '@sentry/node';
 
+import { Events, Time } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
-import { Time, Events } from '../lib/constants';
-import getOSItem from '../lib/util/getOSItem';
 import { rand } from '../lib/util';
+import getOSItem from '../lib/util/getOSItem';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
