@@ -30,6 +30,7 @@ declare module 'klasa' {
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
 		public killWorkerThread?: ArbitraryThreadType;
+		public wtf(error: Error): void;
 		twitchClientID?: string;
 		osggDB?: Db;
 		commentStream?: CommentStream;
@@ -189,11 +190,5 @@ declare module 'discord.js' {
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
 		assertCanManageMessages(): void;
-	}
-}
-
-declare module 'klasa-dashboard-hooks' {
-	interface AuthData {
-		user_id: string;
 	}
 }

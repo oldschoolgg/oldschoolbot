@@ -432,11 +432,21 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 	}
 
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
+		this.client.commands
+			.get('chop')!
+			.run(msg, [quantity, logName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands.get('light')!.run(msg, [quantity, logName]);
+		this.client.commands
+			.get('light')!
+			.run(msg, [quantity, logName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async craft(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
