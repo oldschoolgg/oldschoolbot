@@ -1,7 +1,7 @@
+import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Color } from '../../lib/constants';
