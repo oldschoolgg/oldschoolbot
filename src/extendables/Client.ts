@@ -2,6 +2,7 @@ import { Extendable, ExtendableStore, KlasaClient, SQLProvider } from 'klasa';
 import { Client } from 'discord.js';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
+import * as Sentry from '@sentry/node';
 
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { Time, Events } from '../lib/constants';
@@ -70,5 +71,9 @@ export default class extends Extendable {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		return (this.providers.default as SQLProvider).runAll(query);
+	}
+
+	async wtf(this: KlasaClient, error: Error) {
+		Sentry.captureException(error);
 	}
 }

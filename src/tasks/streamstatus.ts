@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 import fetch from 'node-fetch';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MessageEmbed, TextChannel } from 'discord.js';
 
 import OSRSStreamers from '../../data/osrs_streamers';

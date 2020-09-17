@@ -41,7 +41,9 @@ export async function handleTripFinish(
 				const response = messages.first();
 				if (response && !user.minionIsBusy) {
 					try {
-						await onContinue(response as KlasaMessage);
+						await onContinue(response as KlasaMessage).catch(err => {
+							channel.send(err);
+						});
 					} catch (err) {
 						channel.send(err);
 					}

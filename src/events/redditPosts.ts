@@ -1,6 +1,6 @@
 import { Event, EventStore } from 'klasa';
-import * as he from 'he';
-import * as Snoowrap from 'snoowrap';
+import he from 'he';
+import Snoowrap from 'snoowrap';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { MessageEmbed, TextChannel } from 'discord.js';
 

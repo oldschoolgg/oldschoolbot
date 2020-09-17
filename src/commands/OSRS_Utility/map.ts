@@ -5,13 +5,12 @@ import { BotCommand } from '../../lib/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Displays the invite link for the bot.'
+			description: 'Shows the link for the official OSRS map.',
+			aliases: ['worldmap']
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(
-			`You can invite the bot to your server using this link: <https://invite.oldschool.gg/>`
-		);
+		return msg.send('https://www.runescape.com/oldschool/world-map');
 	}
 }
