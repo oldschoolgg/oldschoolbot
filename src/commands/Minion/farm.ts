@@ -78,6 +78,24 @@ export default class extends BotCommand {
 		const timePerPatchHarvest = Time.Second * plants.timePerHarvest;
 		const timePerPatchPlant = Time.Second * 5;
 
+		const storeHarvestablePlant = patchType.lastPlanted;
+		const planted = Farming.Plants.find(
+			plants =>
+				stringMatches(plants.name, storeHarvestablePlant) ||
+				stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
+		);
+
+		const lastPlantTime: number = patchType.plantTime;
+		const difference = currentDate - lastPlantTime;
+		/* initiate a cooldown feature for each of the seed types.
+			allows for a run of specific seed type to only be possible until the
+			previous run's plants has grown.*/
+		if (planted && difference < planted.growthTime * Time.Minute) {
+			throw `Please come back when your crops have finished growing in ${formatDuration(
+				lastPlantTime + plants.growthTime * Time.Minute - currentDate
+			)}!`;
+		}
+
 		if (msg.flagArgs.supercompost) {
 			upgradeType = 'supercompost';
 			upgradeStr = `You are treating all of your patches with supercompost. `;
@@ -227,25 +245,8 @@ export default class extends BotCommand {
 				duration
 			)} to finish.\n\n${boostStr.join(', ')}`;
 		} else if (patchType.patchStage) {
-			const storeHarvestablePlant = patchType.lastPlanted;
-			const planted = Farming.Plants.find(
-				plants =>
-					stringMatches(plants.name, storeHarvestablePlant) ||
-					stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-			);
 			if (!planted)
 				throw `This error shouldn't happen. Just to clear possible undefined error`;
-
-			const lastPlantTime: number = patchType.plantTime;
-			const difference = currentDate - lastPlantTime;
-			/* initiate a cooldown feature for each of the seed types.
-				allows for a run of specific seed type to only be possible until the
-				previous run's plants has grown.*/
-			if (difference < planted.growthTime * Time.Minute) {
-				throw `Please come back when your crops have finished growing in ${formatDuration(
-					lastPlantTime + plants.growthTime * Time.Minute - currentDate
-				)}!`;
-			}
 
 			const storeHarvestableQuantity = patchType.lastQuantity;
 

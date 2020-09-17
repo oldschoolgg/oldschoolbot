@@ -55,14 +55,15 @@ export default class extends Task {
 		let farmersPiecesCheck = 0;
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
+		const userBank = user.settings.get(UserSettings.Bank);
 
-		if (msg.author.hasItem(itemID('Magic secateurs'), 1)) {
+		if (bankHasItem(userBank, itemID('Magic secateurs'))) {
 			baseBonus += 0.1;
 		}
 
 		if (
-			msg.author.hasItem(itemID('Farming cape'), 1) ||
-			msg.author.hasItem(itemID('Farming cape(t)'), 1)
+			bankHasItem(userBank, itemID('Farming cape')) ||
+			bankHasItem(userBank, itemID('Farming cape(t)'))
 		) {
 			baseBonus += 0.05;
 		}
@@ -87,24 +88,22 @@ export default class extends Task {
 		if (patchType.lastPayment) chanceOfDeathReduction = 0;
 
 		// check bank for farmer's items
-		const userBank = user.settings.get(UserSettings.Bank);
-
-		if (bankHasItem(userBank, itemID(`Farmer's strawhat`), 1)) {
+		if (bankHasItem(userBank, itemID(`Farmer's strawhat`))) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck++;
 		}
 		if (
-			bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
-			bankHasItem(userBank, itemID(`Farmer's shirt`), 1)
+			bankHasItem(userBank, itemID(`Farmer's jacket`)) ||
+			bankHasItem(userBank, itemID(`Farmer's shirt`))
 		) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck++;
 		}
-		if (bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1)) {
+		if (bankHasItem(userBank, itemID(`Farmer's boro trousers`))) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck++;
 		}
-		if (bankHasItem(userBank, itemID(`Farmer's boots`), 1)) {
+		if (bankHasItem(userBank, itemID(`Farmer's boots`))) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck++;
 		}
@@ -329,6 +328,7 @@ export default class extends Task {
 			} else if (
 				patchType.patchStage &&
 				plantToHarvest.petChance &&
+				alivePlants > 0 &&
 				roll(
 					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
 						alivePlants
