@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { ItemBank } from '../../types';
+import { O } from 'ts-toolbelt';
+
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
-import { O } from 'ts-toolbelt';
+import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 

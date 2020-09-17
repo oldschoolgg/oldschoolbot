@@ -1,10 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../constants';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import itemID from '../../../util/itemID';
+import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
-
 import bosses from './bosses';
 
 const killableMonsters: KillableMonster[] = [

@@ -58,6 +58,7 @@
 		"eslint-config-klasa": "github:dirigeants/klasa-lint",
 		"eslint-config-prettier": "^6.11.0",
 		"eslint-plugin-prettier": "^3.1.4",
+		"eslint-plugin-simple-import-sort": "^5.0.3",
 		"prettier": "^1.19.1",
 		"rimraf": "^3.0.2",
 		"typescript": "3.9.6"

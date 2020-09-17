@@ -1,5 +1,5 @@
-import itemID from './util/itemID';
 import { Eatable } from './skilling/types';
+import itemID from './util/itemID';
 
 export const Eatables: Eatable[] = [
 	{

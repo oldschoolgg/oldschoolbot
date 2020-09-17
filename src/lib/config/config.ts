@@ -1,8 +1,8 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
-import permissionLevels from './permissionLevels';
+import { customClientOptions, production, providerConfig, twitchClientID } from '../../config';
 import { Intents } from './Intents';
-import { providerConfig, twitchClientID, customClientOptions, production } from '../../config';
+import permissionLevels from './permissionLevels';
 
 const clientProperties = {
 	twitchClientID,

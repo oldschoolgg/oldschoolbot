@@ -1,20 +1,20 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	stringMatches,
-	formatDuration,
-	rand,
-	itemNameFromID,
-	removeItemFromBank,
-	bankHasItem
-} from '../../lib/util';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smithing from '../../lib/skilling/skills/smithing/smithing';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import { Activity, Events, Tasks, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Smithing from '../../lib/skilling/skills/smithing/smithing';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import {
+	bankHasItem,
+	formatDuration,
+	itemNameFromID,
+	rand,
+	removeItemFromBank,
+	stringMatches
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

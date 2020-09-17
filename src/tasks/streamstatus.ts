@@ -1,11 +1,11 @@
-import { Task } from 'klasa';
-import fetch from 'node-fetch';
-import moment from 'moment';
 import { MessageEmbed, TextChannel } from 'discord.js';
+import { Task } from 'klasa';
+import moment from 'moment';
+import fetch from 'node-fetch';
 
 import OSRSStreamers from '../../data/osrs_streamers';
-import { resolveTwitchUsersFromNames, twitchAPIRequestOptions } from '../util';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
+import { resolveTwitchUsersFromNames, twitchAPIRequestOptions } from '../util';
 
 export default class extends Task {
 	public idList: number[] = [];

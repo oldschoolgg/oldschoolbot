@@ -1,8 +1,8 @@
 import { Task } from 'klasa';
 
-import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {

@@ -1,13 +1,13 @@
-import { Event, EventStore } from 'klasa';
-import he from 'he';
-import Snoowrap from 'snoowrap';
-import { CommentStream, SubmissionStream } from 'snoostorm';
 import { MessageEmbed, TextChannel } from 'discord.js';
+import he from 'he';
+import { Event, EventStore } from 'klasa';
+import { CommentStream, SubmissionStream } from 'snoostorm';
+import Snoowrap from 'snoowrap';
 
-import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import JagexMods from '../../data/jagexMods';
-import { JMod } from '../lib/types';
 import { redditAppConfig } from '../config';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
+import { JMod } from '../lib/types';
 
 const jmodAccounts = JagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
