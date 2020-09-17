@@ -1,16 +1,16 @@
-import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { KlasaMessage, Task } from 'klasa';
 
-import { Events, Time, Emoji, PerkTier, alphaNumericalChars } from '../../lib/constants';
-import { randomItemFromArray } from '../../lib/util';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import clueTiers from '../../lib/minions/data/clueTiers';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import MinionCommand from '../../commands/Minion/minion';
+import { alphaNumericalChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
+import clueTiers from '../../lib/minions/data/clueTiers';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { randomItemFromArray } from '../../lib/util';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const charsWithoutC = alphaNumericalChars.filter(char => char !== 'c');
 

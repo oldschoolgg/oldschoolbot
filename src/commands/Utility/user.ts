@@ -1,5 +1,5 @@
-import { Command, Timestamp, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed, GuildMember } from 'discord.js';
+import { GuildMember, MessageEmbed } from 'discord.js';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 

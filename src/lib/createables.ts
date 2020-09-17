@@ -1,6 +1,6 @@
 import { Bank } from './types';
-import itemID from './util/itemID';
 import { resolveNameBank } from './util';
+import itemID from './util/itemID';
 
 interface Createable {
 	name: string;

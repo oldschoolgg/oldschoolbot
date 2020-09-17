@@ -1,11 +1,11 @@
 import { Monsters } from 'oldschooljs';
 
-import { KillableMonster } from '../../../types';
-import resolveItems from '../../../../util/resolveItems';
-import itemID from '../../../../util/itemID';
-import { Time } from '../../../../constants';
 import { bosses } from '../../../../collectionLog';
+import { Time } from '../../../../constants';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import itemID from '../../../../util/itemID';
+import resolveItems from '../../../../util/resolveItems';
+import { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
 	{

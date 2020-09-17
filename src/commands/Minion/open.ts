@@ -1,19 +1,19 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Misc, Openables } from 'oldschooljs';
 import Loot from 'oldschooljs/dist/structures/Loot';
 
-import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { BotCommand } from '../../lib/BotCommand';
-import botOpenables from '../../lib/openables';
-import { stringMatches, roll, addBanks } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
+import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
+import ClueTiers from '../../lib/minions/data/clueTiers';
+import { ClueTier } from '../../lib/minions/types';
+import botOpenables from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { addBanks, roll, stringMatches } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
-import ClueTiers from '../../lib/minions/data/clueTiers';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
-import { ClueTier } from '../../lib/minions/types';
 
 const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)

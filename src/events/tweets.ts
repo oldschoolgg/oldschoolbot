@@ -1,6 +1,6 @@
-import { Event, EventStore } from 'klasa';
 import { MessageEmbed, TextChannel } from 'discord.js';
 import he from 'he';
+import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
 
 import { twitterAppConfig } from '../config';

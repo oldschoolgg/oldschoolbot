@@ -1,8 +1,8 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BadgesEnum } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {

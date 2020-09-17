@@ -1,5 +1,5 @@
+import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
-import { MessageAttachment, TextChannel, DMChannel, Permissions } from 'discord.js';
 
 import { Bank } from '../lib/types';
 

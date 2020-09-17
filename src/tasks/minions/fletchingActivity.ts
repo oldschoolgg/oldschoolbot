@@ -1,8 +1,8 @@
 import { Task } from 'klasa';
 
+import Fletching from '../../lib/skilling/skills/fletching/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import Fletching from '../../lib/skilling/skills/fletching/fletching';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {

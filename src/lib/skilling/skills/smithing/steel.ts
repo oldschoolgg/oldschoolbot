@@ -1,6 +1,7 @@
 import { Time } from 'oldschooljs/dist/constants';
-import { SmithedBar } from '../../types';
+
 import itemID from '../../../util/itemID';
+import { SmithedBar } from '../../types';
 
 const Steel: SmithedBar[] = [
 	{

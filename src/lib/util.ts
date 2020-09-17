@@ -1,14 +1,14 @@
 import { Image } from 'canvas';
-import Items from 'oldschooljs/dist/structures/Items';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask, util, KlasaClient } from 'klasa';
 import { Client, Guild } from 'discord.js';
-import { nodeCrypto, integer, real, bool } from 'random-js';
+import { KlasaClient, ScheduledTask, util } from 'klasa';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
+import Items from 'oldschooljs/dist/structures/Items';
+import { bool, integer, nodeCrypto, real } from 'random-js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { Tasks, Events } from './constants';
+import { Events, Tasks } from './constants';
 import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';

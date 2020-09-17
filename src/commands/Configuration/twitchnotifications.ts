@@ -1,7 +1,7 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import OSRSStreamers from '../../../data/osrs_streamers';
+import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {

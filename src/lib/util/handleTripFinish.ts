@@ -1,10 +1,10 @@
-import { KlasaClient, KlasaUser, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 
+import { alphaNumericalChars, PerkTier, Time } from '../constants';
 import { randomItemFromArray } from '../util';
-import getUsersPerkTier from './getUsersPerkTier';
-import { Time, PerkTier, alphaNumericalChars } from '../constants';
 import { channelIsSendable } from './channelIsSendable';
+import getUsersPerkTier from './getUsersPerkTier';
 
 export async function handleTripFinish(
 	client: KlasaClient,
