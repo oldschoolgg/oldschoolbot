@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { Util } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { coxLog } from '../../lib/collectionLog';
 import { addBanks } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import { Util } from 'oldschooljs';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
-import { coxLog } from '../../lib/collectionLog';
 
 const itemsToShow = Object.values(coxLog).flat(1);
 

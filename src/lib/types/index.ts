@@ -1,4 +1,5 @@
 import { KlasaUser } from 'klasa';
+
 import { SkillsEnum } from '../skilling/types';
 
 export interface Bank {

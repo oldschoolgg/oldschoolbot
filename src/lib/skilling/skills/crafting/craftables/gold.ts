@@ -1,6 +1,6 @@
-import { Craftable } from '../../../types';
-import itemID from '../../../../util/itemID';
 import { resolveNameBank } from '../../../../util';
+import itemID from '../../../../util/itemID';
+import { Craftable } from '../../../types';
 
 const Gold: Craftable[] = [
 	{

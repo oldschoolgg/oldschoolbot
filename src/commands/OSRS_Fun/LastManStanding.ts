@@ -1,10 +1,12 @@
 import { chunk, sleep } from '@klasa/utils';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 import LastManStandingUsage, {
-	LMS_PREP,
 	LMS_FINAL,
+	LMS_PREP,
 	LMS_ROUND
 } from '../../lib/LastManStandingUsage';
-import { KlasaMessage, CommandStore, Command } from 'klasa';
+import { cleanMentions } from '../../lib/util';
 
 export default class extends Command {
 	public readonly playing: Set<string> = new Set();
@@ -22,13 +24,16 @@ export default class extends Command {
 
 	async run(message: KlasaMessage, [contestants]: [string | undefined]): Promise<KlasaMessage> {
 		let filtered = new Set<string>();
-		const splitContestants = contestants?.split(',') ?? [];
+		const splitContestants = contestants
+			? cleanMentions(message.guild, contestants).split(',')
+			: [];
 		// Autofill using authors from the last 100 messages, if none are given to the command
 		if (contestants === 'auto') {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
 
 			for (const { author } of messages.values()) {
-				if (author && !filtered.has(author.username)) filtered.add(author.username);
+				const name = cleanMentions(message.guild, author.username);
+				if (!filtered.has(name)) filtered.add(name);
 			}
 		} else {
 			filtered = new Set(splitContestants);

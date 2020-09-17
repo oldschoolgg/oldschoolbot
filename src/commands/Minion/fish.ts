@@ -1,19 +1,19 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	stringMatches,
-	formatDuration,
-	rand,
-	itemNameFromID,
-	calcPercentOfNum
-} from '../../lib/util';
-import Fishing from '../../lib/skilling/skills/fishing';
-import { Time, Activity, Tasks } from '../../lib/constants';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { FishingActivityTaskOptions } from '../../lib/types/minions';
+import {
+	calcPercentOfNum,
+	formatDuration,
+	itemNameFromID,
+	rand,
+	stringMatches
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

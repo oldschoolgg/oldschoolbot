@@ -1,9 +1,9 @@
 import { Task } from 'klasa';
 
 import { Tasks } from '../../lib/constants';
+import { SkillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import runActivityTask from '../../lib/util/runActivityTask';
-import { SkillingTickerTaskData } from '../../lib/types/minions';
 import { taskNameFromType } from '../../lib/util/taskNameFromType';
 
 export default class extends Task {

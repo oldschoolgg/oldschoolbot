@@ -1,13 +1,15 @@
-const { Command } = require('klasa');
+import { CommandStore, KlasaMessage } from 'klasa';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Shows some information on securing your runescape account.'
 		});
 	}
 
-	async run(msg) {
+	async run(msg: KlasaMessage) {
 		return msg.send(`
 View the official account security guidelines by Jagex here: <https://www.runescape.com/oldschool/security>
 
@@ -20,4 +22,4 @@ View the official account security guidelines by Jagex here: <https://www.runesc
 7. Never click on Twitch streams which claim that someone is quitting, or double XP. *They're fake.*
 `);
 	}
-};
+}

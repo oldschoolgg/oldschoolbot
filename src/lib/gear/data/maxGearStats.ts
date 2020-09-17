@@ -1,4 +1,4 @@
-import { GearStat, DefenceGearStat, OffenceGearStat } from '../types';
+import { DefenceGearStat, GearStat, OffenceGearStat } from '../types';
 
 // https://oldschool.runescape.wiki/w/Armour/Highest_bonuses
 export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
