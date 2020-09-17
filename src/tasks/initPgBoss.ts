@@ -23,10 +23,13 @@ export default class extends Task {
 		]) {
 			await boss.subscribe(`osbot_${ticker}`, async job => {
 				const jobData = job.data as JobActivityTaskOptions;
-				freeMinion(jobData.userID);
+				console.log('?');
+				await freeMinion(jobData.userID);
+				console.log('??');
 				await (this.client.tasks.get(jobData.activity)?.run(jobData) as Promise<any>).catch(
 					console.error
 				);
+				console.log('???');
 				job.done();
 			});
 		}

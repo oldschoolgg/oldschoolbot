@@ -11,7 +11,7 @@ interface BusyMinion {
 }
 
 interface PgBossInterface {
-	boss: PgBoss;
+	boss?: PgBoss;
 	busyMinions: BusyMinion;
 }
 
@@ -26,17 +26,23 @@ const options = {
 };
 
 const boss: PgBossInterface = {
-	boss: new PgBoss(options),
 	busyMinions: {}
 };
 
 export function getPgBoss(): PgBoss {
-	return boss.boss;
+	return boss.boss!;
 }
 
 export async function bossStart() {
+	console.log('bossStart test 2');
+	if (!getPgBoss()) {
+		console.log('new bossStart ');
+		boss.boss = new PgBoss(options);
+	} else {
+		boss.boss?.stop();
+	}
 	getPgBoss().on('error', error => console.error(error));
-	await boss.boss.start();
+	await boss.boss!.start();
 	await refreshCacheWithActiveJobs();
 	return getPgBoss();
 }
@@ -55,7 +61,7 @@ export async function publish(
 	const jobID = await getPgBoss().publish(
 		`osbot_${channel}`,
 		{ ...data, activity },
-		{ startAfter: instantTrips ? 10 : data.duration / Time.Second }
+		{ startAfter: instantTrips ? 0 : data.duration / Time.Second }
 	);
 	if (typeof jobID !== 'string') {
 		throw `It was not possible to start this trip at this time. Please, try again.`;
@@ -63,6 +69,7 @@ export async function publish(
 }
 
 async function refreshCacheWithActiveJobs() {
+	console.log('refreshCacheWithActiveJobs');
 	const _client = new Client({
 		user: providerConfig?.postgres?.user,
 		password: providerConfig?.postgres?.password,
@@ -83,6 +90,7 @@ async function refreshCacheWithActiveJobs() {
 		`
 	);
 	await _client.end();
+	boss.busyMinions = {};
 	for (const row of result.rows) {
 		boss.busyMinions[row.data.userID] = row.data;
 	}
@@ -116,8 +124,13 @@ export async function removeJob(client: KlasaClient, task: ActivityTaskOptions) 
 	return true;
 }
 
-export function freeMinion(userID: string) {
-	delete boss.busyMinions[userID];
+export async function freeMinion(userID: string) {
+	console.log('freeMinion_', boss.busyMinions[userID].type, boss.busyMinions[userID].id);
+	if (!boss.busyMinions[userID]) {
+		await refreshCacheWithActiveJobs();
+	} else {
+		delete boss.busyMinions[userID];
+	}
 }
 
 export function minionIsBusy(userID: string) {
