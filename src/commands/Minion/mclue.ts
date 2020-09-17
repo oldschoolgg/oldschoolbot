@@ -1,15 +1,15 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { publish } from '../../lib/pgBoss';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

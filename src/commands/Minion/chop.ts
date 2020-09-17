@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
+import { publish } from '../../lib/pgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -14,15 +15,7 @@ import {
 	reduceNumByPercent,
 	stringMatches
 } from '../../lib/util';
-import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { publish } from '../../lib/pgBoss';
 
 const axes = [
 	{

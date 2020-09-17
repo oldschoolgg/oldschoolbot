@@ -1,9 +1,10 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
-import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { Activity, Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { removeJob } from '../../lib/pgBoss';
+import getActivityOfUser from '../../lib/util/getActivityOfUser';
 
 const options = {
 	max: 1,

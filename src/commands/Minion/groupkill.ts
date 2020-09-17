@@ -1,17 +1,17 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { MakePartyOptions } from '../../lib/types';
-import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
 import { Activity, Emoji, Tasks } from '../../lib/constants';
-import { addItemToBank, formatDuration, rand } from '../../lib/util';
+import { Eatables } from '../../lib/eatables';
+import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import { Eatables } from '../../lib/eatables';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
+import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
 import { publish } from '../../lib/pgBoss';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { MakePartyOptions } from '../../lib/types';
+import { addItemToBank, formatDuration, rand } from '../../lib/util';
 
 const { ceil } = Math;
 

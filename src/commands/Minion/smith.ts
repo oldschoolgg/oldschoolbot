@@ -1,6 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Events, Tasks, Time } from '../../lib/constants';
+import { publish } from '../../lib/pgBoss';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Smithing from '../../lib/skilling/skills/smithing/smithing';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -9,12 +15,6 @@ import {
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { Activity, Events, Tasks, Time } from '../../lib/constants';
-import Smithing from '../../lib/skilling/skills/smithing/smithing';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

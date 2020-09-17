@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Events, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { publish } from '../../lib/pgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -17,15 +18,6 @@ import {
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { Activity, Events, Tasks, Time } from '../../lib/constants';
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { ItemBank } from '../../lib/types';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

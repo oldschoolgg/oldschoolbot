@@ -1,6 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Tasks, Time } from '../../lib/constants';
+import { publish } from '../../lib/pgBoss';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Fishing from '../../lib/skilling/skills/fishing';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	calcPercentOfNum,
 	formatDuration,
@@ -8,12 +14,6 @@ import {
 	rand,
 	stringMatches
 } from '../../lib/util';
-import Fishing from '../../lib/skilling/skills/fishing';
-import { Activity, Tasks, Time } from '../../lib/constants';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

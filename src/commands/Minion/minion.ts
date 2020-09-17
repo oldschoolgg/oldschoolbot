@@ -19,10 +19,8 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { Eatables } from '../../lib/eatables';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import { publish } from '../../lib/pgBoss';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -34,7 +32,6 @@ import {
 	itemNameFromID,
 	randomItemFromArray
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { rand } from '../../util';
 
@@ -533,7 +530,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			quantity = null;
 		}
 
-		await msg.author.settings.sync(true);
 		if (msg.author.minionIsBusy) {
 			msg.author.log(`[TTK-BUSY] ${quantity} ${name}`);
 			return msg.send(msg.author.minionStatus);
@@ -655,7 +651,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (messages.length > 0) {
 			response += `\n\n**Messages:** ${messages.join('\n')}.`;
 		}
-
 		return msg.send(response);
 	}
 }

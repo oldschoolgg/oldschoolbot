@@ -1,14 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { formatDuration, rand, stringMatches } from '../../lib/util';
 import { Activity, Tasks, Time } from '../../lib/constants';
-import { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import Prayer from '../../lib/skilling/skills/prayer';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { publish } from '../../lib/pgBoss';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Prayer from '../../lib/skilling/skills/prayer';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { OfferingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, rand, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

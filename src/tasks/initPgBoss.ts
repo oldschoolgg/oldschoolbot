@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
-import { getPgBoss, refreshCacheWithActiveJobs } from '../lib/pgBoss';
-import { ClientSettings } from '../lib/settings/types/ClientSettings';
+
 import { Tasks } from '../lib/constants';
+import { bossStart, freeMinion } from '../lib/pgBoss';
 import { ActivityTaskOptions } from '../lib/types/minions';
 
 interface JobActivityTaskOptions extends ActivityTaskOptions {
@@ -14,8 +14,7 @@ export default class extends Task {
 	}
 
 	async run() {
-		await refreshCacheWithActiveJobs(this.client);
-		const boss = await getPgBoss();
+		const boss = await bossStart();
 		for (const ticker of [
 			Tasks.MonsterKillingTicker,
 			Tasks.SkillingTicker,
@@ -24,16 +23,10 @@ export default class extends Task {
 		]) {
 			await boss.subscribe(`osbot_${ticker}`, async job => {
 				const jobData = job.data as JobActivityTaskOptions;
-				await this.client.tasks.get(jobData.activity)?.run(jobData);
-				// sync to make sure we are getting the most recent jobs
-				await this.client.settings.sync(true);
-				const currentJobs = Object.create(
-					this.client.settings.get(ClientSettings.PgBossJobs)
+				freeMinion(jobData.userID);
+				await (this.client.tasks.get(jobData.activity)?.run(jobData) as Promise<any>).catch(
+					console.error
 				);
-				delete currentJobs[job.id];
-				await this.client.settings.update(ClientSettings.PgBossJobs, currentJobs);
-				// sync again to make the bot to knows that a job was finished
-				await this.client.settings.sync(true);
 				job.done();
 			});
 		}

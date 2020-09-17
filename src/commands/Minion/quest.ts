@@ -1,11 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
-import { formatDuration, rand } from '../../lib/util';
 import { Activity, Events, MAX_QP, Tasks, Time } from '../../lib/constants';
-import { QuestingActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 import { publish } from '../../lib/pgBoss';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { QuestingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, rand } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

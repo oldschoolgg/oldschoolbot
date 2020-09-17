@@ -1,6 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { publish } from '../../lib/pgBoss';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -9,13 +16,6 @@ import {
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { Activity, Tasks, Time } from '../../lib/constants';
-import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Fletching from '../../lib/skilling/skills/fletching/fletching';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { publish } from '../../lib/pgBoss';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

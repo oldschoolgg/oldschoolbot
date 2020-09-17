@@ -1,13 +1,19 @@
-import { instantTrips, providerConfig } from '../config';
-import PgBoss from 'pg-boss';
-import { Tasks, Time } from './constants';
-import { Client } from 'pg';
 import { KlasaClient } from 'klasa';
-import { ClientSettings } from './settings/types/ClientSettings';
-import { ActivityTaskOptions } from './types/minions';
-import { PgBossJobs } from './types';
+import { Client } from 'pg';
+import PgBoss from 'pg-boss';
 
-let boss: PgBoss;
+import { instantTrips, providerConfig } from '../config';
+import { Tasks, Time } from './constants';
+import { ActivityTaskOptions } from './types/minions';
+
+interface BusyMinion {
+	[key: string]: ActivityTaskOptions;
+}
+
+interface PgBossInterface {
+	boss: PgBoss;
+	busyMinions: BusyMinion;
+}
 
 const options = {
 	host: 'localhost',
@@ -19,13 +25,20 @@ const options = {
 	retentionDays: 7
 };
 
-export async function getPgBoss() {
-	if (!boss) {
-		boss = await new PgBoss(options);
-		boss.on('error', error => console.error(error));
-		await boss.start();
-	}
-	return boss;
+const boss: PgBossInterface = {
+	boss: new PgBoss(options),
+	busyMinions: {}
+};
+
+export function getPgBoss(): PgBoss {
+	return boss.boss;
+}
+
+export async function bossStart() {
+	getPgBoss().on('error', error => console.error(error));
+	await boss.boss.start();
+	await refreshCacheWithActiveJobs();
+	return getPgBoss();
 }
 
 export async function publish(
@@ -33,9 +46,13 @@ export async function publish(
 	channel: Tasks,
 	data: ActivityTaskOptions,
 	activity: any
-): Promise<boolean> {
-	const boss = await getPgBoss();
-	const jobID = await boss.publish(
+) {
+	if (boss.busyMinions[data.userID]) {
+		throw client.users.get(data.userID)?.minionStatus;
+	} else {
+		boss.busyMinions[data.userID] = data;
+	}
+	const jobID = await getPgBoss().publish(
 		`osbot_${channel}`,
 		{ ...data, activity },
 		{ startAfter: instantTrips ? 10 : data.duration / Time.Second }
@@ -43,19 +60,9 @@ export async function publish(
 	if (typeof jobID !== 'string') {
 		throw `It was not possible to start this trip at this time. Please, try again.`;
 	}
-	// sync to make sure we are getting the most recent jobs
-	await client.settings.sync(true);
-	const currentJobs = Object.create(client.settings.get(ClientSettings.PgBossJobs));
-	currentJobs[jobID] = { userID: data.userID, task: data };
-	await client.settings.update(ClientSettings.PgBossJobs, currentJobs);
-	// sync again to make the bot to know that there is a new task
-	await client.settings.sync(true);
-	return true;
 }
 
-export async function refreshCacheWithActiveJobs(
-	client: KlasaClient
-): Promise<{ qty: number; data: any[] }> {
+async function refreshCacheWithActiveJobs() {
 	const _client = new Client({
 		user: providerConfig?.postgres?.user,
 		password: providerConfig?.postgres?.password,
@@ -76,13 +83,9 @@ export async function refreshCacheWithActiveJobs(
 		`
 	);
 	await _client.end();
-	const currentJobs: PgBossJobs = {};
 	for (const row of result.rows) {
-		currentJobs[row.id] = { userID: row.data.userID, task: row.data };
+		boss.busyMinions[row.data.userID] = row.data;
 	}
-	await client.settings.update(ClientSettings.PgBossJobs, currentJobs);
-	await client.settings.sync(true);
-	return { qty: result.rowCount, data: result.rows };
 }
 
 export async function removeJob(client: KlasaClient, task: ActivityTaskOptions) {
@@ -108,14 +111,15 @@ export async function removeJob(client: KlasaClient, task: ActivityTaskOptions) 
 		[task.userID, task.id]
 	);
 	await _client.end();
-	const boss = await getPgBoss();
-	boss.cancel(result.rows[0].id);
-	await client.settings.sync(true);
-	const currentJobs: PgBossJobs = Object.create(
-		await client.settings.get(ClientSettings.PgBossJobs)
-	);
-	delete currentJobs[result.rows[0].id];
-	await client.settings.update(ClientSettings.PgBossJobs, currentJobs);
-	await client.settings.sync(true);
+	await getPgBoss().cancel(result.rows[0].id);
+	delete boss.busyMinions[task.userID];
 	return true;
+}
+
+export function freeMinion(userID: string) {
+	delete boss.busyMinions[userID];
+}
+
+export function minionIsBusy(userID: string) {
+	return boss.busyMinions[userID] ?? null;
 }

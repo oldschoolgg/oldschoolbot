@@ -3,11 +3,11 @@ import { O } from 'ts-toolbelt';
 
 import {
 	Bank,
+	ItemBank,
 	ItemPriceCache,
 	OSRSPoll,
 	PetRecords as PetRecordsType,
-	ItemBank,
-	PgBossJobs
+	PgBossJobs as PgBossJobsType
 } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -37,5 +37,5 @@ export namespace ClientSettings {
 		export const FightCavesCost = T<O.Readonly<ItemBank>>('economyStats.fightCavesCost');
 		export const PVMCost = T<O.Readonly<ItemBank>>('economyStats.PVMCost');
 	}
-	export const PgBossJobs = T<O.Readonly<PgBossJobs>>('pgBossJobs');
+	export const PgBossJobs = T<O.Readonly<PgBossJobsType>>('pgBossJobs');
 }

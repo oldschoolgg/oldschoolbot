@@ -1,13 +1,8 @@
-import { KlasaUser } from 'klasa';
 import { Client } from 'discord.js';
-import { ClientSettings } from '../settings/types/ClientSettings';
+import { KlasaUser } from 'klasa';
+
+import { minionIsBusy } from '../pgBoss';
 
 export default function getActivityOfUser(client: Client, user: KlasaUser) {
-	if (client.settings) {
-		const tasks = Object.values(client.settings.get(ClientSettings.PgBossJobs)).find(
-			t => t.userID === user.id
-		);
-		if (tasks) return tasks.task;
-	}
-	return null;
+	return minionIsBusy(user.id);
 }
