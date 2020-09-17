@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import { ItemBank } from '../../lib/types';

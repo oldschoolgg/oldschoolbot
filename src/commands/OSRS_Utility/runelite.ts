@@ -1,18 +1,18 @@
-const { Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
-			cooldown: 3,
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['rl'],
 			description: 'Shows information on RuneLite',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
-	async run(msg) {
-		const prefix = msg.guild.settings.get('prefix');
+	async run(msg: KlasaMessage) {
 		const embed = new MessageEmbed()
 			.setTitle('<:RuneLite:418690749719117834> RuneLite')
 			.setColor(16098851)
@@ -29,10 +29,8 @@ https://runelite.net/`
 			.addField('Open Source', 'https://github.com/runelite/runelite', true)
 			.addField('Lightweight & fast', 'No lag, little memory usage', true)
 			.addField('Many Features', 'https://runelite.net/features', true)
-			.setFooter(
-				`*Use of any 3rd party client is not endorsed by Jagex, use at your own risk, use ${prefix}clients to see others`
-			);
+			.setFooter(`*Use of any 3rd party client is at your own risk.`);
 
 		return msg.send({ embed });
 	}
-};
+}

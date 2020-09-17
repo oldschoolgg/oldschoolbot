@@ -1,10 +1,10 @@
-import { KlasaUser, KlasaMessage, Command, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Command, CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { PerkTier } from '../../lib/constants';
 import { toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { PerkTier } from '../../lib/constants';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {

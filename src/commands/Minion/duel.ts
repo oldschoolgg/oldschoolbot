@@ -1,12 +1,12 @@
-import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 import { User } from 'discord.js';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Util } from 'oldschooljs';
 
-import { sleep, noOp } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Emoji, Events } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { noOp, sleep } from '../../lib/util';
 
 const options = {
 	max: 1,

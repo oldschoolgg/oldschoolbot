@@ -1,15 +1,15 @@
 import { Task } from 'klasa';
 
-import { roll } from '../../lib/util';
-import { Events, Emoji } from '../../lib/constants';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Fishing from '../../lib/skilling/skills/fishing';
-import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Emoji, Events } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Fishing from '../../lib/skilling/skills/fishing';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { roll } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
