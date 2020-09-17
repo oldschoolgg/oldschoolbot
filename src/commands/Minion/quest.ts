@@ -1,11 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
-import { formatDuration, rand } from '../../lib/util';
-import { Time, Activity, Tasks, MAX_QP, Events } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { QuestingActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { Activity, Events, MAX_QP, Tasks, Time } from '../../lib/constants';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { QuestingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, rand } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

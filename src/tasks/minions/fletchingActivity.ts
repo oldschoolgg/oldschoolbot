@@ -1,12 +1,9 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
-import { Time } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/skilling/types';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { FletchingActivityTaskOptions } from '../../lib/types/minions';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({
@@ -37,9 +34,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished fletching ${quantity} ${
 			fletchableItem.name
-		}s, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		}s, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Fletching level is now ${newLevel}!`;
@@ -51,31 +46,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-						user.log(
-							`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`
-						);
-						this.client.commands
-							.get('fletch')!
-							.run(response as KlasaMessage, [quantity, fletchableItem.name])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`);
+			return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
 		});
 	}
 }

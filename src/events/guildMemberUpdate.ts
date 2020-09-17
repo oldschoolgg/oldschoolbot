@@ -1,5 +1,5 @@
-import { Event, EventStore } from 'klasa';
 import { GuildMember } from 'discord.js';
+import { Event, EventStore } from 'klasa';
 
 import { Roles, SupportServer } from '../lib/constants';
 

@@ -1,20 +1,21 @@
-const { Command } = require('klasa');
-const { Worlds } = require('oldschooljs');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
+import { Worlds } from 'oldschooljs';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 5,
 			description: 'Returns information on a OSRS World.',
-			usage: '<world:int>',
+			usage: '<world:int{1,1000}>',
 			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
-	async run(msg, [worldNumber]) {
+	async run(msg: KlasaMessage, [worldNumber]: [number]) {
 		const world = await Worlds.fetch(worldNumber);
-		console.log(world);
 		if (!world) return msg.send("That's an invalid world!");
 
 		const embed = new MessageEmbed()
@@ -31,4 +32,4 @@ module.exports = class extends Command {
 
 		return msg.send({ embed });
 	}
-};
+}

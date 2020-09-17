@@ -1,17 +1,17 @@
-import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { MakePartyOptions } from '../../lib/types';
-import { minionNotBusy, requiresMinion, ironsCantUse } from '../../lib/minions/decorators';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
-import { Activity, Tasks, Emoji } from '../../lib/constants';
-import { rand, formatDuration, addItemToBank } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { reducedTimeForGroup, findMonster } from '../../lib/minions/functions';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import { Activity, Emoji, Tasks } from '../../lib/constants';
 import { Eatables } from '../../lib/eatables';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
+import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
+import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { MakePartyOptions } from '../../lib/types';
+import { addItemToBank, formatDuration, rand } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const { ceil } = Math;
 

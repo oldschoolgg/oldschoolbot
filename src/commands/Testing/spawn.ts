@@ -1,10 +1,10 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Emoji } from '../../lib/constants';
 import { Bank } from '../../lib/types';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import { Emoji } from '../../lib/constants';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

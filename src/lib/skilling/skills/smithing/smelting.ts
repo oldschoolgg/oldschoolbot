@@ -1,5 +1,5 @@
-import itemID from '../../../util/itemID';
 import { Emoji } from '../../../constants';
+import itemID from '../../../util/itemID';
 import { Bar, SkillsEnum } from '../../types';
 
 const bars: Bar[] = [
