@@ -1,14 +1,23 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Events, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { ItemBank } from '../../lib/types';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
+	itemID,
 	itemNameFromID,
 	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { Activity, Events, Tasks, Time } from '../../lib/constants';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import Smelting from '../../lib/skilling/skills/smithing/smelting';
@@ -110,10 +119,18 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
+		let goldGauntletMessage = ``;
+		if (
+			bar.id === itemID('Gold bar') &&
+			msg.author.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
+		) {
+			goldGauntletMessage = `\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.`;
+		}
+
 		return msg.send(
 			`${msg.author.minionName} is now smelting ${quantity}x ${
 				bar.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			}, it'll take around ${formatDuration(duration)} to finish.${goldGauntletMessage}`
 		);
 	}
 }

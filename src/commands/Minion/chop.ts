@@ -1,15 +1,24 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+
+import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Tasks } from '../../lib/constants';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	determineScaledLogTime,
-	stringMatches,
 	formatDuration,
+	itemNameFromID,
 	rand,
-	itemNameFromID
+	reduceNumByPercent,
+	stringMatches
 } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -18,19 +27,23 @@ import { publish } from '../../lib/pgBoss';
 const axes = [
 	{
 		id: itemID('3rd age axe'),
-		reductionPercent: 13
+		reductionPercent: 13,
+		wcLvl: 61
 	},
 	{
 		id: itemID('Gilded axe'),
-		reductionPercent: 12
+		reductionPercent: 12,
+		wcLvl: 41
 	},
 	{
 		id: itemID('Infernal axe'),
-		reductionPercent: 11
+		reductionPercent: 11,
+		wcLvl: 61
 	},
 	{
 		id: itemID('Dragon axe'),
-		reductionPercent: 9
+		reductionPercent: 9,
+		wcLvl: 61
 	}
 ];
 
@@ -87,13 +100,14 @@ export default class extends BotCommand {
 
 		// If the user has an axe apply boost
 		const boosts = [];
-		if (msg.author.skillLevel(SkillsEnum.Woodcutting) >= 61) {
-			for (const axe of axes) {
-				if (msg.author.hasItemEquippedOrInBank(axe.id)) {
-					timetoChop = Math.floor(timetoChop * ((100 - axe.reductionPercent) / 100));
-					boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
-					break;
-				}
+		for (const axe of axes) {
+			if (
+				msg.author.hasItemEquippedOrInBank(axe.id) &&
+				msg.author.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl
+			) {
+				timetoChop = reduceNumByPercent(timetoChop, axe.reductionPercent);
+				boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
+				break;
 			}
 		}
 

@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import { Tasks, Activity } from '../../lib/constants';
+import { Activity, Tasks } from '../../lib/constants';
 import { MonsterKillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import runActivityTask from '../../lib/util/runActivityTask';
