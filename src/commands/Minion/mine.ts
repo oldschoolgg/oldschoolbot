@@ -9,7 +9,6 @@ import {
 	determineScaledOreTime,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	reduceNumByPercent,
 	stringMatches
 } from '../../lib/util';
@@ -136,18 +135,18 @@ export default class extends BotCommand {
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
-		const data: MiningActivityTaskOptions = {
-			oreID: ore.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Mining,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<MiningActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				oreID: ore.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Mining
+			}
+		);
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name
