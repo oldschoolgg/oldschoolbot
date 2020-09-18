@@ -2,6 +2,7 @@ import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, Task } from 'klasa';
 
 import MinionCommand from '../../commands/Minion/minion';
+import { customClientOptions } from '../../config';
 import { alphaNumericalChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -81,7 +82,7 @@ export default class extends Task {
 								msg.content.toLowerCase() === 'c' &&
 								clueTiersReceived.length > 0) ||
 							msg.content.toLowerCase() === continuationChar ||
-							msg.content.startsWith('?')
+							msg.content.startsWith(String(customClientOptions.prefix))
 						);
 					},
 					{
@@ -93,7 +94,8 @@ export default class extends Task {
 					const response = messages.first();
 					if (response) {
 						if (response.author.minionIsBusy) return;
-						if (response.content.startsWith('?')) throw ''; // a new command was issued, cancel this now.
+						if (response.content.startsWith(String(customClientOptions.prefix)))
+							throw ''; // a new command was issued, cancel this now.
 						if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
 							await (this.client.commands.get(
 								'minion'
