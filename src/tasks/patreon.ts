@@ -28,12 +28,12 @@ patreonApiURL.search = new URLSearchParams([
 	],
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
-const tiers: [PatronTierID, BitField][] = [
-	[PatronTierID.One, BitField.IsPatronTier1],
-	[PatronTierID.Two, BitField.IsPatronTier2],
-	[PatronTierID.Three, BitField.IsPatronTier3],
-	[PatronTierID.Four, BitField.IsPatronTier4],
-	[PatronTierID.Five, BitField.IsPatronTier5]
+const tiers: [PatronTierID, BitField, BadgesEnum][] = [
+	[PatronTierID.One, BitField.IsPatronTier1, BadgesEnum.Patron],
+	[PatronTierID.Two, BitField.IsPatronTier2, BadgesEnum.Patron2],
+	[PatronTierID.Three, BitField.IsPatronTier3, BadgesEnum.Patron3],
+	[PatronTierID.Four, BitField.IsPatronTier4, BadgesEnum.Patron4],
+	[PatronTierID.Five, BitField.IsPatronTier5, BadgesEnum.Patron5]
 ];
 
 export default class extends Task {
@@ -59,9 +59,7 @@ export default class extends Task {
 		// Remove patreon badge(s)
 		await user.settings.update(
 			UserSettings.Badges,
-			userBadges.filter(
-				number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)
-			),
+			userBadges.filter(number => !tiers.map(t => t[2]).includes(number)),
 			{
 				arrayAction: ArrayActions.Overwrite
 			}
@@ -126,12 +124,16 @@ export default class extends Task {
 			}
 
 			// If they have neither the limited time badge or normal badge, give them the normal one.
-			if (
-				!userBadges.includes(BadgesEnum.Patron) &&
-				!userBadges.includes(BadgesEnum.LimitedPatron)
-			) {
+			let numberOfPBadges = 0;
+			for (const b of tiers) {
+				if (userBadges.includes(b[2])) {
+					numberOfPBadges += 1;
+				}
+			}
+			if (numberOfPBadges === 0) {
+				const t = tiers.find(x => Object.values(x[1]) === userBitfield);
 				result.push(`${user.username}[${patron.patreonID}] was given Patron badge.`);
-				await user.settings.update(UserSettings.Badges, BadgesEnum.Patron, {
+				await user.settings.update(UserSettings.Badges, t?.[2], {
 					arrayAction: ArrayActions.Add
 				});
 			}

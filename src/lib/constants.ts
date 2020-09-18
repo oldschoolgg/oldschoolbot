@@ -157,7 +157,11 @@ export const enum BadgesEnum {
 	Developer = 0,
 	Booster = 1,
 	LimitedPatron = 2,
-	Patron = 3
+	Patron = 3,
+	Patron2 = 4,
+	Patron3 = 5,
+	Patron4 = 6,
+	Patron5 = 7
 }
 
 export const enum PermissionLevelsEnum {
