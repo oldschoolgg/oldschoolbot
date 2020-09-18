@@ -1,11 +1,11 @@
-import { Plant, SkillsEnum } from '../../types';
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
-import herbPlants from './herbPlants';
-import trees from './trees';
-import fruitTrees from './fruitTrees';
-import specialPlants from './specialPlants';
+import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
+import fruitTrees from './fruitTrees';
+import herbPlants from './herbPlants';
+import specialPlants from './specialPlants';
+import trees from './trees';
 
 const plants: Plant[] = [
 	...herbPlants,

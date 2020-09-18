@@ -1,15 +1,15 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Time, Activity, Tasks } from '../../lib/constants';
-import { formatDuration, rand } from '../../lib/util';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { TitheFarmActivityTaskOptions } from '../../lib/types/minions';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { TitheFarmActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -65,18 +65,18 @@ export default class extends BotCommand {
 
 		const [duration, boostStr] = this.determineDuration(msg.author);
 
-		const data: TitheFarmActivityTaskOptions = {
-			minigameID: MinigameIDsEnum.TitheFarm,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity: 1,
-			duration,
-			type: Activity.TitheFarm,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>(
+			this.client,
+			Tasks.MinigameTicker,
+			{
+				minigameID: MinigameIDsEnum.TitheFarm,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity: 1,
+				duration,
+				type: Activity.TitheFarm
+			}
+		);
 
 		return msg.send(
 			`Your minion is off completing a round of the Tithe Farm. It'll take ${formatDuration(

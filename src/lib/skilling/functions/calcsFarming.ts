@@ -1,8 +1,8 @@
-import { KlasaUser, KlasaMessage } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 
-import { rand, itemNameFromID } from '../../util';
-import { Plant, SkillsEnum } from '../types';
 import Farming from '../../skilling/skills/farming/farming';
+import { itemNameFromID, rand } from '../../util';
+import { Plant, SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 	let numOfPatches = plant.defaultNumOfPatches;
