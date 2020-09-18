@@ -1,10 +1,10 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Minigames } from '../../lib/minions/data/minigames';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { stringMatches } from '../../lib/util';
-import { Minigames } from '../../lib/minions/data/minigames';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

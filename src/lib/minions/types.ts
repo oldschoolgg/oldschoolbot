@@ -1,16 +1,16 @@
 import { Image } from 'canvas';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
-import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
+import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
+import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 
-import { Bank, ArrayItemsResolved } from '../types';
 import { PerkTier } from '../constants';
-import { MonsterActivityTaskOptions } from '../types/minions';
+import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { LevelRequirements } from '../skilling/types';
-import { GearSetupTypes, OffenceGearStat, GearStat } from '../gear/types';
+import { ArrayItemsResolved, Bank } from '../types';
+import { MonsterActivityTaskOptions } from '../types/minions';
 
 export interface BankBackground {
 	image: Image | null;

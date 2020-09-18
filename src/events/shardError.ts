@@ -1,5 +1,5 @@
-import { Event, EventStore } from 'klasa';
 import * as Sentry from '@sentry/node';
+import { Event, EventStore } from 'klasa';
 
 import { Events } from '../lib/constants';
 

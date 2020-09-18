@@ -1,20 +1,20 @@
+import { MessageAttachment } from 'discord.js';
 import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
-import { MessageAttachment } from 'discord.js';
 
-import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import { noOp, addBanks, bankHasItem } from '../../../lib/util';
-import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import itemID from '../../../lib/util/itemID';
 import { Emoji, Events } from '../../../lib/constants';
-import { ItemBank } from '../../../lib/types';
+import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
-import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { ItemBank } from '../../../lib/types';
+import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
+import { addBanks, bankHasItem, noOp } from '../../../lib/util';
+import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import itemID from '../../../lib/util/itemID';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)

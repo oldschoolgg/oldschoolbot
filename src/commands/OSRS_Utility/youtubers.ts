@@ -1,34 +1,10 @@
-const {
-	Command,
-	util: { chunk }
-} = require('klasa');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage, util } from 'klasa';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
-			description: 'Shows the links for some OSRS youtubers.',
-			aliases: ['yt'],
-			requiredPermissions: ['EMBED_LINKS']
-		});
-	}
-
-	async run(msg) {
-		const random = youtubers.sort(() => Math.random() - 0.5);
-		const formatted = chunk(random, 5)
-			.map(list => list.join(', '))
-			.join('\n');
-
-		const embed = new MessageEmbed()
-			.setTitle('Here are some Old School RuneScape youtubers!')
-			.setColor(14981973)
-			.setDescription(formatted);
-
-		return msg.send({ embed });
-	}
-};
+import { BotCommand } from '../../lib/BotCommand';
 
 const youtubers = [
+	'[Swampletics](https://www.youtube.com/channel/UCs-w7E2HZWwXmjt9RTvBB_A)',
 	'[SirPugger](https://www.youtube.com/user/SirPugger)',
 	'[Theoatrix](https://www.youtube.com/user/Theoatrix)',
 	'[Slayermusiq1](https://www.youtube.com/user/slayermusiq1)',
@@ -52,3 +28,28 @@ const youtubers = [
 	'[Dicerz](https://www.youtube.com/channel/UCkzdUb4x8IGQuYIT3zudefA)',
 	'[Small Arms](https://www.youtube.com/channel/UCZbyOTmSxMv8EFvnG1UKsUQ)'
 ];
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			description: 'Shows the links for some OSRS youtubers.',
+			aliases: ['yt'],
+			requiredPermissions: ['EMBED_LINKS']
+		});
+	}
+
+	async run(msg: KlasaMessage) {
+		const random = youtubers.sort(() => Math.random() - 0.5);
+		const formatted = util
+			.chunk(random, 5)
+			.map(list => list.join(', '))
+			.join('\n');
+
+		const embed = new MessageEmbed()
+			.setTitle('Here are some Old School RuneScape youtubers!')
+			.setColor(14981973)
+			.setDescription(formatted);
+
+		return msg.send({ embed });
+	}
+}

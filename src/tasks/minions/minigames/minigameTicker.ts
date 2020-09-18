@@ -1,9 +1,9 @@
 import { Task } from 'klasa';
 
-import { MinigameTickerTaskData } from '../../../lib/types/minions';
-import runActivityTask from '../../../lib/util/runActivityTask';
 import { Tasks } from '../../../lib/constants';
+import { MinigameTickerTaskData } from '../../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../../lib/util/removeSubTasksFromActivityTask';
+import runActivityTask from '../../../lib/util/runActivityTask';
 import { taskNameFromType } from '../../../lib/util/taskNameFromType';
 
 export default class extends Task {

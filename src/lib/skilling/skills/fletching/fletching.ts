@@ -1,5 +1,5 @@
-import { SkillsEnum } from '../../types';
 import { Emoji } from '../../../constants';
+import { SkillsEnum } from '../../types';
 import fletchables from './fletchables/index';
 
 const Fletching = {

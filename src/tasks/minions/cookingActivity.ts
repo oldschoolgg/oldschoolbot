@@ -1,12 +1,12 @@
 import { Task } from 'klasa';
 
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import Cooking from '../../lib/skilling/skills/cooking';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import { SkillsEnum } from '../../lib/skilling/types';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
-import itemID from '../../lib/util/itemID';
+import Cooking from '../../lib/skilling/skills/cooking';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID, duration }: CookingActivityTaskOptions) {

@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
-
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import { rand } from 'oldschooljs/dist/util/util';
-import itemID from '../../lib/util/itemID';
+
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {

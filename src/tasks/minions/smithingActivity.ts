@@ -1,8 +1,8 @@
 import { Task } from 'klasa';
 
+import Smithing from '../../lib/skilling/skills/smithing/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import Smithing from '../../lib/skilling/skills/smithing/smithing';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -41,7 +41,7 @@ export default class extends Task {
 		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of  ${SmithedBar.name}[${SmithedBar.id}]`);
+			user.log(`continued trip of ${quantity}x  ${SmithedBar.name}[${SmithedBar.id}]`);
 			return this.client.commands.get('smith')!.run(res, [quantity, SmithedBar.name]);
 		});
 	}

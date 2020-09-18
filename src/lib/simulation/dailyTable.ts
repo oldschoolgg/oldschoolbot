@@ -1,5 +1,5 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 import Loot from 'oldschooljs/dist/structures/Loot';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 const RareTable = new LootTable()
 	.add('Hornwood helm')
