@@ -1,3 +1,4 @@
+import { Emoji } from '../constants';
 import { ItemBank } from '../types';
 
 export enum SkillsEnum {
@@ -149,6 +150,7 @@ export type LevelRequirements = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
 export interface Plant {
 	level: number;
 	plantXp: number;
@@ -184,4 +186,9 @@ export interface Plant {
 	additionalPatchesByFarmLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+
+export interface Skill {
+	aliases: string[];
+	id: SkillsEnum;
+	emoji: Emoji;
 }
