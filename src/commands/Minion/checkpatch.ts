@@ -13,9 +13,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 1,
-			usage: '',
-			usageDelim: ' '
+			cooldown: 1
 		});
 	}
 
@@ -48,7 +46,7 @@ export default class extends BotCommand {
 					)
 				);
 
-				if (!plant) return;
+				if (!plant) throw `WTF Error`;
 
 				const lastPlantTime: number = patch.plantTime;
 				const difference = currentDate - lastPlantTime;

@@ -1,22 +1,21 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { bankHasItem, saidYes, noOp, roll } from '../../../lib/util';
+import { bankHasItem, roll } from '../../../lib/util';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import itemID from '../../../lib/util/itemID';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { Time, Events, Emoji } from '../../../lib/constants';
+import { Events, Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import bankHasItem from '../../../lib/util/bankHasItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
+import { TitheFarmStats } from '../../../lib/farming/types';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ userID, channelID, duration, msg }: TitheFarmActivityTaskOptions) {
+	async run({ userID, channelID, duration }: TitheFarmActivityTaskOptions) {
 		const baseHarvest = 85;
 		let lootStr = '';
 
 		const user = await this.client.users.fetch(userID);
-		const channel = await this.client.channels.fetch(channelID).catch(noOp);
+		user.incrementMinionDailyDuration(duration);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
 		const titheFarmStats = user.settings.get(UserSettings.Stats.TitheFarmStats);
@@ -25,9 +24,9 @@ export default class extends Task {
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		const determinePoints = determineHarvest - 74;
 
-		const updatedTitheFarmStats = {
-			titheFarmsCompleted: (titheFarmsCompleted + 1) as number,
-			titheFarmPoints: (titheFarmPoints + determinePoints) as number
+		const updatedTitheFarmStats: TitheFarmStats = {
+			titheFarmsCompleted: titheFarmsCompleted + 1,
+			titheFarmPoints: titheFarmPoints + determinePoints
 		};
 
 		await user.settings.update(UserSettings.Stats.TitheFarmStats, updatedTitheFarmStats);
@@ -90,7 +89,7 @@ export default class extends Task {
 
 		await user.addXP(SkillsEnum.Farming, Math.floor(totalXp));
 
-		if (roll((7494389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
+		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
 			const loot = { [itemID('Tangleroot')]: 1 };
 			lootStr += '\n\n```diff';
 			lootStr += `\n- You have a funny feeling you're being followed...`;
@@ -106,31 +105,11 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 		}
 
-		if (!channelIsSendable(channel)) return;
-		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${lootStr}\n\n${user.minionName} asks if you'd like them to do another game.`;
+		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${lootStr}\n`;
 
-		msg.author.incrementMinionDailyDuration(duration);
-
-		this.client.queuePromise(() => {
-			channel.send(returnStr);
-
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
-						user.log(`attempted another run of Tithe Farm`);
-
-						this.client.commands.get('tithefarm')!.run(response as KlasaMessage, []);
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, returnStr, res => {
+			user.log(`attemped another run of the Tithe Farm.`);
+			return this.client.commands.get('tithefarm')!.run(res, []);
 		});
 	}
 }

@@ -106,7 +106,6 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | '';
 	patchType: PatchTypes.PatchData;
 	getPatchType: string;
-	msg: KlasaMessage;
 	planting: boolean;
 	currentDate: number;
 }

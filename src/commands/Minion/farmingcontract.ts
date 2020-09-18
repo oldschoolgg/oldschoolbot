@@ -17,7 +17,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<contractLevel:...string>',
 			usageDelim: ' ',
-			aliases: ['fc']
+			aliases: ['fc', 'fcontract']
 		});
 	}
 
@@ -81,19 +81,21 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (contractLevel === 'easy' && farmingLevel < 45) {
+		const contractToFarmingLevel = {
+			easy: 45,
+			medium: 65,
+			hard: 85
+		};
+
+		if (
+			contractLevel !== 'easier' &&
+			contractLevel !== 'current' &&
+			farmingLevel < contractToFarmingLevel[contractLevel]
+		) {
 			return msg.send(
-				await guildmasterJaneImage(`You need 45 farming to receive an easy contract!`)
-			);
-		}
-		if (contractLevel === 'medium' && farmingLevel < 65) {
-			return msg.send(
-				await guildmasterJaneImage(`You need 65 farming to receive a medium contract!`)
-			);
-		}
-		if (contractLevel === 'hard' && farmingLevel < 85) {
-			return msg.send(
-				await guildmasterJaneImage(`You need 85 farming to receive a hard contract!`)
+				await guildmasterJaneImage(
+					`You need ${contractToFarmingLevel[contractLevel]} farming to receive a contract of ${contractLevel} difficulty!`
+				)
 			);
 		}
 

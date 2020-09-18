@@ -4,7 +4,7 @@ import Gear from '../../gear';
 import Farming from '../../farming';
 import { SkillsEnum } from '../../skilling/types';
 import { FarmingPatchTypes } from '../../farming/types';
-import defaultContracts from '../../farming/index';
+import defaultContracts from '../../farming/defaultContracts';
 import defaultTitheFarm from '../../farming/defaultTitheFarm';
 
 Client.defaultUserSchema
