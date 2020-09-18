@@ -25,7 +25,7 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 	return numOfPatches;
 }
 
-export function calcVariableYield(plant: Plant, upgradeType: string, farmingLevel: number) {
+export function calcVariableYield(plant: Plant, upgradeType: string | null, farmingLevel: number) {
 	if (!plant.variableYield) return 0;
 	let cropYield = 0;
 	if (plant.name === 'Crystal tree') {

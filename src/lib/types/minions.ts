@@ -104,10 +104,10 @@ export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
-	plantsName: string;
+	plantsName: string | null;
 	channelID: string;
 	quantity: number;
-	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | '';
+	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
 	patchType: PatchTypes.PatchData;
 	getPatchType: string;
 	planting: boolean;
