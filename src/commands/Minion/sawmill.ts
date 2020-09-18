@@ -49,17 +49,17 @@ export default class extends BotCommand {
 		}
 
 		const boosts = [];
-		let timePerPlank = (Time.Second * 45) / 27;
+		let timePerPlank = (Time.Second * 37) / 27;
 
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			timePerPlank *= 1.1;
+			timePerPlank *= 0.9;
 			boosts.push(`10% for Graceful`);
 		}
 		if (
 			msg.author.skillLevel(SkillsEnum.Woodcutting) >= 60 &&
 			msg.author.settings.get(UserSettings.QP) >= 50
 		) {
-			timePerPlank *= 1.1;
+			timePerPlank *= 0.9;
 			boosts.push(`10% for Woodcutting Guild unlocked`);
 		}
 
