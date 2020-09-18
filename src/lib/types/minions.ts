@@ -137,6 +137,12 @@ export interface MinigameTickerTaskData {
 	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
 }
 
+export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
+	channelID: string;
+}
+
 export type TickerTaskData =
 	| MonsterKillingTickerTaskData
 	| ClueTickerTaskData
@@ -163,4 +169,5 @@ export type MinionActivityTask =
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity;
+	| Tasks.AlchingActivity
+	| Tasks.SawmillActivity;

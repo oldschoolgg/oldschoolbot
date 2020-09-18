@@ -76,6 +76,7 @@ export const enum Emoji {
 	Fletching = '<:fletching:630911040544309258>',
 	Purple = '🟪'
 }
+
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
@@ -116,7 +117,8 @@ export const enum Tasks {
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker'
+	MinigameTicker = 'minigameTicker',
+	SawmillActivity = 'sawmillActivity'
 }
 
 export const enum Activity {
@@ -139,7 +141,8 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
-	Alching = 'Alching'
+	Alching = 'Alching',
+	Sawmill = 'Sawmill'
 }
 
 export const enum Events {

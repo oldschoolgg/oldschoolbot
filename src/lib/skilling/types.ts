@@ -148,3 +148,10 @@ export type LevelRequirements = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export interface Cuttable {
+	name: string;
+	inputItem: number;
+	outputItem: number;
+	gpCost: number;
+}

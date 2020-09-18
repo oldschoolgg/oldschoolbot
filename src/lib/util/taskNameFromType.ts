@@ -42,5 +42,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.Sawmill:
+			return Tasks.SawmillActivity;
 	}
 }

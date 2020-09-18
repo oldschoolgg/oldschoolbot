@@ -9,6 +9,7 @@ import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
+import Cuttables from '../../lib/skilling/skills/construction/cuttables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import Crafting from '../../lib/skilling/skills/crafting/crafting';
 import Firemaking from '../../lib/skilling/skills/firemaking';
@@ -33,6 +34,7 @@ import {
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
@@ -279,6 +281,16 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Sawmill: {
+				const data = currentTask as SawmillActivityTaskOptions;
+				const plank = Cuttables.Plankables.find(
+					_plank => _plank.outputItem === data.plankID
+				);
+				return `${this.minionName} is currently creating ${
+					data.plankQuantity
+				}x ${itemNameFromID(plank!.outputItem)}s. ${formattedDuration}`;
 			}
 		}
 	}
