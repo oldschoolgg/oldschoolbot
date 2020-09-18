@@ -71,7 +71,6 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: 1,
 			duration,
-			msg,
 			type: Activity.TitheFarm,
 			id: rand(1, 10_000_000),
 			finishDate: Date.now() + duration
