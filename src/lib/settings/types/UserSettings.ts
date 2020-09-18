@@ -2,7 +2,6 @@
 import { ItemBank } from '../../types';
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
-import { O } from 'ts-toolbelt';
 import { PatchTypes } from '../../farming';
 import { FarmingPatchTypes } from '../../farming/types';
 import defaultContracts from '../../farming/defaultContracts';
