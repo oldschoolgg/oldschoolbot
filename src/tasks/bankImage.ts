@@ -259,11 +259,6 @@ export default class BankImageTask extends Task {
 		// Draw Bank Title
 		ctx.textAlign = 'center';
 		ctx.font = '16px RuneScape Bold 12';
-		// Calculates if the bank text fits the image. If it doesn't, makes it smaller until it does.
-		// let size = 16;
-		// while (ctx.measureText(title).width + distanceFromSide * 2 > canvas.width) {
-		// 	ctx.font = `${--size}px RuneScape Bold 12`;
-		// }
 
 		ctx.fillStyle = '#000000';
 		fillTextXTimesInCtx(ctx, title, canvas.width / 2 + 1, 21 + 1);
