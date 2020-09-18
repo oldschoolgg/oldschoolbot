@@ -1,32 +1,32 @@
-import { Task, util, TaskStore, KlasaUser } from 'klasa';
-import * as fs from 'fs';
-import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
+import * as fs from 'fs';
+import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { toKMB } from 'oldschooljs/dist/util/util';
 import { Util } from 'oldschooljs';
+import { toKMB } from 'oldschooljs/dist/util/util';
+import * as path from 'path';
 
-import {
-	generateHexColorForCashStack,
-	canvasImageFromBuffer,
-	formatItemStackQuantity,
-	saveCtx,
-	restoreCtx,
-	addArrayOfNumbers,
-	stringMatches,
-	itemNameFromID
-} from '../lib/util';
-import { Bank } from '../lib/types';
-import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
-import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
-import filterByCategory from '../lib/util/filterByCategory';
-import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
+import { allCollectionLogItems } from '../lib/collectionLog';
 import { Events } from '../lib/constants';
+import { filterableTypes } from '../lib/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
-import { filterableTypes } from '../lib/filterables';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { allCollectionLogItems } from '../lib/collectionLog';
+import { Bank } from '../lib/types';
+import {
+	addArrayOfNumbers,
+	canvasImageFromBuffer,
+	formatItemStackQuantity,
+	generateHexColorForCashStack,
+	itemNameFromID,
+	restoreCtx,
+	saveCtx,
+	stringMatches
+} from '../lib/util';
+import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
+import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
+import filterByCategory from '../lib/util/filterByCategory';
+import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });

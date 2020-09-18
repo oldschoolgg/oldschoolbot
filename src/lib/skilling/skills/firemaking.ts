@@ -1,6 +1,6 @@
-import { Burnable, SkillsEnum } from '../types';
-import itemID from '../../util/itemID';
 import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
+import { Burnable, SkillsEnum } from '../types';
 
 const burnables: Burnable[] = [
 	{

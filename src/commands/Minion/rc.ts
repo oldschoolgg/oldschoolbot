@@ -1,15 +1,15 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand, bankHasItem } from '../../lib/util';
 import { Activity, Tasks } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
-import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
-import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
+import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { bankHasItem, formatDuration, rand, stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

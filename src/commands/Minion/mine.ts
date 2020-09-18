@@ -1,20 +1,20 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Tasks } from '../../lib/constants';
+import Mining from '../../lib/skilling/skills/mining';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import {
 	determineScaledOreTime,
-	stringMatches,
 	formatDuration,
-	rand,
 	itemNameFromID,
-	reduceNumByPercent
+	rand,
+	reduceNumByPercent,
+	stringMatches
 } from '../../lib/util';
-import Mining from '../../lib/skilling/skills/mining';
-import { Activity, Tasks } from '../../lib/constants';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
 
 const pickaxes = [
 	{

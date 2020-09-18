@@ -2,17 +2,17 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
+import Createables from '../../lib/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import {
-	stringMatches,
-	removeBankFromBank,
-	multiplyBank,
+	addBanks,
 	bankHasAllItemsFromBank,
-	addBanks
+	multiplyBank,
+	removeBankFromBank,
+	stringMatches
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Createables from '../../lib/createables';
-import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

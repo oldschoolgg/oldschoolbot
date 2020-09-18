@@ -1,7 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import BirthdayPresentTable from './simulation/birthdayPresent';
 import { Emoji } from './constants';
+import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
 

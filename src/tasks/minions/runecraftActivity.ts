@@ -1,13 +1,13 @@
 import { Task } from 'klasa';
 
-import { roll } from '../../lib/util';
-import { Events, Emoji } from '../../lib/constants';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import { Emoji, Events } from '../../lib/constants';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
+import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import itemID from '../../lib/util/itemID';
+import { roll } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({

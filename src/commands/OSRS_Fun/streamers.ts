@@ -1,5 +1,5 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import fetch from 'node-fetch';
 
 import OSRSStreamers from '../../../data/osrs_streamers';

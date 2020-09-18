@@ -1,19 +1,19 @@
-import { Command, KlasaMessage, CommandStore, util } from 'klasa';
-import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import * as fs from 'fs';
+import { Command, CommandStore, KlasaMessage, util } from 'klasa';
 import { Items } from 'oldschooljs';
 
-import {
-	generateHexColorForCashStack,
-	formatItemStackQuantity,
-	chunkObject,
-	addItemToBank
-} from '../../lib/util';
-import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { Bank } from '../../lib/types';
+import {
+	addItemToBank,
+	chunkObject,
+	formatItemStackQuantity,
+	generateHexColorForCashStack
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 const bg = fs.readFileSync('./resources/images/coins.png');

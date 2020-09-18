@@ -1,14 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
-import Agility from '../../lib/skilling/skills/agility';
 import { Activity, Tasks, Time } from '../../lib/constants';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Agility from '../../lib/skilling/skills/agility';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, rand, stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
