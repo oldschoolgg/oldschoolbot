@@ -77,8 +77,11 @@ export default class extends Task {
 					(msg: KlasaMessage) => {
 						if (msg.author !== user) return false;
 						return (
-							(perkTier > PerkTier.One && msg.content.toLowerCase() === 'c') ||
-							msg.content.toLowerCase() === continuationChar
+							(perkTier > PerkTier.One &&
+								msg.content.toLowerCase() === 'c' &&
+								clueTiersReceived.length > 0) ||
+							msg.content.toLowerCase() === continuationChar ||
+							msg.content.startsWith('?')
 						);
 					},
 					{
@@ -88,12 +91,11 @@ export default class extends Task {
 				)
 				.then(async messages => {
 					const response = messages.first();
-
 					if (response) {
 						if (response.author.minionIsBusy) return;
-
+						if (response.content.startsWith('?')) throw ''; // a new command was issued, cancel this now.
 						if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
-							(this.client.commands.get(
+							await (this.client.commands.get(
 								'minion'
 							) as MinionCommand).clue(response as KlasaMessage, [
 								1,
@@ -101,8 +103,7 @@ export default class extends Task {
 							]);
 							return;
 						}
-
-						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}] `);
 
 						this.client.commands
 							.get('minion')!
