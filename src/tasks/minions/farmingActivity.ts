@@ -14,6 +14,7 @@ import { rand } from 'oldschooljs/dist/util/util';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 import { PatchTypes } from '../../lib/farming';
+import { FarmingContracts } from '../../lib/farming/types';
 
 export default class extends Task {
 	async run({
@@ -24,7 +25,6 @@ export default class extends Task {
 		upgradeType,
 		userID,
 		channelID,
-		msg,
 		planting,
 		duration,
 		currentDate
@@ -114,7 +114,7 @@ export default class extends Task {
 
 		delete loot[itemID('Weeds')];
 
-		if (!patchType.patchStage) {
+		if (!patchType.patchPlanted) {
 			if (!plant) return;
 
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
@@ -150,16 +150,16 @@ export default class extends Task {
 
 			await user.addItemsToBank(loot, true);
 
-			const updatePatches = {
+			const updatePatches: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
-				patchStage: true,
+				patchPlanted: true,
 				plantTime: currentDate + duration,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: patchType.lastPayment
 			};
 
-			await msg.author.settings.update(getPatchType, updatePatches);
+			await user.settings.update(getPatchType, updatePatches);
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
@@ -167,7 +167,7 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 
 			channel.send(str);
-		} else if (patchType.patchStage) {
+		} else if (patchType.patchPlanted) {
 			const plantToHarvest = Farming.Plants.find(
 				plant => plant.name === patchType.lastPlanted
 			);
@@ -247,13 +247,13 @@ export default class extends Task {
 				if (!plantToHarvest.treeWoodcuttingLevel) return;
 				if (currentWoodcuttingLevel >= plantToHarvest.treeWoodcuttingLevel) chopped = true;
 				else {
-					await msg.author.settings.sync(true);
-					const GP = msg.author.settings.get(UserSettings.GP);
+					await user.settings.sync(true);
+					const GP = user.settings.get(UserSettings.GP);
 					if (GP < 200 * alivePlants) {
 						throw `You do not have the required woodcutting level or enough GP to clear your patches in order to be able to plant more.`;
 					} else {
 						payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer 200 GP per patch to remove the previous tree.*`;
-						await msg.author.removeGP(200 * alivePlants);
+						await user.removeGP(200 * alivePlants);
 					}
 
 					harvestXp = 0;
@@ -325,7 +325,7 @@ export default class extends Task {
 					tangleroot = true;
 				}
 			} else if (
-				patchType.patchStage &&
+				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
 				roll(
@@ -351,7 +351,7 @@ export default class extends Task {
 			if (planting) {
 				updatePatches = {
 					lastPlanted: plant.name,
-					patchStage: true,
+					patchPlanted: true,
 					plantTime: currentDate + duration,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
@@ -360,7 +360,7 @@ export default class extends Task {
 			} else {
 				updatePatches = {
 					lastPlanted: '',
-					patchStage: false,
+					patchPlanted: false,
 					plantTime: 0,
 					lastQuantity: 0,
 					lastUpgradeType: '',
@@ -368,9 +368,9 @@ export default class extends Task {
 				};
 			}
 
-			await msg.author.settings.update(getPatchType, updatePatches);
+			await user.settings.update(getPatchType, updatePatches);
 
-			const currentContract = msg.author.settings.get(
+			const currentContract = user.settings.get(
 				UserSettings.FarmingContracts.FarmingContract
 			);
 
@@ -378,16 +378,16 @@ export default class extends Task {
 
 			let janeMessage;
 			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-				const farmingContractUpdate = {
-					contractStatus: false as boolean,
-					contractType: '' as 'easy' | 'medium' | 'hard' | '',
-					plantToGrow: '' as string,
-					seedPatchTier: currentContract.plantTier as 0 | 1 | 2 | 3 | 4 | 5,
-					plantTier: 0 as 0 | 1 | 2 | 3 | 4 | 5,
-					contractsCompleted: (contractsCompleted + 1) as number
+				const farmingContractUpdate: FarmingContracts = {
+					contractStatus: false,
+					contractType: '',
+					plantToGrow: '',
+					seedPatchTier: currentContract.plantTier,
+					plantTier: 0,
+					contractsCompleted: contractsCompleted + 1
 				};
 
-				msg.author.settings.update(
+				user.settings.update(
 					UserSettings.FarmingContracts.FarmingContract,
 					farmingContractUpdate
 				);
@@ -410,11 +410,11 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			msg.author.incrementMinionDailyDuration(duration);
+			user.incrementMinionDailyDuration(duration);
 
 			channel.send(str);
 			if (janeMessage) {
-				return msg.send(
+				return channel.send(
 					await guildmasterJaneImage(
 						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${contractsCompleted +
 							1} farming contracts.`

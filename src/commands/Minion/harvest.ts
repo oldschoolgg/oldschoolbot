@@ -57,7 +57,8 @@ export default class extends BotCommand {
 				stringMatches(plants.name, storeHarvestablePlant) ||
 				stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
 		);
-		if (!planted) throw `This error shouldn't happen. Just to clear possible undefined error`;
+		if (!planted)
+			throw `WTF Error. This error shouldn't happen. Just to clear possible undefined error`;
 
 		const timePerPatchTravel = Time.Second * planted.timePerPatchTravel;
 		const timePerPatchHarvest = Time.Second * planted.timePerHarvest;
@@ -87,7 +88,6 @@ export default class extends BotCommand {
 			duration,
 			quantity: patchType.lastQuantity,
 			planting: false,
-			msg,
 			currentDate,
 			type: Activity.Farming,
 			id: rand(1, 10_000_000),
@@ -95,9 +95,9 @@ export default class extends BotCommand {
 		};
 
 		// If user does not have something already planted, just plant the new seeds.
-		if (!patchType.patchStage) {
+		if (!patchType.patchPlanted) {
 			throw `There is nothing planted in this patch to harvest!`;
-		} else if (patchType.patchStage) {
+		} else if (patchType.patchPlanted) {
 			const storeHarvestablePlant = patchType.lastPlanted;
 			const planted = Farming.Plants.find(
 				plants =>
@@ -111,7 +111,7 @@ export default class extends BotCommand {
 			const lastPlantTime: number = patchType.plantTime;
 			const difference = currentDate - lastPlantTime;
 			/* initiate a cooldown feature for each of the seed types.
-				allows for a run of specific seed type to only be possible until the
+				Allows for a run of specific seed type to only be possible until the
 				previous run's plants has grown.*/
 			if (difference < planted.growthTime * Time.Minute) {
 				throw `Please come back when your crops have finished growing in ${formatDuration(
