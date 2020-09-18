@@ -4,7 +4,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Events, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
@@ -38,13 +38,13 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const bar = Smelting.Bars.find(
+		const bar = Smithing.Bars.find(
 			bar =>
 				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
 
 		if (!bar) {
-			throw `Thats not a valid bar to smelt. Valid bars are ${Smelting.Bars.map(
+			throw `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(
 				bar => bar.name
 			).join(', ')}.`;
 		}

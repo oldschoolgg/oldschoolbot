@@ -3,14 +3,14 @@ import { Collection } from 'discord.js';
 import { SkillsEnum } from '../types';
 import Agility from './agility';
 import Cooking from './cooking';
-import Crafting from './crafting/crafting';
+import Crafting from './crafting';
 import Firemaking from './firemaking';
 import Fishing from './fishing';
-import Fletching from './fletching/fletching';
+import Fletching from './fletching';
 import Mining from './mining';
 import Prayer from './prayer';
 import Runecraft from './runecraft';
-import Smithing from './smithing/smithing';
+import Smithing from './smithing';
 import Woodcutting from './woodcutting';
 
 export type Skill =

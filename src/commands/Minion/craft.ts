@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Crafting from '../../lib/skilling/skills/crafting/crafting';
+import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import {

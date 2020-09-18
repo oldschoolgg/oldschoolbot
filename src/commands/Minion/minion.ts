@@ -422,10 +422,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async smith(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
+	async smith(msg: KlasaMessage, [quantity, smithableItemName]: [number, string]) {
 		this.client.commands
 			.get('smith')!
-			.run(msg, [quantity, smithedBarName])
+			.run(msg, [quantity, smithableItemName])
 			.catch(err => {
 				throw err;
 			});

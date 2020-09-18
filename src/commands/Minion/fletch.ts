@@ -4,7 +4,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import {
