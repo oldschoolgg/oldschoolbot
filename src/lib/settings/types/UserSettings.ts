@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { ItemBank } from '../../types';
+import { O } from 'ts-toolbelt';
+
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
-import { PatchTypes } from '../../farming';
+import { ItemBank } from '../../types';
 import { FarmingPatchTypes } from '../../farming/types';
+import { PatchTypes } from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
 import defaultTitheFarm from '../../farming/defaultTitheFarm';
 

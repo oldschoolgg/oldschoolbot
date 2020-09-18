@@ -1,12 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { stringMatches, formatDuration, toTitleCase } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { Time, Emoji } from '../../lib/constants';
-import Farming from '../../lib/skilling/skills/farming/farming';
-import { requiresMinion } from '../../lib/minions/decorators';
+import { Emoji, Time } from '../../lib/constants';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { FarmingPatchTypes } from '../../lib/farming/types';
+import { requiresMinion } from '../../lib/minions/decorators';
+import Farming from '../../lib/skilling/skills/farming/farming';
+import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

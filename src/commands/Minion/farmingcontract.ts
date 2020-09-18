@@ -1,14 +1,14 @@
-import { FarmingContracts } from './../../lib/farming/types';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getPlantToGrow } from '../../lib/skilling/functions/calcFarmingContracts';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import bankHasItem from '../../lib/util/bankHasItem';
+import { bankHasItem } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
+import { FarmingContracts } from './../../lib/farming/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
