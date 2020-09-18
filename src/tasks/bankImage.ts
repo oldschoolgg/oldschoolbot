@@ -196,13 +196,8 @@ export default class BankImageTask extends Task {
 		}
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
-		const { page, full, showNewCL } = flags;
-		if (
-			!showNewCL &&
-			!full &&
-			((Object.entries(flags).length > 0 && !flags.background) ||
-				(Object.entries(flags).length > 1 && flags.background))
-		) {
+		const { page } = flags;
+		if (Number(page) >= 0 && util.chunk(items, 56).length > 1) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
 				util.chunk(items, 56).length
 			}`;
@@ -257,13 +252,18 @@ export default class BankImageTask extends Task {
 			canvas.height - this.borderImageBottom?.height! - this.borderImageTop?.height!
 		);
 
-		// Draw Bank Title
-		ctx.textAlign = 'center';
-		ctx.font = '16px RuneScape Bold 12';
-
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
 		}
+
+		// Draw Bank Title
+		ctx.textAlign = 'center';
+		ctx.font = '16px RuneScape Bold 12';
+		// Calculates if the bank text fits the image. If it doesn't, makes it smaller until it does.
+		// let size = 16;
+		// while (ctx.measureText(title).width + distanceFromSide * 2 > canvas.width) {
+		// 	ctx.font = `${--size}px RuneScape Bold 12`;
+		// }
 
 		ctx.fillStyle = '#000000';
 		fillTextXTimesInCtx(ctx, title, canvas.width / 2 + 1, 21 + 1);
