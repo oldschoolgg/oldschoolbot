@@ -3,7 +3,7 @@ import { Client } from 'pg';
 import PgBoss from 'pg-boss';
 
 import { instantTrips, providerConfig } from '../config';
-import { Tasks, Time } from './constants';
+import { Events, Tasks, Time } from './constants';
 import { ActivityTaskOptions } from './types/minions';
 
 interface BusyMinion {
@@ -11,7 +11,7 @@ interface BusyMinion {
 }
 
 interface PgBossInterface {
-	boss?: PgBoss;
+	boss: PgBoss;
 	busyMinions: BusyMinion;
 }
 
@@ -25,24 +25,31 @@ const options = {
 	retentionDays: 7
 };
 
+const pgbDB = new Client({
+	user: options.user,
+	password: options.password,
+	database: options.database,
+	port: options.port,
+	host: options.host
+});
+
 const boss: PgBossInterface = {
+	boss: new PgBoss(options),
 	busyMinions: {}
 };
 
 export function getPgBoss(): PgBoss {
-	return boss.boss!;
+	return boss.boss;
 }
 
-export async function bossStart() {
-	console.log('bossStart test 2');
-	if (!getPgBoss()) {
-		console.log('new bossStart ');
-		boss.boss = new PgBoss(options);
-	} else {
-		boss.boss?.stop();
+export async function bossStart(client: KlasaClient) {
+	try {
+		await getPgBoss().getSchedules();
+	} catch (e) {
+		client.emit(Events.Log, 'Starting PgBoss');
+		await getPgBoss().start();
 	}
 	getPgBoss().on('error', error => console.error(error));
-	await boss.boss!.start();
 	await refreshCacheWithActiveJobs();
 	return getPgBoss();
 }
@@ -69,16 +76,8 @@ export async function publish(
 }
 
 async function refreshCacheWithActiveJobs() {
-	console.log('refreshCacheWithActiveJobs');
-	const _client = new Client({
-		user: providerConfig?.postgres?.user,
-		password: providerConfig?.postgres?.password,
-		database: providerConfig?.postgres?.database,
-		port: providerConfig?.postgres?.port,
-		host: 'localhost'
-	});
-	await _client.connect();
-	const result = await _client.query(
+	await pgbDB.connect();
+	const result = await pgbDB.query(
 		`
 			select
 				id, name, state, data
@@ -89,7 +88,7 @@ async function refreshCacheWithActiveJobs() {
 				pgboss.job.state not in ('completed', 'expired', 'cancelled', 'failed');
 		`
 	);
-	await _client.end();
+	await pgbDB.end();
 	boss.busyMinions = {};
 	for (const row of result.rows) {
 		boss.busyMinions[row.data.userID] = row.data;
@@ -97,15 +96,8 @@ async function refreshCacheWithActiveJobs() {
 }
 
 export async function removeJob(client: KlasaClient, task: ActivityTaskOptions) {
-	const _client = new Client({
-		user: providerConfig?.postgres?.user,
-		password: providerConfig?.postgres?.password,
-		database: providerConfig?.postgres?.database,
-		port: providerConfig?.postgres?.port,
-		host: 'localhost'
-	});
-	await _client.connect();
-	const result = await _client.query(
+	await pgbDB.connect();
+	const result = await pgbDB.query(
 		`
 		select
 			pgboss.job.id
@@ -118,15 +110,16 @@ export async function removeJob(client: KlasaClient, task: ActivityTaskOptions) 
 		`,
 		[task.userID, task.id]
 	);
-	await _client.end();
+	await pgbDB.end();
 	await getPgBoss().cancel(result.rows[0].id);
 	delete boss.busyMinions[task.userID];
 	return true;
 }
 
 export async function freeMinion(userID: string) {
-	console.log('freeMinion_', boss.busyMinions[userID].type, boss.busyMinions[userID].id);
 	if (!boss.busyMinions[userID]) {
+		// This is a backup routine. If the call to remove the user is null, it means something really bad happened
+		// with the content of the busyMinions and so, we restart the variable with all active tasks on the pgBoss.
 		await refreshCacheWithActiveJobs();
 	} else {
 		delete boss.busyMinions[userID];

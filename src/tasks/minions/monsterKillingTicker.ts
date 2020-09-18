@@ -7,12 +7,12 @@ import runActivityTask from '../../lib/util/runActivityTask';
 
 export default class extends Task {
 	async run(data: MonsterKillingTickerTaskData) {
-		const now = Date.now();
+		// const now = Date.now();
 		const tasksThatWereFinished: number[] = [];
 
 		for (const monsterKillingTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			if (monsterKillingTaskData.finishDate > now) break;
+			// if (monsterKillingTaskData.finishDate > now) break;
 
 			runActivityTask(
 				this.client,

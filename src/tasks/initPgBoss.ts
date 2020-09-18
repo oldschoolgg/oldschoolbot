@@ -14,7 +14,7 @@ export default class extends Task {
 	}
 
 	async run() {
-		const boss = await bossStart();
+		const boss = await bossStart(this.client);
 		for (const ticker of [
 			Tasks.MonsterKillingTicker,
 			Tasks.SkillingTicker,
@@ -23,13 +23,10 @@ export default class extends Task {
 		]) {
 			await boss.subscribe(`osbot_${ticker}`, async job => {
 				const jobData = job.data as JobActivityTaskOptions;
-				console.log('?');
 				await freeMinion(jobData.userID);
-				console.log('??');
 				await (this.client.tasks.get(jobData.activity)?.run(jobData) as Promise<any>).catch(
 					console.error
 				);
-				console.log('???');
 				job.done();
 			});
 		}
