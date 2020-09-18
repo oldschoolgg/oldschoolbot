@@ -1,17 +1,17 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { stringMatches, formatDuration, rand } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { Time, Activity, Tasks } from '../../lib/constants';
-import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Farming from '../../lib/skilling/skills/farming/farming';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { FarmingPatchTypes } from '../../lib/farming/types';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Farming from '../../lib/skilling/skills/farming/farming';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { FarmingActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -81,22 +81,6 @@ export default class extends BotCommand {
 			)}, try a lower quantity.`;
 		}
 
-		const data: FarmingActivityTaskOptions = {
-			plantsName: patchType.lastPlanted,
-			patchType,
-			getPatchType,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			upgradeType,
-			duration,
-			quantity: patchType.lastQuantity,
-			planting: false,
-			currentDate,
-			type: Activity.Farming,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
 			throw `There is nothing planted in this patch to harvest!`;
@@ -120,7 +104,23 @@ export default class extends BotCommand {
 			)} to finish.\n\n${boostStr.join(' ')}`;
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				plantsName: patchType.lastPlanted,
+				patchType,
+				getPatchType,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				upgradeType,
+				duration,
+				quantity: patchType.lastQuantity,
+				planting: false,
+				currentDate,
+				type: Activity.Farming
+			}
+		);
 
 		return msg.send(returnMessageStr);
 	}

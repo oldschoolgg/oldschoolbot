@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
+import { rand } from 'oldschooljs/dist/util/util';
 
 import { SkillsEnum } from '../types';
-import { rand } from 'oldschooljs/dist/util/util';
 
 const easyPlants = [
 	// [farmingLevelNeeded, plantToGrow, plantTier]

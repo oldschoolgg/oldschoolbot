@@ -1,6 +1,6 @@
 import { Activity, Tasks } from '../constants';
-import { MinigameIDsEnum } from '../minions/data/minigames';
 import { PatchTypes } from '../farming';
+import { MinigameIDsEnum } from '../minions/data/minigames';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 
 export interface ActivityTaskOptions {
@@ -116,8 +116,7 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
-export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {
-}
+export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];

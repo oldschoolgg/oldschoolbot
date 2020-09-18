@@ -1,11 +1,11 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import Gear from '../../gear';
 import Farming from '../../farming';
-import { SkillsEnum } from '../../skilling/types';
-import { FarmingPatchTypes } from '../../farming/types';
 import defaultContracts from '../../farming/defaultContracts';
 import defaultTitheFarm from '../../farming/defaultTitheFarm';
+import { FarmingPatchTypes } from '../../farming/types';
+import Gear from '../../gear';
+import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
