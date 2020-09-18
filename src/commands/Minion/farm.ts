@@ -27,6 +27,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
+			aliases: ['plant'],
 			usageDelim: ' '
 		});
 	}
@@ -154,7 +155,7 @@ export default class extends BotCommand {
 		}
 
 		let duration: number;
-		if (patchType.patchStage) {
+		if (patchType.patchPlanted) {
 			duration =
 				patchType.lastQuantity *
 				(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
@@ -230,7 +231,6 @@ export default class extends BotCommand {
 			upgradeType,
 			planting: true,
 			duration,
-			msg,
 			currentDate,
 			type: Activity.Farming,
 			id: rand(1, 10_000_000),
@@ -238,13 +238,13 @@ export default class extends BotCommand {
 		};
 
 		// If user does not have something already planted, just plant the new seeds.
-		if (!patchType.patchStage) {
+		if (!patchType.patchPlanted) {
 			activityStr += `${msg.author.minionName} is now planting ${quantity}x ${
 				plants.name
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
 				duration
 			)} to finish.\n\n${boostStr.join(', ')}`;
-		} else if (patchType.patchStage) {
+		} else if (patchType.patchPlanted) {
 			if (!planted)
 				throw `This error shouldn't happen. Just to clear possible undefined error`;
 

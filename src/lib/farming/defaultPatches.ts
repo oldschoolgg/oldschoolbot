@@ -5,7 +5,7 @@ import { PatchData } from './types';
  */
 const defaultPatches: PatchData = {
 	lastPlanted: '',
-	patchStage: false,
+	patchPlanted: false,
 	plantTime: 0,
 	lastQuantity: 0,
 	lastUpgradeType: '',
