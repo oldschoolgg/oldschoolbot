@@ -235,7 +235,7 @@ export default class extends Extendable {
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 		if (currentXP >= 200_000_000) return;
 
-		const skill = Skills.find(skill => skill.id === skillName);
+		const skill = Object.values(Skills).find(skill => skill.id === skillName);
 		if (!skill) return;
 
 		const newXP = Math.min(200_000_000, currentXP + amount);

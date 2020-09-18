@@ -10,7 +10,7 @@ import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodFo
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { MakePartyOptions } from '../../lib/types';
-import { addItemToBank, formatDuration, rand } from '../../lib/util';
+import { addItemToBank, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const { ceil } = Math;
@@ -151,20 +151,20 @@ export default class extends BotCommand {
 			}
 		}
 
-		const data: GroupMonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.GroupMonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration,
-			leader: msg.author.id,
-			users: users.map(u => u.id)
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.GroupMonsterKilling,
+				leader: msg.author.id,
+				users: users.map(u => u.id)
+			}
+		);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

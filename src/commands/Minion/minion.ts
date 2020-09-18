@@ -628,20 +628,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		const data: MonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.MonsterKilling
+			}
+		);
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-
-		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
+		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
