@@ -11,26 +11,26 @@ interface Pickpocketable {
 	table?: LootTable;
 }
 
-const HamTable =new LootTable()
-.add('Bronze arrow', 1–13, 3/100)
-.add('Bronze axe', 1, 3/100)
-.add('Bronze dagger', 1, 3/100)
-.add('Bronze pickaxe', 1, 3/100)
-.add('Iron axe', 1, 3/100)
-.add('Iron dagger', 1, 3/100)
-.add('Iron pickaxe', 1, 3/100)
-.add('Leather body', 1, 3/100)
-.add('Steel arrow', 1–13, 2/100)
-.add('Steel axe', 1, 2/100)
-.add('Steel dagger', 1, 2/100)
-.add('Steel pickaxe', 1, 2/100)
-.add('Ham boots', 1, 1/100)
-.add('Ham cloak', 1, 1/100)
-.add('Ham gloves', 1, 1/100)
-.add('Ham hood', 1, 1/100)
-.add('Ham logo', 1, 1/100)
-.add('Ham robe', 1, 1/100)
-.add('Ham shirt', 1, 1/100)
+const HamTable = new LootTable()
+	.add('Bronze arrow', [1, 13], 3)
+	.add('Bronze axe', 1, 3)
+	.add('Bronze dagger', 1, 3)
+	.add('Bronze pickaxe', 1, 3)
+	.add('Iron axe', 1, 3)
+	.add('Iron dagger', 1, 3)
+	.add('Iron pickaxe', 1, 3)
+	.add('Leather body', 1, 3)
+	.add('Steel arrow', [1, 13], 2)
+	.add('Steel axe', 1, 2)
+	.add('Steel dagger', 1, 2)
+	.add('Steel pickaxe', 1, 2)
+	.add('Ham boots', 1, 1)
+	.add('Ham cloak', 1, 1)
+	.add('Ham gloves', 1, 1)
+	.add('Ham hood', 1, 1)
+	.add('Ham logo', 1, 1)
+	.add('Ham robe', 1, 1)
+	.add('Ham shirt', 1, 1);
 
 const Pickpocketables: Pickpocketable[] = [
 	{
@@ -48,12 +48,14 @@ const Pickpocketables: Pickpocketable[] = [
 	{
 		name: 'Female H.A.M. member',
 		level: 1,
-		xp: 8
+		xp: 8,
+		table: HamTable
 	},
 	{
 		name: 'Male H.A.M. member',
 		level: 1,
-		xp: 8
+		xp: 8,
+		table: HamTable
 	},
 	{
 		name: 'Warrior woman',
