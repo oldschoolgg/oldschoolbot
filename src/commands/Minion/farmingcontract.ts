@@ -1,3 +1,4 @@
+import { FarmingContracts } from './../../lib/farming/types';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -110,16 +111,16 @@ export default class extends BotCommand {
 				}
 				const newContractLevel = 'easy';
 				const plantInformation = getPlantToGrow(msg.author, newContractLevel);
-				const plantToGrow = plantInformation[0];
-				const plantTier = plantInformation[1];
+				const plantToGrow = plantInformation[0] as string;
+				const plantTier = plantInformation[1] as 0 | 1 | 2 | 3 | 4 | 5;
 
-				const farmingContractUpdate = {
-					contractStatus: true as boolean,
-					contractType: newContractLevel as 'easy' | 'medium' | 'hard' | '',
-					plantToGrow: plantToGrow as string | number,
-					plantTier: plantTier as string | number,
-					seedPackTier: 0 as 0 | 1 | 2 | 3 | 4 | 5,
-					contractsCompleted: currentContract.contractsCompleted as number
+				const farmingContractUpdate: FarmingContracts = {
+					contractStatus: true,
+					contractType: newContractLevel,
+					plantToGrow,
+					plantTier,
+					seedPackTier: 0,
+					contractsCompleted: currentContract.contractsCompleted
 				};
 
 				await msg.author.settings.update(
@@ -148,17 +149,10 @@ export default class extends BotCommand {
 		if (contractLevel === 'current' || contractLevel === 'easier') return;
 
 		const plantInformation = getPlantToGrow(msg.author, contractLevel);
-		const plantToGrow = plantInformation[0];
-		const plantTier = plantInformation[1];
+		const plantToGrow = plantInformation[0] as string;
+		const plantTier = plantInformation[1] as 0 | 1 | 2 | 3 | 4 | 5;
 
-		const farmingContractUpdate: {
-			contractStatus: boolean;
-			contractType: 'easy' | 'medium' | 'hard' | '';
-			plantToGrow: string | number;
-			plantTier: string | number;
-			seedPackTier: 0 | 1 | 2 | 3 | 4 | 5;
-			contractsCompleted: number;
-		} = {
+		const farmingContractUpdate: FarmingContracts = {
 			contractStatus: true,
 			contractType: contractLevel,
 			plantToGrow,

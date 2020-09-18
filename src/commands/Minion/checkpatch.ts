@@ -38,13 +38,16 @@ export default class extends BotCommand {
 			const patch = msg.author.settings.get(getPatchType);
 
 			if (patch.lastPlanted) {
-				const plant = Farming.Plants.find(plants =>
-					plants.aliases.some(
-						alias =>
-							stringMatches(alias, patch.lastPlanted) ||
-							stringMatches(alias.split(' ')[0], patch.lastPlanted)
-					)
-				);
+				const { lastPlanted } = patch;
+				const plant = lastPlanted
+					? Farming.Plants.find(plants =>
+							plants.aliases.some(
+								alias =>
+									stringMatches(alias, lastPlanted) ||
+									stringMatches(alias.split(' ')[0], lastPlanted)
+							)
+					  )
+					: null;
 
 				if (!plant) throw `WTF Error`;
 

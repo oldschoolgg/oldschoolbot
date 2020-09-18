@@ -93,5 +93,5 @@ export function getPlantToGrow(user: KlasaUser, contractLevel: string) {
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
 
-	return [plantToGrow as string, tier as number];
+	return [plantToGrow, tier];
 }
