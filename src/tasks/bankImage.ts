@@ -1,10 +1,19 @@
-import { KlasaUser, Task, TaskStore, util } from 'klasa';
-import * as fs from 'fs';
-import * as path from 'path';
 import { createCanvas, Image, registerFont } from 'canvas';
+import * as fs from 'fs';
+import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
+import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
-// import { Util } from 'oldschooljs';
+import * as path from 'path';
+
+import { allCollectionLogItems } from '../lib/collectionLog';
+import { Events } from '../lib/constants';
+import { filterableTypes } from '../lib/filterables';
+// import { Events } from '../lib/constants';
+import backgroundImages from '../lib/minions/data/bankBackgrounds';
+import { BankBackground } from '../lib/minions/types';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { Bank } from '../lib/types';
 import {
 	addArrayOfNumbers,
 	canvasImageFromBuffer,
@@ -15,19 +24,10 @@ import {
 	saveCtx,
 	stringMatches
 } from '../lib/util';
-import { Bank } from '../lib/types';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
-import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
-import filterByCategory from '../lib/util/filterByCategory';
 import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
-// import { Events } from '../lib/constants';
-import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { BankBackground } from '../lib/minions/types';
-import { filterableTypes } from '../lib/filterables';
-import { UserSettings } from '../lib/settings/types/UserSettings';
-import { Events } from '../lib/constants';
-import { allCollectionLogItems } from '../lib/collectionLog';
-import { Util } from 'oldschooljs';
+import filterByCategory from '../lib/util/filterByCategory';
+import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 // import { allCollectionLogItems } from '../lib/collectionLog';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
