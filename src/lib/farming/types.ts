@@ -18,11 +18,11 @@ export enum FarmingPatchTypes {
 }
 
 export interface PatchData {
-	lastPlanted: string;
+	lastPlanted: string | null;
 	patchPlanted: boolean; // false -> nothing planted, true -> something planted
 	plantTime: number;
 	lastQuantity: number;
-	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | '';
+	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | 'null' | null;
 	lastPayment: boolean;
 }
 
@@ -33,9 +33,9 @@ export interface TitheFarmStats {
 
 export interface FarmingContracts {
 	contractStatus: boolean;
-	contractType: 'easy' | 'medium' | 'hard' | '';
+	contractType: 'easy' | 'medium' | 'hard' | null;
 	plantToGrow: string | null;
-	seedPatchTier: 0 | 1 | 2 | 3 | 4 | 5;
+	seedPackTier: 0 | 1 | 2 | 3 | 4 | 5;
 	plantTier: 0 | 1 | 2 | 3 | 4 | 5;
 	contractsCompleted: number;
 }
