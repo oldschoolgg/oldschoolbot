@@ -10,7 +10,6 @@ import {
 	determineScaledLogTime,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	reduceNumByPercent,
 	stringMatches
 } from '../../lib/util';
@@ -119,18 +118,18 @@ export default class extends BotCommand {
 			} you can chop is ${Math.floor(msg.author.maxTripLength / timetoChop)}.`;
 		}
 
-		const data: WoodcuttingActivityTaskOptions = {
-			logID: log.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Woodcutting,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				logID: log.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Woodcutting
+			}
+		);
 
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${
 			log.name
