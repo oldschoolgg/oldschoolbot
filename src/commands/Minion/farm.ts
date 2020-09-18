@@ -47,8 +47,8 @@ export default class extends BotCommand {
 		const currentDate = new Date().getTime();
 
 		let payment = false;
-		let upgradeType = '';
-		let str = '';
+		let upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null = null;
+		let activityStr = '';
 		let upgradeStr = '';
 		let paymentStr = '';
 		const boostStr: string[] = [];
@@ -80,11 +80,13 @@ export default class extends BotCommand {
 		const timePerPatchPlant = Time.Second * 5;
 
 		const storeHarvestablePlant = patchType.lastPlanted;
-		const planted = Farming.Plants.find(
-			plants =>
-				stringMatches(plants.name, storeHarvestablePlant) ||
-				stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-		);
+		const planted = storeHarvestablePlant
+			? Farming.Plants.find(
+					plants =>
+						stringMatches(plants.name, storeHarvestablePlant) ||
+						stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
+			  )
+			: null;
 
 		const lastPlantTime: number = patchType.plantTime;
 		const difference = currentDate - lastPlantTime;
@@ -125,7 +127,7 @@ export default class extends BotCommand {
 			throw `You do not need to use compost if you are paying a nearby farmer to look over your trees.`;
 		}
 
-		if (plants.canCompostPatch === false && upgradeType !== '') {
+		if (!plants.canCompostPatch && upgradeType !== null) {
 			throw `There would be no point to add compost to your ${plants.name}s!`;
 		}
 

@@ -5,10 +5,10 @@ import { FarmingContracts } from './types';
  */
 const defaultFarmingContracts: FarmingContracts = {
 	contractStatus: false,
-	contractType: '',
-	plantToGrow: '',
+	contractType: null,
+	plantToGrow: null,
 	plantTier: 0,
-	seedPatchTier: 0,
+	seedPackTier: 0,
 	contractsCompleted: 0
 };
 

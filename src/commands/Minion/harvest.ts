@@ -47,16 +47,19 @@ export default class extends BotCommand {
 
 		const patchType = msg.author.settings.get(getPatchType);
 
-		const upgradeType = '';
+		const upgradeType = null;
 		let returnMessageStr = '';
 		const boostStr = [];
 
 		const storeHarvestablePlant = patchType.lastPlanted;
-		const planted = Farming.Plants.find(
-			plants =>
-				stringMatches(plants.name, storeHarvestablePlant) ||
-				stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-		);
+		const planted = storeHarvestablePlant
+			? Farming.Plants.find(
+					plants =>
+						stringMatches(plants.name, storeHarvestablePlant) ||
+						stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
+			  )
+			: null;
+
 		if (!planted)
 			throw `WTF Error. This error shouldn't happen. Just to clear possible undefined error`;
 
@@ -98,27 +101,6 @@ export default class extends BotCommand {
 		if (!patchType.patchPlanted) {
 			throw `There is nothing planted in this patch to harvest!`;
 		} else if (patchType.patchPlanted) {
-			const storeHarvestablePlant = patchType.lastPlanted;
-			const planted = Farming.Plants.find(
-				plants =>
-					stringMatches(plants.name, storeHarvestablePlant) ||
-					stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-			);
-			if (!planted) {
-				throw `This error shouldn't happen. Just to clear possible undefined error`;
-			}
-
-			const lastPlantTime: number = patchType.plantTime;
-			const difference = currentDate - lastPlantTime;
-			/* initiate a cooldown feature for each of the seed types.
-				Allows for a run of specific seed type to only be possible until the
-				previous run's plants has grown.*/
-			if (difference < planted.growthTime * Time.Minute) {
-				throw `Please come back when your crops have finished growing in ${formatDuration(
-					lastPlantTime + planted.growthTime * Time.Minute - currentDate
-				)}!`;
-			}
-
 			const storeHarvestableQuantity = patchType.lastQuantity;
 
 			if (planted.needsChopForHarvest) {

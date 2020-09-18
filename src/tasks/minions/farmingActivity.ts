@@ -356,11 +356,11 @@ export default class extends Task {
 				};
 			} else {
 				updatePatches = {
-					lastPlanted: '',
+					lastPlanted: null,
 					patchPlanted: false,
 					plantTime: 0,
 					lastQuantity: 0,
-					lastUpgradeType: '',
+					lastUpgradeType: null,
 					lastPayment: false
 				};
 			}
@@ -377,9 +377,9 @@ export default class extends Task {
 			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
 				const farmingContractUpdate: FarmingContracts = {
 					contractStatus: false,
-					contractType: '',
-					plantToGrow: '',
-					seedPatchTier: currentContract.plantTier,
+					contractType: null,
+					plantToGrow: null,
+					seedPackTier: currentContract.plantTier,
 					plantTier: 0,
 					contractsCompleted: contractsCompleted + 1
 				};

@@ -15,9 +15,16 @@ const plants: Plant[] = [
 	...specialPlants
 ];
 
-const farmerItems: { [key: number]: number } = {
+const maleFarmerItems: { [key: number]: number } = {
 	[itemID(`Farmer's strawhat`)]: 0.4,
 	[itemID(`Farmer's jacket`)]: 0.8,
+	[itemID(`Farmer's boro trousers`)]: 0.6,
+	[itemID(`Farmer's boots`)]: 0.2
+};
+
+const femaleFarmerItems: { [key: number]: number } = {
+	[itemID(`Farmer's strawhat`)]: 0.4,
+	[itemID(`Farmer's shirt`)]: 0.8,
 	[itemID(`Farmer's boro trousers`)]: 0.6,
 	[itemID(`Farmer's boots`)]: 0.2
 };
@@ -27,8 +34,9 @@ const Farming = {
 	Plants: plants,
 	id: SkillsEnum.Farming,
 	emoji: Emoji.Farming,
-	farmerItems,
-	name: 'farming'
+	name: 'farming',
+	maleFarmerItems,
+	femaleFarmerItems
 };
 
 export default Farming;
