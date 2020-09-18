@@ -13,7 +13,6 @@ import {
 	formatDuration,
 	itemID,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -83,17 +82,6 @@ export default class extends BotCommand {
 			}s you can smelt is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		const data: SmeltingActivityTaskOptions = {
-			barID: bar.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Smelting,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the ores from their bank.
 		let newBank: ItemBank = { ...userBank };
 		for (const [oreID, qty] of requiredOres) {
@@ -107,7 +95,18 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				barID: bar.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Smelting
+			}
+		);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let goldGauntletMessage = ``;
