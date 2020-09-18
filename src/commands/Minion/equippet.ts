@@ -1,11 +1,11 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { requiresMinion } from '../../lib/minions/decorators';
 import { pets } from '../../lib/collectionLog';
-import { removeItemFromBank } from '../../lib/util';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { removeItemFromBank } from '../../lib/util';
 
 const allPetIDs = Object.values(pets).flat(Infinity);
 

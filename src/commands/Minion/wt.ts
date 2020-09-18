@@ -2,24 +2,24 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
+import { Eatables } from '../../lib/eatables';
+import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import {
-	rand,
-	reduceNumByPercent,
+	addItemToBank,
+	bankHasItem,
 	calcWhatPercent,
 	formatDuration,
-	addItemToBank,
-	bankHasItem
+	rand,
+	reduceNumByPercent
 } from '../../lib/util';
-import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import resolveItems from '../../lib/util/resolveItems';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { Eatables } from '../../lib/eatables';
 
 export const warmGear = resolveItems([
 	'Staff of fire',

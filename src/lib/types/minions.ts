@@ -1,8 +1,7 @@
 import { Activity, Tasks } from '../constants';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
-import { KlasaMessage } from 'klasa';
 import { PatchTypes } from '../farming';
+import { GroupMonsterActivityTaskOptions } from '../minions/types';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -133,8 +132,8 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
+
 export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {
-	msg: KlasaMessage;
 }
 
 export interface MonsterKillingTickerTaskData {

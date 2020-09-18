@@ -1,5 +1,5 @@
 import { Task } from 'klasa';
-import { spawn, Pool, Worker } from 'threads';
+import { Pool, spawn, Worker } from 'threads';
 
 export default class extends Task {
 	async init() {

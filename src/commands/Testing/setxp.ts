@@ -1,4 +1,5 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
 import Skills from '../../lib/skilling/skills';
 

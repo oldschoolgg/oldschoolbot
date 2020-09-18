@@ -2,11 +2,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
+import Buyables from '../../lib/buyables';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { stringMatches, toTitleCase, multiplyBank } from '../../lib/util';
+import { multiplyBank, stringMatches, toTitleCase } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Buyables from '../../lib/buyables';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

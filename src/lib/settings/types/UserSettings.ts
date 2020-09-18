@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { ItemBank } from '../../types';
+import { O } from 'ts-toolbelt';
+
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
 import { O } from 'ts-toolbelt';
@@ -7,6 +8,7 @@ import { PatchTypes } from '../../farming';
 import { FarmingPatchTypes } from '../../farming/types';
 import defaultContracts from '../../farming/defaultContracts';
 import defaultTitheFarm from '../../farming/defaultTitheFarm';
+import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -70,6 +72,7 @@ export namespace UserSettings {
 		export const Prayer = T<number>(`skills.${SkillsEnum.Prayer}`);
 		export const Fletching = T<number>(`skills.${SkillsEnum.Fletching}`);
 		export const Farming = T<number>(`skills.${SkillsEnum.Farming}`);
+		export const Thieving = T<number>(`skills.${SkillsEnum.Thieving}`);
 	}
 
 	export namespace Gear {

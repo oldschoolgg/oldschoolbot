@@ -1,11 +1,11 @@
-import { KlasaUser, KlasaMessage, Command, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Command, CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Misc } from 'oldschooljs';
 
-import clueTiers from '../../lib/minions/data/clueTiers';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { PerkTier } from '../../lib/constants';
+import clueTiers from '../../lib/minions/data/clueTiers';
 import { addBanks, roll } from '../../lib/util';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
