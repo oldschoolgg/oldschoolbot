@@ -186,6 +186,7 @@ export interface Plant {
 	additionalPatchesByFarmLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+}
 
 export interface Skill {
 	aliases: string[];

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import { GearTypes } from '../../gear';
-import { SkillsEnum } from '../../skilling/types';
 import { PatchTypes } from '../../farming';
-import { FarmingPatchTypes } from '../../farming/types';
 import defaultContracts from '../../farming/defaultContracts';
 import defaultTitheFarm from '../../farming/defaultTitheFarm';
+import { FarmingPatchTypes } from '../../farming/types';
+import { GearTypes } from '../../gear';
+import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };

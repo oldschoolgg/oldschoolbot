@@ -1,13 +1,13 @@
 import { Task } from 'klasa';
 
-import { bankHasItem, roll } from '../../../lib/util';
-import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import itemID from '../../../lib/util/itemID';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { Events, Emoji } from '../../../lib/constants';
-import { SkillsEnum } from '../../../lib/skilling/types';
+import { Emoji, Events } from '../../../lib/constants';
 import { TitheFarmStats } from '../../../lib/farming/types';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
+import { bankHasItem, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ userID, channelID, duration }: TitheFarmActivityTaskOptions) {

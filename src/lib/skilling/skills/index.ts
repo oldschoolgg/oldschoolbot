@@ -24,7 +24,7 @@ export const Skills: Record<string, Skill> = {
 	Prayer,
 	Runecraft,
 	Fletching,
-  Farming
+	Farming
 };
 
 export default Skills;

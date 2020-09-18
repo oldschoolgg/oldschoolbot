@@ -1,6 +1,6 @@
-import { Plant } from '../../types';
-import itemID from '../../../util/itemID';
 import { resolveNameBank } from '../../../util';
+import itemID from '../../../util/itemID';
+import { Plant } from '../../types';
 
 const trees: Plant[] = [
 	{
