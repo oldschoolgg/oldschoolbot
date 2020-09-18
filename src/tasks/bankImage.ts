@@ -9,7 +9,6 @@ import * as path from 'path';
 import { allCollectionLogItems } from '../lib/collectionLog';
 import { Events } from '../lib/constants';
 import { filterableTypes } from '../lib/filterables';
-// import { Events } from '../lib/constants';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -28,7 +27,6 @@ import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
 import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import filterByCategory from '../lib/util/filterByCategory';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
-// import { allCollectionLogItems } from '../lib/collectionLog';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -52,6 +50,10 @@ export default class BankImageTask extends Task {
 	public borderImage: Image | null = null;
 	public borderImageTop: Image | null = null;
 	public borderImageBottom: Image | null = null;
+
+	public borderC: Image | null = null;
+	public borderH: Image | null = null;
+	public borderV: Image | null = null;
 
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
@@ -88,6 +90,16 @@ export default class BankImageTask extends Task {
 		);
 		this.borderImageBottom = await canvasImageFromBuffer(
 			fs.readFileSync('./resources/images/bank_border_bottom.png')
+		);
+
+		this.borderC = await canvasImageFromBuffer(
+			fs.readFileSync('./resources/images/bank_border_c.png')
+		);
+		this.borderH = await canvasImageFromBuffer(
+			fs.readFileSync('./resources/images/bank_border_h.png')
+		);
+		this.borderV = await canvasImageFromBuffer(
+			fs.readFileSync('./resources/images/bank_border_v.png')
 		);
 	}
 
@@ -196,8 +208,8 @@ export default class BankImageTask extends Task {
 		}
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
-		const { page } = flags;
-		if (Number(page) >= 0 && util.chunk(items, 56).length > 1) {
+		const { page, noBorder } = flags;
+		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
 				util.chunk(items, 56).length
 			}`;
@@ -232,26 +244,78 @@ export default class BankImageTask extends Task {
 			ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
 			ctx.fillRect(0, bankBackgroundID === 1 ? 326 : 331, canvas.width, canvas.height);
 		}
-		// Draws the top border
-		ctx.drawImage(this.borderImageTop, 0, 0, canvas.width, this.borderImageTop?.height!);
-		// Draws the bottom border at the end of the canvas minus the height of the border image
-		ctx.drawImage(
-			this.borderImageBottom,
-			0,
-			canvas.height - this.borderImageBottom?.height!,
-			canvas.width,
-			this.borderImageBottom?.height!
-		);
-		ctx.fillStyle = ctx.createPattern(this.borderImage, 'repeat');
-		// Draw the repeat border - Removes the height of both the bottom and top border from the total
-		// height this needs to repeat and make is starts after the border top
-		ctx.fillRect(
-			0,
-			this.borderImageTop?.height!,
-			canvas.width,
-			canvas.height - this.borderImageBottom?.height! - this.borderImageTop?.height!
-		);
 
+		// Skips border if noBorder is set
+		if (noBorder !== 1) {
+			function drawImage(
+				img: Image | null,
+				x: number,
+				y: number,
+				flip = false,
+				flop = false
+			) {
+				ctx.save();
+				const width = img?.width!;
+				const height = img?.height!;
+
+				// Set rotation point to center of image, instead of top/left
+				x -= width / 2;
+				y -= height / 2;
+
+				// Set the origin to the center of the image
+				ctx.translate(x + width / 2, y + height / 2);
+
+				// Flip/flop the canvas
+				let flipScale = 2;
+				let flopScale = 2;
+				if (flip) flipScale = -2;
+				if (flop) flopScale = -2;
+				ctx.scale(flipScale, flopScale);
+
+				// Draw the image
+				ctx.drawImage(img, -width / 2, -height / 2, width, height);
+				ctx.restore();
+			}
+
+			// Draw top border
+			ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
+			ctx.fillRect(0, 0, canvas.width, this.borderH?.height!);
+
+			// Draw bottom border
+			ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
+			ctx.fillRect(
+				0,
+				canvas.height - this.borderH?.height!,
+				canvas.width,
+				this.borderH?.height!
+			);
+
+			// Draw left border
+			ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
+			ctx.fillRect(0, this.borderV?.width!, this.borderV?.width!, canvas.height);
+
+			// Draw right border
+			ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
+			ctx.fillRect(
+				canvas.width - this.borderV?.width!,
+				0,
+				this.borderV?.width!,
+				canvas.height
+			);
+
+			// Draw corner borders
+			// Top left
+			drawImage(this.borderC, 0, 0);
+
+			// Top right
+			drawImage(this.borderC, canvas.width, 0, true);
+
+			// Bottom right
+			drawImage(this.borderC, canvas.width, canvas.height, true, true);
+
+			// Bottom left
+			drawImage(this.borderC, 0, canvas.height, false, true);
+		}
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
 		}
