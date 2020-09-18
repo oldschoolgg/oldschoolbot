@@ -13,6 +13,7 @@ import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
+export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
