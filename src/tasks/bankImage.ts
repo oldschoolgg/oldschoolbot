@@ -52,9 +52,9 @@ export default class BankImageTask extends Task {
 	public borderImageTop: Image | null = null;
 	public borderImageBottom: Image | null = null;
 
-	public borderC: Image | null = null;
-	public borderH: Image | null = null;
-	public borderV: Image | null = null;
+	public borderCorner: Image | null = null;
+	public borderHorizontal: Image | null = null;
+	public borderVertical: Image | null = null;
 
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
@@ -67,7 +67,7 @@ export default class BankImageTask extends Task {
 	}
 
 	async init() {
-		this.run();
+		await this.run();
 	}
 
 	async run() {
@@ -84,13 +84,13 @@ export default class BankImageTask extends Task {
 			fs.readFileSync('./resources/images/repeating.png')
 		);
 
-		this.borderC = await canvasImageFromBuffer(
+		this.borderCorner = await canvasImageFromBuffer(
 			fs.readFileSync('./resources/images/bank_border_c.png')
 		);
-		this.borderH = await canvasImageFromBuffer(
+		this.borderHorizontal = await canvasImageFromBuffer(
 			fs.readFileSync('./resources/images/bank_border_h.png')
 		);
-		this.borderV = await canvasImageFromBuffer(
+		this.borderVertical = await canvasImageFromBuffer(
 			fs.readFileSync('./resources/images/bank_border_v.png')
 		);
 	}
@@ -165,44 +165,55 @@ export default class BankImageTask extends Task {
 		ctx.restore();
 	}
 
-	drawBorder(canvas: Canvas, ctx: Context) {
+	drawBorder(canvas: Canvas) {
+		const ctx = canvas.getContext('2d');
 		// Draw top border
-		ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
-		ctx.fillRect(0, 0, canvas.width, this.borderH?.height!);
+		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
+		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
 
 		// Draw bottom border
-		ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
-		ctx.fillRect(0, canvas.height - this.borderH?.height!, canvas.width, this.borderH?.height!);
+		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
+		ctx.fillRect(
+			0,
+			canvas.height - this.borderHorizontal?.height!,
+			canvas.width,
+			this.borderHorizontal?.height!
+		);
 
 		// Draw title line
-		ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
+		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
 		ctx.fillRect(
-			this.borderV?.width! * 2,
+			this.borderVertical?.width! * 2,
 			28,
-			canvas.width - this.borderV?.width! * 4,
-			Math.floor(this.borderH?.height! / 1.5)
+			canvas.width - this.borderVertical?.width! * 4,
+			Math.floor(this.borderHorizontal?.height! / 1.5)
 		);
 
 		// Draw left border
-		ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
-		ctx.fillRect(0, this.borderV?.width!, this.borderV?.width!, canvas.height);
+		ctx.fillStyle = ctx.createPattern(this.borderVertical, 'repeat-y');
+		ctx.fillRect(0, this.borderVertical?.width!, this.borderVertical?.width!, canvas.height);
 
 		// Draw right border
-		ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
-		ctx.fillRect(canvas.width - this.borderV?.width!, 0, this.borderV?.width!, canvas.height);
+		ctx.fillStyle = ctx.createPattern(this.borderVertical, 'repeat-y');
+		ctx.fillRect(
+			canvas.width - this.borderVertical?.width!,
+			0,
+			this.borderVertical?.width!,
+			canvas.height
+		);
 
 		// Draw corner borders
 		// Top left
-		this.drawImage(ctx, this.borderC, 0, 0);
+		this.drawImage(ctx, this.borderCorner, 0, 0);
 
 		// Top right
-		this.drawImage(ctx, this.borderC, canvas.width, 0, true);
+		this.drawImage(ctx, this.borderCorner, canvas.width, 0, true);
 
 		// Bottom right
-		this.drawImage(ctx, this.borderC, canvas.width, canvas.height, true, true);
+		this.drawImage(ctx, this.borderCorner, canvas.width, canvas.height, true, true);
 
 		// Bottom left
-		this.drawImage(ctx, this.borderC, 0, canvas.height, false, true);
+		this.drawImage(ctx, this.borderCorner, 0, canvas.height, false, true);
 	}
 
 	async generateBankImage(
@@ -238,7 +249,7 @@ export default class BankImageTask extends Task {
 			}
 		}
 
-		// Remove items that has 0 qty
+		// Remove items that have 0 qty
 		items = items.filter(i => i[1] > 0);
 
 		// Sorting by value
@@ -312,7 +323,7 @@ export default class BankImageTask extends Task {
 
 		// Skips border if noBorder is set
 		if (noBorder !== 1) {
-			this.drawBorder(canvas, ctx);
+			this.drawBorder(canvas);
 		}
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
@@ -547,7 +558,8 @@ export default class BankImageTask extends Task {
 			row++;
 		}
 		// Draw border
-		this.drawBorder(canvas, ctx);
+		this.drawBorder(canvas);
+
 		return canvas.toBuffer();
 	}
 }
