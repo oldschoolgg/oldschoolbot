@@ -230,7 +230,7 @@ ${Emoji.Farming} Farming: ${msg.author.skillLevel(SkillsEnum.Farming)} (${msg.au
 			.toLocaleString()} xp)
 ${Emoji.XP} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
 			.totalLevel(true)
-      .toLocaleString()} xp)
+			.toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}

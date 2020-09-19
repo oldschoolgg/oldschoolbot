@@ -829,9 +829,9 @@ const Createables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({
 			Cabbage: 10
-    })
-  },
-  {
+		})
+	},
+	{
 		name: 'Coconut milk',
 		inputItems: resolveNameBank({
 			Vial: 1,
