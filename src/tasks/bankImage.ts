@@ -1,4 +1,4 @@
-import { Canvas, CanvasRenderingContext2D, createCanvas, Image, registerFont } from 'canvas';
+import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
@@ -140,37 +140,6 @@ export default class BankImageTask extends Task {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawImage(
-		ctx: CanvasRenderingContext2D,
-		img: Image | null,
-		x: number,
-		y: number,
-		flip = false,
-		flop = false
-	) {
-		ctx.save();
-		const width = img?.width!;
-		const height = img?.height!;
-
-		// Set rotation point to center of image, instead of top/left
-		x -= width / 2;
-		y -= height / 2;
-
-		// Set the origin to the center of the image
-		ctx.translate(x + width / 2, y + height / 2);
-
-		// Flip/flop the canvas
-		let flipScale = 2;
-		let flopScale = 2;
-		if (flip) flipScale = -2;
-		if (flop) flopScale = -2;
-		ctx.scale(flipScale, flopScale);
-
-		// Draw the image
-		ctx.drawImage(img, -width / 2, -height / 2, width, height);
-		ctx.restore();
-	}
-
 	drawBorder(canvas: Canvas) {
 		const ctx = canvas.getContext('2d');
 		// Draw top border
@@ -178,48 +147,63 @@ export default class BankImageTask extends Task {
 		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
 
 		// Draw bottom border
+		ctx.save();
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-		ctx.fillRect(
-			0,
-			canvas.height - this.borderHorizontal?.height!,
-			canvas.width,
-			this.borderHorizontal?.height!
-		);
+		ctx.translate(0, canvas.height);
+		ctx.scale(1, -1);
+		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+		ctx.restore();
 
 		// Draw title line
+		ctx.save();
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-		ctx.fillRect(
-			this.borderVertical?.width! * 2,
-			28,
-			canvas.width - this.borderVertical?.width! * 4,
-			Math.floor(this.borderHorizontal?.height! / 1.5)
-		);
+		ctx.translate(this.borderVertical?.width!, 27);
+		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+		ctx.restore();
 
 		// Draw left border
+		ctx.save();
 		ctx.fillStyle = ctx.createPattern(this.borderVertical, 'repeat-y');
-		ctx.fillRect(0, this.borderVertical?.width!, this.borderVertical?.width!, canvas.height);
+		ctx.translate(0, this.borderVertical?.width!);
+		ctx.fillRect(0, 0, this.borderVertical?.width!, canvas.height);
+		ctx.restore();
 
 		// Draw right border
 		ctx.fillStyle = ctx.createPattern(this.borderVertical, 'repeat-y');
-		ctx.fillRect(
-			canvas.width - this.borderVertical?.width!,
-			0,
-			this.borderVertical?.width!,
-			canvas.height
-		);
+		ctx.save();
+		ctx.translate(canvas.width, 0);
+		ctx.scale(-1, 1);
+		ctx.fillRect(0, 0, this.borderVertical?.width!, canvas.height);
+		ctx.restore();
 
 		// Draw corner borders
 		// Top left
-		this.drawImage(ctx, this.borderCorner, 0, 0);
+		ctx.save();
+		ctx.translate(0, 0);
+		ctx.scale(1, 1);
+		ctx.drawImage(this.borderCorner, 0, 0);
+		ctx.restore();
 
 		// Top right
-		this.drawImage(ctx, this.borderCorner, canvas.width, 0, true);
+		ctx.save();
+		ctx.translate(canvas.width, 0);
+		ctx.scale(-1, 1);
+		ctx.drawImage(this.borderCorner, 0, 0);
+		ctx.restore();
 
 		// Bottom right
-		this.drawImage(ctx, this.borderCorner, canvas.width, canvas.height, true, true);
+		ctx.save();
+		ctx.translate(canvas.width, canvas.height);
+		ctx.scale(-1, -1);
+		ctx.drawImage(this.borderCorner, 0, 0);
+		ctx.restore();
 
 		// Bottom left
-		this.drawImage(ctx, this.borderCorner, 0, canvas.height, false, true);
+		ctx.save();
+		ctx.translate(0, canvas.height);
+		ctx.scale(1, -1);
+		ctx.drawImage(this.borderCorner, 0, 0);
+		ctx.restore();
 	}
 
 	async generateBankImage(
