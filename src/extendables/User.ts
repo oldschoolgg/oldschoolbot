@@ -25,7 +25,7 @@ export default class extends Extendable {
 		if (monster.qpRequired && this.settings.get(UserSettings.QP) < monster.qpRequired) {
 			return [
 				false,
-				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`+quest\``
+				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`=quest\``
 			];
 		}
 

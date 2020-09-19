@@ -2,6 +2,99 @@ import resolveItems from './util/resolveItems';
 import { warmGear } from '../commands/Minion/wt';
 import { gracefulItems } from './skilling/skills/agility';
 import { Eatables } from './eatables';
+import Crafting from './skilling/skills/crafting/crafting';
+import Fletching from './skilling/skills/fletching/fletching';
+import {
+	cluesAll,
+	cluesBeginner,
+	cluesEasy,
+	cluesElite,
+	cluesHard,
+	cluesMaster,
+	cluesMedium,
+	cluesRares,
+	cluesShared,
+	wintertodt
+} from './collectionLog';
+
+const ores = resolveItems([
+	`Copper ore`,
+	`Tin ore`,
+	`Iron ore`,
+	`Blurite ore`,
+	`Silver ore`,
+	`Coal`,
+	`Elemental ore`,
+	`Gold ore`,
+	`Mithril ore`,
+	`Lovakite ore`,
+	`Adamantite ore`,
+	`Runite ore`
+]);
+
+const bars = resolveItems([
+	`Bronze bar`,
+	`Blurite bar`,
+	`Iron bar`,
+	`Elemental metal`,
+	`Steel bar`,
+	`Primed bar`,
+	`Primed mind bar`,
+	`Lovakite bar`,
+	`Mithril bar`,
+	`Adamantite bar`,
+	`Runite bar`
+]);
+
+const smithingMisc = resolveItems([
+	`Shield left half`,
+	`Shield right half`,
+	`Dragon metal shard`,
+	`Dragon metal slice`,
+	`Godsword blade`,
+	`Godsword shards 1 & 2`,
+	`Godsword shards 1 & 3`,
+	`Godsword shards 2 & 3`,
+	`Godsword shard 1`,
+	`Godsword shard 2`,
+	`Godsword shard 3`,
+	`Armadyl hilt`,
+	`Bandos hilt`,
+	`Saradomin hilt`,
+	`Zamorak hilt`,
+	`Arcane sigil`,
+	`Spectral sigil`,
+	`Elysian sigil`,
+	`Blessed Spirit Shield`,
+	`Smouldering stone`,
+	`Dragon metal lump`,
+	`Draconic visage`,
+	`Skeletal visage`,
+	`Wyvern visage`
+]);
+
+const gems = resolveItems([
+	`Amethyst`,
+	`Sapphire`,
+	`Opal`,
+	`Jade`,
+	`Red topaz`,
+	`Emerald`,
+	`Ruby`,
+	`Diamond`,
+	`Dragonstone`,
+	`Onyx`,
+	`Zenyte`,
+	`Zenyte shard`
+]);
+
+const craftingItems = Crafting.Craftables.flatMap(item =>
+	Object.keys(item.inputItems).map(key => parseInt(key))
+);
+
+const craftingItemsSet = [...new Set(craftingItems)];
+
+const smithing = resolveItems([...ores, ...bars, ...smithingMisc]);
 
 const barrows = resolveItems([
 	"Ahrim's hood",
@@ -168,134 +261,15 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const gems = resolveItems([
-	'Uncut sapphire',
-	'Uncut emerald',
-	'Uncut ruby',
-	'Uncut diamond',
-	'Uncut dragonstone',
-	'Uncut onyx',
-	'Sapphire',
-	'Emerald',
-	'Ruby',
-	'Diamond',
-	'Dragonstone',
-	'Onyx'
-]);
+const fletchingItems = Fletching.Fletchables.flatMap(item =>
+	Object.keys(item.inputItems).map(key => parseInt(key))
+);
 
-const fletching = resolveItems([
-	'Logs',
-	'Oak logs',
-	'Willow logs',
-	'Teak logs',
-	'Maple logs',
-	'Mahogany logs',
-	'Yew logs',
-	'Magic logs',
-	'Redwood logs',
-	'Bronze dart tip',
-	'Iron dart tip',
-	'Steel dart tip',
-	'Mithril dart tip',
-	'Adamant dart tip',
-	'Rune dart tip',
-	'Dragon dart tip',
-	'Feather',
-	'Bronze bolts (unf)',
-	'Blurite bolts (unf)',
-	'Iron bolts (unf)',
-	'Silver bolts (unf)',
-	'Steel bolts (unf)',
-	'Mithril bolts (unf)',
-	'Adamant bolts (unf)',
-	'Runite bolts (unf)',
-	'Dragon bolts (unf)',
-	'Unfinished broad bolts',
-	'Opal bolt tips',
-	'Jade bolt tips',
-	'Pearl bolt tips',
-	'Topaz bolt tips',
-	'Sapphire bolt tips',
-	'Emerald bolt tips',
-	'Ruby bolt tips',
-	'Diamond bolt tips',
-	'Onyx bolt tips',
-	'Dragonstone bolt tips',
-	'Headless arrow',
-	'Bronze arrowtips',
-	'Iron arrowtips',
-	'Steel arrowtips',
-	'Mithril arrowtips',
-	'Broad arrowheads',
-	'Adamant arrowtips',
-	'Rune arrowtips',
-	'Amethyst arrowtips',
-	'Dragon arrowtips',
-	'Arrow shaft',
-	'Shortbow (u)',
-	'Longbow (u)',
-	'Oak shortbow (u)',
-	'Oak longbow (u)',
-	'Willow shortbow (u)',
-	'Willow longbow (u)',
-	'Maple shortbow (u)',
-	'Maple longbow (u)',
-	'Yew shortbow (u)',
-	'Yew longbow (u)',
-	'Magic shortbow (u)',
-	'Magic longbow (u)',
-	'Bow string',
-	'Crossbow string',
-	'Flax',
-	'Sinew',
-	'Tanzanite fang',
-	'Celastrus bark',
-	'Wooden stock',
-	'Oak stock',
-	'Willow stock',
-	'Teak stock',
-	'Maple stock',
-	'Mahogany stock',
-	'Yew stock',
-	'Magic stock',
-	'Bronze limbs',
-	'Blurite limbs',
-	'Iron limbs',
-	'Steel limbs',
-	'Mithril limbs',
-	'Adamantite limbs',
-	'Runite limbs',
-	'Dragon limbs'
-]);
+const fletchingItemsSet = [...new Set(fletchingItems)];
 
 const skilling = resolveItems([
 	'Rune essence',
-	'Copper ore',
-	'Tin ore',
-	'Iron ore',
-	'Silver ore',
 	'Pure essence',
-	'Coal',
-	'Gold ore',
-	'Mithril ore',
-	'Adamantite ore',
-	'Runite ore',
-	'Bronze bar',
-	'Iron bar',
-	'Silver bar',
-	'Steel bar',
-	'Gold bar',
-	'Mithril bar',
-	'Adamantite bar',
-	'Runite bar',
-	'Green dragonhide',
-	'Blue dragonhide',
-	'Red dragonhide',
-	'Black dragonhide',
-	'Green dragon leather',
-	'Blue dragon leather',
-	'Red dragon leather',
-	'Black dragon leather',
 	'Ashes',
 	'Cactus spine',
 	'Crushed nest',
@@ -314,10 +288,14 @@ const skilling = resolveItems([
 	'Raw shark',
 	'Grapes',
 	'Feather',
-	...fletching,
+	...fletchingItemsSet,
 	...seeds,
 	...bones,
-	...gems
+	...gems,
+	...bars,
+	...ores,
+	...smithingMisc,
+	...craftingItemsSet
 ]);
 
 const godwarsGear = resolveItems([
@@ -692,20 +670,17 @@ const prayer = resolveItems([
 
 const food = resolveItems(Eatables.map(food => food.name));
 
-export const wintertodtItems = resolveItems([
-	'Phoenix',
-	'Pyromancer hood',
-	'Pyromancer garb',
-	'Pyromancer robe',
-	'Pyromancer boots',
-	'Warm gloves',
-	'Bruma torch',
-	'Burnt page',
-	'Tome of fire',
-	'Dragon axe'
-]);
-
 export const filterableTypes = [
+	{
+		name: 'Smithing',
+		aliases: ['smithing', 'smith', 'sm'],
+		items: smithing
+	},
+	{
+		name: 'Crafting',
+		aliases: ['crafting', 'craft', 'cr'],
+		items: craftingItemsSet
+	},
 	{
 		name: 'Barrows',
 		aliases: ['barrows', 'br'],
@@ -774,7 +749,7 @@ export const filterableTypes = [
 	{
 		name: 'Fletching',
 		aliases: ['fletching', 'fletch'],
-		items: fletching
+		items: fletchingItemsSet
 	},
 	{
 		name: 'Agility',
@@ -804,11 +779,56 @@ export const filterableTypes = [
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: wintertodtItems
+		items: Object.values(wintertodt).flat(Infinity)
 	},
 	{
 		name: 'Warm gear',
 		aliases: ['warm gear', 'warm'],
 		items: warmGear
+	},
+	{
+		name: 'Beginner Clues',
+		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
+		items: Object.values(cluesBeginner).flat(Infinity)
+	},
+	{
+		name: 'Easy Clues',
+		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
+		items: Object.values(cluesEasy).flat(Infinity)
+	},
+	{
+		name: 'Medium Clues',
+		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
+		items: Object.values(cluesMedium).flat(Infinity)
+	},
+	{
+		name: 'Hard Clues',
+		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
+		items: Object.values(cluesHard).flat(Infinity)
+	},
+	{
+		name: 'Elite Clues',
+		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
+		items: Object.values(cluesElite).flat(Infinity)
+	},
+	{
+		name: 'Master Clues',
+		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
+		items: Object.values(cluesMaster).flat(Infinity)
+	},
+	{
+		name: 'All Clues',
+		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
+		items: Object.values(cluesAll).flat(Infinity)
+	},
+	{
+		name: 'Clues Shared',
+		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
+		items: Object.values(cluesShared).flat(Infinity)
+	},
+	{
+		name: 'Clues Rares',
+		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
+		items: Object.values(cluesRares).flat(Infinity)
 	}
 ];
