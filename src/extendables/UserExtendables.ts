@@ -1,4 +1,4 @@
-import { TextChannel, User, Util } from 'discord.js';
+import { User, Util } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 
 import { production } from '../config';
@@ -16,6 +16,7 @@ import {
 	removeItemFromBank,
 	toTitleCase
 } from '../lib/util';
+import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -332,9 +333,10 @@ export default class extends Extendable {
 
 			this.log(log);
 			if (production) {
-				(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
-					`${this.sanitizedName} ${log}`
-				);
+				const channel = this.client.channels.get(Channel.ErrorLogs);
+				if (channelIsSendable(channel)) {
+					channel.send(`${this.sanitizedName} ${log}`);
+				}
 			}
 		}
 
