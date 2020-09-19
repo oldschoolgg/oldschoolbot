@@ -1,12 +1,12 @@
-import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
 import { User } from 'discord.js';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Util } from 'oldschooljs';
 
-import { sleep, noOp } from '../../lib/util';
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Emoji, Events } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { noOp, sleep } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -35,9 +35,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
 		if (!amount) {
 			return msg.send(
-				`${Math.random() >= 0.5 ? msg.author : user} won the duel with ${Math.floor(
-					Math.random() * 30 + 1
-				)} HP remaining.`
+				`${
+					Math.random() >= 0.5 ? msg.author.username : user.username
+				} won the duel with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`
 			);
 		}
 

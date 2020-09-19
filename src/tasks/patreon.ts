@@ -1,14 +1,14 @@
-import { Task, ArrayActions, KlasaUser } from 'klasa';
-import fetch from 'node-fetch';
 import { TextChannel } from 'discord.js';
+import { ArrayActions, KlasaUser, Task } from 'klasa';
+import fetch from 'node-fetch';
 import { O } from 'ts-toolbelt';
 
-import { Patron } from '../lib/types';
-import { PatronTierID, BitField, Time, BadgesEnum, Channel, PerkTier } from '../lib/constants';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { patreonConfig } from '../config';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { Patron } from '../lib/types';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`
@@ -28,7 +28,6 @@ patreonApiURL.search = new URLSearchParams([
 	],
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
-
 const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.One, BitField.IsPatronTier1],
 	[PatronTierID.Two, BitField.IsPatronTier2],
@@ -92,7 +91,10 @@ export default class extends Task {
 			const userBadges = user.settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
-			if (Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33) {
+			if (
+				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
+				patron.patronStatus !== 'active_patron'
+			) {
 				const perkTier = getUsersPerkTier(user);
 				if (perkTier < PerkTier.Two) continue;
 				result.push(
@@ -113,7 +115,9 @@ export default class extends Task {
 
 				result.push(`${user.username}[${patron.patreonID}] was given Tier ${i + 1}.`);
 				channel.send(
-					`Giving patron perks from ${user.username}[${patron.patreonID}] PatreonID[${patron.patreonID}]`
+					`Giving T${i + 1} patron perks to ${user.username}[${
+						patron.patreonID
+					}] PatreonID[${patron.patreonID}]`
 				);
 				await user.settings.update(UserSettings.BitField, bitFieldId, {
 					arrayAction: ArrayActions.Add

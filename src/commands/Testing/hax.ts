@@ -1,9 +1,9 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import Skills from '../../lib/skilling/skills';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Eatables } from '../../lib/eatables';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Skills from '../../lib/skilling/skills';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			return;
 		}
 
-		const paths = Skills.map(sk => `skills.${sk.id}`);
+		const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
 
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);

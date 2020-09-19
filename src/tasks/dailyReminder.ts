@@ -1,9 +1,9 @@
 import { Task } from 'klasa';
 
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { PerkTier, Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { noOp } from '../lib/util';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Task {
 	async run() {

@@ -1,4 +1,5 @@
 import { Event } from 'klasa';
+
 import { Events } from '../lib/constants';
 
 export default class extends Event {
