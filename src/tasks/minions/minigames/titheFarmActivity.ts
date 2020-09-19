@@ -50,8 +50,10 @@ export default class extends Task {
 		const farmingXp = harvestXp + depositXp;
 
 		const harvestStr = `${user} ${user.minionName} successfully harvested ${determineHarvest}x ${fruit} fruit and received ${farmingXp} Farming XP.`;
-		const completedStr = `You have completed the Tithe Farm ${titheFarmsCompleted +
-			1}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
+		const completedStr = `You have completed the ${
+			Emoji.MinigameIcon
+		} Tithe Farm ${titheFarmsCompleted + 1}x times. You now have ${titheFarmPoints +
+			determinePoints} points to spend.`;
 
 		const userBank = user.settings.get(UserSettings.Bank);
 		let bonusXpMultiplier = 0;
@@ -98,8 +100,9 @@ export default class extends Task {
 				Events.ServerNotification,
 				`${Emoji.Farming} **${user.username}'s** minion, ${
 					user.minionName
-				}, just received a Tangleroot by completing the Tithe Farm on their ${titheFarmsCompleted +
-					1} run!`
+				}, just received a Tangleroot by completing the ${
+					Emoji.MinigameIcon
+				} Tithe Farm on their ${titheFarmsCompleted + 1} run!`
 			);
 
 			await user.addItemsToBank(loot, true);
