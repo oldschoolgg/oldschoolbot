@@ -10,7 +10,7 @@ export default class extends Argument {
 		// guarantee all characters are numbers
 		const parsed = Number(itemName);
 		if (!isNaN(parsed)) {
-			return [getOSItem(itemName)];
+			return [getOSItem(parsed)];
 		}
 		const osItems = Items.filter(i => stringMatches(i.name, itemName)).array() as Item[];
 		if (!osItems.length) throw `${itemName} doesnt exist.`;
