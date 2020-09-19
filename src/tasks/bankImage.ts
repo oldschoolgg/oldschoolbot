@@ -265,7 +265,6 @@ export default class BankImageTask extends Task {
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const { page, noBorder, wide } = flags;
-		console.log(flags);
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
 				util.chunk(items, 56).length
@@ -287,16 +286,13 @@ export default class BankImageTask extends Task {
 			: 488;
 		if (width < 488) width = 488;
 		const itemsPerRow = Math.floor(width / (distanceFromSide + itemSize + spacer));
-
-		// Calculates the total height of the canvas and create it. If the height is below
-		// the minimum, set it to the minimum
 		const canvasHeight = Math.floor(
-			Math.ceil(items.length / itemsPerRow) * Math.floor((itemSize + spacer / 2) * 1.08)
+			Math.floor(
+				Math.ceil(items.length / itemsPerRow) * Math.floor((itemSize + spacer / 2) * 1.08)
+			) +
+				itemSize * 1.5
 		);
-		const canvas = createCanvas(
-			width,
-			canvasHeight <= 331 ? 331 : Math.floor(canvasHeight + itemSize * 1.5)
-		);
+		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
 
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
