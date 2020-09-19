@@ -10,398 +10,323 @@ import itemID from '../../lib/util/itemID';
 import { GearTypes } from '../../lib/gear';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import getOSItem from '../../lib/util/getOSItem';
 
 const meleeGearBonus = [
 	{
 		itemID: itemID('Neitiznot faceguard'),
-		itemPoint: 5,
-		head: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Serpentine helm'),
-		itemPoint: 4,
-		head: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Helm of neitiznot'),
-		itemPoint: 3,
-		head: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Void melee helm'),
-		itemPoint: 2,
-		head: true
+		itemPoint: 2
 	},
 	{
 		itemID: itemID('Amulet of torture'),
-		itemPoint: 5,
-		neck: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Amulet of fury'),
-		itemPoint: 4,
-		neck: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Amulet of glory'),
-		itemPoint: 3,
-		neck: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Infernal cape'),
-		itemPoint: 5,
-		cape: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Fire cape'),
-		itemPoint: 4,
-		cape: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Bandos chestplate'),
-		itemPoint: 5,
-		chest: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Fighter torso'),
-		itemPoint: 4,
-		chest: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void knight top'),
-		itemPoint: 3,
-		chest: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Bandos tassets'),
-		itemPoint: 5,
-		legs: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Void knight robe'),
-		itemPoint: 3,
-		legs: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Scythe of vitur'),
-		itemPoint: 5,
-		weapon: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Dragon hunter lance'),
-		itemPoint: 4,
-		weapon: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Zamorakian hasta'),
-		itemPoint: 3,
-		weapon: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Abyssal tentacle'),
-		itemPoint: 2,
-		weapon: true
+		itemPoint: 2
 	},
 	{
 		itemID: itemID('Abyssal whip'),
-		itemPoint: 1,
-		weapon: true
+		itemPoint: 1
 	},
 	{
 		itemID: itemID('Avernic defender'),
-		itemPoint: 5,
-		shield: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Dragon defender'),
-		itemPoint: 4,
-		shield: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Ferocious gloves'),
-		itemPoint: 5,
-		gloves: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Barrows gloves'),
-		itemPoint: 4,
-		gloves: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void knight gloves'),
-		itemPoint: 3,
-		gloves: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Primordial boots'),
-		itemPoint: 5,
-		boots: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Dragon boots'),
-		itemPoint: 4,
-		boots: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Berserker ring (i)'),
-		itemPoint: 5,
-		ring: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Brimstone ring'),
-		itemPoint: 4,
-		ring: true
+		itemPoint: 4
 	}
 ];
 
 const rangeGearBonus = [
 	{
 		itemID: itemID('Armadyl helmet'),
-		itemPoint: 5,
-		head: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Void ranger helm'),
-		itemPoint: 3,
-		head: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Necklace of anguish'),
-		itemPoint: 5,
-		neck: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Amulet of fury'),
-		itemPoint: 4,
-		neck: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Amulet of glory'),
-		itemPoint: 3,
-		neck: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID("Ava's assembler"),
-		itemPoint: 5,
-		cape: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID("Ava's accumulator"),
-		itemPoint: 4,
-		cape: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Armadyl chestplate'),
-		itemPoint: 5,
-		chest: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Void knight top'),
-		itemPoint: 3,
-		chest: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Armadyl chainskirt'),
-		itemPoint: 5,
-		legs: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Void knight robe'),
-		itemPoint: 3,
-		legs: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Twisted bow'),
-		itemPoint: 9,
-		weapon: true
+		itemPoint: 9
 	},
 	{
 		itemID: itemID('Dragon hunter crossbow'),
-		itemPoint: 4,
-		weapon: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Armadyl crossbow'),
-		itemPoint: 3,
-		weapon: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Dragon crossbow'),
-		itemPoint: 2,
-		weapon: true
+		itemPoint: 2
 	},
 	{
 		itemID: itemID('Rune crossbow'),
-		itemPoint: 1,
-		weapon: true
+		itemPoint: 1
 	},
 	{
 		itemID: itemID('Twisted buckler'),
-		itemPoint: 5,
-		shield: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Book of law'),
-		itemPoint: 4,
-		shield: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Dragon arrow'),
-		itemPoint: 5,
-		ammo: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Amethyst arrow'),
-		itemPoint: 5,
-		ammo: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Ruby dragon bolts (e)'),
-		itemPoint: 4,
-		ammo: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Ruby bolts (e)'),
-		itemPoint: 3,
-		ammo: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Barrows gloves'),
-		itemPoint: 5,
-		gloves: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Void knight gloves'),
-		itemPoint: 4,
-		gloves: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Pegasian boots'),
-		itemPoint: 5,
-		boots: true
+		itemPoint: 5
 	}
 ];
 
 const mageGearBonus = [
 	{
 		itemID: itemID('Ancestral hat'),
-		itemPoint: 5,
-		head: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID("Ahrim's hood"),
-		itemPoint: 4,
-		head: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void mage helm'),
-		itemPoint: 3,
-		head: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Occult necklace'),
-		itemPoint: 5,
-		neck: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Amulet of fury'),
-		itemPoint: 4,
-		neck: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Amulet of glory'),
-		itemPoint: 3,
-		neck: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Imbued saradomin cape'),
-		itemPoint: 5,
-		cape: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Saradomin cape'),
-		itemPoint: 4,
-		cape: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Ancestral robe top'),
-		itemPoint: 5,
-		chest: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID("Ahrim's robetop"),
-		itemPoint: 4,
-		chest: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void knight top'),
-		itemPoint: 3,
-		chest: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Ancestral robe bottom'),
-		itemPoint: 5,
-		legs: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Ancestral robe bottom'),
-		itemPoint: 5,
-		legs: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID("Ahrim's robeskirt"),
-		itemPoint: 4,
-		legs: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void knight robe'),
-		itemPoint: 3,
-		legs: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Harmonised nightmare staff'),
-		itemPoint: 5,
-		weapon: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Sanguinesti staff'),
-		itemPoint: 4,
-		weapon: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Trident of the swamp'),
-		itemPoint: 3,
-		weapon: true
+		itemPoint: 3
 	},
 	{
 		itemID: itemID('Trident of the seas'),
-		itemPoint: 2,
-		weapon: true
+		itemPoint: 2
 	},
 	{
 		itemID: itemID('Arcane spirit shield'),
-		itemPoint: 5,
-		shield: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Book of darkness'),
-		itemPoint: 4,
-		shield: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Tormented bracelet'),
-		itemPoint: 5,
-		gloves: true
+		itemPoint: 5
 	},
 	{
 		itemID: itemID('Barrows gloves'),
-		itemPoint: 4,
-		gloves: true
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void knight gloves'),
-		itemPoint: 3,
-		gloves: true
+		itemPoint: 3
 	}
 ];
 
@@ -444,98 +369,36 @@ export default class extends BotCommand {
 		let rangeGearPoints = 0;
 		let mageGearPoints = 0;
 		// Scores the melee gear
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear['2h']?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.body?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.cape?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.feet?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.hands?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.head?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.legs?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.neck?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.ring?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.shield?.item)
-				?.itemPoint ?? 0;
-		meleeGearPoints +=
-			meleeGearBonus.find(item => item.itemID === currentEquippedMeleeGear.weapon?.item)
-				?.itemPoint ?? 0;
+		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
+			// Get the item equipped in that slot...
+			const itemSlot = currentEquippedMeleeGear[key];
+			if (!itemSlot) continue;
+			const item = getOSItem(itemSlot.item);
+			if (!item.equipment) continue;
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			meleeGearPoints +=
+				meleeGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
+		}
 		// Scores the range gear
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear['2h']?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.ammo?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.body?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.cape?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.feet?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.hands?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.legs?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.neck?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.shield?.item)
-				?.itemPoint ?? 0;
-		rangeGearPoints +=
-			rangeGearBonus.find(item => item.itemID === currentEquippedRangeGear.weapon?.item)
-				?.itemPoint ?? 0;
+		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
+			// Get the item equipped in that slot...
+			const itemSlot = currentEquippedRangeGear[key];
+			if (!itemSlot) continue;
+			const item = getOSItem(itemSlot.item);
+			if (!item.equipment) continue;
+			rangeGearPoints +=
+				rangeGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
+		}
 		// Scores the mage gear
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear['2h']?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.body?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.cape?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.hands?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.head?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.legs?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.neck?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.shield?.item)
-				?.itemPoint ?? 0;
-		mageGearPoints +=
-			mageGearBonus.find(item => item.itemID === currentEquippedMageGear.weapon?.item)
-				?.itemPoint ?? 0;
+		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
+			// Get the item equipped in that slot...
+			const itemSlot = currentEquippedMageGear[key];
+			if (!itemSlot) continue;
+			const item = getOSItem(itemSlot.item);
+			if (!item.equipment) continue;
+			mageGearPoints += mageGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
+		}
 
 		let totalGearPoints = meleeGearPoints + rangeGearPoints + mageGearPoints;
 
@@ -552,7 +415,7 @@ export default class extends BotCommand {
 		if (user.hasItemEquippedOrInBank(12926)) {
 			totalGearPoints += 5;
 		}
-
+		// Returns base raid points based on gear and gear score.
 		return [totalGearPoints * 100 + 15000, totalGearPoints];
 	}
 
@@ -563,7 +426,7 @@ export default class extends BotCommand {
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 2,
+			minSize: msg.author.getMinigameScore(6969) > 200 ? 1 : 2,
 			maxSize: 50,
 			message: `${msg.author.username} is starting a party to defeat the Chambers of Xeric! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
