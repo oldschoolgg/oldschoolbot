@@ -32,6 +32,8 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
+		this.avoidItems.push(...msg.author.settings.get(UserSettings.FavoriteItems));
 		let userBank = msg.author.settings.get(UserSettings.Bank);
 		let toSell: ItemBank = {};
 		let toSellQty = 0;
