@@ -1,11 +1,10 @@
-import { Canvas, createCanvas, Image, registerFont } from 'canvas';
+import { Canvas, CanvasRenderingContext2D, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
-import { Context } from 'vm';
 
 import { allCollectionLogItems } from '../lib/collectionLog';
 import { Events } from '../lib/constants';
@@ -141,7 +140,14 @@ export default class BankImageTask extends Task {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawImage(ctx: Context, img: Image | null, x: number, y: number, flip = false, flop = false) {
+	drawImage(
+		ctx: CanvasRenderingContext2D,
+		img: Image | null,
+		x: number,
+		y: number,
+		flip = false,
+		flop = false
+	) {
 		ctx.save();
 		const width = img?.width!;
 		const height = img?.height!;
