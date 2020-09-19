@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -79,9 +79,11 @@ export default class extends BotCommand {
 		);
 
 		return msg.send(
-			`Your minion is off completing a round of the Tithe Farm. It'll take ${formatDuration(
-				duration
-			)} to finish.\n\n${boostStr.join(', ')}`
+			`Your minion is off completing a round of the ${
+				Emoji.MinigameIcon
+			} Tithe Farm. It'll take ${formatDuration(duration)} to finish.\n\n${boostStr.join(
+				', '
+			)}`
 		);
 	}
 }

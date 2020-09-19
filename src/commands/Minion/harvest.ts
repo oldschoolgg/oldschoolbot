@@ -10,8 +10,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Farming from '../../lib/skilling/skills/farming/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -42,7 +43,7 @@ export default class extends BotCommand {
 			}
 			throw `That is not a valid patch type! The available patches are: ${patchStr.join(
 				', '
-			)}.`;
+			)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 		}
 
 		const patchType = msg.author.settings.get(getPatchType);
@@ -60,6 +61,17 @@ export default class extends BotCommand {
 			  )
 			: null;
 
+		const lastPlantTime: number = patchType.plantTime;
+		const difference = currentDate - lastPlantTime;
+		/* Initiate a cooldown feature for each of the seed types.
+			Allows for a run of specific seed type to only be possible until the
+			previous run's plants have been fully grown.*/
+		if (planted && difference < planted.growthTime * Time.Minute) {
+			throw `Please come back when your crops have finished growing in ${formatDuration(
+				lastPlantTime + planted.growthTime * Time.Minute - currentDate
+			)}!`;
+		}
+
 		if (!planted)
 			throw `WTF Error. This error shouldn't happen. Just to clear possible undefined error`;
 
@@ -71,7 +83,7 @@ export default class extends BotCommand {
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			boostStr.push('**Boosts**: 10% for Graceful');
+			boostStr.push('**Boosts**: 10% time for Graceful');
 			duration *= 0.9;
 		}
 
@@ -97,11 +109,24 @@ export default class extends BotCommand {
 				}
 			}
 
+			const userBank = msg.author.settings.get(UserSettings.Bank);
+
+			if (bankHasItem(userBank, itemID('Magic secateurs'))) {
+				boostStr.push('10% crop yield for Magic Secateurs');
+			}
+
+			if (
+				bankHasItem(userBank, itemID('Farming cape')) ||
+				bankHasItem(userBank, itemID('Farming cape(t)'))
+			) {
+				boostStr.push('5% crop yield for Farming Skillcape');
+			}
+
 			returnMessageStr += `${
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}.\nIt'll take around ${formatDuration(
 				duration
-			)} to finish.\n\n${boostStr.join(' ')}`;
+			)} to finish.\n\n${boostStr.join(', ')}`;
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(
