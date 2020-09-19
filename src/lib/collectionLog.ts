@@ -1,7 +1,6 @@
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
 import Agility, { gracefulItems } from './skilling/skills/agility';
-import { wintertodtItems } from './filterables';
 
 export const bosses = {
 	Zulrah: resolveItems([
@@ -49,6 +48,7 @@ export const bosses = {
 		'Spectral sigil',
 		'Arcane sigil',
 		'Elysian sigil',
+		'Divine sigil',
 		'Pet dark core'
 	]),
 	Cerberus: resolveItems([
@@ -1161,6 +1161,7 @@ export const capes = {
 		'Crafting hood',
 		'Prayer hood',
 		'Fletching hood',
+		'Runecraft hood',
 		'Quest point hood'
 	]),
 	capes: resolveItems([
@@ -1174,6 +1175,7 @@ export const capes = {
 		'Crafting cape',
 		'Prayer cape',
 		'Fletching cape',
+		'Runecraft cape',
 		'Quest point cape'
 	]),
 	'trimmed capes': resolveItems([
@@ -1187,6 +1189,7 @@ export const capes = {
 		'Crafting cape(t)',
 		'Prayer cape(t)',
 		'Fletching cape(t)',
+		'Runecraft cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1214,6 +1217,21 @@ export const quest = {
 	])
 };
 
+export const wintertodt = {
+	'': resolveItems([
+		'Phoenix',
+		'Pyromancer hood',
+		'Pyromancer garb',
+		'Pyromancer robe',
+		'Pyromancer boots',
+		'Warm gloves',
+		'Bruma torch',
+		'Burnt page',
+		'Tome of fire',
+		'Dragon axe'
+	])
+};
+
 export const skillingLog = {
 	Mining: resolveItems([
 		'Prospector helmet',
@@ -1230,11 +1248,7 @@ export const skillingLog = {
 	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
 	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
 	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
-	Firemaking: wintertodtItems
-};
-
-export const wintertodt = {
-	'': wintertodtItems
+	Firemaking: Object.values(wintertodt).flat(Infinity)
 };
 
 export const coxLog = {

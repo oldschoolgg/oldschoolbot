@@ -1,18 +1,18 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { saidYes, noOp, rand, multiplyBank } from '../../lib/util';
+import { rand, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { roll } from 'oldschooljs/dist/util/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Mining from '../../lib/skilling/skills/mining';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { getRandomMysteryBox } from '../../lib/openables';
+import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -53,9 +53,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${
 			ore.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
@@ -65,12 +63,14 @@ export default class extends Task {
 			[ore.id]: quantity
 		};
 
-		if (user.equippedPet() === itemID('Doug')) {
+		const numberOfMinutes = duration / Time.Minute;
+
+		if (user.equippedPet() === itemID('Doug') && numberOfMinutes >= 7) {
 			for (const randOre of Mining.Ores.sort(() => 0.5 - Math.random()).slice(
 				0,
-				rand(2, 5)
+				rand(1, Math.floor(numberOfMinutes / 7))
 			)) {
-				const qty = rand(1, 100);
+				const qty = rand(1, numberOfMinutes * 3);
 				const amountToAdd = randOre.xp * qty;
 				xpReceived += amountToAdd;
 				bonusXP += amountToAdd;
@@ -98,8 +98,6 @@ export default class extends Task {
 			);
 		}
 
-		const numberOfMinutes = duration / Time.Minute;
-
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
 			loot[12012] = numberOfNuggets;
@@ -123,6 +121,18 @@ export default class extends Task {
 			}
 		}
 
+		const hasKlik = user.equippedPet() === itemID('Klik');
+		if (hasKlik) {
+			const smeltedOre = Smelting.Bars.find(
+				o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1
+			);
+			if (smeltedOre) {
+				delete loot[ore.id];
+				loot[smeltedOre.id] = quantity;
+				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!`;
+			}
+		}
+
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
@@ -130,31 +140,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
-						user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
-
-						this.client.commands
-							.get('mine')!
-							.run(response as KlasaMessage, [quantity, ore.name]);
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
+			return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
 		});
 	}
 }

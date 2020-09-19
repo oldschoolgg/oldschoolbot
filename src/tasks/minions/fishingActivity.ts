@@ -1,18 +1,17 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { saidYes, noOp, roll, multiplyBank } from '../../lib/util';
+import { roll, multiplyBank } from '../../lib/util';
 import { Time, Events, Emoji } from '../../lib/constants';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import Fishing from '../../lib/skilling/skills/fishing';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import itemID from '../../lib/util/itemID';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { Cookables } from '../../lib/skilling/skills/cooking';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
@@ -132,10 +131,8 @@ export default class extends Task {
 		if (fish.name === 'Barbarian fishing') {
 			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
 				fish.name
-			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP. ${
-				user.minionName
-			} asks if you'd like them to do another of the same trip.
-			\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
+			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP.
+\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
 			if (newLevel > currentLevel) {
 				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
 			}
@@ -176,31 +173,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
-						user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
-
-						this.client.commands
-							.get('fish')!
-							.run(response as KlasaMessage, [quantity, fish.name]);
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
+			return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
 		});
 	}
 }

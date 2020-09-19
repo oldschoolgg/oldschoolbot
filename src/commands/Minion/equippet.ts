@@ -18,7 +18,9 @@ export const allPetIDs = [
 		'Harry',
 		'Klik',
 		'Wintertoad',
-		'Scruffy'
+		'Scruffy',
+		'Zak',
+		'Hammy'
 	]),
 	Object.values(pets)
 ].flat(Infinity);

@@ -6,7 +6,12 @@ import { Util } from 'oldschooljs';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { Time, Events } from '../lib/constants';
 import getOSItem from '../lib/util/getOSItem';
-import { rand } from '../lib/util';
+import { rand, resolveNameBank } from '../lib/util';
+
+const customPrices = resolveNameBank({
+	'Divine spirit shield': 900_000_000,
+	'Divine sigil': 930_000_000
+});
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -22,6 +27,10 @@ export default class extends Extendable {
 
 		if (itemID === 995) {
 			return 1;
+		}
+
+		if (customPrices[itemID]) {
+			return customPrices[itemID];
 		}
 
 		const currentItems = this.settings!.get(ClientSettings.Prices);
