@@ -1,6 +1,7 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearTypes } from '..';
+import { keys, values } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 const baseSumObj: GearTypes.GearStats = {
@@ -24,15 +25,13 @@ export function sumOfSetupStats(setup: GearTypes.GearSetup): GearTypes.GearStats
 	const sum = { ...baseSumObj };
 
 	// For each item slot that there is...
-	for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
+	for (const key of values(EquipmentSlot)) {
 		// Get the item equipped in that slot...
 		const itemSlot = setup[key];
 		if (!itemSlot) continue;
 		const item = getOSItem(itemSlot.item);
-		for (const keyToAdd of Object.keys(baseSumObj)) {
+		for (const keyToAdd of keys(baseSumObj)) {
 			if (!item.equipment) continue;
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
 			sum[keyToAdd] += item.equipment[keyToAdd];
 		}
 	}
