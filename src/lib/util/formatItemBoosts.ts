@@ -1,5 +1,5 @@
-import { itemNameFromID } from '../util';
 import { Bank } from '../types';
+import { itemNameFromID } from '../util';
 
 export function formatItemBoosts(items: Bank) {
 	const str = [];

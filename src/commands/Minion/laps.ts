@@ -1,14 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand } from '../../lib/util';
-import Agility from '../../lib/skilling/skills/agility';
 import { Activity, Tasks, Time } from '../../lib/constants';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Agility from '../../lib/skilling/skills/agility';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -24,19 +24,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (!quantity) {
-			const entries = Object.entries(
-				msg.author.settings.get(UserSettings.LapsScores)
-			).map(arr => [parseInt(arr[0]), arr[1]]);
-			if (entries.length === 0) {
-				throw `You haven't done any laps yet! Sad.`;
-			}
-			const data = entries.map(
-				([id, qty]) => `${Agility.Courses.find(c => c.id === id)!.name}: ${qty}`
-			);
-			return msg.send(data.join('\n'));
-		}
-
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -75,18 +62,18 @@ export default class extends BotCommand {
 			} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`;
 		}
 
-		const data: AgilityActivityTaskOptions = {
-			courseID: course.name,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Agility,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<AgilityActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				courseID: course.name,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Agility
+			}
+		);
 		msg.author.incrementMinionDailyDuration(duration);
 
 		const response = `${msg.author.minionName} is now doing ${quantity}x ${

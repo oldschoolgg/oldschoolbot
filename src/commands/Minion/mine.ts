@@ -1,36 +1,40 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Tasks } from '../../lib/constants';
+import Mining from '../../lib/skilling/skills/mining';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import {
 	determineScaledOreTime,
-	stringMatches,
 	formatDuration,
-	rand,
-	itemNameFromID
+	itemNameFromID,
+	reduceNumByPercent,
+	stringMatches
 } from '../../lib/util';
-import Mining from '../../lib/skilling/skills/mining';
-import { Activity, Tasks } from '../../lib/constants';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
 
 const pickaxes = [
 	{
 		id: itemID('3rd age pickaxe'),
-		reductionPercent: 13
+		reductionPercent: 13,
+		miningLvl: 61
 	},
 	{
 		id: itemID('Gilded pickaxe'),
-		reductionPercent: 11
+		reductionPercent: 11,
+		miningLvl: 41
 	},
 	{
 		id: itemID('Infernal pickaxe'),
-		reductionPercent: 10
+		reductionPercent: 10,
+		miningLvl: 61
 	},
 	{
 		id: itemID('Dragon pickaxe'),
-		reductionPercent: 6
+		reductionPercent: 6,
+		miningLvl: 61
 	}
 ];
 
@@ -97,18 +101,20 @@ export default class extends BotCommand {
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
-		if (msg.author.skillLevel(SkillsEnum.Mining) >= 61) {
-			for (const pickaxe of pickaxes) {
-				if (msg.author.hasItemEquippedOrInBank(pickaxe.id)) {
-					timeToMine = Math.floor(timeToMine * ((100 - pickaxe.reductionPercent) / 100));
-					boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
-					break;
-				}
+		for (const pickaxe of pickaxes) {
+			if (
+				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
+				msg.author.skillLevel(SkillsEnum.Mining) >= pickaxe.miningLvl
+			) {
+				timeToMine = reduceNumByPercent(timeToMine, pickaxe.reductionPercent);
+				boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
+				break;
 			}
-
+		}
+		if (msg.author.skillLevel(SkillsEnum.Mining) >= 60) {
 			for (const glove of gloves) {
 				if (msg.author.hasItemEquippedAnywhere(glove.id)) {
-					timeToMine = Math.floor(timeToMine * ((100 - glove.reductionPercent) / 100));
+					timeToMine = reduceNumByPercent(timeToMine, glove.reductionPercent);
 					boosts.push(`${glove.reductionPercent}% for ${itemNameFromID(glove.id)}`);
 					break;
 				}
@@ -129,18 +135,18 @@ export default class extends BotCommand {
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
-		const data: MiningActivityTaskOptions = {
-			oreID: ore.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Mining,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<MiningActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				oreID: ore.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Mining
+			}
+		);
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name

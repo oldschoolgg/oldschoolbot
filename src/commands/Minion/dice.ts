@@ -1,11 +1,11 @@
-import { CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Image, Color, Emoji, Events } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { Color, Emoji, Events, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { rand } from '../../lib/util';
 
 export default class extends BotCommand {
@@ -49,7 +49,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.GP, amountToAdd);
 
 			const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DicingBank);
-			const dividedAmount = (dicingBank + (won ? -amount : amount)) / 1_000_000;
+			const dividedAmount = (won ? -amount : amount) / 1_000_000;
 			this.client.settings.update(
 				ClientSettings.EconomyStats.DicingBank,
 				Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)

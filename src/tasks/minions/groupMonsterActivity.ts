@@ -1,13 +1,13 @@
 import { Task } from 'klasa';
 
-import { noOp, randomItemFromArray, queuedMessageSend, addBanks } from '../../lib/util';
+import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import announceLoot from '../../lib/minions/functions/announceLoot';
+import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';
-import announceLoot from '../../lib/minions/functions/announceLoot';
+import { addBanks, noOp, queuedMessageSend, randomItemFromArray } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import { Emoji } from '../../lib/constants';
 
 export default class extends Task {
 	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {

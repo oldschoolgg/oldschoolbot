@@ -1,8 +1,8 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Item } from 'oldschooljs/dist/meta/types';
 
 const options = {
 	max: 1,

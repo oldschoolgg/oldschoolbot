@@ -1,7 +1,7 @@
-import { Bank } from './types';
-import itemID from './util/itemID';
 import { MAX_QP } from './constants';
+import { Bank } from './types';
 import { resolveNameBank } from './util';
+import itemID from './util/itemID';
 
 interface Buyable {
 	name: string;
@@ -193,7 +193,7 @@ const Buyables: Buyable[] = [
 			'Shield right half': 1
 		}),
 		qpRequired: 111,
-		gpCost: 750_000
+		gpCost: 1_000_000
 	}
 ];
 

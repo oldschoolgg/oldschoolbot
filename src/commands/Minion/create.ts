@@ -2,17 +2,17 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
+import Createables from '../../lib/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import {
-	stringMatches,
-	removeBankFromBank,
-	multiplyBank,
+	addBanks,
 	bankHasAllItemsFromBank,
-	addBanks
+	multiplyBank,
+	removeBankFromBank,
+	stringMatches
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Createables from '../../lib/createables';
-import { SkillsEnum } from '../../lib/skilling/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) throw `That's not a valid item you can create.`;
 
-		if (typeof quantity !== 'number' || createableItem.cantHaveItems) {
+		if (!quantity || createableItem.cantHaveItems) {
 			quantity = 1;
 		}
 
@@ -42,40 +42,12 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.QPRequired} QP to create this item.`;
 		}
 
-		if (
-			createableItem.smithingLevel &&
-			msg.author.skillLevel(SkillsEnum.Smithing) < createableItem.smithingLevel
-		) {
-			// Ensure they have the required skills to create the item.
-			throw `You need ${createableItem.smithingLevel} smithing to create this item.`;
-		}
-
-		if (
-			createableItem.firemakingLevel &&
-			msg.author.skillLevel(SkillsEnum.Firemaking) < createableItem.firemakingLevel
-		) {
-			throw `You need ${createableItem.firemakingLevel} firemaking to create this item.`;
-		}
-
-		if (
-			createableItem.craftingLevel &&
-			msg.author.skillLevel(SkillsEnum.Crafting) < createableItem.craftingLevel
-		) {
-			throw `You need ${createableItem.craftingLevel} crafting to create this item.`;
-		}
-
-		if (
-			createableItem.prayerLevel &&
-			msg.author.skillLevel(SkillsEnum.Prayer) < createableItem.prayerLevel
-		) {
-			throw `You need ${createableItem.prayerLevel} prayer to create this item.`;
-		}
-
-		if (
-			createableItem.agilityLevel &&
-			msg.author.skillLevel(SkillsEnum.Agility) < createableItem.agilityLevel
-		) {
-			throw `You need ${createableItem.agilityLevel} agility to create this item.`;
+		if (createableItem.requiredSkills) {
+			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills)) {
+				if (msg.author.skillLevel(skillName as SkillsEnum) < lvl) {
+					throw `You need ${lvl} ${skillName} to create this item.`;
+				}
+			}
 		}
 
 		const outItems = multiplyBank(createableItem.outputItems, quantity);

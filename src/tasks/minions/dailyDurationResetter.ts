@@ -1,4 +1,4 @@
-import { Task, Gateway, Stopwatch } from 'klasa';
+import { Gateway, Stopwatch, Task } from 'klasa';
 
 import { Events } from '../../lib/constants';
 

@@ -1,10 +1,12 @@
-import { Client, KlasaClientOptions } from 'klasa';
-import { Client as TagsClient } from '@kcp/tags';
-import pLimit from 'p-limit';
-import * as Sentry from '@sentry/node';
+import 'reflect-metadata';
 
-import { clientOptions, clientProperties } from './lib/config/config';
+import { Client as TagsClient } from '@kcp/tags';
+import * as Sentry from '@sentry/node';
+import { Client, KlasaClientOptions } from 'klasa';
+import pLimit from 'p-limit';
+
 import { botToken, sentryDSN } from './config';
+import { clientOptions, clientProperties } from './lib/config/config';
 
 if (sentryDSN) {
 	Sentry.init({
