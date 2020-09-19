@@ -1,9 +1,21 @@
-import resolveItems from './util/resolveItems';
 import { warmGear } from '../commands/Minion/wt';
-import { gracefulItems } from './skilling/skills/agility';
+import {
+	cluesAll,
+	cluesBeginner,
+	cluesEasy,
+	cluesElite,
+	cluesHard,
+	cluesMaster,
+	cluesMedium,
+	cluesRares,
+	cluesShared,
+	wintertodt
+} from './collectionLog';
 import { Eatables } from './eatables';
-import Crafting from './skilling/skills/crafting/crafting';
-import Fletching from './skilling/skills/fletching/fletching';
+import { gracefulItems } from './skilling/skills/agility';
+import Crafting from './skilling/skills/crafting';
+import Fletching from './skilling/skills/fletching';
+import resolveItems from './util/resolveItems';
 
 const ores = resolveItems([
 	`Copper ore`,
@@ -658,19 +670,6 @@ const prayer = resolveItems([
 
 const food = resolveItems(Eatables.map(food => food.name));
 
-export const wintertodtItems = resolveItems([
-	'Phoenix',
-	'Pyromancer hood',
-	'Pyromancer garb',
-	'Pyromancer robe',
-	'Pyromancer boots',
-	'Warm gloves',
-	'Bruma torch',
-	'Burnt page',
-	'Tome of fire',
-	'Dragon axe'
-]);
-
 export const filterableTypes = [
 	{
 		name: 'Smithing',
@@ -780,11 +779,56 @@ export const filterableTypes = [
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: wintertodtItems
+		items: Object.values(wintertodt).flat(Infinity)
 	},
 	{
 		name: 'Warm gear',
 		aliases: ['warm gear', 'warm'],
 		items: warmGear
+	},
+	{
+		name: 'Beginner Clues',
+		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
+		items: Object.values(cluesBeginner).flat(Infinity)
+	},
+	{
+		name: 'Easy Clues',
+		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
+		items: Object.values(cluesEasy).flat(Infinity)
+	},
+	{
+		name: 'Medium Clues',
+		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
+		items: Object.values(cluesMedium).flat(Infinity)
+	},
+	{
+		name: 'Hard Clues',
+		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
+		items: Object.values(cluesHard).flat(Infinity)
+	},
+	{
+		name: 'Elite Clues',
+		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
+		items: Object.values(cluesElite).flat(Infinity)
+	},
+	{
+		name: 'Master Clues',
+		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
+		items: Object.values(cluesMaster).flat(Infinity)
+	},
+	{
+		name: 'All Clues',
+		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
+		items: Object.values(cluesAll).flat(Infinity)
+	},
+	{
+		name: 'Clues Shared',
+		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
+		items: Object.values(cluesShared).flat(Infinity)
+	},
+	{
+		name: 'Clues Rares',
+		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
+		items: Object.values(cluesRares).flat(Infinity)
 	}
 ];

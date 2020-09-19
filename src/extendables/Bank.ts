@@ -1,8 +1,8 @@
-import { Extendable, SettingsFolder, ExtendableStore } from 'klasa';
 import { User } from 'discord.js';
+import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { GearTypes } from '../lib/gear';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import { ItemBank } from '../lib/types';
 import { addItemToBank } from '../lib/util';
 

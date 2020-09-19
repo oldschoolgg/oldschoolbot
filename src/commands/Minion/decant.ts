@@ -1,10 +1,10 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Potions from '../../lib/minions/data/potions';
-import { stringMatches, addItemToBank } from '../../lib/util';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
+import { addItemToBank, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

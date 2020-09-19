@@ -1,6 +1,6 @@
+import { filterableTypes } from '../filterables';
 import { ItemTuple } from '../types';
 import { stringMatches } from '../util';
-import { filterableTypes } from '../filterables';
 
 export default function filterByCategory(filterQuery: string, items: ItemTuple[]) {
 	const filtered = filterableTypes.find(_filtered =>

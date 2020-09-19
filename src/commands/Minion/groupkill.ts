@@ -1,17 +1,17 @@
-import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { MakePartyOptions } from '../../lib/types';
-import { minionNotBusy, requiresMinion, ironsCantUse } from '../../lib/minions/decorators';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
-import { Activity, Tasks, Emoji } from '../../lib/constants';
-import { rand, formatDuration, addItemToBank } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { reducedTimeForGroup, findMonster } from '../../lib/minions/functions';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import { Activity, Emoji, Tasks } from '../../lib/constants';
 import { Eatables } from '../../lib/eatables';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
+import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
+import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { MakePartyOptions } from '../../lib/types';
+import { addItemToBank, formatDuration } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const { ceil } = Math;
 
@@ -151,20 +151,20 @@ export default class extends BotCommand {
 			}
 		}
 
-		const data: GroupMonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.GroupMonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration,
-			leader: msg.author.id,
-			users: users.map(u => u.id)
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.GroupMonsterKilling,
+				leader: msg.author.id,
+				users: users.map(u => u.id)
+			}
+		);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

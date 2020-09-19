@@ -1,16 +1,16 @@
 import { Task } from 'klasa';
 
-import { MinigameTickerTaskData } from '../../../lib/types/minions';
-import runActivityTask from '../../../lib/util/runActivityTask';
 import { Tasks } from '../../../lib/constants';
+import { MinigameTickerTaskData } from '../../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../../lib/util/removeSubTasksFromActivityTask';
+import runActivityTask from '../../../lib/util/runActivityTask';
 import { taskNameFromType } from '../../../lib/util/taskNameFromType';
 import { instantTrips, production } from '../../../config';
 
 export default class extends Task {
 	async run(data: MinigameTickerTaskData) {
 		const now = Date.now();
-		const tasksThatWereFinished: number[] = [];
+		const tasksThatWereFinished: string[] = [];
 
 		for (const minigameTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.

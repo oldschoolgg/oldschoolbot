@@ -1,19 +1,19 @@
-import { Command, KlasaMessage, CommandStore, util } from 'klasa';
-import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { createCanvas, Image, registerFont } from 'canvas';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import * as fs from 'fs';
+import { Command, CommandStore, KlasaMessage, util } from 'klasa';
 import { Items } from 'oldschooljs';
 
-import {
-	generateHexColorForCashStack,
-	formatItemStackQuantity,
-	chunkObject,
-	addItemToBank
-} from '../../lib/util';
-import { Bank } from '../../lib/types';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { Bank } from '../../lib/types';
+import {
+	addItemToBank,
+	chunkObject,
+	formatItemStackQuantity,
+	generateHexColorForCashStack
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 const bg = fs.readFileSync('./resources/images/coins.png');
@@ -77,7 +77,7 @@ export default class extends Command {
 				}
 				return msg.channel.sendBankImage({
 					bank: view,
-					title: 'Partial Bank View'
+					title: `${msg.author.username}'s Bank`
 				});
 			}
 			const item = getOSItem(pageNumberOrItemName);
@@ -116,6 +116,7 @@ export default class extends Command {
 				);
 			}
 
+			msg.channel.assertCanManageMessages();
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 			const display = new UserRichDisplay();
 			display.setFooterPrefix(`Page `);
@@ -139,7 +140,7 @@ export default class extends Command {
 		if (bankKeys.length < 57) {
 			return msg.channel.sendBankImage({
 				bank,
-				title: `${msg.author.username}'s Bank - Page 1 of 1`,
+				title: `${msg.author.username}'s Bank`,
 				flags: msg.flagArgs,
 				background: msg.author.settings.get(UserSettings.BankBackground)
 			});
@@ -155,18 +156,20 @@ export default class extends Command {
 				bank,
 				title: `${msg.author.username}'s Bank`,
 				flags: msg.flagArgs,
-				background: msg.author.settings.get(UserSettings.BankBackground)
+				background: msg.author.settings.get(UserSettings.BankBackground),
+				user: msg.author
 			});
 		}
 
 		return msg.channel.sendBankImage({
 			bank,
-			title: `${msg.author.username}'s Bank - Page ${pageNumberOrItemName} of ${chunkedObject.length}`,
+			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,
 				page: pageNumberOrItemName - 1
 			},
-			background: msg.author.settings.get(UserSettings.BankBackground)
+			background: msg.author.settings.get(UserSettings.BankBackground),
+			user: msg.author
 		});
 	}
 }

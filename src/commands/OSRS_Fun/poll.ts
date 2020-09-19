@@ -1,5 +1,5 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageReaction } from 'discord.js';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 import { Emoji } from '../../lib/constants';
 

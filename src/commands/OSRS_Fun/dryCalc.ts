@@ -1,4 +1,5 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 import { round } from '../../lib/util';
 
 export default class extends Command {

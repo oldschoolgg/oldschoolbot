@@ -1,4 +1,5 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
 export default class extends Command {

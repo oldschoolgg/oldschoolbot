@@ -1,14 +1,11 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
-import { Time } from '../../lib/constants';
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import Cooking from '../../lib/skilling/skills/cooking';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import { SkillsEnum } from '../../lib/skilling/types';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
+import Cooking from '../../lib/skilling/skills/cooking';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
@@ -45,9 +42,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished cooking ${quantity}x ${
 			cookable.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Cooking level is now ${newLevel}!`;
@@ -67,30 +62,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		channel.send(str).catch(noOp);
-
-		channel
-			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-				max: 1
-			})
-			.then(messages => {
-				const response = messages.first();
-
-				if (response) {
-					if (response.author.minionIsBusy) return;
-
-					user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
-
-					this.client.commands
-						.get('cook')!
-						.run(response as KlasaMessage, [quantity, cookable.name])
-						.catch(err => channel.send(err));
-				}
-			})
-			.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
+			return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
+		});
 	}
 }

@@ -1,11 +1,12 @@
+import { KlasaClientOptions } from 'klasa';
+
 import {
+	MongoDBConfig,
+	PatreonConfig,
 	ProviderConfig,
 	RedditAppConfig,
-	TwitterAppConfig,
-	MongoDBConfig,
-	PatreonConfig
+	TwitterAppConfig
 } from './lib/types';
-import { KlasaClientOptions } from 'klasa';
 
 export const botToken = '';
 export const providerConfig: ProviderConfig | null = {

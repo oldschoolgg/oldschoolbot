@@ -1,5 +1,5 @@
-import { Extendable, ExtendableStore } from 'klasa';
 import { User } from 'discord.js';
+import { Extendable, ExtendableStore } from 'klasa';
 
 import { UserSettings } from '../lib/settings/types/UserSettings';
 

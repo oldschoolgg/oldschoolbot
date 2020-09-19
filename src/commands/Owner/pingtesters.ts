@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { SupportServer, Roles } from '../../lib/constants';
+import { Roles, SupportServer } from '../../lib/constants';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

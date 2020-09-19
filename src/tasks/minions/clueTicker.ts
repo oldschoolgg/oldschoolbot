@@ -9,7 +9,7 @@ import { instantTrips, production } from '../../config';
 export default class extends Task {
 	async run(data: ClueTickerTaskData) {
 		const now = Date.now();
-		const tasksThatWereFinished: number[] = [];
+		const tasksThatWereFinished: string[] = [];
 
 		for (const clueTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
