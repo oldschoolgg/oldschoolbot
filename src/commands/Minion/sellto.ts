@@ -1,12 +1,11 @@
 import { KlasaMessage, CommandStore } from 'klasa';
-import { Util, Items } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { GuildMember } from 'discord.js';
 import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
-import { stringMatches } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -43,8 +42,13 @@ export default class extends BotCommand {
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
 			throw `That user doesn't have enough GP :(`;
 		}
-		const osItem = Items.find(item => stringMatches(item.name, itemArray[0].name));
-		if (!osItem) throw `That item doesnt exist.`;
+
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const osItem = itemArray.find(i => userBank[i.id] && !i.duplicate);
+
+		if (!osItem) {
+			throw `You don't have any of this item to sell, or it is not tradeable.`;
+		}
 
 		buyerMember.user.toggleBusy(true);
 		msg.author.toggleBusy(true);
