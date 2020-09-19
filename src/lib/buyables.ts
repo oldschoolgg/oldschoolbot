@@ -261,8 +261,8 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 0,
 		titheFarmPoints: 50
-  },
-  {
+	},
+	{
 		name: 'Eye of newt',
 		aliases: ['eye of newt', 'newt eye'],
 		outputItems: resolveNameBank({
