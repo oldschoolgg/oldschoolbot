@@ -1,5 +1,3 @@
-import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
-import { TextChannel, User, Util } from 'discord.js';
 import { TextChannel, User, Util } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 
@@ -9,7 +7,6 @@ import clueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { SkillsEnum } from '../lib/skilling/types';
-import { Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
 import { Bank } from '../lib/types';
 import {
 	addBanks,
