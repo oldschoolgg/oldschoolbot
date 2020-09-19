@@ -385,8 +385,8 @@ export default class BankImageTask extends Task {
 			fillTextXTimesInCtx(
 				ctx,
 				formattedQuantity,
-				xLoc + distanceFromSide - 19,
-				yLoc + distanceFromTop - 25
+				xLoc + distanceFromSide - 17,
+				yLoc + distanceFromTop - 23
 			);
 
 			// Draw qty
@@ -407,15 +407,15 @@ export default class BankImageTask extends Task {
 				fillTextXTimesInCtx(
 					ctx,
 					__name,
-					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
-					yLoc + distanceFromTop - 1
+					Math.floor(xLoc + (itemSize - item.width) / 2),
+					yLoc + distanceFromTop
 				);
 				ctx.fillStyle = 'white';
 				fillTextXTimesInCtx(
 					ctx,
 					__name,
-					Math.floor(xLoc + (itemSize - item.width) / 2),
-					yLoc + distanceFromTop
+					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
+					yLoc + distanceFromTop - 1
 				);
 			}
 
@@ -426,15 +426,15 @@ export default class BankImageTask extends Task {
 				fillTextXTimesInCtx(
 					ctx,
 					formattedValue,
-					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
-					yLoc + distanceFromTop - 1
+					Math.floor(xLoc + (itemSize - item.width) / 2),
+					yLoc + distanceFromTop
 				);
 				ctx.fillStyle = generateHexColorForCashStack(value);
 				fillTextXTimesInCtx(
 					ctx,
 					formattedValue,
-					Math.floor(xLoc + (itemSize - item.width) / 2),
-					yLoc + distanceFromTop
+					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
+					yLoc + distanceFromTop - 1
 				);
 			}
 		}
