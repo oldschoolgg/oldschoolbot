@@ -146,11 +146,13 @@ export default class BankImageTask extends Task {
 
 		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
 
+		let partial = false;
+		let partialValue = 0;
 		const totalValue = addArrayOfNumbers(items.map(i => i[2]));
-
 		// Filtering
 		const searchQuery = flags.search || flags.s;
 		if (searchQuery && typeof searchQuery === 'string') {
+			partial = true;
 			items = filterItemTupleByQuery(searchQuery, items);
 		}
 
@@ -159,15 +161,42 @@ export default class BankImageTask extends Task {
 			if (
 				filterableTypes.some(type => type.aliases.some(alias => stringMatches(alias, flag)))
 			) {
+				partial = true;
 				items = filterByCategory(flag, items);
 			}
 		}
 
-		// Sorting
+		// Sorting by value
 		items = items.sort((a, b) => b[2] - a[2]);
 
+		// Sorting by favorites
+		if (user) {
+			const favorites = user.settings.get(UserSettings.FavoriteItems);
+			if (favorites.length > 0) {
+				// Sort favorited items to the front
+				items = items.sort((a, b) => {
+					const aFav = favorites.includes(a[0]);
+					const bFav = favorites.includes(b[0]);
+					if (aFav && bFav) return 0;
+					if (aFav) return -1;
+					return 1;
+				});
+			}
+		}
+
+		if (partial) {
+			partialValue = addArrayOfNumbers(items.map(i => i[2]));
+		}
+
+		// get page flag to show the current page, full and showNewCL to avoid showing page n of y
+		const { page, full, showNewCL } = flags;
+		if (!showNewCL && !full && Object.entries(flags).length > 0) {
+			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
+				util.chunk(items, 56).length
+			}`;
+		}
+
 		// Paging
-		const { page } = flags;
 		if (typeof page === 'number') {
 			const chunked = util.chunk(items, 56);
 			const pageLoot = chunked[page];
@@ -176,12 +205,11 @@ export default class BankImageTask extends Task {
 		}
 
 		// Draw Bank Title
-
 		ctx.textAlign = 'center';
 		ctx.font = '16px RuneScape Bold 12';
 
 		if (showValue) {
-			title += ` (Value: ${toKMB(totalValue)})`;
+			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
 		}
 
 		ctx.fillStyle = '#000000';
@@ -202,9 +230,7 @@ export default class BankImageTask extends Task {
 				const state = saveCtx(ctx);
 				const temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
 				canvas.height += itemSize + (i === chunkedLoot.length ? 0 : spacer);
-
-				const ptrn = ctx.createPattern(this.repeatingImage, 'repeat');
-				ctx.fillStyle = ptrn;
+				ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 				ctx.putImageData(temp, 0, 0);
@@ -391,8 +417,7 @@ export default class BankImageTask extends Task {
 				const temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
 				canvas.height += itemSize + spacer;
 
-				const ptrn = ctx.createPattern(repeaterImage, 'repeat');
-				ctx.fillStyle = ptrn;
+				ctx.fillStyle = ctx.createPattern(repeaterImage, 'repeat');
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 				ctx.putImageData(temp, 0, 0);

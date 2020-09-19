@@ -9,6 +9,7 @@ import { stringMatches, toTitleCase, convertXPtoLVL, stripEmojis } from '../../l
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import Skills from '../../lib/skilling/skills';
+import Agility from '../../lib/skilling/skills/agility';
 
 const CACHE_TIME = Time.Minute * 5;
 
@@ -116,7 +117,7 @@ export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the people with the most virtual GP.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -394,6 +395,9 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
+		if (1 < 2) {
+			throw `The collection log leaderboards are currently disabled.`;
+		}
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
@@ -456,6 +460,30 @@ WHERE u.logbanklength > 300 ORDER BY u.logbanklength DESC;`
 						.join('\n')
 				),
 			`${type.name} Collection Log Leaderboard`
+		);
+	}
+
+	async laps(msg: KlasaMessage, [courseName = '']: [string]) {
+		const course = Agility.Courses.find(course =>
+			course.aliases.some(alias => stringMatches(alias, courseName))
+		);
+
+		if (!course) throw `Thats not a valid agility course.`;
+
+		const data: { id: string; lapCount: number }[] = await this.query(
+			`SELECT id, "lapsScores"->>'${course.id}' as "lapCount" FROM users WHERE "lapsScores"->>'${course.id}' IS NOT NULL ORDER BY ("lapsScores"->>'${course.id}')::int DESC LIMIT 50;`
+		);
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(data, 10)
+				.map(subList =>
+					subList
+						.map(({ id, lapCount }) => `**${this.getUsername(id)}:** ${lapCount} Laps`)
+						.join('\n')
+				),
+			`${course.name} Laps Leaderboard`
 		);
 	}
 
