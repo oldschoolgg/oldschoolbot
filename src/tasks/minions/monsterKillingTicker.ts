@@ -1,10 +1,10 @@
 import { Task } from 'klasa';
 
+import { instantTrips, production } from '../../config';
 import { Activity, Tasks } from '../../lib/constants';
 import { MonsterKillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import runActivityTask from '../../lib/util/runActivityTask';
-import { instantTrips, production } from '../../config';
 
 export default class extends Task {
 	async run(data: MonsterKillingTickerTaskData) {

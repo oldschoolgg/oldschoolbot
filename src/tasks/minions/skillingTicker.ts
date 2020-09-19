@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
 
+import { instantTrips, production } from '../../config';
 import { Tasks } from '../../lib/constants';
 import { SkillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import runActivityTask from '../../lib/util/runActivityTask';
 import { taskNameFromType } from '../../lib/util/taskNameFromType';
-import { instantTrips, production } from '../../config';
 
 export default class extends Task {
 	async run(data: SkillingTickerTaskData) {

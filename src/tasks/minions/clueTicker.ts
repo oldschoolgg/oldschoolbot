@@ -1,10 +1,10 @@
 import { Task } from 'klasa';
 
+import { instantTrips, production } from '../../config';
 import { Tasks } from '../../lib/constants';
 import { ClueTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import runActivityTask from '../../lib/util/runActivityTask';
-import { instantTrips, production } from '../../config';
 
 export default class extends Task {
 	async run(data: ClueTickerTaskData) {
