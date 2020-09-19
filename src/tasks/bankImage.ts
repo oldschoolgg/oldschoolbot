@@ -1,10 +1,11 @@
-import { createCanvas, Image, registerFont } from 'canvas';
+import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
+import { Context } from 'vm';
 
 import { allCollectionLogItems } from '../lib/collectionLog';
 import { Events } from '../lib/constants';
@@ -70,7 +71,7 @@ export default class BankImageTask extends Task {
 	}
 
 	async run() {
-		this.cacheFiles();
+		await this.cacheFiles();
 		this.backgroundImages = await Promise.all(
 			backgroundImages.map(async img => ({
 				...img,
@@ -81,15 +82,6 @@ export default class BankImageTask extends Task {
 		);
 		this.repeatingImage = await canvasImageFromBuffer(
 			fs.readFileSync('./resources/images/repeating.png')
-		);
-		this.borderImage = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border.png')
-		);
-		this.borderImageTop = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_top.png')
-		);
-		this.borderImageBottom = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_bottom.png')
 		);
 
 		this.borderC = await canvasImageFromBuffer(
@@ -141,12 +133,76 @@ export default class BankImageTask extends Task {
 			`https://static.runelite.net/cache/item/icon/${itemID}.png`
 		).then(result => result.buffer());
 
-		fs.promises.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
+		await fs.promises.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
 
 		const image = await canvasImageFromBuffer(imageBuffer);
 
 		this.itemIconsList.add(itemID);
 		this.itemIconImagesCache.set(itemID, image);
+	}
+
+	drawImage(ctx: Context, img: Image | null, x: number, y: number, flip = false, flop = false) {
+		ctx.save();
+		const width = img?.width!;
+		const height = img?.height!;
+
+		// Set rotation point to center of image, instead of top/left
+		x -= width / 2;
+		y -= height / 2;
+
+		// Set the origin to the center of the image
+		ctx.translate(x + width / 2, y + height / 2);
+
+		// Flip/flop the canvas
+		let flipScale = 2;
+		let flopScale = 2;
+		if (flip) flipScale = -2;
+		if (flop) flopScale = -2;
+		ctx.scale(flipScale, flopScale);
+
+		// Draw the image
+		ctx.drawImage(img, -width / 2, -height / 2, width, height);
+		ctx.restore();
+	}
+
+	drawBorder(canvas: Canvas, ctx: Context) {
+		// Draw top border
+		ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
+		ctx.fillRect(0, 0, canvas.width, this.borderH?.height!);
+
+		// Draw bottom border
+		ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
+		ctx.fillRect(0, canvas.height - this.borderH?.height!, canvas.width, this.borderH?.height!);
+
+		// Draw title line
+		ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
+		ctx.fillRect(
+			this.borderV?.width! * 2,
+			28,
+			canvas.width - this.borderV?.width! * 4,
+			Math.floor(this.borderH?.height! / 1.5)
+		);
+
+		// Draw left border
+		ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
+		ctx.fillRect(0, this.borderV?.width!, this.borderV?.width!, canvas.height);
+
+		// Draw right border
+		ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
+		ctx.fillRect(canvas.width - this.borderV?.width!, 0, this.borderV?.width!, canvas.height);
+
+		// Draw corner borders
+		// Top left
+		this.drawImage(ctx, this.borderC, 0, 0);
+
+		// Top right
+		this.drawImage(ctx, this.borderC, canvas.width, 0, true);
+
+		// Bottom right
+		this.drawImage(ctx, this.borderC, canvas.width, canvas.height, true, true);
+
+		// Bottom left
+		this.drawImage(ctx, this.borderC, 0, canvas.height, false, true);
 	}
 
 	async generateBankImage(
@@ -192,7 +248,7 @@ export default class BankImageTask extends Task {
 		if (user) {
 			const favorites = user.settings.get(UserSettings.FavoriteItems);
 			if (favorites.length > 0) {
-				// Sort favorited items to the front
+				// Sort favorite items to the front
 				items = items.sort((a, b) => {
 					const aFav = favorites.includes(a[0]);
 					const bFav = favorites.includes(b[0]);
@@ -208,7 +264,7 @@ export default class BankImageTask extends Task {
 		}
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
-		const { page, noBorder } = flags;
+		const { page, noBorder, wide } = flags;
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
 				util.chunk(items, 56).length
@@ -223,13 +279,21 @@ export default class BankImageTask extends Task {
 			items = pageLoot;
 		}
 
+		let width = wide
+			? Math.ceil(Math.sqrt(items.length) + 1) * itemSize +
+			  Math.ceil(Math.sqrt(items.length) + 1) * spacer * 2 +
+			  distanceFromSide * 2
+			: 488;
+		if (width < 488) width = 488;
+		const itemsPerRow = Math.floor(width / (distanceFromSide + itemSize + spacer));
+
 		// Calculates the total height of the canvas and create it. If the height is below
 		// the minimum, set it to the minimum
 		const canvasHeight = Math.floor(
-			Math.ceil(items.length / 8) * Math.floor((itemSize + spacer / 2) * 1.08)
+			Math.ceil(items.length / itemsPerRow) * Math.floor((itemSize + spacer / 2) * 1.08)
 		);
 		const canvas = createCanvas(
-			488,
+			width,
 			canvasHeight <= 331 ? 331 : Math.floor(canvasHeight + itemSize * 1.5)
 		);
 
@@ -239,82 +303,19 @@ export default class BankImageTask extends Task {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
-		ctx.drawImage(bgImage!.image, 0, 0, bgImage.image!.width, bgImage.image!.height);
-		if (canvasHeight > 331) {
-			ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
-			ctx.fillRect(0, bankBackgroundID === 1 ? 326 : 331, canvas.width, canvas.height);
-		}
+		ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(
+			bgImage!.image,
+			0,
+			0,
+			wide ? canvas.width : bgImage!.image?.width!,
+			wide ? canvas.height : bgImage!.image?.height!
+		);
 
 		// Skips border if noBorder is set
 		if (noBorder !== 1) {
-			function drawImage(
-				img: Image | null,
-				x: number,
-				y: number,
-				flip = false,
-				flop = false
-			) {
-				ctx.save();
-				const width = img?.width!;
-				const height = img?.height!;
-
-				// Set rotation point to center of image, instead of top/left
-				x -= width / 2;
-				y -= height / 2;
-
-				// Set the origin to the center of the image
-				ctx.translate(x + width / 2, y + height / 2);
-
-				// Flip/flop the canvas
-				let flipScale = 2;
-				let flopScale = 2;
-				if (flip) flipScale = -2;
-				if (flop) flopScale = -2;
-				ctx.scale(flipScale, flopScale);
-
-				// Draw the image
-				ctx.drawImage(img, -width / 2, -height / 2, width, height);
-				ctx.restore();
-			}
-
-			// Draw top border
-			ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
-			ctx.fillRect(0, 0, canvas.width, this.borderH?.height!);
-
-			// Draw bottom border
-			ctx.fillStyle = ctx.createPattern(this.borderH, 'repeat-x');
-			ctx.fillRect(
-				0,
-				canvas.height - this.borderH?.height!,
-				canvas.width,
-				this.borderH?.height!
-			);
-
-			// Draw left border
-			ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
-			ctx.fillRect(0, this.borderV?.width!, this.borderV?.width!, canvas.height);
-
-			// Draw right border
-			ctx.fillStyle = ctx.createPattern(this.borderV, 'repeat-y');
-			ctx.fillRect(
-				canvas.width - this.borderV?.width!,
-				0,
-				this.borderV?.width!,
-				canvas.height
-			);
-
-			// Draw corner borders
-			// Top left
-			drawImage(this.borderC, 0, 0);
-
-			// Top right
-			drawImage(this.borderC, canvas.width, 0, true);
-
-			// Bottom right
-			drawImage(this.borderC, canvas.width, canvas.height, true, true);
-
-			// Bottom left
-			drawImage(this.borderC, 0, canvas.height, false, true);
+			this.drawBorder(canvas, ctx);
 		}
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
@@ -325,10 +326,10 @@ export default class BankImageTask extends Task {
 		ctx.font = '16px RuneScape Bold 12';
 
 		ctx.fillStyle = '#000000';
-		fillTextXTimesInCtx(ctx, title, canvas.width / 2 + 1, 21 + 1);
+		fillTextXTimesInCtx(ctx, title, Math.floor(canvas.width / 2) + 1, 22);
 
 		ctx.fillStyle = '#ff981f';
-		fillTextXTimesInCtx(ctx, title, canvas.width / 2, 21);
+		fillTextXTimesInCtx(ctx, title, Math.floor(canvas.width / 2), 21);
 
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -338,8 +339,10 @@ export default class BankImageTask extends Task {
 		let xLoc = 0;
 		let yLoc = 0;
 		for (let i = 0; i < items.length; i++) {
-			if (i % 8 === 0) yLoc += Math.floor((itemSize + spacer / 2) * 1.08);
-			xLoc = Math.floor(spacer + (i % 8) * ((canvas.width - 40) / 8) + distanceFromSide);
+			if (i % itemsPerRow === 0) yLoc += Math.floor((itemSize + spacer / 2) * 1.08);
+			xLoc = Math.floor(
+				spacer + (i % itemsPerRow) * ((canvas.width - 40) / itemsPerRow) + distanceFromSide
+			);
 			const [id, quantity, value] = items[i];
 			const item = await this.getItemImage(id);
 			if (!item) {
@@ -348,8 +351,8 @@ export default class BankImageTask extends Task {
 			}
 			ctx.drawImage(
 				item,
-				xLoc + (itemSize - item.width) / 2,
-				yLoc + (itemSize - item.height) / 2,
+				Math.floor(xLoc + (itemSize - item.width) / 2),
+				Math.floor(yLoc + (itemSize - item.height) / 2),
 				item.width,
 				item.height
 			);
@@ -368,8 +371,8 @@ export default class BankImageTask extends Task {
 			fillTextXTimesInCtx(
 				ctx,
 				formattedQuantity,
-				xLoc + distanceFromSide - 18 + 1,
-				yLoc + distanceFromTop - 24 + 1
+				xLoc + distanceFromSide - 19,
+				yLoc + distanceFromTop - 25
 			);
 
 			// Draw qty
@@ -390,14 +393,14 @@ export default class BankImageTask extends Task {
 				fillTextXTimesInCtx(
 					ctx,
 					__name,
-					xLoc + (itemSize - item.width) / 2 - 1,
+					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
 					yLoc + distanceFromTop - 1
 				);
 				ctx.fillStyle = 'white';
 				fillTextXTimesInCtx(
 					ctx,
 					__name,
-					xLoc + (itemSize - item.width) / 2,
+					Math.floor(xLoc + (itemSize - item.width) / 2),
 					yLoc + distanceFromTop
 				);
 			}
@@ -409,19 +412,22 @@ export default class BankImageTask extends Task {
 				fillTextXTimesInCtx(
 					ctx,
 					formattedValue,
-					xLoc + (itemSize - item.width) / 2 - 1,
+					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
 					yLoc + distanceFromTop - 1
 				);
 				ctx.fillStyle = generateHexColorForCashStack(value);
 				fillTextXTimesInCtx(
 					ctx,
 					formattedValue,
-					xLoc + (itemSize - item.width) / 2,
+					Math.floor(xLoc + (itemSize - item.width) / 2),
 					yLoc + distanceFromTop
 				);
 			}
 		}
-		return canvas.toBuffer();
+		if (items.length > 5000) {
+			return canvas.toBuffer('image/jpeg', { quality: 0.75 });
+		}
+		return canvas.toBuffer('image/png');
 	}
 
 	async generateCollectionLogImage(collectionLog: Bank, title = '', type: any): Promise<Buffer> {
@@ -543,14 +549,8 @@ export default class BankImageTask extends Task {
 			}
 			row++;
 		}
-		// Draw the bottom border
-		ctx.drawImage(
-			this.borderImageBottom,
-			0,
-			canvas.height - this.borderImageBottom?.height!,
-			canvas.width,
-			this.borderImageBottom?.height!
-		);
+		// Draw border
+		this.drawBorder(canvas, ctx);
 		return canvas.toBuffer();
 	}
 }
