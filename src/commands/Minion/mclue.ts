@@ -85,20 +85,16 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		const data: ClueActivityTaskOptions = {
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, Tasks.ClueTicker, {
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.ClueCompletion,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.ClueTicker, data);
+			type: Activity.ClueCompletion
+		});
 		return msg.send(
-			`${msg.author.minionName} is now completing ${data.quantity}x ${
+			`${msg.author.minionName} is now completing ${quantity}x ${
 				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.${
 				boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}` : ''

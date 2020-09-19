@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { rand } from 'oldschooljs/dist/util/util';
 
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -13,7 +13,7 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		const bar = Smelting.Bars.find(bar => bar.id === barID);
+		const bar = Smithing.Bars.find(bar => bar.id === barID);
 		if (!bar) return;
 
 		// If this bar has a chance of failing to smelt, calculate that here.

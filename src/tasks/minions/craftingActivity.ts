@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import Crafting from '../../lib/skilling/skills/crafting/crafting';
+import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';

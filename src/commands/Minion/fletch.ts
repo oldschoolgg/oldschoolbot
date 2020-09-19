@@ -4,14 +4,13 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -106,17 +105,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		const data: FletchingActivityTaskOptions = {
-			fletchableName: fletchableItem.name,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Fletching,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the required items from their bank.
 		let newBank = { ...userBank };
 		for (const [itemID, qty] of requiredItems) {
@@ -124,7 +112,18 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<FletchingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				fletchableName: fletchableItem.name,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Fletching
+			}
+		);
 
 		return msg.send(
 			`${msg.author.minionName} is now Fletching ${quantity} ${sets} ${
