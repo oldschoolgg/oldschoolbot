@@ -91,19 +91,19 @@ export default class extends BotCommand {
 		const lastPlantTime: number = patchType.plantTime;
 		const difference = currentDate - lastPlantTime;
 		/* initiate a cooldown feature for each of the seed types.
-			allows for a run of specific seed type to only be possible until the
-			previous run's plants has grown.*/
+			Allows for a run of specific seed type to only be possible until the
+			previous run's plants have been fully grown.*/
 		if (planted && difference < planted.growthTime * Time.Minute) {
 			throw `Please come back when your crops have finished growing in ${formatDuration(
-				lastPlantTime + plants.growthTime * Time.Minute - currentDate
+				lastPlantTime + planted.growthTime * Time.Minute - currentDate
 			)}!`;
 		}
 
-		if (msg.flagArgs.supercompost) {
+		if (msg.flagArgs.supercompost || msg.flagArgs.sc) {
 			upgradeType = 'supercompost';
 			upgradeStr = `You are treating all of your patches with supercompost. `;
 		}
-		if (msg.flagArgs.ultracompost) {
+		if (msg.flagArgs.ultracompost || msg.flagArgs.uc) {
 			upgradeType = 'ultracompost';
 			upgradeStr = `You are treating all of your patches with ultracompost. `;
 		}
@@ -169,7 +169,7 @@ export default class extends BotCommand {
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			boostStr.push('**Boosts**: 10% for Graceful');
+			boostStr.push('**Boosts**: 10% time for Graceful');
 			duration *= 0.9;
 		}
 
@@ -246,13 +246,24 @@ export default class extends BotCommand {
 				}
 			}
 
+			if (bankHasItem(userBank, itemID('Magic secateurs'))) {
+				boostStr.push('10% crop yield for Magic Secateurs');
+			}
+
+			if (
+				bankHasItem(userBank, itemID('Farming cape')) ||
+				bankHasItem(userBank, itemID('Farming cape(t)'))
+			) {
+				boostStr.push('5% crop yield for Farming Skillcape');
+			}
+
 			activityStr += `${
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}, and then planting ${quantity}x ${
 				plants.name
 			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
 				duration
-			)} to finish.\n\n${boostStr.join(' ')}`;
+			)} to finish.\n\n${boostStr.join(', ')}`;
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(
