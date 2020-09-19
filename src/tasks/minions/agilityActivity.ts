@@ -1,15 +1,14 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
+import { rand, roll } from 'oldschooljs/dist/util/util';
 
-import { saidYes, noOp, addItemToBank } from '../../lib/util';
-import { Time, Events, Emoji } from '../../lib/constants';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { roll, rand } from 'oldschooljs/dist/util/util';
-import Agility from '../../lib/skilling/skills/agility';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Agility from '../../lib/skilling/skills/agility';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import { addItemToBank } from '../../lib/util';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ courseID, quantity, userID, channelID, duration }: AgilityActivityTaskOptions) {
@@ -60,9 +59,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-		} laps and fell on ${lapsFailed} of them, you also received ${xpReceived.toLocaleString()} XP and ${totalMarks}x Mark of grace. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		} laps and fell on ${lapsFailed} of them, you also received ${xpReceived.toLocaleString()} XP and ${totalMarks}x Mark of grace.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${newLevel}!`;
@@ -99,32 +96,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		this.client.queuePromise(() => {
-			channel.send(str);
-
-			channel
-				.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-					time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-					max: 1
-				})
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
-						user.log(`continued trip of ${quantity}x ${course.name} laps`);
-
-						this.client.commands
-							.get('laps')!
-							.run(response as KlasaMessage, [quantity, course.aliases[0]])
-							.catch(err => channel.send(err));
-					}
-				})
-				.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x ${course.name} laps`);
+			return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
 		});
 	}
 }

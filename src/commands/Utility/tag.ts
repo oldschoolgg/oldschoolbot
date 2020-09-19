@@ -1,5 +1,5 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'discord.js';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 

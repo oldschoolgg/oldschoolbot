@@ -1,6 +1,14 @@
 import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import { TextChannel, User, Util } from 'discord.js';
+import { TextChannel, User, Util } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 
+import { production } from '../config';
+import { Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
+import clueTiers from '../lib/minions/data/clueTiers';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import Skills from '../lib/skilling/skills';
+import { SkillsEnum } from '../lib/skilling/types';
 import { Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
 import { Bank } from '../lib/types';
 import {
@@ -11,14 +19,9 @@ import {
 	removeItemFromBank,
 	toTitleCase
 } from '../lib/util';
-import clueTiers from '../lib/minions/data/clueTiers';
-import { UserSettings } from '../lib/settings/types/UserSettings';
-import Skills from '../lib/skilling/skills';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
-import { SkillsEnum } from '../lib/skilling/types';
-import getActivityOfUser from '../lib/util/getActivityOfUser';
-import { production } from '../config';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
+import getActivityOfUser from '../lib/util/getActivityOfUser';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -248,7 +251,7 @@ export default class extends Extendable {
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 		if (currentXP >= 200_000_000) return;
 
-		const skill = Skills.find(skill => skill.id === skillName);
+		const skill = Object.values(Skills).find(skill => skill.id === skillName);
 		if (!skill) return;
 
 		const newXP = Math.min(200_000_000, currentXP + amount);

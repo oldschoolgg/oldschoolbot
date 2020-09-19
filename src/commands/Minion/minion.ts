@@ -1,39 +1,39 @@
-import { CommandStore, KlasaMessage, util } from 'klasa';
-import { Util, Monsters } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage, util } from 'klasa';
+import { Monsters, Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	Tasks,
 	Activity,
-	Emoji,
-	Time,
 	Color,
+	Emoji,
+	MIMIC_MONSTER_ID,
 	PerkTier,
-	MIMIC_MONSTER_ID
+	Tasks,
+	Time
 } from '../../lib/constants';
-import {
-	formatDuration,
-	randomItemFromArray,
-	isWeekend,
-	itemNameFromID,
-	addItemToBank,
-	bankHasItem
-} from '../../lib/util';
-import { rand } from '../../util';
+import { Eatables } from '../../lib/eatables';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { SkillsEnum } from '../../lib/skilling/types';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
-import findMonster from '../../lib/minions/functions/findMonster';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { Eatables } from '../../lib/eatables';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import findMonster from '../../lib/minions/functions/findMonster';
+import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import {
+	addItemToBank,
+	bankHasItem,
+	formatDuration,
+	isWeekend,
+	itemNameFromID,
+	randomItemFromArray
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { rand } from '../../util';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -425,21 +425,31 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async smith(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
+	async smith(msg: KlasaMessage, [quantity, smithableItemName]: [number, string]) {
 		this.client.commands
 			.get('smith')!
-			.run(msg, [quantity, smithedBarName])
+			.run(msg, [quantity, smithableItemName])
 			.catch(err => {
 				throw err;
 			});
 	}
 
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
+		this.client.commands
+			.get('chop')!
+			.run(msg, [quantity, logName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands.get('light')!.run(msg, [quantity, logName]);
+		this.client.commands
+			.get('light')!
+			.run(msg, [quantity, logName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async craft(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
@@ -621,20 +631,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		const data: MonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.MonsterKilling
+			}
+		);
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-
-		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
+		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 

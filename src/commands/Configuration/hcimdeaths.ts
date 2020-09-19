@@ -1,4 +1,4 @@
-import { Command, KlasaMessage, CommandStore } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 

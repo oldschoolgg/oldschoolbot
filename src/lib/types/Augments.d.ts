@@ -1,21 +1,25 @@
-import { Db } from 'mongodb';
-import { Settings, SettingsUpdateResult, KlasaUser } from 'klasa';
-import { FSWatcher } from 'fs';
-import { CommentStream, SubmissionStream } from 'snoostorm';
-import { Limit } from 'p-limit';
 import { Image } from 'canvas';
-import Monster from 'oldschooljs/dist/structures/Monster';
-
-import { CustomGet } from '../settings/types/UserSettings';
-import { Bank, MakePartyOptions, Skills, ItemBank } from '.';
-import { SkillsEnum } from '../skilling/types';
-import { KillableMonster } from '../minions/types';
-import { UserFullGearSetup, GearSetupTypes, GearStats } from '../gear/types';
+import { FSWatcher } from 'fs';
+import { KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { Db } from 'mongodb';
 import { Item } from 'oldschooljs/dist/meta/types';
+import Monster from 'oldschooljs/dist/structures/Monster';
+import { Limit } from 'p-limit';
+import PgBoss from 'pg-boss';
+import { CommentStream, SubmissionStream } from 'snoostorm';
+import { Connection } from 'typeorm';
+
+import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
+import { KillableMonster } from '../minions/types';
+import { CustomGet } from '../settings/types/UserSettings';
+import { SkillsEnum } from '../skilling/types';
+import { Bank, ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
+		public boss: PgBoss;
+		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
 		public queuePromise: Limit;
@@ -26,6 +30,7 @@ declare module 'klasa' {
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
 		public killWorkerThread?: ArbitraryThreadType;
+		public wtf(error: Error): void;
 		twitchClientID?: string;
 		osggDB?: Db;
 		commentStream?: CommentStream;
@@ -173,6 +178,7 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
+		assertCanManageMessages(): void;
 	}
 
 	interface DMChannel {
@@ -184,11 +190,6 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
-	}
-}
-
-declare module 'klasa-dashboard-hooks' {
-	interface AuthData {
-		user_id: string;
+		assertCanManageMessages(): void;
 	}
 }

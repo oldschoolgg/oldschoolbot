@@ -1,12 +1,9 @@
-import { Task, KlasaMessage } from 'klasa';
+import { Task } from 'klasa';
 
-import { saidYes, noOp } from '../../lib/util';
-import { Time } from '../../lib/constants';
+import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import Smithing from '../../lib/skilling/skills/smithing/smithing';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run({
@@ -20,55 +17,32 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		const SmithedBar = Smithing.SmithedBars.find(SmithedBar => SmithedBar.id === smithedBarID);
-		if (!SmithedBar) return;
+		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID);
+		if (!smithedItem) return;
 
-		const xpReceived = quantity * SmithedBar.xp;
+		const xpReceived = quantity * smithedItem.xp;
 
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Smithing);
 
 		let str = `${user}, ${user.minionName} finished smithing ${quantity *
-			SmithedBar.outputMultiple}x ${
-			SmithedBar.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+			smithedItem.outputMultiple}x ${
+			smithedItem.name
+		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;
 		}
 
 		const loot = {
-			[SmithedBar.id]: quantity * SmithedBar.outputMultiple
+			[smithedItem.id]: quantity * smithedItem.outputMultiple
 		};
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		channel.send(str).catch(noOp);
-
-		channel
-			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-				max: 1
-			})
-			.then(messages => {
-				const response = messages.first();
-
-				if (response) {
-					if (response.author.minionIsBusy) return;
-
-					user.log(`continued trip of  ${SmithedBar.name}[${SmithedBar.id}]`);
-
-					this.client.commands
-						.get('smith')!
-						.run(response as KlasaMessage, [quantity, SmithedBar.name])
-						.catch(err => channel.send(err));
-				}
-			})
-			.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${quantity}x  ${smithedItem.name}[${smithedItem.id}]`);
+			return this.client.commands.get('smith')!.run(res, [quantity, smithedItem.name]);
+		});
 	}
 }
