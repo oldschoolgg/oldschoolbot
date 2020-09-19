@@ -116,6 +116,7 @@ export default class extends BotCommand {
 
 		if (1 > 2) {
 			for (const user of users) {
+				await user.settings.sync(true);
 				let [healAmountNeeded] = calculateMonsterFood(monster, user);
 
 				healAmountNeeded = Math.ceil(healAmountNeeded / users.length);
