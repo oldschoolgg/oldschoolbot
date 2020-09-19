@@ -1,17 +1,45 @@
 import { Image } from 'canvas';
-import Items from 'oldschooljs/dist/structures/Items';
+import { Client, Guild } from 'discord.js';
+import { KlasaClient, ScheduledTask, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { ScheduledTask, util, KlasaClient } from 'klasa';
-import { Client } from 'discord.js';
-import { nodeCrypto, integer, real, bool } from 'random-js';
+import Items from 'oldschooljs/dist/structures/Items';
+import { bool, integer, nodeCrypto, real } from 'random-js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { Tasks, Events } from './constants';
+import { Events, Tasks } from './constants';
 import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';
+export { Util } from 'discord.js';
+export { v4 as uuid } from 'uuid';
+
+const zeroWidthSpace = '\u200b';
+
+export function cleanMentions(guild: Guild | null, input: string) {
+	return input
+		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
+		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
+			switch (type) {
+				case '@':
+				case '@!': {
+					const tag = guild?.client.users.get(id);
+					return tag ? `@${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
+				}
+				case '@&': {
+					const role = guild?.roles.get(id);
+					return role ? `@${role.name}` : match;
+				}
+				case '#': {
+					const channel = guild?.channels.get(id);
+					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
+				}
+				default:
+					return `<${type}${zeroWidthSpace}${id}>`;
+			}
+		});
+}
 
 export function generateHexColorForCashStack(coins: number) {
 	if (coins > 9999999) {
@@ -259,4 +287,16 @@ export function stripEmojis(str: string) {
 export function round(value = 1, precision = 1) {
 	const multiplier = Math.pow(10, precision || 0);
 	return Math.round(value * multiplier) / multiplier;
+}
+
+export function entries<T extends {}>(obj: T) {
+	return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
+export function values<T extends {}>(obj: T) {
+	return Object.values(obj) as T[keyof T][];
+}
+
+export function keys<T extends {}>(obj: T) {
+	return Object.keys(obj) as (keyof T)[];
 }

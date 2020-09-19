@@ -1,16 +1,13 @@
 import { KlasaUser } from 'klasa';
 
-import { Roles, PerkTier, BitField } from '../constants';
-import getSupportGuild from './getSupportGuild';
+import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
+import getSupportGuild from './getSupportGuild';
 
 export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 	if (user.client.owners.has(user)) {
 		return 10;
 	}
-
-	const supportGuild = getSupportGuild(user.client);
-	const member = supportGuild.members.find(member => member.user === user);
 
 	if (user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier5)) {
 		return PerkTier.Six;
@@ -20,6 +17,8 @@ export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 		return PerkTier.Five;
 	}
 
+	const supportGuild = getSupportGuild(user.client);
+	const member = supportGuild.members.get(user.id);
 	if (
 		user.settings.get(UserSettings.BitField).includes(BitField.IsPatronTier3) ||
 		(member && [Roles.Contributor, Roles.Moderator].some(roleID => member.roles.has(roleID)))

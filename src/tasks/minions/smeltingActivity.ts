@@ -1,14 +1,11 @@
-import { Task, KlasaMessage } from 'klasa';
-
-import { saidYes, noOp } from '../../lib/util';
-import { Time } from '../../lib/constants';
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import { Task } from 'klasa';
 import { rand } from 'oldschooljs/dist/util/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import itemID from '../../lib/util/itemID';
+
+import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
@@ -16,7 +13,7 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		const bar = Smelting.Bars.find(bar => bar.id === barID);
+		const bar = Smithing.Bars.find(bar => bar.id === barID);
 		if (!bar) return;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
@@ -45,9 +42,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${
 			bar.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;
@@ -63,29 +58,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		channel.send(str).catch(noOp);
-
-		channel
-			.awaitMessages(mes => mes.author === user && saidYes(mes.content), {
-				time: getUsersPerkTier(user) > 1 ? Time.Minute * 10 : Time.Minute * 2,
-				max: 1
-			})
-			.then(messages => {
-				const response = messages.first();
-
-				if (response) {
-					if (response.author.minionIsBusy) return;
-
-					user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
-
-					this.client.commands
-						.get('smelt')!
-						.run(response as KlasaMessage, [oldQuantity, bar.name]);
-				}
-			})
-			.catch(noOp);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
+			return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
+		});
 	}
 }

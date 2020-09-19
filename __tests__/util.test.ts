@@ -11,6 +11,7 @@ ava('getOSItem', test => {
 	test.is(getOSItem('Twisted bow').id, 20997);
 	test.is(getOSItem(20997).id, 20997);
 	test.is(getOSItem('20997').id, 20997);
+	test.is(getOSItem('3rd age platebody').id, 10348);
 
 	try {
 		getOSItem('Non-existant item');

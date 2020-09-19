@@ -1,9 +1,10 @@
-import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
+import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
 import pets from '../lib/pets';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
-import { roll } from '../lib/util';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { roll } from '../lib/util';
+import { channelIsSendable } from '../lib/util/channelIsSendable';
 
 export default class extends Monitor {
 	public __memberCache: { [key: string]: number } = {};
@@ -28,8 +29,9 @@ export default class extends Monitor {
 			const newUserPets = { ...userPets };
 			if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
 			else newUserPets[pet.id]++;
-
+			await msg.author.settings.sync(true);
 			msg.author.settings.update(UserSettings.Pets, { ...newUserPets });
+			if (!channelIsSendable(msg.channel)) return;
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(
 					`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`

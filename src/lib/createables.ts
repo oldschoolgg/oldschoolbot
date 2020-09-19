@@ -1,18 +1,13 @@
 import { Bank } from './types';
-import itemID from './util/itemID';
 import { resolveNameBank } from './util';
+import itemID from './util/itemID';
 
 interface Createable {
 	name: string;
 	outputItems: Bank;
 	inputItems: Bank;
-	smithingLevel?: number;
 	cantHaveItems?: Bank;
-	firemakingLevel?: number;
-	craftingLevel?: number;
-	prayerLevel?: number;
-	agilityLevel?: number;
-	fletchingLevel?: number;
+	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
 }
@@ -28,7 +23,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1
 		},
-		smithingLevel: 80
+		requiredSkills: { smithing: 80 }
 	},
 	{
 		name: 'Armadyl godsword',
@@ -38,8 +33,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Armadyl godsword')]: 1
-		},
-		smithingLevel: 80
+		}
 	},
 	{
 		name: 'Bandos godsword',
@@ -49,8 +43,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Bandos godsword')]: 1
-		},
-		smithingLevel: 80
+		}
 	},
 	{
 		name: 'Saradomin godsword',
@@ -60,8 +53,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Saradomin godsword')]: 1
-		},
-		smithingLevel: 80
+		}
 	},
 	{
 		name: 'Zamorak godsword',
@@ -71,8 +63,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
-		},
-		smithingLevel: 80
+		}
 	},
 	{
 		name: 'Dragonfire shield',
@@ -84,7 +75,7 @@ const Createables: Createable[] = [
 			// Uncharged dragonfire shield
 			11284: 1
 		},
-		smithingLevel: 90
+		requiredSkills: { smithing: 90 }
 	},
 	{
 		name: 'Dragonfire ward',
@@ -96,7 +87,7 @@ const Createables: Createable[] = [
 			// Uncharged Dragonfire ward
 			22003: 1
 		},
-		smithingLevel: 90
+		requiredSkills: { smithing: 90 }
 	},
 	{
 		name: 'Infernal pickaxe',
@@ -107,7 +98,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Infernal pickaxe')]: 1
 		},
-		smithingLevel: 85
+		requiredSkills: { smithing: 85 }
 	},
 	{
 		name: 'Malediction ward',
@@ -385,7 +376,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Infernal axe')]: 1
 		},
-		firemakingLevel: 85
+		requiredSkills: { firemaking: 85 }
 	},
 	{
 		name: 'Graceful',
@@ -493,7 +484,7 @@ const Createables: Createable[] = [
 			[itemID('Medium pouch')]: 1
 		},
 
-		craftingLevel: 10
+		requiredSkills: { crafting: 10 }
 	},
 	{
 		name: 'Large pouch',
@@ -507,7 +498,7 @@ const Createables: Createable[] = [
 			[itemID('Large pouch')]: 1
 		},
 
-		craftingLevel: 20
+		requiredSkills: { crafting: 20 }
 	},
 	{
 		name: 'Giant pouch',
@@ -521,7 +512,7 @@ const Createables: Createable[] = [
 			[itemID('Giant pouch')]: 1
 		},
 
-		craftingLevel: 30
+		requiredSkills: { crafting: 30 }
 	},
 	// Spirit Shields
 	{
@@ -533,7 +524,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Blessed spirit shield')]: 1
 		},
-		prayerLevel: 85
+		requiredSkills: { prayer: 85 }
 	},
 	{
 		name: 'Spectral spirit shield',
@@ -544,8 +535,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Spectral spirit shield')]: 1
 		},
-		prayerLevel: 90,
-		smithingLevel: 85
+		requiredSkills: { prayer: 90, smithing: 85 }
 	},
 	{
 		name: 'Arcane spirit shield',
@@ -556,8 +546,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Arcane spirit shield')]: 1
 		},
-		prayerLevel: 90,
-		smithingLevel: 85
+		requiredSkills: { prayer: 90, smithing: 85 }
 	},
 	{
 		name: 'Elysian spirit shield',
@@ -568,8 +557,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Elysian spirit shield')]: 1
 		},
-		prayerLevel: 90,
-		smithingLevel: 85
+		requiredSkills: { prayer: 90, smithing: 85 }
 	},
 	{
 		name: 'Holy book',
@@ -582,7 +570,7 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Holy book': 1
 		}),
-		agilityLevel: 35,
+		requiredSkills: { agility: 35 },
 		QPRequired: 5
 	},
 	{
@@ -596,7 +584,7 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Book of balance': 1
 		}),
-		agilityLevel: 35,
+		requiredSkills: { agility: 35 },
 		QPRequired: 5
 	},
 	{
@@ -610,7 +598,7 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Unholy book': 1
 		}),
-		agilityLevel: 35,
+		requiredSkills: { agility: 35 },
 		QPRequired: 5
 	},
 	{
@@ -624,7 +612,7 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Book of law': 1
 		}),
-		agilityLevel: 35,
+		requiredSkills: { agility: 35 },
 		QPRequired: 5
 	},
 	{
@@ -638,7 +626,7 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Book of war': 1
 		}),
-		agilityLevel: 35,
+		requiredSkills: { agility: 35 },
 		QPRequired: 5
 	},
 	{
@@ -652,7 +640,7 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Book of darkness': 1
 		}),
-		agilityLevel: 35,
+		requiredSkills: { agility: 35 },
 		QPRequired: 5
 	},
 	{
@@ -687,7 +675,7 @@ const Createables: Createable[] = [
 			'Dragon sq shield': 1
 		}),
 		QPRequired: 111,
-		smithingLevel: 60
+		requiredSkills: { smithing: 60 }
 	},
 	{
 		name: 'Coconut milk',

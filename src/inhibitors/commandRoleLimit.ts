@@ -1,6 +1,6 @@
 import { Inhibitor, KlasaMessage } from 'klasa';
 
-import { SupportServer, PerkTier } from '../lib/constants';
+import { PerkTier, SupportServer } from '../lib/constants';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Inhibitor {

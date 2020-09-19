@@ -14,7 +14,7 @@ export default function getOSItem(itemName: string | number): Item {
 	if (typeof itemName === 'number') {
 		identifier = itemName;
 	} else {
-		const parsed = parseInt(itemName);
+		const parsed = Number(itemName);
 		identifier = isNaN(parsed) ? cleanItemName(itemName) : parsed;
 	}
 

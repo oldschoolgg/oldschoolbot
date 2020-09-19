@@ -1,24 +1,25 @@
-import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
-import { User, Util, TextChannel } from 'discord.js';
+import { User, Util } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 
-import { Events, Emoji, Channel, Time, MAX_QP, PerkTier } from '../lib/constants';
-import { Bank } from '../lib/types';
-import {
-	addBanks,
-	removeItemFromBank,
-	addItemToBank,
-	formatDuration,
-	convertXPtoLVL,
-	toTitleCase
-} from '../lib/util';
+import { production } from '../config';
+import { Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
 import clueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { SkillsEnum } from '../lib/skilling/types';
-import getActivityOfUser from '../lib/util/getActivityOfUser';
-import { production } from '../config';
+import { Bank } from '../lib/types';
+import {
+	addBanks,
+	addItemToBank,
+	convertXPtoLVL,
+	formatDuration,
+	removeItemFromBank,
+	toTitleCase
+} from '../lib/util';
+import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
+import getActivityOfUser from '../lib/util/getActivityOfUser';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -230,12 +231,25 @@ export default class extends Extendable {
 		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number);
 	}
 
+	public totalLevel(this: User, returnXP = false) {
+		const userXPs = Object.values(
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			this.settings.get('skills').toJSON() as Skills
+		) as number[];
+		let totalLevel = 0;
+		for (const xp of userXPs) {
+			totalLevel += returnXP ? convertXPtoLVL(xp) : xp;
+		}
+		return totalLevel;
+	}
+
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 		if (currentXP >= 200_000_000) return;
 
-		const skill = Skills.find(skill => skill.id === skillName);
+		const skill = Object.values(Skills).find(skill => skill.id === skillName);
 		if (!skill) return;
 
 		const newXP = Math.min(200_000_000, currentXP + amount);
@@ -332,9 +346,10 @@ export default class extends Extendable {
 
 			this.log(log);
 			if (production) {
-				(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
-					`${this.sanitizedName} ${log}`
-				);
+				const channel = this.client.channels.get(Channel.ErrorLogs);
+				if (channelIsSendable(channel)) {
+					channel.send(`${this.sanitizedName} ${log}`);
+				}
 			}
 		}
 

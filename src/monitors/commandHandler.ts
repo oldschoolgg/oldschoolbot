@@ -1,7 +1,7 @@
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { PermissionLevelsEnum } from '../lib/constants';
+import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { floatPromise } from '../lib/util';
 
 export default class extends Monitor {
