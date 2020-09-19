@@ -24,6 +24,7 @@ ava('itemArg', async test => {
 	const itemArg = mockArgument(ItemArgument);
 	const expectedResults = [
 		['3rd age platebody', [{ id: 10348, name: '3rd age platebody' }]],
+		[20011, [{ id: 20011, name: '3rd age axe' }]],
 		['Dragon dagger(p++)', [{ id: 5698, name: 'Dragon dagger(p++)' }]]
 	];
 
