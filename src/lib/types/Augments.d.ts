@@ -102,6 +102,7 @@ declare module 'discord.js' {
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
 		skillLevel(skillName: SkillsEnum): number;
+		totalLevel(returnXP = false): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
 		/**
