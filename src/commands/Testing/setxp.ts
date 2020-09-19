@@ -22,7 +22,7 @@ export default class extends BotCommand {
 			return;
 		}
 		skillName = skillName.toLowerCase();
-		if (Skills.some(skill => skill.id === skillName)) {
+		if (Object.values(Skills).some(skill => skill.id === skillName)) {
 			await msg.author.settings.update(`skills.${skillName}`, newXP);
 			return msg.send(`${skillName} experience set to ${newXP}`);
 		}

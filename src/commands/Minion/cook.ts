@@ -10,7 +10,6 @@ import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -99,17 +98,6 @@ export default class extends BotCommand {
 			}s you can cook is ${Math.floor(msg.author.maxTripLength / timeToCookSingleCookable)}.`;
 		}
 
-		const data: CookingActivityTaskOptions = {
-			cookableID: cookable.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Cooking,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the cookables from their bank.
 		let newBank = { ...userBank };
 		for (const [cookableID, qty] of requiredCookables) {
@@ -123,7 +111,18 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<CookingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				cookableID: cookable.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Cooking
+			}
+		);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(

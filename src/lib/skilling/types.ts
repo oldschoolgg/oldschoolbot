@@ -1,3 +1,4 @@
+import { Emoji } from '../constants';
 import { ItemBank } from '../types';
 
 export enum SkillsEnum {
@@ -13,7 +14,8 @@ export enum SkillsEnum {
 	Prayer = 'prayer',
 	Fletching = 'fletching',
 	Farming = 'farming',
-	Herblore = 'herblore'
+	Herblore = 'herblore',
+	Thieving = 'thieving'
 }
 
 export interface Ore {
@@ -25,18 +27,6 @@ export interface Ore {
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
-}
-
-export interface Bar {
-	level: number;
-	xp: number;
-	id: number;
-	name: string;
-	inputOres: ItemBank;
-	/**
-	 * Chance that the ore will fail to smelt (i.e iron), out of 100
-	 */
-	chanceOfFail: number;
 }
 
 export interface Log {
@@ -107,7 +97,19 @@ export interface Eatable {
 	healAmount: number;
 }
 
-export interface SmithedBar {
+export interface Bar {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputOres: ItemBank;
+	/**
+	 * Chance that the ore will fail to smelt (i.e iron), out of 100
+	 */
+	chanceOfFail: number;
+}
+
+export interface SmithedItem {
 	level: number;
 	xp: number;
 	id: number;
@@ -148,3 +150,9 @@ export type LevelRequirements = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export interface Skill {
+	aliases: string[];
+	id: SkillsEnum;
+	emoji: Emoji;
+}

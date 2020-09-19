@@ -422,10 +422,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async smith(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
+	async smith(msg: KlasaMessage, [quantity, smithableItemName]: [number, string]) {
 		this.client.commands
 			.get('smith')!
-			.run(msg, [quantity, smithedBarName])
+			.run(msg, [quantity, smithableItemName])
 			.catch(err => {
 				throw err;
 			});
@@ -628,20 +628,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		const data: MonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.MonsterKilling
+			}
+		);
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-
-		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
+		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 

@@ -9,7 +9,7 @@ import { taskNameFromType } from '../../lib/util/taskNameFromType';
 export default class extends Task {
 	async run(data: SkillingTickerTaskData) {
 		const now = Date.now();
-		const tasksThatWereFinished: number[] = [];
+		const tasksThatWereFinished: string[] = [];
 
 		for (const skillingTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
