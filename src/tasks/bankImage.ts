@@ -265,6 +265,7 @@ export default class BankImageTask extends Task {
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const { page, noBorder, wide } = flags;
+		console.log(flags);
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
 				util.chunk(items, 56).length
