@@ -39,7 +39,7 @@ export function initCustomItems() {
 	// Dwarven Items
 
 	// 2x faster chopping and wintertodt
-	setCustomItem(472, 'Dwarven greataxe', getOSItem('Dragon axe'));
+	setCustomItem(472, 'Dwarven greataxe', getOSItem('Dragon pickaxe'));
 	// 2x faster mining
 	setCustomItem(476, 'Dwarven pickaxe', getOSItem('Dragon pickaxe'));
 	// 2x faster smithing and crafting
