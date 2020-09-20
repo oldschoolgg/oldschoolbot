@@ -2,13 +2,16 @@ import { Argument } from 'klasa';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import getOSItem from '../lib/util/getOSItem';
 import { stringMatches } from '../lib/util';
+import getOSItem from '../lib/util/getOSItem';
 
 export default class extends Argument {
 	async run(itemName: string): Promise<Item[]> {
 		// guarantee all characters are numbers
-		if (Number(itemName)) {
+		if (
+			!isNaN(parseInt(itemName)) &&
+			parseInt(itemName).toString().length === itemName.length
+		) {
 			return [getOSItem(parseInt(itemName))];
 		}
 
