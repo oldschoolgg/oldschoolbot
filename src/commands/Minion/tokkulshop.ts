@@ -1,19 +1,17 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Monsters } from 'oldschooljs';
+import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import TokkulShop from '../../lib/buyables/tokkulBuyables';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Bank } from '../../lib/types';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	removeBankFromBank,
-	resolveNameBank,
-	stringMatches
-} from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
+
+const { TzTokJad } = Monsters;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -30,9 +28,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [type = 'buy', quantity, name]: ['buy' | 'sell', number, string]) {
 		await msg.author.settings.sync(true);
 
-		if (
-			!bankHasAllItemsFromBank(msg.author.collectionLog, resolveNameBank({ 'Fire cape': 1 }))
-		) {
+		if (msg.author.getKC(TzTokJad) >= 1) {
 			throw `You are not worthy JalYt. Come back when you have defeated the might TzTok-Jad!`;
 		}
 
@@ -50,10 +46,10 @@ export default class extends BotCommand {
 			}).join(', ')}.`;
 		}
 
-		if (!shopInventory.buyable && type === 'buy') {
+		if (!shopInventory.tokkulReturn && type === 'buy') {
 			throw `I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShop.map(
 				item => {
-					if (item.buyable) return item.name;
+					if (item.tokkulReturn) return item.name;
 				}
 			).join(', ')}.`;
 		}
@@ -89,7 +85,7 @@ export default class extends BotCommand {
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, JalYt, say \`confirm\` to confirm that you want to ${
-					type === 'buy' ? 'purcharse' : 'sell'
+					type === 'buy' ? 'buy' : 'sell'
 				} **${inItemString}** for **${itemString}**.`
 			);
 

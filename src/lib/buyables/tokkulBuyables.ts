@@ -4,8 +4,7 @@ interface TokkulShop {
 	name: string;
 	inputItem: number;
 	tokkulReturn: number;
-	buyable?: boolean;
-	tokkulCost?: number;
+	tokkulCost?: number; // Prices are using the Karamja gloves 1
 	aliases?: string[];
 }
 
@@ -15,21 +14,18 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Tin ore',
 		inputItem: itemID('Tin ore'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 3
 	},
 	{
 		name: 'Copper ore',
 		inputItem: itemID('Copper ore'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 3
 	},
 	{
 		name: 'Iron ore',
 		inputItem: itemID('Iron ore'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 22
 	},
 	{
@@ -66,14 +62,12 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Uncut sapphire',
 		inputItem: itemID('Uncut sapphire'),
 		tokkulReturn: 2,
-		buyable: true,
 		tokkulCost: 32
 	},
 	{
 		name: 'Uncut emerald',
 		inputItem: itemID('Uncut emerald'),
 		tokkulReturn: 5,
-		buyable: true,
 		tokkulCost: 65
 	},
 	{
@@ -95,7 +89,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Uncut onyx',
 		inputItem: itemID('Uncut onyx'),
 		tokkulReturn: 20000,
-		buyable: true,
 		tokkulCost: 260000,
 		aliases: ['onyx']
 	},
@@ -103,7 +96,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Onyx bolt tips',
 		inputItem: itemID('Onyx bolt tips'),
 		tokkulReturn: 100,
-		buyable: true,
 		tokkulCost: 1300
 	},
 	// Equipment Store
@@ -111,7 +103,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian throwing ring',
 		inputItem: itemID('Toktz-xil-ul'),
 		tokkulReturn: 25,
-		buyable: true,
 		tokkulCost: 325,
 		aliases: ['Toktz-xil-ul']
 	},
@@ -119,7 +110,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian sword',
 		inputItem: itemID('Toktz-xil-ak'),
 		tokkulReturn: 4000,
-		buyable: true,
 		tokkulCost: 52000,
 		aliases: ['Toktz-xil-ak']
 	},
@@ -127,7 +117,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian dagger',
 		inputItem: itemID('Toktz-xil-ek'),
 		tokkulReturn: 2500,
-		buyable: true,
 		tokkulCost: 32500,
 		aliases: ['Toktz-xil-ek']
 	},
@@ -135,7 +124,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian maul',
 		inputItem: itemID('Tzhaar-ket-om'),
 		tokkulReturn: 5000,
-		buyable: true,
 		tokkulCost: 65001,
 		aliases: ['Tzhaar-ket-om']
 	},
@@ -143,7 +131,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian staff',
 		inputItem: itemID('Toktz-mej-tal'),
 		tokkulReturn: 3500,
-		buyable: true,
 		tokkulCost: 45500,
 		aliases: ['Toktz-mej-tal']
 	},
@@ -151,7 +138,6 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian mace',
 		inputItem: itemID('Tzhaar-ket-em'),
 		tokkulReturn: 3000,
-		buyable: true,
 		tokkulCost: 39000,
 		aliases: ['Tzhaar-ket-em']
 	},
@@ -159,14 +145,12 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian cape',
 		inputItem: itemID('Obsidian cape'),
 		tokkulReturn: 6000,
-		buyable: true,
 		tokkulCost: 78000
 	},
 	{
 		name: 'Obsidian shield',
 		inputItem: itemID('Toktz-ket-xil'),
 		tokkulReturn: 4500,
-		buyable: true,
 		tokkulCost: 58500,
 		aliases: ['Toktz-ket-xil']
 	},
@@ -174,21 +158,18 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Obsidian helmet',
 		inputItem: itemID('Obsidian helmet'),
 		tokkulReturn: 5632,
-		buyable: true,
 		tokkulCost: 73216
 	},
 	{
 		name: 'Obsidian platebody',
 		inputItem: itemID('Obsidian platebody'),
 		tokkulReturn: 8400,
-		buyable: true,
 		tokkulCost: 109200
 	},
 	{
 		name: 'Obsidian platelegs',
 		inputItem: itemID('Obsidian platelegs'),
 		tokkulReturn: 6700,
-		buyable: true,
 		tokkulCost: 87100
 	},
 	// Runes
@@ -196,56 +177,48 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Fire rune',
 		inputItem: itemID('Fire rune'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 5
 	},
 	{
 		name: 'Water rune',
 		inputItem: itemID('Water rune'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 5
 	},
 	{
 		name: 'Air rune',
 		inputItem: itemID('Air rune'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 5
 	},
 	{
 		name: 'Earth rune',
 		inputItem: itemID('Earth rune'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 5
 	},
 	{
 		name: 'Mind rune',
 		inputItem: itemID('Mind rune'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 3
 	},
 	{
 		name: 'Body rune',
 		inputItem: itemID('Body rune'),
 		tokkulReturn: 1,
-		buyable: true,
 		tokkulCost: 3
 	},
 	{
 		name: 'Chaos rune',
 		inputItem: itemID('Chaos rune'),
 		tokkulReturn: 9,
-		buyable: true,
 		tokkulCost: 117
 	},
 	{
 		name: 'Death rune',
 		inputItem: itemID('Death rune'),
 		tokkulReturn: 18,
-		buyable: true,
 		tokkulCost: 234
 	}
 ];
