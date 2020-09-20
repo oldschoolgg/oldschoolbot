@@ -72,7 +72,7 @@ export default class extends BotCommand {
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greataxe'))) {
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greathammer'))) {
 			timeToCraftSingleItem /= 2;
 		}
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
