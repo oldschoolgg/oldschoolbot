@@ -4,7 +4,7 @@ import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import itemID from '../../../../util/itemID';
-import resolveItems from '../../../../util/resolveItems';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
@@ -65,7 +65,11 @@ const killableBosses: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackRanged],
 		minimumGearRequirements: {
 			[GearStat.AttackRanged]: 30 + 17 + 69 + 7
-		}
+		},
+		itemsRequired: deepResolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		])
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -93,7 +97,11 @@ const killableBosses: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackSlash],
 		minimumGearRequirements: {
 			[GearStat.AttackRanged]: 30 + 17 + 69 + 7
-		}
+		},
+		itemsRequired: deepResolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		])
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -122,7 +130,11 @@ const killableBosses: KillableMonster[] = [
 		minimumGearRequirements: {
 			[GearStat.DefenceSlash]: 200,
 			[GearStat.AttackStab]: 80
-		}
+		},
+		itemsRequired: deepResolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		])
 	}
 ];
 
