@@ -9,6 +9,7 @@ import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
+	itemID,
 	itemNameFromID,
 	removeItemFromBank,
 	stringMatches
@@ -70,8 +71,10 @@ export default class extends BotCommand {
 		const requiredItems: [string, number][] = Object.entries(Craft.inputItems);
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
-		const timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
-
+		let timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greataxe'))) {
+			timeToCraftSingleItem /= 2;
+		}
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToCraftSingleItem);

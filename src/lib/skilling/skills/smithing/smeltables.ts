@@ -65,6 +65,14 @@ const Bars: Bar[] = [
 		id: itemID('Runite bar'),
 		inputOres: { [itemID('Runite ore')]: 1, [itemID('Coal')]: 8 },
 		chanceOfFail: 0
+	},
+	{
+		name: 'Dwarven bar',
+		level: 99,
+		xp: 5000,
+		id: itemID('Dwarven bar'),
+		inputOres: { [itemID('Dwarven ore')]: 1, [itemID('Coal')]: 20 },
+		chanceOfFail: 35
 	}
 ];
 

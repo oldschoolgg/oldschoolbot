@@ -99,6 +99,10 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven pickaxe'))) {
+			timeToMine /= 2;
+		}
+
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
 		for (const pickaxe of pickaxes) {

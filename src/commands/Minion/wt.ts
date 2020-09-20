@@ -15,6 +15,7 @@ import {
 	bankHasItem,
 	calcWhatPercent,
 	formatDuration,
+	itemID,
 	reduceNumByPercent
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -71,7 +72,9 @@ export default class extends BotCommand {
 		const wcBoost = (wcLevel + 1) / 10;
 		if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
 		durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
-
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greataxe'))) {
+			durationPerTodt /= 2;
+		}
 		const baseHealAmountNeeded = 20 * 8;
 		let healAmountNeeded = baseHealAmountNeeded;
 		let warmGearAmount = 0;

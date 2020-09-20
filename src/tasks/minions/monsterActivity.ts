@@ -54,6 +54,15 @@ export default class extends Task {
 			loot[itemID('Banana')] = bananas;
 		}
 
+		if (monster.id === 290) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(6000)) {
+					loot[itemID('Dwarven ore')] = 1;
+					break;
+				}
+			}
+		}
+
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);

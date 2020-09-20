@@ -10,6 +10,7 @@ import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
+	itemID,
 	itemNameFromID,
 	removeItemFromBank,
 	stringMatches
@@ -66,8 +67,10 @@ export default class extends BotCommand {
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
-
+		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greathammer'))) {
+			timeToSmithSingleBar /= 2;
+		}
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
