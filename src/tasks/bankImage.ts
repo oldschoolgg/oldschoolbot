@@ -19,7 +19,6 @@ import {
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	itemNameFromID,
-	randomItemFromArray,
 	restoreCtx,
 	saveCtx,
 	stringMatches
@@ -55,6 +54,8 @@ export default class BankImageTask extends Task {
 	public borderCorner: Image | null = null;
 	public borderHorizontal: Image | null = null;
 	public borderVertical: Image | null = null;
+
+	public imageHamstare: Image | null = null;
 
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
@@ -92,6 +93,9 @@ export default class BankImageTask extends Task {
 		);
 		this.borderVertical = await canvasImageFromBuffer(
 			fs.readFileSync('./resources/images/bank_border_v.png')
+		);
+		this.imageHamstare = await canvasImageFromBuffer(
+			fs.readFileSync('./resources/images/hamstare.png')
 		);
 	}
 
@@ -207,6 +211,24 @@ export default class BankImageTask extends Task {
 		ctx.restore();
 	}
 
+	addsHamstare(canvas: Canvas, wide = false) {
+		const ctx = canvas.getContext('2d');
+		ctx.save();
+		ctx.globalAlpha = 0.15;
+		ctx.translate(
+			wide ? this.borderVertical?.width! : canvas.width / 2 - this.imageHamstare?.width! / 2,
+			canvas.height - this.imageHamstare?.height! - this.borderHorizontal?.height!
+		);
+		ctx.drawImage(
+			this.imageHamstare,
+			0,
+			0,
+			wide ? canvas.width - this.borderVertical?.width! * 2 : this.imageHamstare?.width!,
+			this.imageHamstare?.height!
+		);
+		ctx.restore();
+	}
+
 	async generateBankImage(
 		itemLoot: Bank,
 		title = '',
@@ -316,6 +338,10 @@ export default class BankImageTask extends Task {
 		if (noBorder !== 1) {
 			this.drawBorder(canvas);
 		}
+
+		// Adds hamstare
+		this.addsHamstare(canvas, Boolean(wide));
+
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
 		}
@@ -342,10 +368,7 @@ export default class BankImageTask extends Task {
 			xLoc = Math.floor(
 				spacer + (i % itemsPerRow) * ((canvas.width - 40) / itemsPerRow) + distanceFromSide
 			);
-			let [id, quantity, value] = items[i];
-			if (user && user.settings.get('troll')) {
-				id = randomItemFromArray([4012, 2130, 7147]);
-			}
+			const [id, quantity, value] = items[i];
 			const item = await this.getItemImage(id);
 			if (!item) {
 				this.client.emit(Events.Warn, `Item with ID[${id}] has no item image.`);
@@ -553,6 +576,7 @@ export default class BankImageTask extends Task {
 		}
 		// Draw border
 		this.drawBorder(canvas);
+		this.addsHamstare(canvas);
 
 		return canvas.toBuffer();
 	}
