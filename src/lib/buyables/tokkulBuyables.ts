@@ -102,7 +102,9 @@ const TokkulShop: TokkulShop[] = [
 	{
 		name: 'Onyx bolt tips',
 		inputItem: itemID('Onyx bolt tips'),
-		tokkulReturn: 100
+		tokkulReturn: 100,
+		buyable: true,
+		tokkulCost: 1300
 	},
 	// Equipment Store
 	{
