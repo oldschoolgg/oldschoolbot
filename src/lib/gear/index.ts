@@ -1,5 +1,5 @@
-import * as GearTypes from './types';
 import defaultGear from './defaultGear';
+import * as GearTypes from './types';
 
 const Gear = { defaultGear };
 

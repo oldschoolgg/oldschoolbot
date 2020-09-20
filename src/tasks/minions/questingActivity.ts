@@ -1,9 +1,9 @@
-import { Task, KlasaMessage } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 
-import { rand, roll } from '../../lib/util';
 import { MAX_QP } from '../../lib/constants';
-import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { QuestingActivityTaskOptions } from '../../lib/types/minions';
+import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {

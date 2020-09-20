@@ -1,11 +1,11 @@
 import { chunk, sleep } from '@klasa/utils';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 import LastManStandingUsage, {
-	LMS_PREP,
 	LMS_FINAL,
+	LMS_PREP,
 	LMS_ROUND
 } from '../../lib/LastManStandingUsage';
-import { KlasaMessage, CommandStore, Command } from 'klasa';
-
 import { cleanMentions } from '../../lib/util';
 
 export default class extends Command {

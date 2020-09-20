@@ -1,21 +1,21 @@
 import { Task } from 'klasa';
 
-import {
-	noOp,
-	randomItemFromArray,
-	queuedMessageSend,
-	addBanks,
-	roll,
-	multiplyBank
-} from '../../lib/util';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
-import { ItemBank } from '../../lib/types';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { Emoji } from '../../lib/constants';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
+import announceLoot from '../../lib/minions/functions/announceLoot';
+import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
+import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { ItemBank } from '../../lib/types';
+import {
+	addBanks,
+	multiplyBank,
+	noOp,
+	queuedMessageSend,
+	randomItemFromArray,
+	roll
+} from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends Task {
 	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {

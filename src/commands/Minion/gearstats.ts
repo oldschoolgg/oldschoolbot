@@ -1,15 +1,15 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { GearSetupTypes } from '../../lib/gear/types';
 import readableStatName from '../../lib/gear/functions/readableStatName';
+import { GearSetupTypes } from '../../lib/gear/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			oneAtTime: true,
-			usage: '<melee|range|magic>'
+			usage: '<melee|range|mage>'
 		});
 	}
 

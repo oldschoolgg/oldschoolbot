@@ -1,14 +1,14 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import minionIcons from '../../lib/minions/data/minionIcons';
 import { Events } from '../../lib/constants';
+import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { addItemToBank, roll, itemID } from '../../lib/util';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { addItemToBank, itemID, roll } from '../../lib/util';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 
 const options = {
 	max: 1,

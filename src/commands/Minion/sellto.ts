@@ -1,11 +1,11 @@
-import { KlasaMessage, CommandStore } from 'klasa';
-import { Util, Items } from 'oldschooljs';
+import { GuildMember } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
+import { Items, Util } from 'oldschooljs';
+import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { GuildMember } from 'discord.js';
 import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
 import { stringMatches } from '../../lib/util';
 
 const options = {

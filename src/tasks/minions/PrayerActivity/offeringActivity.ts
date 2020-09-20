@@ -1,9 +1,9 @@
 import { Task } from 'klasa';
 
-import { rand, roll, itemID } from '../../../lib/util';
-import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
+import { itemID, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {

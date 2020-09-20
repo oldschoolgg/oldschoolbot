@@ -1,23 +1,22 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	stringMatches,
-	formatDuration,
-	rand,
-	itemNameFromID,
-	removeItemFromBank,
-	bankHasItem,
-	itemID
-} from '../../lib/util';
-import { Time, Activity, Tasks, Events } from '../../lib/constants';
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import { Activity, Events, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
-import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import {
+	bankHasItem,
+	formatDuration,
+	itemID,
+	itemNameFromID,
+	removeItemFromBank,
+	stringMatches
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -38,13 +37,13 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const bar = Smelting.Bars.find(
+		const bar = Smithing.Bars.find(
 			bar =>
 				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
 
 		if (!bar) {
-			throw `Thats not a valid bar to smelt. Valid bars are ${Smelting.Bars.map(
+			throw `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(
 				bar => bar.name
 			).join(', ')}.`;
 		}
@@ -83,17 +82,6 @@ export default class extends BotCommand {
 			}s you can smelt is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		const data: SmeltingActivityTaskOptions = {
-			barID: bar.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Smelting,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the ores from their bank.
 		let newBank: ItemBank = { ...userBank };
 		for (const [oreID, qty] of requiredOres) {
@@ -107,7 +95,18 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				barID: bar.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Smelting
+			}
+		);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let goldGauntletMessage = ``;

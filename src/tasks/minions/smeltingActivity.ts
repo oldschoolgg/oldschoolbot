@@ -1,16 +1,16 @@
 import { Task } from 'klasa';
-
-import { multiplyBank } from '../../lib/util';
-import { Time } from '../../lib/constants';
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
 import { rand } from 'oldschooljs/dist/util/util';
-import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { roll } from '../../util';
+
+import { Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Smithing from '../../lib/skilling/skills/smithing';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import { multiplyBank } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
+import { roll } from '../../util';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
@@ -18,7 +18,7 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		const bar = Smelting.Bars.find(bar => bar.id === barID);
+		const bar = Smithing.Bars.find(bar => bar.id === barID);
 		if (!bar) return;
 
 		// If this bar has a chance of failing to smelt, calculate that here.

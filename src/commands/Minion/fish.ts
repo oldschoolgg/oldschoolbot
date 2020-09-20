@@ -1,20 +1,20 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	stringMatches,
-	formatDuration,
-	rand,
-	itemNameFromID,
-	calcPercentOfNum,
-	itemID
-} from '../../lib/util';
-import Fishing from '../../lib/skilling/skills/fishing';
-import { Time, Activity, Tasks } from '../../lib/constants';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { FishingActivityTaskOptions } from '../../lib/types/minions';
+import {
+	calcPercentOfNum,
+	formatDuration,
+	itemID,
+	itemNameFromID,
+	rand,
+	stringMatches
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -100,23 +100,23 @@ export default class extends BotCommand {
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
 		duration += rand(-tenPercent, tenPercent);
 
-		const data: FishingActivityTaskOptions = {
-			fishID: fish.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Fishing,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the bait from their bank.
 		if (fish.bait) {
 			await msg.author.removeItemFromBank(fish.bait, quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<FishingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				fishID: fish.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Fishing
+			}
+		);
 
 		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name

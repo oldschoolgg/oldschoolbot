@@ -1,15 +1,15 @@
 import { Task } from 'klasa';
 
-import { roll, multiplyBank } from '../../lib/util';
 import { Time } from '../../lib/constants';
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import Cooking from '../../lib/skilling/skills/cooking';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import { SkillsEnum } from '../../lib/skilling/types';
-import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
-import itemID from '../../lib/util/itemID';
 import { getRandomMysteryBox } from '../../lib/openables';
+import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
+import Cooking from '../../lib/skilling/skills/cooking';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import { multiplyBank, roll } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ cookableID, quantity, userID, channelID, duration }: CookingActivityTaskOptions) {

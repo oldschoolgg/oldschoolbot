@@ -1,5 +1,5 @@
-import resolveItems from './resolveItems';
 import getOSItem from './getOSItem';
+import resolveItems from './resolveItems';
 
 const specialUntradeables = resolveItems(['Coins']);
 
