@@ -2,11 +2,22 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
 import Crafting from '../../lib/skilling/skills/crafting';
+import Firemaking from '../../lib/skilling/skills/firemaking';
+import Fishing from '../../lib/skilling/skills/fishing';
+import Mining from '../../lib/skilling/skills/mining';
+import Prayer from '../../lib/skilling/skills/prayer';
+import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Smithing from '../../lib/skilling/skills/smithing';
+import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	AgilityActivityTaskOptions,
