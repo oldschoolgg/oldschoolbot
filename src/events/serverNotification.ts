@@ -1,5 +1,5 @@
-import { Event, EventStore } from 'klasa';
 import { TextChannel } from 'discord.js';
+import { Event, EventStore } from 'klasa';
 
 import { Events } from '../lib/constants';
 

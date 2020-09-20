@@ -1,13 +1,12 @@
 import { Task } from 'klasa';
 
-import { roll, multiplyBank } from '../../lib/util';
-import { Time, Emoji, Events } from '../../lib/constants';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
+import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
+import { itemID, multiplyBank, roll } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {

@@ -1,10 +1,10 @@
-import { KlasaMessage, CommandStore } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
-import { stringMatches } from '../../lib/util';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { stringMatches } from '../../lib/util';
 
 const slicedCollectionLogTypes = collectionLogTypes.slice(1);
 

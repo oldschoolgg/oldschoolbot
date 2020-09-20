@@ -1,15 +1,14 @@
 import { Task } from 'klasa';
 
-import { addItemToBank, multiplyBank } from '../../lib/util';
-import { Time, Events, Emoji } from '../../lib/constants';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { roll, rand } from 'oldschooljs/dist/util/util';
-import Agility from '../../lib/skilling/skills/agility';
-import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Agility from '../../lib/skilling/skills/agility';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import { addItemToBank, multiplyBank, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ courseID, quantity, userID, channelID, duration }: AgilityActivityTaskOptions) {

@@ -1,4 +1,4 @@
-import { Possible, Argument, KlasaMessage } from 'klasa';
+import { Argument, KlasaMessage, Possible } from 'klasa';
 import fetch from 'node-fetch';
 
 export default class extends Argument {

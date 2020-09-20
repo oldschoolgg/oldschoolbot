@@ -1,6 +1,6 @@
+import { resolveNameBank } from '../../../../util';
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
-import { resolveNameBank } from '../../../../util';
 
 const Javelins: Fletchable[] = [
 	{

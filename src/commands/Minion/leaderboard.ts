@@ -1,15 +1,15 @@
 import { MessageEmbed } from 'discord.js';
-import { util, KlasaMessage, Command, CommandStore } from 'klasa';
+import { Command, CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { SettingsEntry, StringKeyedBank } from '../../lib/types';
 import badges from '../../lib/badges';
-import { Time } from '../../lib/constants';
-import { stringMatches, toTitleCase, convertXPtoLVL, stripEmojis } from '../../lib/util';
 import { collectionLogTypes } from '../../lib/collectionLog';
-import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { Time } from '../../lib/constants';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
+import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { SettingsEntry, StringKeyedBank } from '../../lib/types';
+import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 
 const CACHE_TIME = Time.Minute * 5;
 
@@ -344,7 +344,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 	async skills(msg: KlasaMessage, [inputSkill = 'overall']: [string]) {
 		let res: SkillUser[] = [];
-		const skill = Skills.find(_skill =>
+		const skill = Object.values(Skills).find(_skill =>
 			_skill.aliases.some(name => stringMatches(name, inputSkill))
 		);
 

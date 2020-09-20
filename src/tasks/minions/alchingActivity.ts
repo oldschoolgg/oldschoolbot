@@ -1,14 +1,14 @@
-import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { Task } from 'klasa';
 import { resolveNameBank, toKMB } from 'oldschooljs/dist/util';
-import { roll } from '../../lib/util';
+
+import { Time } from '../../lib/constants';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import itemID from '../../lib/util/itemID';
+import { AlchingActivityTaskOptions } from '../../lib/types/minions';
+import { itemID, roll } from '../../lib/util';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import { Time } from '../../lib/constants';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 

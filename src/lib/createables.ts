@@ -1,6 +1,6 @@
 import { Bank } from './types';
-import itemID from './util/itemID';
 import { resolveNameBank } from './util';
+import itemID from './util/itemID';
 
 interface Createable {
 	name: string;
@@ -3127,7 +3127,19 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Dwarf cannon set')]: 1
-		}
+		},
+		requiredSkills: { smithing: 60 }
+	},
+	{
+		name: 'Coconut milk',
+		inputItems: resolveNameBank({
+			Vial: 1,
+			Coconut: 1
+		}),
+		outputItems: resolveNameBank({
+			'Coconut milk': 1,
+			'Coconut shell': 1
+		})
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',

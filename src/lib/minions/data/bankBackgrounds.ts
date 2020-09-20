@@ -1,6 +1,6 @@
-import { BankBackground } from '../types';
 import { PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
+import { BankBackground } from '../types';
 
 const backgroundImages: BankBackground[] = [
 	{

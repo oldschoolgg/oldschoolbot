@@ -15,7 +15,6 @@
 		"canvas-constructor": "^1.1.2",
 		"cheerio": "^1.0.0-rc.3",
 		"chokidar": "^3.4.0",
-		"crystalmethlabs": "github:gc/crystalmethlabs",
 		"discord.js": "discordjs/discord.js#fe7df708e44e0280dfaf0f8e457b154781bb5140",
 		"emoji-regex": "^9.0.0",
 		"he": "^1.2.0",
@@ -39,6 +38,7 @@
 		"twit": "^2.2.9",
 		"typeorm": "^0.2.25",
 		"utf-8-validate": "^5.0.2",
+		"uuid": "^8.3.0",
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
@@ -49,6 +49,7 @@
 		"@types/node-fetch": "^2.5.7",
 		"@types/pg": "^7.14.3",
 		"@types/twit": "^2.2.24",
+		"@types/uuid": "^8.3.0",
 		"@types/xml2js": "^0.4.5",
 		"@typescript-eslint/eslint-plugin": "^2.34.0",
 		"@typescript-eslint/parser": "^2.34.0",
@@ -59,6 +60,7 @@
 		"eslint-config-klasa": "github:dirigeants/klasa-lint",
 		"eslint-config-prettier": "^6.11.0",
 		"eslint-plugin-prettier": "^3.1.4",
+		"eslint-plugin-simple-import-sort": "^5.0.3",
 		"prettier": "^1.19.1",
 		"rimraf": "^3.0.2",
 		"typescript": "3.9.6"

@@ -1,18 +1,18 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import BankImageTask from '../../tasks/bankImage';
+import { Events, Time } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
-	stringMatches,
-	removeBankFromBank,
+	addBanks,
 	bankHasAllItemsFromBank,
-	addBanks
+	removeBankFromBank,
+	stringMatches
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Time, Events } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import BankImageTask from '../../tasks/bankImage';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

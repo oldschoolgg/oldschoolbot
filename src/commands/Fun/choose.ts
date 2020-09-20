@@ -1,6 +1,6 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
-import { randomItemFromArray, cleanMentions } from '../../lib/util';
+import { cleanMentions, randomItemFromArray } from '../../lib/util';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {

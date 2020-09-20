@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+
 import { BotCommand } from '../../lib/BotCommand';
-import { PerkTier, Time } from '../../lib/constants';
+import { PerkTier } from '../../lib/constants';
 import { ItemBank } from '../../lib/types';
 
 const IGNORE_LESS_THEN = 10;
@@ -11,7 +12,7 @@ export default class extends BotCommand {
 			aliases: ['ebank'],
 			perkTier: PerkTier.Six,
 			oneAtTime: true,
-			cooldown: 180 * Time.Minute
+			cooldown: 60 * 60 * 3
 		});
 	}
 
