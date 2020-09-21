@@ -3,12 +3,12 @@ import 'reflect-metadata';
 import { Client as TagsClient } from '@kcp/tags';
 import * as Sentry from '@sentry/node';
 import { Client, KlasaClientOptions } from 'klasa';
+import { Items } from 'oldschooljs';
 import pLimit from 'p-limit';
 
 import { botToken, sentryDSN } from './config';
-import { initCustomItems } from './lib/customItems';
-initCustomItems();
 import { clientOptions, clientProperties } from './lib/config/config';
+import { initCustomItems } from './lib/customItems';
 
 if (sentryDSN) {
 	Sentry.init({
@@ -35,6 +35,13 @@ class OldSchoolBot extends Client {
 			this[prop] = clientProperties[prop];
 		}
 	}
+
+	public initCustomStuff = async (): Promise<this> => {
+		await Items.fetchAll();
+		await initCustomItems();
+		return this;
+	};
 }
 
-new OldSchoolBot(clientOptions).login(botToken);
+const __client = new OldSchoolBot(clientOptions);
+__client.initCustomStuff().then(client => client.login(botToken));
