@@ -18,7 +18,6 @@ interface Openable {
 }
 
 const HolidayItems = new LootTable()
-	.oneIn(30, 'Halloween mask set')
 	.add('Chicken head')
 	.add('Chicken wings')
 	.add('Chicken legs')
@@ -186,7 +185,6 @@ const PetsTable = new LootTable()
 	.add('Youngllef');
 
 const PartyhatTable = new LootTable()
-	.oneIn(60, 'Partyhat set')
 	.oneIn(50, 'Black partyhat')
 	.oneIn(20, 'Rainbow partyhat')
 	.add('Red Partyhat')
@@ -269,7 +267,16 @@ let allItemsIDs = Openables.map(
 	i => (typeof i.table !== 'function' && i.table.allItems) || []
 ).flat(Infinity) as number[];
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
-const cantBeDropped = [...Object.values(coxLog).flat(Infinity)] as number[];
+const cantBeDropped = [
+	...Object.values(coxLog).flat(Infinity),
+	itemID('Halloween mask set'),
+	itemID('Partyhat set'),
+	itemID('Ancestral robes set'),
+	itemID('Kodai wand'),
+	itemID('Twisted ancestral hat'),
+	itemID('Twisted ancestral robe top'),
+	itemID('Twisted ancestral robe bottom')
+] as number[];
 
 function getRandomItem(tradeables: boolean): number {
 	return Items.filter(i => {
