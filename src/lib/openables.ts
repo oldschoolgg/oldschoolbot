@@ -1,13 +1,13 @@
+import { Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { coxLog } from './collectionLog';
 import { Emoji } from './constants';
 import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
 import { itemID, itemNameFromID, removeDuplicatesFromArray } from './util';
-import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import { coxLog } from './collectionLog';
 
 interface Openable {
 	name: string;
