@@ -11,13 +11,20 @@ import { KillableMonster } from '../../types';
 import bosses from './bosses';
 
 const KingTable = new LootTable()
-	.tertiary(1000, 'Dwarven warhammer')
+	.tertiary(2300, 'Dwarven warhammer')
+	.tertiary(20, 'Clue scroll (master)')
 	.oneIn(
-		10,
+		30,
 		new LootTable()
 			.add('Dwarven crate')
 			.add('Dwarven ore')
 			.add('Coal', [2, 14])
+			.add('Iron ore', [2, 14])
+			.add('Royal crown')
+			.add('Mystic jewel')
+			.add('Dwarven lore')
+			.add('Golden goblin')
+			.add('Gold candlesticks')
 	)
 	.every('Bones')
 	.add('Beer', [1, 4])
@@ -27,9 +34,16 @@ const KingTable = new LootTable()
 	.add('Axe head')
 	.add('Pickaxe handle')
 	.add('Hair')
-	.add('Royal crown')
 	.add('Gold bar')
-	.add('Gold ring');
+	.add('Gold ring')
+	.add('Dwarven helmet')
+	.add('Jewellery')
+	.add('Dwarven stout(m)')
+	.add('Gold ore', [2, 20])
+	.add('Coins', [50_000, 1_000_000])
+	.add('Skull piece')
+	.add('Dwarven rock cake')
+	.add('Dwarven stout');
 
 function makeKillTable(table: LootTable) {
 	return function(quantity: number) {
