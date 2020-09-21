@@ -36,12 +36,11 @@ class OldSchoolBot extends Client {
 		}
 	}
 
-	public initCustomStuff = async (): Promise<this> => {
+	public init = async (): Promise<this> => {
 		await Items.fetchAll();
 		initCustomItems();
 		return this;
 	};
 }
 
-const __client = new OldSchoolBot(clientOptions);
-__client.initCustomStuff().then(client => client.login(botToken));
+new OldSchoolBot(clientOptions).init().then(client => client.login(botToken));
