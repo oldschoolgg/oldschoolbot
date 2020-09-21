@@ -1,7 +1,8 @@
-import { Item } from 'oldschooljs/dist/meta/types';
 import { Items } from 'oldschooljs';
-import { cleanString } from '../util';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+
+import { cleanString } from '../util';
 import getOSItem from './util/getOSItem';
 
 function setCustomItem(id: number, name: string, baseItem: Item, newItemData?: Partial<Item>) {

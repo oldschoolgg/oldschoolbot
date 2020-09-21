@@ -1,8 +1,9 @@
 import { Task } from 'klasa';
-import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import { noOp, formatDuration } from '../../lib/util';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+
+import { RaidsActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, noOp } from '../../lib/util';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 

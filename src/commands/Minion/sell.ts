@@ -5,8 +5,8 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { BotCommand } from '../../lib/BotCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { itemID } from '../../lib/util';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 
 const options = {
 	max: 1,
