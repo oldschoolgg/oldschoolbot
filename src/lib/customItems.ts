@@ -53,5 +53,7 @@ export function initCustomItems() {
 	setCustomItem(506, 'Dwarven bar', getOSItem('Steel bar'));
 	setCustomItem(508, 'Dwarven ore', getOSItem('Iron ore'));
 
+	setCustomItem(6741, 'Dwarven warhammer', getOSItem('Dragon warhammer'));
+
 	setCustomItem(8871, 'Dwarven crate', getOSItem('Mystery box'));
 }

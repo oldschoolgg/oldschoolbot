@@ -28,6 +28,7 @@ import {
 	bankHasItem,
 	formatDuration,
 	isWeekend,
+	itemID,
 	itemNameFromID,
 	randomItemFromArray
 } from '../../lib/util';
@@ -456,6 +457,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		if (monster.id === 696969) {
+			throw `You would be foolish to try to face King Goldemar in a solo fight.`;
+		}
+
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
@@ -477,18 +482,18 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			}
 		}
 
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
+			timeToFinish *= 0.8;
+			boosts.push(`20% boost for Dwarven warhammer`);
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = floor(msg.author.maxTripLength / timeToFinish);
 		}
 
 		// Check food
-		if (
-			monster.healAmountNeeded &&
-			monster.attackStyleToUse &&
-			monster.attackStylesUsed &&
-			1 > 2
-		) {
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 

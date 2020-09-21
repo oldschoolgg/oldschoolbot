@@ -1,10 +1,71 @@
 import { Monsters } from 'oldschooljs';
+import Loot from 'oldschooljs/dist/structures/Loot';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { Time } from '../../../constants';
+import { GearSetupTypes, GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import bosses from './bosses';
+
+const KingTable = new LootTable()
+	.tertiary(1000, 'Dwarven warhammer')
+	.oneIn(
+		10,
+		new LootTable()
+			.add('Dwarven crate')
+			.add('Dwarven ore')
+			.add('Coal', [2, 14])
+	)
+	.every('Bones')
+	.add('Beer', [1, 4])
+	.add('Kebab', [1, 4])
+	.add('Hammer', 1)
+	.add('Oily cloth')
+	.add('Axe head')
+	.add('Pickaxe handle')
+	.add('Hair')
+	.add('Royal crown')
+	.add('Gold bar')
+	.add('Gold ring');
+
+function makeKillTable(table: LootTable) {
+	return function(quantity: number) {
+		const loot = new Loot();
+
+		for (let i = 0; i < quantity; i++) {
+			loot.add(table.roll());
+		}
+
+		return loot.values();
+	};
+}
+
+function setCustomMonster(
+	id: number,
+	name: string,
+	table: LootTable,
+	baseItem: Monster,
+	newItemData?: Partial<Monster>
+) {
+	Monsters.set(id, {
+		...baseItem,
+		...newItemData,
+		name,
+		id,
+		kill: makeKillTable(table)
+	});
+}
+
+setCustomMonster(696969, 'King Goldemar', KingTable, Monsters.GeneralGraardor, {
+	id: 696969,
+	name: 'King Goldemar',
+	aliases: ['king goldemar', 'dwarf king']
+});
+
+const KingGoldemar = Monsters.find(mon => mon.name === 'King Goldemar')!;
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
@@ -311,6 +372,32 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0
+	},
+	{
+		id: KingGoldemar.id,
+		name: KingGoldemar.name,
+		aliases: KingGoldemar.aliases,
+		timeToFinish: Time.Minute * 22,
+		table: {
+			kill: makeKillTable(KingTable)
+		},
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 26,
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush],
+		minimumGearRequirements: {
+			[GearStat.DefenceCrush]: 150,
+			[GearStat.AttackCrush]: 80
+		},
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 43
+		}
 	}
 ];
 

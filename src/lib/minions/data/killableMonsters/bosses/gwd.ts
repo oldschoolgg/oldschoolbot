@@ -2,7 +2,6 @@ import { Monsters } from 'oldschooljs';
 
 import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import itemID from '../../../../util/itemID';
 import resolveItems from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -28,14 +27,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
-		minimumGearRequirements: {
-			[GearStat.DefenceCrush]: 150,
-			[GearStat.AttackCrush]: 80
-		}
+		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards]
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -59,13 +51,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			agility: 70
 		},
-		uniques: [...bosses.Saradomin, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackRanged],
-		minimumGearRequirements: {
-			[GearStat.AttackRanged]: 30 + 17 + 69 + 7
-		}
+		uniques: [...bosses.Saradomin, ...bosses.Shards]
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -87,13 +73,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: [...bosses.Arma, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackSlash],
-		minimumGearRequirements: {
-			[GearStat.AttackRanged]: 30 + 17 + 69 + 7
-		}
+		uniques: [...bosses.Arma, ...bosses.Shards]
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -115,14 +95,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: [...bosses.Zammy, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash],
-		minimumGearRequirements: {
-			[GearStat.DefenceSlash]: 200,
-			[GearStat.AttackStab]: 80
-		}
+		uniques: [...bosses.Zammy, ...bosses.Shards]
 	}
 ];
 

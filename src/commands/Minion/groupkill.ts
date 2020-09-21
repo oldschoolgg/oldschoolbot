@@ -18,7 +18,7 @@ const { ceil } = Math;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[quantity:int] <monster:string>',
+			usage: '[quantity:int] <monster:...string>',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
@@ -59,7 +59,7 @@ export default class extends BotCommand {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
 
-			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity)) {
+			if (monster.healAmountNeeded && !hasEnoughFoodForMonster(monster, user, quantity)) {
 				throw `${user.username} doesn't have enough food.`;
 			}
 		}
@@ -92,7 +92,7 @@ export default class extends BotCommand {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
 
-				if (1 > 2) {
+				if (monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
 					} catch (err) {
@@ -109,12 +109,14 @@ export default class extends BotCommand {
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);
-
+		if (users.length < 3 && monster.id === 696969) {
+			throw `You need atleast 3 people to fight the Dwarf king.`;
+		}
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
 
 		this.checkReqs(users, monster, quantity);
 
-		if (1 > 2) {
+		if (monster.healAmountNeeded) {
 			for (const user of users) {
 				await user.settings.sync(true);
 				let [healAmountNeeded] = calculateMonsterFood(monster, user);
