@@ -235,6 +235,12 @@ const backgroundImages: BankBackground[] = [
 		name: 'peeposcooter',
 		image: null,
 		available: false
+	},
+	{
+		id: 33,
+		name: 'high',
+		image: null,
+		available: false
 	}
 ];
 
