@@ -2,7 +2,7 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
-import { cleanString } from './util';
+import { cleanString } from '../util';
 import getOSItem from './util/getOSItem';
 
 function setCustomItem(id: number, name: string, baseItem: Item, newItemData?: Partial<Item>) {
@@ -16,7 +16,7 @@ function setCustomItem(id: number, name: string, baseItem: Item, newItemData?: P
 	itemNameMap.set(cleanName, id);
 }
 
-export async function initCustomItems() {
+export function initCustomItems() {
 	setCustomItem(19939, 'Untradeable Mystery Box', getOSItem('Mystery box'));
 	setCustomItem(6199, 'Tradeable Mystery Box', getOSItem('Mystery box'));
 	setCustomItem(3062, 'Pet Mystery Box', getOSItem('Mystery box'));
