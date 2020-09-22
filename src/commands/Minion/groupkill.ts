@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { addBanks } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks } from '../../lib/constants';
@@ -6,14 +7,13 @@ import { Eatables } from '../../lib/eatables';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
+import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MakePartyOptions } from '../../lib/types';
-import { addItemToBank, formatDuration } from '../../lib/util';
+import { formatDuration, removeBankFromBank } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-
-const { ceil } = Math;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -58,8 +58,13 @@ export default class extends BotCommand {
 			if (!hasReqs) {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
-
-			if (monster.healAmountNeeded && !hasEnoughFoodForMonster(monster, user, quantity)) {
+			if (
+				monster.healAmountNeeded &&
+				!getUserFoodFromBank(
+					user.settings.get(UserSettings.Bank),
+					monster.healAmountNeeded * quantity
+				)
+			) {
 				throw `${user.username} doesn't have enough food.`;
 			}
 		}
@@ -99,8 +104,19 @@ export default class extends BotCommand {
 						return [true, err];
 					}
 
-					if (!hasEnoughFoodForMonster(monster, user, 2)) {
-						return [true, "you don't have enough food."];
+					// Ensure people have enough food for at least 2 full KC
+					// This makes it so the users will always have enough food for any amount of KC
+					if (
+						!getUserFoodFromBank(
+							user.settings.get(UserSettings.Bank),
+							monster.healAmountNeeded * 2
+						)
+					) {
+						return [
+							true,
+							`You don't have enough food. You need at least ${monster.healAmountNeeded *
+								2} HP in food to enter the mass.`
+						];
 					}
 				}
 
@@ -109,8 +125,8 @@ export default class extends BotCommand {
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);
-		if (users.length < 3 && monster.id === 696969) {
-			throw `You need atleast 3 people to fight the Dwarf king.`;
+		if (users.length < 2 && monster.id === 696969) {
+			throw `You need at least 3 people to fight the Dwarf king.`;
 		}
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
 
@@ -119,37 +135,32 @@ export default class extends BotCommand {
 		if (monster.healAmountNeeded) {
 			for (const user of users) {
 				await user.settings.sync(true);
-				let [healAmountNeeded] = calculateMonsterFood(monster, user);
-
-				healAmountNeeded = Math.ceil(healAmountNeeded / users.length);
-
-				for (const food of Eatables) {
-					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-					if (user.numItemsInBankSync(food.id) < amountNeeded) {
-						if (Eatables.indexOf(food) === Eatables.length - 1) {
-							throw `You don't have enough food to kill ${
-								monster.name
-							}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-								quantity} per kill) You can use these food items: ${Eatables.map(
-								i => i.name
-							).join(', ')}.`;
-						}
-						continue;
-					}
-
-					await user.removeItemFromBank(food.id, amountNeeded);
-
-					// Track this food cost in Economy Stats
+				const userBank = user.settings.get(UserSettings.Bank);
+				const [healAmountNeeded] = calculateMonsterFood(monster, user);
+				const foodToRemove = getUserFoodFromBank(
+					userBank,
+					Math.ceil(healAmountNeeded / users.length) * quantity
+				);
+				if (!foodToRemove) {
+					throw `You don't have enough food to kill ${
+						monster.name
+					}! You need enough food to heal at least ${healAmountNeeded} HP (${Math.ceil(
+						healAmountNeeded / quantity
+					)} per kill). You can use these food items: ${Eatables.map(i => i.name).join(
+						', '
+					)}.`;
+				} else {
+					await user.settings.update(
+						UserSettings.Bank,
+						removeBankFromBank(userBank, foodToRemove)
+					);
 					await this.client.settings.update(
 						ClientSettings.EconomyStats.PVMCost,
-						addItemToBank(
+						addBanks([
 							this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-							food.id,
-							amountNeeded
-						)
+							foodToRemove
+						])
 					);
-
-					break;
 				}
 			}
 		}

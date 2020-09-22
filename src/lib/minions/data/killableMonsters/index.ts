@@ -46,7 +46,7 @@ const KingTable = new LootTable()
 	.add('Dwarven stout');
 
 function makeKillTable(table: LootTable) {
-	return function(quantity: number) {
+	return (quantity: number) => {
 		const loot = new Loot();
 
 		for (let i = 0; i < quantity; i++) {
