@@ -58,14 +58,17 @@ export default class extends BotCommand {
 			if (!hasReqs) {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
+			const monsterFoodNeeded =
+				Math.ceil(calculateMonsterFood(monster, user)[0] / users.length) * quantity;
 			if (
 				monster.healAmountNeeded &&
-				!getUserFoodFromBank(
-					user.settings.get(UserSettings.Bank),
-					monster.healAmountNeeded * quantity
-				)
+				!getUserFoodFromBank(user.settings.get(UserSettings.Bank), monsterFoodNeeded)
 			) {
-				throw `${user.username} doesn't have enough food.`;
+				throw `${user.username} doesn't have enough food. You need at least ${
+					monsterFoodNeeded < monster.healAmountNeeded
+						? monster.healAmountNeeded
+						: monsterFoodNeeded
+				} HP in food to enter the mass.`;
 			}
 		}
 	}
