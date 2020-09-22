@@ -18,7 +18,7 @@ export default class extends Monitor {
 		}
 		if (
 			['mass', 'pingmass', 'groupkill'].every(
-				str => !msg.content.toLowerCase().includes(`${this.client.options.prefix}${str}`)
+				str => !msg.content.toLowerCase().startsWith(`${this.client.options.prefix}${str}`)
 			)
 		) {
 			await msg.delete();
