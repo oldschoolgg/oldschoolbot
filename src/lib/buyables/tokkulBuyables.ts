@@ -1,6 +1,6 @@
 import itemID from '../util/itemID';
 
-interface TokkulShop {
+interface TokkulShopItem {
 	name: string;
 	inputItem: number;
 	tokkulReturn: number;
@@ -8,7 +8,7 @@ interface TokkulShop {
 	aliases?: string[];
 }
 
-const TokkulShop: TokkulShop[] = [
+const TokkulShopItem: TokkulShopItem[] = [
 	// Ore and Gem Store
 	{
 		name: 'Tin ore',
@@ -248,4 +248,4 @@ const TokkulShop: TokkulShop[] = [
 	}
 ];
 
-export default TokkulShop;
+export default TokkulShopItem;
