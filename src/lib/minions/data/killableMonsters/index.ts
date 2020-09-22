@@ -115,8 +115,8 @@ const SeedPackTable = new LootTable()
 	.add('Potato cactus seed', 1);
 
 const KrakenTable = new LootTable()
-	.every(FishTable, [1, 3])
-	.tertiary(3, SeedPackTable, [1, 4])
+	.every(FishTable, 4)
+	.every(SeedPackTable, 6)
 	.add('Coins', [50_000, 100_000])
 	.add('Clue scroll (master)')
 	.add('Clue scroll (elite)')
