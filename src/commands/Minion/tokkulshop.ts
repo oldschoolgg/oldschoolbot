@@ -46,7 +46,7 @@ export default class extends BotCommand {
 			}).join(', ')}.`;
 		}
 
-		if (!shopInventory.tokkulReturn && type === 'buy') {
+		if (!shopInventory.tokkulCost && type === 'buy') {
 			throw `I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShop.map(
 				item => {
 					if (item.tokkulReturn) return item.name;

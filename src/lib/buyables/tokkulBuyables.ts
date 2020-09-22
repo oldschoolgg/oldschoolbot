@@ -14,24 +14,28 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Tin ore',
 		inputItem: itemID('Tin ore'),
 		tokkulReturn: 1,
-		tokkulCost: 3
+		tokkulCost: 3,
+		aliases: ['tin']
 	},
 	{
 		name: 'Copper ore',
 		inputItem: itemID('Copper ore'),
 		tokkulReturn: 1,
-		tokkulCost: 3
+		tokkulCost: 3,
+		aliases: ['copper']
 	},
 	{
 		name: 'Iron ore',
 		inputItem: itemID('Iron ore'),
 		tokkulReturn: 1,
-		tokkulCost: 22
+		tokkulCost: 22,
+		aliases: ['iron']
 	},
 	{
 		name: 'Silver ore',
 		inputItem: itemID('Silver ore'),
-		tokkulReturn: 7
+		tokkulReturn: 7,
+		aliases: ['silver']
 	},
 	{
 		name: 'Coal',
@@ -41,44 +45,52 @@ const TokkulShop: TokkulShop[] = [
 	{
 		name: 'Gold ore',
 		inputItem: itemID('Gold ore'),
-		tokkulReturn: 15
+		tokkulReturn: 15,
+		aliases: ['gold']
 	},
 	{
 		name: 'Mithril ore',
 		inputItem: itemID('Mithril ore'),
-		tokkulReturn: 16
+		tokkulReturn: 16,
+		aliases: ['mithril']
 	},
 	{
 		name: 'Adamantite ore',
 		inputItem: itemID('Adamantite ore'),
-		tokkulReturn: 40
+		tokkulReturn: 40,
+		aliases: ['adamantite', 'adamant', 'addy']
 	},
 	{
 		name: 'Runite ore',
 		inputItem: itemID('Runite ore'),
-		tokkulReturn: 320
+		tokkulReturn: 320,
+		aliases: ['runite', 'rune ore', 'rune']
 	},
 	{
 		name: 'Uncut sapphire',
 		inputItem: itemID('Uncut sapphire'),
 		tokkulReturn: 2,
-		tokkulCost: 32
+		tokkulCost: 32,
+		aliases: ['sapphire']
 	},
 	{
 		name: 'Uncut emerald',
 		inputItem: itemID('Uncut emerald'),
 		tokkulReturn: 5,
-		tokkulCost: 65
+		tokkulCost: 65,
+		aliases: ['emerald']
 	},
 	{
 		name: 'Uncut ruby',
 		inputItem: itemID('Uncut ruby'),
-		tokkulReturn: 10
+		tokkulReturn: 10,
+		aliases: ['ruby']
 	},
 	{
 		name: 'Uncut diamond',
 		inputItem: itemID('Uncut diamond'),
-		tokkulReturn: 20
+		tokkulReturn: 20,
+		aliases: ['diamond']
 	},
 	{
 		name: 'Uncut dragonstone',
@@ -96,7 +108,8 @@ const TokkulShop: TokkulShop[] = [
 		name: 'Onyx bolt tips',
 		inputItem: itemID('Onyx bolt tips'),
 		tokkulReturn: 100,
-		tokkulCost: 1300
+		tokkulCost: 1300,
+		aliases: ['onyx tips', 'onix bolts']
 	},
 	// Equipment Store
 	{
@@ -104,122 +117,134 @@ const TokkulShop: TokkulShop[] = [
 		inputItem: itemID('Toktz-xil-ul'),
 		tokkulReturn: 25,
 		tokkulCost: 325,
-		aliases: ['Toktz-xil-ul']
+		aliases: ['toktz-xil-ul']
 	},
 	{
 		name: 'Obsidian sword',
 		inputItem: itemID('Toktz-xil-ak'),
 		tokkulReturn: 4000,
 		tokkulCost: 52000,
-		aliases: ['Toktz-xil-ak']
+		aliases: ['toktz-xil-ak']
 	},
 	{
 		name: 'Obsidian dagger',
 		inputItem: itemID('Toktz-xil-ek'),
 		tokkulReturn: 2500,
 		tokkulCost: 32500,
-		aliases: ['Toktz-xil-ek']
+		aliases: ['toktz-xil-ek']
 	},
 	{
 		name: 'Obsidian maul',
 		inputItem: itemID('Tzhaar-ket-om'),
 		tokkulReturn: 5000,
 		tokkulCost: 65001,
-		aliases: ['Tzhaar-ket-om']
+		aliases: ['tzhaar-ket-om']
 	},
 	{
 		name: 'Obsidian staff',
 		inputItem: itemID('Toktz-mej-tal'),
 		tokkulReturn: 3500,
 		tokkulCost: 45500,
-		aliases: ['Toktz-mej-tal']
+		aliases: ['toktz-mej-tal']
 	},
 	{
 		name: 'Obsidian mace',
 		inputItem: itemID('Tzhaar-ket-em'),
 		tokkulReturn: 3000,
 		tokkulCost: 39000,
-		aliases: ['Tzhaar-ket-em']
+		aliases: ['tzhaar-ket-em']
 	},
 	{
 		name: 'Obsidian cape',
 		inputItem: itemID('Obsidian cape'),
 		tokkulReturn: 6000,
-		tokkulCost: 78000
+		tokkulCost: 78000,
+		aliases: ['obby cape']
 	},
 	{
 		name: 'Obsidian shield',
 		inputItem: itemID('Toktz-ket-xil'),
 		tokkulReturn: 4500,
 		tokkulCost: 58500,
-		aliases: ['Toktz-ket-xil']
+		aliases: ['toktz-ket-xil', 'obby shield']
 	},
 	{
 		name: 'Obsidian helmet',
 		inputItem: itemID('Obsidian helmet'),
 		tokkulReturn: 5632,
-		tokkulCost: 73216
+		tokkulCost: 73216,
+		aliases: ['obby helmet']
 	},
 	{
 		name: 'Obsidian platebody',
 		inputItem: itemID('Obsidian platebody'),
 		tokkulReturn: 8400,
-		tokkulCost: 109200
+		tokkulCost: 109200,
+		aliases: ['obby platebody']
 	},
 	{
 		name: 'Obsidian platelegs',
 		inputItem: itemID('Obsidian platelegs'),
 		tokkulReturn: 6700,
-		tokkulCost: 87100
+		tokkulCost: 87100,
+		aliases: ['obby platelegs']
 	},
 	// Runes
 	{
 		name: 'Fire rune',
 		inputItem: itemID('Fire rune'),
 		tokkulReturn: 1,
-		tokkulCost: 5
+		tokkulCost: 5,
+		aliases: ['fire']
 	},
 	{
 		name: 'Water rune',
 		inputItem: itemID('Water rune'),
 		tokkulReturn: 1,
-		tokkulCost: 5
+		tokkulCost: 5,
+		aliases: ['water']
 	},
 	{
 		name: 'Air rune',
 		inputItem: itemID('Air rune'),
 		tokkulReturn: 1,
-		tokkulCost: 5
+		tokkulCost: 5,
+		aliases: ['air']
 	},
 	{
 		name: 'Earth rune',
 		inputItem: itemID('Earth rune'),
 		tokkulReturn: 1,
-		tokkulCost: 5
+		tokkulCost: 5,
+		aliases: ['earth']
 	},
 	{
 		name: 'Mind rune',
 		inputItem: itemID('Mind rune'),
 		tokkulReturn: 1,
-		tokkulCost: 3
+		tokkulCost: 3,
+		aliases: ['mind']
 	},
 	{
 		name: 'Body rune',
 		inputItem: itemID('Body rune'),
 		tokkulReturn: 1,
-		tokkulCost: 3
+		tokkulCost: 3,
+		aliases: ['body']
 	},
 	{
 		name: 'Chaos rune',
 		inputItem: itemID('Chaos rune'),
 		tokkulReturn: 9,
-		tokkulCost: 117
+		tokkulCost: 117,
+		aliases: ['chaos']
 	},
 	{
 		name: 'Death rune',
 		inputItem: itemID('Death rune'),
 		tokkulReturn: 18,
-		tokkulCost: 234
+		tokkulCost: 234,
+		aliases: ['death']
 	}
 ];
 
