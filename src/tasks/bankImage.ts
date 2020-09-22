@@ -145,7 +145,7 @@ export default class BankImageTask extends Task {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawBorder(canvas: Canvas) {
+	drawBorder(canvas: Canvas, titleLine = true) {
 		const ctx = canvas.getContext('2d');
 		// Draw top border
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
@@ -160,11 +160,13 @@ export default class BankImageTask extends Task {
 		ctx.restore();
 
 		// Draw title line
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-		ctx.translate(this.borderVertical?.width!, 27);
-		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
-		ctx.restore();
+		if (titleLine) {
+			ctx.save();
+			ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
+			ctx.translate(this.borderVertical?.width!, 27);
+			ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+			ctx.restore();
+		}
 
 		// Draw left border
 		ctx.save();
@@ -336,11 +338,13 @@ export default class BankImageTask extends Task {
 
 		// Skips border if noBorder is set
 		if (noBorder !== 1) {
-			this.drawBorder(canvas);
+			this.drawBorder(canvas, bgImage.name === 'Default');
 		}
 
 		// Adds hamstare
-		this.addsHamstare(canvas, Boolean(wide));
+		if (bgImage.name === 'Default') {
+			this.addsHamstare(canvas, Boolean(wide));
+		}
 
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
