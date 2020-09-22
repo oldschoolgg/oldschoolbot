@@ -187,7 +187,6 @@ const PetsTable = new LootTable()
 const PartyhatTable = new LootTable()
 	.oneIn(50, 'Black partyhat')
 	.oneIn(20, 'Rainbow partyhat')
-	.add('Partyhat & specs')
 	.add('Red Partyhat')
 	.add('Yellow partyhat')
 	.add('Blue partyhat')
@@ -276,7 +275,8 @@ const cantBeDropped = [
 	itemID('Kodai wand'),
 	itemID('Twisted ancestral hat'),
 	itemID('Twisted ancestral robe top'),
-	itemID('Twisted ancestral robe bottom')
+	itemID('Twisted ancestral robe bottom'),
+	itemID('Partyhat & specs')
 ] as number[];
 
 function getRandomItem(tradeables: boolean): number {
