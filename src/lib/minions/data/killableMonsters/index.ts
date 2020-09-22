@@ -129,7 +129,7 @@ const KrakenTable = new LootTable()
 	.add('Water rune', [20, 500]);
 
 function makeKillTable(table: LootTable) {
-	return function(quantity: number) {
+	return (quantity: number) => {
 		const loot = new Loot();
 
 		for (let i = 0; i < quantity; i++) {
