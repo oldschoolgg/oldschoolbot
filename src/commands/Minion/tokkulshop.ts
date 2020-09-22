@@ -103,7 +103,7 @@ export default class extends BotCommand {
 				);
 			} catch (err) {
 				return sellMsg.edit(
-					`Cancelling ${type === 'buy' ? 'purcharse' : 'sale'} of **${inItemString}**.`
+					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${inItemString}**.`
 				);
 			}
 		}
