@@ -74,7 +74,7 @@ export default class extends Task {
 				const amountToAdd = randOre.xp * qty;
 				xpReceived += amountToAdd;
 				bonusXP += amountToAdd;
-				loot[randOre.id] = qty;
+				loot[randOre.id] = (loot[randOre.id] ?? 0) + qty;
 			}
 		}
 
