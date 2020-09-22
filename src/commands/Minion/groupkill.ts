@@ -128,7 +128,7 @@ export default class extends BotCommand {
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);
-		if (users.length < 2 && monster.id === 696969) {
+		if (users.length < 3 && monster.id === 696969) {
 			throw `You need at least 3 people to fight the Dwarf king.`;
 		}
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
