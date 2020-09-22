@@ -25,8 +25,8 @@ const HolidayItems = new LootTable()
 	.add('Scythe')
 	.add('Pumpkin')
 	.add('Red halloween mask')
-	.add('Blue halloween mask	')
-	.add('Green halloween mask	')
+	.add('Blue halloween mask')
+	.add('Green halloween mask')
 	.add("Black h'ween mask")
 	.add('Skeleton mask')
 	.add('Skeleton shirt')
@@ -267,7 +267,17 @@ let allItemsIDs = Openables.map(
 	i => (typeof i.table !== 'function' && i.table.allItems) || []
 ).flat(Infinity) as number[];
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
-const cantBeDropped = [...Object.values(coxLog).flat(Infinity)] as number[];
+const cantBeDropped = [
+	...Object.values(coxLog).flat(Infinity),
+	itemID('Halloween mask set'),
+	itemID('Partyhat set'),
+	itemID('Ancestral robes set'),
+	itemID('Kodai wand'),
+	itemID('Twisted ancestral hat'),
+	itemID('Twisted ancestral robe top'),
+	itemID('Twisted ancestral robe bottom'),
+	itemID('Partyhat & specs')
+] as number[];
 
 function getRandomItem(tradeables: boolean): number {
 	return Items.filter(i => {
