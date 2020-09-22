@@ -28,7 +28,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [type = 'buy', quantity, name]: ['buy' | 'sell', number, string]) {
 		await msg.author.settings.sync(true);
 
-		if (msg.author.getKC(TzTokJad) >= 1) {
+		if (msg.author.getKC(TzTokJad) < 1) {
 			throw `You are not worthy JalYt. Come back when you have defeated the might TzTok-Jad!`;
 		}
 
