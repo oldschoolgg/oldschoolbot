@@ -5,7 +5,7 @@ import { SupportServer } from '../lib/constants';
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, { enabled: true, ignoreOthers: false });
-		this.enabled = true;
+		this.enabled = this.client.production;
 	}
 
 	async run(msg: KlasaMessage) {
@@ -17,7 +17,7 @@ export default class extends Monitor {
 			return;
 		}
 		if (
-			['mass', 'pingmass'].every(
+			['mass', 'pingmass', 'groupkill'].every(
 				str => !msg.content.toLowerCase().includes(`${this.client.options.prefix}${str}`)
 			)
 		) {
