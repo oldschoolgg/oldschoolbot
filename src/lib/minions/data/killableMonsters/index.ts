@@ -12,7 +12,7 @@ import bosses from './bosses';
 
 const KingTable = new LootTable()
 	.tertiary(2300, 'Dwarven warhammer')
-	.tertiary(20, 'Clue scroll (master)')
+	.tertiary(10, 'Clue scroll (master)')
 	.oneIn(
 		30,
 		new LootTable()
@@ -44,6 +44,33 @@ const KingTable = new LootTable()
 	.add('Skull piece')
 	.add('Dwarven rock cake')
 	.add('Dwarven stout');
+
+const FishTable = new LootTable()
+	.add('Raw sea turtle', [1, 10])
+	.add('Raw dark crab', [1, 10])
+	.add('Raw anglerfish', [1, 20])
+	.add('Raw shark', [1, 30])
+	.add('Raw monkfish', [1, 40])
+	.add('Raw karambwan', [1, 40])
+	.add('Raw swordfish', [1, 50])
+	.add('Raw bass', [1, 60])
+	.add('Raw lobster', [1, 70])
+	.add('Raw trout', [1, 80])
+	.add('Raw tuna', [1, 90]);
+
+const KrakenTable = new LootTable()
+	.every(FishTable, [1, 3])
+	.tertiary(3, 'Seed pack', [1, 4])
+	.add('Coins', [50_000, 100_000])
+	.add('Clue scroll (master)')
+	.add('Clue scroll (elite)')
+	.add('Clue scroll (hard)')
+	.add('Pirate boots')
+	.add('Harpoon')
+	.add('Kraken tentacle')
+	.add('Crystal key')
+	.add('Seaweed')
+	.add('Water rune', [20, 500]);
 
 function makeKillTable(table: LootTable) {
 	return function(quantity: number) {
@@ -79,7 +106,14 @@ setCustomMonster(696969, 'King Goldemar', KingTable, Monsters.GeneralGraardor, {
 	aliases: ['king goldemar', 'dwarf king']
 });
 
+setCustomMonster(53466534, 'Sea Kraken', KrakenTable, Monsters.CommanderZilyana, {
+	id: 53466534,
+	name: 'Sea Kraken',
+	aliases: ['sea kraken']
+});
+
 const KingGoldemar = Monsters.find(mon => mon.name === 'King Goldemar')!;
+const SeaKraken = Monsters.find(mon => mon.name === 'Sea Kraken')!;
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
@@ -406,6 +440,32 @@ const killableMonsters: KillableMonster[] = [
 		minimumGearRequirements: {
 			[GearStat.DefenceCrush]: 150,
 			[GearStat.AttackCrush]: 80
+		},
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 43
+		}
+	},
+	{
+		id: SeaKraken.id,
+		name: SeaKraken.name,
+		aliases: SeaKraken.aliases,
+		timeToFinish: Time.Minute * 17,
+		table: {
+			kill: makeKillTable(KrakenTable)
+		},
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0,
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic],
+		minimumGearRequirements: {
+			[GearStat.DefenceMagic]: 150,
+			[GearStat.AttackRanged]: 80
 		},
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
