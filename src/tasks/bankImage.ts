@@ -370,7 +370,7 @@ export default class BankImageTask extends Task {
 		for (let i = 0; i < items.length; i++) {
 			if (i % itemsPerRow === 0) yLoc += Math.floor((itemSize + spacer / 2) * 1.08);
 			xLoc = Math.floor(
-				spacer + (i % itemsPerRow) * ((canvas.width - 40) / itemsPerRow) + distanceFromSide
+				spacer + (i % itemsPerRow) * ((canvas.width - 24) / itemsPerRow) + distanceFromSide
 			);
 			const [id, quantity, value] = items[i];
 			const item = await this.getItemImage(id);
