@@ -460,9 +460,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (monster.id === 696969) {
 			throw `You would be foolish to try to face King Goldemar in a solo fight.`;
 		}
-		if (monster.id === 53466534) {
-			throw `You would be foolish to try to face the Sea Kraken in a solo fight.`;
-		}
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
