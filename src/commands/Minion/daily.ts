@@ -143,7 +143,9 @@ export default class DailyCommand extends BotCommand {
 		} Diango says..** That's ${correct}! ${reward}\n`;
 
 		if (triviaCorrect && roll(13)) {
-			const pet = pets[Math.floor(Math.random() * pets.length)];
+			const pet = Object.values(pets)[
+				Math.floor(Math.random() * (Object.values(pets).length - 1))
+			];
 			const userPets = {
 				...user.settings.get(UserSettings.Pets)
 			};
