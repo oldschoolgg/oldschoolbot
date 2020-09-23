@@ -82,7 +82,7 @@ const Potions = [
 		])
 	},
 	{
-		name: '	Restore potion',
+		name: 'Restore potion',
 		items: resolveItems([
 			'Restore potion(1)',
 			'Restore potion(2)',
