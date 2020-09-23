@@ -501,7 +501,8 @@ const killableMonsters: KillableMonster[] = [
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		uniques: resolveItems(['Dwarven warhammer', 'Dwarven crate', 'Dwarven ore'])
 	},
 	{
 		id: SeaKraken.id,
