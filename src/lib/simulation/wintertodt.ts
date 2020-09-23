@@ -4,6 +4,7 @@ import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
 import Loot from 'oldschooljs/dist/structures/Loot';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+import { addBanks } from 'oldschooljs/dist/util';
 import { rand, roll } from 'oldschooljs/dist/util/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
@@ -236,12 +237,14 @@ export class WintertodtCrateClass {
 			// Checks in order: Garb, Hood, Robes, Boots
 			// If any part is lesser than the previous, it rewards that
 			// Otherwise, rewards the first one
-			let last = 0;
+			const bank: number[] = [];
 			for (const piece of pyroPieces) {
-				if ((itemsOwned[piece] ?? 0) < last) return piece;
-				last = itemsOwned[piece] ?? 0;
+				bank.push(itemsOwned[piece] ?? 0);
 			}
-			return pyroPieces[0];
+			const minBank = Math.min(...bank);
+			for (let i = 0; i < bank.length; i++) {
+				if (bank[i] === minBank) return pyroPieces[i];
+			}
 		}
 	}
 
@@ -254,7 +257,7 @@ export class WintertodtCrateClass {
 		const loot = new Loot();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(itemsOwned);
+			const rolledUnique = this.rollUnique(addBanks([itemsOwned, loot.values()]));
 			if (rolledUnique) {
 				loot.add(rolledUnique);
 				continue;
