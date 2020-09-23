@@ -142,8 +142,6 @@ export default class DailyCommand extends BotCommand {
 			Emoji.Diango
 		} Diango says..** That's ${correct}! ${reward}\n`;
 
-		console.log(pets);
-
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
 			const userPets = {
