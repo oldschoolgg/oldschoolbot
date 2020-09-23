@@ -19,9 +19,9 @@ const { triviaQuestions } = JSON.parse(
 	fs.readFileSync('./resources/trivia-questions.json').toString()
 );
 
-import * as pets from '../../../data/pets';
 import { BotCommand } from '../../lib/BotCommand';
 import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
+import pets from '../../lib/pets';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
@@ -142,10 +142,10 @@ export default class DailyCommand extends BotCommand {
 			Emoji.Diango
 		} Diango says..** That's ${correct}! ${reward}\n`;
 
+		console.log(pets);
+
 		if (triviaCorrect && roll(13)) {
-			const pet = Object.values(pets)[
-				Math.floor(Math.random() * (Object.values(pets).length - 1))
-			];
+			const pet = pets[Math.floor(Math.random() * pets.length)];
 			const userPets = {
 				...user.settings.get(UserSettings.Pets)
 			};
