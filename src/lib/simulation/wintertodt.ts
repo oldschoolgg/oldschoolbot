@@ -8,7 +8,7 @@ import { rand, roll } from 'oldschooljs/dist/util/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
-import { calcPercentOfNum, convertXPtoLVL, randomItemFromArray } from '../util';
+import { calcPercentOfNum, convertXPtoLVL } from '../util';
 import itemID from '../util/itemID';
 import { normal } from '../util/normal';
 import resolveItems from '../util/resolveItems';
@@ -21,6 +21,7 @@ interface WintertodtCrateOptions {
 
 type WintertodtTableSlot = [number, [number, number]];
 type WintertodtTable = WintertodtTableSlot[];
+
 function todtTable(table: [string, [number, number]][]): WintertodtTable {
 	return table.map(slot => [itemID(slot[0]), slot[1]]);
 }
@@ -129,9 +130,10 @@ const SeedTables = new SimpleTable<WintertodtTable>()
 	.add(HerbSeedsTable)
 	.add(TreeSeedsTable);
 
+// Do not change this order as it is the order that the pieces should be received
 const pyroPieces = resolveItems([
-	'Pyromancer hood',
 	'Pyromancer garb',
+	'Pyromancer hood',
 	'Pyromancer robe',
 	'Pyromancer boots'
 ]) as number[];
@@ -231,7 +233,15 @@ export class WintertodtCrateClass {
 		}
 
 		if (roll(150)) {
-			return randomItemFromArray(pyroPieces);
+			// Checks in order: Garb, Hood, Robes, Boots
+			// If any part is lesser than the previous, it rewards that
+			// Otherwise, rewards the first one
+			let last = 0;
+			for (const piece of pyroPieces) {
+				if ((itemsOwned[piece] ?? 0) < last) return piece;
+				last = itemsOwned[piece] ?? 0;
+			}
+			return pyroPieces[0];
 		}
 	}
 
