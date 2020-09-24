@@ -1,5 +1,5 @@
+import { roll } from 'e';
 import { Task } from 'klasa';
-import { roll } from 'oldschooljs/dist/util/util';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
