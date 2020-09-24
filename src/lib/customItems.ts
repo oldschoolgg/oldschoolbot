@@ -168,12 +168,12 @@ export function initCustomItems() {
 		wiki_name: 'Ori'
 	});
 
-	// Garvle Pet || 24202 = Ancient halo [DUPLICATE]
-	setCustomItem(24202, 'Garvle', getOSItem('Herbi'), {
+	// Mally Pet || 24202 = Ancient halo [DUPLICATE]
+	setCustomItem(24202, 'Mally', getOSItem('Herbi'), {
 		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
-		wiki_name: 'Garvle'
+		wiki_name: 'Malyguzin'
 	});
 
 	// Abyssal bones || 24199 = Seren halo [DUPLICATE]

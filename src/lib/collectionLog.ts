@@ -1307,7 +1307,7 @@ export const customBossLog = {
 		'Dragon hunter crossbow',
 		'Ori',
 		'Dragcula',
-		'Garvle'
+		'Mally'
 	])
 };
 

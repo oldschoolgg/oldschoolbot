@@ -20,7 +20,7 @@ export const AbyssalDragonLootTable = new LootTable()
 
 			.add('Ori', 1, 1 / 3076)
 			.add('Dragcula', 1, 1 / 3076)
-			.add('Garvle', 1, 1 / 3076)
+			.add('Mally', 1, 1 / 3076)
 
 			.add('Abyssal thread', 1, 1 / 1024)
 

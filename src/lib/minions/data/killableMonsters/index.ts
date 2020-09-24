@@ -419,7 +419,7 @@ const killableMonsters: KillableMonster[] = [
 			'Abyssal cape',
 			'Ori',
 			'Dragcula',
-			'Garvle',
+			'Mally',
 			'Dragon hunter lance',
 			'Dragon hunter crossbow'
 		]),
@@ -429,7 +429,7 @@ const killableMonsters: KillableMonster[] = [
 			'Abyssal cape',
 			'Ori',
 			'Dragcula',
-			'Garvle'
+			'Mally'
 		])
 	}
 ];
