@@ -1,5 +1,5 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-import { Time } from 'oldschooljs/dist/constants';
 
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
