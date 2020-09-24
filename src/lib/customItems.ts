@@ -153,7 +153,7 @@ export function initCustomItems() {
 	});
 
 	// Ori Pet || 24208 = Victor's cape (1) [DUPLICATE]
-	setCustomItem(24208, 'Dragcula', getOSItem('Herbi'), {
+	setCustomItem(24202, 'Dragcula', getOSItem('Herbi'), {
 		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
@@ -169,7 +169,7 @@ export function initCustomItems() {
 	});
 
 	// Mally Pet || 24202 = Ancient halo [DUPLICATE]
-	setCustomItem(24202, 'Mally', getOSItem('Herbi'), {
+	setCustomItem(24208, 'Mally', getOSItem('Herbi'), {
 		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
