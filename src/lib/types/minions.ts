@@ -100,6 +100,11 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 	preJadDeathTime: number | null;
 }
 
+export interface NightmareTaskOptions extends MinigameActivityTaskOptions {
+	leader: string;
+	users: string[];
+}
+
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
