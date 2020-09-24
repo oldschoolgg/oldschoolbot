@@ -1296,6 +1296,21 @@ export const miscLog = {
 	Tzhaar: resolveItems(['Fire cape'])
 };
 
+export const customBossLog = {
+	'King Goldmar': resolveItems(['Dwarven warhammer', 'Dwarven ore']),
+	Malygos: resolveItems([
+		'Abyssal thread',
+		'Abyssal lance',
+		'Abyssal defender',
+		'Abyssal cape',
+		'Dragon hunter lance',
+		'Dragon hunter crossbow',
+		'Ori',
+		'Dragcula',
+		'Garvle'
+	])
+};
+
 export const allCollectionLogItems = removeDuplicatesFromArray(
 	[
 		...Object.values(bosses),
@@ -1308,7 +1323,8 @@ export const allCollectionLogItems = removeDuplicatesFromArray(
 		...Object.values(quest),
 		...Object.values(skillingLog),
 		...Object.values(coxLog),
-		...Object.values(miscLog)
+		...Object.values(miscLog),
+		...Object.values(customBossLog)
 	].flat(Infinity)
 );
 
@@ -1417,5 +1433,10 @@ export const collectionLogTypes = [
 		name: 'Misc',
 		aliases: ['misc'],
 		items: miscLog
+	},
+	{
+		name: 'Custom Bosses',
+		aliases: ['custom boss'],
+		items: customBossLog
 	}
 ];
