@@ -283,7 +283,7 @@ export default class BankImageTask extends Task {
 		}
 
 		let width = wide
-			? 6 + this.borderVertical?.width! + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
+			? 5 + this.borderVertical?.width! + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
 			: 488;
 		if (width < 488) width = 488;
 		const itemsPerRow = Math.floor((width - this.borderVertical?.width! * 2) / (36 + 20));
