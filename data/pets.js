@@ -594,6 +594,19 @@ const pets = [
 				num
 			)} times to get the Sraracha pet! <:Sraracha:608231007803670529>`,
 		bossKeys: ['sarachnis']
+	},
+	{
+		id: 46,
+		emoji: '<:Little_nightmare:758149284952014928>',
+		chance: 3800,
+		name: 'Little nightmare',
+		type: 'BOSS',
+		altNames: ['NIGHTMARE', 'LILNIGHTMARE', 'THENIGHTMARE'],
+		formatFinish: num =>
+			`You had to kill The Nightmare ${fm(
+				num
+			)} times to get the Little nightmare pet! <:Little_nightmare:758149284952014928>`,
+		bossKeys: ['nightmare']
 	}
 ];
 
