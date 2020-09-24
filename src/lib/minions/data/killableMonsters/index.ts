@@ -341,7 +341,8 @@ const killableMonsters: KillableMonster[] = [
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		notifyDrops: resolveItems(['Dwarven warhammer'])
 	},
 	{
 		id: SeaKraken.id,
@@ -382,15 +383,20 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 999,
-		healAmountNeeded: 20 * 22,
+		healAmountNeeded: 20 * 25,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
+		attackStylesUsed: [
+			GearStat.AttackStab,
+			GearStat.AttackSlash,
+			GearStat.AttackMagic,
+			GearStat.AttackRanged
+		],
 		minimumGearRequirements: {
-			[GearStat.DefenceRanged]: 180,
-			[GearStat.DefenceSlash]: 180,
+			[GearStat.AttackStab]: 150,
 			[GearStat.DefenceStab]: 180,
+			[GearStat.DefenceSlash]: 180,
 			[GearStat.DefenceMagic]: -20,
-			[GearStat.AttackStab]: 150
+			[GearStat.DefenceRanged]: 180
 		},
 		itemInBankBoosts: {
 			[itemID('Saradomin godsword')]: 5,
@@ -398,6 +404,9 @@ const killableMonsters: KillableMonster[] = [
 			[itemID('Bandos godsword')]: 5,
 			[itemID('Dragon hunter lance')]: 10
 		},
+		itemsRequired: deepResolveItems([
+			['Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield', 'Abyssal cape']
+		]),
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
@@ -413,6 +422,14 @@ const killableMonsters: KillableMonster[] = [
 			'Garvle',
 			'Dragon hunter lance',
 			'Dragon hunter crossbow'
+		]),
+		notifyDrops: resolveItems([
+			'Abyssal lance',
+			'Abyssal defender',
+			'Abyssal cape',
+			'Ori',
+			'Dragcula',
+			'Garvle'
 		])
 	}
 ];
