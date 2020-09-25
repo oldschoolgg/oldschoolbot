@@ -1,12 +1,14 @@
 import { Task } from 'klasa';
+import { removeBankFromBank } from 'oldschooljs/dist/util';
 
 import { Emoji, Events } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { Bank } from '../../lib/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { randFloat, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -101,6 +103,34 @@ export default class extends Task {
 			[fish.id]: quantity
 		};
 
+		// Add clue scrolls
+		// https://oldschool.runescape.wiki/w/Clue_bottle
+		if (fish.clueScrollChance) {
+			const clues: Record<number, number> = {
+				[itemID('Clue scroll(easy)')]: 4 / 10,
+				[itemID('Clue scroll(medium)')]: 3 / 10,
+				[itemID('Clue scroll(hard)')]: 2 / 10,
+				[itemID('Clue scroll(elite)')]: 1 / 10,
+				[itemID('Clue scroll(beginner)')]: 1 / 1000
+			};
+			for (let i = 0; i < quantity; i++) {
+				if (
+					roll(
+						Math.floor(
+							fish.clueScrollChance / (100 + user.skillLevel(SkillsEnum.Fishing))
+						)
+					)
+				) {
+					for (const clue of Object.entries(clues)) {
+						if (randFloat(0, 1) <= clue[1]) {
+							loot[Number(clue[0])] = (loot[Number(clue[0])] ?? 0) + 1;
+							break;
+						}
+					}
+				}
+			}
+		}
+
 		// Add barbarian fish to loot
 		if (fish.name === 'Barbarian fishing') {
 			loot[fish.id] = 0;
@@ -109,7 +139,7 @@ export default class extends Task {
 			loot[itemID('Leaping trout')] = leapingTrout;
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		str += `\n\nYou received: ___ITEMSRECEIVED___.`;
 		if (fish.name === 'Barbarian fishing') {
 			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
 				fish.name
@@ -144,7 +174,17 @@ export default class extends Task {
 			loot[fish.bigFish] = 1;
 		}
 
-		await user.addItemsToBank(loot, true);
+		// Show only what is added to the bank, to avoid showing multiple of the same clue scroll
+		const addResult = Object.values(await user.addItemsToBank(loot, true));
+		const bankPrevious = addResult[0].previous as Bank;
+		const bankAfter = addResult[0].next as Bank;
+		str = str.replace(
+			'___ITEMSRECEIVED___',
+			await createReadableItemListFromBank(
+				this.client,
+				removeBankFromBank(bankAfter, bankPrevious)
+			)
+		);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);

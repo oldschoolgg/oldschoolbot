@@ -57,6 +57,7 @@ export interface Fish {
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
+	clueScrollChance?: number;
 }
 
 export interface Course {
