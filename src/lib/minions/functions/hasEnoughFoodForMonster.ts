@@ -4,7 +4,7 @@ import { O } from 'ts-toolbelt';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
 import calculateMonsterFood from './calculateMonsterFood';
-import { getUserFoodFromBank } from './removeFoodFromUser';
+import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default function hasEnoughFoodForMonster(
 	monster: O.Readonly<KillableMonster>,

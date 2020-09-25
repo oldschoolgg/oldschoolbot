@@ -94,7 +94,7 @@ export default class extends BotCommand {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
 
-				if (monster.healAmountNeeded) {
+				if (1 > 2 && monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
 					} catch (err) {
