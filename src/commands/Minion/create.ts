@@ -124,8 +124,7 @@ export default class extends BotCommand {
 		);
 
 		if (createableItem.GPCost) {
-			const userGP = msg.author.settings.get(UserSettings.GP);
-			await msg.author.settings.update(UserSettings.GP, userGP - createableItem.GPCost);
+			await msg.author.removeGP(createableItem.GPCost);
 		}
 
 		if (!createableItem.noCl) await msg.author.addItemsToCollectionLog(outItems);
