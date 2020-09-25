@@ -35,9 +35,11 @@ export default class extends BotCommand {
 			`**Most '${item.name}' received:**\n${result
 				.map(
 					({ id, qty }) =>
-						// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-						// @ts-ignore
-						`${command.getUsername(id) as string}: ${parseInt(qty).toLocaleString()}`
+						`${
+							// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+							// @ts-ignore
+							result.length < 10 ? '(Anonymous)' : (command.getUsername(id) as string)
+						}: ${parseInt(qty).toLocaleString()}`
 				)
 				.join('\n')}`
 		);
