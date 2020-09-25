@@ -272,7 +272,7 @@ const Openables: Openable[] = [
 	}
 ];
 
-const MysteryBoxes = new LootTable()
+export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
 	.oneIn(20, itemNameFromID(3713)!)
 	.oneIn(15, 'Dwarven crate')
