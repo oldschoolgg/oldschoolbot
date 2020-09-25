@@ -2,7 +2,6 @@ import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import addItemsToBankAndReturn from '../../lib/minions/functions/addItemsToBankAndReturn';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -116,8 +115,7 @@ export default class extends Task {
 			loot[itemID('Leaping trout')] = leapingTrout;
 		}
 
-		str += `\n\nYou received: ___ITEMSRECEIVED___.`;
-
+		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 		if (fish.name === 'Barbarian fishing') {
 			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
 				fish.name
@@ -152,14 +150,7 @@ export default class extends Task {
 			loot[fish.bigFish] = 1;
 		}
 
-		// Show only what is added to the bank, to avoid showing multiple of the same clue scroll
-		str = str.replace(
-			'___ITEMSRECEIVED___',
-			await createReadableItemListFromBank(
-				this.client,
-				await addItemsToBankAndReturn(user, loot)
-			)
-		);
+		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);

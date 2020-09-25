@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../lib/constants';
-import addItemsToBankAndReturn from '../../lib/minions/functions/addItemsToBankAndReturn';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -56,11 +55,9 @@ export default class extends Task {
 			);
 		}
 
-		// Show only what is added to the bank, to avoid showing multiple of the same clue scroll
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			await addItemsToBankAndReturn(user, loot)
-		)}.`;
+		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+
+		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
