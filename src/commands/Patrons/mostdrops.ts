@@ -27,7 +27,7 @@ export default class extends BotCommand {
 			}[]
 		>(query);
 
-		if (result.length === 0) throw `No results found.`;
+		if (result.length < 10) throw `Not enough of this item have been dropped yet.`;
 
 		const command = this.client.commands.get('leaderboard');
 
