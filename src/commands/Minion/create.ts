@@ -50,11 +50,17 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (
+			createableItem.GPCost &&
+			msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity
+		) {
+			throw `You need ${createableItem.GPCost.toLocaleString()} coins to create this item.`;
+		}
+
 		const outItems = multiplyBank(createableItem.outputItems, quantity);
 		const inItems = multiplyBank(createableItem.inputItems, quantity);
 
 		const outputItemsString = await createReadableItemListFromBank(this.client, outItems);
-
 		const inputItemsString = await createReadableItemListFromBank(this.client, inItems);
 
 		await msg.author.settings.sync(true);
@@ -62,7 +68,11 @@ export default class extends BotCommand {
 
 		// Ensure they have the required items to create the item.
 		if (!bankHasAllItemsFromBank(userBank, inItems)) {
-			throw `You don't have the required items to create this item. You need: ${inputItemsString}.`;
+			throw `You don't have the required items to create this item. You need: ${inputItemsString}${
+				createableItem.GPCost
+					? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
+					: ''
+			}.`;
 		}
 
 		// Check for any items they cant have 2 of.
@@ -82,7 +92,13 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}.`
+				`${
+					msg.author
+				}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}${
+					createableItem.GPCost
+						? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
+						: ''
+				}.`
 			);
 
 			// Confirm the user wants to create the item(s)
@@ -107,7 +123,11 @@ export default class extends BotCommand {
 			addBanks([outItems, removeBankFromBank(userBank, inItems)])
 		);
 
-		if (!createableItem.noCl) msg.author.addItemsToCollectionLog(outItems);
+		if (createableItem.GPCost) {
+			await msg.author.removeGP(createableItem.GPCost);
+		}
+
+		if (!createableItem.noCl) await msg.author.addItemsToCollectionLog(outItems);
 
 		return msg.send(`You created ${outputItemsString}.`);
 	}
