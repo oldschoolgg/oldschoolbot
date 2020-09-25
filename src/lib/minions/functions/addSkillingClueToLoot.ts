@@ -8,7 +8,7 @@ import itemID from '../../util/itemID';
 export default function addSkillingClueToLoot(
 	user: KlasaUser,
 	quantity: number,
-	clueScrollChance: number,
+	clueChance: number,
 	loot: ItemBank
 ) {
 	const clues: Record<number, number> = {
@@ -18,12 +18,13 @@ export default function addSkillingClueToLoot(
 		[itemID('Clue scroll(elite)')]: 1 / 10,
 		[itemID('Clue scroll(beginner)')]: 1 / 1000
 	};
+	const userLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const chance = Math.floor(clueChance / (100 + userLevel));
 	for (let i = 0; i < quantity; i++) {
-		if (roll(Math.floor(clueScrollChance / (100 + user.skillLevel(SkillsEnum.Woodcutting))))) {
+		if (roll(chance)) {
 			for (const clue of Object.entries(clues)) {
 				if (randFloat(0, 1) <= clue[1]) {
 					loot[Number(clue[0])] = (loot[Number(clue[0])] ?? 0) + 1;
-					break;
 				}
 			}
 		}
