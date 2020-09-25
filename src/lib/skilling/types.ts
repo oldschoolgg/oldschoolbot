@@ -37,6 +37,7 @@ export interface Log {
 	respawnTime: number;
 	petChance?: number;
 	qpRequired: number;
+	clueScrollChance?: number;
 }
 
 export interface Burnable {
