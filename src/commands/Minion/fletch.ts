@@ -15,6 +15,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -79,14 +80,14 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToFletchSingleItem);
 			for (const [itemID, qty] of requiredItems) {
-				const itemsOwned = userBank[parseInt(itemID)];
+				const itemsOwned = userBank[getOSItem(itemID).id] ?? 0;
 				if (itemsOwned < qty) {
-					throw `You dont have enough ${itemNameFromID(parseInt(itemID))}.`;
+					throw `You dont have enough **${getOSItem(itemID).name}**.`;
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
 		}
-
+		console.log(quantity);
 		const duration = quantity * timeToFletchSingleItem;
 
 		if (duration > msg.author.maxTripLength) {
@@ -99,9 +100,10 @@ export default class extends BotCommand {
 
 		// Check the user has the required items to fletch.
 		for (const [itemID, qty] of requiredItems) {
-			const id = parseInt(itemID);
+			const { id } = getOSItem(itemID);
+			console.log(id, qty * quantity);
 			if (!bankHasItem(userBank, id, qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(id)}.`;
+				throw `You don't have enough **${itemNameFromID(id)}**.`;
 			}
 		}
 
