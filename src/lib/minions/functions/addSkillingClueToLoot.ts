@@ -25,6 +25,7 @@ export default function addSkillingClueToLoot(
 			for (const clue of Object.entries(clues)) {
 				if (randFloat(0, 1) <= clue[1]) {
 					loot[Number(clue[0])] = (loot[Number(clue[0])] ?? 0) + 1;
+					break;
 				}
 			}
 		}

@@ -3,6 +3,8 @@ import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import addItemsToBankAndReturn from '../../lib/minions/functions/addItemsToBankAndReturn';
+import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -57,9 +59,14 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
 		}
 
-		const loot = {
+		let loot = {
 			[ore.id]: quantity
 		};
+
+		// Add clue scrolls
+		if (ore.clueScrollChance) {
+			loot = addSkillingClueToLoot(user, quantity, ore.clueScrollChance, loot);
+		}
 
 		// Roll for pet
 		if (
@@ -90,12 +97,15 @@ export default class extends Task {
 			}
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		// Show only what is added to the bank, to avoid showing multiple of the same clue scroll
+		str += `\n\nYou received: ${await createReadableItemListFromBank(
+			this.client,
+			await addItemsToBankAndReturn(user, loot)
+		)}.`;
+
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
-
-		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);

@@ -104,7 +104,6 @@ export default class extends Task {
 		};
 
 		// Add clue scrolls
-		// https://oldschool.runescape.wiki/w/Clue_bottle
 		if (fish.clueScrollChance) {
 			loot = addSkillingClueToLoot(user, quantity, fish.clueScrollChance, loot);
 		}

@@ -27,6 +27,7 @@ export interface Ore {
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
+	clueScrollChance?: number;
 }
 
 export interface Log {
