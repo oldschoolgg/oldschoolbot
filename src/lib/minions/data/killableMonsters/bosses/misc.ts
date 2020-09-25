@@ -182,7 +182,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: deepResolveItems(["Karil's leatherskirt", "Karil's leathertop", 'Knife']),
+		itemsRequired: deepResolveItems(["Karil's leatherskirt", "Karil's leathertop"]),
 		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
 		qpRequired: 0,
 		itemInBankBoosts: {
