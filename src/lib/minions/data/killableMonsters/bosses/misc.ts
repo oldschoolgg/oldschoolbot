@@ -171,6 +171,26 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		}
+	},
+	{
+		id: Monsters.Sarachnis.id,
+		name: Monsters.Sarachnis.name,
+		aliases: Monsters.Sarachnis.aliases,
+		timeToFinish: Time.Minute * 1.75,
+		table: Monsters.Sarachnis,
+		emoji: '<:Sraracha:608231007803670529>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		itemsRequired: deepResolveItems(["Karil's leatherskirt", "Karil's leathertop", 'Knife']),
+		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
+		qpRequired: 0,
+		itemInBankBoosts: {
+			[itemID('Abyssal bludgeon')]: 10
+		},
+		levelRequirements: {
+			prayer: 43
+		}
 	}
 ];
 
