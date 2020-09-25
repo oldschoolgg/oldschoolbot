@@ -87,7 +87,6 @@ export default class extends BotCommand {
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
 		}
-		console.log(quantity);
 		const duration = quantity * timeToFletchSingleItem;
 
 		if (duration > msg.author.maxTripLength) {
@@ -101,7 +100,6 @@ export default class extends BotCommand {
 		// Check the user has the required items to fletch.
 		for (const [itemID, qty] of requiredItems) {
 			const { id } = getOSItem(itemID);
-			console.log(id, qty * quantity);
 			if (!bankHasItem(userBank, id, qty * quantity)) {
 				throw `You don't have enough **${itemNameFromID(id)}**.`;
 			}
