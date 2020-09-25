@@ -14,14 +14,12 @@ const customPrices = resolveNameBank({
 	'Divine sigil': 930_000_000,
 	// Abyssal dragon boss
 	'Abyssal dragon bones': 50_000,
-	'Abyssal lance': 1_000_000_000,
-	'Abyssal defender': 900_000_000,
-	'Abyssal cape': 900_000_000,
+	'Abyssal cape': 500_000_000,
 	'Abyssal thread': 100_000_000,
-	'Abyssal pouch': 1,
-	Dragcula: 1,
-	Mally: 1,
-	Ori: 1
+	'Abyssal pouch': 0,
+	Dragcula: 0,
+	Mally: 0,
+	Ori: 0
 });
 
 export default class extends Extendable {

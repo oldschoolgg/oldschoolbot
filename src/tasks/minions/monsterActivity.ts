@@ -28,18 +28,7 @@ export default class extends Task {
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let abyssalBonus = 1;
-		let abyssalSet = false;
-		if (user.hasItemEquippedAnywhere(itemID('Abyssal lance'))) {
-			abyssalBonus += 0.1;
-		}
-		if (user.hasItemEquippedAnywhere(itemID('Abyssal defender'))) {
-			abyssalBonus += 0.1;
-		}
 		if (user.hasItemEquippedAnywhere(itemID('Abyssal cape'))) {
-			abyssalBonus += 0.1;
-		}
-		if (abyssalBonus >= 1.3) {
-			abyssalSet = true;
 			abyssalBonus += 0.1;
 		}
 
@@ -126,9 +115,7 @@ export default class extends Task {
 		}
 
 		if (abyssalBonus > 1) {
-			str += `\n\nBy having ${
-				abyssalSet ? 'the abyssal set' : 'some abyssal items'
-			} equipped, you managed to get some extra loot!`;
+			str += `\n\nBy having some abyssal items equipped, you managed to get some extra loot!`;
 		}
 
 		user.incrementMonsterScore(monsterID, quantity);

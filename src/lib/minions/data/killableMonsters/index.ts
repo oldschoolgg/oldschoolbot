@@ -414,8 +414,6 @@ const killableMonsters: KillableMonster[] = [
 		},
 		uniques: resolveItems([
 			'Abyssal thread',
-			'Abyssal lance',
-			'Abyssal defender',
 			'Abyssal cape',
 			'Ori',
 			'Dragcula',
@@ -423,14 +421,7 @@ const killableMonsters: KillableMonster[] = [
 			'Dragon hunter lance',
 			'Dragon hunter crossbow'
 		]),
-		notifyDrops: resolveItems([
-			'Abyssal lance',
-			'Abyssal defender',
-			'Abyssal cape',
-			'Ori',
-			'Dragcula',
-			'Mally'
-		])
+		notifyDrops: resolveItems(['Abyssal cape', 'Ori', 'Dragcula', 'Mally'])
 	}
 ];
 

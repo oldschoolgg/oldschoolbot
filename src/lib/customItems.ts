@@ -59,56 +59,56 @@ export function initCustomItems() {
 
 	// Abyssal Dragon
 	// Abyssal lance || 24218 = Guthixian icon [DUPLICATE]
-	setCustomItem(24218, 'Abyssal lance', getOSItem('Dragonhunter lance'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal lance',
-		equipment: {
-			attack_stab: 155,
-			attack_slash: 135,
-			attack_crush: 75,
-			attack_magic: 0,
-			attack_ranged: 0,
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-			melee_strength: 70,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 10,
-			slot: EquipmentSlot.Weapon,
-			requirements: null
-		}
-	});
-
-	// Abyssal defender || 24216 = Victor's cape (500) [DUPLICATE]
-	setCustomItem(24216, 'Abyssal defender', getOSItem('Dragonhunter lance'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal defender',
-		equipment: {
-			attack_stab: 77,
-			attack_slash: 67,
-			attack_crush: 37,
-			attack_magic: 0,
-			attack_ranged: 0,
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-			melee_strength: 35,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 5,
-			slot: EquipmentSlot.Shield,
-			requirements: null
-		}
-	});
+	// setCustomItem(24218, 'Abyssal lance', getOSItem('Dragonhunter lance'), {
+	// 	duplicate: false,
+	// 	tradeable: true,
+	// 	tradeable_on_ge: true,
+	// 	wiki_name: 'Abyssal lance',
+	// 	equipment: {
+	// 		attack_stab: 155,
+	// 		attack_slash: 135,
+	// 		attack_crush: 75,
+	// 		attack_magic: 0,
+	// 		attack_ranged: 0,
+	// 		defence_stab: 0,
+	// 		defence_slash: 0,
+	// 		defence_crush: 0,
+	// 		defence_magic: 0,
+	// 		defence_ranged: 0,
+	// 		melee_strength: 70,
+	// 		ranged_strength: 0,
+	// 		magic_damage: 0,
+	// 		prayer: 10,
+	// 		slot: EquipmentSlot.Weapon,
+	// 		requirements: null
+	// 	}
+	// });
+	//
+	// // Abyssal defender || 24216 = Victor's cape (500) [DUPLICATE]
+	// setCustomItem(24216, 'Abyssal defender', getOSItem('Dragonhunter lance'), {
+	// 	duplicate: false,
+	// 	tradeable: true,
+	// 	tradeable_on_ge: true,
+	// 	wiki_name: 'Abyssal defender',
+	// 	equipment: {
+	// 		attack_stab: 77,
+	// 		attack_slash: 67,
+	// 		attack_crush: 37,
+	// 		attack_magic: 0,
+	// 		attack_ranged: 0,
+	// 		defence_stab: 0,
+	// 		defence_slash: 0,
+	// 		defence_crush: 0,
+	// 		defence_magic: 0,
+	// 		defence_ranged: 0,
+	// 		melee_strength: 35,
+	// 		ranged_strength: 0,
+	// 		magic_damage: 0,
+	// 		prayer: 5,
+	// 		slot: EquipmentSlot.Shield,
+	// 		requirements: null
+	// 	}
+	// });
 
 	// Abyssal Cape || 24214 = Victor's cape (100) [DUPLICATE]
 	setCustomItem(24214, 'Abyssal cape', getOSItem('Infernal cape'), {
@@ -152,7 +152,7 @@ export function initCustomItems() {
 		wiki_name: 'Abyssal pouch'
 	});
 
-	// Ori Pet || 24208 = Victor's cape (1) [DUPLICATE]
+	// Dragcula pet || 24208 = Victor's cape (1) [DUPLICATE]
 	setCustomItem(24202, 'Dragcula', getOSItem('Herbi'), {
 		duplicate: false,
 		tradeable: true,
@@ -160,7 +160,7 @@ export function initCustomItems() {
 		wiki_name: 'Dragcula'
 	});
 
-	// Dragula Pet || 24205 = Brassica halo [DUPLICATE]
+	// Ori Pet || 24205 = Brassica halo [DUPLICATE]
 	setCustomItem(24205, 'Ori', getOSItem('Herbi'), {
 		duplicate: false,
 		tradeable: true,

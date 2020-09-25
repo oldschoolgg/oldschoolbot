@@ -11,11 +11,8 @@ export const AbyssalDragonLootTable = new LootTable()
 	.every('Abyssal dragon bones', 2)
 
 	// Uniques
-	.tertiary(
-		1,
+	.every(
 		new LootTable({ limit: 1 })
-			.add('Abyssal lance', 1, 1 / 5120)
-			.add('Abyssal defender', 1, 1 / 5120)
 			.add('Abyssal cape', 1, 1 / 5120)
 
 			.add('Ori', 1, 1 / 3076)
@@ -61,9 +58,9 @@ export const AbyssalDragonLootTable = new LootTable()
 	.oneIn(
 		1000,
 		new LootTable()
-			.add('Draconic visage')
-			.oneIn(2, 'Skeletal visage')
-			.oneIn(3, 'Wyvern visage')
+			.add('Draconic visage', 1, 3)
+			.add('Skeletal visage', 1, 2)
+			.add('Wyvern visage', 1, 1)
 	)
 
 	.oneIn(

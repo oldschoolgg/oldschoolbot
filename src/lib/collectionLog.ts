@@ -1300,8 +1300,6 @@ export const customBossLog = {
 	'King Goldmar': resolveItems(['Dwarven warhammer', 'Dwarven ore']),
 	Malygos: resolveItems([
 		'Abyssal thread',
-		'Abyssal lance',
-		'Abyssal defender',
 		'Abyssal cape',
 		'Dragon hunter lance',
 		'Dragon hunter crossbow',
