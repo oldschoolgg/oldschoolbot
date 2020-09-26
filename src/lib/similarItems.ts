@@ -270,6 +270,8 @@ const SimilarItems: Record<number, number[]> = {
 		'Amulet of glory (2)',
 		'Amulet of glory (3)',
 		'Amulet of glory (4)',
+		'Amulet of glory (5)',
+		'Amulet of glory (6)',
 		'Amulet of glory (t1)',
 		'Amulet of glory (t2)',
 		'Amulet of glory (t3)',
