@@ -3,6 +3,7 @@ import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 
 import { GearTypes } from '../lib/gear';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import SimilarItems from '../lib/similarItems';
 import { ItemBank } from '../lib/types';
 import { addItemToBank } from '../lib/util';
 
@@ -32,9 +33,15 @@ export default class extends Extendable {
 		return numOwned;
 	}
 
-	public numItemsInBankSync(this: User, itemID: number) {
+	public numItemsInBankSync(this: User, itemID: number, mapping = false) {
 		const bank = this.settings.get(UserSettings.Bank);
-		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
+		const itemQty = typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
+		if (mapping && itemQty === 0 && SimilarItems[itemID]) {
+			for (const i of SimilarItems[itemID]) {
+				if (bank[i] && bank[i] > 0) return bank[i];
+			}
+		}
+		return itemQty;
 	}
 
 	public allItemsOwned(this: User): ItemBank {
