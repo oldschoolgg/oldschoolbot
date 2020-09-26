@@ -3,10 +3,8 @@ import { O } from 'ts-toolbelt';
 
 import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import readableStatName from '../../gear/functions/readableStatName';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { KillableMonster } from '../types';
-import { gearSetupMeetsRequirement } from './gearSetupMeetsRequirement';
 
 const { floor, max } = Math;
 
@@ -15,7 +13,7 @@ export default function calculateMonsterFood(
 	user: O.Readonly<KlasaUser>
 ): [number, string[]] {
 	const messages: string[] = [];
-	let { healAmountNeeded, attackStyleToUse, attackStylesUsed, minimumGearRequirements } = monster;
+	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
 		return [0, messages];
@@ -24,20 +22,6 @@ export default function calculateMonsterFood(
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
 	const gearStats = user.setupStats(attackStyleToUse);
-
-	if (minimumGearRequirements) {
-		const [meetsRequirements, unmetKey, has] = gearSetupMeetsRequirement(
-			gearStats,
-			minimumGearRequirements
-		);
-		if (!meetsRequirements) {
-			throw `You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
-				unmetKey!
-			)} stat in your ${attackStyleToUse} setup is ${has}, but you need atleast ${
-				minimumGearRequirements[unmetKey!]
-			}.`;
-		}
-	}
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;

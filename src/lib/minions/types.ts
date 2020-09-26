@@ -11,6 +11,7 @@ import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { LevelRequirements } from '../skilling/types';
 import { ArrayItemsResolved, Bank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
+import { GearStat } from './../gear/types';
 
 export interface BankBackground {
 	image: Image | null;
@@ -37,6 +38,9 @@ export interface ClueTier {
 	milestoneReward?: ClueMilestoneReward;
 	mimicChance: number | false;
 }
+
+export type GearRequirement = Partial<{ [key in GearStat]: number }>;
+export type GearRequirements = Partial<{ [key in GearSetupTypes]: GearRequirement }>;
 
 export interface KillableMonster {
 	id: number;
@@ -72,7 +76,10 @@ export interface KillableMonster {
 	healAmountNeeded?: number;
 	attackStyleToUse?: GearSetupTypes;
 	attackStylesUsed?: OffenceGearStat[];
-	minimumGearRequirements?: Partial<{ [key in GearStat]: number }>;
+	/**
+	 * The minimum *required* gear stats to fight this monster.
+	 */
+	minimumGearRequirements?: GearRequirements;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {

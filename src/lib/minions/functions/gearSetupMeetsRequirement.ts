@@ -1,10 +1,12 @@
 import { objectKeys } from 'e';
+import { O } from 'ts-toolbelt';
 
-import { GearStat, GearStats } from '../../gear/types';
+import { GearStats } from '../../gear/types';
+import { GearRequirement } from '../types';
 
 export function gearSetupMeetsRequirement(
-	gearStats: GearStats,
-	gearRequirements: Partial<{ [key in GearStat]: number }>
+	gearStats: O.Readonly<GearStats>,
+	gearRequirements: O.Readonly<GearRequirement>
 ): [false, keyof GearStats, number] | [true, null, null] {
 	const keys = objectKeys(gearStats as Record<keyof GearStats, number>);
 	for (const key of keys) {

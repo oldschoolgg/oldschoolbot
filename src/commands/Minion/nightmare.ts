@@ -11,12 +11,15 @@ import { reducedTimeForGroup } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { KillableMonster } from '../../lib/minions/types';
 import { MakePartyOptions } from '../../lib/types';
 import { NightmareActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { maxOffenceStats, maxOtherStats } from './../../lib/gear/data/maxGearStats';
+
+const NIGHTMARES_HP = 2400;
+const ZAM_HASTA_CRUSH = 65;
 
 /**
  * get mass changes from bso
@@ -144,15 +147,44 @@ export default class extends BotCommand {
 		}
 
 		interface NightmareUser {
+			id: string;
 			chanceOfDeath: number;
 			damageDone: number;
 		}
 		const parsedUsers = [];
+
+		const hpRemaining = NIGHTMARES_HP;
+
 		for (const user of users) {
 			const kc = user.getMinigameScore(MinigameIDsEnum.Nightmare);
 			const weapon = user.equippedWeapon(GearSetupTypes.Melee);
-			const weaponPower = calcWhatPercent(weapon?.equipment?.attack_crush ?? 0, 95);
 			const gearStats = user.setupStats(GearSetupTypes.Melee);
+			const percentMeleeStrength = calcWhatPercent(
+				gearStats.melee_strength,
+				maxOtherStats.melee_strength
+			);
+			const attackCrushStat = weapon?.equipment?.attack_crush ?? 0;
+			const percentWeaponAttackCrush = calcWhatPercent(attackCrushStat, 95);
+			const totalGearPercent = (percentMeleeStrength + percentWeaponAttackCrush) / 2;
+
+			let percentChanceOfDeath = Math.floor(
+				100 - (Math.log(kc) / Math.log(Math.sqrt(15))) * 50
+			);
+
+			// If they have 50% best gear, -12.5% chance of death
+			percentChanceOfDeath -= totalGearPercent / 4;
+
+			// Chance of death cannot be 100% or <2%.
+			percentChanceOfDeath = Math.max(Math.min(percentChanceOfDeath, 99), 2);
+
+			let damageDone = NIGHTMARES_HP / users.length;
+			if (attackCrushStat < ZAM_HASTA_CRUSH) {
+			}
+
+			damageDone = parsedUsers.push({
+				id: user.id,
+				chanceOfDeath: percentChanceOfDeath
+			});
 		}
 
 		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(
@@ -166,7 +198,7 @@ export default class extends BotCommand {
 				type: Activity.Nightmare,
 				leader: msg.author.id,
 				users: users.map(u => u.id),
-				minigaa
+				minigameID: MinigameIDsEnum.Nightmare
 			}
 		);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
