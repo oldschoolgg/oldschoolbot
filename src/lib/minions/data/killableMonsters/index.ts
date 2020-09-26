@@ -342,6 +342,7 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
+		uniques: resolveItems(['Dwarven warhammer', 'Dwarven crate', 'Dwarven ore']),
 		notifyDrops: resolveItems(['Dwarven warhammer'])
 	},
 	{
