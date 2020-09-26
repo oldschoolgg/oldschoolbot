@@ -34,6 +34,7 @@ Client.defaultUserSchema
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
+			.add('farmingContract', 'any', { default: defaultContracts })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
@@ -87,7 +88,4 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Celastrus, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Hespori, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Flower, 'any', { default: Farming.defaultPatches })
-	)
-	.add('farmingContracts', (folder: SchemaFolder) =>
-		folder.add('farmingContract', 'any', { default: defaultContracts })
 	);

@@ -47,7 +47,12 @@ export default class extends BotCommand {
 					)
 				);
 
-				if (!plant) throw `WTF Error`;
+				if (!plant) {
+					this.client.wtf(
+						new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`)
+					);
+					return;
+				}
 
 				const lastPlantTime: number = patch.plantTime;
 				const difference = currentDate - lastPlantTime;

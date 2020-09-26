@@ -31,11 +31,10 @@ export interface TitheFarmStats {
 	titheFarmPoints: number;
 }
 
-export interface FarmingContracts {
-	contractStatus: boolean;
-	contractType: 'easy' | 'medium' | 'hard' | null;
+export interface FarmingContract {
+	hasContract: boolean;
+	difficultyLevel: 'easy' | 'medium' | 'hard' | null;
 	plantToGrow: string | null;
-	seedPackTier: 0 | 1 | 2 | 3 | 4 | 5;
 	plantTier: 0 | 1 | 2 | 3 | 4 | 5;
 	contractsCompleted: number;
 }
