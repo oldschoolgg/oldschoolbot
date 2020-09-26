@@ -37,23 +37,29 @@ export default class extends BotCommand {
 		);
 
 		if (!shopInventory) {
-			throw `I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(
-				item => {
-					return item.name;
-				}
-			).join(', ')}.`;
+			return msg.send(
+				`I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(
+					item => {
+						return item.name;
+					}
+				).join(', ')}.`
+			);
 		}
 
 		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad) < 1) {
-			throw `You are not worthy JalYt. Before you can buy a ${shopInventory}, you need to have defeated the might TzTok-Jad!`;
+			return msg.send(
+				`You are not worthy JalYt. Before you can buy a ${shopInventory}, you need to have defeated the might TzTok-Jad!`
+			);
 		}
 
 		if (!shopInventory.tokkulCost && type === 'buy') {
-			throw `I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.map(
-				item => {
-					if (item.tokkulReturn) return item.name;
-				}
-			).join(', ')}.`;
+			return msg.send(
+				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.map(
+					item => {
+						if (item.tokkulReturn) return item.name;
+					}
+				).join(', ')}.`
+			);
 		}
 
 		if (quantity === undefined) {
@@ -78,10 +84,13 @@ export default class extends BotCommand {
 
 		if (!bankHasAllItemsFromBank(userBank, outItems)) {
 			if (type === 'buy') {
-				throw `I am sorry JalYt, but you don't have enough tokkul for that. You need **${itemString}** to buy **${inItemString}**.`;
-			} else {
-				throw `I am sorry JalYt, but you don't have enough items for that. You need **${itemString}** to sell for **${inItemString}**.`;
+				return msg.send(
+					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${itemString}** to buy **${inItemString}**.`
+				);
 			}
+			return msg.send(
+				`I am sorry JalYt, but you don't have enough items for that. You need **${itemString}** to sell for **${inItemString}**.`
+			);
 		}
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
