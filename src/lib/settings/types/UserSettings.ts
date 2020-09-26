@@ -54,6 +54,7 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
+		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
 	}
 
 	export namespace Skills {
@@ -114,11 +115,5 @@ export namespace UserSettings {
 			`farmingPatches.${FarmingPatchTypes.Hespori}`
 		);
 		export const Flower = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Flower}`);
-	}
-
-	export namespace FarmingContracts {
-		export const FarmingContract = T<typeof defaultContracts>(
-			'farmingContracts.farmingContract'
-		);
 	}
 }

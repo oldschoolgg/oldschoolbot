@@ -4,7 +4,7 @@ import chatHeadImage from './chatHeadImage';
 
 export default async function guildmasterJaneImage(str: string) {
 	const image = await chatHeadImage({
-		npc: 'GuildmasterJane',
+		id: 2,
 		content: str,
 		name: 'Guildmaster Jane'
 	});
