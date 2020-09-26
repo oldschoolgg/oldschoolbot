@@ -6,9 +6,9 @@
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,
-		"types": ["node", "node-fetch", "discord.js", "klasa"],
+		"types": ["node", "node-fetch", "discord.js", "klasa", "jest"],
 		"esModuleInterop": true
 	},
-	"include": ["./src/**/*", "__tests__/**/*"],
+	"include": ["./src/**/*", "tests/**/*"],
 	"exclude": ["node_modules", "**/dist"]
 }

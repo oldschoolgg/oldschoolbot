@@ -70,8 +70,16 @@ async function _setup(
 						const [customDenied, reason] = options.customDenier(user);
 						if (customDenied) {
 							user.send(`You couldn't join this mass, for this reason: ${reason}`);
+							reaction.users.remove(user);
 							return false;
 						}
+					}
+
+					if (
+						(reaction.emoji.id === ReactionEmoji.Join && user === options.leader) ||
+						(user !== options.leader && reaction.emoji.id !== ReactionEmoji.Join)
+					) {
+						reaction.users.remove(user);
 					}
 
 					return ([
