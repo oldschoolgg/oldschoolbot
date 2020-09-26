@@ -6,6 +6,7 @@ interface TokkulShopItem {
 	tokkulReturn: number;
 	tokkulCost?: number;
 	aliases?: string[];
+	requireFireCape?: boolean;
 }
 
 const TokkulShopItem: TokkulShopItem[] = [
@@ -173,21 +174,24 @@ const TokkulShopItem: TokkulShopItem[] = [
 		inputItem: itemID('Obsidian helmet'),
 		tokkulReturn: 5_632,
 		tokkulCost: 84_480,
-		aliases: ['obby helmet']
+		aliases: ['obby helmet'],
+		requireFireCape: true
 	},
 	{
 		name: 'Obsidian platebody',
 		inputItem: itemID('Obsidian platebody'),
 		tokkulReturn: 8_400,
 		tokkulCost: 126_000,
-		aliases: ['obby platebody']
+		aliases: ['obby platebody'],
+		requireFireCape: true
 	},
 	{
 		name: 'Obsidian platelegs',
 		inputItem: itemID('Obsidian platelegs'),
 		tokkulReturn: 6_700,
 		tokkulCost: 100_500,
-		aliases: ['obby platelegs']
+		aliases: ['obby platelegs'],
+		requireFireCape: true
 	},
 	// Runes
 	{

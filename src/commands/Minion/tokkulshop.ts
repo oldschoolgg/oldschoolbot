@@ -28,10 +28,6 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [type = 'buy', quantity, name]: ['buy' | 'sell', number, string]) {
 		await msg.author.settings.sync(true);
 
-		if (msg.author.getKC(TzTokJad) < 1) {
-			throw `You are not worthy JalYt. Come back when you have defeated the might TzTok-Jad!`;
-		}
-
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		const shopInventory = TokkulShopItem.find(
@@ -46,6 +42,10 @@ export default class extends BotCommand {
 					return item.name;
 				}
 			).join(', ')}.`;
+		}
+
+		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad) < 1) {
+			throw `You are not worthy JalYt. Before you can buy a ${shopInventory}, you need to have defeated the might TzTok-Jad!`;
 		}
 
 		if (!shopInventory.tokkulCost && type === 'buy') {
