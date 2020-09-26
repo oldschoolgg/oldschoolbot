@@ -182,7 +182,9 @@ export default class extends Extendable {
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithableItem = Smithing.Bars.find(item => item.id === data.smithedBarID);
+				const SmithableItem = Smithing.SmithableItems.find(
+					item => item.id === data.smithedBarID
+				);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					SmithableItem!.name

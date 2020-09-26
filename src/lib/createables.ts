@@ -10,6 +10,7 @@ interface Createable {
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
+	GPCost?: number;
 }
 
 const Createables: Createable[] = [
@@ -841,6 +842,23 @@ const Createables: Createable[] = [
 			'Coconut milk': 1,
 			'Coconut shell': 1
 		})
+	},
+	{
+		name: 'Zamorakian hasta',
+		inputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		QPRequired: 3,
+		requiredSkills: {
+			fishing: 55,
+			firemaking: 35,
+			crafting: 15,
+			smithing: 5
+		},
+		GPCost: 300_000
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',
