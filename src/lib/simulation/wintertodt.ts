@@ -6,7 +6,6 @@ import Loot from 'oldschooljs/dist/structures/Loot';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { addBanks } from 'oldschooljs/dist/util';
-import { rand, roll } from 'oldschooljs/dist/util/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
