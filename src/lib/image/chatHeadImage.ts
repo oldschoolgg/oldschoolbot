@@ -6,24 +6,19 @@ registerFont('./resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
 const textBoxFile = fs.readFileSync('./resources/images/textbox.png');
 
-const ChatHeads: { [key: string]: Buffer } = {
-	Jad: fs.readFileSync('./resources/images/mejJal.png'),
-	GuildmasterJane: fs.readFileSync('./resources/images/guildmasterJaneImage.png')
-};
-
 export default function chatHeadImage({
-	npc,
+	id,
 	content,
 	name
 }: {
-	npc: string;
+	id: number;
 	content: string;
 	name: string;
 }) {
 	const canvas = new Canvas(519, 142);
 	canvas.context.imageSmoothingEnabled = false;
 
-	const chatImage = ChatHeads[npc];
+	const chatImage = fs.readFileSync(`./resources/images/chat_heads/${id}.png`);
 
 	return canvas
 		.addImage(textBoxFile, 0, 0)

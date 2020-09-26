@@ -48,9 +48,7 @@ export default class extends BotCommand {
 
 		let payment = false;
 		let upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null = null;
-		let activityStr = '';
-		let upgradeStr = '';
-		let paymentStr = '';
+		const infoStr: string[] = [];
 		const boostStr: string[] = [];
 
 		if (typeof quantity === 'string') {
@@ -69,6 +67,10 @@ export default class extends BotCommand {
 			throw `That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(
 				plants => plants.name
 			).join(', ')}. *Make sure you are not attempting to farm 0 crops.*`;
+		}
+
+		if (msg.author.skillLevel(SkillsEnum.Farming) < plants.level) {
+			throw `${msg.author.minionName} needs ${plants.level} Farming to plant ${plants.name}.`;
 		}
 
 		const getPatchType = resolvePatchTypeSetting(plants.seedType);
@@ -90,7 +92,7 @@ export default class extends BotCommand {
 
 		const lastPlantTime: number = patchType.plantTime;
 		const difference = currentDate - lastPlantTime;
-		/* initiate a cooldown feature for each of the seed types.
+		/* Initiate a cooldown feature for each of the seed types.
 			Allows for a run of specific seed type to only be possible until the
 			previous run's plants have been fully grown.*/
 		if (planted && difference < planted.growthTime * Time.Minute) {
@@ -99,21 +101,34 @@ export default class extends BotCommand {
 			)}!`;
 		}
 
-		if (msg.flagArgs.supercompost || msg.flagArgs.sc) {
-			upgradeType = 'supercompost';
-			upgradeStr = `You are treating all of your patches with supercompost. `;
-		}
-		if (msg.flagArgs.ultracompost || msg.flagArgs.uc) {
-			upgradeType = 'ultracompost';
-			upgradeStr = `You are treating all of your patches with ultracompost. `;
-		}
-		if (msg.flagArgs.pay) {
-			payment = true;
-			paymentStr = `You are paying a nearby farmer to look after your patches. `;
+		const storeHarvestableQuantity = patchType.lastQuantity;
+
+		if (
+			planted &&
+			planted.needsChopForHarvest &&
+			planted.treeWoodcuttingLevel &&
+			currentWoodcuttingLevel < planted.treeWoodcuttingLevel
+		) {
+			const gpToCutTree =
+				planted.seedType === 'redwood'
+					? 2000 * storeHarvestableQuantity
+					: 200 * storeHarvestableQuantity;
+			if (GP < gpToCutTree) {
+				throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cancel their trip.`;
+			}
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Farming) < plants.level) {
-			throw `${msg.author.minionName} needs ${plants.level} Farming to plant ${plants.name}.`;
+		if (msg.flagArgs.supercompost || msg.flagArgs.sc) {
+			upgradeType = 'supercompost';
+			infoStr.push(`You are treating all of your patches with supercompost.`);
+		} else if (msg.flagArgs.ultracompost || msg.flagArgs.uc) {
+			upgradeType = 'ultracompost';
+			infoStr.push(`You are treating all of your patches with ultracompost.`);
+		}
+
+		if (msg.flagArgs.pay) {
+			payment = true;
+			infoStr.push(`You are paying a nearby farmer to look after your patches.`);
 		}
 
 		if (!plants.canPayFarmer && payment) {
@@ -165,11 +180,13 @@ export default class extends BotCommand {
 				duration +=
 					(quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
 			}
-		} else duration = quantity * (timePerPatchTravel + timePerPatchPlant);
+		} else {
+			duration = quantity * (timePerPatchTravel + timePerPatchPlant);
+		}
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			boostStr.push('**Boosts**: 10% time for Graceful');
+			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
 
@@ -195,6 +212,18 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
+			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
+			if (!hasCompostType) {
+				throw `You dont have ${quantity}x ${upgradeType}.`;
+			}
+			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+		} else if (bankHasItem(userBank, itemID('compost'), quantity) && plants.canCompostPatch) {
+			upgradeType = 'compost';
+			infoStr.push(`You are treating all of your patches with compost.`);
+			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+		}
+
 		if (payment) {
 			if (!plants.protectionPayment) return;
 			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
@@ -209,42 +238,18 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
-			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
-			if (!hasCompostType) {
-				throw `You dont have ${quantity}x ${upgradeType}.`;
-			}
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
-		} else if (bankHasItem(userBank, itemID('compost'), quantity) && plants.canCompostPatch) {
-			upgradeType = 'compost';
-			upgradeStr = `You are treating all of your patches with compost. `;
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
-		}
-
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
-			activityStr += `${msg.author.minionName} is now planting ${quantity}x ${
-				plants.name
-			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
-				duration
-			)} to finish.\n\n${boostStr.join(', ')}`;
+			infoStr.unshift(
+				`${msg.author.minionName} is now planting ${quantity}x ${
+					plants.name
+				}. ${infoStr.join(' ')}`
+			);
 		} else if (patchType.patchPlanted) {
 			if (!planted)
 				throw `This error shouldn't happen. Just to clear possible undefined error`;
-
-			const storeHarvestableQuantity = patchType.lastQuantity;
-
-			if (planted.needsChopForHarvest) {
-				if (!planted.treeWoodcuttingLevel) return;
-				if (
-					currentWoodcuttingLevel < planted.treeWoodcuttingLevel &&
-					GP < 200 * storeHarvestableQuantity
-				) {
-					throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the 200GP per patch required to be able to harvest the currently planted trees.`;
-				}
-			}
 
 			if (bankHasItem(userBank, itemID('Magic secateurs'))) {
 				boostStr.push('10% crop yield for Magic Secateurs');
@@ -257,13 +262,9 @@ export default class extends BotCommand {
 				boostStr.push('5% crop yield for Farming Skillcape');
 			}
 
-			activityStr += `${
-				msg.author.minionName
-			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}, and then planting ${quantity}x ${
-				plants.name
-			}. ${upgradeStr}${paymentStr}\nIt'll take around ${formatDuration(
-				duration
-			)} to finish.\n\n${boostStr.join(', ')}`;
+			infoStr.unshift(
+				`${msg.author.minionName} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}, and then planting ${quantity}x ${plants.name}.`
+			);
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(
@@ -284,6 +285,10 @@ export default class extends BotCommand {
 			}
 		);
 
-		return msg.send(activityStr);
+		return msg.send(
+			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
+				boostStr.length > 0 ? `**Boosts**: ` : ``
+			}${boostStr.join(', ')}`
+		);
 	}
 }
