@@ -1,6 +1,6 @@
 import { KlasaUser } from 'klasa';
-import { rand } from 'oldschooljs/dist/util/util';
 
+import { rand } from '../../../lib/util';
 import { SkillsEnum } from '../types';
 
 const easyPlants = [
