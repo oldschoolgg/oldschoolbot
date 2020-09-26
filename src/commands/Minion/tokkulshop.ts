@@ -48,7 +48,7 @@ export default class extends BotCommand {
 
 		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad) < 1) {
 			return msg.send(
-				`You are not worthy JalYt. Before you can buy an ${shopInventory}, you need to have defeated the might TzTok-Jad!`
+				`You are not worthy JalYt. Before you can buy an ${shopInventory.name}, you need to have defeated the might TzTok-Jad!`
 			);
 		}
 
