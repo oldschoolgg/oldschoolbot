@@ -1,8 +1,7 @@
 import itemID from '../../../util/itemID';
-import { Emoji } from '../../../constants';
-import { Bar, SkillsEnum } from '../../types';
+import { Bar } from '../../types';
 
-const bars: Bar[] = [
+const Bars: Bar[] = [
 	{
 		name: 'Bronze bar',
 		level: 1,
@@ -66,15 +65,15 @@ const bars: Bar[] = [
 		id: itemID('Runite bar'),
 		inputOres: { [itemID('Runite ore')]: 1, [itemID('Coal')]: 8 },
 		chanceOfFail: 0
+	},
+	{
+		name: 'Dwarven bar',
+		level: 99,
+		xp: 5000,
+		id: itemID('Dwarven bar'),
+		inputOres: { [itemID('Dwarven ore')]: 1, [itemID('Coal')]: 20 },
+		chanceOfFail: 35
 	}
 ];
 
-// TODO - this is NOT right. It shouldnt be coded to look like a skill, should be mats in a new folder, only smithing.ts in root
-const Smelting = {
-	aliases: ['smelting'],
-	Bars: bars,
-	id: SkillsEnum.Smithing,
-	emoji: Emoji.Smithing
-};
-
-export default Smelting;
+export default Bars;

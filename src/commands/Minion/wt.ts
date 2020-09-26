@@ -2,24 +2,24 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
+import { Eatables } from '../../lib/eatables';
+import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import {
-	rand,
-	reduceNumByPercent,
+	addItemToBank,
+	bankHasItem,
 	calcWhatPercent,
 	formatDuration,
-	addItemToBank,
-	bankHasItem
+	itemID,
+	reduceNumByPercent
 } from '../../lib/util';
-import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import resolveItems from '../../lib/util/resolveItems';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { Eatables } from '../../lib/eatables';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -72,7 +72,9 @@ export default class extends BotCommand {
 		const wcBoost = (wcLevel + 1) / 10;
 		if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
 		durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
-
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greataxe'))) {
+			durationPerTodt /= 2;
+		}
 		const baseHealAmountNeeded = 20 * 8;
 		let healAmountNeeded = baseHealAmountNeeded;
 		let warmGearAmount = 0;
@@ -128,18 +130,18 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		const data: WintertodtActivityTaskOptions = {
-			minigameID: MinigameIDsEnum.Wintertodt,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Wintertodt,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(
+			this.client,
+			Tasks.MinigameTicker,
+			{
+				minigameID: MinigameIDsEnum.Wintertodt,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Wintertodt
+			}
+		);
 
 		return msg.send(
 			`${

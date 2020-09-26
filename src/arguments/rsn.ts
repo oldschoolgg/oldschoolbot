@@ -1,10 +1,10 @@
-import { Argument, Possible, KlasaMessage } from 'klasa';
+import { Argument, KlasaMessage, Possible } from 'klasa';
 
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 
 export default class extends Argument {
 	async run(arg: string, _: Possible, msg: KlasaMessage) {
-		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '+';
+		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		if (typeof arg === 'undefined') {
 			if (!msg.author.settings.get('RSN')) await msg.author.settings.sync(true);
 			const player = msg.author.settings.get('RSN');

@@ -1,5 +1,6 @@
 import { Command, Inhibitor, InhibitorStore, KlasaMessage } from 'klasa';
-import { Time, PerkTier } from '../lib/constants';
+
+import { PerkTier, Time } from '../lib/constants';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Inhibitor {

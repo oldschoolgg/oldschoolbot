@@ -1,11 +1,11 @@
-import { CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Image, Color, Emoji, Events } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { Color, Emoji, Events, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { rand, roll } from '../../lib/util';
 
 export default class extends BotCommand {

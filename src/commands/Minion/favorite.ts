@@ -1,4 +1,4 @@
-import { CommandStore, KlasaMessage, ArrayActions } from 'klasa';
+import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -9,7 +9,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[item:item]',
-			aliases: ['fav']
+			aliases: ['fav'],
+			description: 'Favorites an item so it displays at the top of your bank.'
 		});
 	}
 

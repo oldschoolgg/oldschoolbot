@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ItemBank } from '../types';
+import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
+import Loot from 'oldschooljs/dist/structures/Loot';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
-import Loot from 'oldschooljs/dist/structures/Loot';
 import { rand, roll } from 'oldschooljs/dist/util/util';
-import itemID from '../util/itemID';
+
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
-import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
-import resolveItems from '../util/resolveItems';
-import { randomItemFromArray, calcPercentOfNum, convertXPtoLVL } from '../util';
+import { ItemBank } from '../types';
+import { calcPercentOfNum, convertXPtoLVL, randomItemFromArray } from '../util';
+import itemID from '../util/itemID';
 import { normal } from '../util/normal';
+import resolveItems from '../util/resolveItems';
 
 interface WintertodtCrateOptions {
 	points: number;

@@ -1,5 +1,5 @@
-import { SkillsEnum } from '../../types';
 import { Emoji } from '../../../constants';
+import { SkillsEnum } from '../../types';
 import craftables from './craftables/index';
 
 const Crafting = {

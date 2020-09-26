@@ -1,6 +1,6 @@
-import { Bone, SkillsEnum } from '../types';
-import itemID from '../../util/itemID';
 import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
+import { Bone, SkillsEnum } from '../types';
 
 const bones: Bone[] = [
 	{

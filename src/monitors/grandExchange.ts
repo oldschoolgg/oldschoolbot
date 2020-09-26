@@ -1,6 +1,6 @@
-import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
+import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
-import { SupportServer, Channel } from '../lib/constants';
+import { Channel, SupportServer } from '../lib/constants';
 
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {

@@ -1,12 +1,12 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { KillableMonster } from '../types';
+import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
+import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
+import readableStatName from '../../gear/functions/readableStatName';
 import { GearStats } from '../../gear/types';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
-import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
-import readableStatName from '../../gear/functions/readableStatName';
-import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
+import { KillableMonster } from '../types';
 
 const { floor, max } = Math;
 

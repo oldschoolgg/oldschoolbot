@@ -1,45 +1,44 @@
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import { User } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
-import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import { formatDuration, rand } from '../../util';
-import {
-	MonsterActivityTaskOptions,
-	ClueActivityTaskOptions,
-	CraftingActivityTaskOptions,
-	AgilityActivityTaskOptions,
-	CookingActivityTaskOptions,
-	FishingActivityTaskOptions,
-	MiningActivityTaskOptions,
-	SmeltingActivityTaskOptions,
-	SmithingActivityTaskOptions,
-	FiremakingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions,
-	OfferingActivityTaskOptions,
-	BuryingActivityTaskOptions,
-	FletchingActivityTaskOptions,
-	AlchingActivityTaskOptions
-} from '../../lib/types/minions';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
-import Crafting from '../../lib/skilling/skills/crafting/crafting';
-import { SkillsEnum } from '../../lib/skilling/types';
-import Agility from '../../lib/skilling/skills/agility';
-import Cooking from '../../lib/skilling/skills/cooking';
-import Fishing from '../../lib/skilling/skills/fishing';
-import Mining from '../../lib/skilling/skills/mining';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
-import Smithing from '../../lib/skilling/skills/smithing/smithing';
-import Firemaking from '../../lib/skilling/skills/firemaking';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import Prayer from '../../lib/skilling/skills/prayer';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Agility from '../../lib/skilling/skills/agility';
+import Cooking from '../../lib/skilling/skills/cooking';
+import Crafting from '../../lib/skilling/skills/crafting';
+import Firemaking from '../../lib/skilling/skills/firemaking';
+import Fishing from '../../lib/skilling/skills/fishing';
+import Mining from '../../lib/skilling/skills/mining';
+import Prayer from '../../lib/skilling/skills/prayer';
+import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Smithing from '../../lib/skilling/skills/smithing';
+import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import { SkillsEnum } from '../../lib/skilling/types';
+import {
+	AgilityActivityTaskOptions,
+	AlchingActivityTaskOptions,
+	BuryingActivityTaskOptions,
+	ClueActivityTaskOptions,
+	CookingActivityTaskOptions,
+	CraftingActivityTaskOptions,
+	FiremakingActivityTaskOptions,
+	FishingActivityTaskOptions,
+	FletchingActivityTaskOptions,
+	MiningActivityTaskOptions,
+	MonsterActivityTaskOptions,
+	OfferingActivityTaskOptions,
+	SmeltingActivityTaskOptions,
+	SmithingActivityTaskOptions,
+	WoodcuttingActivityTaskOptions
+} from '../../lib/types/minions';
 import { itemNameFromID } from '../../lib/util';
+import getActivityOfUser from '../../lib/util/getActivityOfUser';
+import { formatDuration, rand } from '../../util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -55,18 +54,18 @@ export default class extends Extendable {
 			return `${this.minionName} is currently doing nothing.
 
 - Visit <https://www.oldschool.gg/oldschoolbot/minions> for extensive information on minions.
-- Use \`+minion setname [name]\` to change your minions' name.
-- You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
-- Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
-- Train mining with \`+mine\`
-- Train smithing with \`+smelt\` or \`+smith\`
-- Train prayer with \`+bury\` or \`+offer\`
-- Train woodcutting with \`+chop\`
-- Train firemaking with \`+light\`
-- Train crafting with \`+craft\`
-- Train fletching with \`+fletch\`
-- Gain quest points with \`+quest\`
-- Pat your minion with \`+minion pat\``;
+- Use \`=minion setname [name]\` to change your minions' name.
+- You can assign ${this.minionName} to kill monsters for loot using \`=minion kill\`.
+- Do clue scrolls with \`=minion clue easy\` (complete 1 easy clue)
+- Train mining with \`=mine\`
+- Train smithing with \`=smelt\` or \`=smith\`
+- Train prayer with \`=bury\` or \`=offer\`
+- Train woodcutting with \`=chop\`
+- Train firemaking with \`=light\`
+- Train crafting with \`=craft\`
+- Train fletching with \`=fletch\`
+- Gain quest points with \`=quest\`
+- Pat your minion with \`=minion pat\``;
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();
@@ -174,7 +173,7 @@ export default class extends Extendable {
 			case Activity.Smelting: {
 				const data = currentTask as SmeltingActivityTaskOptions;
 
-				const bar = Smelting.Bars.find(bar => bar.id === data.barID);
+				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
 				return `${this.minionName} is currently smelting ${data.quantity}x ${
 					bar!.name
@@ -186,10 +185,10 @@ export default class extends Extendable {
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithedBar = Smithing.SmithedBars.find(item => item.id === data.smithedBarID);
+				const SmithableItem = Smithing.Bars.find(item => item.id === data.smithedBarID);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
-					SmithedBar!.name
+					SmithableItem!.name
 				}. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
 					SkillsEnum.Smithing
 				)}`;

@@ -1,4 +1,4 @@
-import { generateHexColorForCashStack, formatItemStackQuantity } from '../util';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
 import { fillTextXTimesInCtx } from './fillTextXTimesInCtx';
 
 export function drawItemQuantityText(

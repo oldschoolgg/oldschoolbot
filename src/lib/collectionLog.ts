@@ -1,6 +1,6 @@
+import Agility, { gracefulItems } from './skilling/skills/agility';
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
-import Agility, { gracefulItems } from './skilling/skills/agility';
 
 export const bosses = {
 	Zulrah: resolveItems([

@@ -2,6 +2,9 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
+import { ItemBank } from '../../lib/types';
+
+const IGNORE_LESS_THEN = 10;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -14,23 +17,19 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const totalBank: { [key: string]: number } = {};
-
-		const res: any = await this.client.query(
-			msg.flagArgs.im
-				? `SELECT ARRAY(SELECT bank FROM users WHERE bank::text <> '{}'::text AND "minion.ironman" = true);`
-				: `SELECT ARRAY(SELECT bank FROM users WHERE bank::text <> '{}'::text);`
-		);
-
-		const banks = res[0].array;
-
-		for (let i = 0; i < banks.length; i++) {
-			for (const [id, qty] of Object.entries(banks[i]) as [string, number][]) {
-				if (!totalBank[id]) totalBank[id] = qty;
-				else totalBank[id] += qty;
-			}
-		}
-
-		return msg.channel.sendBankImage({ bank: totalBank, title: `Entire Economy Bank` });
+		const query = `select
+				json_object_agg(itemID, itemQTY)::jsonb as banks
+			 from (
+				select key as itemID, sum(value::int) as itemQTY
+				from users
+				cross join json_each_text(bank)
+				${msg.flagArgs.im ? ` where users."minion.ironman" = true ` : ``}
+				group by key
+			 ) s where itemQTY >= ${IGNORE_LESS_THEN};`;
+		const queryBank = await this.client.query<{ banks: ItemBank }[]>(query);
+		return msg.channel.sendBankImage({
+			bank: queryBank[0].banks,
+			title: `Entire Economy Bank`
+		});
 	}
 }

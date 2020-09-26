@@ -1,18 +1,18 @@
 import { Task } from 'klasa';
-
-import { rand, multiplyBank } from '../../lib/util';
-import { Time, Events, Emoji } from '../../lib/constants';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from 'oldschooljs/dist/util/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import Mining from '../../lib/skilling/skills/mining';
-import itemID from '../../lib/util/itemID';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
+
+import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { getRandomMysteryBox } from '../../lib/openables';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Mining from '../../lib/skilling/skills/mining';
+import Smithing from '../../lib/skilling/skills/smithing';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import { multiplyBank, rand } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -74,7 +74,7 @@ export default class extends Task {
 				const amountToAdd = randOre.xp * qty;
 				xpReceived += amountToAdd;
 				bonusXP += amountToAdd;
-				loot[randOre.id] = qty;
+				loot[randOre.id] = (loot[randOre.id] ?? 0) + qty;
 			}
 		}
 
@@ -123,7 +123,7 @@ export default class extends Task {
 
 		const hasKlik = user.equippedPet() === itemID('Klik');
 		if (hasKlik) {
-			const smeltedOre = Smelting.Bars.find(
+			const smeltedOre = Smithing.Bars.find(
 				o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1
 			);
 			if (smeltedOre) {

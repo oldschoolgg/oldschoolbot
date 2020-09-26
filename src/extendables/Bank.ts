@@ -1,8 +1,8 @@
-import { Extendable, SettingsFolder, ExtendableStore } from 'klasa';
 import { User } from 'discord.js';
+import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { GearTypes } from '../lib/gear';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import { ItemBank } from '../lib/types';
 import { addItemToBank } from '../lib/util';
 
@@ -34,14 +34,7 @@ export default class extends Extendable {
 
 	public numItemsInBankSync(this: User, itemID: number) {
 		const bank = this.settings.get(UserSettings.Bank);
-
-		const result = bank[itemID];
-
-		if (typeof result !== 'undefined') {
-			return result;
-		}
-
-		return 0;
+		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
 	}
 
 	public allItemsOwned(this: User): ItemBank {

@@ -1,4 +1,4 @@
-import { Argument, ArgumentStore, Possible, KlasaMessage } from 'klasa';
+import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
 
 export default class extends Argument {
 	public constructor(store: ArgumentStore, file: string[], directory: string) {

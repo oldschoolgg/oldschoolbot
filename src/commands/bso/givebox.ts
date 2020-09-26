@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Time, PerkTier } from '../../lib/constants';
-import { formatDuration, roll, itemID } from '../../lib/util';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { PerkTier, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { formatDuration, itemID, roll } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

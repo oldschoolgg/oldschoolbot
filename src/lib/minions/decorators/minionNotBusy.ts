@@ -1,5 +1,5 @@
-import { createFunctionInhibitor } from 'klasa-decorators';
 import { KlasaMessage } from 'klasa';
+import { createFunctionInhibitor } from 'klasa-decorators';
 
 /**
  * Requires that the users' minion isn't busy.

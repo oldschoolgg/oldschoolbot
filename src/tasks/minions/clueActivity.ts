@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
-
-import clueTiers from '../../lib/minions/data/clueTiers';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { Events, Time } from '../../lib/constants';
-import { roll, multiplyBank, addItemToBank, itemID, rand, addBanks } from '../../lib/util';
-import { getRandomMysteryBox } from '../../lib/openables';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
+
+import { Events, Time } from '../../lib/constants';
+import clueTiers from '../../lib/minions/data/clueTiers';
+import { getRandomMysteryBox } from '../../lib/openables';
+import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import { addBanks, addItemToBank, itemID, multiplyBank, rand, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -42,7 +42,7 @@ export default class extends Task {
 			clueTier.name
 		} clues. ${user.minionName} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
-		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
+		} in your bank. You can open this casket using \`=open ${clueTier.name}\``;
 
 		let loot = { [clueTier.id]: quantity };
 		if (roll(10)) {

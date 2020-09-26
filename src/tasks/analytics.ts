@@ -1,12 +1,12 @@
 import { Task } from 'klasa';
+import PgBoss from 'pg-boss';
 import { createConnection } from 'typeorm';
-import * as PgBoss from 'pg-boss';
 
 import { providerConfig } from '../config';
-import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
-import { activityTaskFilter } from '../lib/util';
-import { TickerTaskData } from '../lib/types/minions';
 import { Tasks } from '../lib/constants';
+import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
+import { TickerTaskData } from '../lib/types/minions';
+import { activityTaskFilter } from '../lib/util';
 
 const { port, user, password, database } = providerConfig!.postgres!;
 

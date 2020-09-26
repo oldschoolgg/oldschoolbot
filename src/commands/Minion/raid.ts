@@ -1,11 +1,11 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { MakePartyOptions } from '../../lib/types';
+import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { Tasks, Time, Activity, Emoji } from '../../lib/constants';
-import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { MakePartyOptions } from '../../lib/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -48,7 +48,7 @@ export default class extends BotCommand {
 			partyLeaderID: msg.author.id,
 			userID: msg.author.id,
 			type: Activity.Raids,
-			id: rand(1, 10_000_000),
+			id: rand(1, 10_000_000).toString(),
 			finishDate: Date.now() + duration,
 			team: users.map(u => ({
 				id: u.id,

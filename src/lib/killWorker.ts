@@ -1,5 +1,5 @@
-import { expose } from 'threads';
 import { Monsters } from 'oldschooljs';
+import { expose } from 'threads';
 
 import sarachnis = require('../../data/monsters/sarachnis');
 import lavaDragon = require('../../data/monsters/lavaDragon');

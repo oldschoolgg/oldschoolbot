@@ -1,4 +1,4 @@
-import { TextChannel, DMChannel, Channel } from 'discord.js';
+import { Channel, DMChannel, TextChannel } from 'discord.js';
 
 /**
  * Checks if the bot can send a message to a channel object.

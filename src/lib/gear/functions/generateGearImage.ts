@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import * as fs from 'fs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { KlasaClient } from 'klasa';
 import { createCanvas } from 'canvas';
+import * as fs from 'fs';
+import { KlasaClient } from 'klasa';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearTypes } from '..';
-import readableGearTypeName from './readableGearTypeName';
 import { canvasImageFromBuffer } from '../../util';
 import { drawItemQuantityText } from '../../util/drawItemQuantityText';
 import { drawTitleText } from '../../util/drawTitleText';
+import readableGearTypeName from './readableGearTypeName';
 
 const gearTemplateFile = fs.readFileSync('./resources/images/gear_template.png');
 

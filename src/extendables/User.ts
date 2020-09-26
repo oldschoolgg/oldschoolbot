@@ -1,12 +1,12 @@
-import { Extendable, ExtendableStore } from 'klasa';
 import { User } from 'discord.js';
+import { Extendable, ExtendableStore } from 'klasa';
 
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { KillableMonster } from '../lib/minions/types';
-import { formatItemReqs } from '../lib/util/formatItemReqs';
-import { itemNameFromID, toTitleCase } from '../lib/util';
-import { Skills } from '../lib/types';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../lib/skilling/types';
+import { Skills } from '../lib/types';
+import { itemNameFromID, toTitleCase } from '../lib/util';
+import { formatItemReqs } from '../lib/util/formatItemReqs';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -25,7 +25,7 @@ export default class extends Extendable {
 		if (monster.qpRequired && this.settings.get(UserSettings.QP) < monster.qpRequired) {
 			return [
 				false,
-				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`+quest\``
+				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`=quest\``
 			];
 		}
 

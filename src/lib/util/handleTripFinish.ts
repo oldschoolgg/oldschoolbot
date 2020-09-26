@@ -1,10 +1,10 @@
-import { KlasaClient, KlasaUser, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 
+import { continuationChars, PerkTier, Time } from '../constants';
 import { randomItemFromArray } from '../util';
-import getUsersPerkTier from './getUsersPerkTier';
-import { Time, PerkTier, alphaNumericalChars } from '../constants';
 import { channelIsSendable } from './channelIsSendable';
+import getUsersPerkTier from './getUsersPerkTier';
 
 export async function handleTripFinish(
 	client: KlasaClient,
@@ -18,8 +18,7 @@ export async function handleTripFinish(
 	if (!channelIsSendable(channel)) return;
 
 	const perkTier = getUsersPerkTier(user);
-	const continuationChar =
-		perkTier > PerkTier.Two ? 'y' : randomItemFromArray(alphaNumericalChars);
+	const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
 	if (onContinue) {
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
@@ -33,7 +32,7 @@ export async function handleTripFinish(
 			.awaitMessages(
 				mes => mes.author === user && mes.content?.toLowerCase() === continuationChar,
 				{
-					time: perkTier > PerkTier.Two ? Time.Minute * 10 : Time.Minute * 2,
+					time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
 					max: 1
 				}
 			)
@@ -41,7 +40,9 @@ export async function handleTripFinish(
 				const response = messages.first();
 				if (response && !user.minionIsBusy) {
 					try {
-						await onContinue(response as KlasaMessage);
+						await onContinue(response as KlasaMessage).catch(err => {
+							channel.send(err);
+						});
 					} catch (err) {
 						channel.send(err);
 					}

@@ -1,8 +1,9 @@
 import { Time } from 'oldschooljs/dist/constants';
-import { SmithedBar } from '../../types';
-import itemID from '../../../util/itemID';
 
-const Adamant: SmithedBar[] = [
+import itemID from '../../../../util/itemID';
+import { SmithedItem } from '../../../types';
+
+const Adamant: SmithedItem[] = [
 	{
 		name: 'Adamant dagger',
 		level: 70,

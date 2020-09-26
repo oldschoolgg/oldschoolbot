@@ -3,10 +3,10 @@ import { O } from 'ts-toolbelt';
 
 import {
 	Bank,
+	ItemBank,
 	ItemPriceCache,
 	OSRSPoll,
-	PetRecords as PetRecordsType,
-	ItemBank
+	PetRecords as PetRecordsType
 } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };

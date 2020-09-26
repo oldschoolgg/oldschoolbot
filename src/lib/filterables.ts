@@ -1,9 +1,4 @@
-import resolveItems from './util/resolveItems';
 import { warmGear } from '../commands/Minion/wt';
-import { gracefulItems } from './skilling/skills/agility';
-import { Eatables } from './eatables';
-import Crafting from './skilling/skills/crafting/crafting';
-import Fletching from './skilling/skills/fletching/fletching';
 import {
 	cluesAll,
 	cluesBeginner,
@@ -16,6 +11,11 @@ import {
 	cluesShared,
 	wintertodt
 } from './collectionLog';
+import { Eatables } from './eatables';
+import { gracefulItems } from './skilling/skills/agility';
+import Crafting from './skilling/skills/crafting';
+import Fletching from './skilling/skills/fletching';
+import resolveItems from './util/resolveItems';
 
 const ores = resolveItems([
 	`Copper ore`,

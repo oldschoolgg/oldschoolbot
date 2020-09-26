@@ -4,8 +4,8 @@ import { Monsters } from 'oldschooljs';
 import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import backgroundImages from '../../lib/minions/data/bankBackgrounds';
-import { StringKeyedBank } from '../../lib/types';
 import ClueTiers from '../../lib/minions/data/clueTiers';
+import { StringKeyedBank } from '../../lib/types';
 
 type BankQueryResult = { bankBackground: number; count: string }[];
 

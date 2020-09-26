@@ -1,8 +1,8 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { KillableMonster } from '../types';
 import { Eatables } from '../../eatables';
+import { KillableMonster } from '../types';
 import calculateMonsterFood from './calculateMonsterFood';
 
 export default function hasEnoughFoodForMonster(

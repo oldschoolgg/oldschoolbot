@@ -1,24 +1,24 @@
-import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { addBanks } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { MakePartyOptions } from '../../lib/types';
-import { minionNotBusy, requiresMinion, ironsCantUse } from '../../lib/minions/decorators';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
-import { Activity, Tasks, Emoji } from '../../lib/constants';
-import { rand, formatDuration, addItemToBank } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { reducedTimeForGroup, findMonster } from '../../lib/minions/functions';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import { Activity, Emoji, Tasks } from '../../lib/constants';
 import { Eatables } from '../../lib/eatables';
+import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
+import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
+import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
-
-const { ceil } = Math;
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MakePartyOptions } from '../../lib/types';
+import { formatDuration, removeBankFromBank } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[quantity:int] <monster:string>',
+			usage: '[quantity:int] <monster:...string>',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
@@ -58,9 +58,17 @@ export default class extends BotCommand {
 			if (!hasReqs) {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
-
-			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity)) {
-				throw `${user.username} doesn't have enough food.`;
+			const monsterFoodNeeded =
+				Math.ceil(calculateMonsterFood(monster, user)[0] / users.length) * quantity;
+			if (
+				monster.healAmountNeeded &&
+				!getUserFoodFromBank(user.settings.get(UserSettings.Bank), monsterFoodNeeded)
+			) {
+				throw `${user.username} doesn't have enough food. You need at least ${
+					monsterFoodNeeded < monster.healAmountNeeded
+						? monster.healAmountNeeded
+						: monsterFoodNeeded
+				} HP in food to enter the mass.`;
 			}
 		}
 	}
@@ -92,15 +100,26 @@ export default class extends BotCommand {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
 
-				if (1 > 2) {
+				if (monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
 					} catch (err) {
 						return [true, err];
 					}
 
-					if (!hasEnoughFoodForMonster(monster, user, 2)) {
-						return [true, "you don't have enough food."];
+					// Ensure people have enough food for at least 2 full KC
+					// This makes it so the users will always have enough food for any amount of KC
+					if (
+						!getUserFoodFromBank(
+							user.settings.get(UserSettings.Bank),
+							monster.healAmountNeeded * 2
+						)
+					) {
+						return [
+							true,
+							`You don't have enough food. You need at least ${monster.healAmountNeeded *
+								2} HP in food to enter the mass.`
+						];
 					}
 				}
 
@@ -109,62 +128,60 @@ export default class extends BotCommand {
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);
-
+		if (users.length < 3 && monster.id === 696969) {
+			throw `You need at least 3 people to fight the Dwarf king.`;
+		}
 		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
 
 		this.checkReqs(users, monster, quantity);
 
-		if (1 > 2) {
+		if (monster.healAmountNeeded) {
 			for (const user of users) {
-				let [healAmountNeeded] = calculateMonsterFood(monster, user);
-
-				healAmountNeeded = Math.ceil(healAmountNeeded / users.length);
-
-				for (const food of Eatables) {
-					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-					if (user.numItemsInBankSync(food.id) < amountNeeded) {
-						if (Eatables.indexOf(food) === Eatables.length - 1) {
-							throw `You don't have enough food to kill ${
-								monster.name
-							}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-								quantity} per kill) You can use these food items: ${Eatables.map(
-								i => i.name
-							).join(', ')}.`;
-						}
-						continue;
-					}
-
-					await user.removeItemFromBank(food.id, amountNeeded);
-
-					// Track this food cost in Economy Stats
+				await user.settings.sync(true);
+				const userBank = user.settings.get(UserSettings.Bank);
+				const [healAmountNeeded] = calculateMonsterFood(monster, user);
+				const foodToRemove = getUserFoodFromBank(
+					userBank,
+					Math.ceil(healAmountNeeded / users.length) * quantity
+				);
+				if (!foodToRemove) {
+					throw `You don't have enough food to kill ${
+						monster.name
+					}! You need enough food to heal at least ${healAmountNeeded} HP (${Math.ceil(
+						healAmountNeeded / quantity
+					)} per kill). You can use these food items: ${Eatables.map(i => i.name).join(
+						', '
+					)}.`;
+				} else {
+					await user.settings.update(
+						UserSettings.Bank,
+						removeBankFromBank(userBank, foodToRemove)
+					);
 					await this.client.settings.update(
 						ClientSettings.EconomyStats.PVMCost,
-						addItemToBank(
+						addBanks([
 							this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-							food.id,
-							amountNeeded
-						)
+							foodToRemove
+						])
 					);
-
-					break;
 				}
 			}
 		}
 
-		const data: GroupMonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.GroupMonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration,
-			leader: msg.author.id,
-			users: users.map(u => u.id)
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.GroupMonsterKilling,
+				leader: msg.author.id,
+				users: users.map(u => u.id)
+			}
+		);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

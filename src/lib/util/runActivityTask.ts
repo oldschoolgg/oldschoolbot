@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
 
-import { MinionActivityTask, ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskOptions, MinionActivityTask } from '../types/minions';
 
 export default function runActivityTask(
 	client: Client,

@@ -1,7 +1,7 @@
 import { Emoji, Time } from '../../constants';
-import { SkillsEnum, Rune } from '../types';
-import itemID from '../../util/itemID';
 import { ActivityTaskOptions } from '../../types/minions';
+import itemID from '../../util/itemID';
+import { Rune, SkillsEnum } from '../types';
 
 const Runes: Rune[] = [
 	{

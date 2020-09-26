@@ -1,11 +1,11 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import { Activity, Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { tickerTaskFromActivity } from '../../lib/minions/functions/tickerTaskFromActivity';
+import getActivityOfUser from '../../lib/util/getActivityOfUser';
+import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 
 const options = {
 	max: 1,

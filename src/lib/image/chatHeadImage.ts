@@ -1,6 +1,6 @@
-import * as fs from 'fs';
 import { registerFont } from 'canvas';
 import { Canvas } from 'canvas-constructor';
+import * as fs from 'fs';
 
 registerFont('./resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
