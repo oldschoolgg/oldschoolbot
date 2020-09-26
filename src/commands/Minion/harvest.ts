@@ -72,8 +72,29 @@ export default class extends BotCommand {
 			)}!`;
 		}
 
-		if (!planted)
-			throw `WTF Error. This error shouldn't happen. Just to clear possible undefined error`;
+		const storeHarvestableQuantity = patchType.lastQuantity;
+
+		if (
+			planted &&
+			planted.needsChopForHarvest &&
+			planted.treeWoodcuttingLevel &&
+			currentWoodcuttingLevel < planted.treeWoodcuttingLevel
+		) {
+			const gpToCutTree =
+				planted.seedType === 'redwood'
+					? 2000 * storeHarvestableQuantity
+					: 200 * storeHarvestableQuantity;
+			if (GP < gpToCutTree) {
+				throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cancel their trip.`;
+			}
+		}
+
+		if (!planted) {
+			this.client.wtf(
+				new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`)
+			);
+			return;
+		}
 
 		const timePerPatchTravel = Time.Second * planted.timePerPatchTravel;
 		const timePerPatchHarvest = Time.Second * planted.timePerHarvest;
@@ -97,8 +118,6 @@ export default class extends BotCommand {
 		if (!patchType.patchPlanted) {
 			throw `There is nothing planted in this patch to harvest!`;
 		} else if (patchType.patchPlanted) {
-			const storeHarvestableQuantity = patchType.lastQuantity;
-
 			if (planted.needsChopForHarvest) {
 				if (!planted.treeWoodcuttingLevel) return;
 				if (
