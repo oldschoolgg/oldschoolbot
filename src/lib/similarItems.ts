@@ -368,7 +368,67 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Rune chainbody')]: resolveItems(['Gilded chainbody']),
 	[itemID('Rune sq shield')]: resolveItems(['Gilded sq shield']),
 	[itemID('Obsidian cape')]: resolveItems(['Obsidian cape (r)']),
-	[itemID('Bucket helm')]: resolveItems(['Bucket helm (g)'])
+	[itemID('Bucket helm')]: resolveItems(['Bucket helm (g)']),
+	[itemID('Graceful hood')]: resolveItems([
+		13579, // Arceuus hood
+		13591, // Port Piscarilius hood
+		13603, // Lovakengj hood
+		13615, // Shayzien hood
+		13627, // Hosidius hood
+		13667, // All cities hood
+		21061, // Brimhaven Agility Arena hood
+		24743 // Hallowed Sepulchre hood
+	]),
+	[itemID('Graceful top')]: resolveItems([
+		13583, // Arceuus top
+		13595, // Port Piscarilius top
+		13607, // Lovakengj top
+		13619, // Shayzien top
+		13631, // Hosidius top
+		13671, // All cities top
+		21067, // Brimhaven Agility Arena top
+		24749 // Hallowed Sepulchre top
+	]),
+	[itemID('Graceful legs')]: resolveItems([
+		13585, // Arceuus legs
+		13597, // Port Piscarilius legs
+		13609, // Lovakengj legs
+		13621, // Shayzien legs
+		13633, // Hosidius legs
+		13673, // All cities legs
+		21070, // Brimhaven Agility Arena legs
+		24752 // Hallowed Sepulchre legs
+	]),
+	[itemID('Graceful gloves')]: resolveItems([
+		13587, // Arceuus gloves
+		13599, // Port Piscarilius gloves
+		13611, // Lovakengj gloves
+		13623, // Shayzien gloves
+		13635, // Hosidius gloves
+		13675, // All cities gloves
+		21073, // Brimhaven Agility Arena gloves
+		24755 // Hallowed Sepulchre gloves
+	]),
+	[itemID('Graceful boots')]: resolveItems([
+		13589, // Arceuus boots
+		13601, // Port Piscarilius boots
+		13613, // Lovakengj boots
+		13625, // Shayzien boots
+		13637, // Hosidius boots
+		13677, // All cities boots
+		21076, // Brimhaven Agility Arena boots
+		24758 // Hallowed Sepulchre boots
+	]),
+	[itemID('Graceful cape')]: resolveItems([
+		13581, // Arceuus cape
+		13593, // Port Piscarilius cape
+		13605, // Lovakengj cape
+		13617, // Shayzien cape
+		13629, // Hosidius cape
+		13669, // All cities cape
+		21064, // Brimhaven Agility Arena cape
+		24746 // Hallowed Sepulchre cape
+	])
 };
 
 export default SimilarItems;
