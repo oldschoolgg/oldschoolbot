@@ -6,7 +6,7 @@
 		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\"",
 		"test": "jest",
 		"test:watch": "jest --watch",
-		"dev": "yarn build && tsc -p . -w"
+		"dev": "yarn wipedist && tsc -p . -w"
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
