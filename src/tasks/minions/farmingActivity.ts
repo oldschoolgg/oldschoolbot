@@ -1,6 +1,5 @@
 import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
-import { rand } from 'oldschooljs/dist/util/util';
 
 import { Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/farming';
@@ -12,7 +11,7 @@ import Farming from '../../lib/skilling/skills/farming/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, roll } from '../../lib/util';
+import { bankHasItem, rand, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
