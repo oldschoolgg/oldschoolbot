@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { randInt, roll } from 'e';
 import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
 import Loot from 'oldschooljs/dist/structures/Loot';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -178,7 +179,7 @@ export class WintertodtCrateClass {
 	}
 
 	public lootRoll(skills: Partial<LevelRequirements>): ReturnedLootItem[] {
-		const roll = rand(1, 9);
+		const roll = randInt(1, 9);
 
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.roll() : MaterialTables.roll();
@@ -191,7 +192,7 @@ export class WintertodtCrateClass {
 			return [
 				{
 					item: rolledItem[0],
-					quantity: rand(rolledItem[1][0], rolledItem[1][1])
+					quantity: randInt(rolledItem[1][0], rolledItem[1][1])
 				}
 			];
 		}
