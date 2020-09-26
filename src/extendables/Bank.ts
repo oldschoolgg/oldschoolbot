@@ -33,10 +33,10 @@ export default class extends Extendable {
 		return numOwned;
 	}
 
-	public numItemsInBankSync(this: User, itemID: number, mapping = false) {
+	public numItemsInBankSync(this: User, itemID: number, similar = false) {
 		const bank = this.settings.get(UserSettings.Bank);
 		const itemQty = typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
-		if (mapping && itemQty === 0 && SimilarItems[itemID]) {
+		if (similar && itemQty === 0 && SimilarItems[itemID]) {
 			for (const i of SimilarItems[itemID]) {
 				if (bank[i] && bank[i] > 0) return bank[i];
 			}
