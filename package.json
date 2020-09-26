@@ -4,7 +4,8 @@
 		"build": "yarn wipedist && tsc -p .",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\"",
-		"test": "yarn build && ava"
+		"test": "yarn build && ava",
+		"dev": "yarn build && tsc -p . -w"
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
