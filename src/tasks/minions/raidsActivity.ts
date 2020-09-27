@@ -56,6 +56,9 @@ export default class extends Task {
 				userLoot = multiplyBank(userLoot, 2);
 				userLoot[getRandomMysteryBox()] = 1;
 			}
+			if (roll(2000)) {
+				userLoot[23931] = 1;
+			}
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
 			} ||${await createReadableItemListFromBank(
