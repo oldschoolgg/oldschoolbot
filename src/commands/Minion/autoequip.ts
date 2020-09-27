@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { addBanks } from 'oldschooljs/dist/util';
+import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { GearTypes } from '../../lib/gear';
@@ -107,6 +107,7 @@ export default class extends BotCommand {
 
 		// Sort all slots
 		for (const [slot, items] of Object.entries(equipables)) {
+			// Sort by the extra gear first if that is set
 			equipables[slot as EquipmentSlot] = items.sort((a, b) => {
 				if (gearStatExtra) {
 					return (
@@ -117,6 +118,8 @@ export default class extends BotCommand {
 				}
 				return getOSItem(b)?.equipment![gearStat] - getOSItem(a)?.equipment![gearStat];
 			});
+
+			// Get the best item (first in slot) and if that exists, add its stats to the calculation
 			const item = equipables[slot as EquipmentSlot][0]
 				? getOSItem(equipables[slot as EquipmentSlot][0])
 				: null;
@@ -133,13 +136,29 @@ export default class extends BotCommand {
 			}
 		}
 
+		// Removes weapon/shield or 2h, depending on what has the highest stats
 		if (
 			(!gearStatExtra && scoreWs > score2h) ||
 			(gearStatExtra && scoreWsExtra > score2hExtra)
 		) {
+			toRemoveBank = removeItemFromBank(
+				toRemoveBank,
+				newGear['2h']!.item,
+				newGear['2h']!.quantity
+			);
 			newGear['2h'] = null;
 		} else {
+			toRemoveBank = removeItemFromBank(
+				toRemoveBank,
+				newGear.weapon!.item,
+				newGear.weapon!.quantity
+			);
 			newGear.weapon = null;
+			toRemoveBank = removeItemFromBank(
+				toRemoveBank,
+				newGear.shield!.item,
+				newGear.shield!.quantity
+			);
 			newGear.shield = null;
 		}
 
