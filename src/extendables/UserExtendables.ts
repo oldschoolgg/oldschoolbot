@@ -224,7 +224,7 @@ export default class extends Extendable {
 		) as number[];
 		let totalLevel = 0;
 		for (const xp of userXPs) {
-			totalLevel += returnXP ? convertXPtoLVL(xp) : xp;
+			totalLevel += returnXP ? xp : convertXPtoLVL(xp);
 		}
 		return totalLevel;
 	}

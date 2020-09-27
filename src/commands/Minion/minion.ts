@@ -13,7 +13,6 @@ import {
 	Tasks,
 	Time
 } from '../../lib/constants';
-import { Eatables } from '../../lib/eatables';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -21,18 +20,11 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import findMonster from '../../lib/minions/functions/findMonster';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	isWeekend,
-	itemID,
-	itemNameFromID,
-	randomItemFromArray,
-	removeBankFromBank
-} from '../../lib/util';
+import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { rand } from '../../util';
@@ -433,7 +425,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		const bank = msg.author.settings.get(UserSettings.Bank);
 		const boosts = [];
 		let messages: string[] = [];
 
@@ -499,30 +490,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		// Check food
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-
 			messages = messages.concat(foodMessages);
-			const foodToRemove = getUserFoodFromBank(bank, healAmountNeeded * quantity);
-			if (!foodToRemove) {
-				throw `You don't have enough food to kill ${
-					monster.name
-				}! You need enough food to heal at least ${healAmountNeeded} HP (${Math.ceil(
-					healAmountNeeded / quantity
-				)} per kill). You can use these food items: ${Eatables.map(i => i.name).join(
-					', '
-				)}.`;
-			} else {
-				await msg.author.settings.update(
-					UserSettings.Bank,
-					removeBankFromBank(bank, foodToRemove)
-				);
-				await this.client.settings.update(
-					ClientSettings.EconomyStats.PVMCost,
-					addBanks([
-						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-						foodToRemove
-					])
-				);
-			}
+			await removeFoodFromUser(
+				this.client,
+				msg.author,
+				healAmountNeeded * quantity,
+				Math.ceil(healAmountNeeded / quantity),
+				monster.name
+			);
 		}
 
 		let duration = timeToFinish * quantity;

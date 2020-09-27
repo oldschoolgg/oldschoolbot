@@ -19,9 +19,9 @@ const { triviaQuestions } = JSON.parse(
 	fs.readFileSync('./resources/trivia-questions.json').toString()
 );
 
-import * as pets from '../../../data/pets';
 import { BotCommand } from '../../lib/BotCommand';
 import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
+import pets from '../../lib/pets';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { formatDuration, isWeekend, itemID, rand, roll, stringMatches } from '../../lib/util';

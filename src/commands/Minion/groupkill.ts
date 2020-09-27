@@ -1,18 +1,15 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { addBanks } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks } from '../../lib/constants';
-import { Eatables } from '../../lib/eatables';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
+import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
+import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MakePartyOptions } from '../../lib/types';
-import { formatDuration, removeBankFromBank } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -58,17 +55,14 @@ export default class extends BotCommand {
 			if (!hasReqs) {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
-			const monsterFoodNeeded =
-				Math.ceil(calculateMonsterFood(monster, user)[0] / users.length) * quantity;
-			if (
-				monster.healAmountNeeded &&
-				!getUserFoodFromBank(user.settings.get(UserSettings.Bank), monsterFoodNeeded)
-			) {
-				throw `${user.username} doesn't have enough food. You need at least ${
-					monsterFoodNeeded < monster.healAmountNeeded
-						? monster.healAmountNeeded
-						: monsterFoodNeeded
-				} HP in food to enter the mass.`;
+
+			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
+				throw `${
+					users.length === 1 ? `You don't` : `${user.username} doesn't`
+				} have enough food. You need at least ${monster?.healAmountNeeded! *
+					quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
 	}
@@ -109,12 +103,7 @@ export default class extends BotCommand {
 
 					// Ensure people have enough food for at least 2 full KC
 					// This makes it so the users will always have enough food for any amount of KC
-					if (
-						!getUserFoodFromBank(
-							user.settings.get(UserSettings.Bank),
-							monster.healAmountNeeded * 2
-						)
-					) {
+					if (!hasEnoughFoodForMonster(monster, user, 2)) {
 						return [
 							true,
 							`You don't have enough food. You need at least ${monster.healAmountNeeded *
@@ -137,34 +126,14 @@ export default class extends BotCommand {
 
 		if (monster.healAmountNeeded) {
 			for (const user of users) {
-				await user.settings.sync(true);
-				const userBank = user.settings.get(UserSettings.Bank);
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
-				const foodToRemove = getUserFoodFromBank(
-					userBank,
-					Math.ceil(healAmountNeeded / users.length) * quantity
+				await removeFoodFromUser(
+					this.client,
+					user,
+					Math.ceil(healAmountNeeded / users.length) * quantity,
+					Math.ceil(healAmountNeeded / quantity),
+					monster.name
 				);
-				if (!foodToRemove) {
-					throw `You don't have enough food to kill ${
-						monster.name
-					}! You need enough food to heal at least ${healAmountNeeded} HP (${Math.ceil(
-						healAmountNeeded / quantity
-					)} per kill). You can use these food items: ${Eatables.map(i => i.name).join(
-						', '
-					)}.`;
-				} else {
-					await user.settings.update(
-						UserSettings.Bank,
-						removeBankFromBank(userBank, foodToRemove)
-					);
-					await this.client.settings.update(
-						ClientSettings.EconomyStats.PVMCost,
-						addBanks([
-							this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-							foodToRemove
-						])
-					);
-				}
 			}
 		}
 
