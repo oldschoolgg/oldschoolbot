@@ -393,11 +393,11 @@ const killableMonsters: KillableMonster[] = [
 			GearStat.AttackRanged
 		],
 		minimumGearRequirements: {
-			[GearStat.AttackStab]: 150,
-			[GearStat.DefenceStab]: 180,
+			[GearStat.AttackStab]: 120,
+			[GearStat.DefenceStab]: 150,
 			[GearStat.DefenceSlash]: 180,
 			[GearStat.DefenceMagic]: -20,
-			[GearStat.DefenceRanged]: 180
+			[GearStat.DefenceRanged]: 150
 		},
 		itemInBankBoosts: {
 			[itemID('Saradomin godsword')]: 5,
