@@ -37,6 +37,10 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`;
 		}
 
+		if (currentTask.type === Activity.Raids) {
+			throw `${msg.author.minionName} is in a raid, their team wouldn't like it if they left!`;
+		}
+
 		const taskTicker = tickerTaskFromActivity(currentTask.type);
 
 		const cancelMsg = await msg.channel.send(

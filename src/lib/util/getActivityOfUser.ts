@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 
 import { Activity } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { TickerTaskData } from '../types/minions';
+import { RaidsActivityTaskOptions, TickerTaskData } from '../types/minions';
 import { activityTaskFilter } from '../util';
 
 export default function getActivityOfUser(client: Client, user: KlasaUser) {
@@ -14,6 +14,12 @@ export default function getActivityOfUser(client: Client, user: KlasaUser) {
 			if (
 				subTask.type === Activity.GroupMonsterKilling &&
 				(subTask as GroupMonsterActivityTaskOptions).users.includes(user.id)
+			) {
+				return subTask;
+			}
+			if (
+				subTask.type === Activity.Raids &&
+				(subTask as RaidsActivityTaskOptions).users.includes(user.id)
 			) {
 				return subTask;
 			}
