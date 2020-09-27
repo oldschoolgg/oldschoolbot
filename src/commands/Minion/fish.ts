@@ -1,8 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Time } from 'oldschooljs/dist/constants';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Tasks } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
