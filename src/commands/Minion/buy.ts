@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import Buyables from '../../lib/buyables';
+import Buyables from '../../lib/buyables/buyables';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { multiplyBank, stringMatches, toTitleCase } from '../../lib/util';
