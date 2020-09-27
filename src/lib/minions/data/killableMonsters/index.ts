@@ -393,9 +393,9 @@ const killableMonsters: KillableMonster[] = [
 			GearStat.AttackRanged
 		],
 		minimumGearRequirements: {
-			[GearStat.AttackStab]: 120,
+			[GearStat.AttackStab]: 100,
 			[GearStat.DefenceStab]: 150,
-			[GearStat.DefenceSlash]: 180,
+			[GearStat.DefenceSlash]: 150,
 			[GearStat.DefenceMagic]: -20,
 			[GearStat.DefenceRanged]: 150
 		},
