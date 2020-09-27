@@ -124,7 +124,7 @@ export default class extends BotCommand {
 				? getOSItem(equipables[slot as EquipmentSlot][0])
 				: null;
 			if (item !== null) {
-				newGear[slot as EquipmentSlot] = item ? { item: item.id, quantity: 1 } : null;
+				newGear[slot as EquipmentSlot] = { item: item.id, quantity: 1 };
 				score2h += slot !== 'weapon' && slot !== 'shield' ? item.equipment![gearStat] : 0;
 				scoreWs += slot !== '2h' ? item.equipment![gearStat] : 0;
 				if (gearStatExtra) {
