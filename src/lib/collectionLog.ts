@@ -1297,7 +1297,7 @@ export const miscLog = {
 };
 
 export const customBossLog = {
-	'King Goldmar': resolveItems(['Dwarven warhammer', 'Dwarven ore']),
+	'King Goldmar': resolveItems(['Dwarven warhammer', 'Dwarven ore', 'Dwarven crate']),
 	Malygos: resolveItems([
 		'Abyssal thread',
 		'Abyssal cape',
