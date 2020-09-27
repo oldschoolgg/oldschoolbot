@@ -1303,9 +1303,7 @@ export const customBossLog = {
 		'Abyssal cape',
 		'Dragon hunter lance',
 		'Dragon hunter crossbow',
-		'Ori',
-		'Dragcula',
-		'Mally'
+		'Ori'
 	])
 };
 
