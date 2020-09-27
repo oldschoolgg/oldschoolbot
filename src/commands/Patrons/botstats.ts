@@ -15,7 +15,7 @@ export default class extends BotCommand {
 			aliases: ['bstats'],
 			perkTier: PerkTier.Four,
 			subcommands: true,
-			usage: '<servers|minions|ironmen|sacrificed|bankbg|monsters|clues>',
+			usage: '<servers|minions|ironmen|sacrificed|bankbg|monsters|clues|icons>',
 			oneAtTime: true,
 			cooldown: 60
 		});
@@ -39,6 +39,17 @@ export default class extends BotCommand {
 		return msg.send(`There are ${result[0].count.toLocaleString()} minions!`);
 	}
 
+	async icons(msg: KlasaMessage) {
+		const result: { icon: string | null; qty: number }[] = await this._query(
+			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users group by "minion.icon" order by qty asc;`
+		);
+		return msg.send(
+			`**Current minion tiers and their number of users:**\n${Object.values(result)
+				.map(row => `${row.icon ?? '<:minion:759120536860229732>'} : ${row.qty}`)
+				.join('\n')}`
+		);
+	}
+
 	async ironmen(msg: KlasaMessage) {
 		const result = await this._query(
 			`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`
@@ -58,7 +69,7 @@ export default class extends BotCommand {
 	}
 
 	async bankbg(msg: KlasaMessage) {
-		const result: BankQueryResult = await this._query(`SELECT "bankBackground", COUNT(*) 
+		const result: BankQueryResult = await this._query(`SELECT "bankBackground", COUNT(*)
 FROM users
 WHERE "bankBackground" <> 1
 GROUP BY "bankBackground";`);
