@@ -1,8 +1,8 @@
 import { Client } from 'discord.js';
 
-import { Tasks, Activity } from '../constants';
-import { ActivityTaskOptions, RaidsActivityTaskOptions } from '../types/minions';
+import { Activity, Tasks } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { ActivityTaskOptions, RaidsActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
 
 export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(

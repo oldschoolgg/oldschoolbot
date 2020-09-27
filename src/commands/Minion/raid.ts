@@ -1,18 +1,17 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { GearTypes } from '../../lib/gear';
+import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-
-import itemID from '../../lib/util/itemID';
-import { GearTypes } from '../../lib/gear';
-import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 
 const meleeGearBonus = [
 	{

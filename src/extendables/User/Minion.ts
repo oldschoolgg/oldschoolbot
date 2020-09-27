@@ -20,7 +20,6 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
-	RaidsActivityTaskOptions,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
@@ -33,6 +32,7 @@ import {
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	RaidsActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions

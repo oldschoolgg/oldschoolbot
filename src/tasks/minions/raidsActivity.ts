@@ -1,12 +1,12 @@
 import { Task } from 'klasa';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
-import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { noOp, formatDuration, queuedMessageSend, roll, multiplyBank } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { RaidsActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, multiplyBank, noOp, queuedMessageSend, roll } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 
 const uniques = [
 	21034,

@@ -1,10 +1,10 @@
 import { Client } from 'discord.js';
 import { KlasaUser } from 'klasa';
 
-import { activityTaskFilter } from '../util';
-import { TickerTaskData, RaidsActivityTaskOptions } from '../types/minions';
 import { Activity } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { RaidsActivityTaskOptions, TickerTaskData } from '../types/minions';
+import { activityTaskFilter } from '../util';
 
 export default function getActivityOfUser(client: Client, user: KlasaUser) {
 	for (const task of client.schedule.tasks.filter(activityTaskFilter)) {
