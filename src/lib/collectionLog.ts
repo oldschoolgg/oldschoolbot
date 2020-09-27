@@ -1434,7 +1434,7 @@ export const collectionLogTypes = [
 	},
 	{
 		name: 'Custom Bosses',
-		aliases: ['custom boss'],
+		aliases: ['custom boss', 'custom bosses'],
 		items: customBossLog
 	}
 ];
