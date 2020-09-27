@@ -206,7 +206,12 @@ export default class extends BotCommand {
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
+				if (msg.author.numItemsInBankSync(parseInt(seedID)) > 0) {
+					quantity = msg.author.numItemsInBankSync(parseInt(seedID));
+					newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
+				} else {
+					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
+				}
 			} else if (bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
 				newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
 			}
@@ -251,13 +256,18 @@ export default class extends BotCommand {
 			if (!planted)
 				throw `This error shouldn't happen. Just to clear possible undefined error`;
 
-			if (bankHasItem(userBank, itemID('Magic secateurs'))) {
+			if (
+				bankHasItem(userBank, itemID('Magic secateurs')) ||
+				msg.author.hasItemEquippedAnywhere(itemID(`Magic secateurs`))
+			) {
 				boostStr.push('10% crop yield for Magic Secateurs');
 			}
 
 			if (
 				bankHasItem(userBank, itemID('Farming cape')) ||
-				bankHasItem(userBank, itemID('Farming cape(t)'))
+				bankHasItem(userBank, itemID('Farming cape(t)')) ||
+				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape`)) ||
+				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape(t)`))
 			) {
 				boostStr.push('5% crop yield for Farming Skillcape');
 			}
