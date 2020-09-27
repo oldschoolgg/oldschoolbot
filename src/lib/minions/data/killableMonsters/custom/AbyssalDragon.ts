@@ -20,9 +20,6 @@ export const AbyssalDragonLootTable = new LootTable()
 			.add('Mally', 1, 1 / 3076)
 
 			.add('Abyssal thread', 1, 1 / 1024)
-
-			.add('Dragon hunter lance', 1, 1 / 512)
-			.add('Dragon hunter crossbow', 1, 1 / 512)
 	)
 
 	// Uniques

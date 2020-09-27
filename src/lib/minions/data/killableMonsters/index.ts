@@ -413,15 +413,7 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 99
 		},
-		uniques: resolveItems([
-			'Abyssal thread',
-			'Abyssal cape',
-			'Ori',
-			'Dragcula',
-			'Mally',
-			'Dragon hunter lance',
-			'Dragon hunter crossbow'
-		]),
+		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragcula', 'Mally']),
 		notifyDrops: resolveItems(['Abyssal cape', 'Ori', 'Dragcula', 'Mally'])
 	}
 ];
