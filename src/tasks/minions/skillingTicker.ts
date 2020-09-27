@@ -1,6 +1,5 @@
 import { Task } from 'klasa';
 
-import { instantTrips, production } from '../../config';
 import { Tasks } from '../../lib/constants';
 import { SkillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
@@ -14,7 +13,7 @@ export default class extends Task {
 
 		for (const skillingTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			if (skillingTaskData.finishDate > (instantTrips && !production ? Infinity : now)) break;
+			if (skillingTaskData.finishDate > now) break;
 
 			runActivityTask(this.client, taskNameFromType(skillingTaskData.type), skillingTaskData);
 

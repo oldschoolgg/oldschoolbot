@@ -1,6 +1,5 @@
 import { Task } from 'klasa';
 
-import { instantTrips, production } from '../../../config';
 import { Tasks } from '../../../lib/constants';
 import { MinigameTickerTaskData } from '../../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../../lib/util/removeSubTasksFromActivityTask';
@@ -14,7 +13,7 @@ export default class extends Task {
 
 		for (const minigameTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			if (minigameTaskData.finishDate > (instantTrips && !production ? Infinity : now)) break;
+			if (minigameTaskData.finishDate > now) break;
 
 			await runActivityTask(
 				this.client,

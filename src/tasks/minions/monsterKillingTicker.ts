@@ -1,6 +1,5 @@
 import { Task } from 'klasa';
 
-import { instantTrips, production } from '../../config';
 import { Activity, Tasks } from '../../lib/constants';
 import { MonsterKillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
@@ -13,8 +12,7 @@ export default class extends Task {
 
 		for (const monsterKillingTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.
-			if (monsterKillingTaskData.finishDate > (instantTrips && !production ? Infinity : now))
-				break;
+			if (monsterKillingTaskData.finishDate > now) break;
 
 			runActivityTask(
 				this.client,

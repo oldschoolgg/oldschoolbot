@@ -1,9 +1,12 @@
 import { Client } from 'discord.js';
 
+import { instantTrips, production } from '../../config';
 import { Activity, Tasks } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { ActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
+import runActivityTask from './runActivityTask';
+import { taskNameFromType } from './taskNameFromType';
 
 export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 	client: Client,
@@ -32,6 +35,10 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		finishDate: Date.now() + subTaskToAdd.duration,
 		id: uuid()
 	};
+
+	if (instantTrips && !production) {
+		return runActivityTask(client, taskNameFromType(subTaskToAdd.type), newSubtask);
+	}
 
 	return task.update({
 		data: {
