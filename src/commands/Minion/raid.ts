@@ -1,11 +1,12 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { MakePartyOptions } from '../../lib/types';
+import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { Tasks, Time, Activity, Emoji } from '../../lib/constants';
-import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { MakePartyOptions } from '../../lib/types';
+
 import itemID from '../../lib/util/itemID';
 import { GearTypes } from '../../lib/gear';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
@@ -481,7 +482,7 @@ export default class extends BotCommand {
 			partyLeaderID: msg.author.id,
 			userID: msg.author.id,
 			type: Activity.Raids,
-			id: rand(1, 10_000_000),
+			id: rand(1, 10_000_000).toString(),
 			finishDate: Date.now() + duration,
 			users: users.map(u => u.id),
 			team: users.map(u => ({

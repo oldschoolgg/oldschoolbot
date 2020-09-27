@@ -1,5 +1,5 @@
+import { Message, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
-import { Message, TextChannel, Permissions } from 'discord.js';
 
 import { noOp } from '../../lib/util';
 

@@ -1,20 +1,20 @@
-import { Task } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Task } from 'klasa';
 
-import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import { noOp, addBanks, bankHasItem, roll, multiplyBank, rand } from '../../../lib/util';
-import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import itemID from '../../../lib/util/itemID';
 import { Emoji, Events, Time } from '../../../lib/constants';
-import { ItemBank } from '../../../lib/types';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import Firemaking from '../../../lib/skilling/skills/firemaking';
 import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { getRandomMysteryBox } from '../../../lib/openables';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
+import Firemaking from '../../../lib/skilling/skills/firemaking';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { ItemBank } from '../../../lib/types';
+import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
+import { addBanks, bankHasItem, multiplyBank, noOp, rand, roll } from '../../../lib/util';
+import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
@@ -23,7 +23,6 @@ export default class extends Task {
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
-		const bank = user.settings.get(UserSettings.Bank);
 		let loot: ItemBank = {};
 
 		let totalPoints = 0;
@@ -36,7 +35,7 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([bank, loot]),
+					itemsOwned: addBanks([user.allItemsOwned(), loot]),
 					skills: user.rawSkills
 				})
 			]);

@@ -1,10 +1,10 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { MessageAttachment } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { GearTypes } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
-import { MessageAttachment } from 'discord.js';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {

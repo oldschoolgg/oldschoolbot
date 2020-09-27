@@ -1,6 +1,6 @@
-import { Bone, SkillsEnum } from '../types';
-import itemID from '../../util/itemID';
 import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
+import { Bone, SkillsEnum } from '../types';
 
 const bones: Bone[] = [
 	{
@@ -122,6 +122,12 @@ const bones: Bone[] = [
 		level: 70,
 		xp: 150,
 		inputId: itemID('Superior dragon bones')
+	},
+	{
+		name: 'Abyssal dragon bones',
+		level: 99,
+		xp: 750,
+		inputId: itemID('Abyssal dragon bones')
 	}
 ];
 

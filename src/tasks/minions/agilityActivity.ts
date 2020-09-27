@@ -1,15 +1,15 @@
+import { randInt, roll } from 'e';
 import { Task } from 'klasa';
 
-import { addItemToBank, multiplyBank } from '../../lib/util';
-import { Time, Events, Emoji } from '../../lib/constants';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { roll, rand } from 'oldschooljs/dist/util/util';
-import Agility from '../../lib/skilling/skills/agility';
-import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Agility from '../../lib/skilling/skills/agility';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import { addItemToBank, multiplyBank } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ courseID, quantity, userID, channelID, duration }: AgilityActivityTaskOptions) {
@@ -24,7 +24,10 @@ export default class extends Task {
 		// Calculate failed laps
 		let lapsFailed = 0;
 		for (let t = 0; t < quantity; t++) {
-			if (rand(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
+			if (
+				randInt(1, 100) >
+				(100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)
+			) {
 				lapsFailed += 1;
 			}
 		}
@@ -102,6 +105,16 @@ export default class extends Task {
 				if (roll(1200)) {
 					loot[itemID('Harry')] = 1;
 					str += `\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.`;
+					break;
+				}
+			}
+		}
+
+		if (course.id === 12) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(1200)) {
+					loot[itemID('Skipper')] = 1;
+					str += `\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.`;
 					break;
 				}
 			}

@@ -75,26 +75,6 @@ function toTitleCase(str) {
 	return splitStr.join(' ');
 }
 
-function cmlErrorCheck(res) {
-	switch (res.replace(/\s/g, '')) {
-		case '-1':
-			throw 'That user does not exist in the CrystalMathLabs database. Have you tried using +update?';
-		case '-2':
-			throw 'That username is invalid.';
-		case '-3':
-		case '-4':
-			throw 'The CrystalMathLabs API is currently offline. Please try again in 5 minutes.';
-		default:
-			return null;
-	}
-}
-
-function flatten(arr) {
-	return arr.reduce((flat, toFlatten) => {
-		return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
-	}, []);
-}
-
 const formatDuration = ms => {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -119,7 +99,5 @@ module.exports = {
 	resolveTwitchUsersFromNames,
 	twitchAPIRequestOptions,
 	toTitleCase,
-	cmlErrorCheck,
-	flatten,
 	formatDuration
 };

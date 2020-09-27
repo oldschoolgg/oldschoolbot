@@ -1,21 +1,19 @@
-import { Task, KlasaMessage } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { KlasaMessage, Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
-
-import { Events, Time, Emoji, PerkTier, alphaNumericalChars } from '../../lib/constants';
-import { roll, multiplyBank, itemID, rand, randomItemFromArray } from '../../lib/util';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import clueTiers from '../../lib/minions/data/clueTiers';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import MinionCommand from '../../commands/Minion/minion';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import { getRandomMysteryBox } from '../../lib/openables';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-const charsWithoutC = alphaNumericalChars.filter(char => char !== 'c');
+import MinionCommand from '../../commands/Minion/minion';
+import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
+import clueTiers from '../../lib/minions/data/clueTiers';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
+import announceLoot from '../../lib/minions/functions/announceLoot';
+import { getRandomMysteryBox } from '../../lib/openables';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { itemID, multiplyBank, rand, randomItemFromArray, roll } from '../../lib/util';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
@@ -23,11 +21,18 @@ export default class extends Task {
 		const fullMonster = Monsters.get(monsterID);
 		if (!fullMonster) throw 'No full monster';
 		const user = await this.client.users.fetch(userID);
+		const perkTier = getUsersPerkTier(user);
 		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
-		let loot = monster.table.kill(quantity);
+		// Abyssal set bonuses -- grants the user a few extra kills
+		let abyssalBonus = 1;
+		if (user.hasItemEquippedAnywhere(itemID('Abyssal cape'))) {
+			abyssalBonus += 0.1;
+		}
+
+		let loot = monster.table.kill(Math.ceil(quantity * abyssalBonus));
 		if (roll(10)) {
 			if (duration > Time.Minute * 14) {
 				loot = multiplyBank(loot, 2);
@@ -53,6 +58,15 @@ export default class extends Task {
 				bananas += rand(1, 3);
 			}
 			loot[itemID('Banana')] = bananas;
+		}
+
+		if (monster.id === 290) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(6000)) {
+					loot[itemID('Dwarven ore')] = 1;
+					break;
+				}
+			}
 		}
 
 		announceLoot(this.client, user, monster, quantity, loot);
@@ -85,7 +99,7 @@ export default class extends Task {
 			str += `\n ${Emoji.Casket} You got clue scrolls in your loot (${clueTiersReceived
 				.map(tier => tier.name)
 				.join(', ')}).`;
-			if (getUsersPerkTier(user) > PerkTier.One) {
+			if (perkTier > PerkTier.One) {
 				str += `\n\nSay \`c\` if you want to complete this ${clueTiersReceived[0].name} clue now.`;
 			} else {
 				str += `\n\nYou can get your minion to complete them using \`=minion clue easy/medium/etc \``;
@@ -97,7 +111,11 @@ export default class extends Task {
 		}
 
 		if (bananas > 0) {
-			str += `\n\n <:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
+			str += `\n\n<:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
+		}
+
+		if (abyssalBonus > 1) {
+			str += `\n\nBy having some abyssal items equipped, you managed to get some extra loot!`;
 		}
 
 		user.incrementMonsterScore(monsterID, quantity);
@@ -105,10 +123,10 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
-		const perkTier = getUsersPerkTier(user);
-		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
+		const continuationChar =
+			perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
 
-		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
+		str += `\n\nSay \`${continuationChar}\` to repeat this trip.`;
 
 		this.client.queuePromise(() => {
 			channel.send(str, new MessageAttachment(image));
@@ -132,7 +150,11 @@ export default class extends Task {
 					if (response) {
 						if (response.author.minionIsBusy) return;
 
-						if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
+						if (
+							clueTiersReceived.length > 0 &&
+							perkTier > PerkTier.One &&
+							response.content.toLowerCase() === 'c'
+						) {
 							(this.client.commands.get(
 								'minion'
 							) as MinionCommand).clue(response as KlasaMessage, [

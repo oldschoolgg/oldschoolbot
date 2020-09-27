@@ -1,11 +1,11 @@
-import { KlasaMessage, CommandStore } from 'klasa';
-import { Util, Items } from 'oldschooljs';
+import { GuildMember } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
+import { Items, Util } from 'oldschooljs';
+import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { GuildMember } from 'discord.js';
 import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
 import { stringMatches } from '../../lib/util';
 
 const options = {
@@ -17,7 +17,7 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 20,
+			cooldown: 5,
 			usage:
 				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
 			usageDelim: ' ',

@@ -1,9 +1,9 @@
-import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
+import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
 import pets from '../lib/pets';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
-import { roll } from '../lib/util';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { roll } from '../lib/util';
 import { channelIsSendable } from '../lib/util/channelIsSendable';
 
 export default class extends Monitor {

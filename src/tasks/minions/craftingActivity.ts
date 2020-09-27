@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
 
-import { roll, multiplyBank } from '../../lib/util';
 import { Time } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/openables';
+import Crafting from '../../lib/skilling/skills/crafting/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import Crafting from '../../lib/skilling/skills/crafting/crafting';
-import { getRandomMysteryBox } from '../../lib/openables';
+import { multiplyBank, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {

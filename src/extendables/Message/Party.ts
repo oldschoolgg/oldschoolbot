@@ -1,11 +1,11 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Message, MessageReaction } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 import { debounce } from 'lodash';
 
-import { MakePartyOptions } from '../../lib/types';
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
+import { MakePartyOptions } from '../../lib/types';
 import { sleep } from '../../lib/util';
 
 async function _setup(
@@ -70,8 +70,16 @@ async function _setup(
 						const [customDenied, reason] = options.customDenier(user);
 						if (customDenied) {
 							user.send(`You couldn't join this mass, for this reason: ${reason}`);
+							reaction.users.remove(user);
 							return false;
 						}
+					}
+
+					if (
+						(reaction.emoji.id === ReactionEmoji.Join && user === options.leader) ||
+						(user !== options.leader && reaction.emoji.id !== ReactionEmoji.Join)
+					) {
+						reaction.users.remove(user);
 					}
 
 					return ([

@@ -1,12 +1,12 @@
+import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { MessageEmbed } from 'discord.js';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Color, PerkTier } from '../../lib/constants';
-import { stringMatches, roll, itemID } from '../../lib/util';
 import { getRandomMysteryBox } from '../../lib/openables';
+import { itemID, roll, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

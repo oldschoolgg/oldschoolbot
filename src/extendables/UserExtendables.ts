@@ -1,22 +1,22 @@
-import { Extendable, KlasaClient, ExtendableStore } from 'klasa';
 import { User, Util } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 
-import { Events, Emoji, Time, MAX_QP, PerkTier } from '../lib/constants';
+import { Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import Skills from '../lib/skilling/skills';
+import { SkillsEnum } from '../lib/skilling/types';
 import { Bank } from '../lib/types';
 import {
 	addBanks,
-	removeItemFromBank,
 	addItemToBank,
 	convertXPtoLVL,
-	toTitleCase,
-	itemID
+	itemID,
+	removeItemFromBank,
+	toTitleCase
 } from '../lib/util';
-import { UserSettings } from '../lib/settings/types/UserSettings';
-import Skills from '../lib/skilling/skills';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
-import { SkillsEnum } from '../lib/skilling/types';
-import getActivityOfUser from '../lib/util/getActivityOfUser';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
+import getActivityOfUser from '../lib/util/getActivityOfUser';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -216,11 +216,24 @@ export default class extends Extendable {
 		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number);
 	}
 
+	public totalLevel(this: User, returnXP = false) {
+		const userXPs = Object.values(
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			this.settings.get('skills').toJSON() as Skills
+		) as number[];
+		let totalLevel = 0;
+		for (const xp of userXPs) {
+			totalLevel += returnXP ? xp : convertXPtoLVL(xp);
+		}
+		return totalLevel;
+	}
+
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 
-		const skill = Skills.find(skill => skill.id === skillName);
+		const skill = Object.values(Skills).find(skill => skill.id === skillName);
 		if (!skill) return;
 
 		const newXP = currentXP + amount * 5;
@@ -309,7 +322,7 @@ export default class extends Extendable {
 		if (perkTier === PerkTier.Three) return Time.Minute * 36 * timeMultiplier;
 		if (perkTier >= PerkTier.Four) return Time.Minute * 40 * timeMultiplier;
 
-		return Time.Minute * 30;
+		return Time.Minute * 30 * timeMultiplier;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore

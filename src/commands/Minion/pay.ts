@@ -1,4 +1,4 @@
-import { CommandStore, KlasaUser, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';

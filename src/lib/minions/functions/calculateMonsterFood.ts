@@ -1,12 +1,12 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { KillableMonster } from '../types';
-import { GearStats } from '../../gear/types';
-import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
-import readableStatName from '../../gear/functions/readableStatName';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
+import readableStatName from '../../gear/functions/readableStatName';
+import { GearStats } from '../../gear/types';
+import { calcWhatPercent, itemID, reduceNumByPercent } from '../../util';
+import { KillableMonster } from '../types';
 
 const { floor, max } = Math;
 
@@ -66,14 +66,21 @@ export default function calculateMonsterFood(
 	);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
+	const hasAbyssalCape = user.hasItemEquippedAnywhere(itemID('Abyssal cape'));
+	if (hasAbyssalCape) {
+		healAmountNeeded = Math.floor(healAmountNeeded * 0.5);
+	}
+
 	messages.push(
-		`You use ${100 -
-			calcWhatPercent(
-				healAmountNeeded,
-				monster.healAmountNeeded!
-			)}% less food (${healAmountNeeded} instead of ${
+		`You use ${(100 - calcWhatPercent(healAmountNeeded, monster.healAmountNeeded!)).toFixed(
+			2
+		)}% less food (${healAmountNeeded} instead of ${
 			monster.healAmountNeeded
-		}) because of your gear`
+		}) because of your gear.\n${
+			hasAbyssalCape
+				? '*Your abyssal cape emanates an aura that protects you, reducing all the damage you receive by 50%, making you waste less food!*'
+				: ''
+		}`
 	);
 
 	return [healAmountNeeded, messages];

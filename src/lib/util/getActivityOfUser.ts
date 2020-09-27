@@ -1,5 +1,5 @@
-import { KlasaUser } from 'klasa';
 import { Client } from 'discord.js';
+import { KlasaUser } from 'klasa';
 
 import { activityTaskFilter } from '../util';
 import { TickerTaskData, RaidsActivityTaskOptions } from '../types/minions';

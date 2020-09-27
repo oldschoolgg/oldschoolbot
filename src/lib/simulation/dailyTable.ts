@@ -1,5 +1,7 @@
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 import Loot from 'oldschooljs/dist/structures/Loot';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
+import { MysteryBoxes } from '../openables';
 
 const RareTable = new LootTable()
 	.add('Hornwood helm')
@@ -41,7 +43,7 @@ const DailyTable = new LootTable()
 	.add('Coins', [100_000, 10_000_000])
 	.add(UncommonTable)
 	.add(CommonTable, 1, 2)
-	.add('Mystery box', 1, 2);
+	.add(MysteryBoxes, 1, 2);
 
 export default function dailyRoll(qty = 1, correct = false) {
 	const loot = new Loot();

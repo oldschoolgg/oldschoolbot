@@ -1,10 +1,10 @@
 import { KlasaClient, KlasaUser } from 'klasa';
 
-import { ItemBank } from '../../types';
-import filterBankFromArrayOfItems from '../../util/filterBankFromArrayOfItems';
 import { Events } from '../../constants';
-import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { ItemBank } from '../../types';
+import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
+import filterBankFromArrayOfItems from '../../util/filterBankFromArrayOfItems';
 import { KillableMonster } from '../types';
 
 export default async function announceLoot(

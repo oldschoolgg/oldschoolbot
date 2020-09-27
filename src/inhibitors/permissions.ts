@@ -1,4 +1,4 @@
-import { Inhibitor, KlasaMessage, Command } from 'klasa';
+import { Command, Inhibitor, KlasaMessage } from 'klasa';
 
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 

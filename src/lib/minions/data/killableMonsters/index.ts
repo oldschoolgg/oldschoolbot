@@ -1,11 +1,15 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../constants';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { GearSetupTypes, GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
+import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
-
 import bosses from './bosses';
+import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
+import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
+import SeaKraken, { KrakenTable } from './custom/SeaKraken';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
@@ -312,6 +316,113 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0
+	},
+	{
+		id: KingGoldemar.id,
+		name: KingGoldemar.name,
+		aliases: KingGoldemar.aliases,
+		timeToFinish: Time.Minute * 22,
+		table: {
+			kill: makeKillTable(KingGoldemarLootTable)
+		},
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 26,
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush],
+		minimumGearRequirements: {
+			[GearStat.DefenceCrush]: 150,
+			[GearStat.AttackCrush]: 80
+		},
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 43
+		},
+		uniques: resolveItems(['Dwarven warhammer', 'Dwarven crate', 'Dwarven ore']),
+		notifyDrops: resolveItems(['Dwarven warhammer'])
+	},
+	{
+		id: SeaKraken.id,
+		name: SeaKraken.name,
+		aliases: SeaKraken.aliases,
+		timeToFinish: Time.Minute * 17,
+		table: {
+			kill: makeKillTable(KrakenTable)
+		},
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 0,
+		qpRequired: 0,
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic],
+		minimumGearRequirements: {
+			[GearStat.DefenceMagic]: 150,
+			[GearStat.AttackRanged]: 80
+		},
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 43
+		}
+	},
+	{
+		id: AbyssalDragon.id,
+		name: AbyssalDragon.name,
+		aliases: AbyssalDragon.aliases,
+		timeToFinish: Time.Minute * 30,
+		table: {
+			kill: makeKillTable(AbyssalDragonLootTable)
+		},
+		emoji: '',
+		wildy: true,
+		canBeKilled: true,
+		difficultyRating: 9,
+		qpRequired: 999,
+		healAmountNeeded: 20 * 25,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [
+			GearStat.AttackStab,
+			GearStat.AttackSlash,
+			GearStat.AttackMagic,
+			GearStat.AttackRanged
+		],
+		minimumGearRequirements: {
+			[GearStat.AttackStab]: 150,
+			[GearStat.DefenceStab]: 180,
+			[GearStat.DefenceSlash]: 180,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 180
+		},
+		itemInBankBoosts: {
+			[itemID('Saradomin godsword')]: 5,
+			[itemID('Dragon warhammer')]: 5,
+			[itemID('Bandos godsword')]: 5,
+			[itemID('Dragon hunter lance')]: 10
+		},
+		itemsRequired: deepResolveItems([
+			['Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield', 'Abyssal cape']
+		]),
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 99
+		},
+		uniques: resolveItems([
+			'Abyssal thread',
+			'Abyssal cape',
+			'Ori',
+			'Dragcula',
+			'Mally',
+			'Dragon hunter lance',
+			'Dragon hunter crossbow'
+		]),
+		notifyDrops: resolveItems(['Abyssal cape', 'Ori', 'Dragcula', 'Mally'])
 	}
 ];
 

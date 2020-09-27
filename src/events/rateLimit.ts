@@ -1,5 +1,6 @@
-import { Event, EventStore } from 'klasa';
 import { RateLimitData } from 'discord.js';
+import { Event, EventStore } from 'klasa';
+
 import { Events } from '../lib/constants';
 
 export default class extends Event {

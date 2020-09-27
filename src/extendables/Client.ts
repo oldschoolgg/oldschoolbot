@@ -1,16 +1,25 @@
-import { Extendable, ExtendableStore, KlasaClient, SQLProvider } from 'klasa';
+import * as Sentry from '@sentry/node';
 import { Client } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaClient, SQLProvider } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
+import { Events, Time } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
-import { Time, Events } from '../lib/constants';
-import getOSItem from '../lib/util/getOSItem';
 import { rand, resolveNameBank } from '../lib/util';
+import getOSItem from '../lib/util/getOSItem';
 
 const customPrices = resolveNameBank({
 	'Divine spirit shield': 900_000_000,
-	'Divine sigil': 930_000_000
+	'Divine sigil': 930_000_000,
+	// Abyssal dragon boss
+	'Abyssal dragon bones': 50_000,
+	'Abyssal cape': 500_000_000,
+	'Abyssal thread': 100_000_000,
+	'Abyssal pouch': 0,
+	Dragcula: 0,
+	Mally: 0,
+	Ori: 0
 });
 
 export default class extends Extendable {
@@ -80,5 +89,9 @@ export default class extends Extendable {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		return (this.providers.default as SQLProvider).runAll(query);
+	}
+
+	async wtf(this: KlasaClient, error: Error) {
+		Sentry.captureException(error);
 	}
 }

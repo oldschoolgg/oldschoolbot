@@ -1,6 +1,10 @@
 {
 	"parser": "@typescript-eslint/parser",
+	"plugins": ["simple-import-sort"],
 	"extends": ["bamboo", "prettier/@typescript-eslint", "plugin:prettier/recommended"],
+	"env": {
+		"jest": true
+	},
 	"rules": {
 		"no-mixed-operators": "off",
 		"consistent-return": "off",
@@ -17,11 +21,12 @@
 		"no-throw-literal": "off",
 		"no-negated-condition": "off",
 		"padding-line-between-statements": [
-				"error",
-				{ "blankLine": "always", "prev": "import", "next": "const" },
-				{ "blankLine": "always", "prev": "import", "next": "export" },
-				{ "blankLine": "always", "prev": "const", "next": "export" }
-		]
+			"error",
+			{ "blankLine": "always", "prev": "import", "next": "const" },
+			{ "blankLine": "always", "prev": "import", "next": "export" },
+			{ "blankLine": "always", "prev": "const", "next": "export" }
+		],
+		"simple-import-sort/sort": "error"
 	},
 	"parserOptions": {
 		"sourceType": "module",

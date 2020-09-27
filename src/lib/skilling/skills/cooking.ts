@@ -1,5 +1,5 @@
-import itemID from '../../util/itemID';
 import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
 import { Cookable, SkillsEnum } from '../types';
 
 export const Cookables: Cookable[] = [

@@ -1,8 +1,8 @@
 import { KlasaUser } from 'klasa';
 
+import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
 import reducedTimeFromKC from './reducedTimeFromKC';
-import { UserSettings } from '../../settings/types/UserSettings';
 
 export default function reducedTimeForGroup(users: KlasaUser[], monster: KillableMonster) {
 	let reductionMultiplier = 0;

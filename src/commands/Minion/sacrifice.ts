@@ -1,14 +1,14 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import minionIcons from '../../lib/minions/data/minionIcons';
 import { Events } from '../../lib/constants';
+import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { addItemToBank, roll, itemID } from '../../lib/util';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { addItemToBank, itemID, roll } from '../../lib/util';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 
 const options = {
 	max: 1,
@@ -51,7 +51,11 @@ export default class extends BotCommand {
 			throw `You dont have ${quantity}x ${osItem.name}.`;
 		}
 
-		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
+		let priceOfItem = await this.client.fetchItemPrice(osItem.id);
+		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
+		if (hasSkipper) {
+			priceOfItem *= 1.4;
+		}
 		const totalPrice = priceOfItem * quantity;
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -121,6 +125,8 @@ export default class extends BotCommand {
 		if (gotHammy) {
 			str += `\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.`;
 		}
+		if (hasSkipper)
+			str += `\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +40% extra value from your sacrifice.`;
 
 		return msg.send(
 			`You sacrificed ${quantity}x ${

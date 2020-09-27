@@ -1,4 +1,4 @@
-import { Argument, Possible, KlasaMessage } from 'klasa';
+import { Argument, KlasaMessage, Possible } from 'klasa';
 
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 

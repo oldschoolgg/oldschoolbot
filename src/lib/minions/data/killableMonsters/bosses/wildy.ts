@@ -1,8 +1,9 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-import { KillableMonster } from '../../../types';
-import { Time } from 'oldschooljs/dist/constants';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+
 import itemID from '../../../../util/itemID';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
 	{

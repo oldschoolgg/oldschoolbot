@@ -1,39 +1,37 @@
-import { CommandStore, KlasaMessage, util } from 'klasa';
-import { Util, Monsters } from 'oldschooljs';
 import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage, util } from 'klasa';
+import { Monsters, Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
-	Tasks,
 	Activity,
-	Emoji,
-	Time,
 	Color,
+	Emoji,
+	MIMIC_MONSTER_ID,
 	PerkTier,
-	MIMIC_MONSTER_ID
+	Tasks,
+	Time
 } from '../../lib/constants';
-import {
-	formatDuration,
-	randomItemFromArray,
-	isWeekend,
-	itemNameFromID,
-	addItemToBank,
-	bankHasItem
-} from '../../lib/util';
-import { rand } from '../../util';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { SkillsEnum } from '../../lib/skilling/types';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { requiresMinion } from '../../lib/minions/decorators';
-import findMonster from '../../lib/minions/functions/findMonster';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { Eatables } from '../../lib/eatables';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import findMonster from '../../lib/minions/functions/findMonster';
+import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import {
+	formatDuration,
+	isWeekend,
+	itemID,
+	itemNameFromID,
+	randomItemFromArray
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { rand } from '../../util';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -55,7 +53,7 @@ const patMessages = [
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
 
-const { floor, ceil } = Math;
+const { floor } = Math;
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -130,6 +128,9 @@ ${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.autho
 ${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
 			SkillsEnum.Fletching
 		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
+${Emoji.XP} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
+			.totalLevel(true)
+			.toLocaleString()} xp)
 ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 `);
 	}
@@ -329,21 +330,31 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async smith(msg: KlasaMessage, [quantity, smithedBarName]: [number, string]) {
+	async smith(msg: KlasaMessage, [quantity, smithableItemName]: [number, string]) {
 		this.client.commands
 			.get('smith')!
-			.run(msg, [quantity, smithedBarName])
+			.run(msg, [quantity, smithableItemName])
 			.catch(err => {
 				throw err;
 			});
 	}
 
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands.get('chop')!.run(msg, [quantity, logName]);
+		this.client.commands
+			.get('chop')!
+			.run(msg, [quantity, logName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands.get('light')!.run(msg, [quantity, logName]);
+		this.client.commands
+			.get('light')!
+			.run(msg, [quantity, logName])
+			.catch(err => {
+				throw err;
+			});
 	}
 
 	async craft(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
@@ -418,7 +429,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		const bank = msg.author.settings.get(UserSettings.Bank);
 		const boosts = [];
 		let messages: string[] = [];
 
@@ -443,6 +453,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
+		if (monster.id === 696969) {
+			throw `You would be foolish to try to face King Goldemar in a solo fight.`;
+		}
+		if (monster.id === 53466534) {
+			throw `You would be foolish to try to face the Sea Kraken in a solo fight.`;
+		}
+
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
@@ -464,50 +481,27 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			}
 		}
 
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
+			timeToFinish *= 0.6;
+			boosts.push(`40% boost for Dwarven warhammer`);
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = floor(msg.author.maxTripLength / timeToFinish);
 		}
 
 		// Check food
-		if (
-			monster.healAmountNeeded &&
-			monster.attackStyleToUse &&
-			monster.attackStylesUsed &&
-			1 > 2
-		) {
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-
-			for (const food of Eatables) {
-				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-				if (!bankHasItem(bank, food.id, amountNeeded)) {
-					if (Eatables.indexOf(food) === Eatables.length - 1) {
-						throw `You don't have enough food to kill ${
-							monster.name
-						}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-							quantity} per kill) You can use these food items: ${Eatables.map(
-							i => i.name
-						).join(', ')}.`;
-					}
-					continue;
-				}
-
-				messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-				await msg.author.removeItemFromBank(food.id, amountNeeded);
-
-				// Track this food cost in Economy Stats
-				await this.client.settings.update(
-					ClientSettings.EconomyStats.PVMCost,
-					addItemToBank(
-						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-						food.id,
-						amountNeeded
-					)
-				);
-
-				break;
-			}
+			await removeFoodFromUser(
+				this.client,
+				msg.author,
+				healAmountNeeded * quantity,
+				Math.ceil(healAmountNeeded / quantity),
+				monster.name
+			);
 		}
 
 		let duration = timeToFinish * quantity;
@@ -529,20 +523,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		boosts.push(`👻2x Boost`);
 
-		const data: MonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.MonsterKilling
+			}
+		);
 
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
-
-		let response = `${msg.author.minionName} is now killing ${data.quantity}x ${
+		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
@@ -551,7 +545,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		if (messages.length > 0) {
-			response += `\n\n**Messages:** ${messages.join('\n')}.`;
+			response += `\n\n**Messages:** ${messages.join('\n')}`;
 		}
 
 		return msg.send(response);

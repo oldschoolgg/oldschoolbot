@@ -1,19 +1,20 @@
-import { KlasaMessage, CommandStore } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Misc, Openables } from 'oldschooljs';
 import Loot from 'oldschooljs/dist/structures/Loot';
-import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
+
 import { BotCommand } from '../../lib/BotCommand';
-import botOpenables from '../../lib/openables';
-import { stringMatches, roll, addBanks, itemNameFromID, rand } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { cluesRares } from '../../lib/collectionLog';
+import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
+import ClueTiers from '../../lib/minions/data/clueTiers';
+import { ClueTier } from '../../lib/minions/types';
+import botOpenables from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ItemBank } from '../../lib/types';
+import { addBanks, itemNameFromID, rand, roll, stringMatches } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
-import ClueTiers from '../../lib/minions/data/clueTiers';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
-import { ClueTier } from '../../lib/minions/types';
-import { ItemBank } from '../../lib/types';
 
 const itemsToNotifyOf = Object.values(cluesRares)
 	.flat(Infinity)
@@ -57,6 +58,7 @@ export default class extends BotCommand {
 			return msg.send(await this.showAvailable(msg));
 		}
 
+		await msg.author.settings.sync(true);
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
@@ -94,7 +96,7 @@ export default class extends BotCommand {
 
 		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${
 			quantity > 1 ? 's' : ''
-		} ${mimicNumber > 0 ? ` defeating ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
+		} ${mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
 
 		const nthCasket =
 			(msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;

@@ -1,7 +1,7 @@
 import { Emoji, Time } from '../../constants';
-import { SkillsEnum, Rune } from '../types';
-import itemID from '../../util/itemID';
 import { ActivityTaskOptions } from '../../types/minions';
+import itemID from '../../util/itemID';
+import { Rune, SkillsEnum } from '../types';
 
 const Runes: Rune[] = [
 	{
@@ -169,6 +169,11 @@ const RCPouches = [
 		id: itemID('Giant pouch'),
 		level: 75,
 		capacity: 12
+	},
+	{
+		id: itemID('Abyssal pouch'),
+		level: 90,
+		capacity: 64
 	}
 ];
 

@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ItemBank } from '../types';
+import { randInt, roll } from 'e';
+import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
+import Loot from 'oldschooljs/dist/structures/Loot';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
-import Loot from 'oldschooljs/dist/structures/Loot';
-import { rand, roll } from 'oldschooljs/dist/util/util';
-import itemID from '../util/itemID';
+import { addBanks } from 'oldschooljs/dist/util';
+
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
-import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
-import resolveItems from '../util/resolveItems';
-import { randomItemFromArray, calcPercentOfNum, convertXPtoLVL } from '../util';
+import { ItemBank } from '../types';
+import { calcPercentOfNum, convertXPtoLVL } from '../util';
+import itemID from '../util/itemID';
 import { normal } from '../util/normal';
+import resolveItems from '../util/resolveItems';
 
 interface WintertodtCrateOptions {
 	points: number;
@@ -20,6 +22,7 @@ interface WintertodtCrateOptions {
 
 type WintertodtTableSlot = [number, [number, number]];
 type WintertodtTable = WintertodtTableSlot[];
+
 function todtTable(table: [string, [number, number]][]): WintertodtTable {
 	return table.map(slot => [itemID(slot[0]), slot[1]]);
 }
@@ -128,9 +131,10 @@ const SeedTables = new SimpleTable<WintertodtTable>()
 	.add(HerbSeedsTable)
 	.add(TreeSeedsTable);
 
+// Do not change this order as it is the order that the pieces should be received
 const pyroPieces = resolveItems([
-	'Pyromancer hood',
 	'Pyromancer garb',
+	'Pyromancer hood',
 	'Pyromancer robe',
 	'Pyromancer boots'
 ]) as number[];
@@ -174,7 +178,7 @@ export class WintertodtCrateClass {
 	}
 
 	public lootRoll(skills: Partial<LevelRequirements>): ReturnedLootItem[] {
-		const roll = rand(1, 9);
+		const roll = randInt(1, 9);
 
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.roll() : MaterialTables.roll();
@@ -187,7 +191,7 @@ export class WintertodtCrateClass {
 			return [
 				{
 					item: rolledItem[0],
-					quantity: rand(rolledItem[1][0], rolledItem[1][1])
+					quantity: randInt(rolledItem[1][0], rolledItem[1][1])
 				}
 			];
 		}
@@ -230,7 +234,17 @@ export class WintertodtCrateClass {
 		}
 
 		if (roll(150)) {
-			return randomItemFromArray(pyroPieces);
+			// Checks in order: Garb, Hood, Robes, Boots
+			// If any part is lesser than the previous, it rewards that
+			// Otherwise, rewards the first one
+			const bank: number[] = [];
+			for (const piece of pyroPieces) {
+				bank.push(itemsOwned[piece] ?? 0);
+			}
+			const minBank = Math.min(...bank);
+			for (let i = 0; i < bank.length; i++) {
+				if (bank[i] === minBank) return pyroPieces[i];
+			}
 		}
 	}
 
@@ -243,7 +257,7 @@ export class WintertodtCrateClass {
 		const loot = new Loot();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(itemsOwned);
+			const rolledUnique = this.rollUnique(addBanks([itemsOwned, loot.values()]));
 			if (rolledUnique) {
 				loot.add(rolledUnique);
 				continue;

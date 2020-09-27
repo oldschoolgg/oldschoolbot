@@ -1,20 +1,19 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Tasks } from '../../lib/constants';
+import Mining from '../../lib/skilling/skills/mining';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import {
 	determineScaledOreTime,
-	stringMatches,
 	formatDuration,
-	rand,
 	itemNameFromID,
-	reduceNumByPercent
+	reduceNumByPercent,
+	stringMatches
 } from '../../lib/util';
-import Mining from '../../lib/skilling/skills/mining';
-import { Activity, Tasks } from '../../lib/constants';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from '../../lib/skilling/types';
 
 const pickaxes = [
 	{
@@ -100,6 +99,10 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven pickaxe'))) {
+			timeToMine /= 2;
+		}
+
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
 		for (const pickaxe of pickaxes) {
@@ -136,18 +139,18 @@ export default class extends BotCommand {
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
-		const data: MiningActivityTaskOptions = {
-			oreID: ore.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Mining,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<MiningActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				oreID: ore.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Mining
+			}
+		);
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name

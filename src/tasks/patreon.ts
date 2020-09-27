@@ -1,14 +1,14 @@
-import { Task, ArrayActions, KlasaUser } from 'klasa';
-import fetch from 'node-fetch';
 import { TextChannel } from 'discord.js';
+import { ArrayActions, KlasaUser, Task } from 'klasa';
+import fetch from 'node-fetch';
 import { O } from 'ts-toolbelt';
 
-import { Patron } from '../lib/types';
-import { PatronTierID, BitField, Time, BadgesEnum, Channel, PerkTier } from '../lib/constants';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { patreonConfig } from '../config';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { Patron } from '../lib/types';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 const patreonApiURL = new URL(
 	`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`

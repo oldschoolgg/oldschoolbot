@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { ItemBank } from '../../types';
+import { O } from 'ts-toolbelt';
+
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
-import { O } from 'ts-toolbelt';
+import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -64,6 +65,7 @@ export namespace UserSettings {
 		export const Crafting = T<number>(`skills.${SkillsEnum.Crafting}`);
 		export const Prayer = T<number>(`skills.${SkillsEnum.Prayer}`);
 		export const Fletching = T<number>(`skills.${SkillsEnum.Fletching}`);
+		export const Thieving = T<number>(`skills.${SkillsEnum.Thieving}`);
 	}
 
 	export namespace Gear {

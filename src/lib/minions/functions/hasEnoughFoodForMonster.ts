@@ -1,28 +1,24 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
+import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
-import { Eatables } from '../../eatables';
 import calculateMonsterFood from './calculateMonsterFood';
+import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default function hasEnoughFoodForMonster(
 	monster: O.Readonly<KillableMonster>,
 	user: O.Readonly<KlasaUser>,
-	quantity: number
+	quantity: number,
+	totalPartySize = 1
 ) {
-	const [healAmountNeeded] = calculateMonsterFood(monster, user);
-
-	for (const food of Eatables) {
-		const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount!) * quantity;
-		if (user.numItemsInBankSync(food.id) < amountNeeded) {
-			if (Eatables.indexOf(food) === Eatables.length - 1) {
-				return false;
-			}
-			continue;
-		}
-
-		return true;
+	if (monster.healAmountNeeded) {
+		return (
+			getUserFoodFromBank(
+				user.settings.get(UserSettings.Bank),
+				Math.ceil(calculateMonsterFood(monster, user)[0] / totalPartySize) * quantity
+			) !== false
+		);
 	}
-
-	return false;
+	return true;
 }

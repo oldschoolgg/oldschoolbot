@@ -1,15 +1,15 @@
 import { Task } from 'klasa';
 
 import { Tasks } from '../../lib/constants';
+import { SkillingTickerTaskData } from '../../lib/types/minions';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import runActivityTask from '../../lib/util/runActivityTask';
-import { SkillingTickerTaskData } from '../../lib/types/minions';
 import { taskNameFromType } from '../../lib/util/taskNameFromType';
 
 export default class extends Task {
 	async run(data: SkillingTickerTaskData) {
 		const now = Date.now();
-		const tasksThatWereFinished: number[] = [];
+		const tasksThatWereFinished: string[] = [];
 
 		for (const skillingTaskData of data.subTasks) {
 			// If the current task being checked finishes past now, break.

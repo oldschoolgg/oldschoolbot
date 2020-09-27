@@ -1,4 +1,4 @@
-import { Argument, ArgumentStore, Possible, KlasaMessage } from 'klasa';
+import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
 import { Util } from 'oldschooljs';
 
 export default class extends Argument {

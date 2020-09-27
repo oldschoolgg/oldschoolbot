@@ -1,5 +1,5 @@
-import { Command, Timestamp, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed, GuildMember } from 'discord.js';
+import { GuildMember, MessageEmbed } from 'discord.js';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
@@ -10,7 +10,8 @@ export default class extends Command {
 		super(store, file, directory, {
 			description: 'Get information on a mentioned user.',
 			usage: '[Member:member]',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			runIn: ['text']
 		});
 	}
 

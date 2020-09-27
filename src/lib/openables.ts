@@ -1,13 +1,13 @@
+import { Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import BirthdayPresentTable from './simulation/birthdayPresent';
+import { coxLog } from './collectionLog';
 import { Emoji } from './constants';
+import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
 import { itemID, itemNameFromID, removeDuplicatesFromArray } from './util';
-import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import { coxLog } from './collectionLog';
 
 interface Openable {
 	name: string;
@@ -25,8 +25,8 @@ const HolidayItems = new LootTable()
 	.add('Scythe')
 	.add('Pumpkin')
 	.add('Red halloween mask')
-	.add('Blue halloween mask	')
-	.add('Green halloween mask	')
+	.add('Blue halloween mask')
+	.add('Green halloween mask')
 	.add("Black h'ween mask")
 	.add('Skeleton mask')
 	.add('Skeleton shirt')
@@ -194,6 +194,18 @@ const PartyhatTable = new LootTable()
 	.add('Green partyhat')
 	.add('White partyhat');
 
+const DwarvenCrateTable = new LootTable()
+	.add('Dwarven ore')
+	.add('Dwarven stout')
+	.add('Dwarven lore')
+	.add('Dwarven rock cake')
+	.add('Dwarven helmet')
+	.add('Hammer')
+	.add('Steel pickaxe')
+	.add('Pickaxe handle')
+	.add('Beer')
+	.add('Kebab');
+
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
@@ -250,12 +262,20 @@ const Openables: Openable[] = [
 		aliases: ['cracker', 'christmas cracker'],
 		table: PartyhatTable,
 		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Dwarven crate',
+		itemID: itemID('Dwarven crate'),
+		aliases: ['dwarven crate', 'dc'],
+		table: DwarvenCrateTable,
+		emoji: Emoji.MysteryBox
 	}
 ];
 
-const MysteryBoxes = new LootTable()
+export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
 	.oneIn(20, itemNameFromID(3713)!)
+	.oneIn(15, 'Dwarven crate')
 	.add(6199)
 	.add(19939);
 
@@ -267,7 +287,18 @@ let allItemsIDs = Openables.map(
 	i => (typeof i.table !== 'function' && i.table.allItems) || []
 ).flat(Infinity) as number[];
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
-const cantBeDropped = [...Object.values(coxLog).flat(Infinity)] as number[];
+const cantBeDropped = [
+	...Object.values(coxLog).flat(Infinity),
+	itemID('Dwarven crate'),
+	itemID('Halloween mask set'),
+	itemID('Partyhat set'),
+	itemID('Ancestral robes set'),
+	itemID('Kodai wand'),
+	itemID('Twisted ancestral hat'),
+	itemID('Twisted ancestral robe top'),
+	itemID('Twisted ancestral robe bottom'),
+	itemID('Partyhat & specs')
+] as number[];
 
 function getRandomItem(tradeables: boolean): number {
 	return Items.filter(i => {

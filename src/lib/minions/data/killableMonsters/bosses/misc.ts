@@ -1,13 +1,13 @@
 import { Monsters } from 'oldschooljs';
-
-import { KillableMonster } from '../../../types';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import itemID from '../../../../util/itemID';
-import { Time } from '../../../../constants';
-import { bosses } from '../../../../collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
-import { CorporealBeastTable } from '../../../../simulation/Corp';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+
+import { bosses } from '../../../../collectionLog';
+import { Time } from '../../../../constants';
+import { GearStat } from '../../../../gear/types';
+import { CorporealBeastTable } from '../../../../simulation/Corp';
+import itemID from '../../../../util/itemID';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -148,10 +148,7 @@ const killableBosses: KillableMonster[] = [
 			[GearStat.AttackStab]: 85,
 			[GearStat.DefenceCrush]: 150
 		},
-		uniques: bosses['Corp Beast'],
-		healAmountNeeded: 20 * 40,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		uniques: bosses['Corp Beast']
 	},
 	{
 		id: Monsters.Cerberus.id,
