@@ -1,7 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
-import { addBanks } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
@@ -18,13 +17,18 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import findMonster from '../../lib/minions/functions/findMonster';
-import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
+import {
+	formatDuration,
+	isWeekend,
+	itemID,
+	itemNameFromID,
+	randomItemFromArray
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { rand } from '../../util';
