@@ -152,28 +152,12 @@ export function initCustomItems() {
 		wiki_name: 'Abyssal pouch'
 	});
 
-	// Dragcula pet || 24208 = Victor's cape (1) [DUPLICATE]
-	setCustomItem(24202, 'Dragcula', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Dragcula'
-	});
-
-	// Ori Pet || 24205 = Brassica halo [DUPLICATE]
-	setCustomItem(24205, 'Ori', getOSItem('Herbi'), {
+	// Ori Pet || 4149	 = Abyssal demon
+	setCustomItem(4149, 'Ori', getOSItem('Herbi'), {
 		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
 		wiki_name: 'Ori'
-	});
-
-	// Mally Pet || 24202 = Ancient halo [DUPLICATE]
-	setCustomItem(24208, 'Mally', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Malyguzin'
 	});
 
 	// Abyssal bones || 24199 = Seren halo [DUPLICATE]

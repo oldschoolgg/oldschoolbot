@@ -28,8 +28,8 @@ export default class extends Task {
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let abyssalBonus = 1;
-		if (user.hasItemEquippedAnywhere(itemID('Abyssal cape'))) {
-			abyssalBonus += 0.1;
+		if (user.equippedPet() === itemID('Ori')) {
+			abyssalBonus += 0.25;
 		}
 
 		let loot = monster.table.kill(Math.ceil(quantity * abyssalBonus));
@@ -115,7 +115,7 @@ export default class extends Task {
 		}
 
 		if (abyssalBonus > 1) {
-			str += `\n\nBy having some abyssal items equipped, you managed to get some extra loot!`;
+			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
 		}
 
 		user.incrementMonsterScore(monsterID, quantity);
