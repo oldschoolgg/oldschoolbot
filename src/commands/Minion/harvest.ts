@@ -104,7 +104,7 @@ export default class extends BotCommand {
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			boostStr.push('**Boosts**: 10% time for Graceful');
+			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
 
@@ -130,22 +130,27 @@ export default class extends BotCommand {
 
 			const userBank = msg.author.settings.get(UserSettings.Bank);
 
-			if (bankHasItem(userBank, itemID('Magic secateurs'))) {
+			if (
+				bankHasItem(userBank, itemID('Magic secateurs')) ||
+				msg.author.hasItemEquippedAnywhere(itemID(`Magic secateurs`))
+			) {
 				boostStr.push('10% crop yield for Magic Secateurs');
 			}
 
 			if (
 				bankHasItem(userBank, itemID('Farming cape')) ||
-				bankHasItem(userBank, itemID('Farming cape(t)'))
+				bankHasItem(userBank, itemID('Farming cape(t)')) ||
+				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape`)) ||
+				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape(t)`))
 			) {
 				boostStr.push('5% crop yield for Farming Skillcape');
 			}
 
-			returnMessageStr += `${
+			returnMessageStr = `${
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}.\nIt'll take around ${formatDuration(
 				duration
-			)} to finish.\n\n${boostStr.join(', ')}`;
+			)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(

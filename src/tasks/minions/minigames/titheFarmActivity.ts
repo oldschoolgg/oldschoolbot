@@ -12,7 +12,8 @@ import itemID from '../../../lib/util/itemID';
 export default class extends Task {
 	async run({ userID, channelID, duration }: TitheFarmActivityTaskOptions) {
 		const baseHarvest = 85;
-		let lootStr = '';
+		const lootStr: string[] = [];
+		const levelStr: string[] = [];
 
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
@@ -58,22 +59,33 @@ export default class extends Task {
 		const userBank = user.settings.get(UserSettings.Bank);
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
-		if (bankHasItem(userBank, itemID(`Farmer's strawhat`), 1)) {
+		if (
+			bankHasItem(userBank, itemID(`Farmer's strawhat`), 1) ||
+			user.hasItemEquippedAnywhere(itemID(`Farmer's strawhat`))
+		) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck += 1;
 		}
 		if (
 			bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
-			bankHasItem(userBank, itemID(`Farmer's shirt`), 1)
+			bankHasItem(userBank, itemID(`Farmer's shirt`), 1) ||
+			user.hasItemEquippedAnywhere(itemID(`Farmer's jacket`)) ||
+			user.hasItemEquippedAnywhere(itemID(`Farmer's shirt`))
 		) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck += 1;
 		}
-		if (bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1)) {
+		if (
+			bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1) ||
+			user.hasItemEquippedAnywhere(itemID(`Farmer's boro trousers`))
+		) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck += 1;
 		}
-		if (bankHasItem(userBank, itemID(`Farmer's boots`), 1)) {
+		if (
+			bankHasItem(userBank, itemID(`Farmer's boots`), 1) ||
+			user.hasItemEquippedAnywhere(itemID(`Farmer's boots`))
+		) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck += 1;
 		}
@@ -91,11 +103,17 @@ export default class extends Task {
 
 		await user.addXP(SkillsEnum.Farming, Math.floor(totalXp));
 
+		const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
+
+		if (newFarmingLevel > farmingLvl) {
+			levelStr.push(`\n\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
+		}
+
 		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
 			const loot = { [itemID('Tangleroot')]: 1 };
-			lootStr += '\n\n```diff';
-			lootStr += `\n- You have a funny feeling you're being followed...`;
-			lootStr += '```';
+			lootStr.push('\n\n```diff');
+			lootStr.push(`\n- You have a funny feeling you're being followed...`);
+			lootStr.push('```');
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Farming} **${user.username}'s** minion, ${
@@ -108,7 +126,7 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 		}
 
-		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${lootStr}\n`;
+		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
 
 		handleTripFinish(this.client, user, channelID, returnStr, res => {
 			user.log(`attemped another run of the Tithe Farm.`);

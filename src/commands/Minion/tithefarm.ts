@@ -31,11 +31,13 @@ export default class extends BotCommand {
 		const percentIncreaseFromCompletions =
 			Math.floor(Math.min(60, titheFarmsCompleted) / 3) / 100;
 		baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
-		boostStr.push(
-			`**Boosts**: ${Math.floor(
-				percentIncreaseFromCompletions * 100
-			)}% from Tithe Farms completed`
-		);
+		Math.floor(percentIncreaseFromCompletions * 100) > 0
+			? boostStr.push(
+					`${Math.floor(
+						percentIncreaseFromCompletions * 100
+					)}% from Tithe Farms completed`
+			  )
+			: boostStr.push('');
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(user.settings.get(UserSettings.Gear.Skilling))) {
@@ -81,9 +83,9 @@ export default class extends BotCommand {
 		return msg.send(
 			`Your minion is off completing a round of the ${
 				Emoji.MinigameIcon
-			} Tithe Farm. It'll take ${formatDuration(duration)} to finish.\n\n${boostStr.join(
-				', '
-			)}`
+			} Tithe Farm. It'll take ${formatDuration(duration)} to finish.\n\n${
+				boostStr.length > 0 ? `**Boosts:** ` : ``
+			}${boostStr.join(', ')}`
 		);
 	}
 }
