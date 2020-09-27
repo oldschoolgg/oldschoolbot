@@ -428,7 +428,28 @@ const SimilarItems: Record<number, number[]> = {
 		13669, // All cities cape
 		21064, // Brimhaven Agility Arena cape
 		24746 // Hallowed Sepulchre cape
-	])
+	]),
+	[itemID('Fire cape')]: resolveItems(['Fire max cape', 'Fire max cape (l)']),
+	[itemID('Infernal cape')]: resolveItems(['Infernal max cape', 'Infernal max cape (l)']),
+	[itemID('Ardougne cloak 4')]: resolveItems(['Ardougne max cape']),
+	[itemID("Ava's accumulator")]: resolveItems(['Accumulator max cape']),
+	[itemID("Ava's assembler")]: resolveItems(['Assembler max cape']),
+	[itemID('Mythical cape')]: resolveItems(['Mythical max cape']),
+	[itemID('Imbued guthix cape')]: resolveItems([
+		'Imbued guthix max cape',
+		'Imbued guthix max cape (l)'
+	]),
+	[itemID('Imbued saradomin cape')]: resolveItems([
+		'Imbued saradomin max cape',
+		'Imbued saradomin max cape (l)'
+	]),
+	[itemID('Imbued zamorak cape')]: resolveItems([
+		'Imbued zamorak max cape',
+		'Imbued zamorak max cape (l)'
+	]),
+	[itemID('Guthix cape')]: resolveItems(['Guthix max cape']),
+	[itemID('Saradomin cape')]: resolveItems(['Saradomin max cape']),
+	[itemID('Zamorak cape')]: resolveItems(['Zamorak max cape'])
 };
 
 export default SimilarItems;
