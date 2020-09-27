@@ -17,8 +17,6 @@ const customPrices = resolveNameBank({
 	'Abyssal cape': 500_000_000,
 	'Abyssal thread': 100_000_000,
 	'Abyssal pouch': 0,
-	Dragcula: 0,
-	Mally: 0,
 	Ori: 0
 });
 
