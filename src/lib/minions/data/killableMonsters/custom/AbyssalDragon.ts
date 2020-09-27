@@ -11,7 +11,7 @@ export const AbyssalDragonLootTable = new LootTable()
 	.every('Abyssal dragon bones', 2)
 
 	// Uniques
-	.tertiary(5120, 'Abyssal cape')
+	.tertiary(2400, 'Abyssal cape')
 	.tertiary(3076, 'Ori')
 	.tertiary(1024, 'Abyssal thread')
 
