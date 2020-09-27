@@ -122,6 +122,12 @@ const bones: Bone[] = [
 		level: 70,
 		xp: 150,
 		inputId: itemID('Superior dragon bones')
+	},
+	{
+		name: 'Abyssal dragon bones',
+		level: 99,
+		xp: 750,
+		inputId: itemID('Abyssal dragon bones')
 	}
 ];
 

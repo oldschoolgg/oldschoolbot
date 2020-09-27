@@ -169,6 +169,11 @@ const RCPouches = [
 		id: itemID('Giant pouch'),
 		level: 75,
 		capacity: 12
+	},
+	{
+		id: itemID('Abyssal pouch'),
+		level: 90,
+		capacity: 64
 	}
 ];
 

@@ -11,7 +11,15 @@ import getOSItem from '../lib/util/getOSItem';
 
 const customPrices = resolveNameBank({
 	'Divine spirit shield': 900_000_000,
-	'Divine sigil': 930_000_000
+	'Divine sigil': 930_000_000,
+	// Abyssal dragon boss
+	'Abyssal dragon bones': 50_000,
+	'Abyssal cape': 500_000_000,
+	'Abyssal thread': 100_000_000,
+	'Abyssal pouch': 0,
+	Dragcula: 0,
+	Mally: 0,
+	Ori: 0
 });
 
 export default class extends Extendable {

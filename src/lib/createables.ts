@@ -3140,6 +3140,16 @@ const Createables: Createable[] = [
 			'Coconut milk': 1,
 			'Coconut shell': 1
 		})
+	},
+	{
+		name: 'Abyssal pouch',
+		inputItems: resolveNameBank({
+			'Abyssal thread': 1,
+			'Giant pouch': 1
+		}),
+		outputItems: resolveNameBank({
+			'Abyssal pouch': 1
+		})
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',
