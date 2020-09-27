@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			usage:
 				'<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
 			usageDelim: ' ',
-			aliases: ['aep']
+			aliases: ['aep', 'aequip']
 		});
 	}
 
