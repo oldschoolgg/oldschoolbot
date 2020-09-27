@@ -342,7 +342,9 @@ export default class BankImageTask extends Task {
 		}
 
 		// Adds hamstare
-		this.addsHamstare(canvas, Boolean(wide));
+		if (bgImage.name === 'Default') {
+			this.addsHamstare(canvas, Boolean(wide));
+		}
 
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
