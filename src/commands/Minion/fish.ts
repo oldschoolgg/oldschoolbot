@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Time } from 'oldschooljs/dist/constants';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
@@ -76,8 +77,13 @@ export default class extends BotCommand {
 			scaledTimePerFish /= 2;
 		}
 
+		let { maxTripLength } = msg.author;
+		if (msg.author.hasItemEquippedAnywhere(itemID('Fish sack'))) {
+			maxTripLength += Time.Minute * 9;
+		}
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
+			quantity = Math.floor(maxTripLength / scaledTimePerFish);
 		}
 
 		let duration = quantity * scaledTimePerFish;

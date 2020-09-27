@@ -84,7 +84,10 @@ export const KrakenTable = new LootTable()
 	.add('Kraken tentacle')
 	.add('Crystal key')
 	.add('Seaweed')
-	.add('Water rune', [20, 500]);
+	.add('Water rune', [20, 500])
+	.tertiary(400, 'Fish sack')
+	.tertiary(1200, 'Pufferfish')
+	.tertiary(100_000, 'Fishing trophy');
 
 setCustomMonster(53466534, 'Sea Kraken', KrakenTable, Monsters.CommanderZilyana, {
 	id: 53466534,
