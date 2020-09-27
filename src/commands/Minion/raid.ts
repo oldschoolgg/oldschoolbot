@@ -470,7 +470,7 @@ export default class extends BotCommand {
 			teamKCBoost = 25;
 		}
 		duration *= (100 - teamKCBoost) / 100;
-
+		duration = Math.max(Time.Minute * 30, duration);
 		this.checkReqs(users);
 
 		const data: RaidsActivityTaskOptions = {
