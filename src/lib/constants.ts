@@ -204,7 +204,9 @@ export const enum BitField {
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
 	IsPatronTier4 = 5,
-	IsPatronTier5 = 6
+	IsPatronTier5 = 6,
+	isModerator = 7,
+	isContributor = 8
 }
 
 export const enum PatronTierID {
