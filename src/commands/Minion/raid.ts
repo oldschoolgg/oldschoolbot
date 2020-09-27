@@ -470,7 +470,7 @@ export default class extends BotCommand {
 			teamKCBoost = 25;
 		}
 		duration *= (100 - teamKCBoost) / 100;
-
+		duration = Math.max(Time.Minute * 30, duration);
 		this.checkReqs(users);
 
 		const data: RaidsActivityTaskOptions = {
@@ -484,12 +484,21 @@ export default class extends BotCommand {
 			id: rand(1, 10_000_000).toString(),
 			finishDate: Date.now() + duration,
 			users: users.map(u => u.id),
-			team: users.map(u => ({
-				id: u.id,
-				personalPoints: (this.gearPointCalc(u)[0] * (100 - rand(0, 20))) / 100,
-				canReceiveDust: rand(1, 10) <= 7,
-				canReceiveAncientTablet: u.hasItemEquippedOrInBank('Ancient tablet')
-			}))
+			team: users.map(u => {
+				let points = (this.gearPointCalc(u)[0] * (100 - rand(0, 20))) / 100;
+				const kc = msg.author.getMinigameScore(6969);
+				if (kc < 5) {
+					points /= 5;
+				} else if (kc < 20) {
+					points /= 3;
+				}
+				return {
+					id: u.id,
+					personalPoints: points,
+					canReceiveDust: rand(1, 10) <= 7,
+					canReceiveAncientTablet: u.hasItemEquippedOrInBank('Ancient tablet')
+				};
+			})
 		};
 
 		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
