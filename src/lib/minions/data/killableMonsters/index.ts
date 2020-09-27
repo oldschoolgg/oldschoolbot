@@ -405,9 +405,7 @@ const killableMonsters: KillableMonster[] = [
 			[itemID('Bandos godsword')]: 5,
 			[itemID('Dragon hunter lance')]: 10
 		},
-		itemsRequired: deepResolveItems([
-			['Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield', 'Abyssal cape']
-		]),
+		itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
