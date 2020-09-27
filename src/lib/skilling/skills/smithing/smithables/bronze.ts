@@ -1,4 +1,4 @@
-import { Time } from 'oldschooljs/dist/constants';
+import { Time } from 'e';
 
 import itemID from '../../../../util/itemID';
 import { SmithedItem } from '../../../types';

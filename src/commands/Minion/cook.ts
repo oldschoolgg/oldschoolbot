@@ -41,6 +41,7 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		await msg.author.settings.sync(true);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
 				stringMatches(cookable.name, cookableName) ||
@@ -77,7 +78,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Check the user has the required cookables

@@ -9,7 +9,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 1,
 			oneAtTime: true,
-			usage: '<melee|range|magic>'
+			usage: '<melee|range|mage>'
 		});
 	}
 

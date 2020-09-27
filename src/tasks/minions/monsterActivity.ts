@@ -2,7 +2,7 @@ import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, Task } from 'klasa';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { alphaNumericalChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
+import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -12,12 +12,11 @@ import { randomItemFromArray } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
-const charsWithoutC = alphaNumericalChars.filter(char => char !== 'c');
-
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
+		const perkTier = getUsersPerkTier(user);
 		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
@@ -53,10 +52,10 @@ export default class extends Task {
 			str += `\n ${Emoji.Casket} You got clue scrolls in your loot (${clueTiersReceived
 				.map(tier => tier.name)
 				.join(', ')}).`;
-			if (getUsersPerkTier(user) > PerkTier.One) {
+			if (perkTier > PerkTier.One) {
 				str += `\n\nSay \`c\` if you want to complete this ${clueTiersReceived[0].name} clue now.`;
 			} else {
-				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc \``;
+				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc\``;
 			}
 		}
 
@@ -65,8 +64,8 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
-		const perkTier = getUsersPerkTier(user);
-		const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(charsWithoutC);
+		const continuationChar =
+			perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
 
 		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
@@ -92,7 +91,11 @@ export default class extends Task {
 					if (response) {
 						if (response.author.minionIsBusy) return;
 
-						if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
+						if (
+							clueTiersReceived.length > 0 &&
+							perkTier > PerkTier.One &&
+							response.content.toLowerCase() === 'c'
+						) {
 							(this.client.commands.get(
 								'minion'
 							) as MinionCommand).clue(response as KlasaMessage, [

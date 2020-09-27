@@ -1,4 +1,4 @@
-import { TextChannel, User, Util } from 'discord.js';
+import { User, Util } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 
 import { production } from '../config';
@@ -16,6 +16,7 @@ import {
 	removeItemFromBank,
 	toTitleCase
 } from '../lib/util';
+import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -230,6 +231,19 @@ export default class extends Extendable {
 		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number);
 	}
 
+	public totalLevel(this: User, returnXP = false) {
+		const userXPs = Object.values(
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			this.settings.get('skills').toJSON() as Skills
+		) as number[];
+		let totalLevel = 0;
+		for (const xp of userXPs) {
+			totalLevel += returnXP ? xp : convertXPtoLVL(xp);
+		}
+		return totalLevel;
+	}
+
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
@@ -332,9 +346,10 @@ export default class extends Extendable {
 
 			this.log(log);
 			if (production) {
-				(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
-					`${this.sanitizedName} ${log}`
-				);
+				const channel = this.client.channels.get(Channel.ErrorLogs);
+				if (channelIsSendable(channel)) {
+					channel.send(`${this.sanitizedName} ${log}`);
+				}
 			}
 		}
 
