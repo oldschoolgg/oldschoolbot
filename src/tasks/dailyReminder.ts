@@ -15,7 +15,7 @@ export default class extends Task {
 			if (lastVoteDate === -1) continue;
 
 			const difference = currentDate - lastVoteDate;
-			if (difference >= Time.Hour * 12) {
+			if (difference >= Time.Hour * 4) {
 				await user.settings.update(UserSettings.LastDailyTimestamp, -1);
 				await user.send(`Your daily is ready!`).catch(noOp);
 			}

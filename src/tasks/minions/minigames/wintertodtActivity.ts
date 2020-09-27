@@ -23,7 +23,6 @@ export default class extends Task {
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
-		const bank = user.settings.get(UserSettings.Bank);
 		let loot: ItemBank = {};
 
 		let totalPoints = 0;
@@ -36,7 +35,7 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([bank, loot]),
+					itemsOwned: addBanks([user.allItemsOwned(), loot]),
 					skills: user.rawSkills
 				})
 			]);

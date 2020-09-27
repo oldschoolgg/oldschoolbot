@@ -122,6 +122,7 @@ export interface RaidsActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 	quantity: number;
 	partyLeaderID: string;
+	users: string[];
 	team: TeamMember[];
 	challengeMode: boolean;
 }

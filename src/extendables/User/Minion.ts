@@ -32,6 +32,7 @@ import {
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	RaidsActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
@@ -97,6 +98,12 @@ export default class extends Extendable {
 				return `${this.minionName} is currently killing ${data.quantity}x ${
 					monster!.name
 				} with a party of ${data.users.length}. ${formattedDuration}`;
+			}
+
+			case Activity.Raids: {
+				const data = currentTask as RaidsActivityTaskOptions;
+
+				return `${this.minionName} is currently raiding Chambers of Xeric. With a party of ${data.team.length}. ${formattedDuration}`;
 			}
 
 			case Activity.ClueCompletion: {
@@ -185,7 +192,9 @@ export default class extends Extendable {
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithableItem = Smithing.Bars.find(item => item.id === data.smithedBarID);
+				const SmithableItem = Smithing.SmithableItems.find(
+					item => item.id === data.smithedBarID
+				);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					SmithableItem!.name

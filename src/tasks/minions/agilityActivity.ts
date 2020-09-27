@@ -1,3 +1,4 @@
+import { randInt, roll } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../lib/constants';
@@ -6,7 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, multiplyBank, rand, roll } from '../../lib/util';
+import { addItemToBank, multiplyBank } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -23,7 +24,10 @@ export default class extends Task {
 		// Calculate failed laps
 		let lapsFailed = 0;
 		for (let t = 0; t < quantity; t++) {
-			if (rand(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
+			if (
+				randInt(1, 100) >
+				(100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)
+			) {
 				lapsFailed += 1;
 			}
 		}

@@ -2,7 +2,7 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { coxLog } from './collectionLog';
+import { coxLog, customBossLog } from './collectionLog';
 import { Emoji } from './constants';
 import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
@@ -272,10 +272,9 @@ const Openables: Openable[] = [
 	}
 ];
 
-const MysteryBoxes = new LootTable()
+export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
 	.oneIn(20, itemNameFromID(3713)!)
-	.oneIn(15, 'Dwarven crate')
 	.add(6199)
 	.add(19939);
 
@@ -289,6 +288,7 @@ let allItemsIDs = Openables.map(
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [
 	...Object.values(coxLog).flat(Infinity),
+	...Object.values(customBossLog).flat(Infinity),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),
 	itemID('Partyhat set'),
@@ -297,7 +297,10 @@ const cantBeDropped = [
 	itemID('Twisted ancestral hat'),
 	itemID('Twisted ancestral robe top'),
 	itemID('Twisted ancestral robe bottom'),
-	itemID('Partyhat & specs')
+	itemID('Partyhat & specs'),
+	itemID('Dwarven warhammer'),
+	itemID('Dwarven ore'),
+	itemID('Dwarven bar')
 ] as number[];
 
 function getRandomItem(tradeables: boolean): number {

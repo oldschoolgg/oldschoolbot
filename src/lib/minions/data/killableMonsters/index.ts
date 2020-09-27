@@ -1,175 +1,15 @@
 import { Monsters } from 'oldschooljs';
-import Loot from 'oldschooljs/dist/structures/Loot';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
-import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { Time } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 import bosses from './bosses';
-
-const KingTable = new LootTable()
-	.tertiary(2300, 'Dwarven warhammer')
-	.tertiary(10, 'Clue scroll (master)')
-	.oneIn(
-		30,
-		new LootTable()
-			.add('Dwarven crate')
-			.add('Dwarven ore')
-			.add('Coal', [2, 14])
-			.add('Iron ore', [2, 14])
-			.add('Royal crown')
-			.add('Mystic jewel')
-			.add('Dwarven lore')
-			.add('Golden goblin')
-			.add('Gold candlesticks')
-	)
-	.every('Bones')
-	.add('Beer', [1, 4])
-	.add('Kebab', [1, 4])
-	.add('Hammer', 1)
-	.add('Oily cloth')
-	.add('Axe head')
-	.add('Pickaxe handle')
-	.add('Hair')
-	.add('Gold bar')
-	.add('Gold ring')
-	.add('Dwarven helmet')
-	.add('Jewellery')
-	.add('Dwarven stout(m)')
-	.add('Gold ore', [2, 20])
-	.add('Coins', [50_000, 1_000_000])
-	.add('Skull piece')
-	.add('Dwarven rock cake')
-	.add('Dwarven stout');
-
-const FishTable = new LootTable()
-	.add('Raw sea turtle', [1, 10])
-	.add('Raw dark crab', [1, 10])
-	.add('Raw anglerfish', [1, 20])
-	.add('Raw shark', [1, 30])
-	.add('Raw monkfish', [1, 40])
-	.add('Raw karambwan', [1, 40])
-	.add('Raw swordfish', [1, 50])
-	.add('Raw bass', [1, 60])
-	.add('Raw lobster', [1, 70])
-	.add('Raw trout', [1, 80])
-	.add('Raw tuna', [1, 90]);
-
-const SeedPackTable = new LootTable()
-	.add('Potato seed', [1, 4])
-	.add('Onion seed', [1, 3])
-	.add('Cabbage seed', [1, 3])
-	.add('Tomato seed', [1, 2])
-	.add('Sweetcorn seed', [1, 2])
-	.add('Strawberry seed', 1)
-	.add('Watermelon seed', 1)
-	.add('Snape grass seed', 1)
-
-	// Hops
-	.add('Barley seed', [1, 12])
-	.add('Hammerstone seed', [1, 10])
-	.add('Asgarnian seed', [1, 10])
-	.add('Jute seed', [1, 10])
-	.add('Yanillian seed', [1, 10])
-	.add('Krandorian seed', [1, 10])
-	.add('Wildblood seed', [1, 3])
-
-	// Flowers
-	.add('Marigold seed', 1)
-	.add('Nasturtium seed', 1)
-	.add('Rosemary seed', 1)
-	.add('Woad seed', 1)
-	.add('Limpwurt seed', 1)
-
-	// Bushes
-	.add('Redberry seed', 1)
-	.add('Cadavaberry seed', 1)
-	.add('Dwellberry seed', 1)
-	.add('Jangerberry seed', 1)
-	.add('Whiteberry seed', 1)
-	.add('Poison ivy seed', 1)
-
-	// Herbs
-	.add('Guam seed', 1)
-	.add('Marrentill seed', 1)
-	.add('Tarromin seed', 1)
-	.add('Harralander seed', 1)
-	.add('Ranarr seed', 1)
-	.add('Toadflax seed', 1)
-	.add('Irit seed', 1)
-	.add('Avantoe seed', 1)
-	.add('Kwuarm seed', 1)
-	.add('Snapdragon seed', 1)
-	.add('Cadantine seed', 1)
-	.add('Lantadyme seed', 1)
-	.add('Dwarf weed seed', 1)
-	.add('Torstol seed', 1)
-
-	// Special
-	.add('Mushroom spore', 1)
-	.add('Belladonna seed', 1)
-	.add('Cactus seed', 1)
-	.add('Potato cactus seed', 1);
-
-const KrakenTable = new LootTable()
-	.every(FishTable, 4)
-	.every(SeedPackTable, 6)
-	.add('Coins', [50_000, 100_000])
-	.add('Clue scroll (master)')
-	.add('Clue scroll (elite)')
-	.add('Clue scroll (hard)')
-	.add('Pirate boots')
-	.add('Harpoon')
-	.add('Kraken tentacle')
-	.add('Crystal key')
-	.add('Seaweed')
-	.add('Water rune', [20, 500]);
-
-function makeKillTable(table: LootTable) {
-	return (quantity: number) => {
-		const loot = new Loot();
-
-		for (let i = 0; i < quantity; i++) {
-			loot.add(table.roll());
-		}
-
-		return loot.values();
-	};
-}
-
-function setCustomMonster(
-	id: number,
-	name: string,
-	table: LootTable,
-	baseItem: Monster,
-	newItemData?: Partial<Monster>
-) {
-	Monsters.set(id, {
-		...baseItem,
-		...newItemData,
-		name,
-		id,
-		kill: makeKillTable(table)
-	});
-}
-
-setCustomMonster(696969, 'King Goldemar', KingTable, Monsters.GeneralGraardor, {
-	id: 696969,
-	name: 'King Goldemar',
-	aliases: ['king goldemar', 'dwarf king']
-});
-
-setCustomMonster(53466534, 'Sea Kraken', KrakenTable, Monsters.CommanderZilyana, {
-	id: 53466534,
-	name: 'Sea Kraken',
-	aliases: ['sea kraken']
-});
-
-const KingGoldemar = Monsters.find(mon => mon.name === 'King Goldemar')!;
-const SeaKraken = Monsters.find(mon => mon.name === 'Sea Kraken')!;
+import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
+import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
+import SeaKraken, { KrakenTable } from './custom/SeaKraken';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
@@ -483,7 +323,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: KingGoldemar.aliases,
 		timeToFinish: Time.Minute * 22,
 		table: {
-			kill: makeKillTable(KingTable)
+			kill: makeKillTable(KingGoldemarLootTable)
 		},
 		emoji: '',
 		wildy: false,
@@ -501,7 +341,9 @@ const killableMonsters: KillableMonster[] = [
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		uniques: resolveItems(['Dwarven warhammer', 'Dwarven crate', 'Dwarven ore']),
+		notifyDrops: resolveItems(['Dwarven warhammer'])
 	},
 	{
 		id: SeaKraken.id,
@@ -528,6 +370,51 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		}
+	},
+	{
+		id: AbyssalDragon.id,
+		name: AbyssalDragon.name,
+		aliases: AbyssalDragon.aliases,
+		timeToFinish: Time.Minute * 30,
+		table: {
+			kill: makeKillTable(AbyssalDragonLootTable)
+		},
+		emoji: '',
+		wildy: true,
+		canBeKilled: true,
+		difficultyRating: 9,
+		qpRequired: 999,
+		healAmountNeeded: 20 * 25,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [
+			GearStat.AttackStab,
+			GearStat.AttackSlash,
+			GearStat.AttackMagic,
+			GearStat.AttackRanged
+		],
+		minimumGearRequirements: {
+			[GearStat.AttackStab]: 120,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 180,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 150
+		},
+		itemInBankBoosts: {
+			[itemID('Saradomin godsword')]: 5,
+			[itemID('Dragon warhammer')]: 5,
+			[itemID('Bandos godsword')]: 5,
+			[itemID('Dragon hunter lance')]: 10
+		},
+		itemsRequired: deepResolveItems([
+			['Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield', 'Abyssal cape']
+		]),
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 99
+		},
+		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragcula', 'Mally']),
+		notifyDrops: resolveItems(['Abyssal cape', 'Ori', 'Dragcula', 'Mally'])
 	}
 ];
 

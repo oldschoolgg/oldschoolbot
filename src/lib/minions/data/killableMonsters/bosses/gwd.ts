@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
 import itemID from '../../../../util/itemID';
-import resolveItems from '../../../../util/resolveItems';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
@@ -51,7 +51,11 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			agility: 70
 		},
-		uniques: [...bosses.Saradomin, ...bosses.Shards]
+		uniques: [...bosses.Saradomin, ...bosses.Shards],
+		itemsRequired: deepResolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		])
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -73,7 +77,11 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: [...bosses.Arma, ...bosses.Shards]
+		uniques: [...bosses.Arma, ...bosses.Shards],
+		itemsRequired: deepResolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		])
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -95,7 +103,11 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: [...bosses.Zammy, ...bosses.Shards]
+		uniques: [...bosses.Zammy, ...bosses.Shards],
+		itemsRequired: deepResolveItems([
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
+		])
 	}
 ];
 

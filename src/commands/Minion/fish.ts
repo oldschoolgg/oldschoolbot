@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Tasks } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -76,8 +77,13 @@ export default class extends BotCommand {
 			scaledTimePerFish /= 2;
 		}
 
+		let { maxTripLength } = msg.author;
+		if (msg.author.hasItemEquippedAnywhere(itemID('Fish sack'))) {
+			maxTripLength += Time.Minute * 9;
+		}
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
+			quantity = Math.floor(maxTripLength / scaledTimePerFish);
 		}
 
 		let duration = quantity * scaledTimePerFish;

@@ -4,6 +4,7 @@ import { createConnection } from 'typeorm';
 
 import { providerConfig } from '../config';
 import { Tasks } from '../lib/constants';
+import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
 import { TickerTaskData } from '../lib/types/minions';
 import { activityTaskFilter } from '../lib/util';
@@ -58,14 +59,23 @@ export default class extends Task {
 		return minionTaskCounts;
 	}
 
+	generateTotalXPQuery() {
+		const skillNames = Object.keys(this.client.user!.rawSkills);
+		const columnNames = skillNames.map(val => `"skills.${val}"`);
+		const query = `SELECT SUM(${columnNames.join(' + ')}) as count FROM users`;
+
+		return query;
+	}
+
 	async analyticsTick() {
-		const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
+		const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP, totalXP] = (
 			await Promise.all(
 				[
 					`SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;`,
 					`SELECT SUM ("sacrificedValue") AS count FROM users;`,
 					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`,
-					`SELECT SUM ("GP") AS count FROM users;`
+					`SELECT SUM ("GP") AS count FROM users;`,
+					this.generateTotalXPQuery()
 				].map(query => this.client.query(query))
 			)
 		).map((result: any) => parseInt(result[0].count)) as number[];
@@ -83,7 +93,11 @@ export default class extends Task {
 			ironMinionsCount: numberOfIronmen,
 			minionsCount: numberOfMinions,
 			totalSacrificed,
-			totalGP
+			totalGP,
+			totalXP,
+			dicingBank: this.client.settings.get(ClientSettings.EconomyStats.DicingBank),
+			duelTaxBank: this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank),
+			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount)
 		});
 	}
 }

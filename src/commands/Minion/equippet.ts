@@ -4,6 +4,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { BotCommand } from '../../lib/BotCommand';
 import { pets } from '../../lib/collectionLog';
 import { requiresMinion } from '../../lib/minions/decorators';
+import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { removeItemFromBank } from '../../lib/util';
 import resolveItems from '../../lib/util/resolveItems';
@@ -21,7 +22,10 @@ const allPetIDs = [
 		'Scruffy',
 		'Zak',
 		'Hammy',
-		'Skipper'
+		'Skipper',
+		'Ori',
+		'Dragcula',
+		'Mally'
 	]),
 	Object.values(pets)
 ].flat(Infinity);
@@ -36,6 +40,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [itemArray]: [Item[]]): Promise<KlasaMessage> {
 		const userBank = msg.author.settings.get(UserSettings.Bank);

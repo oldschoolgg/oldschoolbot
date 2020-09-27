@@ -61,7 +61,6 @@ export default class extends Task {
 				alchValue
 			)}) has been added to your bank. ${saved}`
 		];
-
 		if (gotLamb) {
 			responses.push(
 				`<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.`
