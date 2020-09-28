@@ -77,6 +77,7 @@ export const AbyssalDragonLootTable = new LootTable()
 	.tertiary(1538, new LootTable().add('Ori').add('Abyssal head'))
 	.tertiary(1024, 'Abyssal thread')
 	.tertiary(2, cluesLoot)
+	.oneIn(512, 'Dragon hunter lance')
 	.add(commonLoot, 5);
 
 setCustomMonster(707070, 'Malygos', AbyssalDragonLootTable, Monsters.Vorkath, {
