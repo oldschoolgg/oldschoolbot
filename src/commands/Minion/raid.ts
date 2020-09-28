@@ -841,6 +841,7 @@ export default class extends BotCommand {
 				} else if (kc > 1000) {
 					points *= 1.2;
 				}
+				points = Math.round(points);
 				return {
 					id: u.id,
 					personalPoints: points,
