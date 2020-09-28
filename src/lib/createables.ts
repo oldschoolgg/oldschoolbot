@@ -3168,6 +3168,28 @@ const Createables: Createable[] = [
 			smithing: 5
 		},
 		GPCost: 300_000
+	},
+	{
+		name: 'Neitiznot faceguard',
+		inputItems: resolveNameBank({
+			'Helm of neitiznot': 1,
+			'Basilisk jaw': 1
+		}),
+		outputItems: resolveNameBank({
+			'Neitiznot faceguard': 1
+		}),
+		QPRequired: 77
+	},
+	{
+		name: 'Basilisk jaw',
+		inputItems: resolveNameBank({
+			'Neitiznot faceguard': 1
+		}),
+		outputItems: resolveNameBank({
+			'Helm of neitiznot': 1,
+			'Basilisk jaw': 1
+		}),
+		QPRequired: 77
 	}
 	/* {
 		name: 'Toxic blowpipe (empty)',
