@@ -31,6 +31,10 @@ const meleeGearBonus = [
 		itemPoint: 2
 	},
 	{
+		itemID: itemID('Void melee helm (l)'),
+		itemPoint: 2
+	},
+	{
 		itemID: itemID('Amulet of torture'),
 		itemPoint: 5
 	},
@@ -115,11 +119,23 @@ const meleeGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Infernal cape (l)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Infernal max cape'),
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Infernal max cape (l)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Fire cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Fire cape (l)'),
 		itemPoint: 4
 	},
 	{
@@ -135,11 +151,19 @@ const meleeGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight top (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Bandos tassets'),
 		itemPoint: 5
 	},
 	{
 		itemID: itemID('Void knight robe'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight robe (l)'),
 		itemPoint: 3
 	},
 	{
@@ -167,7 +191,15 @@ const meleeGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Avernic defender (l)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Dragon defender'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Dragon defender (l)'),
 		itemPoint: 4
 	},
 	{
@@ -180,6 +212,10 @@ const meleeGearBonus = [
 	},
 	{
 		itemID: itemID('Void knight gloves'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight gloves (l)'),
 		itemPoint: 3
 	},
 	{
@@ -207,6 +243,10 @@ const rangeGearBonus = [
 	},
 	{
 		itemID: itemID('Void ranger helm'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void ranger helm (l)'),
 		itemPoint: 3
 	},
 	{
@@ -294,7 +334,15 @@ const rangeGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID("Ava's assembler (l)"),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Assembler max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Assembler max cape (l)'),
 		itemPoint: 5
 	},
 	{
@@ -310,11 +358,19 @@ const rangeGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight top (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Armadyl chainskirt'),
 		itemPoint: 5
 	},
 	{
 		itemID: itemID('Void knight robe'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight robe (l)'),
 		itemPoint: 3
 	},
 	{
@@ -370,6 +426,10 @@ const rangeGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Void knight gloves (l)'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Pegasian boots'),
 		itemPoint: 5
 	}
@@ -386,6 +446,10 @@ const mageGearBonus = [
 	},
 	{
 		itemID: itemID('Void mage helm'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void mage helm (l)'),
 		itemPoint: 3
 	},
 	{
@@ -477,6 +541,42 @@ const mageGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Imbued saradomin cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued zamorak cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued guthix cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued saradomin max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued zamorak max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued guthix max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued saradomin max cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued zamorak max cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued guthix max cape (l)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Saradomin cape'),
 		itemPoint: 4
 	},
@@ -501,6 +601,10 @@ const mageGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight top (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Ancestral robe bottom'),
 		itemPoint: 5
 	},
@@ -510,6 +614,10 @@ const mageGearBonus = [
 	},
 	{
 		itemID: itemID('Void knight robe'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight robe (l)'),
 		itemPoint: 3
 	},
 	{
@@ -558,6 +666,10 @@ const mageGearBonus = [
 	},
 	{
 		itemID: itemID('Void knight gloves'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight gloves (l)'),
 		itemPoint: 3
 	}
 ];
