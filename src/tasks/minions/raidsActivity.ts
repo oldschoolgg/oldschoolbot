@@ -67,7 +67,7 @@ export default class extends Task {
 			)}||, personal points: ${personalPoints}, ${Math.round(
 				(personalPoints! / totalPoints) * 10000
 			) / 100}%`;
-			await user.addItemsToBank(userLoot);
+			await user.addItemsToBank(userLoot, true);
 		}
 
 		queuedMessageSend(this.client, channelID, resultMessage);
