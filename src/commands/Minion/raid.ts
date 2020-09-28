@@ -441,6 +441,10 @@ const mageGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Twisted ancestral hat'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID("Ahrim's hood"),
 		itemPoint: 4
 	},
@@ -593,6 +597,10 @@ const mageGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Twisted ancestral robe top'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID("Ahrim's robetop"),
 		itemPoint: 4
 	},
@@ -606,6 +614,10 @@ const mageGearBonus = [
 	},
 	{
 		itemID: itemID('Ancestral robe bottom'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Twisted ancestral robe bottom'),
 		itemPoint: 5
 	},
 	{
