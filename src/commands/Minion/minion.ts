@@ -490,6 +490,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
 			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter lance'))) {
 				timeToFinish *= 0.8;
+				boosts.push(`20% boost for Dragon hunter lance`);
 			}
 		}
 
