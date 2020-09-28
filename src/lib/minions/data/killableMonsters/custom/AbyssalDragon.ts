@@ -52,6 +52,9 @@ const regularTable = new LootTable()
 	.add('Gold ore', [6, 600])
 	.add('Yew logs', [5, 500])
 	.add('Magic logs', [2, 250])
+	.add('Soul rune', [100, 200])
+	.add('Blood rune', [100, 200])
+	.add('Death rune', [100, 200])
 	.add('Uncut dragonstone', [1, 10])
 
 	/* Food */
