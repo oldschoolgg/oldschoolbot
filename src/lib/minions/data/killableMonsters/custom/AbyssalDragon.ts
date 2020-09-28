@@ -32,8 +32,8 @@ const regularTable = new LootTable()
 	.add('Dragon mace', 1, 3)
 	.add('Dragon platelegs', 1, 2)
 	.add('Dragon plateskirt', 1, 2)
-	.oneIn(1024, 'Dragon med helm', 73)
 	.oneIn(1024, 'Dragon hunter lance')
+	.oneIn(15_360, 'Dragon med helm', 73)
 	.oneIn(1_000_000, 'Dragon platebody')
 
 	/* Supplies */
