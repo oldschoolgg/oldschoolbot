@@ -482,7 +482,56 @@ const SimilarItems: Record<number, number[]> = {
 		'Trident of the seas (full)',
 		'Trident of the seas (e)'
 	]),
-	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)'])
+	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)']),
+	[itemID('Slayer helmet (i)')]: resolveItems([
+		'Black slayer helmet (i)',
+		'Green slayer helmet (i)',
+		'Red slayer helmet (i)',
+		'Purple slayer helmet (i)',
+		'Turquoise slayer helmet (i)',
+		'Hydra slayer helmet (i)',
+		'Twisted slayer helmet (i)'
+	])
 };
+
+// Adds dependant items
+SimilarItems[itemID('Slayer helmet')] = [
+	...SimilarItems[itemID('Slayer helmet (i)')],
+	...resolveItems([
+		'Black slayer helmet',
+		'Green slayer helmet',
+		'Red slayer helmet',
+		'Purple slayer helmet',
+		'Turquoise slayer helmet',
+		'Hydra slayer helmet',
+		'Twisted slayer helmet'
+	])
+];
+SimilarItems[itemID('Black mask')] = [
+	...SimilarItems[itemID('Slayer helmet')],
+	itemID('Black mask (i)'),
+	itemID('Black mask (1)'),
+	itemID('Black mask (2)'),
+	itemID('Black mask (3)'),
+	itemID('Black mask (4)'),
+	itemID('Black mask (5)'),
+	itemID('Black mask (6)'),
+	itemID('Black mask (7)'),
+	itemID('Black mask (8)'),
+	itemID('Black mask (9)'),
+	itemID('Black mask (10)')
+];
+
+SimilarItems[itemID('Black mask (i)')] = [...SimilarItems[itemID('Slayer helmet (i)')]];
+SimilarItems[itemID('Nosepeg')] = [...SimilarItems[itemID('Slayer helmet')]];
+SimilarItems[itemID('Earmuffs')] = [...SimilarItems[itemID('Slayer helmet')]];
+SimilarItems[itemID('Spiny helmet')] = [...SimilarItems[itemID('Slayer helmet')]];
+SimilarItems[itemID('Facemask')] = [...SimilarItems[itemID('Slayer helmet')]];
+// Uncomment then Reinforced goggles is added to item_data.json
+// SimilarItems[itemID('Reinforced goggles')] = [...SimilarItems[itemID('Slayer helmet')]];
+
+export function getSimilarItems(itemID: number) {
+	return [...(SimilarItems[itemID] ?? []), itemID];
+}
 
 export default SimilarItems;
