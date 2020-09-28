@@ -481,7 +481,8 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Trident of the seas')]: resolveItems([
 		'Trident of the seas (full)',
 		'Trident of the seas (e)'
-	])
+	]),
+	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)'])
 };
 
 export default SimilarItems;
