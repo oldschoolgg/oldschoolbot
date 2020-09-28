@@ -59,10 +59,10 @@ const regularTable = new LootTable()
 
 	/* Food */
 	.add('Grapes', 10, 3)
-	.add('Shark', [1, 200], 3)
-	.add('Raw shark', [1, 200], 3)
-	.add('Manta ray', [1, 200], 2)
-	.add('Raw manta ray', [1, 200], 2)
+	.add('Shark', [1, 50], 3)
+	.add('Raw shark', [1, 50], 3)
+	.add('Manta ray', [1, 50], 2)
+	.add('Raw manta ray', [1, 50], 2)
 	.add('Grapes', [2, 50])
 
 	/* Other */
@@ -85,7 +85,7 @@ export const AbyssalDragonLootTable = new LootTable()
 	.every(regularTable, 4)
 
 	/* Tertiary */
-	.tertiary(2, clueTable)
+	.tertiary(3, clueTable)
 	.tertiary(300, petTrollTable)
 	.tertiary(2400, 'Abyssal cape')
 	.tertiary(1024, 'Abyssal thread');
