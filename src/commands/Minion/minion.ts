@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
@@ -484,6 +485,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
 			timeToFinish *= 0.6;
 			boosts.push(`40% boost for Dwarven warhammer`);
+		}
+
+		if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
+			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter lance'))) {
+				timeToFinish *= 0.8;
+				boosts.push(`20% boost for Dragon hunter lance`);
+			}
 		}
 
 		// If no quantity provided, set it to the max.

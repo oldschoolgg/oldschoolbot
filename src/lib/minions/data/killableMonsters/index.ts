@@ -393,17 +393,16 @@ const killableMonsters: KillableMonster[] = [
 			GearStat.AttackRanged
 		],
 		minimumGearRequirements: {
-			[GearStat.AttackStab]: 120,
+			[GearStat.AttackStab]: 100,
 			[GearStat.DefenceStab]: 150,
-			[GearStat.DefenceSlash]: 180,
+			[GearStat.DefenceSlash]: 150,
 			[GearStat.DefenceMagic]: -20,
 			[GearStat.DefenceRanged]: 150
 		},
 		itemInBankBoosts: {
 			[itemID('Saradomin godsword')]: 5,
 			[itemID('Dragon warhammer')]: 5,
-			[itemID('Bandos godsword')]: 5,
-			[itemID('Dragon hunter lance')]: 10
+			[itemID('Bandos godsword')]: 5
 		},
 		itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
 		groupKillable: true,
@@ -411,7 +410,7 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 99
 		},
-		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori']),
+		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 		notifyDrops: resolveItems(['Abyssal cape', 'Ori'])
 	}
 ];
