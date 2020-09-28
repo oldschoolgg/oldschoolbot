@@ -472,7 +472,10 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Ranger hat')]: resolveItems(['Ranger hat (l)']),
 	[itemID('Healer hat')]: resolveItems(['Healer hat (l)']),
 	[itemID('Fighter torso')]: resolveItems(['Fighter torso (l)']),
-	[itemID('Penance skirt')]: resolveItems(['Penance skirt (l)'])
+	[itemID('Trident of the seas')]: resolveItems([
+		'Trident of the seas (full)',
+		'Trident of the seas (e)'
+	])
 };
 
 export default SimilarItems;
