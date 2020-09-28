@@ -1298,13 +1298,7 @@ export const miscLog = {
 
 export const customBossLog = {
 	'King Goldmar': resolveItems(['Dwarven warhammer', 'Dwarven ore', 'Dwarven crate']),
-	Malygos: resolveItems([
-		'Abyssal thread',
-		'Abyssal cape',
-		'Dragon hunter lance',
-		'Dragon hunter crossbow',
-		'Ori'
-	])
+	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori'])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
