@@ -9,6 +9,7 @@ import { canvasImageFromBuffer } from '../../util';
 import { drawItemQuantityText } from '../../util/drawItemQuantityText';
 import { drawTitleText } from '../../util/drawTitleText';
 import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
+import { maxDefenceStats, maxOffenceStats } from '../data/maxGearStats';
 import readableGearTypeName from './readableGearTypeName';
 import { sumOfSetupStats } from './sumOfSetupStats';
 
@@ -38,17 +39,22 @@ let borderCorner: Image | null = null;
 let borderHorizontal: Image | null = null;
 let borderVertical: Image | null = null;
 
-async function getBorders(canvas: Canvas) {
-	borderCorner =
-		borderCorner ??
-		(await canvasImageFromBuffer(fs.readFileSync('./resources/images/bank_border_c.png')));
-	borderHorizontal =
-		borderHorizontal ??
-		(await canvasImageFromBuffer(fs.readFileSync('./resources/images/bank_border_h.png')));
-	borderVertical =
-		borderVertical ??
-		(await canvasImageFromBuffer(fs.readFileSync('./resources/images/bank_border_v.png')));
-	drawBorder(canvas);
+async function getBorders() {
+	if (!borderCorner) {
+		borderCorner = await canvasImageFromBuffer(
+			fs.readFileSync('./resources/images/bank_border_c.png')
+		);
+	}
+	if (!borderHorizontal) {
+		borderHorizontal = await canvasImageFromBuffer(
+			fs.readFileSync('./resources/images/bank_border_h.png')
+		);
+	}
+	if (!borderVertical) {
+		borderVertical = await canvasImageFromBuffer(
+			fs.readFileSync('./resources/images/bank_border_v.png')
+		);
+	}
 }
 
 function drawBorder(canvas: Canvas) {
@@ -110,17 +116,15 @@ function drawBorder(canvas: Canvas) {
 	ctx.restore();
 }
 
-function drawText(canvas: Canvas, text: string, x: number, y: number, shadow = true) {
+function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = true) {
 	const ctx = canvas.getContext('2d');
-	if (shadow) {
-		ctx.fillStyle = '#000000';
-		fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
-	}
-	const texts = text.split(':');
-	if (texts.length > 1) {
+	ctx.fillStyle = '#000000';
+	fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
+	if (text.includes(':')) {
+		const texts = text.split(':');
 		for (let i = 0; i < texts.length; i++) {
 			const t = texts[i] + (i === 0 ? ': ' : '');
-			ctx.fillStyle = i === 0 ? '#ff981f' : '#ffffff';
+			ctx.fillStyle = i === 0 ? '#ff981f' : maxStat ? '#00ff00' : '#ffffff';
 			fillTextXTimesInCtx(
 				ctx,
 				t,
@@ -152,7 +156,10 @@ export async function generateGearImage(
 
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 
-	await getBorders(canvas);
+	if (!borderCorner || !borderVertical || !borderHorizontal) {
+		await getBorders();
+	}
+	drawBorder(canvas);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
@@ -160,48 +167,107 @@ export async function generateGearImage(
 
 	// Draw stats
 	ctx.save();
-	drawTitleText(ctx, 'Gear stats', 218 + Math.floor(232 / 2), 25);
-	ctx.restore();
-	ctx.save();
 	ctx.translate(225, 0);
-	ctx.font = '15px OSRSFontCompact';
+	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'start';
-	drawText(canvas, `Attack bonus`, 0, 50, true);
-	drawText(canvas, `Stab: ${gearStats.attack_stab}`, 0, 68);
-	drawText(canvas, `Slash: ${gearStats.attack_slash}`, 0, 86);
-	drawText(canvas, `Crush: ${gearStats.attack_crush}`, 0, 104);
-	drawText(canvas, `Ranged: ${gearStats.attack_ranged}`, 0, 122);
-	drawText(canvas, `Magic: ${gearStats.attack_magic}`, 0, 140);
+	drawText(canvas, `Attack bonus`, 0, 25);
+	ctx.font = '16px OSRSFontCompact';
+	drawText(
+		canvas,
+		`Stab: ${gearStats.attack_stab}`,
+		0,
+		50,
+		maxOffenceStats.attack_stab === gearStats.attack_stab
+	);
+	drawText(
+		canvas,
+		`Slash: ${gearStats.attack_slash}`,
+		0,
+		68,
+		maxOffenceStats.attack_slash === gearStats.attack_slash
+	);
+	drawText(
+		canvas,
+		`Crush: ${gearStats.attack_crush}`,
+		0,
+		86,
+		maxOffenceStats.attack_crush === gearStats.attack_crush
+	);
+	drawText(
+		canvas,
+		`Ranged: ${gearStats.attack_ranged}`,
+		0,
+		104,
+		maxOffenceStats.attack_ranged === gearStats.attack_ranged
+	);
+	drawText(
+		canvas,
+		`Magic: ${gearStats.attack_magic}`,
+		0,
+		122,
+		maxOffenceStats.attack_magic === gearStats.attack_magic
+	);
 	ctx.restore();
 	ctx.save();
 	ctx.translate(canvas.width - borderVertical?.width! * 2, 0);
-	ctx.font = '15px OSRSFontCompact';
+	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'end';
-	drawText(canvas, `Defence bonus`, 0, 50, true);
-	drawText(canvas, `Stab: ${gearStats.defence_stab}`, 0, 68);
-	drawText(canvas, `Slash: ${gearStats.defence_slash}`, 0, 86);
-	drawText(canvas, `Crush: ${gearStats.defence_crush}`, 0, 104);
-	drawText(canvas, `Ranged: ${gearStats.defence_ranged}`, 0, 122);
-	drawText(canvas, `Magic: ${gearStats.defence_magic}`, 0, 140);
+	drawText(canvas, `Defence bonus`, 0, 25);
+	ctx.font = '16px OSRSFontCompact';
+	drawText(
+		canvas,
+		`Stab: ${gearStats.defence_stab}`,
+		0,
+		50,
+		maxDefenceStats.defence_stab === gearStats.defence_stab
+	);
+	drawText(
+		canvas,
+		`Slash: ${gearStats.defence_slash}`,
+		0,
+		68,
+		maxDefenceStats.defence_slash === gearStats.defence_slash
+	);
+	drawText(
+		canvas,
+		`Crush: ${gearStats.defence_crush}`,
+		0,
+		86,
+		maxDefenceStats.defence_crush === gearStats.defence_crush
+	);
+	drawText(
+		canvas,
+		`Ranged: ${gearStats.defence_ranged}`,
+		0,
+		104,
+		maxDefenceStats.defence_ranged === gearStats.defence_ranged
+	);
+	drawText(
+		canvas,
+		`Magic: ${gearStats.defence_magic}`,
+		0,
+		122,
+		maxDefenceStats.defence_magic === gearStats.defence_magic
+	);
 	ctx.textAlign = 'center';
 	ctx.restore();
-	drawTitleText(ctx, 'Others', 210 + Math.floor(232 / 2), 158);
+	drawTitleText(ctx, 'Others', 210 + Math.floor(232 / 2), 140);
 	ctx.restore();
 	ctx.save();
 	ctx.translate(225, 0);
-	ctx.font = '15px OSRSFontCompact';
+	ctx.font = '16px OSRSFontCompact';
 	ctx.textAlign = 'start';
-	drawText(canvas, `Melee Str.: ${gearStats.melee_strength}`, 0, 183);
-	drawText(canvas, `Ranged Str.: ${gearStats.ranged_strength}`, 0, 201);
-	drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 219);
+	drawText(canvas, `Melee Str.: ${gearStats.melee_strength}`, 0, 165, false);
+	drawText(canvas, `Ranged Str.: ${gearStats.ranged_strength}`, 0, 183, false);
+	// drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 	ctx.save();
 	ctx.translate(canvas.width - borderVertical?.width! * 2, 0);
-	ctx.font = '15px OSRSFontCompact';
+	ctx.font = '16px OSRSFontCompact';
 	ctx.textAlign = 'end';
-	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)} %`, 0, 183);
-	drawText(canvas, `Prayer: ${gearStats.prayer}`, 0, 201);
-	drawText(canvas, `Slayer: ${(0).toFixed(1)} %`, 0, 219);
+	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
+	drawText(canvas, `Prayer: ${gearStats.prayer}`, 0, 183, false);
+	// drawText(canvas, `Slayer: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 
 	// Draw items
