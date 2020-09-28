@@ -362,6 +362,12 @@ const SimilarItems: Record<number, number[]> = {
 		'Rune shield (h3)',
 		'Rune shield (h4)',
 		'Rune shield (h5)',
+		'Zamorak kiteshield',
+		'Guthix kiteshield',
+		'Saradomin kiteshield',
+		'Ancient kiteshield',
+		'Armadyl kiteshield',
+		'Bandos kiteshield',
 		'Gilded kiteshield'
 	]),
 	[itemID('Rune med helm')]: resolveItems(['Gilded med helm']),
