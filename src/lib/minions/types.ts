@@ -11,7 +11,6 @@ import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { LevelRequirements } from '../skilling/types';
 import { ArrayItemsResolved, Bank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
-import { GearStat } from './../gear/types';
 
 export interface BankBackground {
 	image: Image | null;

@@ -325,20 +325,44 @@ export const NightmareMonster: KillableMonster = {
 	wildy: false,
 	canBeKilled: false,
 	difficultyRating: 7,
-	notifyDrops: resolveItems([]),
+	notifyDrops: resolveItems([
+		'Little nightmare',
+		'Jar of dreams',
+		'Nightmare staff',
+		"Inquisitor's great helm",
+		"Inquisitor's hauberk",
+		"Inquisitor's plateskirt",
+		"Inquisitor's mace",
+		'Eldritch orb',
+		'Harmonised orb',
+		'Volatile orb'
+	]),
 	qpRequired: 10,
 	groupKillable: true,
 	respawnTime: Time.Minute * 1.5,
 	levelRequirements: {
 		prayer: 43
 	},
-	uniques: [],
+	uniques: resolveItems([
+		'Little nightmare',
+		'Jar of dreams',
+		'Nightmare staff',
+		"Inquisitor's great helm",
+		"Inquisitor's hauberk",
+		"Inquisitor's plateskirt",
+		"Inquisitor's mace",
+		'Eldritch orb',
+		'Harmonised orb',
+		'Volatile orb'
+	]),
 	healAmountNeeded: 40 * 20,
 	attackStyleToUse: GearSetupTypes.Melee,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
-		[GearStat.DefenceSlash]: 150,
-		[GearStat.AttackCrush]: 80
+		[GearSetupTypes.Melee]: {
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.AttackCrush]: 80
+		}
 	}
 };
 
