@@ -1,8 +1,9 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Items, Util } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -14,7 +15,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [name]: [string]) {
-		const item = Items.get(name);
+		const item = getOSItem(name);
 		if (!item) return msg.send(`Couldn't find that item.`);
 
 		const priceOfItem = await this.client.fetchItemPrice(item.id);
@@ -22,11 +23,25 @@ export default class extends BotCommand {
 		const embed = new MessageEmbed()
 			.setTitle(item.name)
 			.setColor(52224)
-			.setThumbnail(
-				`https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/cache/item/icon/${item.id}.png`
-			)
 			.setDescription(`${priceOfItem.toLocaleString()} (${Util.toKMB(priceOfItem)})`);
-
-		return msg.send({ embed });
+		let toReturn = {};
+		if (item.custom && item.icon) {
+			embed.setThumbnail(`attachment://icon.png`);
+			toReturn = {
+				embed,
+				files: [
+					{
+						attachment: `./icon_cache/${item.id}.png`,
+						name: 'icon.png'
+					}
+				]
+			};
+		} else {
+			embed.setThumbnail(
+				`https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/cache/item/icon/${item.id}.png`
+			);
+			toReturn = { embed };
+		}
+		return msg.send(toReturn);
 	}
 }
