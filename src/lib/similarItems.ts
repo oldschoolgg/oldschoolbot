@@ -91,12 +91,33 @@ const SimilarItems: Record<number, number[]> = {
 		"Ancient d'hide shield",
 		"Bandos d'hide shield"
 	]),
-	[itemID("Ancient d'hide boots")]: resolveItems([
-		"Armadyl d'hide boots",
-		"Bandos d'hide boots",
-		"Guthix d'hide boots",
+	[itemID("Guthix d'hide boots")]: resolveItems([
 		"Saradomin d'hide boots",
-		"Zamorak d'hide boots"
+		"Zamorak d'hide boots",
+		"Armadyl d'hide boots",
+		"Ancient d'hide boots",
+		"Bandos d'hide boots"
+	]),
+	[itemID("Guthix d'hide body")]: resolveItems([
+		"Saradomin d'hide body",
+		"Zamorak d'hide body",
+		"Armadyl d'hide body",
+		"Ancient d'hide body",
+		"Bandos d'hide body"
+	]),
+	[itemID('Guthix chaps')]: resolveItems([
+		'Saradomin chaps',
+		'Zamorak chaps',
+		'Armadyl chaps',
+		'Ancient chaps',
+		'Bandos chaps'
+	]),
+	[itemID("Guthix d'hide shield")]: resolveItems([
+		"Saradomin d'hide shield",
+		"Zamorak d'hide shield",
+		"Armadyl d'hide shield",
+		"Ancient d'hide shield",
+		"Bandos d'hide shield"
 	]),
 	[itemID("Monk's robe top")]: resolveItems(["Monk's robe top (t)", "Monk's robe top (g)"]),
 	[itemID("Monk's robe")]: resolveItems(["Monk's robe (t)", "Monk's robe (t)"]),
@@ -515,11 +536,29 @@ export function getSimilarItems(itemID: number) {
 }
 
 // Adds dependant items
-SimilarItems[itemID("Armadyl d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
-SimilarItems[itemID("Bandos d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
-SimilarItems[itemID("Guthix d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
-SimilarItems[itemID("Saradomin d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
-SimilarItems[itemID("Zamorak d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
+SimilarItems[itemID("Saradomin d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
+SimilarItems[itemID("Zamorak d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
+SimilarItems[itemID("Armadyl d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
+SimilarItems[itemID("Ancient d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
+SimilarItems[itemID("Bandos d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
+
+SimilarItems[itemID("Saradomin d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
+SimilarItems[itemID("Zamorak d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
+SimilarItems[itemID("Armadyl d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
+SimilarItems[itemID("Ancient d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
+SimilarItems[itemID("Bandos d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
+
+SimilarItems[itemID('Saradomin chaps')] = getSimilarItems(itemID('Guthix chaps'));
+SimilarItems[itemID('Zamorak chaps')] = getSimilarItems(itemID('Guthix chaps'));
+SimilarItems[itemID('Armadyl chaps')] = getSimilarItems(itemID('Guthix chaps'));
+SimilarItems[itemID('Ancient chaps')] = getSimilarItems(itemID('Guthix chaps'));
+SimilarItems[itemID('Bandos chaps')] = getSimilarItems(itemID('Guthix chaps'));
+
+SimilarItems[itemID("Saradomin d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
+SimilarItems[itemID("Zamorak d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
+SimilarItems[itemID("Armadyl d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
+SimilarItems[itemID("Ancient d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
+SimilarItems[itemID("Bandos d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
 
 SimilarItems[itemID('Saradomin cape')] = getSimilarItems(itemID('Guthix cape'));
 SimilarItems[itemID('Zamorak cape')] = getSimilarItems(itemID('Guthix cape'));
