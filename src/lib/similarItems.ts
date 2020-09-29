@@ -1,3 +1,4 @@
+import { removeDuplicatesFromArray } from './util';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
@@ -11,7 +12,7 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Dragon sq shield')]: resolveItems(['Dragon sq shield (g)']),
 	[itemID('Dragon kiteshield')]: resolveItems(['Dragon kiteshield (g)']),
 	[itemID('Dragon scimitar')]: resolveItems(['Dragon scimitar (or)']),
-	[itemID('Dragon defender')]: resolveItems(['Dragon defender (t)']),
+	[itemID('Dragon defender')]: resolveItems(['Dragon defender (t)', 'Dragon defender (l)']),
 	[itemID('Dragon boots')]: resolveItems(['Dragon boots (g)']),
 	[itemID('Armadyl godsword')]: resolveItems(['Armadyl godsword (or)']),
 	[itemID('Bandos godsword')]: resolveItems(['Bandos godsword (or)']),
@@ -52,7 +53,7 @@ const SimilarItems: Record<number, number[]> = {
 	// 23332 = Rune scimitar (saradomin)
 	// 23334 = Rune scimitar (zamorak)
 	[itemID('Rune scimitar')]: resolveItems([23330, 23332, 23334, 'Gilded scimitar']),
-	[itemID('Rune defender')]: resolveItems(['Rune defender (t)']),
+	[itemID('Rune defender')]: resolveItems(['Rune defender (t)', 'Rune defender (l)']),
 	[itemID("Green d'hide body")]: resolveItems(["Green d'hide body (g)", "Green d'hide body (t)"]),
 	[itemID("Green d'hide chaps")]: resolveItems([
 		"Green d'hide chaps (g)",
@@ -90,8 +91,15 @@ const SimilarItems: Record<number, number[]> = {
 		"Ancient d'hide shield",
 		"Bandos d'hide shield"
 	]),
-	[itemID("Monk's robe top")]: resolveItems(["Monk's robe top (t)"]),
-	[itemID("Monk's robe")]: resolveItems(["Monk's robe (t)"]),
+	[itemID("Ancient d'hide boots")]: resolveItems([
+		"Armadyl d'hide boots",
+		"Bandos d'hide boots",
+		"Guthix d'hide boots",
+		"Saradomin d'hide boots",
+		"Zamorak d'hide boots"
+	]),
+	[itemID("Monk's robe top")]: resolveItems(["Monk's robe top (t)", "Monk's robe top (g)"]),
+	[itemID("Monk's robe")]: resolveItems(["Monk's robe (t)", "Monk's robe (t)"]),
 	[itemID('Amulet of defence')]: resolveItems(['Amulet of defence (t)']),
 	[itemID('Amulet of magic')]: resolveItems(['Amulet of magic (t)']),
 	[itemID('Wooden shield')]: resolveItems(['Wooden shield (g)']),
@@ -443,19 +451,21 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Mythical cape')]: resolveItems(['Mythical max cape']),
 	[itemID('Imbued guthix cape')]: resolveItems([
 		'Imbued guthix max cape',
-		'Imbued guthix max cape (l)'
-	]),
-	[itemID('Imbued saradomin cape')]: resolveItems([
+		'Imbued guthix max cape (l)',
+		'Imbued saradomin cape',
 		'Imbued saradomin max cape',
-		'Imbued saradomin max cape (l)'
-	]),
-	[itemID('Imbued zamorak cape')]: resolveItems([
+		'Imbued saradomin max cape (l)',
+		'Imbued zamorak cape',
 		'Imbued zamorak max cape',
 		'Imbued zamorak max cape (l)'
 	]),
-	[itemID('Guthix cape')]: resolveItems(['Guthix max cape']),
-	[itemID('Saradomin cape')]: resolveItems(['Saradomin max cape']),
-	[itemID('Zamorak cape')]: resolveItems(['Zamorak max cape']),
+	[itemID('Guthix cape')]: resolveItems([
+		'Saradomin cape',
+		'Zamorak cape',
+		'Guthix max cape',
+		'Saradomin max cape',
+		'Zamorak max cape'
+	]),
 	[itemID('Rune pouch')]: resolveItems(['Rune pouch (l)']),
 	[itemID('Bronze defender')]: resolveItems(['Bronze defender (l)']),
 	[itemID('Iron defender')]: resolveItems(['Iron defender (l)']),
@@ -463,15 +473,21 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Black defender')]: resolveItems(['Black defender (l)']),
 	[itemID('Mithril defender')]: resolveItems(['Mithril defender (l)']),
 	[itemID('Adamant defender')]: resolveItems(['Adamant defender (l)']),
-	[itemID('Rune defender')]: resolveItems(['Rune defender (l)']),
-	[itemID('Dragon defender')]: resolveItems(['Dragon defender (l)']),
 	[itemID('Avernic defender')]: resolveItems(['Avernic defender (l)']),
 	[itemID('Void melee helm')]: resolveItems(['Void melee helm (l)']),
 	[itemID('Void mage helm')]: resolveItems(['Void mage helm (l)']),
 	[itemID('Void ranger helm')]: resolveItems(['Void ranger helm (l)']),
-	[itemID('Void knight top')]: resolveItems(['Void knight top (l)']),
+	[itemID('Void knight top')]: resolveItems([
+		'Void knight top (l)',
+		'Elite void top',
+		'Elite void top (l)'
+	]),
 	[itemID('Elite void top')]: resolveItems(['Elite void top (l)']),
-	[itemID('Void knight robe')]: resolveItems(['Void knight robe (l)']),
+	[itemID('Void knight robe')]: resolveItems([
+		'Void knight robe (l)',
+		'Elite void robe',
+		'Elite void robe (l)'
+	]),
 	[itemID('Elite void robe')]: resolveItems(['Elite void robe (l)']),
 	[itemID('Void knight gloves')]: resolveItems(['Void knight gloves (l)']),
 	[itemID('Fighter hat')]: resolveItems(['Fighter hat (l)']),
@@ -494,7 +510,23 @@ const SimilarItems: Record<number, number[]> = {
 	])
 };
 
+export function getSimilarItems(itemID: number) {
+	return removeDuplicatesFromArray([...(SimilarItems[itemID] ?? []), itemID]);
+}
+
 // Adds dependant items
+SimilarItems[itemID("Armadyl d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
+SimilarItems[itemID("Bandos d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
+SimilarItems[itemID("Guthix d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
+SimilarItems[itemID("Saradomin d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
+SimilarItems[itemID("Zamorak d'hide boots")] = getSimilarItems(itemID("Ancient d'hide boots"));
+
+SimilarItems[itemID('Saradomin cape')] = getSimilarItems(itemID('Guthix cape'));
+SimilarItems[itemID('Zamorak cape')] = getSimilarItems(itemID('Guthix cape'));
+
+SimilarItems[itemID('Imbued saradomin cape')] = getSimilarItems(itemID('Imbued guthix cape'));
+SimilarItems[itemID('Imbued zamorak cape')] = getSimilarItems(itemID('Imbued guthix cape'));
+
 SimilarItems[itemID('Slayer helmet')] = [
 	...SimilarItems[itemID('Slayer helmet (i)')],
 	...resolveItems([
@@ -529,9 +561,5 @@ SimilarItems[itemID('Spiny helmet')] = [...SimilarItems[itemID('Slayer helmet')]
 SimilarItems[itemID('Facemask')] = [...SimilarItems[itemID('Slayer helmet')]];
 // Uncomment then Reinforced goggles is added to item_data.json
 // SimilarItems[itemID('Reinforced goggles')] = [...SimilarItems[itemID('Slayer helmet')]];
-
-export function getSimilarItems(itemID: number) {
-	return [...(SimilarItems[itemID] ?? []), itemID];
-}
 
 export default SimilarItems;
