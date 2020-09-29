@@ -208,39 +208,44 @@ export default class extends BotCommand {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
 				if (msg.author.numItemsInBankSync(parseInt(seedID)) > 0) {
 					quantity = msg.author.numItemsInBankSync(parseInt(seedID));
-					newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
 				} else {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}
-			} else if (bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
-				newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
 			}
-		}
 
-		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
-			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
-			if (!hasCompostType) {
-				throw `You dont have ${quantity}x ${upgradeType}.`;
+			if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
+				const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
+				if (!hasCompostType) {
+					throw `You dont have ${quantity}x ${upgradeType}.`;
+				}
+			} else if (
+				bankHasItem(userBank, itemID('compost'), quantity) &&
+				plants.canCompostPatch
+			) {
+				upgradeType = 'compost';
+				infoStr.push(`You are treating all of your patches with compost.`);
 			}
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
-		} else if (bankHasItem(userBank, itemID('compost'), quantity) && plants.canCompostPatch) {
-			upgradeType = 'compost';
-			infoStr.push(`You are treating all of your patches with compost.`);
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
-		}
 
-		if (payment) {
-			if (!plants.protectionPayment) return;
-			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
-			for (const [itemID, qty] of requiredPayment) {
-				if (!bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
-					throw `You don't have enough ${itemNameFromID(
-						parseInt(itemID)
-					)} to make payments to nearby farmers.`;
-				} else if (bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
-					newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
+			if (payment) {
+				if (!plants.protectionPayment) return;
+				const requiredPayment: [string, number][] = Object.entries(
+					plants.protectionPayment
+				);
+				for (const [paymentID, qty] of requiredPayment) {
+					if (!bankHasItem(userBank, parseInt(paymentID), qty * quantity)) {
+						throw `You don't have enough ${itemNameFromID(
+							parseInt(paymentID)
+						)} to make payments to nearby farmers.`;
+					}
+
+					newBank = removeItemFromBank(newBank, parseInt(paymentID), qty * quantity);
 				}
 			}
+
+			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
+			upgradeType !== null
+				? (newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity))
+				: newBank;
 		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
