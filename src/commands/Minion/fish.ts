@@ -88,12 +88,12 @@ export default class extends BotCommand {
 
 		let duration = quantity * scaledTimePerFish;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${
 				fish.name
-			} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`;
+			} you can fish is ${Math.floor(maxTripLength / scaledTimePerFish)}.`;
 		}
 
 		if (fish.bait) {
