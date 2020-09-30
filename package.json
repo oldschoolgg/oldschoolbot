@@ -1,10 +1,11 @@
 {
 	"scripts": {
 		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
+		"checklint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
 		"build": "yarn wipedist && tsc -p .",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\"",
-		"test": "jest",
+		"test": "yarn checklint && jest",
 		"test:watch": "jest --watch",
 		"dev": "yarn wipedist && tsc -p . -w"
 	},
