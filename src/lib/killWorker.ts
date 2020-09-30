@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+import { Misc, Monsters } from 'oldschooljs';
 import { expose } from 'threads';
 
 import sarachnis = require('../../data/monsters/sarachnis');
@@ -19,6 +19,8 @@ import wintertodt = require('../../data/monsters/wintertodt');
 import kraken = require('../../data/monsters/kraken');
 import obor = require('../../data/monsters/obor');
 import bryophyta = require('../../data/monsters/bryophyta');
+import { addBanks } from 'oldschooljs/dist/util/bank';
+
 import { KillWorkerOptions } from './types';
 
 export function cleanString(str: string) {
@@ -45,6 +47,20 @@ expose({
 			}
 
 			return osjsMonster.kill(quantity, {});
+		}
+
+		if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
+			let bank = {};
+			if (quantity > 10_000) {
+				return `I can only kill a maximum of 10k nightmares a time!`;
+			}
+			for (let i = 0; i < quantity; i++) {
+				bank = addBanks([
+					bank,
+					Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }] }).id
+				]);
+			}
+			return bank;
 		}
 
 		switch (cleanString(bossName)) {

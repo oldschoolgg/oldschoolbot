@@ -3,14 +3,13 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Crafting from '../../lib/skilling/skills/crafting/crafting';
+import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -119,17 +118,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		const data: CraftingActivityTaskOptions = {
-			craftableID: Craft.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Crafting,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the required items from their bank.
 		let newBank = { ...userBank };
 		for (const [itemID, qty] of requiredItems) {
@@ -141,7 +129,18 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<CraftingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				craftableID: Craft.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Crafting
+			}
+		);
 
 		return msg.send(
 			`${msg.author.minionName} is now crafting ${quantity}x ${

@@ -15,7 +15,6 @@ import {
 	bankHasItem,
 	calcWhatPercent,
 	formatDuration,
-	rand,
 	reduceNumByPercent
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -128,18 +127,18 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		const data: WintertodtActivityTaskOptions = {
-			minigameID: MinigameIDsEnum.Wintertodt,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Wintertodt,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(
+			this.client,
+			Tasks.MinigameTicker,
+			{
+				minigameID: MinigameIDsEnum.Wintertodt,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Wintertodt
+			}
+		);
 
 		return msg.send(
 			`${

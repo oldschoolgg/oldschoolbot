@@ -344,7 +344,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 	async skills(msg: KlasaMessage, [inputSkill = 'overall']: [string]) {
 		let res: SkillUser[] = [];
-		const skill = Skills.find(_skill =>
+		const skill = Object.values(Skills).find(_skill =>
 			_skill.aliases.some(name => stringMatches(name, inputSkill))
 		);
 

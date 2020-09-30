@@ -13,6 +13,7 @@ import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
+export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
@@ -286,4 +287,16 @@ export function stripEmojis(str: string) {
 export function round(value = 1, precision = 1) {
 	const multiplier = Math.pow(10, precision || 0);
 	return Math.round(value * multiplier) / multiplier;
+}
+
+export function entries<T extends {}>(obj: T) {
+	return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
+export function values<T extends {}>(obj: T) {
+	return Object.values(obj) as T[keyof T][];
+}
+
+export function keys<T extends {}>(obj: T) {
+	return Object.keys(obj) as (keyof T)[];
 }

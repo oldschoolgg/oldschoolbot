@@ -6,7 +6,7 @@ import { ActivityTaskOptions } from '../types/minions';
 export default function removeSubTasksFromActivityTask(
 	client: Client,
 	taskName: Tasks,
-	subTasksToRemove: number[]
+	subTasksToRemove: string[]
 ) {
 	const task = client.schedule.tasks.find(_task => _task.taskName === taskName);
 

@@ -8,16 +8,12 @@ import getOSItem from '../lib/util/getOSItem';
 export default class extends Argument {
 	async run(itemName: string): Promise<Item[]> {
 		// guarantee all characters are numbers
-		if (
-			!isNaN(parseInt(itemName)) &&
-			parseInt(itemName).toString().length === itemName.length
-		) {
-			return [getOSItem(parseInt(itemName))];
+		const parsed = Number(itemName);
+		if (!isNaN(parsed)) {
+			return [getOSItem(parsed)];
 		}
-
 		const osItems = Items.filter(i => stringMatches(i.name, itemName)).array() as Item[];
 		if (!osItems.length) throw `${itemName} doesnt exist.`;
-
 		return osItems;
 	}
 }

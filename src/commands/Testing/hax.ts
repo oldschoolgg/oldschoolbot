@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			return;
 		}
 
-		const paths = Skills.map(sk => `skills.${sk.id}`);
+		const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
 
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);

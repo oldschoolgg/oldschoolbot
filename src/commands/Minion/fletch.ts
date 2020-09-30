@@ -4,18 +4,18 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Fletching from '../../lib/skilling/skills/fletching/fletching';
+import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -80,14 +80,13 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToFletchSingleItem);
 			for (const [itemID, qty] of requiredItems) {
-				const itemsOwned = userBank[parseInt(itemID)];
+				const itemsOwned = userBank[getOSItem(itemID).id] ?? 0;
 				if (itemsOwned < qty) {
-					throw `You dont have enough ${itemNameFromID(parseInt(itemID))}.`;
+					throw `You dont have enough **${getOSItem(itemID).name}**.`;
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
 		}
-
 		const duration = quantity * timeToFletchSingleItem;
 
 		if (duration > msg.author.maxTripLength) {
@@ -100,22 +99,11 @@ export default class extends BotCommand {
 
 		// Check the user has the required items to fletch.
 		for (const [itemID, qty] of requiredItems) {
-			const id = parseInt(itemID);
+			const { id } = getOSItem(itemID);
 			if (!bankHasItem(userBank, id, qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(id)}.`;
+				throw `You don't have enough **${itemNameFromID(id)}**.`;
 			}
 		}
-
-		const data: FletchingActivityTaskOptions = {
-			fletchableName: fletchableItem.name,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Fletching,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
 
 		// Remove the required items from their bank.
 		let newBank = { ...userBank };
@@ -124,7 +112,18 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<FletchingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				fletchableName: fletchableItem.name,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Fletching
+			}
+		);
 
 		return msg.send(
 			`${msg.author.minionName} is now Fletching ${quantity} ${sets} ${

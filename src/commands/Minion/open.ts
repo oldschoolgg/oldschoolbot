@@ -58,6 +58,7 @@ export default class extends BotCommand {
 			return msg.send(await this.showAvailable(msg));
 		}
 
+		await msg.author.settings.sync(true);
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
@@ -96,7 +97,7 @@ export default class extends BotCommand {
 
 		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${
 			quantity > 1 ? 's' : ''
-		} ${mimicNumber > 0 ? ` defeating ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
+		} ${mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
 
 		const nthCasket =
 			(msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;

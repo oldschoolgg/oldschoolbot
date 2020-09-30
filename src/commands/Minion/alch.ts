@@ -17,7 +17,6 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import resolveItems from '../../lib/util/resolveItems';
-import { rand } from '../../util';
 
 const options = {
 	max: 1,
@@ -131,19 +130,19 @@ export default class extends BotCommand {
 			removeBankFromBank(userBank, consumedItems)
 		);
 
-		const data: AlchingActivityTaskOptions = {
-			itemID: osItem.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			alchValue,
-			type: Activity.Alching,
-			id: rand(1, 1_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				itemID: osItem.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				alchValue,
+				type: Activity.Alching
+			}
+		);
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 

@@ -6,7 +6,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, rand, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -79,21 +79,21 @@ export default class extends BotCommand {
 			}s you can light is ${Math.floor(msg.author.maxTripLength / timeToLightSingleLog)}.`;
 		}
 
-		const data: FiremakingActivityTaskOptions = {
-			burnableID: log.inputLogs,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Firemaking,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the logs from their bank.
 		await msg.author.removeItemFromBank(log.inputLogs, quantity);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				burnableID: log.inputLogs,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Firemaking
+			}
+		);
 
 		return msg.send(
 			`${msg.author.minionName} is now lighting ${quantity}x ${

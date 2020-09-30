@@ -2,18 +2,16 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks } from '../../lib/constants';
-import { Eatables } from '../../lib/eatables';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
+import { findMonster } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
+import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { MakePartyOptions } from '../../lib/types';
-import { addItemToBank, formatDuration, rand } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-
-const { ceil } = Math;
+import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -26,17 +24,6 @@ export default class extends BotCommand {
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			aliases: ['mass']
 		});
-	}
-
-	calcDurQty(users: KlasaUser[], monster: KillableMonster, quantity: number | undefined) {
-		const perKillTime = reducedTimeForGroup(users, monster);
-		const maxQty = Math.floor(users[0].maxTripLength / perKillTime);
-		if (!quantity) quantity = maxQty;
-		if (quantity > maxQty) {
-			throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
-		}
-		const duration = quantity * perKillTime - monster.respawnTime!;
-		return [quantity, duration, perKillTime];
 	}
 
 	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
@@ -59,8 +46,13 @@ export default class extends BotCommand {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
 
-			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity)) {
-				throw `${user.username} doesn't have enough food.`;
+			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
+				throw `${
+					users.length === 1 ? `You don't` : `${user.username} doesn't`
+				} have enough food. You need at least ${monster?.healAmountNeeded! *
+					quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
 	}
@@ -92,15 +84,21 @@ export default class extends BotCommand {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
 
-				if (1 > 2) {
+				if (1 > 2 && monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
 					} catch (err) {
 						return [true, err];
 					}
 
-					if (!hasEnoughFoodForMonster(monster, user, 2)) {
-						return [true, "you don't have enough food."];
+					// Ensure people have enough food for at least 2 full KC
+					// This makes it so the users will always have enough food for any amount of KC
+					if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
+						return [
+							true,
+							`You don't have enough food. You need at least ${monster.healAmountNeeded *
+								2} HP in food to enter the mass.`
+						];
 					}
 				}
 
@@ -110,61 +108,37 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
+		const [quantity, duration, perKillTime] = calcDurQty(users, monster, inputQuantity);
 
 		this.checkReqs(users, monster, quantity);
 
-		if (1 > 2) {
+		if (1 > 2 && monster.healAmountNeeded) {
 			for (const user of users) {
-				let [healAmountNeeded] = calculateMonsterFood(monster, user);
-
-				healAmountNeeded = Math.ceil(healAmountNeeded / users.length);
-
-				for (const food of Eatables) {
-					const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-					if (user.numItemsInBankSync(food.id) < amountNeeded) {
-						if (Eatables.indexOf(food) === Eatables.length - 1) {
-							throw `You don't have enough food to kill ${
-								monster.name
-							}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-								quantity} per kill) You can use these food items: ${Eatables.map(
-								i => i.name
-							).join(', ')}.`;
-						}
-						continue;
-					}
-
-					await user.removeItemFromBank(food.id, amountNeeded);
-
-					// Track this food cost in Economy Stats
-					await this.client.settings.update(
-						ClientSettings.EconomyStats.PVMCost,
-						addItemToBank(
-							this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-							food.id,
-							amountNeeded
-						)
-					);
-
-					break;
-				}
+				const [healAmountNeeded] = calculateMonsterFood(monster, user);
+				await removeFoodFromUser(
+					this.client,
+					user,
+					Math.ceil(healAmountNeeded / users.length) * quantity,
+					Math.ceil(healAmountNeeded / quantity),
+					monster.name
+				);
 			}
 		}
 
-		const data: GroupMonsterActivityTaskOptions = {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.GroupMonsterKilling,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration,
-			leader: msg.author.id,
-			users: users.map(u => u.id)
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MonsterKillingTicker, data);
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
+			this.client,
+			Tasks.MonsterKillingTicker,
+			{
+				monsterID: monster.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.GroupMonsterKilling,
+				leader: msg.author.id,
+				users: users.map(u => u.id)
+			}
+		);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

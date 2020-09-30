@@ -76,7 +76,6 @@ export const enum Emoji {
 	Fletching = '<:fletching:630911040544309258>',
 	Purple = '🟪'
 }
-
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
@@ -114,6 +113,7 @@ export const enum Tasks {
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
+	NightmareActivity = 'nightmareActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -142,7 +142,8 @@ export const enum Activity {
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
 	Alching = 'Alching',
-	Sawmill = 'Sawmill'
+	Sawmill = 'Sawmill',
+	Nightmare = 'Nightmare'
 }
 
 export const enum Events {
@@ -207,7 +208,9 @@ export const enum BitField {
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
 	IsPatronTier4 = 5,
-	IsPatronTier5 = 6
+	IsPatronTier5 = 6,
+	isModerator = 7,
+	isContributor = 8
 }
 
 export const enum PatronTierID {
@@ -222,4 +225,7 @@ export const MAX_QP = 277;
 
 export const MIMIC_MONSTER_ID = 23184;
 
-export const alphaNumericalChars = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
+export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
+
+export const NIGHTMARES_HP = 2400;
+export const ZAM_HASTA_CRUSH = 65;

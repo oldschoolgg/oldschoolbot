@@ -34,4 +34,16 @@ export class AnalyticsTable extends BaseEntity {
 
 	@Column({ type: 'bigint', nullable: true })
 	public totalGP!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public totalXP!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public dicingBank!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public duelTaxBank!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public dailiesAmount!: number;
 }
