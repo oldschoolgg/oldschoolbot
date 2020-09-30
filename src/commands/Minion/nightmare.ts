@@ -2,9 +2,8 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks } from '../../lib/constants';
-import { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
-import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -15,10 +14,13 @@ import { NightmareActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
+import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
+import { ZAM_HASTA_CRUSH } from './../../lib/constants';
+import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
-function soloMessage(user: KlasaUser, duration: number) {
+function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
-	let str = `${user.minionName} is now off to kill The Nightmare.`;
+	let str = `${user.minionName} is now off to kill The Nightmare ${quantity} times.`;
 	if (kc < 5) {
 		str += ` They are terrified to face The Nightmare, and set off to fight it with great fear.`;
 	} else if (kc < 10) {
@@ -72,14 +74,13 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	@ironsCantUse
 	async run(msg: KlasaMessage, [type]: ['mass' | 'solo']) {
 		this.checkReqs([msg.author], NightmareMonster, 2);
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
-			maxSize: 50,
+			maxSize: 10,
 			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
@@ -117,20 +118,68 @@ export default class extends BotCommand {
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
 
-		const [quantity, duration, perKillTime] = calcDurQty(users, NightmareMonster, undefined);
+		let [quantity, duration, perKillTime] = calcDurQty(users, NightmareMonster, undefined);
 
 		this.checkReqs(users, NightmareMonster, quantity);
+
+		let debugStr = '';
+		for (const user of users) {
+			const [data, debug] = getNightmareGearStats(
+				user,
+				users.map(u => u.id)
+			);
+
+			debugStr += debug;
+
+			// Increase duration for each bad weapon.
+			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
+				perKillTime *= 1.08;
+				debugStr += `8% longer duration for ${user.username} bad weapon, `;
+			}
+
+			// Increase duration for lower melee-strength gear.
+			if (data.percentMeleeStrength < 40) {
+				perKillTime *= 1.1;
+				debugStr += `10% longer duration for ${user.username} bad gear, `;
+			} else if (data.percentMeleeStrength < 50) {
+				perKillTime *= 1.07;
+				debugStr += `7% longer duration for ${user.username} bad gear, `;
+			} else if (data.percentMeleeStrength < 60) {
+				perKillTime *= 1.03;
+				debugStr += `3% longer duration for ${user.username} bad gear, `;
+			}
+
+			// Increase duration for lower KC.
+			if (data.kc < 10) {
+				perKillTime *= 1.25;
+				debugStr += `25% longer duration for ${user.username} low KC, `;
+			} else if (data.kc < 25) {
+				perKillTime *= 1.15;
+				debugStr += `15% longer duration for ${user.username} low KC, `;
+			} else if (data.kc < 50) {
+				perKillTime *= 1.05;
+				debugStr += `5% longer duration for ${user.username} low KC, `;
+			} else if (data.kc > 100) {
+				perKillTime *= 0.95;
+				debugStr += `5% faster duration for ${user.username} high KC, `;
+			} else if (data.kc > 400) {
+				perKillTime *= 0.9;
+				debugStr += `10% faster duration for ${user.username} high KC, `;
+			}
+		}
+
+		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-				await removeFoodFromUser(
+				debugStr += `\n${await removeFoodFromUser(
 					this.client,
 					user,
 					Math.ceil(healAmountNeeded / users.length) * quantity,
 					Math.ceil(healAmountNeeded / quantity),
 					NightmareMonster.name
-				);
+				)}`;
 			}
 		}
 
@@ -153,15 +202,15 @@ export default class extends BotCommand {
 
 		const str =
 			type === 'solo'
-				? soloMessage(msg.author, duration)
+				? `${soloMessage(msg.author, duration, quantity)}\n\n${debugStr}`
 				: `${partyOptions.leader.username}'s party (${users
 						.map(u => u.username)
 						.join(', ')}) is now off to kill ${quantity}x ${
 						NightmareMonster.name
 				  }. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 						NightmareMonster.timeToFinish
-				  )} - the total trip will take ${formatDuration(duration)}`;
+				  )} - the total trip will take ${formatDuration(duration)}. \n\n${debugStr}`;
 
-		return msg.channel.send(str);
+		return msg.channel.send(str, { split: true });
 	}
 }

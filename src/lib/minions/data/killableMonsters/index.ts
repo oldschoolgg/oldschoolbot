@@ -319,7 +319,7 @@ export const NightmareMonster: KillableMonster = {
 	id: 9415,
 	name: 'The Nightmare',
 	aliases: ['nightmare', 'the nightmare'],
-	timeToFinish: Time.Minute * 22,
+	timeToFinish: Time.Minute * 25,
 	table: Monsters.GeneralGraardor,
 	emoji: '<:Little_nightmare:758149284952014928>',
 	wildy: false,
@@ -339,7 +339,7 @@ export const NightmareMonster: KillableMonster = {
 	]),
 	qpRequired: 10,
 	groupKillable: true,
-	respawnTime: Time.Minute * 1.5,
+	respawnTime: Time.Minute * 2.5,
 	levelRequirements: {
 		prayer: 43
 	},

@@ -1,10 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Minigames } from '../../lib/minions/data/minigames';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { stringMatches } from '../../lib/util';
+import KillableMonsters, { NightmareMonster } from './../../lib/minions/data/killableMonsters';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -15,7 +16,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [name]: [string]): Promise<KlasaMessage> {
-		const mon = Monsters.find(
+		const mon = [...KillableMonsters, NightmareMonster].find(
 			mon =>
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
@@ -25,8 +26,11 @@ export default class extends BotCommand {
 		if (!mon && !minigame) {
 			throw `That's not a valid monster or minigame.`;
 		}
+		console.log({ mon, minigame });
+		const kc = mon
+			? msg.author.getKC((mon as unknown) as Monster)
+			: msg.author.getMinigameScore(minigame!.id);
 
-		const kc = minigame ? msg.author.getMinigameScore(minigame.id) : msg.author.getKC(mon!);
 		return msg.send(`Your ${minigame ? minigame.name : mon!.name} KC is: ${kc}.`);
 	}
 }

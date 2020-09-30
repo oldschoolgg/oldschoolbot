@@ -3,21 +3,17 @@ import { Task } from 'klasa';
 import { Misc } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { maxOtherStats } from '../../../lib/gear/data/maxGearStats';
-import { GearSetupTypes } from '../../../lib/gear/types';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, calcWhatPercent, noOp, queuedMessageSend } from '../../../lib/util';
+import { addBanks, noOp, queuedMessageSend } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
+import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { randomVariation } from '../../../lib/util/randomVariation';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
-
-const NIGHTMARES_HP = 2400;
-const ZAM_HASTA_CRUSH = 65;
 
 interface NightmareUser {
 	id: string;
@@ -39,66 +35,19 @@ export default class extends Task {
 		for (const id of users) {
 			const user = await this.client.users.fetch(id).catch(noOp);
 			if (!user) continue;
-			const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 1;
-			const weapon = user.equippedWeapon(GearSetupTypes.Melee);
-			const gearStats = user.setupStats(GearSetupTypes.Melee);
-			const percentMeleeStrength = calcWhatPercent(
-				gearStats.melee_strength,
-				maxOtherStats.melee_strength
-			);
-			const attackCrushStat = weapon?.equipment?.attack_crush ?? 0;
-			const percentWeaponAttackCrush = calcWhatPercent(attackCrushStat, 95);
-			const totalGearPercent = (percentMeleeStrength + percentWeaponAttackCrush) / 2;
-
-			let percentChanceOfDeath = Math.floor(
-				100 - (Math.log(kc) / Math.log(Math.sqrt(15))) * 50
-			);
-
-			// If they have 50% best gear, -25% chance of death.
-			percentChanceOfDeath = Math.floor(percentChanceOfDeath - totalGearPercent / 2);
-
-			// Chance of death cannot be over 90% or <2%.
-			percentChanceOfDeath = Math.max(Math.min(percentChanceOfDeath, 90), 2);
-
-			// Damage done starts off as being HP divided by user size.
-			let damageDone = NIGHTMARES_HP / users.length;
-
-			// Half it, to use a low damage amount as the base.
-			damageDone /= 2;
-
-			// If they have the BIS weapon, their damage is doubled.
-			// e.g. 75% of of the best = 1.5x damage done.
-			damageDone *= percentWeaponAttackCrush / 50;
-
-			// Heavily punish them for having a weaker crush weapon than a zammy hasta.
-			if (attackCrushStat < ZAM_HASTA_CRUSH) {
-				damageDone /= 1.5;
-			}
-
-			debug += `\n${user.username}: DamageDone[${Math.floor(
-				damageDone
-			)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
-				percentWeaponAttackCrush
-			)}%] GearStrength[${Math.floor(
-				percentMeleeStrength
-			)}%] TotalGear[${totalGearPercent}%]\n`;
-
-			parsedUsers.push({
-				id: user.id,
-				chanceOfDeath: percentChanceOfDeath,
-				damageDone
-			});
+			const [data, debugStr] = getNightmareGearStats(user, users);
+			parsedUsers.push({ ...data, id: user.id });
+			debug += debugStr;
 		}
 
 		// Store total amount of deaths
 		const deaths: Record<string, number> = {};
 
 		for (let i = 0; i < quantity; i++) {
-			// TODO: add random variation to dmg done?
 			const loot = RawNightmare.kill({
 				team: parsedUsers.map(user => ({
 					id: user.id,
-					damageDone: randomVariation(user.damageDone, 5)
+					damageDone: users.length === 1 ? 2400 : randomVariation(user.damageDone, 5)
 				}))
 			});
 
@@ -157,7 +106,7 @@ export default class extends Task {
 				if (!user) continue;
 				deaths.push(`**${user.username}**: ${qty}x`);
 			}
-			resultStr += `\n**Deaths: ${deaths.join(', ')}.`;
+			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
 		if (users.length > 1) {
@@ -165,18 +114,27 @@ export default class extends Task {
 		} else {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
-			channel.sendBankImage({
-				bank: teamsLoot[leader],
-				content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-					NightmareMonster.name
-				}. Your Nightmare KC is now ${(leaderUser.settings.get(UserSettings.MonsterScores)[
-					NightmareMonster.id
-				] ?? 0) + quantity}.`,
-				title: `${quantity}x Nightmare`,
-				background: leaderUser.settings.get(UserSettings.BankBackground),
-				user: leaderUser,
-				flags: { showNewCL: 1 }
-			});
+
+			if (!kcAmounts[leader]) {
+				channel.send(
+					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
+				);
+			} else {
+				channel.sendBankImage({
+					bank: teamsLoot[leader],
+					content: `${leaderUser}, ${
+						leaderUser.minionName
+					} finished killing ${quantity} ${NightmareMonster.name}, you died ${deaths[
+						leader
+					] ?? 0} times. Your Nightmare KC is now ${(leaderUser.settings.get(
+						UserSettings.MonsterScores
+					)[NightmareMonster.id] ?? 0) + quantity}.\n\n${debug}`,
+					title: `${quantity}x Nightmare`,
+					background: leaderUser.settings.get(UserSettings.BankBackground),
+					user: leaderUser,
+					flags: { showNewCL: 1 }
+				});
+			}
 		}
 	}
 }
