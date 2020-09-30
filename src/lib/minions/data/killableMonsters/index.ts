@@ -334,8 +334,10 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackCrush],
 		minimumGearRequirements: {
-			[GearStat.DefenceCrush]: 150,
-			[GearStat.AttackCrush]: 80
+			[GearSetupTypes.Melee]: {
+				[GearStat.DefenceCrush]: 150,
+				[GearStat.AttackCrush]: 80
+			}
 		},
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
@@ -362,8 +364,10 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic],
 		minimumGearRequirements: {
-			[GearStat.DefenceMagic]: 150,
-			[GearStat.AttackRanged]: 80
+			[GearSetupTypes.Melee]: {
+				[GearStat.DefenceMagic]: 150,
+				[GearStat.AttackRanged]: 80
+			}
 		},
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
@@ -393,11 +397,13 @@ const killableMonsters: KillableMonster[] = [
 			GearStat.AttackRanged
 		],
 		minimumGearRequirements: {
-			[GearStat.AttackStab]: 100,
-			[GearStat.DefenceStab]: 150,
-			[GearStat.DefenceSlash]: 150,
-			[GearStat.DefenceMagic]: -20,
-			[GearStat.DefenceRanged]: 150
+			[GearSetupTypes.Melee]: {
+				[GearStat.AttackStab]: 100,
+				[GearStat.DefenceStab]: 150,
+				[GearStat.DefenceSlash]: 150,
+				[GearStat.DefenceMagic]: -20,
+				[GearStat.DefenceRanged]: 150
+			}
 		},
 		itemInBankBoosts: {
 			[itemID('Saradomin godsword')]: 5,
