@@ -163,6 +163,10 @@ export default class DailyCommand extends BotCommand {
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 		}
 
+		if (roll(2500)) {
+			loot[741] = 1;
+		}
+
 		await user.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({

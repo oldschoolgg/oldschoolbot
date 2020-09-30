@@ -89,7 +89,8 @@ export const AbyssalDragonLootTable = new LootTable()
 	.tertiary(3, clueTable)
 	.tertiary(300, petTrollTable)
 	.tertiary(2400, 'Abyssal cape')
-	.tertiary(1024, 'Abyssal thread');
+	.tertiary(1024, 'Abyssal thread')
+	.tertiary(100, 'Lump of crystal');
 
 setCustomMonster(707070, 'Malygos', AbyssalDragonLootTable, Monsters.Vorkath, {
 	id: 707070,

@@ -3221,6 +3221,17 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Volatile nightmare staff': 1
 		})
+	},
+	{
+		name: 'Heart crystal',
+		inputItems: resolveNameBank({
+			'Chunk of crystal': 1,
+			'Hunk of crystal': 1,
+			'Lump of crystal': 1
+		}),
+		outputItems: resolveNameBank({
+			745: 1
+		})
 	}
 ];
 
