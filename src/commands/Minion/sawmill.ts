@@ -7,7 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cuttables from '../../lib/skilling/skills/construction/cuttables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, rand, stringMatches, toKMB } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -94,21 +94,24 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(plank!.inputItem, quantity);
 		await msg.author.removeGP(cost);
 
-		const data: SawmillActivityTaskOptions = {
-			type: Activity.Sawmill,
-			id: rand(1, 10_000_000),
-			duration,
-			plankID: plank!.outputItem,
-			plankQuantity: quantity,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			finishDate: Date.now() + duration
-		};
+		await addSubTaskToActivityTask<SawmillActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				type: Activity.Sawmill,
+				duration,
+				plankID: plank!.outputItem,
+				plankQuantity: quantity,
+				userID: msg.author.id,
+				channelID: msg.channel.id
+			}
+		);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
 		let response = `${msg.author.minionName} is now creating ${quantity} ${itemNameFromID(
 			plank.outputItem
-		)}s, they'll come back in around ${formatDuration(duration)}.`;
+		)}s. Sawmill has charged you ${toKMB(
+			cost
+		)} GP. They'll come back in around ${formatDuration(duration)}.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
