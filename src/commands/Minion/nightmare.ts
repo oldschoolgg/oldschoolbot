@@ -122,49 +122,37 @@ export default class extends BotCommand {
 
 		this.checkReqs(users, NightmareMonster, quantity);
 
-		let debugStr = '';
 		for (const user of users) {
-			const [data, debug] = getNightmareGearStats(
+			const [data] = getNightmareGearStats(
 				user,
 				users.map(u => u.id)
 			);
 
-			debugStr += debug;
-
 			// Increase duration for each bad weapon.
 			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
 				perKillTime *= 1.08;
-				debugStr += `8% longer duration for ${user.username} bad weapon, `;
 			}
 
 			// Increase duration for lower melee-strength gear.
 			if (data.percentMeleeStrength < 40) {
 				perKillTime *= 1.1;
-				debugStr += `10% longer duration for ${user.username} bad gear, `;
 			} else if (data.percentMeleeStrength < 50) {
 				perKillTime *= 1.07;
-				debugStr += `7% longer duration for ${user.username} bad gear, `;
 			} else if (data.percentMeleeStrength < 60) {
 				perKillTime *= 1.03;
-				debugStr += `3% longer duration for ${user.username} bad gear, `;
 			}
 
 			// Increase duration for lower KC.
 			if (data.kc < 10) {
 				perKillTime *= 1.25;
-				debugStr += `25% longer duration for ${user.username} low KC, `;
 			} else if (data.kc < 25) {
 				perKillTime *= 1.15;
-				debugStr += `15% longer duration for ${user.username} low KC, `;
 			} else if (data.kc < 50) {
 				perKillTime *= 1.05;
-				debugStr += `5% longer duration for ${user.username} low KC, `;
 			} else if (data.kc > 100) {
 				perKillTime *= 0.95;
-				debugStr += `5% faster duration for ${user.username} high KC, `;
 			} else if (data.kc > 400) {
 				perKillTime *= 0.9;
-				debugStr += `10% faster duration for ${user.username} high KC, `;
 			}
 		}
 
@@ -173,13 +161,13 @@ export default class extends BotCommand {
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-				debugStr += `\n${await removeFoodFromUser(
+				await removeFoodFromUser(
 					this.client,
 					user,
 					Math.ceil(healAmountNeeded / users.length) * quantity,
 					Math.ceil(healAmountNeeded / quantity),
 					NightmareMonster.name
-				)}`;
+				);
 			}
 		}
 
@@ -202,14 +190,14 @@ export default class extends BotCommand {
 
 		const str =
 			type === 'solo'
-				? `${soloMessage(msg.author, duration, quantity)}\n\n${debugStr}`
+				? `${soloMessage(msg.author, duration, quantity)}`
 				: `${partyOptions.leader.username}'s party (${users
 						.map(u => u.username)
 						.join(', ')}) is now off to kill ${quantity}x ${
 						NightmareMonster.name
 				  }. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 						NightmareMonster.timeToFinish
-				  )} - the total trip will take ${formatDuration(duration)}. \n\n${debugStr}`;
+				  )} - the total trip will take ${formatDuration(duration)}.`;
 
 		return msg.channel.send(str, { split: true });
 	}

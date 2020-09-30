@@ -30,14 +30,12 @@ export default class extends Task {
 
 		const parsedUsers: NightmareUser[] = [];
 
-		let debug = '';
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
 			const user = await this.client.users.fetch(id).catch(noOp);
 			if (!user) continue;
-			const [data, debugStr] = getNightmareGearStats(user, users);
+			const [data] = getNightmareGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
-			debug += debugStr;
 		}
 
 		// Store total amount of deaths
@@ -95,8 +93,6 @@ export default class extends Task {
 			});
 		}
 
-		resultStr += debug;
-
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);
 		if (deathEntries.length > 0) {
@@ -128,7 +124,7 @@ export default class extends Task {
 						leader
 					] ?? 0} times. Your Nightmare KC is now ${(leaderUser.settings.get(
 						UserSettings.MonsterScores
-					)[NightmareMonster.id] ?? 0) + quantity}.\n\n${debug}`,
+					)[NightmareMonster.id] ?? 0) + quantity}.`,
 					title: `${quantity}x Nightmare`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),
 					user: leaderUser,
