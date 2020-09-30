@@ -60,6 +60,12 @@ export default class extends Task {
 			}
 
 			loot = addBanks([loot, bonusLoot]);
+
+			if (roll(15)) {
+				loot = multiplyBank(loot, 2);
+				str += `\nZippy has **doubled** your loot.`;
+			}
+
 			str += `\n\nZippy has found these items for you: ${await createReadableItemListFromBank(
 				this.client,
 				bonusLoot
