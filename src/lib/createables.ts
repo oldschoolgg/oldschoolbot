@@ -3229,9 +3229,9 @@ const Createables: Createable[] = [
 			'Hunk of crystal': 1,
 			'Lump of crystal': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: {
 			745: 1
-		})
+		}
 	}
 ];
 
