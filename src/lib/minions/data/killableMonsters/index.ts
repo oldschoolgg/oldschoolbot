@@ -334,7 +334,7 @@ const killableMonsters: KillableMonster[] = [
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
 				[GearStat.DefenceRanged]: 57 + 120,
-				[GearStat.DefenceStab]: 120,
+				[GearStat.DefenceStab]: 47 + 26,
 				[GearStat.AttackCrush]: 65
 			}
 		}
