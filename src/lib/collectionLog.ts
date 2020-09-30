@@ -2,6 +2,19 @@ import Agility, { gracefulItems } from './skilling/skills/agility';
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
 
+const nightmareLog = resolveItems([
+	'Little nightmare',
+	'Jar of dreams',
+	'Nightmare staff',
+	"Inquisitor's great helm",
+	"Inquisitor's hauberk",
+	"Inquisitor's plateskirt",
+	"Inquisitor's mace",
+	'Eldritch orb',
+	'Harmonised orb',
+	'Volatile orb'
+]);
+
 export const bosses = {
 	Zulrah: resolveItems([
 		'Uncut onyx',
@@ -144,7 +157,8 @@ export const bosses = {
 	'Chaos Ele': resolveItems(['Dragon pickaxe', 'Dragon 2h sword', 'Pet chaos elemental']),
 	'Chaos Fanatic': resolveItems(['Malediction shard 1', 'Odium shard 1', 'Pet chaos elemental']),
 	'Crazy Arch': resolveItems(['Malediction shard 2', 'Odium shard 2', 'Fedora']),
-	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"])
+	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"]),
+	Nightmare: nightmareLog
 };
 export const pets = {
 	'Skilling Pets': resolveItems([
@@ -1298,13 +1312,7 @@ export const miscLog = {
 
 export const customBossLog = {
 	'King Goldmar': resolveItems(['Dwarven warhammer', 'Dwarven ore', 'Dwarven crate']),
-	Malygos: resolveItems([
-		'Abyssal thread',
-		'Abyssal cape',
-		'Dragon hunter lance',
-		'Dragon hunter crossbow',
-		'Ori'
-	])
+	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori'])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1434,5 +1442,10 @@ export const collectionLogTypes = [
 		name: 'Custom Bosses',
 		aliases: ['custom boss', 'custom bosses'],
 		items: customBossLog
+	},
+	{
+		name: 'Nightmare',
+		aliases: ['nightmare', 'the nightmare'],
+		items: { nightmare: nightmareLog }
 	}
 ];

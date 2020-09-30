@@ -8,7 +8,7 @@ import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSett
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { formatDuration, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
@@ -31,7 +31,15 @@ const meleeGearBonus = [
 		itemPoint: 2
 	},
 	{
+		itemID: itemID('Void melee helm (l)'),
+		itemPoint: 2
+	},
+	{
 		itemID: itemID('Amulet of torture'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Amulet of torture (or)'),
 		itemPoint: 5
 	},
 	{
@@ -39,7 +47,71 @@ const meleeGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Amulet of fury (or)'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Amulet of blood fury'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Amulet of glory'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(1)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(2)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(3)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(4)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(5)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(6)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t1)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t2)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t3)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t4)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t5)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t6)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of eternal glory'),
 		itemPoint: 3
 	},
 	{
@@ -47,7 +119,23 @@ const meleeGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Infernal cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Infernal max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Infernal max cape (l)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Fire cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Fire cape (l)'),
 		itemPoint: 4
 	},
 	{
@@ -63,6 +151,10 @@ const meleeGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight top (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Bandos tassets'),
 		itemPoint: 5
 	},
@@ -71,8 +163,12 @@ const meleeGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight robe (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Scythe of vitur'),
-		itemPoint: 5
+		itemPoint: 10
 	},
 	{
 		itemID: itemID('Dragon hunter lance'),
@@ -95,7 +191,15 @@ const meleeGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Avernic defender (l)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Dragon defender'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Dragon defender (l)'),
 		itemPoint: 4
 	},
 	{
@@ -108,6 +212,10 @@ const meleeGearBonus = [
 	},
 	{
 		itemID: itemID('Void knight gloves'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight gloves (l)'),
 		itemPoint: 3
 	},
 	{
@@ -138,7 +246,15 @@ const rangeGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void ranger helm (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Necklace of anguish'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Necklace of anguish (or)'),
 		itemPoint: 5
 	},
 	{
@@ -146,11 +262,87 @@ const rangeGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Amulet of fury (or)'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Amulet of blood fury'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Amulet of glory'),
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Amulet of glory(1)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(2)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(3)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(4)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(5)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(6)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t1)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t2)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t3)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t4)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t5)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t6)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of eternal glory'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID("Ava's assembler"),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID("Ava's assembler (l)"),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Assembler max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Assembler max cape (l)'),
 		itemPoint: 5
 	},
 	{
@@ -166,6 +358,10 @@ const rangeGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight top (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Armadyl chainskirt'),
 		itemPoint: 5
 	},
@@ -174,8 +370,12 @@ const rangeGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight robe (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Twisted bow'),
-		itemPoint: 9
+		itemPoint: 10
 	},
 	{
 		itemID: itemID('Dragon hunter crossbow'),
@@ -226,6 +426,10 @@ const rangeGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Void knight gloves (l)'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Pegasian boots'),
 		itemPoint: 5
 	}
@@ -237,11 +441,19 @@ const mageGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Twisted ancestral hat'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID("Ahrim's hood"),
 		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void mage helm'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void mage helm (l)'),
 		itemPoint: 3
 	},
 	{
@@ -253,7 +465,71 @@ const mageGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Amulet of fury (or)'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Amulet of blood fury'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Amulet of glory'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(1)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(2)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(3)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(4)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(5)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory(6)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t1)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t2)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t3)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t4)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t5)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of glory (t6)'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Amulet of eternal glory'),
 		itemPoint: 3
 	},
 	{
@@ -261,11 +537,67 @@ const mageGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Imbued zamorak cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued guthix cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued saradomin cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued zamorak cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued guthix cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued saradomin max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued zamorak max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued guthix max cape'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued saradomin max cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued zamorak max cape (l)'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Imbued guthix max cape (l)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Saradomin cape'),
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Zamorak cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Guthix cape'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Ancestral robe top'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Twisted ancestral robe top'),
 		itemPoint: 5
 	},
 	{
@@ -277,11 +609,15 @@ const mageGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Void knight top (l)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Ancestral robe bottom'),
 		itemPoint: 5
 	},
 	{
-		itemID: itemID('Ancestral robe bottom'),
+		itemID: itemID('Twisted ancestral robe bottom'),
 		itemPoint: 5
 	},
 	{
@@ -290,6 +626,10 @@ const mageGearBonus = [
 	},
 	{
 		itemID: itemID('Void knight robe'),
+		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight robe (l)'),
 		itemPoint: 3
 	},
 	{
@@ -305,7 +645,19 @@ const mageGearBonus = [
 		itemPoint: 3
 	},
 	{
+		itemID: itemID('Trident of the swamp (e)'),
+		itemPoint: 3
+	},
+	{
 		itemID: itemID('Trident of the seas'),
+		itemPoint: 2
+	},
+	{
+		itemID: itemID('Trident of the seas (full)'),
+		itemPoint: 2
+	},
+	{
+		itemID: itemID('Trident of the seas (e)'),
 		itemPoint: 2
 	},
 	{
@@ -327,10 +679,14 @@ const mageGearBonus = [
 	{
 		itemID: itemID('Void knight gloves'),
 		itemPoint: 3
+	},
+	{
+		itemID: itemID('Void knight gloves (l)'),
+		itemPoint: 3
 	}
 ];
-
-const MAX_itemPoints = 55 + 54 + 40 + 15;
+// Melee + Ranged + Mage + Special weps
+const MAX_itemPoints = 50 + 50 + 40 + 15;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -416,7 +772,7 @@ export default class extends BotCommand {
 			totalGearPoints += 5;
 		}
 		// Returns base raid points based on gear and gear score.
-		return [totalGearPoints * 100 + 15000, totalGearPoints];
+		return [totalGearPoints * 100 + 12500, totalGearPoints];
 	}
 
 	@minionNotBusy
@@ -449,20 +805,12 @@ export default class extends BotCommand {
 		}
 
 		let duration;
-		if (users.length <= 10) {
-			duration =
-				Time.Minute * 20 +
-				(Time.Minute * 40 - users.length * (Time.Minute * 3)) +
-				rand(Time.Minute * 2, Time.Minute * 10);
-		} else if (users.length <= 20) {
-			duration =
-				Time.Minute * 20 +
-				(Time.Minute * 35 - users.length * (Time.Minute * 2)) +
-				rand(Time.Minute * 2, Time.Minute * 10);
+		if (users.length === 1) {
+			duration = Time.Minute * 50 + rand(Time.Minute * 2, Time.Minute * 10);
 		} else {
 			duration =
-				Time.Minute * 20 +
-				(Time.Minute * 35 - users.length * Number(Time.Minute)) +
+				Time.Minute * 55 -
+				(users.length % 10) * 2 * Time.Minute +
 				rand(Time.Minute * 2, Time.Minute * 10);
 		}
 		// Max 25% boost for experienced raiders
@@ -470,7 +818,6 @@ export default class extends BotCommand {
 			teamKCBoost = 25;
 		}
 		duration *= (100 - teamKCBoost) / 100;
-		duration = Math.max(Time.Minute * 30, duration);
 		this.checkReqs(users);
 
 		const data: RaidsActivityTaskOptions = {
@@ -491,7 +838,10 @@ export default class extends BotCommand {
 					points /= 5;
 				} else if (kc < 20) {
 					points /= 3;
+				} else if (kc > 1000) {
+					points *= 1.2;
 				}
+				points = Math.round(points);
 				return {
 					id: u.id,
 					personalPoints: points,
@@ -505,9 +855,9 @@ export default class extends BotCommand {
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(
-			`The raid is starting...${teamKCBoost}% boost for team KC, the leader is ${
-				msg.author.username
-			}, and the party members are: ${users
+			`The raid is starting... ${teamKCBoost}% boost for team KC. The total trip will take ${formatDuration(
+				duration
+			)}, leader is ${msg.author.username}, and the party members are: ${users
 				.map(
 					u =>
 						`${u.username}: Gear score: ${

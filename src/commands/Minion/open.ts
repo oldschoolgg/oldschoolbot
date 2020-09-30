@@ -153,7 +153,7 @@ export default class extends BotCommand {
 					: ``
 			}`,
 			title: opened,
-			flags: { showNewCL: 1 },
+			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0 },
 			user: msg.author
 		});
 	}
@@ -194,7 +194,7 @@ export default class extends BotCommand {
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
-			flags: { showNewCL: 1 },
+			flags: { showNewCL: 1, wide: Object.keys(loot.values()).length > 250 ? 1 : 0 },
 			user: msg.author
 		});
 	}

@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { findMonster, reducedTimeForGroup } from '../../lib/minions/functions';
+import { findMonster } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -11,6 +11,7 @@ import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/mini
 import { MakePartyOptions } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,17 +24,6 @@ export default class extends BotCommand {
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			aliases: ['mass']
 		});
-	}
-
-	calcDurQty(users: KlasaUser[], monster: KillableMonster, quantity: number | undefined) {
-		const perKillTime = reducedTimeForGroup(users, monster);
-		const maxQty = Math.floor(users[0].maxTripLength / perKillTime);
-		if (!quantity) quantity = maxQty;
-		if (quantity > maxQty) {
-			throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
-		}
-		const duration = quantity * perKillTime - monster.respawnTime!;
-		return [quantity, duration, perKillTime];
 	}
 
 	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
@@ -120,7 +110,7 @@ export default class extends BotCommand {
 		if (users.length < 3 && monster.id === 696969) {
 			throw `You need at least 3 people to fight the Dwarf king.`;
 		}
-		const [quantity, duration, perKillTime] = this.calcDurQty(users, monster, inputQuantity);
+		const [quantity, duration, perKillTime] = calcDurQty(users, monster, inputQuantity);
 
 		this.checkReqs(users, monster, quantity);
 

@@ -393,17 +393,16 @@ const killableMonsters: KillableMonster[] = [
 			GearStat.AttackRanged
 		],
 		minimumGearRequirements: {
-			[GearStat.AttackStab]: 120,
+			[GearStat.AttackStab]: 100,
 			[GearStat.DefenceStab]: 150,
-			[GearStat.DefenceSlash]: 180,
+			[GearStat.DefenceSlash]: 150,
 			[GearStat.DefenceMagic]: -20,
 			[GearStat.DefenceRanged]: 150
 		},
 		itemInBankBoosts: {
 			[itemID('Saradomin godsword')]: 5,
 			[itemID('Dragon warhammer')]: 5,
-			[itemID('Bandos godsword')]: 5,
-			[itemID('Dragon hunter lance')]: 10
+			[itemID('Bandos godsword')]: 5
 		},
 		itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
 		groupKillable: true,
@@ -411,9 +410,86 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 99
 		},
-		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori']),
+		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 		notifyDrops: resolveItems(['Abyssal cape', 'Ori'])
+	},
+	{
+		id: Monsters.Sarachnis.id,
+		name: Monsters.Sarachnis.name,
+		aliases: Monsters.Sarachnis.aliases,
+		timeToFinish: Time.Minute * 2.35,
+		table: Monsters.Sarachnis,
+		emoji: '<:Sraracha:608231007803670529>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
+		qpRequired: 0,
+		levelRequirements: {
+			prayer: 43
+		},
+		healAmountNeeded: 30 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.DefenceRanged]: 57 + 120,
+				[GearStat.DefenceStab]: 47 + 26,
+				[GearStat.AttackCrush]: 65
+			}
+		}
 	}
 ];
+
+export const NightmareMonster: KillableMonster = {
+	id: 9415,
+	name: 'The Nightmare',
+	aliases: ['nightmare', 'the nightmare'],
+	timeToFinish: Time.Minute * 25,
+	table: Monsters.GeneralGraardor,
+	emoji: '<:Little_nightmare:758149284952014928>',
+	wildy: false,
+	canBeKilled: false,
+	difficultyRating: 7,
+	notifyDrops: resolveItems([
+		'Little nightmare',
+		'Jar of dreams',
+		'Nightmare staff',
+		"Inquisitor's great helm",
+		"Inquisitor's hauberk",
+		"Inquisitor's plateskirt",
+		"Inquisitor's mace",
+		'Eldritch orb',
+		'Harmonised orb',
+		'Volatile orb'
+	]),
+	qpRequired: 10,
+	groupKillable: true,
+	respawnTime: Time.Minute * 2.5,
+	levelRequirements: {
+		prayer: 43
+	},
+	uniques: resolveItems([
+		'Little nightmare',
+		'Jar of dreams',
+		'Nightmare staff',
+		"Inquisitor's great helm",
+		"Inquisitor's hauberk",
+		"Inquisitor's plateskirt",
+		"Inquisitor's mace",
+		'Eldritch orb',
+		'Harmonised orb',
+		'Volatile orb'
+	]),
+	healAmountNeeded: 40 * 20,
+	attackStyleToUse: GearSetupTypes.Melee,
+	attackStylesUsed: [GearStat.AttackSlash],
+	minimumGearRequirements: {
+		[GearSetupTypes.Melee]: {
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.AttackCrush]: 80
+		}
+	}
+};
 
 export default killableMonsters;

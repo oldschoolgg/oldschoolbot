@@ -47,9 +47,6 @@ export default class BankImageTask extends Task {
 	public backgroundImages: BankBackground[] = [];
 
 	public repeatingImage: Image | null = null;
-	public borderImage: Image | null = null;
-	public borderImageTop: Image | null = null;
-	public borderImageBottom: Image | null = null;
 
 	public borderCorner: Image | null = null;
 	public borderHorizontal: Image | null = null;

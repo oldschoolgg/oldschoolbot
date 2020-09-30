@@ -7,6 +7,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Color, PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { itemID, roll, stringMatches } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -48,7 +49,9 @@ export default class extends BotCommand {
 			const box = roll(10) ? getRandomMysteryBox() : itemID('Mystery box');
 			await winner.addItemsToBank({ [box]: 1 });
 			return msg.channel.send(
-				`Congratulations, ${winner}! You got it. I've given you: **1x Mystery box**.`
+				`Congratulations, ${winner}! You got it. I've given you: **1x ${
+					getOSItem(box).name
+				}**.`
 			);
 		} catch (err) {
 			return msg.channel.send(`Nobody got it! :(`);

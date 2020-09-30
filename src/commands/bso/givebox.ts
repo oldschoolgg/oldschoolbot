@@ -5,6 +5,7 @@ import { PerkTier, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { formatDuration, itemID, roll } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -30,6 +31,10 @@ export default class extends BotCommand {
 
 		await user.addItemsToBank({ [box]: 1 });
 
-		return msg.channel.send(`Gave a mystery box to ${user.username}.`);
+		return msg.channel.send(
+			`Gave ${[19939].includes(box) ? 'an' : 'a'} **${getOSItem(box).name}** to ${
+				user.username
+			}.`
+		);
 	}
 }

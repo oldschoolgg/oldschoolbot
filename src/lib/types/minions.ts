@@ -102,6 +102,11 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 	preJadDeathTime: number | null;
 }
 
+export interface NightmareActivityTaskOptions extends MinigameActivityTaskOptions {
+	leader: string;
+	users: string[];
+}
+
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
@@ -162,4 +167,5 @@ export type MinionActivityTask =
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity
-	| Tasks.RaidsActivity;
+	| Tasks.RaidsActivity
+	| Tasks.NightmareActivity;

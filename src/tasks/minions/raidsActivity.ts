@@ -13,7 +13,7 @@ const uniques = [
 	21079,
 	20997,
 	21003,
-	21006,
+	21043,
 	21012,
 	21018,
 	21021,
@@ -67,7 +67,7 @@ export default class extends Task {
 			)}||, personal points: ${personalPoints}, ${Math.round(
 				(personalPoints! / totalPoints) * 10000
 			) / 100}%`;
-			await user.addItemsToBank(userLoot);
+			await user.addItemsToBank(userLoot, true);
 		}
 
 		queuedMessageSend(this.client, channelID, resultMessage);

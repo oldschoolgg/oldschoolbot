@@ -303,18 +303,23 @@ const cantBeDropped = [
 	itemID('Dwarven bar')
 ] as number[];
 
+const tmbTable = Items.filter(i => {
+	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
+		return false;
+	}
+	return (i as Item).tradeable_on_ge && !(i as Item).duplicate;
+}).map(i => i.id);
+
+const umbTable = Items.filter(i => {
+	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
+		return false;
+	}
+	return !(i as Item).tradeable && !(i as Item).duplicate;
+}).map(i => i.id);
+
 function getRandomItem(tradeables: boolean): number {
-	return Items.filter(i => {
-		if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
-			return false;
-		}
-		if (!tradeables) {
-			// remove item id 0 (Dwarf remains) to avoid possible bank problems and only allow items that are
-			// not trade-able or duplicates to be dropped
-			return (i as Item).id !== 0 && !(i as Item).tradeable && !(i as Item).duplicate;
-		}
-		return (i as Item).tradeable_on_ge;
-	}).random().id;
+	const table = tradeables ? tmbTable : umbTable;
+	return table[Math.floor(Math.random() * table.length)];
 }
 
 export default Openables;
