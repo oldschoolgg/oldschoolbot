@@ -113,6 +113,7 @@ export const enum Tasks {
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
+	NightmareActivity = 'nightmareActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -139,7 +140,8 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
-	Alching = 'Alching'
+	Alching = 'Alching',
+	Nightmare = 'Nightmare'
 }
 
 export const enum Events {
@@ -222,3 +224,6 @@ export const MAX_QP = 277;
 export const MIMIC_MONSTER_ID = 23184;
 
 export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
+
+export const NIGHTMARES_HP = 2400;
+export const ZAM_HASTA_CRUSH = 65;

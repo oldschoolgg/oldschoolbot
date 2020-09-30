@@ -39,6 +39,7 @@ import {
 import { itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { formatDuration } from '../../util';
+import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -280,6 +281,12 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Nightmare: {
+				const data = currentTask as NightmareActivityTaskOptions;
+
+				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 		}
 	}
