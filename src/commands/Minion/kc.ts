@@ -26,7 +26,7 @@ export default class extends BotCommand {
 		if (!mon && !minigame) {
 			throw `That's not a valid monster or minigame.`;
 		}
-		console.log({ mon, minigame });
+
 		const kc = mon
 			? msg.author.getKC((mon as unknown) as Monster)
 			: msg.author.getMinigameScore(minigame!.id);
