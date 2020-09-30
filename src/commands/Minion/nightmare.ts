@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks } from '../../lib/constants';
+import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -119,7 +119,6 @@ export default class extends BotCommand {
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
 
 		let [quantity, duration, perKillTime] = calcDurQty(users, NightmareMonster, undefined);
-
 		this.checkReqs(users, NightmareMonster, quantity);
 
 		for (const user of users) {
@@ -130,33 +129,35 @@ export default class extends BotCommand {
 
 			// Increase duration for each bad weapon.
 			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
-				perKillTime *= 1.08;
+				perKillTime *= 1.05;
 			}
 
 			// Increase duration for lower melee-strength gear.
 			if (data.percentMeleeStrength < 40) {
-				perKillTime *= 1.1;
+				perKillTime *= 1.06;
 			} else if (data.percentMeleeStrength < 50) {
-				perKillTime *= 1.07;
-			} else if (data.percentMeleeStrength < 60) {
 				perKillTime *= 1.03;
+			} else if (data.percentMeleeStrength < 60) {
+				perKillTime *= 1.02;
 			}
 
 			// Increase duration for lower KC.
 			if (data.kc < 10) {
-				perKillTime *= 1.25;
-			} else if (data.kc < 25) {
 				perKillTime *= 1.15;
-			} else if (data.kc < 50) {
+			} else if (data.kc < 25) {
 				perKillTime *= 1.05;
+			} else if (data.kc < 50) {
+				perKillTime *= 1.02;
 			} else if (data.kc < 100) {
-				perKillTime *= 0.95;
+				perKillTime *= 0.98;
 			} else {
-				perKillTime *= 0.9;
+				perKillTime *= 0.96;
 			}
 		}
 
-		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
+		duration =
+			quantity * Math.max(Math.min(perKillTime, Time.Minute * 30), Time.Minute * 5) -
+			NightmareMonster.respawnTime!;
 
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
