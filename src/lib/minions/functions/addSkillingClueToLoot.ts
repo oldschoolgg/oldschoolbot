@@ -5,18 +5,19 @@ import { ItemBank } from '../../types';
 import { randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
 
+const clues = Object.entries({
+	[itemID('Clue scroll(elite)')]: 1 / 10,
+	[itemID('Clue scroll(hard)')]: 2 / 10,
+	[itemID('Clue scroll(medium)')]: 3 / 10,
+	[itemID('Clue scroll(easy)')]: 4 / 10
+}).reverse();
+
 export default function addSkillingClueToLoot(
 	user: KlasaUser,
 	quantity: number,
 	clueChance: number,
 	loot: ItemBank
 ) {
-	const clues = Object.entries({
-		[itemID('Clue scroll(elite)')]: 1 / 10,
-		[itemID('Clue scroll(hard)')]: 2 / 10,
-		[itemID('Clue scroll(medium)')]: 3 / 10,
-		[itemID('Clue scroll(easy)')]: 4 / 10
-	}).reverse();
 	const userLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	for (let i = 0; i < quantity; i++) {
