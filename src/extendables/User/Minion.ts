@@ -1,4 +1,5 @@
 import { User } from 'discord.js';
+import { randInt } from 'e';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -78,7 +79,7 @@ export default class extends Extendable {
 
 		if (this.settings.get('troll')) {
 			formattedDuration = `Approximately ${formatDuration(
-				rand(Time.Minute, Time.Minute * 1200)
+				randInt(Time.Minute, Time.Minute * 1200)
 			)} remaining.`;
 		}
 
