@@ -312,6 +312,32 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0
+	},
+	{
+		id: Monsters.Sarachnis.id,
+		name: Monsters.Sarachnis.name,
+		aliases: Monsters.Sarachnis.aliases,
+		timeToFinish: Time.Minute * 2.35,
+		table: Monsters.Sarachnis,
+		emoji: '<:Sraracha:608231007803670529>',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 5,
+		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
+		qpRequired: 0,
+		levelRequirements: {
+			prayer: 43
+		},
+		healAmountNeeded: 30 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.DefenceRanged]: 57 + 120,
+				[GearStat.DefenceStab]: 120,
+				[GearStat.AttackCrush]: 65
+			}
+		}
 	}
 ];
 
