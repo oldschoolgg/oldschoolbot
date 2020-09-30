@@ -29,7 +29,7 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 
 	const newSubtask: ActivityTaskOptions = {
 		...subTaskToAdd,
-		finishDate: Date.now() + 1,
+		finishDate: Date.now() + subTaskToAdd.duration,
 		id: uuid()
 	};
 
