@@ -33,8 +33,10 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		minimumGearRequirements: {
-			[GearStat.DefenceCrush]: 150,
-			[GearStat.AttackCrush]: 80
+			[GearSetupTypes.Melee]: {
+				[GearStat.DefenceCrush]: 150,
+				[GearStat.AttackCrush]: 80
+			}
 		}
 	},
 	{
@@ -64,7 +66,9 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackRanged],
 		minimumGearRequirements: {
-			[GearStat.AttackRanged]: 30 + 17 + 69 + 7
+			[GearSetupTypes.Range]: {
+				[GearStat.AttackRanged]: 30 + 17 + 69 + 7
+			}
 		},
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
@@ -96,7 +100,9 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackSlash],
 		minimumGearRequirements: {
-			[GearStat.AttackRanged]: 30 + 17 + 69 + 7
+			[GearSetupTypes.Range]: {
+				[GearStat.AttackRanged]: 30 + 17 + 69 + 7
+			}
 		},
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
@@ -128,8 +134,10 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash],
 		minimumGearRequirements: {
-			[GearStat.DefenceSlash]: 200,
-			[GearStat.AttackStab]: 80
+			[GearSetupTypes.Melee]: {
+				[GearStat.DefenceSlash]: 200,
+				[GearStat.AttackStab]: 80
+			}
 		},
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],

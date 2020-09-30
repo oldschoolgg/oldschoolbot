@@ -10,6 +10,7 @@ interface Createable {
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
+	GPCost?: number;
 }
 
 const Createables: Createable[] = [
@@ -687,27 +688,55 @@ const Createables: Createable[] = [
 			'Coconut milk': 1,
 			'Coconut shell': 1
 		})
-	}
-	/* {
-		name: 'Toxic blowpipe (empty)',
-		inputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		}
 	},
 	{
-		name: 'Toxic blowpipe',
-		inputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
+		name: 'Zamorakian hasta',
+		inputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		QPRequired: 3,
+		requiredSkills: {
+			fishing: 55,
+			firemaking: 35,
+			crafting: 11,
+			smithing: 5
 		},
-		outputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		}
-	} */
+		GPCost: 300_000
+	},
+	// Nightmare
+	{
+		name: 'Eldritch nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		})
+	},
+	{
+		name: '	Harmonised nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		})
+	}
 ];
 
 export default Createables;
