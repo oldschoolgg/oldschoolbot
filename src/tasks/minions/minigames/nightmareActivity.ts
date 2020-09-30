@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance, roll } from 'e';
 import { Task } from 'klasa';
 import { Misc } from 'oldschooljs';
 
@@ -71,6 +71,10 @@ export default class extends Task {
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
+
+			if (roll(4000)) {
+				loot[23929] = 1;
+			}
 
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];

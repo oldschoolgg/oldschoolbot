@@ -40,6 +40,10 @@ export default class extends Task {
 			}
 		}
 
+		if (monster.id === Monsters.Vorkath.id && roll(4000)) {
+			loot[23941] = 1;
+		}
+
 		let gotKlik = false;
 		const minutes = Math.ceil(duration / Time.Minute);
 		if (fullMonster.data.attributes.includes(MonsterAttribute.Dragon)) {
