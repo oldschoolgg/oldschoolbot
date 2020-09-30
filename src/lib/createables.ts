@@ -701,7 +701,7 @@ const Createables: Createable[] = [
 		requiredSkills: {
 			fishing: 55,
 			firemaking: 35,
-			crafting: 15,
+			crafting: 11,
 			smithing: 5
 		},
 		GPCost: 300_000

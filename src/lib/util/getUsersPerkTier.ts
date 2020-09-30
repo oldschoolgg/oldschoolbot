@@ -4,7 +4,7 @@ import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
 import getSupportGuild from './getSupportGuild';
 
-const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.IsPatronTier3];
+const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
 
 export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 	if (user.client.owners.has(user)) {
