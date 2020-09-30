@@ -64,7 +64,7 @@ export default class extends BotCommand {
 			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
 					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough food. You need at least ${monster?.healAmountNeeded! *
+				} have enough food. You need at least ${monster.healAmountNeeded! *
 					quantity} HP in food to ${
 					users.length === 1 ? 'start the mass' : 'enter the mass'
 				}.`;
@@ -149,9 +149,9 @@ export default class extends BotCommand {
 				perKillTime *= 1.15;
 			} else if (data.kc < 50) {
 				perKillTime *= 1.05;
-			} else if (data.kc > 100) {
+			} else if (data.kc < 100) {
 				perKillTime *= 0.95;
-			} else if (data.kc > 400) {
+			} else {
 				perKillTime *= 0.9;
 			}
 		}
