@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../constants';
+import { GearSetupTypes, GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -313,5 +314,56 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	}
 ];
+
+export const NightmareMonster: KillableMonster = {
+	id: 9415,
+	name: 'The Nightmare',
+	aliases: ['nightmare', 'the nightmare'],
+	timeToFinish: Time.Minute * 25,
+	table: Monsters.GeneralGraardor,
+	emoji: '<:Little_nightmare:758149284952014928>',
+	wildy: false,
+	canBeKilled: false,
+	difficultyRating: 7,
+	notifyDrops: resolveItems([
+		'Little nightmare',
+		'Jar of dreams',
+		'Nightmare staff',
+		"Inquisitor's great helm",
+		"Inquisitor's hauberk",
+		"Inquisitor's plateskirt",
+		"Inquisitor's mace",
+		'Eldritch orb',
+		'Harmonised orb',
+		'Volatile orb'
+	]),
+	qpRequired: 10,
+	groupKillable: true,
+	respawnTime: Time.Minute * 2.5,
+	levelRequirements: {
+		prayer: 43
+	},
+	uniques: resolveItems([
+		'Little nightmare',
+		'Jar of dreams',
+		'Nightmare staff',
+		"Inquisitor's great helm",
+		"Inquisitor's hauberk",
+		"Inquisitor's plateskirt",
+		"Inquisitor's mace",
+		'Eldritch orb',
+		'Harmonised orb',
+		'Volatile orb'
+	]),
+	healAmountNeeded: 40 * 20,
+	attackStyleToUse: GearSetupTypes.Melee,
+	attackStylesUsed: [GearStat.AttackSlash],
+	minimumGearRequirements: {
+		[GearSetupTypes.Melee]: {
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.AttackCrush]: 80
+		}
+	}
+};
 
 export default killableMonsters;
