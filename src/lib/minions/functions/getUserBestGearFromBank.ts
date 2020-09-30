@@ -1,4 +1,4 @@
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
 import { GearTypes } from '../../gear';
@@ -6,6 +6,21 @@ import { GearSetup, GearStat } from '../../gear/types';
 import { ItemBank } from '../../types';
 import { removeBankFromBank } from '../../util';
 import getOSItem from '../../util/getOSItem';
+
+function getItemScore(item: Item) {
+	return (
+		item?.equipment![GearStat.DefenceCrush] +
+		item?.equipment![GearStat.DefenceSlash] +
+		item?.equipment![GearStat.DefenceStab] +
+		item?.equipment![GearStat.DefenceMagic] +
+		item?.equipment![GearStat.DefenceRanged] +
+		item?.equipment![GearStat.AttackCrush] +
+		item?.equipment![GearStat.AttackSlash] +
+		item?.equipment![GearStat.AttackStab] +
+		item?.equipment![GearStat.AttackMagic] +
+		item?.equipment![GearStat.AttackRanged]
+	);
+}
 
 export default function(
 	userBank: ItemBank,
@@ -17,7 +32,6 @@ export default function(
 ) {
 	let toRemoveFromGear: ItemBank = {};
 	let toRemoveFromBank: ItemBank = {};
-	let userFinalBank: ItemBank = {};
 	const gearToEquip = { ...userGear };
 
 	let score2h = 0;
@@ -86,15 +100,21 @@ export default function(
 		if (equipables[slot as EquipmentSlot][0]) {
 			// Sort by the extra gear first if that is set
 			equipables[slot as EquipmentSlot] = items.sort((a, b) => {
-				const aAllScore = 0;
+				const itemA = getOSItem(a);
+				const itemB = getOSItem(b);
+				const aGearScore = getItemScore(itemA);
+				const bGearScore = getItemScore(itemB);
 				if (gearStatExtra) {
 					return (
-						getOSItem(b)?.equipment![gearStatExtra] -
-							getOSItem(a)?.equipment![gearStatExtra] ||
-						getOSItem(b)?.equipment![gearStat] - getOSItem(a)?.equipment![gearStat]
+						itemB?.equipment![gearStatExtra] - itemA?.equipment![gearStatExtra] ||
+						itemB?.equipment![gearStat] - itemA?.equipment![gearStat] ||
+						bGearScore - aGearScore
 					);
 				}
-				return getOSItem(b)?.equipment![gearStat] - getOSItem(a)?.equipment![gearStat];
+				return (
+					itemB?.equipment![gearStat] - itemA?.equipment![gearStat] ||
+					bGearScore - aGearScore
+				);
 			});
 
 			// Get the best item (first in slot) and if that exists, add its stats to the calculation
@@ -148,12 +168,10 @@ export default function(
 		}
 	}
 
-	// Set the user bank
-	userFinalBank = removeBankFromBank(addBanks([userBank, toRemoveFromGear]), toRemoveFromBank);
 	return {
 		toRemoveFromGear,
 		toRemoveFromBank,
 		gearToEquip,
-		userFinalBank
+		userFinalBank: removeBankFromBank(addBanks([userBank, toRemoveFromGear]), toRemoveFromBank)
 	};
 }
