@@ -6,10 +6,10 @@ import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
-import { publish } from '../../lib/pgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -85,21 +85,16 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		const data: ClueActivityTaskOptions = {
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, Tasks.ClueTicker, {
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.ClueCompletion,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await publish(this.client, Tasks.ClueTicker, data, Tasks.ClueActivity);
-
+			type: Activity.ClueCompletion
+		});
 		return msg.send(
-			`${msg.author.minionName} is now completing ${data.quantity}x ${
+			`${msg.author.minionName} is now completing ${quantity}x ${
 				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.${
 				boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}` : ''

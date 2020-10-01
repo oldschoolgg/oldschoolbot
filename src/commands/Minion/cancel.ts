@@ -1,10 +1,12 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import {CommandStore, KlasaMessage} from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Time } from '../../lib/constants';
-import { requiresMinion } from '../../lib/minions/decorators';
-import { removeJob } from '../../lib/pgBoss';
+import {BotCommand} from '../../lib/BotCommand';
+import {Activity, Time} from '../../lib/constants';
+import {requiresMinion} from '../../lib/minions/decorators';
+import {removeJob} from '../../lib/pgBoss';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
+import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
+import {NightmareActivityTaskOptions} from './../../lib/types/minions';
 
 const options = {
 	max: 1,
@@ -36,9 +38,18 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`;
 		}
 
+		if (currentTask.type === Activity.Nightmare) {
+			const data = currentTask as NightmareActivityTaskOptions;
+			if (data.users.length > 1) {
+				throw `${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`;
+			}
+		}
+
+		const taskTicker = tickerTaskFromActivity(currentTask.type);
+
 		const cancelMsg = await msg.channel.send(
 			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
-				`They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`
+			`They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`
 		);
 
 		try {

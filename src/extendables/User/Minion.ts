@@ -10,14 +10,13 @@ import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
-import Crafting from '../../lib/skilling/skills/crafting/crafting';
+import Crafting from '../../lib/skilling/skills/crafting';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
-import Smelting from '../../lib/skilling/skills/smithing/smelting';
-import Smithing from '../../lib/skilling/skills/smithing/smithing';
+import Smithing from '../../lib/skilling/skills/smithing';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
@@ -40,6 +39,7 @@ import {
 import { itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { formatDuration } from '../../util';
+import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -168,7 +168,7 @@ export default class extends Extendable {
 			case Activity.Smelting: {
 				const data = currentTask as SmeltingActivityTaskOptions;
 
-				const bar = Smelting.Bars.find(bar => bar.id === data.barID);
+				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
 				return `${this.minionName} is currently smelting ${data.quantity}x ${
 					bar!.name
@@ -180,10 +180,12 @@ export default class extends Extendable {
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithedBar = Smithing.SmithedBars.find(item => item.id === data.smithedBarID);
+				const SmithableItem = Smithing.SmithableItems.find(
+					item => item.id === data.smithedBarID
+				);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
-					SmithedBar!.name
+					SmithableItem!.name
 				}. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
 					SkillsEnum.Smithing
 				)}`;
@@ -279,6 +281,12 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Nightmare: {
+				const data = currentTask as NightmareActivityTaskOptions;
+
+				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 		}
 	}

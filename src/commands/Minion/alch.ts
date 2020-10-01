@@ -5,7 +5,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy } from '../../lib/minions/decorators';
-import { publish } from '../../lib/pgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -15,9 +14,9 @@ import {
 	removeBankFromBank,
 	resolveNameBank
 } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import resolveItems from '../../lib/util/resolveItems';
-import { rand } from '../../util';
 
 const options = {
 	max: 1,
@@ -131,19 +130,19 @@ export default class extends BotCommand {
 			removeBankFromBank(userBank, consumedItems)
 		);
 
-		const data: AlchingActivityTaskOptions = {
-			itemID: osItem.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			alchValue,
-			type: Activity.Alching,
-			id: rand(1, 1_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await publish(this.client, Tasks.SkillingTicker, data, Tasks.AlchingActivity);
+		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				itemID: osItem.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				alchValue,
+				type: Activity.Alching
+			}
+		);
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 

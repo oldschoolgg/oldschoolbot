@@ -8,7 +8,6 @@ import { GearSetupTypes } from '../../lib/gear/types';
 import mejJalImage from '../../lib/image/mejJalImage';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { publish } from '../../lib/pgBoss';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -23,6 +22,7 @@ import {
 	reduceNumByPercent,
 	removeBankFromBank
 } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
@@ -133,27 +133,26 @@ export default class extends BotCommand {
 
 		const diedPreJad = percentChance(preJadDeathChance);
 		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
-		const finishDate = Date.now() + (preJadDeathTime ?? duration);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const newBank = removeBankFromBank(bank, fightCavesSupplies);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		const data: FightCavesActivityTaskOptions = {
-			minigameID: TzTokJad.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity: 1,
-			duration,
-			type: Activity.FightCaves,
-			id: rand(1, 10_000_000),
-			finishDate,
-			jadDeathChance,
-			preJadDeathChance,
-			preJadDeathTime
-		};
-
-		await publish(this.client, Tasks.MinigameTicker, data, Tasks.FightCavesActivity);
+		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(
+			this.client,
+			Tasks.MinigameTicker,
+			{
+				minigameID: TzTokJad.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity: 1,
+				duration,
+				type: Activity.FightCaves,
+				jadDeathChance,
+				preJadDeathChance,
+				preJadDeathTime
+			}
+		);
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(

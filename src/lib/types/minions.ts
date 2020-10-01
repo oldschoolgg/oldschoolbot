@@ -6,108 +6,91 @@ export interface ActivityTaskOptions {
 	type: Activity;
 	userID: string;
 	duration: number;
-	id: number;
+	id: string;
 	finishDate: number;
+	channelID: string;
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	courseID: string;
-	channelID: string;
 	quantity: number;
 }
 
 export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	cookableID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	fishID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
 	smithedBarID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface FiremakingActivityTaskOptions extends ActivityTaskOptions {
 	burnableID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	logID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
 	craftableID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
 	fletchableName: string;
-	channelID: string;
 	quantity: number;
 }
 
 export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
-	channelID: string;
 	quantity: number;
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
-	channelID: string;
 	alchValue: number;
 }
 
-export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
-	channelID: string;
-}
+export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameIDsEnum;
-	channelID: string;
 	quantity: number;
 }
 
@@ -115,6 +98,11 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 	jadDeathChance: number;
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
+}
+
+export interface NightmareActivityTaskOptions extends MinigameActivityTaskOptions {
+	leader: string;
+	users: string[];
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -163,4 +151,5 @@ export type MinionActivityTask =
 	| Tasks.FightCavesActivity
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity;
+	| Tasks.AlchingActivity
+	| Tasks.NightmareActivity;

@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
-import { publish } from '../../lib/pgBoss';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
@@ -10,10 +9,10 @@ import {
 	determineScaledOreTime,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	reduceNumByPercent,
 	stringMatches
 } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
 const pickaxes = [
@@ -136,18 +135,18 @@ export default class extends BotCommand {
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
-		const data: MiningActivityTaskOptions = {
-			oreID: ore.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Mining,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await publish(this.client, Tasks.SkillingTicker, data, Tasks.MiningActivity);
+		await addSubTaskToActivityTask<MiningActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				oreID: ore.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Mining
+			}
+		);
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name

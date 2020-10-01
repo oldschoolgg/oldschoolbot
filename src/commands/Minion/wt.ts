@@ -6,7 +6,6 @@ import { Eatables } from '../../lib/eatables';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { publish } from '../../lib/pgBoss';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -16,9 +15,9 @@ import {
 	bankHasItem,
 	calcWhatPercent,
 	formatDuration,
-	rand,
 	reduceNumByPercent
 } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
 
 export const warmGear = resolveItems([
@@ -128,18 +127,18 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		const data: WintertodtActivityTaskOptions = {
-			minigameID: MinigameIDsEnum.Wintertodt,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Wintertodt,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await publish(this.client, Tasks.MinigameTicker, data, Tasks.WintertodtActivity);
+		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(
+			this.client,
+			Tasks.MinigameTicker,
+			{
+				minigameID: MinigameIDsEnum.Wintertodt,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Wintertodt
+			}
+		);
 
 		return msg.send(
 			`${

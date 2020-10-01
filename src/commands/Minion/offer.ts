@@ -3,12 +3,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { publish } from '../../lib/pgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, rand, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -80,21 +80,20 @@ export default class extends BotCommand {
 			}s you can bury is ${Math.floor(msg.author.maxTripLength / timeToBuryABone)}.`;
 		}
 
-		const data: OfferingActivityTaskOptions = {
-			boneID: bone.inputId,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Offering,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		await msg.author.removeItemFromBank(bone.inputId, quantity);
 
-		await publish(this.client, Tasks.SkillingTicker, data, Tasks.OfferingActivity);
-
+		await addSubTaskToActivityTask<OfferingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				boneID: bone.inputId,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Offering
+			}
+		);
 		return msg.send(
 			`${msg.author.minionName} is now offering ${quantity}x ${
 				bone.name

@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Events, Tasks, Time } from '../../lib/constants';
-import { publish } from '../../lib/pgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -11,10 +10,10 @@ import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
@@ -42,6 +41,7 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		await msg.author.settings.sync(true);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
 				stringMatches(cookable.name, cookableName) ||
@@ -78,7 +78,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Check the user has the required cookables
@@ -99,17 +98,6 @@ export default class extends BotCommand {
 			}s you can cook is ${Math.floor(msg.author.maxTripLength / timeToCookSingleCookable)}.`;
 		}
 
-		const data: CookingActivityTaskOptions = {
-			cookableID: cookable.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Cooking,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
 		// Remove the cookables from their bank.
 		let newBank = { ...userBank };
 		for (const [cookableID, qty] of requiredCookables) {
@@ -123,7 +111,18 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
 		}
 
-		await publish(this.client, Tasks.SkillingTicker, data, Tasks.CookingActivity);
+		await addSubTaskToActivityTask<CookingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				cookableID: cookable.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Cooking
+			}
+		);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(
