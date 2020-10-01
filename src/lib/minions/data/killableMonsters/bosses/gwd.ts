@@ -2,7 +2,6 @@ import { Monsters } from 'oldschooljs';
 
 import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -28,16 +27,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
-		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
-				[GearStat.DefenceCrush]: 150,
-				[GearStat.AttackCrush]: 80
-			}
-		}
+		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards]
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -62,14 +52,6 @@ const killableBosses: KillableMonster[] = [
 			agility: 70
 		},
 		uniques: [...bosses.Saradomin, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackRanged],
-		minimumGearRequirements: {
-			[GearSetupTypes.Range]: {
-				[GearStat.AttackRanged]: 30 + 17 + 69 + 7
-			}
-		},
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
@@ -96,14 +78,6 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		uniques: [...bosses.Arma, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackSlash],
-		minimumGearRequirements: {
-			[GearSetupTypes.Range]: {
-				[GearStat.AttackRanged]: 30 + 17 + 69 + 7
-			}
-		},
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
@@ -130,15 +104,6 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		uniques: [...bosses.Zammy, ...bosses.Shards],
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash],
-		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
-				[GearStat.DefenceSlash]: 200,
-				[GearStat.AttackStab]: 80
-			}
-		},
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
