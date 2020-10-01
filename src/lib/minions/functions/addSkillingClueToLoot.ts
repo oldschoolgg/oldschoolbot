@@ -14,11 +14,12 @@ const clues = Object.entries({
 
 export default function addSkillingClueToLoot(
 	user: KlasaUser,
+	skill: SkillsEnum,
 	quantity: number,
 	clueChance: number,
 	loot: ItemBank
 ) {
-	const userLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const userLevel = user.skillLevel(skill);
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	for (let i = 0; i < quantity; i++) {
 		if (roll(chance)) {
