@@ -276,7 +276,7 @@ export async function generateGearImage(
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
-			200 + slotSize / 2 - image.height / 2,
+			190 + slotSize / 2 - image.height / 2,
 			image.width,
 			image.height
 		);
