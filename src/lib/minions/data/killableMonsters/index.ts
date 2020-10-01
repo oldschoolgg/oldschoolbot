@@ -328,6 +328,12 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
+		uniques: resolveItems([
+			'Sraracha',
+			'Jar of eyes',
+			'Giant egg sac(full)',
+			'Sarachnis cudgel'
+		]),
 		healAmountNeeded: 9 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
