@@ -1,12 +1,12 @@
-import {CommandStore, KlasaMessage} from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-import {BotCommand} from '../../lib/BotCommand';
-import {Activity, Tasks} from '../../lib/constants';
-import {minionNotBusy, requiresMinion} from '../../lib/minions/decorators';
-import {UserSettings} from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/BotCommand';
+import { Activity, Tasks } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import {SkillsEnum} from '../../lib/skilling/types';
-import {WoodcuttingActivityTaskOptions} from '../../lib/types/minions';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	determineScaledLogTime,
 	formatDuration,
@@ -14,6 +14,7 @@ import {
 	reduceNumByPercent,
 	stringMatches
 } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
 const axes = [

@@ -1,11 +1,14 @@
 import { Client } from 'discord.js';
+import { KlasaClient } from 'klasa';
 
 import { Activity, Tasks } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { publish } from '../pgBoss';
 import { ActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
+import { taskNameFromType } from './taskNameFromType';
 
-export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
+export default async function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 	client: Client,
 	taskName: Tasks,
 	subTaskToAdd: Omit<T, 'finishDate' | 'id'>
@@ -33,12 +36,5 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		id: uuid()
 	};
 
-	return task.update({
-		data: {
-			...task.data,
-			subTasks: [...task.data.subTasks, newSubtask].sort(
-				(a, b) => a.finishDate - b.finishDate
-			)
-		}
-	});
+	return publish(client as KlasaClient, taskName, newSubtask, taskNameFromType(newSubtask.type));
 }

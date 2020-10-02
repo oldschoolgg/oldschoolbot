@@ -1,21 +1,20 @@
-import {MessageAttachment} from 'discord.js';
-import {KlasaMessage, Task} from 'klasa';
+import { MessageAttachment } from 'discord.js';
+import { KlasaMessage, Task } from 'klasa';
 
 import MinionCommand from '../../commands/Minion/minion';
-import {continuationChars, Emoji, Events, PerkTier, Time} from '../../lib/constants';
-import {customClientOptions} from '../../config';
-import {alphaNumericalChars, Emoji, Events, PerkTier, Time} from '../../lib/constants';
+import { customClientOptions } from '../../config';
+import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import {UserSettings} from '../../lib/settings/types/UserSettings';
-import {MonsterActivityTaskOptions} from '../../lib/types/minions';
-import {randomItemFromArray} from '../../lib/util';
-import {channelIsSendable} from '../../lib/util/channelIsSendable';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { randomItemFromArray } from '../../lib/util';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
-	async run({monsterID, userID, channelID, quantity, duration}: MonsterActivityTaskOptions) {
+	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		const perkTier = getUsersPerkTier(user);
@@ -34,7 +33,7 @@ export default class extends Task {
 				loot,
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
-				{showNewCL: 1},
+				{ showNewCL: 1 },
 				user
 			);
 
@@ -46,7 +45,7 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
 		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
-		quantity}.`;
+			quantity}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 

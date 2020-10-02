@@ -15,9 +15,9 @@ export default class extends Extendable {
 	}
 
 	async fetchItemPrice(this: KlasaClient, itemID: number | string) {
-		// if (!this.production) {
-		// 	return 73;
-		// }
+		if (!this.production) {
+			return 73;
+		}
 
 		if (typeof itemID === 'string') itemID = parseInt(itemID);
 
