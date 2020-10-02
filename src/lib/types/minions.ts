@@ -109,6 +109,15 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
+export interface AnimatedArmourActivityTaskOptions extends MinigameActivityTaskOptions {
+	armourID: string;
+	quantity: number;
+}
+
+export interface CyclopsActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -152,4 +161,6 @@ export type MinionActivityTask =
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity
-	| Tasks.NightmareActivity;
+	| Tasks.NightmareActivity
+	| Tasks.AnimatedArmourActivity
+	| Tasks.CyclopsActivity;
