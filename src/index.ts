@@ -38,7 +38,7 @@ class OldSchoolBot extends Client {
 
 	public init = async (): Promise<this> => {
 		await Items.fetchAll();
-		await initCustomItems();
+		initCustomItems();
 		return this;
 	};
 }

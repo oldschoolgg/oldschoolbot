@@ -13,7 +13,7 @@ export function isCustomItem(itemID: number) {
 	return customItem.includes(itemID);
 }
 
-async function setCustomItem(
+function setCustomItem(
 	id: number,
 	name: string,
 	baseItem: Item,
@@ -30,55 +30,56 @@ async function setCustomItem(
 	itemNameMap.set(cleanName, id);
 	// Set the item custom price
 	customPrices[id] = price ? price : baseItem.tradeable_on_ge ? 1 : 0;
+	// Add the item to the custom items array
 	customItem.push(id);
 }
 
-export async function initCustomItems() {
-	await setCustomItem(19939, 'Untradeable Mystery Box', getOSItem('Mystery box'));
-	await setCustomItem(6199, 'Tradeable Mystery Box', getOSItem('Mystery box'));
-	await setCustomItem(3062, 'Pet Mystery Box', getOSItem('Mystery box'));
-	await setCustomItem(3713, 'Holiday Mystery Box', getOSItem('Mystery box'));
-	await setCustomItem(5507, 'Remy', getOSItem('Herbi'));
-	await setCustomItem(3714, 'Shelldon', getOSItem('Herbi'));
-	await setCustomItem(9620, 'Doug', getOSItem('Herbi'));
-	await setCustomItem(9619, 'Lil Lamb', getOSItem('Herbi'));
-	await setCustomItem(10092, 'Zippy', getOSItem('Herbi'));
-	await setCustomItem(9058, 'Harry', getOSItem('Herbi'));
-	await setCustomItem(10329, 'Wintertoad', getOSItem('Herbi'));
-	await setCustomItem(3469, 'Klik', getOSItem('Herbi'));
-	await setCustomItem(21313, 'Scruffy', getOSItem('Herbi'));
-	await setCustomItem(9057, 'Zak', getOSItem('Herbi'));
-	await setCustomItem(8441, 'Hammy', getOSItem('Herbi'));
-	await setCustomItem(12592, 'Divine sigil', getOSItem('Elysian sigil'), {}, 930_000_000);
-	await setCustomItem(
+export function initCustomItems() {
+	setCustomItem(19939, 'Untradeable Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(6199, 'Tradeable Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(3062, 'Pet Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(3713, 'Holiday Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(5507, 'Remy', getOSItem('Herbi'));
+	setCustomItem(3714, 'Shelldon', getOSItem('Herbi'));
+	setCustomItem(9620, 'Doug', getOSItem('Herbi'));
+	setCustomItem(9619, 'Lil Lamb', getOSItem('Herbi'));
+	setCustomItem(10092, 'Zippy', getOSItem('Herbi'));
+	setCustomItem(9058, 'Harry', getOSItem('Herbi'));
+	setCustomItem(10329, 'Wintertoad', getOSItem('Herbi'));
+	setCustomItem(3469, 'Klik', getOSItem('Herbi'));
+	setCustomItem(21313, 'Scruffy', getOSItem('Herbi'));
+	setCustomItem(9057, 'Zak', getOSItem('Herbi'));
+	setCustomItem(8441, 'Hammy', getOSItem('Herbi'));
+	setCustomItem(12592, 'Divine sigil', getOSItem('Elysian sigil'), {}, 930_000_000);
+	setCustomItem(
 		3454,
 		'Divine spirit shield',
 		getOSItem('Elysian spirit shield'),
 		{},
 		900_000_000
 	);
-	await setCustomItem(500, 'Skipper', getOSItem('Herbi'));
+	setCustomItem(500, 'Skipper', getOSItem('Herbi'));
 
 	// Dwarven Items
 
 	// 2x faster chopping and wintertodt
-	await setCustomItem(472, 'Dwarven greataxe', getOSItem('Dragon pickaxe'));
+	setCustomItem(472, 'Dwarven greataxe', getOSItem('Dragon pickaxe'));
 	// 2x faster mining
-	await setCustomItem(476, 'Dwarven pickaxe', getOSItem('Dragon pickaxe'));
+	setCustomItem(476, 'Dwarven pickaxe', getOSItem('Dragon pickaxe'));
 	// 2x faster smithing and crafting
-	await setCustomItem(474, 'Dwarven greathammer', getOSItem('Dragon warhammer'));
+	setCustomItem(474, 'Dwarven greathammer', getOSItem('Dragon warhammer'));
 	// 2x faster smelting
-	await setCustomItem(12594, 'Dwarven gauntlets', getOSItem('Cooking gauntlets'));
+	setCustomItem(12594, 'Dwarven gauntlets', getOSItem('Cooking gauntlets'));
 
-	await setCustomItem(478, 'Dwarven knife', getOSItem('Bronze knife'));
+	setCustomItem(478, 'Dwarven knife', getOSItem('Bronze knife'));
 	// setCustomItem(11923, 'Dwarven tinderbox', getOSItem('Tinderbox'));
 
-	await setCustomItem(506, 'Dwarven bar', getOSItem('Steel bar'));
-	await setCustomItem(508, 'Dwarven ore', getOSItem('Iron ore'));
+	setCustomItem(506, 'Dwarven bar', getOSItem('Steel bar'));
+	setCustomItem(508, 'Dwarven ore', getOSItem('Iron ore'));
 
-	await setCustomItem(6741, 'Dwarven warhammer', getOSItem('Dragon warhammer'));
+	setCustomItem(6741, 'Dwarven warhammer', getOSItem('Dragon warhammer'));
 
-	await setCustomItem(8871, 'Dwarven crate', getOSItem('Mystery box'));
+	setCustomItem(8871, 'Dwarven crate', getOSItem('Mystery box'));
 
 	// Abyssal Dragon
 	// Abyssal lance || 24218 = Guthixian icon [DUPLICATE]
@@ -134,7 +135,7 @@ export async function initCustomItems() {
 	// });
 
 	// Abyssal Cape || 24214 = Victor's cape (100) [DUPLICATE]
-	await setCustomItem(
+	setCustomItem(
 		24214,
 		'Abyssal cape',
 		getOSItem('Infernal cape'),
@@ -166,7 +167,7 @@ export async function initCustomItems() {
 	);
 
 	// Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
-	await setCustomItem(
+	setCustomItem(
 		24212,
 		'Abyssal thread',
 		getOSItem('Giant pouch'),
@@ -180,7 +181,7 @@ export async function initCustomItems() {
 	);
 
 	// Abyssal pouch || 24210 = Victor's cape (10) [DUPLICATE]
-	await setCustomItem(24210, 'Abyssal pouch', getOSItem('Giant pouch'), {
+	setCustomItem(24210, 'Abyssal pouch', getOSItem('Giant pouch'), {
 		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
@@ -188,7 +189,7 @@ export async function initCustomItems() {
 	});
 
 	// Ori Pet || 4149	 = Abyssal demon
-	await setCustomItem(4149, 'Ori', getOSItem('Herbi'), {
+	setCustomItem(4149, 'Ori', getOSItem('Herbi'), {
 		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
@@ -196,7 +197,7 @@ export async function initCustomItems() {
 	});
 
 	// Abyssal bones || 24199 = Seren halo [DUPLICATE]
-	await setCustomItem(
+	setCustomItem(
 		24199,
 		'Abyssal dragon bones',
 		getOSItem('Superior dragon bones'),
