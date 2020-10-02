@@ -14,6 +14,7 @@ import createReadableItemListFromBank from '../../../lib/util/createReadableItem
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { randomVariation } from '../../../lib/util/randomVariation';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 interface NightmareUser {
 	id: string;
@@ -111,6 +112,8 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
+			let returnStr = '';
+
 			if (!kcAmounts[leader]) {
 				channel.send(
 					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
@@ -118,19 +121,25 @@ export default class extends Task {
 			} else {
 				channel.sendBankImage({
 					bank: teamsLoot[leader],
-					content: `${leaderUser}, ${
-						leaderUser.minionName
-					} finished killing ${quantity} ${NightmareMonster.name}, you died ${deaths[
-						leader
-					] ?? 0} times. Your Nightmare KC is now ${(leaderUser.settings.get(
-						UserSettings.MonsterScores
-					)[NightmareMonster.id] ?? 0) + quantity}.`,
 					title: `${quantity}x Nightmare`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),
 					user: leaderUser,
 					flags: { showNewCL: 1 }
 				});
+
+				returnStr = `${leaderUser}, ${
+					leaderUser.minionName
+				} finished killing ${quantity} ${NightmareMonster.name}, you died ${deaths[
+					leader
+				] ?? 0} times. Your Nightmare KC is now ${(leaderUser.settings.get(
+					UserSettings.MonsterScores
+				)[NightmareMonster.id] ?? 0) + quantity}.`;
 			}
+
+			handleTripFinish(this.client, leaderUser , channelID, returnStr, res => {
+				leaderUser.log(`continued trip of ${quantity}x The Nightmare`);
+				return this.client.commands.get('nightmare')!.run(res, ['solo']);
+			});
 		}
 	}
 }
