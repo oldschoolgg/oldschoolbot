@@ -199,6 +199,8 @@ export const pets = {
 		'Tzrek-jad',
 		'Jal-nib-rek'
 	]),
+	'Boss Pets 3': resolveItems(['Little Nightmare']),
+	space2: [],
 	'Slayer Boss Pets': resolveItems([
 		'Noon',
 		'Abyssal orphan',
@@ -207,7 +209,7 @@ export const pets = {
 		'Pet smoke devil',
 		'Ikkle hydra'
 	]),
-	space2: [],
+	space3: [],
 	Other: resolveItems([
 		'Bloodhound',
 		'Herbi',
