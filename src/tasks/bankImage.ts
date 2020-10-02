@@ -32,7 +32,7 @@ registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
 
-const bankImageFile = fs.readFileSync('./resources/images/bank.png');
+const bankImageFile = fs.readFileSync('./resources/images/bank_backgrounds/1.jpg');
 const bankRepeaterFile = fs.readFileSync('./resources/images/bank_backgrounds/r1.jpg');
 
 const CACHE_DIR = './icon_cache';
