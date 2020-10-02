@@ -157,6 +157,7 @@ export const bosses = {
 	'Chaos Fanatic': resolveItems(['Malediction shard 1', 'Odium shard 1', 'Pet chaos elemental']),
 	'Crazy Arch': resolveItems(['Malediction shard 2', 'Odium shard 2', 'Fedora']),
 	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"]),
+	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
 	Nightmare: nightmareLog
 };
 export const pets = {
