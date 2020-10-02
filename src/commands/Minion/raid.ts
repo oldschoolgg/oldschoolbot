@@ -139,11 +139,27 @@ const meleeGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Fire max cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Fire max cape (l)'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Bandos chestplate'),
 		itemPoint: 5
 	},
 	{
 		itemID: itemID('Fighter torso'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void top'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void top (l)'),
 		itemPoint: 4
 	},
 	{
@@ -157,6 +173,14 @@ const meleeGearBonus = [
 	{
 		itemID: itemID('Bandos tassets'),
 		itemPoint: 5
+	},
+	{
+		itemID: itemID('Elite void robe'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void robe (l)'),
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void knight robe'),
@@ -354,6 +378,14 @@ const rangeGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Elite void top'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void top (l)'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Void knight top'),
 		itemPoint: 3
 	},
@@ -364,6 +396,14 @@ const rangeGearBonus = [
 	{
 		itemID: itemID('Armadyl chainskirt'),
 		itemPoint: 5
+	},
+	{
+		itemID: itemID('Elite void robe'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void robe (l)'),
+		itemPoint: 4
 	},
 	{
 		itemID: itemID('Void knight robe'),
@@ -605,6 +645,14 @@ const mageGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Elite void top'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void top (l)'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Void knight top'),
 		itemPoint: 3
 	},
@@ -622,6 +670,14 @@ const mageGearBonus = [
 	},
 	{
 		itemID: itemID("Ahrim's robeskirt"),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void robe'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Elite void robe (l)'),
 		itemPoint: 4
 	},
 	{

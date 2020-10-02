@@ -44,5 +44,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.AlchingActivity;
 		case Activity.Raids:
 			return Tasks.RaidsActivity;
+		case Activity.Nightmare:
+			return Tasks.NightmareActivity;
 	}
 }

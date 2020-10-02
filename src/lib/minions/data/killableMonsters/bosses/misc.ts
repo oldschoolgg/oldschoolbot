@@ -3,7 +3,7 @@ import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
-import { GearStat } from '../../../../gear/types';
+import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import { CorporealBeastTable } from '../../../../simulation/Corp';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -145,8 +145,10 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		minimumGearRequirements: {
-			[GearStat.AttackStab]: 85,
-			[GearStat.DefenceCrush]: 150
+			[GearSetupTypes.Melee]: {
+				[GearStat.AttackStab]: 85,
+				[GearStat.DefenceCrush]: 150
+			}
 		},
 		uniques: bosses['Corp Beast']
 	},
