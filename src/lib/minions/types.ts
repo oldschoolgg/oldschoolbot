@@ -21,6 +21,7 @@ export interface BankBackground {
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
 	itemCost?: Bank;
+	repeatImage?: Image | null;
 }
 
 export interface ClueMilestoneReward {
