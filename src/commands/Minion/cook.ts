@@ -66,6 +66,8 @@ export default class extends BotCommand {
 			timeToCookSingleCookable /= 1.6;
 		} else if (hasRemy) {
 			timeToCookSingleCookable /= 2;
+		} else if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven gauntlets'))) {
+			timeToCookSingleCookable /= 3;
 		}
 
 		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);

@@ -2,7 +2,7 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { coxLog } from './collectionLog';
+import { coxLog, customBossLog } from './collectionLog';
 import { Emoji } from './constants';
 import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
@@ -275,7 +275,6 @@ const Openables: Openable[] = [
 export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
 	.oneIn(20, itemNameFromID(3713)!)
-	.oneIn(15, 'Dwarven crate')
 	.add(6199)
 	.add(19939);
 
@@ -289,6 +288,7 @@ let allItemsIDs = Openables.map(
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [
 	...Object.values(coxLog).flat(Infinity),
+	...Object.values(customBossLog).flat(Infinity),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),
 	itemID('Partyhat set'),
@@ -297,21 +297,29 @@ const cantBeDropped = [
 	itemID('Twisted ancestral hat'),
 	itemID('Twisted ancestral robe top'),
 	itemID('Twisted ancestral robe bottom'),
-	itemID('Partyhat & specs')
+	itemID('Partyhat & specs'),
+	itemID('Dwarven warhammer'),
+	itemID('Dwarven ore'),
+	itemID('Dwarven bar')
 ] as number[];
 
+const tmbTable = Items.filter(i => {
+	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
+		return false;
+	}
+	return (i as Item).tradeable_on_ge && !(i as Item).duplicate;
+}).map(i => i.id);
+
+const umbTable = Items.filter(i => {
+	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
+		return false;
+	}
+	return !(i as Item).tradeable && !(i as Item).duplicate;
+}).map(i => i.id);
+
 function getRandomItem(tradeables: boolean): number {
-	return Items.filter(i => {
-		if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
-			return false;
-		}
-		if (!tradeables) {
-			// remove item id 0 (Dwarf remains) to avoid possible bank problems and only allow items that are
-			// not trade-able or duplicates to be dropped
-			return (i as Item).id !== 0 && !(i as Item).tradeable && !(i as Item).duplicate;
-		}
-		return (i as Item).tradeable_on_ge;
-	}).random().id;
+	const table = tradeables ? tmbTable : umbTable;
+	return table[Math.floor(Math.random() * table.length)];
 }
 
 export default Openables;

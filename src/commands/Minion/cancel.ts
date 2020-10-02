@@ -6,6 +6,7 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import { tickerTaskFromActivity } from '../../lib/minions/functions/tickerTaskFromActivity';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
+import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 const options = {
 	max: 1,
@@ -35,6 +36,17 @@ export default class extends BotCommand {
 
 		if (currentTask.type === Activity.GroupMonsterKilling) {
 			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`;
+		}
+
+		if (currentTask.type === Activity.Raids) {
+			throw `${msg.author.minionName} is in a raid, their team wouldn't like it if they left!`;
+		}
+
+		if (currentTask.type === Activity.Nightmare) {
+			const data = currentTask as NightmareActivityTaskOptions;
+			if (data.users.length > 1) {
+				throw `${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`;
+			}
 		}
 
 		const taskTicker = tickerTaskFromActivity(currentTask.type);

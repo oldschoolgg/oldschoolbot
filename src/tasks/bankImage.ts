@@ -47,9 +47,6 @@ export default class BankImageTask extends Task {
 	public backgroundImages: BankBackground[] = [];
 
 	public repeatingImage: Image | null = null;
-	public borderImage: Image | null = null;
-	public borderImageTop: Image | null = null;
-	public borderImageBottom: Image | null = null;
 
 	public borderCorner: Image | null = null;
 	public borderHorizontal: Image | null = null;
@@ -145,7 +142,7 @@ export default class BankImageTask extends Task {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawBorder(canvas: Canvas) {
+	drawBorder(canvas: Canvas, titleLine = true) {
 		const ctx = canvas.getContext('2d');
 		// Draw top border
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
@@ -160,11 +157,13 @@ export default class BankImageTask extends Task {
 		ctx.restore();
 
 		// Draw title line
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-		ctx.translate(this.borderVertical?.width!, 27);
-		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
-		ctx.restore();
+		if (titleLine) {
+			ctx.save();
+			ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
+			ctx.translate(this.borderVertical?.width!, 27);
+			ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+			ctx.restore();
+		}
 
 		// Draw left border
 		ctx.save();
@@ -304,18 +303,18 @@ export default class BankImageTask extends Task {
 		}
 
 		let width = wide
-			? Math.ceil(Math.sqrt(items.length) + 1) * itemSize +
-			  Math.ceil(Math.sqrt(items.length) + 1) * spacer * 2 +
-			  distanceFromSide * 2
+			? 5 + this.borderVertical?.width! + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
 			: 488;
 		if (width < 488) width = 488;
-		const itemsPerRow = Math.floor(width / (distanceFromSide + itemSize + spacer));
-		const canvasHeight = Math.floor(
+		const itemsPerRow = Math.floor((width - this.borderVertical?.width! * 2) / (36 + 20));
+		const canvasHeight =
 			Math.floor(
-				Math.ceil(items.length / itemsPerRow) * Math.floor((itemSize + spacer / 2) * 1.08)
-			) +
-				itemSize * 1.5
-		);
+				Math.floor(
+					Math.ceil(items.length / itemsPerRow) *
+						Math.floor((itemSize + spacer / 2) * 1.08)
+				) +
+					itemSize * 1.5
+			) - 2;
 		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
 
 		const ctx = canvas.getContext('2d');
@@ -336,11 +335,13 @@ export default class BankImageTask extends Task {
 
 		// Skips border if noBorder is set
 		if (noBorder !== 1) {
-			this.drawBorder(canvas);
+			this.drawBorder(canvas, bgImage.name === 'Default');
 		}
 
 		// Adds hamstare
-		this.addsHamstare(canvas, Boolean(wide));
+		if (bgImage.name === 'Default') {
+			this.addsHamstare(canvas, Boolean(wide));
+		}
 
 		if (showValue) {
 			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
@@ -365,15 +366,18 @@ export default class BankImageTask extends Task {
 		let yLoc = 0;
 		for (let i = 0; i < items.length; i++) {
 			if (i % itemsPerRow === 0) yLoc += Math.floor((itemSize + spacer / 2) * 1.08);
-			xLoc = Math.floor(
-				spacer + (i % itemsPerRow) * ((canvas.width - 40) / itemsPerRow) + distanceFromSide
-			);
+			// For some reason, it starts drawing at -2 so we compensate that
+			// Adds the border width
+			// Adds distance from side
+			// 36 + 21 is the itemLength + the space between each item
+			xLoc = 2 + this.borderVertical?.width! + 20 + (i % itemsPerRow) * (36 + 21);
 			const [id, quantity, value] = items[i];
 			const item = await this.getItemImage(id);
 			if (!item) {
 				this.client.emit(Events.Warn, `Item with ID[${id}] has no item image.`);
 				continue;
 			}
+
 			ctx.drawImage(
 				item,
 				Math.floor(xLoc + (itemSize - item.width) / 2),

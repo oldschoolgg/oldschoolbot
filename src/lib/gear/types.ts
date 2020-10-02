@@ -68,3 +68,9 @@ export type DefenceGearStat =
 	| GearStat.DefenceSlash
 	| GearStat.DefenceStab
 	| GearStat.DefenceCrush;
+
+export type OtherGearStat =
+	| GearStat.MeleeStrength
+	| GearStat.RangedStrength
+	| GearStat.MagicDamage
+	| GearStat.Prayer;

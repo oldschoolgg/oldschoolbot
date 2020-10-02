@@ -19,9 +19,9 @@ const { triviaQuestions } = JSON.parse(
 	fs.readFileSync('./resources/trivia-questions.json').toString()
 );
 
-import * as pets from '../../../data/pets';
 import { BotCommand } from '../../lib/BotCommand';
 import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
+import pets from '../../lib/pets';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { formatDuration, isWeekend, itemID, rand, roll, stringMatches } from '../../lib/util';
@@ -161,6 +161,10 @@ export default class DailyCommand extends BotCommand {
 			await user.settings.update(UserSettings.Pets, { ...userPets });
 
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
+		}
+
+		if (roll(2500)) {
+			loot[741] = 1;
 		}
 
 		await user.addItemsToBank(loot, true);

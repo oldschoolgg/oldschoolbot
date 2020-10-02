@@ -91,6 +91,13 @@ export default class extends BotCommand {
 			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 });
 		}
 
+		let str = '';
+
+		if (totalPrice >= 30_000_000 && roll(10)) {
+			str += `You received a *Hunk of crystal*.`;
+			await msg.author.addItemsToBank({ 742: 1 });
+		}
+
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
@@ -107,7 +114,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`sacrificed Quantity[${quantity}] ItemID[${osItem.id}] for ${totalPrice}`);
 
-		let str = '';
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
 		for (const icon of minionIcons) {
 			if (newValue < icon.valueRequired) continue;

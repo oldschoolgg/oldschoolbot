@@ -26,12 +26,22 @@ export default class extends Task {
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
-		let loot = monster.table.kill(quantity);
+		// Abyssal set bonuses -- grants the user a few extra kills
+		let abyssalBonus = 1;
+		if (user.equippedPet() === itemID('Ori')) {
+			abyssalBonus += 0.25;
+		}
+
+		let loot = monster.table.kill(Math.ceil(quantity * abyssalBonus));
 		if (roll(10)) {
 			if (duration > Time.Minute * 14) {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
 			}
+		}
+
+		if (monster.id === Monsters.Vorkath.id && roll(4000)) {
+			loot[23941] = 1;
 		}
 
 		let gotKlik = false;
@@ -105,7 +115,11 @@ export default class extends Task {
 		}
 
 		if (bananas > 0) {
-			str += `\n\n <:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
+			str += `\n\n<:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
+		}
+
+		if (abyssalBonus > 1) {
+			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
 		}
 
 		user.incrementMonsterScore(monsterID, quantity);
@@ -116,7 +130,7 @@ export default class extends Task {
 		const continuationChar =
 			perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
 
-		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
+		str += `\n\nSay \`${continuationChar}\` to repeat this trip.`;
 
 		this.client.queuePromise(() => {
 			channel.send(str, new MessageAttachment(image));

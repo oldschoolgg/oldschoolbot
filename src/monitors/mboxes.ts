@@ -4,7 +4,9 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Color, SupportServer, Time } from '../lib/constants';
-import { resolveNameBank, roll, stringMatches } from '../lib/util';
+import { getRandomMysteryBox } from '../lib/openables';
+import { itemID, roll, stringMatches } from '../lib/util';
+import getOSItem from '../lib/util/getOSItem';
 
 export default class extends Monitor {
 	public lastDrop = 0;
@@ -53,9 +55,12 @@ export default class extends Monitor {
 			);
 
 			const winner = collected.first()?.author!;
-			await winner.addItemsToBank(resolveNameBank({ 'Mystery box': 1 }));
+			const box = roll(10) ? getRandomMysteryBox() : itemID('Mystery box');
+			await winner.addItemsToBank({ [box]: 1 });
 			return msg.channel.send(
-				`Congratulations, ${winner}! You got it. I've given you: **1x Mystery box**.`
+				`Congratulations, ${winner}! You got it. I've given you: **1x ${
+					getOSItem(box).name
+				}**.`
 			);
 		} catch (err) {
 			return msg.channel.send(`Nobody got it! :(`);

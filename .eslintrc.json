@@ -2,6 +2,9 @@
 	"parser": "@typescript-eslint/parser",
 	"plugins": ["simple-import-sort"],
 	"extends": ["bamboo", "prettier/@typescript-eslint", "plugin:prettier/recommended"],
+	"env": {
+		"jest": true
+	},
 	"rules": {
 		"no-mixed-operators": "off",
 		"consistent-return": "off",

@@ -111,6 +111,25 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 100_000_000
 	},
 	{
+		id: 10,
+		name: 'Nightmare',
+		image: null,
+		available: true,
+		collectionLogItemsNeeded: resolveNameBank({
+			'Little nightmare': 1,
+			'Jar of dreams': 1,
+			'Nightmare staff': 1,
+			"Inquisitor's great helm": 1,
+			"Inquisitor's hauberk": 1,
+			"Inquisitor's plateskirt": 1,
+			"Inquisitor's mace": 1,
+			'Eldritch orb': 1,
+			'Harmonised orb': 1,
+			'Volatile orb': 1
+		}),
+		gpCost: 100_000_000
+	},
+	{
 		id: 11,
 		name: 'Relax',
 		image: null,
@@ -239,6 +258,18 @@ const backgroundImages: BankBackground[] = [
 	{
 		id: 33,
 		name: 'high',
+		image: null,
+		available: false
+	},
+	{
+		id: 34,
+		name: 'dark',
+		image: null,
+		available: false
+	},
+	{
+		id: 35,
+		name: 'whale',
 		image: null,
 		available: false
 	}

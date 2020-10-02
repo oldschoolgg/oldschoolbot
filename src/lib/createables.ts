@@ -10,6 +10,7 @@ interface Createable {
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
+	GPCost?: number;
 }
 
 const Createables: Createable[] = [
@@ -3140,27 +3141,98 @@ const Createables: Createable[] = [
 			'Coconut milk': 1,
 			'Coconut shell': 1
 		})
-	}
-	/* {
-		name: 'Toxic blowpipe (empty)',
-		inputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		}
 	},
 	{
-		name: 'Toxic blowpipe',
-		inputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
+		name: 'Abyssal pouch',
+		inputItems: resolveNameBank({
+			'Abyssal thread': 1,
+			'Giant pouch': 1
+		}),
+		outputItems: resolveNameBank({
+			'Abyssal pouch': 1
+		})
+	},
+	{
+		name: 'Zamorakian hasta',
+		inputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		QPRequired: 3,
+		requiredSkills: {
+			fishing: 55,
+			firemaking: 35,
+			crafting: 15,
+			smithing: 5
 		},
+		GPCost: 300_000
+	},
+	{
+		name: 'Neitiznot faceguard',
+		inputItems: resolveNameBank({
+			'Helm of neitiznot': 1,
+			'Basilisk jaw': 1
+		}),
+		outputItems: resolveNameBank({
+			'Neitiznot faceguard': 1
+		}),
+		QPRequired: 77
+	},
+	{
+		name: 'Basilisk jaw',
+		inputItems: resolveNameBank({
+			'Neitiznot faceguard': 1
+		}),
+		outputItems: resolveNameBank({
+			'Helm of neitiznot': 1,
+			'Basilisk jaw': 1
+		}),
+		QPRequired: 77
+	},
+	// Nightmare
+	{
+		name: 'Eldritch nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		})
+	},
+	{
+		name: '	Harmonised nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		})
+	},
+	{
+		name: 'Heart crystal',
+		inputItems: resolveNameBank({
+			'Chunk of crystal': 1,
+			'Hunk of crystal': 1,
+			'Lump of crystal': 1
+		}),
 		outputItems: {
-			[itemID('Toxic blowpipe')]: 1
+			745: 1
 		}
-	} */
+	}
 ];
 
 export default Createables;

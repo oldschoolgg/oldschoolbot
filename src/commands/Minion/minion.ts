@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { BotCommand } from '../../lib/BotCommand';
 import {
@@ -12,20 +13,17 @@ import {
 	Tasks,
 	Time
 } from '../../lib/constants';
-import { Eatables } from '../../lib/eatables';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
-	addItemToBank,
-	bankHasItem,
 	formatDuration,
 	isWeekend,
 	itemID,
@@ -56,7 +54,7 @@ const patMessages = [
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
 
-const { floor, ceil } = Math;
+const { floor } = Math;
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -432,7 +430,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	@requiresMinion
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		const bank = msg.author.settings.get(UserSettings.Bank);
 		const boosts = [];
 		let messages: string[] = [];
 
@@ -490,6 +487,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			boosts.push(`40% boost for Dwarven warhammer`);
 		}
 
+		if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
+			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter lance'))) {
+				timeToFinish *= 0.8;
+				boosts.push(`20% boost for Dragon hunter lance`);
+			}
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = floor(msg.author.maxTripLength / timeToFinish);
@@ -499,36 +503,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-
-			for (const food of Eatables) {
-				const amountNeeded = ceil(healAmountNeeded / food.healAmount!) * quantity;
-				if (!bankHasItem(bank, food.id, amountNeeded)) {
-					if (Eatables.indexOf(food) === Eatables.length - 1) {
-						throw `You don't have enough food to kill ${
-							monster.name
-						}! You need enough food to heal atleast ${healAmountNeeded} HP (${healAmountNeeded /
-							quantity} per kill) You can use these food items: ${Eatables.map(
-							i => i.name
-						).join(', ')}.`;
-					}
-					continue;
-				}
-
-				messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-				await msg.author.removeItemFromBank(food.id, amountNeeded);
-
-				// Track this food cost in Economy Stats
-				await this.client.settings.update(
-					ClientSettings.EconomyStats.PVMCost,
-					addItemToBank(
-						this.client.settings.get(ClientSettings.EconomyStats.PVMCost),
-						food.id,
-						amountNeeded
-					)
-				);
-
-				break;
-			}
+			await removeFoodFromUser(
+				this.client,
+				msg.author,
+				healAmountNeeded * quantity,
+				Math.ceil(healAmountNeeded / quantity),
+				monster.name
+			);
 		}
 
 		let duration = timeToFinish * quantity;
@@ -572,7 +553,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		if (messages.length > 0) {
-			response += `\n\n**Messages:** ${messages.join('\n')}.`;
+			response += `\n\n**Messages:** ${messages.join('\n')}`;
 		}
 
 		return msg.send(response);

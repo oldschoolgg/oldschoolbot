@@ -1,3 +1,4 @@
+import { roll } from 'e';
 import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
@@ -106,6 +107,10 @@ export default class extends Task {
 					attempts + 1
 				)} attempt!`
 			);
+		}
+
+		if (roll(2000)) {
+			loot[23939] = 1;
 		}
 
 		await user.addItemsToBank(loot, true);
