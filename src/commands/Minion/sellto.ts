@@ -44,7 +44,7 @@ export default class extends BotCommand {
 		}
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = itemArray.find(i => userBank[i.id] && !i.duplicate);
+		const osItem = itemArray.find(i => userBank[i.id]);
 
 		if (!osItem) {
 			throw `You don't have any of this item to sell, or it is not tradeable.`;
