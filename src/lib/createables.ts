@@ -706,6 +706,15 @@ const Createables: Createable[] = [
 		},
 		GPCost: 300_000
 	},
+	{
+		name: 'Zamorakian spear',
+		inputItems: resolveNameBank({
+			'Zamorakian hasta': 1,
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian spear': 1,
+		})
+	},
 	// Nightmare
 	{
 		name: 'Eldritch nightmare staff',
