@@ -114,6 +114,8 @@ export const enum Tasks {
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
 	NightmareActivity = 'nightmareActivity',
+	AnimatedArmourActivity = 'animatedArmourActivity',
+	CyclopsActivity = 'cyclopsActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -141,7 +143,9 @@ export const enum Activity {
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
 	Alching = 'Alching',
-	Nightmare = 'Nightmare'
+	Nightmare = 'Nightmare',
+	AnimatedArmour = 'AnimatedArmour',
+	Cyclops = 'Cyclops'
 }
 
 export const enum Events {
