@@ -12,9 +12,9 @@ import { addBanks, noOp, queuedMessageSend } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { randomVariation } from '../../../lib/util/randomVariation';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 interface NightmareUser {
 	id: string;
@@ -127,16 +127,15 @@ export default class extends Task {
 					flags: { showNewCL: 1 }
 				});
 
-				returnStr = `${leaderUser}, ${
-					leaderUser.minionName
-				} finished killing ${quantity} ${NightmareMonster.name}, you died ${deaths[
-					leader
-				] ?? 0} times. Your Nightmare KC is now ${(leaderUser.settings.get(
+				returnStr = `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+					NightmareMonster.name
+				}, you died ${deaths[leader] ??
+					0} times. Your Nightmare KC is now ${(leaderUser.settings.get(
 					UserSettings.MonsterScores
 				)[NightmareMonster.id] ?? 0) + quantity}.`;
 			}
 
-			handleTripFinish(this.client, leaderUser , channelID, returnStr, res => {
+			handleTripFinish(this.client, leaderUser, channelID, returnStr, res => {
 				leaderUser.log(`continued trip of ${quantity}x The Nightmare`);
 				return this.client.commands.get('nightmare')!.run(res, ['solo']);
 			});
