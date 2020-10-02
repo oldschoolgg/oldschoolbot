@@ -1,9 +1,9 @@
 import { Task } from 'klasa';
 
-import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
-import { channelIsSendable } from '../../../../lib/util/channelIsSendable';
-import { noOp, roll } from '../../../../lib/util';
 import { Armours } from '../../../../commands/Minion/warriorsguild';
+import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
+import { noOp, roll } from '../../../../lib/util';
+import { channelIsSendable } from '../../../../lib/util/channelIsSendable';
 import itemID from '../../../../lib/util/itemID';
 
 export default class extends Task {

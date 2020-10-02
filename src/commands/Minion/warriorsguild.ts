@@ -1,17 +1,17 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { stringMatches, formatDuration, rand, itemNameFromID, bankHasItem } from '../../lib/util';
-import { Time, Activity, Tasks } from '../../lib/constants';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { Activity, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	AnimatedArmourActivityTaskOptions,
 	CyclopsActivityTaskOptions
 } from '../../lib/types/minions';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { bankHasItem, formatDuration, itemNameFromID, rand, stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 // import { SkillsEnum } from '../../lib/skilling/types';
 import resolveItems from '../../lib/util/resolveItems';
-import { requiresMinion, minionNotBusy } from '../../lib/minions/decorators';
 
 export const Armours = [
 	{
@@ -94,7 +94,6 @@ export default class extends BotCommand {
 		}
 
 		if (minigame === 'animation') {
-			
 			const armour = Armours.find(armour => stringMatches(armour.name, action));
 			if (armour) {
 				const fullhelm = armour.name.concat(' full helm');

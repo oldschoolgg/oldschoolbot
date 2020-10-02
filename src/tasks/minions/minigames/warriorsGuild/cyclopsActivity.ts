@@ -1,14 +1,14 @@
-import { Task } from 'klasa';
 import { MessageAttachment } from 'discord.js';
+import { Task } from 'klasa';
 
 import { Events } from '../../../../lib/constants';
-import { noOp, bankHasItem, roll, addItemToBank, removeItemFromBank } from '../../../../lib/util';
-import itemID from '../../../../lib/util/itemID';
 import killableMonsters from '../../../../lib/minions/data/killableMonsters';
-import { CyclopsActivityTaskOptions } from '../../../../lib/types/minions';
-import { UserSettings } from '../../../../lib/settings/types/UserSettings';
-import { channelIsSendable } from '../../../../lib/util/channelIsSendable';
 import announceLoot from '../../../../lib/minions/functions/announceLoot';
+import { UserSettings } from '../../../../lib/settings/types/UserSettings';
+import { CyclopsActivityTaskOptions } from '../../../../lib/types/minions';
+import { addItemToBank, bankHasItem, noOp, removeItemFromBank, roll } from '../../../../lib/util';
+import { channelIsSendable } from '../../../../lib/util/channelIsSendable';
+import itemID from '../../../../lib/util/itemID';
 
 const defenders = [
 	{
