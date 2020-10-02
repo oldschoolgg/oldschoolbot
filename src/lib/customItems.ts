@@ -3,10 +3,15 @@ import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { cleanString } from '../util';
-import getIconAsBase64 from './util/getIconAsBase64';
 import getOSItem from './util/getOSItem';
 
 export const customPrices: Record<number, number> = [];
+
+const customItem: number[] = [];
+
+export function isCustomItem(itemID: number) {
+	return customItem.includes(itemID);
+}
 
 async function setCustomItem(
 	id: number,
@@ -19,14 +24,13 @@ async function setCustomItem(
 		...baseItem,
 		...newItemData,
 		name,
-		id,
-		custom: true,
-		icon: await getIconAsBase64(id)
+		id
 	});
 	const cleanName = cleanString(name);
 	itemNameMap.set(cleanName, id);
 	// Set the item custom price
 	customPrices[id] = price ? price : baseItem.tradeable_on_ge ? 1 : 0;
+	customItem.push(id);
 }
 
 export async function initCustomItems() {

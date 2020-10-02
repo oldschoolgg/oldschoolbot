@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { isCustomItem } from '../../lib/customItems';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
@@ -25,7 +26,7 @@ export default class extends BotCommand {
 			.setColor(52224)
 			.setDescription(`${priceOfItem.toLocaleString()} (${Util.toKMB(priceOfItem)})`);
 		let toReturn = {};
-		if (item.custom && item.icon) {
+		if (isCustomItem(item.id)) {
 			embed.setThumbnail(`attachment://icon.png`);
 			toReturn = {
 				embed,
