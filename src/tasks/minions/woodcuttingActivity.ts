@@ -39,7 +39,13 @@ export default class extends Task {
 
 		// Add clue scrolls
 		if (Log.clueScrollChance) {
-			loot = addSkillingClueToLoot(user, quantity, Log.clueScrollChance, loot);
+			loot = addSkillingClueToLoot(
+				user,
+				SkillsEnum.Woodcutting,
+				quantity,
+				Log.clueScrollChance,
+				loot
+			);
 		}
 
 		// Roll for pet
