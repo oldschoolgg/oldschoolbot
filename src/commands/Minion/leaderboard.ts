@@ -8,7 +8,7 @@ import { Time } from '../../lib/constants';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
-import { SettingsEntry, StringKeyedBank } from '../../lib/types';
+import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 
 const CACHE_TIME = Time.Minute * 5;
@@ -42,12 +42,12 @@ interface PetUser {
 
 interface KCUser {
 	id: string;
-	monsterScores: StringKeyedBank;
+	monsterScores: ItemBank;
 }
 
 interface CLUser {
 	id: string;
-	collectionLogBank: StringKeyedBank;
+	collectionLogBank: ItemBank;
 }
 
 interface GPLeaderboard {

@@ -1,7 +1,7 @@
 import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
-import { Bank } from '../lib/types';
+import { ItemBank } from './../lib/types/index';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -18,7 +18,7 @@ export default class extends Extendable {
 			flags,
 			user
 		}: {
-			bank: Bank;
+			bank: ItemBank;
 			content?: string;
 			title?: string;
 			background?: number;
