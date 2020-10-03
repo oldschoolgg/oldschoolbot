@@ -709,11 +709,11 @@ const Createables: Createable[] = [
 	{
 		name: 'Zamorakian spear',
 		inputItems: resolveNameBank({
-			'Zamorakian hasta': 1,
+			'Zamorakian hasta': 1
 		}),
 		outputItems: resolveNameBank({
-			'Zamorakian spear': 1,
-		})
+			'Zamorakian spear': 1
+		}),
 	},
 	// Nightmare
 	{
