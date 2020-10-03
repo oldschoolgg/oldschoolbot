@@ -1,19 +1,18 @@
-import { MinigameIDsEnum } from './../../lib/minions/data/minigames';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	AnimatedArmourActivityTaskOptions,
 	CyclopsActivityTaskOptions
 } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemNameFromID, rand, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 // import { SkillsEnum } from '../../lib/skilling/types';
 import resolveItems from '../../lib/util/resolveItems';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 
 export const Armours = [
 	{
