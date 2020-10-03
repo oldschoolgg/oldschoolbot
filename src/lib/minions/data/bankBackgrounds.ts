@@ -128,6 +128,14 @@ const backgroundImages: BankBackground[] = [
 			'Volatile orb': 1
 		}),
 		gpCost: 100_000_000
+	},
+	{
+		id: 11,
+		name: 'Dark',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 100_000_000
 	}
 ];
 
