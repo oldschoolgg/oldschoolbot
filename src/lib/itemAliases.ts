@@ -1,26 +1,28 @@
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Items } from 'oldschooljs';
+import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
+import { cleanString } from './util';
 import getOSItem from './util/getOSItem';
 
-export const itemAliases: Item[] = [];
-
 function setItemAlias(id: number, name: string | string[]) {
+	let firstName: string | null = null;
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
-		itemAliases.push({
-			...getOSItem(id),
-			id,
-			name
-		});
+		firstName = name;
+		const cleanName = cleanString(name);
+		itemNameMap.set(cleanName, id);
 	} else {
 		for (const _name of name) {
-			itemAliases.push({
-				...getOSItem(id),
-				id,
-				name: _name
-			});
+			if (!firstName) firstName = _name;
+			const cleanName = cleanString(_name);
+			itemNameMap.set(cleanName, id);
 		}
 	}
+	// Update the item name to it's first alias
+	Items.set(id, {
+		...getOSItem(id),
+		name: firstName!
+	});
 }
 
 export function initItemAliases() {
