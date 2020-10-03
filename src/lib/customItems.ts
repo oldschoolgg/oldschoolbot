@@ -5,7 +5,21 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from '../util';
 import getOSItem from './util/getOSItem';
 
-function setCustomItem(id: number, name: string, baseItem: Item, newItemData?: Partial<Item>) {
+export const customPrices: Record<number, number> = [];
+
+const customItem: number[] = [];
+
+export function isCustomItem(itemID: number) {
+	return customItem.includes(itemID);
+}
+
+function setCustomItem(
+	id: number,
+	name: string,
+	baseItem: Item,
+	newItemData?: Partial<Item>,
+	price = 0
+) {
 	Items.set(id, {
 		...baseItem,
 		...newItemData,
@@ -14,6 +28,10 @@ function setCustomItem(id: number, name: string, baseItem: Item, newItemData?: P
 	});
 	const cleanName = cleanString(name);
 	itemNameMap.set(cleanName, id);
+	// Set the item custom price
+	customPrices[id] = price ? price : baseItem.tradeable_on_ge ? 1 : 0;
+	// Add the item to the custom items array
+	customItem.push(id);
 }
 
 export function initCustomItems() {
@@ -32,8 +50,14 @@ export function initCustomItems() {
 	setCustomItem(21313, 'Scruffy', getOSItem('Herbi'));
 	setCustomItem(9057, 'Zak', getOSItem('Herbi'));
 	setCustomItem(8441, 'Hammy', getOSItem('Herbi'));
-	setCustomItem(12592, 'Divine sigil', getOSItem('Elysian sigil'));
-	setCustomItem(3454, 'Divine spirit shield', getOSItem('Elysian spirit shield'));
+	setCustomItem(12592, 'Divine sigil', getOSItem('Elysian sigil'), {}, 930_000_000);
+	setCustomItem(
+		3454,
+		'Divine spirit shield',
+		getOSItem('Elysian spirit shield'),
+		{},
+		900_000_000
+	);
 	setCustomItem(500, 'Skipper', getOSItem('Herbi'));
 
 	// Dwarven Items
@@ -111,38 +135,50 @@ export function initCustomItems() {
 	// });
 
 	// Abyssal Cape || 24214 = Victor's cape (100) [DUPLICATE]
-	setCustomItem(24214, 'Abyssal cape', getOSItem('Infernal cape'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal cape',
-		equipment: {
-			attack_stab: 12,
-			attack_slash: 12,
-			attack_crush: 12,
-			attack_magic: 6,
-			attack_ranged: 6,
-			defence_stab: 36,
-			defence_slash: 36,
-			defence_crush: 36,
-			defence_magic: 36,
-			defence_ranged: 36,
-			melee_strength: 24,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 10,
-			slot: EquipmentSlot.Cape,
-			requirements: null
-		}
-	});
+	setCustomItem(
+		24214,
+		'Abyssal cape',
+		getOSItem('Infernal cape'),
+		{
+			duplicate: false,
+			tradeable: true,
+			tradeable_on_ge: true,
+			wiki_name: 'Abyssal cape',
+			equipment: {
+				attack_stab: 12,
+				attack_slash: 12,
+				attack_crush: 12,
+				attack_magic: 6,
+				attack_ranged: 6,
+				defence_stab: 36,
+				defence_slash: 36,
+				defence_crush: 36,
+				defence_magic: 36,
+				defence_ranged: 36,
+				melee_strength: 24,
+				ranged_strength: 0,
+				magic_damage: 0,
+				prayer: 10,
+				slot: EquipmentSlot.Cape,
+				requirements: null
+			}
+		},
+		500_000_000
+	);
 
 	// Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
-	setCustomItem(24212, 'Abyssal thread', getOSItem('Giant pouch'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal thread'
-	});
+	setCustomItem(
+		24212,
+		'Abyssal thread',
+		getOSItem('Giant pouch'),
+		{
+			duplicate: false,
+			tradeable: true,
+			tradeable_on_ge: true,
+			wiki_name: 'Abyssal thread'
+		},
+		100_000_000
+	);
 
 	// Abyssal pouch || 24210 = Victor's cape (10) [DUPLICATE]
 	setCustomItem(24210, 'Abyssal pouch', getOSItem('Giant pouch'), {
@@ -161,10 +197,16 @@ export function initCustomItems() {
 	});
 
 	// Abyssal bones || 24199 = Seren halo [DUPLICATE]
-	setCustomItem(24199, 'Abyssal dragon bones', getOSItem('Superior dragon bones'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal dragon bones'
-	});
+	setCustomItem(
+		24199,
+		'Abyssal dragon bones',
+		getOSItem('Superior dragon bones'),
+		{
+			duplicate: false,
+			tradeable: true,
+			tradeable_on_ge: true,
+			wiki_name: 'Abyssal dragon bones'
+		},
+		50_000
+	);
 }
