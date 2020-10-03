@@ -1,8 +1,7 @@
-import { itemID } from 'oldschooljs/dist/util';
-
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { stripEmojis } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
+import itemID from '../src/lib/util/itemID';
 
 describe('util', () => {
 	test('stripEmojis', () => {

@@ -7,7 +7,7 @@ import { Items } from 'oldschooljs';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
-import { Bank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 import {
 	addItemToBank,
 	chunkObject,
@@ -58,7 +58,7 @@ export default class extends Command {
 		const coins = msg.author.settings.get(UserSettings.GP);
 		const _bank = msg.author.settings.get(UserSettings.Bank);
 
-		const bank: Bank = { ..._bank, 995: coins };
+		const bank: ItemBank = { ..._bank, 995: coins };
 
 		if (typeof pageNumberOrItemName === 'string') {
 			if (pageNumberOrItemName.includes(',')) {

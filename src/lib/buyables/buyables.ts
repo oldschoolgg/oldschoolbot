@@ -1,11 +1,11 @@
 import { MAX_QP } from '../constants';
-import { Bank } from '../types';
+import { ItemBank } from '../types';
 import { resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 
 interface Buyable {
 	name: string;
-	outputItems: Bank;
+	outputItems: ItemBank;
 	qpRequired: number;
 	gpCost: number;
 	aliases?: string[];

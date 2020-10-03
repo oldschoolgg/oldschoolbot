@@ -2,14 +2,14 @@ import { addBanks } from 'oldschooljs/dist/util';
 import { O } from 'ts-toolbelt';
 
 import { Eatables } from '../../eatables';
-import { Bank, ItemBank } from '../../types';
+import { ItemBank } from '../../types';
 
 export default function getUserFoodFromBank(
-	userBank: O.Readonly<Bank>,
+	userBank: O.Readonly<ItemBank>,
 	totalHealingNeeded: number
 ): false | ItemBank {
 	let totalHealingCalc = totalHealingNeeded;
-	let foodToRemove: Bank = {};
+	let foodToRemove: ItemBank = {};
 	// Gets all the eatables in the user bank
 	for (const eatable of Eatables.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))) {
 		const inBank = userBank[eatable.id];

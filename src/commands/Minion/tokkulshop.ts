@@ -6,7 +6,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import TokkulShopItem from '../../lib/buyables/tokkulBuyables';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Bank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 import { stringMatches } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
@@ -66,8 +66,8 @@ export default class extends BotCommand {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
 
-		let outItems: Bank;
-		let inItems: Bank;
+		let outItems: ItemBank;
+		let inItems: ItemBank;
 		let itemString: string;
 		let inItemString: string;
 		if (type === 'buy') {
