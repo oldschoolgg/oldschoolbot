@@ -4,7 +4,7 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from './util';
 import getOSItem from './util/getOSItem';
 
-function setItemAlias(id: number, name: string | string[]) {
+function setItemAlias(id: number, name: string | string[], rename = true) {
 	let firstName: string | null = null;
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
@@ -19,10 +19,12 @@ function setItemAlias(id: number, name: string | string[]) {
 		}
 	}
 	// Update the item name to it's first alias
-	Items.set(id, {
-		...getOSItem(id),
-		name: firstName!
-	});
+	if (rename) {
+		Items.set(id, {
+			...getOSItem(id),
+			name: firstName!
+		});
+	}
 }
 
 export function initItemAliases() {
