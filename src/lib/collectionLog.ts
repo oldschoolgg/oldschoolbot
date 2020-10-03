@@ -3,16 +3,16 @@ import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
 
 const nightmareLog = resolveItems([
-	'Little nightmare',
-	'Jar of dreams',
-	'Nightmare staff',
 	"Inquisitor's great helm",
 	"Inquisitor's hauberk",
 	"Inquisitor's plateskirt",
 	"Inquisitor's mace",
+	'Nightmare staff',
 	'Eldritch orb',
+	'Volatile orb',
 	'Harmonised orb',
-	'Volatile orb'
+	'Jar of dreams',
+	'Little nightmare'
 ]);
 
 export const bosses = {
