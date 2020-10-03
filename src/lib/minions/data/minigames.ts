@@ -8,10 +8,15 @@ export const Minigames: Minigame[] = [
 	{
 		id: 9415,
 		name: 'The Nightmare'
+	},
+	{
+		id: 2456,
+		name: 'Animated Armour'
 	}
 ];
 
 export enum MinigameIDsEnum {
 	Wintertodt = 20693,
-	Nightmare = 9415
+	Nightmare = 9415,
+	AnimatedArmour = 2456
 }

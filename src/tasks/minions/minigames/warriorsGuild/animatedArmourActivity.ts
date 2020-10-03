@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 
 import { Armours } from '../../../../commands/Minion/warriorsguild';
+import { MinigameIDsEnum } from '../../../../lib/minions/data/minigames';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { noOp, roll } from '../../../../lib/util';
 import { channelIsSendable } from '../../../../lib/util/channelIsSendable';
@@ -36,6 +37,9 @@ export default class extends Task {
 				}
 				killsBeforeBreak++;
 			}
+
+			user.incrementMinigameScore(MinigameIDsEnum.AnimatedArmour, killsBeforeBreak);
+
 			if (killsBeforeBreak !== quantity) {
 				str = `${user}, ${user.minionName} finished killing ${killsBeforeBreak}x animated ${
 					armour.name
@@ -88,6 +92,7 @@ export default class extends Task {
 				8851: quantity * armour.tokens
 			};
 
+			user.incrementMinigameScore(MinigameIDsEnum.AnimatedArmour, quantity);
 			await user.addItemsToBank(loot, true);
 		}
 
