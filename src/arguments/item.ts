@@ -13,7 +13,7 @@ export default class extends Argument {
 			return [getOSItem(parsed)];
 		}
 		const osItems = Items.filter(i => stringMatches(i.name, itemName)).array() as Item[];
-		if (!osItems.length) throw `${itemName} doesnt exist.`;
+		if (!osItems.length) throw `That item doesnt exist.`;
 		return osItems;
 	}
 }
