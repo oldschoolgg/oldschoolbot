@@ -3,7 +3,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
-import { Bank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
@@ -28,7 +28,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.flagArgs.all) {
-			const items: Bank = {};
+			const items: ItemBank = {};
 			for (const item of itemArray) {
 				items[item.id] = qty;
 			}

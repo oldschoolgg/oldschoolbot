@@ -1,12 +1,12 @@
-import { Bank } from './types';
+import { ItemBank } from './types';
 import { resolveNameBank } from './util';
 import itemID from './util/itemID';
 
 interface Createable {
 	name: string;
-	outputItems: Bank;
-	inputItems: Bank;
-	cantHaveItems?: Bank;
+	outputItems: ItemBank;
+	inputItems: ItemBank;
+	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;

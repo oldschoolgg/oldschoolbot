@@ -12,7 +12,7 @@ import { filterableTypes } from '../lib/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { Bank } from '../lib/types';
+import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
 	canvasImageFromBuffer,
@@ -206,7 +206,7 @@ export default class BankImageTask extends Task {
 	}
 
 	async generateBankImage(
-		itemLoot: Bank,
+		itemLoot: ItemBank,
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
@@ -430,7 +430,11 @@ export default class BankImageTask extends Task {
 		return canvas.toBuffer('image/png');
 	}
 
-	async generateCollectionLogImage(collectionLog: Bank, title = '', type: any): Promise<Buffer> {
+	async generateCollectionLogImage(
+		collectionLog: ItemBank,
+		title = '',
+		type: any
+	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
