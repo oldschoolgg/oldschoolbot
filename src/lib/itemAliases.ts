@@ -2,27 +2,25 @@ import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { cleanString } from './util';
-import getOSItem from './util/getOSItem';
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
 	let firstName: string | null = null;
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
 		firstName = name;
-		const cleanName = cleanString(name);
-		itemNameMap.set(cleanName, id);
+		itemNameMap.set(cleanString(name), id);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
-			const cleanName = cleanString(_name);
-			itemNameMap.set(cleanName, id);
+			itemNameMap.set(cleanString(_name), id);
 		}
 	}
 	// Update the item name to it's first alias
 	if (rename) {
 		Items.set(id, {
-			...getOSItem(id),
-			name: firstName!
+			...Items.get(id),
+			name: firstName!,
+			id
 		});
 	}
 }
