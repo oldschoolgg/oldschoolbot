@@ -3,24 +3,7 @@ import { Items } from 'oldschooljs';
 import ItemArgument from '../src/arguments/item';
 import { initItemAliases } from '../src/lib/itemAliases';
 import getOSItem from '../src/lib/util/getOSItem';
-
-function mockArgument(arg: any) {
-	return new arg(
-		{
-			name: 'arguments',
-			client: {
-				options: {
-					pieceDefaults: {
-						arguments: {}
-					}
-				}
-			}
-		},
-		['1'],
-		'',
-		{}
-	);
-}
+import { mockArgument } from './utils';
 
 describe('Item Alias', () => {
 	beforeAll(async () => {
