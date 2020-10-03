@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import { Canvas, createCanvas, Image } from 'canvas';
+import { Canvas, createCanvas } from 'canvas';
 import * as fs from 'fs';
-import { KlasaClient } from 'klasa';
+import { KlasaClient, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearTypes } from '..';
+import BankImageTask from '../../../tasks/bankImage';
+import { UserSettings } from '../../settings/types/UserSettings';
 import { canvasImageFromBuffer } from '../../util';
 import { drawItemQuantityText } from '../../util/drawItemQuantityText';
 import { drawTitleText } from '../../util/drawTitleText';
@@ -35,86 +37,7 @@ const slotCoordinates: { [key in EquipmentSlot]: [number, number] } = {
 
 const slotSize = 36;
 
-let borderCorner: Image | null = null;
-let borderHorizontal: Image | null = null;
-let borderVertical: Image | null = null;
-
-async function getBorders() {
-	if (!borderCorner) {
-		borderCorner = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_c.png')
-		);
-	}
-	if (!borderHorizontal) {
-		borderHorizontal = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_h.png')
-		);
-	}
-	if (!borderVertical) {
-		borderVertical = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_v.png')
-		);
-	}
-}
-
-function drawBorder(canvas: Canvas) {
-	const ctx = canvas.getContext('2d');
-	// Draw top border
-	ctx.fillStyle = ctx.createPattern(borderHorizontal, 'repeat-x');
-	ctx.fillRect(0, 0, canvas.width, borderHorizontal?.height!);
-
-	// Draw bottom border
-	ctx.save();
-	ctx.fillStyle = ctx.createPattern(borderHorizontal, 'repeat-x');
-	ctx.translate(0, canvas.height);
-	ctx.scale(1, -1);
-	ctx.fillRect(0, 0, canvas.width, borderHorizontal?.height!);
-	ctx.restore();
-
-	// Draw left border
-	ctx.save();
-	ctx.fillStyle = ctx.createPattern(borderVertical, 'repeat-y');
-	ctx.translate(0, borderVertical?.width!);
-	ctx.fillRect(0, 0, borderVertical?.width!, canvas.height);
-	ctx.restore();
-
-	// Draw right border
-	ctx.fillStyle = ctx.createPattern(borderVertical, 'repeat-y');
-	ctx.save();
-	ctx.translate(canvas.width, 0);
-	ctx.scale(-1, 1);
-	ctx.fillRect(0, 0, borderVertical?.width!, canvas.height);
-	ctx.restore();
-
-	// Draw corner borders
-	// Top left
-	ctx.save();
-	ctx.translate(0, 0);
-	ctx.scale(1, 1);
-	ctx.drawImage(borderCorner, 0, 0);
-	ctx.restore();
-
-	// Top right
-	ctx.save();
-	ctx.translate(canvas.width, 0);
-	ctx.scale(-1, 1);
-	ctx.drawImage(borderCorner, 0, 0);
-	ctx.restore();
-
-	// Bottom right
-	ctx.save();
-	ctx.translate(canvas.width, canvas.height);
-	ctx.scale(-1, -1);
-	ctx.drawImage(borderCorner, 0, 0);
-	ctx.restore();
-
-	// Bottom left
-	ctx.save();
-	ctx.translate(0, canvas.height);
-	ctx.scale(1, -1);
-	ctx.drawImage(borderCorner, 0, 0);
-	ctx.restore();
-}
+let bankTask: BankImageTask | null = null;
 
 function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = true) {
 	const ctx = canvas.getContext('2d');
@@ -144,22 +67,32 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 
 export async function generateGearImage(
 	client: KlasaClient,
+	user: KlasaUser,
 	gearSetup: GearTypes.GearSetup,
 	gearType: GearTypes.GearSetupTypes,
 	petID: number | null
 ) {
+	// Init the background images if they are not already
+	if (!bankTask) {
+		bankTask = client.tasks.get('bankImage') as BankImageTask;
+	}
+
+	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
+	const userBg = bankTask?.backgroundImages.find(i => i.id === userBgID)?.image;
+
 	const gearStats = sumOfSetupStats(gearSetup);
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.drawImage(
+		userBg,
+		(canvas.width - userBg?.width!) * 0.5,
+		(canvas.height - userBg?.height!) * 0.5
+	);
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-
-	if (!borderCorner || !borderVertical || !borderHorizontal) {
-		await getBorders();
-	}
-	drawBorder(canvas);
+	bankTask?.drawBorder(canvas, false);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
@@ -209,7 +142,7 @@ export async function generateGearImage(
 	);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - borderVertical?.width! * 2, 0);
+	ctx.translate(canvas.width - bankTask.borderVertical?.width! * 2, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Defence bonus`, 0, 25);
@@ -262,7 +195,7 @@ export async function generateGearImage(
 	// drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - borderVertical?.width! * 2, 0);
+	ctx.translate(canvas.width - bankTask?.borderVertical?.width! * 2, 0);
 	ctx.font = '16px OSRSFontCompact';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
