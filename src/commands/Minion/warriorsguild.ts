@@ -1,3 +1,4 @@
+import { MinigameIDsEnum } from './../../lib/minions/data/minigames';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -12,6 +13,7 @@ import { bankHasItem, formatDuration, itemNameFromID, rand, stringMatches } from
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 // import { SkillsEnum } from '../../lib/skilling/types';
 import resolveItems from '../../lib/util/resolveItems';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 
 export const Armours = [
 	{
@@ -125,19 +127,19 @@ export default class extends BotCommand {
 					)}.`;
 				}
 
-				const data: AnimatedArmourActivityTaskOptions = {
-					minigameID: 6185,
-					armourID: armour.name,
-					userID: msg.author.id,
-					channelID: msg.channel.id,
-					quantity,
-					duration,
-					type: Activity.AnimatedArmouring,
-					id: rand(1, 10_000_000),
-					finishDate: Date.now() + duration
-				};
-
-				await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+				await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>(
+					this.client,
+					Tasks.MinigameTicker,
+					{
+						minigameID: MinigameIDsEnum.AnimatedArmour,
+						armourID: armour.name,
+						userID: msg.author.id,
+						channelID: msg.channel.id,
+						quantity,
+						duration,
+						type: Activity.AnimatedArmour
+					}
+				);
 
 				const response = `${msg.author.minionName} is now killing ${quantity}x animated ${
 					armour.name
@@ -182,18 +184,18 @@ export default class extends BotCommand {
 				)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
 			}
 
-			const data: CyclopsActivityTaskOptions = {
-				minigameID: 2097,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Cyclopes,
-				id: rand(1, 10_000_000),
-				finishDate: Date.now() + duration
-			};
-
-			await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>(
+				this.client,
+				Tasks.MinigameTicker,
+				{
+					minigameID: 2097,
+					userID: msg.author.id,
+					channelID: msg.channel.id,
+					quantity,
+					duration,
+					type: Activity.Cyclops
+				}
+			);
 
 			let response = `${
 				msg.author.minionName
