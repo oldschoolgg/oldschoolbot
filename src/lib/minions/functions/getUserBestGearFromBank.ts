@@ -98,13 +98,13 @@ export default function(
 				const bGearScore = getItemScore(itemB);
 				if (gearStatExtra) {
 					return (
-						itemB?.equipment![gearStatExtra] - itemA?.equipment![gearStatExtra] ||
-						itemB?.equipment![gearStat] - itemA?.equipment![gearStat] ||
+						itemB.equipment![gearStatExtra] - itemA.equipment![gearStatExtra] ||
+						itemB.equipment![gearStat] - itemA.equipment![gearStat] ||
 						bGearScore - aGearScore
 					);
 				}
 				return (
-					itemB?.equipment![gearStat] - itemA?.equipment![gearStat] ||
+					itemB.equipment![gearStat] - itemA.equipment![gearStat] ||
 					bGearScore - aGearScore
 				);
 			});
