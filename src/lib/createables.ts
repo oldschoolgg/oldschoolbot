@@ -713,7 +713,7 @@ const Createables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({
 			'Zamorakian spear': 1
-		}),
+		})
 	},
 	// Nightmare
 	{
