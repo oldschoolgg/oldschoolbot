@@ -35,12 +35,7 @@ export default class extends BotCommand {
 		]
 	) {
 		await msg.author.settings.sync(true);
-		const {
-			toRemoveFromGear,
-			toRemoveFromBank,
-			gearToEquip,
-			userFinalBank
-		} = getUserBestGearFromBank(
+		const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
 			msg.author.settings.get(UserSettings.Bank),
 			msg.author.rawGear()[gearType],
 			gearType,
@@ -48,11 +43,11 @@ export default class extends BotCommand {
 			style,
 			extra
 		);
-		console.log({ toRemoveFromGear, toRemoveFromBank, gearToEquip, userFinalBank });
 		await msg.author.settings.update(UserSettings.Bank, userFinalBank);
 		await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
 		const image = await generateGearImage(
 			this.client,
+			msg.author,
 			msg.author.settings.get(resolveGearTypeSetting(gearType)),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)

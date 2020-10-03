@@ -18,7 +18,7 @@ const userBank = resolveNameBank({
 	'Dragonfire shield': 1,
 	'Amulet of glory': 1
 });
-const nulLGear: GearSetup = {
+const nullGear: GearSetup = {
 	'2h': null,
 	ammo: null,
 	body: null,
@@ -33,7 +33,7 @@ const nulLGear: GearSetup = {
 	weapon: null
 };
 const userGear: GearSetup = {
-	...nulLGear,
+	...nullGear,
 	'2h': { item: itemID('Elder maul'), quantity: 1 },
 	body: { item: itemID('Dragon chainbody'), quantity: 1 },
 	cape: { item: itemID('Cape of legends'), quantity: 1 },
@@ -42,13 +42,15 @@ const userGear: GearSetup = {
 };
 
 describe('getUserBestGearFromBank', () => {
-	test('autoequip melee attack slash', async () => {
+	beforeAll(async () => {
 		await Items.fetchAll();
+	});
+	test('autoequip melee attack slash', async () => {
 		expect(
 			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'attack', 'slash')
 		).toStrictEqual({
 			gearToEquip: {
-				...nulLGear,
+				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
 				cape: { item: itemID('Cape of legends'), quantity: 1 },
 				hands: { item: itemID('Leather gloves'), quantity: 1 },
@@ -85,12 +87,11 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip melee attack crush', async () => {
-		await Items.fetchAll();
 		expect(
 			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'attack', 'crush')
 		).toStrictEqual({
 			gearToEquip: {
-				...nulLGear,
+				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
 				cape: { item: itemID('Cape of legends'), quantity: 1 },
 				hands: { item: itemID('Leather gloves'), quantity: 1 },
@@ -124,7 +125,6 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip mage attack magic strength', async () => {
-		await Items.fetchAll();
 		expect(
 			getUserBestGearFromBank(
 				userBank,
@@ -136,7 +136,7 @@ describe('getUserBestGearFromBank', () => {
 			)
 		).toStrictEqual({
 			gearToEquip: {
-				...nulLGear,
+				...nullGear,
 				cape: { item: itemID('Cape of legends'), quantity: 1 },
 				hands: { item: itemID('Leather gloves'), quantity: 1 },
 				neck: { item: itemID('Occult necklace'), quantity: 1 },
@@ -171,12 +171,11 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip mage attack magic', async () => {
-		await Items.fetchAll();
 		expect(
 			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Mage, 'attack', 'magic')
 		).toStrictEqual({
 			gearToEquip: {
-				...nulLGear,
+				...nullGear,
 				cape: { item: itemID('Cape of legends'), quantity: 1 },
 				hands: { item: itemID('Leather gloves'), quantity: 1 },
 				neck: { item: itemID('3rd age amulet'), quantity: 1 },
@@ -211,12 +210,11 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip melee defence slash', async () => {
-		await Items.fetchAll();
 		expect(
 			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'defence', 'slash')
 		).toStrictEqual({
 			gearToEquip: {
-				...nulLGear,
+				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
 				cape: { item: itemID('Cape of legends'), quantity: 1 },
 				hands: { item: itemID('Leather gloves'), quantity: 1 },

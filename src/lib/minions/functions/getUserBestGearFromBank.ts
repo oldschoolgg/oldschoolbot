@@ -8,17 +8,9 @@ import { removeBankFromBank } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 function getItemScore(item: Item) {
-	return (
-		item?.equipment![GearStat.DefenceCrush] +
-		item?.equipment![GearStat.DefenceSlash] +
-		item?.equipment![GearStat.DefenceStab] +
-		item?.equipment![GearStat.DefenceMagic] +
-		item?.equipment![GearStat.DefenceRanged] +
-		item?.equipment![GearStat.AttackCrush] +
-		item?.equipment![GearStat.AttackSlash] +
-		item?.equipment![GearStat.AttackStab] +
-		item?.equipment![GearStat.AttackMagic] +
-		item?.equipment![GearStat.AttackRanged]
+	return Object.values(item.equipment!).reduce(
+		(a, b) => (!isNaN(Number(a)) ? Number(a) : 0) + (!isNaN(Number(b)) ? Number(b) : 0),
+		0
 	);
 }
 
