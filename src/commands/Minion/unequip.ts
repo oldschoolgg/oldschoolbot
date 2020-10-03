@@ -53,6 +53,7 @@ export default class extends BotCommand {
 
 		const image = await generateGearImage(
 			this.client,
+			msg.author,
 			msg.author.settings.get(resolveGearTypeSetting(gearType)),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
