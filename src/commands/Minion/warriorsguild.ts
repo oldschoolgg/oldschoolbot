@@ -63,7 +63,7 @@ export default class extends BotCommand {
 		// For future
 		/*
 		if (msg.author.skillLevel(SkillsEnum.Attack) !== 99 || msg.author.skillLevel(SkillsEnum.Strength) !== 99 || (msg.author.skillLevel(SkillsEnum.Attack) + msg.author.skillLevel(SkillsEnum.Strength)) < 130) {
-			throw `You need 99 Attack or Strength or a combined attack and strength lvl of 130 to enter the Warriors' guild.`;
+			return msg.send(`You need 99 Attack or Strength or a combined attack and strength lvl of 130 to enter the Warriors' guild.`);
 		}
 		*/
 
@@ -71,7 +71,9 @@ export default class extends BotCommand {
 		const attack = 99;
 		const strength = 99;
 		if (attack !== 99 || strength !== 99 || attack + strength < 130) {
-			throw `You need 99 Attack or Strength or a combined attack and strength lvl of 130 to enter the Warriors' guild.`;
+			return msg.send(
+				`You need 99 Attack or Strength or a combined attack and strength lvl of 130 to enter the Warriors' guild.`
+			);
 		}
 
 		if (minigame === 'animation') {
@@ -83,9 +85,11 @@ export default class extends BotCommand {
 				const requiredArmour = resolveItems([fullhelm, platelegs, platebody]);
 				for (const piece of requiredArmour) {
 					if (!bankHasItem(userBank, piece, 1)) {
-						throw `You don't have the required items to kill animated ${action} armour! You are missing at least a ${itemNameFromID(
-							piece
-						)}. A fullhelm, platelegs and platebody are required.`;
+						return msg.send(
+							`You don't have the required items to kill animated ${action} armour! You are missing at least a ${itemNameFromID(
+								piece
+							)}. A fullhelm, platelegs and platebody are required.`
+						);
 					}
 				}
 
@@ -97,13 +101,15 @@ export default class extends BotCommand {
 				const duration = armour.timeToFinish * quantity;
 
 				if (duration > msg.author.maxTripLength) {
-					throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-						msg.author.maxTripLength
-					)}, try a lower quantity. The highest amount of animated ${
-						armour.name
-					} armour you can kill is ${Math.floor(
-						msg.author.maxTripLength / armour.timeToFinish
-					)}.`;
+					return msg.send(
+						`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+							msg.author.maxTripLength
+						)}, try a lower quantity. The highest amount of animated ${
+							armour.name
+						} armour you can kill is ${Math.floor(
+							msg.author.maxTripLength / armour.timeToFinish
+						)}.`
+					);
 				}
 
 				await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>(
@@ -126,41 +132,59 @@ export default class extends BotCommand {
 
 				return msg.send(response);
 			}
-			throw `That isn't a valid animated armour tier to kill, the available tiers are: ${Armours.map(
-				tier => tier.name
-			).join(', ')}. For example, \`${msg.cmdPrefix}warriorsguild animation 5 bronze\``;
+			return msg.send(
+				`That isn't a valid animated armour tier to kill, the available tiers are: ${Armours.map(
+					tier => tier.name
+				).join(', ')}. For example, \`${msg.cmdPrefix}warriorsguild animation 5 bronze\``
+			);
 		}
 
 		if (minigame === 'cyclops') {
 			// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 			if (!bankHasItem(userBank, 8851, 100) && !bankHasItem(userBank, 9747, 1)) {
-				throw `You don't have enough Warrior guild tokens to enter the cyclopes room! You need atleast 100 Warrior guild tokens.`;
+				return msg.send(
+					`You don't have enough Warrior guild tokens to enter the cyclopes room! You need atleast 100 Warrior guild tokens.`
+				);
 			}
 
 			// If no quantity provided, set it to the max.
 			if (quantity === null) {
-				quantity = Math.floor(msg.author.maxTripLength / (Time.Second * 30));
+				const maxTokensTripLength =
+					Math.floor((msg.author.numItemsInBankSync(8851) - 10) / 10) * Time.Minute;
+				quantity = Math.floor(
+					(maxTokensTripLength > msg.author.maxTripLength
+						? msg.author.maxTripLength
+						: maxTokensTripLength) /
+						(Time.Second * 30)
+				);
+				if (bankHasItem(userBank, 9747, 1)) {
+					quantity = Math.floor(msg.author.maxTripLength / (Time.Second * 30));
+				}
 			}
 
 			const duration = Time.Second * 30 * quantity;
 
 			if (duration > msg.author.maxTripLength) {
-				throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount of cyclopes that can be killed is ${Math.floor(
-					msg.author.maxTripLength / (Time.Second * 30)
-				)}.`;
+				return msg.send(
+					`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+						msg.author.maxTripLength
+					)}, try a lower quantity. The highest amount of cyclopes that can be killed is ${Math.floor(
+						msg.author.maxTripLength / (Time.Second * 30)
+					)}.`
+				);
 			}
 
 			if (
 				!bankHasItem(userBank, 8851, Math.floor((duration / Time.Minute) * 10 + 10)) &&
 				!bankHasItem(userBank, 9747, 1)
 			) {
-				throw `You don't have enough Warrior guild tokens to kill cyclopes for ${formatDuration(
-					duration
-				)}, try a lower quantity. You need atleast ${Math.floor(
-					(duration / Time.Minute) * 10 + 10
-				)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
+				return msg.send(
+					`You don't have enough Warrior guild tokens to kill cyclopes for ${formatDuration(
+						duration
+					)}, try a lower quantity. You need atleast ${Math.floor(
+						(duration / Time.Minute) * 10 + 10
+					)}x Warrior guild tokens to kill ${quantity}x cyclopes.`
+				);
 			}
 
 			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>(
@@ -195,6 +219,8 @@ export default class extends BotCommand {
 			return msg.send(response);
 		}
 
-		throw `That isn't a valid Warriors's guild minigame, the possible minigames are animation or cyclops. For example, \`${msg.cmdPrefix}warriorsguild animation 5 bronze\``;
+		return msg.send(
+			`That isn't a valid Warriors's guild minigame, the possible minigames are animation or cyclops. For example, \`${msg.cmdPrefix}warriorsguild animation 5 bronze\``
+		);
 	}
 }

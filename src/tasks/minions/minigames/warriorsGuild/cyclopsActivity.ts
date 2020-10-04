@@ -81,7 +81,7 @@ export default class extends Task {
 		}
 		// Remove Catacomb totem pieces
 		loot = removeItemFromBank(loot, 19677, user.numItemsInBankSync(19677));
-		loot = removeItemFromBank(loot, 19679, user.numItemsInBankSync(196779));
+		loot = removeItemFromBank(loot, 19679, user.numItemsInBankSync(19679));
 		loot = removeItemFromBank(loot, 19681, user.numItemsInBankSync(19681));
 		loot = removeItemFromBank(loot, 19683, user.numItemsInBankSync(19683));
 
