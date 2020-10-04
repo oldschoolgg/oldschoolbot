@@ -25,16 +25,15 @@ export default class extends Extendable {
 			return 1;
 		}
 
-		const currentItems = this.settings!.get(ClientSettings.Prices);
-
-		const currentItem = currentItems[itemID];
-
 		let osItem;
 		try {
 			osItem = getOSItem(itemID);
 		} catch (e) {
 			return 0;
 		}
+
+		const currentItems = this.settings!.get(ClientSettings.Prices);
+		const currentItem = currentItems[itemID];
 		const needsToFetchAgain = osItem.tradeable_on_ge && currentItem.price === 0;
 
 		if (
