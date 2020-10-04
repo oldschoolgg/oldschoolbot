@@ -18,7 +18,7 @@ export default class extends BotCommand {
 		if (
 			this.client.production ||
 			!this.client.user ||
-			this.client.user.id === '156230339621027840'
+			this.client.user.id === '303730326692429825'
 		) {
 			return;
 		}
