@@ -5,7 +5,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import itemInSlot from '../lib/gear/functions/itemInSlot';
 import { sumOfSetupStats } from '../lib/gear/functions/sumOfSetupStats';
 import { GearSetupTypes, UserFullGearSetup } from '../lib/gear/types';
-import SimilarItems from '../lib/similarItems';
+import { getSimilarItems } from '../lib/similarItems';
 import itemID from '../lib/util/itemID';
 
 export default class extends Extendable {
@@ -20,9 +20,8 @@ export default class extends Extendable {
 	}
 
 	public hasItemEquippedAnywhere(this: User, itemID: number) {
-		const items = [...(SimilarItems[itemID] ?? []), itemID];
 		const gear = this.rawGear();
-		for (const item of items) {
+		for (const item of getSimilarItems(itemID)) {
 			for (const setup of Object.values(gear)) {
 				const thisItemEquipped = Object.values(setup).find(setup => setup?.item === item);
 				if (thisItemEquipped) return true;
