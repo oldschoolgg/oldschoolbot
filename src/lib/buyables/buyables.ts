@@ -6,10 +6,94 @@ import itemID from '../util/itemID';
 interface Buyable {
 	name: string;
 	outputItems: ItemBank;
-	qpRequired: number;
-	gpCost: number;
+	qpRequired?: number;
+	gpCost?: number;
+	itemCost?: ItemBank;
 	aliases?: string[];
 }
+
+const sepulchreBuyables: Buyable[] = [
+	{
+		name: 'Hallowed crystal shard',
+		outputItems: resolveNameBank({ 'Hallowed crystal shard': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 1 })
+	},
+	{
+		name: 'Hallowed token',
+		outputItems: resolveNameBank({ 'Hallowed token': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 10 })
+	},
+	{
+		name: 'Hallowed grapple',
+		outputItems: resolveNameBank({ 'Hallowed grapple': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed focus',
+		outputItems: resolveNameBank({ 'Hallowed focus': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed symbol',
+		outputItems: resolveNameBank({ 'Hallowed symbol': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed hammer',
+		outputItems: resolveNameBank({ 'Hallowed hammer': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed ring',
+		outputItems: resolveNameBank({ 'Hallowed ring': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 250 })
+	},
+	{
+		name: 'Dark dye',
+		outputItems: resolveNameBank({ 'Dark dye': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 300 })
+	},
+	{
+		name: 'Dark acorn',
+		outputItems: resolveNameBank({ 'Dark acorn': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 3000 })
+	},
+	{
+		name: 'Dark graceful hood',
+		outputItems: resolveNameBank({ 'Dark graceful hood': 1 }),
+		itemCost: resolveNameBank({ 'Graceful hood': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful top',
+		outputItems: resolveNameBank({ 'Dark graceful top': 1 }),
+		itemCost: resolveNameBank({ 'Graceful top': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful legs',
+		outputItems: resolveNameBank({ 'Dark graceful hood': 1 }),
+		itemCost: resolveNameBank({ 'Graceful legs': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful gloves',
+		outputItems: resolveNameBank({ 'Dark graceful gloves': 1 }),
+		itemCost: resolveNameBank({ 'Graceful gloves': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful boots',
+		outputItems: resolveNameBank({ 'Dark graceful boots': 1 }),
+		itemCost: resolveNameBank({ 'Graceful boots': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful cape',
+		outputItems: resolveNameBank({ 'Dark graceful cape': 1 }),
+		itemCost: resolveNameBank({ 'Graceful cape': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark squirrel',
+		outputItems: resolveNameBank({ 'Dark squirrel': 1 }),
+		itemCost: resolveNameBank({ 'Dark acon': 1, 'Giant squirrel': 1 })
+	}
+];
 
 const Buyables: Buyable[] = [
 	{
@@ -239,7 +323,8 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 200
-	}
+	},
+	...sepulchreBuyables
 ];
 
 export default Buyables;
