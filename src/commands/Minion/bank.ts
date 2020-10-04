@@ -63,11 +63,11 @@ export default class extends Command {
 		if (typeof pageNumberOrItemName === 'string') {
 			if (pageNumberOrItemName.includes(',')) {
 				const arrItemNameOrID = pageNumberOrItemName.split(',');
-				let view = {};
+				let view: ItemBank = {};
 				for (const nameOrID of arrItemNameOrID) {
 					try {
 						const item = getOSItem(nameOrID);
-						if (bank[item.id]) {
+						if (bank[item.id] && !view[item.id]) {
 							view = addItemToBank(view, item.id, bank[item.id]);
 						}
 					} catch (_) {}
