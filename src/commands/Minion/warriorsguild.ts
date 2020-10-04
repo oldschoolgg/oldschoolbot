@@ -16,43 +16,23 @@ import resolveItems from '../../lib/util/resolveItems';
 
 export const Armours = [
 	{
-		name: 'bronze',
-		timeToFinish: Time.Second * 6,
-		tokens: 5,
-		breakChance1: 4,
-		breakChance2: 36,
-		breakChance3: 1000
-	},
-	{
-		name: 'iron',
-		timeToFinish: Time.Second * 10,
-		tokens: 10,
-		breakChance1: 10
-	},
-	{
-		name: 'steel',
-		timeToFinish: Time.Second * 19,
-		tokens: 15,
-		breakChance1: 10
-	},
-	{
 		name: 'black',
-		timeToFinish: Time.Minute * 0.6,
+		timeToFinish: Time.Minute * 0.65,
 		tokens: 20
 	},
 	{
 		name: 'mithril',
-		timeToFinish: Time.Minute * 0.833,
+		timeToFinish: Time.Minute * 0.95,
 		tokens: 25
 	},
 	{
 		name: 'adamant',
-		timeToFinish: Time.Minute * 1.125,
+		timeToFinish: Time.Minute * 1.15,
 		tokens: 30
 	},
 	{
 		name: 'rune',
-		timeToFinish: Time.Minute * 1.714,
+		timeToFinish: Time.Minute * 1.2,
 		tokens: 40
 	}
 ];
