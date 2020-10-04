@@ -1,8 +1,8 @@
 import { KlasaClient } from 'klasa';
+import { Items } from 'oldschooljs';
 
 import { ItemBank } from '../types';
 import createTupleOfItemsFromBank from './createTupleOfItemsFromBank';
-import getOSItem from './getOSItem';
 
 export default async function createReadableItemListFromBank(
 	client: KlasaClient,
@@ -11,13 +11,8 @@ export default async function createReadableItemListFromBank(
 	const items = await createTupleOfItemsFromBank(client, itemBank);
 	return items
 		.map(([name, qty]) => {
-			let item;
-			try {
-				item = getOSItem(name).name;
-			} catch (e) {
-				item = `WTF-${name}`;
-			}
-			return `${qty.toLocaleString()}x ${item}`;
+			const __item = Items.get(name);
+			return `${qty.toLocaleString()}x ${__item ? __item.name : `WTF-${name}`}`;
 		})
 		.join(', ');
 }

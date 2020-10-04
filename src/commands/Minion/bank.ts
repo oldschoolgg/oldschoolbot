@@ -2,6 +2,7 @@ import { createCanvas, Image, registerFont } from 'canvas';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import * as fs from 'fs';
 import { Command, CommandStore, KlasaMessage, util } from 'klasa';
+import { Items } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -100,13 +101,12 @@ export default class extends Command {
 			const debug = Boolean(msg.flagArgs.debug);
 			const textBank = [];
 			for (const [id, qty] of Object.entries(bank)) {
-				let item;
-				try {
-					item = getOSItem(id).name;
-				} catch (e) {
-					item = `WTF-${id}`;
-				}
-				textBank.push(`${item}${debug ? `[${id}]` : ''}: ${qty.toLocaleString()}`);
+				const item = Items.get(Number(id));
+				textBank.push(
+					`${item ? item.name : `WTF-${id}`}${
+						debug ? `[${id}]` : ''
+					}: ${qty.toLocaleString()}`
+				);
 			}
 
 			if (msg.flagArgs.full) {

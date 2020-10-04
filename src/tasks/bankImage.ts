@@ -398,11 +398,10 @@ export default class BankImageTask extends Task {
 			// Check for names flag and draw its shadow and name
 			if (flags.names) {
 				const __item = Items.get(id);
-				const __name = `${
-					__item
-						? `${__item.name!.replace('Grimy', 'Grmy').slice(0, 7)}`
-						: `WTF-${id}`.slice(0, 7)
-				}..`;
+				const __name = `${(__item
+					? `${__item.name.replace('Grimy', 'Grmy')}`
+					: `WTF-${id}`
+				).slice(0, 7)}..`;
 				ctx.fillStyle = 'black';
 				fillTextXTimesInCtx(
 					ctx,
