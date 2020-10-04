@@ -1,12 +1,12 @@
-import { Bank } from './types';
+import { ItemBank } from './types';
 import { resolveNameBank } from './util';
 import itemID from './util/itemID';
 
 interface Createable {
 	name: string;
-	outputItems: Bank;
-	inputItems: Bank;
-	cantHaveItems?: Bank;
+	outputItems: ItemBank;
+	inputItems: ItemBank;
+	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
@@ -701,31 +701,51 @@ const Createables: Createable[] = [
 		requiredSkills: {
 			fishing: 55,
 			firemaking: 35,
-			crafting: 15,
+			crafting: 11,
 			smithing: 5
 		},
 		GPCost: 300_000
-	}
-	/* {
-		name: 'Toxic blowpipe (empty)',
-		inputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		}
 	},
 	{
-		name: 'Toxic blowpipe',
-		inputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		}
-	} */
+		name: 'Zamorakian spear',
+		inputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		})
+	},
+	// Nightmare
+	{
+		name: 'Eldritch nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		})
+	},
+	{
+		name: '	Harmonised nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		})
+	}
 ];
 
 export default Createables;

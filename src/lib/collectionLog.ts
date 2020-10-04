@@ -2,6 +2,19 @@ import Agility, { gracefulItems } from './skilling/skills/agility';
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
 
+const nightmareLog = resolveItems([
+	"Inquisitor's great helm",
+	"Inquisitor's hauberk",
+	"Inquisitor's plateskirt",
+	"Inquisitor's mace",
+	'Nightmare staff',
+	'Eldritch orb',
+	'Volatile orb',
+	'Harmonised orb',
+	'Jar of dreams',
+	'Little nightmare'
+]);
+
 export const bosses = {
 	Zulrah: resolveItems([
 		'Uncut onyx',
@@ -143,7 +156,9 @@ export const bosses = {
 	'Chaos Ele': resolveItems(['Dragon pickaxe', 'Dragon 2h sword', 'Pet chaos elemental']),
 	'Chaos Fanatic': resolveItems(['Malediction shard 1', 'Odium shard 1', 'Pet chaos elemental']),
 	'Crazy Arch': resolveItems(['Malediction shard 2', 'Odium shard 2', 'Fedora']),
-	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"])
+	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"]),
+	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
+	Nightmare: nightmareLog
 };
 export const pets = {
 	'Skilling Pets': resolveItems([
@@ -185,6 +200,8 @@ export const pets = {
 		'Tzrek-jad',
 		'Jal-nib-rek'
 	]),
+	'Boss Pets 3': resolveItems(['Little Nightmare']),
+	space2: [],
 	'Slayer Boss Pets': resolveItems([
 		'Noon',
 		'Abyssal orphan',
@@ -193,7 +210,7 @@ export const pets = {
 		'Pet smoke devil',
 		'Ikkle hydra'
 	]),
-	space2: [],
+	space3: [],
 	Other: resolveItems([
 		'Bloodhound',
 		'Herbi',
@@ -1417,5 +1434,10 @@ export const collectionLogTypes = [
 		name: 'Misc',
 		aliases: ['misc'],
 		items: miscLog
+	},
+	{
+		name: 'Nightmare',
+		aliases: ['nightmare', 'the nightmare'],
+		items: { nightmare: nightmareLog }
 	}
 ];

@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -57,9 +58,20 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
 		}
 
-		const loot = {
+		let loot = {
 			[ore.id]: quantity
 		};
+
+		// Add clue scrolls
+		if (ore.clueScrollChance) {
+			loot = addSkillingClueToLoot(
+				user,
+				SkillsEnum.Mining,
+				quantity,
+				ore.clueScrollChance,
+				loot
+			);
+		}
 
 		// Roll for pet
 		if (
