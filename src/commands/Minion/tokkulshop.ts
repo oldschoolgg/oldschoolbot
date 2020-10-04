@@ -16,7 +16,7 @@ const { TzTokJad } = Monsters;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<buy|sell> [quantity:integer{1}] <item:...string>',
+			usage: '<buy|sell> [quantity:integer{1,2147483647}] <item:...string>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -89,7 +89,7 @@ export default class extends BotCommand {
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${itemString}** to sell for **${inItemString}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${inItemString}** to sell for **${itemString}**.`
 			);
 		}
 
