@@ -62,6 +62,12 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (type === 'sell' && msg.author.numItemsInBankSync(shopInventory.inputItem) === 0) {
+			return msg.send(
+				`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`
+			);
+		}
+
 		if (quantity === undefined) {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
