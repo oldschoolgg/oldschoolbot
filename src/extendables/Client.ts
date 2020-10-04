@@ -15,9 +15,9 @@ export default class extends Extendable {
 	}
 
 	async fetchItemPrice(this: KlasaClient, itemID: number | string) {
-		if (!this.production) {
-			return 73;
-		}
+		// if (!this.production) {
+		// 	return 73;
+		// }
 
 		if (typeof itemID === 'string') itemID = parseInt(itemID);
 
@@ -29,7 +29,12 @@ export default class extends Extendable {
 
 		const currentItem = currentItems[itemID];
 
-		const osItem = getOSItem(itemID);
+		let osItem;
+		try {
+			osItem = getOSItem(itemID);
+		} catch (e) {
+			return 0;
+		}
 		const needsToFetchAgain = osItem.tradeable_on_ge && currentItem.price === 0;
 
 		if (

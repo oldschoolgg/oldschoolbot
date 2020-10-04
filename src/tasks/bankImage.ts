@@ -2,7 +2,7 @@ import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Util } from 'oldschooljs';
+import { Items, Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -18,7 +18,6 @@ import {
 	canvasImageFromBuffer,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
-	itemNameFromID,
 	restoreCtx,
 	saveCtx,
 	stringMatches
@@ -110,23 +109,30 @@ export default class BankImageTask extends Task {
 	}
 
 	async getItemImage(itemID: number): Promise<Image> {
-		const isOnDisk = this.itemIconsList.has(itemID);
-		const cachedImage = this.itemIconImagesCache.get(itemID);
+		try {
+			const isOnDisk = this.itemIconsList.has(itemID);
+			const cachedImage = this.itemIconImagesCache.get(itemID);
 
-		if (!isOnDisk) {
-			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID);
+			if (!isOnDisk) {
+				await this.fetchAndCacheImage(itemID);
+				return this.getItemImage(itemID);
+			}
+
+			if (!cachedImage) {
+				const imageBuffer = await fs.promises.readFile(
+					path.join(CACHE_DIR, `${itemID}.png`)
+				);
+				const image = await canvasImageFromBuffer(imageBuffer);
+
+				this.itemIconImagesCache.set(itemID, image);
+				return this.getItemImage(itemID);
+			}
+
+			return cachedImage;
+		} catch (e) {
+			// Returns the image of the guidance cake is the icon is unknown
+			return this.getItemImage(7542);
 		}
-
-		if (!cachedImage) {
-			const imageBuffer = await fs.promises.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-			const image = await canvasImageFromBuffer(imageBuffer);
-
-			this.itemIconImagesCache.set(itemID, image);
-			return this.getItemImage(itemID);
-		}
-
-		return cachedImage;
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -391,9 +397,12 @@ export default class BankImageTask extends Task {
 
 			// Check for names flag and draw its shadow and name
 			if (flags.names) {
-				const __name = `${itemNameFromID(id)!
-					.replace('Grimy', 'Grmy')
-					.slice(0, 7)}..`;
+				const __item = Items.get(id);
+				const __name = `${
+					__item
+						? `${__item.name!.replace('Grimy', 'Grmy').slice(0, 7)}`
+						: `WTF-${id}`.slice(0, 7)
+				}..`;
 				ctx.fillStyle = 'black';
 				fillTextXTimesInCtx(
 					ctx,
