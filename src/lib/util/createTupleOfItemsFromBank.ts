@@ -11,9 +11,9 @@ export default async function createTupleOfItemsFromBank(client: KlasaClient, ba
 		try {
 			item = getOSItem(itemID).id;
 		} catch (e) {
-			item = Number(itemID) ?? undefined;
+			item = Number(itemID);
 		}
-		readableTuple.push([item!, qty, (await client.fetchItemPrice(item!)) * qty]);
+		readableTuple.push([item, qty, (await client.fetchItemPrice(item!)) * qty]);
 	}
 
 	return readableTuple;
