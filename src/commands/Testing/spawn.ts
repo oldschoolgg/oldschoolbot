@@ -10,7 +10,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[qty:integer{1,1000000}] (item:...item)',
+			usage: '[qty:integer{1,2147483647}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
@@ -38,9 +38,9 @@ export default class extends BotCommand {
 		}
 
 		const osItem = itemArray[0];
-		await msg.author.addItemsToBank({ [osItem.id]: qty });
+		await msg.author.addItemsToBank({ [osItem.id]: qty }, true);
 
-		for (const setup of ['range', 'melee', 'mage', 'skilling']) {
+		for (const setup of ['range', 'melee', 'mage', 'skilling', 'misc']) {
 			if (msg.flagArgs[setup]) {
 				try {
 					await this.client.commands.get('equip')!.run(msg, [setup, 1, [osItem]]);

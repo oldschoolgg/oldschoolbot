@@ -1,18 +1,20 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<amount:int{1}>'
+			usage: '<qp:int{0,2147483647}>',
+			cooldown: 1,
+			oneAtTime: true
 		});
 		this.enabled = !this.client.production;
 	}
 
-	async run(msg: KlasaMessage, [gp]: [number]) {
+	async run(msg: KlasaMessage, [qp = 0]: [number]) {
 		// Make 100% sure this command can never be used in prod
 		if (
 			this.client.production ||
@@ -22,7 +24,8 @@ export default class extends BotCommand {
 			return;
 		}
 
-		await msg.author.settings.update(UserSettings.GP, gp);
-		return msg.send(`Your cash stack is now ${toKMB(gp)}`);
+		if (qp > MAX_QP) qp = MAX_QP;
+		await msg.author.settings.update(UserSettings.QP, qp);
+		return msg.send(`You set yout quest points to ${qp}.`);
 	}
 }
