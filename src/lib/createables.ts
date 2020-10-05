@@ -745,6 +745,7 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Volatile nightmare staff': 1
 		})
+	},
 	{
 		name: 'Deconstructed eldrich nightmare staff',
 		inputItems: resolveNameBank({
