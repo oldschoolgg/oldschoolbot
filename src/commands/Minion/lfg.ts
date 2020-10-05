@@ -314,7 +314,7 @@ export default class extends BotCommand {
 				}
 
 				// Detect if there are any person left
-				if (finalUsers.length <= 1) {
+				if (finalUsers.length < (monster.minQueueSize ? monster.minQueueSize : 2)) {
 					doNotClear = true;
 					this.client.emit(
 						Events.Log,
