@@ -232,6 +232,15 @@ const Buyables: Buyable[] = [
 		gpCost: 1500
 	},
 	{
+		name: 'Sandworms',
+		aliases: ['sandworms'],
+		outputItems: resolveNameBank({
+			'Sandworms': 1
+		}),
+		qpRequired: 0,
+		gpCost: 200
+	},
+	{
 		name: 'Chocolate bar',
 		aliases: ['chocolate bar', 'chocolate'],
 		outputItems: resolveNameBank({
