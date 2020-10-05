@@ -91,7 +91,7 @@ const sepulchreBuyables: Buyable[] = [
 	{
 		name: 'Dark squirrel',
 		outputItems: resolveNameBank({ 'Dark squirrel': 1 }),
-		itemCost: resolveNameBank({ 'Dark acon': 1, 'Giant squirrel': 1 })
+		itemCost: resolveNameBank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
 	}
 ];
 

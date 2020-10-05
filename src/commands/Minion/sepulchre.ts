@@ -31,7 +31,6 @@ export default class extends BotCommand {
 		const completableFloors = sepulchreFloors.filter(
 			floor => agilityLevel >= floor.agilityLevel
 		);
-		nigh;
 		const lapLength = addArrayOfNumbers(completableFloors.map(floor => floor.time));
 		const maxLaps = Math.floor(msg.author.maxTripLength / lapLength);
 		const tripLength = maxLaps * lapLength;
