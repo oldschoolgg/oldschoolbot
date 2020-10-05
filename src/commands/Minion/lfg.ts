@@ -347,7 +347,7 @@ export default class extends BotCommand {
 					const { channel } = this.LFGList[monster.id].userSentFrom[user.id];
 					const { guild } = this.LFGList[monster.id].userSentFrom[user.id];
 					let toSendChannel;
-
+					channelsToSend[this.DEFAULT_MASS_CHANNEL] = [];
 					// Limits 1 message per server
 					// Not guild means DM
 					if (!guild) {
