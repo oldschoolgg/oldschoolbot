@@ -101,6 +101,7 @@ export default class extends BotCommand {
 
 	async handleStart(monster: KillableMonster, skipChecks = false) {
 		const queue = this.LFGList[monster.id];
+		let doNotClear = false;
 		// Check if we can start
 		if (Object.values(queue.users).length >= this.MIN_USERS || skipChecks) {
 			// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
@@ -141,6 +142,7 @@ export default class extends BotCommand {
 					if (allowed) {
 						finalUsers.push(user);
 					} else {
+						this.removeUserFromAllQueues(user);
 						await user.send(
 							`You were removed from the **${
 								monster.name
@@ -153,7 +155,8 @@ export default class extends BotCommand {
 				}
 
 				// Detect if there are any person left
-				if (finalUsers.length === 0) {
+				if (finalUsers.length <= 1) {
+					doNotClear = true;
 					this.client.emit(
 						Events.Log,
 						`LFG Canceled [${monster.id}] No users left after validation`
@@ -255,8 +258,11 @@ export default class extends BotCommand {
 			} finally {
 				this.client.emit(Events.Log, `Unlocking LFG [${monster.id}]`);
 				this.clearTimeout(monster.id);
-				this.LFGList[monster.id].users = {};
-				this.LFGList[monster.id].userSentFrom = {};
+				// Allows canceled mass to keep the user here
+				if (!doNotClear) {
+					this.LFGList[monster.id].users = {};
+					this.LFGList[monster.id].userSentFrom = {};
+				}
 				this.LFGList[monster.id].locked = false;
 				this.LFGList[monster.id].lastUserJoinDate = undefined;
 				this.LFGList[monster.id].firstUserJoinDate = undefined;
