@@ -42,7 +42,7 @@ export default class extends Task {
 		// Store total amount of deaths
 		const deaths: Record<string, number> = {};
 
-		for (let i = 0; i < quantity * 500; i++) {
+		for (let i = 0; i < quantity; i++) {
 			const loot = RawNightmare.kill({
 				team: parsedUsers.map(user => ({
 					id: user.id,
