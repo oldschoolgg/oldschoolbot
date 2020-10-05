@@ -16,7 +16,7 @@ export default class extends Argument {
 		const osItems = Items.filter(
 			i => itemNameMap.get(cleanString(itemName)) === i.id || stringMatches(i.name, itemName)
 		).array() as Item[];
-		if (!osItems.length) throw `${itemName} doesnt exist.`;
+		if (!osItems.length) throw `That item doesnt exist.`;
 		return osItems;
 	}
 }
