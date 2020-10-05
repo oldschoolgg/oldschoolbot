@@ -85,6 +85,7 @@ export interface KillableMonster {
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
 	leader: string;
 	users: string[];
+	lfg?: false | Record<string, string[]>;
 }
 
 export interface Minigame {

@@ -7,10 +7,18 @@ import isImportantItemForMonster from '../../lib/minions/functions/isImportantIt
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';
 import { addBanks, noOp, queuedMessageSend, randomItemFromArray } from '../../lib/util';
+import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends Task {
-	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {
+	async run({
+		monsterID,
+		channelID,
+		quantity,
+		users,
+		leader,
+		lfg
+	}: GroupMonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: ItemBank } = {};
@@ -28,7 +36,17 @@ export default class extends Task {
 
 		const leaderUser = await this.client.users.fetch(leader);
 
-		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
+		let resultStr = '';
+		const resultStrLfg: Record<string, string> = {};
+		if (lfg) {
+			for (const channel of Object.keys(lfg)) {
+				resultStrLfg[
+					channel
+				] = `LFG mass of ${quantity}x ${monster.name} returned! Here are the spoils:\n\n`;
+			}
+		} else {
+			resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
+		}
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
@@ -41,12 +59,20 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), monster)
 			);
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
-				loot
-			)}||\n`;
+			if (lfg) {
+				for (const channel of Object.entries(lfg)) {
+					resultStrLfg[channel[0]] += `${purple ? Emoji.Purple : ''} **${
+						channel[1].includes(user.id) ? user : user.username
+					} received:** ||${await createReadableItemListFromBank(this.client, loot)}||\n`;
+				}
+			} else {
+				resultStr += `${
+					purple ? Emoji.Purple : ''
+				} **${user} received:** ||${await createReadableItemListFromBank(
+					this.client,
+					loot
+				)}||\n`;
+			}
 
 			announceLoot(this.client, leaderUser, monster, quantity, loot, {
 				leader: leaderUser,
@@ -59,7 +85,15 @@ export default class extends Task {
 		if (usersWithoutLoot.length > 0) {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
-
-		queuedMessageSend(this.client, channelID, resultStr);
+		if (lfg) {
+			for (const _channel of Object.keys(lfg)) {
+				const channel = this.client.channels.get(_channel);
+				if (channelIsSendable(channel)) {
+					await queuedMessageSend(this.client, channel.id, resultStrLfg[_channel]);
+				}
+			}
+		} else {
+			await queuedMessageSend(this.client, channelID, resultStr);
+		}
 	}
 }
