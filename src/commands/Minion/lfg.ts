@@ -148,7 +148,7 @@ export default class extends BotCommand {
 		[Monsters.KrilTsutsaroth.id]: {
 			thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png'
 		},
-		[Monsters.CorporealBeast.id]: {
+		[Monsters.GeneralGraardor.id]: {
 			thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png'
 		},
 		[Monsters.Kreearra.id]: {
