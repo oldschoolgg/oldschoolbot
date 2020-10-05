@@ -42,6 +42,8 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
+			undefined,
+			undefined,
 			hasMaxQP
 				? undefined
 				: res => {

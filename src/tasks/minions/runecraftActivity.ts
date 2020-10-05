@@ -57,7 +57,7 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
+		handleTripFinish(this.client, user, channelID, str, undefined, undefined, res => {
 			user.log(`continued trip of ${runeQuantity}x ${rune.name}[${rune.id}]`);
 			return this.client.commands.get('rc')!.run(res, [essenceQuantity, rune.name]);
 		});

@@ -42,7 +42,7 @@ export default class extends Task {
 		// Store total amount of deaths
 		const deaths: Record<string, number> = {};
 
-		for (let i = 0; i < quantity; i++) {
+		for (let i = 0; i < quantity * 500; i++) {
 			const loot = RawNightmare.kill({
 				team: parsedUsers.map(user => ({
 					id: user.id,
@@ -113,19 +113,20 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 
 			let returnStr = '';
+			let image: Buffer;
 
 			if (!kcAmounts[leader]) {
-				channel.send(
-					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
-				);
+				returnStr = `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`;
 			} else {
-				channel.sendBankImage({
-					bank: teamsLoot[leader],
-					title: `${quantity}x Nightmare`,
-					background: leaderUser.settings.get(UserSettings.BankBackground),
-					user: leaderUser,
-					flags: { showNewCL: 1 }
-				});
+				image = await this.client.tasks
+					.get('bankImage')!
+					.generateBankImage(
+						teamsLoot[leader],
+						`${quantity}x Nightmare`,
+						true,
+						{ showNewCL: 1 },
+						leaderUser
+					);
 
 				returnStr = `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 					NightmareMonster.name
@@ -135,10 +136,18 @@ export default class extends Task {
 				)[NightmareMonster.id] ?? 0) + quantity}.`;
 			}
 
-			handleTripFinish(this.client, leaderUser, channelID, returnStr, res => {
-				leaderUser.log(`continued trip of ${quantity}x The Nightmare`);
-				return this.client.commands.get('nightmare')!.run(res, ['solo']);
-			});
+			handleTripFinish(
+				this.client,
+				leaderUser,
+				channelID,
+				returnStr,
+				teamsLoot[leader]!,
+				image!,
+				res => {
+					leaderUser.log(`continued trip of ${quantity}x ${NightmareMonster.name}`);
+					return this.client.commands.get('nightmare')!.run(res, ['solo']);
+				}
+			);
 		}
 	}
 }

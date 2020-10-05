@@ -52,9 +52,17 @@ export default class extends Task {
 			)}) has been added to your bank. ${saved}`
 		];
 
-		handleTripFinish(this.client, user, channelID, responses.join('\n'), res => {
-			user.log(`continued trip of alching ${quantity}x ${item.name}`);
-			return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			responses.join('\n'),
+			undefined,
+			undefined,
+			res => {
+				user.log(`continued trip of alching ${quantity}x ${item.name}`);
+				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
+			}
+		);
 	}
 }

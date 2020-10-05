@@ -61,7 +61,7 @@ export default class extends Task {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(this.client, user, channelID, str, res => {
+		handleTripFinish(this.client, user, channelID, str, undefined, undefined, res => {
 			user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.inputLogs}]`);
 			return this.client.commands.get('light')!.run(res, [quantity, Burn.name]);
 		});
