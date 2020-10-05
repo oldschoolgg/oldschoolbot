@@ -6,7 +6,7 @@ import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { continuationChars, Emoji, PerkTier, Time } from '../constants';
 import { randomItemFromArray } from '../util';
-import { Bank } from './../types/index';
+import { ItemBank } from './../types';
 import { channelIsSendable } from './channelIsSendable';
 import getUsersPerkTier from './getUsersPerkTier';
 
@@ -15,7 +15,7 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
-	loot?: Bank,
+	loot?: ItemBank,
 	attachment?: Buffer,
 	onContinue?: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>
 ) {
@@ -73,11 +73,9 @@ export async function handleTripFinish(
 
 				if (response && !user.minionIsBusy) {
 					if (
-						response &&
 						clueTiersReceived.length > 0 &&
 						perkTier > PerkTier.One &&
-						response.content.toLowerCase() === 'c' &&
-						!user.minionIsBusy
+						response.content.toLowerCase() === 'c'
 					) {
 						(client.commands.get(
 							'minion'
@@ -86,13 +84,14 @@ export async function handleTripFinish(
 							clueTiersReceived[0].name
 						]);
 						return;
-					}
-					try {
-						await onContinue(response as KlasaMessage).catch(err => {
+					} else {
+						try {
+							await onContinue(response as KlasaMessage).catch(err => {
+								channel.send(err);
+							});
+						} catch (err) {
 							channel.send(err);
-						});
-					} catch (err) {
-						channel.send(err);
+						}
 					}
 				}
 			});
