@@ -59,7 +59,7 @@ export default class extends Task {
 	async run({ minigameID, userID, channelID, quantity, duration }: CyclopsActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === minigameID)!;
 		if (!monster) throw 'WTF!';
-		
+
 		const user = await this.client.users.fetch(userID);
 		const userBank = user.settings.get(UserSettings.Bank);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);

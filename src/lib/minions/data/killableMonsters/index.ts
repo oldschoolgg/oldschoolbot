@@ -338,6 +338,18 @@ const killableMonsters: KillableMonster[] = [
 				[GearStat.AttackCrush]: 65
 			}
 		}
+	},
+	{
+		id: Monsters.Cyclopse.id,
+		name: Monsters.Cyclopse.name,
+		aliases: Monsters.Cyclopse.aliases,
+		timeToFinish: Time.Second * 35,
+		table: Monsters.Cyclopse,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		qpRequired: 0
 	}
 ];
 
