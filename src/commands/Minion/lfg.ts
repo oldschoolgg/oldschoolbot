@@ -226,7 +226,7 @@ export default class extends BotCommand {
 		}
 
 		if (!hasEnoughFoodForMonster(monster, user, 2)) {
-			throw `You don't have enough food. You need at least ${monster?.healAmountNeeded! *
+			throw `You don't have enough food. You need at least ${monster.healAmountNeeded! *
 				2} HP in food to participate.`;
 		}
 		return {
