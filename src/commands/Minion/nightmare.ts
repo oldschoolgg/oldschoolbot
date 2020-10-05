@@ -72,6 +72,55 @@ export default class extends BotCommand {
 		}
 	}
 
+	getQtyDurationPerKillTime(users: KlasaUser[]) {
+		let effectiveTime = NightmareMonster.timeToFinish;
+		for (const user of users) {
+			const [data] = getNightmareGearStats(
+				user,
+				users.map(u => u.id)
+			);
+
+			// Increase duration for each bad weapon.
+			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
+				effectiveTime *= 1.05;
+			}
+
+			// Increase duration for lower melee-strength gear.
+			if (data.percentMeleeStrength < 40) {
+				effectiveTime *= 1.06;
+			} else if (data.percentMeleeStrength < 50) {
+				effectiveTime *= 1.03;
+			} else if (data.percentMeleeStrength < 60) {
+				effectiveTime *= 1.02;
+			}
+
+			// Increase duration for lower KC.
+			if (data.kc < 10) {
+				effectiveTime *= 1.15;
+			} else if (data.kc < 25) {
+				effectiveTime *= 1.05;
+			} else if (data.kc < 50) {
+				effectiveTime *= 1.02;
+			} else if (data.kc < 100) {
+				effectiveTime *= 0.98;
+			} else {
+				effectiveTime *= 0.96;
+			}
+		}
+
+		let [quantity, duration, perKillTime] = calcDurQty(
+			users,
+			{ ...NightmareMonster, timeToFinish: effectiveTime },
+			undefined,
+			Time.Minute * 5,
+			Time.Minute * 30
+		);
+		this.checkReqs(users, NightmareMonster, quantity);
+
+		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
+		return [quantity, duration, perKillTime];
+	}
+
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [type]: ['mass' | 'solo']) {
@@ -118,52 +167,7 @@ export default class extends BotCommand {
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
 
-		let effectiveTime = NightmareMonster.timeToFinish;
-		for (const user of users) {
-			const [data] = getNightmareGearStats(
-				user,
-				users.map(u => u.id)
-			);
-
-			// Increase duration for each bad weapon.
-			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
-				effectiveTime *= 1.05;
-			}
-
-			// Increase duration for lower melee-strength gear.
-			if (data.percentMeleeStrength < 40) {
-				effectiveTime *= 1.06;
-			} else if (data.percentMeleeStrength < 50) {
-				effectiveTime *= 1.03;
-			} else if (data.percentMeleeStrength < 60) {
-				effectiveTime *= 1.02;
-			}
-
-			// Increase duration for lower KC.
-			if (data.kc < 10) {
-				effectiveTime *= 1.15;
-			} else if (data.kc < 25) {
-				effectiveTime *= 1.05;
-			} else if (data.kc < 50) {
-				effectiveTime *= 1.02;
-			} else if (data.kc < 100) {
-				effectiveTime *= 0.98;
-			} else {
-				effectiveTime *= 0.96;
-			}
-			console.log(user.id, data, effectiveTime);
-		}
-
-		let [quantity, duration, perKillTime] = calcDurQty(
-			users,
-			{ ...NightmareMonster, timeToFinish: effectiveTime },
-			undefined,
-			Time.Minute * 5,
-			Time.Minute * 30
-		);
-		this.checkReqs(users, NightmareMonster, quantity);
-
-		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
+		const [quantity, duration, perKillTime] = this.getQtyDurationPerKillTime(users);
 
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {

@@ -3,16 +3,7 @@ import { sleep } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser, TaskOptions } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	Activity,
-	Color,
-	Emoji,
-	Events,
-	SupportServer,
-	Tasks,
-	Time,
-	ZAM_HASTA_CRUSH
-} from '../../lib/constants';
+import { Activity, Color, Emoji, Events, SupportServer, Tasks, Time } from '../../lib/constants';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import ironsCantUse from '../../lib/minions/decorators/ironsCantUse';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -22,7 +13,6 @@ import { formatDuration, noOp, queuedMessageSend, stringMatches } from '../../li
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
 // eslint-disable-next-line no-undef
 import Timeout = NodeJS.Timeout;
 import { Monsters } from 'oldschooljs';
@@ -139,9 +129,9 @@ export async function sendLFGMessages(
 
 export default class extends BotCommand {
 	LFGList: Record<number, LFGMonster> = {};
-	MIN_USERS = 2;
+	MIN_USERS = 20;
 	MAX_USERS = 50;
-	WAIT_TIME = 2 * Time.Second;
+	WAIT_TIME = 2 * Time.Minute;
 	DEFAULT_MASS_CHANNEL = '755074115978657894'; // #testing-2
 
 	override: Record<number, MonterCustomProperties> = {
@@ -161,7 +151,12 @@ export default class extends BotCommand {
 			thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png'
 		},
 		[NightmareMonster.id]: {
-			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png'
+			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+			taskName: Tasks.MinigameTicker,
+			activityName: Activity.Nightmare,
+			uniqueID: MinigameIDsEnum.Nightmare,
+			minQueueSize: 2,
+			maxQueueSize: 10
 		}
 	};
 
@@ -177,56 +172,11 @@ export default class extends BotCommand {
 		{
 			...NightmareMonster,
 			calcDurQty: (users: KlasaUser[]) => {
-				let effectiveTime = NightmareMonster.timeToFinish;
-				for (const user of users) {
-					const [data] = getNightmareGearStats(
-						user,
-						users.map(u => u.id)
-					);
-					// Increase duration for each bad weapon.
-					if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
-						effectiveTime *= 1.05;
-					}
-
-					// Increase duration for lower melee-strength gear.
-					if (data.percentMeleeStrength < 40) {
-						effectiveTime *= 1.06;
-					} else if (data.percentMeleeStrength < 50) {
-						effectiveTime *= 1.03;
-					} else if (data.percentMeleeStrength < 60) {
-						effectiveTime *= 1.02;
-					}
-
-					// Increase duration for lower KC.
-					if (data.kc < 10) {
-						effectiveTime *= 1.15;
-					} else if (data.kc < 25) {
-						effectiveTime *= 1.05;
-					} else if (data.kc < 50) {
-						effectiveTime *= 1.02;
-					} else if (data.kc < 100) {
-						effectiveTime *= 0.98;
-					} else {
-						effectiveTime *= 0.96;
-					}
-				}
-
-				let [quantity, duration, perKillTime] = calcDurQty(
-					users,
-					{ ...NightmareMonster, timeToFinish: effectiveTime },
-					undefined,
-					Time.Minute * 5,
-					Time.Minute * 30
-				);
-				duration = quantity * perKillTime - NightmareMonster.respawnTime!;
-				return [quantity, duration, perKillTime];
+				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+				// @ts-ignore
+				return this.client.commands.get('nightmare')!.getQtyDurationPerKillTime(users);
 			},
-			taskName: Tasks.MinigameTicker,
-			activityName: Activity.Nightmare,
-			uniqueID: MinigameIDsEnum.Nightmare,
-			minQueueSize: 2,
-			maxQueueSize: 10,
-			...Object.values(this.override[NightmareMonster.id])
+			...this.override[NightmareMonster.id]
 		}
 	];
 
