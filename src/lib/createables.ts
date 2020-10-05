@@ -745,6 +745,36 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Volatile nightmare staff': 1
 		})
+	},
+		{
+		name: 'Deconstructed eldrich nightmare staff',
+		inputItems: resolveNameBank({
+			'Eldrich nightmare staff': 1
+		}),
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldrich orb': 1
+		})
+	},
+			{
+		name: 'Deconstructed harmonised nightmare staff',
+		inputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		}),
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		})
+	},
+			{
+		name: 'Deconstructed volatile nightmare staff',
+		inputItems: resolveNameBank({
+			'Eldrich nightmare staff': 1
+		}),
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		})
 	}
 ];
 
