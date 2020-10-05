@@ -83,7 +83,6 @@ export async function handleTripFinish(
 							1,
 							clueTiersReceived[0].name
 						]);
-						return;
 					} else {
 						try {
 							await onContinue(response as KlasaMessage).catch(err => {
