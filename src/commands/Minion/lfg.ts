@@ -310,7 +310,7 @@ export default class extends BotCommand {
 		let doNotClear = false;
 		// Check if we can start
 		if (
-			Object.values(queue.users).length >= (monster?.minQueueSize ?? this.MIN_USERS) ||
+			Object.values(queue.users).length >= (monster.minQueueSize ?? this.MIN_USERS) ||
 			skipChecks
 		) {
 			// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
