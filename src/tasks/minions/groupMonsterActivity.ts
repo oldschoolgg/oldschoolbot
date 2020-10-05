@@ -89,7 +89,12 @@ export default class extends Task {
 		const usersWithoutLoot = users.filter(id => !teamsLoot[id]);
 		if (usersWithoutLoot.length > 0) {
 			if (lfg) {
-				resultStrLfg = await addLFGNoDrops(resultStrLfg, this.client, users, lfg);
+				resultStrLfg = await addLFGNoDrops(
+					resultStrLfg,
+					this.client,
+					usersWithoutLoot,
+					lfg
+				);
 			} else {
 				resultStr += `${usersWithoutLoot
 					.map(id => `<@${id}>`)

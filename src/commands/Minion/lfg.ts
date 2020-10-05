@@ -25,6 +25,8 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
 // eslint-disable-next-line no-undef
 import Timeout = NodeJS.Timeout;
+import { Monsters } from 'oldschooljs';
+
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
@@ -43,14 +45,18 @@ interface LFGMonster {
 	startDate?: Date;
 }
 
-interface AllowedMonsters extends KillableMonster {
-	calcDurQty?: (users: KlasaUser[]) => [number, number, number];
+interface MonterCustomProperties {
 	taskName?: Tasks;
 	activityName?: Activity;
 	uniqueID?: number;
 	taskOptions?: TaskOptions;
 	minQueueSize?: number;
 	maxQueueSize?: number;
+	thumbnail?: string;
+}
+
+interface AllowedMonsters extends KillableMonster, MonterCustomProperties {
+	calcDurQty?: (users: KlasaUser[]) => [number, number, number];
 }
 
 export function prepareLFGMessage(
@@ -103,12 +109,14 @@ export async function addLFGNoDrops(
 	channels: Record<string, string[]> | false | undefined
 ) {
 	if (!channels) return lootString;
+	const klasaUsers: KlasaUser[] = [];
+	for (const u of users) {
+		const _u = await client.users.fetch(u).catch(noOp);
+		if (_u) klasaUsers.push(_u);
+	}
 	for (const channel of Object.entries(channels)) {
-		lootString[channel[0]] += `${users
-			.map(async id => {
-				const user = await client.users.fetch(id).catch(noOp);
-				return channel[1].includes(id) ? `<@${id}>` : user ? user.username : `<@${id}>`;
-			})
+		lootString[channel[0]] += `${klasaUsers
+			.map(user => (channel[1].includes(user.id) ? `<@${user.id}>` : user.username))
 			.join(', ')} - Got no loot, sad!`;
 	}
 	return lootString;
@@ -131,13 +139,41 @@ export async function sendLFGMessages(
 
 export default class extends BotCommand {
 	LFGList: Record<number, LFGMonster> = {};
-	MIN_USERS = 20;
+	MIN_USERS = 2;
 	MAX_USERS = 50;
-	WAIT_TIME = 2 * Time.Minute;
+	WAIT_TIME = 2 * Time.Second;
 	DEFAULT_MASS_CHANNEL = '755074115978657894'; // #testing-2
 
+	override: Record<number, MonterCustomProperties> = {
+		[Monsters.KrilTsutsaroth.id]: {
+			thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png'
+		},
+		[Monsters.CorporealBeast.id]: {
+			thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png'
+		},
+		[Monsters.Kreearra.id]: {
+			thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png'
+		},
+		[Monsters.CommanderZilyana.id]: {
+			thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png'
+		},
+		[Monsters.CorporealBeast.id]: {
+			thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png'
+		},
+		[NightmareMonster.id]: {
+			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png'
+		}
+	};
+
 	allowedMonsters: AllowedMonsters[] = [
-		...killableMonsters.filter(m => m.groupKillable),
+		...killableMonsters
+			.filter(m => m.groupKillable)
+			.map(m => {
+				if (this.override[m.id]) {
+					m = { ...m, ...this.override[m.id] };
+				}
+				return m;
+			}),
 		{
 			...NightmareMonster,
 			calcDurQty: (users: KlasaUser[]) => {
@@ -189,7 +225,8 @@ export default class extends BotCommand {
 			activityName: Activity.Nightmare,
 			uniqueID: MinigameIDsEnum.Nightmare,
 			minQueueSize: 2,
-			maxQueueSize: 10
+			maxQueueSize: 10,
+			...Object.values(this.override[NightmareMonster.id])
 		}
 	];
 
@@ -272,7 +309,10 @@ export default class extends BotCommand {
 		const queue = this.LFGList[monster.id];
 		let doNotClear = false;
 		// Check if we can start
-		if (Object.values(queue.users).length >= this.MIN_USERS || skipChecks) {
+		if (
+			Object.values(queue.users).length >= (monster?.minQueueSize ?? this.MIN_USERS) ||
+			skipChecks
+		) {
 			// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
 			if (Object.values(queue.users).length >= (monster.maxQueueSize ?? this.MAX_USERS)) {
 				if (this.twoMinutesCheck[monster.id] !== null) {
@@ -342,12 +382,12 @@ export default class extends BotCommand {
 
 				const guilds: Record<string, string> = {};
 				const channelsToSend: Record<string, string[]> = {};
+				channelsToSend[this.DEFAULT_MASS_CHANNEL] = [];
 				for (const user of finalUsers) {
 					// Verifying channels to send
 					const { channel } = this.LFGList[monster.id].userSentFrom[user.id];
 					const { guild } = this.LFGList[monster.id].userSentFrom[user.id];
 					let toSendChannel;
-					channelsToSend[this.DEFAULT_MASS_CHANNEL] = [];
 					// Limits 1 message per server
 					// Not guild means DM
 					if (!guild) {
@@ -420,7 +460,7 @@ export default class extends BotCommand {
 					.addField('Duration', formatDuration(duration), true)
 					.addField('Quantity being killed', quantity.toLocaleString(), true)
 					.addField(
-						'Aprox. returning time',
+						'Returning time',
 						`${String(endDate.getDate()).padStart(2, '0')}/${String(
 							endDate.getMonth() + 1
 						).padStart(2, '0')}/${String(endDate.getFullYear()).padStart(
@@ -434,11 +474,15 @@ export default class extends BotCommand {
 					.addField('Time per kill', formatDuration(perKillTime), true)
 					.addField('Original time per kill', formatDuration(monster.timeToFinish), true)
 					.addField(
-						'Aprox. kills per player',
-						(quantity / finalUsers.length).toFixed(2),
+						'Kills per player',
+						`${(quantity / finalUsers.length).toFixed(2)}~`,
 						true
 					)
 					.addField('Users: ', finalUsers.map(u => u.username).join(', '));
+
+				if (this.override[monster.id] && this.override[monster.id].thumbnail) {
+					embed.setThumbnail(this.override[monster.id].thumbnail!);
+				}
 
 				for (const _channel of [...Object.keys(channelsToSend)]) {
 					const channel = this.client.channels.get(_channel);
@@ -472,9 +516,12 @@ export default class extends BotCommand {
 			.setDescription(
 				`Below is a description of all monsters that can be killed in groups and how many users are on the queue.` +
 					`\nEach queue has a minimum and maximum queue size.` +
-					` When the queue reaches the minimum size, it'll wait 2 minutes before starting.` +
-					`\nBe cautious to not be busy when the activity is about to start or you'll be automatically removed from it!`
-			);
+					`\nWhen the queue reaches the minimum size, it'll wait ${formatDuration(
+						this.WAIT_TIME
+					)} before starting.` +
+					`\n**WARNING**: Do not be busy when the activity is about to start or you'll be removed from it!`
+			)
+			.setTimestamp();
 		for (const _monster of this.allowedMonsters) {
 			const smallestAlias =
 				_monster.aliases.sort((a, b) => a.length - b.length)[0] ?? _monster.name;
@@ -483,16 +530,16 @@ export default class extends BotCommand {
 			const title = _monster.name + (joined ? ` [JOINED]` : ``);
 			embed.addField(
 				title,
-				`Currently on queue: ${
+				`On queue: ${
 					this.LFGList[_monster.id]
 						? Object.values(this.LFGList[_monster.id]?.users).length
 						: 0
 				}` +
 					`\n\`${prefix}lfg ${joined ? 'leave' : 'join'} ${smallestAlias}\`` +
-					`\nTime till start: ${this.getTimeLeft(
+					`\nStarts in: ${this.getTimeLeft(
 						this.LFGList[_monster.id] ? this.LFGList[_monster.id].startDate : undefined
 					)}` +
-					`\nMin/Max queue size: ${_monster.minQueueSize ??
+					`\nMin/Max users: ${_monster.minQueueSize ??
 						this.MIN_USERS}/${_monster.maxQueueSize ?? this.MAX_USERS}`,
 				true
 			);
