@@ -43,7 +43,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[minigame:string] [quantity:int{1}] [action:...string]',
+			usage: '[quantity:int{1}] [minigame:string] [action:string]',
 			usageDelim: ' ',
 			aliases: ['wg', 'warriorguild']
 		});
@@ -53,7 +53,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(
 		msg: KlasaMessage,
-		[minigame = '', quantity = null, action = '']: [string, null | number, string]
+		[quantity = null, minigame = '', action = '']: [null | number, string, string]
 	) {
 		minigame = minigame.toLowerCase();
 		action = action.toLowerCase();
@@ -76,7 +76,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (minigame === 'animation') {
+		if (minigame === 'animated') {
+			if (action === '') {
+				action = 'rune';
+			}
 			const armour = Armours.find(armour => stringMatches(armour.name, action));
 			if (armour) {
 				const fullhelm = armour.name.concat(' full helm');
@@ -135,7 +138,7 @@ export default class extends BotCommand {
 			return msg.send(
 				`That isn't a valid animated armour tier to kill, the available tiers are: ${Armours.map(
 					tier => tier.name
-				).join(', ')}. For example, \`${msg.cmdPrefix}warriorsguild animation 5 bronze\``
+				).join(', ')}. For example, \`${msg.cmdPrefix}warriorsguild 5 animated bronze\``
 			);
 		}
 
@@ -220,7 +223,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(
-			`That isn't a valid Warriors's guild minigame, the possible minigames are animation or cyclops. For example, \`${msg.cmdPrefix}warriorsguild animation 5 bronze\``
+			`That isn't a valid Warriors's guild minigame, the possible minigames are animated or cyclops. For example, \`${msg.cmdPrefix}warriorsguild 5 animated bronze\``
 		);
 	}
 }

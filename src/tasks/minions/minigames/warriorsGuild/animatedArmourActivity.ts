@@ -1,10 +1,9 @@
 import { Task } from 'klasa';
 
 import { Armours } from '../../../../commands/Minion/warriorsguild';
-import { MinigameIDsEnum } from '../../../../lib/minions/data/minigames';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
-import { noOp } from '../../../../lib/util';
-import { channelIsSendable } from '../../../../lib/util/channelIsSendable';
+import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
+import { MinigameIDsEnum } from './../../../../lib/minions/data/minigames';
 
 export default class extends Task {
 	async run({
@@ -16,7 +15,6 @@ export default class extends Task {
 	}: AnimatedArmourActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 		const armour = Armours.find(armour => armour.name === armourID);
 
 		if (!armour) {
@@ -35,8 +33,13 @@ export default class extends Task {
 
 		// TODO: Combat calculations in future depending on HP
 
-		if (!channelIsSendable(channel)) return;
-
-		return channel.send(str);
+		handleTripFinish(this.client, user, channelID, str, res => {
+			user.log(
+				`continued trip of ${quantity}x  animated ${armour.name}[${MinigameIDsEnum.AnimatedArmour}]`
+			);
+			return this.client.commands
+				.get('warriorsguild')!
+				.run(res, [quantity, 'animated', armour.name]);
+		});
 	}
 }
