@@ -131,10 +131,10 @@ export async function sendLFGMessages(
 
 export default class extends BotCommand {
 	LFGList: Record<number, LFGMonster> = {};
-	MIN_USERS = 2;
-	MAX_USERS = 5;
-	WAIT_TIME = 10 * Time.Second;
-	DEFAULT_MASS_CHANNEL = '755074115978657894';
+	MIN_USERS = 20;
+	MAX_USERS = 50;
+	WAIT_TIME = 2 * Time.Minute;
+	DEFAULT_MASS_CHANNEL = '755074115978657894'; // #testing-2
 
 	allowedMonsters: AllowedMonsters[] = [
 		...killableMonsters.filter(m => m.groupKillable),
