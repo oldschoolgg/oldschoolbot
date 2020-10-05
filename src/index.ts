@@ -8,6 +8,7 @@ import pLimit from 'p-limit';
 
 import { botToken, sentryDSN } from './config';
 import { clientOptions, clientProperties } from './lib/config/config';
+import { initItemAliases } from './lib/itemAliases';
 
 if (sentryDSN) {
 	Sentry.init({
@@ -37,6 +38,7 @@ class OldSchoolBot extends Client {
 
 	public init = async (): Promise<this> => {
 		await Items.fetchAll();
+		initItemAliases();
 		return this;
 	};
 }
