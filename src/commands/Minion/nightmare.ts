@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Tasks, Time, ZAM_HASTA_CRUSH } from '../../lib/constants';
+import { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -15,8 +16,6 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
-import { ZAM_HASTA_CRUSH } from './../../lib/constants';
-import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
 function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
@@ -116,7 +115,6 @@ export default class extends BotCommand {
 			Time.Minute * 30
 		);
 		this.checkReqs(users, NightmareMonster, quantity);
-
 		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 		return [quantity, duration, perKillTime];
 	}
