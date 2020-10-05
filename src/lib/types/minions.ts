@@ -103,6 +103,7 @@ export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptio
 export interface NightmareActivityTaskOptions extends MinigameActivityTaskOptions {
 	leader: string;
 	users: string[];
+	lfg?: false | Record<string, string[]>;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {

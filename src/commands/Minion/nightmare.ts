@@ -151,6 +151,7 @@ export default class extends BotCommand {
 			} else {
 				effectiveTime *= 0.96;
 			}
+			console.log(user.id, data, effectiveTime);
 		}
 
 		let [quantity, duration, perKillTime] = calcDurQty(
@@ -163,7 +164,11 @@ export default class extends BotCommand {
 		this.checkReqs(users, NightmareMonster, quantity);
 
 		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
-
+		console.log([
+			quantity,
+			quantity * perKillTime - NightmareMonster.respawnTime!,
+			perKillTime
+		]);
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);

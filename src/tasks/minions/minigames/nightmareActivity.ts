@@ -2,7 +2,14 @@ import { percentChance } from 'e';
 import { Task } from 'klasa';
 import { Misc } from 'oldschooljs';
 
+import {
+	addLFGLoot,
+	addLFGText,
+	prepareLFGMessage,
+	sendLFGMessages
+} from '../../../commands/Minion/lfg';
 import { Emoji } from '../../../lib/constants';
+import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -13,7 +20,6 @@ import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { randomVariation } from '../../../lib/util/randomVariation';
-import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 interface NightmareUser {
 	id: string;
@@ -24,7 +30,7 @@ interface NightmareUser {
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity }: NightmareActivityTaskOptions) {
+	async run({ channelID, leader, users, quantity, lfg }: NightmareActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -66,7 +72,13 @@ export default class extends Task {
 
 		const leaderUser = await this.client.users.fetch(leader);
 
-		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NightmareMonster.name}!\n\n`;
+		let resultStr = '';
+		let resultStrLfg: Record<string, string> = {};
+		if (lfg) {
+			resultStrLfg = prepareLFGMessage(NightmareMonster.name, quantity, lfg);
+		} else {
+			resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NightmareMonster.name}!\n\n`;
+		}
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
@@ -79,12 +91,24 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
-				loot
-			)}||\n`;
+			// Add LFG loot
+			if (lfg) {
+				resultStrLfg = addLFGLoot(
+					resultStrLfg,
+					purple,
+					user,
+					await createReadableItemListFromBank(this.client, loot),
+					lfg
+				);
+			} else {
+				// Add normal loot
+				resultStr += `${
+					purple ? Emoji.Purple : ''
+				} **${user} received:** ||${await createReadableItemListFromBank(
+					this.client,
+					loot
+				)}||\n`;
+			}
 
 			announceLoot(this.client, leaderUser, NightmareMonster, quantity, loot, {
 				leader: leaderUser,
@@ -102,11 +126,19 @@ export default class extends Task {
 				if (!user) continue;
 				deaths.push(`**${user.username}**: ${qty}x`);
 			}
-			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
+			if (lfg) {
+				resultStrLfg = addLFGText(resultStrLfg, `\n**Deaths**: ${deaths.join(', ')}.`, lfg);
+			} else {
+				resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
+			}
 		}
 
 		if (users.length > 1) {
-			queuedMessageSend(this.client, channelID, resultStr);
+			if (lfg) {
+				await sendLFGMessages(resultStrLfg, this.client, lfg);
+			} else {
+				await queuedMessageSend(this.client, channelID, resultStr);
+			}
 		} else {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
