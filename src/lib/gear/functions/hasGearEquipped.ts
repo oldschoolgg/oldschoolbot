@@ -2,7 +2,6 @@ import { objectValues } from 'e';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearTypes } from '..';
-import { itemNameFromID } from '../../util';
 import hasItemEquipped from './hasItemEquipped';
 
 export type GearRequired = Partial<
@@ -17,10 +16,8 @@ export function hasGearEquipped(setup: GearTypes.GearSetup, reqs: GearRequired):
 
 		for (let i = 0; i < items.length; i++) {
 			if (hasItemEquipped(items[i], setup)) {
-				console.log(`Has ${itemNameFromID(items[i])} equipped.`);
 				break;
 			} else if (i === items.length - 1) {
-				console.log(`NO ${itemNameFromID(items[i])} equipped.`);
 				return false;
 			}
 		}
