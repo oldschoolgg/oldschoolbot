@@ -747,13 +747,13 @@ const Createables: Createable[] = [
 		})
 	},
 	{
-		name: 'Deconstructed eldrich nightmare staff',
+		name: 'Deconstructed eldritch nightmare staff',
 		inputItems: resolveNameBank({
-			'Eldrich nightmare staff': 1
+			'Eldritch nightmare staff': 1
 		}),
 		outputItems: resolveNameBank({
 			'Nightmare staff': 1,
-			'Eldrich orb': 1
+			'Eldritch orb': 1
 		})
 	},
 	{
