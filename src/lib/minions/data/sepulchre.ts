@@ -1,6 +1,7 @@
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Time } from '../../constants';
 import { ItemBank } from '../../types';
@@ -108,6 +109,15 @@ export const sepulchreFloors = [
 		marksRange: [4, 6]
 	}
 ];
+
+export const sepulchreBoosts = resolveNameBank({
+	'Strange old lockpick': 1,
+	'Hallowed grapple': 3,
+	'Hallowed focus': 3,
+	'Hallowed symbol': 3,
+	'Hallowed hammer': 3,
+	'Ring of endurance': 4
+});
 
 export function openCoffin(floor: 1 | 2 | 3 | 4 | 5): ItemBank {
 	const loot = new Bank();
