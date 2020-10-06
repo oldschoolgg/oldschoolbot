@@ -42,11 +42,11 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Agility, agilityXP);
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
-		let str = `<:Hamstare:685036648089780234> You did the Hallowed Sepulchre ${quantity}x times (floor ${
-			floors[0]
-		}-${
+		let str = `${
+			user.minionName
+		} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${floors[0]}-${
 			floors[floors.length - 1]
-		}), you received ${agilityXP.toLocaleString()} Agility XP. You opened ${numCoffinsOpened}x coffins.`;
+		}), you received ${agilityXP.toLocaleString()} Agility XP. ${numCoffinsOpened}x coffins opened.`;
 
 		if (nextLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;

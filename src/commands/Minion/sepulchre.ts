@@ -49,13 +49,15 @@ export default class extends BotCommand {
 		);
 
 		return msg.send(
-			`You can complete floors[${completableFloors
-				.map(fl => fl.number)
-				.join(', ')}], each lap takes ${formatDuration(
-				lapLength
-			)}, you can do a maximum of ${maxLaps} laps in your limit of ${formatDuration(
-				msg.author.maxTripLength
-			)}, so the whole trip will take ${formatDuration(tripLength)}`
+			`${
+				msg.author.minionName
+			} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
+				completableFloors[0].number
+			}-${
+				completableFloors[completableFloors.length - 1].number
+			}, the trip will take ${formatDuration(
+				tripLength
+			)}, with each lap taking ${formatDuration(lapLength)}`
 		);
 	}
 }
