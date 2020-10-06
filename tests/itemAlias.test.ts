@@ -1,15 +1,9 @@
-import { Items } from 'oldschooljs';
-
 import ItemArgument from '../src/arguments/item';
-import { initItemAliases } from '../src/lib/itemAliases';
 import getOSItem from '../src/lib/util/getOSItem';
-import { mockArgument } from './utils';
+import { mockArgument, testSetup } from './utils';
 
 describe('Item Alias', () => {
-	beforeAll(async () => {
-		await Items.fetchAll();
-		initItemAliases();
-	});
+	beforeAll(testSetup);
 	test('itemArg parameter', () => {
 		const itemArg = mockArgument(ItemArgument);
 		const expectedResults = [
@@ -29,7 +23,7 @@ describe('Item Alias', () => {
 				]
 			],
 			['Black graceful cape', [getOSItem(24746)]],
-			['Hallowed graceful cape', [getOSItem(24746)]],
+			['Dark graceful cape', [getOSItem(24746)]],
 			[24746, [getOSItem(24746)]]
 		];
 		for (const [input, output] of expectedResults) {
