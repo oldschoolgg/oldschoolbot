@@ -19,10 +19,6 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
-				if (roll(floor.petChance)) {
-					loot.add('Giant squirrel');
-				}
-
 				if (floor.number === 5) {
 					loot.add(Openables.GrandHallowedCoffin.open());
 				}
@@ -34,6 +30,9 @@ export default class extends Task {
 				}
 
 				agilityXP += floor.xp;
+			}
+			if (roll(completedFloors[completedFloors.length - 1].petChance)) {
+				loot.add('Giant squirrel');
 			}
 		}
 
