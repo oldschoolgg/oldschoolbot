@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank, Openables } from 'oldschooljs';
 
-import { sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -26,7 +26,7 @@ export default class extends Task {
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(floor.coffinTable.roll());
+					loot.add(openCoffin(floor.number));
 				}
 
 				agilityXP += floor.xp;

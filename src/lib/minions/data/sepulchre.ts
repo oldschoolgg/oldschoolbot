@@ -119,7 +119,7 @@ export const sepulchreBoosts = resolveNameBank({
 	'Ring of endurance': 4
 });
 
-export function openCoffin(floor: 1 | 2 | 3 | 4 | 5): ItemBank {
+export function openCoffin(floor: number): ItemBank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
