@@ -44,7 +44,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 		for (const [id, percent] of objectEntries(sepulchreBoosts)) {
-			if (await msg.author.hasItem(Number(id))) {
+			if (msg.author.hasItemEquippedOrInBank(Number(id))) {
 				boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
 				lapLength = reduceNumByPercent(lapLength, percent);
 			}
