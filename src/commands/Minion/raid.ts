@@ -838,7 +838,7 @@ export default class extends BotCommand {
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: msg.author.getMinigameScore(6969) > 200 ? 1 : 2,
+			minSize: msg.author.getMinigameScore(6969) > 199 ? 1 : 2,
 			maxSize: 50,
 			message: `${msg.author.username} is starting a party to defeat the Chambers of Xeric! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
