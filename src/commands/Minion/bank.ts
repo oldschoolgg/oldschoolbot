@@ -142,7 +142,8 @@ export default class extends Command {
 				bank,
 				title: `${msg.author.username}'s Bank`,
 				flags: { ...msg.flagArgs, page: 0 },
-				background: msg.author.settings.get(UserSettings.BankBackground)
+				background: msg.author.settings.get(UserSettings.BankBackground),
+				user: msg.author
 			});
 		}
 
