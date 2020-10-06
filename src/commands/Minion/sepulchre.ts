@@ -2,8 +2,10 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { sepulchreFloors } from '../../lib/minions/data/sepulchre';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SepulchreActivityTaskOptions } from '../../lib/types/minions';
 import { addArrayOfNumbers, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -25,6 +27,12 @@ export default class extends BotCommand {
 		if (agilityLevel < minLevel) {
 			return msg.send(
 				`You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`
+			);
+		}
+
+		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+			return msg.send(
+				`You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.`
 			);
 		}
 
