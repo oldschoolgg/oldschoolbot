@@ -1,8 +1,11 @@
 import { MessageAttachment } from 'discord.js';
+import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { stringMatches } from '../../lib/util';
 
@@ -19,30 +22,47 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [inputType = 'all']) {
 		await msg.author.settings.sync(true);
+
+		const monster = killableMonsters.find(_type =>
+			_type.aliases.some(name => stringMatches(name, inputType))
+		);
+
 		const type = slicedCollectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
 
-		if (!type) {
+		if (!type && (!monster || !monster.uniques)) {
 			throw `That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 				.map(type => type.name)
 				.join(', ')}`;
 		}
 
-		const items = Object.values(type.items).flat(100);
+		let items = Array.from(new Set(Object.values(type?.items ?? monster!.uniques!).flat(100)));
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;
 
-		msg.channel.send(
-			new MessageAttachment(
-				await this.client.tasks
-					.get('bankImage')!
-					.generateCollectionLogImage(
-						log,
-						`${msg.author.username}'s ${type.name} Collection Log (${num}/${items.length})`,
-						type
-					)
-			)
+		const chunkedMonsterItems: Record<number, number[]> = {};
+		if (monster) {
+			if (msg.flagArgs.all) {
+				items = Monsters.get(monster.id)?.allItems!;
+			}
+			for (const itemChunk of chunk(items, 12)) {
+				chunkedMonsterItems[itemChunk[0]] = itemChunk;
+			}
+		}
+
+		const attachment = new MessageAttachment(
+			await this.client.tasks
+				.get('bankImage')!
+				.generateCollectionLogImage(
+					log,
+					`${msg.author.username}'s ${(type || monster!).name} Collection Log (${num}/${
+						items.length
+					})`,
+					monster ? { ...monster, items: chunkedMonsterItems } : type
+				)
 		);
+
+		return msg.send(attachment);
 	}
 }

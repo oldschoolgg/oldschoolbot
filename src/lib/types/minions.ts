@@ -46,6 +46,11 @@ export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface SepulchreActivityTaskOptions extends ActivityTaskOptions {
+	floors: number[];
+	quantity: number;
+}
+
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
 	smithedBarID: number;
 	quantity: number;
@@ -122,7 +127,12 @@ export interface SkillingTickerTaskData {
 }
 
 export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
+	subTasks: (
+		| FightCavesActivityTaskOptions
+		| WintertodtActivityTaskOptions
+		| NightmareActivityTaskOptions
+		| SepulchreActivityTaskOptions
+	)[];
 }
 
 export type TickerTaskData =
@@ -152,4 +162,5 @@ export type MinionActivityTask =
 	| Tasks.FletchingActivity
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity
-	| Tasks.NightmareActivity;
+	| Tasks.NightmareActivity
+	| Tasks.SepulchreActivity;
