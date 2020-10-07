@@ -116,7 +116,6 @@ export default class extends Command {
 				);
 			}
 
-			msg.channel.assertCanManageMessages();
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 			const display = new UserRichDisplay();
 			display.setFooterPrefix(`Page `);

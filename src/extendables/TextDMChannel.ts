@@ -31,13 +31,4 @@ export default class extends Extendable {
 			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user);
 		return this.send(content, new MessageAttachment(image));
 	}
-
-	assertCanManageMessages(this: TextChannel): void {
-		const canManage =
-			this.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.MANAGE_MESSAGES) || false;
-
-		if (!canManage) {
-			throw `I need the **Manage Messages** permission to perform this action. Please give me this permission and try again.`;
-		}
-	}
 }
