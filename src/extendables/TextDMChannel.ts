@@ -1,4 +1,4 @@
-import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
+import { DMChannel, MessageAttachment, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
 import { ItemBank } from './../lib/types/index';
