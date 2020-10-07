@@ -57,7 +57,7 @@ export default class extends BotCommand {
 			return msg.send(
 				`You don't have the required items to purchase this. You need: ${await createReadableItemListFromBank(
 					this.client,
-					buyable.itemCost
+					multiplyBank(buyable.itemCost, quantity)
 				)}.`
 			);
 		}
@@ -77,7 +77,10 @@ export default class extends BotCommand {
 
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
-			str += await createReadableItemListFromBank(this.client, buyable.itemCost);
+			str += await createReadableItemListFromBank(
+				this.client,
+				multiplyBank(buyable.itemCost, quantity)
+			);
 			if (buyable.gpCost) {
 				str += `, ${buyable.gpCost.toLocaleString()} GP.`;
 			}

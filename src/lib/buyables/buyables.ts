@@ -70,7 +70,7 @@ const sepulchreBuyables: Buyable[] = [
 	},
 	{
 		name: 'Dark graceful legs',
-		outputItems: resolveNameBank({ 'Dark graceful hood': 1 }),
+		outputItems: resolveNameBank({ 'Dark graceful legs': 1 }),
 		itemCost: resolveNameBank({ 'Graceful legs': 1, 'Dark dye': 1 })
 	},
 	{
