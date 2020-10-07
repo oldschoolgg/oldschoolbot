@@ -36,7 +36,7 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (name.endsWith('s')) name = name.slice(0, name.length - 1);
+		if (name.endsWith('s') || name.endsWith('S')) name = name.slice(0, name.length - 1);
 
 		const rune = Runecraft.Runes.find(
 			_rune =>
