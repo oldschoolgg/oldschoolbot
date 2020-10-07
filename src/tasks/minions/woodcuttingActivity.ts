@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../lib/constants';
-import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { getRandomMysteryBox } from '../../lib/openables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';

@@ -1,6 +1,5 @@
 import { Client } from 'discord.js';
 
-import user from '../../commands/Utility/user';
 import { Activity } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { RaidsActivityTaskOptions, TickerTaskData } from '../types/minions';
@@ -20,7 +19,7 @@ export default function getActivityOfUser(client: Client, userID: string) {
 			}
 			if (
 				subTask.type === Activity.Raids &&
-				(subTask as RaidsActivityTaskOptions).users.includes(user.id)
+				(subTask as RaidsActivityTaskOptions).users.includes(userID)
 			) {
 				return subTask;
 			}

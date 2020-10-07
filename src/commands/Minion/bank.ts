@@ -140,7 +140,6 @@ export default class extends Command {
 			return msg.channel.sendBankImage({
 				bank,
 				title: `${msg.author.username}'s Bank`,
-				user: msg.author,
 				flags: { ...msg.flagArgs, page: 0 },
 				background: msg.author.settings.get(UserSettings.BankBackground),
 				user: msg.author
