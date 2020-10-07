@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
-import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
@@ -36,7 +36,7 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (name.endsWith('s')) name = name.slice(0, name.length - 1);
+		if (name.endsWith('s') || name.endsWith('S')) name = name.slice(0, name.length - 1);
 
 		const rune = Runecraft.Runes.find(
 			_rune =>

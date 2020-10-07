@@ -27,6 +27,7 @@ export interface Ore {
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
+	clueScrollChance?: number;
 }
 
 export interface Log {
@@ -37,6 +38,7 @@ export interface Log {
 	respawnTime: number;
 	petChance?: number;
 	qpRequired: number;
+	clueScrollChance?: number;
 }
 
 export interface Burnable {
@@ -57,6 +59,7 @@ export interface Fish {
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
+	clueScrollChance?: number;
 }
 
 export interface Course {

@@ -9,7 +9,7 @@ import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import { PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { LevelRequirements } from '../skilling/types';
-import { ArrayItemsResolved, Bank } from '../types';
+import { ArrayItemsResolved, ItemBank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 
 export interface BankBackground {
@@ -17,10 +17,11 @@ export interface BankBackground {
 	id: number;
 	name: string;
 	available: boolean;
-	collectionLogItemsNeeded?: Bank;
+	collectionLogItemsNeeded?: ItemBank;
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
-	itemCost?: Bank;
+	itemCost?: ItemBank;
+	repeatImage?: Image | null;
 }
 
 export interface ClueMilestoneReward {
@@ -47,7 +48,7 @@ export interface KillableMonster {
 	aliases: string[];
 	timeToFinish: number;
 	table: {
-		kill(quantity: number): Bank;
+		kill(quantity: number): ItemBank;
 	};
 	emoji: string;
 	wildy: boolean;
@@ -61,7 +62,7 @@ export interface KillableMonster {
 	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
 	 * this monster.
 	 */
-	itemInBankBoosts?: Bank;
+	itemInBankBoosts?: ItemBank;
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */

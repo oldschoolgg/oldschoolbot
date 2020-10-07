@@ -5,7 +5,12 @@ import { BotCommand } from '../../lib/BotCommand';
 import Buyables from '../../lib/buyables/buyables';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { multiplyBank, stringMatches, toTitleCase } from '../../lib/util';
+import {
+	bankHasAllItemsFromBank,
+	multiplyBank,
+	removeBankFromBank,
+	stringMatches
+} from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
@@ -27,35 +32,65 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that item, the items you can buy are: ${Buyables.map(
-				item => item.name
-			).join(', ')}.`;
+			return msg.send(
+				`I don't recognize that item, the items you can buy are: ${Buyables.map(
+					item => item.name
+				).join(', ')}.`
+			);
+		}
+
+		if (buyable.qpRequired) {
+			const QP = msg.author.settings.get(UserSettings.QP);
+			if (QP < buyable.qpRequired) {
+				return msg.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
+			}
 		}
 
 		await msg.author.settings.sync(true);
-		const GP = msg.author.settings.get(UserSettings.GP);
-		const GPCost = buyable.gpCost * quantity;
-		if (GP < GPCost) {
-			throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
+
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+
+		if (
+			buyable.itemCost &&
+			!bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))
+		) {
+			return msg.send(
+				`You don't have the required items to purchase this. You need: ${await createReadableItemListFromBank(
+					this.client,
+					multiplyBank(buyable.itemCost, quantity)
+				)}.`
+			);
 		}
-		const QP = msg.author.settings.get(UserSettings.QP);
-		if (QP < buyable.qpRequired) {
-			throw `You need ${buyable.qpRequired} QP to purchase this item.`;
+
+		const GP = msg.author.settings.get(UserSettings.GP);
+		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < buyable.gpCost) {
+			return msg.send(
+				`You need ${buyable.gpCost.toLocaleString()} GP to purchase this background.`
+			);
 		}
 
 		const outItems = multiplyBank(buyable.outputItems, quantity);
 		const itemString = await createReadableItemListFromBank(this.client, outItems);
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
-					GPCost
-				)}.`
-			);
+		// Start building a string to show to the user.
+		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
 
-			// Confirm the user wants to buy
+		// If theres an item cost or GP cost, add it to the string to show users the cost.
+		if (buyable.itemCost) {
+			str += await createReadableItemListFromBank(
+				this.client,
+				multiplyBank(buyable.itemCost, quantity)
+			);
+			if (buyable.gpCost) {
+				str += `, ${buyable.gpCost.toLocaleString()} GP.`;
+			}
+		} else if (buyable.gpCost) {
+			str += `${buyable.gpCost.toLocaleString()} GP.`;
+		}
+
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(str);
+
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
@@ -68,15 +103,31 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(
-					`Cancelling purchase of ${quantity} ${toTitleCase(buyable.name)}.`
-				);
+				return sellMsg.edit(`Cancelling purchase.`);
 			}
 		}
 
-		await msg.author.removeGP(GPCost);
+		await msg.author.settings.sync(true);
+		if (buyable.itemCost) {
+			await msg.author.settings.update(
+				UserSettings.Bank,
+				removeBankFromBank(
+					msg.author.settings.get(UserSettings.Bank),
+					multiplyBank(buyable.itemCost, quantity)
+				)
+			);
+		}
+
+		if (buyable.gpCost) {
+			const GPCost = buyable.gpCost * quantity;
+			if (GP < GPCost) {
+				throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
+			}
+			await msg.author.removeGP(GPCost);
+		}
+
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${itemString} for ${toKMB(GPCost)}.`);
+		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : ''} ${buyable.name}.`);
 	}
 }

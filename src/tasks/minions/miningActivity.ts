@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
@@ -83,6 +84,17 @@ export default class extends Task {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
 			}
+		}
+
+		// Add clue scrolls
+		if (ore.clueScrollChance) {
+			loot = addSkillingClueToLoot(
+				user,
+				SkillsEnum.Mining,
+				quantity,
+				ore.clueScrollChance,
+				loot
+			);
 		}
 
 		// Roll for pet

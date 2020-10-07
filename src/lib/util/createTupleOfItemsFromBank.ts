@@ -1,9 +1,9 @@
 import { KlasaClient } from 'klasa';
 import { Items } from 'oldschooljs';
 
-import { Bank, ItemTuple } from '../types';
+import { ItemBank, ItemTuple } from '../types';
 
-export default async function createTupleOfItemsFromBank(client: KlasaClient, bank: Bank) {
+export default async function createTupleOfItemsFromBank(client: KlasaClient, bank: ItemBank) {
 	const readableTuple: ItemTuple[] = [];
 
 	for (const [itemID, qty] of Object.entries(bank)) {
