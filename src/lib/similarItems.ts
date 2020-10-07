@@ -52,17 +52,7 @@ const SimilarItems: Record<number, number[]> = {
 	// 23330 = Rune scimitar (guthix)
 	// 23332 = Rune scimitar (saradomin)
 	// 23334 = Rune scimitar (zamorak)
-	[itemID('Rune scimitar')]: resolveItems([23330, 23332, 23334, 'Gilded scimitar']),
-	[itemID('Rune defender')]: resolveItems(['Rune defender (t)', 'Rune defender (l)']),
-	[itemID("Green d'hide body")]: resolveItems(["Green d'hide body (g)", "Green d'hide body (t)"]),
-	[itemID("Green d'hide chaps")]: resolveItems([
-		"Green d'hide chaps (g)",
-		"Green d'hide chaps (t)"
-	]),
-	[itemID("Blue d'hide body")]: resolveItems(["Blue d'hide body (g)", "Blue d'hide body (t)"]),
-	[itemID("Blue d'hide chaps")]: resolveItems(["Blue d'hide chaps (g)", "Blue d'hide chaps (t)"]),
-	[itemID("Red d'hide body")]: resolveItems(["Red d'hide body (g)", "Red d'hide body (t)"]),
-	[itemID("Red d'hide chaps")]: resolveItems(["Red d'hide chaps (g)", "Red d'hide chaps (t)"]),
+	[itemID('Rune scimitar')]: resolveItems([23330, 23332, 23334]),
 	[itemID("Black d'hide body")]: resolveItems([
 		"Black d'hide body (g)",
 		"Black d'hide body (t)",
@@ -83,14 +73,6 @@ const SimilarItems: Record<number, number[]> = {
 		'Ancient chaps',
 		'Bandos chaps'
 	]),
-	[itemID("Black d'hide shield")]: resolveItems([
-		"Guthix d'hide shield",
-		"Saradomin d'hide shield",
-		"Zamorak d'hide shield",
-		"Armadyl d'hide shield",
-		"Ancient d'hide shield",
-		"Bandos d'hide shield"
-	]),
 	[itemID("Guthix d'hide boots")]: resolveItems([
 		"Saradomin d'hide boots",
 		"Zamorak d'hide boots",
@@ -98,202 +80,6 @@ const SimilarItems: Record<number, number[]> = {
 		"Ancient d'hide boots",
 		"Bandos d'hide boots"
 	]),
-	[itemID("Guthix d'hide body")]: resolveItems([
-		"Saradomin d'hide body",
-		"Zamorak d'hide body",
-		"Armadyl d'hide body",
-		"Ancient d'hide body",
-		"Bandos d'hide body"
-	]),
-	[itemID('Guthix chaps')]: resolveItems([
-		'Saradomin chaps',
-		'Zamorak chaps',
-		'Armadyl chaps',
-		'Ancient chaps',
-		'Bandos chaps'
-	]),
-	[itemID("Guthix d'hide shield")]: resolveItems([
-		"Saradomin d'hide shield",
-		"Zamorak d'hide shield",
-		"Armadyl d'hide shield",
-		"Ancient d'hide shield",
-		"Bandos d'hide shield"
-	]),
-	[itemID("Monk's robe top")]: resolveItems(["Monk's robe top (t)", "Monk's robe top (g)"]),
-	[itemID("Monk's robe")]: resolveItems(["Monk's robe (t)", "Monk's robe (t)"]),
-	[itemID('Amulet of defence')]: resolveItems(['Amulet of defence (t)']),
-	[itemID('Amulet of magic')]: resolveItems(['Amulet of magic (t)']),
-	[itemID('Wooden shield')]: resolveItems(['Wooden shield (g)']),
-	[itemID('Black full helm')]: resolveItems([
-		'Black full helm (t)',
-		'Black full helm (g)',
-		'Black helm (h1)',
-		'Black helm (h2)',
-		'Black helm (h3)',
-		'Black helm (h4)',
-		'Black helm (h5)'
-	]),
-	[itemID('Black platebody')]: resolveItems([
-		'Black platebody (t)',
-		'Black platebody (g)',
-		'Black platebody (h1)',
-		'Black platebody (h2)',
-		'Black platebody (h3)',
-		'Black platebody (h4)',
-		'Black platebody (h5)'
-	]),
-	[itemID('Black platelegs')]: resolveItems([
-		'Black plateskirt',
-		'Black platelegs (t)',
-		'Black platelegs (g)',
-		'Black plateskirt (t)',
-		'Black plateskirt (g)'
-	]),
-	[itemID('Black plateskirt')]: resolveItems([
-		'Black platelegs',
-		'Black plateskirt (t)',
-		'Black plateskirt (g)',
-		'Black platelegs (t)',
-		'Black platelegs (g)'
-	]),
-	[itemID('Black kiteshield')]: resolveItems([
-		'Black kiteshield (t)',
-		'Black kiteshield (g)',
-		'Black shield (h1)',
-		'Black shield (h2)',
-		'Black shield (h3)',
-		'Black shield (h4)',
-		'Black shield (h5)'
-	]),
-	[itemID('Steel full helm')]: resolveItems(['Steel full helm (t)', 'Steel full helm (g)']),
-	[itemID('Steel platebody')]: resolveItems(['Steel platebody (t)', 'Steel platebody (g)']),
-	[itemID('Steel platelegs')]: resolveItems([
-		'Steel plateskirt',
-		'Steel platelegs (t)',
-		'Steel platelegs (g)',
-		'Steel plateskirt (t)',
-		'Steel plateskirt (g)'
-	]),
-	[itemID('Steel plateskirt')]: resolveItems([
-		'Steel platelegs',
-		'Steel plateskirt (t)',
-		'Steel plateskirt (g)',
-		'Steel platelegs (t)',
-		'Steel platelegs (g)'
-	]),
-	[itemID('Steel kiteshield')]: resolveItems(['Steel kiteshield (t)', 'Steel kiteshield (g)']),
-	[itemID('Iron full helm')]: resolveItems(['Iron full helm (t)', 'Iron full helm (g)']),
-	[itemID('Iron platebody')]: resolveItems(['Iron platebody (t)', 'Iron platebody (g)']),
-	[itemID('Iron platelegs')]: resolveItems([
-		'Iron plateskirt',
-		'Iron platelegs (t)',
-		'Iron platelegs (g)',
-		'Iron plateskirt (t)',
-		'Iron plateskirt (g)'
-	]),
-	[itemID('Iron plateskirt')]: resolveItems([
-		'Iron platelegs',
-		'Iron plateskirt (t)',
-		'Iron plateskirt (g)',
-		'Iron platelegs (t)',
-		'Iron platelegs (g)'
-	]),
-	[itemID('Iron kiteshield')]: resolveItems(['Iron kiteshield (t)', 'Iron kiteshield (g)']),
-	[itemID('Bronze full helm')]: resolveItems(['Bronze full helm (t)', 'Bronze full helm (g)']),
-	[itemID('Bronze platebody')]: resolveItems(['Bronze platebody (t)', 'Bronze platebody (g)']),
-	[itemID('Bronze platelegs')]: resolveItems([
-		'Bronze plateskirt',
-		'Bronze platelegs (t)',
-		'Bronze platelegs (g)',
-		'Bronze plateskirt (t)',
-		'Bronze plateskirt (g)'
-	]),
-	[itemID('Bronze plateskirt')]: resolveItems([
-		'Bronze platelegs',
-		'Bronze plateskirt (t)',
-		'Bronze plateskirt (g)',
-		'Bronze platelegs (t)',
-		'Bronze platelegs (g)'
-	]),
-	[itemID('Bronze kiteshield')]: resolveItems(['Bronze kiteshield (t)', 'Bronze kiteshield (g)']),
-	[itemID('Studded body')]: resolveItems(['Studded body (g)', 'Studded body (t)']),
-	[itemID('Studded chaps')]: resolveItems(['Studded chaps (g)', 'Studded chaps (t)']),
-	[itemID('Leather body')]: resolveItems(['Leather body (g)']),
-	[itemID('Leather chaps')]: resolveItems(['Leather chaps (g)']),
-	[itemID('Blue wizard hat')]: resolveItems(['Blue wizard hat (g)', 'Blue wizard hat (t)']),
-	[itemID('Blue wizard robe')]: resolveItems([
-		'Blue wizard robe (g)',
-		'Blue wizard robe (t)',
-		'Black wizard robe (g)',
-		'Black wizard robe (t)'
-	]),
-	[itemID('Blue skirt')]: resolveItems(['Blue skirt (g)', 'Blue skirt (t)']),
-	[itemID('Wizard hat')]: resolveItems(['Black wizard hat (g)', 'Black wizard hat (t)']),
-	[itemID('Black skirt')]: resolveItems(['Black skirt (g)', 'Black skirt (t)']),
-	[itemID('Amulet of power')]: resolveItems(['Amulet of power (t)']),
-	[itemID('Climbing boots')]: resolveItems(['Climbing boots (g)']),
-	[itemID('Adamant full helm')]: resolveItems([
-		'Adamant full helm (t)',
-		'Adamant full helm (g)',
-		'Adamant helm (h1)',
-		'Adamant helm (h2)',
-		'Adamant helm (h3)',
-		'Adamant helm (h4)',
-		'Adamant helm (h5)'
-	]),
-	[itemID('Adamant platebody')]: resolveItems([
-		'Adamant platebody (t)',
-		'Adamant platebody (g)',
-		'Adamant platebody (h1)',
-		'Adamant platebody (h2)',
-		'Adamant platebody (h3)',
-		'Adamant platebody (h4)',
-		'Adamant platebody (h5)'
-	]),
-	[itemID('Adamant platelegs')]: resolveItems([
-		'Adamant plateskirt',
-		'Adamant platelegs (t)',
-		'Adamant platelegs (g)',
-		'Adamant plateskirt (t)',
-		'Adamant plateskirt (g)'
-	]),
-	[itemID('Adamant plateskirt')]: resolveItems([
-		'Adamant platelegs',
-		'Adamant plateskirt (t)',
-		'Adamant plateskirt (g)',
-		'Adamant platelegs (t)',
-		'Adamant platelegs (g)'
-	]),
-	[itemID('Adamant kiteshield')]: resolveItems([
-		'Adamant kiteshield (t)',
-		'Adamant kiteshield (g)',
-		'Adamant shield (h1)',
-		'Adamant shield (h2)',
-		'Adamant shield (h3)',
-		'Adamant shield (h4)',
-		'Adamant shield (h5)'
-	]),
-	[itemID('Mithril full helm')]: resolveItems(['Mithril full helm (t)', 'Mithril full helm (g)']),
-	[itemID('Mithril platebody')]: resolveItems(['Mithril platebody (t)', 'Mithril platebody (g)']),
-	[itemID('Mithril platelegs')]: resolveItems([
-		'Mithril plateskirt',
-		'Mithril platelegs (t)',
-		'Mithril platelegs (g)',
-		'Mithril plateskirt (t)',
-		'Mithril plateskirt (g)'
-	]),
-	[itemID('Mithril plateskirt')]: resolveItems([
-		'Mithril platelegs',
-		'Mithril plateskirt (t)',
-		'Mithril plateskirt (g)',
-		'Mithril platelegs (t)',
-		'Mithril platelegs (g)'
-	]),
-	[itemID('Mithril kiteshield')]: resolveItems([
-		'Mithril kiteshield (t)',
-		'Mithril kiteshield (g)'
-	]),
-	[itemID('Amulet of strength')]: resolveItems(['Strength amulet (t)']),
 	[itemID('Amulet of glory (4)')]: resolveItems([
 		'Amulet of glory (1)',
 		'Amulet of glory (2)',
@@ -309,101 +95,6 @@ const SimilarItems: Record<number, number[]> = {
 		'Amulet of glory (t6)',
 		'Amulet of eternal glory'
 	]),
-	[itemID('Rune full helm')]: resolveItems([
-		'Rune full helm (t)',
-		'Rune full helm (g)',
-		'Rune helm (h1)',
-		'Rune helm (h2)',
-		'Rune helm (h3)',
-		'Rune helm (h4)',
-		'Rune helm (h5)',
-		'Zamorak full helm',
-		'Guthix full helm',
-		'Saradomin full helm',
-		'Ancient full helm',
-		'Armadyl full helm',
-		'Bandos full helm',
-		'Gilded full helm'
-	]),
-	[itemID('Rune platebody')]: resolveItems([
-		'Rune platebody (t)',
-		'Rune platebody (g)',
-		'Rune platebody (h1)',
-		'Rune platebody (h2)',
-		'Rune platebody (h3)',
-		'Rune platebody (h4)',
-		'Rune platebody (h5)',
-		'Zamorak platebody',
-		'Guthix platebody',
-		'Saradomin platebody',
-		'Ancient platebody',
-		'Armadyl platebody',
-		'Bandos platebody',
-		'Gilded platebody'
-	]),
-	[itemID('Rune platelegs')]: resolveItems([
-		'Rune plateskirt',
-		'Rune platelegs (t)',
-		'Rune platelegs (g)',
-		'Rune plateskirt (t)',
-		'Rune plateskirt (g)',
-		'Zamorak platelegs',
-		'Zamorak plateskirt',
-		'Guthix platelegs',
-		'Guthix plateskirt',
-		'Saradomin platelegs',
-		'Saradomin plateskirt',
-		'Ancient platelegs',
-		'Ancient plateskirt',
-		'Armadyl platelegs',
-		'Armadyl plateskirt',
-		'Bandos platelegs',
-		'Bandos plateskirt',
-		'Gilded platelegs',
-		'Gilded plateskirt'
-	]),
-	[itemID('Rune plateskirt')]: resolveItems([
-		'Rune platelegs',
-		'Rune platelegs (t)',
-		'Rune plateskirt (t)',
-		'Rune platelegs (g)',
-		'Rune plateskirt (g)',
-		'Zamorak platelegs',
-		'Zamorak plateskirt',
-		'Guthix platelegs',
-		'Guthix plateskirt',
-		'Saradomin platelegs',
-		'Saradomin plateskirt',
-		'Ancient platelegs',
-		'Ancient plateskirt',
-		'Armadyl platelegs',
-		'Armadyl plateskirt',
-		'Bandos platelegs',
-		'Bandos plateskirt',
-		'Gilded platelegs',
-		'Gilded plateskirt'
-	]),
-	[itemID('Rune kiteshield')]: resolveItems([
-		'Rune kiteshield (t)',
-		'Rune kiteshield (g)',
-		'Rune shield (h1)',
-		'Rune shield (h2)',
-		'Rune shield (h3)',
-		'Rune shield (h4)',
-		'Rune shield (h5)',
-		'Zamorak kiteshield',
-		'Guthix kiteshield',
-		'Saradomin kiteshield',
-		'Ancient kiteshield',
-		'Armadyl kiteshield',
-		'Bandos kiteshield',
-		'Gilded kiteshield'
-	]),
-	[itemID('Rune med helm')]: resolveItems(['Gilded med helm']),
-	[itemID('Rune chainbody')]: resolveItems(['Gilded chainbody']),
-	[itemID('Rune sq shield')]: resolveItems(['Gilded sq shield']),
-	[itemID('Obsidian cape')]: resolveItems(['Obsidian cape (r)']),
-	[itemID('Bucket helm')]: resolveItems(['Bucket helm (g)']),
 	[itemID('Graceful hood')]: resolveItems([
 		13579, // Arceuus hood
 		13591, // Port Piscarilius hood
@@ -487,13 +178,6 @@ const SimilarItems: Record<number, number[]> = {
 		'Saradomin max cape',
 		'Zamorak max cape'
 	]),
-	[itemID('Rune pouch')]: resolveItems(['Rune pouch (l)']),
-	[itemID('Bronze defender')]: resolveItems(['Bronze defender (l)']),
-	[itemID('Iron defender')]: resolveItems(['Iron defender (l)']),
-	[itemID('Steel defender')]: resolveItems(['Steel defender (l)']),
-	[itemID('Black defender')]: resolveItems(['Black defender (l)']),
-	[itemID('Mithril defender')]: resolveItems(['Mithril defender (l)']),
-	[itemID('Adamant defender')]: resolveItems(['Adamant defender (l)']),
 	[itemID('Avernic defender')]: resolveItems(['Avernic defender (l)']),
 	[itemID('Void melee helm')]: resolveItems(['Void melee helm (l)']),
 	[itemID('Void mage helm')]: resolveItems(['Void mage helm (l)']),
@@ -511,10 +195,6 @@ const SimilarItems: Record<number, number[]> = {
 	]),
 	[itemID('Elite void robe')]: resolveItems(['Elite void robe (l)']),
 	[itemID('Void knight gloves')]: resolveItems(['Void knight gloves (l)']),
-	[itemID('Fighter hat')]: resolveItems(['Fighter hat (l)']),
-	[itemID('Ranger hat')]: resolveItems(['Ranger hat (l)']),
-	[itemID('Healer hat')]: resolveItems(['Healer hat (l)']),
-	[itemID('Fighter torso')]: resolveItems(['Fighter torso (l)']),
 	[itemID('Trident of the seas')]: resolveItems([
 		'Trident of the seas (full)',
 		'Trident of the seas (e)'
@@ -536,36 +216,10 @@ export function getSimilarItems(itemID: number) {
 }
 
 // Adds dependant items
-SimilarItems[itemID("Saradomin d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
-SimilarItems[itemID("Zamorak d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
-SimilarItems[itemID("Armadyl d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
-SimilarItems[itemID("Ancient d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
-SimilarItems[itemID("Bandos d'hide boots")] = getSimilarItems(itemID("Guthix d'hide boots"));
-
-SimilarItems[itemID("Saradomin d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
-SimilarItems[itemID("Zamorak d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
-SimilarItems[itemID("Armadyl d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
-SimilarItems[itemID("Ancient d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
-SimilarItems[itemID("Bandos d'hide body")] = getSimilarItems(itemID("Guthix d'hide body"));
-
-SimilarItems[itemID('Saradomin chaps')] = getSimilarItems(itemID('Guthix chaps'));
-SimilarItems[itemID('Zamorak chaps')] = getSimilarItems(itemID('Guthix chaps'));
-SimilarItems[itemID('Armadyl chaps')] = getSimilarItems(itemID('Guthix chaps'));
-SimilarItems[itemID('Ancient chaps')] = getSimilarItems(itemID('Guthix chaps'));
-SimilarItems[itemID('Bandos chaps')] = getSimilarItems(itemID('Guthix chaps'));
-
-SimilarItems[itemID("Saradomin d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
-SimilarItems[itemID("Zamorak d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
-SimilarItems[itemID("Armadyl d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
-SimilarItems[itemID("Ancient d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
-SimilarItems[itemID("Bandos d'hide shield")] = getSimilarItems(itemID("Guthix d'hide shield"));
-
 SimilarItems[itemID('Saradomin cape')] = getSimilarItems(itemID('Guthix cape'));
 SimilarItems[itemID('Zamorak cape')] = getSimilarItems(itemID('Guthix cape'));
-
 SimilarItems[itemID('Imbued saradomin cape')] = getSimilarItems(itemID('Imbued guthix cape'));
 SimilarItems[itemID('Imbued zamorak cape')] = getSimilarItems(itemID('Imbued guthix cape'));
-
 SimilarItems[itemID('Slayer helmet')] = [
 	...SimilarItems[itemID('Slayer helmet (i)')],
 	...resolveItems([
@@ -598,7 +252,6 @@ SimilarItems[itemID('Nosepeg')] = [...SimilarItems[itemID('Slayer helmet')]];
 SimilarItems[itemID('Earmuffs')] = [...SimilarItems[itemID('Slayer helmet')]];
 SimilarItems[itemID('Spiny helmet')] = [...SimilarItems[itemID('Slayer helmet')]];
 SimilarItems[itemID('Facemask')] = [...SimilarItems[itemID('Slayer helmet')]];
-// Uncomment then Reinforced goggles is added to item_data.json
-// SimilarItems[itemID('Reinforced goggles')] = [...SimilarItems[itemID('Slayer helmet')]];
+SimilarItems[itemID('Reinforced goggles')] = [...SimilarItems[itemID('Slayer helmet')]];
 
 export default SimilarItems;
