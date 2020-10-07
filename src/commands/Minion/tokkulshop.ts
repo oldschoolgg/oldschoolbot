@@ -16,7 +16,7 @@ const { TzTokJad } = Monsters;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<buy|sell> [quantity:integer{1}] <item:...string>',
+			usage: '<buy|sell> [quantity:integer{1,2147483647}] <item:...string>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -54,11 +54,17 @@ export default class extends BotCommand {
 
 		if (!shopInventory.tokkulCost && type === 'buy') {
 			return msg.send(
-				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.map(
-					item => {
-						if (item.tokkulReturn) return item.name;
-					}
-				).join(', ')}.`
+				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.filter(
+					item => item.tokkulCost
+				)
+					.map(item => item.name)
+					.join(', ')}.`
+			);
+		}
+
+		if (type === 'sell' && msg.author.numItemsInBankSync(shopInventory.inputItem) === 0) {
+			return msg.send(
+				`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`
 			);
 		}
 
@@ -89,7 +95,7 @@ export default class extends BotCommand {
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${itemString}** to sell for **${inItemString}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${inItemString}** to sell for **${itemString}**.`
 			);
 		}
 
