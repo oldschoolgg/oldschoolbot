@@ -126,6 +126,6 @@ export function openCoffin(floor: number): ItemBank {
 		loot.add('Strange old lockpick');
 	}
 	loot.add(floorObj.coffinTable.roll());
-	loot.add(randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
+	loot.add('Hallowed mark', randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
 	return loot.bank;
 }
