@@ -75,7 +75,8 @@ export default class extends BotCommand {
 				userID: msg.author.id,
 				duration: tripLength,
 				type: Activity.Sepulchre,
-				channelID: msg.channel.id
+				channelID: msg.channel.id,
+				minigameID: MinigameIDsEnum.Sepulchre
 			}
 		);
 
