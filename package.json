@@ -1,11 +1,12 @@
 {
 	"scripts": {
 		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
-		"checklint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
 		"build": "yarn wipedist && tsc -p .",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\"",
-		"test": "yarn checklint && jest",
+		"test": "yarn test:lint && yarn test:unit",
+		"test:lint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
+		"test:unit": "jest",
 		"test:watch": "jest --watch",
 		"dev": "yarn wipedist && tsc -p . -w"
 	},
@@ -27,7 +28,7 @@
 		"markovchain": "^1.0.2",
 		"moment": "^2.27.0",
 		"node-fetch": "^2.6.1",
-		"oldschooljs": "^1.4.2",
+		"oldschooljs": "^1.4.3",
 		"p-limit": "^2.3.0",
 		"pg": "^8.3.3",
 		"pg-boss": "^5.0.8",

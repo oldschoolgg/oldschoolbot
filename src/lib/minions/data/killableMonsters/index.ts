@@ -24,7 +24,8 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
-			[itemID("Iban's staff")]: 5
+			[itemID("Iban's staff")]: 5,
+			[itemID('Strange old lockpick')]: 7
 		},
 		levelRequirements: {
 			prayer: 43

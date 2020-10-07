@@ -76,10 +76,10 @@ export function initItemAliases() {
 	setItemAlias(21073, ['Brimhaven graceful gloves', 'Dark blue graceful gloves']);
 	setItemAlias(21076, ['Brimhaven graceful boots', 'Dark blue graceful boots']);
 	// Graceful sets -- Brimhaven
-	setItemAlias(24743, ['Hallowed graceful hood', 'Black graceful hood']);
-	setItemAlias(24746, ['Hallowed graceful cape', 'Black graceful cape']);
-	setItemAlias(24749, ['Hallowed graceful top', 'Black graceful top']);
-	setItemAlias(24752, ['Hallowed graceful legs', 'Black graceful legs']);
-	setItemAlias(24755, ['Hallowed graceful gloves', 'Black graceful gloves']);
-	setItemAlias(24758, ['Hallowed graceful boots', 'Black graceful boots']);
+	setItemAlias(24743, ['Dark graceful hood', 'Black graceful hood']);
+	setItemAlias(24746, ['Dark graceful cape', 'Black graceful cape']);
+	setItemAlias(24749, ['Dark graceful top', 'Black graceful top']);
+	setItemAlias(24752, ['Dark graceful legs', 'Black graceful legs']);
+	setItemAlias(24755, ['Dark graceful gloves', 'Black graceful gloves']);
+	setItemAlias(24758, ['Dark graceful boots', 'Black graceful boots']);
 }
