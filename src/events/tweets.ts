@@ -1,4 +1,4 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { MessageEmbed, Permissions, TextChannel } from 'discord.js';
 import he from 'he';
 import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
@@ -213,7 +213,13 @@ export default class extends Event {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 				// @ts-ignore
 				const channel = guild.channels.get(guild.settings.get(key));
-				if (channel && channel instanceof TextChannel && channel.postable) {
+				if (
+					channel &&
+					channel instanceof TextChannel &&
+					channel.postable &&
+					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
+					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
+				) {
 					channel.send(`<${url}>`, { embed }).catch(() => null);
 				}
 			});
