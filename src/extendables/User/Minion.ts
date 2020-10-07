@@ -288,6 +288,12 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
+
+			case Activity.Sepulchre: {
+				const data = currentTask as NightmareActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
+			}
 		}
 	}
 

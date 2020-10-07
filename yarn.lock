@@ -5141,10 +5141,10 @@ observable-fns@^0.5.1:
   resolved "https://registry.yarnpkg.com/observable-fns/-/observable-fns-0.5.1.tgz#9b56478690dd0fa8603e3a7e7d2975d88bca0904"
   integrity sha512-wf7g4Jpo1Wt2KIqZKLGeiuLOEMqpaOZ5gJn7DmSdqXgTdxRwSdBhWegQQpPteQ2gZvzCKqNNpwb853wcpA0j7A==
 
-oldschooljs@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.4.2.tgz#241e1aa93e40d5a3e853545e593f39a20c46140c"
-  integrity sha512-O4DYY+wi3ZAs1ZQTi1+QICp+OnCJHdSCt5UmpRaR/jKvAi1GaTQOkc98Kdu04S/rf0felfcmC4UabXeDe2igAA==
+oldschooljs@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.4.3.tgz#dc1b17083c4d8d2e25a54bb6439bab57d0b4713f"
+  integrity sha512-uyPUKxGoKZO0TMqRCxgmtb/AMEEIvN85ft319McWCmYE7I+FD0+EnjmKjtTOc+KVCs3VXtvmT/4s8UDcFUrBoQ==
   dependencies:
     e "^0.1.3"
     jsdom "^16.0.1"
