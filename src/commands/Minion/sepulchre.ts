@@ -53,7 +53,7 @@ export default class extends BotCommand {
 			10
 		);
 
-		boosts.push(`${percentReduced.toFixed(1)}% for experience`);
+		boosts.push(`${percentReduced.toFixed(1)}% for minion learning`);
 
 		lapLength = reduceNumByPercent(lapLength, percentReduced);
 
