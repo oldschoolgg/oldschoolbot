@@ -22,9 +22,9 @@ export default class extends BotCommand {
 		if (!sepulchreCount && entries.length === 0) {
 			throw `You haven't done any laps yet! Sad.`;
 		}
-		const data = `${entries.map(
-			([id, qty]) => `---**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}\n`
-		)}\n**Hallowed Sepulchre:** ${sepulchreCount}`;
+		const data = `${entries
+			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
+			.join('\n')}\n**Hallowed Sepulchre:** ${sepulchreCount}`;
 		return msg.send(data);
 	}
 }
