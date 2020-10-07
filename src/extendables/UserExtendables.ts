@@ -302,7 +302,7 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.client, this);
+		const usersTask = getActivityOfUser(this.client, this.id);
 		return Boolean(usersTask);
 	}
 

@@ -46,11 +46,6 @@ export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface SepulchreActivityTaskOptions extends ActivityTaskOptions {
-	floors: number[];
-	quantity: number;
-}
-
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
 	smithedBarID: number;
 	quantity: number;
@@ -112,6 +107,10 @@ export interface NightmareActivityTaskOptions extends MinigameActivityTaskOption
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
+}
+
+export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
+	floors: number[];
 }
 
 export interface MonsterKillingTickerTaskData {

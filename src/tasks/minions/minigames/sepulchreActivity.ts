@@ -43,7 +43,7 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Agility, agilityXP);
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
-		let str = `${
+		let str = `${user}, ${
 			user.minionName
 		} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${floors[0]}-${
 			floors[floors.length - 1]

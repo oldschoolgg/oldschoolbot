@@ -49,7 +49,7 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = getActivityOfUser(this.client, this);
+		const currentTask = getActivityOfUser(this.client, this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.

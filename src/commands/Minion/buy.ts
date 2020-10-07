@@ -128,6 +128,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : ''} ${itemString}.`);
+		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : ''} ${buyable.name}.`);
 	}
 }
