@@ -8,9 +8,9 @@ import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import {
+	addBanks,
 	bankHasAllItemsFromBank,
 	formatDuration,
-	itemID,
 	removeBankFromBank,
 	resolveNameBank
 } from '../../lib/util';
@@ -37,8 +37,6 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Tome of fire'
 ]);
 
-const unalchables = [itemID('Nature rune'), itemID('Fire rune')];
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -55,10 +53,6 @@ export default class extends BotCommand {
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
 			throw `You don't have any of this item to alch.`;
-		}
-
-		if (unalchables.some(item => item === osItem.id)) {
-			throw `This item cannot be alched.`;
 		}
 
 		// 5 tick action
@@ -88,12 +82,13 @@ export default class extends BotCommand {
 		}
 
 		const alchValue = quantity * osItem.highalch;
-
-		const consumedItems = resolveNameBank({
-			...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-			'Nature rune': quantity,
-			[osItem.name]: quantity
-		});
+		const consumedItems = addBanks([
+			resolveNameBank({
+				...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
+				'Nature rune': quantity
+			}),
+			{ [osItem.id]: quantity }
+		]);
 
 		const consumedItemsString = await createReadableItemListFromBank(
 			this.client,
