@@ -10,7 +10,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			aliases: ['clear']
 		});
-		// this.enabled = !this.client.production;
+		this.enabled = !this.client.production;
 	}
 
 	async run(msg: KlasaMessage) {
@@ -27,9 +27,11 @@ export default class extends BotCommand {
 			await msg.author.settings.reset();
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
 		} else {
-			await msg.author.settings.update(UserSettings.Bank, {});
-			await msg.author.settings.update(UserSettings.CollectionLogBank, {});
-			await msg.author.settings.update(UserSettings.GP, 0);
+			await msg.author.settings.update([
+				[UserSettings.Bank, {}],
+				[UserSettings.CollectionLogBank, {}],
+				[UserSettings.GP, 0]
+			]);
 		}
 
 		return msg.send(

@@ -7,7 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<qp:int{0,2147483647}>',
+			usage: '<qp:int{0,50000}>',
 			cooldown: 1,
 			oneAtTime: true
 		});

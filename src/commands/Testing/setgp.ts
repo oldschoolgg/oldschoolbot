@@ -7,7 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<amount:int{1}>'
+			usage: '<amount:int{1,2147483647}>'
 		});
 		this.enabled = !this.client.production;
 	}
