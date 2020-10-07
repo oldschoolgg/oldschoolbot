@@ -24,7 +24,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const currentTask = getActivityOfUser(this.client, msg.author);
+		const currentTask = getActivityOfUser(this.client, msg.author.id);
 
 		if (!currentTask) {
 			throw `${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`;

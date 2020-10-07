@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Events, MAX_QP, Tasks, Time } from '../../lib/constants';
-import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';

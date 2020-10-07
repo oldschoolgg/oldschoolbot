@@ -30,7 +30,8 @@ export default class extends Extendable {
 		const currentItem = currentItems[itemID];
 
 		const osItem = getOSItem(itemID);
-		const needsToFetchAgain = osItem.tradeable_on_ge && currentItem.price === 0;
+		const needsToFetchAgain =
+			!currentItem || (osItem.tradeable_on_ge && currentItem.price === 0);
 
 		if (
 			!needsToFetchAgain &&
