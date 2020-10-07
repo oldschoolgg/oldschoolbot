@@ -5,20 +5,10 @@ import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
 import { Events, Time } from '../lib/constants';
+import { customPrices } from '../lib/customItems';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
-import { rand, resolveNameBank } from '../lib/util';
+import { rand } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
-
-const customPrices = resolveNameBank({
-	'Divine spirit shield': 900_000_000,
-	'Divine sigil': 930_000_000,
-	// Abyssal dragon boss
-	'Abyssal dragon bones': 50_000,
-	'Abyssal cape': 500_000_000,
-	'Abyssal thread': 100_000_000,
-	'Abyssal pouch': 0,
-	Ori: 0
-});
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {

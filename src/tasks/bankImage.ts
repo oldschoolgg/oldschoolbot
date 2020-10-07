@@ -12,7 +12,7 @@ import { filterableTypes } from '../lib/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { Bank } from '../lib/types';
+import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
 	canvasImageFromBuffer,
@@ -32,8 +32,8 @@ registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
 
-const bankImageFile = fs.readFileSync('./resources/images/bank.png');
-const bankRepeaterFile = fs.readFileSync('./resources/images/repeating.png');
+const bankImageFile = fs.readFileSync('./resources/images/bank_backgrounds/1.jpg');
+const bankRepeaterFile = fs.readFileSync('./resources/images/bank_backgrounds/r1.jpg');
 
 const CACHE_DIR = './icon_cache';
 const spacer = 12;
@@ -70,16 +70,21 @@ export default class BankImageTask extends Task {
 
 	async run() {
 		await this.cacheFiles();
+
+		this.repeatingImage = await canvasImageFromBuffer(bankRepeaterFile);
+
 		this.backgroundImages = await Promise.all(
 			backgroundImages.map(async img => ({
 				...img,
 				image: await canvasImageFromBuffer(
 					fs.readFileSync(`./resources/images/bank_backgrounds/${img.id}.jpg`)
-				)
+				),
+				repeatImage: fs.existsSync(`./resources/images/bank_backgrounds/r${img.id}.jpg`)
+					? await canvasImageFromBuffer(
+							fs.readFileSync(`./resources/images/bank_backgrounds/r${img.id}.jpg`)
+					  )
+					: null
 			}))
-		);
-		this.repeatingImage = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/repeating.png')
 		);
 
 		this.borderCorner = await canvasImageFromBuffer(
@@ -229,7 +234,7 @@ export default class BankImageTask extends Task {
 	}
 
 	async generateBankImage(
-		itemLoot: Bank,
+		itemLoot: ItemBank,
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
@@ -323,7 +328,7 @@ export default class BankImageTask extends Task {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
-		ctx.fillStyle = ctx.createPattern(this.repeatingImage, 'repeat');
+		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(
 			bgImage!.image,
@@ -459,7 +464,11 @@ export default class BankImageTask extends Task {
 		return canvas.toBuffer('image/png');
 	}
 
-	async generateCollectionLogImage(collectionLog: Bank, title = '', type: any): Promise<Buffer> {
+	async generateCollectionLogImage(
+		collectionLog: ItemBank,
+		title = '',
+		type: any
+	): Promise<Buffer> {
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';

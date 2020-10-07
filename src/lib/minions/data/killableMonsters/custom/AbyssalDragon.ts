@@ -33,9 +33,8 @@ const regularTable = new LootTable()
 	.add('Dragon platelegs', 1, 2)
 	.add('Dragon plateskirt', 1, 2)
 	.add('Dragon med helm', 1, 2)
-	.oneIn(1024, 'Dragon hunter lance')
-	.oneIn(15_360, 'Dragon med helm', 73)
-	.oneIn(1_000_000, 'Dragon platebody')
+	.oneIn(60_000, 'Dragon med helm', 73)
+	.oneIn(5_000_000, 'Dragon platebody')
 
 	/* Supplies */
 	.add('Black dragonhide', [2, 200])
@@ -90,6 +89,7 @@ export const AbyssalDragonLootTable = new LootTable()
 	.tertiary(300, petTrollTable)
 	.tertiary(2400, 'Abyssal cape')
 	.tertiary(1024, 'Abyssal thread')
+	.tertiary(1024, 'Dragon hunter lance')
 	.tertiary(100, 'Lump of crystal');
 
 setCustomMonster(707070, 'Malygos', AbyssalDragonLootTable, Monsters.Vorkath, {

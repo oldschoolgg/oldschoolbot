@@ -3,16 +3,16 @@ import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
 
 const nightmareLog = resolveItems([
-	'Little nightmare',
-	'Jar of dreams',
-	'Nightmare staff',
 	"Inquisitor's great helm",
 	"Inquisitor's hauberk",
 	"Inquisitor's plateskirt",
 	"Inquisitor's mace",
+	'Nightmare staff',
 	'Eldritch orb',
+	'Volatile orb',
 	'Harmonised orb',
-	'Volatile orb'
+	'Jar of dreams',
+	'Little nightmare'
 ]);
 
 export const bosses = {
@@ -158,6 +158,7 @@ export const bosses = {
 	'Chaos Fanatic': resolveItems(['Malediction shard 1', 'Odium shard 1', 'Pet chaos elemental']),
 	'Crazy Arch': resolveItems(['Malediction shard 2', 'Odium shard 2', 'Fedora']),
 	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"]),
+	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
 	Nightmare: nightmareLog
 };
 export const pets = {
@@ -171,7 +172,6 @@ export const pets = {
 		'Rocky',
 		'Rift guardian'
 	]),
-	space1: [],
 	'Boss Pets': resolveItems([
 		"Pet k'ril tsutsaroth",
 		'Pet general graardor',
@@ -200,6 +200,7 @@ export const pets = {
 		'Tzrek-jad',
 		'Jal-nib-rek'
 	]),
+	'Boss Pets 3': resolveItems(['Little Nightmare']),
 	'Slayer Boss Pets': resolveItems([
 		'Noon',
 		'Abyssal orphan',
@@ -216,7 +217,8 @@ export const pets = {
 		'Phoenix',
 		'Smolcano',
 		'Youngllef'
-	])
+	]),
+	Special: resolveItems(['Dark squirrel'])
 };
 export const cluesShared = {
 	'God Pages': resolveItems([
@@ -1315,6 +1317,33 @@ export const customBossLog = {
 	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori'])
 };
 
+export const sepulchreLog = {
+	Misc: resolveItems([
+		'Hallowed mark',
+		'Hallowed token',
+		'Hallowed grapple',
+		'Hallowed focus',
+		'Hallowed symbol',
+		'Hallowed hammer'
+	]),
+	Misc2: resolveItems([
+		'Hallowed ring',
+		'Dark dye',
+		'Dark acorn',
+		'Strange old lockpick',
+		'Ring of endurance'
+	]),
+	Graceful: resolveItems([
+		'Dark graceful hood',
+		'Dark graceful top',
+		'Dark graceful legs',
+		'Dark graceful boots',
+		'Dark graceful gloves',
+		'Dark graceful cape'
+	]),
+	Pets: resolveItems(['Giant squirrel', 'Dark squirrel'])
+};
+
 export const allCollectionLogItems = removeDuplicatesFromArray(
 	[
 		...Object.values(bosses),
@@ -1328,7 +1357,9 @@ export const allCollectionLogItems = removeDuplicatesFromArray(
 		...Object.values(skillingLog),
 		...Object.values(coxLog),
 		...Object.values(miscLog),
-		...Object.values(customBossLog)
+		...Object.values(customBossLog),
+		...Object.values(nightmareLog),
+		...Object.values(sepulchreLog)
 	].flat(Infinity)
 );
 
@@ -1447,5 +1478,10 @@ export const collectionLogTypes = [
 		name: 'Nightmare',
 		aliases: ['nightmare', 'the nightmare'],
 		items: { nightmare: nightmareLog }
+	},
+	{
+		name: 'Hallowed Sepulchre',
+		aliases: ['sepulchre', 'hallowed sepulchre'],
+		items: sepulchreLog
 	}
 ];

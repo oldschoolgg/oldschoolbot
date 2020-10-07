@@ -1,4 +1,4 @@
-import { Bank } from '../types';
+import { ItemBank } from '../types';
 
 /**
  * Given a list of items, and a bank, it will return a new bank with all items not
@@ -6,8 +6,8 @@ import { Bank } from '../types';
  * @param itemFilter The array of item IDs to use as the filter.
  * @param bank The bank to filter items from.
  */
-export default function filterBankFromArrayOfItems(itemFilter: number[], bank: Bank): Bank {
-	const returnBank: Bank = {};
+export default function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
+	const returnBank: ItemBank = {};
 	const bankKeys = Object.keys(bank);
 
 	// If there are no items in the filter or bank, just return an empty bank.

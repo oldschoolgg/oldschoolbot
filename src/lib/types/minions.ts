@@ -111,6 +111,10 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
+export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
+	floors: number[];
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -137,6 +141,8 @@ export interface MinigameTickerTaskData {
 		| FightCavesActivityTaskOptions
 		| WintertodtActivityTaskOptions
 		| RaidsActivityTaskOptions
+		| NightmareActivityTaskOptions
+		| SepulchreActivityTaskOptions
 	)[];
 }
 
@@ -168,4 +174,5 @@ export type MinionActivityTask =
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity
 	| Tasks.RaidsActivity
-	| Tasks.NightmareActivity;
+	| Tasks.NightmareActivity
+	| Tasks.SepulchreActivity;

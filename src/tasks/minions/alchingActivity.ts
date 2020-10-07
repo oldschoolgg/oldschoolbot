@@ -2,8 +2,6 @@ import { Task } from 'klasa';
 import { resolveNameBank, toKMB } from 'oldschooljs/dist/util';
 
 import { Time } from '../../lib/constants';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
@@ -29,7 +27,7 @@ export default class extends Task {
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
 		let savedRunes = 0;
-		if (hasItemEquipped(bryophytasStaffId, user.settings.get(UserSettings.Gear.Skilling))) {
+		if (user.hasItemEquippedAnywhere(bryophytasStaffId)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(15)) savedRunes++;
 			}

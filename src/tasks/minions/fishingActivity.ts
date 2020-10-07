@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Cookables } from '../../lib/skilling/skills/cooking';
@@ -117,6 +118,16 @@ export default class extends Task {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
 			}
+		}
+
+		if (fish.clueScrollChance) {
+			loot = addSkillingClueToLoot(
+				user,
+				SkillsEnum.Fishing,
+				quantity,
+				fish.clueScrollChance,
+				loot
+			);
 		}
 
 		// Add barbarian fish to loot
