@@ -62,7 +62,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			throw `${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`
+			);
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
