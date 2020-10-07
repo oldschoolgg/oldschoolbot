@@ -49,7 +49,7 @@ export const sepulchreFloors = [
 		petChance: 35_000,
 		agilityLevel: 52,
 		xp: 500,
-		time: Time.Minute * 0.9,
+		time: Number(Time.Minute),
 		lockpickCoffinChance: 2000,
 		coffinTable: new LootTable()
 			.add(LowTierCoffin, 1, 60)
@@ -63,7 +63,7 @@ export const sepulchreFloors = [
 		petChance: 16_000,
 		agilityLevel: 62,
 		xp: 850,
-		time: Time.Minute * 1.1,
+		time: Time.Minute * 1.2,
 		lockpickCoffinChance: 1500,
 		coffinTable: new LootTable()
 			.add(LowTierCoffin, 1, 30)
@@ -77,7 +77,7 @@ export const sepulchreFloors = [
 		petChance: 8000,
 		agilityLevel: 72,
 		xp: 1425,
-		time: Time.Minute * 1.5,
+		time: Time.Minute * 1.6,
 		lockpickCoffinChance: 1100,
 		coffinTable: new LootTable()
 			.add(LowTierCoffin, 1, 15)
@@ -91,7 +91,7 @@ export const sepulchreFloors = [
 		petChance: 4000,
 		agilityLevel: 82,
 		xp: 2625,
-		time: Time.Minute * 2,
+		time: Time.Minute * 2.2,
 		lockpickCoffinChance: 800,
 		coffinTable: new LootTable().add(MidTierCoffin, 1, 60).add(HighTierCoffin, 1, 40),
 		numCoffins: 2,
@@ -102,7 +102,7 @@ export const sepulchreFloors = [
 		petChance: 2000,
 		agilityLevel: 92,
 		xp: 5850,
-		time: Time.Minute * 4,
+		time: Time.Minute * 4.3,
 		lockpickCoffinChance: 600,
 		coffinTable: new LootTable().add(MidTierCoffin, 1, 20).add(HighTierCoffin, 1, 80),
 		numCoffins: 3,

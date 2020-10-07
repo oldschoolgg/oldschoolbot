@@ -1,9 +1,10 @@
-import { objectEntries, reduceNumByPercent } from 'e';
+import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulchre';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -43,6 +44,19 @@ export default class extends BotCommand {
 		let lapLength = addArrayOfNumbers(completableFloors.map(floor => floor.time));
 
 		const boosts = [];
+
+		// Every 1h becomes 1% faster to a cap of 10%
+		const percentReduced = Math.min(
+			Math.floor(
+				msg.author.getMinigameScore(MinigameIDsEnum.Sepulchre) / (Time.Hour / lapLength)
+			),
+			10
+		);
+
+		boosts.push(`${percentReduced.toFixed(1)}% for experience`);
+
+		lapLength = reduceNumByPercent(lapLength, percentReduced);
+
 		for (const [id, percent] of objectEntries(sepulchreBoosts)) {
 			if (msg.author.hasItemEquippedOrInBank(Number(id))) {
 				boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
