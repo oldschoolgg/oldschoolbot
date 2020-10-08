@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { objectValues, Time } from 'e';
 import { KlasaClient } from 'klasa';
 import { Pool, QueryResult } from 'pg';
 import PgBoss from 'pg-boss';
@@ -178,11 +178,13 @@ export default class {
 	 * @private
 	 */
 	private async bossStart() {
-		this.client.emit(Events.Log, 'Starting PgBoss');
 		this.pgBoss = await this.pgBoss.start();
 		this.pgBoss.on('error', error => console.error(error));
 		await this.refreshCacheWithActiveJobs();
 		await this.startEventListener();
+		this.client.console.log(
+			`Loaded ${objectValues(await this.getRunningJobs()).length} events for PgBoss`
+		);
 		return this.pgBoss;
 	}
 
