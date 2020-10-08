@@ -47,7 +47,6 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		if (
@@ -63,9 +62,11 @@ export default class extends BotCommand {
 		}
 
 		const GP = msg.author.settings.get(UserSettings.GP);
-		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < buyable.gpCost) {
+		const totalGPCost = (buyable.gpCost ?? 0) * quantity;
+
+		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
 			return msg.send(
-				`You need ${buyable.gpCost.toLocaleString()} GP to purchase this background.`
+				`You need ${totalGPCost.toLocaleString()} GP to purchase this background.`
 			);
 		}
 
@@ -74,7 +75,7 @@ export default class extends BotCommand {
 
 		// Start building a string to show to the user.
 		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
-
+		console.log(totalGPCost);
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
 			str += await createReadableItemListFromBank(
@@ -82,10 +83,10 @@ export default class extends BotCommand {
 				multiplyBank(buyable.itemCost, quantity)
 			);
 			if (buyable.gpCost) {
-				str += `, ${buyable.gpCost.toLocaleString()} GP.`;
+				str += `, ${totalGPCost.toLocaleString()} GP.`;
 			}
 		} else if (buyable.gpCost) {
-			str += `${buyable.gpCost.toLocaleString()} GP.`;
+			str += `${totalGPCost.toLocaleString()} GP.`;
 		}
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
@@ -119,11 +120,10 @@ export default class extends BotCommand {
 		}
 
 		if (buyable.gpCost) {
-			const GPCost = buyable.gpCost * quantity;
-			if (GP < GPCost) {
-				throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
+			if (GP < totalGPCost) {
+				throw `You need ${toKMB(totalGPCost)} GP to purchase this item.`;
 			}
-			await msg.author.removeGP(GPCost);
+			await msg.author.removeGP(totalGPCost);
 		}
 
 		await msg.author.addItemsToBank(outItems, true);
