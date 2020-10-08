@@ -1,5 +1,4 @@
 import { Task } from 'klasa';
-import PgBoss from 'pg-boss';
 import { createConnection } from 'typeorm';
 
 import { providerConfig } from '../config';
@@ -25,9 +24,8 @@ export default class extends Task {
 			synchronize: true
 		});
 
-		const boss = new PgBoss({ ...providerConfig?.postgres });
+		const boss = this.client.pgBoss.getPgBoss();
 		boss.on('error', error => console.error(error));
-		await boss.start();
 		await boss.schedule('analytics', `*/20 * * * *`);
 		await boss.subscribe('analytics', async job => {
 			await this.analyticsTick();

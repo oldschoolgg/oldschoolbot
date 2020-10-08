@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -13,7 +14,7 @@ import {
 	rand,
 	stringMatches
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -99,18 +100,14 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(fish.bait, quantity);
 		}
 
-		await addSubTaskToActivityTask<FishingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				fishID: fish.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Fishing
-			}
-		);
+		await addNewJob<FishingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+			fishID: fish.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Fishing
+		});
 
 		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name

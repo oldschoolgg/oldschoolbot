@@ -2,11 +2,11 @@ import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, Task } from 'klasa';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { customClientOptions } from '../../config';
 import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { randomItemFromArray } from '../../lib/util';
@@ -70,6 +70,7 @@ export default class extends Task {
 
 		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
+		const prefix = channel.guild.settings.get(GuildSettings.Prefix);
 		this.client.queuePromise(() => {
 			channel.send(str, new MessageAttachment(image));
 			channel
@@ -81,7 +82,7 @@ export default class extends Task {
 								msg.content.toLowerCase() === 'c' &&
 								clueTiersReceived.length > 0) ||
 							msg.content.toLowerCase() === continuationChar ||
-							msg.content.startsWith(String(customClientOptions.prefix))
+							msg.content.startsWith(String(prefix))
 						);
 					},
 					{
@@ -94,8 +95,7 @@ export default class extends Task {
 
 					if (response) {
 						if (response.author.minionIsBusy) return;
-						if (response.content.startsWith(String(customClientOptions.prefix)))
-							throw ''; // a new command was issued, cancel this now.
+						if (response.content.startsWith(String(prefix))) throw ''; // a new command was issued, cancel this now.
 						if (perkTier > PerkTier.One && response.content.toLowerCase() === 'c') {
 							await (this.client.commands.get(
 								'minion'

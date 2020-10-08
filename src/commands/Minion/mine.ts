@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
@@ -12,7 +13,7 @@ import {
 	reduceNumByPercent,
 	stringMatches
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import itemID from '../../lib/util/itemID';
 
 const pickaxes = [
@@ -135,18 +136,14 @@ export default class extends BotCommand {
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
-		await addSubTaskToActivityTask<MiningActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				oreID: ore.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Mining
-			}
-		);
+		await addNewJob<MiningActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+			oreID: ore.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Mining
+		});
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name

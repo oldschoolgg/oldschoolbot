@@ -1,11 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { Eatables } from '../../lib/eatables';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -17,7 +18,7 @@ import {
 	formatDuration,
 	reduceNumByPercent
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import resolveItems from '../../lib/util/resolveItems';
 
 export const warmGear = resolveItems([
@@ -127,18 +128,14 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				minigameID: MinigameIDsEnum.Wintertodt,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Wintertodt
-			}
-		);
+		await addNewJob<WintertodtActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
+			minigameID: MinigameIDsEnum.Wintertodt,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Wintertodt
+		});
 
 		return msg.send(
 			`${

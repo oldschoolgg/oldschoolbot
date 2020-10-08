@@ -1,16 +1,17 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { findMonster } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { MakePartyOptions } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 
 export default class extends BotCommand {
@@ -125,9 +126,9 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
+		await addNewJob<GroupMonsterActivityTaskOptions>(
 			this.client,
-			Tasks.MonsterKillingTicker,
+			Listeners.MonsterKillingEvent,
 			{
 				monsterID: monster.id,
 				userID: msg.author.id,

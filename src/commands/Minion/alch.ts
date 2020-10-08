@@ -3,8 +3,9 @@ import { Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy } from '../../lib/minions/decorators';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -14,7 +15,7 @@ import {
 	removeBankFromBank,
 	resolveNameBank
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import resolveItems from '../../lib/util/resolveItems';
 
@@ -125,19 +126,15 @@ export default class extends BotCommand {
 			removeBankFromBank(userBank, consumedItems)
 		);
 
-		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				itemID: osItem.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				alchValue,
-				type: Activity.Alching
-			}
-		);
+		await addNewJob<AlchingActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
+			itemID: osItem.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			alchValue,
+			type: Activity.Alching
+		});
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 

@@ -96,7 +96,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`equipping ${quantity}x ${itemToEquip.name}[${itemToEquip.id}]`);
 
-		console.log(newGear);
 		await msg.author.settings.update(gearTypeSetting, newGear);
 		const image = await generateGearImage(
 			this.client,

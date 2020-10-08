@@ -3,15 +3,7 @@ import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	Activity,
-	Color,
-	Emoji,
-	MIMIC_MONSTER_ID,
-	PerkTier,
-	Tasks,
-	Time
-} from '../../lib/constants';
+import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -19,11 +11,12 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { rand } from '../../util';
 
@@ -599,18 +592,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
-			this.client,
-			Tasks.MonsterKillingTicker,
-			{
-				monsterID: monster.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.MonsterKilling
-			}
-		);
+		await addNewJob<MonsterActivityTaskOptions>(this.client, Listeners.MonsterKillingEvent, {
+			monsterID: monster.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.MonsterKilling
+		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name

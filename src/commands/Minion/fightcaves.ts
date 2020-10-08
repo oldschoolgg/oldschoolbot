@@ -2,12 +2,13 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { GearSetupTypes } from '../../lib/gear/types';
 import mejJalImage from '../../lib/image/mejJalImage';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -22,7 +23,7 @@ import {
 	reduceNumByPercent,
 	removeBankFromBank
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
@@ -138,21 +139,17 @@ export default class extends BotCommand {
 		const newBank = removeBankFromBank(bank, fightCavesSupplies);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				minigameID: TzTokJad.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity: 1,
-				duration,
-				type: Activity.FightCaves,
-				jadDeathChance,
-				preJadDeathChance,
-				preJadDeathTime
-			}
-		);
+		await addNewJob<FightCavesActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
+			minigameID: TzTokJad.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity: 1,
+			duration,
+			type: Activity.FightCaves,
+			jadDeathChance,
+			preJadDeathChance,
+			preJadDeathTime
+		});
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(

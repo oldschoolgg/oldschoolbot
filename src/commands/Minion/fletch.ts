@@ -1,8 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -14,7 +15,7 @@ import {
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
@@ -112,18 +113,14 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask<FletchingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				fletchableName: fletchableItem.name,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Fletching
-			}
-		);
+		await addNewJob<FletchingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+			fletchableName: fletchableItem.name,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Fletching
+		});
 
 		return msg.send(
 			`${msg.author.minionName} is now Fletching ${quantity} ${sets} ${

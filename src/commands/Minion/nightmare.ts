@@ -1,25 +1,25 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Time, ZAM_HASTA_CRUSH } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MakePartyOptions } from '../../lib/types';
 import { NightmareActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
 import resolveItems from '../../lib/util/resolveItems';
-import { ZAM_HASTA_CRUSH } from './../../lib/constants';
-import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
 function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
@@ -199,20 +199,16 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Nightmare,
-				leader: msg.author.id,
-				users: users.map(u => u.id),
-				minigameID: MinigameIDsEnum.Nightmare
-			}
-		);
+		await addNewJob<NightmareActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Nightmare,
+			leader: msg.author.id,
+			users: users.map(u => u.id),
+			minigameID: MinigameIDsEnum.Nightmare
+		});
 
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 

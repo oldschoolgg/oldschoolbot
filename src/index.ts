@@ -9,6 +9,7 @@ import pLimit from 'p-limit';
 import { botToken, sentryDSN } from './config';
 import { clientOptions, clientProperties } from './lib/config/config';
 import { initItemAliases } from './lib/itemAliases';
+import PgBoss from './lib/PgBoss/PgBoss';
 
 if (sentryDSN) {
 	Sentry.init({
@@ -26,7 +27,7 @@ class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();
 	public queuePromise = pLimit(1);
-
+	public pgBoss: PgBoss;
 	constructor(options: KlasaClientOptions) {
 		super(options);
 		for (const prop of Object.keys(clientProperties)) {
@@ -34,11 +35,13 @@ class OldSchoolBot extends Client {
 			// @ts-ignore
 			this[prop] = clientProperties[prop];
 		}
+		this.pgBoss = new PgBoss({}, this);
 	}
 
 	public init = async (): Promise<this> => {
 		await Items.fetchAll();
 		initItemAliases();
+		await this.pgBoss.init();
 		return this;
 	};
 }

@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
@@ -31,6 +31,7 @@ import {
 	FletchingActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -39,7 +40,6 @@ import {
 import { itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { formatDuration } from '../../util';
-import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -49,7 +49,8 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = getActivityOfUser(this.client, this.id);
+		const client = this.client as KlasaClient;
+		const currentTask = getActivityOfUser(client, this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.

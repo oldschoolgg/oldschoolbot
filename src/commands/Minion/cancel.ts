@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
-import { removeJob } from '../../lib/pgBoss';
 import { NightmareActivityTaskOptions } from '../../lib/types/minions';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 
@@ -59,7 +58,7 @@ export default class extends BotCommand {
 			return cancelMsg.edit(`Halting cancellation of minion task.`);
 		}
 
-		await removeJob(this.client, currentTask);
+		await this.client.pgBoss.removeJob(currentTask);
 
 		return msg.send(
 			`${msg.author.minionName}'s trip was cancelled, and they're now available.`

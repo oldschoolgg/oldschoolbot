@@ -2,16 +2,17 @@ import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulchre';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../lib/types/minions';
 import { addArrayOfNumbers, formatDuration, itemNameFromID } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { SkillsEnum } from './../../lib/skilling/types';
+import addNewJob from '../../lib/util/addNewJob';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -66,19 +67,15 @@ export default class extends BotCommand {
 		const maxLaps = Math.floor(msg.author.maxTripLength / lapLength);
 		const tripLength = maxLaps * lapLength;
 
-		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				floors: completableFloors.map(fl => fl.number),
-				quantity: maxLaps,
-				userID: msg.author.id,
-				duration: tripLength,
-				type: Activity.Sepulchre,
-				channelID: msg.channel.id,
-				minigameID: MinigameIDsEnum.Sepulchre
-			}
-		);
+		await addNewJob<SepulchreActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
+			floors: completableFloors.map(fl => fl.number),
+			quantity: maxLaps,
+			userID: msg.author.id,
+			duration: tripLength,
+			type: Activity.Sepulchre,
+			channelID: msg.channel.id,
+			minigameID: MinigameIDsEnum.Sepulchre
+		});
 
 		let str = `${
 			msg.author.minionName

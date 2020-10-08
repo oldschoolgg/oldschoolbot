@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import { ItemBank, ItemPriceCache, OSRSPoll, PetRecords as PetRecordsType,
-	PgBossJobs as PgBossJobsType } from '../../types';
+import {
+	ItemBank,
+	ItemPriceCache,
+	OSRSPoll,
+	PetRecords as PetRecordsType,
+	PgBossJobs as PgBossJobsType
+} from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 

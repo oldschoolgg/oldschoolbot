@@ -1,12 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Events, MAX_QP, Tasks, Time } from '../../lib/constants';
+import { Activity, Events, MAX_QP, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -46,16 +47,12 @@ export default class extends BotCommand {
 			boosts.push(`10% for Graceful`);
 		}
 
-		await addSubTaskToActivityTask<QuestingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				type: Activity.Questing,
-				duration,
-				userID: msg.author.id,
-				channelID: msg.channel.id
-			}
-		);
+		await addNewJob<QuestingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+			type: Activity.Questing,
+			duration,
+			userID: msg.author.id,
+			channelID: msg.channel.id
+		});
 		let response = `${
 			msg.author.minionName
 		} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;

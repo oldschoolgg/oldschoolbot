@@ -7,6 +7,7 @@ import clueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { SkillsEnum } from '../lib/skilling/types';
+import { ItemBank } from '../lib/types';
 import {
 	addBanks,
 	addItemToBank,
@@ -19,7 +20,6 @@ import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
-import { ItemBank } from './../lib/types/index';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -302,7 +302,8 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.client, this.id);
+		const client = this.client as KlasaClient;
+		const usersTask = getActivityOfUser(client, this.id);
 		return Boolean(usersTask);
 	}
 

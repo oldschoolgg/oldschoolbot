@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Events, Tasks, Time } from '../../lib/constants';
+import { Activity, Events, Time } from '../../lib/constants';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -13,7 +14,7 @@ import {
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
@@ -111,18 +112,14 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				cookableID: cookable.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Cooking
-			}
-		);
+		await addNewJob<CookingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+			cookableID: cookable.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Cooking
+		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(

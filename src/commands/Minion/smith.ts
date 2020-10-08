@@ -1,8 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -14,7 +15,7 @@ import {
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addNewJob from '../../lib/util/addNewJob';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -117,18 +118,14 @@ export default class extends BotCommand {
 			usedbars = qty * quantity;
 		}
 
-		await addSubTaskToActivityTask<SmithingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				smithedBarID: smithedItem.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Smithing
-			}
-		);
+		await addNewJob<SmithingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+			smithedBarID: smithedItem.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Smithing
+		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(
