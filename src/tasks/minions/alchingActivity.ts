@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { resolveNameBank, toKMB } from 'oldschooljs/dist/util';
 
-import { AlchingActivityTaskOptions } from '../../lib/types/minions';
+import { AlchingActivityJobOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -17,7 +17,7 @@ export default class extends Task {
 		alchValue,
 		userID,
 		duration
-	}: AlchingActivityTaskOptions) {
+	}: AlchingActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMinionDailyDuration(duration);
 		await user.addGP(alchValue);

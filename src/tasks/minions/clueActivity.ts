@@ -2,11 +2,11 @@ import { Task } from 'klasa';
 
 import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import { ClueActivityJobOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ clueID, userID, channelID, quantity, duration }: ClueActivityTaskOptions) {
+	async run({ clueID, userID, channelID, quantity, duration }: ClueActivityJobOptions) {
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);

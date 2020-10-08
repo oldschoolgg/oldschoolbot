@@ -7,7 +7,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import { SmithingActivityJobOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -118,7 +118,7 @@ export default class extends BotCommand {
 			usedbars = qty * quantity;
 		}
 
-		await addNewJob<SmithingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<SmithingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
 			smithedBarID: smithedItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

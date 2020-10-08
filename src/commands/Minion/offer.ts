@@ -7,7 +7,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { OfferingActivityTaskOptions } from '../../lib/types/minions';
+import { OfferingActivityJobOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(bone.inputId, quantity);
 
-		await addNewJob<OfferingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<OfferingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
 			boneID: bone.inputId,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

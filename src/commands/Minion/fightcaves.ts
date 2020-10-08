@@ -12,7 +12,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
+import { FightCavesActivityJobOptions } from '../../lib/types/minions';
 import {
 	addBanks,
 	bankHasAllItemsFromBank,
@@ -139,7 +139,7 @@ export default class extends BotCommand {
 		const newBank = removeBankFromBank(bank, fightCavesSupplies);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addNewJob<FightCavesActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
+		await addNewJob<FightCavesActivityJobOptions>(this.client, Listeners.MinigameEvent, {
 			minigameID: TzTokJad.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

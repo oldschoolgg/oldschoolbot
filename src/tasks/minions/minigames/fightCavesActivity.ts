@@ -6,7 +6,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import mejJalImage from '../../../lib/image/mejJalImage';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
+import { FightCavesActivityJobOptions } from '../../../lib/types/minions';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -31,7 +31,7 @@ export default class extends Task {
 		jadDeathChance,
 		preJadDeathTime,
 		duration
-	}: FightCavesActivityTaskOptions) {
+	}: FightCavesActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);

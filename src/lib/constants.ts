@@ -114,11 +114,7 @@ export const enum Tasks {
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
 	NightmareActivity = 'nightmareActivity',
-	SepulchreActivity = 'sepulchreActivity',
-	MonsterKillingTicker = 'monsterKillingTicker',
-	ClueTicker = 'clueTicker',
-	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker'
+	SepulchreActivity = 'sepulchreActivity'
 }
 
 export const enum Activity {

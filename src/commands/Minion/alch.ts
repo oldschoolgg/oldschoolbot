@@ -7,7 +7,7 @@ import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy } from '../../lib/minions/decorators';
 import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { AlchingActivityTaskOptions } from '../../lib/types/minions';
+import { AlchingActivityJobOptions } from '../../lib/types/minions';
 import {
 	addBanks,
 	bankHasAllItemsFromBank,
@@ -126,7 +126,7 @@ export default class extends BotCommand {
 			removeBankFromBank(userBank, consumedItems)
 		);
 
-		await addNewJob<AlchingActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
+		await addNewJob<AlchingActivityJobOptions>(this.client, Listeners.MinigameEvent, {
 			itemID: osItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

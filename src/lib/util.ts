@@ -1,15 +1,15 @@
 import { Image } from 'canvas';
 import { Client, Guild } from 'discord.js';
-import { KlasaClient, ScheduledTask, util } from 'klasa';
+import { KlasaClient, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
+import { Events } from './constants';
+import { channelIsSendable } from './util/channelIsSendable';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
-
-import { Events, Tasks } from './constants';
-import { channelIsSendable } from './util/channelIsSendable';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -129,15 +129,6 @@ export function formatDuration(ms: number) {
 		.join(', ');
 }
 
-export function activityTaskFilter(task: ScheduledTask) {
-	return ([
-		Tasks.ClueTicker,
-		Tasks.MonsterKillingTicker,
-		Tasks.SkillingTicker,
-		Tasks.MinigameTicker
-	] as string[]).includes(task.taskName);
-}
-
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
@@ -202,6 +193,7 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }
+
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;

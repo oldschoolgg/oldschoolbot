@@ -7,14 +7,14 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import { MiningActivityJobOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
+	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);

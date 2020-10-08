@@ -2,12 +2,12 @@ import { Task } from 'klasa';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
+import { OfferingActivityJobOptions } from '../../../lib/types/minions';
 import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ boneID, quantity, userID, channelID, duration }: OfferingActivityTaskOptions) {
+	async run({ boneID, quantity, userID, channelID, duration }: OfferingActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);

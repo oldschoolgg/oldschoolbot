@@ -1,12 +1,12 @@
 import { Time } from 'e';
 import { KlasaClient } from 'klasa';
-import { Client } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import PgBoss from 'pg-boss';
 
 import { providerConfig } from '../../config';
 import { Events } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityJobOptions } from '../types/minions';
 import { removeDuplicatesFromArray } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 
@@ -38,7 +38,7 @@ export default class {
 	 * Manual PgSQL connection to allow for task removals and cache refresh on bot start
 	 * @private
 	 */
-	private readonly pgDatabase: Client;
+	private readonly pgDatabase: Pool;
 	/**
 	 * Controls where the minions are busy or not.
 	 * @see freeMinion
@@ -46,14 +46,14 @@ export default class {
 	 * @private
 	 */
 	private busyMinions: {
-		[key: string]: ActivityTaskOptions;
+		[key: string]: ActivityJobOptions;
 	};
 
 	constructor(options: PgBoss.ConstructorOptions, client: KlasaClient) {
 		this.pgBoss = new PgBoss(this.options);
 		this.client = client;
 		this.busyMinions = {};
-		this.pgDatabase = new Client({
+		this.pgDatabase = new Pool({
 			user: this.options.user,
 			password: this.options.password,
 			database: this.options.database,
@@ -68,7 +68,6 @@ export default class {
 	 * @see startEventListener
 	 */
 	async init() {
-		await this.pgDatabase.connect();
 		await this.bossStart();
 		return this;
 	}
@@ -95,7 +94,7 @@ export default class {
 	 * @param data The job to be added. All users in the job (userID for single jobs or users for
 	 * group jobs) will have their busy status set.
 	 */
-	async addJob(client: KlasaClient, channel: Listeners, data: ActivityTaskOptions) {
+	async addJob(client: KlasaClient, channel: Listeners, data: ActivityJobOptions) {
 		this.lockMinion(data);
 		const jobID: string | null = await this.pgBoss.publish(`osbot_${channel}`, data, {
 			startAfter: data.duration / Time.Second
@@ -110,8 +109,8 @@ export default class {
 	 * Remove the activity from the event listener and free all the minions from it
 	 * @param task
 	 */
-	async removeJob(task: ActivityTaskOptions) {
-		const result = await this.pgDatabase.query(
+	async removeJob(task: ActivityJobOptions) {
+		const result = await this.query(
 			`
 		select
 			pgboss.job.id
@@ -126,6 +125,49 @@ export default class {
 		);
 		await this.pgBoss.cancel(result.rows[0].id);
 		await this.freeMinion(task);
+	}
+
+	/**
+	 * Return the current number of jobs running
+	 * @param listener
+	 */
+	async getRunningJobs(): Promise<Record<Listeners, number>> {
+		const checkListeners: Listeners[] = Object.values(Listeners);
+		const query = `
+			select
+				pgboss.job.name as job,
+				count(*) as qty
+			from
+				pgboss.job
+			where
+				pgboss.job.name = any ($1)
+				and pgboss.job.state not in ('completed', 'expired', 'cancelled', 'failed')
+			group by
+				pgboss.job.name
+			order by
+				qty, job;
+		`;
+		const queryResult = await this.query(query, [checkListeners.map(l => `osbot_${l}`)]);
+		const toReturn: Partial<Record<Listeners, number>> = {};
+		for (const listener of checkListeners) {
+			toReturn[listener] = Number(
+				queryResult.rows.find(r => r.job === `osbot_${listener}`)?.qty ?? 0
+			);
+		}
+		return toReturn as Record<Listeners, number>;
+	}
+
+	/**
+	 * Runs query on the DB
+	 * @param query
+	 * @param params
+	 * @private
+	 */
+	private async query(query: string, params: any[] = []): Promise<QueryResult> {
+		const client = await this.pgDatabase.connect();
+		const toReturn = await client.query(query, params);
+		client.release();
+		return toReturn;
 	}
 
 	/**
@@ -150,7 +192,7 @@ export default class {
 	 * @private
 	 */
 	private async refreshCacheWithActiveJobs() {
-		const result = await this.pgDatabase.query(
+		const result = await this.query(
 			`
 			select
 				id, name, state, data
@@ -176,7 +218,7 @@ export default class {
 			await this.pgBoss.subscribe(`osbot_${event}`, async job => {
 				try {
 					// Get the job being executed
-					const jobData = job.data as ActivityTaskOptions;
+					const jobData = job.data as ActivityJobOptions;
 					// Get the users in this job and free them
 					await this.freeMinion(jobData);
 					// Execute the job
@@ -204,7 +246,7 @@ export default class {
 	 * @param job
 	 * @private
 	 */
-	private async freeMinion(job: ActivityTaskOptions) {
+	private async freeMinion(job: ActivityJobOptions) {
 		for (const user of this.getUsersFromJob(job)) {
 			if (!this.busyMinions[user]) {
 				// This is a backup routine. If the call to remove the user is null, it means something really bad happened
@@ -220,7 +262,7 @@ export default class {
 	 * @param job
 	 * @private
 	 */
-	private lockMinion(job: ActivityTaskOptions) {
+	private lockMinion(job: ActivityJobOptions) {
 		for (const user of this.getUsersFromJob(job)) {
 			this.busyMinions[user] = job;
 		}
@@ -231,7 +273,7 @@ export default class {
 	 * @param job
 	 * @private
 	 */
-	private getUsersFromJob(job: ActivityTaskOptions): string[] {
+	private getUsersFromJob(job: ActivityJobOptions): string[] {
 		let users: string[] = [];
 		if ((job as GroupMonsterActivityTaskOptions).users) {
 			users.push(

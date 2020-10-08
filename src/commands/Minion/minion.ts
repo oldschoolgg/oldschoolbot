@@ -14,7 +14,7 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { MonsterActivityJobOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -592,7 +592,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		await addNewJob<MonsterActivityTaskOptions>(this.client, Listeners.MonsterKillingEvent, {
+		await addNewJob<MonsterActivityJobOptions>(this.client, Listeners.MonsterKillingEvent, {
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

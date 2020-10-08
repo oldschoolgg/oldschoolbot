@@ -1,8 +1,7 @@
 import { Activity, Tasks } from '../constants';
 import { MinigameIDsEnum } from '../minions/data/minigames';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
 
-export interface ActivityTaskOptions {
+export interface ActivityJobOptions {
 	type: Activity;
 	userID: string;
 	duration: number;
@@ -11,134 +10,107 @@ export interface ActivityTaskOptions {
 	channelID: string;
 }
 
-export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
+export interface AgilityActivityJobOptions extends ActivityJobOptions {
 	courseID: string;
 	quantity: number;
 }
 
-export interface CookingActivityTaskOptions extends ActivityTaskOptions {
+export interface CookingActivityJobOptions extends ActivityJobOptions {
 	cookableID: number;
 	quantity: number;
 }
 
-export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
+export interface MonsterActivityJobOptions extends ActivityJobOptions {
 	monsterID: number;
 	quantity: number;
 }
 
-export interface ClueActivityTaskOptions extends ActivityTaskOptions {
+export interface ClueActivityJobOptions extends ActivityJobOptions {
 	clueID: number;
 	quantity: number;
 }
 
-export interface FishingActivityTaskOptions extends ActivityTaskOptions {
+export interface FishingActivityJobOptions extends ActivityJobOptions {
 	fishID: number;
 	quantity: number;
 }
 
-export interface MiningActivityTaskOptions extends ActivityTaskOptions {
+export interface MiningActivityJobOptions extends ActivityJobOptions {
 	oreID: number;
 	quantity: number;
 }
 
-export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
+export interface SmeltingActivityJobOptions extends ActivityJobOptions {
 	barID: number;
 	quantity: number;
 }
 
-export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
+export interface SmithingActivityJobOptions extends ActivityJobOptions {
 	smithedBarID: number;
 	quantity: number;
 }
 
-export interface FiremakingActivityTaskOptions extends ActivityTaskOptions {
+export interface FiremakingActivityJobOptions extends ActivityJobOptions {
 	burnableID: number;
 	quantity: number;
 }
 
-export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
+export interface WoodcuttingActivityJobOptions extends ActivityJobOptions {
 	logID: number;
 	quantity: number;
 }
 
-export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
+export interface CraftingActivityJobOptions extends ActivityJobOptions {
 	craftableID: number;
 	quantity: number;
 }
 
-export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
+export interface FletchingActivityJobOptions extends ActivityJobOptions {
 	fletchableName: string;
 	quantity: number;
 }
 
-export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
+export interface BuryingActivityJobOptions extends ActivityJobOptions {
 	boneID: number;
 	quantity: number;
 }
 
-export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
+export interface OfferingActivityJobOptions extends ActivityJobOptions {
 	boneID: number;
 	quantity: number;
 }
 
-export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
+export interface AlchingActivityJobOptions extends ActivityJobOptions {
 	itemID: number;
 	quantity: number;
 	alchValue: number;
 }
 
-export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
+export interface QuestingActivityJobOptions extends ActivityJobOptions {}
 
-export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
+export interface MinigameActivityJobOptions extends ActivityJobOptions {
 	minigameID: MinigameIDsEnum;
 	quantity: number;
 }
 
-export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface FightCavesActivityJobOptions extends MinigameActivityJobOptions {
 	jadDeathChance: number;
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
 }
 
-export interface NightmareActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface NightmareActivityJobOptions extends MinigameActivityJobOptions {
 	leader: string;
 	users: string[];
 }
 
-export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface WintertodtActivityJobOptions extends MinigameActivityJobOptions {
 	quantity: number;
 }
 
-export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface SepulchreActivityJobOptions extends MinigameActivityJobOptions {
 	floors: number[];
 }
-
-export interface MonsterKillingTickerTaskData {
-	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
-}
-
-export interface ClueTickerTaskData {
-	subTasks: ClueActivityTaskOptions[];
-}
-
-export interface SkillingTickerTaskData {
-	subTasks: ActivityTaskOptions[];
-}
-
-export interface MinigameTickerTaskData {
-	subTasks: (
-		| FightCavesActivityTaskOptions
-		| WintertodtActivityTaskOptions
-		| NightmareActivityTaskOptions
-		| SepulchreActivityTaskOptions
-	)[];
-}
-
-export type TickerTaskData =
-	| MonsterKillingTickerTaskData
-	| ClueTickerTaskData
-	| SkillingTickerTaskData
-	| MinigameTickerTaskData;
 
 export type MinionActivityTask =
 	| Tasks.CraftingActivity

@@ -2,11 +2,8 @@ import { Task } from 'klasa';
 import { createConnection } from 'typeorm';
 
 import { providerConfig } from '../config';
-import { Tasks } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
-import { TickerTaskData } from '../lib/types/minions';
-import { activityTaskFilter } from '../lib/util';
 
 const { port, user, password, database } = providerConfig!.postgres!;
 
@@ -37,24 +34,8 @@ export default class extends Task {
 		this.analyticsTick();
 	}
 
-	calculateMinionTaskCounts() {
-		const minionTaskCounts = {
-			[Tasks.ClueTicker]: 0,
-			[Tasks.MinigameTicker]: 0,
-			[Tasks.MonsterKillingTicker]: 0,
-			[Tasks.SkillingTicker]: 0
-		};
-		for (const task of this.client.schedule.tasks.filter(activityTaskFilter)) {
-			const taskData = task.data as TickerTaskData;
-			const taskName = task.taskName as
-				| Tasks.ClueTicker
-				| Tasks.MinigameTicker
-				| Tasks.MonsterKillingTicker
-				| Tasks.SkillingTicker;
-
-			minionTaskCounts[taskName] = taskData.subTasks.length;
-		}
-		return minionTaskCounts;
+	async calculateMinionTaskCounts() {
+		return this.client.pgBoss.getRunningJobs();
 	}
 
 	generateTotalXPQuery() {
@@ -78,16 +59,16 @@ export default class extends Task {
 			)
 		).map((result: any) => parseInt(result[0].count)) as number[];
 
-		const taskCounts = this.calculateMinionTaskCounts();
+		const taskCounts = await this.calculateMinionTaskCounts();
 
 		await AnalyticsTable.insert({
 			guildsCount: this.client.guilds.size,
 			membersCount: this.client.guilds.reduce((acc, curr) => (acc += curr.memberCount), 0),
 			timestamp: Math.floor(Date.now() / 1000),
-			clueTasksCount: taskCounts.clueTicker,
-			minigameTasksCount: taskCounts.minigameTicker,
-			monsterTasksCount: taskCounts.monsterKillingTicker,
-			skillingTasksCount: taskCounts.skillingTicker,
+			clueTasksCount: taskCounts.clueEvent,
+			minigameTasksCount: taskCounts.minigameEvent,
+			monsterTasksCount: taskCounts.monsterKillingEvent,
+			skillingTasksCount: taskCounts.skillingEvent,
 			ironMinionsCount: numberOfIronmen,
 			minionsCount: numberOfMinions,
 			totalSacrificed,

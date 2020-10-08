@@ -2,17 +2,11 @@ import { Task } from 'klasa';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import { SmithingActivityJobOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({
-		smithedBarID,
-		quantity,
-		userID,
-		channelID,
-		duration
-	}: SmithingActivityTaskOptions) {
+	async run({ smithedBarID, quantity, userID, channelID, duration }: SmithingActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);

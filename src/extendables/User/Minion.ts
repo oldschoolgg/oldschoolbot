@@ -20,22 +20,22 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
-	AgilityActivityTaskOptions,
-	AlchingActivityTaskOptions,
-	BuryingActivityTaskOptions,
-	ClueActivityTaskOptions,
-	CookingActivityTaskOptions,
-	CraftingActivityTaskOptions,
-	FiremakingActivityTaskOptions,
-	FishingActivityTaskOptions,
-	FletchingActivityTaskOptions,
-	MiningActivityTaskOptions,
-	MonsterActivityTaskOptions,
-	NightmareActivityTaskOptions,
-	OfferingActivityTaskOptions,
-	SmeltingActivityTaskOptions,
-	SmithingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	AgilityActivityJobOptions,
+	AlchingActivityJobOptions,
+	BuryingActivityJobOptions,
+	ClueActivityJobOptions,
+	CookingActivityJobOptions,
+	CraftingActivityJobOptions,
+	FiremakingActivityJobOptions,
+	FishingActivityJobOptions,
+	FletchingActivityJobOptions,
+	MiningActivityJobOptions,
+	MonsterActivityJobOptions,
+	NightmareActivityJobOptions,
+	OfferingActivityJobOptions,
+	SmeltingActivityJobOptions,
+	SmithingActivityJobOptions,
+	WoodcuttingActivityJobOptions
 } from '../../lib/types/minions';
 import { itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
@@ -78,7 +78,7 @@ export default class extends Extendable {
 
 		switch (currentTask.type) {
 			case Activity.MonsterKilling: {
-				const data = currentTask as MonsterActivityTaskOptions;
+				const data = currentTask as MonsterActivityJobOptions;
 				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
 
 				return `${this.minionName} is currently killing ${data.quantity}x ${
@@ -96,7 +96,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.ClueCompletion: {
-				const data = currentTask as ClueActivityTaskOptions;
+				const data = currentTask as ClueActivityJobOptions;
 
 				const clueTier = ClueTiers.find(tier => tier.id === data.clueID);
 
@@ -106,7 +106,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Crafting: {
-				const data = currentTask as CraftingActivityTaskOptions;
+				const data = currentTask as CraftingActivityJobOptions;
 				const craftable = Crafting.Craftables.find(item => item.id === data.craftableID);
 
 				return `${this.minionName} is currently crafting ${data.quantity}x ${
@@ -117,7 +117,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Agility: {
-				const data = currentTask as AgilityActivityTaskOptions;
+				const data = currentTask as AgilityActivityJobOptions;
 
 				const course = Agility.Courses.find(course => course.name === data.courseID);
 
@@ -129,7 +129,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Cooking: {
-				const data = currentTask as CookingActivityTaskOptions;
+				const data = currentTask as CookingActivityJobOptions;
 
 				const cookable = Cooking.Cookables.find(
 					cookable => cookable.id === data.cookableID
@@ -143,7 +143,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Fishing: {
-				const data = currentTask as FishingActivityTaskOptions;
+				const data = currentTask as FishingActivityJobOptions;
 
 				const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
 
@@ -155,7 +155,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Mining: {
-				const data = currentTask as MiningActivityTaskOptions;
+				const data = currentTask as MiningActivityJobOptions;
 
 				const ore = Mining.Ores.find(ore => ore.id === data.oreID);
 
@@ -167,7 +167,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Smelting: {
-				const data = currentTask as SmeltingActivityTaskOptions;
+				const data = currentTask as SmeltingActivityJobOptions;
 
 				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
@@ -179,7 +179,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Smithing: {
-				const data = currentTask as SmithingActivityTaskOptions;
+				const data = currentTask as SmithingActivityJobOptions;
 
 				const SmithableItem = Smithing.SmithableItems.find(
 					item => item.id === data.smithedBarID
@@ -193,7 +193,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Offering: {
-				const data = currentTask as OfferingActivityTaskOptions;
+				const data = currentTask as OfferingActivityJobOptions;
 
 				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
 
@@ -205,7 +205,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Burying: {
-				const data = currentTask as BuryingActivityTaskOptions;
+				const data = currentTask as BuryingActivityJobOptions;
 
 				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
 
@@ -217,7 +217,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Firemaking: {
-				const data = currentTask as FiremakingActivityTaskOptions;
+				const data = currentTask as FiremakingActivityJobOptions;
 
 				const burn = Firemaking.Burnables.find(burn => burn.inputLogs === data.burnableID);
 
@@ -237,7 +237,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Woodcutting: {
-				const data = currentTask as WoodcuttingActivityTaskOptions;
+				const data = currentTask as WoodcuttingActivityJobOptions;
 
 				const log = Woodcutting.Logs.find(log => log.id === data.logID);
 
@@ -263,7 +263,7 @@ export default class extends Extendable {
 				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
 			}
 			case Activity.Fletching: {
-				const data = currentTask as FletchingActivityTaskOptions;
+				const data = currentTask as FletchingActivityJobOptions;
 
 				return `${this.minionName} is currently fletching ${data.quantity}x ${
 					data.fletchableName
@@ -277,7 +277,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Alching: {
-				const data = currentTask as AlchingActivityTaskOptions;
+				const data = currentTask as AlchingActivityJobOptions;
 
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
@@ -285,13 +285,13 @@ export default class extends Extendable {
 			}
 
 			case Activity.Nightmare: {
-				const data = currentTask as NightmareActivityTaskOptions;
+				const data = currentTask as NightmareActivityJobOptions;
 
 				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 
 			case Activity.Sepulchre: {
-				const data = currentTask as NightmareActivityTaskOptions;
+				const data = currentTask as NightmareActivityJobOptions;
 
 				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
 			}

@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FletchingActivityTaskOptions } from '../../lib/types/minions';
+import { FletchingActivityJobOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -12,7 +12,7 @@ export default class extends Task {
 		userID,
 		channelID,
 		duration
-	}: FletchingActivityTaskOptions) {
+	}: FletchingActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fletching);

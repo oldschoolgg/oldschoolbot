@@ -7,7 +7,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
+import { WoodcuttingActivityJobOptions } from '../../lib/types/minions';
 import {
 	determineScaledLogTime,
 	formatDuration,
@@ -120,7 +120,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addNewJob<WoodcuttingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<WoodcuttingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
 			logID: log.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

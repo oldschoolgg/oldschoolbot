@@ -6,7 +6,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { FishingActivityJobOptions } from '../../lib/types/minions';
 import {
 	calcPercentOfNum,
 	formatDuration,
@@ -100,7 +100,7 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(fish.bait, quantity);
 		}
 
-		await addNewJob<FishingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<FishingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
 			fishID: fish.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

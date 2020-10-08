@@ -6,14 +6,14 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { FishingActivityJobOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
+	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);

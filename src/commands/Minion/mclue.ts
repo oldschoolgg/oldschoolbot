@@ -8,7 +8,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import { ClueActivityJobOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 
@@ -86,7 +86,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		await addNewJob<ClueActivityTaskOptions>(this.client, Listeners.ClueEvent, {
+		await addNewJob<ClueActivityJobOptions>(this.client, Listeners.ClueEvent, {
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

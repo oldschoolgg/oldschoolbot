@@ -11,7 +11,7 @@ import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
-import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
+import { WintertodtActivityJobOptions } from '../../../lib/types/minions';
 import { addBanks, bankHasItem, noOp } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import itemID from '../../../lib/util/itemID';
@@ -40,7 +40,7 @@ const PointsTable = new SimpleTable<number>()
 	.add(850);
 
 export default class extends Task {
-	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
+	async run({ userID, channelID, quantity, duration }: WintertodtActivityJobOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
