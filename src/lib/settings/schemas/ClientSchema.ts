@@ -18,5 +18,4 @@ Client.defaultClientSchema
 			.add('wintertodtLoot', 'any', { default: {} })
 			.add('fightCavesCost', 'any', { default: {} })
 			.add('PVMCost', 'any', { default: {} })
-	)
-	.add('pgBossJobs', 'any', { default: {} });
+	);

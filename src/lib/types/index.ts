@@ -1,7 +1,6 @@
 import { KlasaUser } from 'klasa';
 
 import { SkillsEnum } from '../skilling/types';
-import { ActivityTaskOptions } from './minions';
 
 export interface ItemBank {
 	[key: string]: number;
@@ -37,7 +36,9 @@ export interface Pet {
 	type: string;
 	altNames: string[];
 	bossKeys?: string[];
+
 	finish?(): number;
+
 	formatFinish(num: number): string;
 }
 
@@ -147,6 +148,7 @@ export interface MakePartyOptions {
 	message: string;
 	usersAllowed?: string[];
 	party?: boolean;
+
 	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
 }
 
@@ -155,10 +157,3 @@ export type Skills = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
-
-export interface PgBossJobs {
-	[key: string]: {
-		userID: string;
-		task: ActivityTaskOptions;
-	};
-}

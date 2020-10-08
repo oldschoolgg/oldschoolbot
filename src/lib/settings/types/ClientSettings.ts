@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import {
-	ItemBank,
-	ItemPriceCache,
-	OSRSPoll,
-	PetRecords as PetRecordsType,
-	PgBossJobs as PgBossJobsType
-} from '../../types';
+import { ItemBank, ItemPriceCache, OSRSPoll, PetRecords as PetRecordsType } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -36,5 +30,4 @@ export namespace ClientSettings {
 		export const FightCavesCost = T<O.Readonly<ItemBank>>('economyStats.fightCavesCost');
 		export const PVMCost = T<O.Readonly<ItemBank>>('economyStats.PVMCost');
 	}
-	export const PgBossJobs = T<O.Readonly<PgBossJobsType>>('pgBossJobs');
 }
