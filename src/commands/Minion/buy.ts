@@ -65,9 +65,7 @@ export default class extends BotCommand {
 		const totalGPCost = (buyable.gpCost ?? 0) * quantity;
 
 		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
-			return msg.send(
-				`You need ${totalGPCost.toLocaleString()} GP to purchase this background.`
-			);
+			return msg.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
 		}
 
 		const outItems = multiplyBank(buyable.outputItems, quantity);
@@ -75,7 +73,7 @@ export default class extends BotCommand {
 
 		// Start building a string to show to the user.
 		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
-		console.log(totalGPCost);
+
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
 			str += await createReadableItemListFromBank(
