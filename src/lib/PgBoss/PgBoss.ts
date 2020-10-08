@@ -180,16 +180,18 @@ export default class {
 					// Get the users in this job and free them
 					await this.freeMinion(jobData);
 					// Execute the job
-					if (
-						this.client.tasks &&
-						this.client.tasks.get(taskNameFromType(jobData.type))
-					) {
-						await (this.client.tasks
-							?.get(taskNameFromType(jobData.type))
-							?.run(jobData) as Promise<any>).catch(console.error);
+					if (this.client.tasks) {
+						const task = this.client.tasks.get(taskNameFromType(jobData.type));
+						if (task) {
+							await (task.run(jobData) as Promise<any>).catch(console.error);
+						} else {
+							throw 'Error';
+						}
 					} else {
-						this.client.emit(Events.Error, `Impossible to execute the task ${job.id}!`);
+						throw 'Error';
 					}
+				} catch (e) {
+					this.client.emit(Events.Error, `Impossible to execute the task ${job.id}!`);
 				} finally {
 					job.done();
 				}
