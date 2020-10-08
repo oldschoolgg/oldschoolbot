@@ -72,7 +72,7 @@ export default class extends Extendable {
 
 		const durationRemaining = currentTask.finishDate - Date.now();
 		const formattedDuration =
-			durationRemaining < Time.Minute
+			durationRemaining < Time.Second
 				? `They're on their way back now!`
 				: `Approximately ${formatDuration(durationRemaining)} remaining.`;
 
