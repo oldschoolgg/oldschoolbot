@@ -2,6 +2,8 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -15,6 +17,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
+import resolveItems from '../../lib/util/resolveItems';
 import { ZAM_HASTA_CRUSH } from './../../lib/constants';
 import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
@@ -33,6 +36,13 @@ function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 
 	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
 }
+
+const inquisitorItems = resolveItems([
+	"Inquisitor's great helm",
+	"Inquisitor's hauberk",
+	"Inquisitor's plateskirt",
+	"Inquisitor's mace"
+]);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -124,6 +134,18 @@ export default class extends BotCommand {
 				user,
 				users.map(u => u.id)
 			);
+
+			// Special inquisitor outfit damage boost
+			const meleeGear = user.settings.get(UserSettings.Gear.Melee);
+			if (hasArrayOfItemsEquipped(inquisitorItems, meleeGear)) {
+				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
+			} else {
+				for (const inqItem of inquisitorItems) {
+					if (hasItemEquipped(inqItem, meleeGear)) {
+						effectiveTime *= users.length === 1 ? 0.98 : 0.995;
+					}
+				}
+			}
 
 			// Increase duration for each bad weapon.
 			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
