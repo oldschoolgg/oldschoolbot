@@ -6,7 +6,7 @@ import PgBoss from 'pg-boss';
 import { providerConfig } from '../../config';
 import { Events } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { ActivityJobOptions } from '../types/minions';
+import { ActivityTaskOptions } from '../types/minions';
 import { removeDuplicatesFromArray } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 
@@ -46,7 +46,7 @@ export default class {
 	 * @private
 	 */
 	private busyMinions: {
-		[key: string]: ActivityJobOptions;
+		[key: string]: ActivityTaskOptions;
 	};
 
 	constructor(options: PgBoss.ConstructorOptions, client: KlasaClient) {
@@ -94,7 +94,7 @@ export default class {
 	 * @param data The job to be added. All users in the job (userID for single jobs or users for
 	 * group jobs) will have their busy status set.
 	 */
-	async addJob(client: KlasaClient, channel: Listeners, data: ActivityJobOptions) {
+	async addJob(client: KlasaClient, channel: Listeners, data: ActivityTaskOptions) {
 		this.lockMinion(data);
 		const jobID: string | null = await this.pgBoss.publish(`osbot_${channel}`, data, {
 			startAfter: data.duration / Time.Second
@@ -109,7 +109,7 @@ export default class {
 	 * Remove the activity from the event listener and free all the minions from it
 	 * @param task
 	 */
-	async removeJob(task: ActivityJobOptions) {
+	async removeJob(task: ActivityTaskOptions) {
 		const result = await this.query(
 			`
 		select
@@ -218,7 +218,7 @@ export default class {
 			await this.pgBoss.subscribe(`osbot_${event}`, async job => {
 				try {
 					// Get the job being executed
-					const jobData = job.data as ActivityJobOptions;
+					const jobData = job.data as ActivityTaskOptions;
 					// Get the users in this job and free them
 					await this.freeMinion(jobData);
 					// Execute the job
@@ -246,7 +246,7 @@ export default class {
 	 * @param job
 	 * @private
 	 */
-	private async freeMinion(job: ActivityJobOptions) {
+	private async freeMinion(job: ActivityTaskOptions) {
 		for (const user of this.getUsersFromJob(job)) {
 			if (!this.busyMinions[user]) {
 				// This is a backup routine. If the call to remove the user is null, it means something really bad happened
@@ -262,7 +262,7 @@ export default class {
 	 * @param job
 	 * @private
 	 */
-	private lockMinion(job: ActivityJobOptions) {
+	private lockMinion(job: ActivityTaskOptions) {
 		for (const user of this.getUsersFromJob(job)) {
 			this.busyMinions[user] = job;
 		}
@@ -273,7 +273,7 @@ export default class {
 	 * @param job
 	 * @private
 	 */
-	private getUsersFromJob(job: ActivityJobOptions): string[] {
+	private getUsersFromJob(job: ActivityTaskOptions): string[] {
 		let users: string[] = [];
 		if ((job as GroupMonsterActivityTaskOptions).users) {
 			users.push(

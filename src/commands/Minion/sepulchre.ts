@@ -10,7 +10,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SepulchreActivityJobOptions } from '../../lib/types/minions';
+import { SepulchreActivityTaskOptions } from '../../lib/types/minions';
 import { addArrayOfNumbers, formatDuration, itemNameFromID } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 
@@ -67,7 +67,7 @@ export default class extends BotCommand {
 		const maxLaps = Math.floor(msg.author.maxTripLength / lapLength);
 		const tripLength = maxLaps * lapLength;
 
-		await addNewJob<SepulchreActivityJobOptions>(this.client, Listeners.MinigameEvent, {
+		await addNewJob<SepulchreActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
 			floors: completableFloors.map(fl => fl.number),
 			quantity: maxLaps,
 			userID: msg.author.id,

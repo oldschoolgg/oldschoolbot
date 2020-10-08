@@ -6,7 +6,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CraftingActivityJobOptions } from '../../lib/types/minions';
+import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -130,7 +130,7 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addNewJob<CraftingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<CraftingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			craftableID: Craft.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

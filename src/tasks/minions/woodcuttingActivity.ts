@@ -4,14 +4,14 @@ import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { WoodcuttingActivityJobOptions } from '../../lib/types/minions';
+import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityJobOptions) {
+	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Woodcutting);

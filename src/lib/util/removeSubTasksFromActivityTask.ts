@@ -1,7 +1,7 @@
 import { Client } from 'discord.js';
 
 import { Tasks } from '../constants';
-import { ActivityJobOptions } from '../types/minions';
+import { ActivityTaskOptions } from '../types/minions';
 
 export default function removeSubTasksFromActivityTask(
 	client: Client,
@@ -15,7 +15,7 @@ export default function removeSubTasksFromActivityTask(
 	return task.update({
 		data: {
 			...task.data,
-			subTasks: (task.data.subTasks as ActivityJobOptions[])
+			subTasks: (task.data.subTasks as ActivityTaskOptions[])
 				.filter(task => !subTasksToRemove.includes(task.id))
 				.sort((a, b) => a.finishDate - b.finishDate)
 		}

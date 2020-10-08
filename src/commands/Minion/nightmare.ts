@@ -14,7 +14,7 @@ import { KillableMonster } from '../../lib/minions/types';
 import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MakePartyOptions } from '../../lib/types';
-import { NightmareActivityJobOptions } from '../../lib/types/minions';
+import { NightmareActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
@@ -199,7 +199,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addNewJob<NightmareActivityJobOptions>(this.client, Listeners.MinigameEvent, {
+		await addNewJob<NightmareActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

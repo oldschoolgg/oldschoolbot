@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
-import { NightmareActivityJobOptions } from '../../lib/types/minions';
+import { NightmareActivityTaskOptions } from '../../lib/types/minions';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 
 const options = {
@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		}
 
 		if (currentTask.type === Activity.Nightmare) {
-			const data = currentTask as NightmareActivityJobOptions;
+			const data = currentTask as NightmareActivityTaskOptions;
 			if (data.users.length > 1) {
 				throw `${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`;
 			}

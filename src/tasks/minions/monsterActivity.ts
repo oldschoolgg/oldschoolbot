@@ -8,13 +8,13 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MonsterActivityJobOptions } from '../../lib/types/minions';
+import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { randomItemFromArray } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityJobOptions) {
+	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		const perkTier = getUsersPerkTier(user);

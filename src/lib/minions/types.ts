@@ -10,7 +10,7 @@ import { PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { LevelRequirements } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank } from '../types';
-import { MonsterActivityJobOptions } from '../types/minions';
+import { MonsterActivityTaskOptions } from '../types/minions';
 
 export interface BankBackground {
 	image: Image | null;
@@ -82,7 +82,7 @@ export interface KillableMonster {
 	minimumGearRequirements?: GearRequirements;
 }
 
-export interface GroupMonsterActivityTaskOptions extends MonsterActivityJobOptions {
+export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
 	leader: string;
 	users: string[];
 }

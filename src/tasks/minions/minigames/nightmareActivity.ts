@@ -7,7 +7,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
-import { NightmareActivityJobOptions } from '../../../lib/types/minions';
+import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, noOp, queuedMessageSend } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
@@ -24,7 +24,7 @@ interface NightmareUser {
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity }: NightmareActivityJobOptions) {
+	async run({ channelID, leader, users, quantity }: NightmareActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 

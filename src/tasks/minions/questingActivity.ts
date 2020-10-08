@@ -2,12 +2,12 @@ import { KlasaMessage, Task } from 'klasa';
 
 import { MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { QuestingActivityJobOptions } from '../../lib/types/minions';
+import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ userID, channelID, duration }: QuestingActivityJobOptions) {
+	async run({ userID, channelID, duration }: QuestingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentQP = user.settings.get(UserSettings.QP);

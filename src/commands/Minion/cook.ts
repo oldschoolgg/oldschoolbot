@@ -6,7 +6,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CookingActivityJobOptions } from '../../lib/types/minions';
+import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -112,7 +112,7 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
 		}
 
-		await addNewJob<CookingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<CookingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			cookableID: cookable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

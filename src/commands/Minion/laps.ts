@@ -7,7 +7,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { AgilityActivityJobOptions } from '../../lib/types/minions';
+import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 
@@ -63,7 +63,7 @@ export default class extends BotCommand {
 			} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`;
 		}
 
-		await addNewJob<AgilityActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<AgilityActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			courseID: course.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

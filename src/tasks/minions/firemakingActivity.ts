@@ -4,11 +4,17 @@ import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEqu
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FiremakingActivityJobOptions } from '../../lib/types/minions';
+import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ burnableID, quantity, userID, channelID, duration }: FiremakingActivityJobOptions) {
+	async run({
+		burnableID,
+		quantity,
+		userID,
+		channelID,
+		duration
+	}: FiremakingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);

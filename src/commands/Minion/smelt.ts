@@ -8,7 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
-import { SmeltingActivityJobOptions } from '../../lib/types/minions';
+import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -96,7 +96,7 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
 
-		await addNewJob<SmeltingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<SmeltingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			barID: bar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

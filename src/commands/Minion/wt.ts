@@ -10,7 +10,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { WintertodtActivityJobOptions } from '../../lib/types/minions';
+import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addItemToBank,
 	bankHasItem,
@@ -128,7 +128,7 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		await addNewJob<WintertodtActivityJobOptions>(this.client, Listeners.MinigameEvent, {
+		await addNewJob<WintertodtActivityTaskOptions>(this.client, Listeners.MinigameEvent, {
 			minigameID: MinigameIDsEnum.Wintertodt,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

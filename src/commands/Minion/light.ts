@@ -6,7 +6,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FiremakingActivityJobOptions } from '../../lib/types/minions';
+import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 		// Remove the logs from their bank.
 		await msg.author.removeItemFromBank(log.inputLogs, quantity);
 
-		await addNewJob<FiremakingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<FiremakingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			burnableID: log.inputLogs,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

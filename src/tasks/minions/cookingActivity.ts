@@ -3,13 +3,13 @@ import { Task } from 'klasa';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CookingActivityJobOptions } from '../../lib/types/minions';
+import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ cookableID, quantity, userID, channelID, duration }: CookingActivityJobOptions) {
+	async run({ cookableID, quantity, userID, channelID, duration }: CookingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);

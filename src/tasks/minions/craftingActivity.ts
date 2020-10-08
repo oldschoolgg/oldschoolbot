@@ -2,11 +2,11 @@ import { Task } from 'klasa';
 
 import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CraftingActivityJobOptions } from '../../lib/types/minions';
+import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ craftableID, quantity, userID, channelID, duration }: CraftingActivityJobOptions) {
+	async run({ craftableID, quantity, userID, channelID, duration }: CraftingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);

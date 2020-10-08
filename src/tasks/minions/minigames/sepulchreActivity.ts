@@ -4,12 +4,12 @@ import { Bank, Openables } from 'oldschooljs';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { SepulchreActivityJobOptions } from '../../../lib/types/minions';
+import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ channelID, quantity, floors, duration, userID }: SepulchreActivityJobOptions) {
+	async run({ channelID, quantity, floors, duration, userID }: SepulchreActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.Sepulchre, quantity);

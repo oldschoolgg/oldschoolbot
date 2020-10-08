@@ -2,11 +2,11 @@ import { Task } from 'klasa';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { BuryingActivityJobOptions } from '../../../lib/types/minions';
+import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ boneID, quantity, userID, channelID, duration }: BuryingActivityJobOptions) {
+	async run({ boneID, quantity, userID, channelID, duration }: BuryingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 

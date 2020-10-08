@@ -1,5 +1,5 @@
 import { Emoji, Time } from '../../constants';
-import { ActivityJobOptions } from '../../types/minions';
+import { ActivityTaskOptions } from '../../types/minions';
 import itemID from '../../util/itemID';
 import { Rune, SkillsEnum } from '../types';
 
@@ -172,7 +172,7 @@ const RCPouches = [
 	}
 ];
 
-export interface RunecraftActivityTaskOptions extends ActivityJobOptions {
+export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	runeID: number;
 	channelID: string;
 	essenceQuantity: number;

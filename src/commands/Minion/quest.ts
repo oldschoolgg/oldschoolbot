@@ -5,7 +5,7 @@ import { Activity, Events, MAX_QP, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { QuestingActivityJobOptions } from '../../lib/types/minions';
+import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addNewJob from '../../lib/util/addNewJob';
 
@@ -47,7 +47,7 @@ export default class extends BotCommand {
 			boosts.push(`10% for Graceful`);
 		}
 
-		await addNewJob<QuestingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<QuestingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			type: Activity.Questing,
 			duration,
 			userID: msg.author.id,

@@ -5,7 +5,7 @@ import { Activity } from '../../lib/constants';
 import { Listeners } from '../../lib/PgBoss/PgBoss';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MiningActivityJobOptions } from '../../lib/types/minions';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import {
 	determineScaledOreTime,
 	formatDuration,
@@ -136,7 +136,7 @@ export default class extends BotCommand {
 			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
 		}
 
-		await addNewJob<MiningActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<MiningActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			oreID: ore.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

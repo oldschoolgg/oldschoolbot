@@ -1,11 +1,11 @@
 import { KlasaClient } from 'klasa';
 
 import { Listeners } from '../PgBoss/PgBoss';
-import { ActivityJobOptions } from '../types/minions';
+import { ActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
 import getActivityOfUser from './getActivityOfUser';
 
-export default async function addNewJob<T extends ActivityJobOptions>(
+export default async function addNewJob<T extends ActivityTaskOptions>(
 	client: KlasaClient,
 	listenerName: Listeners,
 	subTaskToAdd: Omit<T, 'finishDate' | 'id'>

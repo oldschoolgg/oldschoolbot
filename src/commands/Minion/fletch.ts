@@ -7,7 +7,7 @@ import { Listeners } from '../../lib/PgBoss/PgBoss';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FletchingActivityJobOptions } from '../../lib/types/minions';
+import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -113,7 +113,7 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addNewJob<FletchingActivityJobOptions>(this.client, Listeners.SkillingEvent, {
+		await addNewJob<FletchingActivityTaskOptions>(this.client, Listeners.SkillingEvent, {
 			fletchableName: fletchableItem.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
