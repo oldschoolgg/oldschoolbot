@@ -1,12 +1,12 @@
-import { Client } from 'discord.js';
-import { KlasaClient } from 'klasa';
+import {Client} from 'discord.js';
+import {KlasaClient} from 'klasa';
 
-import { Activity, Tasks } from '../constants';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { publish } from '../pgBoss';
-import { ActivityTaskOptions } from '../types/minions';
-import { uuid } from '../util';
-import { taskNameFromType } from './taskNameFromType';
+import {Tasks} from '../constants';
+import {publish} from '../pgBoss';
+import {ActivityTaskOptions} from '../types/minions';
+import {uuid} from '../util';
+import getActivityOfUser from './getActivityOfUser';
+import {taskNameFromType} from './taskNameFromType';
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 	client: Client,
@@ -16,17 +16,8 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	const task = client.schedule.tasks.find(_task => _task.taskName === taskName);
 
 	if (!task) throw `Missing activity task: ${taskName}.`;
-	if (
-		task.data.subTasks.some((subTask: ActivityTaskOptions) => {
-			if (subTask.userID === subTaskToAdd.userID) return true;
-			if (
-				subTask.type === Activity.GroupMonsterKilling &&
-				(subTask as GroupMonsterActivityTaskOptions).users.includes(subTaskToAdd.userID)
-			) {
-				return true;
-			}
-		})
-	) {
+	const usersTask = getActivityOfUser(client, subTaskToAdd.userID);
+	if (usersTask) {
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 

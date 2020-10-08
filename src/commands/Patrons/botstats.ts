@@ -5,7 +5,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import backgroundImages from '../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { StringKeyedBank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 
 type BankQueryResult = { bankBackground: number; count: string }[];
 
@@ -93,7 +93,7 @@ GROUP BY "bankBackground";`);
 			`SELECT ARRAY(SELECT "monsterScores" FROM users WHERE "monsterScores"::text <> '{}'::text);`
 		);
 
-		const banks: StringKeyedBank[] = res[0].array;
+		const banks: ItemBank[] = res[0].array;
 
 		banks.map(bank => {
 			for (const [id, qty] of Object.entries(bank)) {
@@ -119,7 +119,7 @@ GROUP BY "bankBackground";`);
 			`SELECT ARRAY(SELECT "clueScores" FROM users WHERE "clueScores"::text <> '{}'::text);`
 		);
 
-		const banks: StringKeyedBank[] = res[0].array;
+		const banks: ItemBank[] = res[0].array;
 
 		banks.map(bank => {
 			for (const [id, qty] of Object.entries(bank)) {

@@ -7,7 +7,6 @@ import clueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { SkillsEnum } from '../lib/skilling/types';
-import { Bank } from '../lib/types';
 import {
 	addBanks,
 	addItemToBank,
@@ -20,6 +19,7 @@ import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { ItemBank } from './../lib/types/index';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -103,7 +103,7 @@ export default class extends Extendable {
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
-	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
+	public async addItemsToBank(this: User, _items: ItemBank, collectionLog = false) {
 		await this.settings.sync(true);
 		for (const { scrollID } of clueTiers) {
 			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
@@ -162,7 +162,7 @@ export default class extends Extendable {
 		);
 	}
 
-	public async addItemsToCollectionLog(this: User, items: Bank) {
+	public async addItemsToCollectionLog(this: User, items: ItemBank) {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
@@ -302,7 +302,7 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.client, this);
+		const usersTask = getActivityOfUser(this.client, this.id);
 		return Boolean(usersTask);
 	}
 

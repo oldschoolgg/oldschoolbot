@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import {
-	Bank,
-	ItemBank,
-	ItemPriceCache,
-	OSRSPoll,
-	PetRecords as PetRecordsType,
-	PgBossJobs as PgBossJobsType
-} from '../../types';
+import { ItemBank, ItemPriceCache, OSRSPoll, PetRecords as PetRecordsType,
+	PgBossJobs as PgBossJobsType } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -18,7 +12,7 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 
 export namespace ClientSettings {
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
-	export const CommandStats = T<Bank>('commandStats');
+	export const CommandStats = T<ItemBank>('commandStats');
 	export const Prices = T<ItemPriceCache>('prices');
 	export const PollQuestions = T<OSRSPoll>('pollQuestions');
 	export const PetRecords = T<PetRecordsType>('petRecords');

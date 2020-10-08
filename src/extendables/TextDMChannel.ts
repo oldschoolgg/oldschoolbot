@@ -1,7 +1,7 @@
-import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
+import { DMChannel, MessageAttachment, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
-import { Bank } from '../lib/types';
+import { ItemBank } from './../lib/types/index';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -18,7 +18,7 @@ export default class extends Extendable {
 			flags,
 			user
 		}: {
-			bank: Bank;
+			bank: ItemBank;
 			content?: string;
 			title?: string;
 			background?: number;
@@ -30,14 +30,5 @@ export default class extends Extendable {
 			.get('bankImage')!
 			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user);
 		return this.send(content, new MessageAttachment(image));
-	}
-
-	assertCanManageMessages(this: TextChannel): void {
-		const canManage =
-			this.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.MANAGE_MESSAGES) || false;
-
-		if (!canManage) {
-			throw `I need the **Manage Messages** permission to perform this action. Please give me this permission and try again.`;
-		}
 	}
 }

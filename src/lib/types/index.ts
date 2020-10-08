@@ -3,16 +3,8 @@ import { KlasaUser } from 'klasa';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from './minions';
 
-export interface Bank {
-	[key: number]: number;
-}
-
-export interface StringKeyedBank {
-	[key: string]: number;
-}
-
 export interface ItemBank {
-	[key: number]: number;
+	[key: string]: number;
 }
 
 export interface SettingsEntry {
@@ -21,11 +13,11 @@ export interface SettingsEntry {
 	GP?: number;
 	autoupdate?: boolean;
 	badges?: string[];
-	bank?: Bank;
-	clueScores?: Bank;
-	monsterScores?: Bank;
+	bank?: ItemBank;
+	clueScores?: ItemBank;
+	monsterScores?: ItemBank;
 	collectionLog?: number[];
-	collectionLogBank?: Bank;
+	collectionLogBank?: ItemBank;
 	pets?: number[];
 	lastDailyTimestamp?: number;
 	bitfield?: number[];
@@ -82,8 +74,8 @@ export interface PollVotes {
 }
 
 export interface PetRecords {
-	highest: Bank;
-	lowest: Bank;
+	highest: ItemBank;
+	lowest: ItemBank;
 }
 
 export interface JMod {
