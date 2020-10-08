@@ -174,15 +174,25 @@ export default class {
 	private async startEventListener() {
 		for (const event of Object.values(Listeners)) {
 			await this.pgBoss.subscribe(`osbot_${event}`, async job => {
-				// Get the job being executed
-				const jobData = job.data as ActivityTaskOptions;
-				// Get the users in this job and free them
-				await this.freeMinion(jobData);
-				// Execute the job
-				await (this.client.tasks
-					?.get(taskNameFromType(jobData.type))
-					?.run(jobData) as Promise<any>).catch(console.error);
-				job.done();
+				try {
+					// Get the job being executed
+					const jobData = job.data as ActivityTaskOptions;
+					// Get the users in this job and free them
+					await this.freeMinion(jobData);
+					// Execute the job
+					if (
+						this.client.tasks &&
+						this.client.tasks.get(taskNameFromType(jobData.type))
+					) {
+						await (this.client.tasks
+							?.get(taskNameFromType(jobData.type))
+							?.run(jobData) as Promise<any>).catch(console.error);
+					} else {
+						this.client.emit(Events.Error, `Impossible to execute the task ${job.id}!`);
+					}
+				} finally {
+					job.done();
+				}
 			});
 		}
 	}
