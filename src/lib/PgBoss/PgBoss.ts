@@ -180,7 +180,7 @@ export default class {
 				await this.freeMinion(jobData);
 				// Execute the job
 				await (this.client.tasks
-					.get(taskNameFromType(jobData.type))
+					?.get(taskNameFromType(jobData.type))
 					?.run(jobData) as Promise<any>).catch(console.error);
 				job.done();
 			});
