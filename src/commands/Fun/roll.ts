@@ -1,3 +1,4 @@
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -10,7 +11,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [max]: [number]) {
-		return msg.send((Math.floor(Math.random() * max) + 1).toLocaleString());
+	async run(msg: KlasaMessage, [max = 100]: [number]) {
+		return msg.send(randInt(1, max));
 	}
 }
