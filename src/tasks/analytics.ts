@@ -22,7 +22,6 @@ export default class extends Task {
 		});
 
 		const boss = this.client.pgBoss.getPgBoss();
-		boss.on('error', error => console.error(error));
 		await boss.schedule('analytics', `*/20 * * * *`);
 		await boss.subscribe('analytics', async job => {
 			await this.analyticsTick();
