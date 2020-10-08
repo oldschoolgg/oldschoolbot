@@ -19,7 +19,7 @@ export default function getOSItem(itemName: string | number): Item {
 	}
 
 	const osItem = Items.get(identifier) as Item | undefined;
-	if (!osItem) throw `The item doesnt exist.`;
+	if (!osItem) throw `That item doesnt exist.`;
 	cache.set(itemName, osItem);
 	return osItem;
 }
