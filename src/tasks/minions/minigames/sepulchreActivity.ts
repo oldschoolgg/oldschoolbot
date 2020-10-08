@@ -63,16 +63,9 @@ export default class extends Task {
 				user
 			);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log(`continued trip of ${quantity}x sepulchre`);
-				return this.client.commands.get('sepulchre')!.run(res, []);
-			},
-			image
-		);
+		handleTripFinish(this.client, user, channelID, str, loot.bank, image, res => {
+			user.log(`continued trip of ${quantity}x sepulchre`);
+			return this.client.commands.get('sepulchre')!.run(res, []);
+		});
 	}
 }
