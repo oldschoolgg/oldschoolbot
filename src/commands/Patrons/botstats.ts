@@ -45,7 +45,7 @@ export default class extends BotCommand {
 		);
 		return msg.send(
 			`**Current minion tiers and their number of users:**\n${Object.values(result)
-				.map(row => `${row.icon ?? '<:minion:759120536860229732>'} : ${row.qty}`)
+				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
 				.join('\n')}`
 		);
 	}
