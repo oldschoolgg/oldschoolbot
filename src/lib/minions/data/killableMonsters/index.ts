@@ -365,7 +365,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic],
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			[GearSetupTypes.Range]: {
 				[GearStat.DefenceMagic]: 150,
 				[GearStat.AttackRanged]: 80
 			}
