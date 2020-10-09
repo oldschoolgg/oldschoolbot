@@ -47,7 +47,7 @@ const inquisitorItems = resolveItems([
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<mass|solo>',
+			usage: '<mass|solo> [maximumSize:int{2,10}]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -84,14 +84,17 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [type]: ['mass' | 'solo']) {
+	async run(msg: KlasaMessage, [type, maximumSizeForParty]: ['mass' | 'solo', number]) {
 		this.checkReqs([msg.author], NightmareMonster, 2);
+
+		let maximumSize = 10;
+		if (type === 'mass' && maximumSizeForParty) maximumSize = maximumSizeForParty;
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 2,
-			maxSize: 10,
-			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			minSize: 1,
+			maxSize: maximumSize - 1,
+			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSize}.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
