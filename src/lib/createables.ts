@@ -713,7 +713,8 @@ const Createables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({
 			'Zamorakian spear': 1
-		})
+		}),
+		noCl: true
 	},
 	// Nightmare
 	{
@@ -754,7 +755,8 @@ const Createables: Createable[] = [
 		}),
 		inputItems: resolveNameBank({
 			'Volatile nightmare staff': 1
-		})
+		}),
+		noCl: true
 	},
 	{
 		name: 'Harmonised orb',
@@ -764,7 +766,8 @@ const Createables: Createable[] = [
 		}),
 		inputItems: resolveNameBank({
 			'Harmonised nightmare staff': 1
-		})
+		}),
+		noCl: true
 	},
 	{
 		name: 'Eldritch orb',
@@ -774,7 +777,8 @@ const Createables: Createable[] = [
 		}),
 		inputItems: resolveNameBank({
 			'Eldritch nightmare staff': 1
-		})
+		}),
+		noCl: true
 	}
 ];
 
