@@ -92,7 +92,7 @@ export default class extends BotCommand {
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 1,
+			minSize: 2,
 			maxSize: maximumSize - 1,
 			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSize}.`,
 			customDenier: user => {

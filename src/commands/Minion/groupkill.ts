@@ -16,7 +16,7 @@ import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[quantity:int] <monster:string>',
+			usage: '<monster:string> [quantity:int{2,50}]',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
@@ -60,18 +60,21 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	@ironsCantUse
-	async run(msg: KlasaMessage, [inputQuantity, monsterName]: [number | undefined, string]) {
+	async run(msg: KlasaMessage, [monsterName, maximumSizeForParty]: [string, number]) {
 		const monster = findMonster(monsterName);
 		if (!monster) throw `That monster doesn't exist!`;
 		if (!monster.groupKillable) throw `This monster can't be killed in groups!`;
 
 		this.checkReqs([msg.author], monster, 2);
 
+		let maximumSize = 50;
+		if (maximumSizeForParty) maximumSize = maximumSizeForParty;
+
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
-			maxSize: 50,
-			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			maxSize: maximumSize - 1,
+			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSize}.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -108,7 +111,7 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		const [quantity, duration, perKillTime] = calcDurQty(users, monster, inputQuantity);
+		const [quantity, duration, perKillTime] = calcDurQty(users, monster, undefined);
 
 		this.checkReqs(users, monster, quantity);
 
