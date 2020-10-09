@@ -3,11 +3,12 @@ import { KlasaClient } from 'klasa';
 import { Pool, QueryResult } from 'pg';
 import PgBoss from 'pg-boss';
 
-import { providerConfig } from '../../config';
+import { instantTrips, production, providerConfig } from '../../config';
 import { Events } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { ActivityTaskOptions } from '../types/minions';
 import { removeDuplicatesFromArray } from '../util';
+import getActivityOfUser from '../util/getActivityOfUser';
 import { taskNameFromType } from '../util/taskNameFromType';
 
 export enum Listeners {
@@ -95,6 +96,12 @@ export default class {
 	 * group jobs) will have their busy status set.
 	 */
 	async addJob(client: KlasaClient, channel: Listeners, data: ActivityTaskOptions) {
+		if (instantTrips && !production) {
+			data.duration = Number(Time.Second);
+			data.finishDate = Date.now() + data.duration;
+		}
+		// This is a backup check to guarantee no 2 tasks will be added for the same user
+		this.checkBusyMinions(data);
 		this.lockMinion(data);
 		const jobID: string | null = await this.pgBoss.publish(`osbot_${channel}`, data, {
 			startAfter: data.duration / Time.Second
@@ -129,7 +136,6 @@ export default class {
 
 	/**
 	 * Return the current number of jobs running
-	 * @param listener
 	 */
 	async getRunningJobs(): Promise<Record<Listeners, number>> {
 		const checkListeners: Listeners[] = Object.values(Listeners);
@@ -217,29 +223,33 @@ export default class {
 	 */
 	private async startEventListener() {
 		for (const event of Object.values(Listeners)) {
-			await this.pgBoss.subscribe(`osbot_${event}`, async job => {
-				try {
-					// Get the job being executed
-					const jobData = job.data as ActivityTaskOptions;
-					// Get the users in this job and free them
-					await this.freeMinion(jobData);
-					// Execute the job
-					if (this.client.tasks) {
-						const task = this.client.tasks.get(taskNameFromType(jobData.type));
-						if (task) {
-							await (task.run(jobData) as Promise<any>).catch(console.error);
+			await this.pgBoss.subscribe(
+				`osbot_${event}`,
+				{ teamSize: 1000, teamConcurrency: 1000 },
+				async job => {
+					try {
+						// Get the job being executed
+						const jobData = job.data as ActivityTaskOptions;
+						// Get the users in this job and free them
+						await this.freeMinion(jobData);
+						// Execute the job
+						if (this.client.tasks) {
+							const task = this.client.tasks.get(taskNameFromType(jobData.type));
+							if (task) {
+								await (task.run(jobData) as Promise<any>).catch(console.error);
+							} else {
+								throw 'Error';
+							}
 						} else {
 							throw 'Error';
 						}
-					} else {
-						throw 'Error';
+					} catch (e) {
+						this.client.emit(Events.Error, `Impossible to execute the task ${job.id}!`);
+					} finally {
+						job.done();
 					}
-				} catch (e) {
-					this.client.emit(Events.Error, `Impossible to execute the task ${job.id}!`);
-				} finally {
-					job.done();
 				}
-			});
+			);
 		}
 	}
 
@@ -256,6 +266,25 @@ export default class {
 				await this.refreshCacheWithActiveJobs();
 			}
 			delete this.busyMinions[user];
+		}
+	}
+
+	/**
+	 * Check if minions for the job are busy. If they are, throw an error with all the minions that are busy instead of
+	 * the first one.
+	 * @param job
+	 * @private
+	 */
+	private checkBusyMinions(job: ActivityTaskOptions) {
+		const busyMinions = [];
+		for (const user of this.getUsersFromJob(job)) {
+			const userActivity = getActivityOfUser(this.client, user);
+			if (userActivity) busyMinions.push(user);
+		}
+		if (busyMinions.length > 0) {
+			throw `${busyMinions
+				.map(u => `${this.client.users.get(u)!.username} is busy.`)
+				.join(`\n`)}`;
 		}
 	}
 
