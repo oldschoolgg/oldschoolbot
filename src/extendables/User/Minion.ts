@@ -37,9 +37,8 @@ import {
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
 } from '../../lib/types/minions';
-import { itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import { formatDuration } from '../../util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
