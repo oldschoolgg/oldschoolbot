@@ -1,5 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, Task } from 'klasa';
+import { Bank, Monsters } from 'oldschooljs';
 
 import MinionCommand from '../../commands/Minion/minion';
 import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
@@ -11,6 +12,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { randomItemFromArray } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import resolveItems from '../../lib/util/resolveItems';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
@@ -22,6 +24,29 @@ export default class extends Task {
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		const loot = monster.table.kill(quantity);
+
+		if (monster.id === Monsters.Skeleton.id) {
+			const skeletonOutfitPieces = resolveItems([
+				'Skeleton mask',
+				'Skeleton shirt',
+				'Skeleton leggings',
+				'Skeleton gloves',
+				'Skeleton boots'
+			]);
+			const collectionLog = new Bank(user.settings.get(UserSettings.CollectionLogBank));
+			const notReceived = skeletonOutfitPieces.filter(
+				piece => collectionLog.amount(piece) === 0
+			);
+
+			if (notReceived.length > 0) {
+				let given = 0;
+				for (const piece of notReceived) {
+					if (given === 2) break;
+					given++;
+					loot[piece] = 1;
+				}
+			}
+		}
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);

@@ -94,6 +94,8 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface TrickTreatActivityTaskOptions extends MinigameActivityTaskOptions {}
+
 export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
 	jadDeathChance: number;
 	preJadDeathChance: number;
@@ -131,6 +133,7 @@ export interface MinigameTickerTaskData {
 		| WintertodtActivityTaskOptions
 		| NightmareActivityTaskOptions
 		| SepulchreActivityTaskOptions
+		| TrickTreatActivityTaskOptions
 	)[];
 }
 
@@ -140,26 +143,4 @@ export type TickerTaskData =
 	| SkillingTickerTaskData
 	| MinigameTickerTaskData;
 
-export type MinionActivityTask =
-	| Tasks.CraftingActivity
-	| Tasks.AgilityActivity
-	| Tasks.CookingActivity
-	| Tasks.MonsterActivity
-	| Tasks.GroupMonsterActivity
-	| Tasks.ClueActivity
-	| Tasks.FishingActivity
-	| Tasks.MiningActivity
-	| Tasks.SmeltingActivity
-	| Tasks.SmithingActivity
-	| Tasks.WoodcuttingActivity
-	| Tasks.RunecraftActivity
-	| Tasks.FiremakingActivity
-	| Tasks.QuestingActivity
-	| Tasks.BuryingActivity
-	| Tasks.OfferingActivity
-	| Tasks.FightCavesActivity
-	| Tasks.FletchingActivity
-	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity
-	| Tasks.NightmareActivity
-	| Tasks.SepulchreActivity;
+export type MinionActivityTask = Tasks;
