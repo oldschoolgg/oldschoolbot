@@ -1,4 +1,4 @@
-import { randArrItem, randInt } from 'e';
+import { randArrItem } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -13,9 +13,11 @@ import resolveItems from '../../../lib/util/resolveItems';
 const trickOrTreatingLootTable = new LootTable()
 	.every('Purple sweets', [1, 5])
 	.every('Chocolate bar')
-	.add('Chocolate strawberry')
 	.add('Purple sweets', [1, 5])
 	.add('Chocolate bar')
+	.add('Chocolate bomb')
+	.add('Chocchip crunchies')
+	.add('Chocolate strawberry')
 	.tertiary(5, 'Pumpkin');
 
 export default class extends Task {
@@ -28,7 +30,6 @@ export default class extends Task {
 		loot.add(trickOrTreatingLootTable.roll());
 
 		if (roll(20)) {
-			const cl = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 			const masks = resolveItems([
 				'Green halloween mask',
 				'Red halloween mask',
@@ -42,14 +43,24 @@ export default class extends Task {
 			}
 		}
 
+		const image = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				loot.bank,
+				`Loot From Trick or Treating!`,
+				true,
+				{ showNewCL: 1 },
+				user
+			);
+
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			str,
+			`You finished Trick or Treating!`,
 			res => {
-				user.log(`continued trip of ${quantity}x sepulchre`);
-				return this.client.commands.get('sepulchre')!.run(res, []);
+				user.log(`continued trick or treating`);
+				return this.client.commands.get('trickortreat')!.run(res, []);
 			},
 			image
 		);
