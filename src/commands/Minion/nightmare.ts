@@ -91,6 +91,7 @@ export default class extends BotCommand {
 			leader: msg.author,
 			minSize: 2,
 			maxSize: 10,
+			ironmanAllowed: true,
 			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
