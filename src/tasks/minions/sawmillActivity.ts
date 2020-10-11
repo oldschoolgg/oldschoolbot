@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import Cuttables from '../../lib/skilling/skills/construction/cuttables';
+import Planks from '../../lib/minions/data/planks';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { itemNameFromID } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -10,7 +10,7 @@ export default class extends Task {
 	async run({ userID, channelID, duration, plankID, plankQuantity }: SawmillActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const plank = Cuttables.Plankables.find(plank => plank.outputItem === plankID);
+		const plank = Planks.find(plank => plank.outputItem === plankID);
 		if (!plank) return;
 		let str = `${user}, ${
 			user.minionName
@@ -22,12 +22,7 @@ export default class extends Task {
 			[plankID]: plankQuantity
 		};
 
-		await user.addItemsToBank(
-			{
-				[plankID]: plankQuantity
-			},
-			true
-		);
+		await user.addItemsToBank(loot, true);
 		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
 		handleTripFinish(this.client, user, channelID, str, res => {

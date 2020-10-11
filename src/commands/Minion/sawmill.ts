@@ -3,8 +3,9 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import Planks from '../../lib/minions/data/planks';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Cuttables from '../../lib/skilling/skills/construction/cuttables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
@@ -22,28 +23,22 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, plankName = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			plankName = quantity;
 			quantity = null;
 		}
 
-		const plank = Cuttables.Plankables.find(
+		const plank = Planks.find(
 			plank =>
 				stringMatches(plank.name, plankName) ||
 				stringMatches(plank.name.split(' ')[0], plankName)
 		);
 
 		if (!plank) {
-			throw `Thats not a valid log to cut. Valid planks are **${Cuttables.Plankables.map(
+			throw `Thats not a valid log to cut. Valid planks are **${Planks.map(
 				plank => plank.name
 			).join(', ')}**.`;
 		}
@@ -109,7 +104,7 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now creating ${quantity} ${itemNameFromID(
 			plank.outputItem
-		)}s. Sawmill has charged you ${toKMB(
+		)}${quantity > 1 ? 's' : ''}. Sawmill has charged you ${toKMB(
 			cost
 		)} GP. They'll come back in around ${formatDuration(duration)}.`;
 

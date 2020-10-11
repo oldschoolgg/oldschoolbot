@@ -157,7 +157,7 @@ export interface Skill {
 	emoji: Emoji;
 }
 
-export interface Cuttable {
+export interface Planks {
 	name: string;
 	inputItem: number;
 	outputItem: number;

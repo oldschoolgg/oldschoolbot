@@ -1,7 +1,7 @@
-import itemID from '../../../util/itemID';
-import { Cuttable } from '../../types';
+import { Planks } from '../../skilling/types';
+import itemID from '../../util/itemID';
 
-const Plankables: Cuttable[] = [
+const Planks: Planks[] = [
 	{
 		name: 'Logs',
 		inputItem: itemID('Logs'),
@@ -28,9 +28,4 @@ const Plankables: Cuttable[] = [
 	}
 ];
 
-const Cuttables = {
-	aliases: ['saw'],
-	Plankables
-};
-
-export default Cuttables;
+export default Planks;
