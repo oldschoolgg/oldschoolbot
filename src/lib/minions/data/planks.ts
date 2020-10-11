@@ -1,7 +1,7 @@
-import { Planks } from '../../skilling/types';
+import { Plankables } from '../../skilling/types';
 import itemID from '../../util/itemID';
 
-const Planks: Planks[] = [
+export const Planks: Plankables[] = [
 	{
 		name: 'Logs',
 		inputItem: itemID('Logs'),
@@ -27,5 +27,3 @@ const Planks: Planks[] = [
 		gpCost: 1500
 	}
 ];
-
-export default Planks;

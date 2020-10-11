@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import Planks from '../../lib/minions/data/planks';
+import { Planks } from '../../lib/minions/data/planks';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { itemNameFromID } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
