@@ -67,14 +67,18 @@ export default class extends BotCommand {
 
 		this.checkReqs([msg.author], monster, 2);
 
-		let maximumSize = 50;
-		if (maximumSizeForParty) maximumSize = maximumSizeForParty;
+		const maximumSize = 50;
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
-			maxSize: maximumSize - 1,
-			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSize}.`,
+			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
+			message: `${msg.author.username} is doing a ${
+				monster.name
+			} mass! Anyone can click the ${
+				Emoji.Join
+			} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSizeForParty ??
+				maximumSize}.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
