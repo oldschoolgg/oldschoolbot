@@ -16,7 +16,8 @@ const ores: Ore[] = [
 		id: 436,
 		name: 'Copper ore',
 		respawnTime: 0.5,
-		petChance: 750_000
+		petChance: 750_000,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 1,
@@ -24,7 +25,8 @@ const ores: Ore[] = [
 		id: 438,
 		name: 'Tin ore',
 		respawnTime: 0.5,
-		petChance: 750_000
+		petChance: 750_000,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 15,
@@ -32,7 +34,8 @@ const ores: Ore[] = [
 		id: 440,
 		name: 'Iron ore',
 		respawnTime: 0.2,
-		petChance: 750_000
+		petChance: 750_000,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 20,
@@ -40,7 +43,8 @@ const ores: Ore[] = [
 		id: 442,
 		name: 'Silver ore',
 		respawnTime: 3,
-		petChance: 750_000
+		petChance: 750_000,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 30,
@@ -56,7 +60,8 @@ const ores: Ore[] = [
 		name: 'Coal',
 		respawnTime: 2,
 		petChance: 300_000,
-		minerals: 60
+		minerals: 60,
+		clueScrollChance: 296_640
 	},
 	{
 		level: 40,
@@ -65,7 +70,8 @@ const ores: Ore[] = [
 		name: 'Gold ore',
 		respawnTime: 4,
 		petChance: 300_000,
-		nuggets: true
+		nuggets: true,
+		clueScrollChance: 296_640
 	},
 	{
 		level: 55,
@@ -74,7 +80,8 @@ const ores: Ore[] = [
 		name: 'Mithril ore',
 		respawnTime: 10,
 		petChance: 150_000,
-		nuggets: true
+		nuggets: true,
+		clueScrollChance: 148_320
 	},
 	{
 		level: 70,
@@ -83,7 +90,8 @@ const ores: Ore[] = [
 		name: 'Adamantite ore',
 		respawnTime: 18,
 		petChance: 60_000,
-		nuggets: true
+		nuggets: true,
+		clueScrollChance: 59_328
 	},
 	{
 		level: 85,
@@ -92,7 +100,8 @@ const ores: Ore[] = [
 		name: 'Runite ore',
 		respawnTime: 50,
 		petChance: 45_000,
-		nuggets: true
+		nuggets: true,
+		clueScrollChance: 42_377
 	},
 	{
 		level: 92,
@@ -101,7 +110,8 @@ const ores: Ore[] = [
 		name: 'Amethyst',
 		respawnTime: 40,
 		petChance: 50_000,
-		minerals: 20
+		minerals: 20,
+		clueScrollChance: 46_350
 	}
 ];
 

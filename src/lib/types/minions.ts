@@ -109,6 +109,10 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
+export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
+	floors: number[];
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -121,13 +125,18 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
-export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
-}
-
 export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 	plankID: number;
 	plankQuantity: number;
+}
+
+export interface MinigameTickerTaskData {
+	subTasks: (
+		| FightCavesActivityTaskOptions
+		| WintertodtActivityTaskOptions
+		| NightmareActivityTaskOptions
+		| SepulchreActivityTaskOptions
+	)[];
 }
 
 export type TickerTaskData =
@@ -158,4 +167,5 @@ export type MinionActivityTask =
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity
 	| Tasks.NightmareActivity
+	| Tasks.SepulchreActivity
 	| Tasks.SawmillActivity;

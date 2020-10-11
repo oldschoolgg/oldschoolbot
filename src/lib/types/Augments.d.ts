@@ -14,7 +14,7 @@ import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { Bank, ItemBank, MakePartyOptions, Skills } from '.';
+import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -47,14 +47,14 @@ declare module 'klasa' {
 
 	interface Task {
 		generateBankImage(
-			bank: Bank,
+			bank: ItemBank,
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
 			user?: KlasaUser
 		): Promise<Buffer>;
 		generateCollectionLogImage(
-			collectionLog: Bank,
+			collectionLog: ItemBank,
 			title: string = '',
 			type: any
 		): Promise<Buffer>;
@@ -81,8 +81,8 @@ declare module 'discord.js' {
 		public query<T>(query: string): Promise<T>;
 	}
 	interface User {
-		addItemsToBank(items: Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
-		addItemsToCollectionLog(items: Bank): Promise<SettingsUpdateResult>;
+		addItemsToBank(items: ItemBank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(
 			monsterID: number,
@@ -152,7 +152,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns this users Collection Log bank.
 		 */
-		collectionLog: Bank;
+		collectionLog: ItemBank;
 		sanitizedName: string;
 		badges: string;
 		/**
@@ -171,25 +171,23 @@ declare module 'discord.js' {
 
 	interface TextChannel {
 		sendBankImage(options: {
-			bank: Bank;
+			bank: ItemBank;
 			content?: string;
 			title?: string;
 			background?: number;
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
-		assertCanManageMessages(): void;
 	}
 
 	interface DMChannel {
 		sendBankImage(options: {
-			bank: Bank;
+			bank: ItemBank;
 			content?: string;
 			title?: string;
 			background?: number;
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
-		assertCanManageMessages(): void;
 	}
 }

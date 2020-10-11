@@ -1,7 +1,7 @@
-import { Bank } from '../types';
+import { ItemBank } from '../types';
 import { itemNameFromID } from '../util';
 
-export function formatItemBoosts(items: Bank) {
+export function formatItemBoosts(items: ItemBank) {
 	const str = [];
 	for (const [itemID, boostAmount] of Object.entries(items)) {
 		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);

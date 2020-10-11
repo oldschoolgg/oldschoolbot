@@ -2,7 +2,6 @@ import { Monsters } from 'oldschooljs';
 
 import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -137,16 +136,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
-				[GearStat.AttackStab]: 85,
-				[GearStat.DefenceCrush]: 150
-			}
-		},
-		uniques: bosses['Corp Beast'],
-		healAmountNeeded: 20 * 40,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		uniques: bosses['Corp Beast']
 	},
 	{
 		id: Monsters.Cerberus.id,

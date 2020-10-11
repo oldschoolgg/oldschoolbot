@@ -19,6 +19,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [gearType]: [GearTypes.GearSetupTypes]) {
 		const image = await generateGearImage(
 			this.client,
+			msg.author,
 			msg.author.settings.get(resolveGearTypeSetting(gearType)),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)

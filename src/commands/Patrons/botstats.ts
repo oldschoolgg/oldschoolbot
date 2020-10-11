@@ -5,7 +5,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import backgroundImages from '../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { StringKeyedBank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 
 type BankQueryResult = { bankBackground: number; count: string }[];
 
@@ -41,11 +41,11 @@ export default class extends BotCommand {
 
 	async icons(msg: KlasaMessage) {
 		const result: { icon: string | null; qty: number }[] = await this._query(
-			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users group by "minion.icon" order by qty asc;`
+			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;`
 		);
 		return msg.send(
 			`**Current minion tiers and their number of users:**\n${Object.values(result)
-				.map(row => `${row.icon ?? '<:minion:759120536860229732>'} : ${row.qty}`)
+				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
 				.join('\n')}`
 		);
 	}
@@ -93,7 +93,7 @@ GROUP BY "bankBackground";`);
 			`SELECT ARRAY(SELECT "monsterScores" FROM users WHERE "monsterScores"::text <> '{}'::text);`
 		);
 
-		const banks: StringKeyedBank[] = res[0].array;
+		const banks: ItemBank[] = res[0].array;
 
 		banks.map(bank => {
 			for (const [id, qty] of Object.entries(bank)) {
@@ -119,7 +119,7 @@ GROUP BY "bankBackground";`);
 			`SELECT ARRAY(SELECT "clueScores" FROM users WHERE "clueScores"::text <> '{}'::text);`
 		);
 
-		const banks: StringKeyedBank[] = res[0].array;
+		const banks: ItemBank[] = res[0].array;
 
 		banks.map(bank => {
 			for (const [id, qty] of Object.entries(bank)) {

@@ -2,6 +2,8 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -15,6 +17,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
+import resolveItems from '../../lib/util/resolveItems';
 import { ZAM_HASTA_CRUSH } from './../../lib/constants';
 import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
@@ -33,6 +36,13 @@ function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 
 	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
 }
+
+const inquisitorItems = resolveItems([
+	"Inquisitor's great helm",
+	"Inquisitor's hauberk",
+	"Inquisitor's plateskirt",
+	"Inquisitor's mace"
+]);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -81,6 +91,7 @@ export default class extends BotCommand {
 			leader: msg.author,
 			minSize: 2,
 			maxSize: 10,
+			ironmanAllowed: true,
 			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
@@ -118,46 +129,63 @@ export default class extends BotCommand {
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
 
-		let [quantity, duration, perKillTime] = calcDurQty(users, NightmareMonster, undefined);
-		this.checkReqs(users, NightmareMonster, quantity);
-
+		let effectiveTime = NightmareMonster.timeToFinish;
 		for (const user of users) {
 			const [data] = getNightmareGearStats(
 				user,
 				users.map(u => u.id)
 			);
 
+			// Special inquisitor outfit damage boost
+			const meleeGear = user.settings.get(UserSettings.Gear.Melee);
+			if (hasArrayOfItemsEquipped(inquisitorItems, meleeGear)) {
+				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
+			} else {
+				for (const inqItem of inquisitorItems) {
+					if (hasItemEquipped(inqItem, meleeGear)) {
+						effectiveTime *= users.length === 1 ? 0.98 : 0.995;
+					}
+				}
+			}
+
 			// Increase duration for each bad weapon.
 			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
-				perKillTime *= 1.05;
+				effectiveTime *= 1.05;
 			}
 
 			// Increase duration for lower melee-strength gear.
 			if (data.percentMeleeStrength < 40) {
-				perKillTime *= 1.06;
+				effectiveTime *= 1.06;
 			} else if (data.percentMeleeStrength < 50) {
-				perKillTime *= 1.03;
+				effectiveTime *= 1.03;
 			} else if (data.percentMeleeStrength < 60) {
-				perKillTime *= 1.02;
+				effectiveTime *= 1.02;
 			}
 
 			// Increase duration for lower KC.
 			if (data.kc < 10) {
-				perKillTime *= 1.15;
+				effectiveTime *= 1.15;
 			} else if (data.kc < 25) {
-				perKillTime *= 1.05;
+				effectiveTime *= 1.05;
 			} else if (data.kc < 50) {
-				perKillTime *= 1.02;
+				effectiveTime *= 1.02;
 			} else if (data.kc < 100) {
-				perKillTime *= 0.98;
+				effectiveTime *= 0.98;
 			} else {
-				perKillTime *= 0.96;
+				effectiveTime *= 0.96;
 			}
 		}
 
-		duration =
-			quantity * Math.max(Math.min(perKillTime, Time.Minute * 30), Time.Minute * 5) -
-			NightmareMonster.respawnTime!;
+		let [quantity, duration, perKillTime] = calcDurQty(
+			users,
+			{ ...NightmareMonster, timeToFinish: effectiveTime },
+			undefined,
+			Time.Minute * 5,
+			Time.Minute * 30
+		);
+		this.checkReqs(users, NightmareMonster, quantity);
+
+		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
@@ -200,6 +228,8 @@ export default class extends BotCommand {
 						NightmareMonster.timeToFinish
 				  )} - the total trip will take ${formatDuration(duration)}.`;
 
-		return msg.channel.send(str, { split: true });
+		return msg.channel.send(str, {
+			split: true
+		});
 	}
 }

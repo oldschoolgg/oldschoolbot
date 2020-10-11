@@ -1,19 +1,18 @@
 {
 	"scripts": {
 		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
-		"checklint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
 		"build": "yarn wipedist && tsc -p .",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\"",
-		"test": "yarn checklint && jest",
+		"test": "yarn test:lint && yarn test:unit",
+		"test:lint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
+		"test:unit": "jest",
 		"test:watch": "jest --watch",
 		"dev": "yarn wipedist && tsc -p . -w"
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
 		"@sentry/node": "5.20.1",
-		"@types/jest": "^26.0.14",
-		"@types/lodash": "^4.14.157",
 		"bufferutil": "^4.0.1",
 		"canvas": "^2.6.1",
 		"canvas-constructor": "^1.1.2",
@@ -23,15 +22,13 @@
 		"e": "^0.1.3",
 		"emoji-regex": "^9.0.0",
 		"he": "^1.2.0",
-		"jest": "^26.4.2",
-		"jest-circus": "^26.4.2",
 		"klasa": "github:dirigeants/klasa#916/head",
 		"klasa-decorators": "^0.0.1",
 		"lodash": "^4.17.19",
 		"markovchain": "^1.0.2",
 		"moment": "^2.27.0",
 		"node-fetch": "^2.6.1",
-		"oldschooljs": "^1.4.1",
+		"oldschooljs": "^1.4.6",
 		"p-limit": "^2.3.0",
 		"pg": "^8.3.3",
 		"pg-boss": "^5.0.8",
@@ -41,7 +38,6 @@
 		"snoostorm": "^1.2.2",
 		"snoowrap": "github:gc/snoowrap#master",
 		"threads": "^1.4.1",
-		"ts-jest": "^26.4.0",
 		"ts-toolbelt": "^6.9.9",
 		"twit": "^2.2.9",
 		"typeorm": "^0.2.25",
@@ -50,9 +46,10 @@
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
-		"@ava/typescript": "^1.1.1",
 		"@types/cheerio": "^0.22.18",
 		"@types/he": "^1.1.1",
+		"@types/jest": "^26.0.14",
+		"@types/lodash": "^4.14.157",
 		"@types/node": "^14.0.14",
 		"@types/node-fetch": "^2.5.7",
 		"@types/pg": "^7.14.3",
@@ -61,7 +58,6 @@
 		"@types/xml2js": "^0.4.5",
 		"@typescript-eslint/eslint-plugin": "^2.34.0",
 		"@typescript-eslint/parser": "^2.34.0",
-		"ava": "^3.10.1",
 		"concurrently": "^5.2.0",
 		"eslint": "^6.8.0",
 		"eslint-config-bamboo": "^3.0.0",
@@ -69,24 +65,14 @@
 		"eslint-config-prettier": "^6.11.0",
 		"eslint-plugin-prettier": "^3.1.4",
 		"eslint-plugin-simple-import-sort": "^5.0.3",
+		"jest": "^26.4.2",
+		"jest-circus": "^26.4.2",
 		"prettier": "^1.19.1",
 		"rimraf": "^3.0.2",
-		"typescript": "3.9.6"
+		"ts-jest": "^26.4.0",
+		"typescript": "3.7.5"
 	},
 	"engines": {
 		"node": ">=12.0"
-	},
-	"ava": {
-		"files": [
-			"__tests__/**/*.ts"
-		],
-		"typescript": {
-			"extensions": [
-				"ts"
-			],
-			"rewritePaths": {
-				"__tests__/": "dist/__tests__/"
-			}
-		}
 	}
 }
