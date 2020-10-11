@@ -156,7 +156,7 @@ async function _setup(
 
 			collector.once('end', () => {
 				confirmMessage.removeAllReactions();
-				startTrip();
+				setTimeout(() => startTrip(), 750);
 			});
 		});
 
