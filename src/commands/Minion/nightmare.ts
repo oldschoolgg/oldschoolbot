@@ -93,6 +93,7 @@ export default class extends BotCommand {
 			leader: msg.author,
 			minSize: 2,
 			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
+			ironmanAllowed: true,
 			message: `${msg.author.username} is doing a ${
 				NightmareMonster.name
 			} mass! Anyone can click the ${

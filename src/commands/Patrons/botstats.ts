@@ -41,11 +41,11 @@ export default class extends BotCommand {
 
 	async icons(msg: KlasaMessage) {
 		const result: { icon: string | null; qty: number }[] = await this._query(
-			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users group by "minion.icon" order by qty asc;`
+			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;`
 		);
 		return msg.send(
 			`**Current minion tiers and their number of users:**\n${Object.values(result)
-				.map(row => `${row.icon ?? '<:minion:759120536860229732>'} : ${row.qty}`)
+				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
 				.join('\n')}`
 		);
 	}
