@@ -6,7 +6,7 @@ import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
-import Planks from '../../lib/minions/data/planks';
+import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
