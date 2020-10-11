@@ -53,7 +53,7 @@ async function _setup(
 				confirmMessage,
 				(reaction: MessageReaction, user: KlasaUser) => {
 					if (
-						user.isIronman ||
+						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
 						user.minionIsBusy ||
 						!reaction.emoji.id ||

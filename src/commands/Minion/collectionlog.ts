@@ -31,23 +31,23 @@ export default class extends BotCommand {
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
 
-		if (!type && (!monster || !monster.uniques)) {
+		if (!type && !monster) {
 			throw `That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 				.map(type => type.name)
 				.join(', ')}`;
 		}
 
-		let items = Array.from(new Set(Object.values(type?.items ?? monster!.uniques!).flat(100)));
+		const items = Array.from(
+			new Set(Object.values(type?.items ?? Monsters.get(monster!.id)?.allItems!).flat(100))
+		);
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
+		let i = 0;
 		if (monster) {
-			if (msg.flagArgs.all) {
-				items = Monsters.get(monster.id)?.allItems!;
-			}
 			for (const itemChunk of chunk(items, 12)) {
-				chunkedMonsterItems[itemChunk[0]] = itemChunk;
+				chunkedMonsterItems[++i] = itemChunk;
 			}
 		}
 
