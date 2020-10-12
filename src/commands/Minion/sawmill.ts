@@ -39,7 +39,7 @@ export default class extends BotCommand {
 
 		if (!plank) {
 			return msg.send(
-				`Thats not a valid log to cut. Valid planks are **${Planks.map(
+				`Thats not a valid plank to make. Valid planks are **${Planks.map(
 					plank => plank.name
 				).join(', ')}**.`
 			);
@@ -64,8 +64,9 @@ export default class extends BotCommand {
 			quantity = Math.floor(msg.author.maxTripLength / timePerPlank);
 		}
 
-		if (msg.author.numItemsInBankSync(plank.inputItem) < quantity) {
-			quantity = msg.author.numItemsInBankSync(plank.inputItem);
+		const inputItemOwned = msg.author.numItemsInBankSync(plank.inputItem);
+		if (inputItemOwned < quantity) {
+			quantity = inputItemOwned;
 		}
 
 		if (quantity === 0) {
@@ -108,7 +109,7 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now creating ${quantity} ${itemNameFromID(
 			plank.outputItem
-		)}${quantity > 1 ? 's' : ''}. Sawmill has charged you ${toKMB(
+		)}${quantity > 1 ? 's' : ''}. The Sawmill has charged you ${toKMB(
 			cost
 		)} GP. They'll come back in around ${formatDuration(duration)}.`;
 
