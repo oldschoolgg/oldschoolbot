@@ -46,6 +46,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.RaidsActivity;
 		case Activity.Nightmare:
 			return Tasks.NightmareActivity;
+		case Activity.Sawmill:
+			return Tasks.SawmillActivity;
 		case Activity.Sepulchre:
 			return Tasks.SepulchreActivity;
 	}

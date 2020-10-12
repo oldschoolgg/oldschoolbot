@@ -136,6 +136,11 @@ export interface RaidsActivityTaskOptions extends ActivityTaskOptions {
 	challengeMode: boolean;
 }
 
+export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
+}
+
 export interface MinigameTickerTaskData {
 	subTasks: (
 		| FightCavesActivityTaskOptions
@@ -175,4 +180,5 @@ export type MinionActivityTask =
 	| Tasks.AlchingActivity
 	| Tasks.RaidsActivity
 	| Tasks.NightmareActivity
-	| Tasks.SepulchreActivity;
+	| Tasks.SepulchreActivity
+	| Tasks.SawmillActivity;

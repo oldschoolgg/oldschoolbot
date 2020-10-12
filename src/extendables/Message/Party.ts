@@ -53,7 +53,7 @@ async function _setup(
 				confirmMessage,
 				(reaction: MessageReaction, user: KlasaUser) => {
 					if (
-						user.isIronman ||
+						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
 						user.minionIsBusy ||
 						!reaction.emoji.id ||
@@ -156,7 +156,7 @@ async function _setup(
 
 			collector.once('end', () => {
 				confirmMessage.removeAllReactions();
-				startTrip();
+				setTimeout(() => startTrip(), 750);
 			});
 		});
 
