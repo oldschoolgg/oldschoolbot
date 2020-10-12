@@ -160,7 +160,7 @@ export interface Skill {
 	emoji: Emoji;
 }
 
-export interface Plankables {
+export interface Plankable {
 	name: string;
 	inputItem: number;
 	outputItem: number;

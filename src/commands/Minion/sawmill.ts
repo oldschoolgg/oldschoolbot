@@ -38,9 +38,11 @@ export default class extends BotCommand {
 		);
 
 		if (!plank) {
-			throw `Thats not a valid log to cut. Valid planks are **${Planks.map(
-				plank => plank.name
-			).join(', ')}**.`;
+			return msg.send(
+				`Thats not a valid log to cut. Valid planks are **${Planks.map(
+					plank => plank.name
+				).join(', ')}**.`
+			);
 		}
 
 		const boosts = [];
@@ -62,28 +64,30 @@ export default class extends BotCommand {
 			quantity = Math.floor(msg.author.maxTripLength / timePerPlank);
 		}
 
-		if ((await msg.author.numItemsInBankSync(plank.inputItem)) < quantity) {
-			quantity = await msg.author.numItemsInBankSync(plank.inputItem);
+		if (msg.author.numItemsInBankSync(plank.inputItem) < quantity) {
+			quantity = msg.author.numItemsInBankSync(plank.inputItem);
 		}
 
 		if (quantity === 0) {
-			throw `You don't have any ${itemNameFromID(plank.inputItem)}.`;
+			return msg.send(`You don't have any ${itemNameFromID(plank.inputItem)}.`);
 		}
 
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const cost = plank!.gpCost * quantity;
 		if (GP < cost) {
-			throw `You need ${toKMB(cost)} GP to create ${quantity} planks.`;
+			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
 		}
 
 		const duration = quantity * timePerPlank;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of planks you can make is ${Math.floor(
-				msg.author.maxTripLength / timePerPlank
-			)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of planks you can make is ${Math.floor(
+					msg.author.maxTripLength / timePerPlank
+				)}.`
+			);
 		}
 
 		await msg.author.removeItemFromBank(plank!.inputItem, quantity);

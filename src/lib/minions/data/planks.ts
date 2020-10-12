@@ -1,7 +1,7 @@
-import { Plankables } from '../../skilling/types';
+import { Plankable } from '../../skilling/types';
 import itemID from '../../util/itemID';
 
-export const Planks: Plankables[] = [
+export const Planks: Plankable[] = [
 	{
 		name: 'Logs',
 		inputItem: itemID('Logs'),
