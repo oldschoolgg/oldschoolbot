@@ -15,8 +15,4 @@ export namespace GuildSettings {
 	export const StreamerTweets = T<string>('streamertweets');
 	export const PetChannel = T<string>('petchannel');
 	export const JModTweets = T<string>('tweetchannel');
-	export namespace TwitchNotifications {
-		export const Channel = T<string>('twitchnotifs');
-		export const Streamers = T<readonly string[]>('streamers');
-	}
 }
