@@ -7204,6 +7204,11 @@ tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
+ts-debounce@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ts-debounce/-/ts-debounce-2.0.1.tgz#4d92a203c4183386802f8ef9eaebe0f2409e62da"
+  integrity sha512-+TztZrH7GnAD5CKxUohIAqIVHLrtivsYT7tZCLeRTCaBMSsfgYwprhA00kB/m0ezvYheOXJQqPfarAvgoayb7A==
+
 ts-jest@^26.4.0:
   version "26.4.0"
   resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-26.4.0.tgz#903c7827f3d3bc33efc2f91be294b164400c32e3"
