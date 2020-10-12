@@ -1053,7 +1053,7 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
   integrity sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
 
-"@types/xml2js@0.4.5", "@types/xml2js@^0.4.5":
+"@types/xml2js@0.4.5":
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/@types/xml2js/-/xml2js-0.4.5.tgz#d21759b056f282d9c7066f15bbf5c19b908f22fa"
   integrity sha512-yohU3zMn0fkhlape1nxXG2bLEGZRc1FeqF80RoHaYXJN7uibaauXfhzhOJr1Xh36sn+/tx21QAOf07b/xYVk1w==
@@ -4699,13 +4699,6 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-markovchain@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/markovchain/-/markovchain-1.0.2.tgz#58b38643fb6093cd5b62455b7b1e7bbfe56d7e53"
-  integrity sha1-WLOGQ/tgk81bYkVbex57v+VtflM=
-  dependencies:
-    pick-one-by-weight "~1.0.0"
-
 merge-stream@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/merge-stream/-/merge-stream-2.0.0.tgz#52823629a14dd00c9770fb6ad47dc6310f2c1f60"
@@ -5474,11 +5467,6 @@ pgpass@1.x:
   integrity sha1-Knu0G2BltnkH6R2hsHwYR8h3swY=
   dependencies:
     split "^1.0.0"
-
-pick-one-by-weight@~1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/pick-one-by-weight/-/pick-one-by-weight-1.0.2.tgz#fa0893276c848c8b7dd2f446e99f89d83c4cee86"
-  integrity sha1-+giTJ2yEjIt90vRG6Z+J2DxM7oY=
 
 picomatch@^2.0.4:
   version "2.0.7"
