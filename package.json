@@ -38,7 +38,7 @@
 		"ts-debounce": "^2.0.1",
 		"ts-toolbelt": "^6.15.5",
 		"twit": "^2.2.9",
-		"typeorm": "^0.2.25",
+		"typeorm": "^0.2.28",
 		"utf-8-validate": "^5.0.2",
 		"uuid": "^8.3.1",
 		"zlib-sync": "^0.1.7"
