@@ -65,7 +65,7 @@
 		"jest-circus": "^26.5.3",
 		"prettier": "^1.19.1",
 		"rimraf": "^3.0.2",
-		"ts-jest": "^26.4.0",
+		"ts-jest": "^26.4.1",
 		"typescript": "3.7.5"
 	},
 	"engines": {
