@@ -34,7 +34,7 @@
 		"rss-parser": "^3.8.0",
 		"snoostorm": "^1.5.1",
 		"snoowrap": "github:gc/snoowrap#master",
-		"threads": "^1.4.1",
+		"threads": "^1.6.3",
 		"ts-debounce": "^2.0.1",
 		"ts-toolbelt": "^6.9.9",
 		"twit": "^2.2.9",
