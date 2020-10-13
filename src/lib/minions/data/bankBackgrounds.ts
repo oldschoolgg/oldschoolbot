@@ -131,7 +131,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 11,
-		name: 'Relax',
+		name: 'Ariana Grande (11)',
 		image: null,
 		available: false
 	},
@@ -245,7 +245,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 31,
-		name: 'bender',
+		name: 'Glowing Guy (31)',
 		image: null,
 		available: false
 	},
