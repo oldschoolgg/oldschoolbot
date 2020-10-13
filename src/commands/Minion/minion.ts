@@ -569,7 +569,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			1 > 2 &&
 			monster.healAmountNeeded &&
 			monster.attackStyleToUse &&
-			monster.attackStylesUsed
+			monster.attackStylesUsedMonster &&
+			monster.attackStylesUsedPlayer
 		) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);

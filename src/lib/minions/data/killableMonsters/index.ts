@@ -337,7 +337,8 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		healAmountNeeded: 9 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
+		attackStylesUsedMonster: [GearStat.AttackStab, GearStat.AttackRanged],
+		attackStylesUsedPlayer: [GearStat.AttackCrush],
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
 				[GearStat.DefenceRanged]: 57 + 120,
@@ -389,8 +390,8 @@ export const NightmareMonster: KillableMonster = {
 		'Volatile orb'
 	]),
 	healAmountNeeded: 40 * 20,
-	attackStyleToUse: GearSetupTypes.Melee,
-	attackStylesUsed: [GearStat.AttackSlash],
+	attackStylesUsedMonster: [GearStat.AttackSlash],
+	attackStylesUsedPlayer: [GearStat.AttackCrush],
 	minimumGearRequirements: {
 		[GearSetupTypes.Melee]: {
 			[GearStat.DefenceSlash]: 150,
