@@ -274,12 +274,6 @@ module.exports = class extends Language {
 			JOY_REACTIONS_ARENT_ENABLED: "😂 Reactions aren't enabled, so you can't disable them.",
 			JOY_REACTIONS_DISABLED: 'Disabled 😂 Reactions in this channel.',
 
-			ASH_TWEETS_ALREADY_ENABLED: `Ash Tweets are already enabled in this channel.`,
-			ASH_TWEETS_ENABLED_OTHER: `Ash Tweets are already enabled in another channel, but I've switched them to use this channel.`,
-			ASH_TWEETS_ENABLED: `Enabled Ash Tweets in this channel.`,
-			ASH_TWEETS_ARENT_ENABLED: "Ash Tweets aren't enabled, so you can't disable them.",
-			ASH_TWEETS_DISABLED: 'Disabled Ash Tweets in this channel.',
-
 			AUTO_UPDATE_NO_RSN: prefix =>
 				`You must have an RSN set to Autoupdate. Use \`${prefix}setrsn <username>\``,
 			AUTO_UPDATE: state =>
@@ -332,26 +326,6 @@ module.exports = class extends Language {
 			JMOD_TWEETS_ARENT_ENABLED: "Jmod Tweets aren't enabled, so you can't disable them.",
 			JMOD_TWEETS_DISABLED: 'Disabled Jmod Tweets in this channel.',
 
-			TN_ALREADY_ENABLED: `Twitch Notifications are already enabled in this channel.`,
-			TN_ENABLED_OTHER: `Twitch Notifications are already enabled in another channel, but I've switched them to use this channel.`,
-			TN_ENABLED: `Enabled Twitch Notifications in this channel.`,
-			TN_ARENT_ENABLED: "Twitch Notifications aren't enabled, so you can't disable them.",
-			TN_DISABLED: 'Disabled Twitch Notifications in this channel.',
-			TN_NO_STREAMER: prefix =>
-				`Please include which streamer you want to add, like this: \`${prefix}tn add B0aty\``,
-			TN_INVALID_STREAMER:
-				"That streamer doesn't look like a Old School RuneScape Streamer to me. You can request they be added in the support server.",
-			TN_ALREADY_ENABLED_STREAMER:
-				'Twitch Notifications are already enabled for this streamer.',
-			TN_ADDED_STREAMER: name =>
-				`Successfully added ${name}. You will receive a message here when they go live.`,
-			TN_NO_STREAMER_REMOVE: prefix =>
-				`Please include which streamer you want to remove, like this: \`${prefix}tn remove B0aty\``,
-			TN_NOT_ENABLED_STREAMER:
-				"Twitch Notifications aren't enabled for this streamer, so you cannot remove them.",
-			TN_REMOVE: name => `Successfully removed ${name}.`,
-			TN_NOT_ENABLED: 'Twitch Notifications are not enabled in this guild.',
-			TN_NO_STREAMERS: 'You have Twitch Notifications enabled, but no streamers added.',
 			CHANNEL_DISABLED:
 				'Channel disabled. Staff of this server can still use commands in this channel.',
 			CHANNEL_ENABLED: 'Channel enabled. Anyone can use commands in this channel now.',
