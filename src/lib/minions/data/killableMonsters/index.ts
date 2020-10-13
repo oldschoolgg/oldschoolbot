@@ -390,6 +390,7 @@ export const NightmareMonster: KillableMonster = {
 		'Volatile orb'
 	]),
 	healAmountNeeded: 40 * 20,
+	attackStyleToUse: GearSetupTypes.Melee,
 	attackStylesUsedMonster: [GearStat.AttackSlash],
 	attackStylesUsedPlayer: [GearStat.AttackCrush],
 	minimumGearRequirements: {
