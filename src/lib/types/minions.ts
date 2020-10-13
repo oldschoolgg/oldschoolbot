@@ -125,6 +125,11 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
+export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
+}
+
 export interface MinigameTickerTaskData {
 	subTasks: (
 		| FightCavesActivityTaskOptions
@@ -162,4 +167,5 @@ export type MinionActivityTask =
 	| Tasks.WintertodtActivity
 	| Tasks.AlchingActivity
 	| Tasks.NightmareActivity
-	| Tasks.SepulchreActivity;
+	| Tasks.SepulchreActivity
+	| Tasks.SawmillActivity;
