@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
-		"@sentry/node": "5.20.1",
+		"@sentry/node": "5.25.0",
 		"bufferutil": "^4.0.1",
 		"canvas": "^2.6.1",
 		"canvas-constructor": "^1.1.2",
