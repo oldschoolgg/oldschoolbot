@@ -18,7 +18,7 @@ function setItemAlias(id: number, name: string | string[], rename = true) {
 	// Update the item name to it's first alias
 	if (rename) {
 		Items.set(id, {
-			...Items.get(id),
+			...Items.get(id)!,
 			name: firstName!,
 			id
 		});

@@ -1,4 +1,3 @@
-import { Items } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { GearSetup, GearSetupTypes } from '../src/lib/gear/types';
@@ -42,9 +41,6 @@ const userGear: GearSetup = {
 };
 
 describe('getUserBestGearFromBank', () => {
-	beforeAll(async () => {
-		await Items.fetchAll();
-	});
 	test('autoequip melee attack slash', async () => {
 		expect(
 			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'attack', 'slash')
