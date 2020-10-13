@@ -333,7 +333,8 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 26,
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush],
+		attackStylesUsedMonster: [GearStat.AttackCrush],
+		attackStylesUsedPlayer: [GearStat.AttackCrush],
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
 				[GearStat.DefenceCrush]: 150,
@@ -363,7 +364,8 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackMagic],
+		attackStylesUsedMonster: [GearStat.AttackMagic],
+		attackStylesUsedPlayer: [GearStat.AttackRanged],
 		minimumGearRequirements: {
 			[GearSetupTypes.Range]: {
 				[GearStat.DefenceMagic]: 150,
@@ -391,12 +393,13 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 999,
 		healAmountNeeded: 20 * 25,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [
+		attackStylesUsedMonster: [
 			GearStat.AttackStab,
 			GearStat.AttackSlash,
 			GearStat.AttackMagic,
 			GearStat.AttackRanged
 		],
+		attackStylesUsedPlayer: [GearStat.AttackStab],
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
 				[GearStat.AttackStab]: 100,
@@ -443,7 +446,8 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		healAmountNeeded: 9 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
+		attackStylesUsedMonster: [GearStat.AttackStab, GearStat.AttackRanged],
+		attackStylesUsedPlayer: [GearStat.AttackCrush],
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
 				[GearStat.DefenceRanged]: 57 + 120,
@@ -496,7 +500,8 @@ export const NightmareMonster: KillableMonster = {
 	]),
 	healAmountNeeded: 40 * 20,
 	attackStyleToUse: GearSetupTypes.Melee,
-	attackStylesUsed: [GearStat.AttackSlash],
+	attackStylesUsedMonster: [GearStat.AttackSlash],
+	attackStylesUsedPlayer: [GearStat.AttackCrush],
 	minimumGearRequirements: {
 		[GearSetupTypes.Melee]: {
 			[GearStat.DefenceSlash]: 150,

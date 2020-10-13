@@ -13,9 +13,19 @@ export default function calculateMonsterFood(
 	user: O.Readonly<KlasaUser>
 ): [number, string[]] {
 	const messages: string[] = [];
-	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
+	let {
+		healAmountNeeded,
+		attackStyleToUse,
+		attackStylesUsedMonster,
+		attackStylesUsedPlayer
+	} = monster;
 
-	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
+	if (
+		!healAmountNeeded ||
+		!attackStyleToUse ||
+		!attackStylesUsedMonster ||
+		!attackStylesUsedPlayer
+	) {
 		return [0, messages];
 	}
 
@@ -25,7 +35,7 @@ export default function calculateMonsterFood(
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
-	for (const style of attackStylesUsed) {
+	for (const style of attackStylesUsedMonster) {
 		const inverseStyle = inverseOfOffenceStat(style);
 		const usersStyle = gearStats[inverseStyle];
 		const maxStyle = maxDefenceStats[inverseStyle]!;
@@ -34,15 +44,21 @@ export default function calculateMonsterFood(
 			`Your ${inverseStyle} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`
 		);
 		totalPercentOfGearLevel += percent;
+	}
 
+	for (const style of attackStylesUsedPlayer) {
 		totalOffensivePercent += floor(calcWhatPercent(gearStats[style], maxOffenceStats[style]));
+		messages.push(
+			`Your ${style} bonus is ${totalOffensivePercent}% of the best (${gearStats[style]} out of ${maxOffenceStats[style]})`
+		);
 	}
 
 	totalPercentOfGearLevel = Math.min(
-		floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)),
+		floor(max(0, totalPercentOfGearLevel / attackStylesUsedMonster.length)),
 		85
 	);
-	totalOffensivePercent = floor(max(0, totalOffensivePercent / attackStylesUsed.length)) / 2;
+	totalOffensivePercent =
+		floor(max(0, totalOffensivePercent / attackStylesUsedPlayer.length)) / 2;
 
 	messages.push(
 		`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`

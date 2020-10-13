@@ -500,7 +500,12 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Check food
-		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
+		if (
+			monster.healAmountNeeded &&
+			monster.attackStyleToUse &&
+			monster.attackStylesUsedMonster &&
+			monster.attackStylesUsedPlayer
+		) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 			await removeFoodFromUser(
