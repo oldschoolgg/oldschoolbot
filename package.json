@@ -26,7 +26,7 @@
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
 		"oldschooljs": "^1.4.6",
-		"p-limit": "^2.3.0",
+		"p-limit": "^3.0.2",
 		"pg": "^8.4.1",
 		"pg-boss": "^5.0.8",
 		"random-js": "^2.1.0",
