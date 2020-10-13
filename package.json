@@ -31,7 +31,7 @@
 		"pg-boss": "^5.0.8",
 		"random-js": "^2.1.0",
 		"reflect-metadata": "^0.1.13",
-		"rss-parser": "^3.8.0",
+		"rss-parser": "^3.9.0",
 		"snoostorm": "^1.5.1",
 		"snoowrap": "github:gc/snoowrap#master",
 		"threads": "^1.4.1",
