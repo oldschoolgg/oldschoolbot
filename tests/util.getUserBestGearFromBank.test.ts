@@ -16,7 +16,8 @@ const userBank = resolveNameBank({
 	'Ancestral robe top': 1,
 	'Ancestral robe bottom': 1,
 	'Dragonfire shield': 1,
-	'Amulet of glory': 1
+	'Amulet of glory': 1,
+	'Blade of saeldor': 0
 });
 const nullGear: GearSetup = {
 	'2h': null,
@@ -82,7 +83,8 @@ describe('getUserBestGearFromBank', () => {
 				'Occult necklace': 1,
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
-				'Amulet of strength': 1
+				'Amulet of strength': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -120,7 +122,8 @@ describe('getUserBestGearFromBank', () => {
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
 				'Dragonfire shield': 1,
-				'Amulet of strength': 1
+				'Amulet of strength': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -166,7 +169,8 @@ describe('getUserBestGearFromBank', () => {
 				'Amulet of strength': 1,
 				'Elder maul': 1,
 				'Dragonfire shield': 1,
-				'Amulet of glory': 1
+				'Amulet of glory': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -205,7 +209,8 @@ describe('getUserBestGearFromBank', () => {
 				'Amulet of strength': 1,
 				'Elder maul': 1,
 				'Dragonfire shield': 1,
-				'Amulet of glory': 1
+				'Amulet of glory': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -246,7 +251,8 @@ describe('getUserBestGearFromBank', () => {
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
 				'Elder maul': 1,
-				'Amulet of strength': 1
+				'Amulet of strength': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
