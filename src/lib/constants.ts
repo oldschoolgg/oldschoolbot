@@ -119,7 +119,8 @@ export const enum Tasks {
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker'
+	MinigameTicker = 'minigameTicker',
+	SawmillActivity = 'sawmillActivity'
 }
 
 export const enum Activity {
@@ -143,6 +144,7 @@ export const enum Activity {
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
 	Alching = 'Alching',
+	Sawmill = 'Sawmill',
 	Nightmare = 'Nightmare',
 	Sepulchre = 'Sepulchre',
 	TrickTreat = 'TrickTreat'
@@ -223,7 +225,7 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
-export const MAX_QP = 277;
+export const MAX_QP = 278;
 
 export const MIMIC_MONSTER_ID = 23184;
 

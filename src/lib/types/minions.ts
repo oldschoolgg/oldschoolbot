@@ -127,6 +127,11 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
+export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
+}
+
 export interface MinigameTickerTaskData {
 	subTasks: (
 		| FightCavesActivityTaskOptions
