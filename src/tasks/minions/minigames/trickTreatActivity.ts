@@ -33,7 +33,7 @@ export default class extends Task {
 			.get(UserSettings.BitField)
 			.includes(BitField.HasReceivedHweenMasks);
 
-		if (roll(20) && !hasReceivedMasks) {
+		if (roll(15) && !hasReceivedMasks) {
 			loot.add({
 				'Green halloween mask': 1,
 				'Red halloween mask': 1,
@@ -58,7 +58,11 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished Trick or Treating!`,
+			`${user}, ${user.minionName} finished Trick or Treating! ${
+				loot.amount('Green halloween mask') > 0
+					? `Your minion found some masks on the ground and picked them up.`
+					: ''
+			}`,
 			res => {
 				user.log(`continued trick or treating`);
 				return this.client.commands.get('trickortreat')!.run(res, []);
