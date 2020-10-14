@@ -159,3 +159,10 @@ export interface Skill {
 	id: SkillsEnum;
 	emoji: Emoji;
 }
+
+export interface Plankable {
+	name: string;
+	inputItem: number;
+	outputItem: number;
+	gpCost: number;
+}

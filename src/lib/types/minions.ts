@@ -94,6 +94,8 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface TrickTreatActivityTaskOptions extends MinigameActivityTaskOptions {}
+
 export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
 	jadDeathChance: number;
 	preJadDeathChance: number;
@@ -118,6 +120,10 @@ export interface CyclopsActivityTaskOptions extends MinigameActivityTaskOptions 
 	quantity: number;
 }
 
+export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
+	floors: number[];
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
@@ -130,8 +136,19 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
+export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
+}
+
 export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
+	subTasks: (
+		| FightCavesActivityTaskOptions
+		| WintertodtActivityTaskOptions
+		| NightmareActivityTaskOptions
+		| SepulchreActivityTaskOptions
+		| TrickTreatActivityTaskOptions
+	)[];
 }
 
 export type TickerTaskData =
@@ -140,27 +157,4 @@ export type TickerTaskData =
 	| SkillingTickerTaskData
 	| MinigameTickerTaskData;
 
-export type MinionActivityTask =
-	| Tasks.CraftingActivity
-	| Tasks.AgilityActivity
-	| Tasks.CookingActivity
-	| Tasks.MonsterActivity
-	| Tasks.GroupMonsterActivity
-	| Tasks.ClueActivity
-	| Tasks.FishingActivity
-	| Tasks.MiningActivity
-	| Tasks.SmeltingActivity
-	| Tasks.SmithingActivity
-	| Tasks.WoodcuttingActivity
-	| Tasks.RunecraftActivity
-	| Tasks.FiremakingActivity
-	| Tasks.QuestingActivity
-	| Tasks.BuryingActivity
-	| Tasks.OfferingActivity
-	| Tasks.FightCavesActivity
-	| Tasks.FletchingActivity
-	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity
-	| Tasks.NightmareActivity
-	| Tasks.AnimatedArmourActivity
-	| Tasks.CyclopsActivity;
+export type MinionActivityTask = Tasks;

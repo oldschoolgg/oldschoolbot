@@ -6,6 +6,7 @@ import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -32,6 +33,7 @@ import {
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
@@ -49,7 +51,7 @@ export default class extends Extendable {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = getActivityOfUser(this.client, this);
+		const currentTask = getActivityOfUser(this.client, this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
@@ -283,6 +285,14 @@ export default class extends Extendable {
 				)}. ${formattedDuration}`;
 			}
 
+			case Activity.Sawmill: {
+				const data = currentTask as SawmillActivityTaskOptions;
+				const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+				return `${this.minionName} is currently creating ${
+					data.plankQuantity
+				}x ${itemNameFromID(plank!.outputItem)}s. ${formattedDuration}`;
+			}
+
 			case Activity.Nightmare: {
 				const data = currentTask as NightmareActivityTaskOptions;
 
@@ -295,6 +305,16 @@ export default class extends Extendable {
 
 			case Activity.Cyclops: {
 				return `${this.minionName} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
+			}
+			
+			case Activity.Sepulchre: {
+				const data = currentTask as NightmareActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
+			}
+
+			case Activity.TrickTreat: {
+				return `<:Pumpkin:764130154662199347> ${this.minionName} is currently Trick or Treating around Misthalin! ${formattedDuration}`;
 			}
 		}
 	}

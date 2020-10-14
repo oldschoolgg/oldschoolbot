@@ -7,7 +7,7 @@ import { Items } from 'oldschooljs';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
-import { Bank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 import {
 	addItemToBank,
 	chunkObject,
@@ -58,16 +58,16 @@ export default class extends Command {
 		const coins = msg.author.settings.get(UserSettings.GP);
 		const _bank = msg.author.settings.get(UserSettings.Bank);
 
-		const bank: Bank = { ..._bank, 995: coins };
+		const bank: ItemBank = { ..._bank, 995: coins };
 
 		if (typeof pageNumberOrItemName === 'string') {
 			if (pageNumberOrItemName.includes(',')) {
 				const arrItemNameOrID = pageNumberOrItemName.split(',');
-				let view = {};
+				let view: ItemBank = {};
 				for (const nameOrID of arrItemNameOrID) {
 					try {
 						const item = getOSItem(nameOrID);
-						if (bank[item.id]) {
+						if (bank[item.id] && !view[item.id]) {
 							view = addItemToBank(view, item.id, bank[item.id]);
 						}
 					} catch (_) {}
@@ -116,7 +116,6 @@ export default class extends Command {
 				);
 			}
 
-			msg.channel.assertCanManageMessages();
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 			const display = new UserRichDisplay();
 			display.setFooterPrefix(`Page `);
@@ -142,7 +141,8 @@ export default class extends Command {
 				bank,
 				title: `${msg.author.username}'s Bank`,
 				flags: { ...msg.flagArgs, page: 0 },
-				background: msg.author.settings.get(UserSettings.BankBackground)
+				background: msg.author.settings.get(UserSettings.BankBackground),
+				user: msg.author
 			});
 		}
 

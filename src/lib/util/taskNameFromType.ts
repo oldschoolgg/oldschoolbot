@@ -48,5 +48,11 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.AnimatedArmourActivity;
 		case Activity.Cyclops:
 			return Tasks.CyclopsActivity;
+		case Activity.Sawmill:
+			return Tasks.SawmillActivity;
+		case Activity.Sepulchre:
+			return Tasks.SepulchreActivity;
+		case Activity.TrickTreat:
+			return Tasks.TrickTreatActivity;
 	}
 }

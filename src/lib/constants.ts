@@ -116,10 +116,13 @@ export const enum Tasks {
 	NightmareActivity = 'nightmareActivity',
 	AnimatedArmourActivity = 'animatedArmourActivity',
 	CyclopsActivity = 'cyclopsActivity',
+	SepulchreActivity = 'sepulchreActivity',
+	TrickTreatActivity = 'trickTreatActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker'
+	MinigameTicker = 'minigameTicker',
+	SawmillActivity = 'sawmillActivity'
 }
 
 export const enum Activity {
@@ -143,9 +146,12 @@ export const enum Activity {
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
 	Alching = 'Alching',
-	Nightmare = 'Nightmare',
 	AnimatedArmour = 'AnimatedArmour',
-	Cyclops = 'Cyclops'
+	Cyclops = 'Cyclops',
+	Sawmill = 'Sawmill',
+	Nightmare = 'Nightmare',
+	Sepulchre = 'Sepulchre',
+	TrickTreat = 'TrickTreat'
 }
 
 export const enum Events {
@@ -223,7 +229,7 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
-export const MAX_QP = 277;
+export const MAX_QP = 278;
 
 export const MIMIC_MONSTER_ID = 23184;
 

@@ -1,16 +1,17 @@
-import { Bank } from './types';
+import { ItemBank } from './types';
 import { resolveNameBank } from './util';
 import itemID from './util/itemID';
 
 interface Createable {
 	name: string;
-	outputItems: Bank;
-	inputItems: Bank;
-	cantHaveItems?: Bank;
+	outputItems: ItemBank;
+	inputItems: ItemBank;
+	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
 	GPCost?: number;
+	cantBeInCL?: boolean;
 }
 
 const Createables: Createable[] = [
@@ -706,6 +707,16 @@ const Createables: Createable[] = [
 		},
 		GPCost: 300_000
 	},
+	{
+		name: 'Zamorakian spear',
+		inputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		noCl: true
+	},
 	// Nightmare
 	{
 		name: 'Eldritch nightmare staff',
@@ -736,6 +747,50 @@ const Createables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Volatile nightmare staff': 1
 		})
+	},
+	{
+		name: 'Volatile orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Harmonised orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Eldritch orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Scythe',
+		inputItems: resolveNameBank({
+			'Steel bar': 1,
+			Logs: 1
+		}),
+		outputItems: resolveNameBank({
+			Scythe: 1
+		}),
+		cantBeInCL: true
 	}
 ];
 
