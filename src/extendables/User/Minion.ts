@@ -306,7 +306,7 @@ export default class extends Extendable {
 			case Activity.Cyclops: {
 				return `${this.minionName} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
 			}
-			
+
 			case Activity.Sepulchre: {
 				const data = currentTask as NightmareActivityTaskOptions;
 
