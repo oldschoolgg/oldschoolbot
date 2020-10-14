@@ -33,7 +33,7 @@ export default class extends Task {
 			.get(UserSettings.BitField)
 			.includes(BitField.HasReceivedHweenMasks);
 
-		if (roll(1) && !hasReceivedMasks) {
+		if (roll(20) && !hasReceivedMasks) {
 			loot.add({
 				'Green halloween mask': 1,
 				'Red halloween mask': 1,
