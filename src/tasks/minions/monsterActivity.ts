@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, Task } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
 
 import MinionCommand from '../../commands/Minion/minion';
 import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
@@ -33,9 +33,8 @@ export default class extends Task {
 				'Skeleton gloves',
 				'Skeleton boots'
 			]);
-			const collectionLog = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 			const notReceived = skeletonOutfitPieces.filter(
-				piece => collectionLog.amount(piece) === 0
+				piece => !user.hasItemEquippedOrInBank(piece)
 			);
 
 			if (notReceived.length > 0) {

@@ -2,7 +2,6 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { BitField } from '../../../lib/constants';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
@@ -29,17 +28,12 @@ export default class extends Task {
 		const loot = new Bank();
 		loot.add(trickOrTreatingLootTable.roll());
 
-		const hasReceivedMasks = user.settings
-			.get(UserSettings.BitField)
-			.includes(BitField.HasReceivedHweenMasks);
+		const collectionLog = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 
-		if (roll(15) && !hasReceivedMasks) {
-			loot.add({
-				'Green halloween mask': 1,
-				'Red halloween mask': 1,
-				'Blue halloween mask': 1
-			});
-			await user.settings.update(UserSettings.BitField, BitField.HasReceivedHweenMasks);
+		for (const mask of ['Green halloween mask', 'Red halloween mask', 'Blue halloween mask']) {
+			if (roll(15) && collectionLog.amount(mask) === 0) {
+				loot.add(mask);
+			}
 		}
 
 		await user.addItemsToBank(loot.bank, true);
