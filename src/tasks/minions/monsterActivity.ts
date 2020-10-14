@@ -41,7 +41,7 @@ export default class extends Task {
 			if (notReceived.length > 0) {
 				let given = 0;
 				for (const piece of notReceived) {
-					if (given === 2) break;
+					if (duration / Time.Minute < 29 && given === 2) break;
 					given++;
 					loot[piece] = 1;
 				}

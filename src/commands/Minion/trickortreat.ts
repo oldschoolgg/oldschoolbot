@@ -1,4 +1,5 @@
 import { MessageAttachment } from 'discord.js';
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -9,6 +10,7 @@ import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TrickTreatActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
 
@@ -35,6 +37,15 @@ async function deathImage(str: string) {
 	return new MessageAttachment(image);
 }
 
+const trickTreatMessages = [
+	`Mortal, good luck on your trick or treating.`,
+	`Stay away from Canifis! They give out a specially gross kind of candy.`,
+	`Stay safe, traveller - there are real monsters out there, even on Halloween.`,
+	`Perhaps I should join you, and show you what a real halloween costume looks like.`,
+	`Keep an eye out for pumpkin theives, there's been reports of gremlins stealing them.`,
+	`Dont drop any of your costume pieces.`
+];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -47,6 +58,13 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
+		if (Date.now() - msg.author.createdTimestamp < Time.Year) {
+			return msg.send(
+				await deathImage(
+					`${msg.author.username}, your account is too new to do Trick or Treating. Your account must be atleast 1 year old.`
+				)
+			);
+		}
 		const gear = msg.author.settings.get(UserSettings.Gear.Misc);
 
 		if (!hasGearEquipped(gear, scaryItems)) {
@@ -68,6 +86,15 @@ export default class extends BotCommand {
 				quantity: 1,
 				duration: Time.Minute * 30
 			}
+		);
+
+		return msg.send(
+			`${
+				msg.author.minionName
+			} is now Trick or Treating, this trip will take around ${formatDuration(
+				Time.Minute * 30
+			)} to finish.`,
+			await deathImage(randArrItem(trickTreatMessages))
 		);
 	}
 }

@@ -1,14 +1,13 @@
-import { randArrItem } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { BitField } from '../../../lib/constants';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import resolveItems from '../../../lib/util/resolveItems';
 
 const trickOrTreatingLootTable = new LootTable()
 	.every('Purple sweets', [1, 5])
@@ -18,7 +17,8 @@ const trickOrTreatingLootTable = new LootTable()
 	.add('Chocolate bomb')
 	.add('Chocchip crunchies')
 	.add('Chocolate strawberry')
-	.tertiary(5, 'Pumpkin');
+	.tertiary(5, 'Pumpkin')
+	.tertiary(5000, 'Coal');
 
 export default class extends Task {
 	async run({ channelID, quantity, duration, userID }: SepulchreActivityTaskOptions) {
@@ -29,19 +29,20 @@ export default class extends Task {
 		const loot = new Bank();
 		loot.add(trickOrTreatingLootTable.roll());
 
-		if (roll(20)) {
-			const masks = resolveItems([
-				'Green halloween mask',
-				'Red halloween mask',
-				'Blue halloween mask'
-			]);
-			const collectionLog = new Bank(user.settings.get(UserSettings.CollectionLogBank));
-			const notReceived = masks.filter(piece => collectionLog.amount(piece) === 0);
+		const hasReceivedMasks = user.settings
+			.get(UserSettings.BitField)
+			.includes(BitField.HasReceivedHweenMasks);
 
-			if (notReceived.length > 0) {
-				loot.add(randArrItem(notReceived));
-			}
+		if (roll(1) && !hasReceivedMasks) {
+			loot.add({
+				'Green halloween mask': 1,
+				'Red halloween mask': 1,
+				'Blue halloween mask': 1
+			});
+			await user.settings.update(UserSettings.BitField, BitField.HasReceivedHweenMasks);
 		}
+
+		await user.addItemsToBank(loot.bank, true);
 
 		const image = await this.client.tasks
 			.get('bankImage')!
@@ -57,7 +58,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`You finished Trick or Treating!`,
+			`${user}, ${user.minionName} finished Trick or Treating!`,
 			res => {
 				user.log(`continued trick or treating`);
 				return this.client.commands.get('trickortreat')!.run(res, []);
