@@ -1127,8 +1127,7 @@ export const holiday = {
 		'Cow trousers',
 		'Cow gloves',
 		'Cow shoes',
-		'Slice of birthday cake',
-		'War ship'
+		'Slice of birthday cake'
 	]),
 	'Easter Event': resolveItems(['Bunny ears', 'Easter egg']),
 	'Halloween Event': resolveItems([
