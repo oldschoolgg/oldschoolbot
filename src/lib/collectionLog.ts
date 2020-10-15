@@ -1317,7 +1317,7 @@ export const sepulchreLog = {
 		'Dark dye',
 		'Dark acorn',
 		'Strange old lockpick',
-		'Ring of endurance'
+		'Ring of endurance (uncharged)'
 	]),
 	Graceful: resolveItems([
 		'Dark graceful hood',
@@ -1358,7 +1358,7 @@ export const skillingLog = {
 		'Dark dye',
 		'Dark acorn',
 		'Strange old lockpick',
-		'Ring of endurance'
+		'Ring of endurance (uncharged)'
 	]),
 	Sepulchre2: resolveItems([
 		'Dark graceful hood',
