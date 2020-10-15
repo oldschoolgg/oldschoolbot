@@ -36,7 +36,7 @@
 		"snoowrap": "github:gc/snoowrap#master",
 		"threads": "^1.4.1",
 		"ts-debounce": "^2.0.1",
-		"ts-toolbelt": "^6.15.5",
+		"ts-toolbelt": "^8.0.7",
 		"twit": "^2.2.9",
 		"typeorm": "^0.2.28",
 		"utf-8-validate": "^5.0.2",
