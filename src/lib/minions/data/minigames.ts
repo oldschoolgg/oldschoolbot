@@ -12,11 +12,16 @@ export const Minigames: Minigame[] = [
 	{
 		id: 35236,
 		name: 'Hallowed Sepulchre'
+	},
+	{
+		id: 3719,
+		name: 'Trick or Treating'
 	}
 ];
 
 export enum MinigameIDsEnum {
 	Wintertodt = 20693,
 	Nightmare = 9415,
-	Sepulchre = 35236
+	Sepulchre = 35236,
+	TrickOrTreat = 3719
 }

@@ -48,5 +48,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.SawmillActivity;
 		case Activity.Sepulchre:
 			return Tasks.SepulchreActivity;
+		case Activity.TrickTreat:
+			return Tasks.TrickTreatActivity;
 	}
 }
