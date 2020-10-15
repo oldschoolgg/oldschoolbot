@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
@@ -55,6 +56,17 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity
 		) {
 			throw `You need ${createableItem.GPCost.toLocaleString()} coins to create this item.`;
+		}
+
+		if (createableItem.cantBeInCL) {
+			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
+			if (
+				Object.keys(createableItem.outputItems).some(
+					itemID => cl.amount(Number(itemID)) > 0
+				)
+			) {
+				return msg.channel.send(`You can only create this item once!`);
+			}
 		}
 
 		const outItems = multiplyBank(createableItem.outputItems, quantity);

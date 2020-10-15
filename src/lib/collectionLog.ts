@@ -1130,7 +1130,19 @@ export const holiday = {
 		'Slice of birthday cake',
 		'War ship'
 	]),
-	'Easter Event': resolveItems(['Bunny ears', 'Easter egg'])
+	'Easter Event': resolveItems(['Bunny ears', 'Easter egg']),
+	'Halloween Event': resolveItems([
+		'Pumpkin',
+		'Scythe',
+		'Red halloween mask',
+		'Blue halloween mask',
+		'Green halloween mask',
+		'Skeleton mask',
+		'Skeleton shirt',
+		'Skeleton leggings',
+		'Skeleton gloves',
+		'Skeleton boots'
+	])
 };
 export const diangoCollectionLog = {
 	Common: resolveItems([

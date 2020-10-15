@@ -11,6 +11,7 @@ interface Createable {
 	QPRequired?: number;
 	noCl?: boolean;
 	GPCost?: number;
+	cantBeInCL?: boolean;
 }
 
 const Createables: Createable[] = [
@@ -779,6 +780,17 @@ const Createables: Createable[] = [
 			'Eldritch nightmare staff': 1
 		}),
 		noCl: true
+	},
+	{
+		name: 'Scythe',
+		inputItems: resolveNameBank({
+			'Steel bar': 1,
+			Logs: 1
+		}),
+		outputItems: resolveNameBank({
+			Scythe: 1
+		}),
+		cantBeInCL: true
 	}
 ];
 
