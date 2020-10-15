@@ -178,12 +178,6 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 20,
-		name: 'Relax',
-		image: null,
-		available: false
-	},
-	{
 		id: 21,
 		name: 'POST',
 		image: null,
@@ -197,19 +191,13 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 23,
-		name: 'RS3',
+		name: "Childish Marvino's Background (23)",
 		image: null,
 		available: false
 	},
 	{
 		id: 24,
-		name: 'ps4',
-		image: null,
-		available: false
-	},
-	{
-		id: 25,
-		name: 'mac',
+		name: "DMarvin2K's Background (24)",
 		image: null,
 		available: false
 	},
@@ -233,7 +221,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 29,
-		name: 'Cab',
+		name: "Subete's Background (29)",
 		image: null,
 		available: false
 	},
