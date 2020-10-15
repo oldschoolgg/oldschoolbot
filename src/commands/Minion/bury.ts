@@ -39,13 +39,17 @@ export default class extends BotCommand {
 		);
 
 		if (!bone) {
-			throw `That's not a valid bone to bury. Valid bones are ${Prayer.Bones.map(
-				bone => bone.name
-			).join(', ')}.`;
+			return msg.send(
+				`That's not a valid bone to bury. Valid bones are ${Prayer.Bones.map(
+					bone => bone.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < bone.level) {
-			throw `${msg.author.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`
+			);
 		}
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
