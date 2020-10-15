@@ -43,9 +43,11 @@ export default class extends BotCommand {
 		);
 
 		if (!bone) {
-			throw `That's not a valid bone to offer. Valid bones are ${Prayer.Bones.map(
-				bone => bone.name
-			).join(', ')}.`;
+			return msg.send(
+				`That's not a valid bone to offer. Valid bones are ${Prayer.Bones.map(
+					bone => bone.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < bone.level) {

@@ -40,13 +40,17 @@ export default class extends BotCommand {
 		);
 
 		if (!log) {
-			throw `That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(
-				log => log.name
-			).join(', ')}.`;
+			return msg.send(
+				`That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(
+					log => log.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Firemaking) < log.level) {
-			throw `${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`
+			);
 		}
 
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
