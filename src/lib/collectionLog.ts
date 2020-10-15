@@ -1258,25 +1258,6 @@ export const wintertodt = {
 	])
 };
 
-export const skillingLog = {
-	Mining: resolveItems([
-		'Prospector helmet',
-		'Prospector jacket',
-		'Prospector legs',
-		'Prospector boots',
-		'Mining gloves',
-		'Superior mining gloves',
-		'Expert mining gloves',
-		'Golden nugget',
-		'Unidentified minerals',
-		'Rock golem'
-	]),
-	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
-	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
-	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
-	Firemaking: Object.values(wintertodt).flat(Infinity)
-};
-
 export const coxLog = {
 	Misc: resolveItems([
 		'Dexterous prayer scroll',
@@ -1347,6 +1328,47 @@ export const sepulchreLog = {
 		'Dark graceful cape'
 	]),
 	Pets: resolveItems(['Giant squirrel', 'Dark squirrel'])
+};
+
+export const skillingLog = {
+	Mining: resolveItems([
+		'Prospector helmet',
+		'Prospector jacket',
+		'Prospector legs',
+		'Prospector boots',
+		'Mining gloves',
+		'Superior mining gloves',
+		'Expert mining gloves',
+		'Golden nugget',
+		'Unidentified minerals',
+		'Rock golem'
+	]),
+	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
+	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
+	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
+	Firemaking: Object.values(wintertodt).flat(Infinity),
+	Sepulchre1: resolveItems([
+		'Hallowed mark',
+		'Hallowed token',
+		'Hallowed grapple',
+		'Hallowed focus',
+		'Hallowed symbol',
+		'Hallowed hammer',
+		'Hallowed ring',
+		'Dark dye',
+		'Dark acorn',
+		'Strange old lockpick',
+		'Ring of endurance'
+	]),
+	Sepulchre2: resolveItems([
+		'Dark graceful hood',
+		'Dark graceful top',
+		'Dark graceful legs',
+		'Dark graceful boots',
+		'Dark graceful gloves',
+		'Dark graceful cape',
+		'Dark squirrel'
+	])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
