@@ -1,10 +1,10 @@
-import { randArrItem, randInt } from 'e';
+import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { ItemBank } from '../types';
-import { itemNameFromID, roll } from '../util';
+import { roll } from '../util';
 import resolveItems from '../util/resolveItems';
 
 const trawlerFish = [
@@ -69,7 +69,6 @@ export function fishingTrawlerLoot(fishingLevel: number, bank: ItemBank) {
 
 	if (roll(8)) {
 		for (const item of anglerOutfit) {
-			console.log(bank[item]);
 			if (!bank[item]) {
 				loot.add(item);
 				break;

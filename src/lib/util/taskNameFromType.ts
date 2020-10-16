@@ -50,5 +50,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.SepulchreActivity;
 		case Activity.TrickTreat:
 			return Tasks.TrickTreatActivity;
+		case Activity.FishingTrawler:
+			return Tasks.FishingTrawler;
 	}
 }
