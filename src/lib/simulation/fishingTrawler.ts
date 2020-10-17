@@ -3,46 +3,55 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { ItemBank } from '../types';
-import { itemNameFromID, roll } from '../util';
+import { roll } from '../util';
 import { randomVariation } from '../util/randomVariation';
 import resolveItems from '../util/resolveItems';
 
 const trawlerFish = [
 	{
 		id: itemID('Raw shrimps'),
-		level: 1
+		level: 1,
+		xp: 10
 	},
 	{
 		id: itemID('Raw sardine'),
-		level: 5
+		level: 5,
+		xp: 20
 	},
 	{
 		id: itemID('Raw anchovies'),
-		level: 15
+		level: 15,
+		xp: 40
 	},
 	{
 		id: itemID('Raw tuna'),
-		level: 35
+		level: 35,
+		xp: 80
 	},
 	{
 		id: itemID('Raw lobster'),
-		level: 40
+		level: 40,
+		xp: 90
 	},
 	{
 		id: itemID('Raw swordfish'),
-		level: 50
+		level: 50,
+		xp: 100
 	},
 	{
 		id: itemID('Raw shark'),
-		level: 76
+		level: 76,
+		xp: 110
 	},
 	{
 		id: itemID('Raw sea turtle'),
-		level: 79
+		level: 79,
+		xp: 38
 	},
 	{
 		id: itemID('Raw manta ray'),
-		level: 81
+		level: 81,
+		xp: 46
 	}
 ];
 
@@ -61,7 +70,7 @@ const JunkTable = new LootTable().add(RawJunkTable, [0, 1]).add(RawJunkTable, [0
 
 const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 
-export function fishingTrawlerLoot(fishingLevel: number, bank: ItemBank) {
+export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, bank: ItemBank) {
 	const loot = new Bank();
 	if (roll(5000)) {
 		loot.add('Heron');
@@ -81,23 +90,30 @@ export function fishingTrawlerLoot(fishingLevel: number, bank: ItemBank) {
 	const ableToFish = trawlerFish.filter(i => fishingLevel >= i.level);
 	let possibleFish = ableToFish.slice(Math.max(ableToFish.length - 5, 0)).reverse();
 
-	console.log(possibleFish.map(i => itemNameFromID(i.id)));
+	let xp = 0;
 
 	const len = possibleFish.length;
 	let multiplier = 3;
 	for (let i = 0; i < len; i++) {
 		const fishToGive = possibleFish[0];
 
-		const qty = Math.floor(
+		let qty = Math.floor(
 			randomVariation((ableToFish.indexOf(fishToGive) + 1) * multiplier, 50)
 		);
+		// 50% Extra fish for having elite diary
+		if (hasEliteArd) {
+			qty = Math.floor(qty * 1.5);
+		}
+
+		xp += fishToGive.xp * qty;
+
 		multiplier /= 2;
 		loot.add(fishToGive.id, qty);
 
 		// Cant get same fish twice in 1 trawler
 		possibleFish = possibleFish.filter(i => i !== fishToGive);
-		if (roll(5)) break;
+		if (roll(3)) break;
 	}
 
-	return loot;
+	return { loot, xp };
 }

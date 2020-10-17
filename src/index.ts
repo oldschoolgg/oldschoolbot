@@ -3,26 +3,17 @@ import 'reflect-metadata';
 import { Client as TagsClient } from '@kcp/tags';
 import * as Sentry from '@sentry/node';
 import { Client, KlasaClientOptions } from 'klasa';
-import { Bank } from 'oldschooljs';
 import pLimit from 'p-limit';
 
 import { botToken, sentryDSN } from './config';
 import { clientOptions, clientProperties } from './lib/config/config';
 import { initItemAliases } from './lib/itemAliases';
-import { fishingTrawlerLoot } from './lib/simulation/fishingTrawler';
 
 if (sentryDSN) {
 	Sentry.init({
 		dsn: sentryDSN
 	});
 }
-
-const loot = new Bank();
-for (let i = 0; i < 100; i++) {
-	console.log(fishingTrawlerLoot(1, loot.bank));
-	loot.add(fishingTrawlerLoot(1, loot.bank));
-}
-console.log(loot.bank);
 
 Client.use(TagsClient);
 
@@ -50,4 +41,4 @@ class OldSchoolBot extends Client {
 	};
 }
 
-if (1 > 2) new OldSchoolBot(clientOptions).init().then(client => client.login(botToken));
+new OldSchoolBot(clientOptions).init().then(client => client.login(botToken));

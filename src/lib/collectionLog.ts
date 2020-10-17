@@ -15,6 +15,33 @@ const nightmareLog = resolveItems([
 	'Little nightmare'
 ]);
 
+const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+const fishingTrawler = {
+	AnglerOutfit: anglerOutfit,
+	Junk: resolveItems([
+		'Broken arrow',
+		'Broken glass',
+		'Broken staff',
+		'Buttons',
+		'Damaged armour',
+		'Old boot',
+		'Oyster',
+		'Pot',
+		'Rusty sword'
+	]),
+	Fish: [
+		'Raw shrimps',
+		'Raw sardine',
+		'Raw anchovies',
+		'Raw tuna',
+		'Raw lobster',
+		'Raw swordfish',
+		'Raw shark',
+		'Raw sea turtle',
+		'Raw manta ray'
+	]
+};
+
 export const bosses = {
 	Zulrah: resolveItems([
 		'Uncut onyx',
@@ -1368,7 +1395,8 @@ export const skillingLog = {
 		'Dark graceful gloves',
 		'Dark graceful cape',
 		'Dark squirrel'
-	])
+	]),
+	Angler: anglerOutfit
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1504,5 +1532,10 @@ export const collectionLogTypes = [
 		name: 'Hallowed Sepulchre',
 		aliases: ['sepulchre', 'hallowed sepulchre'],
 		items: sepulchreLog
+	},
+	{
+		name: 'Fishing Trawler',
+		aliases: ['trawler', 'ft'],
+		items: fishingTrawler
 	}
 ];
