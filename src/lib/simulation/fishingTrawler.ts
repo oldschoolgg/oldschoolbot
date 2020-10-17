@@ -1,10 +1,10 @@
-import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { ItemBank } from '../types';
-import { roll } from '../util';
+import { itemNameFromID, roll } from '../util';
+import { randomVariation } from '../util/randomVariation';
 import resolveItems from '../util/resolveItems';
 
 const trawlerFish = [
@@ -78,21 +78,20 @@ export function fishingTrawlerLoot(fishingLevel: number, bank: ItemBank) {
 
 	loot.add(JunkTable.roll());
 
-	let possibleFish = trawlerFish
-		.filter(i => fishingLevel >= i.level)
-		.slice(Math.max(trawlerFish.length - 5, 0))
-		.reverse();
+	const ableToFish = trawlerFish.filter(i => fishingLevel >= i.level);
+	let possibleFish = ableToFish.slice(Math.max(ableToFish.length - 5, 0)).reverse();
 
-	// console.log(possibleFish.map(i => itemNameFromID(i.id)));
+	console.log(possibleFish.map(i => itemNameFromID(i.id)));
 
 	const len = possibleFish.length;
+	let multiplier = 3;
 	for (let i = 0; i < len; i++) {
 		const fishToGive = possibleFish[0];
-		// console.log(
-		// 	`index of ${itemNameFromID(fishToGive.id)} is ${trawlerFish.indexOf(fishToGive)}`
-		// );
-		const qty = randInt(1, 3) * trawlerFish.indexOf(fishToGive);
-		// console.log({ qty, index: possibleFish.indexOf(fishToGive) });
+
+		const qty = Math.floor(
+			randomVariation((ableToFish.indexOf(fishToGive) + 1) * multiplier, 50)
+		);
+		multiplier /= 2;
 		loot.add(fishToGive.id, qty);
 
 		// Cant get same fish twice in 1 trawler
