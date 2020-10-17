@@ -1540,7 +1540,7 @@ export const collectionLogTypes = [
 	},
 	{
 		name: 'Fishing Trawler',
-		aliases: ['trawler', 'ft'],
+		aliases: ['trawler', 'ft', 'fishing trawler'],
 		items: fishingTrawler
 	}
 ];
