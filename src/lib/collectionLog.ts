@@ -15,7 +15,12 @@ const nightmareLog = resolveItems([
 	'Little nightmare'
 ]);
 
-const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+export const anglerOutfit = resolveItems([
+	'Angler hat',
+	'Angler top',
+	'Angler waders',
+	'Angler boots'
+]);
 const fishingTrawler = {
 	AnglerOutfit: anglerOutfit,
 	Junk: resolveItems([

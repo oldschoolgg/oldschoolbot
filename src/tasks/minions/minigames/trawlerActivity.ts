@@ -5,7 +5,7 @@ import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks } from '../../../lib/util';
+import { addBanks, anglerBoostPercent, calcPercentOfNum } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { skillsMeetRequirements } from '../../../lib/util/skillsMeetRequirements';
 
@@ -44,15 +44,22 @@ export default class extends Task {
 			loot.add(_loot);
 		}
 
+		let str = `${user}, ${
+			user.minionName
+		} finished completing the Fishing Trawler ${quantity}x times. You received ${totalXP.toLocaleString()} Fishing XP.`;
+
+		const xpBonusPercent = anglerBoostPercent(user);
+		if (xpBonusPercent > 0) {
+			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
+			str += `\n\n${xpBonusPercent}% Bonus XP (${bonusXP}) for Angler outfit pieces.`;
+			totalXP += bonusXP;
+		}
+
 		await user.addItemsToBank(loot.bank, true);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		await user.addXP(SkillsEnum.Fishing, totalXP);
 		const newLevel = user.skillLevel(SkillsEnum.Fishing);
-
-		let str = `${user}, ${
-			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. You received ${totalXP.toLocaleString()} Fishing XP.`;
 
 		if (currentLevel !== newLevel) {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
