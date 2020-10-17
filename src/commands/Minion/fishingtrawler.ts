@@ -5,6 +5,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../lib/types/minions';
 import { calcWhatPercent, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -22,6 +23,10 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
+		if (msg.author.skillLevel(SkillsEnum.Fishing) < 15) {
+			return msg.send(`You need atleast level 15 Fishing to do the Fishing Trawler.`);
+		}
+
 		const tripsDone = msg.author.getMinigameScore(MinigameIDsEnum.FishingTrawler);
 
 		let tripLength = Time.Minute * 13;
