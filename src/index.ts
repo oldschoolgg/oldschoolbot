@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { Client as TagsClient } from '@kcp/tags';
 import * as Sentry from '@sentry/node';
 import { Client, KlasaClientOptions } from 'klasa';
-import { Items } from 'oldschooljs';
 import pLimit from 'p-limit';
 
 import { botToken, sentryDSN } from './config';
@@ -37,7 +36,6 @@ class OldSchoolBot extends Client {
 	}
 
 	public init = async (): Promise<this> => {
-		await Items.fetchAll();
 		initItemAliases();
 		return this;
 	};
