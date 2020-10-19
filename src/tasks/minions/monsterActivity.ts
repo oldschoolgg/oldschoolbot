@@ -14,6 +14,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, multiplyBank, rand, randomItemFromArray, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import resolveItems from '../../lib/util/resolveItems';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
@@ -69,6 +70,28 @@ export default class extends Task {
 				if (roll(6000)) {
 					loot[itemID('Dwarven ore')] = 1;
 					break;
+				}
+			}
+		}
+
+		if (monster.id === Monsters.Skeleton.id) {
+			const skeletonOutfitPieces = resolveItems([
+				'Skeleton mask',
+				'Skeleton shirt',
+				'Skeleton leggings',
+				'Skeleton gloves',
+				'Skeleton boots'
+			]);
+			const notReceived = skeletonOutfitPieces.filter(
+				piece => !user.hasItemEquippedOrInBank(piece)
+			);
+
+			if (notReceived.length > 0) {
+				let given = 0;
+				for (const piece of notReceived) {
+					if (duration / Time.Minute < 29 && given === 2) break;
+					given++;
+					loot[piece] = 1;
 				}
 			}
 		}

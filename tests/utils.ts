@@ -1,4 +1,3 @@
-import { Items } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearTypes } from '../src/lib/gear';
@@ -46,6 +45,5 @@ export function constructGearSetup(setup: PartialGearSetup): GearTypes.GearSetup
 }
 
 export async function testSetup() {
-	await Items.fetchAll();
 	initItemAliases();
 }

@@ -1,7 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
-import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import fetch from 'node-fetch';
 
 import { Color, SupportServer, Time } from '../lib/constants';
 import { getRandomMysteryBox } from '../lib/openables';
@@ -30,23 +29,28 @@ export default class extends Monitor {
 			return;
 		}
 
-		if (Date.now() - this.lastDrop < Time.Minute * 18.5) return;
+		if (Date.now() - this.lastDrop < Time.Minute * 5) return;
 		if (!roll(20)) return;
 		this.lastDrop = Date.now();
 
-		const randomItem = Items.filter(i => (i as Item).tradeable_on_ge).random() as Item;
+		const { question, correct_answer, incorrect_answers } = await fetch(
+			'https://opentdb.com/api.php?amount=1&category=9&difficulty=medium&type=multiple'
+		)
+			.then(res => res.json())
+			.then(res => res.results[0]);
+
+		const allAnswers = [correct_answer, ...incorrect_answers].sort(() => 0.5 - Math.random());
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
-			.setThumbnail(`https://static.runelite.net/cache/item/icon/${randomItem.id}.png`)
-			.setTitle('Tell me what this item is called, for a Mystery Box!')
-			.setDescription(randomItem.examine);
+			.setTitle('Answer this for a Mystery box!')
+			.setDescription(`${question}\n\nPossible answers: ${allAnswers.join(', ')}`);
 
 		await msg.channel.send(embed);
 
 		try {
 			const collected = await msg.channel.awaitMessages(
-				_msg => stringMatches(_msg.content, randomItem.name),
+				_msg => stringMatches(_msg.content, correct_answer),
 				{
 					max: 1,
 					time: 14_000,

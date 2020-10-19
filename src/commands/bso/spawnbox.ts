@@ -6,7 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { BotCommand } from '../../lib/BotCommand';
 import { Color, PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
-import { itemID, roll, stringMatches } from '../../lib/util';
+import { itemID, roll, stripPunctuation } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
@@ -37,7 +37,9 @@ export default class extends BotCommand {
 
 		try {
 			const collected = await msg.channel.awaitMessages(
-				_msg => stringMatches(_msg.content, randomItem.name),
+				_msg =>
+					stripPunctuation(_msg.content.toLowerCase()) ===
+					stripPunctuation(randomItem.name.toLowerCase()),
 				{
 					max: 1,
 					time: 14_000,

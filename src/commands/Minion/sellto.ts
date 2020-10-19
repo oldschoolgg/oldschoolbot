@@ -1,7 +1,7 @@
 import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
-import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
@@ -65,7 +65,7 @@ export default class extends BotCommand {
 		buyerMember: GuildMember,
 		price: number,
 		quantity: number,
-		osItem: Item | PartialItem
+		osItem: Item
 	) {
 		const hasItem = await msg.author.hasItem(osItem.id, quantity);
 		if (!hasItem) {
