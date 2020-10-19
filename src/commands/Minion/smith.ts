@@ -72,9 +72,12 @@ export default class extends BotCommand {
 		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
 		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greathammer'))) {
 			timeToSmithSingleBar /= 2;
+		} else if (msg.author.equippedPet() === itemID('Takon')) {
+			timeToSmithSingleBar /= 4;
 		}
-		// If no quantity provided, set it to the max.
+
 		if (quantity === null) {
+			// If no quantity provided, set it to the max.
 			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
 		}
 
@@ -137,7 +140,11 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
 				smithedItem.name
-			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`
+			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish. ${
+				msg.author.equippedPet() === itemID('Takon')
+					? `\n\nTakon is Smithing for you, at incredible speeds and skill.`
+					: ''
+			}`
 		);
 	}
 }
