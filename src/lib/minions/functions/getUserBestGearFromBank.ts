@@ -80,9 +80,14 @@ export default function(
 	}
 
 	// Get all items by slot from user bank
-	for (const item of Object.keys(addBanks([userBank, toRemoveFromGear]))) {
-		const osItem = getOSItem(item);
-		if (osItem.equipable_by_player && osItem.equipment && osItem.equipment[gearStat] >= 0) {
+	for (const item of Object.entries(addBanks([userBank, toRemoveFromGear]))) {
+		const osItem = getOSItem(item[0]);
+		if (
+			osItem.equipable_by_player &&
+			osItem.equipment &&
+			osItem.equipment[gearStat] >= 0 &&
+			item[1] > 0
+		) {
 			equipables[osItem.equipment.slot].push(osItem.id);
 		}
 	}

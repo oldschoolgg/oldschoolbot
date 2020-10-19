@@ -116,11 +116,14 @@ export const enum Tasks {
 	RaidsActivity = 'raidsActivity',
 	NightmareActivity = 'nightmareActivity',
 	SepulchreActivity = 'sepulchreActivity',
+	TrickTreatActivity = 'trickTreatActivity',
+	FishingTrawler = 'trawlerActivity',
+	SawmillActivity = 'sawmillActivity',
+
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker',
-	SawmillActivity = 'sawmillActivity'
+	MinigameTicker = 'minigameTicker'
 }
 
 export const enum Activity {
@@ -147,7 +150,9 @@ export const enum Activity {
 	Raids = 'Raids',
 	Sawmill = 'Sawmill',
 	Nightmare = 'Nightmare',
-	Sepulchre = 'Sepulchre'
+	Sepulchre = 'Sepulchre',
+	TrickTreat = 'TrickTreat',
+	FishingTrawler = 'FishingTrawler'
 }
 
 export const enum Events {

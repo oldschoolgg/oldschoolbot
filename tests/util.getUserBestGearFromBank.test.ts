@@ -1,4 +1,3 @@
-import { Items } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { GearSetup, GearSetupTypes } from '../src/lib/gear/types';
@@ -16,7 +15,8 @@ const userBank = resolveNameBank({
 	'Ancestral robe top': 1,
 	'Ancestral robe bottom': 1,
 	'Dragonfire shield': 1,
-	'Amulet of glory': 1
+	'Amulet of glory': 1,
+	'Blade of saeldor': 0
 });
 const nullGear: GearSetup = {
 	'2h': null,
@@ -42,9 +42,6 @@ const userGear: GearSetup = {
 };
 
 describe('getUserBestGearFromBank', () => {
-	beforeAll(async () => {
-		await Items.fetchAll();
-	});
 	test('autoequip melee attack slash', async () => {
 		expect(
 			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'attack', 'slash')
@@ -82,7 +79,8 @@ describe('getUserBestGearFromBank', () => {
 				'Occult necklace': 1,
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
-				'Amulet of strength': 1
+				'Amulet of strength': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -120,7 +118,8 @@ describe('getUserBestGearFromBank', () => {
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
 				'Dragonfire shield': 1,
-				'Amulet of strength': 1
+				'Amulet of strength': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -166,7 +165,8 @@ describe('getUserBestGearFromBank', () => {
 				'Amulet of strength': 1,
 				'Elder maul': 1,
 				'Dragonfire shield': 1,
-				'Amulet of glory': 1
+				'Amulet of glory': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -205,7 +205,8 @@ describe('getUserBestGearFromBank', () => {
 				'Amulet of strength': 1,
 				'Elder maul': 1,
 				'Dragonfire shield': 1,
-				'Amulet of glory': 1
+				'Amulet of glory': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
@@ -246,7 +247,8 @@ describe('getUserBestGearFromBank', () => {
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
 				'Elder maul': 1,
-				'Amulet of strength': 1
+				'Amulet of strength': 1,
+				'Blade of saeldor': 0
 			})
 		});
 	});
