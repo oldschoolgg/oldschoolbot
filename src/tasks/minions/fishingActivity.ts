@@ -7,7 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { anglerBoostPercent, calcPercentOfNum, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -134,6 +134,12 @@ export default class extends Task {
 				str += `\n\n${user.minionName}'s Agility level is now ${newAgilityLevel}!`;
 			}
 		}
+
+		const xpBonusPercent = anglerBoostPercent(user);
+		if (xpBonusPercent > 0) {
+			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));
+		}
+
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
