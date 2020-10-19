@@ -34,7 +34,7 @@ const fishingTrawler = {
 		'Pot',
 		'Rusty sword'
 	]),
-	Fish: [
+	Fish: resolveItems([
 		'Raw shrimps',
 		'Raw sardine',
 		'Raw anchovies',
@@ -44,7 +44,7 @@ const fishingTrawler = {
 		'Raw shark',
 		'Raw sea turtle',
 		'Raw manta ray'
-	]
+	])
 };
 
 export const bosses = {
