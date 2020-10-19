@@ -4,7 +4,14 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, multiplyBank, noOp, queuedMessageSend, roll } from '../../lib/util';
+import {
+	formatDuration,
+	itemID,
+	multiplyBank,
+	noOp,
+	queuedMessageSend,
+	roll
+} from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 
@@ -58,6 +65,9 @@ export default class extends Task {
 			}
 			if (roll(2000)) {
 				userLoot[23931] = 1;
+			}
+			if (roll(1500)) {
+				userLoot[itemID('Takon')] = 1;
 			}
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
