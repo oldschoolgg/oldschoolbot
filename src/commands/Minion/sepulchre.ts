@@ -9,7 +9,7 @@ import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulch
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SepulchreActivityTaskOptions } from '../../lib/types/minions';
-import { addArrayOfNumbers, formatDuration, itemNameFromID } from '../../lib/util';
+import { addArrayOfNumbers, formatDuration, itemID, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { SkillsEnum } from './../../lib/skilling/types';
 
@@ -56,6 +56,13 @@ export default class extends BotCommand {
 		boosts.push(`${percentReduced.toFixed(1)}% for minion learning`);
 
 		lapLength = reduceNumByPercent(lapLength, percentReduced);
+
+		const hasCob = msg.author.equippedPet() === itemID('Cob');
+
+		if (hasCob) {
+			lapLength *= 0.7;
+			boosts.push(`30% with Cob's help`);
+		}
 
 		for (const [id, percent] of objectEntries(sepulchreBoosts)) {
 			if (msg.author.hasItemEquippedOrInBank(Number(id))) {

@@ -209,4 +209,11 @@ export function initCustomItems() {
 		},
 		50_000
 	);
+
+	setCustomItem(19567, 'Cob', getOSItem('Herbi'), {
+		duplicate: false,
+		tradeable: true,
+		tradeable_on_ge: true,
+		wiki_name: 'Cob'
+	});
 }

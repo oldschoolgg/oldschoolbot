@@ -36,6 +36,10 @@ export default class extends Task {
 			}
 		}
 
+		if (roll(500)) {
+			loot.add('Cob');
+		}
+
 		await user.addItemsToBank(loot.bank, true);
 
 		const image = await this.client.tasks
