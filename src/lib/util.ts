@@ -326,3 +326,7 @@ export function anglerBoostPercent(user: KlasaUser) {
 	}
 	return round(boostPercent, 1);
 }
+
+export function stripPunctuation(str: string) {
+	return str.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/, '');
+}
