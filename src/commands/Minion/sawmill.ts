@@ -8,7 +8,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
+import { formatDuration, itemID, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -74,7 +74,8 @@ export default class extends BotCommand {
 		}
 
 		const GP = msg.author.settings.get(UserSettings.GP);
-		const cost = plank!.gpCost * quantity;
+		const hasHammy = msg.author.equippedPet() === itemID('Hammy');
+		const cost = hasHammy ? 1 : plank!.gpCost * quantity;
 		if (GP < cost) {
 			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
 		}
@@ -112,6 +113,10 @@ export default class extends BotCommand {
 		)}${quantity > 1 ? 's' : ''}. The Sawmill has charged you ${toKMB(
 			cost
 		)} GP. They'll come back in around ${formatDuration(duration)}.`;
+
+		if (hasHammy) {
+			response += `\n\nHammy stares intently into the eyes of the sawmill operator - who, knowing what Hammy is capable of, apologetically reduces the price to only 1gp for you.`;
+		}
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
