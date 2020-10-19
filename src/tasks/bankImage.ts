@@ -288,7 +288,7 @@ export default class BankImageTask extends Task {
 			? 5 + this.borderVertical?.width! + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
 			: 488;
 		if (width < 488) width = 488;
-		const itemsPerRow = Math.floor((width - this.borderVertical?.width! * 2) / (36 + 20));
+		const itemsPerRow = Math.floor((width - this.borderVertical?.width! * 2) / (36 + 21));
 		const canvasHeight =
 			Math.floor(
 				Math.floor(
@@ -356,7 +356,7 @@ export default class BankImageTask extends Task {
 
 			ctx.drawImage(
 				item,
-				Math.floor(xLoc + (itemSize - item.width) / 2),
+				Math.floor(xLoc + (itemSize - item.width) / 2) + 2,
 				Math.floor(yLoc + (itemSize - item.height) / 2),
 				item.width,
 				item.height
