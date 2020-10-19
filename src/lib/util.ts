@@ -1,6 +1,6 @@
 import { Image } from 'canvas';
 import { Client, Guild } from 'discord.js';
-import { KlasaClient, ScheduledTask, util } from 'klasa';
+import { KlasaClient, KlasaUser, ScheduledTask, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -9,7 +9,10 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 const emojiRegex = require('emoji-regex');
 
 import { Events, Tasks } from './constants';
+import hasItemEquipped from './gear/functions/hasItemEquipped';
+import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
+import itemID from './util/itemID';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -299,4 +302,27 @@ export function values<T extends {}>(obj: T) {
 
 export function keys<T extends {}>(obj: T) {
 	return Object.keys(obj) as (keyof T)[];
+}
+
+export const anglerBoosts = [
+	[itemID('Angler hat'), 0.4],
+	[itemID('Angler top'), 0.8],
+	[itemID('Angler waders'), 0.6],
+	[itemID('Angler boots'), 0.2]
+];
+
+export function anglerBoostPercent(user: KlasaUser) {
+	const skillingSetup = user.settings.get(UserSettings.Gear.Skilling);
+	let amountEquipped = 0;
+	let boostPercent = 0;
+	for (const [id, percent] of anglerBoosts) {
+		if (hasItemEquipped(id, skillingSetup)) {
+			boostPercent += percent;
+			amountEquipped++;
+		}
+	}
+	if (amountEquipped === 4) {
+		boostPercent += 0.5;
+	}
+	return round(boostPercent, 1);
 }
