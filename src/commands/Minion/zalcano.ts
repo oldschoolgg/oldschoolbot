@@ -61,9 +61,9 @@ export default class extends BotCommand {
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
 
 		let healAmountNeeded = 7 * 12;
-		if (kc > 20) healAmountNeeded = 5 * 12;
+		if (kc > 100) healAmountNeeded = 1 * 12;
 		else if (kc > 50) healAmountNeeded = 3 * 12;
-		else if (kc > 100) healAmountNeeded = 1 * 12;
+		else if (kc > 20) healAmountNeeded = 5 * 12;
 
 		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
 		const duration = quantity * baseTime;
