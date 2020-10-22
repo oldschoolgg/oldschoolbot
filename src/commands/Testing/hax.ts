@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Eatables } from '../../lib/eatables';
+import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 
@@ -21,10 +21,15 @@ export default class extends BotCommand {
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, 250);
-		const loot: Record<string, number> = Object.fromEntries(
-			Eatables.map(({ id }) => [id, 1000])
-		);
+		const loot = {};
+		for (const item of Herblore.Mixables) {
+			for (const [Penis] of Object.entries(item.inputItems)) {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+				// @ts-ignore
+				loot[parseInt(Penis)] = 1000;
+			}
+		}
 		msg.author.addItemsToBank(loot);
-		return msg.send(`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all eatable foods`);
+		return msg.send(`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all the herb stuff`);
 	}
 }

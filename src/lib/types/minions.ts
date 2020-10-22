@@ -90,6 +90,13 @@ export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
+	mixableID: number;
+	channelID: string;
+	quantity: number;
+	zuhar: boolean;
+}
+
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;

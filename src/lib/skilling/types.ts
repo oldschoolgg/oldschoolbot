@@ -142,6 +142,19 @@ export interface Fletchable {
 	outputMultiple?: number;
 }
 
+export interface Mixable {
+	name: string;
+	id: number;
+	level: number;
+	xp: number;
+	inputItems: ItemBank;
+	tickRate: number;
+	bankTimePerPotion: number;
+	outputMultiple?: number;
+	zuhar?: boolean;
+	wesley?: boolean;
+}
+
 export interface Bone {
 	level: number;
 	xp: number;
