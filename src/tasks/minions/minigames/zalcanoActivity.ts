@@ -59,7 +59,9 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano.`,
+			`${user}, ${
+				user.minionName
+			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${kc + quantity}`,
 			res => {
 				user.log(`continued zalcano`);
 				return this.client.commands.get('zalcano')!.run(res, []);
