@@ -42,7 +42,7 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.QP) < 150
 		) {
 			return msg.send(
-				`To fight Zalcano, you need: Level 70 Mining, Level 70 Smithing and 200 QP.`
+				`To fight Zalcano, you need: Level 70 Mining, Level 70 Smithing and 150 QP.`
 			);
 		}
 
