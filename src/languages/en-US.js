@@ -339,9 +339,7 @@ module.exports = class extends Language {
 			/*
 			 * Fun Commands
 			 */
-			NO_PETS: prefix => `You have no pets yet.
 
-You can get pets by talking in a server which has petmessages enabled. (\`${prefix}petmessages enable\`)`,
 			NO_QUOTE: "Couldn't find a quote.",
 			URBAN_NO_ENTRY: 'No entry found',
 			URBAN_RESULT: (search, result, wdef) => `**Word:** ${search}
