@@ -68,7 +68,8 @@ export default class extends BotCommand {
 
 		const arrayOfNames = names.split(' ');
 
-		if (arrayOfNames.length > 5) throw `You can't have more than 5 members in a raid team.`;
+		if (arrayOfNames.length > 5)
+			return msg.send(`You can't have more than 5 members in a raid team.`);
 
 		const team = arrayOfNames.map(member => ({
 			id: member,
