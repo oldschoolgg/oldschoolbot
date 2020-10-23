@@ -24,6 +24,11 @@ const axes = [
 		wcLvl: 61
 	},
 	{
+		id: itemID('Crystal axe'),
+		reductionPercent: 13,
+		wcLvl: 61
+	},
+	{
 		id: itemID('Gilded axe'),
 		reductionPercent: 12,
 		wcLvl: 41
@@ -72,7 +77,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) < log.level) {
-			throw `${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`
+			);
 		}
 
 		const QP = msg.author.settings.get(UserSettings.QP);

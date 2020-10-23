@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -9,6 +10,7 @@ import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	calcPercentOfNum,
 	formatDuration,
+	itemID,
 	itemNameFromID,
 	rand,
 	stringMatches
@@ -26,15 +28,9 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -45,30 +41,40 @@ export default class extends BotCommand {
 		);
 
 		if (!fish) {
-			throw `Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(
-				fish => fish.name
-			).join(', ')}.`;
+			return msg.send(
+				`Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(
+					fish => fish.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Fishing) < fish.level) {
-			throw `${msg.author.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`
+			);
 		}
 
 		if (fish.qpRequired) {
 			if (msg.author.settings.get(UserSettings.QP) < fish.qpRequired) {
-				throw `You need ${fish.qpRequired} qp to catch those!`;
+				return msg.send(`You need ${fish.qpRequired} qp to catch those!`);
 			}
 		}
 
 		if (fish.name === 'Barbarian fishing' && msg.author.skillLevel(SkillsEnum.Agility) < 15) {
-			throw `You need at least 15 Agility to catch those!`;
+			return msg.send(`You need at least 15 Agility to catch those!`);
 		}
 
 		// If no quantity provided, set it to the max.
-		const scaledTimePerFish =
+		let scaledTimePerFish =
 			Time.Second *
 			fish.timePerFish *
 			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
+
+		const boosts = [];
+		if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+			scaledTimePerFish *= 0.5;
+			boosts.push(`5% for Crystal harpoon`);
+		}
 
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
@@ -77,17 +83,19 @@ export default class extends BotCommand {
 		let duration = quantity * scaledTimePerFish;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				fish.name
-			} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					fish.name
+				} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`
+			);
 		}
 
 		if (fish.bait) {
 			const hasBait = await msg.author.hasItem(fish.bait, quantity);
 			if (!hasBait) {
-				throw `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
+				return msg.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
 			}
 		}
 
@@ -112,9 +120,13 @@ export default class extends BotCommand {
 			}
 		);
 
-		const response = `${msg.author.minionName} is now fishing ${quantity}x ${
+		let response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
 
 		return msg.send(response);
 	}
