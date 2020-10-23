@@ -119,6 +119,11 @@ export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOption
 	floors: number[];
 }
 
+export interface ZalcanoActivityTaskOptions extends MinigameActivityTaskOptions {
+	isMVP: boolean;
+	performance: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
