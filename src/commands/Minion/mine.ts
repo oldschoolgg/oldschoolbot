@@ -22,6 +22,11 @@ const pickaxes = [
 		miningLvl: 61
 	},
 	{
+		id: itemID('Crystal pickaxe'),
+		reductionPercent: 11,
+		miningLvl: 71
+	},
+	{
 		id: itemID('Gilded pickaxe'),
 		reductionPercent: 11,
 		miningLvl: 41

@@ -14,6 +14,48 @@ interface Createable {
 	cantBeInCL?: boolean;
 }
 
+const crystalTools: Createable[] = [
+	{
+		name: 'Crystal pickaxe',
+		inputItems: {
+			[itemID('Dragon pickaxe')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal pickaxe')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	},
+	{
+		name: 'Crystal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal harpoon')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	},
+	{
+		name: 'Crystal axe',
+		inputItems: {
+			[itemID('Dragon axe')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal axe')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	}
+];
+
 const Createables: Createable[] = [
 	{
 		name: 'Godsword blade',
@@ -791,7 +833,8 @@ const Createables: Createable[] = [
 			Scythe: 1
 		}),
 		cantBeInCL: true
-	}
+	},
+	...crystalTools
 ];
 
 export default Createables;
