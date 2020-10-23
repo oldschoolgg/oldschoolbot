@@ -1,7 +1,9 @@
 import { Image } from 'canvas';
+import { MessageEmbed } from 'discord.js';
 import { FSWatcher } from 'fs';
 import { KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
+import { Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { Limit } from 'p-limit';
@@ -61,6 +63,13 @@ declare module 'klasa' {
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
+		getStatsEmbed(
+			username: string,
+			color: number,
+			player: Player,
+			key = 'level',
+			showExtra = true
+		): MessageEmbed;
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
