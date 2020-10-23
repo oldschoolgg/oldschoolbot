@@ -119,7 +119,7 @@ export default class extends BotCommand {
 
 		if (buyable.gpCost) {
 			if (GP < totalGPCost) {
-				throw `You need ${toKMB(totalGPCost)} GP to purchase this item.`;
+				return msg.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
 			}
 			await msg.author.removeGP(totalGPCost);
 		}
