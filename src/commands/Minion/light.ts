@@ -54,7 +54,9 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			const amountOfLogsOwned = msg.author.settings.get(UserSettings.Bank)[log.inputLogs];
-			if (!amountOfLogsOwned || amountOfLogsOwned === 0) throw `You have no ${log.name}.`;
+			if (!amountOfLogsOwned || amountOfLogsOwned === 0) {
+				return msg.send(`You have no ${log.name}.`);
+			}
 			quantity = Math.min(
 				Math.floor(msg.author.maxTripLength / timeToLightSingleLog),
 				amountOfLogsOwned
