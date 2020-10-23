@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -59,6 +60,11 @@ export default class extends BotCommand {
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
+
+		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+			baseTime = 1.15;
+			boosts.push(`-15% time penalty for not having graceful equipped`);
+		}
 
 		let healAmountNeeded = 7 * 12;
 		if (kc > 100) healAmountNeeded = 1 * 12;
