@@ -72,7 +72,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 		if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
-			scaledTimePerFish *= 0.5;
+			scaledTimePerFish *= 0.95;
 			boosts.push(`5% for Crystal harpoon`);
 		}
 
