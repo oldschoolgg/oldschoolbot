@@ -25,7 +25,7 @@ const axes = [
 	},
 	{
 		id: itemID('Crystal axe'),
-		reductionPercent: 13,
+		reductionPercent: 12,
 		wcLvl: 61
 	},
 	{
