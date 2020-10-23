@@ -33,6 +33,7 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Nightmare:
 		case Activity.Sepulchre:
 		case Activity.TrickTreat:
+		case Activity.Zalcano:
 		case Activity.FishingTrawler:
 			return Tasks.MinigameTicker;
 		default: {
