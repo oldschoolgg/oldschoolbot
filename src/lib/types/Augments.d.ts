@@ -31,7 +31,6 @@ declare module 'klasa' {
 		public _badgeCache: Map<string, string>;
 		public killWorkerThread?: ArbitraryThreadType;
 		public wtf(error: Error): void;
-		twitchClientID?: string;
 		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;

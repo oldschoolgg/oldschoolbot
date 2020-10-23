@@ -1,7 +1,3 @@
-const fetch = require('node-fetch');
-
-const { twitchClientID } = require('./config');
-
 const convertLVLtoXP = lvl => {
 	let points = 0;
 
@@ -48,25 +44,6 @@ function rand(min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const twitchAPIRequestOptions = {
-	headers: {
-		Accept: 'application/vnd.twitchtv.v5+json',
-		'Client-ID': twitchClientID ?? ''
-	}
-};
-
-async function resolveTwitchUsersFromNames(names) {
-	return await fetch(
-		`https://api.twitch.tv/kraken/users?login=${names.map(encodeURIComponent).join(',')}`,
-		twitchAPIRequestOptions
-	)
-		.then(response => response.json())
-		.then(res => res.users || [])
-		.catch(err => {
-			throw err;
-		});
-}
-
 function toTitleCase(str) {
 	var splitStr = str.toLowerCase().split(' ');
 	for (let i = 0; i < splitStr.length; i++) {
@@ -96,8 +73,6 @@ module.exports = {
 	cleanString,
 	fmNum,
 	rand,
-	resolveTwitchUsersFromNames,
-	twitchAPIRequestOptions,
 	toTitleCase,
 	formatDuration
 };

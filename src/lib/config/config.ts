@@ -1,13 +1,8 @@
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
-import { customClientOptions, production, providerConfig, twitchClientID } from '../../config';
+import { customClientOptions, production, providerConfig } from '../../config';
 import { Intents } from './Intents';
 import permissionLevels from './permissionLevels';
-
-const clientProperties = {
-	twitchClientID,
-	production
-};
 
 const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
@@ -43,6 +38,7 @@ const clientOptions: KlasaClientOptions = {
 	},
 	noPrefixDM: true,
 	partials: ['USER'],
+	production,
 	...customClientOptions
 };
 

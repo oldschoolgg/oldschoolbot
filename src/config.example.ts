@@ -15,7 +15,6 @@ export const providerConfig: ProviderConfig | null = {
 export const production = require('os').platform() === 'linux';
 export const staging = false;
 
-export const twitchClientID: string | null = null;
 export const redditAppConfig: RedditAppConfig = null;
 export const twitterAppConfig: TwitterAppConfig = null;
 export const mongoDBConfig: MongoDBConfig = null;
