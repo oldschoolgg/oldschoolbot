@@ -55,6 +55,11 @@ export default class extends Task {
 				| Tasks.SkillingTicker;
 
 			minionTaskCounts[taskName] = taskData.subTasks.length;
+			for (const task of taskData.subTasks) {
+				if ('users' in task) {
+					minionTaskCounts[taskName] += task.users.length;
+				}
+			}
 		}
 		return minionTaskCounts;
 	}

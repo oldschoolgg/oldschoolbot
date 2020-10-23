@@ -39,7 +39,8 @@ import {
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
 import { itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
@@ -327,6 +328,11 @@ export default class extends Extendable {
 			case Activity.FishingTrawler: {
 				const data = currentTask as FishingTrawlerActivityTaskOptions;
 				return `${this.minionName} is currently aboard the Fishing Trawler, doing ${data.quantity}x trips. ${formattedDuration}`;
+			}
+
+			case Activity.Zalcano: {
+				const data = currentTask as ZalcanoActivityTaskOptions;
+				return `${this.minionName} is currently killing Zalcano ${data.quantity}x times. ${formattedDuration}`;
 			}
 		}
 	}
