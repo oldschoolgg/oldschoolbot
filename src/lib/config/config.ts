@@ -42,4 +42,4 @@ const clientOptions: KlasaClientOptions = {
 	...customClientOptions
 };
 
-export { clientOptions, clientProperties };
+export { clientOptions };
