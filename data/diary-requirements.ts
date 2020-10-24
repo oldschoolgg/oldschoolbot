@@ -1,7 +1,7 @@
 /* Assumes you cannot use spicy stews until Hard Diaries unless 30 crafting */
 /* Assumes you cannot use crystal saw until Hard Diaries */
 
-module.exports = {
+const diaryRequirements = {
 	Ardougne: {
 		attack: {
 			statReq: [0, 0, 0, 0],
@@ -1131,3 +1131,5 @@ module.exports = {
 		}
 	}
 };
+
+export default diaryRequirements;
