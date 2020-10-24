@@ -1,19 +1,18 @@
-const { Command, Stopwatch, Type, util } = require('klasa');
-const { inspect } = require('util');
+import { Command, CommandStore, KlasaMessage, Stopwatch, Type, util } from 'klasa';
+import { inspect } from 'util';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+export default class extends Command {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['ev'],
 			permissionLevel: 10,
 			guarded: true,
-			usage: '<expression:str>',
-			usageDelim: null
+			usage: '<expression:str>'
 		});
 	}
 
-	async run(message, [code]) {
-		if (!this.client.owners.has(message.author)) return;
+	async run(message: KlasaMessage, [code]: [string]) {
+		if (!this.client.owners.has(message.author)) return null;
 		const { success, result, time, type } = await this.eval(message, code);
 		if (typeof result !== 'string') return null;
 
@@ -45,17 +44,22 @@ module.exports = class extends Command {
 	}
 
 	// Eval the input
-	async eval(message, code) {
+	async eval(message: KlasaMessage, code: string) {
 		// eslint-disable-next-line no-unused-vars
 		const msg = message;
 		const { flagArgs: flags } = message;
 		code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 		const stopwatch = new Stopwatch();
-		let success, syncTime, asyncTime, result;
+		let success;
+		let syncTime;
+		let asyncTime;
+		let result;
 		let thenable = false;
 		let type;
 		try {
 			if (flags.async) code = `(async () => {\n${code}\n})();`;
+			else if (flags.bk) code = `(async () => {\nreturn ${code}\n})();`;
+			// eslint-disable-next-line no-eval
 			result = eval(code);
 			syncTime = stopwatch.toString();
 			type = new Type(result);
@@ -95,7 +99,7 @@ module.exports = class extends Command {
 		};
 	}
 
-	formatTime(syncTime, asyncTime) {
+	formatTime(syncTime: string, asyncTime: string | undefined) {
 		return asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`;
 	}
-};
+}

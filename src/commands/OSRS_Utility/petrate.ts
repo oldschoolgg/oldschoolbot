@@ -1,27 +1,5 @@
-const { Command } = require('klasa');
-
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
-			description: 'Shows the rates of getting skilling pets at certain levels.',
-			usage:
-				'<skillLevel:int{1,99}> <hunter|woodcutting|agility|fishing|mining|thieving|farming>',
-			usageDelim: ' '
-		});
-	}
-
-	async run(msg, [skillLevel, petName]) {
-		return msg.send(this.rate(rates[petName], skillLevel));
-	}
-
-	rate(obj, lvl) {
-		const rates = [];
-		for (const thing in obj) {
-			rates.push(`**${thing}:** ${(obj[thing] - lvl * 25).toLocaleString()}`);
-		}
-		return rates.join('\n');
-	}
-};
+import { objectKeys } from 'e';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const rates = {
 	hunter: {
@@ -86,3 +64,26 @@ const rates = {
 		'Tithe Farm': 7494389
 	}
 };
+
+export default class extends Command {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			description: 'Shows the rates of getting skilling pets at certain levels.',
+			usage:
+				'<skillLevel:int{1,99}> <hunter|woodcutting|agility|fishing|mining|thieving|farming>',
+			usageDelim: ' '
+		});
+	}
+
+	async run(msg: KlasaMessage, [skillLevel, petName]: [number, keyof typeof rates]) {
+		return msg.send(this.rate(rates[petName], skillLevel));
+	}
+
+	rate(obj: typeof rates[keyof typeof rates], lvl: number) {
+		const rates = [];
+		for (const key of objectKeys(obj)) {
+			rates.push(`**${key}:** ${(obj[key] - lvl * 25).toLocaleString()}`);
+		}
+		return rates.join('\n');
+	}
+}
