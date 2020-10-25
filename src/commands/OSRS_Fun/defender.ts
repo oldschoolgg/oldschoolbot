@@ -1,12 +1,9 @@
-const { Command } = require('klasa');
-const { roll } = require('../../util');
+import { Command, KlasaMessage } from 'klasa';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, { description: 'See how long it takes you to get a Dragon Defender.' });
-	}
+import { roll } from '../../lib/util';
 
-	async run(msg) {
+export default class extends Command {
+	async run(msg: KlasaMessage) {
 		let KC = 0;
 		let DKC = 0;
 		let defenders = 0;
@@ -30,4 +27,4 @@ module.exports = class extends Command {
 			`You had to kill ${KC} Cyclops to get up to a Rune Defender, and then another ${DKC} for the Dragon Defender.`
 		);
 	}
-};
+}
