@@ -1,0 +1,67 @@
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { constants, Hiscores } from 'oldschooljs';
+import { cleanString } from 'oldschooljs/dist/util';
+
+import { toTitleCase } from '../../lib/util';
+
+const aliasNameMap: Record<string, string> = {
+	corp: 'corporealBeast',
+	mole: 'giantMole',
+	kbd: 'kingBlackDragon',
+	bandos: 'generalGraardor',
+	sire: 'abyssalSire',
+	arma: 'kreeArra',
+	kree: 'kreeArra',
+	zammy: 'krilTsutsaroth',
+	kril: 'krilTsutsaroth',
+	jad: 'tzTokJad',
+	zuk: 'tzKalZuk',
+	inferno: 'tzKalZuk',
+	thermy: 'thermonuclearSmokeDevil',
+	tob: 'theatreofBlood',
+	gauntlet: 'theGauntlet',
+	barrows: 'barrowsChests',
+	hydra: 'alchemicalHydra'
+};
+
+export default class extends Command {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			cooldown: 2,
+			usage: '<boss:string> (username:rsn)',
+			usageDelim: ',',
+			requiredPermissions: ['EMBED_LINKS']
+		});
+	}
+
+	async run(msg: KlasaMessage, [bossName, username]: [string, string]) {
+		try {
+			const { bossRecords } = await Hiscores.fetch(username);
+
+			const alias = aliasNameMap[bossName.toLowerCase()];
+
+			if (alias) bossName = alias;
+
+			for (const [boss, { rank, score }] of Object.entries(bossRecords)) {
+				if (cleanString(boss) === cleanString(bossName)) {
+					if (score === -1 || rank === -1) {
+						return msg.send(
+							`${toTitleCase(username)}'s has no recorded KC for that boss.`
+						);
+					}
+					return msg.send(
+						`${toTitleCase(username)}'s ${constants.bossNameMap.get(
+							boss
+						)} KC is **${score.toLocaleString()}** (Rank ${rank.toLocaleString()})`
+					);
+				}
+			}
+
+			return msg.send(
+				`${toTitleCase(username)} doesn't have any records kills for that boss.`
+			);
+		} catch (err) {
+			return msg.send(err.message);
+		}
+	}
+}
