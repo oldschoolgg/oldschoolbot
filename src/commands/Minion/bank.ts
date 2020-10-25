@@ -73,7 +73,7 @@ export default class extends Command {
 					} catch (_) {}
 				}
 				if (Object.keys(view).length === 0) {
-					throw `You have none of those items!`;
+					return msg.send(`You have none of those items!`);
 				}
 				return msg.channel.sendBankImage({
 					bank: view,
@@ -94,7 +94,9 @@ export default class extends Command {
 		const hasItemsInBank = bankKeys.length > 0;
 
 		if (coins === 0 && !hasItemsInBank) {
-			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;
+			return msg.send(
+				`You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`
+			);
 		}
 
 		if (msg.flagArgs.text) {
@@ -149,7 +151,7 @@ export default class extends Command {
 		const chunkedObject = chunkObject(bank, 56);
 		const bankPage = chunkedObject[pageNumberOrItemName - 1];
 
-		if (!bankPage) throw "You don't have any items on that page!";
+		if (!bankPage) return msg.send("You don't have any items on that page!");
 
 		if (msg.flagArgs.full) {
 			return msg.channel.sendBankImage({

@@ -24,7 +24,7 @@ export default class extends BotCommand {
 		const minigame = Minigames.find(game => stringMatches(game.name, name));
 
 		if (!mon && !minigame) {
-			throw `That's not a valid monster or minigame.`;
+			return msg.send(`That's not a valid monster or minigame.`);
 		}
 
 		const kc = mon

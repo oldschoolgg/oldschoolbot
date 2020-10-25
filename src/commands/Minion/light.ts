@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -20,15 +21,9 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, logName = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			logName = quantity;
 			quantity = null;
@@ -59,7 +54,9 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			const amountOfLogsOwned = msg.author.settings.get(UserSettings.Bank)[log.inputLogs];
-			if (!amountOfLogsOwned || amountOfLogsOwned === 0) throw `You have no ${log.name}.`;
+			if (!amountOfLogsOwned || amountOfLogsOwned === 0) {
+				return msg.send(`You have no ${log.name}.`);
+			}
 			quantity = Math.min(
 				Math.floor(msg.author.maxTripLength / timeToLightSingleLog),
 				amountOfLogsOwned
@@ -70,17 +67,19 @@ export default class extends BotCommand {
 		// Multiplying the logs required by the quantity of ashes.
 		const hasRequiredLogs = await msg.author.hasItem(log.inputLogs, quantity);
 		if (!hasRequiredLogs) {
-			throw `You dont have ${quantity}x ${log.name}.`;
+			return msg.send(`You dont have ${quantity}x ${log.name}.`);
 		}
 
 		const duration = quantity * timeToLightSingleLog;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				log.name
-			}s you can light is ${Math.floor(msg.author.maxTripLength / timeToLightSingleLog)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					log.name
+				}s you can light is ${Math.floor(msg.author.maxTripLength / timeToLightSingleLog)}.`
+			);
 		}
 
 		// Remove the logs from their bank.

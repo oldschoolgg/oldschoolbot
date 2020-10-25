@@ -23,7 +23,7 @@ export default class extends Command {
 	async add(message: KlasaMessage, [tag, content]: [string, string]) {
 		const isStaff = await message.hasAtLeastPermissionLevel(6);
 		if (!message.member || !isStaff) {
-			throw `You must be a staff of this server to add tags.`;
+			return message.send(`You must be a staff of this server to add tags.`);
 		}
 
 		if (!content || content.length === 0) {

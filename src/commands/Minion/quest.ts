@@ -1,8 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Events, MAX_QP, Tasks, Time } from '../../lib/constants';
+import { Activity, MAX_QP, Tasks, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
@@ -18,23 +19,12 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion.`;
-		}
-
 		const currentQP = msg.author.settings.get(UserSettings.QP);
 		if (currentQP >= MAX_QP) {
-			throw `You already have the maximum amount of Quest Points.`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			this.client.emit(
-				Events.Log,
-				`${msg.author.username}[${msg.author.id}] [TTK-BUSY] Questing`
-			);
-
-			return msg.send(msg.author.minionStatus);
+			return msg.send(`You already have the maximum amount of Quest Points.`);
 		}
 
 		const boosts = [];

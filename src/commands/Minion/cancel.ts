@@ -27,21 +27,29 @@ export default class extends BotCommand {
 		const currentTask = getActivityOfUser(this.client, msg.author.id);
 
 		if (!currentTask) {
-			throw `${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`;
+			return msg.send(
+				`${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`
+			);
 		}
 
 		if (currentTask.finishDate - Date.now() < Time.Minute * 1.5) {
-			throw `${msg.author.minionName} is already on their way back from the trip, returning in around a minute, no point in cancelling now!`;
+			return msg.send(
+				`${msg.author.minionName} is already on their way back from the trip, returning in around a minute, no point in cancelling now!`
+			);
 		}
 
 		if (currentTask.type === Activity.GroupMonsterKilling) {
-			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`;
+			return msg.send(
+				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
+			);
 		}
 
 		if (currentTask.type === Activity.Nightmare) {
 			const data = currentTask as NightmareActivityTaskOptions;
 			if (data.users.length > 1) {
-				throw `${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`;
+				return msg.send(
+					`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
+				);
 			}
 		}
 

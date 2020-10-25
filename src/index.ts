@@ -2,11 +2,11 @@ import 'reflect-metadata';
 
 import { Client as TagsClient } from '@kcp/tags';
 import * as Sentry from '@sentry/node';
-import { Client, KlasaClientOptions } from 'klasa';
+import { Client } from 'klasa';
 import pLimit from 'p-limit';
 
 import { botToken, sentryDSN } from './config';
-import { clientOptions, clientProperties } from './lib/config/config';
+import { clientOptions } from './lib/config/config';
 import { initItemAliases } from './lib/itemAliases';
 
 if (sentryDSN) {
@@ -25,15 +25,6 @@ class OldSchoolBot extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();
 	public queuePromise = pLimit(1);
-
-	constructor(options: KlasaClientOptions) {
-		super(options);
-		for (const prop of Object.keys(clientProperties)) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			this[prop] = clientProperties[prop];
-		}
-	}
 
 	public init = async (): Promise<this> => {
 		initItemAliases();
