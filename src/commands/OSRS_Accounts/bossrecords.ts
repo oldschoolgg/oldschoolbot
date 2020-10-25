@@ -1,13 +1,10 @@
-const {
-	Command,
-	RichDisplay,
-	util: { chunk }
-} = require('klasa');
-const { Hiscores, constants } = require('oldschooljs');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { chunk } from 'e';
+import { Command, CommandStore, KlasaMessage, RichDisplay } from 'klasa';
+import { constants, Hiscores } from 'oldschooljs';
 
-const { toTitleCase } = require('../../util');
-const pets = require('../../../data/pets');
+import { toTitleCase } from '../../lib/util';
+import pets = require('../../../data/pets');
 
 // Emojis for bosses with no pets
 const miscEmojis = {
@@ -20,9 +17,9 @@ const miscEmojis = {
 	obor: '<:Hill_giant_club:421045456194240523>'
 };
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+export default class extends Command {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 2,
 			aliases: ['br'],
 			usage: '(username:rsn)',
@@ -30,14 +27,18 @@ module.exports = class extends Command {
 		});
 	}
 
-	getEmojiForBoss(key) {
+	getEmojiForBoss(key: keyof typeof miscEmojis | string) {
+		if (key in miscEmojis) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore
+			return miscEmojis[key];
+		}
+
 		const pet = pets.find(_pet => _pet.bossKeys && _pet.bossKeys.includes(key));
 		if (pet) return pet.emoji;
-
-		return miscEmojis[key];
 	}
 
-	async run(msg, [username]) {
+	async run(msg: KlasaMessage, [username]: [string]) {
 		const { bossRecords } = await Hiscores.fetch(username).catch(err => {
 			throw err.message;
 		});
@@ -64,7 +65,7 @@ module.exports = class extends Command {
 
 			for (const [name, { rank, score }] of page) {
 				embed.addField(
-					`${this.getEmojiForBoss(name)} ${constants.bossNameMap.get(name)}`,
+					`${this.getEmojiForBoss(name) || ''} ${constants.bossNameMap.get(name)}`,
 					`**KC:** ${score.toLocaleString()}\n**Rank:** ${rank.toLocaleString()}`,
 					true
 				);
@@ -73,6 +74,7 @@ module.exports = class extends Command {
 			display.addPage(embed);
 		}
 
-		return display.run(await loadingMsg, { jump: false, stop: false });
+		display.run(await loadingMsg, { jump: false, stop: false });
+		return null;
 	}
-};
+}
