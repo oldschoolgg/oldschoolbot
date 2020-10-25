@@ -1,17 +1,18 @@
-const { Command } = require('klasa');
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { cleanString } from 'oldschooljs/dist/util';
 
-const { roll, cleanString } = require('../../util');
+import { roll } from '../../lib/util';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+export default class extends Command {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 10,
 			description: 'Rolls a singular pet until you get it twice in a row.',
 			usage: '<petName:str>'
 		});
 	}
 
-	async run(msg, [petName]) {
+	async run(msg: KlasaMessage, [petName]: [string]) {
 		const cleanName = cleanString(petName);
 		switch (cleanName) {
 			case 'GIANTMOLE':
@@ -189,16 +190,6 @@ module.exports = class extends Command {
 						65
 					)} times to get the Skotos Pet **Back-to-Back (2 in a row)!** <:Skotos:324127378890817546>`
 				);
-			case 'TANGLEROOT':
-			case 'FARMING': {
-				const drop = this.skillPetRoll(6893);
-				const xp = (drop * 13913).toLocaleString();
-				const gp = (drop * 210000).toLocaleString();
-				const amount = drop.toLocaleString();
-				return msg.send(
-					`You had to harvest ${amount} Magic Trees to get the Tangleroot Pet **Back-to-Back (2 in a row)!** <:Tangleroot:324127378978635778> You also got...\n<:xp:630911040510623745> ${xp} XP\n<:RSGP:369349580040437770> -${gp} GP`
-				);
-			}
 			case 'JAD':
 				return msg.send(
 					`You had to kill Jad ${this.petRoll(
@@ -277,7 +268,8 @@ module.exports = class extends Command {
 				);
 		}
 	}
-	petRoll(dropChance) {
+
+	petRoll(dropChance: number) {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
@@ -287,7 +279,7 @@ module.exports = class extends Command {
 		return amountOfRolls.toLocaleString();
 	}
 
-	skillPetRoll(dropChance) {
+	skillPetRoll(dropChance: number) {
 		let hasPet = false;
 		let amountOfRolls = 0;
 		while (!hasPet) {
@@ -296,4 +288,4 @@ module.exports = class extends Command {
 		}
 		return amountOfRolls;
 	}
-};
+}
