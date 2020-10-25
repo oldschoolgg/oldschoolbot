@@ -14,7 +14,6 @@ interface ClientStorage {
 	totalCommandsUsed?: number;
 	prices?: object;
 	pollQuestions?: object;
-	petRecords?: object;
 	economyStats?: {
 		dicingBank?: number;
 		duelTaxBank?: number;
@@ -83,7 +82,6 @@ export interface RawClientSettings {
 	totalCommandsUsed: number;
 	prices: object;
 	pollQuestions: object;
-	petRecords: object;
 	'economyStats.dicingBank': number;
 	'economyStats.duelTaxBank': number;
 	'economyStats.dailiesAmount': number;
@@ -100,7 +98,6 @@ export const ClientSettingsSchema = /* sql */ `
 		"totalCommandsUsed"            INTEGER       DEFAULT 0                  NOT NULL,
 		"prices"                       JSON          DEFAULT '{}'::JSON         NOT NULL,
 		"pollQuestions"                JSON          DEFAULT '{}'::JSON         NOT NULL,
-		"petRecords"                   JSON          DEFAULT '{}'::JSON         NOT NULL,
 		"economyStats.dicingBank"      INTEGER       DEFAULT 0                  NOT NULL,
 		"economyStats.duelTaxBank"     INTEGER       DEFAULT 0                  NOT NULL,
 		"economyStats.dailiesAmount"   INTEGER       DEFAULT 0                  NOT NULL,
@@ -310,7 +307,6 @@ async function migrateClientStorage() {
 			commandStats: entry.commandStats || {},
 			prices: entry.prices || {},
 			pollQuestions: entry.pollQuestions || {},
-			petRecords: entry.petRecords || {},
 			'economyStats.dicingBank': Math.floor(entry.economyStats?.dicingBank || 0),
 			'economyStats.duelTaxBank': Math.floor(entry.economyStats?.duelTaxBank || 0),
 			'economyStats.dailiesAmount': Math.floor(entry.economyStats?.dailiesAmount || 0),

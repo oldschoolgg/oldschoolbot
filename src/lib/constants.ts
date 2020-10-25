@@ -238,3 +238,9 @@ export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
 
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
+
+export const SKYRA_DEPRECATED_COMMAND = `This command has been *removed* from Old School Bot. However, the command is available in a bot called **Skyra**. 
+
+Skyra invite link: <https://invite.skyra.pw/>
+Skyra commands list & website: <https://skyra.pw/commands>
+`;

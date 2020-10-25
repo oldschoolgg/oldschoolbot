@@ -12,7 +12,7 @@ export default class extends Command {
 
 	async run(msg: KlasaMessage, [qty = 1]: [number]) {
 		if (qty > 10 && msg.author.id !== '157797566833098752') {
-			throw `I can only catch 10 Lucky Imps at a time!`;
+			return msg.send(`I can only catch 10 Lucky Imps at a time!`);
 		}
 
 		const loot = Openables.LuckyImp.open(qty);

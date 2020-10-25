@@ -27,7 +27,7 @@ export default class extends BotCommand {
 			}[]
 		>(query);
 
-		if (result.length === 0) throw `No results found.`;
+		if (result.length === 0) return msg.send(`No results found.`);
 
 		const command = this.client.commands.get('leaderboard');
 

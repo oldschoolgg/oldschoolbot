@@ -337,20 +337,6 @@ module.exports = class extends Language {
 				`**${username}**'s Time to 200m All is **${time}** hours.`,
 
 			/*
-			 * Fun Commands
-			 */
-			NO_PETS: prefix => `You have no pets yet.
-
-You can get pets by talking in a server which has petmessages enabled. (\`${prefix}petmessages enable\`)`,
-			NO_QUOTE: "Couldn't find a quote.",
-			URBAN_NO_ENTRY: 'No entry found',
-			URBAN_RESULT: (search, result, wdef) => `**Word:** ${search}
-**Definition:** _${wdef}_
-**Example:**\n${result.example}
-**${result.thumbs_up}** 👍 | **${result.thumbs_down}** 👎
-*By ${result.author}*
-<${result.permalink}>`,
-			/*
 			 * OSRS Account Commands
 			 */
 			CLUE_SCORE_FORMAT: (rank, score) =>

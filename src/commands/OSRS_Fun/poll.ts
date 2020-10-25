@@ -14,7 +14,9 @@ export default class extends Command {
 		msg.react('380915244760825857')
 			.then((react: MessageReaction) => react.message.react('380915244652036097'))
 			.catch(() => {
-				throw `There was an error ${Emoji.Sad} Do I have permissions to react to messages?`;
+				return msg.send(
+					`There was an error ${Emoji.Sad} Do I have permissions to react to messages?`
+				);
 			});
 
 		return null;

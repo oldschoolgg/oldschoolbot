@@ -1,8 +1,7 @@
 const { Command } = require('klasa');
 const { Hiscores } = require('oldschooljs');
 const { MessageEmbed } = require('discord.js');
-
-const { convertXPtoLVL } = require('../../util');
+const { convertXPtoLVL } = require('oldschooljs/dist/util');
 
 const { default: emoji } = require('../../../data/skill-emoji');
 

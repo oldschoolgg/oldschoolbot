@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		const mon = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monName)));
 
 		if (!mon) {
-			throw `That's not a valid monster.`;
+			return msg.send(`That's not a valid monster.`);
 		}
 
 		const item = getOSItem(itemName);
@@ -36,7 +36,7 @@ export default class extends BotCommand {
 			}[]
 		>(query);
 
-		if (result.length === 0) throw `No results found.`;
+		if (result.length === 0) return msg.send(`No results found.`);
 
 		const command = this.client.commands.get('leaderboard');
 

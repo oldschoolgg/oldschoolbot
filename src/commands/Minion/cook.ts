@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Events, Tasks, Time } from '../../lib/constants';
+import { Activity, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -27,15 +28,9 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, cookableName = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			cookableName = quantity;
 			quantity = null;
@@ -49,13 +44,17 @@ export default class extends BotCommand {
 		);
 
 		if (!cookable) {
-			throw `Thats not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
-				cookable => cookable.name
-			).join(', ')}.`;
+			return msg.send(
+				`Thats not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
+					cookable => cookable.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < cookable.level) {
-			throw `${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`
+			);
 		}
 
 		// Based off catherby fish/hr rates
@@ -72,7 +71,7 @@ export default class extends BotCommand {
 			for (const [cookableID, qty] of requiredCookables) {
 				const itemsOwned = msg.author.numItemsInBankSync(parseInt(cookableID));
 				if (itemsOwned === 0) {
-					throw `You have no ${itemNameFromID(parseInt(cookableID))}.`;
+					return msg.send(`You have no ${itemNameFromID(parseInt(cookableID))}.`);
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
@@ -84,29 +83,34 @@ export default class extends BotCommand {
 		// Multiplying the cookable required by the quantity
 		for (const [cookableID, qty] of requiredCookables) {
 			if (!bankHasItem(userBank, parseInt(cookableID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(cookableID))}.`;
+				return msg.send(`You don't have enough ${itemNameFromID(parseInt(cookableID))}.`);
 			}
 		}
 
 		const duration = quantity * timeToCookSingleCookable;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${
-				msg.author.maxTripLength
-			} minutes, try a lower quantity. The highest amount of ${
-				cookable.name
-			}s you can cook is ${Math.floor(msg.author.maxTripLength / timeToCookSingleCookable)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${
+					msg.author.maxTripLength
+				} minutes, try a lower quantity. The highest amount of ${
+					cookable.name
+				}s you can cook is ${Math.floor(
+					msg.author.maxTripLength / timeToCookSingleCookable
+				)}.`
+			);
 		}
 
 		// Remove the cookables from their bank.
 		let newBank = { ...userBank };
 		for (const [cookableID, qty] of requiredCookables) {
 			if (newBank[parseInt(cookableID)] < qty) {
-				this.client.emit(
-					Events.Wtf,
-					`${msg.author.sanitizedName} had insufficient cookables to be removed.`
+				this.client.wtf(
+					new Error(
+						`${msg.author.sanitizedName} had insufficient cookables to be removed.`
+					)
 				);
-				throw `What a terrible failure :(`;
+				return;
 			}
 			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
 		}

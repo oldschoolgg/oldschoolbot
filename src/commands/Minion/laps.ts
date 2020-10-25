@@ -34,17 +34,23 @@ export default class extends BotCommand {
 		);
 
 		if (!course) {
-			throw `Thats not a valid course. Valid courses are ${Agility.Courses.map(
-				course => course.name
-			).join(', ')}.`;
+			return msg.send(
+				`Thats not a valid course. Valid courses are ${Agility.Courses.map(
+					course => course.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
-			throw `${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`
+			);
 		}
 
 		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
-			throw `You need atleast ${course.qpRequired} Quest Points to do this course.`;
+			return msg.send(
+				`You need atleast ${course.qpRequired} Quest Points to do this course.`
+			);
 		}
 
 		// If no quantity provided, set it to the max.
@@ -55,11 +61,13 @@ export default class extends BotCommand {
 		const duration = quantity * timePerLap;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				course.name
-			} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					course.name
+				} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`
+			);
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>(
@@ -74,7 +82,6 @@ export default class extends BotCommand {
 				type: Activity.Agility
 			}
 		);
-		msg.author.incrementMinionDailyDuration(duration);
 
 		const response = `${msg.author.minionName} is now doing ${quantity}x ${
 			course.name

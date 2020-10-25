@@ -25,12 +25,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemArray]: [number | undefined, Item[]]) {
-		if (msg.author.isIronman) throw `Iron players can't sell items.`;
+		if (msg.author.isIronman) return msg.send(`Iron players can't sell items.`);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
 		if (!osItem) {
-			throw `You don't have any of this item to sell, or it is not tradeable.`;
+			return msg.send(`You don't have any of this item to sell, or it is not tradeable.`);
 		}
 
 		const numItemsHas = userBank[osItem.id];
@@ -42,7 +42,7 @@ export default class extends BotCommand {
 		let totalPrice = priceOfItem * quantity;
 
 		if (quantity > numItemsHas) {
-			throw `You dont have ${quantity}x ${osItem.name}.`;
+			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
 		if (totalPrice > 3) {
