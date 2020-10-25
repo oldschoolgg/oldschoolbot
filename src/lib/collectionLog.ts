@@ -1403,7 +1403,8 @@ export const skillingLog = {
 		'Dark graceful cape',
 		'Dark squirrel'
 	]),
-	Angler: anglerOutfit
+	Angler: anglerOutfit,
+	Zalcano: zalcanoLog
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
