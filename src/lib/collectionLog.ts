@@ -15,6 +15,8 @@ const nightmareLog = resolveItems([
 	'Little nightmare'
 ]);
 
+const zalcanoLog = resolveItems(['Crystal shard', 'Zalcano shard', 'Smolcano', 'Uncut onyx']);
+
 export const anglerOutfit = resolveItems([
 	'Angler hat',
 	'Angler top',
@@ -1542,5 +1544,10 @@ export const collectionLogTypes = [
 		name: 'Fishing Trawler',
 		aliases: ['trawler', 'ft', 'fishing trawler'],
 		items: fishingTrawler
+	},
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		items: zalcanoLog
 	}
 ];
