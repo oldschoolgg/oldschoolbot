@@ -20,24 +20,7 @@ module.exports = class extends Command {
 		if (!pet) throw "I don't recognize that pet!";
 
 		const count = pet.finish();
-		let petMessage = pet.formatFinish(count);
 
-		const petRecords = this.client.settings.get('petRecords');
-		const lowest = petRecords.lowest[pet.id];
-		const highest = petRecords.highest[pet.id];
-
-		if (!lowest || count < lowest) {
-			petRecords.lowest[pet.id] = count;
-			this.client.settings.update('petRecords', { ...petRecords });
-			petMessage += `\n\nYou set a new global record for the **luckiest** ${pet.name} pet!`;
-			if (lowest) petMessage += ` The previous record was ${lowest}.`;
-		} else if (!highest || count > highest) {
-			petRecords.highest[pet.id] = count;
-			this.client.settings.update('petRecords', { ...petRecords });
-			petMessage += `\n\nYou set a new global record for the **unluckiest** ${pet.name} pet!`;
-			if (highest) petMessage += ` The previous record was ${highest}.`;
-		}
-
-		return msg.send(petMessage);
+		return msg.send(pet.formatFinish(count));
 	}
 };
