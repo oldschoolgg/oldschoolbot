@@ -103,7 +103,11 @@ export default class extends BotCommand {
 
 		// Confirm the buyer wants to buy
 		const buyerConfirmationMsg = await msg.channel.send(
-			`${buyerMember}, do you wish to buy ${itemDesc} from \`${msg.author.username}#${msg.author.discriminator}\` for ${priceDesc}? Say \`buy\` to confirm.`
+			`${buyerMember}, do you wish to buy ${itemDesc} from \`${msg.author.username}#${
+				msg.author.discriminator
+			}\` for ${priceDesc} (${(
+				price / quantity
+			).toLocaleString()} GP each)? Say \`buy\` to confirm.`
 		);
 
 		try {
