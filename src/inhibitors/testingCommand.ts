@@ -2,7 +2,7 @@ import { Command, Inhibitor, KlasaMessage } from 'klasa';
 
 export default class extends Inhibitor {
 	public async run(msg: KlasaMessage, command: Command) {
-		if (command.testingCommand) {
+		if (command.testingCommand || command.category === 'Testing') {
 			if (
 				this.client.production ||
 				!this.client.user ||
