@@ -9,6 +9,6 @@
 		"types": ["node", "node-fetch", "discord.js", "klasa", "jest"],
 		"esModuleInterop": true
 	},
-	"include": ["./src/**/*", "tests/**/*"],
+	"include": ["./src/**/*", "./data/**/*", "tests/**/*"],
 	"exclude": ["node_modules", "**/dist"]
 }

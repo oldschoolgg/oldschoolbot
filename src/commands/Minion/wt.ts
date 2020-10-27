@@ -61,7 +61,7 @@ export default class extends BotCommand {
 		const fmLevel = msg.author.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {
-			throw `You need 50 Firemaking to have a chance at defeating the Wintertodt.`;
+			return msg.send(`You need 50 Firemaking to have a chance at defeating the Wintertodt.`);
 		}
 
 		const messages = [];
@@ -105,9 +105,11 @@ export default class extends BotCommand {
 			const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount) * quantity;
 			if (!bankHasItem(bank, food.id, amountNeeded)) {
 				if (Eatables.indexOf(food) === Eatables.length - 1) {
-					throw `You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
-						i => i.name
-					).join(', ')}.`;
+					return msg.send(
+						`You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
+							i => i.name
+						).join(', ')}.`
+					);
 				}
 				continue;
 			}

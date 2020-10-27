@@ -46,15 +46,19 @@ export default class extends Command {
 	async run(msg: KlasaMessage, [tier, quantity = 1]: [string, number]) {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
-			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
+			return msg.send(
+				`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`
+			);
 		}
 
 		const clueTier = clueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());
 
 		if (!clueTier) {
-			throw `Not a valid clue tier. The valid tiers are: ${clueTiers
-				.map(_tier => _tier.name)
-				.join(', ')}`;
+			return msg.send(
+				`Not a valid clue tier. The valid tiers are: ${clueTiers
+					.map(_tier => _tier.name)
+					.join(', ')}`
+			);
 		}
 
 		let loot = clueTier.table.open(quantity);

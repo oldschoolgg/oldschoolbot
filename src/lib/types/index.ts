@@ -72,11 +72,6 @@ export interface PollVotes {
 	'Skip question': string;
 }
 
-export interface PetRecords {
-	highest: ItemBank;
-	lowest: ItemBank;
-}
-
 export interface JMod {
 	redditUsername: string;
 	formattedName: string;

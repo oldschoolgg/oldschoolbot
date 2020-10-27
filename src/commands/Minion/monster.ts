@@ -26,9 +26,11 @@ export default class MinionCommand extends BotCommand {
 		const monster = findMonster(name);
 
 		if (!monster) {
-			throw `Thats not a valid monster to kill. Valid monsters are ${killableMonsters
-				.map(mon => mon.name)
-				.join(', ')}.`;
+			return msg.send(
+				`Thats not a valid monster to kill. Valid monsters are ${killableMonsters
+					.map(mon => mon.name)
+					.join(', ')}.`
+			);
 		}
 
 		const userKc = msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;

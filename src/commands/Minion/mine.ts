@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
@@ -69,15 +70,9 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -88,13 +83,17 @@ export default class extends BotCommand {
 		);
 
 		if (!ore) {
-			throw `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(
-				ore => ore.name
-			).join(', ')}.`;
+			return msg.send(
+				`Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(
+					ore => ore.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Mining) < ore.level) {
-			throw `${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`
+			);
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
@@ -137,11 +136,13 @@ export default class extends BotCommand {
 		const duration = quantity * timeToMine;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				ore.name
-			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					ore.name
+				} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`
+			);
 		}
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>(

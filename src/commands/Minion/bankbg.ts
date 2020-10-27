@@ -33,11 +33,11 @@ export default class extends BotCommand {
 		}
 
 		if (!selectedImage.available) {
-			throw `This image is not currently available.`;
+			return msg.send(`This image is not currently available.`);
 		}
 
 		if (msg.author.settings.get(UserSettings.BankBackground) === selectedImage.id) {
-			throw `This is already your bank background.`;
+			return msg.send(`This is already your bank background.`);
 		}
 
 		// Check they have required collection log items.
@@ -48,10 +48,12 @@ export default class extends BotCommand {
 				selectedImage.collectionLogItemsNeeded
 			)
 		) {
-			throw `You're not worthy to use this background. You need these items in your Collection Log: ${await createReadableItemListFromBank(
-				this.client,
-				selectedImage.collectionLogItemsNeeded
-			)}`;
+			return msg.send(
+				`You're not worthy to use this background. You need these items in your Collection Log: ${await createReadableItemListFromBank(
+					this.client,
+					selectedImage.collectionLogItemsNeeded
+				)}`
+			);
 		}
 
 		// Check they have the required perk tier.
@@ -59,9 +61,10 @@ export default class extends BotCommand {
 			selectedImage.perkTierNeeded &&
 			getUsersPerkTier(msg.author) < selectedImage.perkTierNeeded
 		) {
-			throw `This background is only available for Tier ${Number(
-				selectedImage.perkTierNeeded
-			) - 1} patrons.`;
+			return msg.send(
+				`This background is only available for Tier ${Number(selectedImage.perkTierNeeded) -
+					1} patrons.`
+			);
 		}
 
 		/**
@@ -76,10 +79,12 @@ export default class extends BotCommand {
 				selectedImage.itemCost &&
 				!bankHasAllItemsFromBank(userBank, selectedImage.itemCost)
 			) {
-				throw `You don't have the required items to purchase this background. You need: ${await createReadableItemListFromBank(
-					this.client,
-					selectedImage.itemCost
-				)}.`;
+				return msg.send(
+					`You don't have the required items to purchase this background. You need: ${await createReadableItemListFromBank(
+						this.client,
+						selectedImage.itemCost
+					)}.`
+				);
 			}
 
 			// Ensure they have the required GP.
@@ -87,7 +92,9 @@ export default class extends BotCommand {
 				selectedImage.gpCost &&
 				msg.author.settings.get(UserSettings.GP) < selectedImage.gpCost
 			) {
-				throw `You need ${selectedImage.gpCost.toLocaleString()} GP to purchase this background.`;
+				return msg.send(
+					`You need ${selectedImage.gpCost.toLocaleString()} GP to purchase this background.`
+				);
 			}
 
 			// Start building a string to show to the user.

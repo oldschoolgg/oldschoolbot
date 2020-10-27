@@ -222,8 +222,6 @@ export default class extends BotCommand {
 			}
 		);
 
-		for (const user of users) user.incrementMinionDailyDuration(duration);
-
 		const str =
 			type === 'solo'
 				? `${soloMessage(msg.author, duration, quantity)}`

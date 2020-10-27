@@ -291,7 +291,9 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 	async kc(msg: KlasaMessage, [name]: [string]) {
 		if (!name) {
-			throw `Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``;
+			return msg.send(
+				`Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``
+			);
 		}
 
 		const monster = Monsters.find(
@@ -300,7 +302,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
 
-		if (!monster) throw `That's not a valid monster!`;
+		if (!monster) return msg.send(`That's not a valid monster!`);
 
 		const onlyForGuild = msg.flagArgs.server;
 
@@ -354,7 +356,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			);
 		} else {
 			if (!skill) {
-				throw `That's not a valid skill.`;
+				return msg.send(`That's not a valid skill.`);
 			}
 
 			res = await this.query(
@@ -395,17 +397,19 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		if (1 < 2) {
-			throw `The collection log leaderboards are currently disabled.`;
+		if (msg.author.id !== '157797566833098752') {
+			return msg.send(`The collection log leaderboards are currently disabled.`);
 		}
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
 
 		if (!type) {
-			throw `That's not a valid collection log type. The valid types are: ${collectionLogTypes
-				.map(type => type.name)
-				.join(', ')}`;
+			return msg.send(
+				`That's not a valid collection log type. The valid types are: ${collectionLogTypes
+					.map(type => type.name)
+					.join(', ')}`
+			);
 		}
 
 		const items = Object.values(type.items).flat(100);
@@ -468,7 +472,7 @@ WHERE u.logbanklength > 300 ORDER BY u.logbanklength DESC;`
 			course.aliases.some(alias => stringMatches(alias, courseName))
 		);
 
-		if (!course) throw `Thats not a valid agility course.`;
+		if (!course) return msg.send(`Thats not a valid agility course.`);
 
 		const data: { id: string; lapCount: number }[] = await this.query(
 			`SELECT id, "lapsScores"->>'${course.id}' as "lapCount" FROM users WHERE "lapsScores"->>'${course.id}' IS NOT NULL ORDER BY ("lapsScores"->>'${course.id}')::int DESC LIMIT 50;`

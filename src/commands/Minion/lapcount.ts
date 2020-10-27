@@ -20,7 +20,7 @@ export default class extends BotCommand {
 		).map(arr => [parseInt(arr[0]), arr[1]]);
 		const sepulchreCount = msg.author.getMinigameScore(MinigameIDsEnum.Sepulchre);
 		if (!sepulchreCount && entries.length === 0) {
-			throw `You haven't done any laps yet! Sad.`;
+			return msg.send(`You haven't done any laps yet! Sad.`);
 		}
 		const data = `${entries
 			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)

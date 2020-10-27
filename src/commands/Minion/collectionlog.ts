@@ -32,9 +32,11 @@ export default class extends BotCommand {
 		);
 
 		if (!type && !monster) {
-			throw `That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
-				.map(type => type.name)
-				.join(', ')}`;
+			return msg.send(
+				`That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
+					.map(type => type.name)
+					.join(', ')}`
+			);
 		}
 
 		const items = Array.from(
