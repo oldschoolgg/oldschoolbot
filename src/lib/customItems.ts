@@ -223,4 +223,6 @@ export function initCustomItems() {
 		tradeable_on_ge: true,
 		wiki_name: 'Takon'
 	});
+
+	setCustomItem(21862, 'Obis', getOSItem('Herbi'));
 }

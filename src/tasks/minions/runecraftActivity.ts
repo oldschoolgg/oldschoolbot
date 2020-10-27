@@ -52,6 +52,10 @@ export default class extends Task {
 			}
 		}
 
+		if (roll(1200) && !user.hasItemEquippedOrInBank('Obis')) {
+			loot[itemID('Obis')] = 1;
+		}
+
 		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
 			loot[itemID('Rift guardian')] = 1;
 			str += `\nYou have a funny feeling you're being followed...`;
