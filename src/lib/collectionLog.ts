@@ -15,6 +15,8 @@ const nightmareLog = resolveItems([
 	'Little nightmare'
 ]);
 
+const zalcanoLog = resolveItems(['Crystal shard', 'Zalcano shard', 'Smolcano', 'Uncut onyx']);
+
 export const anglerOutfit = resolveItems([
 	'Angler hat',
 	'Angler top',
@@ -1407,7 +1409,8 @@ export const skillingLog = {
 		'Dark graceful cape',
 		'Dark squirrel'
 	]),
-	Angler: anglerOutfit
+	Angler: anglerOutfit,
+	Zalcano: zalcanoLog
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1554,5 +1557,10 @@ export const collectionLogTypes = [
 		name: 'Fishing Trawler',
 		aliases: ['trawler', 'ft', 'fishing trawler'],
 		items: fishingTrawler
+	},
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		items: zalcanoLog
 	}
 ];

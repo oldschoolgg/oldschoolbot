@@ -39,7 +39,9 @@ export default class extends BotCommand {
 		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
 		if (!osItem) {
-			throw `You don't have any of this item to sacrifice, or it is not tradeable.`;
+			return msg.send(
+				`You don't have any of this item to sacrifice, or it is not tradeable.`
+			);
 		}
 
 		const numItemsHas = userBank[osItem.id];
@@ -48,7 +50,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity > numItemsHas) {
-			throw `You dont have ${quantity}x ${osItem.name}.`;
+			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
 		let priceOfItem = await this.client.fetchItemPrice(osItem.id);

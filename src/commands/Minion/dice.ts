@@ -29,10 +29,10 @@ export default class extends BotCommand {
 		if (!amount) {
 			embed.setDescription(`You rolled **${rolled}** on the percentile dice.`);
 		} else {
-			if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
+			if (msg.author.isIronman) return msg.send(`You're an ironman and you cant play dice.`);
 
 			if (amount < 5_000_000) {
-				throw `You must dice atleast 5m.`;
+				return msg.send(`You must dice atleast 5m.`);
 			}
 
 			await msg.author.settings.sync(true);

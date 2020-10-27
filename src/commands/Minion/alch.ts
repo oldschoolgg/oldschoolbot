@@ -4,7 +4,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
-import { minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -48,11 +48,12 @@ export default class extends BotCommand {
 	}
 
 	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			throw `You don't have any of this item to alch.`;
+			return msg.send(`You don't have any of this item to alch.`);
 		}
 
 		// 5 tick action
@@ -68,7 +69,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity * timePerAlch > msg.author.maxTripLength) {
-			throw `The max number of alchs you can do is ${maxCasts}!`;
+			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
 		const duration = quantity * timePerAlch;
@@ -96,7 +97,7 @@ export default class extends BotCommand {
 		);
 
 		if (!bankHasAllItemsFromBank(userBank, consumedItems)) {
-			throw `You don't have the required items, you need ${consumedItemsString}`;
+			return msg.send(`You don't have the required items, you need ${consumedItemsString}`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {

@@ -41,12 +41,12 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.isIronman) throw `You can't duel someone as an ironman.`;
-		if (user.isIronman) throw `You can't duel someone as an ironman.`;
-		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
-		if (user.id === msg.author.id) throw `You cant duel yourself.`;
-		if (user.bot) throw `You cant duel a bot.`;
-		if (user.isBusy) throw `That user is busy right now.`;
+		if (msg.author.isIronman) return msg.send(`You can't duel someone as an ironman.`);
+		if (user.isIronman) return msg.send(`You can't duel someone as an ironman.`);
+		if (!(user instanceof User)) return msg.send(`You didn't mention a user to duel.`);
+		if (user.id === msg.author.id) return msg.send(`You cant duel yourself.`);
+		if (user.bot) return msg.send(`You cant duel a bot.`);
+		if (user.isBusy) return msg.send(`That user is busy right now.`);
 
 		user.toggleBusy(true);
 		msg.author.toggleBusy(true);

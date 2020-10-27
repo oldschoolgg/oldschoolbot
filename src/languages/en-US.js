@@ -268,17 +268,6 @@ module.exports = class extends Language {
 			 * Configuration Commands
 			 */
 
-			JOY_REACTIONS_ALREADY_ENABLED: `😂 Reactions are already enabled in this channel.`,
-			JOY_REACTIONS_ENABLED_OTHER: `😂 Reactions are already enabled in another channel, but I've switched them to use this channel.`,
-			JOY_REACTIONS_ENABLED: `Enabled 😂 Reactions in this channel.`,
-			JOY_REACTIONS_ARENT_ENABLED: "😂 Reactions aren't enabled, so you can't disable them.",
-			JOY_REACTIONS_DISABLED: 'Disabled 😂 Reactions in this channel.',
-
-			AUTO_UPDATE_NO_RSN: prefix =>
-				`You must have an RSN set to Autoupdate. Use \`${prefix}setrsn <username>\``,
-			AUTO_UPDATE: state =>
-				`Turned Auto Updating for your account ${state ? '**on**.' : '**off**.'}`,
-
 			CMD_ISNT_DISABLED: "That command isn't disabled.",
 			CMD_ENABLED: name => `Successfully enabled the \`${name}\` command.`,
 			CMD_ALREADY_DISABLED: 'That command is already disabled.',
@@ -336,20 +325,6 @@ module.exports = class extends Language {
 			TT200_RESULT: (username, time) =>
 				`**${username}**'s Time to 200m All is **${time}** hours.`,
 
-			/*
-			 * Fun Commands
-			 */
-			NO_PETS: prefix => `You have no pets yet.
-
-You can get pets by talking in a server which has petmessages enabled. (\`${prefix}petmessages enable\`)`,
-			NO_QUOTE: "Couldn't find a quote.",
-			URBAN_NO_ENTRY: 'No entry found',
-			URBAN_RESULT: (search, result, wdef) => `**Word:** ${search}
-**Definition:** _${wdef}_
-**Example:**\n${result.example}
-**${result.thumbs_up}** 👍 | **${result.thumbs_down}** 👎
-*By ${result.author}*
-<${result.permalink}>`,
 			/*
 			 * OSRS Account Commands
 			 */

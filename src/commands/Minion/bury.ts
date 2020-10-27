@@ -57,7 +57,7 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			const amountOfBonesOwned = msg.author.settings.get(UserSettings.Bank)[bone.inputId];
-			if (!amountOfBonesOwned) throw `You have no ${bone.name}.`;
+			if (!amountOfBonesOwned) return msg.send(`You have no ${bone.name}.`);
 			quantity = Math.min(
 				Math.floor(msg.author.maxTripLength / timeToBuryABone),
 				amountOfBonesOwned
@@ -67,17 +67,19 @@ export default class extends BotCommand {
 		// Check the user has the required bones to bury.
 		const hasRequiredBones = await msg.author.hasItem(bone.inputId, quantity);
 		if (!hasRequiredBones) {
-			throw `You dont have ${quantity}x ${bone.name}.`;
+			return msg.send(`You dont have ${quantity}x ${bone.name}.`);
 		}
 
 		const duration = quantity * timeToBuryABone;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				bone.name
-			}s you can bury is ${Math.floor(msg.author.maxTripLength / timeToBuryABone)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					bone.name
+				}s you can bury is ${Math.floor(msg.author.maxTripLength / timeToBuryABone)}.`
+			);
 		}
 
 		await msg.author.removeItemFromBank(bone.inputId, quantity);
