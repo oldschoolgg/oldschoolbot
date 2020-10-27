@@ -33,7 +33,7 @@ export abstract class BotCommand extends Command {
 		this.guildOnly = options.guildOnly!;
 		this.perkTier = options.perkTier;
 		this.ironCantUse = options.ironCantUse;
-		this.examples = options.examples;
+		this.examples = options.examples || [];
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,6 +53,7 @@ export interface BotCommandOptions extends CommandOptions {
 	guildOnly?: boolean;
 	perkTier?: number;
 	ironCantUse?: boolean;
-	examples: string[];
-	description: string;
+	testingCommand?: boolean;
+	examples?: string[];
+	description?: string;
 }
