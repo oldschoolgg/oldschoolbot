@@ -187,6 +187,7 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
+		__triviaQuestionsDone: any;
 	}
 
 	interface DMChannel {
@@ -198,5 +199,6 @@ declare module 'discord.js' {
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
+		__triviaQuestionsDone: any;
 	}
 }
