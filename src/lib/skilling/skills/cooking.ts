@@ -204,6 +204,16 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Burnt shark')
 	},
 	{
+		level: 82,
+		xp: 211,
+		id: itemID('Sea turtle'),
+		name: 'Sea turtle',
+		inputCookables: { [itemID('Raw sea turtle')]: 1 },
+		stopBurnAt: 99,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt sea turtle')
+	},
+	{
 		level: 84,
 		xp: 230,
 		id: itemID('Anglerfish'),
