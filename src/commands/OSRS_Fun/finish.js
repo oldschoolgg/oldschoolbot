@@ -5,7 +5,7 @@ const tob = require('../../../data/monsters/tob');
 const raids = require('../../../data/monsters/raids');
 const alchemicalHydra = require('../../../data/monsters/alchemicalHydra');
 const hespori = require('../../../data/monsters/hespori');
-const pets = require('../../../data/pets');
+const pets = require('../../lib/pets');
 
 async function getAllPetsEmbed(petsRecieved) {
 	const embed = new MessageEmbed()
