@@ -3,7 +3,7 @@ import { chunk } from 'e';
 import { Command, CommandStore, KlasaMessage, RichDisplay } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 
-import pets from '../../../data/pets';
+import pets from '../../lib/pets';
 import { toTitleCase } from '../../lib/util';
 
 // Emojis for bosses with no pets

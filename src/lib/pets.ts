@@ -1,6 +1,5 @@
 import { Emoji } from './constants';
 import raids = require('../../data/monsters/raids');
-import { roll } from '../util';
 import { Pet } from './types';
 
 const xpEmoji = Emoji.XP;
@@ -611,19 +610,5 @@ const pets: Pet[] = [
 		bossKeys: ['nightmare']
 	}
 ];
-
-for (const pet of pets) {
-	// eslint-disable-next-line @typescript-eslint/unbound-method
-	pet.finish = () => {
-		let count = 0;
-		let hasPet = false;
-		while (!hasPet) {
-			count++;
-			if (roll(pet.chance)) hasPet = true;
-		}
-
-		return count;
-	};
-}
 
 export default pets;
