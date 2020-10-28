@@ -14,7 +14,7 @@ import skotizo = require('../../data/monsters/skotizo');
 import alchemicalHydra = require('../../data/monsters/alchemicalHydra');
 import hydra = require('../../data/monsters/hydra');
 import hespori = require('../../data/monsters/hespori');
-import gauntlet = require('../../data/new_monsters/gauntlet');
+import gauntlet from '../../data/new_monsters/gauntlet';
 import wintertodt = require('../../data/monsters/wintertodt');
 import kraken = require('../../data/monsters/kraken');
 import obor = require('../../data/monsters/obor');

@@ -1,5 +1,7 @@
 import { objectKeys } from 'e';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
+
+import { BotCommand } from '../../lib/BotCommand';
 
 const rates = {
 	hunter: {
@@ -65,7 +67,7 @@ const rates = {
 	}
 };
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the rates of getting skilling pets at certain levels.',

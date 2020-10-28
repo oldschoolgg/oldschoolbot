@@ -44,6 +44,7 @@ declare module 'klasa' {
 		guildOnly?: boolean;
 		perkTier?: number;
 		ironCantUse?: boolean;
+		testingCommand?: boolean;
 	}
 
 	interface Task {

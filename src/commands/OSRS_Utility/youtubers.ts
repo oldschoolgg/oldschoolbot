@@ -33,6 +33,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the links for some OSRS youtubers.',
+			examples: ['+youtubers'],
 			aliases: ['yt'],
 			requiredPermissions: ['EMBED_LINKS']
 		});

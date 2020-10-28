@@ -11,7 +11,9 @@ export default class extends BotCommand {
 			usage: '<itemName:str>',
 			oneAtTime: true,
 			cooldown: 120,
-			usageDelim: ','
+			description:
+				'Shows which players have received the most drops of an item, based on their collection log.',
+			examples: ['+mostdrops elysian sigil']
 		});
 	}
 

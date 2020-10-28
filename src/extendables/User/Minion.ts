@@ -40,9 +40,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
-import { itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import { formatDuration } from '../../util';
 import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends Extendable {
