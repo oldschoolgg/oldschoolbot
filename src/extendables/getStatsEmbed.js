@@ -1,7 +1,7 @@
 const { Extendable, Command } = require('klasa');
 const { MessageEmbed } = require('discord.js');
 
-const { toTitleCase } = require('../util');
+const { toTitleCase } = require('../lib/util');
 
 const { default: emoji } = require('../../data/skill-emoji');
 
