@@ -19,7 +19,8 @@ const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Fake yourself getting zammy loot!',
+			description: 'Generates a fake image of someone getting a zamorak pet.',
+			examples: ['+fakezammy Woox 50'],
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) [kc:int{1,999999}]',

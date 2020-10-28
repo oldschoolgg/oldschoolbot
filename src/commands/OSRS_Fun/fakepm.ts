@@ -16,7 +16,8 @@ registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Fake a private message from someone.',
+			description: 'Generates a fake private message from someone.',
+			examples: ['+fakeely Woox Hello'],
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) <message:...str>',
