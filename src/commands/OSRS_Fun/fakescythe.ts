@@ -17,7 +17,8 @@ registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Get yourself a Scythe of Vitur!',
+			description: 'Generates a fake image of someone getting a scythe of vitur.',
+			examples: ['+fakescythe Woox 50'],
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) [kc:int{1,999999}]',
