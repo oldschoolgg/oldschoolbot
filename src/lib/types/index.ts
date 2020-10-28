@@ -10,7 +10,6 @@ export interface SettingsEntry {
 	id: string;
 	RSN?: string;
 	GP?: number;
-	autoupdate?: boolean;
 	badges?: string[];
 	bank?: ItemBank;
 	clueScores?: ItemBank;

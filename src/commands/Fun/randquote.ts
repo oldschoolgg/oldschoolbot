@@ -1,22 +1,25 @@
-const { Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns a random message from someone in the channel.',
+			examples: ['+randquote'],
 			cooldown: 10,
 			requiredPermissions: ['READ_MESSAGE_HISTORY']
 		});
 	}
 
-	async run(msg) {
+	async run(msg: KlasaMessage) {
 		let messageBank = await msg.channel.messages.fetch({ limit: 100 });
 
 		for (let i = 0; i < 3; i++) {
 			const fetchedMessages = await msg.channel.messages.fetch({
 				limit: 100,
-				before: messageBank.last().id
+				before: messageBank.last()!.id
 			});
 			messageBank = messageBank.concat(fetchedMessages);
 		}
@@ -28,9 +31,9 @@ module.exports = class extends Command {
 
 			const embed = new MessageEmbed()
 				.setDescription(message.content)
-				.setAuthor(message.author.username, message.author.avatarURL());
+				.setAuthor(message.author.username, message.author.displayAvatarURL());
 			return msg.send({ embed });
 		}
 		return msg.sendLocale('NO_QUOTE');
 	}
-};
+}

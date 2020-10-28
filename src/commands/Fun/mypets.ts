@@ -1,13 +1,16 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-import pets = require('../../../data/pets');
+import { BotCommand } from '../../lib/BotCommand';
+import pets from '../../lib/pets';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'View the virtual pets you have.',
-			cooldown: 3
+			description:
+				'View the virtual pets you have, which are not the pets in your bank or from your minion.',
+			cooldown: 3,
+			examples: ['+mypets']
 		});
 	}
 

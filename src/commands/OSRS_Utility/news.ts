@@ -1,15 +1,18 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage, RichDisplay } from 'klasa';
+import { CommandStore, KlasaMessage, RichDisplay } from 'klasa';
 import Parser from 'rss-parser';
+
+import { BotCommand } from '../../lib/BotCommand';
 
 const parser = new Parser();
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 30,
 			description: 'Shows the latest OSRS News Posts.',
-			requiredPermissions: ['MANAGE_MESSAGES', 'ADD_REACTIONS', 'READ_MESSAGE_HISTORY']
+			requiredPermissions: ['MANAGE_MESSAGES', 'ADD_REACTIONS', 'READ_MESSAGE_HISTORY'],
+			examples: ['+news']
 		});
 	}
 

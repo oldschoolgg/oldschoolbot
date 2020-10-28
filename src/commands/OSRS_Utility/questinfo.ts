@@ -1,52 +1,13 @@
-const { Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
+import { cleanString } from 'oldschooljs/dist/util';
 
-const quests = require('../../../data/quests.json');
-const { cleanString } = require('../../util');
+import _quests from '../../../data/quests.json';
+import { BotCommand } from '../../lib/BotCommand.js';
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
-			cooldown: 3,
-			aliases: ['qi'],
-			description: 'Shows information on a Quest. (Work in Progress)',
-			usage: '<questName:str>'
-		});
-	}
+const quests = _quests as Record<string, Quest>;
 
-	async run(msg, [questName]) {
-		const quest = cleanString(questName);
-
-		if (quests[quest]) {
-			return msg.send(this.questInfo(quests[quest]));
-		}
-
-		if (alternativeNameMap[quest]) {
-			return msg.send(this.questInfo(quests[alternativeNameMap[quest]]));
-		}
-
-		return msg.send("I don't have that quest, sorry!");
-	}
-
-	questInfo(quest) {
-		return new MessageEmbed()
-			.setTitle(quest.name)
-			.setDescription(quest.description)
-			.setURL(quest.url)
-			.setThumbnail(quest.thumbnail)
-			.addField('**Difficulty**', quest.difficulty, true)
-			.addField('**Length**', quest.length, true)
-			.addField('Requirements', quest.requirements.join('\n'), true)
-			.addField('Rewards', quest.rewards.join('\n'), true)
-			.addField(
-				'Trivia',
-				quest.trivia[Math.floor(Math.random() * quest.trivia.length)],
-				true
-			);
-	}
-};
-
-const alternativeNameMap = {
+const alternativeNameMap: Record<string, string> = {
 	FREMMYISLES: 'FREMISLES',
 	FREMENNIKISLES: 'FREMISLES',
 	THEFREMENNIKISLES: 'FREMISLES',
@@ -104,3 +65,58 @@ const alternativeNameMap = {
 	ATASTEOFHOPE: 'TASTEOFHOPE',
 	THEQUEENOFTHIEVES: 'QUEENOFTHIEVES'
 };
+
+interface Quest {
+	name: any;
+	description: any;
+	url: string;
+	thumbnail: string;
+	difficulty: any;
+	length: any;
+	requirements: any[];
+	rewards: any[];
+	trivia: string | any[];
+}
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			cooldown: 3,
+			aliases: ['qi'],
+			description: 'Shows information on a Quest. Not all quests are available.',
+			examples: ['+questinfo cooks assistant'],
+			usage: '<questName:str>'
+		});
+	}
+
+	async run(msg: KlasaMessage, [questName]: [string]) {
+		const quest = cleanString(questName);
+
+		if (quests[quest]) {
+			return msg.send(this.questInfo(quests[quest]));
+		}
+
+		if (alternativeNameMap[quest]) {
+			return msg.send(this.questInfo(quests[alternativeNameMap[quest]]));
+		}
+
+		return msg.send("I don't have that quest, sorry!");
+	}
+
+	questInfo(quest: Quest) {
+		return new MessageEmbed()
+			.setTitle(quest.name)
+			.setDescription(quest.description)
+			.setURL(quest.url)
+			.setThumbnail(quest.thumbnail)
+			.addField('**Difficulty**', quest.difficulty, true)
+			.addField('**Length**', quest.length, true)
+			.addField('Requirements', quest.requirements.join('\n'), true)
+			.addField('Rewards', quest.rewards.join('\n'), true)
+			.addField(
+				'Trivia',
+				quest.trivia[Math.floor(Math.random() * quest.trivia.length)],
+				true
+			);
+	}
+}

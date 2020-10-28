@@ -1,13 +1,16 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Wiki } from 'oldschooljs';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
 			aliases: ['w'],
 			description: 'Search the OSRS Wikipedia for an article.',
+			examples: ['+wiki tbow'],
 			usage: '[query:str]',
 			requiredPermissions: ['EMBED_LINKS']
 		});

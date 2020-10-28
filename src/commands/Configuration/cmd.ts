@@ -1,8 +1,9 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			runIn: ['text'],
@@ -10,7 +11,9 @@ export default class extends Command {
 			subcommands: true,
 			usage: '<enable|disable> <command:cmd>',
 			usageDelim: ' ',
-			permissionLevel: 7
+			permissionLevel: 7,
+			description: 'Allows you to enable or disable commands in your server.',
+			examples: ['+cmd enable casket', '+cmd disable casket']
 		});
 	}
 
