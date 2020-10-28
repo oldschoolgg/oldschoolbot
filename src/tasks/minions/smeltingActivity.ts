@@ -21,7 +21,7 @@ export default class extends Task {
 		if (bar.chanceOfFail > 0) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (randInt(0, 100) < bar.chanceOfFail) {
+				if (randInt(0, 100) > bar.chanceOfFail) {
 					newQuantity++;
 				}
 			}
