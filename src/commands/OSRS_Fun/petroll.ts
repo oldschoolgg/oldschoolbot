@@ -1,6 +1,6 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
-import pets = require('../../../data/pets');
+import pets from '../../../data/pets';
 import { roll } from '../../lib/util';
 
 export default class extends Command {
