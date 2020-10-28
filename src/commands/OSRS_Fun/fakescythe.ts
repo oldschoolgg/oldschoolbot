@@ -1,20 +1,22 @@
-const { Command } = require('klasa');
-const { MessageAttachment } = require('discord.js');
-const { createCanvas, Image, registerFont } = require('canvas');
-const fs = require('fs');
+import { createCanvas, Image, registerFont } from 'canvas';
+import { MessageAttachment } from 'discord.js';
+import { randInt } from 'e';
+import fs from 'fs';
+import { CommandStore, KlasaMessage } from 'klasa';
+
+import { BotCommand } from '../../lib/BotCommand';
 
 const bg = fs.readFileSync('./resources/images/tob-bg.png');
 const canvas = createCanvas(399, 100);
 const ctx = canvas.getContext('2d');
-const { rand } = require('../../lib/util');
 
 ctx.font = '16px OSRSFont';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Get yourself a Scythe of Vitur!',
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
@@ -23,7 +25,7 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [username, kc = rand(1, 1000)]) {
+	async run(msg: KlasaMessage, [username, kc = randInt(1, 1000)]: [string, number]) {
 		ctx.fillStyle = '#000000';
 		const BG = new Image();
 		BG.src = bg;
@@ -32,7 +34,7 @@ module.exports = class extends Command {
 		ctx.fillText('Your completed Theatre of Blood count is: ', 11, 10);
 		ctx.fillStyle = '#ff0000';
 		ctx.fillText(
-			kc,
+			kc.toString(),
 			12 + ctx.measureText('Your completed Theatre of Blood count is: ').width,
 			10
 		);
@@ -80,4 +82,4 @@ module.exports = class extends Command {
 			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
 		);
 	}
-};
+}
