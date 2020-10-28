@@ -1,6 +1,8 @@
-const { Command } = require('klasa');
+import { CommandStore, KlasaMessage } from 'klasa';
 
-let triviaQuestions;
+import { BotCommand } from '../../lib/BotCommand';
+
+let triviaQuestions: any;
 try {
 	// eslint-disable-next-line prefer-destructuring
 	triviaQuestions = require('../../../resources/trivia-questions.json').triviaQuestions;
@@ -8,9 +10,9 @@ try {
 	console.log('No trivia questions file found. Disabling trivia command.');
 }
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['t'],
 			description: 'Sends a OSRS related trivia question.'
 		});
@@ -20,7 +22,7 @@ module.exports = class extends Command {
 		if (!triviaQuestions) this.disable();
 	}
 
-	async run(msg) {
+	async run(msg: KlasaMessage) {
 		if (
 			!msg.channel.__triviaQuestionsDone ||
 			msg.channel.__triviaQuestionsDone.length === triviaQuestions.length
@@ -34,9 +36,13 @@ module.exports = class extends Command {
 		try {
 			const collected = await msg.channel.awaitMessages(
 				answer => item.a.includes(answer.content.toLowerCase()),
-				options
+				{
+					max: 1,
+					time: 30000,
+					errors: ['time']
+				}
 			);
-			const winner = collected.first();
+			const winner = collected.first()!;
 			return msg.channel.send(
 				`<:RSTickBox:381462594734522372> ${winner.author} had the right answer with \`${winner.content}\`!`
 			);
@@ -45,18 +51,11 @@ module.exports = class extends Command {
 		}
 	}
 
-	findNewTrivia(_triviaQuestionsDone) {
+	findNewTrivia(_triviaQuestionsDone: any[]): any {
 		const index = Math.floor(Math.random() * triviaQuestions.length);
 		if (!_triviaQuestionsDone.includes(index)) {
 			return [triviaQuestions[index], index];
-		} else {
-			return this.findNewTrivia(_triviaQuestionsDone);
 		}
+		return this.findNewTrivia(_triviaQuestionsDone);
 	}
-};
-
-const options = {
-	max: 1,
-	time: 30000,
-	errors: ['time']
-};
+}
