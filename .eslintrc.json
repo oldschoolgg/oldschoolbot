@@ -26,7 +26,8 @@
 			{ "blankLine": "always", "prev": "import", "next": "export" },
 			{ "blankLine": "always", "prev": "const", "next": "export" }
 		],
-		"simple-import-sort/sort": "error"
+		"simple-import-sort/sort": "error",
+		"@typescript-eslint/class-name-casing": "off"
 	},
 	"parserOptions": {
 		"sourceType": "module",

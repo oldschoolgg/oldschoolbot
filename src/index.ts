@@ -8,6 +8,8 @@ import pLimit from 'p-limit';
 import { botToken, sentryDSN } from './config';
 import { clientOptions } from './lib/config/config';
 import { initItemAliases } from './lib/itemAliases';
+import ClueTiers from './lib/minions/data/clueTiers';
+import { Workers } from './lib/workers';
 
 if (sentryDSN) {
 	Sentry.init({
@@ -32,4 +34,5 @@ class OldSchoolBot extends Client {
 	};
 }
 
+Workers.casketOpen({ quantity: 100, clueTierID: 23245 });
 new OldSchoolBot(clientOptions).init().then(client => client.login(botToken));
