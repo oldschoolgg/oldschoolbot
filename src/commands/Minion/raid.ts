@@ -677,6 +677,18 @@ const mageGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Saradomin max cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Zamorak max cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Guthix max cape'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Ancestral robe top'),
 		itemPoint: 5
 	},
