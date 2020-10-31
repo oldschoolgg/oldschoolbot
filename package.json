@@ -1,14 +1,14 @@
 {
 	"scripts": {
 		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
-		"build": "yarn wipedist && tsc -p .",
+		"build": "yarn wipedist && tsc -b src",
 		"wipedist": "rimraf \"dist/\"",
-		"start": "yarn build && concurrently \"tsc -p . -w\" \"node dist/src\"",
+		"start": "yarn build && concurrently \"tsc -b src -w\" \"node dist/src\"",
 		"test": "yarn test:lint && yarn test:unit",
 		"test:lint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
 		"test:unit": "jest",
 		"test:watch": "jest --watch",
-		"dev": "yarn wipedist && tsc -p . -w"
+		"dev": "yarn wipedist && tsc -b src -w"
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",

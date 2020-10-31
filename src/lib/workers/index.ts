@@ -8,9 +8,9 @@ export interface CasketWorkerArgs {
 	quantity: number;
 }
 
-const pool = new Piscina();
+export const piscinaPool = new Piscina();
 
 export const Workers = {
 	casketOpen: (args: CasketWorkerArgs): Promise<[ItemBank, string]> =>
-		pool.runTask(args, resolve(__dirname, 'casket.worker.js'))
+		piscinaPool.runTask(args, resolve(__dirname, 'casket.worker.js'))
 };

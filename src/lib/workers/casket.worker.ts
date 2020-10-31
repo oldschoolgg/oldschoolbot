@@ -2,12 +2,12 @@ import { roll } from 'e';
 import { Misc } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util';
 
+import ClueTiers from '../minions/data/clueTiers';
 import { ItemBank } from '../types';
 import { CasketWorkerArgs } from '.';
 
 export default ({ clueTierID, quantity }: CasketWorkerArgs): [ItemBank, string] => {
-	const clueTier = C;
-	console.log(clueTier, quantity);
+	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 	let loot = clueTier.table.open(quantity);
 	let mimicNumber = 0;
 	if (clueTier.mimicChance) {
@@ -19,14 +19,12 @@ export default ({ clueTierID, quantity }: CasketWorkerArgs): [ItemBank, string] 
 		}
 	}
 
-	const opened = `You opened ${quantity} ${clueTier.name} 
-		Clue Casket${quantity > 1 ? 's' : ''}
-		${
-			mimicNumber > 0
-				? ` and defeated ${mimicNumber} 
+	const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''}${
+		mimicNumber > 0
+			? ` and defeated ${mimicNumber} 
 					mimic${mimicNumber > 1 ? 's' : ''}`
-				: ''
-		}`;
+			: ''
+	}`;
 
 	return [loot, opened];
 };

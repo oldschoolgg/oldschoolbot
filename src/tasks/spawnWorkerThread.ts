@@ -1,6 +1,8 @@
 import { Task } from 'klasa';
 import { Pool, spawn, Worker } from 'threads';
 
+import { OldSchoolBotClient } from '../lib/structures/OldSchoolBotClient';
+
 export default class extends Task {
 	async init() {
 		this.run();
@@ -11,6 +13,7 @@ export default class extends Task {
 
 		const terminateCb = async () => {
 			await this.client.killWorkerThread.terminate();
+			(this.client as OldSchoolBotClient).destroy();
 			process.exit(0);
 		};
 
