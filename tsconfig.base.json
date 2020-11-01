@@ -15,16 +15,12 @@
 		"strict": true,
 		"target": "esnext",
 
-		"tsBuildInfoFile": "../dist/.tsbuildinfo",
-		"rootDir": ".",
 		"removeComments": true,
 
-		"outDir": "../dist",
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,
 		"types": ["node", "node-fetch", "discord.js", "klasa", "jest"],
 		"esModuleInterop": true
-	},
-	"include": ["."]
+	}
 }
