@@ -16,13 +16,13 @@ import {
 } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
-const bg = fs.readFileSync('./resources/images/coins.png');
+const bg = fs.readFileSync('./src/lib/resources/images/coins.png');
 const canvas = createCanvas(50, 50);
 const ctx = canvas.getContext('2d');
 
 ctx.font = '14px OSRSFont';
 
-registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {

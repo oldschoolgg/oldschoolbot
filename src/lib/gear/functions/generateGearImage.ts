@@ -7,7 +7,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { GearTypes } from '..';
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { canvasImageFromBuffer } from '../../util';
+import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
 import { drawItemQuantityText } from '../../util/drawItemQuantityText';
 import { drawTitleText } from '../../util/drawTitleText';
 import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
@@ -15,7 +15,7 @@ import { maxDefenceStats, maxOffenceStats } from '../data/maxGearStats';
 import readableGearTypeName from './readableGearTypeName';
 import { sumOfSetupStats } from './sumOfSetupStats';
 
-const gearTemplateFile = fs.readFileSync('./resources/images/gear_template.png');
+const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 
 /**
  * The default gear in a gear setup, when nothing is equipped.

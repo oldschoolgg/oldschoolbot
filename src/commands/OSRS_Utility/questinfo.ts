@@ -2,8 +2,8 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { cleanString } from 'oldschooljs/dist/util';
 
-import _quests from '../../../data/quests.json';
-import { BotCommand } from '../../lib/BotCommand.js';
+import { BotCommand } from '../../lib/BotCommand';
+import _quests from '../../lib/data/quests.json';
 
 const quests = _quests as Record<string, Quest>;
 

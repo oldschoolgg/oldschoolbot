@@ -2,10 +2,10 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import pets from '../../lib/pets';
-import tob = require('../../../data/monsters/tob');
-import raids = require('../../../data/monsters/raids');
-import alchemicalHydra = require('../../../data/monsters/alchemicalHydra');
-import hespori = require('../../../data/monsters/hespori');
+import tob = require('../../lib/data/monsters/tob');
+import raids = require('../../lib/data/monsters/raids');
+import alchemicalHydra = require('../../lib/data/monsters/alchemicalHydra');
+import hespori = require('../../lib/data/monsters/hespori');
 import { BotCommand } from '../../lib/BotCommand';
 import { roll } from '../../lib/util';
 

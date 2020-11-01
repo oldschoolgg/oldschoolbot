@@ -19,7 +19,7 @@
 		"rootDir": ".",
 		"removeComments": true,
 
-		"outDir": "./dist",
+		"outDir": "../dist",
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,

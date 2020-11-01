@@ -3,12 +3,12 @@
 		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
 		"build": "yarn wipedist && tsc -b src",
 		"wipedist": "rimraf \"dist/\"",
-		"start": "yarn build && concurrently \"tsc -b src -w\" \"node dist/src\"",
+		"start": "yarn build && concurrently \"tsc -b src -w\" \"node dist/\"",
 		"test": "yarn test:lint && yarn test:unit",
 		"test:lint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
 		"test:unit": "jest",
 		"test:watch": "jest --watch",
-		"dev": "yarn wipedist && tsc -b src -w"
+		"dev": "yarn wipedist && tsc -b -w src"
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
@@ -35,7 +35,6 @@
 		"rss-parser": "^3.9.0",
 		"snoostorm": "^1.5.1",
 		"snoowrap": "github:gc/snoowrap#master",
-		"threads": "^1.4.1",
 		"ts-debounce": "^2.0.1",
 		"ts-toolbelt": "^8.0.7",
 		"twit": "^2.2.9",

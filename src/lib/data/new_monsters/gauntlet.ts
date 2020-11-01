@@ -1,4 +1,4 @@
-import { roll } from '../../src/lib/util';
+import { roll } from '../../util';
 
 const drops = {
 	blade: '<:Blade_of_saeldor_inactive:637345429868118046>',

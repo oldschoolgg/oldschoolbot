@@ -5,7 +5,7 @@ import { BotCommand } from '../../lib/BotCommand';
 let triviaQuestions: any;
 try {
 	// eslint-disable-next-line prefer-destructuring
-	triviaQuestions = require('../../../resources/trivia-questions.json').triviaQuestions;
+	triviaQuestions = require('../../../src/lib/resources/trivia-questions.json').triviaQuestions;
 } catch (err) {
 	console.log('No trivia questions file found. Disabling trivia command.');
 }

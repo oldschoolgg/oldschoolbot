@@ -1,4 +1,3 @@
-import { Image } from 'canvas';
 import { Client, Guild } from 'discord.js';
 import { KlasaClient, KlasaUser, ScheduledTask, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -63,16 +62,6 @@ export function formatItemStackQuantity(quantity: number) {
 		return `${Math.floor(quantity / 1000)}K`;
 	}
 	return quantity.toString();
-}
-
-export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return new Promise((resolve, reject) => {
-		const canvasImage = new Image();
-
-		canvasImage.onload = () => resolve(canvasImage);
-		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
-		canvasImage.src = imageBuffer;
-	});
 }
 
 export function randomItemFromArray<T>(array: T[]): T {

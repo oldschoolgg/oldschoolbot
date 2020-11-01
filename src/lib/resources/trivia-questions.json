@@ -1,0 +1,1664 @@
+{
+	"triviaQuestions": [
+		{
+			"q": "Out of Iron Ore and Coal, which is more likely to give Unidentified minerals in the mining guild?",
+			"a": ["coal"]
+		},
+		{
+			"q": "The % chance of receiving a Golden nugget from Paydirt in the Motherlode Mine is closest to which number? 1%, 2%, 3%, 5%",
+			"a": ["3", "3%"]
+		},
+		{
+			"q": "What's the name of the Mace shop owner in Falador?",
+			"a": ["flynn"]
+		},
+		{
+			"q": "Which player famously unofficially won a deadman mode tournament by using Phials to unnote food?",
+			"a": ["woox"]
+		},
+		{
+			"q": "Which JMod is the current Head of ESports at Jagex?",
+			"a": ["mod rogue", "rogue"]
+		},
+		{
+			"q": "What mining level do you need to mine amethyst?",
+			"a": ["92"]
+		},
+		{
+			"q": "How much Crafting XP do you get from spinning wool into a Ball of Wool?",
+			"a": ["2.5"]
+		},
+		{ "q": "What's the combat level of TzKal-Zuk?", "a": ["1400"] },
+		{
+			"q": "Which NPC, in the Varrock Clothing Store, can you get a clothing makeover from?",
+			"a": ["thessalia"]
+		},
+		{
+			"q": "What is the race of the NPC called Wormbrain?",
+			"a": ["goblin"]
+		},
+		{
+			"q": "Guthix appointed a Snake to guard the Tears of Guthix, and to judge who is worthy to enter, what is the snakes name?",
+			"a": ["juna"]
+		},
+		{
+			"q": "Which weapon, or type of weapon, has a special attack called Concentrated Shot?",
+			"a": ["ballista", "ballistae", "light ballista", "heavy ballista"]
+		},
+		{
+			"q": "What's the maximum amount of targets a Black Chinchompa can hit at once?",
+			"a": ["10"]
+		},
+		{
+			"q": "When you die with Chinchompas in your inventory, they will dissappear, UNLESS you are where?",
+			"a": ["the wilderness", "wilderness"]
+		},
+		{
+			"q": "What's the missing word in this name, which belongs to the Zamorakian fire demon found in the centre in the bottom level of the Chasm of Fire? 'Voice of _'",
+			"a": ["yama"]
+		},
+		{
+			"q": "What's the name of the NPC in the Nature Grotto?",
+			"a": ["filliman tarlock"]
+		},
+		{
+			"q": "The Armadyl Crossbow model is a recolored version of which crossbow?",
+			"a": ["hunters' crossbow", "hunters crossbow", "hunters"]
+		},
+		{
+			"q": "What is this player wearing? The Robes of ______? https://i.imgur.com/t3V6Dhp.png",
+			"a": ["darkness"]
+		},
+		{
+			"q": "Name any monster which drops a Zenyte Shard",
+			"a": ["tortured gorilla", "demonic gorilla"]
+		},
+		{
+			"q": "What fishing level do you need for Barbarian Fishing?",
+			"a": ["48"]
+		},
+		{
+			"q": "What is the name of this town? Image: https://i.imgur.com/5M1hHhI.jpg",
+			"a": ["piscatoris fishing colony", "piscatoris"]
+		},
+		{
+			"q": "Which NPC is said to have created the Giant Mole?",
+			"a": ["malignius mortifer"]
+		},
+		{
+			"q": "What goes G.A.G. stand for?",
+			"a": ["group of advanced gardeners"]
+		},
+		{
+			"q": "What item has the examine text: 'The essence of fire.'? Hint: It's a rare drop.",
+			"a": ["phoenix"]
+		},
+		{
+			"q": "If you have exactly 1 million XP in a skill, what level would it be?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "How many Marks of Grace does full Graceful cost?",
+			"a": ["260"]
+		},
+		{
+			"q": "Wearing the full Gracefull outfit restores run energy by how much % faster?",
+			"a": ["30"]
+		},
+		{
+			"q": "Not including the default color, how many different colors can you recolor your Graceful into?",
+			"a": ["7"]
+		},
+		{
+			"q": "Drinking a Stamina Potion restores 20% run energy, and reduces your run energy depletion rate by how much %?",
+			"a": ["70"]
+		},
+		{
+			"q": "The Happy Heroes Emporium, a weapon store in the Heroes Guild, sells a Dragon battleaxe for how much GP?",
+			"a": ["200k", "200,000", "200000"]
+		},
+		{
+			"q": "How much special attack energy does the Dragon mace use per special attack?",
+			"a": ["25%"]
+		},
+		{
+			"q": "Which GWD Boss has the highest combat level?",
+			"a": ["zammy", "zamorak", "kril"]
+		},
+		{
+			"q": "What strength level do you need to open the entrance to the Bandos' Stronghold?",
+			"a": ["70"]
+		},
+		{
+			"q": "In what quest do you have to solve a puzzle with a skull on a door?",
+			"a": ["olafs quest", "olaf's quest"]
+		},
+		{
+			"q": "The King Black Dragon always drops the same quantity of Dragon javelin heads, how many does it drop?",
+			"a": ["15"]
+		},
+		{
+			"q": "What Crafting level do you need to make a Broodoo shield?",
+			"a": ["35"]
+		},
+		{
+			"q": "What is the exact amount of XP for 99 in a skill?",
+			"a": ["13034431", "13,034,431"]
+		},
+		{
+			"q": "What kind of key do you need to access the Slayer Tower's rooftop?",
+			"a": ["brittle"]
+		},
+		{
+			"q": "Name either one of the Grosteque Guardians",
+			"a": ["dusk", "dawn"]
+		},
+		{
+			"q": "What Strength level do you need to wield the Granite Hammer?",
+			"a": ["50"]
+		},
+		{
+			"q": "George Laxmeister, Arnold Lydspor, Ramara du Croissant and Herman Caranos all reside in which town?",
+			"a": ["piscatoris", "piscatoris fishing colony"]
+		},
+		{ "q": "Who is the Herblore skill master?", "a": ["kaqemeex"] },
+		{
+			"q": "The Altar of Guthix is found in which town?",
+			"a": ["taverley"]
+		},
+		{
+			"q": "What village am I standing in? https://i.imgur.com/JXBEQL9.jpg",
+			"a": ["witchaven"]
+		},
+
+		{
+			"q": "Where am I? Image: https://i.imgur.com/7BYG3Wq.png",
+			"a": ["west ardy", "west ardougne"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/n0g6EYV.png",
+			"a": ["lunar isle"]
+		},
+
+		{
+			"q": "What's the name of the hunchbacked fisher on the shore of Brimhaven?",
+			"a": ["lubufu"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/ZGbaVwM.png",
+			"a": ["woodcutting guild"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/M5hYiHt.png",
+			"a": ["fishing guild"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/jh0kAHG.png",
+			"a": ["wintertodt camp"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/Xky6aFW.png",
+			"a": ["burthorpe"]
+		},
+		{
+			"q": "What crafting level do you need to create a wieldable Crab claw?",
+			"a": ["15"]
+		},
+		{
+			"q": "Who is the protagonist of the 2017 Christmas holiday event?",
+			"a": ["wise old man"]
+		},
+		{ "q": "What slayer level do you need to kill Mogres?", "a": ["32"] },
+		{
+			"q": "What is the name of this monster? Image: https://i.imgur.com/hxY9YH5.png",
+			"a": ["molanisk"]
+		},
+		{
+			"q": "What is the name of the superior version of the Jelly monster?",
+			"a": ["vitreous jelly"]
+		},
+		{
+			"q": "What is the name of the superior version of the Cave Crawler monster?",
+			"a": ["chasm crawler"]
+		},
+		{
+			"q": "Name any type of Wyvern found in the Wyvern Cave on Fossil Island.",
+			"a": ["taloned", "ancient", "long-tailed", "splitting"]
+		},
+		{
+			"q": "What is the combat level of the Kalphite Queen?",
+			"a": ["333"]
+		},
+		{
+			"q": "What's the chance of receiving a Dragon chainbody from a Thermonuclear smoke devil? 1 in ____",
+			"a": ["2000"]
+		},
+		{
+			"q": "Name any one of the 3 wise monkeys from the Temple of Marimbo on Ape Atoll (who appear in Monkey Madness I and Freeing King Awowogei)",
+			"a": ["kikazaru", "mizaru", "iwazaru"]
+		},
+		{
+			"q": "What is the name of the monkey who is king of Ape Atoll?",
+			"a": ["awowogei"]
+		},
+		{
+			"q": "What is the name of the goddess of Monkeys and Apes, of whom the town 'Marim' on Ape Atoll is named after?",
+			"a": ["marimbo"]
+		},
+		{
+			"q": "Who is the Taskmaster for the Varrock Diaries?",
+			"a": ["toby"]
+		},
+		{
+			"q": "What item is the highest prayer bonus for the feet slot?",
+			"a": ["devout boots"]
+		},
+		{
+			"q": "How many coal do you need when smithing an Adamant bar in a regular furnace?",
+			"a": ["6"]
+		},
+		{
+			"q": "What mining level is required to access the upper level of the Motherlode mine?",
+			"a": ["72"]
+		},
+		{
+			"q": "What woodcutting level do you need to use a Mithril Axe?",
+			"a": ["21"]
+		},
+		{
+			"q": "How many water runes does a single Ice Barrage cast cost?",
+			"a": ["6"]
+		},
+		{
+			"q": "What magic level is required to use the Smoke Blitz spell?",
+			"a": ["74"]
+		},
+		{
+			"q": "The Strength Skillcape allows you to teleport to which guild?",
+			"a": ["warriors", "warriors guild"]
+		},
+		{
+			"q": "How many achievement diary regions are there?",
+			"a": ["12"]
+		},
+		{
+			"q": "What crafting level do you need to craft Red Dragonhide Vambraces?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "What Hunter level do you need to catch Black chinchompas?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "What smithing level do you need to smith Adamant med helms?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "The Flax Keeper, from Seers' Village, is the brother of which famous NPC?",
+			"a": ["hans"]
+		},
+		{
+			"q": "What does the 'i' in 'Salve amulet(ei)' stand for?",
+			"a": ["imbued"]
+		},
+		{
+			"q": "The Doors of Dinh sit infront of which boss?",
+			"a": ["wintertodt"]
+		},
+		{
+			"q": "Name any of the clans that has a statue in Clan Wars.",
+			"a": [
+				"rot",
+				"hexis",
+				"reign of terror",
+				"stud unit",
+				"final ownage elite",
+				"foe",
+				"ancient fury",
+				"fatality"
+			]
+		},
+		{
+			"q": "At Castle Wars, whats the color/god of the middle portal?",
+			"a": ["guthix", "green"]
+		},
+		{
+			"q": "The chance of receiving the Baby Mole pet from Giant Mole is 1 in what?",
+			"a": ["3000"]
+		},
+		{
+			"q": "What's the name of the Wine Shop owner, in Draynor Village?",
+			"a": ["fortunato"]
+		},
+		{
+			"q": "What's the name of the Guildmaster and founder of the Farming Guild?",
+			"a": ["jane"]
+		},
+		{
+			"q": "In the 2019 Christmas Event, players received a shield with what type of NPC on it?",
+			"a": ["gnome"]
+		},
+		{
+			"q": "Complete the name of this miniquest: `______ Grimhand's Barcrawl`",
+			"a": ["alfred"]
+		},
+		{
+			"q": "In what armor slot do you wield a Mitre?",
+			"a": ["head", "helmet"]
+		},
+		{
+			"q": "What tier of clue scrolls give you items of the Royal outfit?",
+			"a": ["elite"]
+		},
+		{
+			"q": "Which NPC do you talk to in order to begin the Ernest the Chicken quest?",
+			"a": ["veronica"]
+		},
+		{
+			"q": "Name either one of the spider bosses",
+			"a": ["sarachnis", "venenatis"]
+		},
+		{ "q": "What boss drops the Jar of Eyes?", "a": ["sarachnis"] },
+		{
+			"q": "In what quest do you fight an exact copy of yourself?",
+			"a": ["lunar diplomacy"]
+		},
+
+		{
+			"q": "What's the name of the boat that you use around Lake Molch?",
+			"a": ["boaty"]
+		},
+
+		{
+			"q": "From what quest do you get goldsmith gauntlets as a reward?",
+			"a": ["family crest"]
+		},
+		{
+			"q": "In what quest do you retrieve items from the Fitzharmon brothers?",
+			"a": ["family crest"]
+		},
+		{
+			"q": "What NPC gives the player a Collection Log?",
+			"a": ["the collector"]
+		},
+		{
+			"q": "What clue level gives ornament kits for Rune scimitars?",
+			"a": ["beginner"]
+		},
+		{
+			"q": "What color is the Shoulder parrot received from beginner clues?",
+			"a": ["green"]
+		},
+		{
+			"q": "What Construction level do you need to build a Marble lectern?",
+			"a": ["77"]
+		},
+		{ "q": "What's the name of the Witch in Rimmington?", "a": ["hetty"] },
+		{
+			"q": "Rommik, Brian, Hetty and Taria all live in which town?",
+			"a": ["rimmington"]
+		},
+
+		{
+			"q": "Where am I? https://i.imgur.com/Gz6ufzX.jpg",
+			"a": ["harmony island"]
+		},
+
+		{
+			"q": "Where am I? https://i.imgur.com/OPlRcgF.jpg",
+			"a": ["draynor village", "draynor"]
+		},
+
+		{
+			"q": "Name any one of these items: https://i.imgur.com/GOZvFtR.jpg",
+			"a": [
+				"frying pan",
+				"steel key ring",
+				"bull roarer",
+				"skewer",
+				"morytania legs 1",
+				"spatula",
+				"swamp tar",
+				"unidentified rare fossil"
+			]
+		},
+		{
+			"q": "The chance of getting an Elysian Sigil from Corp Beast is 1 in ______?",
+			"a": ["4095", "4,095"]
+		},
+		{
+			"q": "Name any one of these items: https://i.imgur.com/s7JriwZ.jpg",
+			"a": [
+				"diving apparatus",
+				"bandana eyepatch",
+				"pirate leggings",
+				"comp ogre bow",
+				"rod clay mould",
+				"shayzien supply crate",
+				"bandos bracers",
+				"clue bottle"
+			]
+		},
+
+		{
+			"q": "How many Minnows do you exchange to get 1 Raw Shark?",
+			"a": ["40"]
+		},
+		{
+			"q": "How often do Minnow fishing spots move? (in seconds)",
+			"a": ["15", "15 seconds"]
+		},
+		{
+			"q": "In which guild would you find Kylie Minnow?",
+			"a": ["fishing", "fishing guild"]
+		},
+		{
+			"q": "Is Fishing barehanded slower, equal, or faster than fishing with a harpoon?",
+			"a": ["equal"]
+		},
+		{
+			"q": "What Strength level do you need to catch Sharks barehanded?",
+			"a": ["76"]
+		},
+		{ "q": "What Crafting level do you need to cut an Onyx?", "a": ["67"] },
+		{
+			"q": "What Magic level do you need to use the Enfeeble spell?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "What Farming level do you need to farm Lantadyme?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "On which island would you find Rimae Sirsalis?",
+			"a": ["lunar isle"]
+		},
+		{ "q": "Which RuneScape God is the God of War?", "a": ["bandos"] },
+		{
+			"q": "Arrav, famous owner of the Shield of Arrav, has a statue of himself in which building?",
+			"a": ["heros guild", "hero's guild", "heroes guild", "heroe's guild"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/7feNJgY.png",
+			"a": ["ape atoll"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/07qjIsd.png",
+			"a": ["barrows"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/JzrxcBe.png",
+			"a": ["pest control"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/U2fJMDa.jpg",
+			"a": ["digsite"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/EeNw1H5.jpg",
+			"a": ["salve graveyard"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/0FFgZxI.png",
+			"a": ["elf camp"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/AgPbpfV.png",
+			"a": ["nardah"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/8sQio4W.png",
+			"a": ["fenkenstrain's castle", "fenkenstrains castle"]
+		},
+		{
+			"q": "What is the maximum amount of people that can fit in a clan chat at once?",
+			"a": ["100"]
+		},
+		{
+			"q": "Leagues is a new game mode in OSRS, the first iteration/season is known as what?",
+			"a": ["twisted", "twisted league", "twisted leagues"]
+		},
+		{
+			"q": "Whats the XP multiplier in Leagues?",
+			"a": ["5x"]
+		},
+		{
+			"q": "From what do you get the equippable Shoulder Parrot?",
+			"a": ["beginner clues", "beginner clue"]
+		},
+		{
+			"q": "How many clue scroll tiers are there?",
+			"a": ["6"]
+		},
+		{ "q": "What Barrows set has a healing effect?", "a": ["guthans"] },
+		{ "q": "Which boss drops the Tyrannical ring?", "a": ["callisto"] },
+		{
+			"q": "What does your character say when you use the Dragon Pickaxe special attack?",
+			"a": ["smashing!"]
+		},
+		{
+			"q": "Name either item that the Drunken Dwarf random event will give the player.",
+			"a": ["kebab", "beer"]
+		},
+		{
+			"q": "What pet do you get from hunting Herbiboars?",
+			"a": ["herbi"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/pJlZ1Z3.png",
+			"a": ["trollheim"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/TotObmx.png",
+			"a": ["mining guild"]
+		},
+
+		{
+			"q": "Which revenant has the highest combat level?",
+			"a": ["dragon", "revenant dragon"]
+		},
+		{ "q": "How many arms does a Karambwan have?", "a": ["8"] },
+		{
+			"q": "What magic level do you need to wield a Black salamander?",
+			"a": ["70"]
+		},
+		{
+			"q": "What is the name of the pet thats obtainable from the Theatre of Blood?",
+			"a": ["lil zik", "lil' zik"]
+		},
+		{
+			"q": "How many RFD subquests must you complete before you can purchase Dragon gloves?",
+			"a": ["9", "nine"]
+		},
+		{
+			"q": "What monster drops the Dragon warhammer?",
+			"a": ["lizardman shaman"]
+		},
+		{ "q": "What is Elvarg's combat level?", "a": ["83"] },
+		{ "q": "How much HP does a Lobster heal?", "a": ["12"] },
+		{
+			"q": "What slayer level do you need to kill Gargoyles?",
+			"a": ["75"]
+		},
+		{
+			"q": "The chance of getting a Cave Horror dropping a Black Mask is 1 in ____?",
+			"a": ["512"]
+		},
+		{
+			"q": "With boosting, whats the lowest fishing level that can get you into the Fishing Guild?",
+			"a": ["63"]
+		},
+		{
+			"q": "What Achievement Diary gives you Unlimited Teleports to the Piscatoris Fishing Colony?",
+			"a": ["western province", "western provinces", "western elite"]
+		},
+
+		{
+			"q": "What hunting level do you need to track the Herbiboar?",
+			"a": ["80"]
+		},
+		{
+			"q": "Who was the first player to complete the Inferno?",
+			"a": ["woox"]
+		},
+		{ "q": "How many hitpoints does TzTok-Jad have?", "a": ["250"] },
+		{
+			"q": "Who was the first player to 2277 total in OldSchool RuneScape?",
+			"a": ["jebrim"]
+		},
+		{
+			"q": "How much Hunter XP do you get for catching a Red Chinchompa?",
+			"a": ["265"]
+		},
+		{
+			"q": "The Rigour prayer increases your ranged attack bonus by how much %?",
+			"a": ["20"]
+		},
+		{
+			"q": "What Smithing level do you need to create an Infernal Pickaxe?",
+			"a": ["85"]
+		},
+		{
+			"q": "How many hard clues do you need to complete to unlock the Uri Transform Emote?",
+			"a": ["300"]
+		},
+		{
+			"q": "RuneScape was created by the '_____' Brothers?",
+			"a": ["gower", "the gower brothers", "gower brothers"]
+		},
+
+		{
+			"q": "The chance of inflicting venom when attacking with the Toxic Blowpipe is ___%?",
+			"a": ["25", "25%"]
+		},
+		{
+			"q": "Which weapon becomes more powerful if the target has a higher Magic level?",
+			"a": ["twisted bow", "tbow", "t bow"]
+		},
+		{ "q": "Which monster drops the Jar of swamp?", "a": ["zulrah"] },
+		{
+			"q": "Which RuneScape god is the god of law & justice?",
+			"a": ["armadyl", "arma"]
+		},
+		{
+			"q": "Name any RuneScape God.",
+			"a": ["armadyl", "saradomin", "guthix", "zamorak", "bandos", "zaros", "seren"]
+		},
+		{ "q": "Which monster drops the Jar of darkness?", "a": ["skotizo"] },
+		{
+			"q": "Which necklace/amulet has the highest Strength bonus?",
+			"a": ["amulet of torture"]
+		},
+		{
+			"q": "Which item, obtained from Raids, is used to create the Kodai wand?",
+			"a": ["kodai insignia"]
+		},
+		{
+			"q": "Which prayer scroll unlocks the Rigour prayer?",
+			"a": ["dexterous", "dexterous prayer scroll", "dexterous scroll"]
+		},
+
+		{
+			"q": "Which player was the first player to reach the maximum amount of XP?",
+			"a": ["lynx titan"]
+		},
+		{
+			"q": "Which jewelry allows you to teleport to the Wintertodt Camp?",
+			"a": ["games necklace", "game necklace"]
+		},
+		{
+			"q": "What item is dropped by Wintertodt at a 1 in 10,000 chance?",
+			"a": ["dragon axe"]
+		},
+		{
+			"q": "Which town is slightly north of the Heroes' Guild?",
+			"a": ["burthorpe"]
+		},
+		{
+			"q": "Which fairy ring code takes you next to Canifis?",
+			"a": ["c k s", "cks"]
+		},
+		{
+			"q": "Which slayer master requires a combat level of 70 to use?",
+			"a": ["chaeldar"]
+		},
+		{
+			"q": "To access Fossil Island, which quest must you complete?",
+			"a": ["bone voyage"]
+		},
+		{
+			"q": "What color is the hat that the Bloodhound pet wears?",
+			"a": ["green"]
+		},
+		{
+			"q": "What's the name of the NPC which insures pets?",
+			"a": ["probita"]
+		},
+		{
+			"q": "What's the maximum amount of prayer points a Prayer Potion can restore?",
+			"a": ["31"]
+		},
+		{
+			"q": "Who is the Duke of Lumbridge?",
+			"a": ["duke horacio", "horacio"]
+		},
+		{
+			"q": "What clothing do you get from the Freaky Forester Random event?",
+			"a": ["lederhosen"]
+		},
+		{ "q": "In which skill would you use a Magic Box?", "a": ["hunter"] },
+		{
+			"q": "Which NPC redeems codes for commemorative items?",
+			"a": ["diango"]
+		},
+		{
+			"q": "What Defence level does Bandos require to wield?",
+			"a": ["65"]
+		},
+		{
+			"q": "What is the exact name of this shield?: https://i.imgur.com/Wv6feNx.png",
+			"a": ["toktz-ket-xil"]
+		},
+		{
+			"q": "What Defence level do you need to wear Void Knight Equipment?",
+			"a": ["42"]
+		},
+		{
+			"q": "What shield requires 50 agility to wear?",
+			"a": ["crystal shield", "shield"]
+		},
+		{
+			"q": "What is the only ring to give a stab bonus?",
+			"a": ["treasonous", "treasonous ring"]
+		},
+		{
+			"q": "Which ring turns your player model into a bush?",
+			"a": ["ring of nature"]
+		},
+		{
+			"q": "How many charges does an Upgraded Ibans Staff hold?",
+			"a": ["2500"]
+		},
+		{
+			"q": "Which staff provides infinite air and earth runes?",
+			"a": ["dust battlestaff", "dust"]
+		},
+		{
+			"q": "Name any Content Developer for OSRS",
+			"a": [
+				"mod maz",
+				"maz",
+				"kieren",
+				"mod kieren",
+				"ed",
+				"mod ed",
+				"mod delta",
+				"delta",
+				"mod ash",
+				"ash",
+				"god ash"
+			]
+		},
+		{
+			"q": "When wearing full Graceful, your run energy is restored __% faster?",
+			"a": ["30", "30%"]
+		},
+		{
+			"q": "Name any Ancient Magicks teleport",
+			"a": [
+				"paddewwa",
+				"senntisten",
+				"kharyrll",
+				"lassar",
+				"carrallangar",
+				"annakarl",
+				"ghorrock"
+			]
+		},
+		{
+			"q": "What type of spells in the Ancient Magicks Spellbook inflict poison?",
+			"a": ["smoke"]
+		},
+		{
+			"q": "Which item gives the highest Magic Attack bonus out of: Occult Necklace, Eternal Boots, Farseer helm?",
+			"a": ["occult", "occult necklace"]
+		},
+		{
+			"q": "Which Achievement Diary has boots as a reward?",
+			"a": ["fremennik"]
+		},
+		{
+			"q": "Which free to play quest gives 12,725 Smithing XP as a reward?",
+			"a": ["the knights sword", "knights sword", "knight's sword", "the knight's sword"]
+		},
+		{
+			"q": "What's the name of the dwarf that loves Redberry pies?",
+			"a": ["thurgo"]
+		},
+		{ "q": "Which clue scroll tier is above Hard?", "a": ["elite"] },
+		{ "q": "What's the maximum total level?", "a": ["2277"] },
+		{
+			"q": "What's the maximum amount of XP you can get in a skill?",
+			"a": ["200 million", "200m", "200,000,000", "200mil", "200000000"]
+		},
+		{ "q": "How many skills are there?", "a": ["23"] },
+		{
+			"q": "Which NPC in Rimmington exchanges noted items for you?",
+			"a": ["phials"]
+		},
+		{ "q": "What is the House Party world?", "a": ["330", "30"] },
+		{
+			"q": "What is the most expensive Butler you can hire?",
+			"a": ["demon butler", "demon"]
+		},
+		{
+			"q": "How much XP do you get from using a Dragon Bone on a lit Gilded Altar?",
+			"a": ["252"]
+		},
+		{
+			"q": "What activity allows you to train strength, agility and fishing at the same time?",
+			"a": ["barb fishing", "barbarian fishing"]
+		},
+		{
+			"q": "What NPC do you talk to for starting the Monkey Madness quest?",
+			"a": ["king narnode shareen", "narnode shareen"]
+		},
+		{
+			"q": "What type of Tree requires level 50 Woodcutting to cut?",
+			"a": ["mahogany"]
+		},
+		{
+			"q": "At what Agility level can you use the Ape Atoll agility course?",
+			"a": ["48"]
+		},
+		{ "q": "What prayer level do you need to use Eagle Eye?", "a": ["44"] },
+		{
+			"q": "At what Herblore level can you mix Anti-venom potions?",
+			"a": ["87"]
+		},
+		{
+			"q": "Which potion is made using these ingredients?: Lantadyme & Potato cactus",
+			"a": ["magic potion", "magic", "magic pot"]
+		},
+		{
+			"q": "How many coal do you need when smithing an Adamant bar in a regular furnace?",
+			"a": ["6"]
+		},
+		{
+			"q": "What mining level is required to access the upper level of the Motherlode mine?",
+			"a": ["72"]
+		},
+		{
+			"q": "What woodcutting level do you need to use a Mithril Axe?",
+			"a": ["21"]
+		},
+		{
+			"q": "How many water runes does a single Ice Barrage cast cost?",
+			"a": ["6"]
+		},
+		{
+			"q": "What magic level is required to use the Smoke Blitz spell?",
+			"a": ["74"]
+		},
+		{
+			"q": "The Strength Skillcape allows you to teleport to which guild?",
+			"a": ["warriors", "warriors guild"]
+		},
+		{
+			"q": "In order to enter the Warriors guild, a player must have 99 in either Strength/Attack OR the combined level of those two skills has to add up to ___.",
+			"a": ["130"]
+		},
+		{
+			"q": "What's the name of the Ardougne Farming Shop NPC?",
+			"a": ["richard"]
+		},
+		{
+			"q": "What's the combat level of a Reanimated Rune Armor set? (Spawned in the Warriors Guild and killed for tokens)",
+			"a": ["138"]
+		},
+		{
+			"q": "What Thieving level do you need to pickpocket a Master Farmer?",
+			"a": ["38"]
+		},
+		{
+			"q": "How much XP do you get for clearing a Rockfall in the Motherlode Mine?",
+			"a": ["10"]
+		},
+		{
+			"q": "From which NPC can you purchase the Attack Skillcape?",
+			"a": ["ajjat"]
+		},
+		{
+			"q": "Which of these items can you NOT combine with a Max Cape: Fire Cape, Infernal Cape, Ava's Attractor, Saradomin Cape, Zamorak Cape, Guthix Cape.",
+			"a": ["ava's attractor", "avas attractor"]
+		},
+		{
+			"q": "What monster does the player kill in the Slayer Skillcape emote?",
+			"a": ["turoth"]
+		},
+		{
+			"q": "In what wave in the Fight Caves does the monster which uses the Magic Attack first spawn?",
+			"a": ["31"]
+		},
+		{
+			"q": "How many quest points do you need to enter the Champions' Guild?",
+			"a": ["32"]
+		},
+		{
+			"q": "Which NPC will create a Dragonfire Shield for the player if they do not have the required Smithing level?",
+			"a": ["oziach"]
+		},
+		{
+			"q": "What Agility level does this shortcut require? https://i.imgur.com/VSwcxKV.png",
+			"a": ["82"]
+		},
+		{
+			"q": "What Mining level do you need to mine Runite Rocks?",
+			"a": ["85"]
+		},
+		{
+			"q": "Name the blue coloured crystal that Cerberus drops.",
+			"a": ["eternal"]
+		},
+		{
+			"q": "What is the name of this player, who is famous for the Falador Massacre?",
+			"a": ["durial321"]
+		},
+
+		{ "q": "In what year was Wintertodt added to OSRS?", "a": ["2016"] },
+		{ "q": "What slayer level do you need to wear Earmuffs?", "a": ["15"] },
+		{
+			"q": "There are 6 types of Rune God armor sets: Guthix, Saradomin, Zamorak, Armadyl, Bandos and _______?",
+			"a": ["ancient"]
+		},
+		{
+			"q": "What helmet are you given on completion of The Fremennik Isles quest?",
+			"a": ["helm of neitiznot"]
+		},
+		{
+			"q": "What is the name of this island? https://i.imgur.com/xxq8qJB.jpg",
+			"a": ["jatizso"]
+		},
+		{
+			"q": "In what quest do you fight the Ice Troll King?",
+			"a": ["the fremennik isles"]
+		},
+		{
+			"q": "What is the maximum amount of charges a Ring of Suffering can hold?",
+			"a": ["100000", "100,000", "100k"]
+		},
+		{
+			"q": "Name any fish you can get in the Chambers of Xeric.",
+			"a": ["pysk", "suphi", "leckish", "brawk", "mycil", "roqed", "kyren"]
+		},
+		{
+			"q": "How much Crafting XP do you get from spinning wool into a Ball of Wool?",
+			"a": ["2.5"]
+		},
+		{ "q": "What's the combat level of TzKal-Zuk?", "a": ["1400"] },
+		{
+			"q": "Which NPC, in the Varrock Clothing Store, can you get a clothing makeover from?",
+			"a": ["thessalia"]
+		},
+		{
+			"q": "What is the race of the NPC called Wormbrain?",
+			"a": ["goblin"]
+		},
+		{
+			"q": "Guthix appointed a Snake to guard the Tears of Guthix, and to judge who is worthy to enter, what is the snakes name?",
+			"a": ["juna"]
+		},
+		{
+			"q": "Which weapon, or type of weapon, has a special attack called Concentrated Shot?",
+			"a": ["ballista", "ballistae", "light ballista", "heavy ballista"]
+		},
+		{
+			"q": "What's the maximum amount of targets a Black Chinchompa can hit at once?",
+			"a": ["10"]
+		},
+		{
+			"q": "When you die with Chinchompas in your inventory, they will dissappear, UNLESS you are where?",
+			"a": ["the wilderness", "wilderness"]
+		},
+		{
+			"q": "What's the missing word in this name, which belongs to the Zamorakian fire demon found in the centre in the bottom level of the Chasm of Fire? 'Voice of _'",
+			"a": ["yama"]
+		},
+		{
+			"q": "What's the name of the NPC in the Nature Grotto?",
+			"a": ["filliman tarlock"]
+		},
+		{
+			"q": "The Armadyl Crossbow model is a recolored version of which crossbow?",
+			"a": ["hunters' crossbow", "hunters crossbow", "hunters"]
+		},
+		{
+			"q": "What is this player wearing? The Robes of ______? https://i.imgur.com/t3V6Dhp.png",
+			"a": ["darkness"]
+		},
+		{
+			"q": "Name any monster which drops a Zenyte Shard",
+			"a": ["tortured gorilla", "demonic gorilla"]
+		},
+		{
+			"q": "What fishing level do you need for Barbarian Fishing?",
+			"a": ["48"]
+		},
+		{
+			"q": "What is the name of this town? Image: https://i.imgur.com/5M1hHhI.jpg",
+			"a": ["piscatoris fishing colony", "piscatoris"]
+		},
+		{
+			"q": "Which NPC is said to have created the Giant Mole?",
+			"a": ["malignius mortifer"]
+		},
+		{
+			"q": "What goes G.A.G. stand for?",
+			"a": ["group of advanced gardeners"]
+		},
+		{
+			"q": "What item has the examine text: 'The essence of fire.'? Hint: It's a rare drop.",
+			"a": ["phoenix"]
+		},
+		{
+			"q": "If you have exactly 1 million XP in a skill, what level would it be?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "How many Marks of Grace does full Graceful cost?",
+			"a": ["260"]
+		},
+		{
+			"q": "Wearing the full Gracefull outfit restores run energy by how much % faster?",
+			"a": ["30"]
+		},
+		{
+			"q": "Not including the default color, how many different colors can you recolor your Graceful into?",
+			"a": ["7"]
+		},
+		{
+			"q": "Drinking a Stamina Potion restores 20% run energy, and reduces your run energy depletion rate by how much %?",
+			"a": ["70"]
+		},
+		{
+			"q": "The Happy Heroes Emporium, a weapon store in the Heroes Guild, sells a Dragon battleaxe for how much GP?",
+			"a": ["200k", "200,000", "200000"]
+		},
+		{
+			"q": "How much special attack energy does the Dragon mace use per special attack?",
+			"a": ["25%"]
+		},
+		{
+			"q": "Which GWD Boss has the highest combat level?",
+			"a": ["zammy", "zamorak", "kril"]
+		},
+		{
+			"q": "What strength level do you need to open the entrance to the Bandos' Stronghold?",
+			"a": ["70"]
+		},
+		{
+			"q": "In what quest do you have to solve a puzzle with a skull on a door?",
+			"a": ["olafs quest", "olaf's quest"]
+		},
+		{
+			"q": "The King Black Dragon always drops the same quantity of Dragon javelin heads, how many does it drop?",
+			"a": ["15"]
+		},
+		{
+			"q": "What Crafting level do you need to make a Broodoo shield?",
+			"a": ["35"]
+		},
+		{
+			"q": "What is the exact amount of XP for 99 in a skill?",
+			"a": ["13034431", "13,034,431"]
+		},
+		{
+			"q": "What kind of key do you need to access the Slayer Tower's rooftop?",
+			"a": ["brittle"]
+		},
+		{
+			"q": "Name either one of the Grosteque Guardians",
+			"a": ["dusk", "dawn"]
+		},
+		{
+			"q": "What Strength level do you need to wield the Granite Hammer?",
+			"a": ["50"]
+		},
+		{
+			"q": "George Laxmeister, Arnold Lydspor, Ramara du Croissant and Herman Caranos all reside in which town?",
+			"a": ["piscatoris", "piscatoris fishing colony"]
+		},
+		{ "q": "Who is the Herblore skill master?", "a": ["kaqemeex"] },
+		{
+			"q": "The Altar of Guthix is found in which town?",
+			"a": ["taverley"]
+		},
+		{
+			"q": "What village am I standing in? https://i.imgur.com/JXBEQL9.jpg",
+			"a": ["witchaven"]
+		},
+
+		{
+			"q": "Where am I? Image: https://i.imgur.com/7BYG3Wq.png",
+			"a": ["west ardy", "west ardougne"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/n0g6EYV.png",
+			"a": ["lunar isle"]
+		},
+
+		{
+			"q": "What's the name of the hunchbacked fisher on the shore of Brimhaven?",
+			"a": ["lubufu"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/ZGbaVwM.png",
+			"a": ["woodcutting guild"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/M5hYiHt.png",
+			"a": ["fishing guild"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/jh0kAHG.png",
+			"a": ["wintertodt camp"]
+		},
+		{
+			"q": "Where am I? Image: https://i.imgur.com/Xky6aFW.png",
+			"a": ["burthorpe"]
+		},
+		{
+			"q": "What crafting level do you need to create a wieldable Crab claw?",
+			"a": ["15"]
+		},
+		{
+			"q": "Who is the protagonist of the 2017 Christmas holiday event?",
+			"a": ["wise old man"]
+		},
+		{ "q": "What slayer level do you need to kill Mogres?", "a": ["32"] },
+		{
+			"q": "What is the name of this monster? Image: https://i.imgur.com/hxY9YH5.png",
+			"a": ["molanisk"]
+		},
+		{
+			"q": "What is the name of the superior version of the Jelly monster?",
+			"a": ["vitreous jelly"]
+		},
+		{
+			"q": "What is the name of the superior version of the Cave Crawler monster?",
+			"a": ["chasm crawler"]
+		},
+		{
+			"q": "Name any type of Wyvern found in the Wyvern Cave on Fossil Island.",
+			"a": ["taloned", "ancient", "long-tailed", "splitting"]
+		},
+		{
+			"q": "What is the combat level of the Kalphite Queen?",
+			"a": ["333"]
+		},
+		{
+			"q": "What's the chance of receiving a Dragon chainbody from a Thermonuclear smoke devil? 1 in ____",
+			"a": ["2000"]
+		},
+		{
+			"q": "Name any one of the 3 wise monkeys from the Temple of Marimbo on Ape Atoll (who appear in Monkey Madness I and Freeing King Awowogei)",
+			"a": ["kikazaru", "mizaru", "iwazaru"]
+		},
+		{
+			"q": "What is the name of the monkey who is king of Ape Atoll?",
+			"a": ["awowogei"]
+		},
+		{
+			"q": "What is the name of the goddess of Monkeys and Apes, of whom the town 'Marim' on Ape Atoll is named after?",
+			"a": ["marimbo"]
+		},
+		{
+			"q": "Who is the Taskmaster for the Varrock Diaries?",
+			"a": ["toby"]
+		},
+		{
+			"q": "What item is the highest prayer bonus for the feet slot?",
+			"a": ["devout boots"]
+		},
+		{
+			"q": "'Ultimate Strength' is a prayer which increases your strength bonus by how much %?",
+			"a": ["15"]
+		},
+		{
+			"q": "The 'Preserve' prayer makes boosted stats last how much % longer?",
+			"a": ["50", "50%"]
+		},
+		{
+			"q": "What Magic level does the 'Trollheim' teleport require?",
+			"a": ["61"]
+		},
+		{
+			"q": "At what Runecrafting level do you start making 10 Air Runes per essence?",
+			"a": ["99"]
+		},
+
+		{
+			"q": "What crafting level do you need to make a Birdhouse trap from Yew logs?",
+			"a": ["60"]
+		},
+
+		{
+			"q": "What is the heaviest item you can carry in the Weapon slot?",
+			"a": ["barrelchest anchor"]
+		},
+		{
+			"q": "What smithing level do you need to smith Adamant crossbow bolts?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "What Agility level do you need to use the Arceuus Essence Mine shortcut?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "What's the combat level of the Black Demons in the Taverly Dungeon?",
+			"a": ["172"]
+		},
+		{
+			"q": "What NPC do you talk to to start the Dwarf Cannon quest?",
+			"a": ["captain lawgof"]
+		},
+		{
+			"q": "What weapon is this? https://i.imgur.com/tVVxcnj.jpg",
+			"a": ["rod of ivandis"]
+		},
+		{
+			"q": "Which rooftop Agility course do you start by jumping on a basket?",
+			"a": ["pollnivneach"]
+		},
+		{
+			"q": "Where in RuneScape would you find Hofuthand?",
+			"a": ["grand exchange", "g.e"]
+		},
+		{
+			"q": "What is the name of the Dwarven child you rescue in the Dwarf Cannon quest?",
+			"a": ["lollk"]
+		},
+		{
+			"q": "What race of monster occupies the cave outside the fishing guild?",
+			"a": ["goblin"]
+		},
+		{
+			"q": "What is the name of the random event person who goes around donating to victims of crime?",
+			"a": ["rick turpentine"]
+		},
+		{
+			"q": "What is the name of the NPC that sells you Dwarf Cannon parts?",
+			"a": ["nulodion"]
+		},
+		{
+			"q": "What monster drops 2000 cannonballs in one drop?",
+			"a": ["corp", "corp beast", "corporeal beast"]
+		},
+		{
+			"q": "How many Iron ore rocks are there outside the Ardougne Monastery?",
+			"a": ["6"]
+		},
+		{ "q": "How much XP do you get from mining an Iron ore?", "a": ["35"] },
+		{
+			"q": "What mining level do you need to mine Lunar ore?",
+			"a": ["60"]
+		},
+		{
+			"q": "What magic level do you need to wear Lunar equipment?",
+			"a": ["65"]
+		},
+		{
+			"q": "What quest NPC stands next to the Astral Altar?",
+			"a": ["oneiromancer"]
+		},
+		{
+			"q": "What is the name of the pirate, whose name is a reference to Luke Skywalker, and captains a ship?",
+			"a": ["lokar searunner"]
+		},
+		{
+			"q": "What is the name of the chieftain of Rellekka?",
+			"a": ["brundt", "brundt the chieftain"]
+		},
+		{
+			"q": "What's the name of the Fletching/Arrow shop owner in Lletya?",
+			"a": ["dalldav"]
+		},
+		{
+			"q": "How many slayer points does the 'Gargoyle Smasher' perk from Slayer stores cost?",
+			"a": ["120"]
+		},
+		{
+			"q": "The droprate of a Brittle Key from a Gargoyle is 1 in ___?",
+			"a": ["150"]
+		},
+		{ "q": "What is the combat level of a Gargoyle?", "a": ["111"] },
+		{
+			"q": "Bandosian guards drop 2 rare items with a 1 in 1 million chance, name either of them.",
+			"a": ["bandos boots", "armadyl helmet", "arma helm"]
+		},
+		{
+			"q": "What construction level is required to construct a Mounted Emblem?",
+			"a": ["80"]
+		},
+		{
+			"q": "Out of these kinds of Wyverns, which has the highest combat level? Long-tailed, Taloned, Spitting",
+			"a": ["long-tailed"]
+		},
+		{
+			"q": "What Slayer level do you need to harm an Ancient Wyvern?",
+			"a": ["82"]
+		},
+		{
+			"q": "At what rate does the Ancient Wyvern drop Granite boots? 1 in ___?",
+			"a": ["600"]
+		},
+		{
+			"q": "What Runecrafting & Magic level do you need to create Primordial Boots?",
+			"a": ["60"]
+		},
+		{ "q": "What is the combat level of Cerberus?", "a": ["318"] },
+		{ "q": "What Slayer level do you need to kill Cerberus?", "a": ["91"] },
+		{ "q": "What boss drops the Jar of souls?", "a": ["cerberus"] },
+		{
+			"q": "What is the name of this monster, found in a quest? https://i.imgur.com/ooaVLTB.png",
+			"a": ["evil creature"]
+		},
+		{
+			"q": "Under what castle does the Theatre of Blood lie?",
+			"a": ["ver sinhaza"]
+		},
+		{
+			"q": "The first Theatre of Blood boss is called: The Maiden of ____?",
+			"a": ["sugadinti"]
+		},
+		{
+			"q": "What is the name of this Theatre of Blood boss? https://i.imgur.com/EBhT9jL.png",
+			"a": ["sotetseg"]
+		},
+		{ "q": "How many Town criers are there in Gielinor?", "a": ["6"] },
+
+		{
+			"q": "What is the combat level of Xarpus in the Theatre of Blood?",
+			"a": ["960"]
+		},
+		{
+			"q": "What is the name of the special weapon used during the first phase of killing Lady Verzik?",
+			"a": ["dawnbringer"]
+		},
+		{
+			"q": "What's the name of the specialized weapon you get from completing A Taste of Hope?",
+			"a": ["ivandis flail"]
+		},
+		{
+			"q": "What quest rewards you with an item that teleports you to the Theatre of Blood?",
+			"a": ["a taste of hope"]
+		},
+		{
+			"q": "The _____ medallion allows you unlimited teleportation to the Theatre of Blood?",
+			"a": ["drakan's", "drakans"]
+		},
+		{
+			"q": "What is the name of the NPC you speak to for spectating people in the Theatre of Blood?",
+			"a": ["abigaila"]
+		},
+
+		{
+			"q": "What is the name of this armor piece, obtainable from the Theatre of Blood? https://i.imgur.com/SCP1UFZ.png",
+			"a": ["justiciar legguards"]
+		},
+		{
+			"q": "Nylocas, from the Theatre of Blood, are a type of *crab* or *spider*?",
+			"a": ["spider"]
+		},
+		{
+			"q": "What is the name of this boss, from the Recipe of Disaster quest? https://i.imgur.com/8qonq5M.png",
+			"a": ["flambeed"]
+		},
+		{
+			"q": "How many required quests do you need to complete before you can access the Nightmare Zone?",
+			"a": ["5"]
+		},
+		{
+			"q": "What boss drops an item which allows you to create a Turquoise slayer helmet?",
+			"a": ["vorkath"]
+		},
+		{
+			"q": "What is the name of the Fairy-Dragon NPC which appears in a quest?",
+			"a": ["k'klik"]
+		},
+		{
+			"q": "In what year was the Recipe for Disaster quest released?",
+			"a": ["2006"]
+		},
+		{
+			"q": "What's the only clue scroll tier that can give Green d'hide bodies as a reward?",
+			"a": ["medium"]
+		},
+		{
+			"q": "What Spiritual Creature requires the highest Slayer level to kill? The Spiritual _____?",
+			"a": ["mage"]
+		},
+		{
+			"q": "What is the name of the metal that Dragon items are made of? (Hint: its not dragon)",
+			"a": ["orikalkum"]
+		},
+		{ "q": "Who is the mayor of Witchhaven?", "a": ["hobb", "mayor hobb"] },
+		{
+			"q": "What Kourend House requires you to heal soldiers to gain favour?",
+			"a": ["shayzien"]
+		},
+		{ "q": "What is the combat level of a Lizardman brute?", "a": ["73"] },
+		{
+			"q": "What is the name of this item? image: https://i.imgur.com/ba8melH.png",
+			"a": ["amulet of the damned"]
+		},
+		{
+			"q": "What is the name of the House Architect of the Hosidius house?",
+			"a": ["hosa"]
+		},
+		{
+			"q": "For which kourend house is Lovada the architect of?",
+			"a": ["lovakengj"]
+		},
+		{
+			"q": "What magic level do you need to complete The Mage Arena 2?",
+			"a": ["75"]
+		},
+		{
+			"q": "What is the name of the Saradomin Justiciar you fight in The Mage Arena 2?",
+			"a": ["zachariah"]
+		},
+		{
+			"q": "What Herblore level do you need to mix Extra Strong Weapon Poison Potions?",
+			"a": ["73", "boaty integer", "ginger digit"]
+		},
+		{
+			"q": "What is the chance of receiving a Hard Clue from a Nature Impling? 1 in ____",
+			"a": ["100"]
+		},
+		{ "q": "What race is the NPC named Immenizz?", "a": ["impling"] },
+		{
+			"q": "What Mining level do you need to mine a Limestone rock?",
+			"a": ["10"]
+		},
+		{
+			"q": "In which city would you find the NPC called Hervi?",
+			"a": ["keldagrim"]
+		},
+		{
+			"q": "What cooking level do you need to make a Greenman's Ale",
+			"a": ["29"]
+		},
+		{
+			"q": "In what city would you find the Silver Cog Director?",
+			"a": ["keldagrim"]
+		},
+		{ "q": "What's the combat level of Sarachnis?", "a": ["318"] },
+
+		{
+			"q": "In which city would you find the NPC called Florin?",
+			"a": ["burgh de rott"]
+		},
+		{ "q": "What's the combat level of Sarachnis?", "a": ["318"] },
+		{
+			"q": "Which NPC do you talk to in order to begin the Ernest the Chicken quest?",
+			"a": ["veronica"]
+		},
+		{
+			"q": "Name either one of the spider bosses",
+			"a": ["sarachnis", "venenatis"]
+		},
+		{ "q": "What boss drops the Jar of Eyes?", "a": ["sarachnis"] },
+		{
+			"q": "In what quest do you fight an exact copy of yourself?",
+			"a": ["lunar diplomacy"]
+		},
+		{ "q": "How many Town criers are there in Gielinor?", "a": ["6"] },
+		{
+			"q": "What cooking level do you need to make a Greenman's Ale",
+			"a": ["29"]
+		},
+		{
+			"q": "What's the name of the boat that you use around Lake Molch?",
+			"a": ["boaty"]
+		},
+		{
+			"q": "In what city would you find the Silver Cog Director?",
+			"a": ["keldagrim"]
+		},
+		{
+			"q": "From what quest do you get goldsmith gauntlets as a reward?",
+			"a": ["family crest"]
+		},
+		{
+			"q": "In what quest do you retrieve items from the Fitzharmon brothers?",
+			"a": ["family crest"]
+		},
+		{
+			"q": "What NPC gives the player a Collection Log?",
+			"a": ["the collector"]
+		},
+		{
+			"q": "What clue level gives ornament kits for Rune scimitars?",
+			"a": ["beginner"]
+		},
+		{
+			"q": "What color is the Shoulder parrot received from beginner clues?",
+			"a": ["green"]
+		},
+		{
+			"q": "What Construction level do you need to build a Marble lectern?",
+			"a": ["77"]
+		},
+		{
+			"q": "In which quest does the player create Ardougne Knight armor?",
+			"a": ["sote", "song of the elves"]
+		},
+		{
+			"q": "Which achievement diary gives you access to a Herb Patch on Harmony Island?",
+			"a": ["morytania"]
+		},
+		{
+			"q": "What item is used to fill a Druid Pouch?",
+			"a": ["mort myre fungi"]
+		},
+		{
+			"q": "Where is the only place you can find Sulliuscep's?",
+			"a": ["fossil island"]
+		},
+		{ "q": "What currency is used on Fossil Island?", "a": ["numulite"] },
+		{
+			"q": "What's the name of the mermaid who looks after underwater seaweed farming patches?",
+			"a": ["mernia"]
+		},
+		{
+			"q": "What island is north-west of Fossil Island?",
+			"a": ["lithkren"]
+		},
+		{ "q": "What race is Commander Zilyana?", "a": ["icyene"] },
+		{
+			"q": "What's the name of the resistance group trying to free Morytania from Lord draken?",
+			"a": ["the myreque", "myreque"]
+		},
+		{
+			"q": "Hallowvale is the old name of a region which is now called what?",
+			"a": ["morytania"]
+		},
+		{
+			"q": "What's the name of the Fancy Dress shop owner?",
+			"a": ["asyff", "asyff bymajique"]
+		},
+		{
+			"q": "What's the name of the katana-wielding merchant in Port Phasmatys?",
+			"a": ["ak-haranu", "ak haranu"]
+		},
+		{
+			"q": "Which Falador guard famously dies in the Garden of Tranquility quest?",
+			"a": ["billy"]
+		},
+		{
+			"q": "What's the name of this NPC, featured in an anagram clue: ARMCHAIR THE PELT",
+			"a": ["charlie the tramp", "charlie"]
+		},
+		{
+			"q": "Where is Robin Hood, the NPC, found?",
+			"a": ["port phasmatys"]
+		},
+		{
+			"q": "What's the name of Juliet's father?",
+			"a": ["draul", "draul leptoc"]
+		},
+		{
+			"q": "What's the name of the island that Evil Bob teleports players' to for a random event?",
+			"a": ["scaperune"]
+		},
+
+		{
+			"q": "Name any of the dwarves that keep the Blast Furnace running on certain worlds.",
+			"a": ["dumpy", "stumpy", "numpty", "thumpy"]
+		},
+		{
+			"q": "What's the name of the Banker in the Ourania Cave?",
+			"a": ["eniola"]
+		},
+		{
+			"q": "Which NPC is the solution to the cryptic clue 'I wouldn't wear this jean on my legs.'?",
+			"a": ["father jean"]
+		},
+		{
+			"q": "The Flax Keeper, from Seers' Village, is the brother of which famous NPC?",
+			"a": ["hans"]
+		},
+		{
+			"q": "What's the name of the Wine Shop owner, in Draynor Village?",
+			"a": ["fortunato"]
+		},
+		{
+			"q": "What's the name of the Guildmaster and founder of the Farming Guild?",
+			"a": ["jane"]
+		},
+		{
+			"q": "What's the name of the fishing shop owner in Catherby?",
+			"a": ["harry"]
+		},
+		{
+			"q": "Which zamorakian mahjarrat is featured in the quest, Hazeel Cult?",
+			"a": ["hazeel"]
+		},
+		{
+			"q": "Where is Historian Seth Minas found?",
+			"a": ["varrock museum"]
+		},
+		{
+			"q": "What's the name of the Mage Arena banker?",
+			"a": ["gundai"]
+		},
+		{
+			"q": "What agility level do you need to use the Wilderness Agility Course?",
+			"a": ["52"]
+		},
+		{
+			"q": "What agility level do you need to use the Prifddinas Agility Course?",
+			"a": ["75"]
+		},
+
+		{
+			"q": "What part of Fossil Island do Herbiboars inhabit?",
+			"a": ["mushroom forest"]
+		},
+
+		{
+			"q": "How many hits does an Abyssal Tentacle last?",
+			"a": ["10k", "10,000", "10000"]
+		},
+		{
+			"q": "Name one of the upgraded versions of Silverlight",
+			"a": ["arclight"]
+		},
+		{
+			"q": "What's the only monster that always drops an Ancient shard?",
+			"a": ["skotizo"]
+		},
+		{
+			"q": "In what quest do you make a Blurite Sword?",
+			"a": ["knights sword", "the knights sword"]
+		},
+		{
+			"q": "Whats the fairy ring code for Mudskipper point?",
+			"a": ["aiq"]
+		},
+		{
+			"q": "What fletching level do you need to create Onyx bolt tips?",
+			"a": ["73"]
+		},
+		{
+			"q": "What's the fairy ring code for the Abyssal Nexus?",
+			"a": ["dip"]
+		},
+
+		{
+			"q": "Name either of the POH rooms you can build at level 1 Construction.",
+			"a": ["garden", "parlour"]
+		}
+	]
+}
