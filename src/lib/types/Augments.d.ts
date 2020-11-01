@@ -1,7 +1,7 @@
 import { Image } from 'canvas';
 import { MessageEmbed } from 'discord.js';
 import { FSWatcher } from 'fs';
-import { KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
 import { Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -31,7 +31,6 @@ declare module 'klasa' {
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
-		public killWorkerThread?: ArbitraryThreadType;
 		public wtf(error: Error): void;
 		osggDB?: Db;
 		commentStream?: CommentStream;

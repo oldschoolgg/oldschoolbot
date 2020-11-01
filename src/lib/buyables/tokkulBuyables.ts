@@ -9,7 +9,7 @@ interface TokkulShopItem {
 	requireFireCape?: boolean;
 }
 
-const TokkulShopItem: TokkulShopItem[] = [
+const TokkulShopItems: TokkulShopItem[] = [
 	// Ore and Gem Store
 	{
 		name: 'Tin ore',
@@ -252,4 +252,4 @@ const TokkulShopItem: TokkulShopItem[] = [
 	}
 ];
 
-export default TokkulShopItem;
+export default TokkulShopItems;

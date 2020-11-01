@@ -29,7 +29,6 @@ export default class extends Command {
 
 	getEmojiForBoss(key: keyof typeof miscEmojis | string) {
 		if (key in miscEmojis) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			return miscEmojis[key];
 		}

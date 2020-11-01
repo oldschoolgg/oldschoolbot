@@ -51,7 +51,6 @@ export default class extends Command {
 		return new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore
 	async run(msg: KlasaMessage, [pageNumberOrItemName = 1]: [number | string]) {
 		await msg.author.settings.sync(true);

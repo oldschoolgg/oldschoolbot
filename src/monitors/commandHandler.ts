@@ -59,7 +59,6 @@ export default class extends Monitor {
 				this.client.oneCommandAtATimeCache.add(message.author.id);
 			}
 			try {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 				// @ts-ignore 2341
 				await message.prompter!.run();
 				try {
@@ -68,8 +67,7 @@ export default class extends Monitor {
 						: undefined;
 
 					const commandRun = subcommand
-						? // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-						  // @ts-ignore 7053
+						? // @ts-ignore 7053
 						  message.command![subcommand](message, message.params)
 						: message.command!.run(message, message.params);
 					timer.stop();

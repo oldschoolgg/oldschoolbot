@@ -1,6 +1,6 @@
 import { Misc, Monsters } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
-import { KillWorkerArgs } from '.';
+
 import abyssalSire from '../data/monsters/abyssalSire';
 import alchemicalHydra from '../data/monsters/alchemicalHydra';
 import brutalBlackDragon from '../data/monsters/brutalBlackDragon';
@@ -19,6 +19,7 @@ import tob from '../data/monsters/tob';
 import wintertodt from '../data/monsters/wintertodt';
 import wyvern from '../data/monsters/wyvern';
 import gauntlet from '../data/new_monsters/gauntlet';
+import { KillWorkerArgs } from '.';
 
 export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();

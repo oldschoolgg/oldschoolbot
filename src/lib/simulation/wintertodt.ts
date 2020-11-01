@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randInt, roll } from 'e';
 import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
