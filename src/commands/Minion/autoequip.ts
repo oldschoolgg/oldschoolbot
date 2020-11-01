@@ -19,7 +19,10 @@ export default class extends BotCommand {
 			usage:
 				'<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
 			usageDelim: ' ',
-			aliases: ['aep', 'aequip']
+			aliases: ['aep', 'aequip'],
+			description:
+				'Automatically equips the BIS gear you have in your bank, for a particular attack style, to one of your gear setups.',
+			examples: ['+autoequip melee attack crush', '+autoequip mage attack magic']
 		});
 	}
 

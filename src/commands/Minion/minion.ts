@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
@@ -25,7 +26,6 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { rand } from '../../util';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -591,7 +591,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
-		const randomAddedDuration = rand(1, 20);
+		const randomAddedDuration = randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (isWeekend()) {

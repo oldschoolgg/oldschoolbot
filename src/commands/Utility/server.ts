@@ -1,12 +1,14 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Get information on a mentioned user.',
+			description: 'Get information on the current server.',
+			examples: ['+server'],
 			requiredPermissions: ['EMBED_LINKS'],
 			runIn: ['text']
 		});

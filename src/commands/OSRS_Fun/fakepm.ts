@@ -1,7 +1,9 @@
-const { Command } = require('klasa');
-const { MessageAttachment } = require('discord.js');
-const { createCanvas, Image, registerFont } = require('canvas');
-const fs = require('fs');
+import { createCanvas, Image, registerFont } from 'canvas';
+import { MessageAttachment } from 'discord.js';
+import fs from 'fs';
+import { CommandStore, KlasaMessage } from 'klasa';
+
+import { BotCommand } from '../../lib/BotCommand';
 
 const bg = fs.readFileSync('./resources/images/pm-bg.png');
 const canvas = createCanvas(376, 174);
@@ -11,10 +13,11 @@ ctx.font = '16px OSRSFont';
 
 registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
-			description: 'Fake a private message from someone.',
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			description: 'Generates a fake private message from someone.',
+			examples: ['+fakeely Woox Hello'],
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) <message:...str>',
@@ -22,7 +25,7 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [username, message]) {
+	async run(msg: KlasaMessage, [username, message]: [string, string]) {
 		const BG = new Image();
 		BG.src = bg;
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
@@ -36,4 +39,4 @@ module.exports = class extends Command {
 			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
 		);
 	}
-};
+}

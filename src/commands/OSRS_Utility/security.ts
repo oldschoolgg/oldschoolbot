@@ -5,7 +5,8 @@ import { BotCommand } from '../../lib/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows some information on securing your runescape account.'
+			description: 'Shows some information on securing your runescape account.',
+			examples: ['+security']
 		});
 	}
 

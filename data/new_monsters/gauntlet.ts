@@ -1,4 +1,4 @@
-const { roll } = require('../../src/util');
+import { roll } from '../../src/lib/util';
 
 const drops = {
 	blade: '<:Blade_of_saeldor_inactive:637345429868118046>',
@@ -8,7 +8,7 @@ const drops = {
 };
 
 const gauntlet = {
-	kill(quantity, corrupted = false) {
+	kill(quantity: number, corrupted = false) {
 		const loot = [];
 
 		for (let i = 0; i < quantity; i++) {
@@ -22,4 +22,4 @@ const gauntlet = {
 	}
 };
 
-module.exports = gauntlet;
+export default gauntlet;

@@ -1,7 +1,8 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { cleanString } from 'oldschooljs/dist/util';
 
-import pets = require('../../../data/pets');
+import pets from '../../lib/pets';
+import { roll } from '../../lib/util';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,9 +21,12 @@ export default class extends Command {
 		);
 		if (!pet) return msg.send("I don't recognize that pet!");
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		const count = pet.finish();
+		let count = 0;
+		let hasPet = false;
+		while (!hasPet) {
+			count++;
+			if (roll(pet.chance)) hasPet = true;
+		}
 
 		return msg.send(pet.formatFinish(count));
 	}

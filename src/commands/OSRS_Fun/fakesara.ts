@@ -1,12 +1,14 @@
-const { Command } = require('klasa');
-const { MessageAttachment } = require('discord.js');
-const { createCanvas, Image, registerFont } = require('canvas');
-const fs = require('fs');
+import { createCanvas, Image, registerFont } from 'canvas';
+import { MessageAttachment } from 'discord.js';
+import { randInt } from 'e';
+import fs from 'fs';
+import { CommandStore, KlasaMessage } from 'klasa';
+
+import { BotCommand } from '../../lib/BotCommand';
 
 const bg = fs.readFileSync('./resources/images/tob-bg.png');
 const canvas = createCanvas(399, 100);
 const ctx = canvas.getContext('2d');
-const { rand } = require('../../util');
 
 ctx.font = '16px OSRSFont';
 
@@ -14,10 +16,11 @@ registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
-			description: 'Fake yourself getting bandos loot!',
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			description: 'Generates a fake image of someone getting a saradomin pet.',
+			examples: ['+fakesara Woox 50'],
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) [kc:int{1,999999}]',
@@ -25,25 +28,31 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [username, kc = rand(1, 150)]) {
+	async run(msg: KlasaMessage, [username, kc = randInt(1, 150)]: [string, number]) {
 		ctx.fillStyle = '#000000';
 		const BG = new Image();
 		BG.src = bg;
 		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
 
-		ctx.fillText('Your General Graardor kill count is: ', 11, 10);
+		ctx.fillText('Your Commander Zilyana kill count is: ', 11, 10);
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(kc, 12 + ctx.measureText('Your General Graardor kill count is: ').width, 10);
+		ctx.fillText(
+			kc.toString(),
+			12 + ctx.measureText('Your Commander Zilyana kill count is: ').width,
+			10
+		);
 
 		ctx.fillStyle = '#ff0000';
 		ctx.fillText(`You have a funny feeling like you're being followed.`, 11, 25);
 
 		ctx.fillStyle = '#005f00';
-		ctx.fillText(`${username} received a drop: Pet general graardor`, 11, 40);
+		ctx.fillText(`${username} received a drop: Pet zilyana`, 11, 40);
 
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(
-			`${username} received a drop: Bandos ${Math.random() > 0.5 ? 'chestplate' : 'tassets'}`,
+			`${username} received a drop: ${
+				Math.random() > 0.5 ? 'Saradomin hilt' : 'Armadyl crossbow'
+			}`,
 			11,
 			54
 		);
@@ -59,4 +68,4 @@ module.exports = class extends Command {
 			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
 		);
 	}
-};
+}

@@ -13,7 +13,9 @@ export default class extends BotCommand {
 			usage: '<monsterName:str> <itemName:str>',
 			oneAtTime: true,
 			cooldown: 120,
-			usageDelim: ','
+			usageDelim: ',',
+			description: 'Shows the highest drystreaks for an item from a monster.',
+			examples: ['+drystreak corp, elysian sigil', '+drystreak cerb, pegasian crystal']
 		});
 	}
 

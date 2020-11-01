@@ -1,27 +1,27 @@
-const { Extendable, Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { Command, Extendable, ExtendableStore } from 'klasa';
+import { Player } from 'oldschooljs';
+import { CluesScore, SkillScore, SkillsScore } from 'oldschooljs/dist/meta/types';
 
-const { toTitleCase } = require('../util');
+import emoji from '../../data/skill-emoji';
+import { toTitleCase } from '../lib/util';
 
-const { default: emoji } = require('../../data/skill-emoji');
-
-class getStatsEmbed extends Extendable {
-	constructor(...args) {
-		super(...args, {
-			appliesTo: [Command],
-			enabled: true,
-			klasa: true
-		});
+export default class GetStatsEmbed extends Extendable {
+	public constructor(store: ExtendableStore, file: string[], directory: string) {
+		super(store, file, directory, { appliesTo: [Command], enabled: true });
 	}
 
 	getStatsEmbed(
-		username,
-		color,
-		{ clues, minigames, skills, combatLevel },
-		key = 'level',
+		username: string,
+		color: number,
+		{ clues, minigames, skills, combatLevel }: Player,
+		key: keyof SkillScore = 'level',
 		showExtra = true
 	) {
-		const skillCell = skill => `${emoji[skill]} ${skills[skill][key].toLocaleString()}`;
+		const skillCell = (skill: string) =>
+			`${emoji[skill as keyof typeof emoji] as keyof SkillsScore} ${skills[
+				skill as keyof SkillsScore
+			][key].toLocaleString()}`;
 
 		const embed = new MessageEmbed()
 			.setColor(color)
@@ -97,7 +97,9 @@ class getStatsEmbed extends Extendable {
 						.slice(1)
 						.map(
 							tier =>
-								`**${toTitleCase(tier)}:** ${clues[tier].score.toLocaleString()}`
+								`**${toTitleCase(tier)}:** ${clues[
+									tier as keyof CluesScore
+								].score.toLocaleString()}`
 						),
 					true
 				);
@@ -105,5 +107,3 @@ class getStatsEmbed extends Extendable {
 		return embed;
 	}
 }
-
-module.exports = getStatsEmbed;
