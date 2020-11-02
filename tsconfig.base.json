@@ -19,7 +19,6 @@
 
 		"allowJs": true,
 		"checkJs": false,
-		"skipLibCheck": true,
 		"types": ["node", "node-fetch", "discord.js", "klasa", "jest"],
 		"esModuleInterop": true
 	}

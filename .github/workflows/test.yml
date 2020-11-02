@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - master
+            - bso
     pull_request:
 
 jobs:
