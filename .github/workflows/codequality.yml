@@ -32,10 +32,6 @@ jobs:
                   popd
             - name: Run ESLint
               uses: icrawl/action-eslint@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  job-name: ESLint
 
     Typescript:
         name: Typescript
@@ -61,7 +57,5 @@ jobs:
                   popd
             - name: Run TSC
               uses: icrawl/action-tsc@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  job-name: Typescript
+with:
+    build: src
