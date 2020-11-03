@@ -57,5 +57,5 @@ jobs:
                   popd
             - name: Run TSC
               uses: icrawl/action-tsc@v1
-with:
-    build: src
+              with:
+                  build: src
