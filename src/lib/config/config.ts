@@ -14,7 +14,6 @@ const clientOptions: KlasaClientOptions = {
 	disableEveryone: true,
 	shards: 'auto',
 	ws: {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		intents: new Intents([
 			'GUILDS',
@@ -36,7 +35,6 @@ const clientOptions: KlasaClientOptions = {
 	schedule: {
 		interval: 10000
 	},
-	noPrefixDM: true,
 	partials: ['USER'],
 	production,
 	...customClientOptions

@@ -1,7 +1,9 @@
 import { objectKeys } from 'e';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-const rates = {
+import { BotCommand } from '../../lib/BotCommand';
+
+export const petRates = {
 	hunter: {
 		'Grey chinchompas': 131395,
 		'Red chinchompas': 98373,
@@ -65,7 +67,7 @@ const rates = {
 	}
 };
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the rates of getting skilling pets at certain levels.',
@@ -75,11 +77,11 @@ export default class extends Command {
 		});
 	}
 
-	async run(msg: KlasaMessage, [skillLevel, petName]: [number, keyof typeof rates]) {
-		return msg.send(this.rate(rates[petName], skillLevel));
+	async run(msg: KlasaMessage, [skillLevel, petName]: [number, keyof typeof petRates]) {
+		return msg.send(this.rate(petRates[petName], skillLevel));
 	}
 
-	rate(obj: typeof rates[keyof typeof rates], lvl: number) {
+	rate(obj: typeof petRates[keyof typeof petRates], lvl: number) {
 		const rates = [];
 		for (const key of objectKeys(obj)) {
 			rates.push(`**${key}:** ${(obj[key] - lvl * 25).toLocaleString()}`);

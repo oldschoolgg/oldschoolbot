@@ -13,7 +13,9 @@ export default class extends BotCommand {
 			usage: '<monsterName:str> <itemName:str>',
 			oneAtTime: true,
 			cooldown: 120,
-			usageDelim: ','
+			usageDelim: ',',
+			description: 'Shows the highest drystreaks for an item from a monster.',
+			examples: ['+drystreak corp, elysian sigil', '+drystreak cerb, pegasian crystal']
 		});
 	}
 
@@ -44,7 +46,6 @@ export default class extends BotCommand {
 			`**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
 				.map(
 					({ id, KC }) =>
-						// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 						// @ts-ignore
 						`${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`
 				)

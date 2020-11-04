@@ -23,13 +23,11 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get sanitizedName(this: User) {
 		return `(${this.username.replace(/[()]/g, '')})[${this.id}]`;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get isBusy(this: User) {
 		const client = this.client as KlasaClient;
@@ -38,7 +36,6 @@ export default class extends Extendable {
 		);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get isIronman(this: User) {
 		return this.settings.get(UserSettings.Minion.Ironman);
@@ -218,7 +215,6 @@ export default class extends Extendable {
 
 	public totalLevel(this: User, returnXP = false) {
 		const userXPs = Object.values(
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			this.settings.get('skills').toJSON() as Skills
 		) as number[];
@@ -275,7 +271,6 @@ export default class extends Extendable {
 		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get badges(this: User) {
 		const username = this.settings.get(UserSettings.RSN);
@@ -283,14 +278,12 @@ export default class extends Extendable {
 		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
 		const usersTask = getActivityOfUser(this.client, this.id);
 		return Boolean(usersTask);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
 		const name = this.settings.get(UserSettings.Minion.Name);
@@ -303,13 +296,11 @@ export default class extends Extendable {
 			: `${prefix} ${icon} Your minion`;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get hasMinion(this: User) {
 		return this.settings.get(UserSettings.Minion.HasBought);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
 		let timeMultiplier = 1;

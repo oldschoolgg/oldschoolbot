@@ -30,7 +30,7 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 		} else if (Array.isArray(item)) {
 			const test = resolveItems(item);
 			// TODO - fix this, why the fk is this erroring?
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 			// @ts-ignore
 			newArray.push(test);
 		} else {

@@ -1,11 +1,14 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { cleanMentions } from '../../lib/util';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<name:str>'
+			usage: '<name:str>',
+			description: 'Shows a love rating.',
+			examples: ['+love Mod Sween', '+love @Woox']
 		});
 	}
 

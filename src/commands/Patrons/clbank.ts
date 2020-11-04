@@ -9,7 +9,10 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			perkTier: PerkTier.Two,
 			oneAtTime: true,
-			cooldown: 120
+			cooldown: 120,
+			description:
+				'Allows you to see your entire collection log, which is all items ever recorded in your collection log, viewed in the form of a bank.',
+			examples: ['+clbank']
 		});
 	}
 

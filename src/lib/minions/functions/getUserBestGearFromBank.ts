@@ -14,7 +14,7 @@ function getItemScore(item: Item) {
 	);
 }
 
-export default function(
+export default function getUserBestGearFromBank(
 	userBank: ItemBank,
 	userGear: GearSetup,
 	gearType: GearTypes.GearSetupTypes,

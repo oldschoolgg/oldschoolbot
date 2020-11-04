@@ -1,7 +1,6 @@
 import { MessageReaction, ReactionCollector, User } from 'discord.js';
 
 export class CustomReactionCollector extends ReactionCollector {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore
 	async *[Symbol.asyncIterator](): AsyncIterableIterator<[MessageReaction, User]> {
 		const queue: [MessageReaction, User][] = [];
