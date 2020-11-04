@@ -5,7 +5,7 @@
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -b src -w\" \"node dist/\"",
 		"test": "yarn test:lint && yarn test:unit",
-		"test:lint": "prettier --check \"*/**/*.ts\" && eslint \"*/**/*.ts\"",
+		"test:lint": "prettier --check \"{src,tests}/**/*.ts\" && eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest",
 		"test:watch": "jest --watch",
 		"dev": "yarn wipedist && tsc -b -w src"
