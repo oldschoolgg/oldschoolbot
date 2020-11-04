@@ -209,7 +209,6 @@ const brokenItems: Createable[] = [
 			[itemID('Avernic defender')]: 1
 		},
 		GPCost: 100_000_000,
-		QPRequired: 205,
 		noCl: true
 	}
 ];
@@ -3485,7 +3484,8 @@ const Createables: Createable[] = [
 		}),
 		inputItems: resolveNameBank({
 			'Hydra leather': 1
-		})
+		}),
+		QPRequired: 205
 	},
 	...crystalTools,
 	...brokenItems
