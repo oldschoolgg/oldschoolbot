@@ -35,7 +35,6 @@ const clientOptions: KlasaClientOptions = {
 	schedule: {
 		interval: 10000
 	},
-	noPrefixDM: true,
 	partials: ['USER'],
 	production,
 	...customClientOptions

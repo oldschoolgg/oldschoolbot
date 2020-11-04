@@ -2130,10 +2130,6 @@ eslint-config-bamboo@^3.0.0:
   resolved "https://registry.yarnpkg.com/eslint-config-bamboo/-/eslint-config-bamboo-3.0.0.tgz#26d013e5b575b9608cecb53cc7410be32e1f0471"
   integrity sha512-OyY6aVXQ3RrSNtTDpLf6V426ZUV28JerCizGisLuXQco319ZpxyCtMKonJ04l6faYurdFmV6giDHhXmw7Fe9Lg==
 
-"eslint-config-klasa@github:dirigeants/klasa-lint":
-  version "0.0.1"
-  resolved "https://codeload.github.com/dirigeants/klasa-lint/tar.gz/28618d5bf851bffdb6775deb5937acfe2a1af25a"
-
 eslint-config-prettier@^6.15.0:
   version "6.15.0"
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-6.15.0.tgz#7f93f6cb7d45a92f1537a70ecc06366e1ac6fed9"

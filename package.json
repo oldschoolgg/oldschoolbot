@@ -57,7 +57,6 @@
 		"concurrently": "^5.3.0",
 		"eslint": "^7.12.1",
 		"eslint-config-bamboo": "^3.0.0",
-		"eslint-config-klasa": "github:dirigeants/klasa-lint",
 		"eslint-config-prettier": "^6.15.0",
 		"eslint-plugin-prettier": "^3.1.4",
 		"eslint-plugin-simple-import-sort": "^5.0.3",
