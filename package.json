@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"lint": "prettier --check \"*/**/*.ts\" --write && eslint \"*/**/*.ts\" --fix",
+		"lint": "prettier --check \"{src,tests}/**/*.ts\" --write && eslint \"{src,tests}/**/*.ts\" --fix",
 		"build": "yarn wipedist && tsc -b src",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -b src -w\" \"node dist/\"",

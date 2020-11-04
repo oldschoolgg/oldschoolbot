@@ -25,11 +25,6 @@ jobs:
                   key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
-            - name: Copy Configuration
-              run: |
-                  pushd src &&
-                  cp config.example.ts config.ts &&
-                  popd
             - name: Run ESLint
               uses: icrawl/action-eslint@v1
 
