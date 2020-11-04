@@ -60,8 +60,8 @@ export default class extends BotCommand {
 		const hasCob = msg.author.equippedPet() === itemID('Cob');
 
 		if (hasCob) {
-			lapLength *= 0.7;
-			boosts.push(`30% with Cob's help`);
+			lapLength /= 2;
+			boosts.push(`2x boost with Cob's help`);
 		}
 
 		for (const [id, percent] of objectEntries(sepulchreBoosts)) {
