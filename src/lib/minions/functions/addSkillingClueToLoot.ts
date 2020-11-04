@@ -20,7 +20,6 @@ export default function addSkillingClueToLoot(
 	loot: ItemBank
 ) {
 	const userLevel = user.skillLevel(skill);
-	// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	for (let i = 0; i < quantity; i++) {
 		if (roll(chance)) {

@@ -16,7 +16,6 @@ export default async function announceLoot(
 	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number }
 ) {
 	if (!monster.notifyDrops) return;
-	// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 	const kc = (user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity;
 	const itemsToAnnounce = filterBankFromArrayOfItems(
 		(monster.notifyDrops as number[]) ?? [],

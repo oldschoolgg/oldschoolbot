@@ -113,11 +113,9 @@ export default class extends BotCommand {
 		);
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins);
-		// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);
 
 		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses);
-		// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
 		await winner.addGP(winningAmount - tax);
