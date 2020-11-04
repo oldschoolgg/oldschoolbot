@@ -210,7 +210,6 @@ export default class extends Event {
 		this.client.guilds
 			.filter(guild => Boolean(guild.settings.get(key as string)))
 			.map(guild => {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 				// @ts-ignore
 				const channel = guild.channels.get(guild.settings.get(key));
 				if (

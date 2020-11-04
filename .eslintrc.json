@@ -5,6 +5,9 @@
 	"env": {
 		"jest": true
 	},
+	"parserOptions": {
+		"project": "./tsconfig.eslint.json"
+	},
 	"rules": {
 		"no-mixed-operators": "off",
 		"consistent-return": "off",
@@ -26,10 +29,11 @@
 			{ "blankLine": "always", "prev": "import", "next": "export" },
 			{ "blankLine": "always", "prev": "const", "next": "export" }
 		],
-		"simple-import-sort/sort": "error"
-	},
-	"parserOptions": {
-		"sourceType": "module",
-		"ecmaVersion": 2018
+		"simple-import-sort/sort": "error",
+		"@typescript-eslint/class-name-casing": "off",
+		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/ban-ts-comment": "off",
+		"@typescript-eslint/ban-types": "off",
+		"@typescript-eslint/no-non-null-asserted-optional-chain": "off"
 	}
 }

@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -5,7 +6,9 @@ import { BotCommand } from '../../lib/BotCommand';
 let triviaQuestions: any;
 try {
 	// eslint-disable-next-line prefer-destructuring
-	triviaQuestions = require('../../../resources/trivia-questions.json').triviaQuestions;
+	triviaQuestions = JSON.parse(
+		fs.readFileSync('./src/lib/resources/trivia-questions.json').toString()
+	).triviaQuestions;
 } catch (err) {
 	console.log('No trivia questions file found. Disabling trivia command.');
 }

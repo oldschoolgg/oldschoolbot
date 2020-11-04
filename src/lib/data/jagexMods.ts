@@ -1,4 +1,4 @@
-import { JMod } from '../src/lib/types';
+import { JMod } from '../types';
 
 const JagexMods: JMod[] = [
 	{ redditUsername: 'jagexjd', formattedName: 'Mod JD' },

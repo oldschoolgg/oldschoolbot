@@ -46,7 +46,6 @@ export default class extends BotCommand {
 			`**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
 				.map(
 					({ id, KC }) =>
-						// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 						// @ts-ignore
 						`${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`
 				)

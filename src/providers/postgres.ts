@@ -17,7 +17,6 @@ import { AnyObject } from '../lib/types';
 type PostgresOptions = PoolConfig & Record<PropertyKey, unknown>;
 
 export default class extends SQLProvider {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2416
 	public qb = new QueryBuilder({
 		array: type => `${type}[]`,
@@ -255,7 +254,7 @@ export default class extends SQLProvider {
 	}
 
 	public run<T extends Submittable>(queryStream: T): T;
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 	// @ts-ignore 2394
 	public run<R extends unknown[] = unknown[], I extends unknown[] = unknown[]>(
 		queryConfig: QueryArrayConfig<I>,
@@ -272,7 +271,6 @@ export default class extends SQLProvider {
 	): Promise<QueryResult<R>>;
 
 	public run(...sql: readonly unknown[]) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556
 		return this.pgsql!.query(...sql);
 	}
@@ -292,10 +290,9 @@ export default class extends SQLProvider {
 	): Promise<QueryResult<R>['rows']>;
 
 	public async runAll(...sql: readonly unknown[]) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556
 		const results = await this.run(...sql);
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 		// @ts-ignore 2339
 		return results.rows;
 	}
@@ -315,10 +312,9 @@ export default class extends SQLProvider {
 	): Promise<QueryResult<R>['rows'][number]>;
 
 	public async runOne(...sql: readonly unknown[]) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2556
 		const results = await this.run(...sql);
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 		// @ts-ignore 2339
 		return results.rows[0] || null;
 	}
@@ -423,7 +419,6 @@ export default class extends SQLProvider {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2416
 	protected parseEntry(table: string, raw: Record<string, unknown> | null) {
 		if (!raw) return null;

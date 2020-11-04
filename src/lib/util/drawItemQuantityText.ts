@@ -1,3 +1,5 @@
+import { CanvasRenderingContext2D } from 'canvas';
+
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
 import { fillTextXTimesInCtx } from './fillTextXTimesInCtx';
 

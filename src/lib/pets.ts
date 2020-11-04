@@ -1,5 +1,5 @@
 import { Emoji } from './constants';
-import raids = require('../../data/monsters/raids');
+import raids = require('../lib/data/monsters/raids');
 import { Pet } from './types';
 
 const xpEmoji = Emoji.XP;

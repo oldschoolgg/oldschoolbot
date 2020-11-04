@@ -33,7 +33,6 @@ export default class extends BotCommand {
 	}
 
 	async _query(str: string): Promise<any> {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		return this.client.providers.default.runAll(str);
 	}

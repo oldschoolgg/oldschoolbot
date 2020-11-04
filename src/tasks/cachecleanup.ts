@@ -28,7 +28,6 @@ export default class MemorySweeper extends Task {
 	}
 
 	async run() {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		const queryRes = await this.client.providers!.default!.runAll(
 			`SELECT ARRAY(SELECT "id" FROM users WHERE "badges"::text <> '{}'::text OR "bank"::text <> '{}'::text OR "minion.hasBought" = true); `

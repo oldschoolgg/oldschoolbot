@@ -23,7 +23,6 @@ export default class extends BotCommand {
 		msg.author.settings.update(UserSettings.QP, 250);
 		const loot = {};
 		for (const item of Eatables) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			loot[item.id] = 1000;
 		}
