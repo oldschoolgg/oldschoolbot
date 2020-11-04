@@ -3,9 +3,9 @@ bot/bwd/provider/json/
 src/bwd/provider/json/
 /config/private.js
 /config/private.json
-/private.json
+private.json
 src/config.ts
-resources/trivia-questions.json
+trivia-questions.json
 dist/
 bwd/
 icon_cache/

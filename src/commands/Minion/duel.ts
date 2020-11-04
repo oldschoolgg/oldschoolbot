@@ -129,7 +129,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
 		return msg.channel.send(

@@ -3,7 +3,7 @@ import { Command, Extendable, ExtendableStore } from 'klasa';
 import { Player } from 'oldschooljs';
 import { CluesScore, SkillScore, SkillsScore } from 'oldschooljs/dist/meta/types';
 
-import emoji from '../../data/skill-emoji';
+import emoji from '../lib/data/skill-emoji';
 import { toTitleCase } from '../lib/util';
 
 export default class GetStatsEmbed extends Extendable {

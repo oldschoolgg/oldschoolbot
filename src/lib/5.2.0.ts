@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import { mergeDefault } from '@klasa/utils';
 import { outputJSON, readJSON } from 'fs-nextra';
 import { join } from 'path';

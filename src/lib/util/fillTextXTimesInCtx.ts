@@ -1,3 +1,5 @@
+import { CanvasRenderingContext2D } from 'canvas';
+
 export function fillTextXTimesInCtx(
 	ctx: CanvasRenderingContext2D,
 	text: string,
