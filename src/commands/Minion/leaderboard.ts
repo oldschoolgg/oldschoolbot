@@ -10,6 +10,7 @@ import Agility from '../../lib/skilling/skills/agility';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
 
@@ -154,8 +155,7 @@ export default class extends Command {
 	}
 
 	async query(query: string, cacheUsernames = true) {
-		// @ts-ignore
-		const result = await this.client.providers.default!.runAll(query);
+		const result = await (this.client.providers.default as PostgresProvider).runAll(query);
 		if (cacheUsernames) this.cacheUsernames();
 		return result;
 	}
@@ -378,10 +378,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			util.chunk(res, 10).map(subList =>
 				subList
 					.map((obj: SkillUser) => {
-						const objKey = inputSkill === 'overall' ? 'totalxp' : `skills.${skill?.id}`;
+						const objKey =
+							inputSkill === 'overall'
+								? 'totalxp'
+								: (`skills.${skill?.id}` as keyof SkillUser);
 
-						// @ts-ignore
-						const skillXP = obj[objKey] ?? 0;
+						const skillXP = Number(obj[objKey] ?? 0);
 						const skillLVL =
 							inputSkill === 'overall' ? '' : `(${convertXPtoLVL(skillXP)})`;
 

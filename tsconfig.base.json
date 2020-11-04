@@ -1,26 +1,10 @@
 {
+	"extends": "@oldschoolgg/eslint-config",
 	"compilerOptions": {
-		"allowSyntheticDefaultImports": true,
-		"alwaysStrict": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"incremental": true,
-		"lib": ["esnext"],
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"noUnusedLocals": true,
-		"pretty": true,
-		"resolveJsonModule": true,
-		"sourceMap": true,
-		"strict": true,
-		"target": "esnext",
-
-		"removeComments": true,
-
+		"outDir": "./dist",
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,
-		"types": ["node", "node-fetch", "discord.js", "klasa", "jest"],
-		"esModuleInterop": true
+		"types": ["node", "node-fetch", "discord.js", "klasa", "jest"]
 	}
 }

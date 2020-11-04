@@ -40,7 +40,7 @@ export default class extends BotCommand {
 				}
 			);
 
-			const winner = collected.first()?.author!;
+			const winner = collected.first()!.author;
 			return msg.channel.send(
 				`<:RSTickBox:381462594734522372> ${winner.username} had the right answer with \`${randomItem.name}\`!`
 			);

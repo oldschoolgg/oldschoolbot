@@ -150,30 +150,30 @@ export default class BankImageTask extends Task {
 		const ctx = canvas.getContext('2d');
 		// Draw top border
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal!.height);
 
 		// Draw bottom border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
 		ctx.translate(0, canvas.height);
 		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal!.height);
 		ctx.restore();
 
 		// Draw title line
 		if (titleLine) {
 			ctx.save();
 			ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-			ctx.translate(this.borderVertical?.width!, 27);
-			ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+			ctx.translate(this.borderVertical!.width, 27);
+			ctx.fillRect(0, 0, canvas.width, this.borderHorizontal!.height);
 			ctx.restore();
 		}
 
 		// Draw left border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(this.borderVertical, 'repeat-y');
-		ctx.translate(0, this.borderVertical?.width!);
-		ctx.fillRect(0, 0, this.borderVertical?.width!, canvas.height);
+		ctx.translate(0, this.borderVertical!.width);
+		ctx.fillRect(0, 0, this.borderVertical!.width, canvas.height);
 		ctx.restore();
 
 		// Draw right border
@@ -181,7 +181,7 @@ export default class BankImageTask extends Task {
 		ctx.save();
 		ctx.translate(canvas.width, 0);
 		ctx.scale(-1, 1);
-		ctx.fillRect(0, 0, this.borderVertical?.width!, canvas.height);
+		ctx.fillRect(0, 0, this.borderVertical!.width, canvas.height);
 		ctx.restore();
 
 		// Draw corner borders
@@ -289,10 +289,10 @@ export default class BankImageTask extends Task {
 		}
 
 		let width = wide
-			? 5 + this.borderVertical?.width! + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
+			? 5 + this.borderVertical!.width + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
 			: 488;
 		if (width < 488) width = 488;
-		const itemsPerRow = Math.floor((width - this.borderVertical?.width! * 2) / (36 + 21));
+		const itemsPerRow = Math.floor((width - this.borderVertical!.width * 2) / (36 + 21));
 		const canvasHeight =
 			Math.floor(
 				Math.floor(
@@ -315,8 +315,8 @@ export default class BankImageTask extends Task {
 			bgImage!.image,
 			0,
 			0,
-			wide ? canvas.width : bgImage!.image?.width!,
-			wide ? canvas.height : bgImage!.image?.height!
+			wide ? canvas.width : bgImage.image!.width!,
+			wide ? canvas.height : bgImage.image!.height!
 		);
 
 		// Skips border if noBorder is set
@@ -350,7 +350,7 @@ export default class BankImageTask extends Task {
 			// Adds the border width
 			// Adds distance from side
 			// 36 + 21 is the itemLength + the space between each item
-			xLoc = 2 + this.borderVertical?.width! + 20 + (i % itemsPerRow) * (36 + 21);
+			xLoc = 2 + this.borderVertical!.width + 20 + (i % itemsPerRow) * (36 + 21);
 			const [id, quantity, value] = items[i];
 			const item = await this.getItemImage(id);
 			if (!item) {
@@ -395,9 +395,7 @@ export default class BankImageTask extends Task {
 
 			// Check for names flag and draw its shadow and name
 			if (flags.names) {
-				const __name = `${itemNameFromID(id)!
-					.replace('Grimy', 'Grmy')
-					.slice(0, 7)}..`;
+				const __name = `${itemNameFromID(id)!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
 				ctx.fillStyle = 'black';
 				fillTextXTimesInCtx(
 					ctx,

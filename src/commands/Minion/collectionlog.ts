@@ -40,7 +40,9 @@ export default class extends BotCommand {
 		}
 
 		const items = Array.from(
-			new Set(Object.values(type?.items ?? Monsters.get(monster!.id)?.allItems!).flat(100))
+			new Set(
+				Object.values(type?.items ?? Monsters.get(monster!.id)?.allItems ?? []).flat(100)
+			)
 		);
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;

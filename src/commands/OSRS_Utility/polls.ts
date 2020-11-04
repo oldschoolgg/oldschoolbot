@@ -24,10 +24,7 @@ export default class extends BotCommand {
 			);
 
 			display.addPage(
-				new MessageEmbed()
-					.setTitle(title)
-					.setColor(16098851)
-					.setDescription(description)
+				new MessageEmbed().setTitle(title).setColor(16098851).setDescription(description)
 			);
 
 			for (const question of questions) {

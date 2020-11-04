@@ -7,6 +7,7 @@ import { Emoji, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { noOp, sleep } from '../../lib/util';
+import BankCommand from './bank';
 
 const options = {
 	max: 1,
@@ -129,8 +130,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		// @ts-ignore
-		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
+		const gpImage = (this.client.commands.get('bank') as BankCommand).generateImage(
+			winningAmount
+		);
+
 		return msg.channel.send(
 			`Congratulations ${winner.username}! You won ${Util.toKMB(
 				winningAmount

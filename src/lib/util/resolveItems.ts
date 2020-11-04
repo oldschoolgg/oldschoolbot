@@ -29,9 +29,6 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 			newArray.push(item);
 		} else if (Array.isArray(item)) {
 			const test = resolveItems(item);
-			// TODO - fix this, why the fk is this erroring?
-
-			// @ts-ignore
 			newArray.push(test);
 		} else {
 			const osItem = Items.get(item);

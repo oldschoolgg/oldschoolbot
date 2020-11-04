@@ -14,7 +14,7 @@ const clientOptions: KlasaClientOptions = {
 	disableEveryone: true,
 	shards: 'auto',
 	ws: {
-		// @ts-ignore
+		// @ts-ignore Intents aren't documented as a valid WS property in our current d.js version
 		intents: new Intents([
 			'GUILDS',
 			'GUILD_MEMBERS',

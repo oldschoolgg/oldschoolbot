@@ -74,10 +74,9 @@ export default class extends BotCommand {
 			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
 					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough food. You need at least ${monster.healAmountNeeded! *
-					quantity} HP in food to ${
-					users.length === 1 ? 'start the mass' : 'enter the mass'
-				}.`;
+				} have enough food. You need at least ${
+					monster.healAmountNeeded! * quantity
+				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
 			}
 		}
 	}
@@ -98,8 +97,9 @@ export default class extends BotCommand {
 				NightmareMonster.name
 			} mass! Anyone can click the ${
 				Emoji.Join
-			} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSizeForParty ??
-				maximumSize}.`,
+			} reaction to join, click it again to leave. The maximum size for this mass is ${
+				maximumSizeForParty ?? maximumSize
+			}.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -124,8 +124,9 @@ export default class extends BotCommand {
 					if (!hasEnoughFoodForMonster(NightmareMonster, user, 2)) {
 						return [
 							true,
-							`You don't have enough food. You need at least ${NightmareMonster.healAmountNeeded *
-								2} HP in food to enter the mass.`
+							`You don't have enough food. You need at least ${
+								NightmareMonster.healAmountNeeded * 2
+							} HP in food to enter the mass.`
 						];
 					}
 				}

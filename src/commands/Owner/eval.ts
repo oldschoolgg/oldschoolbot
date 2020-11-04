@@ -50,12 +50,13 @@ export default class extends Command {
 		const { flagArgs: flags } = message;
 		code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 		const stopwatch = new Stopwatch();
-		let success;
-		let syncTime;
-		let asyncTime;
-		let result;
+		let success = false;
+		let syncTime = '?';
+		let asyncTime = '?';
+		let result = null;
 		let thenable = false;
-		let type;
+		// eslint-disable-next-line @typescript-eslint/init-declarations
+		let type!: Type;
 		try {
 			if (flags.async) code = `(async () => {\n${code}\n})();`;
 			else if (flags.bk) code = `(async () => {\nreturn ${code}\n})();`;
