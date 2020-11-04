@@ -7,7 +7,7 @@ let triviaQuestions: any;
 try {
 	// eslint-disable-next-line prefer-destructuring
 	triviaQuestions = JSON.parse(
-		fs.readFileSync('../../../src/lib/resources/trivia-questions.json').toString()
+		fs.readFileSync('./src/lib/resources/trivia-questions.json').toString()
 	).triviaQuestions;
 } catch (err) {
 	console.log('No trivia questions file found. Disabling trivia command.');
