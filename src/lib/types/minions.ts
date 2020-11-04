@@ -94,8 +94,6 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface TrickTreatActivityTaskOptions extends MinigameActivityTaskOptions {}
-
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -145,7 +143,6 @@ export interface MinigameTickerTaskData {
 		| WintertodtActivityTaskOptions
 		| NightmareActivityTaskOptions
 		| SepulchreActivityTaskOptions
-		| TrickTreatActivityTaskOptions
 		| FishingTrawlerActivityTaskOptions
 	)[];
 }

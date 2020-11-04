@@ -305,10 +305,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
 			}
 
-			case Activity.TrickTreat: {
-				return `<:Pumpkin:764130154662199347> ${this.minionName} is currently Trick or Treating around Misthalin! ${formattedDuration}`;
-			}
-
 			case Activity.FishingTrawler: {
 				const data = currentTask as FishingTrawlerActivityTaskOptions;
 				return `${this.minionName} is currently aboard the Fishing Trawler, doing ${data.quantity}x trips. ${formattedDuration}`;
