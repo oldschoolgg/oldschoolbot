@@ -209,6 +209,7 @@ const brokenItems: Createable[] = [
 			[itemID('Avernic defender')]: 1
 		},
 		GPCost: 100_000_000,
+		QPRequired: 205,
 		noCl: true
 	}
 ];
