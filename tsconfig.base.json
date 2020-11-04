@@ -1,7 +1,6 @@
 {
 	"extends": "@oldschoolgg/eslint-config",
 	"compilerOptions": {
-		"outDir": "./dist",
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,
