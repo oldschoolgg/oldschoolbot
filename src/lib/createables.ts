@@ -3477,18 +3477,6 @@ const Createables: Createable[] = [
 		}),
 		noCl: true
 	},
-	...crystalTools
-	{
-		name: 'Scythe',
-		inputItems: resolveNameBank({
-			'Steel bar': 1,
-			Logs: 1
-		}),
-		outputItems: resolveNameBank({
-			Scythe: 1
-		}),
-		cantBeInCL: true
-	},
 	{
 		name: 'Ferocious gloves',
 		outputItems: resolveNameBank({
