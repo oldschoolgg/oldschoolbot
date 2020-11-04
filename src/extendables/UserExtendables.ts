@@ -316,7 +316,6 @@ export default class extends Extendable {
 		return Time.Minute * 30 * timeMultiplier;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore
 	// eslint-disable-next-line
 	public async incrementMinionDailyDuration(this: User, duration: number) {}
