@@ -65,7 +65,7 @@ export default class extends BotCommand {
 		}
 
 		if (!(await this.checkBal(user, amount))) {
-			return msg.send('That person doesnt have enough GP to duel that much.');
+			return msg.send("That person doesn't have enough GP to duel that much.");
 		}
 
 		const duelMsg = await msg.channel.send(
