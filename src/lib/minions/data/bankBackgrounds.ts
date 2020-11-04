@@ -127,6 +127,11 @@ const backgroundImages: BankBackground[] = [
 			'Harmonised orb': 1,
 			'Volatile orb': 1
 		}),
+		itemCost: resolveNameBank({
+			'Eldritch orb': 1,
+			'Harmonised orb': 1,
+			'Volatile orb': 1
+		}),
 		gpCost: 100_000_000
 	},
 	{

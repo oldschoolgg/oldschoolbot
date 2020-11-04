@@ -22,11 +22,11 @@ export default class extends Argument {
 			}
 		} else {
 			// If they mentioned someone, return their avatar.
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 			// @ts-ignore
 			const member = this.constructor.regex.userOrMember.test(arg)
 				? await msg
-						// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 						// @ts-ignore
 						.guild!.members.fetch(this.constructor.regex.userOrMember.exec(arg)[1])
 						.catch(() => null)

@@ -1,13 +1,48 @@
-const { Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-const tob = require('../../../data/monsters/tob');
-const raids = require('../../../data/monsters/raids');
-const alchemicalHydra = require('../../../data/monsters/alchemicalHydra');
-const hespori = require('../../../data/monsters/hespori');
-const pets = require('../../../data/pets');
+import pets from '../../lib/pets';
+import tob = require('../../lib/data/monsters/tob');
+import raids = require('../../lib/data/monsters/raids');
+import alchemicalHydra = require('../../lib/data/monsters/alchemicalHydra');
+import hespori = require('../../lib/data/monsters/hespori');
+import { BotCommand } from '../../lib/BotCommand';
+import { roll } from '../../lib/util';
 
-async function getAllPetsEmbed(petsRecieved) {
+// Use if Drop rate is X/Y
+function rollX(xVar: number, max: number) {
+	const randomRoll = Math.floor(Math.random() * (max + 1));
+	return randomRoll <= xVar + 1 && randomRoll >= 1;
+}
+
+const BARROWS_ITEMS = [
+	'<:Veracs_plateskirt:403038865130127361>',
+	'<:Veracs_helm:403038865239179264>',
+	'<:Veracs_flail:403038865176264715>',
+	'<:Veracs_brassard:403038865079795722>',
+	'<:Torags_platelegs:403038865092509705>',
+	'<:Torags_platebody:403038865008361472>',
+	'<:Torags_helm:403038864983457803>',
+	'<:Torags_hammers:403038864853303296>',
+	'<:Karils_leathertop:403038864798646282>',
+	'<:Karils_leatherskirt:403038864777936921>',
+	'<:Dharoks_greataxe:403038864299655169>',
+	'<:Dharoks_helm:403038864199122947>',
+	'<:Dharoks_platebody:403038864404512768>',
+	'<:Dharoks_platelegs:403038864114974731>',
+	'<:Guthans_chainskirt:403038864446586880>',
+	'<:Guthans_helm:403038864404512770>',
+	'<:Guthans_platebody:403038864299655171>',
+	'<:Guthans_warspear:403038864681467905>',
+	'<:Karils_coif:403038864718954497>',
+	'<:Karils_crossbow:403038864777805825>',
+	'<:Ahrims_staff:403038864350117889>',
+	'<:Ahrims_robetop:403038864316301337>',
+	'<:Ahrims_robeskirt:403038864350117888>',
+	'<:Ahrims_hood:403038864362438666>'
+];
+
+async function getAllPetsEmbed(petsRecieved: string[]) {
 	const embed = new MessageEmbed()
 		.setColor(7981338)
 		.addField(
@@ -78,19 +113,19 @@ async function getAllPetsEmbed(petsRecieved) {
 	return embed;
 }
 
-module.exports = class extends Command {
-	constructor(...args) {
-		super(...args, {
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			cooldown: 2,
 			description: "Simulates how long it takes you to 'finish' a boss (Get all its drops)",
 			usage: '<BossName:str>'
 		});
 	}
 
-	async run(msg, [BossName]) {
-		const loot = [];
+	async run(msg: KlasaMessage, [BossName]: [string]) {
+		const loot: string[] = [];
 		let kc = 0;
-		let duplicates = [];
+		const duplicates: string[] = [];
 
 		switch (BossName.replace(/\W/g, '').toUpperCase()) {
 			case 'RAIDS2':
@@ -899,7 +934,10 @@ ${lootMSG.join('\n')}`);
 			case 'CORP':
 			case 'CORPOREALBEAST':
 			case 'CORPBEAST': {
-				let elyKC, arcKC, specKC, petKC;
+				let elyKC;
+				let arcKC;
+				let specKC;
+				let petKC;
 				const lootMSG = [];
 				while (loot.length < 4) {
 					kc++;
@@ -1106,11 +1144,12 @@ ${lootMSG.join('\n')}`);
 			case 'RAIDS1':
 			case 'COX':
 			case 'CHAMBERSOFXERIC':
+				// eslint-disable-next-line no-case-declarations
 				const theDrops = new Map();
 				while (theDrops.size < 13) {
 					kc++;
 					if (!roll(25)) continue;
-					const dropRecieved = raids.determineItem();
+					const dropRecieved = raids.determineItem()!;
 					if (roll(65)) {
 						if (!theDrops.has(raids.drops.pet.shortName)) {
 							theDrops.set(raids.drops.pet.shortName, {
@@ -1118,9 +1157,9 @@ ${lootMSG.join('\n')}`);
 								dup: 0
 							});
 						} else {
-							theDrops.get(
-								raids.drops.pet.shortName
-							).theKC += ` ${dropRecieved.emoji}`;
+							theDrops.get(raids.drops.pet.shortName).theKC += ` ${
+								dropRecieved!.emoji
+							}`;
 							theDrops.get(raids.drops.pet.shortName).dup++;
 						}
 					}
@@ -1135,9 +1174,7 @@ ${lootMSG.join('\n')}`);
 					}
 				}
 
-				theDrops.forEach((value, key, map) =>
-					loot.push(`${value.theKC} ${value.dup} duplicates`)
-				);
+				theDrops.forEach(value => loot.push(`${value.theKC} ${value.dup} duplicates`));
 				return msg.send(
 					`It took you **${kc.toLocaleString()}** kills to finish the Chambers of Xeric <:Olmlet:324127376873357316> ${loot.join(
 						'\n'
@@ -2046,7 +2083,6 @@ ${lootMSG.join('\n')}`);
 						const drop =
 							BARROWS_ITEMS[Math.floor(Math.random() * BARROWS_ITEMS.length)];
 						if (loot.includes(drop)) {
-							duplicates++;
 							continue;
 						}
 						loot.push(drop);
@@ -2080,7 +2116,7 @@ ${lootMSG}`);
 			case 'ALLPETS':
 			case 'PETS':
 			case 'ALLPET': {
-				const petsRecieved = [];
+				const petsRecieved: string[] = [];
 				pets.forEach(pet => {
 					let kcpet = 1;
 					while (!roll(pet.chance)) {
@@ -2094,40 +2130,4 @@ ${lootMSG}`);
 				return msg.send("I don't have that monster!");
 		}
 	}
-};
-// Use if Drop rate is 1/X
-function roll(max) {
-	return Math.floor(Math.random() * (max + 1)) === 1;
 }
-// Use if Drop rate is X/Y
-function rollX(xVar, max) {
-	const randomRoll = Math.floor(Math.random() * (max + 1));
-	return randomRoll <= xVar + 1 && randomRoll >= 1;
-}
-
-const BARROWS_ITEMS = [
-	'<:Veracs_plateskirt:403038865130127361>',
-	'<:Veracs_helm:403038865239179264>',
-	'<:Veracs_flail:403038865176264715>',
-	'<:Veracs_brassard:403038865079795722>',
-	'<:Torags_platelegs:403038865092509705>',
-	'<:Torags_platebody:403038865008361472>',
-	'<:Torags_helm:403038864983457803>',
-	'<:Torags_hammers:403038864853303296>',
-	'<:Karils_leathertop:403038864798646282>',
-	'<:Karils_leatherskirt:403038864777936921>',
-	'<:Dharoks_greataxe:403038864299655169>',
-	'<:Dharoks_helm:403038864199122947>',
-	'<:Dharoks_platebody:403038864404512768>',
-	'<:Dharoks_platelegs:403038864114974731>',
-	'<:Guthans_chainskirt:403038864446586880>',
-	'<:Guthans_helm:403038864404512770>',
-	'<:Guthans_platebody:403038864299655171>',
-	'<:Guthans_warspear:403038864681467905>',
-	'<:Karils_coif:403038864718954497>',
-	'<:Karils_crossbow:403038864777805825>',
-	'<:Ahrims_staff:403038864350117889>',
-	'<:Ahrims_robetop:403038864316301337>',
-	'<:Ahrims_robeskirt:403038864350117888>',
-	'<:Ahrims_hood:403038864362438666>'
-];

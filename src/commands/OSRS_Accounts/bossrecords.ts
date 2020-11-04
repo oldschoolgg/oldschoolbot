@@ -3,8 +3,8 @@ import { chunk } from 'e';
 import { Command, CommandStore, KlasaMessage, RichDisplay } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 
+import pets from '../../lib/pets';
 import { toTitleCase } from '../../lib/util';
-import pets = require('../../../data/pets');
 
 // Emojis for bosses with no pets
 const miscEmojis = {
@@ -29,7 +29,6 @@ export default class extends Command {
 
 	getEmojiForBoss(key: keyof typeof miscEmojis | string) {
 		if (key in miscEmojis) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			return miscEmojis[key];
 		}

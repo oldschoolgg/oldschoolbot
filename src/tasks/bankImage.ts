@@ -15,7 +15,6 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
-	canvasImageFromBuffer,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	itemNameFromID,
@@ -23,17 +22,18 @@ import {
 	saveCtx,
 	stringMatches
 } from '../lib/util';
+import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
 import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import filterByCategory from '../lib/util/filterByCategory';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 
-registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
-registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
-registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 
-const bankImageFile = fs.readFileSync('./resources/images/bank_backgrounds/1.jpg');
-const bankRepeaterFile = fs.readFileSync('./resources/images/bank_backgrounds/r1.jpg');
+const bankImageFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/1.jpg');
+const bankRepeaterFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/r1.jpg');
 
 const CACHE_DIR = './icon_cache';
 const spacer = 12;
@@ -77,24 +77,28 @@ export default class BankImageTask extends Task {
 			backgroundImages.map(async img => ({
 				...img,
 				image: await canvasImageFromBuffer(
-					fs.readFileSync(`./resources/images/bank_backgrounds/${img.id}.jpg`)
+					fs.readFileSync(`./src/lib/resources/images/bank_backgrounds/${img.id}.jpg`)
 				),
-				repeatImage: fs.existsSync(`./resources/images/bank_backgrounds/r${img.id}.jpg`)
+				repeatImage: fs.existsSync(
+					`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`
+				)
 					? await canvasImageFromBuffer(
-							fs.readFileSync(`./resources/images/bank_backgrounds/r${img.id}.jpg`)
+							fs.readFileSync(
+								`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`
+							)
 					  )
 					: null
 			}))
 		);
 
 		this.borderCorner = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_c.png')
+			fs.readFileSync('./src/lib/resources/images/bank_border_c.png')
 		);
 		this.borderHorizontal = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_h.png')
+			fs.readFileSync('./src/lib/resources/images/bank_border_h.png')
 		);
 		this.borderVertical = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_v.png')
+			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
 		this.imageHamstare = await canvasImageFromBuffer(
 			fs.readFileSync('./resources/images/hamstare.png')

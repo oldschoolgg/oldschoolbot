@@ -4,8 +4,8 @@ import { Event, EventStore } from 'klasa';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import Snoowrap from 'snoowrap';
 
-import JagexMods from '../../data/jagexMods';
 import { redditAppConfig } from '../config';
+import JagexMods from '../lib/data/jagexMods';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { JMod } from '../lib/types';
 
@@ -41,7 +41,7 @@ export default class extends Event {
 
 		const redditClient = new Snoowrap(redditAppConfig);
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		this.client.commentStream = new CommentStream(redditClient, {
 			subreddit: '2007scape',
@@ -62,7 +62,7 @@ export default class extends Event {
 			});
 		});
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		this.client.submissionStream = new SubmissionStream(redditClient, {
 			subreddit: '2007scape',

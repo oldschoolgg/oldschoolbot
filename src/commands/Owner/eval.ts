@@ -81,7 +81,7 @@ export default class extends Command {
 
 		stopwatch.stop();
 		if (msg.flagArgs.bk) {
-			return msg.channel.sendBankImage({ bank: result });
+			msg.channel.sendBankImage({ bank: result });
 		}
 
 		if (typeof result !== 'string') {

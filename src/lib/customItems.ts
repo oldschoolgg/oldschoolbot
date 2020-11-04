@@ -2,7 +2,7 @@ import { Items } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
-import { cleanString } from '../util';
+import { cleanString } from './util';
 import getOSItem from './util/getOSItem';
 
 export const customPrices: Record<number, number> = [];

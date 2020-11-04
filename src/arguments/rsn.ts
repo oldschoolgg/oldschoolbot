@@ -12,11 +12,10 @@ export default class extends Argument {
 			throw `Please specify a username, or set one with \`${prefix}setrsn <username>\``;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		if (this.constructor.regex.userOrMember.test(arg)) {
 			const user = await this.client.users
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 				// @ts-ignore
 				.fetch(this.constructor.regex.userOrMember.exec(arg)[1])
 				.catch(() => null);

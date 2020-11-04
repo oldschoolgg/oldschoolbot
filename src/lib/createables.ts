@@ -3477,6 +3477,7 @@ const Createables: Createable[] = [
 		}),
 		noCl: true
 	},
+	...crystalTools
 	{
 		name: 'Scythe',
 		inputItems: resolveNameBank({

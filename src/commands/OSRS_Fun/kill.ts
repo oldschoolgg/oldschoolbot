@@ -1,10 +1,10 @@
 import { MessageAttachment } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { PerkTier } from '../../lib/constants';
 import { toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { Workers } from '../../lib/workers';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -52,9 +52,11 @@ export default class extends Command {
 	}
 
 	async run(msg: KlasaMessage, [quantity, bossName]: [number, string]) {
-		const result: ItemBank = await this.client.killWorkerThread.queue(async (fn: any) =>
-			fn.kill({ quantity, bossName, limit: this.determineKillLimit(msg.author) })
-		);
+		const result = await Workers.kill({
+			quantity,
+			bossName,
+			limit: this.determineKillLimit(msg.author)
+		});
 
 		if (typeof result === 'string') {
 			return msg.send(result);

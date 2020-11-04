@@ -5,7 +5,8 @@ import { BotCommand } from '../../lib/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows links to the official OSRS client and Runelite.'
+			description: 'Shows links to the official OSRS client and Runelite.',
+			examples: ['+clients']
 		});
 	}
 
@@ -15,7 +16,7 @@ export default class extends BotCommand {
 <http://www.runescape.com/oldschool/download>
 
 
-<:RuneLite:418690749719117834> **RuneLite:** Open-source, make your own plugins. Free. **This is an unofficial client
+<:RuneLite:418690749719117834> **RuneLite:** Open-source, has plugins. Free. **This is an unofficial client
 and is *not* supported by Jagex. Use at your own risk.**
 <https://runelite.net/>
 `);

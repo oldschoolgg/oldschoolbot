@@ -1,7 +1,6 @@
 import { Inhibitor, KlasaMessage } from 'klasa';
 
-import { itemID } from '../lib/util';
-import { roll } from '../util';
+import { itemID, roll } from '../lib/util';
 
 export default class extends Inhibitor {
 	public async run(msg: KlasaMessage) {

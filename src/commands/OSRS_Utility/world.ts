@@ -9,6 +9,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 5,
 			description: 'Returns information on a OSRS World.',
+			examples: ['+world 1', '+world 301'],
 			usage: '<world:int{1,1000}>',
 			requiredPermissions: ['EMBED_LINKS']
 		});

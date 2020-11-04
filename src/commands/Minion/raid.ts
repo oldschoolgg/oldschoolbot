@@ -847,7 +847,6 @@ export default class extends BotCommand {
 			if (!itemSlot) continue;
 			const item = getOSItem(itemSlot.item);
 			if (!item.equipment) continue;
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			meleeGearPoints +=
 				meleeGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
