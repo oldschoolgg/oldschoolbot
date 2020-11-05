@@ -101,7 +101,7 @@ export default class BankImageTask extends Task {
 			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
 		this.imageHamstare = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/hamstare.png')
+			fs.readFileSync('./src/resources/images/hamstare.png')
 		);
 	}
 
