@@ -1,4 +1,5 @@
 import { Client as TagsClient } from '@kcp/tags';
+import { Client } from 'klasa';
 import pLimit from 'p-limit';
 
 import { clientOptions } from '../config/config';
