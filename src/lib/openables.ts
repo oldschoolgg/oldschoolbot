@@ -304,14 +304,14 @@ const cantBeDropped = [
 	22664 // JMOD Scythe of Vitur
 ] as number[];
 
-const tmbTable = Items.filter(i => {
+export const tmbTable = Items.filter(i => {
 	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
 		return false;
 	}
 	return (i as Item).tradeable_on_ge && !(i as Item).duplicate;
 }).map(i => i.id);
 
-const umbTable = Items.filter(i => {
+export const umbTable = Items.filter(i => {
 	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
 		return false;
 	}
