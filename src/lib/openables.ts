@@ -300,7 +300,8 @@ const cantBeDropped = [
 	itemID('Partyhat & specs'),
 	itemID('Dwarven warhammer'),
 	itemID('Dwarven ore'),
-	itemID('Dwarven bar')
+	itemID('Dwarven bar'),
+	22664 // JMOD Scythe of Vitur
 ] as number[];
 
 const tmbTable = Items.filter(i => {

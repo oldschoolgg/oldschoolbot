@@ -56,6 +56,163 @@ const crystalTools: Createable[] = [
 	}
 ];
 
+const brokenItems: Createable[] = [
+	{
+		name: 'Fix fire cape',
+		inputItems: {
+			20445: 1
+		},
+		outputItems: {
+			[itemID('Fire cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix fire max cape',
+		inputItems: {
+			20447: 1
+		},
+		outputItems: {
+			[itemID('Fire max cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix infernal cape',
+		inputItems: {
+			21287: 1
+		},
+		outputItems: {
+			[itemID('Infernal cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix infernal max cape',
+		inputItems: {
+			21289: 1
+		},
+		outputItems: {
+			[itemID('Infernal max cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix assembler max cape',
+		inputItems: {
+			21916: 1
+		},
+		outputItems: {
+			[itemID('Assembler max cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix imbued saradomin cape',
+		inputItems: {
+			24236: 1
+		},
+		outputItems: {
+			[itemID('Imbued saradomin cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix imbued saradomin max cape',
+		inputItems: {
+			24238: 1
+		},
+		outputItems: {
+			[itemID('Imbued saradomin max cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix imbued guthix cape',
+		inputItems: {
+			24240: 1
+		},
+		outputItems: {
+			[itemID('Imbued guthix cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix imbued guthix max cape',
+		inputItems: {
+			24242: 1
+		},
+		outputItems: {
+			[itemID('Imbued guthix max cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix imbued zamorak cape',
+		inputItems: {
+			24244: 1
+		},
+		outputItems: {
+			[itemID('Imbued zamorak cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix imbued zamorak max cape',
+		inputItems: {
+			24246: 1
+		},
+		outputItems: {
+			[itemID('Imbued zamorak max cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix imbued zamorak max cape',
+		inputItems: {
+			24246: 1
+		},
+		outputItems: {
+			[itemID('Imbued zamorak max cape')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix dragon defender',
+		inputItems: {
+			20463: 1
+		},
+		outputItems: {
+			[itemID('Dragon defender')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix avernic defender',
+		inputItems: {
+			22441: 1
+		},
+		outputItems: {
+			[itemID('Avernic defender')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	}
+];
+
 const Createables: Createable[] = [
 	{
 		name: 'Godsword blade',
@@ -3320,7 +3477,18 @@ const Createables: Createable[] = [
 		}),
 		noCl: true
 	},
-	...crystalTools
+	{
+		name: 'Ferocious gloves',
+		outputItems: resolveNameBank({
+			'Ferocious gloves': 1
+		}),
+		inputItems: resolveNameBank({
+			'Hydra leather': 1
+		}),
+		QPRequired: 205
+	},
+	...crystalTools,
+	...brokenItems
 ];
 
 export default Createables;
