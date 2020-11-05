@@ -211,6 +211,14 @@ const meleeGearBonus = [
 		itemPoint: 1
 	},
 	{
+		itemID: itemID('Volcanic abyssal whip'),
+		itemPoint: 1
+	},
+	{
+		itemID: itemID('Frozen abyssal whip'),
+		itemPoint: 1
+	},
+	{
 		itemID: itemID('Avernic defender'),
 		itemPoint: 5
 	},
@@ -224,6 +232,10 @@ const meleeGearBonus = [
 	},
 	{
 		itemID: itemID('Dragon defender (l)'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Dragon defender (t)'),
 		itemPoint: 4
 	},
 	{
@@ -248,6 +260,10 @@ const meleeGearBonus = [
 	},
 	{
 		itemID: itemID('Dragon boots'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Dragon boots (g)'),
 		itemPoint: 4
 	},
 	{
@@ -472,6 +488,30 @@ const rangeGearBonus = [
 	{
 		itemID: itemID('Pegasian boots'),
 		itemPoint: 5
+	},
+	{
+		itemID: itemID("Ancient d'hide boots"),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID("Armadyl d'hide boots"),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID("Bandos d'hide boots"),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID("Guthix d'hide boots"),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID("Saradomin d'hide boots"),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID("Zamorak d'hide boots"),
+		itemPoint: 4
 	}
 ];
 
@@ -498,6 +538,10 @@ const mageGearBonus = [
 	},
 	{
 		itemID: itemID('Occult necklace'),
+		itemPoint: 5
+	},
+	{
+		itemID: itemID('Occult necklace (or)'),
 		itemPoint: 5
 	},
 	{
@@ -633,6 +677,18 @@ const mageGearBonus = [
 		itemPoint: 4
 	},
 	{
+		itemID: itemID('Saradomin max cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Zamorak max cape'),
+		itemPoint: 4
+	},
+	{
+		itemID: itemID('Guthix max cape'),
+		itemPoint: 4
+	},
+	{
 		itemID: itemID('Ancestral robe top'),
 		itemPoint: 5
 	},
@@ -729,6 +785,10 @@ const mageGearBonus = [
 		itemPoint: 5
 	},
 	{
+		itemID: itemID('Tormented bracelet (or)'),
+		itemPoint: 5
+	},
+	{
 		itemID: itemID('Barrows gloves'),
 		itemPoint: 4
 	},
@@ -787,7 +847,6 @@ export default class extends BotCommand {
 			if (!itemSlot) continue;
 			const item = getOSItem(itemSlot.item);
 			if (!item.equipment) continue;
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			meleeGearPoints +=
 				meleeGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
@@ -819,8 +878,8 @@ export default class extends BotCommand {
 		if (user.hasItemEquippedOrInBank(13576)) {
 			totalGearPoints += 5;
 		}
-		// BGS
-		if (user.hasItemEquippedOrInBank(11804)) {
+		// BGS or BGS (or)
+		if (user.hasItemEquippedOrInBank(11804) || user.hasItemEquippedOrInBank(20370)) {
 			totalGearPoints += 5;
 		}
 		// Toxic blowpipe

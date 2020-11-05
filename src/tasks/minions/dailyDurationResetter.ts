@@ -7,7 +7,7 @@ export default class extends Task {
 		const timer = new Stopwatch();
 
 		// Set "minion.dailyDuration" of all users where it is > 0.
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
 		// @ts-ignore
 		const res = await this.client.providers.default.runAll(
 			`UPDATE users SET "minion.dailyDuration" = 0 WHERE "minion.dailyDuration" > 0 RETURNING id;`

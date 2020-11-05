@@ -7,10 +7,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { multiplyBank } from '../../lib/util';
+import { multiplyBank, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { roll } from '../../util';
 
 export default class extends Task {
 	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
@@ -26,7 +25,7 @@ export default class extends Task {
 		if (bar.chanceOfFail > 0) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (randInt(0, 100) < bar.chanceOfFail) {
+				if (randInt(0, 100) > bar.chanceOfFail) {
 					newQuantity++;
 				}
 			}

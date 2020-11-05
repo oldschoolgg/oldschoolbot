@@ -11,7 +11,9 @@ export default class extends BotCommand {
 			usage: '<itemName:str>',
 			oneAtTime: true,
 			cooldown: 120,
-			usageDelim: ','
+			description:
+				'Shows which players have received the most drops of an item, based on their collection log.',
+			examples: ['+mostdrops elysian sigil']
 		});
 	}
 
@@ -36,7 +38,6 @@ export default class extends BotCommand {
 				.map(
 					({ id, qty }) =>
 						`${
-							// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 							// @ts-ignore
 							result.length < 10 ? '(Anonymous)' : (command.getUsername(id) as string)
 						}: ${parseInt(qty).toLocaleString()}`

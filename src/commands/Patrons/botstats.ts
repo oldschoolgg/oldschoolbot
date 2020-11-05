@@ -17,12 +17,22 @@ export default class extends BotCommand {
 			subcommands: true,
 			usage: '<servers|minions|ironmen|sacrificed|bankbg|monsters|clues|icons>',
 			oneAtTime: true,
-			cooldown: 60
+			cooldown: 60,
+			description: 'Allows you to see various statistics about the bot.',
+			examples: [
+				'+bstats servers',
+				'+bstats minions',
+				'+bstats ironmen',
+				'+bstats sacrificed',
+				'+bstats bankbg',
+				'+bstats monsters',
+				'+bstats clues',
+				'+bstats icons'
+			]
 		});
 	}
 
 	async _query(str: string): Promise<any> {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		return this.client.providers.default.runAll(str);
 	}

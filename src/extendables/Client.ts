@@ -74,7 +74,6 @@ export default class extends Extendable {
 	}
 
 	async query(this: KlasaClient, query: string) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore
 		return (this.providers.default as SQLProvider).runAll(query);
 	}

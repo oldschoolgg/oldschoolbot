@@ -42,9 +42,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
-import { itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import { formatDuration } from '../../util';
 import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends Extendable {
@@ -52,7 +51,6 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
 		const currentTask = getActivityOfUser(this.client, this.id);
@@ -319,10 +317,6 @@ export default class extends Extendable {
 				const data = currentTask as NightmareActivityTaskOptions;
 
 				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
-			}
-
-			case Activity.TrickTreat: {
-				return `<:Pumpkin:764130154662199347> ${this.minionName} is currently Trick or Treating around Misthalin! ${formattedDuration}`;
 			}
 
 			case Activity.FishingTrawler: {

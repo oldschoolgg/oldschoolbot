@@ -8,7 +8,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			runIn: ['text'],
 			permissionLevel: 6,
-			usage: '<disable|enable>'
+			usage: '<disable|enable>',
+			description: `Allows you to disable/enable the bot in a channel. If a channel is disabled, only staff of your server can use it in the channel.`,
+			examples: ['+channel enable', '+channel disable']
 		});
 	}
 
@@ -18,7 +20,7 @@ export default class extends BotCommand {
 			.includes(msg.channel.id);
 
 		if (input === 'disable') {
-			if (isDisabled) throw `This channel is already disabled.`;
+			if (isDisabled) return msg.send(`This channel is already disabled.`);
 
 			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 				arrayAction: 'add'
@@ -26,7 +28,7 @@ export default class extends BotCommand {
 
 			return msg.sendLocale('CHANNEL_DISABLED');
 		}
-		if (!isDisabled) throw `This channel is already enabled.`;
+		if (!isDisabled) return msg.send(`This channel is already enabled.`);
 
 		await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 			arrayAction: 'remove'

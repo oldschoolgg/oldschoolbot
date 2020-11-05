@@ -10,7 +10,6 @@ export interface SettingsEntry {
 	id: string;
 	RSN?: string;
 	GP?: number;
-	autoupdate?: boolean;
 	badges?: string[];
 	bank?: ItemBank;
 	clueScores?: ItemBank;
@@ -38,12 +37,6 @@ export interface Pet {
 	bossKeys?: string[];
 	finish?(): number;
 	formatFinish(num: number): string;
-}
-
-export interface KillWorkerOptions {
-	bossName: string;
-	quantity: number;
-	limit: number;
 }
 
 export interface CachedItemPrice {
