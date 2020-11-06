@@ -4,7 +4,7 @@ import { customClientOptions, production, providerConfig } from '../../config';
 import { Intents } from './Intents';
 import permissionLevels from './permissionLevels';
 
-const clientOptions: KlasaClientOptions = {
+export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
 	fetchAllMembers: false,
 	messageCacheMaxSize: 200,
@@ -39,5 +39,3 @@ const clientOptions: KlasaClientOptions = {
 	production,
 	...customClientOptions
 };
-
-export { clientOptions };
