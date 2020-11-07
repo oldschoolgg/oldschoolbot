@@ -65,7 +65,6 @@ const brokenItems: Createable[] = [
 		outputItems: {
 			[itemID('Fire cape')]: 1
 		},
-		GPCost: 100_000_000,
 		noCl: true
 	},
 	{
@@ -209,6 +208,107 @@ const brokenItems: Createable[] = [
 			[itemID('Avernic defender')]: 1
 		},
 		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix void knight top',
+		inputItems: {
+			20465: 1
+		},
+		outputItems: {
+			[itemID('Void knight top')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix void knight robe',
+		inputItems: {
+			20469: 1
+		},
+		outputItems: {
+			[itemID('Void knight robe')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix elite void top',
+		inputItems: {
+			20467: 1
+		},
+		outputItems: {
+			[itemID('Elite void top')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix elite void robe',
+		inputItems: {
+			20471: 1
+		},
+		outputItems: {
+			[itemID('Elite void robe')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix void knight gloves',
+		inputItems: {
+			20475: 1
+		},
+		outputItems: {
+			[itemID('Void knight gloves')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix void mage helm',
+		inputItems: {
+			20477: 1
+		},
+		outputItems: {
+			[itemID('Void mage helm')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix void ranger helm',
+		inputItems: {
+			20479: 1
+		},
+		outputItems: {
+			[itemID('Void ranger helm')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix void melee helm',
+		inputItems: {
+			20481: 1
+		},
+		outputItems: {
+			[itemID('Void melee helm')]: 1
+		},
+		GPCost: 100_000_000,
+		noCl: true
+	}
+];
+
+const lockedItems: Createable[] = [
+	{
+		name: 'Unlock dragon defender',
+		inputItems: {
+			[itemID('Dragon defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Dragon defender')]: 1
+		},
 		noCl: true
 	}
 ];
@@ -3488,7 +3588,8 @@ const Createables: Createable[] = [
 		QPRequired: 205
 	},
 	...crystalTools,
-	...brokenItems
+	...brokenItems,
+	...lockedItems
 ];
 
 export default Createables;
