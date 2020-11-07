@@ -16,6 +16,7 @@ import {
 	roll
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ monsterID, channelID, quantity, users, leader }: GroupMonsterActivityTaskOptions) {
@@ -42,12 +43,14 @@ export default class extends Task {
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 
-		for (const [userID, loot] of Object.entries(teamsLoot)) {
+		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-
-			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
+			if (user.equippedPet() === itemID('Ori')) {
+				loot = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25)) ?? {}, loot]);
+			}
+			await user.addItemsToBank(loot, true);
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID =>
 				isImportantItemForMonster(parseInt(itemID), monster)
