@@ -1549,6 +1549,6 @@ export const collectionLogTypes = [
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		items: zalcanoLog
+		items: { 1: zalcanoLog }
 	}
 ];
