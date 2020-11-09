@@ -1,7 +1,7 @@
 import { CollectionLogType } from '../collectionLog';
 import { ItemBank } from '../types';
 
-export type LeaderboardType = 'cl' | 'gp';
+export type LeaderboardType = 'cl';
 
 export interface BaseProps {
 	type: LeaderboardType;
