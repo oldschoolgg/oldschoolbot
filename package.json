@@ -52,7 +52,7 @@
 		"@types/pg": "^7.14.6",
 		"@types/twit": "^2.2.28",
 		"@types/uuid": "^8.3.0",
-		"@typescript-eslint/eslint-plugin": "^4.6.0",
+		"@typescript-eslint/eslint-plugin": "^4.7.0",
 		"@typescript-eslint/parser": "^4.7.0",
 		"concurrently": "^5.3.0",
 		"eslint": "^7.13.0",
