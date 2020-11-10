@@ -11,6 +11,8 @@ import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import PostgresProvider from '../../providers/postgres';
+import { Workers } from '../../lib/workers';
+import { CLUser } from '../../lib/workers/leaderboard.worker';
 
 const CACHE_TIME = Time.Minute * 5;
 
@@ -46,11 +48,6 @@ interface KCUser {
 	monsterScores: ItemBank;
 }
 
-interface CLUser {
-	id: string;
-	collectionLogBank: ItemBank;
-}
-
 interface GPLeaderboard {
 	lastUpdated: number;
 	list: GPUser[];
@@ -69,11 +66,6 @@ interface PetLeaderboard {
 interface KCLeaderboard {
 	lastUpdated: number;
 	list: KCUser[];
-}
-
-interface CLLeaderboard {
-	lastUpdated: number;
-	list: CLUser[];
 }
 
 interface UsernameCache {
@@ -106,11 +98,6 @@ export default class extends Command {
 	};
 
 	public kcLeaderboard: KCLeaderboard = {
-		lastUpdated: 0,
-		list: []
-	};
-
-	public clLeaderboard: CLLeaderboard = {
 		lastUpdated: 0,
 		list: []
 	};
@@ -161,27 +148,16 @@ export default class extends Command {
 	}
 
 	async gp(msg: KlasaMessage) {
-		const onlyForGuild = msg.flagArgs.server;
-
-		if (Date.now() - this.gpLeaderboard.lastUpdated > CACHE_TIME) {
-			this.gpLeaderboard.list = (
-				await this.query(
-					`SELECT "id", "GP" FROM users WHERE "GP" > 0 ORDER BY "GP" DESC LIMIT 2000;`
-				)
-			).map((res: any) => ({ ...res, GP: parseInt(res.GP) }));
-			this.gpLeaderboard.lastUpdated = Date.now();
-		}
-
-		let { list } = this.gpLeaderboard;
-
-		if (onlyForGuild && msg.guild) {
-			list = list.filter((gpUser: GPUser) => msg.guild!.members.has(gpUser.id));
-		}
+		const users = (
+			await this.query(
+				`SELECT "id", "GP" FROM users WHERE "GP" > 1000000 ORDER BY "GP" DESC LIMIT 500;`
+			)
+		).map((res: any) => ({ ...res, GP: parseInt(res.GP) })) as GPUser[];
 
 		this.doMenu(
 			msg,
 			util
-				.chunk(list, 10)
+				.chunk(users, 10)
 				.map(subList =>
 					subList
 						.map(
@@ -398,9 +374,6 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		if (msg.author.id !== '157797566833098752') {
-			return msg.send(`The collection log leaderboards are currently disabled.`);
-		}
 		const type = collectionLogTypes.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
@@ -413,44 +386,23 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			);
 		}
 
-		const items = Object.values(type.items).flat(100);
-
-		const onlyForGuild = msg.flagArgs.server;
-
-		if (Date.now() - this.clLeaderboard.lastUpdated > CACHE_TIME + Time.Minute * 30) {
-			this.clLeaderboard.list = await this.query(
-				`SELECT u.id, u.logbanklength, u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) logbanklength , id, "collectionLogBank" FROM users
+		const result = (await this.query(
+			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
 ) u
-WHERE u.logbanklength > 300 ORDER BY u.logbanklength DESC;`
-			);
-			this.clLeaderboard.lastUpdated = Date.now();
-		}
+WHERE u."logBankLength" > 300 ORDER BY u."logBankLength" DESC;`
+		)) as CLUser[];
+		const users = await Workers.leaderboard({
+			type: 'cl',
+			users: result,
+			collectionLogInput: type
+		});
 
-		let list = this.clLeaderboard.list
-			.sort((a: CLUser, b: CLUser) => {
-				const aScore = a.collectionLogBank
-					? Object.entries(a.collectionLogBank).filter(
-							([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))
-					  ).length
-					: -1;
-				const bScore = b.collectionLogBank
-					? Object.entries(b.collectionLogBank).filter(
-							([itemID, qty]) => qty > 0 && items.includes(parseInt(itemID))
-					  ).length
-					: -1;
-				return bScore - aScore;
-			})
-			.slice(0, 2000);
-
-		if (onlyForGuild && msg.guild) {
-			list = list.filter((kcUser: CLUser) => msg.guild!.members.has(kcUser.id));
-		}
-
+		const items = Object.values(type.items).flat(Infinity);
 		this.doMenu(
 			msg,
 			util
-				.chunk(list, 10)
+				.chunk(users, 10)
 				.map(subList =>
 					subList
 						.map(
