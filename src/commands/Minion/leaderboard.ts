@@ -10,9 +10,9 @@ import Agility from '../../lib/skilling/skills/agility';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
-import PostgresProvider from '../../providers/postgres';
 import { Workers } from '../../lib/workers';
 import { CLUser } from '../../lib/workers/leaderboard.worker';
+import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
 
