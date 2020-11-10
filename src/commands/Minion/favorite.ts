@@ -42,6 +42,6 @@ export default class extends BotCommand {
 			arrayAction: ArrayActions.Add
 		});
 
-		return msg.send(`Added ${item.name} from your favorite items.`);
+		return msg.send(`Added ${item.name} to your favorite items.`);
 	}
 }
