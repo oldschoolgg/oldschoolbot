@@ -72,10 +72,10 @@ export default class extends BotCommand {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
 
-		let outItems: ItemBank;
-		let inItems: ItemBank;
-		let itemString: string;
-		let inItemString: string;
+		let outItems: ItemBank = {};
+		let inItems: ItemBank = {};
+		let itemString: string = '';
+		let inItemString: string = '';
 		if (type === 'buy') {
 			outItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulCost! };
 			inItems = { [shopInventory.inputItem]: quantity };

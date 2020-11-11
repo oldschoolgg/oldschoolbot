@@ -16,7 +16,7 @@ export default class extends Event {
 	}
 
 	private async _sendErrorChannel(message: KlasaMessage, command: Command, error: Error) {
-		let output: string;
+		let output: string = '';
 
 		if (error.name === 'AbortError') {
 			try {
@@ -26,7 +26,7 @@ export default class extends Event {
 			} catch (_) {}
 		}
 
-		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack || error}`);
+		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack ?? error.name}`);
 		Sentry.captureException(error);
 
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {

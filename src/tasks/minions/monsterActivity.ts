@@ -94,8 +94,9 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) +
-			quantity}.`;
+		} KC is now ${
+			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
+		}.`;
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 

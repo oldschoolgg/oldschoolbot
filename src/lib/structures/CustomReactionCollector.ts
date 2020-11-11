@@ -1,7 +1,7 @@
 import { MessageReaction, ReactionCollector, User } from 'discord.js';
 
 export class CustomReactionCollector extends ReactionCollector {
-	// @ts-ignore
+	// @ts-ignore Custom implementation that returns all event parameters
 	async *[Symbol.asyncIterator](): AsyncIterableIterator<[MessageReaction, User]> {
 		const queue: [MessageReaction, User][] = [];
 		const onCollect = (...items: [MessageReaction, User]) => queue.push(items);
@@ -13,7 +13,7 @@ export class CustomReactionCollector extends ReactionCollector {
 					yield queue.shift()!;
 				} else {
 					// eslint-disable-next-line no-await-in-loop
-					await new Promise(resolve => {
+					await new Promise<void>(resolve => {
 						const tick = () => {
 							this.removeListener('collect', tick);
 							this.removeListener('end', tick);

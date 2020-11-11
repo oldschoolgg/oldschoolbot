@@ -36,3 +36,9 @@ export default class extends Extendable {
 		}
 	}
 }
+
+declare module 'discord.js' {
+	export interface Message {
+		sendLarge(content: string, fileName?: string, tooLong?: string): Promise<KlasaMessage>;
+	}
+}

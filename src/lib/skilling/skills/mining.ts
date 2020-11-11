@@ -1,6 +1,17 @@
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Ore, SkillsEnum } from '../types';
+
+const GemRockTable = new LootTable()
+	.add('Uncut opal', 1, 60)
+	.add('Uncut jade', 1, 30)
+	.add('Uncut red topaz', 1, 15)
+	.add('Uncut sapphire', 1, 9)
+	.add('Uncut emerald', 1, 5)
+	.add('Uncut ruby', 1, 5)
+	.add('Uncut diamond', 1, 4);
 
 const ores: Ore[] = [
 	{
@@ -30,10 +41,10 @@ const ores: Ore[] = [
 	},
 	{
 		level: 15,
-		xp: 48,
+		xp: 35,
 		id: 440,
 		name: 'Iron ore',
-		respawnTime: 0.2,
+		respawnTime: -0.2,
 		petChance: 750_000,
 		clueScrollChance: 741_600
 	},
@@ -65,13 +76,21 @@ const ores: Ore[] = [
 	},
 	{
 		level: 40,
-		xp: 45,
+		xp: 65,
 		id: 444,
 		name: 'Gold ore',
 		respawnTime: 4,
 		petChance: 300_000,
 		nuggets: true,
 		clueScrollChance: 296_640
+	},
+	{
+		level: 40,
+		xp: 65,
+		id: 1625,
+		name: 'Gem rock',
+		respawnTime: 6,
+		petChance: 211_886
 	},
 	{
 		level: 55,
@@ -125,6 +144,7 @@ const prospectorItems: { [key: number]: number } = {
 const Mining = {
 	aliases: ['mining'],
 	Ores: ores,
+	GemRockTable,
 	id: SkillsEnum.Mining,
 	emoji: Emoji.Mining,
 	prospectorItems

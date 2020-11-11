@@ -1,5 +1,5 @@
 import { User, Util } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 
 import { Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -66,8 +66,9 @@ export default class extends Extendable {
 		const currentGP = this.settings.get(UserSettings.GP);
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
 		this.log(
-			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
-				amount}]`
+			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${
+				currentGP - amount
+			}]`
 		);
 		return this.settings.update(UserSettings.GP, currentGP - amount);
 	}
@@ -215,9 +216,8 @@ export default class extends Extendable {
 
 	public totalLevel(this: User, returnXP = false) {
 		const userXPs = Object.values(
-			// @ts-ignore
-			this.settings.get('skills').toJSON() as Skills
-		) as number[];
+			(this.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>
+		);
 		let totalLevel = 0;
 		for (const xp of userXPs) {
 			totalLevel += returnXP ? xp : convertXPtoLVL(xp);

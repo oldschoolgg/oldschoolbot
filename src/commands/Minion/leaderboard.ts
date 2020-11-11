@@ -1,8 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage, util } from 'klasa';
+import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import badges from '../../lib/badges';
+import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { Time } from '../../lib/constants';
 import Skills from '../../lib/skilling/skills';
@@ -12,6 +13,7 @@ import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import { Workers } from '../../lib/workers';
 import { CLUser } from '../../lib/workers/leaderboard.worker';
+import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
 
@@ -72,7 +74,7 @@ interface UsernameCache {
 	map: Map<string, string>;
 }
 
-export default class extends Command {
+export default class extends BotCommand {
 	public settingEntryCache: SettingsEntry[] = [];
 	public lastCacheUpdate = 0;
 
@@ -108,7 +110,8 @@ export default class extends Command {
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
-			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES']
+			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
+			oneAtTime: true
 		});
 	}
 
@@ -141,8 +144,7 @@ export default class extends Command {
 	}
 
 	async query(query: string, cacheUsernames = true) {
-		// @ts-ignore
-		const result = await this.client.providers.default!.runAll(query);
+		const result = await (this.client.providers.default as PostgresProvider).runAll(query);
 		if (cacheUsernames) this.cacheUsernames();
 		return result;
 	}
@@ -354,10 +356,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			util.chunk(res, 10).map(subList =>
 				subList
 					.map((obj: SkillUser) => {
-						const objKey = inputSkill === 'overall' ? 'totalxp' : `skills.${skill?.id}`;
+						const objKey =
+							inputSkill === 'overall'
+								? 'totalxp'
+								: (`skills.${skill?.id}` as keyof SkillUser);
 
-						// @ts-ignore
-						const skillXP = obj[objKey] ?? 0;
+						const skillXP = Number(obj[objKey] ?? 0);
 						const skillLVL =
 							inputSkill === 'overall' ? '' : `(${convertXPtoLVL(skillXP)})`;
 

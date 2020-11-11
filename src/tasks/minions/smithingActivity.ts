@@ -28,10 +28,9 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		let str = `${user}, ${user.minionName} finished smithing ${quantity *
-			smithedItem.outputMultiple}x ${
-			smithedItem.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
+		let str = `${user}, ${user.minionName} finished smithing ${
+			quantity * smithedItem.outputMultiple
+		}x ${smithedItem.name}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;

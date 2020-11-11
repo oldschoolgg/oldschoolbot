@@ -25,7 +25,7 @@ export default class extends Monitor {
 			await util.exec('yarn');
 			await util.exec('git fetch && git pull');
 
-			// @ts-ignore
+			// @ts-expect-error Running command with fake message object
 			await this.client.commands.get('reload')!.everything!({
 				sendLocale: () => null,
 				sendMessage: () => null,

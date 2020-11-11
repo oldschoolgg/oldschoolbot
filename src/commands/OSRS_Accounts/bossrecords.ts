@@ -17,6 +17,8 @@ const miscEmojis = {
 	obor: '<:Hill_giant_club:421045456194240523>'
 };
 
+type MiscEmojisKeys = keyof typeof miscEmojis;
+
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -27,10 +29,9 @@ export default class extends Command {
 		});
 	}
 
-	getEmojiForBoss(key: keyof typeof miscEmojis | string) {
+	getEmojiForBoss(key: MiscEmojisKeys | string) {
 		if (key in miscEmojis) {
-			// @ts-ignore
-			return miscEmojis[key];
+			return miscEmojis[key as MiscEmojisKeys];
 		}
 
 		const pet = pets.find(_pet => _pet.bossKeys && _pet.bossKeys.includes(key));
