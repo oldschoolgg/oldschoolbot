@@ -11,6 +11,6 @@ export default class extends Event {
 	}
 
 	async run(event: CloseEvent) {
-		this.client.emit(Events.Log, `Shard Disconnect: ${event.reason} ${event}`);
+		this.client.emit(Events.Log, `Shard Disconnect: ${event.reason} ${event.code}`);
 	}
 }

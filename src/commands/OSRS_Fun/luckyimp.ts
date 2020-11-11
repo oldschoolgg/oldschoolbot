@@ -33,7 +33,6 @@ export default class extends Command {
 			display += '\n';
 		}
 
-		// @ts-ignore
 		return msg.sendLarge(display, `loot-from-${qty}-lucky-imps.txt`);
 	}
 }

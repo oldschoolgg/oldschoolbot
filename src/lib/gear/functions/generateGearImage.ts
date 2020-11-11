@@ -78,7 +78,7 @@ export async function generateGearImage(
 	}
 
 	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-	const userBg = bankTask?.backgroundImages.find(i => i.id === userBgID)?.image;
+	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
 
 	const gearStats = sumOfSetupStats(gearSetup);
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
@@ -88,8 +88,8 @@ export async function generateGearImage(
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.drawImage(
 		userBg,
-		(canvas.width - userBg?.width!) * 0.5,
-		(canvas.height - userBg?.height!) * 0.5
+		(canvas.width - userBg.width) * 0.5,
+		(canvas.height - userBg.height) * 0.5
 	);
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 	bankTask?.drawBorder(canvas, false);
@@ -142,7 +142,7 @@ export async function generateGearImage(
 	);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask.borderVertical?.width! * 2, 0);
+	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Defence bonus`, 0, 25);
@@ -195,7 +195,7 @@ export async function generateGearImage(
 	// drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask?.borderVertical?.width! * 2, 0);
+	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
 	ctx.font = '16px OSRSFontCompact';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
