@@ -88,8 +88,8 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): undefined {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function noOp(_any: any) {
 	return undefined;
 }
 

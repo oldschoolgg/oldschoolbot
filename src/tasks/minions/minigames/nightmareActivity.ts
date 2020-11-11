@@ -121,11 +121,12 @@ export default class extends Task {
 					bank: teamsLoot[leader],
 					content: `${leaderUser}, ${
 						leaderUser.minionName
-					} finished killing ${quantity} ${NightmareMonster.name}, you died ${deaths[
-						leader
-					] ?? 0} times. Your Nightmare KC is now ${(leaderUser.settings.get(
-						UserSettings.MonsterScores
-					)[NightmareMonster.id] ?? 0) + quantity}.`,
+					} finished killing ${quantity} ${NightmareMonster.name}, you died ${
+						deaths[leader] ?? 0
+					} times. Your Nightmare KC is now ${
+						(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
+							0) + quantity
+					}.`,
 					title: `${quantity}x Nightmare`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),
 					user: leaderUser,

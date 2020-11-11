@@ -74,8 +74,9 @@ export default class extends Task {
 			channelID,
 			`${user}, ${
 				user.minionName
-			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${kc +
-				quantity}. You received ${runecraftXP} Runecraft XP, ${miningXP} Mining XP, ${smithingXP} Smithing XP.`,
+			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
+				kc + quantity
+			}. You received ${runecraftXP} Runecraft XP, ${miningXP} Mining XP, ${smithingXP} Smithing XP.`,
 			res => {
 				user.log(`continued zalcano`);
 				return this.client.commands.get('zalcano')!.run(res, []);

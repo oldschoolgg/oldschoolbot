@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 
-let triviaQuestions: any;
+let triviaQuestions: any = null;
 try {
 	// eslint-disable-next-line prefer-destructuring
 	triviaQuestions = JSON.parse(

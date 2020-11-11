@@ -9,17 +9,12 @@ export default class extends Argument {
 		if (!arg) return this.store.get('item')!.run(arg, possible, message);
 
 		const {
-			// @ts-ignore
 			args,
-
-			// @ts-ignore
 			usage: { usageDelim }
-		} =
-			// @ts-ignore
-			message.prompter;
+		} = message['prompter']!;
 
 		const index = args.indexOf(arg);
-		const rest = args.splice(index, args.length - index).join(usageDelim);
+		const rest = args.splice(index, args.length - index).join(usageDelim ?? '');
 		return this.store.get('item')!.run(rest, possible, message);
 	}
 }

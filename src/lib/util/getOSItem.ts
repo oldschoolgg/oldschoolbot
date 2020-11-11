@@ -10,7 +10,7 @@ export default function getOSItem(itemName: string | number): Item {
 		return cache.get(itemName);
 	}
 
-	let identifier: string | number | undefined;
+	let identifier: string | number | undefined = '';
 	if (typeof itemName === 'number') {
 		identifier = itemName;
 	} else {
@@ -19,7 +19,7 @@ export default function getOSItem(itemName: string | number): Item {
 	}
 
 	const osItem = Items.get(identifier) as Item | undefined;
-	if (!osItem) throw `That item doesnt exist.`;
+	if (!osItem) throw `That item doesn't exist.`;
 	cache.set(itemName, osItem);
 	return osItem;
 }

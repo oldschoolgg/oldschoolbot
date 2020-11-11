@@ -934,10 +934,10 @@ ${lootMSG.join('\n')}`);
 			case 'CORP':
 			case 'CORPOREALBEAST':
 			case 'CORPBEAST': {
-				let elyKC;
-				let arcKC;
-				let specKC;
-				let petKC;
+				let elyKC = -1;
+				let arcKC = -1;
+				let specKC = -1;
+				let petKC = -1;
 				const lootMSG = [];
 				while (loot.length < 4) {
 					kc++;
@@ -1108,7 +1108,7 @@ ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Sca
 							PC++;
 							LOCK = true;
 						}
-						if (!loot.includes('PH') && LOCK === false) {
+						if (!loot.includes('PH') && !LOCK) {
 							loot.push('PH');
 							lootMSG.push(
 								`**Pyromancer Hood:** ${kc.toLocaleString()} KC <:Pyromancer_hood:405265921872232448>`
@@ -1116,7 +1116,7 @@ ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Sca
 							PC++;
 							LOCK = true;
 						}
-						if (!loot.includes('PR') && LOCK === false) {
+						if (!loot.includes('PR') && !LOCK) {
 							loot.push('PR');
 							lootMSG.push(
 								`**Pyromancer Robe:** ${kc.toLocaleString()} KC <:Pyromancer_robe:405265921553334283>`
@@ -1124,7 +1124,7 @@ ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Sca
 							PC++;
 							LOCK = true;
 						}
-						if (!loot.includes('PB') && LOCK === false) {
+						if (!loot.includes('PB') && !LOCK) {
 							loot.push('PB');
 							lootMSG.push(
 								`**Pyromancer Boots:** ${kc.toLocaleString()} KC <:Pyromancer_boots:405265921603534848>`
@@ -1887,7 +1887,7 @@ You also received **${gd.toLocaleString()}** Granite Dust!`);
 										force = true;
 									}
 								}
-								if (loot.includes('BS') && force === false) {
+								if (loot.includes('BS') && !force) {
 									const bludgRoll = Math.floor(Math.random() * 2) + 1;
 									if (bludgRoll === 1) {
 										loot.push('BA');
@@ -1904,7 +1904,7 @@ You also received **${gd.toLocaleString()}** Granite Dust!`);
 										force = true;
 									}
 								}
-								if (loot.includes('BA') && force === false) {
+								if (loot.includes('BA') && !force) {
 									const bludgRoll = Math.floor(Math.random() * 2) + 1;
 									if (bludgRoll === 1) {
 										loot.push('BS');
