@@ -1,8 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage, util } from 'klasa';
+import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import badges from '../../lib/badges';
+import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { Time } from '../../lib/constants';
 import Skills from '../../lib/skilling/skills';
@@ -73,7 +74,7 @@ interface UsernameCache {
 	map: Map<string, string>;
 }
 
-export default class extends Command {
+export default class extends BotCommand {
 	public settingEntryCache: SettingsEntry[] = [];
 	public lastCacheUpdate = 0;
 
@@ -109,7 +110,8 @@ export default class extends Command {
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
-			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES']
+			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
+			oneAtTime: true
 		});
 	}
 
