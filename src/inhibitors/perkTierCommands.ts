@@ -18,8 +18,9 @@ export default class extends Inhibitor {
 						: `tier ${command.perkTier} patron or server booster`
 				} to use this command. You can become this patron tier at https://www.patreon.com/oldschoolbot`
 			);
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 }
