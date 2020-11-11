@@ -129,6 +129,7 @@ export interface Craftable {
 	xp: number;
 	inputItems: ItemBank;
 	tickRate: number;
+	crushChance?: number[];
 }
 
 export interface Fletchable {
