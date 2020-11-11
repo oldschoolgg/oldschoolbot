@@ -853,6 +853,9 @@ export const filterableTypes = [
 	{
 		name: 'Holiday',
 		aliases: ['holiday', 'hmb', 'rare', 'rares'],
-		items: (Openables.find(o => o.name === 'Holiday Mystery box')!.table as LootTable).allItems
+		items: [
+			...(Openables.find(o => o.name === 'Holiday Mystery box')!.table as LootTable).allItems,
+			...(Openables.find(o => o.name === 'Christmas cracker')!.table as LootTable).allItems
+		]
 	}
 ];
