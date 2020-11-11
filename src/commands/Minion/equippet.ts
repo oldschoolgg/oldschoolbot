@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { removeItemFromBank } from '../../lib/util';
 import resolveItems from '../../lib/util/resolveItems';
 
-const allPetIDs = [
+export const allPetIDs = [
 	...resolveItems([
 		'Doug',
 		'Zippy',

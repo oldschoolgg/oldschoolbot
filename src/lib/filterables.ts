@@ -1,3 +1,6 @@
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
+import { allPetIDs } from '../commands/Minion/equippet';
 import { warmGear } from '../commands/Minion/wt';
 import {
 	cluesAll,
@@ -12,6 +15,7 @@ import {
 	wintertodt
 } from './collectionLog';
 import { Eatables } from './eatables';
+import Openables, { tmbTable, umbTable } from './openables';
 import { gracefulItems } from './skilling/skills/agility';
 import Crafting from './skilling/skills/crafting';
 import Fletching from './skilling/skills/fletching';
@@ -830,5 +834,25 @@ export const filterableTypes = [
 		name: 'Clues Rares',
 		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
 		items: Object.values(cluesRares).flat(Infinity)
+	},
+	{
+		name: 'Untradeables',
+		aliases: ['untradeables', 'umb'],
+		items: umbTable
+	},
+	{
+		name: 'Tradeables',
+		aliases: ['tradeables', 'tmb'],
+		items: tmbTable
+	},
+	{
+		name: 'Pets',
+		aliases: ['pets', 'pmb'],
+		items: allPetIDs
+	},
+	{
+		name: 'Holiday',
+		aliases: ['holiday', 'hmb', 'rare', 'rares'],
+		items: (Openables.find(o => o.name === 'Holiday Mystery box')!.table as LootTable).allItems
 	}
 ];

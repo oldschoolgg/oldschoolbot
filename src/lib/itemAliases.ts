@@ -82,4 +82,9 @@ export function initItemAliases() {
 	setItemAlias(24752, ['Dark graceful legs', 'Black graceful legs']);
 	setItemAlias(24755, ['Dark graceful gloves', 'Black graceful gloves']);
 	setItemAlias(24758, ['Dark graceful boots', 'Black graceful boots']);
+
+	setItemAlias(3062, ['pmb'], false);
+	setItemAlias(3713, ['hmb'], false);
+	setItemAlias(6199, ['tmb'], false);
+	setItemAlias(19939, ['umb'], false);
 }
