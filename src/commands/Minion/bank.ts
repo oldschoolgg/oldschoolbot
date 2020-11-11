@@ -51,7 +51,6 @@ export default class extends Command {
 		return new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
 	}
 
-	// @ts-ignore
 	async run(msg: KlasaMessage, [pageNumberOrItemName = 1]: [number | string]) {
 		await msg.author.settings.sync(true);
 		const coins = msg.author.settings.get(UserSettings.GP);
@@ -129,10 +128,11 @@ export default class extends Command {
 				);
 			}
 
-			return display.start(loadingMsg as KlasaMessage, msg.author.id, {
+			await display.start(loadingMsg as KlasaMessage, msg.author.id, {
 				jump: false,
 				stop: false
 			});
+			return null;
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));

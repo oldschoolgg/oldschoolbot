@@ -14,7 +14,7 @@ describe('util', () => {
 		expect(getOSItem('20997').id).toEqual(20997);
 		expect(getOSItem('3rd age platebody').id).toEqual(10348);
 
-		expect(() => getOSItem('Non-existant item')).toThrowError('That item doesnt exist.');
+		expect(() => getOSItem('Non-existant item')).toThrowError("That item doesn't exist.");
 	});
 
 	test('getUserFoodFromBank', () => {

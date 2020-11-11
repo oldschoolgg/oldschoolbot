@@ -22,8 +22,9 @@ export default class extends Task {
 
 		let str = `${user}, ${
 			user.minionName
-		} finished questing, you received ${qpRecieved.toLocaleString()} QP. Your current QP is ${currentQP +
-			qpRecieved}.`;
+		} finished questing, you received ${qpRecieved.toLocaleString()} QP. Your current QP is ${
+			currentQP + qpRecieved
+		}.`;
 
 		const hasMaxQP = currentQP + qpRecieved >= MAX_QP;
 		if (hasMaxQP) {

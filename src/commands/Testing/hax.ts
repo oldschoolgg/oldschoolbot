@@ -21,11 +21,9 @@ export default class extends BotCommand {
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, 250);
-		const loot = {};
-		for (const item of Eatables) {
-			// @ts-ignore
-			loot[item.id] = 1000;
-		}
+		const loot: Record<string, number> = Object.fromEntries(
+			Eatables.map(({ id }) => [id, 1000])
+		);
 		msg.author.addItemsToBank(loot);
 		return msg.send(`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all eatable foods`);
 	}

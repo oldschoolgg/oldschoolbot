@@ -21,7 +21,7 @@ const pvpDeathMessages = [
 	'{name} was just PKed in the middle of their trip.',
 	'{name} got PKed while killing {monster}, but is coming back to finish the trip.',
 	'{name} got teleblocked, and then specced out with dragon claws, unfortunately they died.',
-	'{name} hopes it doesnt anger you, but they were just PKed.'
+	"{name} hopes it doesn't anger you, but they were just PKed."
 ];
 
 const randomDeathMessage = (minionName: string, monsterName: string) =>

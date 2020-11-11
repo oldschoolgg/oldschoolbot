@@ -13,8 +13,10 @@ export default class extends Inhibitor {
 		if (getUsersPerkTier(msg.author) >= PerkTier.One) return;
 
 		if (Date.now() - msg.author.createdTimestamp < Time.Month) {
-			throw `You cannot use this command, as your account is too new and/or ` +
-				`looks like it might be an alt account. Ask for help in the support server if you feel this is a mistake.`;
+			throw (
+				`You cannot use this command, as your account is too new and/or ` +
+				`looks like it might be an alt account. Ask for help in the support server if you feel this is a mistake.`
+			);
 		}
 	}
 }

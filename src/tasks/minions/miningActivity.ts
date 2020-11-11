@@ -1,5 +1,6 @@
 import { roll } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
@@ -10,10 +11,9 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { multiplyBank, rand } from '../../lib/util';
+import { itemID, multiplyBank, rand } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -60,9 +60,7 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
 		}
 
-		let loot = {
-			[ore.id]: quantity
-		};
+		const loot = new Bank();
 
 		const numberOfMinutes = duration / Time.Minute;
 
@@ -75,25 +73,25 @@ export default class extends Task {
 				const amountToAdd = randOre.xp * qty;
 				xpReceived += amountToAdd;
 				bonusXP += amountToAdd;
-				loot[randOre.id] = (loot[randOre.id] ?? 0) + qty;
+				loot.add(randOre.id, qty);
 			}
 		}
 
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
-				loot = multiplyBank(loot, 2);
-				loot[getRandomMysteryBox()] = 1;
+				loot.bank = multiplyBank(loot.values(), 2);
+				loot.add(getRandomMysteryBox(), 1);
 			}
 		}
 
 		// Add clue scrolls
 		if (ore.clueScrollChance) {
-			loot = addSkillingClueToLoot(
+			addSkillingClueToLoot(
 				user,
 				SkillsEnum.Mining,
 				quantity,
 				ore.clueScrollChance,
-				loot
+				loot.values()
 			);
 		}
 
@@ -102,7 +100,7 @@ export default class extends Task {
 			ore.petChance &&
 			roll((ore.petChance - user.skillLevel(SkillsEnum.Mining) * 25) / quantity)
 		) {
-			loot[itemID('Rock golem')] = 1;
+			loot.add('Rock golem');
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,
@@ -112,7 +110,7 @@ export default class extends Task {
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
-			loot[12012] = numberOfNuggets;
+			loot.add('Golden nugget', numberOfNuggets);
 		} else if (numberOfMinutes > 10 && ore.minerals) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
@@ -120,17 +118,26 @@ export default class extends Task {
 			}
 
 			if (numberOfMinerals > 0) {
-				loot[21341] = numberOfMinerals;
+				loot.add('Unidentified minerals', numberOfMinerals);
 			}
 		}
 
 		const minutesInTrip = Math.ceil(duration / Time.Minute);
 		for (let i = 0; i < minutesInTrip; i++) {
 			if (roll(3000)) {
-				loot[itemID('Doug')] = 1;
+				loot.add('Doug');
 				str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
 				break;
 			}
+		}
+
+		// Gem rocks roll off the GemRockTable
+		if (ore.id === 1625) {
+			for (let i = 0; i < quantity; i++) {
+				loot.add(Mining.GemRockTable.roll());
+			}
+		} else {
+			loot.add(ore.id, quantity);
 		}
 
 		const hasKlik = user.equippedPet() === itemID('Klik');
@@ -139,18 +146,21 @@ export default class extends Task {
 				o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1
 			);
 			if (smeltedOre) {
-				delete loot[ore.id];
-				loot[smeltedOre.id] = quantity;
+				loot.remove(ore.id, loot.amount(ore.id));
+				loot.add(smeltedOre.id, quantity);
 				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!`;
 			}
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		str += `\n\nYou received: ${await createReadableItemListFromBank(
+			this.client,
+			loot.values()
+		)}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank(loot.values(), true);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);

@@ -135,8 +135,9 @@ export default class extends BotCommand {
 			rune.name
 		}, it'll take around ${formatDuration(
 			duration
-		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${quantityPerEssence *
-			quantity}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
+		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
+			quantityPerEssence * quantity
+		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
 		return msg.send(response);
 	}

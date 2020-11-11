@@ -59,9 +59,9 @@ export default function calculateMonsterFood(
 	}
 
 	messages.push(
-		`You use ${(100 - calcWhatPercent(healAmountNeeded, monster.healAmountNeeded!)).toFixed(
-			2
-		)}% less food (${healAmountNeeded} instead of ${
+		`You use ${
+			100 - calcWhatPercent(healAmountNeeded, monster.healAmountNeeded!)
+		}% less food (${healAmountNeeded} instead of ${
 			monster.healAmountNeeded
 		}) because of your gear.\n${
 			hasAbyssalCape
