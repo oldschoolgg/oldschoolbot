@@ -62,8 +62,9 @@ export default class extends BotCommand {
 			getUsersPerkTier(msg.author) < selectedImage.perkTierNeeded
 		) {
 			return msg.send(
-				`This background is only available for Tier ${Number(selectedImage.perkTierNeeded) -
-					1} patrons.`
+				`This background is only available for Tier ${
+					Number(selectedImage.perkTierNeeded) - 1
+				} patrons.`
 			);
 		}
 

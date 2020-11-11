@@ -2,6 +2,7 @@ import { SnowflakeUtil } from 'discord.js';
 import { Colors, Task, TaskStore } from 'klasa';
 
 import { Time } from '../lib/constants';
+import PostgresProvider from '../providers/postgres';
 
 const THRESHOLD = Time.Minute * 30;
 
@@ -28,9 +29,7 @@ export default class MemorySweeper extends Task {
 	}
 
 	async run() {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		const queryRes = await this.client.providers!.default!.runAll(
+		const queryRes = await (this.client.providers.default as PostgresProvider).runAll(
 			`SELECT ARRAY(SELECT "id" FROM users WHERE "badges"::text <> '{}'::text OR "bank"::text <> '{}'::text OR "minion.hasBought" = true); `
 		);
 

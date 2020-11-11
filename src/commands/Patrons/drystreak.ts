@@ -5,6 +5,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import { stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import LeaderboardCommand from '../Minion/leaderboard';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -40,14 +41,12 @@ export default class extends BotCommand {
 
 		if (result.length === 0) return msg.send(`No results found.`);
 
-		const command = this.client.commands.get('leaderboard');
+		const command = this.client.commands.get('leaderboard') as LeaderboardCommand;
 
 		return msg.send(
 			`**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
 				.map(
 					({ id, KC }) =>
-						// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-						// @ts-ignore
 						`${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`
 				)
 				.join('\n')}`

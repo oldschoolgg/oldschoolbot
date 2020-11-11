@@ -16,13 +16,13 @@ import {
 } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
-const bg = fs.readFileSync('./resources/images/coins.png');
+const bg = fs.readFileSync('./src/lib/resources/images/coins.png');
 const canvas = createCanvas(50, 50);
 const ctx = canvas.getContext('2d');
 
 ctx.font = '14px OSRSFont';
 
-registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -51,8 +51,6 @@ export default class extends Command {
 		return new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-	// @ts-ignore
 	async run(msg: KlasaMessage, [pageNumberOrItemName = 1]: [number | string]) {
 		await msg.author.settings.sync(true);
 		const coins = msg.author.settings.get(UserSettings.GP);
@@ -130,10 +128,11 @@ export default class extends Command {
 				);
 			}
 
-			return display.start(loadingMsg as KlasaMessage, msg.author.id, {
+			await display.start(loadingMsg as KlasaMessage, msg.author.id, {
 				jump: false,
 				stop: false
 			});
+			return null;
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));

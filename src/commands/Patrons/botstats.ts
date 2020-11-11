@@ -6,6 +6,7 @@ import { PerkTier } from '../../lib/constants';
 import backgroundImages from '../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ItemBank } from '../../lib/types';
+import PostgresProvider from '../../providers/postgres';
 
 type BankQueryResult = { bankBackground: number; count: string }[];
 
@@ -33,9 +34,7 @@ export default class extends BotCommand {
 	}
 
 	async _query(str: string): Promise<any> {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		return this.client.providers.default.runAll(str);
+		return (this.client.providers.default as PostgresProvider).runAll(str);
 	}
 
 	async servers(msg: KlasaMessage) {

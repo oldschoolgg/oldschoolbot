@@ -17,7 +17,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2416
 	async enable(msg: KlasaMessage, [command]: [Command]) {
 		if (!msg.guild!.settings.get(GuildSettings.DisabledCommands).includes(command.name)) {
@@ -29,7 +28,6 @@ export default class extends BotCommand {
 		return msg.sendLocale('CMD_ENABLED', [command.name]);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2416
 	async disable(msg: KlasaMessage, [command]: [Command]) {
 		if (msg.guild!.settings.get(GuildSettings.DisabledCommands).includes(command.name)) {

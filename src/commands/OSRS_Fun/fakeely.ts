@@ -6,13 +6,13 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 
-const bg = fs.readFileSync('./resources/images/tob-bg.png');
+const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
 const canvas = createCanvas(399, 100);
 const ctx = canvas.getContext('2d');
 
 ctx.font = '16px OSRSFont';
 
-registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

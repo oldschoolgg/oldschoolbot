@@ -1,14 +1,10 @@
 {
-	"extends": "eslint-config-bamboo",
+	"extends": "@oldschoolgg/eslint-config",
 	"compilerOptions": {
-		"outDir": "./dist",
-		"target": "es2019",
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,
 		"types": ["node", "node-fetch", "discord.js", "klasa", "jest"],
 		"esModuleInterop": true
-	},
-	"include": ["./src/**/*", "./data/**/*", "tests/**/*"],
-	"exclude": ["node_modules", "**/dist"]
+	}
 }

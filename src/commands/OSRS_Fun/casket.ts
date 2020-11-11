@@ -1,11 +1,10 @@
 import { MessageAttachment } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Misc } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import { addBanks, roll } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { Workers } from '../../lib/workers';
 
 export default class extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,13 +22,20 @@ export default class extends Command {
 		}
 
 		const perkTier = getUsersPerkTier(user);
-
-		if (perkTier >= PerkTier.Four) {
+		if (perkTier >= PerkTier.Six) {
 			return 100_000;
 		}
 
+		if (perkTier >= PerkTier.Five) {
+			return 80_000;
+		}
+
+		if (perkTier >= PerkTier.Four) {
+			return 60_000;
+		}
+
 		if (perkTier === PerkTier.Three) {
-			return 50_000;
+			return 40_000;
 		}
 
 		if (perkTier === PerkTier.Two) {
@@ -61,36 +67,11 @@ export default class extends Command {
 			);
 		}
 
-		let loot = clueTier.table.open(quantity);
-		let mimicNumber = 0;
-		if (clueTier.mimicChance) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(clueTier.mimicChance)) {
-					loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
-					mimicNumber++;
-				}
-			}
-		}
+		const [loot, title] = await Workers.casketOpen({ quantity, clueTierID: clueTier.id });
 
-		const opened = `You opened ${quantity} ${clueTier.name} 
-		Clue Casket${quantity > 1 ? 's' : ''}
-		${
-			mimicNumber > 0
-				? ` and defeated ${mimicNumber} 
-					mimic${mimicNumber > 1 ? 's' : ''}`
-				: ''
-		}`;
+		if (Object.keys(loot).length === 0) return msg.send(`${title} and got nothing :(`);
 
-		if (Object.keys(loot).length === 0) return msg.send(`${opened} and got nothing :(`);
-
-		const image = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot,
-				`Loot from ${quantity} ${clueTier.name} Clue${quantity > 1 ? 's' : ''}${
-					mimicNumber > 0 ? ` with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
-				}`
-			);
+		const image = await this.client.tasks.get('bankImage')!.generateBankImage(loot, title);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}

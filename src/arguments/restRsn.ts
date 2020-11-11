@@ -9,18 +9,12 @@ export default class extends Argument {
 		if (!arg) return this.store.get('rsn')!.run(arg, possible, message);
 
 		const {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
 			args,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
 			usage: { usageDelim }
-		} = // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			message.prompter;
+		} = message['prompter']!;
 
 		const index = args.indexOf(arg);
-		const rest = args.splice(index, args.length - index).join(usageDelim);
+		const rest = args.splice(index, args.length - index).join(usageDelim ?? '');
 		return this.store.get('rsn')!.run(rest, possible, message);
 	}
 }

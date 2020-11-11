@@ -4,7 +4,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Hiscores } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 
-import { diaryRequirements } from '../../../data/diary-requirements';
+import { diaryRequirements } from '../../lib/data/diary-requirements';
 
 const titles: Record<keyof typeof diaryRequirements, string> = {
 	Ardougne: '[Ardougne](https://oldschool.runescape.wiki/w/Ardougne_Diary)',

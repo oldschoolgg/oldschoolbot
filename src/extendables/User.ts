@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { Extendable, ExtendableStore } from 'klasa';
+import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 
 import readableStatName from '../lib/gear/functions/readableStatName';
 import { gearSetupMeetsRequirement } from '../lib/minions/functions/gearSetupMeetsRequirement';
@@ -16,12 +16,9 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get rawSkills(this: User) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		return this.settings.get('skills').toJSON() as Skills;
+		return (this.settings.get('skills') as SettingsFolder).toJSON() as Skills;
 	}
 
 	public hasMonsterRequirements(this: User, monster: KillableMonster) {

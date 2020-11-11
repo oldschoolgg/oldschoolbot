@@ -1,5 +1,5 @@
 import { User, Util } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 
 import { production } from '../config';
 import { Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
@@ -26,13 +26,11 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get sanitizedName(this: User) {
 		return `(${this.username.replace(/[()]/g, '')})[${this.id}]`;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get isBusy(this: User) {
 		const client = this.client as KlasaClient;
@@ -41,7 +39,6 @@ export default class extends Extendable {
 		);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get isIronman(this: User) {
 		return this.settings.get(UserSettings.Minion.Ironman);
@@ -72,8 +69,9 @@ export default class extends Extendable {
 		const currentGP = this.settings.get(UserSettings.GP);
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
 		this.log(
-			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
-				amount}]`
+			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${
+				currentGP - amount
+			}]`
 		);
 		return this.settings.update(UserSettings.GP, currentGP - amount);
 	}
@@ -233,10 +231,8 @@ export default class extends Extendable {
 
 	public totalLevel(this: User, returnXP = false) {
 		const userXPs = Object.values(
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			this.settings.get('skills').toJSON() as Skills
-		) as number[];
+			(this.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>
+		);
 		let totalLevel = 0;
 		for (const xp of userXPs) {
 			totalLevel += returnXP ? xp : convertXPtoLVL(xp);
@@ -291,7 +287,6 @@ export default class extends Extendable {
 		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get badges(this: User) {
 		const username = this.settings.get(UserSettings.RSN);
@@ -299,14 +294,12 @@ export default class extends Extendable {
 		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
 		const usersTask = getActivityOfUser(this.client, this.id);
 		return Boolean(usersTask);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
 		const name = this.settings.get(UserSettings.Minion.Name);
@@ -319,13 +312,11 @@ export default class extends Extendable {
 			: `${prefix} ${icon} Your minion`;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get hasMinion(this: User) {
 		return this.settings.get(UserSettings.Minion.HasBought);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
 		const perkTier = getUsersPerkTier(this);

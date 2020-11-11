@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 
-const rates = {
+export const petRates = {
 	hunter: {
 		'Grey chinchompas': 131395,
 		'Red chinchompas': 98373,
@@ -77,11 +77,11 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [skillLevel, petName]: [number, keyof typeof rates]) {
-		return msg.send(this.rate(rates[petName], skillLevel));
+	async run(msg: KlasaMessage, [skillLevel, petName]: [number, keyof typeof petRates]) {
+		return msg.send(this.rate(petRates[petName], skillLevel));
 	}
 
-	rate(obj: typeof rates[keyof typeof rates], lvl: number) {
+	rate(obj: typeof petRates[keyof typeof petRates], lvl: number) {
 		const rates = [];
 		for (const key of objectKeys(obj)) {
 			rates.push(`**${key}:** ${(obj[key] - lvl * 25).toLocaleString()}`);

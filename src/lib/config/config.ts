@@ -4,7 +4,7 @@ import { customClientOptions, production, providerConfig } from '../../config';
 import { Intents } from './Intents';
 import permissionLevels from './permissionLevels';
 
-const clientOptions: KlasaClientOptions = {
+export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
 	fetchAllMembers: false,
 	messageCacheMaxSize: 200,
@@ -14,8 +14,7 @@ const clientOptions: KlasaClientOptions = {
 	disableEveryone: true,
 	shards: 'auto',
 	ws: {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
+		// @ts-ignore Intents aren't documented as a valid WS property in our current d.js version
 		intents: new Intents([
 			'GUILDS',
 			'GUILD_MEMBERS',
@@ -36,10 +35,7 @@ const clientOptions: KlasaClientOptions = {
 	schedule: {
 		interval: 10000
 	},
-	noPrefixDM: true,
 	partials: ['USER'],
 	production,
 	...customClientOptions
 };
-
-export { clientOptions };

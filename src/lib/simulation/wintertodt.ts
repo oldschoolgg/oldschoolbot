@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randInt, roll } from 'e';
 import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
@@ -208,7 +207,7 @@ export class WintertodtCrateClass {
 		return rolls + 1;
 	}
 
-	public rollUnique(itemsOwned: ItemBank): number | void {
+	public rollUnique(itemsOwned: ItemBank): number | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
 		if (roll(10_000)) return itemID('Dragon axe');
 		if (roll(5_000)) return itemID('Phoenix');
@@ -224,13 +223,14 @@ export class WintertodtCrateClass {
 		}
 
 		if (roll(150)) {
-			const torchesOwned = itemsOwned[itemID('Bruma torch')];
+			const torchID = itemID('Bruma torch');
+			const torchesOwned = itemsOwned[torchID];
 
 			// If they already own 3 gloves, give only magic seeds.
 			if (torchesOwned && torchesOwned >= 3) {
 				return itemID('Torstol seed');
 			}
-			return itemID('Bruma torch');
+			return torchID;
 		}
 
 		if (roll(150)) {

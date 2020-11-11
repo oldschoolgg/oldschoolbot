@@ -194,7 +194,7 @@ export default class extends Event {
 			.setAuthor(name, undefined, authorURL)
 			.setImage(image);
 
-		let key: string;
+		let key: string = '';
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
 		else if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		else if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
@@ -210,9 +210,7 @@ export default class extends Event {
 		this.client.guilds
 			.filter(guild => Boolean(guild.settings.get(key as string)))
 			.map(guild => {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-				// @ts-ignore
-				const channel = guild.channels.get(guild.settings.get(key));
+				const channel = guild.channels.get(guild.settings.get(key) as string);
 				if (
 					channel &&
 					channel instanceof TextChannel &&

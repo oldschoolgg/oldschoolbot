@@ -1,4 +1,3 @@
-import { Image } from 'canvas';
 import { Client, Guild } from 'discord.js';
 import { KlasaClient, KlasaUser, ScheduledTask, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -65,16 +64,6 @@ export function formatItemStackQuantity(quantity: number) {
 	return quantity.toString();
 }
 
-export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return new Promise((resolve, reject) => {
-		const canvasImage = new Image();
-
-		canvasImage.onload = () => resolve(canvasImage);
-		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
-		canvasImage.src = imageBuffer;
-	});
-}
-
 export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
@@ -99,8 +88,8 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): undefined {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function noOp(_any: any) {
 	return undefined;
 }
 
