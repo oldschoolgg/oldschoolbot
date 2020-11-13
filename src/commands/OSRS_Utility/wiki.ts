@@ -21,7 +21,13 @@ export default class extends BotCommand {
 			return msg.send('https://oldschool.runescape.wiki');
 		}
 
-		const [page, ...tail] = await Wiki.search(query);
+		const result = await Wiki.search(query);
+
+		if (result.length === 0) {
+			return msg.send(`Found no results with that query.`);
+		}
+
+		const [page, ...tail] = result;
 
 		const embed = new MessageEmbed()
 			.setColor(52224)
@@ -30,8 +36,11 @@ export default class extends BotCommand {
 			.setDescription(
 				`${page.extract}
 
-${tail.map(pg => `[${pg.title}](${pg.url})`)}
-`
+**Related:**
+${tail
+	.slice(0, 5)
+	.map(pg => `[${pg.title}](${pg.url})`)
+	.join(', ')}`
 			)
 			.setFooter('Old School RuneScape Wiki');
 
