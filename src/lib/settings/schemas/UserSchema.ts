@@ -39,6 +39,10 @@ Client.defaultUserSchema
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultPay', 'boolean', { default: false })
 			.add('combatStyle', 'any', { default: 'melee' })
+			.add('meleeAttackStyle', 'any', { default: null })
+			.add('rangeAttackStyle', 'any', { default: null })
+			.add('mageAttackStyle', 'any', { default: null })
+			.add('castedSpell', 'any', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
