@@ -2,7 +2,7 @@
 import { O } from 'ts-toolbelt';
 
 import { GearTypes } from '../../gear';
-import CombatStyle from '../../../commands/Minion/combatstyle';
+import CombatStyle from '../../../commands/Minion/combatsetup';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
 
@@ -52,6 +52,11 @@ export namespace UserSettings {
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 		export const CombatStyle = T<CombatStyle>('minion.combatStyle');
+		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');
+		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');
+		export const MageAttackStyle = T<string | null>('minion.mageAttackStyle');
+		//Make CastedSpells locked to castables later
+		export const CastedSpell = T<string | null>('minion.castedSpell');
 	}
 
 	export namespace Skills {

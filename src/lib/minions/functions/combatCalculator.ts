@@ -1,4 +1,4 @@
-
+/*
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -13,3 +13,4 @@ export default function combatCalculator(monster: O.Readonly<KillableMonster>, u
 
 	return [monsterKillTime, attackCount];
 }
+*/

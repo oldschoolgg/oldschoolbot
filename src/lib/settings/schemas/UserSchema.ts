@@ -30,6 +30,10 @@ Client.defaultUserSchema
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
 			.add('combatStyle', 'any', { default: 'melee' })
+			.add('meleeAttackStyle', 'any', { default: null })
+			.add('rangeAttackStyle', 'any', { default: null })
+			.add('mageAttackStyle', 'any', { default: null })
+			.add('castedSpell', 'any', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
