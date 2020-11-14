@@ -2,6 +2,7 @@
 import { O } from 'ts-toolbelt';
 
 import { GearTypes } from '../../gear';
+import CombatStyle from '../../../commands/Minion/combatstyle';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
 
@@ -50,6 +51,7 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
+		export const CombatStyle = T<CombatStyle>('minion.combatStyle');
 	}
 
 	export namespace Skills {

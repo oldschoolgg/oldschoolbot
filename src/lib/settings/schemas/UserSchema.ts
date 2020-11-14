@@ -29,6 +29,7 @@ Client.defaultUserSchema
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
+			.add('combatStyle', 'any', { default: 'melee' })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
