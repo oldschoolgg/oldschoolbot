@@ -15,7 +15,13 @@ export enum SkillsEnum {
 	Fletching = 'fletching',
 	Farming = 'farming',
 	Herblore = 'herblore',
-	Thieving = 'thieving'
+	Thieving = 'thieving',
+	Attack = 'attack',
+	Defence = 'defence',
+	Strength = 'strength',
+	Ranged = 'ranged',
+	Magic = 'magic',
+	Hitpoints = 'hitpoints'
 }
 
 export interface Ore {
