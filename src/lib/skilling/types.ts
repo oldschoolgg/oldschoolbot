@@ -21,7 +21,12 @@ export enum SkillsEnum {
 	Thieving = 'thieving',
 	Hunter = 'hunter',
 	Construction = 'construction',
-	Magic = 'magic'
+	Attack = 'attack',
+	Defence = 'defence',
+	Strength = 'strength',
+	Ranged = 'ranged',
+	Magic = 'magic',
+	Hitpoints = 'hitpoints'
 }
 
 export interface Ore {
