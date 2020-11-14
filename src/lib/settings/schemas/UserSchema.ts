@@ -38,6 +38,7 @@ Client.defaultUserSchema
 			.add('farmingContract', 'any', { default: defaultContracts })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultPay', 'boolean', { default: false })
+			.add('combatStyle', 'any', { default: 'melee' })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
