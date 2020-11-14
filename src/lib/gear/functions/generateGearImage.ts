@@ -99,6 +99,18 @@ export async function generateGearImage(
 		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2), 25);
 	}
 
+	//Draw Attack style
+	ctx.save();
+	ctx.translate(225, 200);
+	ctx.font = '16px RuneScape Bold 12';
+	ctx.textAlign = 'start';
+	drawText(canvas, `Attack style: ${user.settings.get(UserSettings.Minion.MeleeAttackStyle)}`, 0, 10);
+	if (gearType === 'mage') {
+		drawText(canvas, `Spell: ${user.settings.get(UserSettings.Minion.CastedSpell)}`, 0, 26);
+	}
+	ctx.restore();
+	ctx.save();
+
 	// Draw stats
 	ctx.save();
 	ctx.translate(225, 0);

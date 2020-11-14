@@ -7,7 +7,6 @@ import { PatchTypes } from '../../minions/farming';
 import defaultContracts from '../../minions/farming/defaultContracts';
 import { CompostTier, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
-import CombatStyle from '../../../commands/Minion/combatstyle';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
 
@@ -70,6 +69,11 @@ export namespace UserSettings {
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const BirdhouseTraps = T<BirdhouseData>('minion.birdhouseTraps');
 		export const CombatStyle = T<CombatStyle>('minion.combatStyle');
+		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');
+		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');
+		export const MageAttackStyle = T<string | null>('minion.mageAttackStyle');
+		//Make CastedSpells locked to castables later
+		export const CastedSpell = T<string | null>('minion.castedSpell');
 	}
 
 	export namespace Skills {
