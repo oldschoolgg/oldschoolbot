@@ -42,6 +42,12 @@ Client.defaultUserSchema
 	)
 	.add('skills', (folder: SchemaFolder) =>
 		folder
+			.add(SkillsEnum.Attack, 'integer', { default: 0 })
+			.add(SkillsEnum.Strength, 'integer', { default: 0 })
+			.add(SkillsEnum.Defence, 'integer', { default: 0 })
+			.add(SkillsEnum.Ranged, 'integer', { default: 0 })
+			.add(SkillsEnum.Magic, 'integer', { default: 0 })
+			.add(SkillsEnum.Hitpoints, 'integer', { default: 0 })
 			.add(SkillsEnum.Agility, 'integer', { default: 0 })
 			.add(SkillsEnum.Cooking, 'integer', { default: 0 })
 			.add(SkillsEnum.Fishing, 'integer', { default: 0 })

@@ -53,6 +53,12 @@ export namespace UserSettings {
 	}
 
 	export namespace Skills {
+		export const Attack = T<number>(`skills.${SkillsEnum.Attack}`);
+		export const Strength = T<number>(`skills.${SkillsEnum.Strength}`);
+		export const Defence = T<number>(`skills.${SkillsEnum.Defence}`);
+		export const Ranged = T<number>(`skills.${SkillsEnum.Ranged}`);
+		export const Magic = T<number>(`skills.${SkillsEnum.Magic}`);
+		export const Hitpoints = T<number>(`skills.${SkillsEnum.Hitpoints}`);
 		export const Agility = T<number>(`skills.${SkillsEnum.Agility}`);
 		export const Cooking = T<number>(`skills.${SkillsEnum.Cooking}`);
 		export const Fishing = T<number>(`skills.${SkillsEnum.Fishing}`);

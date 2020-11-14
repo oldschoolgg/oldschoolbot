@@ -182,6 +182,24 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		}
 
 		return msg.send(`${msg.author.minionName}'s Stats:
+${Emoji.Attack} Attack: ${msg.author.skillLevel(SkillsEnum.Attack)} (${msg.author.settings
+			.get(UserSettings.Skills.Attack)
+			.toLocaleString()} xp)
+${Emoji.Strength} Strength: ${msg.author.skillLevel(
+			SkillsEnum.Strength
+		)} (${msg.author.settings.get(UserSettings.Skills.Strength).toLocaleString()} xp)
+${Emoji.Defence} Defence: ${msg.author.skillLevel(SkillsEnum.Defence)} (${msg.author.settings
+			.get(UserSettings.Skills.Defence)
+			.toLocaleString()} xp)
+${Emoji.Ranged} Ranged: ${msg.author.skillLevel(SkillsEnum.Ranged)} (${msg.author.settings
+			.get(UserSettings.Skills.Ranged)
+			.toLocaleString()} xp)
+${Emoji.Magic} Magic: ${msg.author.skillLevel(SkillsEnum.Magic)} (${msg.author.settings
+			.get(UserSettings.Skills.Magic)
+			.toLocaleString()} xp)
+${Emoji.Hitpoints} Hitpoints: ${msg.author.skillLevel(
+			SkillsEnum.Hitpoints
+		)} (${msg.author.settings.get(UserSettings.Skills.Hitpoints).toLocaleString()} xp)
 ${Emoji.Crafting} Crafting: ${msg.author.skillLevel(
 			SkillsEnum.Crafting
 		)} (${msg.author.settings.get(UserSettings.Skills.Crafting).toLocaleString()} xp)
