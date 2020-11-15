@@ -30,11 +30,11 @@ Client.defaultUserSchema
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
-			.add('combatStyle', 'any', { default: 'melee' })
-			.add('meleeAttackStyle', 'any', { default: null })
-			.add('rangeAttackStyle', 'any', { default: null })
-			.add('mageAttackStyle', 'any', { default: null })
-			.add('castedSpell', 'any', { default: null })
+			.add('combatSkill', 'any', { default: null })
+			.add('meleeCombatStyle', 'any', { default: null })
+			.add('rangeCombatStyle', 'any', { default: null })
+			.add('mageCombatStyle', 'any', { default: null })
+			.add('combatSpell', 'any', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
