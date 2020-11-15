@@ -21,6 +21,7 @@ Client.defaultUserSchema
 	.add('minigameScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
+	.add('sacrificedBank', 'any', { default: {} })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')

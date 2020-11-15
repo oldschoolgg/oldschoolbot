@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -77,7 +77,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (priceOfItem > 50_000_000) {
+		if (priceOfItem > 50_000_000 || totalPrice > 200_000_000) {
 			this.client.emit(
 				Events.ServerNotification,
 				`${msg.author.username} just sacrificed ${quantity}x ${osItem.name}!`
@@ -88,6 +88,10 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
 		await msg.author.removeItemFromBank(osItem.id, quantity);
+
+		const currentSacBank = new Bank(msg.author.settings.get(UserSettings.SacrificedBank));
+		currentSacBank.add(osItem.id, quantity);
+		await msg.author.settings.update(UserSettings.SacrificedBank, currentSacBank.values());
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.SacrificedBank,
