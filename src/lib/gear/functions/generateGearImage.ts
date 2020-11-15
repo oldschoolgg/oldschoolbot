@@ -13,6 +13,7 @@ import { drawItemQuantityText } from '../../util/drawItemQuantityText';
 import { drawTitleText } from '../../util/drawTitleText';
 import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
 import { sumOfSetupStats } from './sumOfSetupStats';
+import { toTitleCase } from '../../util';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 
@@ -171,12 +172,24 @@ export async function generateGearImage(
 
 	//Draw Attack style
 	ctx.save();
-	ctx.translate(225, 200);
+	ctx.translate(225, 198);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'start';
-	drawText(canvas, `Attack style: ${user.settings.get(UserSettings.Minion.MeleeAttackStyle)}`, 0, 10);
+	
+	if (gearType === 'melee') {
+		drawText(canvas, `Combat style: ${toTitleCase(user.settings.get(UserSettings.Minion.MeleeCombatStyle)!)}`, 0, 0);
+		drawText(canvas, `Combat type: ${'Stab'}`, 0, 16);
+		drawText(canvas, `Attack style: ${'Accurate'}`, 0, 32);
+	}
+	if (gearType === 'range') {
+		drawText(canvas, `Combat style: ${toTitleCase(user.settings.get(UserSettings.Minion.RangeCombatStyle)!)}`, 0, 0);
+		drawText(canvas, `Combat type: ${'Accurate'}`, 0, 16);
+		drawText(canvas, `Attack style: ${'Accurate'}`, 0, 32);
+
+	}
 	if (gearType === 'mage') {
-		drawText(canvas, `Spell: ${user.settings.get(UserSettings.Minion.CastedSpell)}`, 0, 26);
+		drawText(canvas, `Combat style: ${toTitleCase(user.settings.get(UserSettings.Minion.MageCombatStyle)!)}`, 0, 0);
+		drawText(canvas, `Using Spell: ${user.settings.get(UserSettings.Minion.CombatSpell)}`, 0, 16);
 	}
 	ctx.restore();
 	ctx.save();

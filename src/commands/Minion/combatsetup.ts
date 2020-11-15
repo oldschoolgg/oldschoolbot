@@ -41,7 +41,6 @@ export default class extends BotCommand {
 			);
 		}
 		const oldCombatSkill = msg.author.settings.get(UserSettings.Minion.CombatSkill);
-
 		if (!combatSkill) {
 			return msg.send(
 				`${msg.author.minionName} is currently using combat skill ${oldCombatSkill}. To swap skill type \`${msg.cmdPrefix}combatsetup melee/range/mage\`.`
