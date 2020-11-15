@@ -5,7 +5,6 @@ import { PatchTypes } from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
 import { CompostTier, FarmingPatchTypes } from '../../farming/types';
 import { GearTypes } from '../../gear';
-import CombatStyle from '../../../commands/Minion/combatsetup';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
 
@@ -63,12 +62,16 @@ export namespace UserSettings {
 		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
 		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
-		export const CombatStyle = T<CombatStyle>('minion.combatStyle');
 		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');
 		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');
 		export const MageAttackStyle = T<string | null>('minion.mageAttackStyle');
 		//Make CastedSpells locked to castables later
 		export const CastedSpell = T<string | null>('minion.castedSpell');
+		export const CombatSkill = T<string | null>('minion.combatSkill');
+		export const MeleeCombatStyle = T<string | null>('minion.meleeCombatStyle');
+		export const RangeCombatStyle = T<string | null>('minion.rangeCombatStyle');
+		export const MageCombatStyle = T<string | null>('minion.mageCombatStyle');
+		export const CombatSpell = T<string | null>('minion.combatSpell');
 	}
 
 	export namespace Skills {

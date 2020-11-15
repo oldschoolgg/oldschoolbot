@@ -94,6 +94,17 @@ export default class extends BotCommand {
 				)}, so they can equip ${itemToEquip.name}`
 			);
 			newGear[slot] = null;
+			if (slot === (EquipmentSlot.Weapon || EquipmentSlot.TwoHanded)) {
+				if (gearType === 'melee') {
+					await msg.author.settings.update(UserSettings.Minion.MeleeCombatStyle, null);
+				}
+				if (gearType === 'range') {
+					await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, null);
+				}
+				if (gearType === 'mage') {
+					await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, null);
+				}
+			}
 
 			await msg.author.addItemsToBank({
 				[equippedInThisSlot.item]: equippedInThisSlot.quantity

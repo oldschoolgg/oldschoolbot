@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { GearTypes } from '../../lib/gear';
@@ -49,6 +49,17 @@ export default class extends BotCommand {
 		const { slot } = itemToUnequip.equipment!;
 		const equippedInThisSlot = currentEquippedGear[slot];
 		const newGear = { ...currentEquippedGear };
+		if (slot === (EquipmentSlot.Weapon || EquipmentSlot.TwoHanded)) {
+			if (gearType === 'melee') {
+				await msg.author.settings.update(UserSettings.Minion.MeleeCombatStyle, null);
+			}
+			if (gearType === 'range') {
+				await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, null);
+			}
+			if (gearType === 'mage') {
+				await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, null);
+			}
+		}
 		newGear[slot] = null;
 
 		await msg.author.addItemsToBank({
