@@ -1,4 +1,4 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util';
 
