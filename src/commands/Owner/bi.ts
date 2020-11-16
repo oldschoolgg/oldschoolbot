@@ -9,7 +9,8 @@ export default class extends BotCommand {
 			permissionLevel: 10,
 			description:
 				'Allows you to generate a bank image directly from an item bank JSON object.',
-			examples: ['+bi {1:1}']
+			examples: ['+bi {1:1}'],
+			categoryFlags: ['hidden']
 		});
 	}
 

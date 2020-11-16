@@ -1,13 +1,16 @@
-import { Command, CommandStore, KlasaMessage, Stopwatch, Type, util } from 'klasa';
+import { CommandStore, KlasaMessage, Stopwatch, Type, util } from 'klasa';
 import { inspect } from 'util';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['ev'],
 			permissionLevel: 10,
 			guarded: true,
-			usage: '<expression:str>'
+			usage: '<expression:str>',
+			categoryFlags: ['hidden']
 		});
 	}
 

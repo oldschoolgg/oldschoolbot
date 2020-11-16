@@ -10,7 +10,10 @@ import KillableMonsters, { NightmareMonster } from './../../lib/minions/data/kil
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<name:string>'
+			usage: '<name:string>',
+			description: "Shows your minions' KC for monsters/bosses.",
+			examples: ['+kc vorkath', '+kc bandos'],
+			categoryFlags: ['minion', 'pvm']
 		});
 	}
 

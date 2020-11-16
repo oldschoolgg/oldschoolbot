@@ -22,7 +22,15 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
-			altProtection: true
+			altProtection: true,
+			description:
+				'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
+			examples: [
+				'+create armadyl godsword',
+				'+create elysian spirit shield',
+				'+create dharoks armour set'
+			],
+			categoryFlags: ['minion']
 		});
 	}
 

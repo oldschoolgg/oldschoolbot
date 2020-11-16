@@ -18,7 +18,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[name:string]',
-			cooldown: 3
+			cooldown: 3,
+			categoryFlags: ['minion']
 		});
 	}
 

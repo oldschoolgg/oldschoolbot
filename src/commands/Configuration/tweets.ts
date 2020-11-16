@@ -13,7 +13,8 @@ export default class extends BotCommand {
 			requiredPermissions: ['EMBED_LINKS'],
 			description:
 				'Allows you to receive tweets from all JMods and the OSRS Twitter to your channel.',
-			examples: ['+tweets on', '+tweets off']
+			examples: ['+tweets on', '+tweets off'],
+			categoryFlags: ['settings']
 		});
 	}
 

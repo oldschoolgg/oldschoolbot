@@ -8,7 +8,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['donate', 'patron'],
 			examples: ['+patreon'],
-			description: 'Displays the link to the patreon.'
+			description: 'Displays the link to the patreon.',
+			categoryFlags: ['utility']
 		});
 	}
 

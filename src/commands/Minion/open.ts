@@ -35,7 +35,10 @@ export default class extends BotCommand {
 			aliases: ['clue'],
 			usage: '[quantity:int] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion'],
+			description: 'Opens openable items, like clue caskets, mystery boxes and crystal keys.',
+			examples: ['+open easy', '+open crystal key']
 		});
 	}
 

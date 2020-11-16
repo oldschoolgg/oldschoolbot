@@ -12,7 +12,8 @@ export default class extends BotCommand {
 			usage: '<on|off>',
 			permissionLevel: 7,
 			description: 'Sends all reddit comments and posts made by OSRS Jmods to your channel.',
-			examples: ['+jmodcomments on', '+jmodcomments off']
+			examples: ['+jmodcomments on', '+jmodcomments off'],
+			categoryFlags: ['settings']
 		});
 	}
 

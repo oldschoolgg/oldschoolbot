@@ -22,7 +22,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
-			aliases: ['mass']
+			aliases: ['mass'],
+			description: 'Allows you to mass/groupkill bosses with other people.',
+			examples: ['+mass corp', '+mass bandos'],
+			categoryFlags: ['minion', 'pvm']
 		});
 	}
 

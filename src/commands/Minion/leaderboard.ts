@@ -105,13 +105,23 @@ export default class extends BotCommand {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows the people with the most virtual GP.',
+			description: 'Shows the bots leaderboards.',
 			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
 			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion', 'utility'],
+			examples: [
+				'+lb gp',
+				'+lb kc vorkath',
+				'+lb skills mining',
+				'+lb laps',
+				'+lb cl boss',
+				'+lb sacrifice',
+				'+lb qp'
+			]
 		});
 	}
 

@@ -11,7 +11,8 @@ export default class extends BotCommand {
 			usage: '<name:str>',
 			aliases: ['is'],
 			description: 'Debug command for identifying items',
-			examples: ['+is Dragon scimitar']
+			examples: ['+is Dragon scimitar'],
+			categoryFlags: ['hidden']
 		});
 	}
 

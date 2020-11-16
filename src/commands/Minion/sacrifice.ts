@@ -22,7 +22,10 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[quantity:int{1}] [item:...item]',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion'],
+			description: 'Sacrifices items from your bank.',
+			examples: ['+sacrifice 1 Elysian sigil']
 		});
 	}
 

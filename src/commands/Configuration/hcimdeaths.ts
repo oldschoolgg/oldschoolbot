@@ -10,7 +10,8 @@ export default class extends BotCommand {
 			runIn: ['text'],
 			usage: '<on|off>',
 			permissionLevel: 7,
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['settings']
 		});
 	}
 

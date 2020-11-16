@@ -12,7 +12,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 60 * 10,
 			description: 'Shows a huge bank containing all items ever sacrificed.',
-			examples: ['+sbank']
+			examples: ['+sbank'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 
