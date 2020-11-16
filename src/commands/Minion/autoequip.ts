@@ -22,7 +22,8 @@ export default class extends BotCommand {
 			aliases: ['aep', 'aequip'],
 			description:
 				'Automatically equips the BIS gear you have in your bank, for a particular attack style, to one of your gear setups.',
-			examples: ['+autoequip melee attack crush', '+autoequip mage attack magic']
+			examples: ['+autoequip melee attack crush', '+autoequip mage attack magic'],
+			categoryFlags: ['minion']
 		});
 	}
 

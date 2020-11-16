@@ -2,6 +2,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { toTitleCase } from '../../lib/util';
 
 const aliasNameMap: Record<string, string> = {
@@ -24,13 +25,16 @@ const aliasNameMap: Record<string, string> = {
 	hydra: 'alchemicalHydra'
 };
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
 			usage: '<boss:string> (username:rsn)',
 			usageDelim: ',',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			examples: ['+osrskc giant mole, Magnaboy', '+osrskc giant mole'],
+			categoryFlags: ['utility'],
+			description: 'Shows the KC for a boss for an OSRS account.'
 		});
 	}
 

@@ -8,7 +8,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<amount:int{1,1000000000}>',
-			testingCommand: true
+			testingCommand: true,
+			categoryFlags: ['hidden']
 		});
 		this.enabled = !this.client.production;
 	}

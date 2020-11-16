@@ -10,7 +10,8 @@ export default class extends Command {
 			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

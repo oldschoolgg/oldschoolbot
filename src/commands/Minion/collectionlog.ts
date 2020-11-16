@@ -16,7 +16,10 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 10,
 			aliases: ['cl'],
-			usage: '[type:string]'
+			usage: '[type:string]',
+			examples: ['+cl boss'],
+			description: 'Allows you to view your collection log, which works the same as ingame.',
+			categoryFlags: ['minion']
 		});
 	}
 

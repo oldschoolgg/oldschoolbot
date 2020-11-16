@@ -18,7 +18,10 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			categoryFlags: ['minion', 'skilling', 'minigame'],
+			description: 'Sends your minion to fight Zalcano. Requires food and 150 QP.',
+			examples: ['+zalcano']
 		});
 	}
 

@@ -11,10 +11,12 @@ import { rand } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Simulates dice rolls from Runescape.',
+			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			usage: '[amount:int{1}]',
 			requiredPermissions: ['EMBED_LINKS'],
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion', 'utility'],
+			examples: ['+dice', '+dice 1m']
 		});
 	}
 

@@ -6,7 +6,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Displays the invite link for the bot.',
-			examples: ['+invite']
+			examples: ['+invite'],
+			categoryFlags: ['utility']
 		});
 	}
 

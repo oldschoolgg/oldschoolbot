@@ -9,7 +9,8 @@ export default class extends BotCommand {
 			description: 'Returns a random message from someone in the channel.',
 			examples: ['+randquote'],
 			cooldown: 10,
-			requiredPermissions: ['READ_MESSAGE_HISTORY']
+			requiredPermissions: ['READ_MESSAGE_HISTORY'],
+			categoryFlags: ['utility']
 		});
 	}
 

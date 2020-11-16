@@ -12,7 +12,8 @@ export default class extends BotCommand {
 			examples: [
 				'+choose guthix, saradomin, zamorak, armadyl',
 				'+choose do the inferno, get a pet'
-			]
+			],
+			categoryFlags: ['utility']
 		});
 	}
 

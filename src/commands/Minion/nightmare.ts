@@ -51,7 +51,11 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			categoryFlags: ['minion', 'pvm', 'minigame'],
+			description:
+				'Sends your minion to kill the nightmare. Requires food and melee gear. Your minion gets better at it over time.',
+			examples: ['+nightmare mass', '+nightmare solo']
 		});
 	}
 

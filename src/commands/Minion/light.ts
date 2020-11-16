@@ -17,7 +17,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'skilling'],
+			description: 'Sends your minion to light logs to train firemaking.',
+			examples: ['+light 5 logs', '+light magic logs']
 		});
 	}
 

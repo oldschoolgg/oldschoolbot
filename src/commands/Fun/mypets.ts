@@ -10,7 +10,8 @@ export default class extends BotCommand {
 			description:
 				'View the virtual pets you have, which are not the pets in your bank or from your minion.',
 			cooldown: 3,
-			examples: ['+mypets']
+			examples: ['+mypets'],
+			categoryFlags: ['utility']
 		});
 	}
 

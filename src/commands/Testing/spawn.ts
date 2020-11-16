@@ -13,7 +13,8 @@ export default class extends BotCommand {
 			usage: '[qty:integer{1,1000000}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
-			testingCommand: true
+			testingCommand: true,
+			categoryFlags: ['hidden']
 		});
 		this.enabled = !this.client.production;
 	}

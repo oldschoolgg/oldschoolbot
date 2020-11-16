@@ -12,7 +12,8 @@ export default class extends BotCommand {
 			permissionLevel: 7,
 			requiredPermissions: ['EMBED_LINKS'],
 			description: 'Posts tweets from OSRS streamers in your server',
-			examples: ['+streamertweets on', '+streamertweets off']
+			examples: ['+streamertweets on', '+streamertweets off'],
+			categoryFlags: ['settings']
 		});
 	}
 
