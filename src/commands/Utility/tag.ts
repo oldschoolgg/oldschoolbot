@@ -12,7 +12,8 @@ export default class extends BotCommand {
 			runIn: ['text'],
 			subcommands: true,
 			usage: '<add|remove|source|list|show:default> (tag:string) [content:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['utility']
 		});
 		this.createCustomResolver('string', (arg, possible, message, [action]) => {
 			if (action === 'list') {

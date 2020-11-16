@@ -20,7 +20,10 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
-			altProtection: true
+			altProtection: true,
+			categoryFlags: ['minion'],
+			description: 'Allows you to purchase certain store/quest items from the bot.',
+			examples: ['+buy barrows gloves', '+buy 1000 jug of water']
 		});
 	}
 

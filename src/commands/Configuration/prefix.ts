@@ -10,7 +10,8 @@ export default class extends BotCommand {
 			runIn: ['text'],
 			usage: '[prefix:str{1,3}]',
 			description: 'Allows you to change the command prefix for your server.',
-			examples: ['+prefix !', '+prefix ?']
+			examples: ['+prefix !', '+prefix ?'],
+			categoryFlags: ['settings']
 		});
 	}
 

@@ -15,7 +15,10 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '(item:...item)'
+			usage: '(item:...item)',
+			description: 'Equips a pet, like dropping it on the floor ingame.',
+			examples: ['+equippet smolcano'],
+			categoryFlags: ['minion']
 		});
 	}
 

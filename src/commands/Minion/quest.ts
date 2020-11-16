@@ -15,7 +15,10 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			aliases: ['q']
+			aliases: ['q'],
+			categoryFlags: ['minion'],
+			description: 'Sends your minion to complete quests.',
+			examples: ['+q']
 		});
 	}
 

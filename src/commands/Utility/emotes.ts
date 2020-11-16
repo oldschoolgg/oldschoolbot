@@ -18,7 +18,8 @@ export default class extends BotCommand {
 			aliases: ['emoteservers'],
 			description: 'Shows the invites to all the OSRS Emoji discord servers.',
 			examples: ['+emotes'],
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

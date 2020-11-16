@@ -143,3 +143,13 @@ export type Skills = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export type CategoryFlag =
+	| 'minion'
+	| 'settings'
+	| 'patron'
+	| 'skilling'
+	| 'pvm'
+	| 'minigame'
+	| 'utility'
+	| 'hidden';

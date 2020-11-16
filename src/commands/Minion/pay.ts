@@ -13,7 +13,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
-			ironCantUse: true
+			ironCantUse: true,
+			categoryFlags: ['minion'],
+			description: 'Pays GP to another user.',
+			examples: ['+pay @Magnaboy 10m']
 		});
 	}
 

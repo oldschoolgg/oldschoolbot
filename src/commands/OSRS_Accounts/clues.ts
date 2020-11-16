@@ -1,16 +1,18 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Hiscores } from 'oldschooljs';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { toTitleCase } from '../../lib/util';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

@@ -1,9 +1,10 @@
 import { MessageEmbed } from 'discord.js';
 import { objectKeys } from 'e';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Hiscores } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { diaryRequirements } from '../../lib/data/diary-requirements';
 
 const titles: Record<keyof typeof diaryRequirements, string> = {
@@ -23,7 +24,7 @@ const titles: Record<keyof typeof diaryRequirements, string> = {
 	Kandarin: '[Kandarin](https://oldschool.runescape.wiki/w/Kandarin_Diary)'
 };
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,

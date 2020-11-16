@@ -24,7 +24,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			description: 'Sends your minion to cook food.',
+			categoryFlags: ['minion', 'skilling'],
+			examples: ['+cook manta ray', '+cook 50 shrimps']
 		});
 	}
 

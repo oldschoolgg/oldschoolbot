@@ -9,7 +9,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 3,
 			aliases: ['bal', 'gp'],
-			description: 'Shows how much virtual GP you own.'
+			description: 'Shows how much virtual GP you own.',
+			examples: ['+gp', '+bal'],
+			categoryFlags: ['minion']
 		});
 	}
 
