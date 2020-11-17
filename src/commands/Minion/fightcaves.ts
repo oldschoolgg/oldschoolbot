@@ -33,7 +33,11 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: ['ATTACH_FILES'],
+			description:
+				'Sends your minion to complete the fight caves - it will start off bad but get better with more attempts. Requires range gear, prayer pots, brews and restores.',
+			examples: ['+fightcaves'],
+			categoryFlags: ['minion', 'minigame']
 		});
 	}
 
@@ -133,27 +137,26 @@ export default class extends BotCommand {
 
 		const diedPreJad = percentChance(preJadDeathChance);
 		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
-		const finishDate = Date.now() + (preJadDeathTime ?? duration);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const newBank = removeBankFromBank(bank, fightCavesSupplies);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		const data: FightCavesActivityTaskOptions = {
-			minigameID: TzTokJad.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity: 1,
-			duration,
-			type: Activity.FightCaves,
-			id: rand(1, 10_000_000),
-			finishDate,
-			jadDeathChance,
-			preJadDeathChance,
-			preJadDeathTime
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(
+			this.client,
+			Tasks.MinigameTicker,
+			{
+				minigameID: TzTokJad.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity: 1,
+				duration,
+				type: Activity.FightCaves,
+				jadDeathChance,
+				preJadDeathChance,
+				preJadDeathTime
+			}
+		);
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(

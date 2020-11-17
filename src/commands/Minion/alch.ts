@@ -4,20 +4,19 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
-import { minionNotBusy } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import {
+	addBanks,
 	bankHasAllItemsFromBank,
 	formatDuration,
-	itemID,
 	removeBankFromBank,
 	resolveNameBank
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import resolveItems from '../../lib/util/resolveItems';
-import { rand } from '../../util';
 
 const options = {
 	max: 1,
@@ -38,28 +37,26 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Tome of fire'
 ]);
 
-const unalchables = [itemID('Nature rune'), itemID('Fire rune')];
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			usage: '[quantity:int{1}] <item:...item>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			description: 'Allows you to send your minion to alch items from your bank',
+			examples: ['+alch 12 dragon scimitar', '+alch pumpkin'],
+			categoryFlags: ['minion', 'skilling']
 		});
 	}
 
 	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			throw `You don't have any of this item to alch.`;
-		}
-
-		if (unalchables.some(item => item === osItem.id)) {
-			throw `This item cannot be alched.`;
+			return msg.send(`You don't have any of this item to alch.`);
 		}
 
 		// 5 tick action
@@ -75,7 +72,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity * timePerAlch > msg.author.maxTripLength) {
-			throw `The max number of alchs you can do is ${maxCasts}!`;
+			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
 		const duration = quantity * timePerAlch;
@@ -89,12 +86,13 @@ export default class extends BotCommand {
 		}
 
 		const alchValue = quantity * osItem.highalch;
-
-		const consumedItems = resolveNameBank({
-			...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-			'Nature rune': quantity,
-			[osItem.name]: quantity
-		});
+		const consumedItems = addBanks([
+			resolveNameBank({
+				...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
+				'Nature rune': quantity
+			}),
+			{ [osItem.id]: quantity }
+		]);
 
 		const consumedItemsString = await createReadableItemListFromBank(
 			this.client,
@@ -102,7 +100,7 @@ export default class extends BotCommand {
 		);
 
 		if (!bankHasAllItemsFromBank(userBank, consumedItems)) {
-			throw `You don't have the required items, you need ${consumedItemsString}`;
+			return msg.send(`You don't have the required items, you need ${consumedItemsString}`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -131,19 +129,19 @@ export default class extends BotCommand {
 			removeBankFromBank(userBank, consumedItems)
 		);
 
-		const data: AlchingActivityTaskOptions = {
-			itemID: osItem.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			alchValue,
-			type: Activity.Alching,
-			id: rand(1, 1_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				itemID: osItem.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				alchValue,
+				type: Activity.Alching
+			}
+		);
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 

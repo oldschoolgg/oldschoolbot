@@ -1,6 +1,7 @@
 import { chunk, sleep } from '@klasa/utils';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import LastManStandingUsage, {
 	LMS_FINAL,
 	LMS_PREP,
@@ -8,7 +9,7 @@ import LastManStandingUsage, {
 } from '../../lib/LastManStandingUsage';
 import { cleanMentions } from '../../lib/util';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public readonly playing: Set<string> = new Set();
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -18,7 +19,9 @@ export default class extends Command {
 			description: 'Simulates a game of last man standing',
 			usage: '[contestants:string]',
 			usageDelim: '',
-			flagSupport: true
+			flagSupport: true,
+			categoryFlags: ['fun', 'simulation'],
+			examples: ['+lms', '+lms Mod Ash, Mod Mark, Mod Huskyy']
 		});
 	}
 

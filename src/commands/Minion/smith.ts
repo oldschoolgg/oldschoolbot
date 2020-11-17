@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Events, Tasks, Time } from '../../lib/constants';
+import { Activity, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -10,7 +11,6 @@ import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -21,16 +21,18 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'skilling'],
+			description:
+				'Sends your minion to smith items, which is turning bars into smithed items, like weapons and armor.',
+			examples: ['+smith mithril sword', '+smith rune platebody']
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, smithableItem = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
 		if (msg.flagArgs.items) {
 			return msg.channel.sendFile(
 				Buffer.from(
@@ -45,10 +47,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			smithableItem = quantity;
 			quantity = null;
@@ -61,11 +59,15 @@ export default class extends BotCommand {
 		);
 
 		if (!smithedItem) {
-			throw `That is not a valid item to smith, to see the items availible do \`${msg.cmdPrefix}smith --items\``;
+			return msg.send(
+				`That is not a valid item to smith, to see the items availible do \`${msg.cmdPrefix}smith --items\``
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			throw `${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`
+			);
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
@@ -84,47 +86,52 @@ export default class extends BotCommand {
 		const requiredBars: [string, number][] = Object.entries(smithedItem.inputBars);
 		for (const [barID, qty] of requiredBars) {
 			if (!bankHasItem(userBank, parseInt(barID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(barID))}.`;
+				return msg.send(
+					`You don't have enough ${itemNameFromID(
+						parseInt(barID)
+					)}'s to smith ${quantity}x ${smithedItem.name}, you need atleast ${qty}.`
+				);
 			}
 		}
 
 		const duration = quantity * timeToSmithSingleBar;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				smithedItem.name
-			}s you can smith is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					smithedItem.name
+				}s you can smith is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`
+			);
 		}
-
-		const data: SmithingActivityTaskOptions = {
-			smithedBarID: smithedItem.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Smithing,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
 
 		// Remove the bars from their bank.
 		let usedbars = 0;
 		let newBank = { ...userBank };
 		for (const [barID, qty] of requiredBars) {
 			if (newBank[parseInt(barID)] < qty) {
-				this.client.emit(
-					Events.Wtf,
-					`${msg.author.sanitizedName} had insufficient bars to be removed.`
+				this.client.wtf(
+					new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`)
 				);
-				throw `What a terrible failure :(`;
+				return;
 			}
 			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
 			usedbars = qty * quantity;
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<SmithingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				smithedBarID: smithedItem.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Smithing
+			}
+		);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(

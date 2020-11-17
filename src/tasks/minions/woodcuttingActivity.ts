@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../lib/constants';
+import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -32,11 +33,22 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Woodcutting level is now ${newLevel}!`;
 		}
 
-		const loot = {
+		let loot = {
 			[Log.id]: quantity
 		};
 
-		// roll for pet
+		// Add clue scrolls
+		if (Log.clueScrollChance) {
+			loot = addSkillingClueToLoot(
+				user,
+				SkillsEnum.Woodcutting,
+				quantity,
+				Log.clueScrollChance,
+				loot
+			);
+		}
+
+		// Roll for pet
 		if (
 			Log.petChance &&
 			roll((Log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)

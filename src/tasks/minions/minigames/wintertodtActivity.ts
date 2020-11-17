@@ -46,7 +46,6 @@ export default class extends Task {
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
-		const bank = user.settings.get(UserSettings.Bank);
 		let loot: ItemBank = {};
 
 		let totalPoints = 0;
@@ -59,7 +58,7 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([bank, loot]),
+					itemsOwned: addBanks([user.allItemsOwned(), loot]),
 					skills: user.rawSkills
 				})
 			]);
@@ -76,11 +75,9 @@ export default class extends Task {
 				Events.ServerNotification,
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
 					user.minionName
-				}, just received a Phoenix! Their Wintertodt KC is ${user.getMinigameScore(
-					MinigameIDsEnum.Wintertodt
-				) + quantity}, and their Firemaking level is ${user.skillLevel(
-					SkillsEnum.Firemaking
-				)}.`
+				}, just received a Phoenix! Their Wintertodt KC is ${
+					user.getMinigameScore(MinigameIDsEnum.Wintertodt) + quantity
+				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}
 

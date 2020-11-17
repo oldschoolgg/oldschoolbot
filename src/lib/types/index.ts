@@ -2,29 +2,20 @@ import { KlasaUser } from 'klasa';
 
 import { SkillsEnum } from '../skilling/types';
 
-export interface Bank {
-	[key: number]: number;
-}
-
-export interface StringKeyedBank {
-	[key: string]: number;
-}
-
 export interface ItemBank {
-	[key: number]: number;
+	[key: string]: number;
 }
 
 export interface SettingsEntry {
 	id: string;
 	RSN?: string;
 	GP?: number;
-	autoupdate?: boolean;
 	badges?: string[];
-	bank?: Bank;
-	clueScores?: Bank;
-	monsterScores?: Bank;
+	bank?: ItemBank;
+	clueScores?: ItemBank;
+	monsterScores?: ItemBank;
 	collectionLog?: number[];
-	collectionLogBank?: Bank;
+	collectionLogBank?: ItemBank;
 	pets?: number[];
 	lastDailyTimestamp?: number;
 	bitfield?: number[];
@@ -46,12 +37,6 @@ export interface Pet {
 	bossKeys?: string[];
 	finish?(): number;
 	formatFinish(num: number): string;
-}
-
-export interface KillWorkerOptions {
-	bossName: string;
-	quantity: number;
-	limit: number;
 }
 
 export interface CachedItemPrice {
@@ -78,11 +63,6 @@ export interface PollVotes {
 	Yes: string;
 	No: string;
 	'Skip question': string;
-}
-
-export interface PetRecords {
-	highest: Bank;
-	lowest: Bank;
 }
 
 export interface JMod {
@@ -152,6 +132,7 @@ export interface MakePartyOptions {
 	minSize: number;
 	leader: KlasaUser;
 	message: string;
+	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
 	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
@@ -162,3 +143,14 @@ export type Skills = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export type CategoryFlag =
+	| 'minion'
+	| 'settings'
+	| 'patron'
+	| 'skilling'
+	| 'pvm'
+	| 'minigame'
+	| 'utility'
+	| 'fun'
+	| 'simulation';

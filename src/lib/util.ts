@@ -1,6 +1,5 @@
-import { Image } from 'canvas';
 import { Client, Guild } from 'discord.js';
-import { KlasaClient, ScheduledTask, util } from 'klasa';
+import { KlasaClient, KlasaUser, ScheduledTask, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -9,10 +8,14 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 const emojiRegex = require('emoji-regex');
 
 import { Events, Tasks } from './constants';
+import hasItemEquipped from './gear/functions/hasItemEquipped';
+import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
+import itemID from './util/itemID';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
+export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
@@ -61,16 +64,6 @@ export function formatItemStackQuantity(quantity: number) {
 	return quantity.toString();
 }
 
-export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return new Promise((resolve, reject) => {
-		const canvasImage = new Image();
-
-		canvasImage.onload = () => resolve(canvasImage);
-		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
-		canvasImage.src = imageBuffer;
-	});
-}
-
 export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
@@ -95,8 +88,8 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): undefined {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function noOp(_any: any) {
 	return undefined;
 }
 
@@ -286,4 +279,39 @@ export function stripEmojis(str: string) {
 export function round(value = 1, precision = 1) {
 	const multiplier = Math.pow(10, precision || 0);
 	return Math.round(value * multiplier) / multiplier;
+}
+
+export function entries<T extends {}>(obj: T) {
+	return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
+export function values<T extends {}>(obj: T) {
+	return Object.values(obj) as T[keyof T][];
+}
+
+export function keys<T extends {}>(obj: T) {
+	return Object.keys(obj) as (keyof T)[];
+}
+
+export const anglerBoosts = [
+	[itemID('Angler hat'), 0.4],
+	[itemID('Angler top'), 0.8],
+	[itemID('Angler waders'), 0.6],
+	[itemID('Angler boots'), 0.2]
+];
+
+export function anglerBoostPercent(user: KlasaUser) {
+	const skillingSetup = user.settings.get(UserSettings.Gear.Skilling);
+	let amountEquipped = 0;
+	let boostPercent = 0;
+	for (const [id, percent] of anglerBoosts) {
+		if (hasItemEquipped(id, skillingSetup)) {
+			boostPercent += percent;
+			amountEquipped++;
+		}
+	}
+	if (amountEquipped === 4) {
+		boostPercent += 0.5;
+	}
+	return round(boostPercent, 1);
 }

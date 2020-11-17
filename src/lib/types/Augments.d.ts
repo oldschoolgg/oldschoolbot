@@ -1,7 +1,9 @@
 import { Image } from 'canvas';
+import { MessageEmbed } from 'discord.js';
 import { FSWatcher } from 'fs';
-import { KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
+import { Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { Limit } from 'p-limit';
@@ -14,7 +16,7 @@ import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { Bank, ItemBank, MakePartyOptions, Skills } from '.';
+import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -29,9 +31,7 @@ declare module 'klasa' {
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
-		public killWorkerThread?: ArbitraryThreadType;
 		public wtf(error: Error): void;
-		twitchClientID?: string;
 		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
@@ -43,18 +43,19 @@ declare module 'klasa' {
 		guildOnly?: boolean;
 		perkTier?: number;
 		ironCantUse?: boolean;
+		testingCommand?: boolean;
 	}
 
 	interface Task {
 		generateBankImage(
-			bank: Bank,
+			bank: ItemBank,
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
 			user?: KlasaUser
 		): Promise<Buffer>;
 		generateCollectionLogImage(
-			collectionLog: Bank,
+			collectionLog: ItemBank,
 			title: string = '',
 			type: any
 		): Promise<Buffer>;
@@ -62,6 +63,13 @@ declare module 'klasa' {
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
+		getStatsEmbed(
+			username: string,
+			color: number,
+			player: Player,
+			key = 'level',
+			showExtra = true
+		): MessageEmbed;
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
@@ -81,8 +89,8 @@ declare module 'discord.js' {
 		public query<T>(query: string): Promise<T>;
 	}
 	interface User {
-		addItemsToBank(items: Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
-		addItemsToCollectionLog(items: Bank): Promise<SettingsUpdateResult>;
+		addItemsToBank(items: ItemBank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(
 			monsterID: number,
@@ -102,6 +110,7 @@ declare module 'discord.js' {
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
 		skillLevel(skillName: SkillsEnum): number;
+		totalLevel(returnXP = false): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
 		/**
@@ -151,7 +160,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns this users Collection Log bank.
 		 */
-		collectionLog: Bank;
+		collectionLog: ItemBank;
 		sanitizedName: string;
 		badges: string;
 		/**
@@ -170,25 +179,25 @@ declare module 'discord.js' {
 
 	interface TextChannel {
 		sendBankImage(options: {
-			bank: Bank;
+			bank: ItemBank;
 			content?: string;
 			title?: string;
 			background?: number;
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
-		assertCanManageMessages(): void;
+		__triviaQuestionsDone: any;
 	}
 
 	interface DMChannel {
 		sendBankImage(options: {
-			bank: Bank;
+			bank: ItemBank;
 			content?: string;
 			title?: string;
 			background?: number;
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
 		}): Promise<KlasaMessage>;
-		assertCanManageMessages(): void;
+		__triviaQuestionsDone: any;
 	}
 }

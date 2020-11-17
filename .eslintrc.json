@@ -1,32 +1,8 @@
 {
-	"parser": "@typescript-eslint/parser",
-	"plugins": ["simple-import-sort"],
-	"extends": ["bamboo", "prettier/@typescript-eslint", "plugin:prettier/recommended"],
+	"extends": ["@oldschoolgg"],
 	"rules": {
-		"no-mixed-operators": "off",
-		"consistent-return": "off",
-		"array-callback-return": "off",
-		"id-length": "off",
-		"complexity": "off",
-		"@typescript-eslint/explicit-function-return-type": "off",
-		"@typescript-eslint/no-non-null-assertion": "off",
-		"@typescript-eslint/explicit-member-accessibility": "off",
-		"@typescript-eslint/prefer-for-of": "off",
-		"@typescript-eslint/no-floating-promises": "off",
-		"@typescript-eslint/require-await": "off",
-		"radix": "off",
-		"no-throw-literal": "off",
-		"no-negated-condition": "off",
-		"padding-line-between-statements": [
-			"error",
-			{ "blankLine": "always", "prev": "import", "next": "const" },
-			{ "blankLine": "always", "prev": "import", "next": "export" },
-			{ "blankLine": "always", "prev": "const", "next": "export" }
-		],
-		"simple-import-sort/sort": "error"
-	},
-	"parserOptions": {
-		"sourceType": "module",
-		"ecmaVersion": 2018
+		"@typescript-eslint/naming-convention": 0,
+		"@typescript-eslint/no-throw-literal": 0,
+		"@typescript-eslint/default-param-last": 0
 	}
 }

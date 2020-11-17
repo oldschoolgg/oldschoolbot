@@ -1,8 +1,10 @@
+import { roll } from 'e';
 import { Task } from 'klasa';
-import { roll } from 'oldschooljs/dist/util/util';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -10,7 +12,6 @@ import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
@@ -57,16 +58,25 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
 		}
 
-		const loot = {
-			[ore.id]: quantity
-		};
+		const loot = new Bank();
+
+		// Add clue scrolls
+		if (ore.clueScrollChance) {
+			addSkillingClueToLoot(
+				user,
+				SkillsEnum.Mining,
+				quantity,
+				ore.clueScrollChance,
+				loot.values()
+			);
+		}
 
 		// Roll for pet
 		if (
 			ore.petChance &&
 			roll((ore.petChance - user.skillLevel(SkillsEnum.Mining) * 25) / quantity)
 		) {
-			loot[itemID('Rock golem')] = 1;
+			loot.add('Rock golem');
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,
@@ -78,7 +88,7 @@ export default class extends Task {
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
-			loot[12012] = numberOfNuggets;
+			loot.add('Golden nugget', numberOfNuggets);
 		} else if (numberOfMinutes > 10 && ore.minerals) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
@@ -86,16 +96,27 @@ export default class extends Task {
 			}
 
 			if (numberOfMinerals > 0) {
-				loot[21341] = numberOfMinerals;
+				loot.add('Unidentified minerals', numberOfMinerals);
 			}
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		// Gem rocks roll off the GemRockTable
+		if (ore.id === 1625) {
+			for (let i = 0; i < quantity; i++) {
+				loot.add(Mining.GemRockTable.roll());
+			}
+		} else {
+			loot.add(ore.id, quantity);
+		}
+		str += `\n\nYou received: ${await createReadableItemListFromBank(
+			this.client,
+			loot.values()
+		)}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank(loot.values(), true);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);

@@ -29,6 +29,7 @@ export namespace UserSettings {
 	export const RSN = T<string>('RSN');
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
 	export const SacrificedValue = T<number>('sacrificedValue');
+	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

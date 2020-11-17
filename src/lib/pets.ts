@@ -1,6 +1,5 @@
 import { Emoji } from './constants';
-import raids = require('../../data/monsters/raids');
-import { roll } from '../util';
+import raids = require('../lib/data/monsters/raids');
 import { Pet } from './types';
 
 const xpEmoji = Emoji.XP;
@@ -596,21 +595,20 @@ const pets: Pet[] = [
 				num
 			)} times to get the Sraracha pet! <:Sraracha:608231007803670529>`,
 		bossKeys: ['sarachnis']
+	},
+	{
+		id: 46,
+		emoji: '<:Little_nightmare:758149284952014928>',
+		chance: 3800,
+		name: 'Little nightmare',
+		type: 'BOSS',
+		altNames: ['NIGHTMARE', 'LILNIGHTMARE'],
+		formatFinish: (num: number) =>
+			`You had to kill The Nightmare ${fm(
+				num
+			)} times to get the Little nightmare pet! <:Little_nightmare:758149284952014928>`,
+		bossKeys: ['nightmare']
 	}
 ];
-
-for (const pet of pets) {
-	// eslint-disable-next-line @typescript-eslint/unbound-method
-	pet.finish = () => {
-		let count = 0;
-		let hasPet = false;
-		while (!hasPet) {
-			count++;
-			if (roll(pet.chance)) hasPet = true;
-		}
-
-		return count;
-	};
-}
 
 export default pets;

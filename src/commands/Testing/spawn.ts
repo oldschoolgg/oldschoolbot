@@ -3,7 +3,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
-import { Bank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
@@ -12,23 +12,15 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[qty:integer{1,1000000}] (item:...item)',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			testingCommand: true
 		});
 		this.enabled = !this.client.production;
 	}
 
 	async run(msg: KlasaMessage, [qty = 1, itemArray]: [number, Item[]]) {
-		// Make 100% sure this command can never be used in prod
-		if (
-			this.client.production ||
-			!this.client.user ||
-			this.client.user.id === '303730326692429825'
-		) {
-			return;
-		}
-
 		if (msg.flagArgs.all) {
-			const items: Bank = {};
+			const items: ItemBank = {};
 			for (const item of itemArray) {
 				items[item.id] = qty;
 			}

@@ -1,7 +1,7 @@
 import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
-import { Item, PartialItem } from 'oldschooljs/dist/meta/types';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
@@ -22,7 +22,13 @@ export default class extends BotCommand {
 				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
-			ironCantUse: true
+			ironCantUse: true,
+			categoryFlags: ['minion'],
+			description: 'Sells items to other players for GP.',
+			examples: [
+				'+sellto @Magnaboy 1b 2 Elysian sigil',
+				'+sellto @Magnaboy 500k 1 Dragon platelegs'
+			]
 		});
 	}
 
@@ -66,7 +72,7 @@ export default class extends BotCommand {
 		buyerMember: GuildMember,
 		price: number,
 		quantity: number,
-		osItem: Item | PartialItem
+		osItem: Item
 	) {
 		const hasItem = await msg.author.hasItem(osItem.id, quantity);
 		if (!hasItem) {
@@ -103,7 +109,11 @@ export default class extends BotCommand {
 
 		// Confirm the buyer wants to buy
 		const buyerConfirmationMsg = await msg.channel.send(
-			`${buyerMember}, do you wish to buy ${itemDesc} from \`${msg.author.username}#${msg.author.discriminator}\` for ${priceDesc}? Say \`buy\` to confirm.`
+			`${buyerMember}, do you wish to buy ${itemDesc} from \`${msg.author.username}#${
+				msg.author.discriminator
+			}\` for ${priceDesc} (${(
+				price / quantity
+			).toLocaleString()} GP each)? Say \`buy\` to confirm.`
 		);
 
 		try {

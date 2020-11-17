@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 
-import { alphaNumericalChars, PerkTier, Time } from '../constants';
+import { continuationChars, PerkTier, Time } from '../constants';
 import { randomItemFromArray } from '../util';
 import { channelIsSendable } from './channelIsSendable';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -18,8 +18,7 @@ export async function handleTripFinish(
 	if (!channelIsSendable(channel)) return;
 
 	const perkTier = getUsersPerkTier(user);
-	const continuationChar =
-		perkTier > PerkTier.One ? 'y' : randomItemFromArray(alphaNumericalChars);
+	const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
 	if (onContinue) {
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}

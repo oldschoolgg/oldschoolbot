@@ -6,6 +6,7 @@ import { Activity, Emoji, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -28,27 +29,29 @@ import {
 	CraftingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
+	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
-import { itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID } from '../../lib/util';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import { formatDuration } from '../../util';
+import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = getActivityOfUser(this.client, this);
+		const currentTask = getActivityOfUser(this.client, this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
@@ -179,7 +182,9 @@ export default class extends Extendable {
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithableItem = Smithing.Bars.find(item => item.id === data.smithedBarID);
+				const SmithableItem = Smithing.SmithableItems.find(
+					item => item.id === data.smithedBarID
+				);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					SmithableItem!.name
@@ -278,6 +283,36 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Sawmill: {
+				const data = currentTask as SawmillActivityTaskOptions;
+				const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+				return `${this.minionName} is currently creating ${
+					data.plankQuantity
+				}x ${itemNameFromID(plank!.outputItem)}s. ${formattedDuration}`;
+			}
+
+			case Activity.Nightmare: {
+				const data = currentTask as NightmareActivityTaskOptions;
+
+				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
+			}
+
+			case Activity.Sepulchre: {
+				const data = currentTask as NightmareActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
+			}
+
+			case Activity.FishingTrawler: {
+				const data = currentTask as FishingTrawlerActivityTaskOptions;
+				return `${this.minionName} is currently aboard the Fishing Trawler, doing ${data.quantity}x trips. ${formattedDuration}`;
+			}
+
+			case Activity.Zalcano: {
+				const data = currentTask as ZalcanoActivityTaskOptions;
+				return `${this.minionName} is currently killing Zalcano ${data.quantity}x times. ${formattedDuration}`;
 			}
 		}
 	}

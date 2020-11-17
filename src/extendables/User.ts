@@ -1,6 +1,9 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore } from 'klasa';
+import { objectEntries } from 'e';
+import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 
+import readableStatName from '../lib/gear/functions/readableStatName';
+import { gearSetupMeetsRequirement } from '../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../lib/minions/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../lib/skilling/types';
@@ -13,12 +16,9 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get rawSkills(this: User) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		return this.settings.get('skills').toJSON() as Skills;
+		return (this.settings.get('skills') as SettingsFolder).toJSON() as Skills;
 	}
 
 	public hasMonsterRequirements(this: User, monster: KillableMonster) {
@@ -61,6 +61,29 @@ export default class extends Extendable {
 							skillEnum
 						)} for information on how to train this skill.`
 					];
+				}
+			}
+		}
+
+		if (monster.minimumGearRequirements) {
+			for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
+				if (setup && requirements) {
+					const [meetsRequirements, unmetKey, has] = gearSetupMeetsRequirement(
+						this.setupStats(setup),
+						requirements
+					);
+					if (!meetsRequirements) {
+						return [
+							false,
+							`You don't have the requirements to kill ${
+								monster.name
+							}! Your ${readableStatName(
+								unmetKey!
+							)} stat in your ${setup} setup is ${has}, but you need atleast ${
+								monster.minimumGearRequirements[setup]![unmetKey!]
+							}.`
+						];
+					}
 				}
 			}
 		}

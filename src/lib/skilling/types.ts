@@ -1,3 +1,4 @@
+import { Emoji } from '../constants';
 import { ItemBank } from '../types';
 
 export enum SkillsEnum {
@@ -26,6 +27,7 @@ export interface Ore {
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
+	clueScrollChance?: number;
 }
 
 export interface Log {
@@ -36,6 +38,7 @@ export interface Log {
 	respawnTime: number;
 	petChance?: number;
 	qpRequired: number;
+	clueScrollChance?: number;
 }
 
 export interface Burnable {
@@ -56,6 +59,7 @@ export interface Fish {
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
+	clueScrollChance?: number;
 }
 
 export interface Course {
@@ -125,6 +129,7 @@ export interface Craftable {
 	xp: number;
 	inputItems: ItemBank;
 	tickRate: number;
+	crushChance?: number[];
 }
 
 export interface Fletchable {
@@ -149,3 +154,16 @@ export type LevelRequirements = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export interface Skill {
+	aliases: string[];
+	id: SkillsEnum;
+	emoji: Emoji;
+}
+
+export interface Plankable {
+	name: string;
+	inputItem: number;
+	outputItem: number;
+	gpCost: number;
+}

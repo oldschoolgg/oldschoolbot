@@ -9,7 +9,7 @@ import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import { PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { LevelRequirements } from '../skilling/types';
-import { ArrayItemsResolved, Bank } from '../types';
+import { ArrayItemsResolved, ItemBank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 
 export interface BankBackground {
@@ -17,10 +17,11 @@ export interface BankBackground {
 	id: number;
 	name: string;
 	available: boolean;
-	collectionLogItemsNeeded?: Bank;
+	collectionLogItemsNeeded?: ItemBank;
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
-	itemCost?: Bank;
+	itemCost?: ItemBank;
+	repeatImage?: Image | null;
 }
 
 export interface ClueMilestoneReward {
@@ -38,13 +39,16 @@ export interface ClueTier {
 	mimicChance: number | false;
 }
 
+export type GearRequirement = Partial<{ [key in GearStat]: number }>;
+export type GearRequirements = Partial<{ [key in GearSetupTypes]: GearRequirement }>;
+
 export interface KillableMonster {
 	id: number;
 	name: string;
 	aliases: string[];
 	timeToFinish: number;
 	table: {
-		kill(quantity: number): Bank;
+		kill(quantity: number): ItemBank;
 	};
 	emoji: string;
 	wildy: boolean;
@@ -58,7 +62,7 @@ export interface KillableMonster {
 	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
 	 * this monster.
 	 */
-	itemInBankBoosts?: Bank;
+	itemInBankBoosts?: ItemBank;
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
@@ -72,7 +76,10 @@ export interface KillableMonster {
 	healAmountNeeded?: number;
 	attackStyleToUse?: GearSetupTypes;
 	attackStylesUsed?: OffenceGearStat[];
-	minimumGearRequirements?: Partial<{ [key in GearStat]: number }>;
+	/**
+	 * The minimum *required* gear stats to fight this monster.
+	 */
+	minimumGearRequirements?: GearRequirements;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {

@@ -1,11 +1,15 @@
 import { Command, CommandOptions, CommandStore, KlasaMessage, util } from 'klasa';
 
+import { CategoryFlag } from './types';
+
 export abstract class BotCommand extends Command {
 	public altProtection: boolean;
 	public guildOnly: boolean;
 	public oneAtTime: boolean;
 	public perkTier?: number;
 	public ironCantUse?: boolean;
+	public examples: string[];
+	public categoryFlags: CategoryFlag[];
 
 	public constructor(
 		store: CommandStore,
@@ -32,6 +36,8 @@ export abstract class BotCommand extends Command {
 		this.guildOnly = options.guildOnly!;
 		this.perkTier = options.perkTier;
 		this.ironCantUse = options.ironCantUse;
+		this.examples = options.examples || [];
+		this.categoryFlags = options.categoryFlags || [];
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,4 +57,8 @@ export interface BotCommandOptions extends CommandOptions {
 	guildOnly?: boolean;
 	perkTier?: number;
 	ironCantUse?: boolean;
+	testingCommand?: boolean;
+	examples?: string[];
+	description?: string;
+	categoryFlags?: CategoryFlag[];
 }

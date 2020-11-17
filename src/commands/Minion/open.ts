@@ -35,7 +35,10 @@ export default class extends BotCommand {
 			aliases: ['clue'],
 			usage: '[quantity:int] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion'],
+			description: 'Opens openable items, like clue caskets, mystery boxes and crystal keys.',
+			examples: ['+open easy', '+open crystal key']
 		});
 	}
 
@@ -58,6 +61,7 @@ export default class extends BotCommand {
 			return msg.send(await this.showAvailable(msg));
 		}
 
+		await msg.author.settings.sync(true);
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
@@ -75,9 +79,11 @@ export default class extends BotCommand {
 
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
 		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
-			throw `You don't have enough ${
-				clueTier.name
-			} Caskets to open!\n\n However... ${await this.showAvailable(msg)}`;
+			return msg.send(
+				`You don't have enough ${
+					clueTier.name
+				} Caskets to open!\n\n However... ${await this.showAvailable(msg)}`
+			);
 		}
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
@@ -96,7 +102,7 @@ export default class extends BotCommand {
 
 		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${
 			quantity > 1 ? 's' : ''
-		} ${mimicNumber > 0 ? ` defeating ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
+		} ${mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
 
 		const nthCasket =
 			(msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
@@ -154,9 +160,11 @@ export default class extends BotCommand {
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: any) {
 		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
-			throw `You don't have enough ${
-				osjsOpenable.name
-			} to open!\n\n However... ${await this.showAvailable(msg)}`;
+			return msg.send(
+				`You don't have enough ${
+					osjsOpenable.name
+				} to open!\n\n However... ${await this.showAvailable(msg)}`
+			);
 		}
 
 		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
@@ -184,18 +192,22 @@ export default class extends BotCommand {
 		);
 
 		if (!botOpenable) {
-			throw `That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
-				tier => tier.name
-			).join(', ')}), or another non-clue thing (${botOpenables
-				.map(thing => thing.name)
-				.concat(Openables.map(thing => thing.name))
-				.join(', ')})`;
+			return msg.send(
+				`That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
+					tier => tier.name
+				).join(', ')}), or another non-clue thing (${botOpenables
+					.map(thing => thing.name)
+					.concat(Openables.map(thing => thing.name))
+					.join(', ')})`
+			);
 		}
 
 		if (msg.author.numItemsInBankSync(botOpenable.itemID) < quantity) {
-			throw `You don't have enough ${
-				botOpenable.name
-			} to open!\n\n However... ${await this.showAvailable(msg)}`;
+			return msg.send(
+				`You don't have enough ${
+					botOpenable.name
+				} to open!\n\n However... ${await this.showAvailable(msg)}`
+			);
 		}
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);

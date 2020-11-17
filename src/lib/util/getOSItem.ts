@@ -10,16 +10,16 @@ export default function getOSItem(itemName: string | number): Item {
 		return cache.get(itemName);
 	}
 
-	let identifier: string | number | undefined;
+	let identifier: string | number | undefined = '';
 	if (typeof itemName === 'number') {
 		identifier = itemName;
 	} else {
-		const parsed = parseInt(itemName);
+		const parsed = Number(itemName);
 		identifier = isNaN(parsed) ? cleanItemName(itemName) : parsed;
 	}
 
 	const osItem = Items.get(identifier) as Item | undefined;
-	if (!osItem) throw `That item doesnt exist.`;
+	if (!osItem) throw `That item doesn't exist.`;
 	cache.set(itemName, osItem);
 	return osItem;
 }

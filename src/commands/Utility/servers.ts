@@ -27,7 +27,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['servers', 'communities', 'community'],
 			description: 'Shows some community servers related to OSRS.',
-			requiredPermissions: ['EMBED_LINKS']
+			examples: ['+servers'],
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

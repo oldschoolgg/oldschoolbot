@@ -16,7 +16,10 @@ export default class extends BotCommand {
 			cooldown: 4,
 			usage: '[quantity:int{1}] (item:...item)',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion'],
+			description: 'Drops an item from your bank.',
+			examples: ['+drop 1 elysian sigil', '+drop bronze dagger']
 		});
 	}
 
@@ -25,7 +28,7 @@ export default class extends BotCommand {
 		const osItem = itemArray.find(i => userBank[i.id]);
 
 		if (!osItem) {
-			throw `You don't have any of this item to drop!`;
+			return msg.send(`You don't have any of this item to drop!`);
 		}
 
 		const numItemsHas = userBank[osItem.id];
@@ -34,7 +37,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity > numItemsHas) {
-			throw `You dont have ${quantity}x ${osItem.name}.`;
+			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {

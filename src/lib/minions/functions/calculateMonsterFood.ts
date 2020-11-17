@@ -3,8 +3,6 @@ import { O } from 'ts-toolbelt';
 
 import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import readableStatName from '../../gear/functions/readableStatName';
-import { GearStats } from '../../gear/types';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { KillableMonster } from '../types';
 
@@ -15,7 +13,7 @@ export default function calculateMonsterFood(
 	user: O.Readonly<KlasaUser>
 ): [number, string[]] {
 	const messages: string[] = [];
-	let { healAmountNeeded, attackStyleToUse, attackStylesUsed, minimumGearRequirements } = monster;
+	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
 		return [0, messages];
@@ -24,17 +22,6 @@ export default function calculateMonsterFood(
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
 	const gearStats = user.setupStats(attackStyleToUse);
-	const keys = Object.keys(gearStats) as (keyof GearStats)[];
-	for (const key of keys) {
-		const required = minimumGearRequirements?.[key];
-		if (!required) continue;
-		const has = gearStats[key];
-		if (has < required) {
-			throw `You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
-				key
-			)} stat in your ${attackStyleToUse} setup is ${has}, but you need atleast ${required}.`;
-		}
-	}
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
@@ -67,11 +54,9 @@ export default function calculateMonsterFood(
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
 	messages.push(
-		`You use ${100 -
-			calcWhatPercent(
-				healAmountNeeded,
-				monster.healAmountNeeded!
-			)}% less food (${healAmountNeeded} instead of ${
+		`You use ${
+			100 - calcWhatPercent(healAmountNeeded, monster.healAmountNeeded!)
+		}% less food (${healAmountNeeded} instead of ${
 			monster.healAmountNeeded
 		}) because of your gear`
 	);

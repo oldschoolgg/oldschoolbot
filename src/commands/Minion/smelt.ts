@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Events, Tasks, Time } from '../../lib/constants';
+import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -13,7 +13,6 @@ import {
 	formatDuration,
 	itemID,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -26,7 +25,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'skilling'],
+			description: 'Sends your minion to smelt items, which is turning ores into bars.',
+			examples: ['+smelt bronze']
 		});
 	}
 
@@ -44,13 +46,17 @@ export default class extends BotCommand {
 		);
 
 		if (!bar) {
-			throw `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(
-				bar => bar.name
-			).join(', ')}.`;
+			return msg.send(
+				`Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(
+					bar => bar.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			throw `${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`
+			);
 		}
 
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
@@ -69,45 +75,46 @@ export default class extends BotCommand {
 		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
 		for (const [oreID, qty] of requiredOres) {
 			if (!bankHasItem(userBank, parseInt(oreID), qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(parseInt(oreID))}.`;
+				return msg.send(`You don't have enough ${itemNameFromID(parseInt(oreID))}.`);
 			}
 		}
 
 		const duration = quantity * timeToSmithSingleBar;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				bar.name
-			}s you can smelt is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					bar.name
+				}s you can smelt is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`
+			);
 		}
-
-		const data: SmeltingActivityTaskOptions = {
-			barID: bar.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Smelting,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
 
 		// Remove the ores from their bank.
 		let newBank: ItemBank = { ...userBank };
 		for (const [oreID, qty] of requiredOres) {
 			if (newBank[parseInt(oreID)] < qty) {
-				this.client.emit(
-					Events.Wtf,
-					`${msg.author.sanitizedName} had insufficient ores to be removed.`
+				this.client.wtf(
+					new Error(`${msg.author.sanitizedName} had insufficient ores to be removed.`)
 				);
-				throw `What a terrible failure :(`;
+				return;
 			}
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				barID: bar.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Smelting
+			}
+		);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let goldGauntletMessage = ``;

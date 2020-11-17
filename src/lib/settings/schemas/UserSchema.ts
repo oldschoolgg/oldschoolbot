@@ -7,7 +7,6 @@ Client.defaultUserSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
 	.add('GP', 'integer', { default: 0 })
 	.add('QP', 'integer', { default: 0 })
-	.add('autoupdate', 'boolean', { default: false })
 	.add('RSN', 'string', { default: null })
 	.add('pets', 'any', { default: {} })
 	.add('badges', 'integer', { array: true, default: [] })
@@ -22,6 +21,7 @@ Client.defaultUserSchema
 	.add('minigameScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
+	.add('sacrificedBank', 'any', { default: {} })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')

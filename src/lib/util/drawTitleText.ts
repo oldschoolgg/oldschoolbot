@@ -1,3 +1,5 @@
+import { CanvasRenderingContext2D } from 'canvas';
+
 import { fillTextXTimesInCtx } from './fillTextXTimesInCtx';
 
 export function drawTitleText(ctx: CanvasRenderingContext2D, title: string, x: number, y: number) {

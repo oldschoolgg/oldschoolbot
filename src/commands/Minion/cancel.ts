@@ -6,6 +6,7 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import { tickerTaskFromActivity } from '../../lib/minions/functions/tickerTaskFromActivity';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
+import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 const options = {
 	max: 1,
@@ -17,24 +18,42 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			oneAtTime: true,
-			cooldown: 180
+			cooldown: 180,
+			examples: ['+cancel'],
+			description: 'Cancels your minions current task.',
+			categoryFlags: ['minion']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const currentTask = getActivityOfUser(this.client, msg.author);
+		const currentTask = getActivityOfUser(this.client, msg.author.id);
 
 		if (!currentTask) {
-			throw `${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`;
+			return msg.send(
+				`${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`
+			);
 		}
 
 		if (currentTask.finishDate - Date.now() < Time.Minute * 1.5) {
-			throw `${msg.author.minionName} is already on their way back from the trip, returning in around a minute, no point in cancelling now!`;
+			return msg.send(
+				`${msg.author.minionName} is already on their way back from the trip, returning in around a minute, no point in cancelling now!`
+			);
 		}
 
 		if (currentTask.type === Activity.GroupMonsterKilling) {
-			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`;
+			return msg.send(
+				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
+			);
+		}
+
+		if (currentTask.type === Activity.Nightmare) {
+			const data = currentTask as NightmareActivityTaskOptions;
+			if (data.users.length > 1) {
+				return msg.send(
+					`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
+				);
+			}
 		}
 
 		const taskTicker = tickerTaskFromActivity(currentTask.type);

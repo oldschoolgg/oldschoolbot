@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/node';
-import { DiscordAPIError, HTTPError, MessageEmbed, TextChannel, User } from 'discord.js';
+import { DiscordAPIError, HTTPError, MessageEmbed, User } from 'discord.js';
 import { Command, Event, KlasaMessage, util } from 'klasa';
 
-import { Channel, Emoji, rootFolder } from '../lib/constants';
+import { Emoji, rootFolder } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
 
 export default class extends Event {
@@ -16,7 +16,7 @@ export default class extends Event {
 	}
 
 	private async _sendErrorChannel(message: KlasaMessage, command: Command, error: Error) {
-		let output: string;
+		let output: string = '';
 
 		if (error.name === 'AbortError') {
 			try {
@@ -26,7 +26,7 @@ export default class extends Event {
 			} catch (_) {}
 		}
 
-		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack || error}`);
+		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack ?? error.name}`);
 		Sentry.captureException(error);
 
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {
@@ -49,21 +49,23 @@ export default class extends Event {
 			].join('\n');
 		}
 
-		// If in development, send the error to the developers DM.
-		const channel = await (this.client.production
-			? this.client.channels.get(Channel.ErrorLogs)
-			: (this.client.owners.values().next().value as User).createDM());
+		if (!this.client.production) {
+			// If in development, send the error to the developers DM.
+			const channel = await (this.client.owners.values().next().value as User).createDM();
 
-		(channel as TextChannel).send(
-			new MessageEmbed()
-				.setDescription(output)
-				.setColor(0xfc1020)
-				.setAuthor(
-					message.author.tag,
-					message.author.displayAvatarURL({ size: 64 }),
-					message.url
-				)
-				.setTimestamp()
-		);
+			channel.send(
+				new MessageEmbed()
+					.setDescription(output)
+					.setColor(0xfc1020)
+					.setAuthor(
+						message.author.tag,
+						message.author.displayAvatarURL({
+							size: 64
+						}),
+						message.url
+					)
+					.setTimestamp()
+			);
+		}
 	}
 }

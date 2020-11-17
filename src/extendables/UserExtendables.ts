@@ -1,5 +1,5 @@
-import { TextChannel, User, Util } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
+import { User, Util } from 'discord.js';
+import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 
 import { production } from '../config';
 import { Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../lib/constants';
@@ -7,7 +7,6 @@ import clueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { SkillsEnum } from '../lib/skilling/types';
-import { Bank } from '../lib/types';
 import {
 	addBanks,
 	addItemToBank,
@@ -16,22 +15,22 @@ import {
 	removeItemFromBank,
 	toTitleCase
 } from '../lib/util';
+import { channelIsSendable } from '../lib/util/channelIsSendable';
 import { formatOrdinal } from '../lib/util/formatOrdinal';
 import getActivityOfUser from '../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { ItemBank } from './../lib/types/index';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get sanitizedName(this: User) {
 		return `(${this.username.replace(/[()]/g, '')})[${this.id}]`;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get isBusy(this: User) {
 		const client = this.client as KlasaClient;
@@ -40,7 +39,6 @@ export default class extends Extendable {
 		);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get isIronman(this: User) {
 		return this.settings.get(UserSettings.Minion.Ironman);
@@ -71,8 +69,9 @@ export default class extends Extendable {
 		const currentGP = this.settings.get(UserSettings.GP);
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
 		this.log(
-			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP -
-				amount}]`
+			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${
+				currentGP - amount
+			}]`
 		);
 		return this.settings.update(UserSettings.GP, currentGP - amount);
 	}
@@ -102,7 +101,7 @@ export default class extends Extendable {
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
-	public async addItemsToBank(this: User, _items: Bank, collectionLog = false) {
+	public async addItemsToBank(this: User, _items: ItemBank, collectionLog = false) {
 		await this.settings.sync(true);
 		for (const { scrollID } of clueTiers) {
 			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
@@ -161,7 +160,7 @@ export default class extends Extendable {
 		);
 	}
 
-	public async addItemsToCollectionLog(this: User, items: Bank) {
+	public async addItemsToCollectionLog(this: User, items: ItemBank) {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
@@ -230,12 +229,23 @@ export default class extends Extendable {
 		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number);
 	}
 
+	public totalLevel(this: User, returnXP = false) {
+		const userXPs = Object.values(
+			(this.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>
+		);
+		let totalLevel = 0;
+		for (const xp of userXPs) {
+			totalLevel += returnXP ? xp : convertXPtoLVL(xp);
+		}
+		return totalLevel;
+	}
+
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
 		if (currentXP >= 200_000_000) return;
 
-		const skill = Skills.find(skill => skill.id === skillName);
+		const skill = Object.values(Skills).find(skill => skill.id === skillName);
 		if (!skill) return;
 
 		const newXP = Math.min(200_000_000, currentXP + amount);
@@ -277,7 +287,6 @@ export default class extends Extendable {
 		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get badges(this: User) {
 		const username = this.settings.get(UserSettings.RSN);
@@ -285,14 +294,12 @@ export default class extends Extendable {
 		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.client, this);
+		const usersTask = getActivityOfUser(this.client, this.id);
 		return Boolean(usersTask);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
 		const name = this.settings.get(UserSettings.Minion.Name);
@@ -305,13 +312,11 @@ export default class extends Extendable {
 			: `${prefix} ${icon} Your minion`;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get hasMinion(this: User) {
 		return this.settings.get(UserSettings.Minion.HasBought);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
 		const perkTier = getUsersPerkTier(this);
@@ -332,9 +337,10 @@ export default class extends Extendable {
 
 			this.log(log);
 			if (production) {
-				(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
-					`${this.sanitizedName} ${log}`
-				);
+				const channel = this.client.channels.get(Channel.ErrorLogs);
+				if (channelIsSendable(channel)) {
+					channel.send(`${this.sanitizedName} ${log}`);
+				}
 			}
 		}
 

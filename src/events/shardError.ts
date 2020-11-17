@@ -12,6 +12,6 @@ export default class extends Event {
 
 	async run(error: Error) {
 		Sentry.captureException(error);
-		this.client.emit(Events.Log, `Shard Error: ${error}`);
+		this.client.emit(Events.Log, `Shard Error: ${error.stack ?? error.name}`);
 	}
 }

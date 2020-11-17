@@ -42,5 +42,15 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.Nightmare:
+			return Tasks.NightmareActivity;
+		case Activity.Sawmill:
+			return Tasks.SawmillActivity;
+		case Activity.Sepulchre:
+			return Tasks.SepulchreActivity;
+		case Activity.FishingTrawler:
+			return Tasks.FishingTrawler;
+		case Activity.Zalcano:
+			return Tasks.ZalcanoActivity;
 	}
 }

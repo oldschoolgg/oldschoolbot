@@ -1,5 +1,5 @@
+import { randInt } from 'e';
 import { Task } from 'klasa';
-import { rand } from 'oldschooljs/dist/util/util';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -21,7 +21,7 @@ export default class extends Task {
 		if (bar.chanceOfFail > 0) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (rand(0, 100) < bar.chanceOfFail) {
+				if (randInt(0, 100) > bar.chanceOfFail) {
 					newQuantity++;
 				}
 			}

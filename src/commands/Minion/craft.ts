@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -10,7 +11,6 @@ import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	rand,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -24,15 +24,16 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'skilling'],
+			description: 'Sends your minion to craft items, or tan leather.',
+			examples: ['+craft green dhide body', '+craft leather']
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, craftName = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
 		if (msg.flagArgs.items) {
 			return msg.channel.sendFile(
 				Buffer.from(
@@ -47,10 +48,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			craftName = quantity;
 			quantity = null;
@@ -59,11 +56,15 @@ export default class extends BotCommand {
 		const Craft = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
 
 		if (!Craft) {
-			throw `That is not a valid craftable item, to see the items available do \`${msg.cmdPrefix}craft --items\``;
+			return msg.send(
+				`That is not a valid craftable item, to see the items available do \`${msg.cmdPrefix}craft --items\``
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Crafting) < Craft.level) {
-			throw `${msg.author.minionName} needs ${Craft.level} Crafting to craft ${Craft.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${Craft.level} Crafting to craft ${Craft.name}.`
+			);
 		}
 
 		await msg.author.settings.sync(true);
@@ -81,14 +82,14 @@ export default class extends BotCommand {
 				if (id === 995) {
 					const userGP = msg.author.settings.get(UserSettings.GP);
 					if (userGP < qty) {
-						throw `You do not have enough GP.`;
+						return msg.send(`You do not have enough GP.`);
 					}
 					quantity = Math.min(quantity, Math.floor(userGP / qty));
 					continue;
 				}
 				const itemsOwned = userBank[parseInt(itemID)];
 				if (itemsOwned < qty) {
-					throw `You dont have enough ${itemNameFromID(parseInt(itemID))}.`;
+					return msg.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
@@ -97,11 +98,15 @@ export default class extends BotCommand {
 		const duration = quantity * timeToCraftSingleItem;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				Craft.name
-			}s you can craft is ${Math.floor(msg.author.maxTripLength / timeToCraftSingleItem)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					Craft.name
+				}s you can craft is ${Math.floor(
+					msg.author.maxTripLength / timeToCraftSingleItem
+				)}.`
+			);
 		}
 
 		// Check the user has add the required items to craft.
@@ -110,25 +115,14 @@ export default class extends BotCommand {
 			if (id === 995) {
 				const userGP = msg.author.settings.get(UserSettings.GP);
 				if (userGP < qty * quantity) {
-					throw `You don't have enough ${itemNameFromID(id)}.`;
+					return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
 				}
 				continue;
 			}
 			if (!bankHasItem(userBank, id, qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(id)}.`;
+				return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
 			}
 		}
-
-		const data: CraftingActivityTaskOptions = {
-			craftableID: Craft.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Crafting,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
 
 		// Remove the required items from their bank.
 		let newBank = { ...userBank };
@@ -141,7 +135,18 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<CraftingActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				craftableID: Craft.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Crafting
+			}
+		);
 
 		return msg.send(
 			`${msg.author.minionName} is now crafting ${quantity}x ${

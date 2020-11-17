@@ -1,4 +1,5 @@
 import { KlasaClientOptions } from 'klasa';
+import os from 'os';
 
 import {
 	MongoDBConfig,
@@ -12,10 +13,9 @@ export const botToken = '';
 export const providerConfig: ProviderConfig | null = {
 	default: 'json'
 };
-export const production = require('os').platform() === 'linux';
+export const production = os.platform() === 'linux';
 export const staging = false;
 
-export const twitchClientID: string | null = null;
 export const redditAppConfig: RedditAppConfig = null;
 export const twitterAppConfig: TwitterAppConfig = null;
 export const mongoDBConfig: MongoDBConfig = null;

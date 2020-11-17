@@ -1,16 +1,60 @@
-import { Bank } from './types';
+import { ItemBank } from './types';
 import { resolveNameBank } from './util';
 import itemID from './util/itemID';
 
 interface Createable {
 	name: string;
-	outputItems: Bank;
-	inputItems: Bank;
-	cantHaveItems?: Bank;
+	outputItems: ItemBank;
+	inputItems: ItemBank;
+	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
+	GPCost?: number;
+	cantBeInCL?: boolean;
 }
+
+const crystalTools: Createable[] = [
+	{
+		name: 'Crystal pickaxe',
+		inputItems: {
+			[itemID('Dragon pickaxe')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal pickaxe')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	},
+	{
+		name: 'Crystal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal harpoon')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	},
+	{
+		name: 'Crystal axe',
+		inputItems: {
+			[itemID('Dragon axe')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal axe')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	}
+];
 
 const Createables: Createable[] = [
 	{
@@ -676,27 +720,110 @@ const Createables: Createable[] = [
 		}),
 		QPRequired: 111,
 		requiredSkills: { smithing: 60 }
-	}
-	/* {
-		name: 'Toxic blowpipe (empty)',
-		inputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		}
 	},
 	{
-		name: 'Toxic blowpipe',
-		inputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
+		name: 'Coconut milk',
+		inputItems: resolveNameBank({
+			Vial: 1,
+			Coconut: 1
+		}),
+		outputItems: resolveNameBank({
+			'Coconut milk': 1,
+			'Coconut shell': 1
+		})
+	},
+	{
+		name: 'Zamorakian hasta',
+		inputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		QPRequired: 3,
+		requiredSkills: {
+			fishing: 55,
+			firemaking: 35,
+			crafting: 11,
+			smithing: 5
 		},
-		outputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		}
-	} */
+		GPCost: 300_000
+	},
+	{
+		name: 'Zamorakian spear',
+		inputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		noCl: true
+	},
+	// Nightmare
+	{
+		name: 'Eldritch nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		})
+	},
+	{
+		name: '	Harmonised nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Harmonised orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Eldritch orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		}),
+		noCl: true
+	},
+	...crystalTools
 ];
 
 export default Createables;

@@ -113,6 +113,12 @@ export const enum Tasks {
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
+	NightmareActivity = 'nightmareActivity',
+	SepulchreActivity = 'sepulchreActivity',
+	FishingTrawler = 'trawlerActivity',
+	ZalcanoActivity = 'zalcanoActivity',
+	SawmillActivity = 'sawmillActivity',
+
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -139,7 +145,12 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
-	Alching = 'Alching'
+	Alching = 'Alching',
+	Sawmill = 'Sawmill',
+	Nightmare = 'Nightmare',
+	Sepulchre = 'Sepulchre',
+	FishingTrawler = 'FishingTrawler',
+	Zalcano = 'Zalcano'
 }
 
 export const enum Events {
@@ -204,7 +215,9 @@ export const enum BitField {
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
 	IsPatronTier4 = 5,
-	IsPatronTier5 = 6
+	IsPatronTier5 = 6,
+	isModerator = 7,
+	isContributor = 8
 }
 
 export const enum PatronTierID {
@@ -215,8 +228,11 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
-export const MAX_QP = 277;
+export const MAX_QP = 278;
 
 export const MIMIC_MONSTER_ID = 23184;
 
-export const alphaNumericalChars = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
+export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
+
+export const NIGHTMARES_HP = 2400;
+export const ZAM_HASTA_CRUSH = 65;

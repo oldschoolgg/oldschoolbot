@@ -9,7 +9,8 @@ const logs: Log[] = [
 		name: 'Logs',
 		respawnTime: 3,
 		petChance: 317_647,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 317_647
 	},
 	{
 		level: 1,
@@ -18,7 +19,8 @@ const logs: Log[] = [
 		name: 'Achey Logs',
 		respawnTime: 2.5,
 		petChance: 317_647,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 317_647
 	},
 	{
 		level: 15,
@@ -27,7 +29,8 @@ const logs: Log[] = [
 		name: 'Oak Logs',
 		respawnTime: 0.5,
 		petChance: 361_146,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 361_146
 	},
 	{
 		level: 30,
@@ -36,7 +39,8 @@ const logs: Log[] = [
 		name: 'Willow Logs',
 		respawnTime: -0.25,
 		petChance: 289_286,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 289_286
 	},
 	{
 		level: 35,
@@ -45,7 +49,8 @@ const logs: Log[] = [
 		name: 'Teak Logs',
 		respawnTime: -1,
 		petChance: 264_336,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 264_336
 	},
 	{
 		level: 45,
@@ -54,7 +59,8 @@ const logs: Log[] = [
 		name: 'Maple Logs',
 		respawnTime: 0.75,
 		petChance: 221_918,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 221_918
 	},
 	{
 		level: 45,
@@ -63,7 +69,8 @@ const logs: Log[] = [
 		name: 'Bark',
 		respawnTime: 0,
 		petChance: 214_367,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 214_367
 	},
 	{
 		level: 50,
@@ -72,7 +79,8 @@ const logs: Log[] = [
 		name: 'Mahogany Logs',
 		respawnTime: 2,
 		petChance: 220_623,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 220_623
 	},
 	{
 		level: 54,
@@ -81,7 +89,8 @@ const logs: Log[] = [
 		name: 'Arctic Pine Logs',
 		respawnTime: 4.5,
 		petChance: 145_758,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 145_758
 	},
 	{
 		level: 60,
@@ -90,7 +99,8 @@ const logs: Log[] = [
 		name: 'Yew Logs',
 		respawnTime: 5,
 		petChance: 145_013,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 145_013
 	},
 	{
 		level: 65,
@@ -99,7 +109,8 @@ const logs: Log[] = [
 		name: 'Sulliusceps',
 		respawnTime: -2,
 		petChance: 343_000,
-		qpRequired: 25
+		qpRequired: 25,
+		clueScrollChance: 343_000
 	},
 	{
 		level: 75,
@@ -108,7 +119,8 @@ const logs: Log[] = [
 		name: 'Magic Logs',
 		respawnTime: 15,
 		petChance: 72_321,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 72_321
 	},
 	{
 		level: 90,
@@ -117,7 +129,8 @@ const logs: Log[] = [
 		name: 'Redwood Logs',
 		respawnTime: 1.5,
 		petChance: 72_321,
-		qpRequired: 0
+		qpRequired: 0,
+		clueScrollChance: 72_321
 	}
 ];
 

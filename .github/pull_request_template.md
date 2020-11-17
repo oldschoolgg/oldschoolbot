@@ -1,9 +1,11 @@
 ### Description:
 
--   _Write description here_
+<!-- What did you change? Describe it here. -->
 
 ### Changes:
 
--   _List of changes here_
+<!-- Write a comprehensive list of changes here. -->
 
--   [] I have tested all my changes thoroughly.
+### Other checks:
+
+-   [ ] I have tested all my changes thoroughly.
