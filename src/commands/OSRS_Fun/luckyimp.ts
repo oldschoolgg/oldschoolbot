@@ -1,12 +1,17 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Openables } from 'oldschooljs';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			usage: '[quantity:int{1}]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			examples: ['+luckyimp 5'],
+			description: 'Simulates opening lucky imps.',
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 

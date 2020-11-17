@@ -152,4 +152,5 @@ export type CategoryFlag =
 	| 'pvm'
 	| 'minigame'
 	| 'utility'
-	| 'hidden';
+	| 'fun'
+	| 'simulation';

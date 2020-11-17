@@ -118,7 +118,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 2,
 			description: "Simulates how long it takes you to 'finish' a boss (Get all its drops)",
-			usage: '<BossName:str>'
+			usage: '<BossName:str>',
+			examples: ['+finish bandos', '+finish corp'],
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 

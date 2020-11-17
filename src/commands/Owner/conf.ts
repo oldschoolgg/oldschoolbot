@@ -7,8 +7,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			guarded: true,
 			permissionLevel: 10,
-			enabled: false,
-			categoryFlags: ['hidden']
+			enabled: false
 		});
 	}
 }

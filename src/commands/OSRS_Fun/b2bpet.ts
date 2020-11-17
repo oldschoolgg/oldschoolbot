@@ -1,14 +1,17 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { cleanString } from 'oldschooljs/dist/util';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { roll } from '../../lib/util';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 10,
 			description: 'Rolls a singular pet until you get it twice in a row.',
-			usage: '<petName:str>'
+			usage: '<petName:str>',
+			examples: ['+b2bpet mole'],
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 

@@ -9,8 +9,7 @@ export default class extends BotCommand {
 			aliases: ['ev'],
 			permissionLevel: 10,
 			guarded: true,
-			usage: '<expression:str>',
-			categoryFlags: ['hidden']
+			usage: '<expression:str>'
 		});
 	}
 

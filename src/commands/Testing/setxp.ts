@@ -8,8 +8,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<skillName:string> <amount:int{1,200000000}>',
 			usageDelim: ' ',
-			testingCommand: true,
-			categoryFlags: ['hidden']
+			testingCommand: true
 		});
 		this.enabled = !this.client.production;
 	}
