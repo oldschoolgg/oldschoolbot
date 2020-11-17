@@ -25,6 +25,7 @@ import pets from '../../lib/pets';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { formatDuration, isWeekend, itemID, rand, roll, stringMatches } from '../../lib/util';
+import { LampTable } from '../../lib/xpLamps';
 
 const options = {
 	max: 1,
@@ -165,6 +166,11 @@ export default class DailyCommand extends BotCommand {
 
 		if (roll(2500)) {
 			loot[741] = 1;
+		}
+
+		if (triviaCorrect && roll(2)) {
+			const lamp = LampTable.roll()[0].item;
+			loot[lamp] = 1;
 		}
 
 		await user.addItemsToBank(loot, true);
