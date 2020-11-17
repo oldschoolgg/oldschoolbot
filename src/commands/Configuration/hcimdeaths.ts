@@ -11,7 +11,10 @@ export default class extends BotCommand {
 			usage: '<on|off>',
 			permissionLevel: 7,
 			requiredPermissions: ['EMBED_LINKS'],
-			categoryFlags: ['settings']
+			categoryFlags: ['settings'],
+			examples: ['+hcimdeaths on', '+hcimdeaths off'],
+			description:
+				'Allows you to receive tweets from HCIM Deaths to your channel, showing when high-ranked HCIMs die.'
 		});
 	}
 
