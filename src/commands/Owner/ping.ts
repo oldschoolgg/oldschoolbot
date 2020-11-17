@@ -6,8 +6,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			guarded: true,
-			permissionLevel: 10,
-			categoryFlags: ['hidden']
+			permissionLevel: 10
 		});
 	}
 

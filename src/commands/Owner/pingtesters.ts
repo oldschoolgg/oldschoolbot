@@ -6,8 +6,7 @@ import { Roles, SupportServer } from '../../lib/constants';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['pt'],
-			categoryFlags: ['hidden']
+			aliases: ['pt']
 		});
 		this.enabled = this.client.production;
 	}

@@ -21,7 +21,8 @@ export default class extends BotCommand {
 			cooldown: 3,
 			requiredPermissions: ['ATTACH_FILES'],
 			usage: '(username:string) <message:...str>',
-			usageDelim: ','
+			usageDelim: ',',
+			categoryFlags: ['fun']
 		});
 	}
 

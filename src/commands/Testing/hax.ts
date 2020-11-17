@@ -10,8 +10,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 1,
 			oneAtTime: true,
-			testingCommand: true,
-			categoryFlags: ['hidden']
+			testingCommand: true
 		});
 		this.enabled = !this.client.production;
 	}

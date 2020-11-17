@@ -1,18 +1,22 @@
 import { MessageAttachment } from 'discord.js';
-import { Command, CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Workers } from '../../lib/workers';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['clue'],
 			usage: '<ClueTier:string> [quantity:int{1}]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			examples: ['+casket easy 5k', '+casket hard 10'],
+			description: 'Simulates opening clue caskets.',
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 

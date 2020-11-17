@@ -7,8 +7,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['pm'],
-			cooldown: 60 * 5,
-			categoryFlags: ['hidden']
+			cooldown: 60 * 5
 		});
 		this.enabled = this.client.production;
 	}
