@@ -118,6 +118,7 @@ export const enum Tasks {
 	FishingTrawler = 'trawlerActivity',
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
+	PickpocketActivity = 'pickpocketActivity',
 
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -145,6 +146,7 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
+	Pickpocket = 'Pickpocket',
 	Alching = 'Alching',
 	Sawmill = 'Sawmill',
 	Nightmare = 'Nightmare',

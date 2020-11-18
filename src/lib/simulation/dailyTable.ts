@@ -1,4 +1,4 @@
-import Loot from 'oldschooljs/dist/structures/Loot';
+import Bank from 'oldschooljs/dist/structures/Bank';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 const RareTable = new LootTable()
@@ -44,7 +44,7 @@ const DailyTable = new LootTable()
 	.add('Mystery box', 1, 2);
 
 export default function dailyRoll(qty = 1, correct = false) {
-	const loot = new Loot();
+	const loot = new Bank();
 
 	for (let i = 0; i < qty; i++) {
 		loot.add(DailyTable.roll());

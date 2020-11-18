@@ -1,23 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Tasks } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Skills from '../../lib/skilling/skills';
+import Thieving from '../../lib/skilling/skills/thieving';
 import { SkillsEnum } from '../../lib/skilling/types';
-import {
-	FletchingActivityTaskOptions,
-	PickpocketingActivityTaskOptions
-} from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	rand,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -39,64 +28,59 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const pickpocketable = Skills.Thieving.id.find(item => stringMatches(item.name, name));
+		const pickpocketable = Thieving.Pickpocketables.find(npc => stringMatches(npc.name, name));
 
 		if (!pickpocketable) {
-			throw `That is not a valid fletchable item, to see the items available do \`${msg.cmdPrefix}fletch --items\``;
-		}
-		let sets = 'x';
-		if (pickpocketable.outputMultiple) {
-			sets = 'sets of';
+			return msg.send(
+				`That is not a valid NPC to pickpocket, try pickpocketing one of the following: ${Thieving.Pickpocketables.map(
+					npc => npc.name
+				).join(', ')}.`
+			);
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Fletching) < pickpocketable.level) {
-			throw `${msg.author.minionName} needs ${pickpocketable.level} Fletching to fletch ${pickpocketable.name}.`;
+		if (msg.author.skillLevel(SkillsEnum.Thieving) < pickpocketable.level) {
+			return msg.send(
+				`${msg.author.minionName} needs ${pickpocketable.level} Thieving to pickpocket a ${pickpocketable.name}.`
+			);
 		}
+
+		const timeToPickpocket = pickpocketable.ticksPerPick * 600;
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const requiredItems: [string, number][] = Object.entries(pickpocketable.inputItems);
-
-		// Get the base time to fletch the item then add on quarter of a second per item to account for banking/etc.
-		let timeToFletchSingleItem = pickpocketable.tickRate * Time.Second * 0.6 + Time.Second / 4;
-		if (pickpocketable.tickRate < 1) {
-			timeToFletchSingleItem = pickpocketable.tickRate * Time.Second * 0.6;
-		}
-
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToFletchSingleItem);
+			quantity = Math.floor(msg.author.maxTripLength / timeToPickpocket);
 		}
 
-		const duration = quantity * timeToFletchSingleItem;
+		const duration = quantity * timeToPickpocket;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				pickpocketable.name
-			}s you can fletch is ${Math.floor(msg.author.maxTripLength / timeToFletchSingleItem)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of times you can pickpocket a ${
+					pickpocketable.name
+				} is ${Math.floor(msg.author.maxTripLength / timeToPickpocket)}.`
+			);
 		}
 
-		const data: PickpocketingActivityTaskOptions = {
-			fletchableName: pickpocketable.name,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.Fletching,
-			id: rand(1, 10_000_000),
-			finishDate: Date.now() + duration
-		};
-
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-
-		await addSubTaskToActivityTask(this.client, Tasks.SkillingTicker, data);
+		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(
+			this.client,
+			Tasks.SkillingTicker,
+			{
+				monsterID: pickpocketable.id,
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.Pickpocket
+			}
+		);
 
 		return msg.send(
-			`${msg.author.minionName} is now Fletching ${quantity} ${sets} ${
+			`${msg.author.minionName} is now going to pickpocket a ${
 				pickpocketable.name
-			}s, it'll take around ${formatDuration(duration)} to finish.`
+			} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }

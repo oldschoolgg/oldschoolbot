@@ -71,6 +71,11 @@ export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface PickpocketActivityTaskOptions extends ActivityTaskOptions {
+	monsterID: number;
+	quantity: number;
+}
+
 export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	quantity: number;
