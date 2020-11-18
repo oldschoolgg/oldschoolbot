@@ -68,6 +68,11 @@ export default class extends Task {
 				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc\``;
 			}
 		}
+		const hits = 0;
+		combatXPReciever(monster, user, quantity, hits);
+		const xpString = (await combatXPReciever(monster, user, quantity, hits)).toString();
+
+		str += xpString;
 
 		combatXPReciever(monster, user, quantity, hits);
 		const xpString = (await combatXPReciever(monster, user, quantity, hits)).toString();
