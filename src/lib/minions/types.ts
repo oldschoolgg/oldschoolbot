@@ -87,7 +87,7 @@ export interface KillableMonster {
 	pohBoosts?: POHBoosts;
 	/** 
 	 * Whether or not this monster can be attacked using certain combatskills.
-	*/
+	 */
 	immuneToCombatSkills?: GearSetupTypes[];
 }
 

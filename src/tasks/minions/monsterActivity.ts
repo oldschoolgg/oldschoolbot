@@ -6,6 +6,7 @@ import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/cons
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import combatXPReciever from '../../lib/minions/functions/combatXPReciever';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { randomItemFromArray } from '../../lib/util';
@@ -60,6 +61,11 @@ export default class extends Task {
 				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc\``;
 			}
 		}
+		const hits = 0;
+		combatXPReciever(monster, user, quantity, hits);
+		const xpString = (await combatXPReciever(monster, user, quantity, hits)).toString();
+
+		str += xpString;
 
 		user.incrementMonsterScore(monsterID, quantity);
 

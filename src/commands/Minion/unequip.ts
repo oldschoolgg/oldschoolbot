@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Item, EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { GearSetupTypes, hasItemEquipped, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
