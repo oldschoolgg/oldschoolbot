@@ -34,6 +34,9 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			loot.add(npc.table.roll());
 		}
+		if (user.username === 'thievious') {
+			loot.add('Rocky');
+		}
 		await user.addItemsToBank(loot.values(), true);
 
 		str += `\n\nYou received: ${await createReadableItemListFromBank(
