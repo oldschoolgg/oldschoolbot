@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Item, EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { GearTypes } from '../../lib/gear';
