@@ -24,14 +24,17 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [combatSkill, combatStyle, combatSpell]: [combatSkill, string, string]): Promise<KlasaMessage> {
+	async run(
+		msg: KlasaMessage,
+		[combatSkill, combatStyle, combatSpell]: [combatSkill, string, string]
+	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
 			return msg.send(
 				`${msg.author.minionName} is currently out on a trip, so you can't change combat style!`
 			);
 		}
 		const oldCombatSkill = msg.author.settings.get(UserSettings.Minion.CombatSkill);
-		
+
 		if (!combatSkill) {
 			return msg.send(
 				`${msg.author.minionName} is currently using combat skill ${oldCombatSkill}. To swap skill type \`${msg.cmdPrefix}combatsetup melee/range/mage\`.`
@@ -47,7 +50,7 @@ export default class extends BotCommand {
 				`${msg.author.minionName} changed main combat style from ${oldCombatSkill} to ${combatSkill}.`
 			);
 		}
-		
+
 		if (combatSkill === 'melee') {
 			combatStyle = combatStyle.toLowerCase();
 			const weapon = msg.author.equippedWeapon(GearSetupTypes.Melee);
@@ -58,7 +61,10 @@ export default class extends BotCommand {
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === combatStyle) {
-					await msg.author.settings.update(UserSettings.Minion.MeleeCombatStyle, combatStyle);
+					await msg.author.settings.update(
+						UserSettings.Minion.MeleeCombatStyle,
+						combatStyle
+					);
 
 					return msg.send(
 						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
@@ -66,7 +72,12 @@ export default class extends BotCommand {
 				}
 			}
 
-			return msg.send(`The combatstyle \`${combatStyle}\` dosen't match any of the styles that the current equipped weapon ${weapon?.name} have. The following combat styles is possible: ${weapon?.weapon?.stances.map(styles => styles.combat_style).join(', ')}.`
+			return msg.send(
+				`The combatstyle \`${combatStyle}\` dosen't match any of the styles that the current equipped weapon ${
+					weapon?.name
+				} have. The following combat styles is possible: ${weapon?.weapon?.stances
+					.map(styles => styles.combat_style)
+					.join(', ')}.`
 			);
 		}
 
@@ -80,7 +91,10 @@ export default class extends BotCommand {
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === combatStyle) {
-					await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, combatStyle);
+					await msg.author.settings.update(
+						UserSettings.Minion.RangeCombatStyle,
+						combatStyle
+					);
 
 					return msg.send(
 						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
@@ -88,7 +102,12 @@ export default class extends BotCommand {
 				}
 			}
 
-			return msg.send(`The combatstyle \`${combatStyle}\` dosen't match any of the styles that the current equipped weapon ${weapon?.name} have. The following combat styles is possible: ${weapon?.weapon?.stances.map(styles => styles.combat_style).join(', ')}.`
+			return msg.send(
+				`The combatstyle \`${combatStyle}\` dosen't match any of the styles that the current equipped weapon ${
+					weapon?.name
+				} have. The following combat styles is possible: ${weapon?.weapon?.stances
+					.map(styles => styles.combat_style)
+					.join(', ')}.`
 			);
 		}
 
@@ -98,13 +117,16 @@ export default class extends BotCommand {
 
 			if (combatStyle === ('standard' || 'defensive')) {
 				if (!combatSpell) {
-					await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, combatStyle);
+					await msg.author.settings.update(
+						UserSettings.Minion.MageCombatStyle,
+						combatStyle
+					);
 
 					return msg.send(
 						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
 					);
 				}
-		/*		combatSpell = CombatSpell.toLowerCase();
+				/*		combatSpell = CombatSpell.toLowerCase();
 				if (!AutoCastableSpells.includes(combatSpell)) {
 					return msg.send(`The combat spell \`${combatSpell}\` dosen't match any of the autocastable combat spells. The following combat spells is possible: ${AutoCastableSpells.map(spell => spell.name).join(', ')}.`
 					);
@@ -112,7 +134,8 @@ export default class extends BotCommand {
 		*/
 			}
 
-			return msg.send(`The combatstyle \`${combatStyle}\` dosen't match any of the available styles. The following combat styles is possible: Standard, Defensive.`
+			return msg.send(
+				`The combatstyle \`${combatStyle}\` dosen't match any of the available styles. The following combat styles is possible: Standard, Defensive.`
 			);
 		}
 		return msg.send('Unexpected error');
