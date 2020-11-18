@@ -35,7 +35,6 @@ export const enum Emoji {
 	Bpaptu = '<:bpaptu:660333438292983818>',
 	Diamond = '💎',
 	Dice = '<:dice:660128887111548957>',
-	Minion = '<:minion:660517408968146946>',
 	Fireworks = '🎆',
 	Tick = '✅',
 	Search = '🔎',
@@ -74,8 +73,21 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
-	Purple = '🟪'
+	Purple = '🟪',
+	// Badges,
+	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
+	GreenGem = '<:greenGem:778418736495067166>',
+	PinkGem = '<:pinkGem:778418736276963349>',
+	OrangeGem = '<:orangeGem:778418736474095616>',
+	Minion = '<:minion:778418736180494347>',
+	Spanner = '<:spanner:778418736621158410>',
+	DoubleSpanner = '<:doubleSpanner:778418736327688194>',
+	Hammer = '<:hammer:778418736595206184>',
+	Bug = '<:bug:778418736330833951>',
+	Trophy = '<:goldTrophy:778418736561782794>',
+	Crab = '<:crab:778418736432021505>'
 }
+
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
