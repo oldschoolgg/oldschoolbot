@@ -80,6 +80,10 @@ export interface KillableMonster {
 	 * The minimum *required* gear stats to fight this monster.
 	 */
 	minimumGearRequirements?: GearRequirements;
+	/** 
+	 * Whether or not this monster can be attacked using certain combatskills.
+	*/
+	immuneToCombatSkills?: GearSetupTypes[];
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
