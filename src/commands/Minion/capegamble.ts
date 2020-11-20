@@ -13,7 +13,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 60,
+			cooldown: 5,
 			categoryFlags: ['minion'],
 			examples: ['+capegamble'],
 			description: 'Allows you to gamble fire capes for a chance at the jad pet.'
