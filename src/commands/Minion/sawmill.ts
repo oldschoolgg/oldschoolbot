@@ -19,7 +19,11 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [plankName:...string]',
 			aliases: ['saw'],
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion'],
+			description:
+				'Sends your minion to turn logs into planks at the sawmill, boosts are given for graceful and woodcutting guild access. Costs GP.',
+			examples: ['+sawmill mahogany']
 		});
 	}
 

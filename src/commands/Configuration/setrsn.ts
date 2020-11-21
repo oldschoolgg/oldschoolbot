@@ -11,7 +11,8 @@ export default class extends BotCommand {
 			usage: '[rsn:str{1,12}]',
 			description:
 				'Allows you to set your runescape username, to be automatically used in commands.',
-			examples: ['+setrsn Zezima']
+			examples: ['+setrsn Zezima'],
+			categoryFlags: ['settings']
 		});
 	}
 

@@ -16,7 +16,11 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			aliases: ['trawler']
+			aliases: ['trawler'],
+			description:
+				'Sends your minion to complete the fishing trawler, allowing you to get the angler outfit.',
+			examples: ['+trawler'],
+			categoryFlags: ['minion', 'skilling', 'minigame']
 		});
 	}
 

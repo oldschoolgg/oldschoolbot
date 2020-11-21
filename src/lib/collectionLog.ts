@@ -15,6 +15,19 @@ const nightmareLog = resolveItems([
 	'Little nightmare'
 ]);
 
+const wintertodtLog = resolveItems([
+	'Phoenix',
+	'Pyromancer hood',
+	'Pyromancer garb',
+	'Pyromancer robe',
+	'Pyromancer boots',
+	'Warm gloves',
+	'Bruma torch',
+	'Burnt page',
+	'Tome of fire',
+	'Dragon axe'
+]);
+
 const zalcanoLog = resolveItems(['Crystal shard', 'Zalcano shard', 'Smolcano', 'Uncut onyx']);
 
 export const anglerOutfit = resolveItems([
@@ -163,11 +176,6 @@ export const bosses: CollectionLogData = {
 		'Kalphite princess'
 	]),
 	'Lizardman shaman': resolveItems(['Dragon warhammer']),
-	/* 'Boss Shared':resolveItems([
-		'Dragon pickaxe',
-		'Dragon 2h sword'
-		])*/
-
 	Callisto: resolveItems([
 		'Dragon pickaxe',
 		'Dragon 2h sword',
@@ -193,7 +201,9 @@ export const bosses: CollectionLogData = {
 	'Crazy Arch': resolveItems(['Malediction shard 2', 'Odium shard 2', 'Fedora']),
 	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"]),
 	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
-	Nightmare: nightmareLog
+	Nightmare: nightmareLog,
+	Zalcano: zalcanoLog,
+	Wintertodt: wintertodtLog
 };
 
 export const pets: CollectionLogData = {
@@ -1289,18 +1299,7 @@ export const quest: CollectionLogData = {
 };
 
 export const wintertodt: CollectionLogData = {
-	'': resolveItems([
-		'Phoenix',
-		'Pyromancer hood',
-		'Pyromancer garb',
-		'Pyromancer robe',
-		'Pyromancer boots',
-		'Warm gloves',
-		'Bruma torch',
-		'Burnt page',
-		'Tome of fire',
-		'Dragon axe'
-	])
+	'': wintertodtLog
 };
 
 export const coxLog: CollectionLogData = {
@@ -1396,7 +1395,7 @@ export const skillingLog: CollectionLogData = {
 	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
 	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
 	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
-	Firemaking: Object.values(wintertodt).flat(Infinity) as number[],
+	Firemaking: wintertodtLog,
 	Sepulchre1: resolveItems([
 		'Hallowed mark',
 		'Hallowed token',

@@ -13,7 +13,8 @@ export default class extends BotCommand {
 			permissionLevel: 7,
 			description:
 				'Enables a system for your server where talking allows you to get pets, separate to minion pets and your bank.',
-			examples: ['+petmessages on', '+petmessages off']
+			examples: ['+petmessages on', '+petmessages off'],
+			categoryFlags: ['settings']
 		});
 	}
 

@@ -10,7 +10,8 @@ export default class extends BotCommand {
 			examples: [
 				'+ask Should I try to get an inferno cape?',
 				'+ask Should I become a patron?'
-			]
+			],
+			categoryFlags: ['utility']
 		});
 	}
 

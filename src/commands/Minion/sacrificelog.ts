@@ -15,11 +15,12 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 10,
-			aliases: ['cl'],
+			aliases: ['sl'],
 			usage: '[type:string]',
-			examples: ['+cl boss'],
-			description: 'Allows you to view your collection log, which works the same as ingame.',
-			categoryFlags: ['minion']
+			categoryFlags: ['minion'],
+			description:
+				"The same thing as the collection log, except sourced from the items you've sacrificed.",
+			examples: ['+sacrificelog boss', '+sl skilling']
 		});
 	}
 
@@ -45,7 +46,7 @@ export default class extends BotCommand {
 		const items = Array.from(
 			new Set(Object.values(type?.items ?? Monsters.get(monster!.id)!.allItems!).flat(100))
 		) as number[];
-		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
+		const log = msg.author.settings.get(UserSettings.SacrificedBank);
 		const num = items.filter(item => log[item] > 0).length;
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
@@ -61,7 +62,7 @@ export default class extends BotCommand {
 				.get('bankImage')!
 				.generateCollectionLogImage(
 					log,
-					`${msg.author.username}'s ${(type || monster!).name} Collection Log (${num}/${
+					`${msg.author.username}'s ${(type || monster!).name} Sacrifice Log (${num}/${
 						items.length
 					})`,
 					monster ? { ...monster, items: chunkedMonsterItems } : type

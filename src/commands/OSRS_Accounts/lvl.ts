@@ -1,7 +1,9 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Hiscores } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
+
+import { BotCommand } from '../../lib/BotCommand';
 
 const xpLeft = (xp: number) => {
 	const level = convertXPtoLVL(xp);
@@ -9,7 +11,7 @@ const xpLeft = (xp: number) => {
 	return (convertLVLtoXP(level + 1) - xp).toLocaleString();
 };
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
@@ -20,7 +22,9 @@ export default class extends Command {
 				'crafting|smithing|mining|herblore|agility|thieving|slayer|' +
 				'farming|runecraft|hunter|construction> (username:...rsn)',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			examples: ['+lvl attack Woox', '+lvl strength'],
+			categoryFlags: ['utility']
 		});
 	}
 

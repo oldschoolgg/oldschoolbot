@@ -18,7 +18,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'minigame'],
+			description: 'Sends your minion to complete a clue scroll.',
+			examples: ['+mclue easy']
 		});
 	}
 

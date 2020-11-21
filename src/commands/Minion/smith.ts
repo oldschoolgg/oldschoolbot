@@ -24,7 +24,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
-			description: 'Smiths items from bars.'
+			categoryFlags: ['minion', 'skilling'],
+			description:
+				'Sends your minion to smith items, which is turning bars into smithed items, like weapons and armor.',
+			examples: ['+smith mithril sword', '+smith rune platebody']
 		});
 	}
 

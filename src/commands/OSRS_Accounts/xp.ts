@@ -1,13 +1,17 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Hiscores } from 'oldschooljs';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
 			description: 'Shows your XP in all skills.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			examples: ['+xp Magnaby'],
+			categoryFlags: ['utility']
 		});
 	}
 

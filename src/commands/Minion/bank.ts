@@ -1,9 +1,10 @@
 import { createCanvas, Image, registerFont } from 'canvas';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import * as fs from 'fs';
-import { Command, CommandStore, KlasaMessage, util } from 'klasa';
+import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Items } from 'oldschooljs';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
@@ -24,14 +25,16 @@ ctx.font = '14px OSRSFont';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows how much virtual GP you have',
+			description: 'Shows your bank, with all your items and GP.',
 			cooldown: 3,
 			usage: '[page:int|name:string]',
 			requiredPermissions: ['ATTACH_FILES'],
-			aliases: ['b']
+			aliases: ['b'],
+			examples: ['+b'],
+			categoryFlags: ['minion']
 		});
 	}
 

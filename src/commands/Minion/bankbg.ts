@@ -18,7 +18,11 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[name:string]',
-			cooldown: 3
+			cooldown: 3,
+			categoryFlags: ['minion'],
+			description:
+				'Allows you to change your bank background, which is the image shown behind your bank and gear setups. Bank backgrounds are typically quite hard to acquire, apart from some being easily available to patrons.',
+			examples: ['+bankbg', '+bankbg default', '+bankbg lumbridge']
 		});
 	}
 

@@ -51,7 +51,10 @@ export default class extends BotCommand {
 			aliases: ['wintertodt'],
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: ['ATTACH_FILES'],
+			categoryFlags: ['minion', 'skilling', 'minigame'],
+			description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
+			examples: ['+wt']
 		});
 	}
 

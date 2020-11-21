@@ -11,7 +11,10 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[dose:int{1,4}] <itemname:...string>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			description: 'Allows you to decant potions into 4-doses, or any dosage.',
+			examples: ['+decant prayer potion'],
+			categoryFlags: ['minion']
 		});
 	}
 

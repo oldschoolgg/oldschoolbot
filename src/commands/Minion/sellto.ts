@@ -21,7 +21,13 @@ export default class extends BotCommand {
 				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
-			ironCantUse: true
+			ironCantUse: true,
+			categoryFlags: ['minion'],
+			description: 'Sells items to other players for GP.',
+			examples: [
+				'+sellto @Magnaboy 1b 2 Elysian sigil',
+				'+sellto @Magnaboy 500k 1 Dragon platelegs'
+			]
 		});
 	}
 
