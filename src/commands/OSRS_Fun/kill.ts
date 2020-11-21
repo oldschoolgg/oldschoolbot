@@ -1,19 +1,22 @@
 import { MessageAttachment } from 'discord.js';
-import { Command, CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import { toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Workers } from '../../lib/workers';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			description: 'Simulate killing bosses (shows only rare drops).',
+			description: 'Simulate killing OSRS monsters and shows the loot.',
 			usage: '<quantity:int{1}> <BossName:...str>',
 			usageDelim: ' ',
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: ['ATTACH_FILES'],
+			examples: ['+kill 100 vorkath', 'kill 100k bandos'],
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 

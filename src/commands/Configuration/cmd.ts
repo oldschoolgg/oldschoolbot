@@ -13,7 +13,8 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			permissionLevel: 7,
 			description: 'Allows you to enable or disable commands in your server.',
-			examples: ['+cmd enable casket', '+cmd disable casket']
+			examples: ['+cmd enable casket', '+cmd disable casket'],
+			categoryFlags: ['settings']
 		});
 	}
 

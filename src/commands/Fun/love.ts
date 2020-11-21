@@ -8,7 +8,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<name:str>',
 			description: 'Shows a love rating.',
-			examples: ['+love Mod Sween', '+love @Woox']
+			examples: ['+love Mod Sween', '+love @Woox'],
+			categoryFlags: ['utility']
 		});
 	}
 

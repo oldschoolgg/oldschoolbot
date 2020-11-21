@@ -28,7 +28,9 @@ const links = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows a random gif of Mod Ash.'
+			description: 'Shows a random gif of Mod Ash.',
+			examples: ['+ash'],
+			categoryFlags: ['fun']
 		});
 	}
 

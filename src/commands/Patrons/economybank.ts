@@ -15,7 +15,8 @@ export default class extends BotCommand {
 			cooldown: 60 * 60 * 3,
 			description:
 				'Shows a huge image containing everyones banks combined into one bank. Takes a while to complete.',
-			examples: ['+ebank']
+			examples: ['+ebank'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

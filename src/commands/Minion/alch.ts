@@ -45,7 +45,8 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			description: 'Allows you to send your minion to alch items from your bank',
-			examples: ['+alch 12 dragon scimitar', '+alch pumpkin']
+			examples: ['+alch 12 dragon scimitar', '+alch pumpkin'],
+			categoryFlags: ['minion', 'skilling']
 		});
 	}
 

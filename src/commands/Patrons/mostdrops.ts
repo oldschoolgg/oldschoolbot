@@ -14,7 +14,8 @@ export default class extends BotCommand {
 			cooldown: 120,
 			description:
 				'Shows which players have received the most drops of an item, based on their collection log.',
-			examples: ['+mostdrops elysian sigil']
+			examples: ['+mostdrops elysian sigil'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

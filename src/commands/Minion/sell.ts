@@ -21,7 +21,10 @@ export default class extends BotCommand {
 			usage: '[quantity:int{1}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
-			ironCantUse: true
+			ironCantUse: true,
+			categoryFlags: ['minion'],
+			description: 'Sells an item to the bot for 80% of G.E price.',
+			examples: ['+sell bronze arrow']
 		});
 	}
 

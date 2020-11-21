@@ -10,7 +10,8 @@ export default class extends BotCommand {
 			aliases: ['estats'],
 			perkTier: PerkTier.Two,
 			description: 'Shows some statistics about the bot economy.',
-			examples: ['+estats']
+			examples: ['+estats'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

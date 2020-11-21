@@ -10,7 +10,8 @@ export default class extends BotCommand {
 			permissionLevel: 6,
 			usage: '<disable|enable>',
 			description: `Allows you to disable/enable the bot in a channel. If a channel is disabled, only staff of your server can use it in the channel.`,
-			examples: ['+channel enable', '+channel disable']
+			examples: ['+channel enable', '+channel disable'],
+			categoryFlags: ['settings']
 		});
 	}
 

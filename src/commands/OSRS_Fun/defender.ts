@@ -1,8 +1,17 @@
-import { Command, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { roll } from '../../lib/util';
 
-export default class extends Command {
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			description: 'Simulates how long it takes you to get all the defenders.',
+			examples: ['+defender'],
+			categoryFlags: ['fun', 'simulation']
+		});
+	}
+
 	async run(msg: KlasaMessage) {
 		let KC = 0;
 		let DKC = 0;

@@ -17,7 +17,10 @@ export default class MinionCommand extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[name:...string]'
+			usage: '[name:...string]',
+			categoryFlags: ['minion', 'pvm'],
+			description: 'Shows information on a monster, and how long you take to kill it.',
+			examples: ['+monster vorkath']
 		});
 	}
 

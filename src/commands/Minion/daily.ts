@@ -38,7 +38,11 @@ export default class DailyCommand extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 5
+			cooldown: 5,
+			categoryFlags: ['minion'],
+			examples: ['+daily'],
+			description:
+				'Allows you to answer a trivia question twice daily for some small amount of GP and random items from Diangos store.'
 		});
 	}
 

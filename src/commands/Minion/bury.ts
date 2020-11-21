@@ -17,7 +17,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'skilling'],
+			examples: ['+bury dragon bones', '+bury 10 bones'],
+			description: 'Burys bones from your bank to train prayer.'
 		});
 	}
 
