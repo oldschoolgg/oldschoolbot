@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
-import AlKharidWarrior from 'oldschooljs/dist/simulation/monsters/low/AlKharidWarrior';
 import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/CaveGoblin';
 import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/DesertBandit';
 import Elf from 'oldschooljs/dist/simulation/monsters/low/Elf';
+import Farmer from 'oldschooljs/dist/simulation/monsters/low/Farmer';
 import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/FremennikCitizen';
 import Gnome from 'oldschooljs/dist/simulation/monsters/low/Gnome';
 import Guard from 'oldschooljs/dist/simulation/monsters/low/Guard';
@@ -51,161 +51,161 @@ const Pickpocketables: Pickpocketable[] = [
 		id: Monsters.Woman.id
 	},
 	{
+		name: 'Farmer',
+		level: 10,
+		xp: 14.5,
+		table: Farmer.pickpocketTable!,
+		ticksPerPick: 1,
+		id: Farmer.id
+	},
+	{
 		name: 'Female H.A.M. member',
-		level: 1,
-		xp: 8,
+		level: 15,
+		xp: 18.5,
 		table: HamMember.pickpocketTable!,
 		ticksPerPick: 1,
 		id: HamMember.id
 	},
 	{
 		name: 'Male H.A.M. member',
-		level: 1,
-		xp: 8,
+		level: 20,
+		xp: 22.5,
 		table: HamMember.pickpocketTable!,
 		ticksPerPick: 1,
 		id: HamMember.id
 	},
 	{
 		name: 'Warrior woman',
-		level: 1,
-		xp: 8,
+		level: 25,
+		xp: 26,
 		table: WarriorWoman.pickpocketTable!,
 		ticksPerPick: 1,
 		id: WarriorWoman.id
 	},
 	{
-		name: 'Al-Kharid warrior',
-		level: 1,
-		xp: 8,
-		table: AlKharidWarrior.pickpocketTable!,
-		ticksPerPick: 1,
-		id: AlKharidWarrior.id
-	},
-	{
 		name: 'Rogue',
-		level: 1,
-		xp: 8,
+		level: 32,
+		xp: 35.5,
 		table: Rogue.pickpocketTable!,
 		ticksPerPick: 1,
 		id: Rogue.id
 	},
 	{
 		name: 'Cave goblin',
-		level: 1,
-		xp: 8,
+		level: 36,
+		xp: 40,
 		table: CaveGoblin.pickpocketTable!,
 		ticksPerPick: 1,
 		id: CaveGoblin.id
 	},
 	{
 		name: 'Master Farmer',
-		level: 1,
-		xp: 8,
+		level: 38,
+		xp: 43,
 		table: MasterFarmer.pickpocketTable!,
 		ticksPerPick: 1,
 		id: MasterFarmer.id
 	},
 	{
 		name: 'Guard',
-		level: 1,
-		xp: 8,
+		level: 40,
+		xp: 46.8,
 		table: Guard.pickpocketTable!,
 		ticksPerPick: 1,
 		id: Guard.id
 	},
 	{
 		name: 'Fremennik Citizen',
-		level: 1,
-		xp: 8,
+		level: 45,
+		xp: 65,
 		table: FremennikCitizen.pickpocketTable!,
 		ticksPerPick: 1,
 		id: FremennikCitizen.id
 	},
 	{
 		name: 'Desert Bandit',
-		level: 1,
-		xp: 8,
+		level: 53,
+		xp: 79.5,
 		table: DesertBandit.pickpocketTable!,
 		ticksPerPick: 1,
 		id: DesertBandit.id
 	},
 	{
 		name: 'Knight of Ardougne',
-		level: 1,
-		xp: 8,
+		level: 55,
+		xp: 84.3,
 		table: KnightOfArdougne.pickpocketTable!,
 		ticksPerPick: 1,
 		id: KnightOfArdougne.id
 	},
 	{
 		name: 'Pollnivian Bandit',
-		level: 1,
-		xp: 8,
+		level: 55,
+		xp: 84.3,
 		table: PollnivnianBandit.pickpocketTable!,
 		ticksPerPick: 1,
 		id: PollnivnianBandit.id
 	},
 	{
 		name: 'Yanille Watchman',
-		level: 1,
-		xp: 8,
+		level: 65,
+		xp: 137.5,
 		table: YanilleWatchman.pickpocketTable!,
 		ticksPerPick: 1,
 		id: YanilleWatchman.id
 	},
 	{
 		name: 'Menaphite Thug',
-		level: 1,
-		xp: 8,
+		level: 65,
+		xp: 137.5,
 		table: MenaphiteThug.pickpocketTable!,
 		ticksPerPick: 1,
 		id: MenaphiteThug.id
 	},
 	{
 		name: 'Paladin',
-		level: 1,
-		xp: 8,
+		level: 70,
+		xp: 151.7,
 		table: Paladin.pickpocketTable!,
 		ticksPerPick: 1,
 		id: Paladin.id
 	},
 	{
 		name: 'Gnome',
-		level: 1,
-		xp: 8,
+		level: 75,
+		xp: 198.5,
 		table: Gnome.pickpocketTable!,
 		ticksPerPick: 1,
 		id: Gnome.id
 	},
 	{
 		name: 'Hero',
-		level: 1,
-		xp: 8,
+		level: 80,
+		xp: 275,
 		table: Hero.pickpocketTable!,
 		ticksPerPick: 1,
 		id: Hero.id
 	},
 	{
 		name: 'Vyre',
-		level: 1,
-		xp: 8,
+		level: 82,
+		xp: 306.9,
 		table: Vyre.pickpocketTable!,
 		ticksPerPick: 1,
 		id: Vyre.id
 	},
 	{
 		name: 'Elf',
-		level: 1,
-		xp: 8,
+		level: 85,
+		xp: 353,
 		table: Elf.pickpocketTable!,
 		ticksPerPick: 1,
 		id: Elf.id
 	},
 	{
 		name: 'TzHaar-Hur',
-		level: 1,
-		xp: 8,
+		level: 90,
+		xp: 103.4,
 		table: TzHaarHur.pickpocketTable!,
 		ticksPerPick: 1,
 		id: TzHaarHur.id

@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { Time } from '../../lib/constants';
 import Pickpocketables from '../../lib/skilling/skills/thieving/pickpocketables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -30,6 +31,8 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Thieving level is now ${newLevel}!`;
 		}
 
+		for (let i = 0; i < quantity; i++) {}
+
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add(npc.table.roll());
@@ -47,6 +50,11 @@ export default class extends Task {
 		if (loot.amount('Rocky') > 0) {
 			str += `\nYou have a funny feeling you're being followed...`;
 		}
+
+		str += `\n**${(
+			((quantity * npc.xp) / (duration / Time.Minute)) *
+			60
+		).toLocaleString()} XP/Hr**`;
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of ${quantity}x ${npc.name}[${npc.id}]`);
