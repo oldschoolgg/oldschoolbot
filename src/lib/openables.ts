@@ -301,6 +301,11 @@ const cantBeDropped = [
 	itemID('Dwarven warhammer'),
 	itemID('Dwarven ore'),
 	itemID('Dwarven bar'),
+	itemID('Dwarven pickaxe'),
+	itemID('Dwarven greataxe'),
+	itemID('Dwarven greathammer'),
+	itemID('Dwarven knife'),
+	itemID('Cob'),
 	22664 // JMOD Scythe of Vitur
 ] as number[];
 
