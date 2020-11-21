@@ -223,4 +223,9 @@ export function initCustomItems() {
 		tradeable_on_ge: true,
 		wiki_name: 'Takon'
 	});
+	setCustomItem(6796, 'Tiny lamp', getOSItem('Lamp'));
+	setCustomItem(21642, 'Small lamp', getOSItem('Lamp'));
+	setCustomItem(23516, 'Average lamp', getOSItem('Lamp'));
+	setCustomItem(22320, 'Large lamp', getOSItem('Lamp'));
+	setCustomItem(11157, 'Huge lamp', getOSItem('Lamp'));
 }

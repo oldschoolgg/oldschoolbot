@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-interface XPLamp {
+export interface XPLamp {
 	itemID: number;
 	amount: number;
 	name: string;
@@ -10,27 +10,27 @@ export const XPLamps: XPLamp[] = [
 	{
 		itemID: 6796,
 		amount: 20_000,
-		name: 'Lamp'
+		name: 'Tiny lamp'
 	},
 	{
 		itemID: 21642,
 		amount: 50_000,
-		name: 'Antique lamp'
+		name: 'Small lamp'
 	},
 	{
 		itemID: 23516,
 		amount: 100_000,
-		name: 'Lamp of knowledge'
+		name: 'Average lamp'
 	},
 	{
 		itemID: 22320,
 		amount: 1_000_000,
-		name: "Champion's lamp"
+		name: 'Large lamp'
 	},
 	{
 		itemID: 11157,
 		amount: 5_000_000,
-		name: 'Dreamy lamp'
+		name: 'Huge lamp'
 	}
 ];
 
