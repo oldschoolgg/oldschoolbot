@@ -8,7 +8,6 @@ import Skills from '../../lib/skilling/skills';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { itemNameFromID, toTitleCase } from '../../lib/util';
 import { XPLamps } from '../../lib/xpLamps';
-import user from '../Utility/user';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
