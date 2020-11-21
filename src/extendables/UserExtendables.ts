@@ -232,11 +232,11 @@ export default class extends Extendable {
 		const skill = Object.values(Skills).find(skill => skill.id === skillName);
 		if (!skill) return;
 
-		let newXP = currentXP + amount;
-
 		if (multiplier) {
-			newXP *= 5;
+			amount *= 5;
 		}
+
+		let newXP = currentXP + amount;
 
 		// If they reached a XP milestone, send a server notification.
 		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {
