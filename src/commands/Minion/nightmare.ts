@@ -13,7 +13,7 @@ import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MakePartyOptions } from '../../lib/types';
 import { NightmareActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
@@ -193,6 +193,11 @@ export default class extends BotCommand {
 		);
 		this.checkReqs(users, NightmareMonster, quantity);
 
+		const hasCob = msg.author.equippedPet() === itemID('Cob');
+		if (hasCob && type === 'solo') {
+			duration /= 2;
+		}
+
 		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 
 		if (NightmareMonster.healAmountNeeded) {
@@ -223,7 +228,7 @@ export default class extends BotCommand {
 			}
 		);
 
-		const str =
+		let str =
 			type === 'solo'
 				? `${soloMessage(msg.author, duration, quantity)}`
 				: `${partyOptions.leader.username}'s party (${users
@@ -233,6 +238,10 @@ export default class extends BotCommand {
 				  }. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 						NightmareMonster.timeToFinish
 				  )} - the total trip will take ${formatDuration(duration)}.`;
+
+		if (hasCob && type === 'solo') {
+			str += `\n2x Boost from Cob`;
+		}
 
 		return msg.channel.send(str, {
 			split: true
