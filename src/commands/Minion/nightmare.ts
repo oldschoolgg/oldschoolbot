@@ -188,6 +188,11 @@ export default class extends BotCommand {
 			}
 		}
 
+		const hasCob = msg.author.equippedPet() === itemID('Cob');
+		if (hasCob && type === 'solo') {
+			effectiveTime /= 2;
+		}
+
 		let [quantity, duration, perKillTime] = calcDurQty(
 			users,
 			{ ...NightmareMonster, timeToFinish: effectiveTime },
@@ -196,11 +201,6 @@ export default class extends BotCommand {
 			Time.Minute * 30
 		);
 		this.checkReqs(users, NightmareMonster, quantity);
-
-		const hasCob = msg.author.equippedPet() === itemID('Cob');
-		if (hasCob && type === 'solo') {
-			duration /= 2;
-		}
 
 		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 
