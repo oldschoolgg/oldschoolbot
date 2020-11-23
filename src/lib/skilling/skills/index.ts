@@ -1,6 +1,11 @@
 import { Skill } from '../types';
 import Agility from './agility';
 import Construction from './construction';
+import Attack from './combat/attack';
+import Defence from './combat/defence';
+import Hitpoints from './combat/hitpoints';
+import Ranged from './combat/ranged';
+import Strength from './combat/strength';
 import Cooking from './cooking';
 import Crafting from './crafting';
 import Farming from './farming';
@@ -34,7 +39,12 @@ export const Skills: Record<string, Skill> = {
 	Herblore,
 	Hunter,
 	Construction,
-	Magic
+	Attack,
+	Strength,
+	Defence,
+	Ranged,
+	Magic,
+	Hitpoints
 };
 
 export const skillsValues = Object.values(Skills);

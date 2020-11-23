@@ -4,6 +4,7 @@ import { SkillsEnum } from '../../../types';
 import castables from './castables';
 
 const Magic = {
+	name: 'Magic',
 	aliases: ['magic', 'mage'],
 	Castables: castables,
 	Monsters: killableMonsters,
