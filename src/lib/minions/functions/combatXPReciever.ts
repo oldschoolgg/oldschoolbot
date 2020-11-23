@@ -2,6 +2,8 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { UserSettings } from '../../settings/types/UserSettings';
+import castables from '../../skilling/skills/combat/magic/castables';
+import { stringMatches } from '../../util';
 import { KillableMonster } from '../types';
 import { GearSetupTypes } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
@@ -14,7 +16,18 @@ export default async function combatXPReciever(
 ) {
 	// Returned XP and level up string.
 	let str = '';
+	let spell;
 	const combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
+	if (combatSkill === 'mage') {
+		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
+		if (combatSpell === null) {
+			console.log('Spell is null.');
+			return;
+		}
+		spell = castables.find(_spell =>
+			stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
+		);
+	}
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		console.log("Monster dosen't exist.");
@@ -58,6 +71,8 @@ export default async function combatXPReciever(
 	const rangeCombatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle);
 	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
 	let rangeAttackStyle = '';
+
+	const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle);
 
 	switch (combatSkill) {
 		case 'melee':
@@ -227,14 +242,50 @@ export default async function combatXPReciever(
 			}
 			break;
 		case 'mage':
-			// Xp depends on how much splashed aswell which is based on which spell used.
-			hits *= hits + 5;
-			// Add xp depending on spells etc.
-			str = `\nMage dosen't work yet.`;
-			if (newMagicLevel > currentMagicLevel) {
-				str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}! oh hits XD ${hits}`;
+			switch (mageCombatStyle) {
+				case 'standard':
+					await user.addXP(SkillsEnum.Magic, 2 * totalHP + hits * spell?.magicxp!);
+					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
+					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
+					str = `\nYou also received ${(
+						2 * totalHP + hits * spell?.magicxp!
+					).toLocaleString()} Magic XP and ${Math.round(
+						1.33 * totalHP
+					).toLocaleString()} Hitpoints XP.`;
+					if (newMagicLevel > currentMagicLevel) {
+						str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
+					}
+					if (newHitpointsLevel > currentHitpointsLevel) {
+						str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
+					}
+					return str;
+				case 'defensive':
+					await user.addXP(SkillsEnum.Magic, Math.round(1.33 * totalHP) + hits * spell?.magicxp!);
+					await user.addXP(SkillsEnum.Defence, 1 * totalHP);
+					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
+					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
+					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
+					str = `\nYou also received ${(
+						Math.round(1.33 * totalHP) + hits * spell?.magicxp!
+					).toLocaleString()} Magic XP, ${(
+						1 * totalHP
+					).toLocaleString()} Defence XP and ${Math.round(
+						1.33 * totalHP
+					).toLocaleString()} Hitpoints XP.`;
+					if (newMagicLevel > currentMagicLevel) {
+						str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
+					}
+					if (newDefenceLevel > currentDefenceLevel) {
+						str += `\n\n${user.minionName}'s Defence level is now ${newDefenceLevel}!`;
+					}
+					if (newHitpointsLevel > currentHitpointsLevel) {
+						str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
+					}
+					return str;
 			}
-			return str;
+			break;
 	}
 	return '\nNot working..';
 }
