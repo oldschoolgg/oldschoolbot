@@ -1,6 +1,6 @@
-import { Castable } from '../../../types';
-import itemID from '../../../../util/itemID';
-import { resolveNameBank } from '../../../../util';
+import { resolveNameBank } from '../../../../../util';
+import itemID from '../../../../../util/itemID';
+import { Castable } from '../../../../types';
 
 const Standard: Castable[] = [
 	{
