@@ -133,6 +133,7 @@ export default class extends BotCommand {
 				);
 			}
 		}
+		const hits = 0;
 
 		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
 			this.client,
@@ -143,6 +144,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
+				hits,
 				type: Activity.GroupMonsterKilling,
 				leader: msg.author.id,
 				users: users.map(u => u.id)

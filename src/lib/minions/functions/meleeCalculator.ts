@@ -18,13 +18,11 @@ export default function meleeCalculator(
 	const combatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle);
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
-		console.log("Monster dosen't exist.");
-		return;
+		throw "Monster dosen't exist.";
 	}
 	const meleeWeapon = user.equippedWeapon(GearSetupTypes.Melee);
 	if (meleeWeapon === null || meleeWeapon.weapon === null) {
-		console.log('Weapon is null.');
-		return;
+		throw 'Weapon is null.';
 	}
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Melee))
