@@ -4,8 +4,13 @@ import { BotCommand } from '../../lib/BotCommand';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import castables from '../../lib/skilling/skills/combat/magic/castables';
+import Ancient from '../../lib/skilling/skills/combat/magic/castables/Ancient';
+import Standard from '../../lib/skilling/skills/combat/magic/castables/Standard';
 import { stringMatches } from '../../lib/util';
+import { Castable } from './../../lib/skilling/types';
+
+// No Lunar at this point, vengence etc isn't useful here.
+const castables: Castable[] = [...Standard, ...Ancient];
 
 export enum combatSkill {
 	Melee = 'melee',
@@ -19,7 +24,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[melee|mage|range] [combatSkill:string] [combatSpell:string]',
+			usage: '[melee|mage|range] [combatSkill:string] [combatSpell:...string]',
 			usageDelim: ' ',
 			aliases: ['cs']
 		});
@@ -117,7 +122,7 @@ export default class extends BotCommand {
 			combatStyle = combatStyle.toLowerCase();
 			await msg.author.settings.update(UserSettings.Minion.CombatSkill, combatSkill);
 
-			if (combatStyle === ('standard' || 'defensive')) {
+			if (combatStyle === 'standard' || combatStyle === 'defensive') {
 				if (!combatSpell) {
 					await msg.author.settings.update(
 						UserSettings.Minion.MageCombatStyle,
@@ -125,13 +130,17 @@ export default class extends BotCommand {
 					);
 
 					return msg.send(
-						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
+						`${
+							msg.author.minionName
+						} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}, your current combat spell is ${msg.author.settings.get(
+							UserSettings.Minion.CombatSpell
+						)}.`
 					);
 				}
 				combatSpell = combatSpell.toLowerCase();
 
 				const CombatSpells = castables.filter(
-					_spell => _spell.category.toLowerCase() === 'combat'
+					_spell => _spell.category.toLowerCase() === 'combat' && _spell.baseMaxHit
 				);
 
 				const Spell = CombatSpells.find(_spell =>
@@ -140,7 +149,7 @@ export default class extends BotCommand {
 
 				if (!Spell) {
 					return msg.send(
-						`The combat spell \`${combatSpell}\` dosen't match any of the autocastable combat spells. The following combat spells is possible: ${CombatSpells.map(
+						`The combat spell \`${combatSpell}\` dosen't match any of the available combat spells. The following combat spells is possible: ${CombatSpells.map(
 							spell => spell.name
 						).join(', ')}.`
 					);
@@ -151,7 +160,7 @@ export default class extends BotCommand {
 				await msg.author.settings.update(UserSettings.Minion.CombatSpell, Spell.name);
 
 				return msg.send(
-					`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill}, combat style to ${combatStyle} and Combat spell to ${Spell.name}.`
+					`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill}, combat style to ${combatStyle} and combat spell to ${Spell.name}.`
 				);
 			}
 
