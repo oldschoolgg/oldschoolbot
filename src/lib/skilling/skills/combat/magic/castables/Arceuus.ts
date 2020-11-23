@@ -1,5 +1,5 @@
-import { Castable } from '../../../types';
-import { resolveNameBank } from '../../../../util';
+import { resolveNameBank } from '../../../../../util';
+import { Castable } from '../../../../types';
 
 const Arceuus: Castable[] = [
 	{

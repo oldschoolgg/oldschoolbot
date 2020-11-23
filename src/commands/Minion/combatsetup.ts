@@ -4,6 +4,8 @@ import { BotCommand } from '../../lib/BotCommand';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import castables from '../../lib/skilling/skills/combat/magic/castables';
+import { stringMatches } from '../../lib/util';
 
 export enum combatSkill {
 	Melee = 'melee',
@@ -126,12 +128,31 @@ export default class extends BotCommand {
 						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
 					);
 				}
-				/*		combatSpell = CombatSpell.toLowerCase();
-				if (!AutoCastableSpells.includes(combatSpell)) {
-					return msg.send(`The combat spell \`${combatSpell}\` dosen't match any of the autocastable combat spells. The following combat spells is possible: ${AutoCastableSpells.map(spell => spell.name).join(', ')}.`
+				combatSpell = combatSpell.toLowerCase();
+
+				const CombatSpells = castables.filter(
+					_spell => _spell.category.toLowerCase() === 'combat'
+				);
+
+				const Spell = CombatSpells.find(_spell =>
+					stringMatches(_spell.name.toLowerCase(), combatSpell)
+				);
+
+				if (!Spell) {
+					return msg.send(
+						`The combat spell \`${combatSpell}\` dosen't match any of the autocastable combat spells. The following combat spells is possible: ${CombatSpells.map(
+							spell => spell.name
+						).join(', ')}.`
 					);
 				}
-		*/
+
+				await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, combatStyle);
+
+				await msg.author.settings.update(UserSettings.Minion.CombatSpell, Spell.name);
+
+				return msg.send(
+					`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill}, combat style to ${combatStyle} and Combat spell to ${Spell.name}.`
+				);
 			}
 
 			return msg.send(
