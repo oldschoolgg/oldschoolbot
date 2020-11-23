@@ -521,6 +521,13 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			await removeAmmoFromUser(this.client, msg.author, hits);
 		}
 
+		const combatCalcInfo = combatCalculator(monster, msg.author, quantity);
+
+		if (!combatCalcInfo) {
+			throw `Something went wrong with combatCalculator`;
+		}
+		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
+		console.log(combatDuration);
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
