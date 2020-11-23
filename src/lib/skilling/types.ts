@@ -212,3 +212,18 @@ export interface Plant {
 	timePerPatchTravel: number;
 	timePerHarvest: number;
 }
+
+export interface Castable {
+	name: string;
+	id?: number;
+	level: number;
+	magicxp: number;
+	prayerxp?: number;
+	farmingxp?: number;
+	craftingxp?: number;
+	baseMaxHit?: number;
+	category: string;
+	inputItems: ItemBank;
+	tickRate: number;
+	outputMultiple?: number;
+}

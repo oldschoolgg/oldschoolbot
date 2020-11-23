@@ -87,7 +87,7 @@ export default function rangeCalculator(
 	// Calculate Defence roll
 	let defenceRoll = currentMonsterData.defenceLevel + 9;
 
-	defenceRoll *= (currentMonsterData.defenceRanged + 64);
+	defenceRoll *= currentMonsterData.defenceRanged + 64;
 
 	defenceRoll = Math.round(defenceRoll);
 
@@ -103,7 +103,10 @@ export default function rangeCalculator(
 	// Calculate average damage per hit and dps
 	const DamagePerHit = (maxHit * hitChance) / 2;
 
-	let rangeAttackSpeed = combatStyle === 'rapid' ? rangeWeapon.weapon.attack_speed - 0.6 : rangeWeapon.weapon.attack_speed;
+	let rangeAttackSpeed =
+		combatStyle === 'rapid'
+			? rangeWeapon.weapon.attack_speed - 0.6
+			: rangeWeapon.weapon.attack_speed;
 	const DPS = DamagePerHit / rangeAttackSpeed;
 
 	// Calculates hits required, combat time and average monster kill speed.
