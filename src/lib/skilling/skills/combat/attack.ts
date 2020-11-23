@@ -3,6 +3,7 @@ import killableMonsters from '../../../minions/data/killableMonsters';
 import { SkillsEnum } from '../../types';
 
 const Attack = {
+	name: 'Attack',
 	aliases: ['attack'],
 	Monsters: killableMonsters,
 	id: SkillsEnum.Attack,

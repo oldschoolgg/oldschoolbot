@@ -1,5 +1,11 @@
 import { Skill } from '../types';
 import Agility from './agility';
+import Attack from './combat/attack';
+import Defence from './combat/defence';
+import Hitpoints from './combat/hitpoints';
+import Magic from './combat/magic/magic';
+import Ranged from './combat/ranged';
+import Strength from './combat/strength';
 import Cooking from './cooking';
 import Crafting from './crafting';
 import Farming from './farming';
@@ -26,7 +32,13 @@ export const Skills: Record<string, Skill> = {
 	Runecraft,
 	Fletching,
 	Thieving,
-	Farming
+	Farming,
+	Attack,
+	Strength,
+	Defence,
+	Ranged,
+	Magic,
+	Hitpoints
 };
 
 export default Skills;
