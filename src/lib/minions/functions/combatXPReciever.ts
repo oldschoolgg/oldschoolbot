@@ -22,7 +22,7 @@ export default async function combatXPReciever(
 		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 		if (combatSpell === null) {
 			console.log('Spell is null.');
-			return;
+			return str;
 		}
 		spell = castables.find(_spell =>
 			stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
@@ -70,7 +70,6 @@ export default async function combatXPReciever(
 
 	const rangeCombatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle);
 	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
-	let rangeAttackStyle = '';
 
 	const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle);
 
@@ -176,13 +175,11 @@ export default async function combatXPReciever(
 				console.log('Weapon is null.');
 				return str;
 			}
-			for (let stance of rangeWeapon.weapon.stances) {
-				if (stance.combat_style.toLowerCase() === rangeCombatStyle) {
-					rangeAttackStyle = stance.attack_style;
-					break;
-				}
+			if (rangeCombatStyle === null) {
+				console.log('Range combat style is null.');
+				return str;
 			}
-			switch (rangeAttackStyle) {
+			switch (rangeCombatStyle.toLowerCase()) {
 				case 'accurate':
 					await user.addXP(SkillsEnum.Ranged, 4 * totalHP);
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
