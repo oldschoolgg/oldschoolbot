@@ -13,10 +13,6 @@ export default function combatCalculator(
 ) {
 	const combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
 
-	if (combatSkill === null) {
-		console.log('No good default');
-		return;
-	}
 	/*
 	// Move out of function.
 	if (monster.immuneToCombatSkills && combatSkill != null) {

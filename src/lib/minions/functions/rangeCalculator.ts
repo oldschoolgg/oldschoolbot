@@ -18,13 +18,11 @@ export default function rangeCalculator(
 	const combatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle);
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
-		console.log("Monster dosen't exist.");
-		return;
+		throw "Monster dosen't exist.";
 	}
 	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
 	if (rangeWeapon === null || rangeWeapon.weapon === null) {
-		console.log('Weapon is null.');
-		return;
+		throw 'Weapon is null.';
 	}
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Range))
