@@ -28,18 +28,15 @@ export default function mageCalculator(
 		stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
 	);
 	if (!spell?.baseMaxHit) {
-		console.log('Spell got no base max hit.');
-		return;
+		throw 'Spell got no base max hit.';
 	}
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
-		console.log("Monster dosen't exist.");
-		return;
+		throw "Monster dosen't exist.";
 	}
 	const mageWeapon = user.equippedWeapon(GearSetupTypes.Mage);
 	if (mageWeapon === null || mageWeapon.weapon === null) {
-		console.log('Weapon is null.');
-		return;
+		throw 'Weapon is null.';
 	}
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Mage))

@@ -14,7 +14,7 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
+	async run({ monsterID, userID, channelID, quantity, duration, hits}: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		const perkTier = getUsersPerkTier(user);
@@ -61,7 +61,7 @@ export default class extends Task {
 				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc\``;
 			}
 		}
-		const hits = 0;
+
 		combatXPReciever(monster, user, quantity, hits);
 		const xpString = (await combatXPReciever(monster, user, quantity, hits)).toString();
 

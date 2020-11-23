@@ -25,6 +25,7 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
+	hits: number;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {

@@ -17,6 +17,7 @@ import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+import combatCalculator from '../../lib/minions/functions/combatCalculator';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -579,6 +580,13 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			foodStr = result;
 		}
 
+		const combatCalcInfo = combatCalculator(monster, msg.author, quantity);
+
+		if (!combatCalcInfo) {
+			throw `Something went wrong with combatCalculator`;
+		}
+		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
+		console.log(combatDuration);
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
@@ -595,6 +603,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
 		}
+		duration = 0;
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
 			this.client,
@@ -605,7 +614,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.MonsterKilling
+				hits,
+				type: Activity.MonsterKilling,
 			}
 		);
 
@@ -615,6 +625,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		if (foodStr) {
 			response += ` Removed ${foodStr}.`;
 		}
+		response += `it'll take around ${formatDuration(duration)} to finish. Your DPS is ${DPS.toLocaleString()} and kill monsters in ${Math.round(monsterKillSpeed).toLocaleString()} seconds.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
