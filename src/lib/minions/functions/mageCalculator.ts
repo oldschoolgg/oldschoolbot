@@ -25,7 +25,7 @@ export default function mageCalculator(
 		return;
 	}
 	const spell = castables.find(_spell =>
-		stringMatches(_spell.name.toLowerCase(), combatSpell)
+		stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
 	);
 	if (!spell?.baseMaxHit) {
 		console.log('Spell got no base max hit.');
