@@ -33,8 +33,8 @@ export default function combatCalculator(
 		case 'melee':
 			return meleeCalculator(monster, user, quantity);
 		case 'range':
-			return rangeCalculator(monster, user);
+			return rangeCalculator(monster, user, quantity);
 		case 'mage':
-			return mageCalculator(monster, user);
+			return mageCalculator(monster, user, quantity);
 	}
 }
