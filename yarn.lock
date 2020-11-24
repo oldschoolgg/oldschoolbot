@@ -3999,10 +3999,10 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oldschooljs@^1.4.91:
-  version "1.4.91"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.4.91.tgz#724c05b5379330ef0d0267831b91b5acaf4ad1d8"
-  integrity sha512-QM8HJ+JQRulyUxmsUefSw3TP6yeGO248M/yvgNxWccuZhQHCzeUab0YOdeO9reAOFktNTQuWT8+PR1c86l+Dmg==
+oldschooljs@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.5.2.tgz#7af3ae0caab74cb9533a7cfc51579e08a7324cd2"
+  integrity sha512-AhjOKS8z78ataosDyCW1gzyvr8hyRtO+gMRDSDcyROWzTlVg78ffCkmRqQsiZjx6BFYOglZ1rBWwwlo0Eu9TMw==
   dependencies:
     e "^0.1.3"
     jsdom "^16.0.1"
