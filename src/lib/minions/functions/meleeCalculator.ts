@@ -67,7 +67,7 @@ export default function meleeCalculator(
 			user.skillLevel(SkillsEnum.Attack) /* + Attack boost: potions etc) * prayerbonus */
 		) + 8;
 
-	if (attackStyle === 'aggresive') {
+	if (attackStyle === 'accurate') {
 		effectiveAttackLvl += 3;
 	}
 	if (attackStyle === 'controlled') {
@@ -127,7 +127,7 @@ export default function meleeCalculator(
 
 	// Calculate average damage per hit and dps
 	const DamagePerHit = (maxHit * hitChance) / 2;
-	const DPS = DamagePerHit / meleeWeapon.weapon.attack_speed;
+	const DPS = DamagePerHit / (meleeWeapon.weapon.attack_speed * 0.6);
 
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
@@ -145,6 +145,7 @@ export default function meleeCalculator(
 			hits++;
 		}
 	}
+
 	const combatDuration = hits * meleeWeapon.weapon.attack_speed;
 
 	return [combatDuration, hits, DPS, monsterKillSpeed];
