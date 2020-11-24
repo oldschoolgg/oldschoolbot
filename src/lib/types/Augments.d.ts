@@ -59,7 +59,7 @@ declare module 'klasa' {
 			title: string = '',
 			type: any
 		): Promise<Buffer>;
-		getItemImage(itemID: number): Promise<Image>;
+		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
