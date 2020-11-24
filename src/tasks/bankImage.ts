@@ -119,7 +119,6 @@ export default class BankImageTask extends Task {
 
 		const item = Items.get(itemID);
 		if (item?.stackedVariants) {
-			console.log(itemID);
 			for (const variant of item.stackedVariants) {
 				if (quantity >= variant.qty) {
 					return this.getItemImage(variant.id, quantity);
