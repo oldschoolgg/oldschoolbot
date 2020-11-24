@@ -2,7 +2,7 @@ import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Util } from 'oldschooljs';
+import { Items, Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -113,13 +113,23 @@ export default class BankImageTask extends Task {
 		}
 	}
 
-	async getItemImage(itemID: number): Promise<Image> {
+	async getItemImage(itemID: number, quantity: number): Promise<Image> {
 		const isOnDisk = this.itemIconsList.has(itemID);
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 
+		const item = Items.get(itemID);
+		if (item?.stackedVariants) {
+			console.log(itemID);
+			for (const variant of item.stackedVariants) {
+				if (quantity >= variant.qty) {
+					return this.getItemImage(variant.id, quantity);
+				}
+			}
+		}
+
 		if (!isOnDisk) {
 			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID);
+			return this.getItemImage(itemID, quantity);
 		}
 
 		if (!cachedImage) {
@@ -127,7 +137,7 @@ export default class BankImageTask extends Task {
 			const image = await canvasImageFromBuffer(imageBuffer);
 
 			this.itemIconImagesCache.set(itemID, image);
-			return this.getItemImage(itemID);
+			return this.getItemImage(itemID, quantity);
 		}
 
 		return cachedImage;
@@ -135,7 +145,7 @@ export default class BankImageTask extends Task {
 
 	async fetchAndCacheImage(itemID: number) {
 		const imageBuffer = await fetch(
-			`https://static.runelite.net/cache/item/icon/${itemID}.png`
+			`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`
 		).then(result => result.buffer());
 
 		await fs.promises.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
@@ -352,7 +362,7 @@ export default class BankImageTask extends Task {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + this.borderVertical!.width + 20 + (i % itemsPerRow) * (36 + 21);
 			const [id, quantity, value] = items[i];
-			const item = await this.getItemImage(id);
+			const item = await this.getItemImage(id, quantity);
 			if (!item) {
 				this.client.emit(Events.Warn, `Item with ID[${id}] has no item image.`);
 				continue;
@@ -480,7 +490,7 @@ export default class BankImageTask extends Task {
 			quantity: number,
 			completed: boolean
 		) => {
-			const item = await this.getItemImage(itemID);
+			const item = await this.getItemImage(itemID, 100_000);
 			if (!item) return;
 
 			x += (32 - item.width) / 2;
