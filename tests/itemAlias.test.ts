@@ -19,7 +19,8 @@ describe('Item Alias', () => {
 					getOSItem(13630), // Duplicate Graceful cape (Hosidius)
 					getOSItem(13670), // Duplicate Graceful cape (Kourend)
 					getOSItem(21066), // Duplicate Graceful cape (Agility Arena)
-					getOSItem(24748) // Duplicate Graceful cape (Hallowed Sepulchre)
+					getOSItem(24748), // Duplicate Graceful cape (Hallowed Sepulchre)
+					getOSItem(25074) // Duplicate Graceful cape (Trailblazer)
 				]
 			],
 			['Black graceful cape', [getOSItem(24746)]],
