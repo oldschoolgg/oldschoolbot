@@ -24,7 +24,7 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
+import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray, round } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
@@ -642,7 +642,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish. Your DPS is ${DPS.toLocaleString()} and kill monsters in ${Math.round(monsterKillSpeed).toLocaleString()} seconds.`;
+		}, it'll take around ${formatDuration(combatDuration*1000)} to finish. Your DPS is ${round(DPS, 2)} and average monster kill speed is ${round(monsterKillSpeed, 2)} seconds.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
