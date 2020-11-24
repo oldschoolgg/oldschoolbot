@@ -33,15 +33,8 @@ export default function rangeCalculator(
 		Math.round(
 			user.skillLevel(SkillsEnum.Ranged) /* + Ranged boost: potions etc) * prayerbonus */
 		) + 8;
-	let attackStyle = '';
-	for (let stance of rangeWeapon.weapon.stances) {
-		if (stance.combat_style.toLowerCase() === combatStyle) {
-			attackStyle = stance.attack_style;
-			break;
-		}
-	}
 
-	if (attackStyle === 'accurate') {
+	if (combatStyle === 'accurate') {
 		effectiveRangeStr += 3;
 	}
 
@@ -62,10 +55,10 @@ export default function rangeCalculator(
 			user.skillLevel(SkillsEnum.Ranged) /* + Range boost: potions etc) * prayerbonus */
 		) + 8;
 
-	if (attackStyle === 'accurate') {
+	if (combatStyle === 'accurate') {
 		effectiveRangeAttack += 3;
 	}
-	if (attackStyle === 'controlled') {
+	if (combatStyle === 'controlled') {
 		effectiveRangeAttack += 1;
 	}
 
@@ -103,9 +96,10 @@ export default function rangeCalculator(
 
 	let rangeAttackSpeed =
 		combatStyle === 'rapid'
-			? rangeWeapon.weapon.attack_speed - 0.6
+			? rangeWeapon.weapon.attack_speed - 1
 			: rangeWeapon.weapon.attack_speed;
-	const DPS = DamagePerHit / rangeAttackSpeed;
+	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
+	console.log(hitChance, rangeAttackSpeed, maxHit)
 
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
