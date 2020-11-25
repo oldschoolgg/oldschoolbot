@@ -14,6 +14,7 @@ import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import removeRunesFromUser from '../../lib/minions/functions/removeRunesFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
@@ -510,7 +511,14 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			throw `Something went wrong with combatCalculator`;
 		}
 		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
-		console.log(combatDuration);
+
+		await removeRunesFromUser(
+			this.client,
+			msg.author,
+			hits
+		);
+		//Have a message saying how many runes that was removed?
+
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
