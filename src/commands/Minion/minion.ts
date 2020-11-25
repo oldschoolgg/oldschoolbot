@@ -21,6 +21,7 @@ import combatCalculator from '../../lib/minions/functions/combatCalculator';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import removeRunesFromUser from '../../lib/minions/functions/removeRunesFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -586,7 +587,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			throw `Something went wrong with combatCalculator`;
 		}
 		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
-		console.log(combatDuration);
+
+		await removeRunesFromUser(
+			this.client,
+			msg.author,
+			hits
+		);
+		//Have a message saying how many runes that was removed?
+
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
