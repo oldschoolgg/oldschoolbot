@@ -527,7 +527,14 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			throw `Something went wrong with combatCalculator`;
 		}
 		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
-		console.log(combatDuration);
+
+		await removeRunesFromUser(
+			this.client,
+			msg.author,
+			hits
+		);
+		//Have a message saying how many runes that was removed?
+
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
