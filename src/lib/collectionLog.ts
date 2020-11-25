@@ -28,7 +28,13 @@ const wintertodtLog = resolveItems([
 	'Dragon axe'
 ]);
 
-const zalcanoLog = resolveItems(['Crystal shard', 'Zalcano shard', 'Smolcano', 'Uncut onyx']);
+const zalcanoLog = resolveItems([
+	'Crystal shard',
+	'Zalcano shard',
+	'Smolcano',
+	'Uncut onyx',
+	'Crystal tool seed	'
+]);
 
 export const anglerOutfit = resolveItems([
 	'Angler hat',

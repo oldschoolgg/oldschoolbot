@@ -1,4 +1,4 @@
-import Bank from 'oldschooljs/dist/structures/Bank';
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 const RareTable = new LootTable()

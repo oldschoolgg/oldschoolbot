@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randInt, roll } from 'e';
+import { Bank } from 'oldschooljs';
 import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
-import Bank from 'oldschooljs/dist/structures/Bank';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { addBanks } from 'oldschooljs/dist/util';

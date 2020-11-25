@@ -17,7 +17,7 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 20,
+			cooldown: 3,
 			usage:
 				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
 			usageDelim: ' ',

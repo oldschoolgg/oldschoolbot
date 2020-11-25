@@ -9,6 +9,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
+			oneAtTime: true,
 			description: 'Rolls a singular pet until you get it and shows the KC/Rolls',
 			usage: '<petName:str>',
 			examples: ['+pet smolcano', '+pet hunter'],

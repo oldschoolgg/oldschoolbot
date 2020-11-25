@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Misc, Openables } from 'oldschooljs';
-import Bank from 'oldschooljs/dist/structures/Bank';
+import { Bank, Misc, Openables } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { cluesRares } from '../../lib/collectionLog';
