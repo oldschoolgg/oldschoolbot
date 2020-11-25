@@ -182,7 +182,8 @@ const PetsTable = new LootTable()
 	.add('Pet penance queen')
 	.add('Phoenix')
 	.add('Smolcano')
-	.add('Youngllef');
+	.add('Youngllef')
+	.add('Little nightmare');
 
 const PartyhatTable = new LootTable()
 	.oneIn(50, 'Black partyhat')
