@@ -263,7 +263,22 @@ export const pets: CollectionLogData = {
 		'Smolcano',
 		'Youngllef'
 	]),
-	Special: resolveItems(['Dark squirrel'])
+	Special: resolveItems(['Dark squirrel']),
+	BSOpets: resolveItems([
+		'Doug',
+		'Zippy',
+		'Shelldon',
+		'Remy',
+		'Lil Lamb',
+		'Harry',
+		'Klik',
+		'Wintertoad',
+		'Scruffy',
+		'Zak',
+		'Hammy',
+		'Skipper'
+	]),
+	BSOPets2: resolveItems(['Ori', 'Cob', 'Takon'])
 };
 
 export const cluesShared: CollectionLogData = {
