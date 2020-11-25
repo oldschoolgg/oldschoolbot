@@ -39,7 +39,7 @@ export default class extends BotCommand {
 		}
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
+		const osItem = itemArray.find(i => userBank[i.id]);
 
 		if (!osItem) {
 			return msg.send(
@@ -56,7 +56,9 @@ export default class extends BotCommand {
 			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
-		let priceOfItem = await this.client.fetchItemPrice(osItem.id);
+		let priceOfItem = itemIsTradeable(osItem.id)
+			? 1
+			: await this.client.fetchItemPrice(osItem.id);
 		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
 		if (hasSkipper) {
 			priceOfItem *= 1.4;
