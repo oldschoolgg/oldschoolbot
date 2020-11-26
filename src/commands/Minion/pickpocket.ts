@@ -9,6 +9,9 @@ import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
+// Pickpocketing takes 2 ticks
+const timeToPickpocket = 2 * 600;
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -43,8 +46,6 @@ export default class extends BotCommand {
 				`${msg.author.minionName} needs ${pickpocketable.level} Thieving to pickpocket a ${pickpocketable.name}.`
 			);
 		}
-
-		const timeToPickpocket = pickpocketable.ticksPerPick * 600;
 
 		await msg.author.settings.sync(true);
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.

@@ -29,7 +29,6 @@ export interface Pickpocketable {
 	qpRequired?: number;
 	itemsRequired?: ItemBank;
 	table: LootTable;
-	ticksPerPick: number;
 	id: number;
 }
 
@@ -39,7 +38,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 1,
 		xp: 8,
 		table: Monsters.Man.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Monsters.Man.id
 	},
 	{
@@ -47,7 +45,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 1,
 		xp: 8,
 		table: Monsters.Woman.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Monsters.Woman.id
 	},
 	{
@@ -55,7 +52,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 10,
 		xp: 14.5,
 		table: Farmer.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Farmer.id
 	},
 	{
@@ -63,7 +59,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 15,
 		xp: 18.5,
 		table: HamMember.pickpocketTable!,
-		ticksPerPick: 1,
 		id: HamMember.id
 	},
 	{
@@ -71,7 +66,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 20,
 		xp: 22.5,
 		table: HamMember.pickpocketTable!,
-		ticksPerPick: 1,
 		id: HamMember.id
 	},
 	{
@@ -79,7 +73,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 25,
 		xp: 26,
 		table: WarriorWoman.pickpocketTable!,
-		ticksPerPick: 1,
 		id: WarriorWoman.id
 	},
 	{
@@ -87,7 +80,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 32,
 		xp: 35.5,
 		table: Rogue.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Rogue.id
 	},
 	{
@@ -95,7 +87,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 36,
 		xp: 40,
 		table: CaveGoblin.pickpocketTable!,
-		ticksPerPick: 1,
 		id: CaveGoblin.id
 	},
 	{
@@ -103,7 +94,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 38,
 		xp: 43,
 		table: MasterFarmer.pickpocketTable!,
-		ticksPerPick: 1,
 		id: MasterFarmer.id
 	},
 	{
@@ -111,7 +101,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 40,
 		xp: 46.8,
 		table: Guard.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Guard.id
 	},
 	{
@@ -119,7 +108,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 45,
 		xp: 65,
 		table: FremennikCitizen.pickpocketTable!,
-		ticksPerPick: 1,
 		id: FremennikCitizen.id
 	},
 	{
@@ -127,7 +115,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 53,
 		xp: 79.5,
 		table: DesertBandit.pickpocketTable!,
-		ticksPerPick: 1,
 		id: DesertBandit.id
 	},
 	{
@@ -135,7 +122,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 55,
 		xp: 84.3,
 		table: KnightOfArdougne.pickpocketTable!,
-		ticksPerPick: 1,
 		id: KnightOfArdougne.id
 	},
 	{
@@ -143,7 +129,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 55,
 		xp: 84.3,
 		table: PollnivnianBandit.pickpocketTable!,
-		ticksPerPick: 1,
 		id: PollnivnianBandit.id
 	},
 	{
@@ -151,7 +136,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 65,
 		xp: 137.5,
 		table: YanilleWatchman.pickpocketTable!,
-		ticksPerPick: 1,
 		id: YanilleWatchman.id
 	},
 	{
@@ -159,7 +143,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 65,
 		xp: 137.5,
 		table: MenaphiteThug.pickpocketTable!,
-		ticksPerPick: 1,
 		id: MenaphiteThug.id
 	},
 	{
@@ -167,7 +150,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 70,
 		xp: 151.7,
 		table: Paladin.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Paladin.id
 	},
 	{
@@ -175,7 +157,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 75,
 		xp: 198.5,
 		table: Gnome.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Gnome.id
 	},
 	{
@@ -183,7 +164,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 80,
 		xp: 275,
 		table: Hero.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Hero.id
 	},
 	{
@@ -191,7 +171,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 82,
 		xp: 306.9,
 		table: Vyre.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Vyre.id
 	},
 	{
@@ -199,7 +178,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 85,
 		xp: 353,
 		table: Elf.pickpocketTable!,
-		ticksPerPick: 1,
 		id: Elf.id
 	},
 	{
@@ -207,7 +185,6 @@ const Pickpocketables: Pickpocketable[] = [
 		level: 90,
 		xp: 103.4,
 		table: TzHaarHur.pickpocketTable!,
-		ticksPerPick: 1,
 		id: TzHaarHur.id
 	}
 ];
