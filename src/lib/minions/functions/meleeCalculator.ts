@@ -146,7 +146,7 @@ export default function meleeCalculator(
 		}
 	}
 
-	const combatDuration = hits * meleeWeapon.weapon.attack_speed;
+	const combatDuration = hits * meleeWeapon.weapon.attack_speed * 0.6;
 
 	return [combatDuration, hits, DPS, monsterKillSpeed];
 }

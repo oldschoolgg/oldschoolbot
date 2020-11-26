@@ -2,7 +2,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { GearSetupTypes } from './../../gear/types';
 import { ItemBank } from '../../types/index';
 import { KlasaClient, KlasaUser } from 'klasa';
-import { addBanks} from 'oldschooljs/dist/util';
+import { addBanks, bankHasItem } from 'oldschooljs/dist/util';
 
 import { roll } from '../../../lib/util';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -69,13 +69,12 @@ export default async function removeAmmoFromUser(
 		}
 	}
 	const userBank = user.settings.get(UserSettings.Bank);
-	const itemsOwned = userBank[parseInt(ammo.name)];
-	if (itemsOwned < brokenAmmo) {
-		throw `You dont have enough ${itemNameFromID(parseInt(ammo.name))} in the bank.`;
+	if (!bankHasItem(userBank, ammo.id, brokenAmmo)) {
+		throw `You don't have enough ${itemNameFromID(ammo.id)} in the bank.`;
 	}
 	// Remove the required items from their bank.
 	let ammoToRemove: ItemBank = {};
-	ammoToRemove = addBanks([ammoToRemove, { [ammo.name]: brokenAmmo }]);
+	ammoToRemove = addBanks([ammoToRemove, { [ammo.id]: brokenAmmo }]);
 	await user.removeItemFromBank(ammo.id, brokenAmmo);
 
 	return `${await createReadableItemListFromBank(client, ammoToRemove)} from ${
