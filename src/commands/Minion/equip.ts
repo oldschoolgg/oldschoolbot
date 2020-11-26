@@ -114,6 +114,7 @@ export default class extends BotCommand {
 					await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, null);
 				}
 			}
+			newGear[slot] = null;
 
 			await msg.author.addItemsToBank({
 				[equippedInThisSlot.item]: equippedInThisSlot.quantity
