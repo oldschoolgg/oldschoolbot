@@ -20,6 +20,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import combatCalculator from '../../lib/minions/functions/combatCalculator';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import removeAmmoFromUser from '../../lib/minions/functions/removeAmmoFromUser';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import removeRunesFromUser from '../../lib/minions/functions/removeRunesFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -588,12 +589,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
 
-		await removeRunesFromUser(
-			this.client,
-			msg.author,
-			hits
-		);
-		//Have a message saying how many runes that was removed?
+		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'mage') {
+			await removeRunesFromUser(
+				this.client,
+				msg.author,
+				hits
+			);
+		}
+		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'range') {
+			await removeAmmoFromUser(
+				this.client,
+				msg.author,
+				hits
+			);
+		}
 
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
