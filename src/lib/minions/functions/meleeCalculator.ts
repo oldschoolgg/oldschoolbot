@@ -64,7 +64,7 @@ export default function meleeCalculator(
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Melee))
 	);
-	console.log("2");
+
 	// Calculate effective strength level
 	let effectiveStrLvl =
 		Math.floor(
@@ -79,7 +79,7 @@ export default function meleeCalculator(
 			break;
 		}
 	}
-	console.log("3");
+
 	if (attackStyle === 'aggresive') {
 		effectiveStrLvl += 3;
 	}
@@ -253,7 +253,7 @@ export default function meleeCalculator(
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = monsterHP / DPS;
 	let hits = 0;
-	console.log("5");
+
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
 		while (hitpointsLeft > 0) {
