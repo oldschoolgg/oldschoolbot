@@ -24,19 +24,26 @@ export default class extends Task {
 
 		const loot = new Bank();
 		let successful = 0;
+
+		/**
+		 * 40% base chance of failure. If you have lvl+10 thieving level,
+		 * your chance goes to the absolute lowest of 15%.
+		 */
+		let chanceOfFailure = 80;
+		if (currentLevel >= npc.level + 10) {
+			chanceOfFailure = 50;
+		} else {
+			let percentOfBest = 100 - calcWhatPercent(currentLevel, npc.level + 10);
+			console.log({ percentOfBest });
+			chanceOfFailure += percentOfBest / 4;
+		}
+		console.log(chanceOfFailure);
+
 		for (let i = 0; i < quantity; i++) {
-			/**
-			 * 40% base chance of failure. If you have lvl+10 thieving level,
-			 * your chance goes to the absolute lowest of 15%.
-			 */
-			let chanceOfFailure = 40;
-			if (currentLevel >= npc.level + 10) {
-				chanceOfFailure = 15;
-			} else {
-				let percentOfBest = 100 - calcWhatPercent(currentLevel, npc.level + 10);
-				chanceOfFailure += percentOfBest / 4;
-			}
 			if (percentChance(chanceOfFailure)) {
+				// The minion has just been stunned, and cant pickpocket for a few ticks, therefore
+				// they also miss out on the next pickpocket.
+				quantity--;
 				continue;
 			}
 			successful++;
