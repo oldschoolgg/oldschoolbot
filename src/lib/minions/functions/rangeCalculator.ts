@@ -21,8 +21,8 @@ export default function rangeCalculator(
 		throw "Monster dosen't exist.";
 	}
 	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
-	if (rangeWeapon === null || rangeWeapon.weapon === null) {
-		throw 'Weapon is null.';
+	if (rangeWeapon === null || rangeWeapon.weapon === null || combatStyle === null) {
+		throw 'No range weapon is equipped or combatStyle is not choosen.';
 	}
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Range))
@@ -99,7 +99,7 @@ export default function rangeCalculator(
 			? rangeWeapon.weapon.attack_speed - 1
 			: rangeWeapon.weapon.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
-	console.log(hitChance, rangeAttackSpeed, maxHit)
+	console.log(hitChance, rangeAttackSpeed, maxHit);
 
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;

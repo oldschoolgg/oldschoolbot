@@ -246,7 +246,8 @@ export default async function combatXPReciever(
 					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(
-						2 * totalHP + hits * spell?.magicxp!
+						2 * totalHP +
+						hits * spell?.magicxp!
 					).toLocaleString()} Magic XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
@@ -258,16 +259,20 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'defensive':
-					await user.addXP(SkillsEnum.Magic, Math.round(1.33 * totalHP) + hits * spell?.magicxp!);
-					await user.addXP(SkillsEnum.Defence, 1 * totalHP);
+					await user.addXP(
+						SkillsEnum.Magic,
+						Math.round(1.33 * totalHP) + hits * spell?.magicxp!
+					);
+					await user.addXP(SkillsEnum.Defence, Number(totalHP));
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
 					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(
-						Math.round(1.33 * totalHP) + hits * spell?.magicxp!
-					).toLocaleString()} Magic XP, ${(
-						1 * totalHP
+						Math.round(1.33 * totalHP) +
+						hits * spell?.magicxp!
+					).toLocaleString()} Magic XP, ${Number(
+						totalHP
 					).toLocaleString()} Defence XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;

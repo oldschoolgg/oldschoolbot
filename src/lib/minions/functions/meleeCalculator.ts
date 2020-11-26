@@ -20,14 +20,15 @@ export default function meleeCalculator(
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
 	}
+	console.log("1");
 	const meleeWeapon = user.equippedWeapon(GearSetupTypes.Melee);
-	if (meleeWeapon === null || meleeWeapon.weapon === null) {
-		throw 'Weapon is null.';
+	if (meleeWeapon === null || meleeWeapon.weapon === null || combatStyle === null) {
+		throw 'No melee weapon is equipped or combatStyle is not choosen.';
 	}
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Melee))
 	);
-
+	console.log("2");
 	// Calculate effective strength level
 	let effectiveStrLvl =
 		Math.round(
@@ -42,7 +43,7 @@ export default function meleeCalculator(
 			break;
 		}
 	}
-
+	console.log("3");
 	if (attackStyle === 'aggresive') {
 		effectiveStrLvl += 3;
 	}
@@ -133,7 +134,7 @@ export default function meleeCalculator(
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = monsterHP / DPS;
 	let hits = 0;
-
+	console.log("5");
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
 		while (hitpointsLeft > 0) {

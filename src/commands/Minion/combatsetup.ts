@@ -61,6 +61,9 @@ export default class extends BotCommand {
 		if (combatSkill === 'melee') {
 			combatStyle = combatStyle.toLowerCase();
 			const weapon = msg.author.equippedWeapon(GearSetupTypes.Melee);
+			if (weapon === null || weapon.weapon === null) {
+				throw `No weapon is equipped.`;
+			}
 			await msg.author.settings.update(UserSettings.Minion.CombatSkill, combatSkill);
 
 			for (let stance of weapon!.weapon!.stances) {
@@ -91,6 +94,9 @@ export default class extends BotCommand {
 		if (combatSkill === 'range') {
 			combatStyle = combatStyle.toLowerCase();
 			const weapon = msg.author.equippedWeapon(GearSetupTypes.Range);
+			if (weapon === null || weapon.weapon === null) {
+				throw `No weapon is equipped.`;
+			}
 			await msg.author.settings.update(UserSettings.Minion.CombatSkill, combatSkill);
 
 			for (let stance of weapon!.weapon!.stances) {
