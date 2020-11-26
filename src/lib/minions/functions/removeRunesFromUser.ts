@@ -1,12 +1,12 @@
-import { ItemBank } from './../../types/index';
-import { SkillsEnum } from './../../skilling/types';
 import { KlasaClient, KlasaUser } from 'klasa';
-import { bankHasItem, addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
+import { addBanks, bankHasItem, removeItemFromBank } from 'oldschooljs/dist/util';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import Magic from '../../skilling/skills/combat/magic/magic';
 import { itemNameFromID, stringMatches } from '../../util';
 import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
+import { SkillsEnum } from './../../skilling/types';
+import { ItemBank } from './../../types/index';
 
 export default async function removeRunesFromUser(
 	client: KlasaClient,
@@ -30,7 +30,7 @@ export default async function removeRunesFromUser(
 		if (itemsOwned < qty) {
 			throw `You dont have enough ${itemNameFromID(parseInt(itemID))}.`;
 		}
-	}	
+	}
 	// Check the user has the required items to cast.
 	for (const [itemID, qty] of requiredItems) {
 		const id = parseInt(itemID);
@@ -45,11 +45,8 @@ export default async function removeRunesFromUser(
 		runesToRemove = addBanks([runesToRemove, { [itemID]: qty * casts }]);
 		newBank = removeItemFromBank(newBank, parseInt(itemID), qty * casts);
 	}
-	
+
 	await user.settings.update(UserSettings.Bank, newBank);
 
-	return `${await createReadableItemListFromBank(client, runesToRemove)} from ${
-		user.username
-	}`;
+	return `${await createReadableItemListFromBank(client, runesToRemove)} from ${user.username}`;
 }
-

@@ -27,7 +27,8 @@ import {
 	itemNameFromID,
 	randomItemFromArray,
 	randomVariation,
-	removeDuplicatesFromArray
+	removeDuplicatesFromArray,
+	round
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -514,18 +515,10 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
 
 		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'mage') {
-			await removeRunesFromUser(
-				this.client,
-				msg.author,
-				hits
-			);
+			await removeRunesFromUser(this.client, msg.author, hits);
 		}
 		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'range') {
-			await removeAmmoFromUser(
-				this.client,
-				msg.author,
-				hits
-			);
+			await removeAmmoFromUser(this.client, msg.author, hits);
 		}
 
 		let duration = timeToFinish * quantity;
@@ -563,7 +556,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		if (foodStr) {
 			response += ` Removed ${foodStr}.\n`;
 		}
-		response += `it'll take around ${formatDuration(duration)} to finish. Your DPS is ${DPS.toLocaleString()} and kill monsters in ${Math.round(monsterKillSpeed).toLocaleString()} seconds.`;
+		response += `it'll take around ${formatDuration(
+			combatDuration * 1000
+		)} to finish. Your DPS is ${round(DPS, 2)} and average monster kill speed is ${round(
+			monsterKillSpeed,
+			2
+		)} seconds.`;
 
 		if (boosts.length > 0) {
 			response += `\n**Boosts:** ${boosts.join(', ')}.`;

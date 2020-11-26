@@ -105,7 +105,7 @@ export async function generateGearImage(
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'start';
 
-	if (gearType === 'melee') {
+	if (gearType === 'melee' && user.settings.get(UserSettings.Minion.MeleeCombatStyle)) {
 		drawText(
 			canvas,
 			`Combat style: ${toTitleCase(
@@ -114,10 +114,25 @@ export async function generateGearImage(
 			0,
 			0
 		);
-		drawText(canvas, `Combat type: ${'Stab'}`, 0, 16);
-		drawText(canvas, `Attack style: ${'Accurate'}`, 0, 32);
+		const meleeWeapon = user.equippedWeapon(GearSetupTypes.Melee);
+		if (meleeWeapon != null && meleeWeapon.weapon != null) {
+			let attackStyle = '';
+			let combatType = '';
+			for (let stance of meleeWeapon.weapon.stances) {
+				if (
+					stance.combat_style.toLowerCase() ===
+					user.settings.get(UserSettings.Minion.MeleeCombatStyle)
+				) {
+					attackStyle = stance.attack_style;
+					combatType = stance.attack_type;
+					break;
+				}
+			}
+			drawText(canvas, `Combat type: ${toTitleCase(combatType)}`, 0, 16);
+			drawText(canvas, `Attack style: ${toTitleCase(attackStyle)}`, 0, 32);
+		}
 	}
-	if (gearType === 'range') {
+	if (gearType === 'range' && user.settings.get(UserSettings.Minion.RangeCombatStyle)) {
 		drawText(
 			canvas,
 			`Combat style: ${toTitleCase(
@@ -126,22 +141,30 @@ export async function generateGearImage(
 			0,
 			0
 		);
-		drawText(canvas, `Combat type: ${'Accurate'}`, 0, 16);
-		drawText(canvas, `Attack style: ${'Accurate'}`, 0, 32);
+		drawText(
+			canvas,
+			`Attack style: ${toTitleCase(
+				user.settings.get(UserSettings.Minion.RangeCombatStyle)!
+			)}`,
+			0,
+			16
+		);
 	}
-	if (gearType === 'mage') {
+	if (gearType === 'mage' && user.settings.get(UserSettings.Minion.MageCombatStyle)) {
 		drawText(
 			canvas,
 			`Combat style: ${toTitleCase(user.settings.get(UserSettings.Minion.MageCombatStyle)!)}`,
 			0,
 			0
 		);
-		drawText(
-			canvas,
-			`Using Spell: ${user.settings.get(UserSettings.Minion.CombatSpell)}`,
-			0,
-			16
-		);
+		if (user.settings.get(UserSettings.Minion.CombatSpell)) {
+			drawText(
+				canvas,
+				`Using Spell: ${user.settings.get(UserSettings.Minion.CombatSpell)}`,
+				0,
+				16
+			);
+		}
 	}
 	ctx.restore();
 	ctx.save();
