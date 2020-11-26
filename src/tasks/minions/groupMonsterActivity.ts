@@ -10,7 +10,14 @@ import { addBanks, noOp, queuedMessageSend, randomItemFromArray } from '../../li
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends Task {
-	async run({ monsterID, channelID, quantity, users, leader, hits }: GroupMonsterActivityTaskOptions) {
+	async run({
+		monsterID,
+		channelID,
+		quantity,
+		users,
+		leader,
+		hits
+	}: GroupMonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: ItemBank } = {};

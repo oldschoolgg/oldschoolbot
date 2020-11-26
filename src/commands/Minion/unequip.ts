@@ -49,7 +49,7 @@ export default class extends BotCommand {
 		const { slot } = itemToUnequip.equipment!;
 		const equippedInThisSlot = currentEquippedGear[slot];
 		const newGear = { ...currentEquippedGear };
-		if (slot === (EquipmentSlot.Weapon || EquipmentSlot.TwoHanded)) {
+		if (slot === EquipmentSlot.Weapon || slot === EquipmentSlot.TwoHanded) {
 			if (gearType === 'melee') {
 				await msg.author.settings.update(UserSettings.Minion.MeleeCombatStyle, null);
 			}

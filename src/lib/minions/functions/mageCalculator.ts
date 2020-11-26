@@ -21,7 +21,7 @@ export default function mageCalculator(
 	const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 	if (combatSpell === null) {
 		console.log('Spell is null.');
-		return;
+		throw `Spell is null`;
 	}
 	const spell = castables.find(_spell =>
 		stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
@@ -34,8 +34,8 @@ export default function mageCalculator(
 		throw "Monster dosen't exist.";
 	}
 	const mageWeapon = user.equippedWeapon(GearSetupTypes.Mage);
-	if (mageWeapon === null || mageWeapon.weapon === null) {
-		throw 'Weapon is null.';
+	if (mageWeapon === null || mageWeapon.weapon === null || combatStyle === null) {
+		throw 'No mage weapon is equipped or combatStyle is not choosen.';
 	}
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Mage))
@@ -89,7 +89,7 @@ export default function mageCalculator(
 	// Calculate Defence roll
 	let defenceRoll = currentMonsterData.magicLevel + 9;
 
-	defenceRoll *= (currentMonsterData.defenceMagic + 64);
+	defenceRoll *= currentMonsterData.defenceMagic + 64;
 
 	// Calculate hit chance
 	let hitChance = 0;
