@@ -117,7 +117,7 @@ export default function rangeCalculator(
 			hits++;
 		}
 	}
-	const combatDuration = hits * rangeWeapon.weapon.attack_speed;
+	const combatDuration = hits * rangeAttackSpeed * 0.6;
 
 	return [combatDuration, hits, DPS, monsterKillSpeed];
 }
