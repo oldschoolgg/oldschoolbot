@@ -4872,10 +4872,10 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-snoostorm@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/snoostorm/-/snoostorm-1.5.1.tgz#1bcab340632e82d6e8b0dffc66f3b713b599247f"
-  integrity sha512-4UOjK68qOr9mC60w0BJJJo6MQ9EFEJkJETWvqMJal0D4buZuAzGT0PUcqEdgHDYRvHDNoojpthCBMfpJb9iwvw==
+snoostorm@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/snoostorm/-/snoostorm-1.5.2.tgz#e96aa17dd9131b3f2b9e0dbcd7186443a3a1a40f"
+  integrity sha512-GU2s2Lj+iR24yfGlQpIiOBH2HRuuQplhfj+fiBMwL0nzHIBeKJL2qVe3EjvZKlSSDwmpR2y+ltHob7aSOWxkfA==
   dependencies:
     snoowrap "^1.20.1"
 
