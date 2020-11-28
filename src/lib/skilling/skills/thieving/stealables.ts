@@ -20,9 +20,9 @@ import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/WarriorWoman'
 import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/YanilleWatchman';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { ItemBank } from '../../../../types';
+import { ItemBank } from '../../../types';
 
-export interface Pickpocketable {
+export interface Stealable {
 	name: string;
 	level: number;
 	xp: number;
@@ -30,9 +30,21 @@ export interface Pickpocketable {
 	itemsRequired?: ItemBank;
 	table: LootTable;
 	id: number;
+	scalesOnLevel?: boolean;
 }
 
-const Pickpocketables: Pickpocketable[] = [
+const Stalls: Stealable[] = [
+	{
+		name: 'Vegetable stall',
+		level: 2,
+		xp: 10,
+		id: 23424234234,
+		table: new LootTable(),
+		qpRequired: 99
+	}
+];
+
+const Pickpocketables: Stealable[] = [
 	{
 		name: 'Man',
 		level: 1,

@@ -1,13 +1,16 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Thieving from '../../lib/skilling/skills/thieving';
+import Pickpocketables from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, round, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 
 // Pickpocketing takes 2 ticks
 const timeToPickpocket = 2 * 600;
@@ -26,6 +29,20 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+		if (msg.flagArgs.xphr) {
+			let str = '';
+			for (let i = 1; i < 100; i += 5) {
+				str += `\n---- Level ${i} ----`;
+				for (const npc of Pickpocketables) {
+					if (i < npc.level) continue;
+					const [_, xpReceived] = calcLootXPPickpocketing(i, npc, Time.Hour / (2 * 600));
+					str += `\n${npc.name} ${round(xpReceived, 2).toLocaleString()} XP/HR`;
+				}
+				str += '\n\n\n';
+			}
+			return msg.channel.sendFile(Buffer.from(str), 'output.txt');
+		}
+
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
