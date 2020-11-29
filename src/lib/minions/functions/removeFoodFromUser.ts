@@ -22,7 +22,9 @@ export default async function removeFoodFromUser(
 			i => i.name
 		).join(', ')}.`;
 	} else {
-		await user.settings.update(UserSettings.Bank, removeBankFromBank(userBank, foodToRemove));
+		await user.queueFn(() =>
+			user.settings.update(UserSettings.Bank, removeBankFromBank(userBank, foodToRemove))
+		);
 		await client.settings.update(
 			ClientSettings.EconomyStats.PVMCost,
 			addBanks([client.settings.get(ClientSettings.EconomyStats.PVMCost), foodToRemove])

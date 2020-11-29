@@ -1,12 +1,13 @@
 import { Image } from 'canvas';
+import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
-import { FSWatcher } from 'fs';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
 import { Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { Limit } from 'p-limit';
+import PQueue from 'p-queue';
 import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
@@ -159,6 +160,14 @@ declare module 'discord.js' {
 		rawGear(): UserFullGearSetup;
 		allItemsOwned(): ItemBank;
 		setupStats(setup: GearSetupTypes): GearStats;
+		/**
+		 * Returns this users update promise queue.
+		 */
+		getUpdateQueue(): PQueue;
+		/**
+		 * Queue a function to run on a per-user queue.
+		 */
+		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
 		/**
 		 * Returns this users Collection Log bank.
 		 */
