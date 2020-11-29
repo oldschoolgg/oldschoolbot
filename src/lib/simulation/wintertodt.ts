@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randInt, roll } from 'e';
+import { Bank } from 'oldschooljs';
 import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
-import Loot from 'oldschooljs/dist/structures/Loot';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { addBanks } from 'oldschooljs/dist/util';
@@ -254,7 +254,7 @@ export class WintertodtCrateClass {
 			return {};
 		}
 
-		const loot = new Loot();
+		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
 			const rolledUnique = this.rollUnique(addBanks([itemsOwned, loot.values()]));

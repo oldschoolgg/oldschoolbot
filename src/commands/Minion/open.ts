@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Misc, Openables } from 'oldschooljs';
-import Loot from 'oldschooljs/dist/structures/Loot';
+import { Bank, Misc, Openables } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { cluesRares } from '../../lib/collectionLog';
@@ -212,7 +211,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
-		const loot = new Loot();
+		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add(botOpenable.table.roll());
 		}

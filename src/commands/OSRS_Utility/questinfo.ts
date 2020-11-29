@@ -82,6 +82,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
+			oneAtTime: true,
 			aliases: ['qi'],
 			description: 'Shows information on a Quest. Not all quests are available.',
 			examples: ['+questinfo cooks assistant'],
