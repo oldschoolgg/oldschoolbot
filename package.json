@@ -27,6 +27,7 @@
 		"node-fetch": "^2.6.1",
 		"oldschooljs": "^1.5.3",
 		"p-limit": "^2.3.0",
+		"p-queue": "^6.6.2",
 		"pg": "^8.5.1",
 		"pg-boss": "^5.0.8",
 		"piscina": "^1.6.3",
