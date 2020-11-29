@@ -57,8 +57,8 @@ export default class extends BotCommand {
 		}
 
 		let priceOfItem = itemIsTradeable(osItem.id)
-			? 1
-			: await this.client.fetchItemPrice(osItem.id);
+			? await this.client.fetchItemPrice(osItem.id)
+			: 1;
 		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
 		if (hasSkipper) {
 			priceOfItem *= 1.4;
