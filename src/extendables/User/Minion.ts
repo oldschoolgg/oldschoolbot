@@ -22,7 +22,6 @@ import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skil
 import Smithing from '../../lib/skilling/skills/smithing';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ItemBank } from '../../lib/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -44,7 +43,6 @@ import {
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
 import {
-	addBanks,
 	addItemToBank,
 	convertXPtoLVL,
 	formatDuration,
