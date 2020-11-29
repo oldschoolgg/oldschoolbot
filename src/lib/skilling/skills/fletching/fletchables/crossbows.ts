@@ -167,8 +167,8 @@ const Crossbows: Fletchable[] = [
 		tickRate: 2
 	},
 	{
-		name: 'Mith crossbow',
-		id: itemID('Mith crossbow'),
+		name: 'Mithril crossbow',
+		id: itemID('Mithril crossbow'),
 		level: 54,
 		xp: 32,
 		inputItems: resolveNameBank({ 'Mithril crossbow (u)': 1, 'Crossbow string': 1 }),

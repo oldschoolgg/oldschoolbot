@@ -205,7 +205,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await client.tasks.get('bankImage')!.getItemImage(petID);
+		const image = await client.tasks.get('bankImage')!.getItemImage(petID, 1);
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
@@ -218,7 +218,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await client.tasks.get('bankImage')!.getItemImage(item.item);
+		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
 		const [x, y] = slotCoordinates[enumName];
 

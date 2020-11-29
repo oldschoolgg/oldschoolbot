@@ -2,11 +2,11 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import itemInSlot from '../lib/gear/functions/itemInSlot';
-import { sumOfSetupStats } from '../lib/gear/functions/sumOfSetupStats';
-import { GearSetupTypes, UserFullGearSetup } from '../lib/gear/types';
-import { UserSettings } from '../lib/settings/types/UserSettings';
-import { itemID } from '../lib/util';
+import itemInSlot from '../../lib/gear/functions/itemInSlot';
+import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
+import { GearSetupTypes, UserFullGearSetup } from '../../lib/gear/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -15,7 +15,6 @@ export default class extends Extendable {
 
 	public rawGear(this: User) {
 		const gear = (this.settings.get('gear') as SettingsFolder).toJSON() as UserFullGearSetup;
-
 		return gear;
 	}
 

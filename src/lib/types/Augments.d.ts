@@ -1,16 +1,18 @@
 import { Image } from 'canvas';
+import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
-import { FSWatcher } from 'fs';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
 import { Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { Limit } from 'p-limit';
+import PQueue from 'p-queue';
 import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
+import { BitField } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
@@ -44,6 +46,7 @@ declare module 'klasa' {
 		perkTier?: number;
 		ironCantUse?: boolean;
 		testingCommand?: boolean;
+		bitfieldsRequired?: BitField[];
 	}
 
 	interface Task {
@@ -59,7 +62,7 @@ declare module 'klasa' {
 			title: string = '',
 			type: any
 		): Promise<Buffer>;
-		getItemImage(itemID: number): Promise<Image>;
+		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
@@ -162,6 +165,14 @@ declare module 'discord.js' {
 		equippedPet(): number | null;
 		allItemsOwned(): ItemBank;
 		setupStats(setup: GearSetupTypes): GearStats;
+		/**
+		 * Returns this users update promise queue.
+		 */
+		getUpdateQueue(): PQueue;
+		/**
+		 * Queue a function to run on a per-user queue.
+		 */
+		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
 		/**
 		 * Returns this users Collection Log bank.
 		 */
