@@ -1,5 +1,6 @@
 import { Command, CommandOptions, CommandStore, KlasaMessage, util } from 'klasa';
 
+import { BitField } from './constants';
 import { CategoryFlag } from './types';
 
 export abstract class BotCommand extends Command {
@@ -38,6 +39,7 @@ export abstract class BotCommand extends Command {
 		this.ironCantUse = options.ironCantUse;
 		this.examples = options.examples || [];
 		this.categoryFlags = options.categoryFlags || [];
+		this.bitfieldsRequired = options.bitfieldsRequired || [];
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,4 +63,5 @@ export interface BotCommandOptions extends CommandOptions {
 	examples?: string[];
 	description?: string;
 	categoryFlags?: CategoryFlag[];
+	bitfieldsRequired?: BitField[];
 }
