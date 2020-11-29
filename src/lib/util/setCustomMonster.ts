@@ -1,11 +1,10 @@
-import { Monsters } from 'oldschooljs';
-import Loot from 'oldschooljs/dist/structures/Loot';
+import { Bank, Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 export function makeKillTable(table: LootTable) {
 	return (quantity: number) => {
-		const loot = new Loot();
+		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add(table.roll());
