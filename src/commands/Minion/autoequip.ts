@@ -9,6 +9,7 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import getUserBestGearFromBank from '../../lib/minions/functions/getUserBestGearFromBank';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import user from '../Utility/user';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -39,16 +40,20 @@ export default class extends BotCommand {
 		]
 	) {
 		await msg.author.settings.sync(true);
-		const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
-			msg.author.settings.get(UserSettings.Bank),
-			msg.author.rawGear()[gearType],
-			gearType,
-			type,
-			style,
-			extra
-		);
-		await msg.author.settings.update(UserSettings.Bank, userFinalBank);
-		await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
+
+		await msg.author.queueFn(async () => {
+			const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
+				msg.author.settings.get(UserSettings.Bank),
+				msg.author.rawGear()[gearType],
+				gearType,
+				type,
+				style,
+				extra
+			);
+			await msg.author.settings.update(UserSettings.Bank, userFinalBank);
+			await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
+		});
+
 		const image = await generateGearImage(
 			this.client,
 			msg.author,

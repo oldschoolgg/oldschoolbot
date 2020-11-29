@@ -1,11 +1,13 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
+import PromiseQueue from 'p-queue';
 
 import { Events } from '../../lib/constants';
 import readableStatName from '../../lib/gear/functions/readableStatName';
 import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
+import { userQueues } from '../../lib/queueing';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Skills } from '../../lib/types';
@@ -106,5 +108,21 @@ export default class extends Extendable {
 		const username = this.settings.get(UserSettings.RSN);
 		if (!username) return '';
 		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
+	}
+
+	// @ts-ignore 2784
+	public getUpdateQueue(this: User) {
+		let currentQueue = userQueues.get(this.id);
+		if (!currentQueue) {
+			let queue = new PromiseQueue({ concurrency: 1 });
+			userQueues.set(this.id, queue);
+			return queue;
+		}
+		return currentQueue;
+	}
+
+	public async queueFn(this: User, fn: (...args: any[]) => Promise<any>) {
+		const queue = this.getUpdateQueue();
+		await queue.add(fn);
 	}
 }
