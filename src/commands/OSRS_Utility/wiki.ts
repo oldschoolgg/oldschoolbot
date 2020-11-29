@@ -8,6 +8,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
+			oneAtTime: true,
 			aliases: ['w'],
 			description: 'Search the OSRS Wikipedia for an article.',
 			examples: ['+wiki tbow'],

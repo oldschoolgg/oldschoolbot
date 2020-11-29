@@ -62,7 +62,7 @@ export default class extends BotCommand {
 			}
 
 			return msg.send(
-				`${toTitleCase(username)} doesn't have any records kills for that boss.`
+				`${toTitleCase(username)} doesn't have any recorded kills for that boss.`
 			);
 		} catch (err) {
 			return msg.send(err.message);

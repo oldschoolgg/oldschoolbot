@@ -87,4 +87,12 @@ export function initItemAliases() {
 	setItemAlias(3713, ['hmb'], false);
 	setItemAlias(6199, ['tmb'], false);
 	setItemAlias(19939, ['umb'], false);
+
+	// Graceful sets -- Trailblazer
+	setItemAlias(25069, 'Trailblazer graceful hood');
+	setItemAlias(25072, 'Trailblazer graceful cape');
+	setItemAlias(25075, 'Trailblazer graceful top');
+	setItemAlias(25078, 'Trailblazer graceful legs');
+	setItemAlias(25081, 'Trailblazer graceful gloves');
+	setItemAlias(25084, 'Trailblazer graceful boots');
 }

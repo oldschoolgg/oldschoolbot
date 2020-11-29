@@ -15,7 +15,8 @@ export const enum Channel {
 	ErrorLogs = '665678499578904596',
 	Suggestions = '668441710703149074',
 	GrandExchange = '682996313209831435',
-	Developers = '648196527294251020'
+	Developers = '648196527294251020',
+	BlacklistLogs = '782459317218967602'
 }
 
 export const enum Roles {

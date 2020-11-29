@@ -8,6 +8,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 5,
+			oneAtTime: true,
 			description: 'Returns information on a OSRS World.',
 			examples: ['+world 1', '+world 301'],
 			usage: '<world:int{1,1000}>',

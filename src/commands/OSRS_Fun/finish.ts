@@ -116,7 +116,8 @@ async function getAllPetsEmbed(petsRecieved: string[]) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
+			cooldown: 5,
+			oneAtTime: true,
 			description: "Simulates how long it takes you to 'finish' a boss (Get all its drops)",
 			usage: '<BossName:str>',
 			examples: ['+finish bandos', '+finish corp'],
