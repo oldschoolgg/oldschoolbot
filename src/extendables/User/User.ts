@@ -1,15 +1,18 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
+import PromiseQueue from 'p-queue';
 
-import readableStatName from '../lib/gear/functions/readableStatName';
-import { gearSetupMeetsRequirement } from '../lib/minions/functions/gearSetupMeetsRequirement';
-import { KillableMonster } from '../lib/minions/types';
-import { UserSettings } from '../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../lib/skilling/types';
-import { Skills } from '../lib/types';
-import { itemNameFromID, toTitleCase } from '../lib/util';
-import { formatItemReqs } from '../lib/util/formatItemReqs';
+import { Events } from '../../lib/constants';
+import readableStatName from '../../lib/gear/functions/readableStatName';
+import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
+import { KillableMonster } from '../../lib/minions/types';
+import { userQueues } from '../../lib/queueing';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { Skills } from '../../lib/types';
+import { itemNameFromID, toTitleCase } from '../../lib/util';
+import { formatItemReqs } from '../../lib/util/formatItemReqs';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -89,5 +92,37 @@ export default class extends Extendable {
 		}
 
 		return [true];
+	}
+
+	// @ts-ignore 2784
+	get sanitizedName(this: User) {
+		return `(${this.username.replace(/[()]/g, '')})[${this.id}]`;
+	}
+
+	public log(this: User, stringLog: string) {
+		this.client.emit(Events.Log, `${this.sanitizedName} ${stringLog}`);
+	}
+
+	// @ts-ignore 2784
+	public get badges(this: User) {
+		const username = this.settings.get(UserSettings.RSN);
+		if (!username) return '';
+		return (this.client as KlasaClient)._badgeCache.get(username.toLowerCase()) || '';
+	}
+
+	// @ts-ignore 2784
+	public getUpdateQueue(this: User) {
+		let currentQueue = userQueues.get(this.id);
+		if (!currentQueue) {
+			let queue = new PromiseQueue({ concurrency: 1 });
+			userQueues.set(this.id, queue);
+			return queue;
+		}
+		return currentQueue;
+	}
+
+	public async queueFn(this: User, fn: (...args: any[]) => Promise<any>) {
+		const queue = this.getUpdateQueue();
+		await queue.add(fn);
 	}
 }
