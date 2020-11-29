@@ -3,7 +3,6 @@ import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 
 import { Events } from '../../lib/constants';
 import { GearTypes } from '../../lib/gear';
-import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks, addItemToBank, removeItemFromBank } from '../../lib/util';
