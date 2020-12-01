@@ -3,8 +3,9 @@ import { SkillsEnum } from '../../types';
 
 const Thieving = {
 	aliases: ['thieving', 'stealing'],
-	id: SkillsEnum.Agility,
-	emoji: Emoji.Agility
+	id: SkillsEnum.Thieving,
+	emoji: Emoji.Thieving,
+	name: 'Thieving'
 };
 
 export default Thieving;

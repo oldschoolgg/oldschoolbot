@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Time } from '../../lib/constants';
-import Pickpocketables, { Stealable } from '../../lib/skilling/skills/thieving/stealables';
+import { Pickpocketables, Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -19,17 +19,10 @@ export function calcLootXPPickpocketing(
 	const loot = new Bank();
 	let successful = 0;
 
-	/**
-	 * 40% base chance of failure. If you have lvl+10 thieving level,
-	 * your chance goes to the absolute lowest of 15%.
-	 */
 	let chanceOfFailure = 80;
-	if (currentLevel >= npc.level + 10) {
-		chanceOfFailure = 50;
-	} else {
-		let percentOfBest = 100 - calcWhatPercent(currentLevel, npc.level + 10);
-		chanceOfFailure += percentOfBest / 4;
-	}
+
+	let percentOfBest = 100 - calcWhatPercent(currentLevel, npc.level + 10);
+	chanceOfFailure += percentOfBest / 4;
 
 	for (let i = 0; i < quantity; i++) {
 		if (percentChance(chanceOfFailure)) {

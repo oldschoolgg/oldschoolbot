@@ -21,7 +21,7 @@ import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
+import Skills from '../../lib/skilling/skills';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -181,40 +181,17 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 
+		let str = '';
+		for (const skill of Object.values(Skills)) {
+			str += `${skill.emoji} ${skill.name}: ${msg.author.skillLevel(
+				skill.id
+			)} (${(msg.author.settings.get(
+				`skills.${skill.id}`
+			) as number).toLocaleString()} xp)\n`;
+		}
+
 		return msg.send(`${msg.author.minionName}'s Stats:
-${Emoji.Crafting} Crafting: ${msg.author.skillLevel(
-			SkillsEnum.Crafting
-		)} (${msg.author.settings.get(UserSettings.Skills.Crafting).toLocaleString()} xp)
-${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
-			.get(UserSettings.Skills.Agility)
-			.toLocaleString()} xp)
-${Emoji.Cooking} Cooking: ${msg.author.skillLevel(SkillsEnum.Cooking)} (${msg.author.settings
-			.get(UserSettings.Skills.Cooking)
-			.toLocaleString()} xp)
-${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
-			.get(UserSettings.Skills.Fishing)
-			.toLocaleString()} xp)
-${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-			.get(UserSettings.Skills.Mining)
-			.toLocaleString()} xp)
-${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
-			SkillsEnum.Smithing
-		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
-${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-			SkillsEnum.Woodcutting
-		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
-${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
-			SkillsEnum.Firemaking
-		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
-${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
-			SkillsEnum.Runecraft
-		)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
-${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.author.settings
-			.get(UserSettings.Skills.Prayer)
-			.toLocaleString()} xp)
-${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
-			SkillsEnum.Fletching
-		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
+${str}
 ${Emoji.XP} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
 			.totalLevel(true)
 			.toLocaleString()} xp)

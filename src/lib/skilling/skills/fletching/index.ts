@@ -6,7 +6,8 @@ const Fletching = {
 	aliases: ['fletch', 'fletching'],
 	Fletchables: fletchables,
 	id: SkillsEnum.Fletching,
-	emoji: Emoji.Fletching
+	emoji: Emoji.Fletching,
+	name: 'Fletching'
 };
 
 export default Fletching;
