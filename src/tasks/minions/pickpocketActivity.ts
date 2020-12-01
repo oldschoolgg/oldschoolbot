@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Time } from '../../lib/constants';
-import Pickpocketables, { Pickpocketable } from '../../lib/skilling/skills/thieving/stealables';
+import Pickpocketables, { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
-	npc: Pickpocketable,
+	npc: Stealable,
 	quantity: number
 ): [number, number, Bank] {
 	let xpReceived = 0;

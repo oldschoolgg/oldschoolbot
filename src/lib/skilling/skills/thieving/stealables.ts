@@ -1,3 +1,4 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/CaveGoblin';
 import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/DesertBandit';
@@ -30,21 +31,113 @@ export interface Stealable {
 	itemsRequired?: ItemBank;
 	table: LootTable;
 	id: number;
-	scalesOnLevel?: boolean;
 }
 
-const Stalls: Stealable[] = [
+export interface Stall extends Stealable {
+	respawnTime: number;
+}
+
+export const Stalls: Stall[] = [
 	{
 		name: 'Vegetable stall',
 		level: 2,
 		xp: 10,
-		id: 23424234234,
-		table: new LootTable(),
-		qpRequired: 99
+		id: 4706,
+		table: new LootTable()
+			.add('Cabbage')
+			.add('Potato')
+			.add('Onion')
+			.add('Tomato')
+			.add('Garlic')
+			.tertiary(206_000, 'Rocky'),
+		qpRequired: 3,
+		respawnTime: Time.Second * 2
+	},
+	{
+		name: "Baker's stall",
+		level: 5,
+		xp: 16,
+		id: 4707,
+		table: new LootTable()
+			.add('Cake')
+			.add('Bread')
+			.add('Chocolate slice')
+			.tertiary(124_000, 'Rocky'),
+		respawnTime: Time.Second * 2.5
+	},
+	{
+		name: 'Tea stall',
+		level: 5,
+		xp: 16,
+		id: 4708,
+		table: new LootTable().add('Cup of tea').tertiary(68_000, 'Rocky'),
+		respawnTime: Time.Second * 5
+	},
+	{
+		name: 'Wine stall',
+		level: 22,
+		xp: 27,
+		id: 4709,
+		table: new LootTable()
+			.add('Bottle of wine')
+			.add('Grapes')
+			.add('Jug', 1, 3)
+			.add('Jug of water')
+			.add('Jug of wine')
+			.tertiary(36_000, 'Rocky'),
+		respawnTime: Time.Second * 10
+	},
+	{
+		name: 'Fruit stall',
+		level: 25,
+		xp: 28.5,
+		id: 4710,
+		table: new LootTable()
+			.add('Cooking apple', 1, 40)
+			.add('Banana', 1, 20)
+			.add('Jangerberries', 1, 7)
+			.add('Lemon', 1, 5)
+			.add('Redberries', 1, 5)
+			.add('Lime', 1, 5)
+			.add('Strawberry', 1, 5)
+			.add('Strange fruit', 1, 5)
+			.add('Golovanova fruit top', 1, 2)
+			.add('Papaya fruit', 1, 1)
+			.tertiary(124_000, 'Rocky'),
+		respawnTime: Time.Second * 2
+	},
+	{
+		name: 'Gem stall',
+		level: 75,
+		xp: 160,
+		id: 4711,
+		table: new LootTable()
+			.add('Uncut sapphire', 1, 105)
+			.add('Uncut emerald', 1, 17)
+			.add('Uncut ruby', 1, 5)
+			.add('Uncut diamond', 1, 1)
+			.tertiary(36_000, 'Rocky'),
+		respawnTime: Time.Second * 100
+	},
+	{
+		name: 'Ore stall',
+		level: 82,
+		xp: 180,
+		id: 4712,
+		table: new LootTable()
+			.add('Iron ore', 1, 37)
+			.add('Silver ore', 1, 16)
+			.add('Coal', 1, 22)
+			.add('Gold ore', 1, 18)
+			.add('Mithril ore', 1, 18)
+			.add('Adamantite ore', 1, 15)
+			.add('Runite ore', 1, 2)
+			.tertiary(36_000, 'Rocky'),
+		respawnTime: Time.Second * 60
 	}
 ];
 
-const Pickpocketables: Stealable[] = [
+export const Pickpocketables: Stealable[] = [
 	{
 		name: 'Man',
 		level: 1,
@@ -201,10 +294,8 @@ const Pickpocketables: Stealable[] = [
 	}
 ];
 
-for (const npc of Pickpocketables) {
-	if (!npc.table) {
-		console.error(`Warning! No pickpocket table for ${npc.name}.`);
+for (const entity of Pickpocketables) {
+	if (!entity.table) {
+		console.error(`Warning! No table for ${entity.name}.`);
 	}
 }
-
-export default Pickpocketables;

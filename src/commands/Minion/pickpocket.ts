@@ -4,8 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import Thieving from '../../lib/skilling/skills/thieving';
-import Pickpocketables from '../../lib/skilling/skills/thieving/stealables';
+import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, round, stringMatches } from '../../lib/util';
@@ -33,10 +32,14 @@ export default class extends BotCommand {
 			let str = '';
 			for (let i = 1; i < 100; i += 5) {
 				str += `\n---- Level ${i} ----`;
+				let results: [string, number][] = [];
 				for (const npc of Pickpocketables) {
 					if (i < npc.level) continue;
-					const [_, xpReceived] = calcLootXPPickpocketing(i, npc, Time.Hour / (2 * 600));
-					str += `\n${npc.name} ${round(xpReceived, 2).toLocaleString()} XP/HR`;
+					const [, xpReceived] = calcLootXPPickpocketing(i, npc, Time.Hour / (2 * 600));
+					results.push([npc.name, round(xpReceived, 2)]);
+				}
+				for (const [name, xp] of results.sort((a, b) => a[1] - b[1])) {
+					str += `\n${name} ${xp.toLocaleString()} XP/HR`;
 				}
 				str += '\n\n\n';
 			}
@@ -48,11 +51,11 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const pickpocketable = Thieving.Pickpocketables.find(npc => stringMatches(npc.name, name));
+		const pickpocketable = Pickpocketables.find(npc => stringMatches(npc.name, name));
 
 		if (!pickpocketable) {
 			return msg.send(
-				`That is not a valid NPC to pickpocket, try pickpocketing one of the following: ${Thieving.Pickpocketables.map(
+				`That is not a valid NPC to pickpocket, try pickpocketing one of the following: ${Pickpocketables.map(
 					npc => npc.name
 				).join(', ')}.`
 			);
