@@ -49,7 +49,7 @@ export const Stalls: Stall[] = [
 			.add('Onion')
 			.add('Tomato')
 			.add('Garlic')
-			.tertiary(206_000, 'Rocky'),
+			.tertiary(206_777, 'Rocky'),
 		qpRequired: 3,
 		respawnTime: Time.Second * 2
 	},
@@ -62,36 +62,44 @@ export const Stalls: Stall[] = [
 			.add('Cake')
 			.add('Bread')
 			.add('Chocolate slice')
-			.tertiary(124_000, 'Rocky'),
-		respawnTime: Time.Second * 2.5
+			.tertiary(124_066, 'Rocky'),
+		respawnTime: Time.Second * 2
 	},
 	{
 		name: 'Tea stall',
 		level: 5,
 		xp: 16,
 		id: 4708,
-		table: new LootTable().add('Cup of tea').tertiary(68_000, 'Rocky'),
+		table: new LootTable().add('Cup of tea').tertiary(68_926, 'Rocky'),
+		respawnTime: Time.Second * 7
+	},
+	{
+		name: 'Silk stall',
+		level: 20,
+		xp: 24,
+		id: 4709,
+		table: new LootTable().add('Silk').tertiary(68_926, 'Rocky'),
 		respawnTime: Time.Second * 5
 	},
 	{
 		name: 'Wine stall',
 		level: 22,
 		xp: 27,
-		id: 4709,
+		id: 4710,
 		table: new LootTable()
 			.add('Bottle of wine')
 			.add('Grapes')
 			.add('Jug', 1, 3)
 			.add('Jug of water')
 			.add('Jug of wine')
-			.tertiary(36_000, 'Rocky'),
+			.tertiary(36_490, 'Rocky'),
 		respawnTime: Time.Second * 10
 	},
 	{
 		name: 'Fruit stall',
 		level: 25,
-		xp: 28.5,
-		id: 4710,
+		xp: 28.2,
+		id: 4711,
 		table: new LootTable()
 			.add('Cooking apple', 1, 40)
 			.add('Banana', 1, 20)
@@ -103,21 +111,8 @@ export const Stalls: Stall[] = [
 			.add('Strange fruit', 1, 5)
 			.add('Golovanova fruit top', 1, 2)
 			.add('Papaya fruit', 1, 1)
-			.tertiary(124_000, 'Rocky'),
+			.tertiary(124_066, 'Rocky'),
 		respawnTime: Time.Second * 2
-	},
-	{
-		name: 'Gem stall',
-		level: 75,
-		xp: 160,
-		id: 4711,
-		table: new LootTable()
-			.add('Uncut sapphire', 1, 105)
-			.add('Uncut emerald', 1, 17)
-			.add('Uncut ruby', 1, 5)
-			.add('Uncut diamond', 1, 1)
-			.tertiary(36_000, 'Rocky'),
-		respawnTime: Time.Second * 100
 	},
 	{
 		name: 'Ore stall',
@@ -132,7 +127,7 @@ export const Stalls: Stall[] = [
 			.add('Mithril ore', 1, 18)
 			.add('Adamantite ore', 1, 15)
 			.add('Runite ore', 1, 2)
-			.tertiary(36_000, 'Rocky'),
+			.tertiary(36_490, 'Rocky'),
 		respawnTime: Time.Second * 60
 	}
 ];
