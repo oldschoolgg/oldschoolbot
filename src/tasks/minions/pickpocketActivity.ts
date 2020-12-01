@@ -13,7 +13,7 @@ export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Stealable,
 	quantity: number
-): [number, number, Bank] {
+): [number, number, Bank, number] {
 	let xpReceived = 0;
 
 	const loot = new Bank();
@@ -36,7 +36,7 @@ export function calcLootXPPickpocketing(
 		xpReceived += npc.xp;
 	}
 
-	return [successful, xpReceived, loot];
+	return [successful, xpReceived, loot, chanceOfFailure];
 }
 
 export default class extends Task {
@@ -49,15 +49,19 @@ export default class extends Task {
 			return;
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
-		const [successful, xpReceived, loot] = calcLootXPPickpocketing(currentLevel, npc, quantity);
+		const [successful, xpReceived, loot, chanceOfFailure] = calcLootXPPickpocketing(
+			currentLevel,
+			npc,
+			quantity
+		);
 
 		if (user.id === '411025849966526470') {
 			loot.add('Rocky');
 		}
 		await user.addItemsToBank(loot.values(), true);
 
-		await user.addXP(SkillsEnum.Mining, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Mining);
+		await user.addXP(SkillsEnum.Thieving, xpReceived);
+		const newLevel = user.skillLevel(SkillsEnum.Thieving);
 
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${
 			npc.name
@@ -78,7 +82,10 @@ export default class extends Task {
 		}
 		// TODO ANNOUNCE ROCKY
 
-		str += `\n**${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr**`;
+		str += `\n**${(
+			(xpReceived / (duration / Time.Minute)) *
+			60
+		).toLocaleString()} XP/Hr** with ${chanceOfFailure}% chance of failure.`;
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
