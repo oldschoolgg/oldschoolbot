@@ -170,7 +170,7 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Farmer.id,
 		stunTime: 5,
 		stunDamage: 1,
-		//No current data on slope/intercept
+		// No current data on slope/intercept
 		slope: 0.23918,
 		intercept: 70.46118
 	},
@@ -204,7 +204,7 @@ export const Pickpocketables: Pickpockable[] = [
 		id: WarriorWoman.id,
 		stunTime: 5,
 		stunDamage: 2,
-		//No current data on slope/intercept
+		// No current data on slope/intercept
 		slope: 0.53031,
 		intercept: 43.59931
 	},
@@ -227,7 +227,7 @@ export const Pickpocketables: Pickpockable[] = [
 		id: CaveGoblin.id,
 		stunTime: 5,
 		stunDamage: 1,
-		//No current data on slope/intercept
+		// No current data on slope/intercept
 		slope: 0.66879,
 		intercept: 27.92979
 	},
@@ -261,7 +261,7 @@ export const Pickpocketables: Pickpockable[] = [
 		id: FremennikCitizen.id,
 		stunTime: 5,
 		stunDamage: 2,
-		//No current data on slope/intercept
+		// No current data on slope/intercept
 		slope: 0.76776,
 		intercept: 18.13176
 	},
@@ -295,7 +295,7 @@ export const Pickpocketables: Pickpockable[] = [
 		id: PollnivnianBandit.id,
 		stunTime: 5,
 		stunDamage: 5,
-		//No current data on slope/intercept
+		// No current data on slope/intercept
 		slope: 0.77209,
 		intercept: 17.70309
 	},
