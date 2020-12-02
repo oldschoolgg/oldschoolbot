@@ -88,7 +88,10 @@ export default class extends Task {
 		}
 		// TODO ANNOUNCE ROCKY
 
-		str += `\n**${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr**`;
+		str += `\n**${(
+			(xpReceived / (duration / Time.Minute)) *
+			60
+		).toLocaleString()} XP/Hr** with ${chanceOfFailure}% chance of failure.`;
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
