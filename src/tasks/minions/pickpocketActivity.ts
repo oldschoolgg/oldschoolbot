@@ -2,7 +2,7 @@ import { percentChance } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
+import { Events, Time } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -84,8 +84,11 @@ export default class extends Task {
 
 		if (loot.amount('Rocky') > 0) {
 			str += `\n\n**You have a funny feeling you're being followed...**`;
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`
+			);
 		}
-		// TODO ANNOUNCE ROCKY
 
 		str += `\n**${(
 			(xpReceived / (duration / Time.Minute)) *
