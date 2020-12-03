@@ -39,16 +39,20 @@ export default class extends BotCommand {
 		]
 	) {
 		await msg.author.settings.sync(true);
-		const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
-			msg.author.settings.get(UserSettings.Bank),
-			msg.author.rawGear()[gearType],
-			gearType,
-			type,
-			style,
-			extra
-		);
-		await msg.author.settings.update(UserSettings.Bank, userFinalBank);
-		await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
+
+		await msg.author.queueFn(async () => {
+			const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
+				msg.author.settings.get(UserSettings.Bank),
+				msg.author.rawGear()[gearType],
+				gearType,
+				type,
+				style,
+				extra
+			);
+			await msg.author.settings.update(UserSettings.Bank, userFinalBank);
+			await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
+		});
+
 		const image = await generateGearImage(
 			this.client,
 			msg.author,

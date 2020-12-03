@@ -823,6 +823,29 @@ const Createables: Createable[] = [
 		}),
 		noCl: true
 	},
+	{
+		name: "Inquisitor's",
+		inputItems: resolveNameBank({
+			"Inquisitor's armour set": 1
+		}),
+		outputItems: resolveNameBank({
+			"Inquisitor's great helm": 1,
+			"Inquisitor's hauberk": 1,
+			"Inquisitor's plateskirt": 1
+		}),
+		noCl: true
+	},
+	{
+		name: "Inquisitor's armour set",
+		inputItems: resolveNameBank({
+			"Inquisitor's great helm": 1,
+			"Inquisitor's hauberk": 1,
+			"Inquisitor's plateskirt": 1
+		}),
+		outputItems: resolveNameBank({
+			"Inquisitor's armour set": 1
+		})
+	},
 	...crystalTools
 ];
 
