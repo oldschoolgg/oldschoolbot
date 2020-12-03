@@ -20,6 +20,7 @@ import Vyre from 'oldschooljs/dist/simulation/monsters/low/Vyre';
 import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/WarriorWoman';
 import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/YanilleWatchman';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { ItemBank } from '../../../types';
 
@@ -43,6 +44,7 @@ export interface Pickpockable extends Stealable {
 	slope: number;
 	intercept: number;
 	customTickRate?: number;
+	itemsRequired?: ItemBank;
 }
 
 export const Stalls: Stall[] = [
@@ -389,7 +391,10 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 4,
 		slope: 1.61125,
-		intercept: -80.99375
+		intercept: -80.99375,
+		itemsRequired: resolveNameBank({
+			'Fire cape': 1
+		})
 	}
 ];
 

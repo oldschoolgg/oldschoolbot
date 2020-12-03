@@ -10,8 +10,15 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, formatDuration, round, stringMatches } from '../../lib/util';
+import {
+	addBanks,
+	bankHasAllItemsFromBank,
+	formatDuration,
+	round,
+	stringMatches
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 
 export default class extends BotCommand {
@@ -73,6 +80,18 @@ export default class extends BotCommand {
 		) {
 			return msg.send(
 				`You need atleast **${pickpocketable.qpRequired}** QP to pickpocket a ${pickpocketable.name}.`
+			);
+		}
+
+		if (
+			pickpocketable.itemsRequired &&
+			!bankHasAllItemsFromBank(msg.author.allItemsOwned(), pickpocketable.itemsRequired)
+		) {
+			return msg.send(
+				`You need these items to pickpocket this NPC: ${await createReadableItemListFromBank(
+					this.client,
+					pickpocketable.itemsRequired
+				)}.`
 			);
 		}
 
