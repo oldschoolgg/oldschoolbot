@@ -273,7 +273,7 @@ export const Pickpocketables: Pickpockable[] = [
 		level: 53,
 		xp: 79.5,
 		table: DesertBandit.pickpocketTable!,
-		id: DesertBandit.id,
+		id: 33322,
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.75735,
