@@ -3,6 +3,7 @@ import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
+import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import { CorporealBeastTable } from '../../../../simulation/Corp';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -65,12 +66,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: resolveItems([
-			'Armadyl chestplate',
-			'Armadyl chainskirt',
-			"Ahrim's robetop",
-			"Ahrim's robeskirt"
-		]),
 		notifyDrops: resolveItems([
 			'Tanzanite mutagen',
 			'Magma mutagen',
@@ -85,6 +80,17 @@ const killableBosses: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
+		},
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
+		minimumGearRequirements: {
+			[GearSetupTypes.Mage]: {
+				[GearStat.AttackMagic]: 50
+			},
+			[GearSetupTypes.Range]: {
+				[GearStat.AttackRanged]: 47
+			}
 		}
 	},
 	{
