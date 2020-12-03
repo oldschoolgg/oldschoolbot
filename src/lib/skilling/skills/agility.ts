@@ -178,7 +178,8 @@ const Agility = {
 	Courses: courses,
 	MonkeyBackpacks,
 	id: SkillsEnum.Agility,
-	emoji: Emoji.Agility
+	emoji: Emoji.Agility,
+	name: 'Agility'
 };
 
 export default Agility;

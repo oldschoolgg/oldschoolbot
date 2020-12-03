@@ -75,6 +75,7 @@ export const enum Emoji {
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
 	Purple = '🟪',
+	Thieving = '<:thieving:630910829352452123>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -131,6 +132,7 @@ export const enum Tasks {
 	FishingTrawler = 'trawlerActivity',
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
+	PickpocketActivity = 'pickpocketActivity',
 
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -158,6 +160,7 @@ export const enum Activity {
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
 	Fletching = 'Fletching',
+	Pickpocket = 'Pickpocket',
 	Alching = 'Alching',
 	Sawmill = 'Sawmill',
 	Nightmare = 'Nightmare',

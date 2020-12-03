@@ -52,5 +52,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FishingTrawler;
 		case Activity.Zalcano:
 			return Tasks.ZalcanoActivity;
+		case Activity.Pickpocket:
+			return Tasks.PickpocketActivity;
 	}
 }

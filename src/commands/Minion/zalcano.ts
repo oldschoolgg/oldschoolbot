@@ -77,7 +77,7 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
 		const duration = quantity * baseTime;
 
-		const food = await removeFoodFromUser(
+		const [food] = await removeFoodFromUser(
 			this.client,
 			msg.author,
 			healAmountNeeded * quantity,
