@@ -38,7 +38,7 @@ export default class extends BotCommand {
 					const [, damageTaken, xpReceived] = calcLootXPPickpocketing(
 						i,
 						npc,
-						5 * (Time.Hour / (npc.customTickRate ?? 2 * 600))
+						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600))
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}

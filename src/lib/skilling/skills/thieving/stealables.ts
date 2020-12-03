@@ -298,7 +298,8 @@ export const Pickpocketables: Pickpockable[] = [
 		stunDamage: 5,
 		// No current data on slope/intercept
 		slope: 0.77209,
-		intercept: 17.70309
+		intercept: 17.70309,
+		customTickRate: 2.4
 	},
 	{
 		name: 'Yanille Watchman',
@@ -321,7 +322,7 @@ export const Pickpocketables: Pickpockable[] = [
 		stunDamage: 5,
 		slope: 0.65485,
 		intercept: 29.30985,
-		customTickRate: 3
+		customTickRate: 2.4
 	},
 	{
 		name: 'Paladin',
