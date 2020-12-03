@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/CaveGoblin';
 import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/DesertBandit';
-import Elf from 'oldschooljs/dist/simulation/monsters/low/Elf';
 import Farmer from 'oldschooljs/dist/simulation/monsters/low/Farmer';
 import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/FremennikCitizen';
 import Gnome from 'oldschooljs/dist/simulation/monsters/low/Gnome';
@@ -14,6 +13,7 @@ import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/MasterFarmer'
 import MenaphiteThug from 'oldschooljs/dist/simulation/monsters/low/MenaphiteThug';
 import Paladin from 'oldschooljs/dist/simulation/monsters/low/Paladin';
 import PollnivnianBandit from 'oldschooljs/dist/simulation/monsters/low/PollnivnianBandit';
+import PrifddinasElf from 'oldschooljs/dist/simulation/monsters/low/PrifddinasElf';
 import Rogue from 'oldschooljs/dist/simulation/monsters/low/Rogue';
 import TzHaarHur from 'oldschooljs/dist/simulation/monsters/low/TzHaarHur';
 import Vyre from 'oldschooljs/dist/simulation/monsters/low/Vyre';
@@ -369,12 +369,13 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Elf',
 		level: 85,
 		xp: 353,
-		table: Elf.pickpocketTable!,
-		id: Elf.id,
+		table: PrifddinasElf.pickpocketTable!,
+		id: PrifddinasElf.id,
 		stunTime: 6,
 		stunDamage: 5,
 		slope: 0.42077,
-		intercept: -2.20623
+		intercept: -2.20623,
+		qpRequired: 200
 	},
 	{
 		name: 'TzHaar-Hur',

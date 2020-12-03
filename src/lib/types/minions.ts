@@ -74,6 +74,9 @@ export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
 export interface PickpocketActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
+	xpReceived: number;
+	successfulQuantity: number;
+	damageTaken: number;
 }
 
 export interface BuryingActivityTaskOptions extends ActivityTaskOptions {

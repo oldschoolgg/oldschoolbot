@@ -13,10 +13,9 @@ export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Pickpockable,
 	quantity: number
-): [number, number, number, Bank, number] {
+): [number, number, number, number] {
 	let xpReceived = 0;
 
-	const loot = new Bank();
 	let successful = 0;
 	let damageTaken = 0;
 	// Pickpocketing takes 2 ticks
@@ -36,15 +35,23 @@ export function calcLootXPPickpocketing(
 			continue;
 		}
 		successful++;
-		loot.add(npc.table.roll());
+
 		xpReceived += npc.xp;
 	}
 
-	return [successful, damageTaken, xpReceived, loot, chanceOfSuccess];
+	return [successful, damageTaken, xpReceived, chanceOfSuccess];
 }
 
 export default class extends Task {
-	async run({ monsterID, quantity, userID, channelID, duration }: PickpocketActivityTaskOptions) {
+	async run({
+		monsterID,
+		quantity,
+		successfulQuantity,
+		userID,
+		channelID,
+		duration,
+		xpReceived
+	}: PickpocketActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const npc = Pickpocketables.find(_npc => _npc.id === monsterID);
@@ -53,25 +60,20 @@ export default class extends Task {
 			return;
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
-		const [
-			successful,
-			xpReceived,
-			damageTaken,
-			loot,
-			chanceOfSuccess
-		] = calcLootXPPickpocketing(currentLevel, npc, quantity);
+
+		const loot = new Bank();
+		for (let i = 0; i < successfulQuantity; i++) {
+			loot.add(npc.table.roll());
+		}
 
 		await user.addItemsToBank(loot.values(), true);
-
-		// Do something with damageTaken, text and remove food?
-		console.log(damageTaken);
-		await user.addXP(SkillsEnum.Mining, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Mining);
+		await user.addXP(SkillsEnum.Thieving, xpReceived);
+		const newLevel = user.skillLevel(SkillsEnum.Thieving);
 
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${
 			npc.name
-		} ${successful}x times, due to failures you missed out on ${
-			quantity - successful
+		} ${successfulQuantity}x times, due to failures you missed out on ${
+			quantity - successfulQuantity
 		}x pickpockets, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
@@ -90,10 +92,7 @@ export default class extends Task {
 			);
 		}
 
-		str += `\n**${(
-			(xpReceived / (duration / Time.Minute)) *
-			60
-		).toLocaleString()} XP/Hr** with ${chanceOfSuccess}% chance of success.`;
+		str += `\n**${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr**.`;
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);

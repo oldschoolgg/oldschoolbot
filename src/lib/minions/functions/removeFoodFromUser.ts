@@ -18,7 +18,7 @@ export default async function removeFoodFromUser(
 	const userBank = user.settings.get(UserSettings.Bank);
 	const foodToRemove = getUserFoodFromBank(userBank, totalHealingNeeded);
 	if (!foodToRemove) {
-		throw `You don't have enough food to kill ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per kill). You can use these food items: ${Eatables.map(
+		throw `You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
 			i => i.name
 		).join(', ')}.`;
 	} else {

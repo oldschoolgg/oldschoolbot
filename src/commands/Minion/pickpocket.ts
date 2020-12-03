@@ -4,6 +4,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -28,18 +30,24 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (msg.flagArgs.xphr) {
+		if (msg.flagArgs.xphr && msg.author.id === '157797566833098752') {
 			let str = '';
 			for (let i = 1; i < 100; i += 5) {
 				str += `\n---- Level ${i} ----`;
-				let results: [string, number][] = [];
+				let results: [string, number, number][] = [];
 				for (const npc of Pickpocketables) {
 					if (i < npc.level) continue;
-					const [, , xpReceived] = calcLootXPPickpocketing(i, npc, Time.Hour / (2 * 600));
-					results.push([npc.name, round(xpReceived, 2)]);
+					const [, damageTaken, xpReceived] = calcLootXPPickpocketing(
+						i,
+						npc,
+						5 * (Time.Hour / (2 * 600))
+					);
+					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
-				for (const [name, xp] of results.sort((a, b) => a[1] - b[1])) {
-					str += `\n${name} ${xp.toLocaleString()} XP/HR`;
+				for (const [name, xp, damageTaken] of results.sort((a, b) => a[1] - b[1])) {
+					str += `\n${name} ${xp.toLocaleString()} XP/HR and ${
+						damageTaken / 20
+					} Sharks/hr`;
 				}
 				str += '\n\n\n';
 			}
@@ -61,13 +69,21 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (
+			pickpocketable.qpRequired &&
+			msg.author.settings.get(UserSettings.QP) < pickpocketable.qpRequired
+		) {
+			return msg.send(
+				`You need atleast **${pickpocketable.qpRequired}** QP to pickpocket a ${pickpocketable.name}.`
+			);
+		}
+
 		if (msg.author.skillLevel(SkillsEnum.Thieving) < pickpocketable.level) {
 			return msg.send(
 				`${msg.author.minionName} needs ${pickpocketable.level} Thieving to pickpocket a ${pickpocketable.name}.`
 			);
 		}
 
-		await msg.author.settings.sync(true);
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToPickpocket);
@@ -85,6 +101,20 @@ export default class extends BotCommand {
 			);
 		}
 
+		const [successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
+			msg.author.skillLevel(SkillsEnum.Thieving),
+			pickpocketable,
+			quantity
+		);
+
+		const food = await removeFoodFromUser(
+			this.client,
+			msg.author,
+			damageTaken,
+			Math.ceil(damageTaken / quantity),
+			'Pickpocketing'
+		);
+
 		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(
 			this.client,
 			Tasks.SkillingTicker,
@@ -94,14 +124,17 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.Pickpocket
+				type: Activity.Pickpocket,
+				damageTaken,
+				successfulQuantity,
+				xpReceived
 			}
 		);
 
 		return msg.send(
 			`${msg.author.minionName} is now going to pickpocket a ${
 				pickpocketable.name
-			} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`
+			} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. ${food}`
 		);
 	}
 }
