@@ -339,7 +339,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		if (inputSkill === 'overall') {
 			res = await this.query(
-				`SELECT id, "skills.cooking" + "skills.woodcutting" + "skills.mining" + "skills.smithing" + "skills.agility" + "skills.fishing" + "skills.firemaking" + "skills.runecraft" + "skills.crafting" + "skills.prayer" + "skills.fletching" as totalxp FROM users ORDER BY totalxp DESC LIMIT 2000;`
+				`SELECT id, "skills.cooking" + "skills.woodcutting" + "skills.mining" + "skills.smithing" + "skills.agility" + "skills.fishing" + "skills.firemaking" + "skills.runecraft" + "skills.crafting" + "skills.prayer" + "skills.fletching" + "skills.thieving" as totalxp FROM users ORDER BY totalxp DESC LIMIT 2000;`
 			);
 		} else {
 			if (!skill) {

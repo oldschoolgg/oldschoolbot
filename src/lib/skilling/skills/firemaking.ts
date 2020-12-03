@@ -77,7 +77,8 @@ const Firemaking = {
 	Burnables: burnables,
 	id: SkillsEnum.Firemaking,
 	emoji: Emoji.Firemaking,
-	pyromancerItems
+	pyromancerItems,
+	name: 'Firemaking'
 };
 
 export default Firemaking;
