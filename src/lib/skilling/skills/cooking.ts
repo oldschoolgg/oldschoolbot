@@ -249,7 +249,8 @@ const Cooking = {
 	aliases: ['cooking', 'cook'],
 	Cookables,
 	id: SkillsEnum.Cooking,
-	emoji: Emoji.Cooking
+	emoji: Emoji.Cooking,
+	name: 'Cooking'
 };
 
 export default Cooking;

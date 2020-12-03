@@ -21,6 +21,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import Smithing from '../../lib/skilling/skills/smithing';
+import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
@@ -37,6 +38,7 @@ import {
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	PickpocketActivityTaskOptions,
 	RaidsActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
@@ -339,6 +341,12 @@ export default class extends Extendable {
 			case Activity.Zalcano: {
 				const data = currentTask as ZalcanoActivityTaskOptions;
 				return `${this.minionName} is currently killing Zalcano ${data.quantity}x times. ${formattedDuration}`;
+			}
+
+			case Activity.Pickpocket: {
+				const data = currentTask as PickpocketActivityTaskOptions;
+				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID)!;
+				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
 			}
 		}
 	}

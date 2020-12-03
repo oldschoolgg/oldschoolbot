@@ -147,7 +147,8 @@ const Mining = {
 	GemRockTable,
 	id: SkillsEnum.Mining,
 	emoji: Emoji.Mining,
-	prospectorItems
+	prospectorItems,
+	name: 'Mining'
 };
 
 export default Mining;

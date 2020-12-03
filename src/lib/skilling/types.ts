@@ -159,6 +159,7 @@ export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
 	emoji: Emoji;
+	name: string;
 }
 
 export interface Plankable {

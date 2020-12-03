@@ -8,7 +8,8 @@ const Smithing = {
 	Bars,
 	SmithableItems,
 	id: SkillsEnum.Smithing,
-	emoji: Emoji.Smithing
+	emoji: Emoji.Smithing,
+	name: 'Smithing'
 };
 
 export default Smithing;
