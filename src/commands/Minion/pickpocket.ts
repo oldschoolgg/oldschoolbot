@@ -35,7 +35,7 @@ export default class extends BotCommand {
 				let results: [string, number][] = [];
 				for (const npc of Pickpocketables) {
 					if (i < npc.level) continue;
-					const [, xpReceived] = calcLootXPPickpocketing(i, npc, Time.Hour / (2 * 600));
+					const [, , xpReceived] = calcLootXPPickpocketing(i, npc, Time.Hour / (2 * 600));
 					results.push([npc.name, round(xpReceived, 2)]);
 				}
 				for (const [name, xp] of results.sort((a, b) => a[1] - b[1])) {
