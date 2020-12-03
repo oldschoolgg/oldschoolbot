@@ -1247,6 +1247,7 @@ export const capes: CollectionLogData = {
 		'Prayer hood',
 		'Fletching hood',
 		'Runecraft hood',
+		'Thieving hood',
 		'Quest point hood'
 	]),
 	capes: resolveItems([
@@ -1261,6 +1262,7 @@ export const capes: CollectionLogData = {
 		'Prayer cape',
 		'Fletching cape',
 		'Runecraft cape',
+		'Thieving cape',
 		'Quest point cape'
 	]),
 	'trimmed capes': resolveItems([
@@ -1275,6 +1277,7 @@ export const capes: CollectionLogData = {
 		'Prayer cape(t)',
 		'Fletching cape(t)',
 		'Runecraft cape(t)',
+		'Thieving cape(t)',
 		'Quest point cape (t)'
 	])
 };
