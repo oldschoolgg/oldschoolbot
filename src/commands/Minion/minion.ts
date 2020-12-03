@@ -542,21 +542,20 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Check food
-		if (
-			1 > 2 &&
-			monster.healAmountNeeded &&
-			monster.attackStyleToUse &&
-			monster.attackStylesUsed
-		) {
+		let foodStr: undefined | string = undefined;
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-			await removeFoodFromUser(
+
+			const [result] = await removeFoodFromUser(
 				this.client,
 				msg.author,
 				healAmountNeeded * quantity,
 				Math.ceil(healAmountNeeded / quantity),
 				monster.name
 			);
+
+			foodStr = result;
 		}
 
 		let duration = timeToFinish * quantity;
@@ -592,6 +591,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
+		if (foodStr) {
+			response += ` Removed ${foodStr}.`;
+		}
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
