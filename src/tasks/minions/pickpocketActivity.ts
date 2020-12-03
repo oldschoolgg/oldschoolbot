@@ -19,7 +19,7 @@ export function calcLootXPPickpocketing(
 	let successful = 0;
 	let damageTaken = 0;
 	// Pickpocketing takes 2 ticks
-	const timeToPickpocket = 2 * 0.6;
+	const timeToPickpocket = (npc.customTickRate ?? 2) * 0.6;
 	// For future Ardougne Diary and Thieving cape
 	const diary = 1;
 	const thievCape = 1;

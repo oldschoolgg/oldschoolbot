@@ -42,6 +42,7 @@ export interface Pickpockable extends Stealable {
 	stunDamage: number;
 	slope: number;
 	intercept: number;
+	customTickRate?: number;
 }
 
 export const Stalls: Stall[] = [
@@ -319,7 +320,8 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 5,
 		slope: 0.65485,
-		intercept: 29.30985
+		intercept: 29.30985,
+		customTickRate: 3
 	},
 	{
 		name: 'Paladin',

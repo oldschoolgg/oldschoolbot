@@ -14,9 +14,6 @@ import { addBanks, formatDuration, round, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 
-// Pickpocketing takes 2 ticks
-const timeToPickpocket = 2 * 600;
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -41,7 +38,7 @@ export default class extends BotCommand {
 					const [, damageTaken, xpReceived] = calcLootXPPickpocketing(
 						i,
 						npc,
-						5 * (Time.Hour / timeToPickpocket)
+						5 * (Time.Hour / (npc.customTickRate ?? 2 * 600))
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
@@ -84,6 +81,8 @@ export default class extends BotCommand {
 				`${msg.author.minionName} needs ${pickpocketable.level} Thieving to pickpocket a ${pickpocketable.name}.`
 			);
 		}
+
+		const timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
