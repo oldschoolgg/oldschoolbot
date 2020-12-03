@@ -12,7 +12,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Pickpockable,
-	quantity: number
+	quantity: number,
+	hasThievingCape: boolean
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -22,7 +23,7 @@ export function calcLootXPPickpocketing(
 	const timeToPickpocket = (npc.customTickRate ?? 2) * 0.6;
 	// For future Ardougne Diary and Thieving cape
 	const diary = 1;
-	const thievCape = 1;
+	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
 	const chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
 

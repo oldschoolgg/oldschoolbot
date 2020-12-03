@@ -14,6 +14,7 @@ import {
 	addBanks,
 	bankHasAllItemsFromBank,
 	formatDuration,
+	itemID,
 	round,
 	stringMatches
 } from '../../lib/util';
@@ -45,7 +46,8 @@ export default class extends BotCommand {
 					const [, damageTaken, xpReceived] = calcLootXPPickpocketing(
 						i,
 						npc,
-						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600))
+						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600)),
+						false
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
@@ -123,7 +125,9 @@ export default class extends BotCommand {
 		const [successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
 			msg.author.skillLevel(SkillsEnum.Thieving),
 			pickpocketable,
-			quantity
+			quantity,
+			msg.author.hasItemEquippedAnywhere(itemID('Thieving cape')) ||
+				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)'))
 		);
 
 		const [foodString, foodRemoved] = await removeFoodFromUser(
