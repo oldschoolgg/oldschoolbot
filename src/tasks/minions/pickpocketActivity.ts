@@ -70,11 +70,13 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Thieving, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Thieving);
 
+		const xpHr = `${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
+
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${
 			npc.name
 		} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
-		}x pickpockets, you also received ${xpReceived.toLocaleString()} XP.`;
+		}x pickpockets, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Thieving level is now ${newLevel}!`;
@@ -91,8 +93,6 @@ export default class extends Task {
 				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`
 			);
 		}
-
-		str += `\n**${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr**.`;
 
 		handleTripFinish(this.client, user, channelID, str, res => {
 			user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);

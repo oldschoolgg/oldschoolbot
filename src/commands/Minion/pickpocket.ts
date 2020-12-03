@@ -5,11 +5,12 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, round, stringMatches } from '../../lib/util';
+import { addBanks, formatDuration, round, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 
@@ -40,7 +41,7 @@ export default class extends BotCommand {
 					const [, damageTaken, xpReceived] = calcLootXPPickpocketing(
 						i,
 						npc,
-						5 * (Time.Hour / (2 * 600))
+						5 * (Time.Hour / timeToPickpocket)
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
@@ -107,12 +108,20 @@ export default class extends BotCommand {
 			quantity
 		);
 
-		const [food] = await removeFoodFromUser(
+		const [foodString, foodRemoved] = await removeFoodFromUser(
 			this.client,
 			msg.author,
 			damageTaken,
 			Math.ceil(damageTaken / quantity),
 			'Pickpocketing'
+		);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.ThievingCost,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.ThievingCost),
+				foodRemoved
+			])
 		);
 
 		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(
@@ -134,7 +143,9 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now going to pickpocket a ${
 				pickpocketable.name
-			} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. ${food}`
+			} ${quantity}x times, it'll take around ${formatDuration(
+				duration
+			)} to finish. Removed ${foodString}`
 		);
 	}
 }
