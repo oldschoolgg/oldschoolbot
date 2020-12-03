@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
 const options = {
@@ -35,6 +36,11 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[buyerMember, price, quantity, itemArray]: [GuildMember, number, number, Item[]]
 	) {
+		// Make sure blacklisted members can't be traded.
+		const isBlacklisted = this.client.settings
+			.get(ClientSettings.UserBlacklist)
+			.includes(buyerMember.user.id);
+		if (isBlacklisted) throw `Blacklisted players can't buy items.`;
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		if (buyerMember.user.isIronman) throw `Iron players can't be sold items.`;
 		if (buyerMember.user.id === msg.author.id) throw `You can't trade yourself.`;

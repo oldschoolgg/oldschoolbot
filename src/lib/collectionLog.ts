@@ -68,6 +68,37 @@ const fishingTrawler: CollectionLogData = {
 	])
 };
 
+const barrows: CollectionLogData = {
+	Barrows: resolveItems([
+		"Ahrim's staff",
+		"Ahrim's hood",
+		"Ahrim's robetop",
+		"Ahrim's robeskirt",
+		"Dharok's greataxe",
+		"Dharok's helm",
+		"Dharok's platebody",
+		"Dharok's platelegs",
+		"Guthan's warspear",
+		"Guthan's helm",
+		"Guthan's platebody",
+		"Guthan's chainskirt"
+	]),
+	'Barrows 2': resolveItems([
+		"Karil's crossbow",
+		"Karil's coif",
+		"Karil's leathertop",
+		"Karil's leatherskirt",
+		"Torag's hammers",
+		"Torag's helm",
+		"Torag's platebody",
+		"Torag's platelegs",
+		"Verac's flail",
+		"Verac's helm",
+		"Verac's brassard",
+		"Verac's plateskirt"
+	])
+};
+
 export const bosses: CollectionLogData = {
 	Zulrah: resolveItems([
 		'Uncut onyx',
@@ -1263,6 +1294,7 @@ export const capes: CollectionLogData = {
 		'Prayer hood',
 		'Fletching hood',
 		'Runecraft hood',
+		'Thieving hood',
 		'Quest point hood'
 	]),
 	capes: resolveItems([
@@ -1277,6 +1309,7 @@ export const capes: CollectionLogData = {
 		'Prayer cape',
 		'Fletching cape',
 		'Runecraft cape',
+		'Thieving cape',
 		'Quest point cape'
 	]),
 	'trimmed capes': resolveItems([
@@ -1291,6 +1324,7 @@ export const capes: CollectionLogData = {
 		'Prayer cape(t)',
 		'Fletching cape(t)',
 		'Runecraft cape(t)',
+		'Thieving cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1600,5 +1634,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Zalcano',
 		aliases: ['zalcano'],
 		items: { 1: zalcanoLog }
+	},
+	{
+		name: 'Barrows',
+		aliases: ['barrows'],
+		items: barrows
 	}
 ];

@@ -135,7 +135,8 @@ const Prayer = {
 	aliases: ['prayer', 'pray'],
 	Bones: bones,
 	id: SkillsEnum.Prayer,
-	emoji: Emoji.Prayer
+	emoji: Emoji.Prayer,
+	name: 'Prayer'
 };
 
 export default Prayer;

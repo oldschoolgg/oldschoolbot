@@ -215,7 +215,8 @@ const Fishing = {
 	Fishes: fishes,
 	id: SkillsEnum.Fishing,
 	emoji: Emoji.Fishing,
-	anglerItems
+	anglerItems,
+	name: 'Fishing'
 };
 
 export default Fishing;
