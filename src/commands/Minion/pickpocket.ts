@@ -28,8 +28,8 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (msg.flagArgs.xphr && msg.author.id === '157797566833098752') {
-			let str = '';
+		if (msg.flagArgs.xphr) {
+			let str = 'Approximate XP/Hr and Food usage rates (varies based on RNG)\n\n';
 			for (let i = 1; i < 100; i += 5) {
 				str += `\n---- Level ${i} ----`;
 				let results: [string, number, number][] = [];
