@@ -368,7 +368,7 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
 		const perkTier = getUsersPerkTier(this);
-		const zakBonus = this.equippedPet() === itemID('Klik') ? 1.4 : 1;
+		const zakBonus = this.equippedPet() === itemID('Zak') ? 1.4 : 1;
 
 		if (perkTier === PerkTier.Two) return Time.Minute * 33 * zakBonus;
 		if (perkTier === PerkTier.Three) return Time.Minute * 36 * zakBonus;
