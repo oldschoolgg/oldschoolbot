@@ -547,13 +547,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 
-			const [result] = await removeFoodFromUser(
-				this.client,
-				msg.author,
-				healAmountNeeded * quantity,
-				Math.ceil(healAmountNeeded / quantity),
-				monster.name
-			);
+			const [result] = await removeFoodFromUser({
+				client: this.client,
+				user: msg.author,
+				totalHealingNeeded: healAmountNeeded * quantity,
+				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				activityName: monster.name,
+				elyEffective: true
+			});
 
 			foodStr = result;
 		}
