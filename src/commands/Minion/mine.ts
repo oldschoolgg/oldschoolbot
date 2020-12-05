@@ -39,11 +39,6 @@ const pickaxes = [
 		miningLvl: 61
 	},
 	{
-		id: itemID('Dragon pickaxe (or)'),
-		reductionPercent: 6,
-		miningLvl: 61
-	},
-	{
 		id: itemID('Dragon pickaxe'),
 		reductionPercent: 6,
 		miningLvl: 61
