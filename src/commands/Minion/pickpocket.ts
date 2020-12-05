@@ -130,13 +130,14 @@ export default class extends BotCommand {
 				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)'))
 		);
 
-		const [foodString, foodRemoved] = await removeFoodFromUser(
-			this.client,
-			msg.author,
-			damageTaken,
-			Math.ceil(damageTaken / quantity),
-			'Pickpocketing'
-		);
+		const [foodString, foodRemoved] = await removeFoodFromUser({
+			client: this.client,
+			user: msg.author,
+			totalHealingNeeded: damageTaken,
+			healPerAction: Math.ceil(damageTaken / quantity),
+			activityName: 'Pickpocketing',
+			attackStylesUsed: []
+		});
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ThievingCost,

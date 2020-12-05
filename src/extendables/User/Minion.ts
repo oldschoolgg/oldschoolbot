@@ -327,6 +327,14 @@ export default class extends Extendable {
 				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 
+			case Activity.AnimatedArmour: {
+				return `${this.minionName} is currently fighting animated armour in the Warriors' Guild. ${formattedDuration}`;
+			}
+
+			case Activity.Cyclops: {
+				return `${this.minionName} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
+			}
+
 			case Activity.Sepulchre: {
 				const data = currentTask as NightmareActivityTaskOptions;
 

@@ -14,6 +14,10 @@ export const Minigames: Minigame[] = [
 		name: 'The Nightmare'
 	},
 	{
+		id: 2456,
+		name: 'Animated Armour'
+	},
+	{
 		id: 35236,
 		name: 'Hallowed Sepulchre'
 	},
@@ -35,6 +39,7 @@ export enum MinigameIDsEnum {
 	Wintertodt = 20693,
 	ChambersOfXeric = 6969,
 	Nightmare = 9415,
+	AnimatedArmour = 2456,
 	Sepulchre = 35236,
 	TrickOrTreat = 3719,
 	FishingTrawler = 9525,
