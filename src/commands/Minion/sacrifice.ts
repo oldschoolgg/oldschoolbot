@@ -59,7 +59,9 @@ export default class extends BotCommand {
 		let priceOfItem = itemIsTradeable(osItem.id)
 			? await this.client.fetchItemPrice(osItem.id)
 			: 1;
-		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') ||
+			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
 		if (hasSkipper) {
 			priceOfItem *= 1.4;
 		}
