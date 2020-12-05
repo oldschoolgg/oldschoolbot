@@ -121,6 +121,15 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
+export interface AnimatedArmourActivityTaskOptions extends MinigameActivityTaskOptions {
+	armourID: string;
+	quantity: number;
+}
+
+export interface CyclopsActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
 export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
 	floors: number[];
 }

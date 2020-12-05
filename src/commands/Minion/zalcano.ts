@@ -82,13 +82,14 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
 		const duration = quantity * baseTime;
 
-		const [food] = await removeFoodFromUser(
-			this.client,
-			msg.author,
-			healAmountNeeded * quantity,
-			Math.ceil(healAmountNeeded / quantity),
-			'Zalcano'
-		);
+		const [food] = await removeFoodFromUser({
+			client: this.client,
+			user: msg.author,
+			totalHealingNeeded: healAmountNeeded * quantity,
+			healPerAction: Math.ceil(healAmountNeeded / quantity),
+			activityName: 'Zalcano',
+			attackStylesUsed: []
+		});
 
 		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>(
 			this.client,

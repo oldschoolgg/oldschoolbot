@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { randInt } from 'e';
+import { objectKeys, randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -479,13 +479,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 
-			const [result] = await removeFoodFromUser(
-				this.client,
-				msg.author,
-				healAmountNeeded * quantity,
-				Math.ceil(healAmountNeeded / quantity),
-				monster.name
-			);
+			const [result] = await removeFoodFromUser({
+				client: this.client,
+				user: msg.author,
+				totalHealingNeeded: healAmountNeeded * quantity,
+				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				activityName: monster.name,
+				attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+			});
 
 			foodStr = result;
 		}
