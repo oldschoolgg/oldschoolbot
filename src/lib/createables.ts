@@ -56,6 +56,31 @@ const crystalTools: Createable[] = [
 	}
 ];
 
+const ornamentKits: Createable[] = [
+	{
+		name: 'Dragon defender (t)',
+		inputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
+		outputItems: resolveNameBank({ 'Dragon defender (t)': 1 })
+	},
+	{
+		name: 'Dragon defender',
+		inputItems: resolveNameBank({ 'Dragon defender (t)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Rune defender (t)',
+		inputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
+		outputItems: resolveNameBank({ 'Rune defender (t)': 1 })
+	},
+	{
+		name: 'Rune defender',
+		inputItems: resolveNameBank({ 'Rune defender (t)': 1 }),
+		outputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
+		noCl: true
+	}
+];
+
 const Createables: Createable[] = [
 	{
 		name: 'Godsword blade',
@@ -846,7 +871,8 @@ const Createables: Createable[] = [
 			"Inquisitor's armour set": 1
 		})
 	},
-	...crystalTools
+	...crystalTools,
+	...ornamentKits
 ];
 
 export default Createables;
