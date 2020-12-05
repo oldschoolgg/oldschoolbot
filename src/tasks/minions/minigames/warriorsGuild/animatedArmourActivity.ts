@@ -1,3 +1,4 @@
+import { MinigameIDsEnum } from './../../../../lib/minions/data/minigames';
 import { Task } from 'klasa';
 
 import { Armours } from '../../../../commands/Minion/warriorsguild';
@@ -20,6 +21,8 @@ export default class extends Task {
 		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${
 			armour.name
 		} armour and received ${quantity * armour.tokens}x Warrior guild tokens.`;
+
+		user.incrementMinigameScore(MinigameIDsEnum.AnimatedArmour, quantity);
 
 		await user.addItemsToBank(
 			resolveNameBank({
