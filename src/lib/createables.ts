@@ -119,7 +119,7 @@ const ornamentKits: Createable[] = [
 		name: 'Dragon plateskirt (g)',
 		inputItems: resolveNameBank({
 			'Dragon plateskirt': 1,
-			'Dragon plateskirt ornament kit': 1
+			'Dragon legs/skirt ornament kit': 1
 		}),
 		outputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 })
 	},
@@ -173,7 +173,7 @@ const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Zamorak godsword',
+		name: 'Revert zamorak godsword',
 		inputItems: resolveNameBank({
 			'Zamorak godsword (or)': 1
 		}),
@@ -188,7 +188,7 @@ const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Bandos godsword',
+		name: 'Revert bandos godsword',
 		inputItems: resolveNameBank({
 			'Bandos godsword (or)': 1
 		}),
@@ -206,7 +206,7 @@ const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Saradomin godsword',
+		name: 'Revert saradomin godsword',
 		inputItems: resolveNameBank({
 			'Saradomin godsword (or)': 1
 		}),
@@ -227,7 +227,7 @@ const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Armadyl godsword',
+		name: 'Revert Armadyl godsword',
 		inputItems: resolveNameBank({
 			'Armadyl godsword (or)': 1
 		}),
