@@ -1,10 +1,10 @@
-import { MinigameIDsEnum } from './../../../../lib/minions/data/minigames';
 import { Task } from 'klasa';
 
 import { Armours } from '../../../../commands/Minion/warriorsguild';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { resolveNameBank } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
+import { MinigameIDsEnum } from './../../../../lib/minions/data/minigames';
 
 export default class extends Task {
 	async run({
