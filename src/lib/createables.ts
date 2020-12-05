@@ -96,7 +96,7 @@ const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 })
 	},
 	{
-		name: 'Dragon sq shield',
+		name: 'Revert dragon sq shield',
 		inputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
 		noCl: true
