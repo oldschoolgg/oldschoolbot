@@ -1,3 +1,4 @@
+import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -133,7 +134,7 @@ export default class extends BotCommand {
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),
 					activityName: monster.name,
-					elyEffective: true
+					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
 				});
 			}
 		}

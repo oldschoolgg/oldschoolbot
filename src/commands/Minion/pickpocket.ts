@@ -136,7 +136,7 @@ export default class extends BotCommand {
 			totalHealingNeeded: damageTaken,
 			healPerAction: Math.ceil(damageTaken / quantity),
 			activityName: 'Pickpocketing',
-			elyEffective: false
+			attackStylesUsed: []
 		});
 
 		await this.client.settings.update(

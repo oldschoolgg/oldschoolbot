@@ -76,6 +76,7 @@ export const enum Emoji {
 	Fletching = '<:fletching:630911040544309258>',
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
+	Ely = '<:ely:784453586033049630>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',

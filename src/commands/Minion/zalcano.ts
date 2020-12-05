@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			totalHealingNeeded: healAmountNeeded * quantity,
 			healPerAction: Math.ceil(healAmountNeeded / quantity),
 			activityName: 'Zalcano',
-			elyEffective: false
+			attackStylesUsed: []
 		});
 
 		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>(

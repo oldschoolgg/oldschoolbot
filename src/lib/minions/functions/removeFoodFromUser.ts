@@ -1,7 +1,10 @@
+import { objectEntries } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { addBanks, itemID, removeBankFromBank } from 'oldschooljs/dist/util';
 
+import { Emoji } from '../../constants';
 import { Eatables } from '../../eatables';
+import { GearSetupTypes } from '../../gear/types';
 import { ClientSettings } from '../../settings/types/ClientSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
@@ -15,24 +18,29 @@ export default async function removeFoodFromUser({
 	totalHealingNeeded,
 	healPerAction,
 	activityName,
-	elyEffective
+	attackStylesUsed
 }: {
 	client: KlasaClient;
 	user: KlasaUser;
 	totalHealingNeeded: number;
 	healPerAction: number;
 	activityName: string;
-	elyEffective: boolean;
+	attackStylesUsed: GearSetupTypes[];
 }): Promise<[string, ItemBank]> {
 	await user.settings.sync(true);
 	const userBank = user.settings.get(UserSettings.Bank);
 
+	const rawGear = user.rawGear();
+	const gearSetupsUsed = objectEntries(rawGear).filter(entry =>
+		attackStylesUsed.includes(entry[0])
+	);
 	const reductions = [];
-
-	const elyUsed = elyEffective && user.hasItemEquippedAnywhere(itemID('Elysian spirit shield'));
+	const elyUsed = gearSetupsUsed.some(
+		entry => entry[1].shield?.item === itemID('Elysian spirit shield')
+	);
 	if (elyUsed) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 17.5);
-		reductions.push(`17.5% for Ely`);
+		reductions.push(`17.5% for Ely ${Emoji.Ely}`);
 	}
 	const foodToRemove = getUserFoodFromBank(userBank, totalHealingNeeded);
 	if (!foodToRemove) {
