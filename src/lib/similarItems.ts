@@ -1,6 +1,18 @@
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
+const slayerHelmSimilar = resolveItems([
+	'Black slayer helmet (i)',
+	'Green slayer helmet (i)',
+	'Red slayer helmet (i)',
+	'Purple slayer helmet (i)',
+	'Turquoise slayer helmet (i)',
+	'Hydra slayer helmet (i)',
+	'Twisted slayer helmet (i)',
+	'Slayer helmet (i)',
+	'Slayer helmet'
+]);
+
 const SimilarItems: Record<number, number[]> = {
 	// Ornaments
 	[itemID('Dragon full helm')]: resolveItems(['Dragon full helm (g)']),
@@ -199,58 +211,33 @@ const SimilarItems: Record<number, number[]> = {
 		'Trident of the seas (e)'
 	]),
 	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)']),
-	[itemID('Slayer helmet (i)')]: resolveItems([
-		'Black slayer helmet (i)',
-		'Green slayer helmet (i)',
-		'Red slayer helmet (i)',
-		'Purple slayer helmet (i)',
-		'Turquoise slayer helmet (i)',
-		'Hydra slayer helmet (i)',
-		'Twisted slayer helmet (i)'
-	])
+	[itemID('Slayer helmet (i)')]: slayerHelmSimilar,
+	[itemID('Black mask')]: [
+		...slayerHelmSimilar,
+		...resolveItems([
+			'Black mask (i)',
+			'Black mask (1)',
+			'Black mask (2)',
+			'Black mask (3)',
+			'Black mask (4)',
+			'Black mask (5)',
+			'Black mask (6)',
+			'Black mask (7)',
+			'Black mask (8)',
+			'Black mask (9)',
+			'Black mask (10)'
+		])
+	],
+	[itemID('Black mask (i)')]: slayerHelmSimilar,
+	[itemID('Nosepeg')]: slayerHelmSimilar,
+	[itemID('Earmuffs')]: slayerHelmSimilar,
+	[itemID('Spiny helmet')]: slayerHelmSimilar,
+	[itemID('Facemask')]: slayerHelmSimilar,
+	[itemID('Reinforced goggles')]: slayerHelmSimilar
 };
 
 export function getSimilarItems(itemID: number) {
 	return [...new Set([...(SimilarItems[itemID] ?? []), itemID])];
 }
-
-// Adds dependant items
-SimilarItems[itemID('Saradomin cape')] = getSimilarItems(itemID('Guthix cape'));
-SimilarItems[itemID('Zamorak cape')] = getSimilarItems(itemID('Guthix cape'));
-SimilarItems[itemID('Imbued saradomin cape')] = getSimilarItems(itemID('Imbued guthix cape'));
-SimilarItems[itemID('Imbued zamorak cape')] = getSimilarItems(itemID('Imbued guthix cape'));
-SimilarItems[itemID('Slayer helmet')] = [
-	...SimilarItems[itemID('Slayer helmet (i)')],
-	...resolveItems([
-		'Black slayer helmet',
-		'Green slayer helmet',
-		'Red slayer helmet',
-		'Purple slayer helmet',
-		'Turquoise slayer helmet',
-		'Hydra slayer helmet',
-		'Twisted slayer helmet'
-	])
-];
-SimilarItems[itemID('Black mask')] = [
-	...SimilarItems[itemID('Slayer helmet')],
-	itemID('Black mask (i)'),
-	itemID('Black mask (1)'),
-	itemID('Black mask (2)'),
-	itemID('Black mask (3)'),
-	itemID('Black mask (4)'),
-	itemID('Black mask (5)'),
-	itemID('Black mask (6)'),
-	itemID('Black mask (7)'),
-	itemID('Black mask (8)'),
-	itemID('Black mask (9)'),
-	itemID('Black mask (10)')
-];
-
-SimilarItems[itemID('Black mask (i)')] = [...SimilarItems[itemID('Slayer helmet (i)')]];
-SimilarItems[itemID('Nosepeg')] = [...SimilarItems[itemID('Slayer helmet')]];
-SimilarItems[itemID('Earmuffs')] = [...SimilarItems[itemID('Slayer helmet')]];
-SimilarItems[itemID('Spiny helmet')] = [...SimilarItems[itemID('Slayer helmet')]];
-SimilarItems[itemID('Facemask')] = [...SimilarItems[itemID('Slayer helmet')]];
-SimilarItems[itemID('Reinforced goggles')] = [...SimilarItems[itemID('Slayer helmet')]];
 
 export default SimilarItems;

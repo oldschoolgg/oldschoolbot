@@ -5,6 +5,7 @@ import { Events } from '../../lib/constants';
 import { GearTypes } from '../../lib/gear';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import SimilarItems from '../../lib/similarItems';
 import { ItemBank } from '../../lib/types';
 import { addBanks, addItemToBank, removeItemFromBank } from '../../lib/util';
 
@@ -34,9 +35,15 @@ export default class extends Extendable {
 		return numOwned;
 	}
 
-	public numItemsInBankSync(this: User, itemID: number) {
+	public numItemsInBankSync(this: User, itemID: number, similar = false) {
 		const bank = this.settings.get(UserSettings.Bank);
-		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
+		const itemQty = typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
+		if (similar && itemQty === 0 && SimilarItems[itemID]) {
+			for (const i of SimilarItems[itemID]) {
+				if (bank[i] && bank[i] > 0) return bank[i];
+			}
+		}
+		return itemQty;
 	}
 
 	public allItemsOwned(this: User): ItemBank {
