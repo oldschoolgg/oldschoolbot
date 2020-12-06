@@ -1,4 +1,3 @@
-import { removeDuplicatesFromArray } from './util';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
@@ -212,7 +211,7 @@ const SimilarItems: Record<number, number[]> = {
 };
 
 export function getSimilarItems(itemID: number) {
-	return removeDuplicatesFromArray([...(SimilarItems[itemID] ?? []), itemID]);
+	return [...new Set([...(SimilarItems[itemID] ?? []), itemID])];
 }
 
 // Adds dependant items
