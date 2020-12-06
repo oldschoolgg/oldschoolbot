@@ -5,7 +5,8 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import itemInSlot from '../../lib/gear/functions/itemInSlot';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { GearSetupTypes, UserFullGearSetup } from '../../lib/gear/types';
-import itemID from '../../lib/util/itemID';
+import { getSimilarItems } from '../../lib/similarItems';
+import { itemID } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -19,8 +20,13 @@ export default class extends Extendable {
 
 	public hasItemEquippedAnywhere(this: User, itemID: number) {
 		const gear = this.rawGear();
-		for (const setup of Object.values(gear)) {
-			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === itemID);
+		const gearValues = Object.values(gear);
+		const similarItems = getSimilarItems(itemID);
+
+		for (const setup of gearValues) {
+			const thisItemEquipped = Object.values(setup).find(
+				setup => setup?.item && similarItems.includes(setup.item)
+			);
 			if (thisItemEquipped) return true;
 		}
 
@@ -29,7 +35,7 @@ export default class extends Extendable {
 
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
-		return this.hasItemEquippedAnywhere(id) || this.numItemsInBankSync(id) > 0;
+		return this.hasItemEquippedAnywhere(id) || this.numItemsInBankSync(id, true) > 0;
 	}
 
 	public equippedWeapon(this: User, setup: GearSetupTypes) {
