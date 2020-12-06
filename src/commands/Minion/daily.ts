@@ -148,7 +148,9 @@ export default class DailyCommand extends BotCommand {
 			Emoji.Diango
 		} Diango says..** That's ${correct}! ${reward}\n`;
 
-		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') ||
+			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
 		if (triviaCorrect && hasSkipper) {
 			loot[COINS_ID] *= 1.5;
 			dmStr += `\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!`;

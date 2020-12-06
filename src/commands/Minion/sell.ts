@@ -49,7 +49,9 @@ export default class extends BotCommand {
 			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
-		const hasSkipper = msg.author.equippedPet() === itemID('Skipper');
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') ||
+			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
 
 		if (totalPrice > 3 && !hasSkipper) {
 			totalPrice = Math.floor(totalPrice * 0.8);
