@@ -50,6 +50,7 @@ import {
 	addItemToBank,
 	convertXPtoLVL,
 	formatDuration,
+	itemID,
 	itemNameFromID,
 	toTitleCase,
 	Util
@@ -375,11 +376,13 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
 		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) return Time.Minute * 33;
-		if (perkTier === PerkTier.Three) return Time.Minute * 36;
-		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
+		const zakBonus = this.equippedPet() === itemID('Zak') ? 1.4 : 1;
 
-		return Time.Minute * 30;
+		if (perkTier === PerkTier.Two) return Time.Minute * 33 * zakBonus;
+		if (perkTier === PerkTier.Three) return Time.Minute * 36 * zakBonus;
+		if (perkTier >= PerkTier.Four) return Time.Minute * 40 * zakBonus;
+
+		return Time.Minute * 30 * zakBonus;
 	}
 
 	// @ts-ignore 2784
