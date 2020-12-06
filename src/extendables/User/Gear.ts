@@ -20,11 +20,14 @@ export default class extends Extendable {
 
 	public hasItemEquippedAnywhere(this: User, itemID: number) {
 		const gear = this.rawGear();
-		for (const item of getSimilarItems(itemID)) {
-			for (const setup of Object.values(gear)) {
-				const thisItemEquipped = Object.values(setup).find(setup => setup?.item === item);
-				if (thisItemEquipped) return true;
-			}
+		const gearValues = Object.values(gear);
+		const similarItems = getSimilarItems(itemID);
+
+		for (const setup of gearValues) {
+			const thisItemEquipped = Object.values(setup).find(
+				setup => setup?.item && similarItems.includes(setup.item)
+			);
+			if (thisItemEquipped) return true;
 		}
 
 		return false;
