@@ -76,7 +76,7 @@ export default class extends BotCommand {
 			return msg.send(
 				`That is not a valid NPC/Stall to pickpocket or steal from, try one of the following: ${Pickpocketables.map(
 					npc => npc.name
-				).join(', ')}\nor ${Stalls.map(stall => stall.name).join(', ')}.`
+				).join(', ')}, ${Stalls.map(stall => stall.name).join(', ')}.`
 			);
 		}
 

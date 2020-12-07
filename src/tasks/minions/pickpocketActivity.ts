@@ -76,8 +76,9 @@ export default class extends Task {
 			}
 		}
 
+		// Keeps different amount of loot depending on stall.
 		if (stall) {
-			for (let i = 0; i < successfulQuantity; i++) {
+			for (let i = 0; i < (successfulQuantity * stall.lootPercent) / 100; i++) {
 				loot.add(stall.table.roll());
 			}
 		}

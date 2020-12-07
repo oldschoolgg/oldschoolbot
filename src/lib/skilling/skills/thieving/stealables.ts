@@ -36,6 +36,7 @@ export interface Stealable {
 
 export interface Stall extends Stealable {
 	respawnTime: number;
+	lootPercent: number;
 }
 
 export interface Pickpockable extends Stealable {
@@ -61,7 +62,8 @@ export const Stalls: Stall[] = [
 			.add('Garlic')
 			.tertiary(206_777, 'Rocky'),
 		qpRequired: 3,
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2,
+		lootPercent: 20
 	},
 	{
 		name: "Baker's stall",
@@ -73,7 +75,8 @@ export const Stalls: Stall[] = [
 			.add('Bread')
 			.add('Chocolate slice')
 			.tertiary(124_066, 'Rocky'),
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2,
+		lootPercent: 20
 	},
 	{
 		name: 'Tea stall',
@@ -81,7 +84,8 @@ export const Stalls: Stall[] = [
 		xp: 16,
 		id: 4708,
 		table: new LootTable().add('Cup of tea').tertiary(68_926, 'Rocky'),
-		respawnTime: Time.Second * 7
+		respawnTime: Time.Second * 7,
+		lootPercent: 35
 	},
 	{
 		name: 'Silk stall',
@@ -89,7 +93,8 @@ export const Stalls: Stall[] = [
 		xp: 24,
 		id: 4709,
 		table: new LootTable().add('Silk').tertiary(68_926, 'Rocky'),
-		respawnTime: Time.Second * 5
+		respawnTime: Time.Second * 5,
+		lootPercent: 30
 	},
 	{
 		name: 'Wine stall',
@@ -103,7 +108,8 @@ export const Stalls: Stall[] = [
 			.add('Jug of water')
 			.add('Jug of wine')
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 10
+		respawnTime: Time.Second * 10,
+		lootPercent: 38
 	},
 	{
 		name: 'Fruit stall',
@@ -122,7 +128,8 @@ export const Stalls: Stall[] = [
 			.add('Golovanova fruit top', 1, 2)
 			.add('Papaya fruit', 1, 1)
 			.tertiary(124_066, 'Rocky'),
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2,
+		lootPercent: 25
 	},
 	{
 		name: 'Ore stall',
@@ -138,7 +145,8 @@ export const Stalls: Stall[] = [
 			.add('Adamantite ore', 1, 15)
 			.add('Runite ore', 1, 2)
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 60
+		respawnTime: Time.Second * 60,
+		lootPercent: 100
 	}
 ];
 
