@@ -132,6 +132,7 @@ export const enum Tasks {
 	AnimatedArmourActivity = 'animatedArmourActivity',
 	CyclopsActivity = 'cyclopsActivity',
 	SepulchreActivity = 'sepulchreActivity',
+	PlunderActivity = 'plunderActivity',
 	FishingTrawler = 'trawlerActivity',
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
@@ -170,6 +171,7 @@ export const enum Activity {
 	Sawmill = 'Sawmill',
 	Nightmare = 'Nightmare',
 	Sepulchre = 'Sepulchre',
+	Plunder = 'Plunder',
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano'
 }
