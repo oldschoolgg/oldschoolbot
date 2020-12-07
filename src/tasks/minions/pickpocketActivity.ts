@@ -3,7 +3,11 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events, Time } from '../../lib/constants';
-import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
+import {
+	Pickpockable,
+	Pickpocketables,
+	Stalls
+} from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -56,15 +60,26 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const npc = Pickpocketables.find(_npc => _npc.id === monsterID);
-		if (!npc) {
-			this.client.wtf(new Error(`Missing pickpocket monster with ID ${monsterID}.`));
+		const stall = Stalls.find(_stall => _stall.id === monsterID);
+
+		if (!npc && !stall) {
+			this.client.wtf(new Error(`Missing pickpocket npc/stall with ID ${monsterID}.`));
 			return;
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
 
 		const loot = new Bank();
-		for (let i = 0; i < successfulQuantity; i++) {
-			loot.add(npc.table.roll());
+
+		if (npc) {
+			for (let i = 0; i < successfulQuantity; i++) {
+				loot.add(npc.table.roll());
+			}
+		}
+
+		if (stall) {
+			for (let i = 0; i < successfulQuantity; i++) {
+				loot.add(stall.table.roll());
+			}
 		}
 
 		await user.addItemsToBank(loot.values(), true);
@@ -73,11 +88,11 @@ export default class extends Task {
 
 		const xpHr = `${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		let str = `${user}, ${user.minionName} finished pickpocketing a ${
-			npc.name
+		let str = `${user}, ${user.minionName} finished pickpocketing/stealing from ${
+			npc ? npc.name : stall?.name
 		} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
-		}x pickpockets, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
+		}x pickpockets/steals, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Thieving level is now ${newLevel}!`;
@@ -91,13 +106,23 @@ export default class extends Task {
 			str += `\n\n**You have a funny feeling you're being followed...**`;
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`
+				`**${user.username}'s** minion, ${
+					user.minionName
+				}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing/stealing from ${
+					npc ? npc.name : stall?.name
+				}, their Thieving level is ${currentLevel}!`
 			);
 		}
 
 		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
-			return this.client.commands.get('pickpocket')!.run(res, [quantity, npc.name]);
+			user.log(
+				`continued trip of pickpocketing/stealing ${quantity}x ${
+					npc ? npc.name : stall?.name
+				}[${npc ? npc.id : stall?.id}]`
+			);
+			return this.client.commands
+				.get('pickpocket')!
+				.run(res, [quantity, npc ? npc.name : stall?.name]);
 		});
 	}
 }
