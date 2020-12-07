@@ -35,6 +35,7 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.AnimatedArmour:
 		case Activity.Cyclops:
 		case Activity.Sepulchre:
+		case Activity.Plunder:
 		case Activity.Zalcano:
 		case Activity.FishingTrawler:
 			return Tasks.MinigameTicker;

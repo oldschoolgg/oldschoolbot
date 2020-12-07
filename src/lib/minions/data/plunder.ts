@@ -38,24 +38,24 @@ const Room6Table = new LootTable()
 	.add('Stone scarab', 1, 2)
 	.add('Stone statuette', 1, 2)
 	.add('Gold seal')
-	.add('Gold scarab')
-	.add('Gold statuette');
+	.add('Golden scarab')
+	.add('Golden statuette');
 
 const Room7Table = new LootTable()
 	.add('Stone seal')
 	.add('Stone scarab')
 	.add('Stone statuette')
 	.add('Gold seal')
-	.add('Gold scarab')
-	.add('Gold statuette');
+	.add('Golden scarab')
+	.add('Golden statuette');
 
 const Room8Table = new LootTable()
 	.add('Stone seal')
 	.add('Stone scarab')
 	.add('Stone statuette')
 	.add('Gold seal', 1, 2)
-	.add('Gold scarab', 1, 2)
-	.add('Gold statuette', 1, 2);
+	.add('Golden scarab', 1, 2)
+	.add('Golden statuette', 1, 2);
 
 export const plunderRooms = [
 	{

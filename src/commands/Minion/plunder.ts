@@ -9,9 +9,9 @@ import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SepulchreActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { PlunderActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -43,7 +43,7 @@ export default class extends BotCommand {
 
 		const completableRooms = plunderRooms.filter(room => thievingLevel >= room.thievingLevel);
 
-		let plunderTime = Time.Minute * 6;
+		let plunderTime = Time.Minute * 5.75;
 
 		const boosts = [];
 
@@ -69,24 +69,24 @@ export default class extends BotCommand {
 		const maxQuantity = Math.floor(msg.author.maxTripLength / plunderTime);
 		const tripLength = maxQuantity * plunderTime;
 
-		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>(
+		await addSubTaskToActivityTask<PlunderActivityTaskOptions>(
 			this.client,
 			Tasks.MinigameTicker,
 			{
-				floors: completableRooms.map(room => room.number),
+				rooms: completableRooms.map(room => room.number),
 				quantity: maxQuantity,
 				userID: msg.author.id,
 				duration: tripLength,
-				type: Activity.Sepulchre,
+				type: Activity.Plunder,
 				channelID: msg.channel.id,
-				minigameID: MinigameIDsEnum.Sepulchre
+				minigameID: MinigameIDsEnum.PyramidPlunder
 			}
 		);
 
 		let str = `${
 			msg.author.minionName
 		} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
-			completableRooms[length - 2].number
+			completableRooms[completableRooms.length - 2].number
 		} and ${
 			completableRooms[completableRooms.length - 1].number
 		}, the trip will take ${formatDuration(
