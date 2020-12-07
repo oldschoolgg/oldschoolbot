@@ -5,13 +5,13 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -41,9 +41,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const completableRooms = plunderRooms.filter(
-			room => thievingLevel >= room.thievingLevel
-		);
+		const completableRooms = plunderRooms.filter(room => thievingLevel >= room.thievingLevel);
 
 		let plunderTime = Time.Minute * 6;
 
@@ -52,13 +50,14 @@ export default class extends BotCommand {
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(
 			Math.floor(
-				msg.author.getMinigameScore(MinigameIDsEnum.PyramidPlunder) / (Time.Hour / plunderTime)
+				msg.author.getMinigameScore(MinigameIDsEnum.PyramidPlunder) /
+					(Time.Hour / plunderTime)
 			),
 			10
 		);
 
 		boosts.push(`${percentFaster.toFixed(1)}% for minion learning`);
-		
+
 		plunderTime = reduceNumByPercent(plunderTime, percentFaster);
 
 		for (const [id, percent] of objectEntries(plunderBoosts)) {
@@ -90,9 +89,9 @@ export default class extends BotCommand {
 			completableRooms[length - 2].number
 		} and ${
 			completableRooms[completableRooms.length - 1].number
-		}, the trip will take ${formatDuration(tripLength)}, with each cycle taking ${formatDuration(
-			plunderTime
-		)}.`;
+		}, the trip will take ${formatDuration(
+			tripLength
+		)}, with each cycle taking ${formatDuration(plunderTime)}.`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

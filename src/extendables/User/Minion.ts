@@ -56,7 +56,11 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { NightmareActivityTaskOptions, PlunderActivityTaskOptions, SepulchreActivityTaskOptions } from './../../lib/types/minions';
+import {
+	NightmareActivityTaskOptions,
+	PlunderActivityTaskOptions,
+	SepulchreActivityTaskOptions
+} from './../../lib/types/minions';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {

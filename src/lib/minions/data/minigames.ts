@@ -32,7 +32,7 @@ export const Minigames: Minigame[] = [
 	{
 		id: 6001,
 		name: 'Pyramid Plunder'
-	},
+	}
 ];
 
 export enum MinigameIDsEnum {

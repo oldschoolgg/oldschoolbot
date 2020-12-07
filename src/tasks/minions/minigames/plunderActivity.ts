@@ -1,18 +1,19 @@
-import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
+import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
+import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
+
 export default class extends Task {
 	async run({ channelID, quantity, rooms, duration, userID }: PlunderActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.PyramidPlunder, quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
-		const completedRooms = [allRooms[allRooms.length - 2], allRooms[allRooms.length - 1]]
+		const completedRooms = [allRooms[allRooms.length - 2], allRooms[allRooms.length - 1]];
 		const loot = new Bank();
 		let thievingXP = 0;
 
