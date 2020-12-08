@@ -11,10 +11,12 @@ import { rand } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Simulates dice rolls from Runescape.',
+			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			usage: '[amount:int{1}]',
 			requiredPermissions: ['EMBED_LINKS'],
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion', 'utility'],
+			examples: ['+dice', '+dice 1m']
 		});
 	}
 
@@ -29,19 +31,19 @@ export default class extends BotCommand {
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
-			if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
+			if (msg.author.isIronman) return msg.send(`You're an ironman and you cant play dice.`);
 
 			if (amount > 2_000_000_000) {
-				throw `You can only dice up to 2bil at a time!`;
+				return msg.send(`You can only dice up to 2b at a time!`);
 			}
 
 			if (amount < 200_000) {
-				throw `You have to dice atleast 200k.`;
+				return msg.send(`You have to dice atleast 200k.`);
 			}
 
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get(UserSettings.GP);
-			if (amount > gp) throw "You don't have enough GP.";
+			if (amount > gp) return msg.send("You don't have enough GP.");
 			const won = roll >= 55;
 			let amountToAdd = won ? gp + amount : gp - amount;
 			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;

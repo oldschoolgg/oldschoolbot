@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -22,7 +22,10 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[quantity:int{1}] [item:...item]',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion'],
+			description: 'Sacrifices items from your bank.',
+			examples: ['+sacrifice 1 Elysian sigil']
 		});
 	}
 
@@ -39,7 +42,9 @@ export default class extends BotCommand {
 		const osItem = itemArray.find(i => userBank[i.id] && itemIsTradeable(i.id));
 
 		if (!osItem) {
-			throw `You don't have any of this item to sacrifice, or it is not tradeable.`;
+			return msg.send(
+				`You don't have any of this item to sacrifice, or it is not tradeable.`
+			);
 		}
 
 		const numItemsHas = userBank[osItem.id];
@@ -48,7 +53,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity > numItemsHas) {
-			throw `You dont have ${quantity}x ${osItem.name}.`;
+			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
 		const priceOfItem = await this.client.fetchItemPrice(osItem.id);
@@ -75,7 +80,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (priceOfItem > 50_000_000) {
+		if (priceOfItem > 50_000_000 || totalPrice > 200_000_000) {
 			this.client.emit(
 				Events.ServerNotification,
 				`${msg.author.username} just sacrificed ${quantity}x ${osItem.name}!`
@@ -86,6 +91,10 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
 		await msg.author.removeItemFromBank(osItem.id, quantity);
+
+		const currentSacBank = new Bank(msg.author.settings.get(UserSettings.SacrificedBank));
+		currentSacBank.add(osItem.id, quantity);
+		await msg.author.settings.update(UserSettings.SacrificedBank, currentSacBank.values());
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.SacrificedBank,

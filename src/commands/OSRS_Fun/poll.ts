@@ -1,12 +1,16 @@
 import { MessageReaction } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2
+			cooldown: 2,
+			examples: ['+poll Should I stake my bank?'],
+			description: 'Creates a reaction poll for people to vote on.',
+			categoryFlags: ['utility']
 		});
 	}
 
@@ -14,7 +18,9 @@ export default class extends Command {
 		msg.react('380915244760825857')
 			.then((react: MessageReaction) => react.message.react('380915244652036097'))
 			.catch(() => {
-				throw `There was an error ${Emoji.Sad} Do I have permissions to react to messages?`;
+				return msg.send(
+					`There was an error ${Emoji.Sad} Do I have permissions to react to messages?`
+				);
 			});
 
 		return null;

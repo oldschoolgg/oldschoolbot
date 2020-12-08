@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import {
-	Bank,
-	ItemBank,
-	ItemPriceCache,
-	OSRSPoll,
-	PetRecords as PetRecordsType
-} from '../../types';
+import { ItemBank, ItemPriceCache, OSRSPoll } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -17,11 +11,11 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 
 export namespace ClientSettings {
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
-	export const CommandStats = T<Bank>('commandStats');
+	export const CommandStats = T<ItemBank>('commandStats');
 	export const Prices = T<ItemPriceCache>('prices');
 	export const PollQuestions = T<OSRSPoll>('pollQuestions');
-	export const PetRecords = T<PetRecordsType>('petRecords');
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
+	export const UserBlacklist = T<readonly string[]>('userBlacklist');
 
 	export namespace EconomyStats {
 		export const DicingBank = T<number>('economyStats.dicingBank');
@@ -35,5 +29,6 @@ export namespace ClientSettings {
 		export const WintertodtLoot = T<O.Readonly<ItemBank>>('economyStats.wintertodtLoot');
 		export const FightCavesCost = T<O.Readonly<ItemBank>>('economyStats.fightCavesCost');
 		export const PVMCost = T<O.Readonly<ItemBank>>('economyStats.PVMCost');
+		export const ThievingCost = T<O.Readonly<ItemBank>>('economyStats.thievingCost');
 	}
 }

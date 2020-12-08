@@ -1,16 +1,99 @@
 import { MAX_QP } from '../constants';
-import { Bank } from '../types';
+import { ItemBank } from '../types';
 import { resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 
 interface Buyable {
 	name: string;
-	outputItems: Bank;
-	qpRequired: number;
-	gpCost: number;
+	outputItems: ItemBank;
+	qpRequired?: number;
+	gpCost?: number;
+	itemCost?: ItemBank;
 	aliases?: string[];
-	titheFarmPoints?: number;
 }
+
+const sepulchreBuyables: Buyable[] = [
+	{
+		name: 'Hallowed crystal shard',
+		outputItems: resolveNameBank({ 'Hallowed crystal shard': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 1 })
+	},
+	{
+		name: 'Hallowed token',
+		outputItems: resolveNameBank({ 'Hallowed token': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 10 })
+	},
+	{
+		name: 'Hallowed grapple',
+		outputItems: resolveNameBank({ 'Hallowed grapple': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed focus',
+		outputItems: resolveNameBank({ 'Hallowed focus': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed symbol',
+		outputItems: resolveNameBank({ 'Hallowed symbol': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed hammer',
+		outputItems: resolveNameBank({ 'Hallowed hammer': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed ring',
+		outputItems: resolveNameBank({ 'Hallowed ring': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 250 })
+	},
+	{
+		name: 'Dark dye',
+		outputItems: resolveNameBank({ 'Dark dye': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 300 })
+	},
+	{
+		name: 'Dark acorn',
+		outputItems: resolveNameBank({ 'Dark acorn': 1 }),
+		itemCost: resolveNameBank({ 'Hallowed mark': 3000 })
+	},
+	{
+		name: 'Dark graceful hood',
+		outputItems: resolveNameBank({ 'Dark graceful hood': 1 }),
+		itemCost: resolveNameBank({ 'Graceful hood': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful top',
+		outputItems: resolveNameBank({ 'Dark graceful top': 1 }),
+		itemCost: resolveNameBank({ 'Graceful top': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful legs',
+		outputItems: resolveNameBank({ 'Dark graceful legs': 1 }),
+		itemCost: resolveNameBank({ 'Graceful legs': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful gloves',
+		outputItems: resolveNameBank({ 'Dark graceful gloves': 1 }),
+		itemCost: resolveNameBank({ 'Graceful gloves': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful boots',
+		outputItems: resolveNameBank({ 'Dark graceful boots': 1 }),
+		itemCost: resolveNameBank({ 'Graceful boots': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark graceful cape',
+		outputItems: resolveNameBank({ 'Dark graceful cape': 1 }),
+		itemCost: resolveNameBank({ 'Graceful cape': 1, 'Dark dye': 1 })
+	},
+	{
+		name: 'Dark squirrel',
+		outputItems: resolveNameBank({ 'Dark squirrel': 1 }),
+		itemCost: resolveNameBank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
+	}
+];
 
 const Buyables: Buyable[] = [
 	{
@@ -197,72 +280,6 @@ const Buyables: Buyable[] = [
 		gpCost: 1_000_000
 	},
 	{
-		name: 'Compost',
-		outputItems: {
-			[itemID('Compost')]: 1
-		},
-		qpRequired: 0,
-		gpCost: 20
-	},
-	{
-		name: 'Magic secateurs',
-		outputItems: {
-			[itemID('Magic secateurs')]: 1
-		},
-		qpRequired: 10,
-		gpCost: 40_000
-	},
-	{
-		name: `Farmer's strawhat`,
-		aliases: ['farmers strawhat', 'farmers hat'],
-		outputItems: {
-			[itemID(`Farmer's strawhat`)]: 1
-		},
-		qpRequired: 0,
-		gpCost: 0,
-		titheFarmPoints: 75
-	},
-	{
-		name: `Farmer's jacket`,
-		aliases: ['farmers jacket'],
-		outputItems: {
-			[itemID(`Farmer's jacket`)]: 1
-		},
-		qpRequired: 0,
-		gpCost: 0,
-		titheFarmPoints: 150
-	},
-	{
-		name: `Farmer's shirt`,
-		aliases: ['farmers shirt'],
-		outputItems: {
-			[itemID(`Farmer's shirt`)]: 1
-		},
-		qpRequired: 0,
-		gpCost: 0,
-		titheFarmPoints: 150
-	},
-	{
-		name: `Farmer's boro trousers`,
-		aliases: ['farmers trousers', 'farmers bottoms', `farmers legs`],
-		outputItems: {
-			[itemID(`Farmer's boro trousers`)]: 1
-		},
-		qpRequired: 0,
-		gpCost: 0,
-		titheFarmPoints: 125
-	},
-	{
-		name: `Farmer's boots`,
-		aliases: ['farmers boots'],
-		outputItems: {
-			[itemID(`Farmer's boots`)]: 1
-		},
-		qpRequired: 0,
-		gpCost: 0,
-		titheFarmPoints: 50
-	},
-	{
 		name: 'Eye of newt',
 		aliases: ['eye of newt', 'newt eye'],
 		outputItems: resolveNameBank({
@@ -306,7 +323,17 @@ const Buyables: Buyable[] = [
 		}),
 		qpRequired: 0,
 		gpCost: 200
-	}
+	},
+	{
+		name: 'Ball of wool',
+		aliases: ['wool ball', 'ball wool'],
+		outputItems: {
+			[itemID('Ball of wool')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 200
+	},
+	...sepulchreBuyables
 ];
 
 export default Buyables;

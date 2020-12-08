@@ -12,16 +12,13 @@ export default class extends Argument {
 			throw `Please specify a username, or set one with \`${prefix}setrsn <username>\``;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		if (this.constructor.regex.userOrMember.test(arg)) {
+		const constructor = this.constructor as typeof Argument;
+		if (constructor.regex.userOrMember.test(arg)) {
 			const user = await this.client.users
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-				// @ts-ignore
-				.fetch(this.constructor.regex.userOrMember.exec(arg)[1])
+				.fetch(constructor.regex.userOrMember.exec(arg)![1])
 				.catch(() => null);
 
-			const rsn = user && user.settings.get('RSN');
+			const rsn = user?.settings.get('RSN');
 			if (rsn) return rsn;
 			throw "That person doesn't have an RSN set.";
 		}

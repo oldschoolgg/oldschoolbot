@@ -8,7 +8,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['rl'],
 			description: 'Shows information on RuneLite',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			examples: ['+runelite']
 		});
 	}
 

@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - master
+            - bso
     pull_request:
 
 jobs:
@@ -12,7 +13,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node_version: [12, 14]
+                node_version: [14]
                 os: [ubuntu-latest, windows-latest]
 
         steps:
@@ -29,12 +30,5 @@ jobs:
                   key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles(matrix.os == 'windows-latest' && '**\yarn.lock' || '**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
-            - name: Copy Configuration
-              run: |
-                  pushd src &&
-                  cp config.example.ts config.ts &&
-                  popd
-            - name: Build Project
-              run: yarn build
             - name: Test
               run: yarn test

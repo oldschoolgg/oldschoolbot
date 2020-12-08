@@ -17,7 +17,10 @@ export default class MinionCommand extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[name:...string]'
+			usage: '[name:...string]',
+			categoryFlags: ['minion', 'pvm'],
+			description: 'Shows information on a monster, and how long you take to kill it.',
+			examples: ['+monster vorkath']
 		});
 	}
 
@@ -26,9 +29,11 @@ export default class MinionCommand extends BotCommand {
 		const monster = findMonster(name);
 
 		if (!monster) {
-			throw `Thats not a valid monster to kill. Valid monsters are ${killableMonsters
-				.map(mon => mon.name)
-				.join(', ')}.`;
+			return msg.send(
+				`Thats not a valid monster to kill. Valid monsters are ${killableMonsters
+					.map(mon => mon.name)
+					.join(', ')}.`
+			);
 		}
 
 		const userKc = msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
@@ -62,11 +67,9 @@ export default class MinionCommand extends BotCommand {
 			str.push(`**Healing Required:** ${monster.healAmountNeeded}hp per kill`);
 			const [hpNeededPerKill] = calculateMonsterFood(monster, msg.author);
 			str.push(
-				`With your current gear you only need ${hpNeededPerKill}hp (${100 -
-					calcWhatPercent(
-						hpNeededPerKill,
-						monster.healAmountNeeded
-					)}% less)\n ${hpNeededPerKill * maxCanKill}hp for a full trip.\n`
+				`With your current gear you only need ${hpNeededPerKill}hp (${
+					100 - calcWhatPercent(hpNeededPerKill, monster.healAmountNeeded)
+				}% less)\n ${hpNeededPerKill * maxCanKill}hp for a full trip.\n`
 			);
 		}
 
@@ -87,8 +90,9 @@ export default class MinionCommand extends BotCommand {
 
 		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
 		str.push(
-			`This time can be reduced through experience gained by killing the monster, every ${kcForOnePercent}kc you will gain a 1% boost to kill efficiency up to a maximum of 10% at ${kcForOnePercent *
-				10}kc.`
+			`This time can be reduced through experience gained by killing the monster, every ${kcForOnePercent}kc you will gain a 1% boost to kill efficiency up to a maximum of 10% at ${
+				kcForOnePercent * 10
+			}kc.`
 		);
 
 		str.push(`You currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`);

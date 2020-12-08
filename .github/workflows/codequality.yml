@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - master
+            - bso
     pull_request:
 
 jobs:
@@ -13,28 +14,19 @@ jobs:
         steps:
             - name: Checkout Project
               uses: actions/checkout@v2
-            - name: Use Node.js 12
+            - name: Use Node.js 14
               uses: actions/setup-node@v1
               with:
-                  node-version: 12
+                  node-version: 14
             - name: Restore CI Cache
               uses: actions/cache@v1
               with:
                   path: node_modules
-                  key: ${{ runner.os }}-12-${{ hashFiles('**/yarn.lock') }}
+                  key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
-            - name: Copy Configuration
-              run: |
-                pushd src &&
-                cp config.example.ts config.ts &&
-                popd
             - name: Run ESLint
               uses: icrawl/action-eslint@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  job-name: ESLint
 
     Typescript:
         name: Typescript
@@ -42,25 +34,23 @@ jobs:
         steps:
             - name: Checkout Project
               uses: actions/checkout@v2
-            - name: Use Node.js 12
+            - name: Use Node.js 14
               uses: actions/setup-node@v1
               with:
-                  node-version: 12
+                  node-version: 14
             - name: Restore CI Cache
               uses: actions/cache@v1
               with:
                   path: node_modules
-                  key: ${{ runner.os }}-12-${{ hashFiles('**/yarn.lock') }}
+                  key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
             - name: Copy Configuration
               run: |
-                pushd src &&
-                cp config.example.ts config.ts &&
-                popd
+                  pushd src &&
+                  cp config.example.ts config.ts &&
+                  popd
             - name: Run TSC
               uses: icrawl/action-tsc@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                  job-name: Typescript
+                  build: src

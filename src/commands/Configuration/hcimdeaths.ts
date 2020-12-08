@@ -1,15 +1,20 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			subcommands: true,
 			runIn: ['text'],
 			usage: '<on|off>',
 			permissionLevel: 7,
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['settings'],
+			examples: ['+hcimdeaths on', '+hcimdeaths off'],
+			description:
+				'Allows you to receive tweets from HCIM Deaths to your channel, showing when high-ranked HCIMs die.'
 		});
 	}
 

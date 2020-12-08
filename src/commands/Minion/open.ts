@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Misc, Openables } from 'oldschooljs';
-import Loot from 'oldschooljs/dist/structures/Loot';
+import { Bank, Misc, Openables } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { cluesRares } from '../../lib/collectionLog';
@@ -35,7 +34,10 @@ export default class extends BotCommand {
 			aliases: ['clue'],
 			usage: '[quantity:int] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion'],
+			description: 'Opens openable items, like clue caskets, mystery boxes and crystal keys.',
+			examples: ['+open easy', '+open crystal key']
 		});
 	}
 
@@ -76,9 +78,11 @@ export default class extends BotCommand {
 
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
 		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
-			throw `You don't have enough ${
-				clueTier.name
-			} Caskets to open!\n\n However... ${await this.showAvailable(msg)}`;
+			return msg.send(
+				`You don't have enough ${
+					clueTier.name
+				} Caskets to open!\n\n However... ${await this.showAvailable(msg)}`
+			);
 		}
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
@@ -155,9 +159,11 @@ export default class extends BotCommand {
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: any) {
 		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
-			throw `You don't have enough ${
-				osjsOpenable.name
-			} to open!\n\n However... ${await this.showAvailable(msg)}`;
+			return msg.send(
+				`You don't have enough ${
+					osjsOpenable.name
+				} to open!\n\n However... ${await this.showAvailable(msg)}`
+			);
 		}
 
 		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
@@ -185,23 +191,27 @@ export default class extends BotCommand {
 		);
 
 		if (!botOpenable) {
-			throw `That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
-				tier => tier.name
-			).join(', ')}), or another non-clue thing (${botOpenables
-				.map(thing => thing.name)
-				.concat(Openables.map(thing => thing.name))
-				.join(', ')})`;
+			return msg.send(
+				`That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
+					tier => tier.name
+				).join(', ')}), or another non-clue thing (${botOpenables
+					.map(thing => thing.name)
+					.concat(Openables.map(thing => thing.name))
+					.join(', ')})`
+			);
 		}
 
 		if (msg.author.numItemsInBankSync(botOpenable.itemID) < quantity) {
-			throw `You don't have enough ${
-				botOpenable.name
-			} to open!\n\n However... ${await this.showAvailable(msg)}`;
+			return msg.send(
+				`You don't have enough ${
+					botOpenable.name
+				} to open!\n\n However... ${await this.showAvailable(msg)}`
+			);
 		}
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
-		const loot = new Loot();
+		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add(botOpenable.table.roll());
 		}

@@ -6,7 +6,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import TokkulShopItem from '../../lib/buyables/tokkulBuyables';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Bank } from '../../lib/types';
+import { ItemBank } from '../../lib/types';
 import { stringMatches } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
@@ -16,12 +16,15 @@ const { TzTokJad } = Monsters;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<buy|sell> [quantity:integer{1}] <item:...string>',
+			usage: '<buy|sell> [quantity:integer{1,2147483647}] <item:...string>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
-			aliases: ['tks']
+			aliases: ['tks'],
+			categoryFlags: ['minion'],
+			description: 'Allows you to buy and sell items to the Tzhaar Tokkul shop.',
+			examples: ['+tks buy Obsidian platebody', '+tks sell 5k Chaos rune']
 		});
 	}
 
@@ -54,11 +57,17 @@ export default class extends BotCommand {
 
 		if (!shopInventory.tokkulCost && type === 'buy') {
 			return msg.send(
-				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.map(
-					item => {
-						if (item.tokkulReturn) return item.name;
-					}
-				).join(', ')}.`
+				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.filter(
+					item => item.tokkulCost
+				)
+					.map(item => item.name)
+					.join(', ')}.`
+			);
+		}
+
+		if (type === 'sell' && msg.author.numItemsInBankSync(shopInventory.inputItem) === 0) {
+			return msg.send(
+				`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`
 			);
 		}
 
@@ -66,10 +75,10 @@ export default class extends BotCommand {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
 
-		let outItems: Bank;
-		let inItems: Bank;
-		let itemString: string;
-		let inItemString: string;
+		let outItems: ItemBank = {};
+		let inItems: ItemBank = {};
+		let itemString: string = '';
+		let inItemString: string = '';
 		if (type === 'buy') {
 			outItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulCost! };
 			inItems = { [shopInventory.inputItem]: quantity };
@@ -89,7 +98,7 @@ export default class extends BotCommand {
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${itemString}** to sell for **${inItemString}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${inItemString}** to sell for **${itemString}**.`
 			);
 		}
 

@@ -15,7 +15,8 @@ export const enum Channel {
 	ErrorLogs = '665678499578904596',
 	Suggestions = '668441710703149074',
 	GrandExchange = '682996313209831435',
-	Developers = '648196527294251020'
+	Developers = '648196527294251020',
+	BlacklistLogs = '782459317218967602'
 }
 
 export const enum Roles {
@@ -35,10 +36,8 @@ export const enum Emoji {
 	Bpaptu = '<:bpaptu:660333438292983818>',
 	Diamond = '💎',
 	Dice = '<:dice:660128887111548957>',
-	Minion = '<:minion:660517408968146946>',
 	Fireworks = '🎆',
 	Tick = '✅',
-	RedX = '❌',
 	Search = '🔎',
 	FancyLoveheart = '💝',
 	Gift = '🎁',
@@ -65,7 +64,6 @@ export const enum Emoji {
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
-	MinigameIcon = '<:minigameIcon:630400565070921761>',
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
@@ -76,11 +74,23 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
-	Farming = '<:farming:630911040355565599>',
-	Tangleroot = '<:tangleroot:324127378978635778>',
 	Purple = '🟪',
-	Timer = '<:ehpclock:352323705210142721>'
+	Thieving = '<:thieving:630910829352452123>',
+	Ely = '<:ely:784453586033049630>',
+	// Badges,
+	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
+	GreenGem = '<:greenGem:778418736495067166>',
+	PinkGem = '<:pinkGem:778418736276963349>',
+	OrangeGem = '<:orangeGem:778418736474095616>',
+	Minion = '<:minion:778418736180494347>',
+	Spanner = '<:spanner:778418736621158410>',
+	DoubleSpanner = '<:doubleSpanner:778418736327688194>',
+	Hammer = '<:hammer:778418736595206184>',
+	Bug = '<:bug:778418736330833951>',
+	Trophy = '<:goldTrophy:778418736561782794>',
+	Crab = '<:crab:778418736432021505>'
 }
+
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
@@ -114,12 +124,19 @@ export const enum Tasks {
 	BuryingActivity = 'buryingActivity',
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
-	FarmingActivity = 'farmingActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
-	TitheFarmActivity = 'titheFarmActivity',
+	NightmareActivity = 'nightmareActivity',
+	AnimatedArmourActivity = 'animatedArmourActivity',
+	CyclopsActivity = 'cyclopsActivity',
+	SepulchreActivity = 'sepulchreActivity',
+	FishingTrawler = 'trawlerActivity',
+	ZalcanoActivity = 'zalcanoActivity',
+	SawmillActivity = 'sawmillActivity',
+	PickpocketActivity = 'pickpocketActivity',
+
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -145,10 +162,16 @@ export const enum Activity {
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
-	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
+	Pickpocket = 'Pickpocket',
 	Alching = 'Alching',
-	Farming = 'Farming'
+	AnimatedArmour = 'AnimatedArmour',
+	Cyclops = 'Cyclops',
+	Sawmill = 'Sawmill',
+	Nightmare = 'Nightmare',
+	Sepulchre = 'Sepulchre',
+	FishingTrawler = 'FishingTrawler',
+	Zalcano = 'Zalcano'
 }
 
 export const enum Events {
@@ -213,7 +236,9 @@ export const enum BitField {
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
 	IsPatronTier4 = 5,
-	IsPatronTier5 = 6
+	IsPatronTier5 = 6,
+	isModerator = 7,
+	isContributor = 8
 }
 
 export const enum PatronTierID {
@@ -224,8 +249,11 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
-export const MAX_QP = 277;
+export const MAX_QP = 279;
 
 export const MIMIC_MONSTER_ID = 23184;
 
 export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
+
+export const NIGHTMARES_HP = 2400;
+export const ZAM_HASTA_CRUSH = 65;

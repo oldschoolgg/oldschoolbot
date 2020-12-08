@@ -1,15 +1,18 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { round } from '../../lib/util';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			description:
 				'Calculates the drop chance of getting an item within a set amount of rolls.',
 			usage: '<dropRate:int{1,10000000}> <rolls:int{1,1000000}>',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['fun', 'simulation'],
+			examples: ['+drycalc 5k 20k (20k rolls of 1 in 5k chance)']
 		});
 	}
 

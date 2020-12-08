@@ -2,27 +2,30 @@ import { registerFont } from 'canvas';
 import { Canvas } from 'canvas-constructor';
 import * as fs from 'fs';
 
-registerFont('./resources/osrs-font-quill-8.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
-const textBoxFile = fs.readFileSync('./resources/images/textbox.png');
+const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
+const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
+
+const chatHeads = {
+	mejJal: mejJalChatHead
+};
 
 export default function chatHeadImage({
-	id,
 	content,
-	name
+	name,
+	head
 }: {
-	id: number;
 	content: string;
 	name: string;
+	head: keyof typeof chatHeads;
 }) {
 	const canvas = new Canvas(519, 142);
 	canvas.context.imageSmoothingEnabled = false;
 
-	const chatImage = fs.readFileSync(`./resources/images/chat_heads/${id}.png`);
-
 	return canvas
 		.addImage(textBoxFile, 0, 0)
-		.addImage(chatImage, 28, 21)
+		.addImage(chatHeads[head], 28, 21)
 		.setTextAlign('center')
 		.setTextFont('16px RuneScape Quill 8')
 

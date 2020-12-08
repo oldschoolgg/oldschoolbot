@@ -6,7 +6,10 @@ import { Emoji } from '../../lib/constants';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['donate', 'patron']
+			aliases: ['donate', 'patron'],
+			examples: ['+patreon'],
+			description: 'Displays the link to the patreon.',
+			categoryFlags: ['utility']
 		});
 	}
 

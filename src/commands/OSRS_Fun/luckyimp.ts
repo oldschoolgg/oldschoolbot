@@ -1,18 +1,24 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Openables } from 'oldschooljs';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
+			cooldown: 5,
+			oneAtTime: true,
 			usage: '[quantity:int{1}]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			examples: ['+luckyimp 5'],
+			description: 'Simulates opening lucky imps.',
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 
 	async run(msg: KlasaMessage, [qty = 1]: [number]) {
 		if (qty > 10 && msg.author.id !== '157797566833098752') {
-			throw `I can only catch 10 Lucky Imps at a time!`;
+			return msg.send(`I can only catch 10 Lucky Imps at a time!`);
 		}
 
 		const loot = Openables.LuckyImp.open(qty);
@@ -33,8 +39,6 @@ export default class extends Command {
 			display += '\n';
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
 		return msg.sendLarge(display, `loot-from-${qty}-lucky-imps.txt`);
 	}
 }

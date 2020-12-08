@@ -8,7 +8,12 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['estats'],
-			perkTier: PerkTier.Two
+			perkTier: PerkTier.Two,
+			cooldown: 10,
+			oneAtTime: true,
+			description: 'Shows some statistics about the bot economy.',
+			examples: ['+estats'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

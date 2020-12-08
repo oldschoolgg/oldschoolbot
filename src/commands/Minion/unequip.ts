@@ -18,7 +18,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<melee|mage|range|skilling|misc> (item:...item)',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion'],
+			description: 'Unequips items from one of your gear setups.',
+			examples: ['+unequip range Twisted bow', '+unequip melee Abyssal whip']
 		});
 	}
 
@@ -28,7 +31,9 @@ export default class extends BotCommand {
 		[gearType, itemArray]: [GearTypes.GearSetupTypes, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			throw `${msg.author.minionName} is currently out on a trip, so you can't change their gear!`;
+			return msg.send(
+				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
+			);
 		}
 
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
@@ -37,7 +42,7 @@ export default class extends BotCommand {
 		const itemToUnequip = itemArray.find(i => hasItemEquipped(i.id, currentEquippedGear));
 
 		if (!itemToUnequip) {
-			throw `You don't have this item equipped!`;
+			return msg.send(`You don't have this item equipped!`);
 		}
 
 		// it thinks equipment can be null somehow but hasItemEquipped already checks that
@@ -53,6 +58,7 @@ export default class extends BotCommand {
 
 		const image = await generateGearImage(
 			this.client,
+			msg.author,
 			msg.author.settings.get(resolveGearTypeSetting(gearType)),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
