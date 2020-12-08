@@ -2,7 +2,6 @@ import { Client, SchemaFolder } from 'klasa';
 
 import Farming from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
-import defaultTitheFarm from '../../farming/defaultTitheFarm';
 import { FarmingPatchTypes } from '../../farming/types';
 import Gear from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
@@ -45,7 +44,8 @@ Client.defaultUserSchema
 			.add('duelWins', 'integer', { default: 0 })
 			.add('fightCavesAttempts', 'integer', { default: 0 })
 			.add('fireCapesSacrificed', 'integer', { default: 0 })
-			.add('titheFarmStats', 'any', { default: defaultTitheFarm })
+			.add('titheFarmsCompleted', 'integer', { default: 0 })
+			.add('titheFarmPoints', 'integer', { default: 0 })
 	)
 	.add('skills', (folder: SchemaFolder) =>
 		folder

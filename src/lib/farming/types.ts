@@ -25,12 +25,6 @@ export interface PatchData {
 	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | 'null' | null;
 	lastPayment: boolean;
 }
-
-export interface TitheFarmStats {
-	titheFarmsCompleted: number;
-	titheFarmPoints: number;
-}
-
 export interface FarmingContract {
 	hasContract: boolean;
 	difficultyLevel: 'easy' | 'medium' | 'hard' | null;

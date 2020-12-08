@@ -3,7 +3,6 @@ import { O } from 'ts-toolbelt';
 
 import { PatchTypes } from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
-import defaultTitheFarm from '../../farming/defaultTitheFarm';
 import { FarmingPatchTypes } from '../../farming/types';
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
@@ -47,7 +46,8 @@ export namespace UserSettings {
 		export const FightCavesAttempts = T<number>('stats.fightCavesAttempts');
 		export const FireCapesSacrificed = T<number>('stats.fireCapesSacrificed');
 
-		export const TitheFarmStats = T<typeof defaultTitheFarm>('stats.titheFarmStats');
+		export const TitheFarmsCompleted = T<number>('stats.titheFarmsCompleted');
+		export const TitheFarmPoints = T<number>('stats.titheFarmPoints');
 	}
 
 	export namespace Minion {

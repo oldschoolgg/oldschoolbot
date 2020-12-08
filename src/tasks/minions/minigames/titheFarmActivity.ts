@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { TitheFarmStats } from '../../../lib/farming/types';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
@@ -19,18 +18,17 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
-		const titheFarmStats = user.settings.get(UserSettings.Stats.TitheFarmStats);
-		const { titheFarmsCompleted } = titheFarmStats;
-		const { titheFarmPoints } = titheFarmStats;
+		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
+		const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
+
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		const determinePoints = determineHarvest - 74;
 
-		const updatedTitheFarmStats: TitheFarmStats = {
-			titheFarmsCompleted: titheFarmsCompleted + 1,
-			titheFarmPoints: titheFarmPoints + determinePoints
-		};
-
-		await user.settings.update(UserSettings.Stats.TitheFarmStats, updatedTitheFarmStats);
+		await user.settings.update(UserSettings.Stats.TitheFarmsCompleted, titheFarmsCompleted + 1);
+		await user.settings.update(
+			UserSettings.Stats.TitheFarmPoints,
+			titheFarmPoints + determinePoints
+		);
 
 		let fruit = '';
 		let fruitXp = 0;
