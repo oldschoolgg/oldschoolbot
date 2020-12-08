@@ -18,7 +18,10 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<easy|medium|hard|easier|current|completed>',
 			usageDelim: ' ',
-			aliases: ['fc', 'fcontract']
+			aliases: ['fc', 'fcontract'],
+			description: `Allows a player to be assigned a farming contract. Can also check stats for farming contracts.`,
+			examples: ['+fc easy', '+fcontract current', '+farmingcontract completed'],
+			categoryFlags: ['minion']
 		});
 	}
 

@@ -14,7 +14,11 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
-			altProtection: true
+			altProtection: true,
+			aliases: ['tfs', 'tfshop'],
+			description: `Allows a player to purchase farmer's items from the tithefarm shop.`,
+			examples: ['+tfs farmers hat', '+tithefarmshop farmers jacket'],
+			categoryFlags: ['minion']
 		});
 	}
 
