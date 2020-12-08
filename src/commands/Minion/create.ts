@@ -88,7 +88,11 @@ export default class extends BotCommand {
 
 		// Ensure they have the required items to create the item.
 		if (!bankHasAllItemsFromBank(userBank, inItems)) {
-			throw `You don't have the required items to create this item. You need: ${inputItemsString}.`;
+			throw `You don't have the required items to create this item. You need: ${inputItemsString}${
+				createableItem.GPCost
+					? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
+					: ''
+			}.`;
 		}
 
 		// Check for any items they cant have 2 of.
