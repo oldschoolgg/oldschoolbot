@@ -26,8 +26,7 @@ export default class extends BotCommand {
 		const boostStr = [];
 
 		// Reduce time based on tithe farm completions
-		const titheFarmStats = user.settings.get(UserSettings.Stats.TitheFarmStats);
-		const { titheFarmsCompleted } = titheFarmStats;
+		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
 		const percentIncreaseFromCompletions =
 			Math.floor(Math.min(60, titheFarmsCompleted) / 3) / 100;
 		baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
@@ -54,8 +53,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		const titheFarmStats = msg.author.settings.get(UserSettings.Stats.TitheFarmStats);
-		const { titheFarmPoints } = titheFarmStats;
+		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
 
 		if (msg.flagArgs.points) {
 			return msg.send(`You have ${titheFarmPoints} Tithe Farm points.`);

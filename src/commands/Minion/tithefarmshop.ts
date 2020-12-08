@@ -40,9 +40,8 @@ export default class extends BotCommand {
 		const outItems = multiplyBank(buyable.outputItems, quantity);
 		const itemString = await createReadableItemListFromBank(this.client, outItems);
 
-		const titheFarmStats = msg.author.settings.get(UserSettings.Stats.TitheFarmStats);
-		const { titheFarmPoints } = titheFarmStats;
-		const { titheFarmsCompleted } = titheFarmStats;
+		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
+
 		const titheFarmPointsCost = buyable.titheFarmPoints * quantity;
 
 		if (titheFarmPoints < titheFarmPointsCost) {
@@ -74,12 +73,10 @@ export default class extends BotCommand {
 			}
 		}
 
-		const updatedTitheFarmStats = {
-			titheFarmsCompleted: titheFarmsCompleted as number,
-			titheFarmPoints: (titheFarmPoints - buyable.titheFarmPoints) as number
-		};
-
-		await msg.author.settings.update(UserSettings.Stats.TitheFarmStats, updatedTitheFarmStats);
+		await msg.author.settings.update(
+			UserSettings.Stats.TitheFarmPoints,
+			titheFarmPoints - buyable.titheFarmPoints
+		);
 		await msg.author.addItemsToBank(buyable.outputItems, true);
 
 		return msg.send(
