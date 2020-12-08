@@ -1,6 +1,6 @@
 import { KlasaMessage, KlasaUser } from 'klasa';
 
-import Farming from '../../skilling/skills/farming/farming';
+import Farming from '../../skilling/skills/farming';
 import { itemNameFromID, rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 

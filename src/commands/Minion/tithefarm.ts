@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
-import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
