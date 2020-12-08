@@ -24,7 +24,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			description: 'Sends your minion to fletch items.',
+			examples: ['+fletch shortbow (u)', '+fletch 5 Oak shield'],
+			categoryFlags: ['minion', 'skilling']
 		});
 	}
 
@@ -55,7 +58,9 @@ export default class extends BotCommand {
 		);
 
 		if (!fletchableItem) {
-			throw `That is not a valid fletchable item, to see the items available do \`${msg.cmdPrefix}fletch --items\``;
+			return msg.send(
+				`That is not a valid fletchable item, to see the items available do \`${msg.cmdPrefix}fletch --items\``
+			);
 		}
 		let sets = 'x';
 		if (fletchableItem.outputMultiple) {
@@ -63,7 +68,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Fletching) < fletchableItem.level) {
-			throw `${msg.author.minionName} needs ${fletchableItem.level} Fletching to fletch ${fletchableItem.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${fletchableItem.level} Fletching to fletch ${fletchableItem.name}.`
+			);
 		}
 
 		await msg.author.settings.sync(true);
@@ -82,7 +89,7 @@ export default class extends BotCommand {
 			for (const [itemID, qty] of requiredItems) {
 				const itemsOwned = userBank[getOSItem(itemID).id] ?? 0;
 				if (itemsOwned < qty) {
-					throw `You dont have enough **${getOSItem(itemID).name}**.`;
+					return msg.send(`You dont have enough **${getOSItem(itemID).name}**.`);
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
@@ -90,18 +97,22 @@ export default class extends BotCommand {
 		const duration = quantity * timeToFletchSingleItem;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				fletchableItem.name
-			}s you can fletch is ${Math.floor(msg.author.maxTripLength / timeToFletchSingleItem)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					fletchableItem.name
+				}s you can fletch is ${Math.floor(
+					msg.author.maxTripLength / timeToFletchSingleItem
+				)}.`
+			);
 		}
 
 		// Check the user has the required items to fletch.
 		for (const [itemID, qty] of requiredItems) {
 			const { id } = getOSItem(itemID);
 			if (!bankHasItem(userBank, id, qty * quantity)) {
-				throw `You don't have enough **${itemNameFromID(id)}**.`;
+				return msg.send(`You don't have enough **${itemNameFromID(id)}**.`);
 			}
 		}
 

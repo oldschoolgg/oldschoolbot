@@ -5,7 +5,9 @@ import { BotCommand } from '../../lib/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Displays the invite link for the bot.'
+			description: 'Displays the invite link for the bot.',
+			examples: ['+invite'],
+			categoryFlags: ['utility']
 		});
 	}
 

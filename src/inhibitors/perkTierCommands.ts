@@ -11,7 +11,14 @@ export default class extends Inhibitor {
 		if (!command.perkTier) return;
 
 		if (getUsersPerkTier(msg.author) < command.perkTier) {
-			throw `You need to be a patron to use this command. You can become a patron at https://www.patreon.com/oldschoolbot`;
+			msg.send(
+				`You need to be a ${
+					command.perkTier - 1 > 0
+						? `tier ${command.perkTier - 1} patron`
+						: `tier ${command.perkTier} patron or server booster`
+				} to use this command. You can become this patron tier at https://www.patreon.com/oldschoolbot`
+			);
+			return true;
 		}
 
 		return false;

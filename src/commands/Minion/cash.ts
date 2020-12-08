@@ -9,7 +9,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 3,
 			aliases: ['bal', 'gp'],
-			description: 'Shows how much virtual GP you own.'
+			description: 'Shows how much virtual GP you own.',
+			examples: ['+gp', '+bal'],
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -18,7 +20,9 @@ export default class extends BotCommand {
 		const coins = msg.author.settings.get(UserSettings.GP);
 
 		if (coins === 0) {
-			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;
+			return msg.send(
+				`You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`
+			);
 		}
 
 		return msg.channel.send(`${Emoji.MoneyBag} You have ${coins.toLocaleString()} GP!`);

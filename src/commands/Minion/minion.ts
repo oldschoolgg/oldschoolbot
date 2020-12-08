@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { objectKeys, randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
@@ -20,12 +21,11 @@ import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
+import Skills from '../../lib/skilling/skills';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { rand } from '../../util';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -57,7 +57,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel] [quantity:int{1}|name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -151,9 +151,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				'gear',
 				'stats',
 				'skills',
-				'minion',
-				'farmingPatches',
-				'farmingContracts'
+				'minion'
 			]);
 
 			await msg.author.settings.update([
@@ -183,43 +181,17 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 
+		let str = '';
+		for (const skill of Object.values(Skills)) {
+			str += `${skill.emoji} ${skill.name}: ${msg.author.skillLevel(
+				skill.id
+			)} (${(msg.author.settings.get(
+				`skills.${skill.id}`
+			) as number).toLocaleString()} xp)\n`;
+		}
+
 		return msg.send(`${msg.author.minionName}'s Stats:
-${Emoji.Crafting} Crafting: ${msg.author.skillLevel(
-			SkillsEnum.Crafting
-		)} (${msg.author.settings.get(UserSettings.Skills.Crafting).toLocaleString()} xp)
-${Emoji.Agility} Agility: ${msg.author.skillLevel(SkillsEnum.Agility)} (${msg.author.settings
-			.get(UserSettings.Skills.Agility)
-			.toLocaleString()} xp)
-${Emoji.Cooking} Cooking: ${msg.author.skillLevel(SkillsEnum.Cooking)} (${msg.author.settings
-			.get(UserSettings.Skills.Cooking)
-			.toLocaleString()} xp)
-${Emoji.Fishing} Fishing: ${msg.author.skillLevel(SkillsEnum.Fishing)} (${msg.author.settings
-			.get(UserSettings.Skills.Fishing)
-			.toLocaleString()} xp)
-${Emoji.Mining} Mining: ${msg.author.skillLevel(SkillsEnum.Mining)} (${msg.author.settings
-			.get(UserSettings.Skills.Mining)
-			.toLocaleString()} xp)
-${Emoji.Smithing} Smithing: ${msg.author.skillLevel(
-			SkillsEnum.Smithing
-		)} (${msg.author.settings.get(UserSettings.Skills.Smithing).toLocaleString()} xp)
-${Emoji.Woodcutting} Woodcutting: ${msg.author.skillLevel(
-			SkillsEnum.Woodcutting
-		)} (${msg.author.settings.get(UserSettings.Skills.Woodcutting).toLocaleString()} xp)
-${Emoji.Firemaking} Firemaking: ${msg.author.skillLevel(
-			SkillsEnum.Firemaking
-		)} (${msg.author.settings.get(UserSettings.Skills.Firemaking).toLocaleString()} xp)
-${Emoji.Runecraft} Runecraft: ${msg.author.skillLevel(
-			SkillsEnum.Runecraft
-		)} (${msg.author.settings.get(UserSettings.Skills.Runecraft).toLocaleString()} xp)
-${Emoji.Prayer} Prayer: ${msg.author.skillLevel(SkillsEnum.Prayer)} (${msg.author.settings
-			.get(UserSettings.Skills.Prayer)
-			.toLocaleString()} xp)
-${Emoji.Fletching} Fletching: ${msg.author.skillLevel(
-			SkillsEnum.Fletching
-		)} (${msg.author.settings.get(UserSettings.Skills.Fletching).toLocaleString()} xp)
-${Emoji.Farming} Farming: ${msg.author.skillLevel(SkillsEnum.Farming)} (${msg.author.settings
-			.get(UserSettings.Skills.Farming)
-			.toLocaleString()} xp)
+${str}
 ${Emoji.XP} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
 			.totalLevel(true)
 			.toLocaleString()} xp)
@@ -476,24 +448,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
-	async farm(msg: KlasaMessage, [quantity, seedName]: [number, string]) {
-		await this.client.commands
-			.get('farm')!
-			.run(msg, [quantity, seedName])
-			.catch(err => {
-				throw err;
-			});
-	}
-
-	async harvest(msg: KlasaMessage, [seedType]: [string]) {
-		await this.client.commands
-			.get('harvest')!
-			.run(msg, [seedType])
-			.catch(err => {
-				throw err;
-			});
-	}
-
 	async offer(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
 		await this.client.commands
 			.get('offer')!
@@ -588,21 +542,21 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Check food
-		if (
-			1 > 2 &&
-			monster.healAmountNeeded &&
-			monster.attackStyleToUse &&
-			monster.attackStylesUsed
-		) {
+		let foodStr: undefined | string = undefined;
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-			await removeFoodFromUser(
-				this.client,
-				msg.author,
-				healAmountNeeded * quantity,
-				Math.ceil(healAmountNeeded / quantity),
-				monster.name
-			);
+
+			const [result] = await removeFoodFromUser({
+				client: this.client,
+				user: msg.author,
+				totalHealingNeeded: healAmountNeeded * quantity,
+				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				activityName: monster.name,
+				attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+			});
+
+			foodStr = result;
 		}
 
 		let duration = timeToFinish * quantity;
@@ -614,7 +568,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
 		}
 
-		const randomAddedDuration = rand(1, 20);
+		const randomAddedDuration = randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (isWeekend()) {
@@ -638,6 +592,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
+		if (foodStr) {
+			response += ` Removed ${foodStr}.`;
+		}
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

@@ -17,7 +17,11 @@ export default class extends BotCommand {
 			usage: '<skillname:string>',
 			oneAtTime: true,
 			cooldown: 5,
-			altProtection: true
+			altProtection: true,
+			categoryFlags: ['minion'],
+			description:
+				'Purchases skillcapes from the bot, you can buy untrimmed capes if its your first 99.',
+			examples: ['+skillcape mining']
 		});
 	}
 
@@ -26,19 +30,22 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
-		if (GP < skillCapeCost) throw `You don't have enough GP to buy a skill cape.`;
+		if (GP < skillCapeCost) return msg.send(`You don't have enough GP to buy a skill cape.`);
 
 		const capeObject = Skillcapes.find(cape => stringMatches(cape.skill, skillName));
-		if (!capeObject) throw `That's not a valid skill.`;
+		if (!capeObject) return msg.send(`That's not a valid skill.`);
 
 		const levelInSkill = convertXPtoLVL(
 			msg.author.settings.get(`skills.${skillName}`) as number
 		);
 
-		if (levelInSkill < 99)
-			throw `Your ${toTitleCase(
-				skillName
-			)} level is less than 99! You can't buy a skill cape, noob.`;
+		if (levelInSkill < 99) {
+			return msg.send(
+				`Your ${toTitleCase(
+					skillName
+				)} level is less than 99! You can't buy a skill cape, noob.`
+			);
+		}
 
 		const itemsToPurchase =
 			countSkillsAtleast99(msg.author) > 1

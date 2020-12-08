@@ -23,7 +23,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
-			description: 'Smiths items from bars.'
+			categoryFlags: ['minion', 'skilling'],
+			description:
+				'Sends your minion to smith items, which is turning bars into smithed items, like weapons and armor.',
+			examples: ['+smith mithril sword', '+smith rune platebody']
 		});
 	}
 
@@ -62,7 +65,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			throw `${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`
+			);
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.

@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
@@ -14,12 +15,18 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
 
 const pickaxes = [
 	{
 		id: itemID('3rd age pickaxe'),
 		reductionPercent: 13,
 		miningLvl: 61
+	},
+	{
+		id: itemID('Crystal pickaxe'),
+		reductionPercent: 11,
+		miningLvl: 71
 	},
 	{
 		id: itemID('Gilded pickaxe'),
@@ -53,6 +60,24 @@ const gloves = [
 	}
 ];
 
+const gloryAmulets = resolveItems([
+	'Amulet of eternal glory',
+	'Amulet of glory (t)',
+	'Amulet of glory (t6)',
+	'Amulet of glory (t5)',
+	'Amulet of glory (t4)',
+	'Amulet of glory (t3)',
+	'Amulet of glory (t2)',
+	'Amulet of glory (t1)',
+	'Amulet of glory',
+	'Amulet of glory(6)',
+	'Amulet of glory(5)',
+	'Amulet of glory(4)',
+	'Amulet of glory(3)',
+	'Amulet of glory(2)',
+	'Amulet of glory(1)'
+]);
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -60,19 +85,16 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'skilling'],
+			description: 'Sends your minion to go mining.',
+			examples: ['+mine copper ore', '+mine amethyst']
 		});
 	}
 
+	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (!msg.author.hasMinion) {
-			throw `You dont have a minion`;
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -83,13 +105,17 @@ export default class extends BotCommand {
 		);
 
 		if (!ore) {
-			throw `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(
-				ore => ore.name
-			).join(', ')}.`;
+			return msg.send(
+				`Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(
+					ore => ore.name
+				).join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Mining) < ore.level) {
-			throw `${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`
+			);
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
@@ -120,6 +146,16 @@ export default class extends BotCommand {
 				}
 			}
 		}
+		// Give gem rocks a speed increase for wearing a glory
+		if (ore.id === 1625) {
+			for (const amulet of gloryAmulets) {
+				if (msg.author.hasItemEquippedAnywhere(amulet)) {
+					timeToMine = Math.floor(timeToMine / 2);
+					boosts.push(`50% for ${itemNameFromID(amulet)}`);
+					break;
+				}
+			}
+		}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -128,11 +164,13 @@ export default class extends BotCommand {
 		const duration = quantity * timeToMine;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				ore.name
-			} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					ore.name
+				} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`
+			);
 		}
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>(

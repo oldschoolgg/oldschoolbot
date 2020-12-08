@@ -12,7 +12,11 @@ export default class extends BotCommand {
 			aliases: ['ebank'],
 			perkTier: PerkTier.Six,
 			oneAtTime: true,
-			cooldown: 60 * 60 * 3
+			cooldown: 60 * 60 * 3,
+			description:
+				'Shows a huge image containing everyones banks combined into one bank. Takes a while to complete.',
+			examples: ['+ebank'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

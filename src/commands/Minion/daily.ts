@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-if (!fs.existsSync('./resources/trivia-questions.json')) {
+if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	fs.writeFileSync(
-		'./resources/trivia-questions.json',
+		'./src/lib/resources/trivia-questions.json',
 		JSON.stringify(
 			{
 				triviaQuestions: []
@@ -12,11 +12,11 @@ if (!fs.existsSync('./resources/trivia-questions.json')) {
 			4
 		)
 	);
-	console.log(`Created empty trivia questions file at ./resources/trivia-questions.json`);
+	console.log(`Created empty trivia questions file at ./src/lib/resources/trivia-questions.json`);
 }
 
 const { triviaQuestions } = JSON.parse(
-	fs.readFileSync('./resources/trivia-questions.json').toString()
+	fs.readFileSync('./src/lib/resources/trivia-questions.json').toString()
 );
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -38,7 +38,11 @@ export default class DailyCommand extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 5
+			cooldown: 5,
+			categoryFlags: ['minion'],
+			examples: ['+daily'],
+			description:
+				'Allows you to answer a trivia question twice daily for some small amount of GP and random items from Diangos store.'
 		});
 	}
 

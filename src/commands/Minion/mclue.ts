@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks } from '../../lib/constants';
-import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
@@ -18,11 +18,14 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'minigame'],
+			description: 'Sends your minion to complete a clue scroll.',
+			examples: ['+mclue easy']
 		});
 	}
 
-	invalidClue(msg: KlasaMessage) {
+	invalidClue(msg: KlasaMessage): string {
 		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(
 			tier => tier.name
 		).join(', ')}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
@@ -38,11 +41,11 @@ export default class extends BotCommand {
 			quantity = 1;
 		}
 
-		if (!tierName) throw this.invalidClue(msg);
+		if (!tierName) return msg.send(this.invalidClue(msg));
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, tierName));
 
-		if (!clueTier) throw this.invalidClue(msg);
+		if (!clueTier) return msg.send(this.invalidClue(msg));
 
 		const boosts = [];
 
@@ -56,18 +59,20 @@ export default class extends BotCommand {
 		let duration = timeToFinish * quantity;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
-			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount you can do for ${
+					clueTier.name
+				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`
+			);
 		}
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const numOfScrolls = bank[clueTier.scrollID];
 
 		if (!numOfScrolls || numOfScrolls < quantity) {
-			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
+			return msg.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
 		}
 
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);

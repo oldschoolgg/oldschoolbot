@@ -12,13 +12,17 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc>'
+			usage: '<melee|mage|range|skilling|misc>',
+			description: 'Shows your equipped gear.',
+			examples: ['+gear melee', '+gear misc'],
+			categoryFlags: ['minion', 'skilling']
 		});
 	}
 
 	async run(msg: KlasaMessage, [gearType]: [GearTypes.GearSetupTypes]) {
 		const image = await generateGearImage(
 			this.client,
+			msg.author,
 			msg.author.settings.get(resolveGearTypeSetting(gearType)),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)

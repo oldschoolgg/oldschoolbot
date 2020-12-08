@@ -1,13 +1,18 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { BadgesEnum } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[rsn:str{1,12}]'
+			usage: '[rsn:str{1,12}]',
+			description:
+				'Allows you to set your runescape username, to be automatically used in commands.',
+			examples: ['+setrsn Zezima'],
+			categoryFlags: ['settings']
 		});
 	}
 

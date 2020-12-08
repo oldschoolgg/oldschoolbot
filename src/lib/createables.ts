@@ -1,17 +1,243 @@
-import { Bank } from './types';
+import { ItemBank } from './types';
 import { resolveNameBank } from './util';
 import itemID from './util/itemID';
 
 interface Createable {
 	name: string;
-	outputItems: Bank;
-	inputItems: Bank;
-	cantHaveItems?: Bank;
+	outputItems: ItemBank;
+	inputItems: ItemBank;
+	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
 	noCl?: boolean;
 	GPCost?: number;
+	cantBeInCL?: boolean;
 }
+
+const crystalTools: Createable[] = [
+	{
+		name: 'Crystal pickaxe',
+		inputItems: {
+			[itemID('Dragon pickaxe')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal pickaxe')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	},
+	{
+		name: 'Crystal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal harpoon')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	},
+	{
+		name: 'Crystal axe',
+		inputItems: {
+			[itemID('Dragon axe')]: 1,
+			[itemID('Crystal tool seed')]: 1,
+			[itemID('Crystal shard')]: 120
+		},
+		outputItems: {
+			[itemID('Crystal axe')]: 1
+		},
+		requiredSkills: { smithing: 76, crafting: 76 },
+		QPRequired: 150
+	}
+];
+
+const ornamentKits: Createable[] = [
+	{
+		name: 'Dragon defender (t)',
+		inputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
+		outputItems: resolveNameBank({ 'Dragon defender (t)': 1 })
+	},
+	{
+		name: 'Dragon defender',
+		inputItems: resolveNameBank({ 'Dragon defender (t)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Rune defender (t)',
+		inputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
+		outputItems: resolveNameBank({ 'Rune defender (t)': 1 })
+	},
+	{
+		name: 'Rune defender',
+		inputItems: resolveNameBank({ 'Rune defender (t)': 1 }),
+		outputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon pickaxe (or)',
+		inputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
+		outputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 })
+	},
+	{
+		name: 'Dragon pickaxe',
+		inputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon sq shield (g)',
+		inputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
+		outputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 })
+	},
+	{
+		name: 'Revert dragon sq shield',
+		inputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon platelegs (g)',
+		inputItems: resolveNameBank({ 'Dragon platelegs': 1, 'Dragon legs/skirt ornament kit': 1 }),
+		outputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 })
+	},
+	{
+		name: 'Dragon platelegs',
+		inputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 }),
+		outputItems: resolveNameBank({
+			'Dragon platelegs': 1,
+			'Dragon legs/skirt ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Dragon plateskirt (g)',
+		inputItems: resolveNameBank({
+			'Dragon plateskirt': 1,
+			'Dragon legs/skirt ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 })
+	},
+	{
+		name: 'Dragon plateskirt',
+		inputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 }),
+		outputItems: resolveNameBank({
+			'Dragon plateskirt': 1,
+			'Dragon legs/skirt ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Dragon chainbody (g)',
+		inputItems: resolveNameBank({
+			'Dragon chainbody': 1,
+			'Dragon legs/skirt ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
+	},
+	{
+		name: 'Dragon chainbody',
+		inputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 }),
+		outputItems: resolveNameBank({
+			'Dragon chainbody': 1,
+			'Dragon chainbody ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Amulet of fury (or)',
+		inputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
+		outputItems: resolveNameBank({
+			'Amulet of fury (or)': 1
+		})
+	},
+	{
+		name: 'Amulet of fury',
+		inputItems: resolveNameBank({
+			'Amulet of fury (or)': 1
+		}),
+		outputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
+		noCl: true
+	},
+	// Godswords
+	{
+		name: 'Zamorak godsword (or)',
+		inputItems: resolveNameBank({ 'Zamorak godsword': 1, 'Zamorak godsword ornament kit': 1 }),
+		outputItems: resolveNameBank({
+			'Zamorak godsword (or)': 1
+		})
+	},
+	{
+		name: 'Revert zamorak godsword',
+		inputItems: resolveNameBank({
+			'Zamorak godsword (or)': 1
+		}),
+		outputItems: resolveNameBank({ 'Zamorak godsword': 1, 'Zamorak godsword ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Bandos godsword (or)',
+		inputItems: resolveNameBank({ 'Bandos godsword': 1, 'Bandos godsword ornament kit': 1 }),
+		outputItems: resolveNameBank({
+			'Bandos godsword (or)': 1
+		})
+	},
+	{
+		name: 'Revert bandos godsword',
+		inputItems: resolveNameBank({
+			'Bandos godsword (or)': 1
+		}),
+		outputItems: resolveNameBank({ 'Bandos godsword': 1, 'Bandos godsword ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Saradomin godsword (or)',
+		inputItems: resolveNameBank({
+			'Saradomin godsword': 1,
+			'Saradomin godsword ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Saradomin godsword (or)': 1
+		})
+	},
+	{
+		name: 'Revert saradomin godsword',
+		inputItems: resolveNameBank({
+			'Saradomin godsword (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Saradomin godsword': 1,
+			'Saradomin godsword ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Armadyl godsword (or)',
+		inputItems: resolveNameBank({
+			'Armadyl godsword': 1,
+			'Armadyl godsword ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Armadyl godsword (or)': 1
+		})
+	},
+	{
+		name: 'Revert Armadyl godsword',
+		inputItems: resolveNameBank({
+			'Armadyl godsword (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Armadyl godsword': 1,
+			'Armadyl godsword ornament kit': 1
+		}),
+		noCl: true
+	}
+];
 
 const Createables: Createable[] = [
 	{
@@ -679,160 +905,6 @@ const Createables: Createable[] = [
 		requiredSkills: { smithing: 60 }
 	},
 	{
-		name: 'Ultracompost',
-		inputItems: resolveNameBank({
-			Supercompost: 1,
-			'Volcanic ash': 2
-		}),
-		outputItems: resolveNameBank({
-			Ultracompost: 1
-		})
-	},
-	{
-		name: 'Tomatoes(5)',
-		inputItems: resolveNameBank({
-			Tomato: 5
-		}),
-		outputItems: resolveNameBank({
-			'Tomatoes(5)': 1
-		})
-	},
-	{
-		name: 'Tomato',
-		inputItems: resolveNameBank({
-			'Tomatoes(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Tomato: 5
-		})
-	},
-	{
-		name: 'Apples(5)',
-		inputItems: resolveNameBank({
-			'Cooking apple': 5
-		}),
-		outputItems: resolveNameBank({
-			'Apples(5)': 1
-		})
-	},
-	{
-		name: 'Cooking apple',
-		inputItems: resolveNameBank({
-			'Apples(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Cooking Apple': 5
-		})
-	},
-	{
-		name: 'Bananas(5)',
-		inputItems: resolveNameBank({
-			Banana: 5
-		}),
-		outputItems: resolveNameBank({
-			'Bananas(5)': 1
-		})
-	},
-	{
-		name: 'Banana',
-		inputItems: resolveNameBank({
-			'Bananas(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Banana: 5
-		})
-	},
-	{
-		name: 'Strawberries(5)',
-		inputItems: resolveNameBank({
-			Strawberry: 5
-		}),
-		outputItems: resolveNameBank({
-			'Strawberries(5)': 1
-		})
-	},
-	{
-		name: 'Strawberry',
-		inputItems: resolveNameBank({
-			'Strawberries(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Strawberry: 5
-		})
-	},
-	{
-		name: 'Oranges(5)',
-		inputItems: resolveNameBank({
-			Orange: 5
-		}),
-		outputItems: resolveNameBank({
-			'Oranges(5)': 1
-		})
-	},
-	{
-		name: 'Orange',
-		inputItems: resolveNameBank({
-			'Oranges(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Orange: 5
-		})
-	},
-	{
-		name: 'Potatoes(10)',
-		inputItems: resolveNameBank({
-			Potato: 10
-		}),
-		outputItems: resolveNameBank({
-			'Potatoes(10)': 1
-		})
-	},
-	{
-		name: 'Potato',
-		inputItems: resolveNameBank({
-			'Potatoes(10)': 1
-		}),
-		outputItems: resolveNameBank({
-			Potato: 10
-		})
-	},
-	{
-		name: 'Onions(10)',
-		inputItems: resolveNameBank({
-			Onion: 10
-		}),
-		outputItems: resolveNameBank({
-			'Onions(10)': 1
-		})
-	},
-	{
-		name: 'Onion',
-		inputItems: resolveNameBank({
-			'Onions(10)': 1
-		}),
-		outputItems: resolveNameBank({
-			Onion: 10
-		})
-	},
-	{
-		name: 'Cabbages(10)',
-		inputItems: resolveNameBank({
-			Cabbage: 10
-		}),
-		outputItems: resolveNameBank({
-			'Cabbages(10)': 1
-		})
-	},
-	{
-		name: 'Cabbage',
-		inputItems: resolveNameBank({
-			'Cabbages(10)': 1
-		}),
-		outputItems: resolveNameBank({
-			Cabbage: 10
-		})
-	},
-	{
 		name: 'Coconut milk',
 		inputItems: resolveNameBank({
 			Vial: 1,
@@ -855,31 +927,110 @@ const Createables: Createable[] = [
 		requiredSkills: {
 			fishing: 55,
 			firemaking: 35,
-			crafting: 15,
+			crafting: 11,
 			smithing: 5
 		},
 		GPCost: 300_000
-	}
-	/* {
-		name: 'Toxic blowpipe (empty)',
-		inputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		}
 	},
 	{
-		name: 'Toxic blowpipe',
-		inputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		}
-	} */
+		name: 'Zamorakian spear',
+		inputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		noCl: true
+	},
+	// Nightmare
+	{
+		name: 'Eldritch nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		})
+	},
+	{
+		name: '	Harmonised nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Harmonised orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Eldritch orb',
+		outputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		inputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		}),
+		noCl: true
+	},
+	{
+		name: "Inquisitor's",
+		inputItems: resolveNameBank({
+			"Inquisitor's armour set": 1
+		}),
+		outputItems: resolveNameBank({
+			"Inquisitor's great helm": 1,
+			"Inquisitor's hauberk": 1,
+			"Inquisitor's plateskirt": 1
+		}),
+		noCl: true
+	},
+	{
+		name: "Inquisitor's armour set",
+		inputItems: resolveNameBank({
+			"Inquisitor's great helm": 1,
+			"Inquisitor's hauberk": 1,
+			"Inquisitor's plateskirt": 1
+		}),
+		outputItems: resolveNameBank({
+			"Inquisitor's armour set": 1
+		})
+	},
+	...crystalTools,
+	...ornamentKits
 ];
 
 export default Createables;

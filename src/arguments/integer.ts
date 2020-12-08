@@ -26,7 +26,6 @@ export default class extends Argument {
 			throw message.language.get('RESOLVER_INVALID_INT', possible.name);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		// @ts-ignore 2341
 		return this.constructor.minOrMax(this.client, number, min, max, possible, message)
 			? number

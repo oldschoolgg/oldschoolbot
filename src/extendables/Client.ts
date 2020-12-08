@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node';
 import { Client } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaClient, SQLProvider } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
@@ -8,6 +8,7 @@ import { Events, Time } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { rand } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
+import PostgresProvider from '../providers/postgres';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -30,7 +31,8 @@ export default class extends Extendable {
 		const currentItem = currentItems[itemID];
 
 		const osItem = getOSItem(itemID);
-		const needsToFetchAgain = osItem.tradeable_on_ge && currentItem.price === 0;
+		const needsToFetchAgain =
+			!currentItem || (osItem.tradeable_on_ge && currentItem.price === 0);
 
 		if (
 			!needsToFetchAgain &&
@@ -68,9 +70,7 @@ export default class extends Extendable {
 	}
 
 	async query(this: KlasaClient, query: string) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		return (this.providers.default as SQLProvider).runAll(query);
+		return (this.providers.default as PostgresProvider).runAll(query);
 	}
 
 	async wtf(this: KlasaClient, error: Error) {
