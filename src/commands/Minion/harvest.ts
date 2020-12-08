@@ -21,7 +21,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<seedType:...string>',
-			usageDelim: ' '
+			usageDelim: ' ',
+			description: `Allows a player to harvest a specific patch without replanting a seed.`,
+			examples: ['+harvest herb', '+harvest tree'],
+			categoryFlags: ['minion']
 		});
 	}
 

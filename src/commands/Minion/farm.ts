@@ -28,7 +28,10 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
 			aliases: ['plant'],
-			usageDelim: ' '
+			usageDelim: ' ',
+			description: `Allows a player to plant or harvest and replant seeds for farming.`,
+			examples: ['+plant ranarr seed', '+farm oak tree'],
+			categoryFlags: ['minion']
 		});
 	}
 

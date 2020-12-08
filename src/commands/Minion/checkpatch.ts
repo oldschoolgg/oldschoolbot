@@ -13,7 +13,11 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 1
+			cooldown: 1,
+			aliases: ['cp'],
+			description: `Allows a player to check the growth status of all patches at once.`,
+			examples: ['+checkpatch', '+cp'],
+			categoryFlags: ['minion']
 		});
 	}
 
