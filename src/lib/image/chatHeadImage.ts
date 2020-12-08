@@ -6,9 +6,13 @@ registerFont('./src/lib/resources/osrs-font-quill-8.ttf', { family: 'Regular' })
 
 const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
+const santaChatHead = fs.readFileSync('./src/lib/resources/images/santa.png');
+const reindeerChatHead = fs.readFileSync('./src/lib/resources/images/reindeer.png');
 
 const chatHeads = {
-	mejJal: mejJalChatHead
+	mejJal: mejJalChatHead,
+	santa: santaChatHead,
+	reindeer: reindeerChatHead
 };
 
 export default function chatHeadImage({
