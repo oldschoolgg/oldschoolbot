@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import { GearTypes } from '../../gear';
-import { SkillsEnum } from '../../skilling/types';
-import { ItemBank } from '../../types';
-import { FarmingPatchTypes } from '../../farming/types';
 import { PatchTypes } from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
 import defaultTitheFarm from '../../farming/defaultTitheFarm';
+import { FarmingPatchTypes } from '../../farming/types';
+import { GearTypes } from '../../gear';
+import { SkillsEnum } from '../../skilling/types';
+import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -25,12 +25,15 @@ export namespace UserSettings {
 	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const MinigameScores = T<O.Readonly<ItemBank>>('minigameScores');
+	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly number[]>('bitfield');
+	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
 	export const SacrificedValue = T<number>('sacrificedValue');
+	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

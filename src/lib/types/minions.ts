@@ -1,8 +1,7 @@
 import { Activity, Tasks } from '../constants';
+import { PatchTypes } from '../farming';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { KlasaMessage } from 'klasa';
-import { PatchTypes } from '../farming';
 
 export interface ActivityTaskOptions {
 	type: Activity;

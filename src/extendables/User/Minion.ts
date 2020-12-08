@@ -14,7 +14,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
 import Crafting from '../../lib/skilling/skills/crafting';
-import Farming from '../../lib/skilling/skills/farming/farming';
+import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Mining from '../../lib/skilling/skills/mining';
@@ -23,7 +23,6 @@ import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skil
 import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	AgilityActivityTaskOptions,
@@ -314,9 +313,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently farming ${data.quantity}x ${
 					plants!.name
-				}. ${formattedDuration} Your ${
-					Emoji.Farming
-				} Farming level is ${this.skillLevel(SkillsEnum.Farming)}`;
+				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
+					SkillsEnum.Farming
+				)}`;
 			}
 
 			case Activity.Sawmill: {

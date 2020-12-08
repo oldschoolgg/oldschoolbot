@@ -3,11 +3,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
-import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
-import Farming from '../../lib/skilling/skills/farming/farming';
+import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -135,8 +135,8 @@ export default class extends BotCommand {
 			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
 		}
 		if (
-			plants.canCompostandPay === false &&
-			payment === true &&
+			!plants.canCompostandPay &&
+			payment &&
 			upgradeType === ('supercompost' || 'ultracompost')
 		) {
 			throw `You do not need to use compost if you are paying a nearby farmer to look over your trees.`;
@@ -171,7 +171,7 @@ export default class extends BotCommand {
 			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
 		}
 
-		let duration: number;
+		let duration: number = 0;
 		if (patchType.patchPlanted) {
 			duration =
 				patchType.lastQuantity *
@@ -193,13 +193,13 @@ export default class extends BotCommand {
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				plants.name
-			} you can plant is ${(Math.floor(
-				msg.author.maxTripLength /
-					(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
-			),
-			numOfPatches)}.`;
+			)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
+				(Math.floor(
+					msg.author.maxTripLength /
+						(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
+				),
+				numOfPatches)
+			}.`;
 		}
 
 		let newBank = { ...userBank };

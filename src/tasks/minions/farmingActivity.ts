@@ -7,7 +7,7 @@ import { FarmingContract } from '../../lib/farming/types';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import Farming from '../../lib/skilling/skills/farming/farming';
+import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
@@ -380,7 +380,15 @@ export default class extends Task {
 				);
 			}
 
-			let updatePatches: PatchTypes.PatchData;
+			let updatePatches: PatchTypes.PatchData = {
+				lastPlanted: null,
+				patchPlanted: false,
+				plantTime: 0,
+				lastQuantity: 0,
+				lastUpgradeType: null,
+				lastPayment: false
+			};
+
 			if (planting) {
 				updatePatches = {
 					lastPlanted: plant.name,
@@ -390,15 +398,6 @@ export default class extends Task {
 					lastUpgradeType: upgradeType,
 					lastPayment: patchType.lastPayment
 				};
-			} else {
-				updatePatches = {
-					lastPlanted: null,
-					patchPlanted: false,
-					plantTime: 0,
-					lastQuantity: 0,
-					lastUpgradeType: null,
-					lastPayment: false
-				};
 			}
 
 			await user.settings.update(getPatchType, updatePatches);
@@ -407,7 +406,7 @@ export default class extends Task {
 
 			const { contractsCompleted } = currentContract;
 
-			let janeMessage;
+			let janeMessage = false;
 			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
 				const farmingContractUpdate: FarmingContract = {
 					hasContract: false,
@@ -444,8 +443,9 @@ export default class extends Task {
 			if (janeMessage) {
 				return channel.send(
 					await guildmasterJaneImage(
-						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${contractsCompleted +
-							1} farming contracts.`
+						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+							contractsCompleted + 1
+						} farming contracts.`
 					)
 				);
 			}
