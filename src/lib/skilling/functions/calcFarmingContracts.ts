@@ -1,9 +1,12 @@
 import { KlasaUser } from 'klasa';
 
+import { PlantTier } from '../../../lib/farming/types';
 import { rand } from '../../../lib/util';
 import { SkillsEnum } from '../types';
 
-const easyPlants = [
+export type PlantsList = [number, string, number][];
+
+const easyPlants: PlantsList = [
 	// [farmingLevelNeeded, plantToGrow, plantTier]
 	[45, 'Potato', 1],
 	[45, 'Onion', 1],
@@ -30,7 +33,7 @@ const easyPlants = [
 	[85, 'Curry tree', 3]
 ];
 
-const mediumPlants = [
+const mediumPlants: PlantsList = [
 	// [farmingLevelNeeded, plantToGrow, plantTier]
 	[65, 'Strawberry', 2],
 	[65, 'Irit', 3],
@@ -55,7 +58,7 @@ const mediumPlants = [
 	[85, 'Palm tree', 4]
 ];
 
-const hardPlants = [
+const hardPlants: PlantsList = [
 	// [farmingLevelNeeded, plantToGrow, plantTier]
 	[85, 'Maple tree', 5],
 	[85, 'Watermelon', 4],
@@ -76,9 +79,12 @@ const hardPlants = [
 	[90, 'Redwood tree', 5]
 ];
 
-export function getPlantToGrow(user: KlasaUser, contractLevel: 'easy' | 'medium' | 'hard') {
+export function getPlantToGrow(
+	user: KlasaUser,
+	contractLevel: 'easy' | 'medium' | 'hard'
+): [string, PlantTier] {
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
-	let contractType: (string | number)[][] = [];
+	let contractType: PlantsList = [];
 	if (contractLevel === 'easy') contractType = easyPlants;
 	if (contractLevel === 'medium') contractType = mediumPlants;
 	if (contractLevel === 'hard') contractType = hardPlants;
@@ -93,5 +99,5 @@ export function getPlantToGrow(user: KlasaUser, contractLevel: 'easy' | 'medium'
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
 
-	return [plantToGrow, tier];
+	return [plantToGrow, tier as PlantTier];
 }

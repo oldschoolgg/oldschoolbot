@@ -25,10 +25,13 @@ export interface PatchData {
 	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | 'null' | null;
 	lastPayment: boolean;
 }
+
+export type PlantTier = 0 | 1 | 2 | 3 | 4 | 5;
+
 export interface FarmingContract {
 	hasContract: boolean;
 	difficultyLevel: 'easy' | 'medium' | 'hard' | null;
 	plantToGrow: string | null;
-	plantTier: 0 | 1 | 2 | 3 | 4 | 5;
+	plantTier: PlantTier;
 	contractsCompleted: number;
 }
