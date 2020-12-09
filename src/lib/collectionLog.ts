@@ -1217,6 +1217,16 @@ export const holiday: CollectionLogData = {
 		'Skeleton leggings',
 		'Skeleton gloves',
 		'Skeleton boots'
+	]),
+	Christmas: resolveItems([
+		'Santa mask',
+		'Santa jacket',
+		'Santa pantaloons',
+		'Santa gloves',
+		'Santa boots',
+		'Sack of presents',
+		'Christmas cracker',
+		'Santa hat'
 	])
 };
 

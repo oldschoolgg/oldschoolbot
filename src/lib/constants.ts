@@ -77,6 +77,8 @@ export const enum Emoji {
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
 	Ely = '<:ely:784453586033049630>',
+	ChristmasCracker = '<:cracker:785389969962958858>',
+	SantaHat = '<:santaHat:785874868905181195>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -141,7 +143,9 @@ export const enum Tasks {
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker'
+	MinigameTicker = 'minigameTicker',
+
+	DeliverPresents = 'deliverPresentsActivity'
 }
 
 export const enum Activity {
@@ -173,7 +177,9 @@ export const enum Activity {
 	Nightmare = 'Nightmare',
 	Sepulchre = 'Sepulchre',
 	FishingTrawler = 'FishingTrawler',
-	Zalcano = 'Zalcano'
+	Zalcano = 'Zalcano',
+
+	DeliverPresents = 'DeliverPresents'
 }
 
 export const enum Events {
