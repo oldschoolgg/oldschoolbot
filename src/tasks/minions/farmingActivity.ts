@@ -94,33 +94,22 @@ export default class extends Task {
 		if (patchType.lastPayment) chanceOfDeathReduction = 0;
 
 		// check bank for farmer's items
-		if (
-			bankHasItem(userBank, itemID(`Farmer's strawhat`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's strawhat`))
-		) {
+		if (user.hasItemEquippedOrInBank(`Farmer's strawhat`)) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck++;
 		}
 		if (
-			bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
-			bankHasItem(userBank, itemID(`Farmer's shirt`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's jacket`)) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's shirt`))
+			user.hasItemEquippedOrInBank(`Farmer's jacket`) ||
+			user.hasItemEquippedOrInBank(`Farmer's shirt`)
 		) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck++;
 		}
-		if (
-			bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's boro trousers`))
-		) {
+		if (user.hasItemEquippedOrInBank(`Farmer's boro trousers`)) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck++;
 		}
-		if (
-			bankHasItem(userBank, itemID(`Farmer's boots`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's boots`))
-		) {
+		if (user.hasItemEquippedOrInBank(`Farmer's boots`)) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck++;
 		}

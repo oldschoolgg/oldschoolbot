@@ -68,6 +68,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (!currentContract.hasContract && contractLevel === 'current') {
+			return msg.send(await guildmasterJaneImage(`You currently don't have a contract!`));
+		}
+
 		const contractToFarmingLevel = {
 			easy: 45,
 			medium: 65,
