@@ -8,6 +8,7 @@ import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
 import { itemID, itemNameFromID, removeDuplicatesFromArray } from './util';
+import resolveItems from './util/resolveItems';
 
 interface Openable {
 	name: string;
@@ -275,7 +276,7 @@ const Openables: Openable[] = [
 
 export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
-	.oneIn(20, itemNameFromID(3713)!)
+	.oneIn(150, itemNameFromID(3713)!)
 	.add(6199)
 	.add(19939);
 
@@ -307,7 +308,17 @@ const cantBeDropped = [
 	itemID('Dwarven greathammer'),
 	itemID('Dwarven knife'),
 	itemID('Cob'),
-	22664 // JMOD Scythe of Vitur
+	22664, // JMOD Scythe of Vitur,
+	...resolveItems([
+		'Red Partyhat',
+		'Yellow partyhat',
+		'Blue partyhat',
+		'Purple partyhat',
+		'Green partyhat',
+		'White partyhat',
+		'Christmas cracker',
+		'Santa hat'
+	])
 ] as number[];
 
 export const tmbTable = Items.filter(i => {
@@ -326,7 +337,9 @@ export const umbTable = Items.filter(i => {
 
 function getRandomItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
-	return table[Math.floor(Math.random() * table.length)];
+	let result = table[Math.floor(Math.random() * table.length)];
+	if (cantBeDropped.includes(result)) return getRandomItem(tradeables);
+	return result;
 }
 
 export default Openables;
