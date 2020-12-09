@@ -9,7 +9,7 @@ import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-const trickOrTreatingLootTable = new LootTable()
+const deliverPresentsLootTable = new LootTable()
 	.every('Purple sweets', [1, 3])
 	.every('Chocolate bar')
 	.add('Purple sweets', [1, 5])
@@ -26,10 +26,10 @@ export default class extends Task {
 	async run({ channelID, quantity, duration, userID }: SepulchreActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.TrickOrTreat, quantity);
+		user.incrementMinigameScore(MinigameIDsEnum.DeliverPresents, quantity);
 
 		const loot = new Bank();
-		loot.add(trickOrTreatingLootTable.roll());
+		loot.add(deliverPresentsLootTable.roll());
 
 		const collectionLog = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 
