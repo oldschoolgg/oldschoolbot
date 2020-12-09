@@ -97,8 +97,8 @@ export default class extends BotCommand {
 				}
 				const newContractLevel = 'easy';
 				const plantInformation = getPlantToGrow(msg.author, newContractLevel);
-				const plantToGrow = plantInformation[0] as string;
-				const plantTier = plantInformation[1] as 0 | 1 | 2 | 3 | 4 | 5;
+				const plantToGrow = plantInformation[0];
+				const plantTier = plantInformation[1];
 
 				const farmingContractUpdate: FarmingContract = {
 					hasContract: true,
