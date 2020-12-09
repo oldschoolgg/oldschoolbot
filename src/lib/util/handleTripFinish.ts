@@ -42,7 +42,7 @@ export async function handleTripFinish(
 			for (const item of shuffle(santaItems)) {
 				if (user.hasItemEquippedOrInBank(item)) continue;
 				await user.removeItemFromBank(itemID('Carrot'));
-				await user.addItemsToBank({ [item]: 1 });
+				await user.addItemsToBank({ [item]: 1 }, true);
 				message += `\n🦌 You found one of Santa's reindeer! They've eaten a Carrot from your bank and given you: ${itemNameFromID(
 					item
 				)}.`;

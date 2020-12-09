@@ -84,8 +84,8 @@ export default class extends BotCommand {
 		const winnerLoot = HatTable.roll()[0].item;
 		const loserLoot = JunkTable.roll()[0].item;
 		const [winner, loser] = shuffle([buyerMember.user, msg.author]);
-		await winner.addItemsToBank({ [winnerLoot]: 1 });
-		await loser.addItemsToBank({ [loserLoot]: 1 });
+		await winner.addItemsToBank({ [winnerLoot]: 1 }, true);
+		await loser.addItemsToBank({ [loserLoot]: 1 }, true);
 
 		return msg.send(
 			cleanMentions(

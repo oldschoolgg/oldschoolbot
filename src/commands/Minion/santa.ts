@@ -56,7 +56,7 @@ export default class extends BotCommand {
 			}
 
 			if (bank.amount('Carrot') === 0) {
-				await msg.author.addItemsToBank(resolveNameBank({ Carrot: 5 }));
+				await msg.author.addItemsToBank(resolveNameBank({ Carrot: 5 }), true);
 				return msg.send(
 					await santaChat(
 						'Ho-ho-ho! Player, I need some help - five of my reindeers have run off with my outfit, leaving me unable to deliver presents! Take these carrots and help me find them.'
@@ -71,7 +71,7 @@ export default class extends BotCommand {
 			);
 		}
 		if (!msg.author.hasItemEquippedOrInBank('Sack of presents')) {
-			await msg.author.addItemsToBank(resolveNameBank({ 'Sack of presents': 1 }));
+			await msg.author.addItemsToBank(resolveNameBank({ 'Sack of presents': 1 }), true);
 			return msg.send(
 				await santaChat(
 					'Here, take my sack of presents to give out to people - equip it in your misc outfit! Use +deliverpresents to deliver them.'
