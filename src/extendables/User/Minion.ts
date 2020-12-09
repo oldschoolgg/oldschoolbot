@@ -342,6 +342,10 @@ export default class extends Extendable {
 				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID)!;
 				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
 			}
+
+			case Activity.DeliverPresents: {
+				return `${this.minionName} is currently delivering presents. ${formattedDuration}`;
+			}
 		}
 	}
 
