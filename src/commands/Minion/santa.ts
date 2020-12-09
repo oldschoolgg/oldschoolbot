@@ -9,12 +9,12 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { resolveNameBank } from '../../lib/util';
 import resolveItems from '../../lib/util/resolveItems';
 
-async function santaChat(str: string) {
+export async function santaChat(str: string) {
 	const image = await chatHeadImage({ content: str, name: 'Santa', head: 'santa' });
 	return new MessageAttachment(image);
 }
 
-const baseSantaOutfit: GearRequired = {
+export const baseSantaOutfit: GearRequired = {
 	head: resolveItems(['Santa mask']),
 	body: resolveItems(['Santa jacket']),
 	legs: resolveItems(['Santa pantaloons']),
@@ -56,7 +56,7 @@ export default class extends BotCommand {
 			}
 
 			if (bank.amount('Carrot') === 0) {
-				await msg.author.addItemsToBank(resolveNameBank({ Carrot: 4 }));
+				await msg.author.addItemsToBank(resolveNameBank({ Carrot: 5 }));
 				return msg.send(
 					await santaChat(
 						'Ho-ho-ho! Player, I need some help - five of my reindeers have run off with my outfit, leaving me unable to deliver presents! Take these carrots and help me find them.'
@@ -70,13 +70,25 @@ export default class extends BotCommand {
 				)
 			);
 		}
-		if (!msg.author.hasItemEquippedOrInBank('Bulging sack')) {
-			await msg.author.addItemsToBank(resolveNameBank({ 'Bulging sack': 1 }));
+		if (!msg.author.hasItemEquippedOrInBank('Sack of presents')) {
+			await msg.author.addItemsToBank(resolveNameBank({ 'Sack of presents': 1 }));
 			return msg.send(
 				await santaChat(
-					'Here, take my sack of presents to give out to people! Use +deliverpresents to deliver them.'
+					'Here, take my sack of presents to give out to people - equip it in your misc outfit! Use +deliverpresents to deliver them.'
 				)
 			);
 		}
+
+		if (msg.author.hasItemEquippedOrInBank('Sack of presents')) {
+			return msg.send(
+				await santaChat(
+					'Go deliver the presents now, the kids are waiting! Use +deliverpresents to deliver them.'
+				)
+			);
+		}
+
+		return msg.send(
+			await santaChat(`This shouldn't be possible wtf!!!!!!!!!!!!! Tell Magnaboy`)
+		);
 	}
 }

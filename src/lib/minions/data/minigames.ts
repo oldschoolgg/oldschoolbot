@@ -28,6 +28,10 @@ export const Minigames: Minigame[] = [
 	{
 		id: 2312,
 		name: 'Zalcano'
+	},
+	{
+		id: 44225,
+		name: 'DeliverPresents'
 	}
 ];
 
@@ -38,5 +42,6 @@ export enum MinigameIDsEnum {
 	Sepulchre = 35236,
 	TrickOrTreat = 3719,
 	FishingTrawler = 9525,
-	Zalcano = 2312
+	Zalcano = 2312,
+	DeliverPresents = 44225
 }

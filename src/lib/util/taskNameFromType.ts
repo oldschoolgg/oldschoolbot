@@ -58,5 +58,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.ZalcanoActivity;
 		case Activity.Pickpocket:
 			return Tasks.PickpocketActivity;
+		case Activity.DeliverPresents:
+			return Tasks.DeliverPresents;
 	}
 }
