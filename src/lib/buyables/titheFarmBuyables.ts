@@ -4,8 +4,6 @@ import itemID from '../util/itemID';
 interface TitheFarmBuyable {
 	name: string;
 	outputItems: ItemBank;
-	qpRequired: number;
-	gpCost: number;
 	titheFarmPoints: number;
 	aliases?: string[];
 }
@@ -17,8 +15,6 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		outputItems: {
 			[itemID(`Farmer's strawhat`)]: 1
 		},
-		qpRequired: 0,
-		gpCost: 0,
 		titheFarmPoints: 75
 	},
 	{
@@ -27,8 +23,6 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		outputItems: {
 			[itemID(`Farmer's jacket`)]: 1
 		},
-		qpRequired: 0,
-		gpCost: 0,
 		titheFarmPoints: 150
 	},
 	{
@@ -37,8 +31,6 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		outputItems: {
 			[itemID(`Farmer's shirt`)]: 1
 		},
-		qpRequired: 0,
-		gpCost: 0,
 		titheFarmPoints: 150
 	},
 	{
@@ -47,8 +39,6 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		outputItems: {
 			[itemID(`Farmer's boro trousers`)]: 1
 		},
-		qpRequired: 0,
-		gpCost: 0,
 		titheFarmPoints: 125
 	},
 	{
@@ -57,9 +47,23 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		outputItems: {
 			[itemID(`Farmer's boots`)]: 1
 		},
-		qpRequired: 0,
-		gpCost: 0,
 		titheFarmPoints: 50
+	},
+	{
+		name: `Grape seed`,
+		aliases: ['grape seeds'],
+		outputItems: {
+			[itemID(`Grape seed`)]: 1
+		},
+		titheFarmPoints: 2
+	},
+	{
+		name: `Supercompost`,
+		aliases: ['super compost'],
+		outputItems: {
+			[itemID(`Supercompost`)]: 1
+		},
+		titheFarmPoints: 5
 	}
 ];
 

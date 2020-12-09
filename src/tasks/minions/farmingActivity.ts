@@ -142,7 +142,7 @@ export default class extends Task {
 				user.minionName
 			} finished raking ${quantity} patches and planting ${quantity}x ${
 				plant.name
-			}.\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
+			}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 			if (bonusXP > 0) {
@@ -153,7 +153,7 @@ export default class extends Task {
 			const newLevel = user.skillLevel(SkillsEnum.Farming);
 
 			if (newLevel > currentFarmingLevel) {
-				str += `\n\n${user.minionName}'s Farming level is now ${newLevel}!`;
+				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
 			if (Object.keys(loot).length > 0) {
@@ -338,7 +338,7 @@ export default class extends Task {
 			const newWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 
 			if (newFarmingLevel > currentFarmingLevel) {
-				infoStr.push(`\n\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
+				infoStr.push(`\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
 			}
 
 			if (newWoodcuttingLevel > currentWoodcuttingLevel) {
@@ -428,9 +428,15 @@ export default class extends Task {
 				);
 			}
 
-			infoStr.push(
-				`\n${user.minionName} tells you to come back after your plants have finished growing! `
-			);
+			if (!planting) {
+				infoStr.push(
+					`\nThe patches have been cleared. They are ready to have new seeds planted.`
+				);
+			} else {
+				infoStr.push(
+					`\n${user.minionName} tells you to come back after your plants have finished growing!`
+				);
+			}
 
 			await user.addItemsToBank(loot, true);
 

@@ -78,6 +78,8 @@ export default class extends BotCommand {
 			contentStr += `\n`;
 			finalStr += emojiStr + baseStr + contentStr;
 		}
-		return msg.send(finalStr);
+		return msg.send(finalStr, {
+			split: true
+		});
 	}
 }

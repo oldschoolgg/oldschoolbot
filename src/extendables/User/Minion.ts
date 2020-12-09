@@ -315,7 +315,7 @@ export default class extends Extendable {
 					plants!.name
 				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
 					SkillsEnum.Farming
-				)}`;
+				)}.`;
 			}
 
 			case Activity.Sawmill: {

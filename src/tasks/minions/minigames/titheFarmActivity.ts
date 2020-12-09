@@ -44,9 +44,9 @@ export default class extends Task {
 		}
 
 		const harvestXp = determineHarvest * fruitXp;
-		const depositXp =
-			74 * 10 * fruitXp + (determineHarvest - 74) * 20 * fruitXp + 250 * fruitXp;
-		const farmingXp = harvestXp + depositXp;
+		const depositXp = 74 * 10 * fruitXp + (determineHarvest - 74) * 20 * fruitXp;
+		const bonusFruitXp = 250 * fruitXp;
+		const farmingXp = harvestXp + depositXp + bonusFruitXp;
 
 		const harvestStr = `${user} ${user.minionName} successfully harvested ${determineHarvest}x ${fruit} fruit and received ${farmingXp} Farming XP.`;
 		const completedStr = `You have completed the ${Emoji.MinigameIcon} Tithe Farm ${
@@ -88,7 +88,7 @@ export default class extends Task {
 		}
 		if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
 
-		const bonusXp = farmingXp * bonusXpMultiplier;
+		const bonusXp = (harvestXp + depositXp) * bonusXpMultiplier;
 		const totalXp = farmingXp + bonusXp;
 
 		let bonusXpStr = '';

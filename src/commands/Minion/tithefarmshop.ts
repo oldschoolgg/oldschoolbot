@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import TitheFarmBuyables from '../../lib/buyables/titheFarmBuyables';
 import { Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { multiplyBank, stringMatches, toTitleCase } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -22,6 +23,8 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity = 1, buyableName]: [number, string]) {
 		const buyable = TitheFarmBuyables.find(
 			item =>
@@ -45,8 +48,9 @@ export default class extends BotCommand {
 		const titheFarmPointsCost = buyable.titheFarmPoints * quantity;
 
 		if (titheFarmPoints < titheFarmPointsCost) {
-			throw `You need ${buyable.titheFarmPoints} Tithe Farm points to purchase this item.`;
+			throw `You need ${titheFarmPointsCost} Tithe Farm points to make this purchase.`;
 		}
+
 		let purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
@@ -75,12 +79,13 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(
 			UserSettings.Stats.TitheFarmPoints,
-			titheFarmPoints - buyable.titheFarmPoints
+			titheFarmPoints - titheFarmPointsCost
 		);
-		await msg.author.addItemsToBank(buyable.outputItems, true);
+
+		await msg.author.addItemsToBank(outItems, true);
 
 		return msg.send(
-			`You purchased ${itemString} for ${buyable.titheFarmPoints} Tithe Farm points.`
+			`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`
 		);
 	}
 }
