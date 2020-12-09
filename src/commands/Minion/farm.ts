@@ -193,6 +193,11 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		if (msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance`))) {
+			boostStr.push('10% time for Ring of Endurance');
+			duration *= 0.9;
+		}
+
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
@@ -256,9 +261,7 @@ export default class extends BotCommand {
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
 			infoStr.unshift(
-				`${msg.author.minionName} is now planting ${quantity}x ${
-					plants.name
-				}. ${infoStr.join(' ')}`
+				`${msg.author.minionName} is now planting ${quantity}x ${plants.name}.`
 			);
 		} else if (patchType.patchPlanted) {
 			if (!planted)

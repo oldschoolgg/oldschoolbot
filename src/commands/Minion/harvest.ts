@@ -111,6 +111,11 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		if (msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance`))) {
+			boostStr.push('10% time for Ring of Endurance');
+			duration *= 0.9;
+		}
+
 		if (duration > msg.author.maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
