@@ -66,7 +66,7 @@ export default class extends BotCommand {
 
 			return msg.send(
 				await santaChat(
-					"You still need to find my outfit from my reindeers! Try doing some activities to find them - they'll have to drop the outfit piece to eat the carrot from your bank."
+					"You still need to find my outfit from my reindeers! Try doing some activities (not killing!) to find them - they'll have to drop the outfit piece to eat the carrot from your bank."
 				)
 			);
 		}
@@ -88,7 +88,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(
-			await santaChat(`This shouldn't be possible wtf!!!!!!!!!!!!! Tell Magnaboy`)
+			await santaChat(`This message shouldn't be possible... what have you done?`)
 		);
 	}
 }

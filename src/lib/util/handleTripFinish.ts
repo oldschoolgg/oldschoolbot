@@ -4,7 +4,7 @@ import { bankHasItem } from 'oldschooljs/dist/util';
 
 import { continuationChars, PerkTier, Time } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
-import { itemNameFromID, percentChance, randomItemFromArray, shuffle } from '../util';
+import { itemNameFromID, randomItemFromArray, shuffle } from '../util';
 import { channelIsSendable } from './channelIsSendable';
 import getUsersPerkTier from './getUsersPerkTier';
 import itemID from './itemID';
@@ -38,16 +38,14 @@ export async function handleTripFinish(
 	// Christmas code
 	const _bank = user.settings.get(UserSettings.Bank);
 	if (bankHasItem(_bank, itemID('Carrot'))) {
-		if (percentChance(100)) {
-			for (const item of shuffle(santaItems)) {
-				if (user.hasItemEquippedOrInBank(item)) continue;
-				await user.removeItemFromBank(itemID('Carrot'));
-				await user.addItemsToBank({ [item]: 1 }, true);
-				message += `\n🦌 You found one of Santa's reindeer! They've eaten a Carrot from your bank and given you: ${itemNameFromID(
-					item
-				)}.`;
-				break;
-			}
+		for (const item of shuffle(santaItems)) {
+			if (user.hasItemEquippedOrInBank(item)) continue;
+			await user.removeItemFromBank(itemID('Carrot'));
+			await user.addItemsToBank({ [item]: 1 }, true);
+			message += `\n🦌 You found one of Santa's reindeer! They've eaten a Carrot from your bank and given you: ${itemNameFromID(
+				item
+			)}.`;
+			break;
 		}
 	}
 
