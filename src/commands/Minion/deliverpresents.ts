@@ -35,7 +35,7 @@ export default class extends BotCommand {
 		if (Date.now() - msg.author.createdTimestamp < Time.Year) {
 			return msg.send(
 				await santaChat(
-					`${msg.author.username}, your account is too new to do Trick or Treating. Your account must be atleast 1 year old.`
+					`${msg.author.username}, your account is too new to deliver presents. Your account must be atleast 1 year old.`
 				)
 			);
 		}
