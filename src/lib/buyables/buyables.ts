@@ -333,6 +333,14 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 200
 	},
+	{
+		name: 'Compost',
+		outputItems: {
+			[itemID('Compost')]: 1
+		},
+		qpRequired: 0,
+		gpCost: 20
+	},
 	...sepulchreBuyables
 ];
 

@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
+import { PatchTypes } from '../../farming';
+import defaultContracts from '../../farming/defaultContracts';
+import { FarmingPatchTypes } from '../../farming/types';
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
@@ -43,6 +46,9 @@ export namespace UserSettings {
 
 		export const FightCavesAttempts = T<number>('stats.fightCavesAttempts');
 		export const FireCapesSacrificed = T<number>('stats.fireCapesSacrificed');
+
+		export const TitheFarmsCompleted = T<number>('stats.titheFarmsCompleted');
+		export const TitheFarmPoints = T<number>('stats.titheFarmPoints');
 	}
 
 	export namespace Minion {
@@ -52,6 +58,7 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
+		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
 	}
 
 	export namespace Skills {
@@ -67,6 +74,7 @@ export namespace UserSettings {
 		export const Prayer = T<number>(`skills.${SkillsEnum.Prayer}`);
 		export const Fletching = T<number>(`skills.${SkillsEnum.Fletching}`);
 		export const Thieving = T<number>(`skills.${SkillsEnum.Thieving}`);
+		export const Farming = T<number>(`skills.${SkillsEnum.Farming}`);
 	}
 
 	export namespace Gear {
@@ -75,5 +83,42 @@ export namespace UserSettings {
 		export const Mage = T<GearTypes.GearSetup>(`gear.mage`);
 		export const Misc = T<GearTypes.GearSetup>(`gear.misc`);
 		export const Skilling = T<GearTypes.GearSetup>(`gear.skilling`);
+	}
+
+	export namespace FarmingPatches {
+		export const Herb = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Herb}`);
+		export const FruitTree = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.FruitTree}`
+		);
+		export const Tree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Tree}`);
+		export const Allotment = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Allotment}`
+		);
+		export const Cactus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Cactus}`);
+		export const Bush = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Bush}`);
+		export const Spirit = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Spirit}`);
+		export const Hardwood = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Hardwood}`
+		);
+		export const Seaweed = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Seaweed}`
+		);
+		export const Vine = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Vine}`);
+		export const Calquat = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Calquat}`
+		);
+		export const Redwood = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Redwood}`
+		);
+		export const Crystal = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Crystal}`
+		);
+		export const Celastrus = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Celastrus}`
+		);
+		export const Hespori = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Hespori}`
+		);
+		export const Flower = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Flower}`);
 	}
 }
