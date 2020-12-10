@@ -62,5 +62,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FarmingActivity;
 		case Activity.TitheFarm:
 			return Tasks.TitheFarmActivity;
+		case Activity.DeliverPresents:
+			return Tasks.DeliverPresents;
 	}
 }
