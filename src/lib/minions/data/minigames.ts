@@ -2,6 +2,10 @@ import { Minigame } from '../types';
 
 export const Minigames: Minigame[] = [
 	{
+		id: 20661,
+		name: 'Tithe farm'
+	},
+	{
 		id: 20693,
 		name: 'Wintertodt'
 	},
@@ -48,5 +52,6 @@ export enum MinigameIDsEnum {
 	TrickOrTreat = 3719,
 	FishingTrawler = 9525,
 	Zalcano = 2312,
+	TitheFarm = 20661,
 	DeliverPresents = 44225
 }

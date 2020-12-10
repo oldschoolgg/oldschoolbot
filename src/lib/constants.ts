@@ -38,6 +38,7 @@ export const enum Emoji {
 	Dice = '<:dice:660128887111548957>',
 	Fireworks = '🎆',
 	Tick = '✅',
+	RedX = '❌',
 	Search = '🔎',
 	FancyLoveheart = '💝',
 	Gift = '🎁',
@@ -64,6 +65,7 @@ export const enum Emoji {
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
+	MinigameIcon = '<:minigameIcon:630400565070921761>',
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
@@ -74,9 +76,12 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
+	Farming = '<:farming:630911040355565599>',
+	Tangleroot = '<:tangleroot:324127378978635778>',
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
 	Ely = '<:ely:784453586033049630>',
+	Timer = '<:ehpclock:729733212527525888>',
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
 	// Badges,
@@ -126,6 +131,7 @@ export const enum Tasks {
 	BuryingActivity = 'buryingActivity',
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
+	FarmingActivity = 'farmingActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -139,7 +145,7 @@ export const enum Tasks {
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
 	PickpocketActivity = 'pickpocketActivity',
-
+	TitheFarmActivity = 'titheFarmActivity',
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -167,6 +173,7 @@ export const enum Activity {
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
+	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
 	Pickpocket = 'Pickpocket',
 	Alching = 'Alching',
@@ -178,7 +185,7 @@ export const enum Activity {
 	Sepulchre = 'Sepulchre',
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
-
+	Farming = 'Farming',
 	DeliverPresents = 'DeliverPresents'
 }
 

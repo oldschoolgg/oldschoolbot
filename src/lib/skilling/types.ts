@@ -168,3 +168,40 @@ export interface Plankable {
 	outputItem: number;
 	gpCost: number;
 }
+
+export interface Plant {
+	level: number;
+	plantXp: number;
+	checkXp: number;
+	harvestXp: number;
+	name: string;
+	inputItems: ItemBank;
+	aliases: string[];
+	outputCrop?: number;
+	outputLogs?: number;
+	treeWoodcuttingLevel?: number;
+	fixedOutputAmount?: number;
+	variableYield?: boolean;
+	variableOutputAmount?: [string, number, number][];
+	woodcuttingXp?: number;
+	needsChopForHarvest: boolean;
+	fixedOutput: boolean;
+	givesLogs: boolean;
+	givesCrops: boolean;
+	petChance: number;
+	seedType: string;
+	growthTime: number;
+	numOfStages: number;
+	chance1: number;
+	chance99: number;
+	chanceOfDeath: number;
+	protectionPayment?: ItemBank;
+	defaultNumOfPatches: number;
+	canPayFarmer: boolean;
+	canCompostPatch: boolean;
+	canCompostandPay: boolean;
+	additionalPatchesByQP: number[][];
+	additionalPatchesByFarmLvl: number[][];
+	timePerPatchTravel: number;
+	timePerHarvest: number;
+}

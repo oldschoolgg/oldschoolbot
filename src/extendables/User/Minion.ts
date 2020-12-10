@@ -15,6 +15,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
 import Crafting from '../../lib/skilling/skills/crafting';
+import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Mining from '../../lib/skilling/skills/mining';
@@ -31,6 +32,7 @@ import {
 	ClueActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
@@ -292,6 +294,10 @@ export default class extends Extendable {
 			case Activity.FightCaves: {
 				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
 			}
+			case Activity.TitheFarm: {
+				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
+			}
+
 			case Activity.Fletching: {
 				const data = currentTask as FletchingActivityTaskOptions;
 
@@ -312,6 +318,18 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Farming: {
+				const data = currentTask as FarmingActivityTaskOptions;
+
+				const plants = Farming.Plants.find(plants => plants.name === data.plantsName);
+
+				return `${this.minionName} is currently farming ${data.quantity}x ${
+					plants!.name
+				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
+					SkillsEnum.Farming
+				)}.`;
 			}
 
 			case Activity.Sawmill: {
