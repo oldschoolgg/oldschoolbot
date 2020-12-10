@@ -34,7 +34,7 @@ const Farming = {
 	Plants: plants,
 	id: SkillsEnum.Farming,
 	emoji: Emoji.Farming,
-	name: 'farming',
+	name: 'Farming',
 	maleFarmerItems,
 	femaleFarmerItems
 };

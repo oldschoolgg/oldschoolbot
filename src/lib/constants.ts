@@ -81,7 +81,7 @@ export const enum Emoji {
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
 	Ely = '<:ely:784453586033049630>',
-	Timer = '<:ehpclock:729733212527525888>',
+	Timer = '<:ehpclock:352323705210142721>',
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
 	// Badges,
