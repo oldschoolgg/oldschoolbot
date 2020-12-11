@@ -47,7 +47,8 @@ const defenders = [
 ];
 
 export default class extends Task {
-	async run({ minigameID, userID, channelID, quantity, duration }: CyclopsActivityTaskOptions) {
+	async run(data: CyclopsActivityTaskOptions) {
+		const { minigameID, userID, channelID, quantity, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = new Bank(user.settings.get(UserSettings.Bank));
 		user.incrementMinionDailyDuration(duration);
@@ -108,7 +109,8 @@ export default class extends Task {
 				user.log(`continued cyclops`);
 				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
 			},
-			image
+			image,
+			data
 		);
 	}
 }
