@@ -11,7 +11,8 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
+	async run(data: WoodcuttingActivityTaskOptions) {
+		const { logID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Woodcutting);
@@ -44,6 +45,16 @@ export default class extends Task {
 			}
 		}
 
+		const petRolls = Math.ceil(duration / Time.Minute / 10);
+		if (petRolls > 0) {
+			for (let i = 0; i < petRolls; i++) {
+				if (roll(3500)) {
+					loot[itemID('Peky')] = 1;
+					str += `<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.`;
+				}
+			}
+		}
+
 		// Add clue scrolls
 		if (Log.clueScrollChance) {
 			loot = addSkillingClueToLoot(
@@ -72,9 +83,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
-			return this.client.commands.get('chop')!.run(res, [quantity, Log.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
+				return this.client.commands.get('chop')!.run(res, [quantity, Log.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }

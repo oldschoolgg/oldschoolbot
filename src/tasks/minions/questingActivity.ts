@@ -7,7 +7,8 @@ import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ userID, channelID, duration }: QuestingActivityTaskOptions) {
+	async run(data: QuestingActivityTaskOptions) {
+		const { userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentQP = user.settings.get(UserSettings.QP);
@@ -48,7 +49,9 @@ export default class extends Task {
 				: res => {
 						user.log(`continued trip of Questing.`);
 						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
-				  }
+				  },
+			undefined,
+			data
 		);
 	}
 }

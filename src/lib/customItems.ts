@@ -224,10 +224,23 @@ export function initCustomItems() {
 		wiki_name: 'Takon'
 	});
 
-	setCustomItem(21862, 'Obis', getOSItem('Herbi'));
 	setCustomItem(6796, 'Tiny lamp', getOSItem('Lamp'));
 	setCustomItem(21642, 'Small lamp', getOSItem('Lamp'));
 	setCustomItem(23516, 'Average lamp', getOSItem('Lamp'));
 	setCustomItem(22320, 'Large lamp', getOSItem('Lamp'));
 	setCustomItem(11157, 'Huge lamp', getOSItem('Lamp'));
+
+	setCustomItem(1808, 'Peky', getOSItem('Herbi'), {
+		duplicate: false,
+		tradeable: true,
+		tradeable_on_ge: true,
+		wiki_name: 'Peky'
+	});
+
+	setCustomItem(1809, 'Obis', getOSItem('Herbi'), {
+		duplicate: false,
+		tradeable: true,
+		tradeable_on_ge: true,
+		wiki_name: 'Obis'
+	});
 }
