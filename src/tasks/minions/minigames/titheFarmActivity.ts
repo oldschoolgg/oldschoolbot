@@ -9,7 +9,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ userID, channelID, duration }: TitheFarmActivityTaskOptions) {
+	async run(data: TitheFarmActivityTaskOptions) {
+		const { userID, channelID, duration } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
@@ -125,9 +126,17 @@ export default class extends Task {
 
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
 
-		handleTripFinish(this.client, user, channelID, returnStr, res => {
-			user.log(`attemped another run of the Tithe Farm.`);
-			return this.client.commands.get('tithefarm')!.run(res, []);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			returnStr,
+			res => {
+				user.log(`attemped another run of the Tithe Farm.`);
+				return this.client.commands.get('tithefarm')!.run(res, []);
+			},
+			undefined,
+			data
+		);
 	}
 }

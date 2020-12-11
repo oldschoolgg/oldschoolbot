@@ -23,7 +23,8 @@ const deliverPresentsLootTable = new LootTable()
 	.tertiary(5000, 'Coal');
 
 export default class extends Task {
-	async run({ channelID, quantity, duration, userID }: SepulchreActivityTaskOptions) {
+	async run(data: SepulchreActivityTaskOptions) {
+		const { channelID, quantity, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.DeliverPresents, quantity);
@@ -71,7 +72,8 @@ export default class extends Task {
 				user.log(`continued delivering presents`);
 				return this.client.commands.get('deliverpresents')!.run(res, []);
 			},
-			image
+			image,
+			data
 		);
 	}
 }

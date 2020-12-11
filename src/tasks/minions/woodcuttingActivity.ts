@@ -23,7 +23,8 @@ const SeedTable = new LootTable()
 	.add(HighSeedPackTable);
 
 export default class extends Task {
-	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
+	async run(data: WoodcuttingActivityTaskOptions) {
+		const { logID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Woodcutting);
@@ -96,9 +97,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
-			return this.client.commands.get('chop')!.run(res, [quantity, Log.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
+				return this.client.commands.get('chop')!.run(res, [quantity, Log.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }
