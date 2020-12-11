@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { Emoji, Events, Time } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/farming';
 import { FarmingContract } from '../../lib/farming/types';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
@@ -337,6 +337,11 @@ export default class extends Task {
 				);
 			}
 
+			if (roll(10)) {
+				loot = multiplyBank(loot, 2);
+				loot[getRandomMysteryBox()] = 1;
+			}
+
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
@@ -347,21 +352,17 @@ export default class extends Task {
 						tangleroot = true;
 					}
 				}
-			} else if (patchType.patchPlanted && plantToHarvest.petChance && alivePlants > 0) {
-				if (
-					roll(
-						(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
-							alivePlants
-					)
-				) {
-					loot[itemID('Tangleroot')] = 1;
-					tangleroot = true;
-				}
-				if (roll(10)) {
-					loot = multiplyBank(loot, 2);
-					loot[getRandomMysteryBox()] = 1;
-				}
-				// TODO: drop a pet from farming here?
+			} else if (
+				patchType.patchPlanted &&
+				plantToHarvest.petChance &&
+				alivePlants > 0 &&
+				roll(
+					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
+						alivePlants
+				)
+			) {
+				loot[itemID('Tangleroot')] = 1;
+				tangleroot = true;
 			}
 
 			if (tangleroot) {
