@@ -48,7 +48,7 @@
 		"@oldschoolgg/eslint-config": "^1.0.4",
 		"@types/cheerio": "^0.22.23",
 		"@types/he": "^1.1.1",
-		"@types/jest": "^26.0.18",
+		"@types/jest": "^26.0.19",
 		"@types/node": "^14.14.12",
 		"@types/node-fetch": "^2.5.7",
 		"@types/pg": "^7.14.7",
