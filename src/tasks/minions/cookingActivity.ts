@@ -12,7 +12,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ cookableID, quantity, userID, channelID, duration }: CookingActivityTaskOptions) {
+	async run(data: CookingActivityTaskOptions) {
+		const { cookableID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
@@ -80,9 +81,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
-			return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
+				return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }
