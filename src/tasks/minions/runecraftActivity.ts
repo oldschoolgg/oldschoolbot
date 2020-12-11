@@ -1,35 +1,14 @@
 import { Task } from 'klasa';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { addItemToBank, multiplyBank, roll } from '../../lib/util';
+import { multiplyBank, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-
-const LowRunes = new LootTable()
-	.add('Air rune', [50, 100])
-	.add('Mind rune', [50, 100])
-	.add('Water rune', [50, 100])
-	.add('Earth rune', [50, 100])
-	.add('Fire rune', [50, 100])
-	.add('Body rune', [50, 100])
-	.add('Cosmic rune', [50, 100])
-	.add('Chaos rune', [50, 100]);
-const HighRuneTable = new LootTable()
-	.add('Nature rune', [20, 50])
-	.add('Law rune', [20, 50])
-	.add('Death rune', [20, 50])
-	.add('Blood rune', [20, 50])
-	.add('Soul rune', [20, 50])
-	.add('Wrath rune', [20, 50])
-	.add('Astral rune', [20, 50]);
-
-const RuneTable = new LootTable().add(LowRunes, 1, 3).add(HighRuneTable);
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
@@ -65,15 +44,6 @@ export default class extends Task {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
-			}
-		}
-
-		const minutes = duration / Time.Minute;
-		if (user.equippedPet() === itemID('Obis')) {
-			let rolls = minutes / 3;
-			for (let i = 0; i < rolls; i++) {
-				let [res] = RuneTable.roll();
-				loot = addItemToBank(loot, res.item, res.quantity);
 			}
 		}
 

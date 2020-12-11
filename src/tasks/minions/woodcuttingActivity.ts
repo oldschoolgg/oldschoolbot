@@ -1,26 +1,14 @@
 import { Task } from 'klasa';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import {
-	HighSeedPackTable,
-	LowSeedPackTable,
-	MediumSeedPackTable
-} from '../../commands/Minion/seedpack';
 import { Emoji, Events, Time } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { getRandomMysteryBox } from '../../lib/openables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, itemID, multiplyBank, roll } from '../../lib/util';
+import { itemID, multiplyBank, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-
-const SeedTable = new LootTable()
-	.every(LowSeedPackTable)
-	.add(LowSeedPackTable, 1, 4)
-	.add(MediumSeedPackTable, 1, 2)
-	.add(HighSeedPackTable);
 
 export default class extends Task {
 	async run(data: WoodcuttingActivityTaskOptions) {
@@ -57,14 +45,13 @@ export default class extends Task {
 			}
 		}
 
-		const minutes = duration / Time.Minute;
-		if (user.equippedPet() === itemID('Peky')) {
-			for (let i = 0; i < minutes; i++) {
-				if (roll(10)) {
-					let items = SeedTable.roll();
-					for (const res of items) {
-						loot = addItemToBank(loot, res.item, res.quantity);
-					}
+		const petRolls = Math.ceil(duration / Time.Minute / 10);
+		console.log({ petRolls });
+		if (petRolls > 0) {
+			for (let i = 0; i < petRolls; i++) {
+				if (roll(3500)) {
+					loot[itemID('Peky')] = 1;
+					str += `<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.`;
 				}
 			}
 		}
