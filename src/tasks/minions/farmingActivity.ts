@@ -363,6 +363,17 @@ export default class extends Task {
 			) {
 				loot[itemID('Tangleroot')] = 1;
 				tangleroot = true;
+			} else if (
+				patchType.patchPlanted &&
+				plantToHarvest.petChance &&
+				alivePlants > 0 &&
+				roll(
+					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
+						alivePlants /
+						3
+				)
+			) {
+				loot[itemID('Plopper')] = 1;
 			}
 
 			if (tangleroot) {
