@@ -46,7 +46,6 @@ export default class extends Task {
 		}
 
 		const petRolls = Math.ceil(duration / Time.Minute / 10);
-		console.log({ petRolls });
 		if (petRolls > 0) {
 			for (let i = 0; i < petRolls; i++) {
 				if (roll(3500)) {
