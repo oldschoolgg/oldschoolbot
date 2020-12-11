@@ -13,7 +13,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
+	async run(data: FishingActivityTaskOptions) {
+		let { fishID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
@@ -164,9 +165,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
-			return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
+				return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }
