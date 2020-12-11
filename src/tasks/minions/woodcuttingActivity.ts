@@ -1,14 +1,26 @@
 import { Task } from 'klasa';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import {
+	HighSeedPackTable,
+	LowSeedPackTable,
+	MediumSeedPackTable
+} from '../../commands/Minion/seedpack';
 import { Emoji, Events, Time } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { getRandomMysteryBox } from '../../lib/openables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, roll } from '../../lib/util';
+import { addItemToBank, itemID, multiplyBank, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+
+const SeedTable = new LootTable()
+	.every(LowSeedPackTable)
+	.add(LowSeedPackTable, 1, 4)
+	.add(MediumSeedPackTable, 1, 2)
+	.add(HighSeedPackTable);
 
 export default class extends Task {
 	async run({ logID, quantity, userID, channelID, duration }: WoodcuttingActivityTaskOptions) {
@@ -41,6 +53,18 @@ export default class extends Task {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
+			}
+		}
+
+		const minutes = duration / Time.Minute;
+		if (user.equippedPet() === itemID('Peky')) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(10)) {
+					let items = SeedTable.roll();
+					for (const res of items) {
+						loot = addItemToBank(loot, res.item, res.quantity);
+					}
+				}
 			}
 		}
 
