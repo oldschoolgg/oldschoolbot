@@ -4,6 +4,7 @@ import { bankHasItem } from 'oldschooljs/dist/util';
 
 import { continuationChars, PerkTier, Time } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
+import { ActivityTaskOptions } from '../types/minions';
 import { itemNameFromID, randomItemFromArray, shuffle } from '../util';
 import { channelIsSendable } from './channelIsSendable';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -23,8 +24,12 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
-	onContinue?: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>,
-	attachment?: Buffer
+	onContinue:
+		| undefined
+		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
+	attachment: Buffer | undefined,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_data: ActivityTaskOptions
 ) {
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;

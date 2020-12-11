@@ -8,7 +8,8 @@ import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ craftableID, quantity, userID, channelID, duration }: CraftingActivityTaskOptions) {
+	async run(data: CraftingActivityTaskOptions) {
+		const { craftableID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
@@ -50,9 +51,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot.values(), true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${Craft.name}[${Craft.id}]`);
-			return this.client.commands.get('craft')!.run(res, [quantity, Craft.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${Craft.name}[${Craft.id}]`);
+				return this.client.commands.get('craft')!.run(res, [quantity, Craft.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }

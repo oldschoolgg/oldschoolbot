@@ -9,14 +9,8 @@ import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({
-		channelID,
-		quantity,
-		duration,
-		userID,
-		performance,
-		isMVP
-	}: ZalcanoActivityTaskOptions) {
+	async run(data: ZalcanoActivityTaskOptions) {
+		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.Zalcano, quantity);
@@ -81,7 +75,8 @@ export default class extends Task {
 				user.log(`continued zalcano`);
 				return this.client.commands.get('zalcano')!.run(res, []);
 			},
-			image
+			image,
+			data
 		);
 	}
 }
