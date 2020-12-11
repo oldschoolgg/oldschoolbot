@@ -1,17 +1,18 @@
 import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { PatchTypes } from '../../lib/farming';
 import { FarmingContract } from '../../lib/farming/types';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
+import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, rand, roll } from '../../lib/util';
+import { bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
@@ -346,17 +347,21 @@ export default class extends Task {
 						tangleroot = true;
 					}
 				}
-			} else if (
-				patchType.patchPlanted &&
-				plantToHarvest.petChance &&
-				alivePlants > 0 &&
-				roll(
-					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
-						alivePlants
-				)
-			) {
-				loot[itemID('Tangleroot')] = 1;
-				tangleroot = true;
+			} else if (patchType.patchPlanted && plantToHarvest.petChance && alivePlants > 0) {
+				if (
+					roll(
+						(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
+							alivePlants
+					)
+				) {
+					loot[itemID('Tangleroot')] = 1;
+					tangleroot = true;
+				}
+				if (roll(10)) {
+					loot = multiplyBank(loot, 2);
+					loot[getRandomMysteryBox()] = 1;
+				}
+				// TODO: drop a pet from farming here?
 			}
 
 			if (tangleroot) {
