@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { bankHasItem } from 'oldschooljs/dist/util';
 
 import { continuationChars, PerkTier, Time } from '../constants';
+import { getRandomMysteryBox } from '../openables';
 import { UserSettings } from '../settings/types/UserSettings';
 import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { ActivityTaskOptions } from '../types/minions';
@@ -102,6 +103,12 @@ export async function handleTripFinish(
 		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${await createReadableItemListFromBank(
 			client,
 			loot.bank
+		)}.`;
+	} else if (pet === itemID('Smokey') && roll(15)) {
+		let box = getRandomMysteryBox();
+		await user.addItemsToBank({ [box]: 1 });
+		message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you a ${itemNameFromID(
+			box
 		)}.`;
 	}
 

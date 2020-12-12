@@ -216,8 +216,15 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
+		const hasSmokey = msg.author.equippedPet() === itemID('Smokey');
 		const loot = new Bank();
-		for (let i = 0; i < quantity; i++) {
+		let smokeyBonus = 0;
+		if (botOpenable.name.toLowerCase().includes('mystery') && hasSmokey) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(10)) smokeyBonus++;
+			}
+		}
+		for (let i = 0; i < quantity + smokeyBonus; i++) {
 			if (typeof botOpenable.table === 'function') {
 				loot.add(botOpenable.table());
 			} else {
@@ -231,7 +238,8 @@ export default class extends BotCommand {
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1, wide: Object.keys(loot.values()).length > 250 ? 1 : 0 },
-			user: msg.author
+			user: msg.author,
+			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined
 		});
 	}
 }

@@ -47,6 +47,7 @@ export default class extends BotCommand {
 						i,
 						npc,
 						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600)),
+						false,
 						false
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
