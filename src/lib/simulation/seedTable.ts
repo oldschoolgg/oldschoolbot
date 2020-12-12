@@ -1,3 +1,4 @@
+import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/MasterFarmer';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import {
@@ -5,6 +6,7 @@ import {
 	LowSeedPackTable,
 	MediumSeedPackTable
 } from '../../commands/Minion/seedpack';
+import CrystalChestTable from './crystalChest';
 
 export const SeedTable = new LootTable()
 	.every(LowSeedPackTable)
@@ -46,3 +48,17 @@ const HighWoodTable = new LootTable()
 	.add('Redwood logs', [20, 50]);
 
 export const WoodTable = new LootTable().add(LowWood, 1, 3).add(HighWoodTable);
+
+export const WilvusTable = new LootTable()
+	.every('Coins', [30_000, 100_000])
+	.add('Coins', [30_000, 100_000])
+	.add('Tokkul', [5, 500])
+	.add('Uncut diamond', [1, 5])
+	.add('Crystal shard', [1, 3])
+	.oneIn(500, 'Blood shard')
+	.add('Clue scroll (master)')
+	.add(MasterFarmer.pickpocketTable!, 3)
+	.add('Runite ore', [3, 6])
+	.add(CrystalChestTable)
+	.tertiary(500, "Thieves' armband")
+	.tertiary(500, 'Thieving bag');

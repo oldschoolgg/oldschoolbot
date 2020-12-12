@@ -1,4 +1,4 @@
-import { percentChance, randInt } from 'e';
+import { percentChance } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +6,6 @@ import { Events, Time } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { itemID } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -63,20 +62,9 @@ export default class extends Task {
 			return;
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
-		const hasWilvus = user.equippedPet() === itemID('Wilvus');
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity; i++) {
 			loot.add(npc.table.roll());
-		}
-
-		if (hasWilvus) {
-			for (
-				let i = 0;
-				i < randInt(Math.floor(successfulQuantity / 3), successfulQuantity);
-				i++
-			) {
-				loot.add(npc.table.roll());
-			}
 		}
 
 		await user.addItemsToBank(loot.values(), true);
