@@ -287,17 +287,7 @@ export const pets: CollectionLogData = {
 		'Hammy',
 		'Skipper'
 	]),
-	BSOPets2: resolveItems([
-		'Ori',
-		'Cob',
-		'Takon',
-		'Obis',
-		'Peky',
-		'Plopper',
-		'Brock',
-		'Wilvus',
-		'Smokey'
-	])
+	BSOPets2: resolveItems(['Ori', 'Cob', 'Takon'])
 };
 
 export const cluesShared: CollectionLogData = {
