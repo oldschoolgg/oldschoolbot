@@ -13,6 +13,15 @@ interface Openable {
 	emoji: Emoji;
 }
 
+export const NestBoxes = new LootTable()
+	.add('Nest box (seeds)', 1, 12)
+	.add('Nest box (ring)', 1, 5)
+	.add('Nest box (empty)', 1, 3);
+
+export function getRandomNestBox() {
+	return NestBoxes.roll()[0].item;
+}
+
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
