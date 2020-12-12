@@ -51,7 +51,7 @@ export default class extends Task {
 			str += `${Emoji.ChristmasCracker} ${user.minionName} found a Christmas cracker on the floor and took it.`;
 		}
 
-		if (roll(500)) {
+		if (roll(1200)) {
 			loot.add('Smokey');
 			str += `<:smokey:787333617037869139> While walking the snowey, dark streets of Gielinor, you find a little santa-hat wearing Puffin walking in the snow, leaving a trail of little footprints behind. It seems cold and lost, so you pick it up and adopt it.`;
 		}
