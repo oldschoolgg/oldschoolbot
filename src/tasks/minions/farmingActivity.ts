@@ -446,6 +446,12 @@ export default class extends Task {
 				);
 			}
 
+			if (loot[itemID('Plopper')]) {
+				infoStr.push(
+					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
+				);
+			}
+
 			await user.addItemsToBank(loot, true);
 
 			const channel = this.client.channels.get(channelID);

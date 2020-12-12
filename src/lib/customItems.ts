@@ -250,4 +250,11 @@ export function initCustomItems() {
 		tradeable_on_ge: true,
 		wiki_name: 'Plopper'
 	});
+
+	setCustomItem(244, 'Brock', getOSItem('Herbi'), {
+		duplicate: false,
+		tradeable: true,
+		tradeable_on_ge: true,
+		wiki_name: 'Brock'
+	});
 }

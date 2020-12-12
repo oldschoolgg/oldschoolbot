@@ -73,6 +73,17 @@ export default class extends Task {
 			}
 		}
 
+		let gotBrock = false;
+		if (monster.name.toLowerCase() === 'zulrah') {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(5500)) {
+					gotBrock = true;
+					loot[itemID('Brock')] = 1;
+					break;
+				}
+			}
+		}
+
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);
@@ -97,6 +108,10 @@ export default class extends Task {
 		} KC is now ${
 			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
 		}.`;
+
+		if (gotBrock) {
+			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
+		}
 
 		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
 
