@@ -180,15 +180,17 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			for (let i = 0; i < patchType.lastQuantity; i++) {
-				for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
-					const deathRoll = Math.random();
-					if (
-						deathRoll <
-						Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128
-					) {
-						quantityDead += 1;
-						break;
+			if (user.equippedPet() !== itemID('Plopper')) {
+				for (let i = 0; i < patchType.lastQuantity; i++) {
+					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
+						const deathRoll = Math.random();
+						if (
+							deathRoll <
+							Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128
+						) {
+							quantityDead += 1;
+							break;
+						}
 					}
 				}
 			}
