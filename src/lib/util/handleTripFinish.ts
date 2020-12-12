@@ -5,7 +5,7 @@ import { bankHasItem } from 'oldschooljs/dist/util';
 
 import { continuationChars, PerkTier, Time } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
-import { RuneTable, SeedTable } from '../simulation/seedTable';
+import { RuneTable, SeedTable, WoodTable } from '../simulation/seedTable';
 import { ActivityTaskOptions } from '../types/minions';
 import { itemNameFromID, randomItemFromArray, roll, shuffle } from '../util';
 import { channelIsSendable } from './channelIsSendable';
@@ -78,6 +78,17 @@ export async function handleTripFinish(
 		}
 		await user.addItemsToBank(loot.bank);
 		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${await createReadableItemListFromBank(
+			client,
+			loot.bank
+		)}.`;
+	} else if (pet === itemID('Brock')) {
+		let loot = new Bank();
+		let rolls = minutes / 3;
+		for (let i = 0; i < rolls; i++) {
+			loot.add(WoodTable.roll());
+		}
+		await user.addItemsToBank(loot.bank);
+		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${await createReadableItemListFromBank(
 			client,
 			loot.bank
 		)}.`;
