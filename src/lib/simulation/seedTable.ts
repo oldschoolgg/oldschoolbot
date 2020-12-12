@@ -34,7 +34,6 @@ export const RuneTable = new LootTable().add(LowRunes, 1, 3).add(HighRuneTable);
 
 const LowWood = new LootTable()
 	.add('Logs', [50, 80])
-	.add('Achey logs', [5, 10])
 	.add('Oak logs', [2, 50])
 	.add('Willow logs', [20, 100])
 	.add('Teak logs', [10, 30])

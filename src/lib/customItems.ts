@@ -257,4 +257,11 @@ export function initCustomItems() {
 		tradeable_on_ge: true,
 		wiki_name: 'Brock'
 	});
+
+	setCustomItem(109, 'Wilvus', getOSItem('Herbi'), {
+		duplicate: false,
+		tradeable: true,
+		tradeable_on_ge: true,
+		wiki_name: 'Wilvus'
+	});
 }
