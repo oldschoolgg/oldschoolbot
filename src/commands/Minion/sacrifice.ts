@@ -97,7 +97,7 @@ export default class extends BotCommand {
 
 		const gotHammy = totalPrice >= 51_530_000 && roll(140);
 		if (gotHammy) {
-			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 });
+			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 }, true);
 		}
 
 		let str = '';

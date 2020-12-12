@@ -99,10 +99,6 @@ export default class extends Task {
 			);
 		}
 
-		if (hasWilvus) {
-			str += `\n<:wilvus:787320791011164201> Wilvus did some extra pickpocketing and got you some loot.`;
-		}
-
 		handleTripFinish(
 			this.client,
 			user,

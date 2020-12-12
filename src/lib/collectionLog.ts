@@ -285,7 +285,16 @@ export const pets: CollectionLogData = {
 		'Scruffy',
 		'Zak',
 		'Hammy',
-		'Skipper'
+		'Skipper',
+		'Ori',
+		'Cob',
+		'Takon',
+		'Obis',
+		'Peky',
+		'Plopper',
+		'Brock',
+		'Wilvus',
+		'Smokey'
 	]),
 	BSOPets2: resolveItems(['Ori', 'Cob', 'Takon'])
 };
