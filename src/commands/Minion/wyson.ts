@@ -5,6 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
 import { stringMatches } from '../../lib/util';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { NestBoxes } from './../../lib/openables';
 
 interface MolePartItem {
@@ -63,7 +64,7 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 			const exchangeMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to exchange ${quantity}x**${moleItem.name}** for equal amount of random Nest boxes.`
+				`${msg.author}, say \`confirm\` to confirm that you want to exchange ${quantity}x **${moleItem.name}** for equal amount of random Nest boxes.`
 			);
 
 			// Confirm the user wants to exchange the item(s)
@@ -98,11 +99,10 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(loot.values(), true);
 
-		return msg.channel.sendBankImage({
-			bank: loot.values(),
-			title: `You exchanged ${quantity} ${moleItem.name}`,
-			flags: { showNewCL: 1 },
-			user: msg.author
-		});
+		return msg.send(
+			`You exchanged ${quantity}x ${
+				moleItem.name
+			} and received: ${await createReadableItemListFromBank(this.client, loot.bank)}.`
+		);
 	}
 }
