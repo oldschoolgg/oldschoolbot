@@ -13,7 +13,8 @@ export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Pickpockable,
 	quantity: number,
-	hasThievingCape: boolean
+	hasThievingCape: boolean,
+	armband: boolean
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -25,8 +26,11 @@ export function calcLootXPPickpocketing(
 	const diary = 1;
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
-	const chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
-
+	let chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
+	if (armband) {
+		// 50% better success chance if has armband
+		chanceOfSuccess += chanceOfSuccess / 2;
+	}
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
 			// The minion has just been stunned, and cant pickpocket for a few ticks, therefore

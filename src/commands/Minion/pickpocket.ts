@@ -131,7 +131,8 @@ export default class extends BotCommand {
 			pickpocketable,
 			quantity,
 			msg.author.hasItemEquippedAnywhere(itemID('Thieving cape')) ||
-				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)'))
+				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)')),
+			msg.author.hasItemEquippedOrInBank("Thieves' armband")
 		);
 
 		const [foodString, foodRemoved] = await removeFoodFromUser({
