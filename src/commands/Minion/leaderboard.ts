@@ -339,7 +339,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		if (inputSkill === 'overall') {
 			res = await this.query(
-				`SELECT id, ${skillsVals
+				`SELECT id,  ${skillsVals.map(s => `"skills.${s.id}"`)}, ${skillsVals
 					.map(s => `"skills.${s.id}"`)
 					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 500;`
 			);
@@ -348,7 +348,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 					let totalLevel = 0;
 					for (const skill of skillsVals) {
 						totalLevel += convertXPtoLVL(
-							user[`skills.${skill.id}` as keyof SkillUser] as any
+							Number(user[`skills.${skill.id}` as keyof SkillUser]) as any
 						);
 					}
 					return {
