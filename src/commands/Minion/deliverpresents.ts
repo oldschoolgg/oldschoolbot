@@ -10,6 +10,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DeliverPresentsActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { baseSantaOutfit, santaChat } from './santa';
 
 const messages = [
@@ -32,7 +33,10 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		if (Date.now() - msg.author.createdTimestamp < Time.Year) {
+		if (
+			Date.now() - msg.author.createdTimestamp < Time.Year &&
+			getUsersPerkTier(msg.author) === 0
+		) {
 			return msg.send(
 				await santaChat(
 					`${msg.author.username}, your account is too new to deliver presents. Your account must be atleast 1 year old.`
