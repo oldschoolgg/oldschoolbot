@@ -21,7 +21,7 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 100_000_000
+		gpCost: 10_000_000
 	},
 	{
 		id: 4,
@@ -31,9 +31,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 5,
-		name: 'Draynor Manor',
+		name: 'Edgeville',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 6,
@@ -41,7 +43,7 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Six,
-		gpCost: 100_000_000
+		gpCost: 10_000_000
 	},
 	{
 		id: 7,
@@ -265,6 +267,22 @@ const backgroundImages: BankBackground[] = [
 		name: 'whale',
 		image: null,
 		available: false
+	},
+	{
+		id: 36,
+		name: 'Morytania',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Five,
+		gpCost: 10_000_000
+	},
+	{
+		id: 37,
+		name: 'Grass',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	}
 ];
 
