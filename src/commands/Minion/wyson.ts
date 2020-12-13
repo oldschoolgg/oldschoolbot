@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Time } from '../../lib/constants';
 import { stringMatches } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { NestBoxes } from './../../lib/openables';
@@ -60,28 +59,6 @@ export default class extends BotCommand {
 
 		if (!quantity) {
 			quantity = 1;
-		}
-
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const exchangeMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to exchange ${quantity}x **${moleItem.name}** for equal amount of random Nest boxes.`
-			);
-
-			// Confirm the user wants to exchange the item(s)
-			try {
-				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
-			} catch (err) {
-				return exchangeMsg.edit(`Cancelling mole part exchange.`);
-			}
 		}
 
 		await msg.author.settings.sync(true);
