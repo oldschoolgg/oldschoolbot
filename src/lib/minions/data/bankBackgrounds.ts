@@ -11,7 +11,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 2,
-		name: 'Morytania',
+		name: 'Swampman',
 		image: null,
 		available: false
 	},
