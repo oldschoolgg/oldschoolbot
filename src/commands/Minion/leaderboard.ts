@@ -29,6 +29,13 @@ interface SkillUser {
 	['skills.cooking']?: number;
 }
 
+interface OverallSkillUser {
+	id: string;
+	totalLevel: number;
+	totalXP: number;
+	ironman: boolean;
+}
+
 interface GPUser {
 	id: string;
 	GP: number;
@@ -333,14 +340,36 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 	async skills(msg: KlasaMessage, [inputSkill = 'overall']: [string]) {
 		let res: SkillUser[] = [];
-		const skill = Object.values(Skills).find(_skill =>
+		let overallUsers: OverallSkillUser[] = [];
+
+		const skillsVals = Object.values(Skills);
+
+		const skill = skillsVals.find(_skill =>
 			_skill.aliases.some(name => stringMatches(name, inputSkill))
 		);
 
 		if (inputSkill === 'overall') {
 			res = await this.query(
-				`SELECT id, "skills.cooking" + "skills.woodcutting" + "skills.mining" + "skills.smithing" + "skills.agility" + "skills.fishing" + "skills.firemaking" + "skills.runecraft" + "skills.crafting" + "skills.prayer" + "skills.fletching" + "skills.thieving" + "skills.farming" as totalxp FROM users ORDER BY totalxp DESC LIMIT 2000;`
+				`SELECT id, ${skillsVals
+					.map(s => `"skills.${s.id}"`)
+					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 500;`
 			);
+			overallUsers = res
+				.map(user => {
+					let totalLevel = 0;
+					for (const skill of skillsVals) {
+						totalLevel += convertXPtoLVL(
+							user[`skills.${skill.id}` as keyof SkillUser] as any
+						);
+					}
+					return {
+						id: user.id,
+						totalLevel,
+						ironman: user['minion.ironman'],
+						totalXP: Number(user.totalxp!)
+					};
+				})
+				.sort((a, b) => b.totalLevel - a.totalLevel);
 		} else {
 			if (!skill) {
 				return msg.send(`That's not a valid skill.`);
@@ -361,23 +390,34 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			res = res.filter((user: SkillUser) => user['minion.ironman']);
 		}
 
+		if (inputSkill === 'overall') {
+			this.doMenu(
+				msg,
+				util.chunk(overallUsers, 10).map(subList =>
+					subList
+						.map((obj: OverallSkillUser) => {
+							return `**${this.getUsername(
+								obj.id
+							)}:** ${obj.totalLevel.toLocaleString()} (${obj.totalXP.toLocaleString()} XP)`;
+						})
+						.join('\n')
+				),
+				`Overall Leaderboard`
+			);
+			return;
+		}
+
 		this.doMenu(
 			msg,
 			util.chunk(res, 10).map(subList =>
 				subList
 					.map((obj: SkillUser) => {
-						const objKey =
-							inputSkill === 'overall'
-								? 'totalxp'
-								: (`skills.${skill?.id}` as keyof SkillUser);
-
+						const objKey = `skills.${skill?.id}` as keyof SkillUser;
 						const skillXP = Number(obj[objKey] ?? 0);
-						const skillLVL =
-							inputSkill === 'overall' ? '' : `(${convertXPtoLVL(skillXP)})`;
 
 						return `**${this.getUsername(
 							obj.id
-						)}:** ${skillXP.toLocaleString()} xp ${skillLVL}`;
+						)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(skillXP)})`;
 					})
 					.join('\n')
 			),
