@@ -6,6 +6,7 @@ import badges from '../../lib/badges';
 import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { Time } from '../../lib/constants';
+import { Minigames } from '../../lib/minions/data/minigames';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
@@ -54,6 +55,7 @@ interface PetUser {
 interface KCUser {
 	id: string;
 	monsterScores: ItemBank;
+	minigameScores: ItemBank;
 }
 
 interface GPLeaderboard {
@@ -69,11 +71,6 @@ interface QPLeaderboard {
 interface PetLeaderboard {
 	lastUpdated: number;
 	list: PetUser[];
-}
-
-interface KCLeaderboard {
-	lastUpdated: number;
-	list: KCUser[];
 }
 
 interface UsernameCache {
@@ -101,11 +98,6 @@ export default class extends BotCommand {
 	};
 
 	public petLeaderboard: PetLeaderboard = {
-		lastUpdated: 0,
-		list: []
-	};
-
-	public kcLeaderboard: KCLeaderboard = {
 		lastUpdated: 0,
 		list: []
 	};
@@ -295,30 +287,30 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
+		const minigame = Minigames.find(game => stringMatches(game.name, name));
 
-		if (!monster) return msg.send(`That's not a valid monster!`);
-
-		const onlyForGuild = msg.flagArgs.server;
-
-		if (Date.now() - this.kcLeaderboard.lastUpdated > CACHE_TIME) {
-			this.kcLeaderboard.list = (
-				await this.query(
-					`SELECT id, "monsterScores" FROM users WHERE "monsterScores"::text <> '{}'::text;`
-				)
-			).map((res: any) => ({ ...res, GP: parseInt(res.GP) }));
-			this.kcLeaderboard.lastUpdated = Date.now();
+		if (!monster && !minigame) {
+			return msg.send(`That's not a valid monster or minigame!`);
 		}
 
-		let list = this.kcLeaderboard.list
-			.filter(user => typeof user.monsterScores[monster.id] === 'number')
+		let key: 'minigameScores' | 'monsterScores' = Boolean(minigame)
+			? 'minigameScores'
+			: 'monsterScores';
+		let entityID = (minigame?.id ?? monster?.id)!.toString();
+		let list = (
+			await this.query(
+				`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5;`
+			)
+		)
+			.filter(user => typeof user[key][entityID] === 'number')
 			.sort((a: KCUser, b: KCUser) => {
-				const aScore = a.monsterScores![monster.id] ?? 0;
-				const bScore = b.monsterScores![monster.id] ?? 0;
+				const aScore = a[key]![entityID] ?? 0;
+				const bScore = b[key]![entityID] ?? 0;
 				return bScore - aScore;
 			})
 			.slice(0, 2000);
 
-		if (onlyForGuild && msg.guild) {
+		if (msg.flagArgs.server && msg.guild) {
 			list = list.filter((kcUser: KCUser) => msg.guild!.members.has(kcUser.id));
 		}
 
@@ -328,13 +320,10 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				.chunk(list, 10)
 				.map(subList =>
 					subList
-						.map(
-							({ id, monsterScores }) =>
-								`**${this.getUsername(id)}:** ${monsterScores[monster.id]} KC`
-						)
+						.map(user => `**${this.getUsername(user.id)}:** ${user[key][entityID]} KC`)
 						.join('\n')
 				),
-			`KC Leaderboard for ${monster.name}`
+			`KC Leaderboard for ${(monster ?? minigame)!.name}`
 		);
 	}
 
