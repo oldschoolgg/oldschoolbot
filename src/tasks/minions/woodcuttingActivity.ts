@@ -45,14 +45,10 @@ export default class extends Task {
 			}
 		}
 
-		const petRolls = Math.ceil(duration / Time.Minute / 10);
-		if (petRolls > 0) {
-			for (let i = 0; i < petRolls; i++) {
-				if (roll(3500)) {
-					loot[itemID('Peky')] = 1;
-					str += `<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.`;
-				}
-			}
+		const minutes = duration / Time.Minute;
+		if (roll(Math.floor(2000 / minutes))) {
+			loot[itemID('Peky')] = 1;
+			str += `<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.`;
 		}
 
 		// Add clue scrolls

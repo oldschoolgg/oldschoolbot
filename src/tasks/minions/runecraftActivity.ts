@@ -46,8 +46,8 @@ export default class extends Task {
 				loot[getRandomMysteryBox()] = 1;
 			}
 		}
-
-		if (roll(1200) && !user.hasItemEquippedOrInBank('Obis')) {
+		const minutes = duration / Time.Minute;
+		if (roll(Math.floor(2000 / minutes)) && !user.hasItemEquippedOrInBank('Obis')) {
 			loot[itemID('Obis')] = 1;
 		}
 
