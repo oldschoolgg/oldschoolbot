@@ -372,7 +372,7 @@ export default class extends Task {
 				roll(
 					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
 						alivePlants /
-						3
+						5
 				)
 			) {
 				loot[itemID('Plopper')] = 1;
