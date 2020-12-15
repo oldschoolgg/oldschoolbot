@@ -274,11 +274,13 @@ export default class extends Task {
 				if (plantToHarvest.givesLogs && chopped) {
 					if (!plantToHarvest.outputLogs) return;
 					if (!plantToHarvest.woodcuttingXp) return;
-					const amountOfLogs = rand(5, 10);
+
+					const amountOfLogs = rand(5, 10) * alivePlants;
+					loot[plantToHarvest.outputLogs] = amountOfLogs;
+
 					if (plantToHarvest.outputRoots) {
-						loot[plantToHarvest.outputRoots] = rand(1, 4);
+						loot[plantToHarvest.outputRoots] = rand(1, 4) * alivePlants;
 					}
-					loot[plantToHarvest.outputLogs] = amountOfLogs * alivePlants;
 
 					woodcuttingXp += alivePlants * amountOfLogs * plantToHarvest.woodcuttingXp;
 					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
