@@ -179,6 +179,7 @@ export interface Plant {
 	aliases: string[];
 	outputCrop?: number;
 	outputLogs?: number;
+	outputRoots?: number;
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
 	variableYield?: boolean;
