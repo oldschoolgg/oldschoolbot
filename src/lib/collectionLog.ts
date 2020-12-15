@@ -1446,6 +1446,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	Angler: anglerOutfit,
+	Farmer: farmersOutfit,
 	Zalcano: zalcanoLog
 };
 
