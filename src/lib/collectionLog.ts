@@ -36,6 +36,14 @@ const zalcanoLog = resolveItems([
 	'Crystal tool seed	'
 ]);
 
+export const farmersOutfit = resolveItems([
+	`Farmer's strawhat`,
+	`Farmer's jacket`,
+	`Farmer's shirt`,
+	`Farmer's boro trousers`,
+	`Farmer's boots`
+]);
+
 export const anglerOutfit = resolveItems([
 	'Angler hat',
 	'Angler top',
