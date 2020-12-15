@@ -183,7 +183,7 @@ export interface Plant {
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
 	variableYield?: boolean;
-	variableOutputAmount?: [string, number, number][];
+	variableOutputAmount?: [string | null, number, number][];
 	woodcuttingXp?: number;
 	needsChopForHarvest: boolean;
 	fixedOutput: boolean;

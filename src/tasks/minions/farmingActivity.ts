@@ -205,7 +205,8 @@ export default class extends Task {
 					cropYield = calcVariableYield(
 						plantToHarvest,
 						patchType.lastUpgradeType,
-						currentFarmingLevel
+						currentFarmingLevel,
+						alivePlants
 					);
 				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;

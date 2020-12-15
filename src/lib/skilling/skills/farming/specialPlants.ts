@@ -370,7 +370,7 @@ const specialPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
-		defaultNumOfPatches: 0,
+		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
@@ -492,7 +492,7 @@ const specialPlants: Plant[] = [
 		outputCrop: itemID('Crystal shard'),
 		variableYield: true,
 		variableOutputAmount: [
-			['', 8, 10],
+			[null, 8, 10],
 			['compost', 10, 12],
 			['supercompost', 12, 14],
 			['ultracompost', 14, 16]
