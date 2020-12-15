@@ -35,3 +35,5 @@ export interface FarmingContract {
 	plantTier: PlantTier;
 	contractsCompleted: number;
 }
+
+export type CompostTier = 'compost' | 'supercompost' | 'ultracompost';
