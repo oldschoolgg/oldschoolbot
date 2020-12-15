@@ -211,6 +211,7 @@ export default class extends BotCommand {
 		}
 
 		let newBank = { ...userBank };
+		const defaultCompostTier = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
@@ -226,6 +227,12 @@ export default class extends BotCommand {
 				if (!hasCompostType) {
 					throw `You dont have ${quantity}x ${upgradeType}.`;
 				}
+			} else if (
+				bankHasItem(userBank, itemID(defaultCompostTier), quantity) &&
+				plants.canCompostPatch
+			) {
+				upgradeType = defaultCompostTier;
+				infoStr.push(`You are treating all of your patches with ${defaultCompostTier}.`);
 			} else if (
 				bankHasItem(userBank, itemID('compost'), quantity) &&
 				plants.canCompostPatch

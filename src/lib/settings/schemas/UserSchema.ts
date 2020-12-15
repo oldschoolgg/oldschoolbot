@@ -34,6 +34,7 @@ Client.defaultUserSchema
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
 			.add('farmingContract', 'any', { default: defaultContracts })
+			.add('defaultCompostToUse', 'string', { default: 'compost' })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

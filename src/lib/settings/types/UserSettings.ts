@@ -3,7 +3,7 @@ import { O } from 'ts-toolbelt';
 
 import { PatchTypes } from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
-import { FarmingPatchTypes } from '../../farming/types';
+import { CompostTier, FarmingPatchTypes } from '../../farming/types';
 import { GearTypes } from '../../gear';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
@@ -58,6 +58,7 @@ export namespace UserSettings {
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
+		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
 	}
 
 	export namespace Skills {
