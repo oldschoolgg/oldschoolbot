@@ -1193,6 +1193,16 @@ const Createables: Createable[] = [
 			"Inquisitor's armour set": 1
 		})
 	},
+	{
+		name: `Zamorak's grapes`,
+		inputItems: resolveNameBank({
+			"Grapes": 1,
+			"Bologa's blessing": 1
+		}),
+		outputItems: {
+			[itemID(`Zamorak's grapes`)]: 1
+		}
+	},
 	...crystalTools,
 	...ornamentKits
 ];
