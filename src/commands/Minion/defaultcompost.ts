@@ -28,11 +28,15 @@ export default class extends BotCommand {
 		}
 
 		if (currentCompostTier !== newCompostTier) {
-			await msg.author.settings.update(UserSettings.Minion.DefaultCompostToUse, newCompostTier);
+			await msg.author.settings.update(
+				UserSettings.Minion.DefaultCompostToUse,
+				newCompostTier
+			);
 
-			return msg.send(`Your minion will now automatically use ${newCompostTier} for farming, if you have any.`);
-		} else {
-			return msg.send(`You are already automatically using this type of compost.`);
+			return msg.send(
+				`Your minion will now automatically use ${newCompostTier} for farming, if you have any.`
+			);
 		}
+		return msg.send(`You are already automatically using this type of compost.`);
 	}
 }

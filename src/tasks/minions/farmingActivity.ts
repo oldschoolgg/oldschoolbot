@@ -276,7 +276,7 @@ export default class extends Task {
 					if (!plantToHarvest.woodcuttingXp) return;
 					const amountOfLogs = rand(5, 10);
 					if (plantToHarvest.outputRoots) {
-						loot[plantToHarvest.outputRoots] = rand(1,4);
+						loot[plantToHarvest.outputRoots] = rand(1, 4);
 					}
 					loot[plantToHarvest.outputLogs] = amountOfLogs * alivePlants;
 

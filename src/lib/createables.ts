@@ -1196,7 +1196,7 @@ const Createables: Createable[] = [
 	{
 		name: `Zamorak's grapes`,
 		inputItems: resolveNameBank({
-			"Grapes": 1,
+			Grapes: 1,
 			"Bologa's blessing": 1
 		}),
 		outputItems: {

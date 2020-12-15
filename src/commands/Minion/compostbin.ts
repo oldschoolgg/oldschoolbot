@@ -49,7 +49,7 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [quantity, cropToCompost]: [null | number |string, string]) {
+	async run(msg: KlasaMessage, [quantity, cropToCompost]: [null | number | string, string]) {
 		await msg.author.settings.sync(true);
 
 		if (typeof quantity === 'string') {
@@ -58,23 +58,33 @@ export default class extends BotCommand {
 		}
 
 		if (!cropToCompost) {
-			return msg.send(`You need to select a crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`)
+			return msg.send(
+				`You need to select a crop to compost. The crops you can compost are: ${SuperCompostables.join(
+					', '
+				)}.`
+			);
 		}
 
-		const superCompostableCrop = SuperCompostables.find(crop => stringMatches(crop, cropToCompost));
+		const superCompostableCrop = SuperCompostables.find(crop =>
+			stringMatches(crop, cropToCompost)
+		);
 
 		if (!superCompostableCrop) {
-			return msg.send(`That's not a valid crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`)
+			return msg.send(
+				`That's not a valid crop to compost. The crops you can compost are: ${SuperCompostables.join(
+					', '
+				)}.`
+			);
 		}
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		if (quantity === null) {
 			quantity = msg.author.numItemsInBankSync(itemID(superCompostableCrop));
-		} else {
-			if (!bankHasItem(userBank, itemID(superCompostableCrop), quantity)) {
-				return msg.send(`You do not have enough ${superCompostableCrop} to compost for the quantity specified`);
-			}
+		} else if (!bankHasItem(userBank, itemID(superCompostableCrop), quantity)) {
+			return msg.send(
+				`You do not have enough ${superCompostableCrop} to compost for the quantity specified`
+			);
 		}
 
 		let newBank = userBank;
@@ -83,6 +93,8 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		return msg.send(`You've composted ${quantity}x ${superCompostableCrop} and received ${quantity}x Supercompost in return.`)
+		return msg.send(
+			`You've composted ${quantity}x ${superCompostableCrop} and received ${quantity}x Supercompost in return.`
+		);
 	}
 }

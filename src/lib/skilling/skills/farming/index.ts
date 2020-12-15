@@ -4,8 +4,8 @@ import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
 import fruitTrees from './fruitTrees';
 import herbPlants from './herbPlants';
-import specialPlants from './specialPlants';
 import hopsPlants from './hops';
+import specialPlants from './specialPlants';
 import trees from './trees';
 
 const plants: Plant[] = [
