@@ -94,6 +94,9 @@ export namespace UserSettings {
 		export const Allotment = T<PatchTypes.PatchData>(
 			`farmingPatches.${FarmingPatchTypes.Allotment}`
 		);
+		export const Hops = T<PatchTypes.PatchData>(
+			`farmingPatches.${FarmingPatchTypes.Hops}`
+		);
 		export const Cactus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Cactus}`);
 		export const Bush = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Bush}`);
 		export const Spirit = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Spirit}`);
@@ -120,5 +123,7 @@ export namespace UserSettings {
 			`farmingPatches.${FarmingPatchTypes.Hespori}`
 		);
 		export const Flower = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Flower}`);
+		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
+		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
 }

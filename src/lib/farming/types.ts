@@ -3,6 +3,7 @@ export enum FarmingPatchTypes {
 	FruitTree = 'fruit tree',
 	Tree = 'tree',
 	Allotment = 'allotment',
+	Hops = 'hops',
 	Cactus = 'cactus',
 	Bush = 'bush',
 	Flower = 'flower',
@@ -14,7 +15,9 @@ export enum FarmingPatchTypes {
 	Redwood = 'redwood',
 	Crystal = 'crystal',
 	Celastrus = 'celastrus',
-	Hespori = 'hespori'
+	Hespori = 'hespori',
+	Mushroom = 'mushroom',
+	Belladonna = 'belladonna'
 }
 
 export interface PatchData {

@@ -78,6 +78,7 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.FruitTree, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Tree, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Allotment, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Hops, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Cactus, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Bush, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Spirit, 'any', { default: Farming.defaultPatches })
@@ -90,4 +91,6 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Celastrus, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Hespori, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Flower, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Mushroom, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Belladonna, 'any', { default: Farming.defaultPatches })
 	);
