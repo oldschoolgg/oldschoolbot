@@ -1,3 +1,4 @@
+import { itemID } from 'oldschooljs/dist/util';
 import { randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -12,6 +13,41 @@ import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
 import { GearSetupTypes } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
+import { hasMeleeVoidEquipped } from '../../gear/functions/hasMeleeVoidEquipped';
+import hasItemEquipped from '../../gear/functions/hasItemEquipped';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+
+interface MeleeStrengthWeaponBonus {
+	id: number;
+	damageBoost: number;
+	againstAttribute?: string;
+	againstMonster?: string;
+	wildernessBonus?: boolean;
+}
+
+// Added some of the most common melee weapon bonuses.
+const meleeStrengthWeaponBonuses: MeleeStrengthWeaponBonus[] = [
+	{
+		id: itemID('Arclight'),
+		damageBoost: 1.7,
+		againstAttribute: MonsterAttribute.Demon
+	},
+	{
+		id: itemID('Leaf-bladed battleaxe'),
+		damageBoost: 1.175,
+		againstMonster: 'kurask'
+	},
+	{
+		id: itemID('Dragon hunter lance'),
+		damageBoost: 1.2,
+		againstAttribute: MonsterAttribute.Dragon
+	},
+	{
+		id: itemID("Viggora's chainmace"),
+		damageBoost: 1.5,
+		wildernessBonus: true
+	}
+];
 
 interface MeleeStrengthWeaponBonus {
 	id: number;
