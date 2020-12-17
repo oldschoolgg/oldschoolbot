@@ -145,6 +145,8 @@ export const enum Tasks {
 	SawmillActivity = 'sawmillActivity',
 	PickpocketActivity = 'pickpocketActivity',
 	TitheFarmActivity = 'titheFarmActivity',
+	BarbarianAssault = 'barbarianAssaultActivity',
+
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
@@ -184,7 +186,8 @@ export const enum Activity {
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
-	DeliverPresents = 'DeliverPresents'
+	DeliverPresents = 'DeliverPresents',
+	BarbarianAssault = 'BarbarianAssault'
 }
 
 export const enum Events {
