@@ -3,7 +3,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { ItemBank } from '../../types';
-import { roll } from '../../util';
+import { rand, roll } from '../../util';
 
 const Room1Table = new LootTable()
 	.add('Ivory Comb', 1, 3)
@@ -103,7 +103,7 @@ export const plunderRooms = [
 	{
 		number: 7,
 		petChance: 2000,
-		thievingLevel: 71,
+		thievingLevel: 81,
 		xp: 9738,
 		rockyChance: 10_339,
 		roomTable: Room7Table
@@ -122,7 +122,7 @@ export const plunderBoosts = resolveNameBank({
 	"Pharaoh's sceptre (3)": 5
 });
 
-export function lootRoom(room: number): ItemBank {
+export function lootRoom(room: number): [ItemBank, number] {
 	const loot = new Bank();
 	const sceptreChance = 1000;
 	const roomObj = plunderRooms[room - 1];
@@ -138,8 +138,9 @@ export function lootRoom(room: number): ItemBank {
 		}
 	}
 
-	for (let i = 0; i < 14; i++) {
+	const amountUrns = rand(9, 14);
+	for (let i = 0; i < amountUrns; i++) {
 		loot.add(roomObj.roomTable.roll());
 	}
-	return loot.bank;
+	return [loot.bank, amountUrns];
 }

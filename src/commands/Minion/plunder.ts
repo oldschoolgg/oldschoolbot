@@ -35,17 +35,16 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			return msg.send(
-				`You need Graceful equipped in your Skilling setup to do Pyramid Plunder.`
-			);
-		}
-
 		const completableRooms = plunderRooms.filter(room => thievingLevel >= room.thievingLevel);
 
 		let plunderTime = Time.Minute * 5.75;
 
 		const boosts = [];
+
+		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+			plunderTime *= 1.075;
+			boosts.push(`-7.5% time penalty for not having graceful equipped`);
+		}
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(
