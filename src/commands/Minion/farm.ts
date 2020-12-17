@@ -15,6 +15,7 @@ import {
 	formatDuration,
 	itemNameFromID,
 	removeItemFromBank,
+	round,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -38,6 +39,44 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, plantName = '']: [null | number | string, string]) {
+		if (msg.flagArgs.xphr) {
+			let str = 'Approximate XP/Hr (varies based on RNG)\n\n';
+			let results: [string, number][] = [];
+			let multiplier = 1;
+			for (const plant of Farming.Plants) {
+				if (plant.seedType === 'allotment' || plant.seedType === 'hops') {
+					multiplier = 40;
+				}
+				if (plant.seedType === 'vine') {
+					multiplier = 10;
+				}
+				if (plant.seedType === 'herb') {
+					multiplier = 9;
+				}
+				if (plant.seedType === 'seaweed') {
+					multiplier = 33;
+				}
+				if (plant.seedType === 'bush') {
+					multiplier = 17;
+				}
+				results.push([
+					plant.name,
+					round(
+						(plant.plantXp + plant.checkXp + plant.harvestXp * multiplier) *
+							(3600 / ((plant.timePerHarvest + plant.timePerPatchTravel) * 0.9)),
+						2
+					)
+				]);
+				multiplier = 1;
+			}
+			for (const [name, xp] of results.sort((a, b) => a[1] - b[1])) {
+				str += `\n${name} ${xp.toLocaleString()} XP/HR`;
+			}
+			str += '\n\n\n';
+
+			return msg.channel.sendFile(Buffer.from(str), 'output.txt');
+		}
+
 		if (msg.flagArgs.plants) {
 			return returnListOfPlants(msg);
 		}
