@@ -53,7 +53,8 @@ export const farmersOutfit = resolveItems([
 	`Farmer's jacket`,
 	`Farmer's shirt`,
 	`Farmer's boro trousers`,
-	`Farmer's boots`
+	`Farmer's boots`,
+	`Tangleroot`
 ]);
 
 export const anglerOutfit = resolveItems([
