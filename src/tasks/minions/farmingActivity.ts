@@ -365,6 +365,16 @@ export default class extends Task {
 				tangleroot = true;
 			}
 
+			if (plantToHarvest.seedType !== 'hespori') {
+				let hesporiSeeds = 0;
+				for (let i = 0; i < alivePlants; i++) {
+					if (roll(plantToHarvest.petChance / 500)) {
+						hesporiSeeds++;
+					}
+				}
+				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
+			}
+
 			if (tangleroot) {
 				infoStr.push('\n```diff');
 				infoStr.push(`\n- You have a funny feeling you're being followed...`);
