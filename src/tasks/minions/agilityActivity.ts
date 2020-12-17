@@ -11,7 +11,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ courseID, quantity, userID, channelID, duration }: AgilityActivityTaskOptions) {
+	async run(data: AgilityActivityTaskOptions) {
+		let { courseID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
@@ -99,9 +100,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${course.name} laps`);
-			return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${course.name} laps`);
+				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
+			},
+			undefined,
+			data
+		);
 	}
 }

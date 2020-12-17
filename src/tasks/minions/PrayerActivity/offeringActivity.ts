@@ -7,7 +7,8 @@ import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ boneID, quantity, userID, channelID, duration }: OfferingActivityTaskOptions) {
+	async run(data: OfferingActivityTaskOptions) {
+		const { boneID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
@@ -52,9 +53,17 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
-			return this.client.commands.get('offer')!.run(res, [quantity, bone.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
+				return this.client.commands.get('offer')!.run(res, [quantity, bone.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }

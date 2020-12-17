@@ -44,15 +44,16 @@ export function calcLootXPPickpocketing(
 }
 
 export default class extends Task {
-	async run({
-		monsterID,
-		quantity,
-		successfulQuantity,
-		userID,
-		channelID,
-		duration,
-		xpReceived
-	}: PickpocketActivityTaskOptions) {
+	async run(data: PickpocketActivityTaskOptions) {
+		const {
+			monsterID,
+			quantity,
+			successfulQuantity,
+			userID,
+			channelID,
+			duration,
+			xpReceived
+		} = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const npc = Pickpocketables.find(_npc => _npc.id === monsterID);
@@ -95,9 +96,17 @@ export default class extends Task {
 			);
 		}
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
-			return this.client.commands.get('pickpocket')!.run(res, [quantity, npc.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
+				return this.client.commands.get('pickpocket')!.run(res, [quantity, npc.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }
