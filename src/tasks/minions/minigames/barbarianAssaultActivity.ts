@@ -62,15 +62,16 @@ export default class extends Task {
 				pts *= 1.1;
 				resultStr += `${user.username} received 10% extra pts for kandarin hard diary. `;
 			}
+			let totalPoints = pts * quantity;
 
-			user.incrementMinigameScore(MinigameIDsEnum.BarbarianAssault);
+			user.incrementMinigameScore(MinigameIDsEnum.BarbarianAssault, quantity);
 
 			user.settings.update(
 				UserSettings.HonourPoints,
-				user.settings.get(UserSettings.HonourPoints) + pts
+				user.settings.get(UserSettings.HonourPoints) + totalPoints
 			);
 
-			resultStr += `${user.username} received ${pts} points\n`;
+			resultStr += `${user} received ${totalPoints} points\n`;
 		}
 
 		const leaderUser = await this.client.users.fetch(leader);
