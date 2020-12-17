@@ -152,6 +152,12 @@ export interface ZalcanoActivityTaskOptions extends MinigameActivityTaskOptions 
 	performance: number;
 }
 
+export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {
+	leader: string;
+	users: string[];
+	totalLevel: number;
+}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }

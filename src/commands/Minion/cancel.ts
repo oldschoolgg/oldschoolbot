@@ -56,6 +56,12 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (currentTask.type === Activity.BarbarianAssault) {
+			return msg.send(
+				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`
+			);
+		}
+
 		const taskTicker = tickerTaskFromActivity(currentTask.type);
 
 		const cancelMsg = await msg.channel.send(

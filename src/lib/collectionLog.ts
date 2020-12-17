@@ -28,6 +28,18 @@ const wintertodtLog = resolveItems([
 	'Dragon axe'
 ]);
 
+const barbAssaultLog = resolveItems([
+	'Pet penance queen',
+	'Fighter torso',
+	'Fighter hat',
+	'Healer hat',
+	'Runner hat',
+	'Ranger hat',
+	'Runner boots',
+	'Penance gloves',
+	'Penance skirt'
+]);
+
 const zalcanoLog = resolveItems([
 	'Crystal shard',
 	'Zalcano shard',
@@ -1606,5 +1618,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Barrows',
 		aliases: ['barrows'],
 		items: barrows
+	},
+	{
+		name: 'Barbarian Assault',
+		aliases: ['ba', 'barb assault', 'barbarian assault'],
+		items: { 1: barbAssaultLog }
 	}
 ];

@@ -27,6 +27,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	BarbarianAssaultActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CookingActivityTaskOptions,
@@ -364,6 +365,12 @@ export default class extends Extendable {
 
 			case Activity.DeliverPresents: {
 				return `${this.minionName} is currently delivering presents. ${formattedDuration}`;
+			}
+
+			case Activity.BarbarianAssault: {
+				const data = currentTask as BarbarianAssaultActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 		}
 	}
