@@ -9,7 +9,8 @@ import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ channelID, quantity, floors, duration, userID }: SepulchreActivityTaskOptions) {
+	async run(data: SepulchreActivityTaskOptions) {
+		const { channelID, quantity, floors, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.Sepulchre, quantity);
@@ -72,7 +73,8 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x sepulchre`);
 				return this.client.commands.get('sepulchre')!.run(res, []);
 			},
-			image
+			image,
+			data
 		);
 	}
 }

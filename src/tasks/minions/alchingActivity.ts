@@ -10,14 +10,8 @@ import itemID from '../../lib/util/itemID';
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export default class extends Task {
-	async run({
-		itemID,
-		quantity,
-		channelID,
-		alchValue,
-		userID,
-		duration
-	}: AlchingActivityTaskOptions) {
+	async run(data: AlchingActivityTaskOptions) {
+		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMinionDailyDuration(duration);
 		await user.addGP(alchValue);
@@ -50,9 +44,17 @@ export default class extends Task {
 			)}) has been added to your bank. ${saved}`
 		];
 
-		handleTripFinish(this.client, user, channelID, responses.join('\n'), res => {
-			user.log(`continued trip of alching ${quantity}x ${item.name}`);
-			return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			responses.join('\n'),
+			res => {
+				user.log(`continued trip of alching ${quantity}x ${item.name}`);
+				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
+			},
+			undefined,
+			data
+		);
 	}
 }

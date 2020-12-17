@@ -60,5 +60,13 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.ZalcanoActivity;
 		case Activity.Pickpocket:
 			return Tasks.PickpocketActivity;
+		case Activity.Farming:
+			return Tasks.FarmingActivity;
+		case Activity.TitheFarm:
+			return Tasks.TitheFarmActivity;
+		case Activity.DeliverPresents:
+			return Tasks.DeliverPresents;
+		case Activity.BarbarianAssault:
+			return Tasks.BarbarianAssault;
 	}
 }

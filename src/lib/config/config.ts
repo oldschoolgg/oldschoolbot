@@ -24,6 +24,9 @@ export const clientOptions: KlasaClientOptions = {
 			'DIRECT_MESSAGE_REACTIONS'
 		]).bitfield
 	},
+	http: {
+		api: 'https://discord.com/api'
+	},
 	/* Klasa Options */
 	createPiecesFolders: false,
 	prefix: '+',

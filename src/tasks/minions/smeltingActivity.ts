@@ -8,7 +8,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
+	async run(data: SmeltingActivityTaskOptions) {
+		let { barID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
@@ -58,9 +59,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
-			return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
+				return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }

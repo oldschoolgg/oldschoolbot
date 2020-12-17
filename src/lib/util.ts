@@ -19,7 +19,8 @@ export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
-export function cleanMentions(guild: Guild | null, input: string) {
+export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
+	const at = showAt ? '@' : '';
 	return input
 		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
 		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
@@ -27,11 +28,11 @@ export function cleanMentions(guild: Guild | null, input: string) {
 				case '@':
 				case '@!': {
 					const tag = guild?.client.users.get(id);
-					return tag ? `@${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
+					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				case '@&': {
 					const role = guild?.roles.get(id);
-					return role ? `@${role.name}` : match;
+					return role ? `${at}${role.name}` : match;
 				}
 				case '#': {
 					const channel = guild?.channels.get(id);
@@ -314,4 +315,13 @@ export function anglerBoostPercent(user: KlasaUser) {
 		boostPercent += 0.5;
 	}
 	return round(boostPercent, 1);
+}
+
+export function shuffle<T>(array: readonly T[]): T[] {
+	let copy = [...array];
+	for (let i = copy.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[copy[i], copy[j]] = [copy[j], copy[i]];
+	}
+	return copy;
 }
