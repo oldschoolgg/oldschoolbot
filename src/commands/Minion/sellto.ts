@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 
@@ -17,12 +18,18 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 20,
+			cooldown: 3,
 			usage:
 				'<member:member> <price:int{1,100000000000}> <quantity:int{1,2000000}> (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
-			ironCantUse: true
+			ironCantUse: true,
+			categoryFlags: ['minion'],
+			description: 'Sells items to other players for GP.',
+			examples: [
+				'+sellto @Magnaboy 1b 2 Elysian sigil',
+				'+sellto @Magnaboy 500k 1 Dragon platelegs'
+			]
 		});
 	}
 
@@ -30,6 +37,11 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[buyerMember, price, quantity, itemArray]: [GuildMember, number, number, Item[]]
 	) {
+		// Make sure blacklisted members can't be traded.
+		const isBlacklisted = this.client.settings
+			.get(ClientSettings.UserBlacklist)
+			.includes(buyerMember.user.id);
+		if (isBlacklisted) throw `Blacklisted players can't buy items.`;
 		if (msg.author.isIronman) throw `Iron players can't sell items.`;
 		if (buyerMember.user.isIronman) throw `Iron players can't be sold items.`;
 		if (buyerMember.user.id === msg.author.id) throw `You can't trade yourself.`;

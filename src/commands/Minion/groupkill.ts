@@ -1,3 +1,4 @@
+import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -22,7 +23,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
-			aliases: ['mass']
+			aliases: ['mass'],
+			description: 'Allows you to mass/groupkill bosses with other people.',
+			examples: ['+mass corp', '+mass bandos'],
+			categoryFlags: ['minion', 'pvm']
 		});
 	}
 
@@ -124,13 +128,14 @@ export default class extends BotCommand {
 		if (1 > 2 && monster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
-				await removeFoodFromUser(
-					this.client,
+				await removeFoodFromUser({
+					client: this.client,
 					user,
-					Math.ceil(healAmountNeeded / users.length) * quantity,
-					Math.ceil(healAmountNeeded / quantity),
-					monster.name
-				);
+					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: monster.name,
+					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+				});
 			}
 		}
 		const hits = 0;

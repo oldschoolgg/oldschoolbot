@@ -1,19 +1,23 @@
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Hiscores } from 'oldschooljs';
+
+import { BotCommand } from '../../lib/BotCommand';
 
 function renderVal(num: number) {
 	return num !== -1 ? num.toLocaleString() : 0;
 }
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
 			aliases: ['bh'],
 			description: 'Shows the BH & LMS scores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			examples: ['+bh d3adscene'],
+			categoryFlags: ['utility']
 		});
 	}
 

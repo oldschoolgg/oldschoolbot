@@ -6,7 +6,8 @@ const Crafting = {
 	aliases: ['craft', 'crafting'],
 	Craftables: craftables,
 	id: SkillsEnum.Crafting,
-	emoji: Emoji.Crafting
+	emoji: Emoji.Crafting,
+	name: 'Crafting'
 };
 
 export default Crafting;

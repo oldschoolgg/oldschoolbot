@@ -138,7 +138,8 @@ const Woodcutting = {
 	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
 	id: SkillsEnum.Woodcutting,
-	emoji: Emoji.Woodcutting
+	emoji: Emoji.Woodcutting,
+	name: 'Woodcutting'
 };
 
 export default Woodcutting;

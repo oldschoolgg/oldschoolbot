@@ -14,7 +14,8 @@ import createReadableItemListFromBank from '../../lib/util/createReadableItemLis
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ oreID, quantity, userID, channelID, duration }: MiningActivityTaskOptions) {
+	async run(data: MiningActivityTaskOptions) {
+		const { oreID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
@@ -118,9 +119,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot.values(), true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
-			return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
+				return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }

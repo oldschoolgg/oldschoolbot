@@ -18,7 +18,10 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			categoryFlags: ['minion', 'skilling', 'minigame'],
+			description: 'Sends your minion to fight Zalcano. Requires food and 150 QP.',
+			examples: ['+zalcano']
 		});
 	}
 
@@ -74,13 +77,14 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
 		const duration = quantity * baseTime;
 
-		const food = await removeFoodFromUser(
-			this.client,
-			msg.author,
-			healAmountNeeded * quantity,
-			Math.ceil(healAmountNeeded / quantity),
-			'Zalcano'
-		);
+		const [food] = await removeFoodFromUser({
+			client: this.client,
+			user: msg.author,
+			totalHealingNeeded: healAmountNeeded * quantity,
+			healPerAction: Math.ceil(healAmountNeeded / quantity),
+			activityName: 'Zalcano',
+			attackStylesUsed: []
+		});
 
 		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>(
 			this.client,

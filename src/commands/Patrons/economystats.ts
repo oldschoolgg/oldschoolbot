@@ -9,8 +9,11 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['estats'],
 			perkTier: PerkTier.Two,
+			cooldown: 10,
+			oneAtTime: true,
 			description: 'Shows some statistics about the bot economy.',
-			examples: ['+estats']
+			examples: ['+estats'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

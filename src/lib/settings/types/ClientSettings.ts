@@ -15,6 +15,7 @@ export namespace ClientSettings {
 	export const Prices = T<ItemPriceCache>('prices');
 	export const PollQuestions = T<OSRSPoll>('pollQuestions');
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
+	export const UserBlacklist = T<readonly string[]>('userBlacklist');
 
 	export namespace EconomyStats {
 		export const DicingBank = T<number>('economyStats.dicingBank');
@@ -28,5 +29,6 @@ export namespace ClientSettings {
 		export const WintertodtLoot = T<O.Readonly<ItemBank>>('economyStats.wintertodtLoot');
 		export const FightCavesCost = T<O.Readonly<ItemBank>>('economyStats.fightCavesCost');
 		export const PVMCost = T<O.Readonly<ItemBank>>('economyStats.PVMCost');
+		export const ThievingCost = T<O.Readonly<ItemBank>>('economyStats.thievingCost');
 	}
 }

@@ -6,13 +6,8 @@ import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({
-		fletchableName,
-		quantity,
-		userID,
-		channelID,
-		duration
-	}: FletchingActivityTaskOptions) {
+	async run(data: FletchingActivityTaskOptions) {
+		let { fletchableName, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fletching);
@@ -46,9 +41,21 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`);
-			return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(
+					`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`
+				);
+				return this.client.commands
+					.get('fletch')!
+					.run(res, [quantity, fletchableItem.name]);
+			},
+			undefined,
+			data
+		);
 	}
 }

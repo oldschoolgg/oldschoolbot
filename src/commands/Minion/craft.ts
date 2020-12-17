@@ -24,7 +24,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'skilling'],
+			description: 'Sends your minion to craft items, or tan leather.',
+			examples: ['+craft green dhide body', '+craft leather']
 		});
 	}
 

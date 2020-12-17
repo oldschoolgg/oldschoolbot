@@ -9,7 +9,10 @@ import Agility from '../../lib/skilling/skills/agility';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['lapcounts']
+			aliases: ['lapcounts'],
+			description: 'Shows your agility course lapcounts.',
+			examples: ['+lapcounts'],
+			categoryFlags: ['minion', 'skilling']
 		});
 	}
 

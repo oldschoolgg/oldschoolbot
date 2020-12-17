@@ -184,7 +184,8 @@ const Runecraft = {
 	id: SkillsEnum.Runecraft,
 	emoji: Emoji.Runecraft,
 	timePerInventory: Time.Minute,
-	pouches: RCPouches
+	pouches: RCPouches,
+	name: 'Runecraft'
 };
 
 export default Runecraft;

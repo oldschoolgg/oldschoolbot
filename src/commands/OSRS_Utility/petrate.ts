@@ -70,6 +70,8 @@ export const petRates = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			cooldown: 3,
+			oneAtTime: true,
 			description: 'Shows the rates of getting skilling pets at certain levels.',
 			usage:
 				'<skillLevel:int{1,99}> <hunter|woodcutting|agility|fishing|mining|thieving|farming>',

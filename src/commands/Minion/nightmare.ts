@@ -4,6 +4,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { GearSetupTypes } from '../../lib/gear/types';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -51,7 +52,11 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			categoryFlags: ['minion', 'pvm', 'minigame'],
+			description:
+				'Sends your minion to kill the nightmare. Requires food and melee gear. Your minion gets better at it over time.',
+			examples: ['+nightmare mass', '+nightmare solo']
 		});
 	}
 
@@ -198,13 +203,14 @@ export default class extends BotCommand {
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-				await removeFoodFromUser(
-					this.client,
+				await removeFoodFromUser({
+					client: this.client,
 					user,
-					Math.ceil(healAmountNeeded / users.length) * quantity,
-					Math.ceil(healAmountNeeded / quantity),
-					NightmareMonster.name
-				);
+					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: NightmareMonster.name,
+					attackStylesUsed: [GearSetupTypes.Melee]
+				});
 			}
 		}
 

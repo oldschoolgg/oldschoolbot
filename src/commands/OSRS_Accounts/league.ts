@@ -1,15 +1,19 @@
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Hiscores } from 'oldschooljs';
 import { AccountType } from 'oldschooljs/dist/meta/types';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/BotCommand';
+
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
 			aliases: ['league', 'leagues'],
 			description: 'Shows the stats of a Seasonal leagues account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility'],
+			examples: ['+league Woox']
 		});
 	}
 
@@ -17,7 +21,7 @@ export default class extends Command {
 		try {
 			const player = await Hiscores.fetch(username, { type: AccountType.Seasonal });
 			const embed = this.getStatsEmbed(username, 7981338, player);
-			embed.setFooter(`Twisted League`);
+			embed.setFooter(`Trailblazer Leagues`);
 			return msg.send({ embed });
 		} catch (err) {
 			return msg.send(err.message);

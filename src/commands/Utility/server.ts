@@ -10,7 +10,8 @@ export default class extends BotCommand {
 			description: 'Get information on the current server.',
 			examples: ['+server'],
 			requiredPermissions: ['EMBED_LINKS'],
-			runIn: ['text']
+			runIn: ['text'],
+			categoryFlags: ['utility']
 		});
 	}
 

@@ -16,11 +16,14 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
+			cooldown: 3,
 			usage: '[quantity:int{1}] (item:...item)',
 			usageDelim: ' ',
 			oneAtTime: true,
-			ironCantUse: true
+			ironCantUse: true,
+			categoryFlags: ['minion'],
+			description: 'Sells an item to the bot for 80% of G.E price.',
+			examples: ['+sell bronze arrow']
 		});
 	}
 

@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { randInt } from 'e';
+import { objectKeys, randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
@@ -24,7 +24,7 @@ import removeAmmoFromUser from '../../lib/minions/functions/removeAmmoFromUser';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import removeRunesFromUser from '../../lib/minions/functions/removeRunesFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
+import Skills from '../../lib/skilling/skills';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
@@ -66,7 +66,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel] [quantity:int{1}|name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -157,10 +157,13 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.ClueScores,
 				UserSettings.BankBackground,
 				UserSettings.SacrificedValue,
+				UserSettings.SacrificedBank,
 				'gear',
 				'stats',
 				'skills',
-				'minion'
+				'minion',
+				'farmingPatches',
+				'farmingContracts'
 			]);
 
 			await msg.author.settings.update([
@@ -188,6 +191,15 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	async stats(msg: KlasaMessage) {
 		if (!msg.author.hasMinion) {
 			throw hasNoMinion(msg.cmdPrefix);
+		}
+
+		let str = '';
+		for (const skill of Object.values(Skills)) {
+			str += `${skill.emoji} ${skill.name}: ${msg.author.skillLevel(
+				skill.id
+			)} (${(msg.author.settings.get(
+				`skills.${skill.id}`
+			) as number).toLocaleString()} xp)\n`;
 		}
 
 		return msg.send(`${msg.author.minionName}'s Stats:
@@ -498,6 +510,24 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
+	async farm(msg: KlasaMessage, [quantity, seedName, upgradeType]: [number, string, string]) {
+		await this.client.commands
+			.get('farm')!
+			.run(msg, [quantity, seedName, upgradeType])
+			.catch(err => {
+				throw err;
+			});
+	}
+
+	async harvest(msg: KlasaMessage, [seedType]: [string]) {
+		await this.client.commands
+			.get('harvest')!
+			.run(msg, [seedType])
+			.catch(err => {
+				throw err;
+			});
+	}
+
 	async offer(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
 		await this.client.commands
 			.get('offer')!
@@ -592,21 +622,21 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		// Check food
-		if (
-			1 > 2 &&
-			monster.healAmountNeeded &&
-			monster.attackStyleToUse &&
-			monster.attackStylesUsed
-		) {
+		let foodStr: undefined | string = undefined;
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-			await removeFoodFromUser(
-				this.client,
-				msg.author,
-				healAmountNeeded * quantity,
-				Math.ceil(healAmountNeeded / quantity),
-				monster.name
-			);
+
+			const [result] = await removeFoodFromUser({
+				client: this.client,
+				user: msg.author,
+				totalHealingNeeded: healAmountNeeded * quantity,
+				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				activityName: monster.name,
+				attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+			});
+
+			foodStr = result;
 		}
 
 		const combatCalcInfo = combatCalculator(monster, msg.author, quantity);

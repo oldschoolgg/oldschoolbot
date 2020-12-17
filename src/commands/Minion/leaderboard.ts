@@ -6,6 +6,7 @@ import badges from '../../lib/badges';
 import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { Time } from '../../lib/constants';
+import { Minigames } from '../../lib/minions/data/minigames';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
@@ -29,6 +30,13 @@ interface SkillUser {
 	['skills.cooking']?: number;
 }
 
+interface OverallSkillUser {
+	id: string;
+	totalLevel: number;
+	totalXP: number;
+	ironman: boolean;
+}
+
 interface GPUser {
 	id: string;
 	GP: number;
@@ -47,6 +55,7 @@ interface PetUser {
 interface KCUser {
 	id: string;
 	monsterScores: ItemBank;
+	minigameScores: ItemBank;
 }
 
 interface GPLeaderboard {
@@ -62,11 +71,6 @@ interface QPLeaderboard {
 interface PetLeaderboard {
 	lastUpdated: number;
 	list: PetUser[];
-}
-
-interface KCLeaderboard {
-	lastUpdated: number;
-	list: KCUser[];
 }
 
 interface UsernameCache {
@@ -98,20 +102,25 @@ export default class extends BotCommand {
 		list: []
 	};
 
-	public kcLeaderboard: KCLeaderboard = {
-		lastUpdated: 0,
-		list: []
-	};
-
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows the people with the most virtual GP.',
+			description: 'Shows the bots leaderboards.',
 			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
 			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion', 'utility'],
+			examples: [
+				'+lb gp',
+				'+lb kc vorkath',
+				'+lb skills mining',
+				'+lb laps',
+				'+lb cl boss',
+				'+lb sacrifice',
+				'+lb qp'
+			]
 		});
 	}
 
@@ -278,30 +287,30 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
+		const minigame = Minigames.find(game => stringMatches(game.name, name));
 
-		if (!monster) return msg.send(`That's not a valid monster!`);
-
-		const onlyForGuild = msg.flagArgs.server;
-
-		if (Date.now() - this.kcLeaderboard.lastUpdated > CACHE_TIME) {
-			this.kcLeaderboard.list = (
-				await this.query(
-					`SELECT id, "monsterScores" FROM users WHERE "monsterScores"::text <> '{}'::text;`
-				)
-			).map((res: any) => ({ ...res, GP: parseInt(res.GP) }));
-			this.kcLeaderboard.lastUpdated = Date.now();
+		if (!monster && !minigame) {
+			return msg.send(`That's not a valid monster or minigame!`);
 		}
 
-		let list = this.kcLeaderboard.list
-			.filter(user => typeof user.monsterScores[monster.id] === 'number')
+		let key: 'minigameScores' | 'monsterScores' = Boolean(minigame)
+			? 'minigameScores'
+			: 'monsterScores';
+		let entityID = (minigame?.id ?? monster?.id)!.toString();
+		let list = (
+			await this.query(
+				`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5;`
+			)
+		)
+			.filter(user => typeof user[key][entityID] === 'number')
 			.sort((a: KCUser, b: KCUser) => {
-				const aScore = a.monsterScores![monster.id] ?? 0;
-				const bScore = b.monsterScores![monster.id] ?? 0;
+				const aScore = a[key]![entityID] ?? 0;
+				const bScore = b[key]![entityID] ?? 0;
 				return bScore - aScore;
 			})
 			.slice(0, 2000);
 
-		if (onlyForGuild && msg.guild) {
+		if (msg.flagArgs.server && msg.guild) {
 			list = list.filter((kcUser: KCUser) => msg.guild!.members.has(kcUser.id));
 		}
 
@@ -311,26 +320,45 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				.chunk(list, 10)
 				.map(subList =>
 					subList
-						.map(
-							({ id, monsterScores }) =>
-								`**${this.getUsername(id)}:** ${monsterScores[monster.id]} KC`
-						)
+						.map(user => `**${this.getUsername(user.id)}:** ${user[key][entityID]} KC`)
 						.join('\n')
 				),
-			`KC Leaderboard for ${monster.name}`
+			`KC Leaderboard for ${(monster ?? minigame)!.name}`
 		);
 	}
 
 	async skills(msg: KlasaMessage, [inputSkill = 'overall']: [string]) {
 		let res: SkillUser[] = [];
-		const skill = Object.values(Skills).find(_skill =>
+		let overallUsers: OverallSkillUser[] = [];
+
+		const skillsVals = Object.values(Skills);
+
+		const skill = skillsVals.find(_skill =>
 			_skill.aliases.some(name => stringMatches(name, inputSkill))
 		);
 
 		if (inputSkill === 'overall') {
 			res = await this.query(
-				`SELECT id, "skills.cooking" + "skills.woodcutting" + "skills.mining" + "skills.smithing" + "skills.agility" + "skills.fishing" + "skills.firemaking" + "skills.runecraft" + "skills.crafting" + "skills.prayer" + "skills.fletching" as totalxp FROM users ORDER BY totalxp DESC LIMIT 2000;`
+				`SELECT id,  ${skillsVals.map(s => `"skills.${s.id}"`)}, ${skillsVals
+					.map(s => `"skills.${s.id}"`)
+					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 500;`
 			);
+			overallUsers = res
+				.map(user => {
+					let totalLevel = 0;
+					for (const skill of skillsVals) {
+						totalLevel += convertXPtoLVL(
+							Number(user[`skills.${skill.id}` as keyof SkillUser]) as any
+						);
+					}
+					return {
+						id: user.id,
+						totalLevel,
+						ironman: user['minion.ironman'],
+						totalXP: Number(user.totalxp!)
+					};
+				})
+				.sort((a, b) => b.totalLevel - a.totalLevel);
 		} else {
 			if (!skill) {
 				return msg.send(`That's not a valid skill.`);
@@ -351,23 +379,34 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			res = res.filter((user: SkillUser) => user['minion.ironman']);
 		}
 
+		if (inputSkill === 'overall') {
+			this.doMenu(
+				msg,
+				util.chunk(overallUsers, 10).map(subList =>
+					subList
+						.map((obj: OverallSkillUser) => {
+							return `**${this.getUsername(
+								obj.id
+							)}:** ${obj.totalLevel.toLocaleString()} (${obj.totalXP.toLocaleString()} XP)`;
+						})
+						.join('\n')
+				),
+				`Overall Leaderboard`
+			);
+			return;
+		}
+
 		this.doMenu(
 			msg,
 			util.chunk(res, 10).map(subList =>
 				subList
 					.map((obj: SkillUser) => {
-						const objKey =
-							inputSkill === 'overall'
-								? 'totalxp'
-								: (`skills.${skill?.id}` as keyof SkillUser);
-
+						const objKey = `skills.${skill?.id}` as keyof SkillUser;
 						const skillXP = Number(obj[objKey] ?? 0);
-						const skillLVL =
-							inputSkill === 'overall' ? '' : `(${convertXPtoLVL(skillXP)})`;
 
 						return `**${this.getUsername(
 							obj.id
-						)}:** ${skillXP.toLocaleString()} xp ${skillLVL}`;
+						)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(skillXP)})`;
 					})
 					.join('\n')
 			),

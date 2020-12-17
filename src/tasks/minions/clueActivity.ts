@@ -6,7 +6,8 @@ import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ clueID, userID, channelID, quantity, duration }: ClueActivityTaskOptions) {
+	async run(data: ClueActivityTaskOptions) {
+		const { clueID, userID, channelID, quantity, duration } = data;
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
@@ -32,6 +33,6 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		handleTripFinish(this.client, user, channelID, str);
+		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data);
 	}
 }

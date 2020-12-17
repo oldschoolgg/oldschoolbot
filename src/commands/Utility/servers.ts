@@ -28,7 +28,8 @@ export default class extends BotCommand {
 			aliases: ['servers', 'communities', 'community'],
 			description: 'Shows some community servers related to OSRS.',
 			examples: ['+servers'],
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

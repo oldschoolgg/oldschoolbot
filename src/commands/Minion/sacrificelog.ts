@@ -16,7 +16,11 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 10,
 			aliases: ['sl'],
-			usage: '[type:string]'
+			usage: '[type:string]',
+			categoryFlags: ['minion'],
+			description:
+				"The same thing as the collection log, except sourced from the items you've sacrificed.",
+			examples: ['+sacrificelog boss', '+sl skilling']
 		});
 	}
 

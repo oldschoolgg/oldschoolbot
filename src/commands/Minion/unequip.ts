@@ -18,7 +18,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<melee|mage|range|skilling|misc> (item:...item)',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion'],
+			description: 'Unequips items from one of your gear setups.',
+			examples: ['+unequip range Twisted bow', '+unequip melee Abyssal whip']
 		});
 	}
 

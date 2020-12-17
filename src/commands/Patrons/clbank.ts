@@ -12,7 +12,8 @@ export default class extends BotCommand {
 			cooldown: 120,
 			description:
 				'Allows you to see your entire collection log, which is all items ever recorded in your collection log, viewed in the form of a bank.',
-			examples: ['+clbank']
+			examples: ['+clbank'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

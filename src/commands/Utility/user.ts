@@ -11,7 +11,8 @@ export default class extends BotCommand {
 			examples: ['+user', '+user @Magnaboy'],
 			usage: '[Member:member]',
 			requiredPermissions: ['EMBED_LINKS'],
-			runIn: ['text']
+			runIn: ['text'],
+			categoryFlags: ['utility']
 		});
 	}
 

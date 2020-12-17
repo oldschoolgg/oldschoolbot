@@ -29,7 +29,8 @@ export default class extends BotCommand {
 				'+bstats monsters',
 				'+bstats clues',
 				'+bstats icons'
-			]
+			],
+			categoryFlags: ['patron', 'utility']
 		});
 	}
 
