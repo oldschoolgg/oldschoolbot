@@ -25,6 +25,8 @@ Client.defaultUserSchema
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
 	.add('sacrificedBank', 'any', { default: {} })
+	.add('honour_level', 'integer', { default: 1 })
+	.add('honour_points', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
