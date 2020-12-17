@@ -62,42 +62,42 @@ export const plunderRooms = [
 		number: 1,
 		thievingLevel: 21,
 		xp: 720,
-		rockyChance: 41355,
+		rockyChance: 41_355,
 		roomTable: Room1Table
 	},
 	{
 		number: 2,
 		thievingLevel: 31,
 		xp: 1165,
-		rockyChance: 29540,
+		rockyChance: 29_540,
 		roomTable: Room2Table
 	},
 	{
 		number: 3,
 		thievingLevel: 41,
 		xp: 2005,
-		rockyChance: 25847,
+		rockyChance: 25_847,
 		roomTable: Room3Table
 	},
 	{
 		number: 4,
 		thievingLevel: 51,
 		xp: 2958,
-		rockyChance: 20678,
+		rockyChance: 20_678,
 		roomTable: Room4Table
 	},
 	{
 		number: 5,
 		thievingLevel: 61,
 		xp: 4280,
-		rockyChance: 20678,
+		rockyChance: 20_678,
 		roomTable: Room5Table
 	},
 	{
 		number: 6,
 		thievingLevel: 71,
 		xp: 6465,
-		rockyChance: 20678,
+		rockyChance: 20_678,
 		roomTable: Room6Table
 	},
 	{
@@ -105,14 +105,14 @@ export const plunderRooms = [
 		petChance: 2000,
 		thievingLevel: 71,
 		xp: 9738,
-		rockyChance: 10339,
+		rockyChance: 10_339,
 		roomTable: Room7Table
 	},
 	{
 		number: 8,
 		petChance: 2000,
 		thievingLevel: 91,
-		xp: 12423,
+		xp: 12_423,
 		rockyChance: 6893,
 		roomTable: Room8Table
 	}

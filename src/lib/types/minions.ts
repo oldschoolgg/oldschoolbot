@@ -188,7 +188,7 @@ export interface MinigameTickerTaskData {
 		| FishingTrawlerActivityTaskOptions
 		| TitheFarmActivityTaskOptions
 		| DeliverPresentsActivityTaskOptions
-  		| PlunderActivityTaskOptions
+		| PlunderActivityTaskOptions
 	)[];
 }
 
