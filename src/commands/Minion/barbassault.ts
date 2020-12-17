@@ -1,6 +1,7 @@
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
@@ -240,10 +241,19 @@ export default class extends BotCommand {
 		waveTime = reduceNumByPercent(waveTime, strengthPercent);
 		boosts.push(`${strengthPercent}% for ${fighter.username}'s melee gear`);
 
-		// Up to 20% speed boost for team total level
-		const totalLevelPercent = round(calcWhatPercent(totalLevel - 4, 20 - 4) / 5, 2);
-		boosts.push(`${totalLevelPercent}% for team levels`);
+		// Up to 30% speed boost for team total honour level
+		const totalLevelPercent = round(calcWhatPercent(totalLevel - 4, 20 - 4) / 3.3, 2);
+		boosts.push(`${totalLevelPercent}% for team honour levels`);
 		waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
+
+		// Up to 10%, at 200 kc, speed boost for team average kc
+		const averageKC =
+			addArrayOfNumbers(
+				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
+			) / 4;
+		const kcPercent = round(calcWhatPercent(averageKC, 200) / 5, 2);
+		boosts.push(`${kcPercent}% for average KC`);
+		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
 		const quantity = Math.floor(msg.author.maxTripLength / waveTime);
 		const duration = quantity * waveTime;
