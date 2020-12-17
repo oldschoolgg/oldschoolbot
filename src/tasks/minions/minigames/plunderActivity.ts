@@ -8,7 +8,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
 export default class extends Task {
-	async run({ channelID, quantity, rooms, duration, userID }: PlunderActivityTaskOptions) {
+	async run(data: PlunderActivityTaskOptions) {
+		const { channelID, quantity, rooms, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.PyramidPlunder, quantity);
@@ -56,7 +57,8 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x plunder`);
 				return this.client.commands.get('plunder')!.run(res, []);
 			},
-			image
+			image,
+			data
 		);
 	}
 }
