@@ -24,6 +24,7 @@ export default function rangeCalculator(
 	if (rangeWeapon === null || rangeWeapon.weapon === null || combatStyle === null) {
 		throw 'No range weapon is equipped or combatStyle is not choosen.';
 	}
+	const rangeGear = user.settings.get(UserSettings.Gear.Range);
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Range))
 	);
