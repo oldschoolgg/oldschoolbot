@@ -14,6 +14,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
 import Crafting from '../../lib/skilling/skills/crafting';
+import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Mining from '../../lib/skilling/skills/mining';
@@ -26,10 +27,12 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	BarbarianAssaultActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
@@ -85,6 +88,7 @@ export default class extends Extendable {
 - Train firemaking with \`+light\`
 - Train crafting with \`+craft\`
 - Train fletching with \`+fletch\`
+- Train farming with \`+farm\` or \`+harvest\`
 - Gain quest points with \`+quest\`
 - Pat your minion with \`+minion pat\``;
 		}
@@ -281,6 +285,10 @@ export default class extends Extendable {
 			case Activity.FightCaves: {
 				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
 			}
+			case Activity.TitheFarm: {
+				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
+			}
+
 			case Activity.Fletching: {
 				const data = currentTask as FletchingActivityTaskOptions;
 
@@ -301,6 +309,18 @@ export default class extends Extendable {
 				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
 					data.itemID
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Farming: {
+				const data = currentTask as FarmingActivityTaskOptions;
+
+				const plants = Farming.Plants.find(plants => plants.name === data.plantsName);
+
+				return `${this.minionName} is currently farming ${data.quantity}x ${
+					plants!.name
+				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
+					SkillsEnum.Farming
+				)}.`;
 			}
 
 			case Activity.Sawmill: {
@@ -351,6 +371,16 @@ export default class extends Extendable {
 				const data = currentTask as PickpocketActivityTaskOptions;
 				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID)!;
 				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
+			}
+
+			case Activity.DeliverPresents: {
+				return `${this.minionName} is currently delivering presents. ${formattedDuration}`;
+			}
+
+			case Activity.BarbarianAssault: {
+				const data = currentTask as BarbarianAssaultActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 		}
 	}

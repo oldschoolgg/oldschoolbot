@@ -120,15 +120,15 @@ async function _setup(
 							return;
 						}
 
-						// +1 because of leader
-						if (usersWhoConfirmed.length >= options.maxSize + 1) {
+						// Add the user
+						usersWhoConfirmed.push(user);
+						updateUsersIn();
+
+						if (usersWhoConfirmed.length >= options.maxSize) {
 							collector.stop('everyoneJoin');
 							break;
 						}
 
-						// Add the user
-						usersWhoConfirmed.push(user);
-						updateUsersIn();
 						break;
 					}
 

@@ -942,6 +942,170 @@ const Createables: Createable[] = [
 		}),
 		noCl: true
 	},
+	{
+		name: 'Ultracompost',
+		inputItems: resolveNameBank({
+			Supercompost: 1,
+			'Volcanic ash': 2
+		}),
+		outputItems: resolveNameBank({
+			Ultracompost: 1
+		})
+	},
+	{
+		name: 'Tomatoes(5)',
+		inputItems: resolveNameBank({
+			Tomato: 5
+		}),
+		outputItems: resolveNameBank({
+			'Tomatoes(5)': 1
+		})
+	},
+	{
+		name: 'Tomato',
+		inputItems: resolveNameBank({
+			'Tomatoes(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Tomato: 5
+		})
+	},
+	{
+		name: 'Apples(5)',
+		inputItems: resolveNameBank({
+			'Cooking apple': 5
+		}),
+		outputItems: resolveNameBank({
+			'Apples(5)': 1
+		})
+	},
+	{
+		name: 'Cooking apple',
+		inputItems: resolveNameBank({
+			'Apples(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Cooking Apple': 5
+		})
+	},
+	{
+		name: 'Bananas(5)',
+		inputItems: resolveNameBank({
+			Banana: 5
+		}),
+		outputItems: resolveNameBank({
+			'Bananas(5)': 1
+		})
+	},
+	{
+		name: 'Banana',
+		inputItems: resolveNameBank({
+			'Bananas(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Banana: 5
+		})
+	},
+	{
+		name: 'Strawberries(5)',
+		inputItems: resolveNameBank({
+			Strawberry: 5
+		}),
+		outputItems: resolveNameBank({
+			'Strawberries(5)': 1
+		})
+	},
+	{
+		name: 'Strawberry',
+		inputItems: resolveNameBank({
+			'Strawberries(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Strawberry: 5
+		})
+	},
+	{
+		name: 'Oranges(5)',
+		inputItems: resolveNameBank({
+			Orange: 5
+		}),
+		outputItems: resolveNameBank({
+			'Oranges(5)': 1
+		})
+	},
+	{
+		name: 'Orange',
+		inputItems: resolveNameBank({
+			'Oranges(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Orange: 5
+		})
+	},
+	{
+		name: 'Potatoes(10)',
+		inputItems: resolveNameBank({
+			Potato: 10
+		}),
+		outputItems: resolveNameBank({
+			'Potatoes(10)': 1
+		})
+	},
+	{
+		name: 'Potato',
+		inputItems: resolveNameBank({
+			'Potatoes(10)': 1
+		}),
+		outputItems: resolveNameBank({
+			Potato: 10
+		})
+	},
+	{
+		name: 'Onions(10)',
+		inputItems: resolveNameBank({
+			Onion: 10
+		}),
+		outputItems: resolveNameBank({
+			'Onions(10)': 1
+		})
+	},
+	{
+		name: 'Onion',
+		inputItems: resolveNameBank({
+			'Onions(10)': 1
+		}),
+		outputItems: resolveNameBank({
+			Onion: 10
+		})
+	},
+	{
+		name: 'Cabbages(10)',
+		inputItems: resolveNameBank({
+			Cabbage: 10
+		}),
+		outputItems: resolveNameBank({
+			'Cabbages(10)': 1
+		})
+	},
+	{
+		name: 'Cabbage',
+		inputItems: resolveNameBank({
+			'Cabbages(10)': 1
+		}),
+		outputItems: resolveNameBank({
+			Cabbage: 10
+		})
+	},
+	/* {
+		name: 'Toxic blowpipe (empty)',
+		inputItems: {
+			[itemID('Toxic blowpipe')]: 1
+		},
+		outputItems: {
+			[itemID('Toxic blowpipe (empty)')]: 1,
+			[itemID(`Zulrah's Scales`)]: 25000
+		}
+	}, */
 	// Nightmare
 	{
 		name: 'Eldritch nightmare staff',

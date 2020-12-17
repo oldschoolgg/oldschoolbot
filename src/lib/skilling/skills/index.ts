@@ -2,6 +2,7 @@ import { Skill } from '../types';
 import Agility from './agility';
 import Cooking from './cooking';
 import Crafting from './crafting';
+import Farming from './farming';
 import Firemaking from './firemaking';
 import Fishing from './fishing';
 import Fletching from './fletching';
@@ -24,7 +25,8 @@ export const Skills: Record<string, Skill> = {
 	Prayer,
 	Runecraft,
 	Fletching,
-	Thieving
+	Thieving,
+	Farming
 };
 
 export default Skills;

@@ -28,6 +28,18 @@ const wintertodtLog = resolveItems([
 	'Dragon axe'
 ]);
 
+const barbAssaultLog = resolveItems([
+	'Pet penance queen',
+	'Fighter torso',
+	'Fighter hat',
+	'Healer hat',
+	'Runner hat',
+	'Ranger hat',
+	'Runner boots',
+	'Penance gloves',
+	'Penance skirt'
+]);
+
 const zalcanoLog = resolveItems([
 	'Crystal shard',
 	'Zalcano shard',
@@ -1201,6 +1213,16 @@ export const holiday: CollectionLogData = {
 		'Skeleton leggings',
 		'Skeleton gloves',
 		'Skeleton boots'
+	]),
+	Christmas: resolveItems([
+		'Santa mask',
+		'Santa jacket',
+		'Santa pantaloons',
+		'Santa gloves',
+		'Santa boots',
+		'Sack of presents',
+		'Christmas cracker',
+		'Santa hat'
 	])
 };
 
@@ -1251,6 +1273,7 @@ export const capes: CollectionLogData = {
 		'Fletching hood',
 		'Runecraft hood',
 		'Thieving hood',
+		'Farming hood',
 		'Quest point hood'
 	]),
 	capes: resolveItems([
@@ -1266,6 +1289,7 @@ export const capes: CollectionLogData = {
 		'Fletching cape',
 		'Runecraft cape',
 		'Thieving cape',
+		'Farming cape',
 		'Quest point cape'
 	]),
 	'trimmed capes': resolveItems([
@@ -1281,6 +1305,7 @@ export const capes: CollectionLogData = {
 		'Fletching cape(t)',
 		'Runecraft cape(t)',
 		'Thieving cape(t)',
+		'Farming cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1584,5 +1609,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Barrows',
 		aliases: ['barrows'],
 		items: barrows
+	},
+	{
+		name: 'Barbarian Assault',
+		aliases: ['ba', 'barb assault', 'barbarian assault'],
+		items: { 1: barbAssaultLog }
 	}
 ];

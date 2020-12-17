@@ -22,7 +22,8 @@ function hasEliteArdougneDiary(user: KlasaUser): boolean {
 }
 
 export default class extends Task {
-	async run({ channelID, quantity, duration, userID }: FishingTrawlerActivityTaskOptions) {
+	async run(data: FishingTrawlerActivityTaskOptions) {
+		const { channelID, quantity, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 
 		user.incrementMinionDailyDuration(duration);
@@ -83,7 +84,8 @@ export default class extends Task {
 				user.log(`continued fishing trawler`);
 				return this.client.commands.get('fishingtrawler')!.run(res, []);
 			},
-			image
+			image,
+			data
 		);
 	}
 }

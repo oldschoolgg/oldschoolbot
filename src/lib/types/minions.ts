@@ -1,4 +1,5 @@
 import { Activity, Tasks } from '../constants';
+import { PatchTypes } from '../farming';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 
@@ -97,12 +98,24 @@ export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
+export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	plantsName: string | null;
+	channelID: string;
+	quantity: number;
+	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
+	patchType: PatchTypes.PatchData;
+	getPatchType: string;
+	planting: boolean;
+	currentDate: number;
+}
+
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameIDsEnum;
 	quantity: number;
 }
 
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
+export interface DeliverPresentsActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
 	jadDeathChance: number;
@@ -118,6 +131,8 @@ export interface NightmareActivityTaskOptions extends MinigameActivityTaskOption
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
+
+export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface AnimatedArmourActivityTaskOptions extends MinigameActivityTaskOptions {
 	armourID: string;
@@ -139,6 +154,12 @@ export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions 
 export interface ZalcanoActivityTaskOptions extends MinigameActivityTaskOptions {
 	isMVP: boolean;
 	performance: number;
+}
+
+export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {
+	leader: string;
+	users: string[];
+	totalLevel: number;
 }
 
 export interface MonsterKillingTickerTaskData {
@@ -165,7 +186,9 @@ export interface MinigameTickerTaskData {
 		| NightmareActivityTaskOptions
 		| SepulchreActivityTaskOptions
 		| FishingTrawlerActivityTaskOptions
-		| PlunderActivityTaskOptions
+		| TitheFarmActivityTaskOptions
+		| DeliverPresentsActivityTaskOptions
+  	| PlunderActivityTaskOptions
 	)[];
 }
 
