@@ -1450,7 +1450,8 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	Angler: anglerOutfit,
-	Zalcano: zalcanoLog
+	Zalcano: zalcanoLog,
+	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky'])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
