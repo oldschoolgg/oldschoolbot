@@ -208,6 +208,11 @@ const DwarvenCrateTable = new LootTable()
 	.add('Beer')
 	.add('Kebab');
 
+export const NestBoxes = new LootTable()
+	.add('Nest box (seeds)', 1, 12)
+	.add('Nest box (ring)', 1, 5)
+	.add('Nest box (empty)', 1, 3);
+
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',

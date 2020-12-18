@@ -34,6 +34,8 @@ export namespace UserSettings {
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
 	export const SacrificedValue = T<number>('sacrificedValue');
 	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
+	export const HonourLevel = T<number>('honour_level');
+	export const HonourPoints = T<number>('honour_points');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
