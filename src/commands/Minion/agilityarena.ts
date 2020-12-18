@@ -111,7 +111,8 @@ export default class extends BotCommand {
 			description: 'Sends your minion to complete the Brimhaven Agility Arena.',
 			examples: ['+agilityarena'],
 			categoryFlags: ['minion', 'skilling'],
-			subcommands: true
+			subcommands: true,
+			aliases: ['aa']
 		});
 	}
 
