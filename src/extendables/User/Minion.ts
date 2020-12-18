@@ -28,6 +28,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
+	BarbarianAssaultActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CookingActivityTaskOptions,
@@ -61,7 +62,11 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { NightmareActivityTaskOptions } from './../../lib/types/minions';
+import {
+	NightmareActivityTaskOptions,
+	PlunderActivityTaskOptions,
+	SepulchreActivityTaskOptions
+} from './../../lib/types/minions';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -355,9 +360,15 @@ export default class extends Extendable {
 			}
 
 			case Activity.Sepulchre: {
-				const data = currentTask as NightmareActivityTaskOptions;
+				const data = currentTask as SepulchreActivityTaskOptions;
 
 				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
+			}
+
+			case Activity.Plunder: {
+				const data = currentTask as PlunderActivityTaskOptions;
+
+				return `${this.minionName} is currently doing Pyramid Plunder x ${data.quantity}x times. ${formattedDuration}`;
 			}
 
 			case Activity.FishingTrawler: {
@@ -378,6 +389,12 @@ export default class extends Extendable {
 
 			case Activity.DeliverPresents: {
 				return `${this.minionName} is currently delivering presents. ${formattedDuration}`;
+			}
+
+			case Activity.BarbarianAssault: {
+				const data = currentTask as BarbarianAssaultActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 		}
 	}

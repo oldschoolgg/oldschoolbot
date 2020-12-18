@@ -28,6 +28,18 @@ const wintertodtLog = resolveItems([
 	'Dragon axe'
 ]);
 
+const barbAssaultLog = resolveItems([
+	'Pet penance queen',
+	'Fighter torso',
+	'Fighter hat',
+	'Healer hat',
+	'Runner hat',
+	'Ranger hat',
+	'Runner boots',
+	'Penance gloves',
+	'Penance skirt'
+]);
+
 const zalcanoLog = resolveItems([
 	'Crystal shard',
 	'Zalcano shard',
@@ -1459,7 +1471,8 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	Angler: anglerOutfit,
-	Zalcano: zalcanoLog
+	Zalcano: zalcanoLog,
+	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky'])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1624,5 +1637,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Barrows',
 		aliases: ['barrows'],
 		items: barrows
+	},
+	{
+		name: 'Barbarian Assault',
+		aliases: ['ba', 'barb assault', 'barbarian assault'],
+		items: { 1: barbAssaultLog }
 	}
 ];
