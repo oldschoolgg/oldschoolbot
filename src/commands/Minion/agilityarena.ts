@@ -19,15 +19,18 @@ import { skillsMeetRequirements } from '../../lib/util/skillsMeetRequirements';
 const buyables = [
 	{
 		item: getOSItem('Toadflax'),
-		cost: 3
+		cost: 3,
+		aliases: []
 	},
 	{
 		item: getOSItem('Snapdragon'),
-		cost: 10
+		cost: 10,
+		aliases: []
 	},
 	{
 		item: getOSItem("Pirate's hook"),
-		cost: 800
+		cost: 800,
+		aliases: ['pirates']
 	}
 ];
 
@@ -152,7 +155,11 @@ export default class extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage, [input = '', qty = 1]: [string | undefined, number | undefined]) {
-		const buyable = buyables.find(i => stringMatches(input, i.item.name));
+		const buyable = buyables.find(
+			i =>
+				stringMatches(input, i.item.name) ||
+				i.aliases.some(alias => stringMatches(alias, input))
+		);
 		const isNotValid = !buyable && !['recolor', 'xp'].includes(input);
 		if (isNotValid) {
 			return msg.send(

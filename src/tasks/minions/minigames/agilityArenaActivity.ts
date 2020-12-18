@@ -9,7 +9,7 @@ import { roll } from '../../../lib/data/monsters/raids';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import { calcWhatPercent, formatDuration, itemID, reduceNumByPercent } from '../../../lib/util';
+import { formatDuration, itemID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { randomVariation } from '../../../lib/util/randomVariation';
 
@@ -18,18 +18,13 @@ export default class extends Task {
 		const { channelID, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const currentScore = user.getMinigameScore(MinigameIDsEnum.AgilityArena);
 
-		// You get 1 ticket per minute at best, slowed down by up to
-		// 10% based on your agility arena score.
+		// You get 1 ticket per minute at best without diary
 		let timePerTicket = Time.Minute;
-		const experiencePercent = calcWhatPercent(Math.min(currentScore, 200), 200) / 5;
-		timePerTicket = reduceNumByPercent(timePerTicket, experiencePercent);
-
 		let ticketsReceived = Math.floor(duration / timePerTicket);
 
-		// Approximately 20k xp/hr (333xp per min) from the obstacles
-		const agilityXP = randomVariation((duration / Time.Minute) * 333, 1);
+		// Approximately 205 xp/hr (416xp per min) from the obstacles
+		const agilityXP = randomVariation((duration / Time.Minute) * 416, 1);
 
 		// 10% bonus tickets for karamja med
 		let bonusTickets = 0;
@@ -50,7 +45,9 @@ export default class extends Task {
 			user.minionName
 		} finished doing the Brimhaven Agility Arena for ${formatDuration(
 			duration
-		)}, you received ${agilityXP.toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets. ${experiencePercent}% boost for experience doing the arena.`;
+		)}, you received ${Math.floor(
+			agilityXP
+		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
 
 		if (nextLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
