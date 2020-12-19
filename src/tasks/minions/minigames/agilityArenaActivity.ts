@@ -9,7 +9,7 @@ import { roll } from '../../../lib/data/monsters/raids';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID } from '../../../lib/util';
+import { calcWhatPercent, formatDuration, itemID, reduceNumByPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { randomVariation } from '../../../lib/util/randomVariation';
 
@@ -18,13 +18,15 @@ export default class extends Task {
 		const { channelID, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
+		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary
 		let timePerTicket = Time.Minute;
 		let ticketsReceived = Math.floor(duration / timePerTicket);
 
 		// Approximately 25k xp/hr (416xp per min) from the obstacles
-		const agilityXP = randomVariation((duration / Time.Minute) * 416, 1);
+		let agilityXP = randomVariation((duration / Time.Minute) * 416, 1);
+		agilityXP = reduceNumByPercent(agilityXP, 100 - calcWhatPercent(currentLevel, 99));
 
 		// 10% bonus tickets for karamja med
 		let bonusTickets = 0;
@@ -37,7 +39,6 @@ export default class extends Task {
 
 		user.incrementMinigameScore(MinigameIDsEnum.AgilityArena, ticketsReceived);
 
-		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 		await user.addXP(SkillsEnum.Agility, agilityXP);
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
