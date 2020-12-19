@@ -39,6 +39,7 @@ export function initCustomItems() {
 	setCustomItem(6199, 'Tradeable Mystery Box', getOSItem('Mystery box'));
 	setCustomItem(3062, 'Pet Mystery Box', getOSItem('Mystery box'));
 	setCustomItem(3713, 'Holiday Mystery Box', getOSItem('Mystery box'));
+	setCustomItem(13345, 'Tester Gift Box', getOSItem('Mystery box'));
 	setCustomItem(5507, 'Remy', getOSItem('Herbi'));
 	setCustomItem(3714, 'Shelldon', getOSItem('Herbi'));
 	setCustomItem(9620, 'Doug', getOSItem('Herbi'));

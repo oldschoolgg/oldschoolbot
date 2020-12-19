@@ -10,6 +10,7 @@ import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
 import { itemID, itemNameFromID, removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
+import { LampTable } from './xpLamps';
 
 interface Openable {
 	name: string;
@@ -214,6 +215,24 @@ export const NestBoxes = new LootTable()
 	.add('Nest box (ring)', 1, 5)
 	.add('Nest box (empty)', 1, 3);
 
+const testerGiftTable = new LootTable()
+	.add('Tradeable mystery box', [1, 3])
+	.add('Reward casket (master)', [3, 6])
+	.add('Reward casket (beginner)', [3, 9])
+	.add('Reward casket (hard)', [3, 7])
+	.add('Dwarven crate')
+	.add(NestBoxes, 100)
+	.add('Holiday Mystery box')
+	.add('Pet Mystery box')
+	.add('Untradeable Mystery box')
+	.add('Abyssal dragon bones', [100, 500])
+	.add('Coins', [20_000_000, 100_000_000])
+	.add(LampTable, [1, 3])
+	.add('Clue scroll (beginner)', [5, 10])
+	.add('Clue scroll (medium)', [4, 9])
+	.add('Clue scroll (hard)', [3, 6])
+	.add('Clue scroll (master)', [2, 5]);
+
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
@@ -262,6 +281,13 @@ const Openables: Openable[] = [
 		itemID: 19939,
 		aliases: ['untradeables mystery box', 'umb'],
 		table: () => getRandomItem(false),
+		emoji: Emoji.MysteryBox
+	},
+	{
+		name: 'Tester Gift box',
+		itemID: itemID('Tester gift box'),
+		aliases: ['tester gift box', 'tgb'],
+		table: testerGiftTable,
 		emoji: Emoji.MysteryBox
 	},
 	{
