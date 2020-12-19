@@ -64,6 +64,14 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 			[itemID(`Supercompost`)]: 1
 		},
 		titheFarmPoints: 5
+	},
+	{
+		name: `Bologa's blessing`,
+		aliases: ['bologa'],
+		outputItems: {
+			[itemID(`Bologa's blessing`)]: 10
+		},
+		titheFarmPoints: 1
 	}
 ];
 
