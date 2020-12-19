@@ -1,4 +1,3 @@
-import { itemID } from 'oldschooljs/dist/util';
 import { randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -13,15 +12,12 @@ import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
 import { GearSetupTypes } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
-import { hasMeleeVoidEquipped } from '../../gear/functions/hasMeleeVoidEquipped';
-import hasItemEquipped from '../../gear/functions/hasItemEquipped';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 interface MeleeStrengthWeaponBonus {
 	id: number;
 	damageBoost: number;
 	againstAttribute?: string;
-	againstMonster?: string;
+	againstMonster?: string[];
 	wildernessBonus?: boolean;
 }
 
@@ -35,7 +31,7 @@ const meleeStrengthWeaponBonuses: MeleeStrengthWeaponBonus[] = [
 	{
 		id: itemID('Leaf-bladed battleaxe'),
 		damageBoost: 1.175,
-		againstMonster: 'kurask'
+		againstMonster: ['kurask', 'turoth']
 	},
 	{
 		id: itemID('Dragon hunter lance'),
