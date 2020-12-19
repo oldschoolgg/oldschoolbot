@@ -36,11 +36,13 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.AnimatedArmour:
 		case Activity.Cyclops:
 		case Activity.Sepulchre:
+		case Activity.Plunder:
 		case Activity.Zalcano:
 		case Activity.FishingTrawler:
 		case Activity.TitheFarm:
 		case Activity.DeliverPresents:
 		case Activity.BarbarianAssault:
+		case Activity.AgilityArena:
 			return Tasks.MinigameTicker;
 		default: {
 			throw new Error(`Unrecognized activity`);

@@ -52,6 +52,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.SawmillActivity;
 		case Activity.Sepulchre:
 			return Tasks.SepulchreActivity;
+		case Activity.Plunder:
+			return Tasks.PlunderActivity;
 		case Activity.FishingTrawler:
 			return Tasks.FishingTrawler;
 		case Activity.Zalcano:
@@ -66,5 +68,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.DeliverPresents;
 		case Activity.BarbarianAssault:
 			return Tasks.BarbarianAssault;
+		case Activity.AgilityArena:
+			return Tasks.AgilityArena;
 	}
 }

@@ -40,6 +40,17 @@ const barbAssaultLog = resolveItems([
 	'Penance skirt'
 ]);
 
+const agilityArenaLog = resolveItems([
+	'Agility arena ticket',
+	"Pirate's hook",
+	'Brimhaven graceful hood',
+	'Brimhaven graceful top',
+	'Brimhaven graceful legs',
+	'Brimhaven graceful gloves',
+	'Brimhaven graceful boots',
+	'Brimhaven graceful cape'
+]);
+
 const zalcanoLog = resolveItems([
 	'Crystal shard',
 	'Zalcano shard',
@@ -1463,7 +1474,9 @@ export const skillingLog: CollectionLogData = {
 	]),
 	Angler: anglerOutfit,
 	Farmer: farmersOutfit,
-	Zalcano: zalcanoLog
+	Zalcano: zalcanoLog,
+	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
+	AgilityArena: agilityArenaLog
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1627,5 +1640,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Barbarian Assault',
 		aliases: ['ba', 'barb assault', 'barbarian assault'],
 		items: { 1: barbAssaultLog }
+	},
+	{
+		name: 'Agility Arena',
+		aliases: ['aa', 'agility arena'],
+		items: { 1: agilityArenaLog }
 	}
 ];

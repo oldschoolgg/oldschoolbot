@@ -66,7 +66,7 @@ export default class extends Task {
 
 			user.incrementMinigameScore(MinigameIDsEnum.BarbarianAssault, quantity);
 
-			user.settings.update(
+			await user.settings.update(
 				UserSettings.HonourPoints,
 				user.settings.get(UserSettings.HonourPoints) + totalPoints
 			);

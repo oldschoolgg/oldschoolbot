@@ -8,11 +8,13 @@ const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
 const janeChatHead = fs.readFileSync('./src/lib/resources/images/jane.png');
 const santaChatHead = fs.readFileSync('./src/lib/resources/images/santa.png');
+const izzyChatHead = fs.readFileSync('./src/lib/resources/images/izzy.png');
 
 export const chatHeads = {
 	mejJal: mejJalChatHead,
 	jane: janeChatHead,
-	santa: santaChatHead
+	santa: santaChatHead,
+	izzy: izzyChatHead
 };
 
 export default function chatHeadImage({
