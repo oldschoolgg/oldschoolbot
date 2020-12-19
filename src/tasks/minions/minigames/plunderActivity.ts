@@ -14,7 +14,10 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.PyramidPlunder, quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
-		const completedRooms = [allRooms.length < 2 ? allRooms[allRooms.length - 1] : allRooms[allRooms.length - 2], allRooms[allRooms.length - 1]];
+		const completedRooms = [
+			allRooms.length < 2 ? allRooms[allRooms.length - 1] : allRooms[allRooms.length - 2],
+			allRooms[allRooms.length - 1]
+		];
 		const loot = new Bank();
 		let amountUrns = 0;
 		let totalAmountUrns = 0;
