@@ -148,11 +148,14 @@ export default class extends BotCommand {
 			}
 		);
 
-		return msg.send(
-			`${msg.author.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(
-				duration
-			)}.`
-		);
+		let str = `${
+			msg.author.minionName
+		} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
+
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+		return msg.send(str);
 	}
 
 	async buy(msg: KlasaMessage, [input = '', qty = 1]: [string | undefined, number | undefined]) {
