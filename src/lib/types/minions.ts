@@ -162,6 +162,8 @@ export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTas
 	totalLevel: number;
 }
 
+export interface AgilityArenaActivityTaskOptions extends MinigameActivityTaskOptions {}
+
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
 }
