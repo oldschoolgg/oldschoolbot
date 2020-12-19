@@ -234,7 +234,6 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 				);
 			}
 			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), 250);
-			bank.remove('Agility arena ticket', 250);
 			bank.remove(plainGraceful);
 			bank.add(brimhavenGraceful);
 			await msg.author.settings.update(UserSettings.Bank, bank.bank);
