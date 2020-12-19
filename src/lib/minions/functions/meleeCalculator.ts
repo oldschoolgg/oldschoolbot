@@ -1,23 +1,23 @@
-import { itemID } from 'oldschooljs/dist/util';
 import { randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { itemID } from 'oldschooljs/dist/util';
 
+import hasItemEquipped from '../../gear/functions/hasItemEquipped';
+import { hasMeleeVoidEquipped } from '../../gear/functions/hasMeleeVoidEquipped';
 import resolveGearTypeSetting from '../../gear/functions/resolveGearTypeSetting';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
 import { GearSetupTypes } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
-import { hasMeleeVoidEquipped } from '../../gear/functions/hasMeleeVoidEquipped';
-import hasItemEquipped from '../../gear/functions/hasItemEquipped';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 interface MeleeStrengthWeaponBonus {
 	id: number;
 	damageBoost: number;
 	againstAttribute?: string;
-	againstMonster?: string;
+	againstMonster?: string[];
 	wildernessBonus?: boolean;
 }
 
@@ -31,7 +31,7 @@ const meleeStrengthWeaponBonuses: MeleeStrengthWeaponBonus[] = [
 	{
 		id: itemID('Leaf-bladed battleaxe'),
 		damageBoost: 1.175,
-		againstMonster: 'kurask'
+		againstMonster: ['kurask', 'turoth']
 	},
 	{
 		id: itemID('Dragon hunter lance'),
@@ -68,7 +68,7 @@ export default function meleeCalculator(
 
 	// Calculate effective strength level
 	let effectiveStrLvl =
-		Math.round(
+		Math.floor(
 			user.skillLevel(SkillsEnum.Strength) /* + Strength boost: potions etc) * prayerbonus */
 		) + 8;
 	let attackStyle = '';
@@ -90,37 +90,54 @@ export default function meleeCalculator(
 
 	// Multiply by void bonus if wearing full melee void
 	if (hasMeleeVoidEquipped(meleeGear)) {
-    	effectiveStrLvl *= 1.1;
+		effectiveStrLvl *= 1.1;
 	}
 
-	effectiveStrLvl = Math.round(effectiveStrLvl);
+	effectiveStrLvl = Math.floor(effectiveStrLvl);
 
 	// Calculate max hit
-	let maxHit = Math.round((effectiveStrLvl * (gearStats.melee_strength + 64) + 320) / 640);
+	let maxHit = Math.floor((effectiveStrLvl * (gearStats.melee_strength + 64) + 320) / 640);
 
+	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
-	if ((hasItemEquipped(itemID('Salve amulet'), meleeGear) || hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) && currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)) {
-		maxHit *= 7/6;
-	}
-	else if ((hasItemEquipped(itemID('Salve amulet (e)'), meleeGear) || hasItemEquipped(itemID('Salve amulet(ei)'), meleeGear)) && currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)) {
+	if (
+		(hasItemEquipped(itemID('Salve amulet'), meleeGear) ||
+			hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		maxHit *= 7 / 6;
+	} else if (
+		(hasItemEquipped(itemID('Salve amulet (e)'), meleeGear) ||
+			hasItemEquipped(itemID('Salve amulet(ei)'), meleeGear)) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
 		maxHit *= 1.2;
-	}
-	else if (hasItemEquipped(itemID('Black mask'), meleeGear)) {
-		maxHit *= 7/6;
+	} else if (hasItemEquipped(itemID('Black mask'), meleeGear)) {
+		maxHit *= 7 / 6;
 	}
 
-	maxHit = Math.round(maxHit);
+	maxHit = Math.floor(maxHit);
 
 	for (const meleeStrengthBonus of meleeStrengthWeaponBonuses) {
 		if (!hasItemEquipped(meleeStrengthBonus.id, meleeGear)) {
 			continue;
 		}
-		if (meleeStrengthBonus.againstAttribute && currentMonsterData.attributes.find(_attribue => _attribue === meleeStrengthBonus.againstAttribute)) {
+		if (
+			meleeStrengthBonus.againstAttribute &&
+			currentMonsterData.attributes.find(
+				_attribue => _attribue === meleeStrengthBonus.againstAttribute
+			)
+		) {
 			maxHit *= meleeStrengthBonus.damageBoost;
 			break;
 		}
-		if (meleeStrengthBonus.againstMonster === monster.name.toLowerCase()) {
-			maxHit *= meleeStrengthBonus.damageBoost;
+		if (meleeStrengthBonus.againstMonster) {
+			for (const monst of meleeStrengthBonus.againstMonster) {
+				if (monst === monster.name.toLowerCase()) {
+					maxHit *= meleeStrengthBonus.damageBoost;
+					break;
+				}
+			}
 			break;
 		}
 		if (meleeStrengthBonus.wildernessBonus && monster.wildy) {
@@ -129,11 +146,11 @@ export default function meleeCalculator(
 		}
 	}
 
-	maxHit = Math.round(maxHit);
+	maxHit = Math.floor(maxHit);
 
 	// Calculate effective attack level
 	let effectiveAttackLvl =
-		Math.round(
+		Math.floor(
 			user.skillLevel(SkillsEnum.Attack) /* + Attack boost: potions etc) * prayerbonus */
 		) + 8;
 
@@ -146,10 +163,10 @@ export default function meleeCalculator(
 
 	// Multiply by void bonus if wearing full melee void
 	if (hasMeleeVoidEquipped(meleeGear)) {
-    	effectiveAttackLvl *= 1.1;
+		effectiveAttackLvl *= 1.1;
 	}
 
-	effectiveAttackLvl = Math.round(effectiveAttackLvl);
+	effectiveAttackLvl = Math.floor(effectiveAttackLvl);
 
 	// Calculate attack roll
 	let attackRoll = 0;
@@ -166,27 +183,42 @@ export default function meleeCalculator(
 			break;
 	}
 
+	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
-	if ((hasItemEquipped(itemID('Salve amulet'), meleeGear) || hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) && currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)) {
-		attackRoll *= 7/6;
-	}
-	else if ((hasItemEquipped(itemID('Salve amulet (e)'), meleeGear) || hasItemEquipped(itemID('Salve amulet(ei)'), meleeGear)) && currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)) {
+	if (
+		(hasItemEquipped(itemID('Salve amulet'), meleeGear) ||
+			hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		attackRoll *= 7 / 6;
+	} else if (
+		(hasItemEquipped(itemID('Salve amulet (e)'), meleeGear) ||
+			hasItemEquipped(itemID('Salve amulet(ei)'), meleeGear)) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
 		attackRoll *= 1.2;
-	}
-	else if (hasItemEquipped(itemID('Black mask'), meleeGear)) {
-		attackRoll *= 7/6;
+	} else if (hasItemEquipped(itemID('Black mask'), meleeGear)) {
+		attackRoll *= 7 / 6;
 	}
 
-	attackRoll = Math.round(attackRoll);
+	attackRoll = Math.floor(attackRoll);
 
 	// Check if passive weapon accuracy.
-	if (hasItemEquipped(itemID('Arclight'), meleeGear)) {
+	if (
+		hasItemEquipped(itemID('Arclight'), meleeGear) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Demon)
+	) {
 		attackRoll *= 1.7;
+	} else if (
+		hasItemEquipped(itemID('Dragon hunter lance'), meleeGear) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Dragon)
+	) {
+		attackRoll *= 1.2;
 	}
 
 	// Reminder: Apply special attack accuracy here in future
 
-	attackRoll = Math.round(attackRoll);
+	attackRoll = Math.floor(attackRoll);
 
 	// Calculate Defence roll
 	let defenceRoll = currentMonsterData.defenceLevel + 9;
@@ -203,7 +235,7 @@ export default function meleeCalculator(
 			break;
 	}
 
-	defenceRoll = Math.round(defenceRoll);
+	defenceRoll = Math.floor(defenceRoll);
 
 	// Calculate hit chance
 	let hitChance = 0;
