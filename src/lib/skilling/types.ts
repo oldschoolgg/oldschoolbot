@@ -144,6 +144,7 @@ export interface Fletchable {
 
 export interface Mixable {
 	name: string;
+	aliases: string[];
 	id: number;
 	level: number;
 	xp: number;

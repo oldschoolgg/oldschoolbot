@@ -5,6 +5,7 @@ import { Mixable } from '../../../types';
 const Grimy: Mixable[] = [
 	{
 		name: 'Guam leaf',
+		aliases: ['Guam', 'Grimy guam'],
 		id: itemID('Guam leaf'),
 		level: 1,
 		xp: 2.5,
@@ -15,6 +16,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Marrentill',
+		aliases: ['Grimy marrentill'],
 		id: itemID('Marrentill'),
 		level: 5,
 		xp: 3.8,
@@ -25,6 +27,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Tarromin',
+		aliases: ['Grimy tarromin'],
 		id: itemID('Tarromin'),
 		level: 11,
 		xp: 5,
@@ -35,6 +38,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Harralander',
+		aliases: ['Grimy harralander'],
 		id: itemID('Harralander'),
 		level: 20,
 		xp: 6.3,
@@ -45,6 +49,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Ranarr weed',
+		aliases: ['Grimy ranarr', 'Ranarr', 'Grimy ranarr weed'],
 		id: itemID('Ranarr weed'),
 		level: 25,
 		xp: 7.5,
@@ -55,6 +60,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Toadflax',
+		aliases: ['Grimy toadflax'],
 		id: itemID('Toadflax'),
 		level: 30,
 		xp: 8,
@@ -65,6 +71,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Irit leaf',
+		aliases: ['Irit', 'Grimy irit', 'Grimy irit leaf'],
 		id: itemID('Irit leaf'),
 		level: 40,
 		xp: 8.8,
@@ -75,6 +82,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Avantoe',
+		aliases: ['Grimy avantoe'],
 		id: itemID('Avantoe'),
 		level: 48,
 		xp: 10,
@@ -85,6 +93,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Kwuarm',
+		aliases: ['Grimy kwuarm'],
 		id: itemID('Kwuarm'),
 		level: 54,
 		xp: 11.3,
@@ -95,6 +104,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Snapdragon',
+		aliases: ['Grimy snapdragon'],
 		id: itemID('Snapdragon'),
 		level: 59,
 		xp: 11.8,
@@ -105,6 +115,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Cadantine',
+		aliases: ['Grimy cadantine'],
 		id: itemID('Cadantine'),
 		level: 65,
 		xp: 12.5,
@@ -115,6 +126,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Lantadyme',
+		aliases: ['Grimy lantadyme'],
 		id: itemID('Lantadyme'),
 		level: 67,
 		xp: 13.1,
@@ -125,6 +137,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Dwarf weed',
+		aliases: ['Grimy dwarf weed'],
 		id: itemID('Dwarf weed'),
 		level: 70,
 		xp: 13.8,
@@ -135,6 +148,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Torstol',
+		aliases: ['Grimy torstol'],
 		id: itemID('Torstol'),
 		level: 75,
 		xp: 15,

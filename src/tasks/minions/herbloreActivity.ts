@@ -38,8 +38,8 @@ export default class extends Task {
 		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${mixableItem.name}[${mixableItem.id}]`);
-			return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
-		});
+            user.log(`continued trip of ${quantity}x ${mixableItem.name}[${mixableItem.id}]`);
+            return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
+        });
 	}
 }

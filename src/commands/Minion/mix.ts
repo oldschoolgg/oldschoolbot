@@ -49,8 +49,10 @@ export default class extends BotCommand {
 			mixName = quantity;
 			quantity = null;
 		}
-
-		const mixableItem = Herblore.Mixables.find(item => stringMatches(item.name, mixName));
+		const mixableItem = Herblore.Mixables.find(item =>
+			item.aliases.some(alias => stringMatches(alias, mixName))
+		);
+		// const mixableItem = Herblore.Mixables.find(item => stringMatches(item.name, mixName));
 
 		if (!mixableItem) {
 			throw `That is not a valid mixable item, to see the items available do \`${msg.cmdPrefix}mix --items\``;
@@ -149,7 +151,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				zuhar,
 				quantity,
-				duration,
+				duration: 1000,
 				type: Activity.Herblore
 			}
 		);
