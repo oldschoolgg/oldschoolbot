@@ -178,6 +178,40 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		level: 53,
+		plantXp: 61.5,
+		checkXp: 0,
+		harvestXp: 57.7,
+		inputItems: resolveNameBank({ 'Mushroom spore': 1 }),
+		outputCrop: itemID('Mushroom'),
+		name: `Mushroom`,
+		aliases: ['mushroom', 'mush'],
+		petChance: 7_500,
+		seedType: 'mushroom',
+		growthTime: 240,
+		numOfStages: 6,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 17,
+		needsChopForHarvest: false,
+		fixedOutput: true,
+		fixedOutputAmount: 6,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 0,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1] // Canifs patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 10,
+		timePerHarvest: 5
+	},
+	{
 		level: 55,
 		plantXp: 66.5,
 		checkXp: 374,
@@ -284,6 +318,38 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		level: 63,
+		plantXp: 91,
+		checkXp: 0,
+		harvestXp: 512,
+		inputItems: resolveNameBank({ 'Belladonna seed': 1 }),
+		outputCrop: itemID('Cave nightshade'),
+		variableYield: true,
+		name: `Belladonna`,
+		aliases: ['belladonna', 'bella', 'nightshade'],
+		petChance: 8_000,
+		seedType: 'belladonna',
+		growthTime: 320,
+		numOfStages: 4,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 17,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 1,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 15,
+		timePerHarvest: 5
+	},
+	{
 		level: 64,
 		plantXp: 68,
 		checkXp: 230,
@@ -304,7 +370,7 @@ const specialPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
-		defaultNumOfPatches: 0,
+		defaultNumOfPatches: 1,
 		canPayFarmer: true,
 		canCompostPatch: true,
 		canCompostandPay: true,
@@ -426,7 +492,7 @@ const specialPlants: Plant[] = [
 		outputCrop: itemID('Crystal shard'),
 		variableYield: true,
 		variableOutputAmount: [
-			['', 8, 10],
+			[null, 8, 10],
 			['compost', 10, 12],
 			['supercompost', 12, 14],
 			['ultracompost', 14, 16]

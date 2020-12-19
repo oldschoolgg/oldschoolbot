@@ -59,6 +59,15 @@ const zalcanoLog = resolveItems([
 	'Crystal tool seed	'
 ]);
 
+export const farmersOutfit = resolveItems([
+	`Farmer's strawhat`,
+	`Farmer's jacket`,
+	`Farmer's shirt`,
+	`Farmer's boro trousers`,
+	`Farmer's boots`,
+	`Tangleroot`
+]);
+
 export const anglerOutfit = resolveItems([
 	'Angler hat',
 	'Angler top',
@@ -1271,7 +1280,7 @@ export const diangoCollectionLog: CollectionLogData = {
 };
 
 export const capes: CollectionLogData = {
-	hoods: resolveItems([
+	hoods1: resolveItems([
 		'Mining hood',
 		'Smithing hood',
 		'Woodcutting hood',
@@ -1318,7 +1327,10 @@ export const capes: CollectionLogData = {
 		'Thieving cape(t)',
 		'Farming cape(t)',
 		'Quest point cape (t)'
-	])
+	]),
+	hoods2: resolveItems(['Farming hood', 'Quest point hood']),
+	capes2: resolveItems(['Farming cape', 'Quest point cape']),
+	'trimmed capes2': resolveItems(['Farming cape(t)', 'Quest point cape (t)'])
 };
 
 export const quest: CollectionLogData = {
@@ -1461,6 +1473,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	Angler: anglerOutfit,
+	Farmer: farmersOutfit,
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
 	AgilityArena: agilityArenaLog

@@ -25,7 +25,12 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 	return numOfPatches;
 }
 
-export function calcVariableYield(plant: Plant, upgradeType: string | null, farmingLevel: number) {
+export function calcVariableYield(
+	plant: Plant,
+	upgradeType: string | null,
+	farmingLevel: number,
+	quantityAlive: number
+) {
 	if (!plant.variableYield) return 0;
 	let cropYield = 0;
 	if (plant.name === 'Crystal tree') {
@@ -33,12 +38,15 @@ export function calcVariableYield(plant: Plant, upgradeType: string | null, farm
 		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
 			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
 			if (upgradeType === upgradeTypeNeeded) {
-				cropYield = rand(min, max);
+				cropYield += rand(min, max);
+				cropYield *= quantityAlive;
 				break;
 			}
 		}
-	} else if (plant.name === 'Limpwurt') {
-		cropYield = 3 + rand(1, Math.floor(farmingLevel / 10));
+	} else if (plant.name === 'Limpwurt' || plant.name === 'Belladonna') {
+		for (let i = 0; i < quantityAlive; i++) {
+			cropYield += 3 + rand(1, Math.floor(farmingLevel / 10));
+		}
 	}
 
 	if (!cropYield) return 0;
