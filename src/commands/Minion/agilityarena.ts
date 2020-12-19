@@ -211,6 +211,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${
 				xpToGive / qty
 			} ea)`;
+			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), qty);
 			if (hasKaramjaMedDiary(msg.author)) {
 				str += `\n\nYou received 10% extra XP for the Karamja Medium Diary.`;
 			}
