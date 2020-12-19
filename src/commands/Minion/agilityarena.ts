@@ -219,6 +219,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		}
 
 		if (input === 'recolor') {
+			let cost = 250;
 			if (!bank.has(plainGraceful)) {
 				return msg.send(
 					await izzyChat(
@@ -227,20 +228,20 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 				);
 			}
 
-			if (amountTicketsHas < 250) {
+			if (amountTicketsHas < cost) {
 				return msg.send(
 					await izzyChat(
-						`Ye don't have enough tickets, I charge 250 tickets for a recoloring.`
+						`Ye don't have enough tickets, I charge ${cost} tickets for a recoloring.`
 					)
 				);
 			}
-			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), 250);
+			bank.remove('Agility arena ticket', cost);
 			bank.remove(plainGraceful);
 			bank.add(brimhavenGraceful);
 			await msg.author.settings.update(UserSettings.Bank, bank.bank);
 			await msg.author.addItemsToCollectionLog({
 				...brimhavenGraceful,
-				[itemID('Agility arena ticket')]: 250
+				[itemID('Agility arena ticket')]: cost
 			});
 			return msg.send(
 				await izzyChat(`I've recolored ye Graceful set, and taken your tickets!`)
