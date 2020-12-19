@@ -174,7 +174,7 @@ export default class DailyCommand extends BotCommand {
 			loot[741] = 1;
 		}
 
-		if (triviaCorrect && roll(2)) {
+		if (triviaCorrect && roll(10)) {
 			const lamp = LampTable.roll()[0].item;
 			loot[lamp] = 1;
 		}
