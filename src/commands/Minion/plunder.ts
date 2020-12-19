@@ -85,7 +85,7 @@ export default class extends BotCommand {
 		let str = `${
 			msg.author.minionName
 		} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
-			completableRooms[completableRooms.length - 2].number
+			completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
 		} and ${
 			completableRooms[completableRooms.length - 1].number
 		}, the trip will take ${formatDuration(
