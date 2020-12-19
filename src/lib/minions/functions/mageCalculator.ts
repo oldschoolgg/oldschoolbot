@@ -1,7 +1,12 @@
 import { randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { itemID } from 'oldschooljs/dist/util';
 
+import { hasEliteMagicVoidEquipped } from '../../gear/functions/hasEliteMagicVoidEquipped';
+import hasItemEquipped from '../../gear/functions/hasItemEquipped';
+import { hasMagicVoidEquipped } from '../../gear/functions/hasMagicVoidEquipped';
 import resolveGearTypeSetting from '../../gear/functions/resolveGearTypeSetting';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -37,13 +42,14 @@ export default function mageCalculator(
 	if (mageWeapon === null || mageWeapon.weapon === null || combatStyle === null) {
 		throw 'No mage weapon is equipped or combatStyle is not choosen.';
 	}
+	const mageGear = user.settings.get(UserSettings.Gear.Mage);
 	const gearStats = sumOfSetupStats(
 		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Mage))
 	);
 
 	// Calculate effective magic level
 	let effectiveMageLvl =
-		Math.round(
+		Math.floor(
 			user.skillLevel(SkillsEnum.Magic) /* + Magic boost: potions etc) * prayerbonus */
 		) + 8;
 	let attackStyle = '';
@@ -54,6 +60,7 @@ export default function mageCalculator(
 		}
 	}
 
+	// Currently won't work, since combatStyles are only standard/defensive atm
 	if (attackStyle === 'accurate') {
 		effectiveMageLvl += 3;
 	}
@@ -62,34 +69,94 @@ export default function mageCalculator(
 		effectiveMageLvl += 3;
 	}
 
-	effectiveMageLvl = Math.round(effectiveMageLvl);
+	// Multiply by void bonus if wearing full mage void
+	if (hasMagicVoidEquipped(mageGear)) {
+		effectiveMageLvl *= 1.45;
+	}
 
-	/* if wearing full magic void
-    effectiveMageLvl *= 1.45;
-    */
+	effectiveMageLvl = Math.floor(effectiveMageLvl);
 
 	// Calculate max hit
-	let maxHit = Math.round(spell?.baseMaxHit * (1 + gearStats.magic_damage / 100));
+	let maxHit = spell?.baseMaxHit * (1 + gearStats.magic_damage / 100);
 
-	/* if wearing black mask (i) / slayer helm (i) or salve amulet DOSEN'T STACK
-    maxHit *= 1.15 or 7/6
-    */
+	// Multiply by void bonus if wearing full elite mage void
+	if (hasEliteMagicVoidEquipped(mageGear)) {
+		maxHit *= 1.025;
+	}
 
-	/* Bunch of other bonuses https://oldschool.runescape.wiki/w/Maximum_magic_hit maybe? */
+	// Check if passive weapon damage bonus smoke staff.
+	if (
+		hasItemEquipped(itemID('Smoke battlestaff'), mageGear) ||
+		hasItemEquipped(itemID('Mystic smoke staff'), mageGear)
+	) {
+		maxHit *= 1.1;
+	}
+
+	maxHit = Math.floor(maxHit);
+
+	// Make sure black mask only work on slayer task in future
+	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
+	if (
+		hasItemEquipped(itemID('Salve amulet(i)'), mageGear) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		maxHit *= 1.15;
+	} else if (
+		hasItemEquipped(itemID('Salve amulet(ei)'), mageGear) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		maxHit *= 1.2;
+	} else if (hasItemEquipped(itemID('Black mask (i)'), mageGear)) {
+		maxHit *= 1.15;
+	}
+
+	maxHit = Math.floor(maxHit);
+
+	if (hasItemEquipped(itemID('Tome of fire'), mageGear) && spell.name.includes('fire')) {
+		maxHit *= 1.5;
+	}
+
+	maxHit = Math.floor(maxHit);
+
+	/* Handle slayer dart, tridents, salamander, ibans staff etc? https://oldschool.runescape.wiki/w/Maximum_magic_hit maybe? */
 
 	// Calculate accuracy roll
 	let accuracyRoll = effectiveMageLvl * (gearStats.attack_magic + 64);
 
-	/* if wearing black mask (i) / slayer helm (i) or salve amulet vs undead monster. DOSEN'T STACK
-    attackRoll *= 1.15 or 7/6
-    */
+	// Make sure black mask only work on slayer task in future
+	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
+	if (
+		hasItemEquipped(itemID('Salve amulet(i)'), mageGear) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		accuracyRoll *= 1.15;
+	} else if (
+		hasItemEquipped(itemID('Salve amulet(ei)'), mageGear) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		accuracyRoll *= 1.2;
+	} else if (hasItemEquipped(itemID('Black mask (i)'), mageGear)) {
+		accuracyRoll *= 1.15;
+	}
 
-	accuracyRoll = Math.round(accuracyRoll);
+	accuracyRoll = Math.floor(accuracyRoll);
+
+	// Check if passive weapon accuracy.
+	if (
+		hasItemEquipped(itemID('Smoke battlestaff'), mageGear) ||
+		hasItemEquipped(itemID('Mystic smoke staff'), mageGear)
+	) {
+		accuracyRoll *= 1.1;
+	}
+
+	accuracyRoll = Math.floor(accuracyRoll);
 
 	// Calculate Defence roll
 	let defenceRoll = currentMonsterData.magicLevel + 9;
 
 	defenceRoll *= currentMonsterData.defenceMagic + 64;
+
+	defenceRoll = Math.floor(defenceRoll);
 
 	// Calculate hit chance
 	let hitChance = 0;
