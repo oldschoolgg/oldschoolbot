@@ -68,5 +68,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.DeliverPresents;
 		case Activity.BarbarianAssault:
 			return Tasks.BarbarianAssault;
+		case Activity.AgilityArena:
+			return Tasks.AgilityArena;
 	}
 }
