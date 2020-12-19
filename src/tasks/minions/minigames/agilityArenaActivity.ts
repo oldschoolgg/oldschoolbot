@@ -23,7 +23,7 @@ export default class extends Task {
 		let timePerTicket = Time.Minute;
 		let ticketsReceived = Math.floor(duration / timePerTicket);
 
-		// Approximately 205 xp/hr (416xp per min) from the obstacles
+		// Approximately 25k xp/hr (416xp per min) from the obstacles
 		const agilityXP = randomVariation((duration / Time.Minute) * 416, 1);
 
 		// 10% bonus tickets for karamja med
