@@ -129,9 +129,11 @@ export default class extends BotCommand {
 			infoStr.push(`You are treating all of your patches with ultracompost.`);
 		}
 
-		if (msg.flagArgs.pay) {
+		if (
+			msg.flagArgs.pay ||
+			(msg.author.settings.get(UserSettings.Minion.DefaultPay) && plants.canPayFarmer)
+		) {
 			payment = true;
-			infoStr.push(`You are paying a nearby farmer to look after your patches.`);
 		}
 
 		if (!plants.canPayFarmer && payment) {
@@ -140,9 +142,9 @@ export default class extends BotCommand {
 		if (
 			!plants.canCompostandPay &&
 			payment &&
-			upgradeType === ('supercompost' || 'ultracompost')
+			(upgradeType === 'supercompost' || upgradeType === 'ultracompost')
 		) {
-			throw `You do not need to use compost if you are paying a nearby farmer to look over your trees.`;
+			throw `You do not need to use compost if you are paying a nearby farmer to look over your crops.`;
 		}
 
 		if (!plants.canCompostPatch && upgradeType !== null) {
@@ -211,7 +213,6 @@ export default class extends BotCommand {
 		}
 
 		let newBank = { ...userBank };
-		const defaultCompostTier = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
@@ -221,13 +222,55 @@ export default class extends BotCommand {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}
 			}
+			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
+		}
 
-			if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
-				const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
-				if (!hasCompostType) {
-					throw `You dont have ${quantity}x ${upgradeType}.`;
+		let paymentBank = { ...newBank };
+		let canPay = false;
+		if (payment) {
+			if (!plants.protectionPayment) return;
+			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
+			for (const [paymentID, qty] of requiredPayment) {
+				if (!bankHasItem(userBank, parseInt(paymentID), qty * quantity)) {
+					canPay = false;
+					if (msg.flagArgs.pay) {
+						return msg.send(
+							`You don't have enough ${itemNameFromID(
+								parseInt(paymentID)
+							)} to make payments to nearby farmers.`
+						);
+					}
+					break;
 				}
-			} else if (
+				paymentBank = removeItemFromBank(paymentBank, parseInt(paymentID), qty * quantity);
+				canPay = true;
+			}
+		}
+
+		if (canPay) {
+			newBank = paymentBank;
+			infoStr.push(`You are paying a nearby farmer to look after your patches.`);
+		} else if (
+			!canPay &&
+			msg.author.settings.get(UserSettings.Minion.DefaultPay) &&
+			plants.canPayFarmer
+		) {
+			infoStr.push(
+				`You did not have enough payment to automatically pay for crop protection.`
+			);
+		}
+
+		const defaultCompostTier = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
+		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
+			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
+			if (!hasCompostType) {
+				throw `You dont have ${quantity}x ${upgradeType}.`;
+			}
+		} else if (
+			!(!plants.canCompostandPay && payment) ||
+			(msg.author.settings.get(UserSettings.Minion.DefaultPay) && !canPay)
+		) {
+			if (
 				bankHasItem(userBank, itemID(defaultCompostTier), quantity) &&
 				plants.canCompostPatch
 			) {
@@ -240,28 +283,11 @@ export default class extends BotCommand {
 				upgradeType = 'compost';
 				infoStr.push(`You are treating all of your patches with compost.`);
 			}
-
-			if (payment) {
-				if (!plants.protectionPayment) return;
-				const requiredPayment: [string, number][] = Object.entries(
-					plants.protectionPayment
-				);
-				for (const [paymentID, qty] of requiredPayment) {
-					if (!bankHasItem(userBank, parseInt(paymentID), qty * quantity)) {
-						throw `You don't have enough ${itemNameFromID(
-							parseInt(paymentID)
-						)} to make payments to nearby farmers.`;
-					}
-
-					newBank = removeItemFromBank(newBank, parseInt(paymentID), qty * quantity);
-				}
-			}
-
-			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
-			upgradeType !== null
-				? (newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity))
-				: this.client.wtf(new Error(`Clear "possible null" error.`));
 		}
+
+		upgradeType !== null
+			? (newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity))
+			: this.client.wtf(new Error(`Clear "possible null" error.`));
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
@@ -306,6 +332,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				upgradeType,
+				payment,
 				planting: true,
 				duration,
 				currentDate,

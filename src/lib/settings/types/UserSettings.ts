@@ -61,6 +61,7 @@ export namespace UserSettings {
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
 		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
+		export const DefaultPay = T<boolean>('minion.defaultPay');
 	}
 
 	export namespace Skills {

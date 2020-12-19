@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { addItemToBank, bankHasItem, removeItemFromBank, stringMatches } from '../../lib/util';
@@ -85,6 +86,31 @@ export default class extends BotCommand {
 			return msg.send(
 				`You do not have enough ${superCompostableCrop} to compost for the quantity specified`
 			);
+		}
+
+		if (quantity === 0) {
+			return msg.send(`You have no ${superCompostableCrop} to compost!`);
+		}
+
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(
+				`${msg.author}, say \`confirm\` to confirm that you want to compost ${quantity}x ${cropToCompost} into supercompost.`
+			);
+
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					{
+						max: 1,
+						time: Time.Second * 15,
+						errors: ['time']
+					}
+				);
+			} catch (err) {
+				return sellMsg.edit(`Cancelling the compost process.`);
+			}
 		}
 
 		let newBank = userBank;

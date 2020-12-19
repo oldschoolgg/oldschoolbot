@@ -1269,7 +1269,7 @@ export const diangoCollectionLog: CollectionLogData = {
 };
 
 export const capes: CollectionLogData = {
-	hoods: resolveItems([
+	hoods1: resolveItems([
 		'Mining hood',
 		'Smithing hood',
 		'Woodcutting hood',
@@ -1316,7 +1316,10 @@ export const capes: CollectionLogData = {
 		'Thieving cape(t)',
 		'Farming cape(t)',
 		'Quest point cape (t)'
-	])
+	]),
+	hoods2: resolveItems(['Farming hood', 'Quest point hood']),
+	capes2: resolveItems(['Farming cape', 'Quest point cape']),
+	'trimmed capes2': resolveItems(['Farming cape(t)', 'Quest point cape (t)'])
 };
 
 export const quest: CollectionLogData = {

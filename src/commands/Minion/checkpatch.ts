@@ -30,6 +30,7 @@ export default class extends BotCommand {
 		let emojiStr = '';
 		let contentStr = '';
 		let finalStr = '';
+		let nothingPlanted = [];
 
 		const patchArray = Object.values(FarmingPatchTypes);
 		for (let i = 0; i < patchArray.length; i++) {
@@ -66,18 +67,26 @@ export default class extends BotCommand {
 						plant.name
 					} will be ready to harvest in ${formatDuration(
 						lastPlantTime + plant.growthTime * Time.Minute - currentDate
-					)}!`;
+					)}!\n`;
 				} else {
 					emojiStr = `${Emoji.Tick} `;
-					contentStr = `Your ${patch.lastQuantity}x ${plant.name} is ready to be harvested!`;
+					contentStr = `Your ${patch.lastQuantity}x ${plant.name} is ready to be harvested!\n`;
 				}
+
+				finalStr += emojiStr + baseStr + contentStr;
 			} else {
-				emojiStr = `${Emoji.RedX} `;
-				contentStr = `You have nothing planted in this patch!`;
+				nothingPlanted.push(toTitleCase(patchType));
 			}
-			contentStr += `\n`;
-			finalStr += emojiStr + baseStr + contentStr;
 		}
+
+		if (nothingPlanted.length > 0) {
+			const emptyEmoji = `${Emoji.RedX} `;
+			const emptyContentStr = `You have nothing planted in these patches: ${nothingPlanted.join(
+				`, `
+			)}.`;
+			finalStr += emptyEmoji + emptyContentStr;
+		}
+
 		return msg.send(finalStr, {
 			split: true
 		});

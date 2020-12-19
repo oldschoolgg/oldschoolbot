@@ -23,6 +23,7 @@ export default class extends Task {
 		getPatchType,
 		quantity,
 		upgradeType,
+		payment,
 		userID,
 		channelID,
 		planting,
@@ -282,7 +283,7 @@ export default class extends Task {
 						loot[plantToHarvest.outputRoots] = rand(1, 4) * alivePlants;
 					}
 
-					woodcuttingXp += alivePlants * amountOfLogs * plantToHarvest.woodcuttingXp;
+					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp;
 					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
 
 					harvestXp = 0;
@@ -401,7 +402,7 @@ export default class extends Task {
 					plantTime: currentDate + duration,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
-					lastPayment: patchType.lastPayment
+					lastPayment: payment ? payment : false
 				};
 			}
 
