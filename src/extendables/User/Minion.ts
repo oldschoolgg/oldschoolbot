@@ -396,6 +396,10 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
+
+			case Activity.AgilityArena: {
+				return `${this.minionName} is currently doing the Brimhaven Agility Arena. ${formattedDuration}`;
+			}
 		}
 	}
 
