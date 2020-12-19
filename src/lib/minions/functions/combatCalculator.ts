@@ -15,7 +15,7 @@ export default function combatCalculator(
 
 	if (combatSkill === null) {
 		throw `No combat skill been set in combatsetup.`;
-	} 
+	}
 
 	/*
 	// Move out of function.
