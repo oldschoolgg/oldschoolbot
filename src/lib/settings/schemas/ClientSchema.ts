@@ -5,6 +5,7 @@ Client.defaultClientSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
 	.add('prices', 'any', { default: {} })
 	.add('pollQuestions', 'any', { default: {} })
+	.add('bank_lottery', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

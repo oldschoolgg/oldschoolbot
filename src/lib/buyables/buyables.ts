@@ -341,6 +341,13 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 20
 	},
+	{
+		name: 'Lottery ticket',
+		outputItems: {
+			[itemID('Lottery ticket')]: 1
+		},
+		gpCost: 50_000_000
+	},
 	...sepulchreBuyables
 ];
 

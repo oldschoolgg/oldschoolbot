@@ -16,6 +16,7 @@ export namespace ClientSettings {
 	export const PollQuestions = T<OSRSPoll>('pollQuestions');
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
 	export const UserBlacklist = T<readonly string[]>('userBlacklist');
+	export const BankLottery = T<O.Readonly<ItemBank>>('bank_lottery');
 
 	export namespace EconomyStats {
 		export const DicingBank = T<number>('economyStats.dicingBank');

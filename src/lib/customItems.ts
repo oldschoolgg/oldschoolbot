@@ -229,4 +229,6 @@ export function initCustomItems() {
 	setCustomItem(23516, 'Average lamp', getOSItem('Lamp'));
 	setCustomItem(22320, 'Large lamp', getOSItem('Lamp'));
 	setCustomItem(11157, 'Huge lamp', getOSItem('Lamp'));
+	setCustomItem(5020, 'Lottery ticket', getOSItem('Paramaya ticket'));
+	setCustomItem(5021, 'Bank lottery ticket', getOSItem('Paramaya ticket'));
 }
