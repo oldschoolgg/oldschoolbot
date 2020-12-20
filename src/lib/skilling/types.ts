@@ -152,7 +152,7 @@ export interface Mixable {
 	tickRate: number;
 	bankTimePerPotion: number;
 	outputMultiple?: number;
-	zuhar?: boolean;
+	zahur?: boolean;
 	wesley?: boolean;
 }
 

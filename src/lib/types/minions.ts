@@ -94,7 +94,7 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	mixableID: number;
 	channelID: string;
 	quantity: number;
-	zuhar: boolean;
+	zahur: boolean;
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {

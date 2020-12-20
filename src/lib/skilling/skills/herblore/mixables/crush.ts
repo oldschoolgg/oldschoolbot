@@ -5,7 +5,7 @@ import { Mixable } from '../../../types';
 const Crush: Mixable[] = [
 	{
 		name: 'Unicorn horn dust',
-		aliases: ['Unicorn horn'],
+		aliases: ['Unicorn horn dust', 'Unicorn horn'],
 		id: itemID('Unicorn horn dust'),
 		level: 1,
 		xp: 0,
@@ -16,7 +16,7 @@ const Crush: Mixable[] = [
 	},
 	{
 		name: 'Chocolate dust',
-		aliases: ['Chocolate'],
+		aliases: ['Chocolate dust', 'Chocolate', 'Chocolate bar'],
 		id: itemID('Chocolate dust'),
 		level: 1,
 		xp: 0,
@@ -27,7 +27,7 @@ const Crush: Mixable[] = [
 	},
 	{
 		name: 'Kebbit teeth dust',
-		aliases: ['kebbit teeth','kebbit teeth dust'],
+		aliases: ['kebbit teeth', 'kebbit teeth dust'],
 		id: itemID('Kebbit teeth dust'),
 		level: 1,
 		xp: 0,
@@ -38,18 +38,18 @@ const Crush: Mixable[] = [
 	},
 	{
 		name: 'Crushed nest',
-		aliases: ['Nest'],
+		aliases: ['Crushed nest', 'Nest', 'Bird nest', 'Birds nest'],
 		id: itemID('Crushed nest'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Bird nest': 1 }),
+		inputItems: { 5075: 1 },
 		tickRate: 2,
 		bankTimePerPotion: 0.17,
 		wesley: true
 	},
 	{
 		name: 'Goat horn dust',
-		aliases: ['Goat', 'Goat horn'],
+		aliases: ['Goat horn dust', 'Goat', 'Goat horn', 'desert goat horn'],
 		id: itemID('Goat horn dust'),
 		level: 1,
 		xp: 0,
@@ -61,6 +61,7 @@ const Crush: Mixable[] = [
 	{
 		name: 'Crushed superior dragon bones',
 		aliases: [
+			'Crushed superior dragon bones',
 			'superior dragon bones',
 			'superior dragon',
 			'superior dragon bone',
@@ -76,7 +77,7 @@ const Crush: Mixable[] = [
 	},
 	{
 		name: 'Dragon scale dust',
-		aliases: ['Dragon scale'],
+		aliases: ['Dragon scale dust', 'Dragon scale'],
 		id: itemID('Dragon scale dust'),
 		level: 1,
 		xp: 0,

@@ -63,6 +63,7 @@ export default class extends BotCommand {
 		}
 
 		let sets = 'x';
+		let cost = 'is now';
 		if (mixableItem.outputMultiple) {
 			sets = 'batches of';
 		}
@@ -75,15 +76,16 @@ export default class extends BotCommand {
 		let timeToMixSingleItem =
 			mixableItem.tickRate * Time.Second * 0.6 + mixableItem.bankTimePerPotion * Time.Second;
 
-		const zuhar = Boolean(msg.flagArgs.zuhar);
-		console.log(zuhar);
-		if (zuhar && mixableItem.zuhar === true) {
+		const zahur = Boolean(msg.flagArgs.zahur);
+		if (zahur && mixableItem.zahur === true) {
 			timeToMixSingleItem = 0.000001;
 			requiredItems = requiredItems.concat([['995', 200]]);
+			cost = "decided to pay Zahur 200 gp for each potion so they don't have go";
 		}
 		if (msg.flagArgs.wesley && mixableItem.wesley === true) {
 			timeToMixSingleItem = 0.000001;
 			requiredItems = requiredItems.concat([['995', 50]]);
+			cost = "decided to pay Wesley 50 gp for each item so they don't have go";
 		}
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
@@ -149,15 +151,15 @@ export default class extends BotCommand {
 				mixableID: mixableItem.id,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
-				zuhar,
+				zahur,
 				quantity,
-				duration: 1000,
+				duration,
 				type: Activity.Herblore
 			}
 		);
 
 		return msg.send(
-			`${msg.author.minionName} is now Mixing ${quantity}${sets} ${
+			`${msg.author.minionName} ${cost} Making ${quantity} ${sets} ${
 				mixableItem.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);

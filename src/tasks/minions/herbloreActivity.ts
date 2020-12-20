@@ -7,7 +7,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: HerbloreActivityTaskOptions) {
-		let { mixableID, quantity, zuhar, userID, channelID } =data;
+		let { mixableID, quantity, zahur, userID, channelID } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Herblore);
 
@@ -15,7 +15,7 @@ export default class extends Task {
 
 		if (!mixableItem) return;
 
-		const xpReceived = zuhar ? 0 : quantity * mixableItem.xp;
+		const xpReceived = zahur ? 0 : quantity * mixableItem.xp;
 
 		if (mixableItem.outputMultiple) {
 			quantity *= mixableItem.outputMultiple;
@@ -38,12 +38,17 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-            user.log(`continued trip of ${quantity}x ${mixableItem.name}[${mixableItem.id}]`);
-            return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
-		},
-		undefined,
-		data
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${mixableItem.name}[${mixableItem.id}]`);
+				return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
+			},
+			undefined,
+			data
 		);
 	}
 }
