@@ -272,4 +272,6 @@ export function initCustomItems() {
 		tradeable_on_ge: true,
 		wiki_name: 'Smokey'
 	});
+	setCustomItem(5020, 'Lottery ticket', getOSItem('Paramaya ticket'));
+	setCustomItem(5021, 'Bank lottery ticket', getOSItem('Paramaya ticket'));
 }
