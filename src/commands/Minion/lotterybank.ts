@@ -5,7 +5,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { addItemToBank, itemID } from '../../lib/util';
+import { addItemToBank, calcPercentOfNum, itemID } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 
 const options = {
@@ -54,16 +54,25 @@ export default class extends BotCommand {
 
 		const totalPrice = priceOfItem * quantity;
 
-		const amountOfTickets = Math.floor(totalPrice / 10_000_000);
-		console.log(amountOfTickets, priceOfItem, totalPrice);
+		let amountOfTickets = Math.floor(totalPrice / 10_000_000);
+
 		if (amountOfTickets < 1) {
 			return msg.send(`Those items aren't worth enough.`);
 		}
 
+		const wasAlready = Boolean(this.client.settings.get(ClientSettings.BankLottery)[osItem.id]);
+		let bonusTickets = 0;
+		if (!wasAlready) {
+			bonusTickets = Math.floor(calcPercentOfNum(15, amountOfTickets));
+			amountOfTickets += bonusTickets;
+		}
+
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to commit ${quantity}x ${osItem.name} to the bank lottery - you'll receive ${amountOfTickets} bank lottery tickets.`
-			);
+			let str = `${msg.author}, say \`confirm\` to commit ${quantity}x ${osItem.name} to the bank lottery - you'll receive ${amountOfTickets} bank lottery tickets.`;
+			if (bonusTickets > 0) {
+				str += `\n\nYou're getting ${bonusTickets}x Bonus Tickets for sacrificing something that nobody has before.`;
+			}
+			const sellMsg = await msg.channel.send(str);
 
 			try {
 				await msg.channel.awaitMessages(
