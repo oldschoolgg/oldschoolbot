@@ -201,8 +201,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			) as number).toLocaleString()} xp)\n`;
 		}
 
-		return msg.send(`${msg.author.minionName}'s Stats:
-${str}
+		return msg.send(`${msg.author.minionName}'s Stats: ${str}
 ${Emoji.XP} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
 			.totalLevel(true)
 			.toLocaleString()} xp)

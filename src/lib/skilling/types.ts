@@ -186,11 +186,15 @@ export interface Plankable {
 }
 
 export interface Plant {
-	level: number;
-	plantXp: number;
-	checkXp: number;
-	harvestXp: number;
 	name: string;
+	id?: number;
+	level: number;
+	magicxp: number;
+	prayerxp?: number;
+	farmingxp?: number;
+	craftingxp?: number;
+	baseMaxHit?: number;
+	category: string;
 	inputItems: ItemBank;
 	aliases: string[];
 	outputCrop?: number;
