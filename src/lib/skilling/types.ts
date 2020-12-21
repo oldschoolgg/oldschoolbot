@@ -171,12 +171,17 @@ export interface Bone {
 
 export interface Prayer {
 	level: number;
+	defLvl?: number;
 	name: string;
 	drainRate: number;
 	drainEffect: number;
 	unlocked: boolean;
 	inputId?: number;
 	qpRequired?: number;
+	offensive1?: boolean;
+	offensive2?: boolean;
+	defensive?: boolean;
+	overHead?: boolean;
 }
 
 export type LevelRequirements = Partial<

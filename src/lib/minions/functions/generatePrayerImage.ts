@@ -5,6 +5,7 @@ import { KlasaClient, KlasaUser } from 'klasa';
 
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { toTitleCase } from '../../util';
 import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
 import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
 import { SkillsEnum } from './../../skilling/types';
@@ -17,8 +18,8 @@ const yellowCircleFile = fs.readFileSync('./src/lib/resources/images/yellowCircl
  */
 const slotCoordinates: { [key: string]: [number, number] } = {
 	'Thick Skin': [10, 15],
-	'Burst of Strength': [47, 15],
-	'Clarity of Thought': [84, 15],
+	'Burst Of Strength': [47, 15],
+	'Clarity Of Thought': [84, 15],
 	'Sharp Eye': [121, 15],
 	'Mystic Will': [158, 15],
 	'Rock Skin': [10, 52],
@@ -32,9 +33,9 @@ const slotCoordinates: { [key: string]: [number, number] } = {
 	'Steel Skin': [121, 89],
 	'Ultimate Strength': [158, 89],
 	'Incredible Reflexes': [10, 126],
-	'Protect from Magic': [47, 126],
-	'Protect from Missiles': [84, 126],
-	'Protect from Melee': [121, 126],
+	'Protect From Magic': [47, 126],
+	'Protect From Missiles': [84, 126],
+	'Protect From Melee': [121, 126],
 	'Eagle Eye': [158, 126],
 	'Mystic Might': [10, 163],
 	Retribution: [47, 163],
@@ -83,7 +84,6 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 
 	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
 	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
-	// Temp
 	const prayerSetup = user.settings.get(UserSettings.SelectedPrayers);
 	const prayerLvl = user.skillLevel(SkillsEnum.Prayer);
 	const prayerTemplateImage = await canvasImageFromBuffer(prayerTemplateFile);
@@ -110,7 +110,7 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 	ctx.save();
 
 	for (const prayer of prayerSetup) {
-		const [x, y] = slotCoordinates[prayer];
+		const [x, y] = slotCoordinates[toTitleCase(prayer)];
 
 		ctx.globalAlpha = 0.13;
 

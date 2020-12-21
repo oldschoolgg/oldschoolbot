@@ -10,56 +10,66 @@ const prayers: Prayer[] = [
 		name: 'Thick Skin',
 		drainRate: 12,
 		drainEffect: 3,
-		unlocked: true
+		unlocked: true,
+		defensive: true
 	},
 	{
 		level: 4,
 		name: 'Burst of Strength',
 		drainRate: 12,
 		drainEffect: 3,
-		unlocked: true
+		unlocked: true,
+		offensive1: true
 	},
 	{
 		level: 7,
 		name: 'Clarity of Thought',
 		drainRate: 12,
 		drainEffect: 3,
-		unlocked: true
+		unlocked: true,
+		offensive2: true
 	},
 	{
 		level: 8,
 		name: 'Sharp Eye',
 		drainRate: 12,
 		drainEffect: 3,
-		unlocked: true
+		unlocked: true,
+		offensive1: true,
+		offensive2: true
 	},
 	{
 		level: 9,
 		name: 'Mystic Will',
 		drainRate: 12,
 		drainEffect: 3,
-		unlocked: true
+		unlocked: true,
+		offensive1: true,
+		offensive2: true
 	},
 	{
 		level: 10,
 		name: 'Rock Skin',
 		drainRate: 6,
 		drainEffect: 6,
-		unlocked: true
+		unlocked: true,
+		defensive: true
 	},
 	{
 		level: 13,
 		name: 'Superhuman Strength',
 		drainRate: 6,
 		drainEffect: 6,
-		unlocked: true
+		unlocked: true,
+		offensive1: true
 	},
 	{
 		level: 16,
 		name: 'Improved Reflexes',
 		drainRate: 6,
 		drainEffect: 6,
-		unlocked: true
+		unlocked: true,
+		offensive2: true
 	},
 	{
 		level: 19,
@@ -87,91 +97,108 @@ const prayers: Prayer[] = [
 		name: 'Hawk Eye',
 		drainRate: 6,
 		drainEffect: 6,
-		unlocked: true
+		unlocked: true,
+		offensive1: true,
+		offensive2: true
 	},
 	{
 		level: 27,
 		name: 'Mystic Lore',
 		drainRate: 6,
 		drainEffect: 6,
-		unlocked: true
+		unlocked: true,
+		offensive1: true,
+		offensive2: true
 	},
 	{
 		level: 28,
 		name: 'Steel Skin',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		defensive: true
 	},
 	{
 		level: 31,
 		name: 'Ultimate Strength',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		offensive1: true
 	},
 	{
 		level: 34,
 		name: 'Incredible Reflexes',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		offensive2: true
 	},
 	{
 		level: 37,
 		name: 'Protect from Magic',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		overHead: true
 	},
 	{
 		level: 40,
 		name: 'Protect from Missiles',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		overHead: true
 	},
 	{
 		level: 43,
 		name: 'Protect from Melee',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		overHead: true
 	},
 	{
 		level: 44,
 		name: 'Eagle Eye',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		offensive1: true,
+		offensive2: true
 	},
 	{
 		level: 45,
 		name: 'Mystic Might',
 		drainRate: 3,
 		drainEffect: 12,
-		unlocked: true
+		unlocked: true,
+		offensive1: true,
+		offensive2: true
 	},
 	{
 		level: 46,
 		name: 'Retribution',
 		drainRate: 12,
 		drainEffect: 3,
-		unlocked: true
+		unlocked: true,
+		overHead: true
 	},
 	{
 		level: 49,
 		name: 'Redemption',
 		drainRate: 6,
 		drainEffect: 6,
-		unlocked: true
+		unlocked: true,
+		overHead: true
 	},
 	{
 		level: 52,
 		name: 'Smite',
 		drainRate: 2,
 		drainEffect: 18,
-		unlocked: true
+		unlocked: true,
+		overHead: true
 	},
 	{
 		level: 55,
@@ -183,35 +210,51 @@ const prayers: Prayer[] = [
 	},
 	{
 		level: 60,
+		defLvl: 65,
 		name: 'Chivalry',
 		drainRate: 1.5,
 		drainEffect: 24,
 		unlocked: false,
-		qpRequired: 25
+		qpRequired: 25,
+		offensive1: true,
+		offensive2: true,
+		defensive: true
 	},
 	{
 		level: 70,
+		defLvl: 70,
 		name: 'Piety',
 		drainRate: 1.5,
 		drainEffect: 24,
 		unlocked: false,
-		qpRequired: 25
+		qpRequired: 25,
+		offensive1: true,
+		offensive2: true,
+		defensive: true
 	},
 	{
 		level: 74,
+		defLvl: 70,
 		name: 'Rigour',
 		drainRate: 1.5,
 		drainEffect: 24,
 		unlocked: false,
-		inputId: itemID('Dexterous prayer scroll')
+		inputId: itemID('Dexterous prayer scroll'),
+		offensive1: true,
+		offensive2: true,
+		defensive: true
 	},
 	{
 		level: 77,
+		defLvl: 70,
 		name: 'Augury',
 		drainRate: 1.5,
 		drainEffect: 24,
 		unlocked: false,
-		inputId: itemID('Arcane prayer scroll')
+		inputId: itemID('Arcane prayer scroll'),
+		offensive1: true,
+		offensive2: true,
+		defensive: true
 	}
 ];
 
