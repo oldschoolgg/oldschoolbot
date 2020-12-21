@@ -2,9 +2,11 @@ import { MessageAttachment } from 'discord.js';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { generatePrayerImage } from '../../lib/minions/functions/generatePrayerImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
+import { itemNameFromID } from '../../lib/util';
 import { SkillsEnum } from './../../lib/skilling/types';
 
 export default class extends BotCommand {
@@ -12,20 +14,25 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			cooldown: 1,
-			usage: '[prayer:...string]',
+			usage: '[unlock] [prayer:...string]',
+			usageDelim: ' ',
 			aliases: ['ps'],
-			description: 'Select what prayer to use.',
-			examples: ['+prayersetup'],
-			categoryFlags: ['minion']
+			description: 'Select what prayer to use or unlock prayer.',
+			examples: ['+prayersetup Thick Skin'],
+			categoryFlags: ['minion'],
+			subcommands: true
 		});
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [prayer]: [string | undefined]) {
 		const currentPrayers = msg.author.settings.get(UserSettings.SelectedPrayers);
+		const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
 
 		if (!prayer) {
 			if (currentPrayers.length === 0) {
-				return msg.send(`You have no prayers selected.`);
+				return msg.send(`You have no prayers activated.`);
 			}
 			const image = await generatePrayerImage(this.client, msg.author);
 
@@ -42,13 +49,26 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (currentPrayers.includes(selectedPrayer.name)) {
-			await msg.author.settings.update(UserSettings.SelectedPrayers, selectedPrayer, {
-				arrayAction: ArrayActions.Remove
-			});
+		if (currentPrayers.includes(selectedPrayer.name.toLowerCase())) {
+			await msg.author.settings.update(
+				UserSettings.SelectedPrayers,
+				selectedPrayer.name.toLowerCase(),
+				{
+					arrayAction: ArrayActions.Remove
+				}
+			);
 			const image = await generatePrayerImage(this.client, msg.author);
 
 			return msg.send(new MessageAttachment(image, 'osbot.png'));
+		}
+
+		if (
+			!selectedPrayer.unlocked &&
+			!unlockedPrayers.includes(selectedPrayer.name.toLowerCase())
+		) {
+			return msg.send(
+				`${msg.author.minionName} needs to unlock ${selectedPrayer.name} before it can be activated.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < selectedPrayer.level) {
@@ -57,12 +77,144 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.SelectedPrayers, selectedPrayer, {
-			arrayAction: ArrayActions.Add
-		});
+		if (
+			selectedPrayer.offensive1 ||
+			selectedPrayer.offensive2 ||
+			selectedPrayer.overHead ||
+			selectedPrayer.defensive
+		) {
+			for (let prayer of Prayer.Prayers) {
+				if (
+					currentPrayers.includes(prayer.name.toLowerCase()) &&
+					prayer.offensive1 &&
+					selectedPrayer.offensive1
+				) {
+					await msg.author.settings.update(
+						UserSettings.SelectedPrayers,
+						prayer.name.toLowerCase(),
+						{
+							arrayAction: ArrayActions.Remove
+						}
+					);
+				} else if (
+					currentPrayers.includes(prayer.name.toLowerCase()) &&
+					prayer.offensive2 &&
+					selectedPrayer.offensive2
+				) {
+					await msg.author.settings.update(
+						UserSettings.SelectedPrayers,
+						prayer.name.toLowerCase(),
+						{
+							arrayAction: ArrayActions.Remove
+						}
+					);
+				} else if (
+					currentPrayers.includes(prayer.name.toLowerCase()) &&
+					prayer.defensive &&
+					selectedPrayer.defensive
+				) {
+					await msg.author.settings.update(
+						UserSettings.SelectedPrayers,
+						prayer.name.toLowerCase(),
+						{
+							arrayAction: ArrayActions.Remove
+						}
+					);
+				} else if (
+					currentPrayers.includes(prayer.name.toLowerCase()) &&
+					prayer.overHead &&
+					selectedPrayer.overHead
+				) {
+					await msg.author.settings.update(
+						UserSettings.SelectedPrayers,
+						prayer.name.toLowerCase(),
+						{
+							arrayAction: ArrayActions.Remove
+						}
+					);
+				}
+			}
+		}
+
+		await msg.author.settings.update(
+			UserSettings.SelectedPrayers,
+			selectedPrayer.name.toLowerCase(),
+			{
+				arrayAction: ArrayActions.Add
+			}
+		);
 
 		const image = await generatePrayerImage(this.client, msg.author);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
+	}
+
+	async unlock(msg: KlasaMessage, [input]: [string | undefined]) {
+		if (!input) {
+			return msg.send(
+				`Possible prayers to unlock are: ${Prayer.Prayers.map(_prayer =>
+					!_prayer.unlocked ? _prayer.name : ''
+				).join(', ')}.`
+			);
+		}
+
+		const unlockable = Prayer.Prayers.find(
+			_prayer => _prayer.name.toLowerCase() === input.toLowerCase()
+		);
+
+		if (!unlockable || unlockable.unlocked) {
+			return msg.send(
+				`That is not a valid prayer to unlock, possible prayers to unlock are: ${Prayer.Prayers.map(
+					_prayer => (!_prayer.unlocked ? _prayer.name : '')
+				).join(', ')}.`
+			);
+		}
+
+		await msg.author.settings.sync(true);
+
+		const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
+
+		if (unlockedPrayers.includes(unlockable.name.toLowerCase())) {
+			return msg.send(`You already unlocked prayer ${unlockable.name}.`);
+		}
+
+		if (unlockable.defLvl && msg.author.skillLevel(SkillsEnum.Defence) < unlockable.defLvl) {
+			return msg.send(
+				`${msg.author.minionName} needs ${unlockable.defLvl} defence to unlock prayer ${unlockable.name}.`
+			);
+		}
+
+		if (
+			unlockable.qpRequired &&
+			msg.author.settings.get(UserSettings.QP) < unlockable.qpRequired
+		) {
+			return msg.send(
+				`${msg.author.minionName} needs ${unlockable.qpRequired} questpoints to unlock prayer ${unlockable.name}.`
+			);
+		}
+
+		if (unlockable.inputId) {
+			const hasRequiredScroll = await msg.author.hasItem(unlockable.inputId, 1, true);
+			if (!hasRequiredScroll)
+				return msg.send(
+					`You have no ${itemNameFromID(unlockable.inputId)} to unlock prayer ${
+						unlockable.name
+					}.`
+				);
+
+			await msg.author.removeItemFromBank(unlockable.inputId, 1);
+		}
+
+		await msg.author.settings.update(
+			UserSettings.UnlockedPrayers,
+			unlockable.name.toLowerCase(),
+			{
+				arrayAction: ArrayActions.Add
+			}
+		);
+
+		return msg.send(
+			`${msg.author.minionName} have unlocked prayer ${unlockable.name}. Congratulations!`
+		);
 	}
 }

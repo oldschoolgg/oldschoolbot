@@ -157,12 +157,17 @@ export interface Bone {
 
 export interface Prayer {
 	level: number;
+	defLvl?: number;
 	name: string;
 	drainRate: number;
 	drainEffect: number;
 	unlocked: boolean;
 	inputId?: number;
 	qpRequired?: number;
+	offensive1?: boolean;
+	offensive2?: boolean;
+	defensive?: boolean;
+	overHead?: boolean;
 }
 
 export type LevelRequirements = Partial<
@@ -189,12 +194,15 @@ export interface Plant {
 	name: string;
 	id?: number;
 	level: number;
-	magicxp: number;
 	prayerxp?: number;
+	plantXp: number;
+	checkXp: number;
+	magicxp?: number;
+	category?: string;
+	harvestXp: number;
 	farmingxp?: number;
 	craftingxp?: number;
 	baseMaxHit?: number;
-	category: string;
 	inputItems: ItemBank;
 	aliases: string[];
 	outputCrop?: number;
