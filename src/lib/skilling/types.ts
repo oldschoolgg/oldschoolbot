@@ -169,6 +169,16 @@ export interface Bone {
 	inputId: number;
 }
 
+export interface Prayer {
+	level: number;
+	name: string;
+	drainRate: number;
+	drainEffect: number;
+	unlocked: boolean;
+	inputId?: number;
+	qpRequired?: number;
+}
+
 export type LevelRequirements = Partial<
 	{
 		[key in SkillsEnum]: number;

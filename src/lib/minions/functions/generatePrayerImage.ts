@@ -6,7 +6,6 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
-import { drawTitleText } from '../../util/drawTitleText';
 import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
 import { SkillsEnum } from './../../skilling/types';
 
@@ -17,40 +16,36 @@ const yellowCircleFile = fs.readFileSync('./src/lib/resources/images/yellowCircl
  * The default positions of the prayers.
  */
 const slotCoordinates: { [key: string]: [number, number] } = {
-	'Thick Skin': [15, 15],
-	'Burst of Strength': [15, 30],
-	'Clarity of Thought': [15, 45],
-	'Sharp Eye': [15, 60],
-	'Mystic Will': [15, 75],
-	'Rock Skin': [30, 15],
-	'Superhuman Strength': [30, 30],
-	'Improved Reflexes': [30, 45],
-	'Rapid Restore': [30, 60],
-	'Rapid Heal': [30, 75],
-	'Protect Item': [45, 15],
-	'Hawk Eye': [45, 30],
-	'Mystic Lore': [45, 45],
-	'Steel Skin': [45, 60],
-	'Ultimate Strength': [45, 75],
-	'Incredible Reflexes': [60, 15],
-	'Protect from Magic': [60, 30],
-	'Protect from Missiles': [60, 45],
-	'Protect from Melee': [60, 60],
-	'Eagle Eye': [60, 75],
-	'Mystic Might': [75, 15],
-	Retribution: [75, 30],
-	Redemption: [75, 45],
-	Smite: [75, 60],
-	Preserve: [75, 75],
-	Chivalry: [90, 15],
-	Piety: [90, 30],
-	Rigour: [90, 45],
-	Augury: [90, 60]
+	'Thick Skin': [10, 15],
+	'Burst of Strength': [47, 15],
+	'Clarity of Thought': [84, 15],
+	'Sharp Eye': [121, 15],
+	'Mystic Will': [158, 15],
+	'Rock Skin': [10, 52],
+	'Superhuman Strength': [47, 52],
+	'Improved Reflexes': [84, 52],
+	'Rapid Restore': [121, 52],
+	'Rapid Heal': [158, 52],
+	'Protect Item': [10, 89],
+	'Hawk Eye': [47, 89],
+	'Mystic Lore': [84, 89],
+	'Steel Skin': [121, 89],
+	'Ultimate Strength': [158, 89],
+	'Incredible Reflexes': [10, 126],
+	'Protect from Magic': [47, 126],
+	'Protect from Missiles': [84, 126],
+	'Protect from Melee': [121, 126],
+	'Eagle Eye': [158, 126],
+	'Mystic Might': [10, 163],
+	Retribution: [47, 163],
+	Redemption: [84, 163],
+	Smite: [121, 163],
+	Preserve: [158, 163],
+	Chivalry: [10, 200],
+	Piety: [47, 200],
+	Rigour: [84, 200],
+	Augury: [121, 200]
 };
-
-const tempPrayerSelection = ['Rapid Heal', 'Hawk Eye', 'Smite'];
-
-const slotSize = 15;
 
 let bankTask: BankImageTask | null = null;
 
@@ -89,7 +84,7 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
 	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
 	// Temp
-	const prayerSetup = tempPrayerSelection;
+	const prayerSetup = user.settings.get(UserSettings.SelectedPrayers);
 	const prayerLvl = user.skillLevel(SkillsEnum.Prayer);
 	const prayerTemplateImage = await canvasImageFromBuffer(prayerTemplateFile);
 	const yellowCircleImage = await canvasImageFromBuffer(yellowCircleFile);
@@ -105,31 +100,21 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 	ctx.drawImage(prayerTemplateImage, 0, 0, prayerTemplateImage.width, prayerTemplateImage.height);
 	bankTask?.drawBorder(canvas, false);
 
-	ctx.font = '16px OSRSFontCompact';
-	// Draw preset title
-	drawTitleText(ctx, 'Hey', Math.floor(176 / 2), 25);
-
 	// Draw Prayer level
 	ctx.save();
-	ctx.translate(225, 198);
+	ctx.translate(prayerTemplateImage.width / 2 - 12, prayerTemplateImage.height - 17);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'start';
-	drawText(canvas, `${prayerLvl}`, 0, 0);
+	drawText(canvas, `${prayerLvl}/${prayerLvl}`, 0, 0);
 	ctx.restore();
 	ctx.save();
 
 	for (const prayer of prayerSetup) {
 		const [x, y] = slotCoordinates[prayer];
 
-		ctx.globalAlpha = 0.5;
+		ctx.globalAlpha = 0.13;
 
-		ctx.drawImage(
-			yellowCircleImage,
-			x + slotSize / 2 - yellowCircleImage.width / 2,
-			y + slotSize / 2 - yellowCircleImage.height / 2,
-			yellowCircleImage.width,
-			yellowCircleImage.height
-		);
+		ctx.drawImage(yellowCircleImage, x, y);
 	}
 
 	return canvas.toBuffer();

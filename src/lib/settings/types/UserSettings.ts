@@ -30,6 +30,7 @@ export namespace UserSettings {
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
+	export const SelectedPrayers = T<readonly string[]>('selectedPrayers');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const SacrificedValue = T<number>('sacrificedValue');
@@ -71,7 +72,7 @@ export namespace UserSettings {
 		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');
 		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');
 		export const MageAttackStyle = T<string | null>('minion.mageAttackStyle');
-		//Make CastedSpells locked to castables later
+		// Make CastedSpells locked to castables later
 		export const CastedSpell = T<string | null>('minion.castedSpell');
 		export const CombatSkill = T<string | null>('minion.combatSkill');
 		export const MeleeCombatStyle = T<string | null>('minion.meleeCombatStyle');
