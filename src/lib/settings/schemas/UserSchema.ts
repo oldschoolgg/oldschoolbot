@@ -27,6 +27,7 @@ Client.defaultUserSchema
 	.add('sacrificedBank', 'any', { default: {} })
 	.add('honour_level', 'integer', { default: 1 })
 	.add('honour_points', 'integer', { default: 0 })
+	.add('high_gambles', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
