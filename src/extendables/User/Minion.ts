@@ -386,6 +386,10 @@ export default class extends Extendable {
 			case Activity.AgilityArena: {
 				return `${this.minionName} is currently doing the Brimhaven Agility Arena. ${formattedDuration}`;
 			}
+
+			case Activity.ChampionsChallenge: {
+				return `${this.minionName} is currently doing the **Champion's Challenge**. ${formattedDuration}`;
+			}
 		}
 	}
 
