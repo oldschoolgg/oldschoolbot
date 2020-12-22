@@ -70,5 +70,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.BarbarianAssault;
 		case Activity.AgilityArena:
 			return Tasks.AgilityArena;
+		case Activity.ChampionsChallenge:
+			return Tasks.ChampionsChallenge;
 	}
 }
