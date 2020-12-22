@@ -251,7 +251,7 @@ export default class extends BotCommand {
 			addArrayOfNumbers(
 				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
 			) / 4;
-		const kcPercent = round(calcWhatPercent(averageKC, 200) / 5, 2);
+		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
