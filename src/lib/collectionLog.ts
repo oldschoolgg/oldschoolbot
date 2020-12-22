@@ -1212,7 +1212,8 @@ export const championScrolls = resolveItems([
 ]);
 
 export const championScrollLog: CollectionLogData = {
-	'Champion scrolls': championScrolls
+	'Champion scrolls': championScrolls,
+	Cape: resolveItems(["Champion's cape"])
 };
 export const holiday: CollectionLogData = {
 	'Birthday Event': resolveItems([
