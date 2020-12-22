@@ -3,7 +3,7 @@ import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
-import { Player } from 'oldschooljs';
+import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { Limit } from 'p-limit';
@@ -169,6 +169,7 @@ declare module 'discord.js' {
 		 * Queue a function to run on a per-user queue.
 		 */
 		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
+		bank(): Bank;
 		/**
 		 * Returns this users Collection Log bank.
 		 */
