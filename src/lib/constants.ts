@@ -191,7 +191,8 @@ export const enum Activity {
 	Farming = 'Farming',
 	DeliverPresents = 'DeliverPresents',
 	BarbarianAssault = 'BarbarianAssault',
-	AgilityArena = 'AgilityArena'
+	AgilityArena = 'AgilityArena',
+	ChampionsChallenge = 'ChampionsChallenge'
 }
 
 export const enum Events {

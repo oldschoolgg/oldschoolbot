@@ -6,9 +6,11 @@ import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import bosses from './bosses';
+import low from './low';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
+	...low,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
