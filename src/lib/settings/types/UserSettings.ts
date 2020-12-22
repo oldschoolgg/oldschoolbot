@@ -35,6 +35,7 @@ export namespace UserSettings {
 	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
 	export const HonourLevel = T<number>('honour_level');
 	export const HonourPoints = T<number>('honour_points');
+	export const HighGambles = T<number>('high_gambles');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
