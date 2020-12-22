@@ -17,7 +17,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user.minionName} completed the Champion's Challenge! You have received the **Champion's cape**.`,
+			`${user}, ${user.minionName} completed the Champion's Challenge! You have received the **Champion's cape**.`,
 			undefined,
 			undefined,
 			data
