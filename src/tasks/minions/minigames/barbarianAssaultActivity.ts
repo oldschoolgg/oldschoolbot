@@ -62,7 +62,7 @@ export default class extends Task {
 				pts *= 1.1;
 				resultStr += `${user.username} received 10% extra pts for kandarin hard diary. `;
 			}
-			let totalPoints = pts * quantity;
+			let totalPoints = Math.floor(pts * quantity);
 
 			user.incrementMinigameScore(MinigameIDsEnum.BarbarianAssault, quantity);
 
