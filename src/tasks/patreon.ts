@@ -113,7 +113,7 @@ export default class extends Task {
 				if (!patron.entitledTiers.includes(tierID)) continue;
 				if (userBitfield.includes(bitFieldId)) continue;
 
-				result.push(`${user.username}[${patron.patreonID}] was given Tier ${i + 1}.`);
+				result.push(`${user.username}[${patron.discordID}] was given Tier ${i + 1}.`);
 				channel.send(
 					`Giving T${i + 1} patron perks to ${user.username}[${
 						patron.patreonID
