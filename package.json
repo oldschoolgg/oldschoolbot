@@ -1,14 +1,14 @@
 {
 	"scripts": {
 		"lint": "eslint \"{src,tests}/**/*.ts\" --fix",
-		"build": "yarn wipedist && tsc -b src",
+		"build": "yarn wipedist && tsc -p src",
 		"wipedist": "rimraf \"dist/\"",
-		"start": "yarn build && concurrently \"tsc -b src -w\" \"node dist/\"",
+		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
 		"test": "yarn test:lint && yarn test:unit",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest",
 		"test:watch": "jest --watch",
-		"dev": "yarn wipedist && tsc -b -w src"
+		"dev": "yarn wipedist && tsc -w -p src"
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
