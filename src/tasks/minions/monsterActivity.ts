@@ -146,9 +146,6 @@ export default class extends Task {
 
 		user.incrementMonsterScore(monsterID, quantity);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
 		const continuationChar =
 			perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
 
