@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, Tasks, Time } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear/data/maxGearStats';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -22,6 +22,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { randomVariation } from '../../lib/util/randomVariation';
 
@@ -194,6 +195,25 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
 		const loot = new Bank().add(table.roll());
+		if (loot.has('Pet penance queen')) {
+			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
+			const countUsersHas =
+				parseInt(
+					(
+						await this.client.query<[{ count: string }]>(
+							`SELECT COUNT(*) FROM users WHERE "collectionLogBank"->>'12703' IS NOT NULL;`
+						)
+					)[0].count
+				) + 1;
+			this.client.emit(
+				Events.ServerNotification,
+				`<:Pet_penance_queen:324127377649303553> **${msg.author.username}'s** minion, ${
+					msg.author.minionName
+				}, just received a Pet penance queen from their ${formatOrdinal(
+					gamblesDone
+				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
+			);
+		}
 		await msg.author.addItemsToBank(loot.bank, true);
 		await msg.author.settings.update(
 			UserSettings.HighGambles,
