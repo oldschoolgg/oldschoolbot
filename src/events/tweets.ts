@@ -134,8 +134,7 @@ interface Tweet {
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
-		super(store, file, directory, { once: true, event: 'klasaReady' });
-		this.enabled = this.client.production;
+		super(store, file, directory, { once: true, event: 'klasaReady', enabled: false });
 	}
 
 	async init() {

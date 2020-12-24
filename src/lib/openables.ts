@@ -1,10 +1,12 @@
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { allPetIDs } from '../commands/Minion/equippet';
 import { coxLog, customBossLog } from './collectionLog';
 import { Emoji } from './constants';
+import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
@@ -215,7 +217,7 @@ export const NestBoxes = new LootTable()
 	.add('Nest box (ring)', 1, 5)
 	.add('Nest box (empty)', 1, 3);
 
-const testerGiftTable = new LootTable()
+const baseTGBTable = new LootTable()
 	.add('Tradeable mystery box', [1, 3])
 	.add('Reward casket (master)', [3, 6])
 	.add('Reward casket (beginner)', [3, 9])
@@ -228,10 +230,22 @@ const testerGiftTable = new LootTable()
 	.add('Abyssal dragon bones', [100, 500])
 	.add('Coins', [20_000_000, 100_000_000])
 	.add(LampTable, [1, 3])
-	.add('Clue scroll (beginner)', [5, 10])
-	.add('Clue scroll (medium)', [4, 9])
-	.add('Clue scroll (hard)', [3, 6])
-	.add('Clue scroll (master)', [2, 5]);
+	.add('Clue scroll (beginner)', [5, 10], 2)
+	.add('Clue scroll (easy)', [4, 9], 2)
+	.add('Clue scroll (medium)', [4, 9], 2)
+	.add('Clue scroll (hard)', [3, 6], 2)
+	.add('Clue scroll (elite)', [4, 9], 2)
+	.add('Clue scroll (master)', [2, 5], 2)
+	.add('Manta ray', [100, 600])
+	.add(FishTable, [1, 15])
+	.add(TreeHerbSeedTable, [1, 15])
+	.add('Prayer potion(4)', [5, 40])
+	.add('Saradomin brew(4)', [5, 40])
+	.add('Super restore(4)', [5, 20])
+	.add('Monkey nuts')
+	.add('Magic seed', [50, 100]);
+
+const testerGiftTable = new LootTable().every(baseTGBTable, [3, 6]);
 
 const Openables: Openable[] = [
 	{

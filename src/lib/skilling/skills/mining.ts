@@ -40,6 +40,13 @@ const ores: Ore[] = [
 		clueScrollChance: 741_600
 	},
 	{
+		level: 1,
+		xp: 0,
+		id: 13421,
+		name: 'Saltpetre',
+		respawnTime: 1
+	},
+	{
 		level: 15,
 		xp: 35,
 		id: 440,
@@ -62,7 +69,7 @@ const ores: Ore[] = [
 		xp: 10,
 		id: 21622,
 		name: 'Volcanic ash',
-		respawnTime: 0.1,
+		respawnTime: 0.05,
 		petChance: 741_600
 	},
 	{

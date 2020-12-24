@@ -179,10 +179,11 @@ export interface Plant {
 	aliases: string[];
 	outputCrop?: number;
 	outputLogs?: number;
+	outputRoots?: number;
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
 	variableYield?: boolean;
-	variableOutputAmount?: [string, number, number][];
+	variableOutputAmount?: [string | null, number, number][];
 	woodcuttingXp?: number;
 	needsChopForHarvest: boolean;
 	fixedOutput: boolean;

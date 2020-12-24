@@ -1,13 +1,14 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { BitField } from '../../lib/constants';
 import { itemID } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<user:user>',
-			permissionLevel: 10
+			bitfieldsRequired: [BitField.isContributor]
 		});
 	}
 

@@ -27,6 +27,10 @@ export default class extends BotCommand {
 
 		const gettedItem = Items.get(name);
 
+		if (msg.flagArgs.raw) {
+			return msg.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
+		}
+
 		return msg.send(
 			`Found ${items.length} items:\n${(items as Item[])
 				.map(

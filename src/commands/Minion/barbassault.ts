@@ -118,7 +118,9 @@ export default class extends BotCommand {
 		return msg.send(
 			`**Honour Points:** ${msg.author.settings.get(
 				UserSettings.HonourPoints
-			)} **Honour Level:** ${msg.author.settings.get(UserSettings.HonourLevel)}\n\n` +
+			)} **Honour Level:** ${msg.author.settings.get(
+				UserSettings.HonourLevel
+			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
 				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need exactly 4 people to join to start.` +
 				` We have a channel dedicated to Barbarian Assault parties in the support server (discord.gg/ob). \n` +
 				`Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points.` +
@@ -193,6 +195,10 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
 		const loot = new Bank().add(table.roll());
 		await msg.author.addItemsToBank(loot.bank, true);
+		await msg.author.settings.update(
+			UserSettings.HighGambles,
+			msg.author.settings.get(UserSettings.HighGambles) + 1
+		);
 		const desc = await createReadableItemListFromBank(this.client, loot.bank);
 		return msg.send(
 			`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${desc}.`
@@ -251,7 +257,7 @@ export default class extends BotCommand {
 			addArrayOfNumbers(
 				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
 			) / 4;
-		const kcPercent = round(calcWhatPercent(averageKC, 200) / 5, 2);
+		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 

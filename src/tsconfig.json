@@ -5,7 +5,8 @@
 		"rootDir": ".",
 		"tsBuildInfoFile": "../dist/.tsbuildinfo",
 		"composite": true,
-		"declaration": true
+		"declaration": true,
+		"incremental": true
 	},
 	"include": [".", "./**/*.json"]
 }
