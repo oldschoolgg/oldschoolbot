@@ -11,6 +11,8 @@ export default function resolvePatchTypeSetting(type: string) {
 			return UserSettings.FarmingPatches.Tree;
 		case PatchTypes.FarmingPatchTypes.Allotment:
 			return UserSettings.FarmingPatches.Allotment;
+		case PatchTypes.FarmingPatchTypes.Hops:
+			return UserSettings.FarmingPatches.Hops;
 		case PatchTypes.FarmingPatchTypes.Cactus:
 			return UserSettings.FarmingPatches.Cactus;
 		case PatchTypes.FarmingPatchTypes.Bush:
@@ -35,5 +37,9 @@ export default function resolvePatchTypeSetting(type: string) {
 			return UserSettings.FarmingPatches.Hespori;
 		case PatchTypes.FarmingPatchTypes.Flower:
 			return UserSettings.FarmingPatches.Flower;
+		case PatchTypes.FarmingPatchTypes.Mushroom:
+			return UserSettings.FarmingPatches.Mushroom;
+		case PatchTypes.FarmingPatchTypes.Belladonna:
+			return UserSettings.FarmingPatches.Belladonna;
 	}
 }

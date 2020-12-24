@@ -20,7 +20,7 @@ export default class extends BotCommand {
 	}
 
 	determineDuration(user: KlasaUser): [number, string[]] {
-		let baseTime = Time.Second * 1538;
+		let baseTime = Time.Second * 1500;
 		let nonGracefulTimeAddition = Time.Second * 123;
 
 		const boostStr = [];
@@ -28,7 +28,7 @@ export default class extends BotCommand {
 		// Reduce time based on tithe farm completions
 		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
 		const percentIncreaseFromCompletions =
-			Math.floor(Math.min(60, titheFarmsCompleted) / 3) / 100;
+			Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 		baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 		Math.floor(percentIncreaseFromCompletions * 100) > 0
 			? boostStr.push(

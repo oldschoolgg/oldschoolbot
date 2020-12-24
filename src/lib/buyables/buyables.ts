@@ -232,7 +232,7 @@ const Buyables: Buyable[] = [
 			[itemID('Fishing bait')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 5
+		gpCost: 20
 	},
 	{
 		name: 'Jug of Water',
@@ -250,7 +250,7 @@ const Buyables: Buyable[] = [
 			[itemID("Iban's staff")]: 1
 		},
 		qpRequired: 30,
-		gpCost: 250_000
+		gpCost: 300_000
 	},
 	{
 		name: 'Barrelchest anchor',
@@ -268,7 +268,7 @@ const Buyables: Buyable[] = [
 			[itemID('Feather')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 10
+		gpCost: 50
 	},
 	{
 		name: 'Shield right half',
@@ -286,7 +286,7 @@ const Buyables: Buyable[] = [
 			'Eye of newt': 1
 		}),
 		qpRequired: 0,
-		gpCost: 100
+		gpCost: 300
 	},
 	{
 		name: 'Vial of water',
@@ -295,7 +295,7 @@ const Buyables: Buyable[] = [
 			'Vial of water': 1
 		}),
 		qpRequired: 0,
-		gpCost: 10
+		gpCost: 60
 	},
 	{
 		name: 'Vial',
@@ -304,7 +304,7 @@ const Buyables: Buyable[] = [
 			Vial: 1
 		}),
 		qpRequired: 0,
-		gpCost: 10
+		gpCost: 30
 	},
 	{
 		name: 'Cup of hot water',
@@ -322,7 +322,7 @@ const Buyables: Buyable[] = [
 			'Chocolate bar': 1
 		}),
 		qpRequired: 0,
-		gpCost: 200
+		gpCost: 1000
 	},
 	{
 		name: 'Ball of wool',
@@ -331,7 +331,7 @@ const Buyables: Buyable[] = [
 			[itemID('Ball of wool')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 200
+		gpCost: 300
 	},
 	{
 		name: 'Compost',
@@ -339,7 +339,7 @@ const Buyables: Buyable[] = [
 			[itemID('Compost')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 20
+		gpCost: 400
 	},
 	{
 		name: 'Lottery ticket',

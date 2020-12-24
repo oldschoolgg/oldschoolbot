@@ -1,5 +1,6 @@
 import { Client } from 'discord.js';
 
+import { production } from '../../config';
 import { Tasks } from '../constants';
 import { ActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
@@ -18,13 +19,14 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 
+	const finishDate = Date.now() + (production ? subTaskToAdd.duration : 1);
 	const newSubtask: ActivityTaskOptions = {
 		...subTaskToAdd,
-		finishDate: Date.now() + subTaskToAdd.duration,
+		finishDate,
 		id: uuid()
 	};
 
-	return task.update({
+	let promise = task.update({
 		data: {
 			...task.data,
 			subTasks: [...task.data.subTasks, newSubtask].sort(
@@ -32,4 +34,9 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 			)
 		}
 	});
+
+	if (!production) {
+		return promise.then(() => task.run());
+	}
+	return promise;
 }

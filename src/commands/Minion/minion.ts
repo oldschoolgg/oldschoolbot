@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { objectKeys, randInt } from 'e';
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -503,7 +503,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+				attackStylesUsed: [monster.attackStyleToUse]
 			});
 
 			foodStr = result;

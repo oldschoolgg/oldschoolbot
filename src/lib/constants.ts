@@ -84,6 +84,7 @@ export const enum Emoji {
 	Timer = '<:ehpclock:352323705210142721>',
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
+	RottenPotato = '<:rottenPotato:791498767051915275>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -149,6 +150,7 @@ export const enum Tasks {
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
+	ChampionsChallenge = 'championsChallengeActivity',
 
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -193,7 +195,8 @@ export const enum Activity {
 	Farming = 'Farming',
 	DeliverPresents = 'DeliverPresents',
 	BarbarianAssault = 'BarbarianAssault',
-	AgilityArena = 'AgilityArena'
+	AgilityArena = 'AgilityArena',
+	ChampionsChallenge = 'ChampionsChallenge'
 }
 
 export const enum Events {
@@ -260,7 +263,8 @@ export const enum BitField {
 	IsPatronTier4 = 5,
 	IsPatronTier5 = 6,
 	isModerator = 7,
-	isContributor = 8
+	isContributor = 8,
+	BypassAgeRestriction = 9
 }
 
 export const enum PatronTierID {

@@ -29,6 +29,7 @@ Client.defaultUserSchema
 	.add('sacrificedBank', 'any', { default: {} })
 	.add('honour_level', 'integer', { default: 1 })
 	.add('honour_points', 'integer', { default: 0 })
+	.add('high_gambles', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
@@ -38,6 +39,8 @@ Client.defaultUserSchema
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
 			.add('farmingContract', 'any', { default: defaultContracts })
+			.add('defaultCompostToUse', 'string', { default: 'compost' })
+			.add('defaultPay', 'boolean', { default: false })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
@@ -81,6 +84,7 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.FruitTree, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Tree, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Allotment, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Hops, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Cactus, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Bush, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Spirit, 'any', { default: Farming.defaultPatches })
@@ -93,4 +97,6 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Celastrus, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Hespori, 'any', { default: Farming.defaultPatches })
 			.add(FarmingPatchTypes.Flower, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Mushroom, 'any', { default: Farming.defaultPatches })
+			.add(FarmingPatchTypes.Belladonna, 'any', { default: Farming.defaultPatches })
 	);

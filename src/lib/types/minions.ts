@@ -105,6 +105,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 	quantity: number;
 	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
+	payment?: boolean;
 	patchType: PatchTypes.PatchData;
 	getPatchType: string;
 	planting: boolean;

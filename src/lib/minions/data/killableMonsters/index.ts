@@ -10,9 +10,11 @@ import bosses from './bosses';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
 import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
+import low from './low';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
+	...low,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,

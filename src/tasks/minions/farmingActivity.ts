@@ -23,6 +23,7 @@ export default class extends Task {
 		getPatchType,
 		quantity,
 		upgradeType,
+		payment,
 		userID,
 		channelID,
 		planting,
@@ -205,7 +206,8 @@ export default class extends Task {
 					cropYield = calcVariableYield(
 						plantToHarvest,
 						patchType.lastUpgradeType,
-						currentFarmingLevel
+						currentFarmingLevel,
+						alivePlants
 					);
 				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;
@@ -273,10 +275,15 @@ export default class extends Task {
 				if (plantToHarvest.givesLogs && chopped) {
 					if (!plantToHarvest.outputLogs) return;
 					if (!plantToHarvest.woodcuttingXp) return;
-					const amountOfLogs = rand(5, 10);
-					loot[plantToHarvest.outputLogs] = amountOfLogs * alivePlants;
 
-					woodcuttingXp += alivePlants * amountOfLogs * plantToHarvest.woodcuttingXp;
+					const amountOfLogs = rand(5, 10) * alivePlants;
+					loot[plantToHarvest.outputLogs] = amountOfLogs;
+
+					if (plantToHarvest.outputRoots) {
+						loot[plantToHarvest.outputRoots] = rand(1, 4) * alivePlants;
+					}
+
+					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp;
 					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
 
 					harvestXp = 0;
@@ -359,6 +366,16 @@ export default class extends Task {
 				tangleroot = true;
 			}
 
+			if (plantToHarvest.seedType !== 'hespori') {
+				let hesporiSeeds = 0;
+				for (let i = 0; i < alivePlants; i++) {
+					if (roll(plantToHarvest.petChance / 500)) {
+						hesporiSeeds++;
+					}
+				}
+				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
+			}
+
 			if (tangleroot) {
 				infoStr.push('\n```diff');
 				infoStr.push(`\n- You have a funny feeling you're being followed...`);
@@ -385,7 +402,7 @@ export default class extends Task {
 					plantTime: currentDate + duration,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
-					lastPayment: patchType.lastPayment
+					lastPayment: payment ? payment : false
 				};
 			}
 
