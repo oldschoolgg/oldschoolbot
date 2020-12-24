@@ -222,13 +222,13 @@ const baseTGBTable = new LootTable()
 	.add('Reward casket (master)', [3, 6])
 	.add('Reward casket (beginner)', [3, 9])
 	.add('Reward casket (hard)', [3, 7])
-	.add('Dwarven crate')
+	.add('Dwarven crate', 2)
 	.add(NestBoxes, 100)
 	.add('Holiday Mystery box')
 	.add('Pet Mystery box')
 	.add('Untradeable Mystery box')
-	.add('Abyssal dragon bones', [100, 500])
-	.add('Coins', [20_000_000, 100_000_000])
+	.add('Abyssal dragon bones', [100, 500], 2)
+	.add('Coins', [20_000_000, 100_000_000], 2)
 	.add(LampTable, [1, 3])
 	.add('Clue scroll (beginner)', [5, 10], 2)
 	.add('Clue scroll (easy)', [4, 9], 2)
@@ -236,16 +236,19 @@ const baseTGBTable = new LootTable()
 	.add('Clue scroll (hard)', [3, 6], 2)
 	.add('Clue scroll (elite)', [4, 9], 2)
 	.add('Clue scroll (master)', [2, 5], 2)
-	.add('Manta ray', [100, 600])
+	.add('Manta ray', [100, 600], 2)
 	.add(FishTable, [1, 15])
 	.add(TreeHerbSeedTable, [1, 15])
 	.add('Prayer potion(4)', [5, 40])
 	.add('Saradomin brew(4)', [5, 40])
 	.add('Super restore(4)', [5, 20])
-	.add('Monkey nuts')
-	.add('Magic seed', [50, 100]);
+	.add('Monkey nuts', 2)
+	.add('Shark', [100, 200], 2)
+	.add('Beer', [500, 5000])
+	.add('Tchiki monkey nuts')
+	.add('Magic seed', [20, 50]);
 
-const testerGiftTable = new LootTable().every(baseTGBTable, [3, 6]);
+const testerGiftTable = new LootTable().every(baseTGBTable, [2, 4]);
 
 const Openables: Openable[] = [
 	{
