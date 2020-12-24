@@ -22,6 +22,12 @@ export default class extends Task {
 		if (!fullMonster) throw 'No full monster';
 		const user = await this.client.users.fetch(userID);
 		const perkTier = getUsersPerkTier(user);
+		const channel = this.client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
+		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
+			return channel.send(`${user.minionName} failed to defeat Koschei the deathless.`);
+		}
+
 		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;

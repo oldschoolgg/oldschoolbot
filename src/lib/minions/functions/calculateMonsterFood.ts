@@ -4,6 +4,7 @@ import { O } from 'ts-toolbelt';
 import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import { calcWhatPercent, itemID, reduceNumByPercent } from '../../util';
+import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
 
 const { floor, max } = Math;
@@ -17,6 +18,10 @@ export default function calculateMonsterFood(
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
 		return [0, messages];
+	}
+
+	if (monster.name === 'Koschei the deathless') {
+		return [killableMonsters.find(m => m.id === monster.id)!.healAmountNeeded!, []];
 	}
 
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
