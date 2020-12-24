@@ -3,7 +3,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import setCustomMonster from '../../../../util/setCustomMonster';
 
-const FishTable = new LootTable()
+export const FishTable = new LootTable()
 	.add('Raw sea turtle', [1, 10])
 	.add('Raw dark crab', [1, 10])
 	.add('Raw anglerfish', [1, 20])
