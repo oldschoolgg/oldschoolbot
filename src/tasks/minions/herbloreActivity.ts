@@ -23,7 +23,7 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Herblore, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Herblore);
 
-		let str = `${user}, ${user.minionName} finished mixing ${quantity} ${
+		let str = `${user}, ${user.minionName} finished making ${quantity} ${
 			mixableItem.name
 		}s, you also received ${xpReceived.toLocaleString()} XP. `;
 

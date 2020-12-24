@@ -154,6 +154,7 @@ export interface Mixable {
 	outputMultiple?: number;
 	zahur?: boolean;
 	wesley?: boolean;
+	qpRequired?: number;
 }
 
 export interface Bone {

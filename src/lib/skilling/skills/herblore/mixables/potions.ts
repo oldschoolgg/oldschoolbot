@@ -354,7 +354,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Saradomin brew (3)',
-		aliases: ['saradomin brew (3)', 'saradomin brew'],
+		aliases: ['saradomin brew (3)', 'saradomin brew', 'sara brew'],
 		id: itemID('Saradomin brew (3)'),
 		level: 81,
 		xp: 180,
@@ -395,7 +395,7 @@ const Potions: Mixable[] = [
 		id: itemID('Anti-venom (4)'),
 		level: 87,
 		xp: 120,
-		inputItems: resolveNameBank({ 'Antidote++ (4)': 1, "Zulrah's scales": 30 }),
+		inputItems: resolveNameBank({ 'Antidote++ (4)': 1, "Zulrah's scales": 20 }),
 		tickRate: 2,
 		bankTimePerPotion: 0.17
 	},
@@ -425,16 +425,17 @@ const Potions: Mixable[] = [
 			'Crushed superior dragon bones': 1
 		}),
 		tickRate: 2,
+		qpRequired: 205,
 		bankTimePerPotion: 0.3
 	},
 	{
 		name: 'Anti-venom+(4)',
 		aliases: ['Anti-venom+(4)', 'Anti-venom+'],
 		id: itemID('Anti-venom+(4)'),
-		level: 92,
+		level: 94,
 		xp: 125,
 		inputItems: resolveNameBank({ 'Anti-venom (4)': 1, Torstol: 1 }),
-		tickRate: 2,
+		tickRate: 4,
 		bankTimePerPotion: 0.3
 	},
 	{
@@ -448,6 +449,7 @@ const Potions: Mixable[] = [
 			'Lava scale shard': 4
 		}),
 		tickRate: 2,
+		qpRequired: 205,
 		bankTimePerPotion: 0.3
 	}
 ];

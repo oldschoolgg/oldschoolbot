@@ -61,7 +61,16 @@ export default class extends BotCommand {
 
 		if (msg.author.skillLevel(SkillsEnum.Herblore) < mixableItem.level) {
 			return msg.send(
-				`${msg.author.minionName} needs ${mixableItem.level} Herblore to mix ${mixableItem.name}.`
+				`${msg.author.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.name}.`
+			);
+		}
+
+		if (
+			mixableItem.qpRequired &&
+			msg.author.settings.get(UserSettings.QP) < mixableItem.qpRequired
+		) {
+			return msg.send(
+				`You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`
 			);
 		}
 
@@ -83,12 +92,12 @@ export default class extends BotCommand {
 		if (zahur && mixableItem.zahur === true) {
 			timeToMixSingleItem = 0.000001;
 			requiredItems = requiredItems.concat([['995', 200]]);
-			cost = "decided to pay Zahur 200 gp for each potion so they don't have to";
+			cost = "decided to pay Zahur 200 gp for each potion so they don't have to go";
 		}
 		if (msg.flagArgs.wesley && mixableItem.wesley === true) {
 			timeToMixSingleItem = 0.000001;
 			requiredItems = requiredItems.concat([['995', 50]]);
-			cost = "decided to pay Wesley 50 gp for each item so they don't have to";
+			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
@@ -120,7 +129,7 @@ export default class extends BotCommand {
 					msg.author.maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					mixableItem.name
-				}s you can mix is ${Math.floor(msg.author.maxTripLength / timeToMixSingleItem)}.`
+				}s you can make is ${Math.floor(msg.author.maxTripLength / timeToMixSingleItem)}.`
 			);
 		}
 

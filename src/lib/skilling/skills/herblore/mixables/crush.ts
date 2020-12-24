@@ -59,6 +59,17 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
+		name: 'Silver dust',
+		aliases: ['silver dust', 'silver'],
+		id: itemID('Silver dust'),
+		level: 1,
+		xp: 0,
+		inputItems: resolveNameBank({ 'Silver bar': 1 }),
+		tickRate: 6,
+		bankTimePerPotion: 1,
+		wesley: false
+	},
+	{
 		name: 'Crushed superior dragon bones',
 		aliases: [
 			'crushed superior dragon bones',
@@ -77,7 +88,7 @@ const Crush: Mixable[] = [
 	},
 	{
 		name: 'Dragon scale dust',
-		aliases: ['dragon scale dust', 'dragon scale'],
+		aliases: ['dragon scale dust', 'dragon scale', 'blue dragon scale'],
 		id: itemID('Dragon scale dust'),
 		level: 1,
 		xp: 0,
