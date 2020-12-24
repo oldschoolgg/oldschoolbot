@@ -7,7 +7,7 @@ const Grimy: Mixable[] = [
 		name: 'Guam leaf',
 		aliases: ['guam leaf', 'guam', 'grimy guam'],
 		id: itemID('Guam leaf'),
-		level: 1,
+		level: 3,
 		xp: 2.5,
 		inputItems: resolveNameBank({ 'Grimy guam leaf': 1 }),
 		tickRate: 0.5,

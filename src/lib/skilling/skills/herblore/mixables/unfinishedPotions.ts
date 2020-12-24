@@ -7,7 +7,7 @@ const unfinishedPotions: Mixable[] = [
 		name: 'Guam potion (unf)',
 		aliases: ['guam potion (unf)', 'guam (unf)', 'guam potion'],
 		id: itemID('Guam potion (unf)'),
-		level: 1,
+		level: 3,
 		xp: 0,
 		inputItems: resolveNameBank({ 'guam leaf': 1, 'Vial of water': 1 }),
 		tickRate: 1,

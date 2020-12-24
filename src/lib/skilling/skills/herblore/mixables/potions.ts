@@ -7,7 +7,7 @@ const Potions: Mixable[] = [
 		name: 'Attack potion (3)',
 		aliases: ['attack potion', 'attack', 'attack potion (3)'],
 		id: itemID('Attack potion (3)'),
-		level: 1,
+		level: 3,
 		xp: 25,
 		inputItems: resolveNameBank({ 'guam potion (unf)': 1, 'Eye of newt': 1 }),
 		tickRate: 2,

@@ -52,7 +52,6 @@ export default class extends BotCommand {
 		const mixableItem = Herblore.Mixables.find(item =>
 			item.aliases.some(alias => stringMatches(alias, mixName))
 		);
-		// const mixableItem = Herblore.Mixables.find(item => stringMatches(item.name, mixName));
 
 		if (!mixableItem) {
 			return msg.send(
@@ -100,14 +99,14 @@ export default class extends BotCommand {
 				if (id === 995) {
 					const userGP = msg.author.settings.get(UserSettings.GP);
 					if (userGP < qty) {
-						throw `You do not have enough GP.`;
+						return msg.send(`You do not have enough GP.`);
 					}
 					quantity = Math.min(quantity, Math.floor(userGP / qty));
 					continue;
 				}
 				const itemsOwned = userBank[parseInt(itemID)];
 				if (itemsOwned < qty) {
-					throw `You dont have enough ${itemNameFromID(parseInt(itemID))}.`;
+					return msg.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
@@ -130,12 +129,12 @@ export default class extends BotCommand {
 			if (id === 995) {
 				const userGP = msg.author.settings.get(UserSettings.GP);
 				if (userGP < qty * quantity) {
-					throw `You don't have enough ${itemNameFromID(id)}.`;
+					return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
 				}
 				continue;
 			}
 			if (!bankHasItem(userBank, id, qty * quantity)) {
-				throw `You don't have enough ${itemNameFromID(id)}.`;
+				return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
 			}
 		}
 		// Remove the required items from their bank.
