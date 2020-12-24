@@ -15,7 +15,8 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<user:user>',
 			oneAtTime: true,
-			categoryFlags: ['minion']
+			categoryFlags: ['minion'],
+			aliases: ['gri']
 		});
 	}
 
