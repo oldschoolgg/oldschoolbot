@@ -5,7 +5,7 @@ import { Mixable } from '../../../types';
 const Tar: Mixable[] = [
 	{
 		name: 'Guam tar',
-		aliases: ['Guam tar'],
+		aliases: ['guam tar'],
 		id: itemID('Guam tar'),
 		level: 19,
 		xp: 30,
@@ -16,7 +16,7 @@ const Tar: Mixable[] = [
 	},
 	{
 		name: 'Marrentill tar',
-		aliases: ['Marrentill tar'],
+		aliases: ['marrentill tar'],
 		id: itemID('Marrentill tar'),
 		level: 31,
 		xp: 42.5,
@@ -27,7 +27,7 @@ const Tar: Mixable[] = [
 	},
 	{
 		name: 'Tarromin tar',
-		aliases: ['Tarromin tar'],
+		aliases: ['tarromin tar'],
 		id: itemID('Tarromin tar'),
 		level: 39,
 		xp: 55,
@@ -38,7 +38,7 @@ const Tar: Mixable[] = [
 	},
 	{
 		name: 'Harralander tar',
-		aliases: ['Harralander tar'],
+		aliases: ['harralander tar'],
 		id: itemID('Harralander tar'),
 		level: 44,
 		xp: 72.5,

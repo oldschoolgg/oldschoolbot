@@ -55,11 +55,15 @@ export default class extends BotCommand {
 		// const mixableItem = Herblore.Mixables.find(item => stringMatches(item.name, mixName));
 
 		if (!mixableItem) {
-			throw `That is not a valid mixable item, to see the items available do \`${msg.cmdPrefix}mix --items\``;
+			return msg.send(
+				`That is not a valid mixable item, to see the items available do \`${msg.cmdPrefix}mix --items\``
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Herblore) < mixableItem.level) {
-			throw `${msg.author.minionName} needs ${mixableItem.level} Herblore to mix ${mixableItem.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${mixableItem.level} Herblore to mix ${mixableItem.name}.`
+			);
 		}
 
 		let sets = 'x';
@@ -80,12 +84,12 @@ export default class extends BotCommand {
 		if (zahur && mixableItem.zahur === true) {
 			timeToMixSingleItem = 0.000001;
 			requiredItems = requiredItems.concat([['995', 200]]);
-			cost = "decided to pay Zahur 200 gp for each potion so they don't have go";
+			cost = "decided to pay Zahur 200 gp for each potion so they don't have to";
 		}
 		if (msg.flagArgs.wesley && mixableItem.wesley === true) {
 			timeToMixSingleItem = 0.000001;
 			requiredItems = requiredItems.concat([['995', 50]]);
-			cost = "decided to pay Wesley 50 gp for each item so they don't have go";
+			cost = "decided to pay Wesley 50 gp for each item so they don't have to";
 		}
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
@@ -112,11 +116,13 @@ export default class extends BotCommand {
 		const duration = quantity * timeToMixSingleItem;
 
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${
-				mixableItem.name
-			}s you can mix is ${Math.floor(msg.author.maxTripLength / timeToMixSingleItem)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					mixableItem.name
+				}s you can mix is ${Math.floor(msg.author.maxTripLength / timeToMixSingleItem)}.`
+			);
 		}
 
 		for (const [itemID, qty] of requiredItems) {

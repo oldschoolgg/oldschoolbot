@@ -5,7 +5,7 @@ import { Mixable } from '../../../types';
 const Potions: Mixable[] = [
 	{
 		name: 'Attack potion (3)',
-		aliases: ['Attack potion', 'Attack', 'Attack potion (3)'],
+		aliases: ['attack potion', 'attack', 'attack potion (3)'],
 		id: itemID('Attack potion (3)'),
 		level: 1,
 		xp: 25,
@@ -15,7 +15,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Antipoison (3)',
-		aliases: ['Antipoison (3)', 'Antipoison'],
+		aliases: ['antipoison (3)', 'antipoison'],
 		id: itemID('Antipoison (3)'),
 		level: 5,
 		xp: 37.5,
@@ -28,7 +28,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Strength potion (3)',
-		aliases: ['Strength potion (3)', 'Strength potion', 'Strength'],
+		aliases: ['strength potion (3)', 'strength potion', 'strength'],
 		id: itemID('Strength potion (3)'),
 		level: 12,
 		xp: 50,
@@ -38,7 +38,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Serum 207 (3)',
-		aliases: ['Serum 207 (3)', 'Serum 207'],
+		aliases: ['serum 207 (3)', 'serum 207'],
 		id: itemID('Serum 207 (3)'),
 		level: 15,
 		xp: 50,
@@ -48,7 +48,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Compost potion (3)',
-		aliases: ['Compost potion (3)', 'Compost potion', 'Compost'],
+		aliases: ['compost potion (3)', 'compost potion', 'compost'],
 		id: itemID('Compost potion (3)'),
 		level: 22,
 		xp: 60,
@@ -58,7 +58,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Restore potion (3)',
-		aliases: ['Restore potion (3)', 'Restore potion', 'Restore'],
+		aliases: ['restore potion (3)', 'restore potion', 'restore'],
 		id: itemID('restore potion (3)'),
 		level: 22,
 		xp: 62.5,
@@ -71,7 +71,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Guthix balance (3)',
-		aliases: ['Guthix balance (3)', 'guthix balance'],
+		aliases: ['guthix balance (3)', 'guthix balance'],
 		id: itemID('Guthix balance (3)'),
 		level: 22,
 		xp: 50,
@@ -85,7 +85,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Energy potion (3)',
-		aliases: ['Energy potion (3)', 'Energy potion', 'Energy'],
+		aliases: ['energy potion (3)', 'energy potion', 'energy'],
 		id: itemID('Energy potion (3)'),
 		level: 26,
 		xp: 67.5,
@@ -98,7 +98,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Defence potion (3)',
-		aliases: ['Defence potion (3)', 'Defence potion', 'Defence'],
+		aliases: ['defence potion (3)', 'defence potion', 'defence'],
 		id: itemID('Defence potion (3)'),
 		level: 30,
 		xp: 75,
@@ -108,7 +108,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Agility potion (3)',
-		aliases: ['Agility potion (3)', 'Agility potion', 'Agility'],
+		aliases: ['agility potion (3)', 'agility potion', 'agility'],
 		id: itemID('Agility potion (3)'),
 		level: 34,
 		xp: 80,
@@ -118,7 +118,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Combat potion (3)',
-		aliases: ['Combat potion (3)', 'Combat potion', 'Combat'],
+		aliases: ['combat potion (3)', 'combat potion', 'combat'],
 		id: itemID('Combat potion (3)'),
 		level: 36,
 		xp: 84,
@@ -141,7 +141,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Super attack (3)',
-		aliases: ['Super attack (3)', 'Super attack'],
+		aliases: ['super attack (3)', 'super attack'],
 		id: itemID('Super attack (3)'),
 		level: 45,
 		xp: 100,
@@ -151,7 +151,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Superantipoison (3)',
-		aliases: ['Superantipoison (3)', 'Superantipoison'],
+		aliases: ['superantipoison (3)', 'superantipoison'],
 		id: itemID('Superantipoison (3)'),
 		level: 48,
 		xp: 106.5,
@@ -161,7 +161,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Fishing potion (3)',
-		aliases: ['Fishing potion (3)', 'Fishing potion', 'Fishing'],
+		aliases: ['fishing potion (3)', 'fishing potion', 'fishing'],
 		id: itemID('Fishing potion (3)'),
 		level: 50,
 		xp: 112.5,
@@ -171,7 +171,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Super energy (3)',
-		aliases: ['Super energy (3)', 'Super energy'],
+		aliases: ['super energy (3)', 'super energy'],
 		id: itemID('Super energy (3)'),
 		level: 52,
 		xp: 117.5,
@@ -181,7 +181,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Hunter potion (3)',
-		aliases: ['Hunter potion (3)', 'Hunter potion', 'Hunter'],
+		aliases: ['hunter potion (3)', 'hunter potion', 'hunter'],
 		id: itemID('Hunter potion (3)'),
 		level: 53,
 		xp: 120,
@@ -191,7 +191,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Super strength (3)',
-		aliases: ['Super strength (3)', 'Super strength'],
+		aliases: ['super strength (3)', 'super strength'],
 		id: itemID('Super strength (3)'),
 		level: 55,
 		xp: 125,
@@ -201,7 +201,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Weapon poison',
-		aliases: ['Weapon poison'],
+		aliases: ['weapon poison'],
 		id: itemID('Weapon poison'),
 		level: 60,
 		xp: 137.5,
@@ -211,7 +211,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Super restore (3)',
-		aliases: ['Super restore (3)', 'Super restore'],
+		aliases: ['super restore (3)', 'super restore'],
 		id: itemID('Super restore (3)'),
 		level: 63,
 		xp: 142.5,
@@ -224,7 +224,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Super defence (3)',
-		aliases: ['Super defence (3)', 'Super defence'],
+		aliases: ['super defence (3)', 'super defence'],
 		id: itemID('Super defence (3)'),
 		level: 66,
 		xp: 150,
@@ -234,7 +234,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Antidote+ (4)',
-		aliases: ['Antidote+ (4)', 'Antidote+'],
+		aliases: ['antidote+ (4)', 'antidote+'],
 		id: itemID('Antidote+ (4)'),
 		level: 68,
 		xp: 155,
@@ -244,7 +244,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Antifire potion (3)',
-		aliases: ['Antifire potion (3)', 'Antifire potion', 'Antifire'],
+		aliases: ['antifire potion (3)', 'antifire potion', 'antifire'],
 		id: itemID('Antifire potion (3)'),
 		level: 69,
 		xp: 157.5,
@@ -257,7 +257,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Ranging potion (3)',
-		aliases: ['Ranging potion (3)', 'Ranging potion', 'Ranging'],
+		aliases: ['ranging potion (3)', 'ranging potion', 'ranging'],
 		id: itemID('Ranging potion (3)'),
 		level: 72,
 		xp: 162.5,
@@ -270,7 +270,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Weapon poison(+)',
-		aliases: ['Weapon poison(+)'],
+		aliases: ['weapon poison(+)'],
 		id: itemID('Weapon poison(+)'),
 		level: 73,
 		xp: 165,
@@ -284,7 +284,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Magic potion (3)',
-		aliases: ['Magic potion (3)', 'Magic potion', 'Magic'],
+		aliases: ['magic potion (3)', 'magic potion', 'magic'],
 		id: itemID('Magic potion (3)'),
 		level: 76,
 		xp: 172.5,
@@ -294,7 +294,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Stamina potion (4)',
-		aliases: ['Stamina potion (4)', 'Stamina potion', 'Stamina'],
+		aliases: ['stamina potion (4)', 'stamina potion', 'stamina'],
 		id: itemID('Stamina potion (4)'),
 		level: 77,
 		xp: 102,
@@ -304,7 +304,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Zamorak brew (3)',
-		aliases: ['Zamorak brew (3)', 'Zamorak brew'],
+		aliases: ['zamorak brew (3)', 'zamorak brew'],
 		id: itemID('Zamorak brew (3)'),
 		level: 78,
 		xp: 175,
@@ -314,7 +314,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Antidote++ (4)',
-		aliases: ['Antidote++ (4)', 'Antidote++'],
+		aliases: ['antidote++ (4)', 'antidote++'],
 		id: itemID('Antidote++ (4)'),
 		level: 79,
 		xp: 177.5,
@@ -328,7 +328,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Bastion potion (3)',
-		aliases: ['Bastion potion (3)', 'Bastion potion', 'Bastion'],
+		aliases: ['bastion potion (3)', 'bastion potion', 'bastion'],
 		id: itemID('Bastion potion (3)'),
 		level: 80,
 		xp: 155,
@@ -341,7 +341,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Battlemage potion (3)',
-		aliases: ['Battlemage potion (3)', 'Battlemage potion', 'Battlemage'],
+		aliases: ['battlemage potion (3)', 'battlemage potion', 'battlemage'],
 		id: itemID('Battlemage potion (3)'),
 		level: 80,
 		xp: 155,
@@ -354,7 +354,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Saradomin brew (3)',
-		aliases: ['Saradomin brew (3)', 'Saradomin brew'],
+		aliases: ['saradomin brew (3)', 'saradomin brew'],
 		id: itemID('Saradomin brew (3)'),
 		level: 81,
 		xp: 180,
@@ -367,7 +367,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Weapon poison(++)',
-		aliases: ['Weapon poison(++)'],
+		aliases: ['weapon poison(++)'],
 		id: itemID('Weapon poison(++)'),
 		level: 82,
 		xp: 165,
@@ -381,7 +381,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Extended antifire (4)',
-		aliases: ['Extended antifire (4)', 'Extended antifire'],
+		aliases: ['extended antifire (4)', 'extended antifire'],
 		id: itemID('Extended antifire (4)'),
 		level: 84,
 		xp: 110,
@@ -391,7 +391,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Anti-venom (4)',
-		aliases: ['Anti-venom (4)', 'Anti-venom'],
+		aliases: ['anti-venom (4)', 'anti-venom'],
 		id: itemID('Anti-venom (4)'),
 		level: 87,
 		xp: 120,
@@ -401,7 +401,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Super combat potion (4)',
-		aliases: ['Super combat potion (4)', 'Super combat potion', 'Super combat'],
+		aliases: ['super combat potion (4)', 'super combat potion', 'super combat'],
 		id: itemID('Super combat potion (4)'),
 		level: 90,
 		xp: 150,
@@ -416,7 +416,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Super antifire potion (4)',
-		aliases: ['Super antifire potion (4)', 'Super antifire potion', 'Super antifire'],
+		aliases: ['super antifire potion (4)', 'super antifire potion', 'super antifire'],
 		id: itemID('Super antifire potion (4)'),
 		level: 92,
 		xp: 130,

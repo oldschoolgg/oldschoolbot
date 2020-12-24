@@ -12,7 +12,6 @@ export default class extends Task {
 		const currentLevel = user.skillLevel(SkillsEnum.Herblore);
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID);
-
 		if (!mixableItem) return;
 
 		const xpReceived = zahur ? 0 : quantity * mixableItem.xp;

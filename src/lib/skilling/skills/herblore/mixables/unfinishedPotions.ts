@@ -5,7 +5,7 @@ import { Mixable } from '../../../types';
 const unfinishedPotions: Mixable[] = [
 	{
 		name: 'Guam potion (unf)',
-		aliases: ['Guam potion (unf)', 'Guam (unf)', 'Guam potion'],
+		aliases: ['guam potion (unf)', 'guam (unf)', 'guam potion'],
 		id: itemID('Guam potion (unf)'),
 		level: 1,
 		xp: 0,
@@ -16,7 +16,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Marrentill potion (unf)',
-		aliases: ['Marrentill potion (unf)', 'Marrentill potion', 'Marrentill (unf)'],
+		aliases: ['marrentill potion (unf)', 'marrentill potion', 'marrentill (unf)'],
 		id: itemID('Marrentill potion (unf)'),
 		level: 5,
 		xp: 0,
@@ -27,7 +27,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Tarromin potion (unf)',
-		aliases: ['Tarromin potion (unf)', 'Tarromin potion', 'Tarromin (unf)'],
+		aliases: ['tarromin potion (unf)', 'tarromin potion', 'tarromin (unf)'],
 		id: itemID('Tarromin potion (unf)'),
 		level: 11,
 		xp: 0,
@@ -38,7 +38,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Harralander potion (unf)',
-		aliases: ['Harralander potion (unf)', 'Harralander potion', 'Harralander (unf)'],
+		aliases: ['harralander potion (unf)', 'harralander potion', 'harralander (unf)'],
 		id: itemID('Harralander potion (unf)'),
 		level: 20,
 		xp: 0,
@@ -49,7 +49,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Ranarr potion (unf)',
-		aliases: ['Ranarr potion (unf)', 'Ranarr potion', 'Ranarr (unf)'],
+		aliases: ['ranarr potion (unf)', 'ranarr potion', 'ranarr (unf)'],
 		id: itemID('Ranarr potion (unf)'),
 		level: 25,
 		xp: 0,
@@ -60,7 +60,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Toadflax potion (unf)',
-		aliases: ['Toadflax potion (unf)', 'Toadflax potion', 'Toadflax (unf)'],
+		aliases: ['toadflax potion (unf)', 'toadflax potion', 'toadflax (unf)'],
 		id: itemID('Toadflax potion (unf)'),
 		level: 30,
 		xp: 0,
@@ -71,7 +71,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Irit potion (unf)',
-		aliases: ['Irit potion (unf)', 'Irit potion', 'Irit (unf)'],
+		aliases: ['irit potion (unf)', 'irit potion', 'irit (unf)'],
 		id: itemID('Irit potion (unf)'),
 		level: 40,
 		xp: 0,
@@ -82,7 +82,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Avantoe potion (unf)',
-		aliases: ['Avantoe potion (unf)', 'Avantoe potion', 'Avantoe (unf)'],
+		aliases: ['avantoe potion (unf)', 'avantoe potion', 'avantoe (unf)'],
 		id: itemID('Avantoe potion (unf)'),
 		level: 48,
 		xp: 0,
@@ -93,7 +93,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Kwuarm potion (unf)',
-		aliases: ['Kwuarm potion (unf)', 'Kwuarm potion', 'Kwuarm (unf)'],
+		aliases: ['kwuarm potion (unf)', 'kwuarm potion', 'kwuarm (unf)'],
 		id: itemID('Kwuarm potion (unf)'),
 		level: 54,
 		xp: 0,
@@ -104,7 +104,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Snapdragon potion (unf)',
-		aliases: ['Snapdragon potion (unf)', 'Snapdragon potion', 'Snapdragon (unf)'],
+		aliases: ['snapdragon potion (unf)', 'snapdragon potion', 'snapdragon (unf)'],
 		id: itemID('Snapdragon potion (unf)'),
 		level: 59,
 		xp: 0,
@@ -115,7 +115,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Cadantine potion (unf)',
-		aliases: ['Cadantine potion (unf)', 'Cadantine potion', 'Cadantine (unf)'],
+		aliases: ['cadantine potion (unf)', 'cadantine potion', 'cadantine (unf)'],
 		id: itemID('Cadantine potion (unf)'),
 		level: 65,
 		xp: 0,
@@ -126,7 +126,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Lantadyme potion (unf)',
-		aliases: ['Lantadyme potion (unf)', 'Lantadyme potion', 'Lantadyme (unf)'],
+		aliases: ['lantadyme potion (unf)', 'lantadyme potion', 'lantadyme (unf)'],
 		id: itemID('Lantadyme potion (unf)'),
 		level: 67,
 		xp: 0,
@@ -137,7 +137,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Dwarf weed potion (unf)',
-		aliases: ['Dwarf weed potion', 'Dwarf weed (unf)', 'Dwarf weed potion (unf)'],
+		aliases: ['dwarf weed potion', 'dwarf weed (unf)', 'dwarf weed potion (unf)'],
 		id: itemID('Dwarf weed potion (unf)'),
 		level: 70,
 		xp: 0,
@@ -148,7 +148,7 @@ const unfinishedPotions: Mixable[] = [
 	},
 	{
 		name: 'Torstol potion (unf)',
-		aliases: ['Torstol potion', 'Torstol (unf)', 'Torstol potion (unf)'],
+		aliases: ['torstol potion', 'torstol (unf)', 'torstol potion (unf)'],
 		id: itemID('Torstol potion (unf)'),
 		level: 75,
 		xp: 0,
