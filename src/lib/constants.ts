@@ -84,6 +84,7 @@ export const enum Emoji {
 	Timer = '<:ehpclock:352323705210142721>',
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
+	RottenPotato = '<:rottenPotato:791498767051915275>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -260,7 +261,8 @@ export const enum BitField {
 	IsPatronTier4 = 5,
 	IsPatronTier5 = 6,
 	isModerator = 7,
-	isContributor = 8
+	isContributor = 8,
+	BypassAgeRestriction = 9
 }
 
 export const enum PatronTierID {
