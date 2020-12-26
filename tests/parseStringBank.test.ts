@@ -2,6 +2,7 @@ import getOSItem from '../src/lib/util/getOSItem';
 import { parseStringBank } from '../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
+const get = getOSItem;
 test('parseStringBank', async () => {
 	const quantities = [
 		['5k', 5000],
@@ -13,25 +14,23 @@ test('parseStringBank', async () => {
 	];
 
 	for (const [input, output] of quantities) {
-		expect(psb(`${input} twisted bow`)).toEqual([
-			{ qty: output, item: getOSItem('Twisted bow') }
-		]);
+		expect(psb(`${input} twisted bow`)).toEqual([{ qty: output, item: get('Twisted bow') }]);
 	}
 
 	const output = psb(` 1 twisted bow, coal,  5k egg,  1b trout `);
 	const expected = [
-		{ qty: 1, item: getOSItem('Twisted bow') },
+		{ qty: 1, item: get('Twisted bow') },
 		{
 			qty: 0,
-			item: getOSItem('Coal')
+			item: get('Coal')
 		},
 		{
 			qty: 5000,
-			item: getOSItem('Egg')
+			item: get('Egg')
 		},
 		{
 			qty: 1_000_000_000,
-			item: getOSItem('Trout')
+			item: get('Trout')
 		}
 	];
 	expect(expected).toEqual(expect.arrayContaining(output));
@@ -45,4 +44,14 @@ test('parseStringBank', async () => {
 
 	expect(psb('')).toEqual([]);
 	expect(psb(' ')).toEqual([]);
+	expect(psb(', ')).toEqual([]);
+	expect(psb(',, , , , ,, , , , ,')).toEqual([]);
+	expect(psb('twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([
+		{ qty: 0, item: get('Twisted bow') }
+	]);
+
+	expect(psb('1k twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([
+		{ qty: 1000, item: get('Twisted bow') }
+	]);
+	expect(psb('5 tarromin')).toEqual([{ qty: 5, item: get('Tarromin') }]);
 });
