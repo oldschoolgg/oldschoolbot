@@ -387,10 +387,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
 			}
 
-			case Activity.DeliverPresents: {
-				return `${this.minionName} is currently delivering presents. ${formattedDuration}`;
-			}
-
 			case Activity.BarbarianAssault: {
 				const data = currentTask as BarbarianAssaultActivityTaskOptions;
 

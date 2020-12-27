@@ -93,6 +93,10 @@ declare module 'discord.js' {
 	}
 	interface User {
 		addItemsToBank(items: ItemBank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		removeItemsFromBank(
+			items: ItemBank,
+			collectionLog?: boolean
+		): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(
