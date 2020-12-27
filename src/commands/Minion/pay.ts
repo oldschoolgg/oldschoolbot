@@ -16,7 +16,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion'],
 			description: 'Pays GP to another user.',
 			examples: ['+pay @Magnaboy 10m'],
-			restrictedChannels: ['792691343284764693']
+			restrictedChannels: ['792691343284764693', '792692390778896424']
 		});
 	}
 
