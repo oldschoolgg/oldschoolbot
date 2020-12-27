@@ -41,7 +41,9 @@ export default class extends BotCommand {
 		}
 
 		if (Object.keys(bankToSell.bank).length === 0) {
-			return msg.send(`None of the items you provided are tradeable, or owned by you.`);
+			return msg.send(
+				`You don't have enough of the items you provided, or none of them are tradeable.`
+			);
 		}
 
 		totalPrice = Math.floor(totalPrice * 0.8);
