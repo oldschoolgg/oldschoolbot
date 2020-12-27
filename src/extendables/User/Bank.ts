@@ -1,13 +1,14 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { O } from 'ts-toolbelt';
 
 import { Events } from '../../lib/constants';
 import { GearTypes } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import SimilarItems from '../../lib/similarItems';
 import { ItemBank } from '../../lib/types';
-import { addBanks, addItemToBank, removeItemFromBank } from '../../lib/util';
+import { addBanks, addItemToBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -135,6 +136,27 @@ export default class extends Extendable {
 			this.settings.update(
 				UserSettings.Bank,
 				removeItemFromBank(bank, itemID, amountToRemove)
+			)
+		);
+	}
+
+	public async removeItemsFromBank(this: User, itemBank: O.Readonly<ItemBank>) {
+		await this.settings.sync(true);
+
+		const items = {
+			...itemBank
+		};
+
+		if (items[995]) {
+			await this.removeGP(items[995]);
+			delete items[995];
+		}
+
+		this.log(`Had items removed from bank - ${JSON.stringify(items)}`);
+		return this.queueFn(() =>
+			this.settings.update(
+				UserSettings.Bank,
+				removeBankFromBank(this.settings.get(UserSettings.Bank), items)
 			)
 		);
 	}

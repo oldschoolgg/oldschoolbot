@@ -155,9 +155,7 @@ export const enum Tasks {
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker',
-
-	DeliverPresents = 'deliverPresentsActivity'
+	MinigameTicker = 'minigameTicker'
 }
 
 export const enum Activity {
@@ -193,7 +191,6 @@ export const enum Activity {
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
-	DeliverPresents = 'DeliverPresents',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge'
@@ -283,3 +280,4 @@ export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
 
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
+export const MAX_INT_JAVA = 2_147_483_647;

@@ -27,7 +27,8 @@ export default class extends BotCommand {
 			altProtection: true,
 			ironCantUse: true,
 			examples: ['+duel @Magnaboy', '+duel @Magnaboy 1m'],
-			categoryFlags: ['minion', 'utility']
+			categoryFlags: ['minion', 'utility'],
+			restrictedChannels: ['792692390778896424']
 		});
 	}
 

@@ -44,7 +44,9 @@ export default class extends BotCommand {
 				}
 			);
 
-			const winner = collected.first()?.author!;
+			const col = collected.first();
+			if (!col) return;
+			const winner = col.author!;
 			const box = LampTable.roll()[0].item;
 			await winner.addItemsToBank({ [box]: 1 });
 			return msg.channel.send(
