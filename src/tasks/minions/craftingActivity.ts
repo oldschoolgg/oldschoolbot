@@ -6,8 +6,7 @@ import { getRandomMysteryBox } from '../../lib/openables';
 import Crafting from '../../lib/skilling/skills/crafting/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { multiplyBank, roll } from '../../lib/util';
-import { randFloat } from '../../lib/util';
+import { multiplyBank, randFloat, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {

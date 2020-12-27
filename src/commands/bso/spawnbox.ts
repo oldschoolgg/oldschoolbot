@@ -47,7 +47,9 @@ export default class extends BotCommand {
 				}
 			);
 
-			const winner = collected.first()?.author!;
+			const col = collected.first();
+			if (!col) return;
+			const winner = col.author!;
 			const box = roll(10) ? getRandomMysteryBox() : itemID('Mystery box');
 			await winner.addItemsToBank({ [box]: 1 });
 			return msg.channel.send(

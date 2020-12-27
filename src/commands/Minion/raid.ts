@@ -847,6 +847,7 @@ export default class extends BotCommand {
 			if (!itemSlot) continue;
 			const item = getOSItem(itemSlot.item);
 			if (!item.equipment) continue;
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			meleeGearPoints +=
 				meleeGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
@@ -920,7 +921,7 @@ export default class extends BotCommand {
 			teamKCBoost += Math.floor(user.getMinigameScore(6969) / 10);
 		}
 
-		let duration;
+		let duration = Time.Hour;
 		if (users.length === 1) {
 			duration = Time.Minute * 50 + rand(Time.Minute * 2, Time.Minute * 10);
 		} else {
@@ -945,7 +946,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			type: Activity.Raids,
 			id: rand(1, 10_000_000).toString(),
-			finishDate: Date.now() + duration,
+			finishDate: Date.now() + (duration as number),
 			users: users.map(u => u.id),
 			team: users.map(u => {
 				let points = (this.gearPointCalc(u)[0] * (100 - rand(0, 20))) / 100;

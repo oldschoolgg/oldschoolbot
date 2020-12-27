@@ -74,9 +74,9 @@ export default class extends Task {
 			} ||${await createReadableItemListFromBank(
 				this.client,
 				userLoot
-			)}||, personal points: ${personalPoints}, ${Math.round(
-				(personalPoints! / totalPoints) * 10000
-			) / 100}%`;
+			)}||, personal points: ${personalPoints}, ${
+				Math.round((personalPoints! / totalPoints) * 10000) / 100
+			}%`;
 			await user.addItemsToBank(userLoot, true);
 		}
 
