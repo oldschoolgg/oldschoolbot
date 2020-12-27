@@ -47,6 +47,7 @@ declare module 'klasa' {
 		ironCantUse?: boolean;
 		testingCommand?: boolean;
 		bitfieldsRequired?: BitField[];
+		restrictedChannels?: string[];
 	}
 
 	interface Task {

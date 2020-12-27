@@ -24,7 +24,8 @@ export default class extends BotCommand {
 			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Sells an item to the bot for 80% of G.E price.',
-			examples: ['+sell bronze arrow']
+			examples: ['+sell bronze arrow'],
+			restrictedChannels: ['792691343284764693', '732207379818479756']
 		});
 	}
 
