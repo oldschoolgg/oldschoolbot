@@ -40,7 +40,6 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Zalcano:
 		case Activity.FishingTrawler:
 		case Activity.TitheFarm:
-		case Activity.DeliverPresents:
 		case Activity.BarbarianAssault:
 		case Activity.AgilityArena:
 		case Activity.ChampionsChallenge:
