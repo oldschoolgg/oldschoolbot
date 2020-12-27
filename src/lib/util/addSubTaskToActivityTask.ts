@@ -1,7 +1,7 @@
-import { Client } from 'discord.js';
+import { Client } from 'klasa';
 
-import { production } from '../../config';
 import { Tasks } from '../constants';
+import { OldSchoolBotClient } from '../structures/OldSchoolBotClient';
 import { ActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
 import getActivityOfUser from './getActivityOfUser';
@@ -19,24 +19,19 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 
-	const finishDate = Date.now() + (production ? subTaskToAdd.duration : 1);
+	const finishDate = Date.now() + subTaskToAdd.duration;
 	const newSubtask: ActivityTaskOptions = {
 		...subTaskToAdd,
 		finishDate,
 		id: uuid()
 	};
 
-	let promise = task.update({
-		data: {
-			...task.data,
-			subTasks: [...task.data.subTasks, newSubtask].sort(
-				(a, b) => a.finishDate - b.finishDate
-			)
-		}
-	});
+	(client as OldSchoolBotClient).minionActivityCache.set(newSubtask.userID, newSubtask);
 
-	if (!production) {
-		return promise.then(() => task.run());
-	}
-	return promise;
+	return (client as OldSchoolBotClient).boss.publishAfter(
+		'minionActivity',
+		newSubtask,
+		{},
+		new Date(finishDate)
+	);
 }
