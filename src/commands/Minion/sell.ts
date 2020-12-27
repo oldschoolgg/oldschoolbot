@@ -97,7 +97,11 @@ export default class extends BotCommand {
 		return msg.send(
 			`Sold ${readableStr} for ${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
-			)}). Tax: ${tax.toLocaleString()}`
+			)}). Tax: ${tax.toLocaleString()} ${
+				hasSkipper
+					? `\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you weren't charged any tax on the sale!`
+					: ''
+			}`
 		);
 	}
 }
