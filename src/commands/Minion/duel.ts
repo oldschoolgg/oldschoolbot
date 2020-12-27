@@ -4,7 +4,6 @@ import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Emoji, Events } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { noOp, sleep } from '../../lib/util';
 import BankCommand from './bank';
@@ -108,14 +107,6 @@ export default class extends BotCommand {
 		await sleep(2000);
 
 		const winningAmount = amount * 2;
-		const tax = winningAmount - winningAmount * 0.95;
-
-		const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank);
-		const dividedAmount = tax / 1_000_000;
-		this.client.settings.update(
-			ClientSettings.EconomyStats.DuelTaxBank,
-			Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
-		);
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins);
 		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);
@@ -123,7 +114,7 @@ export default class extends BotCommand {
 		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses);
 		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
-		await winner.addGP(winningAmount - tax);
+		await winner.addGP(winningAmount);
 
 		if (amount >= 1_000_000_000) {
 			this.client.emit(
@@ -141,7 +132,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`Congratulations ${winner.username}! You won ${Util.toKMB(
 				winningAmount
-			)}, and paid ${Util.toKMB(tax)} tax.`,
+			)}, and paid 0 tax.`,
 			gpImage
 		);
 	}
