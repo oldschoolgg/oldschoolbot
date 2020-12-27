@@ -44,7 +44,7 @@ export default class extends BotCommand {
 			return msg.send(`None of the items you provided are tradeable, or owned by you.`);
 		}
 
-		totalPrice *= 0.8;
+		totalPrice = Math.floor(totalPrice * 0.8);
 		const readableStr = await createReadableItemListFromBank(this.client, bankToSell.bank);
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const tax = (totalPrice / 0.8) * 0.2;
+		const tax = Math.ceil((totalPrice / 0.8) * 0.2);
 
 		await msg.author.removeItemsFromBank(bankToSell.bank);
 		await msg.author.settings.update(
