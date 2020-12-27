@@ -25,6 +25,7 @@
 		"klasa": "github:dirigeants/klasa#916/head",
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
+		"numbro": "^2.3.2",
 		"oldschooljs": "^1.5.6",
 		"p-limit": "^2.3.0",
 		"p-queue": "^6.6.2",

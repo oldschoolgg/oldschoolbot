@@ -281,3 +281,4 @@ export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
 
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
+export const MAX_INT_JAVA = 2_147_483_647;
