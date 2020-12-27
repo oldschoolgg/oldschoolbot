@@ -154,9 +154,7 @@ export const enum Tasks {
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker',
-
-	DeliverPresents = 'deliverPresentsActivity'
+	MinigameTicker = 'minigameTicker'
 }
 
 export const enum Activity {
@@ -191,7 +189,6 @@ export const enum Activity {
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
-	DeliverPresents = 'DeliverPresents',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge'
