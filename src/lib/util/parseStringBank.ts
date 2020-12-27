@@ -21,7 +21,7 @@ function parseQuantityAndItem(str: string): ItemResult | null {
 
 	quantity = Math.floor(Math.min(MAX_INT_JAVA, quantity));
 
-	return { item: osItem, qty: parsedQty ?? 0 };
+	return { item: osItem, qty: quantity };
 }
 
 export function parseStringBank(str: string): ItemResult[] {
