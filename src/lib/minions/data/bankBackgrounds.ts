@@ -144,9 +144,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 12,
-		name: 'Cat',
+		name: 'Transparent (12)',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 13,
@@ -156,15 +158,19 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 15,
-		name: 'Homer',
+		name: 'Homer (15)',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 16,
 		name: 'Jad',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 17,
@@ -214,13 +220,17 @@ const backgroundImages: BankBackground[] = [
 		id: 26,
 		name: 'weeb',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 27,
-		name: 'kpop',
+		name: 'K-Pop',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 28,
@@ -236,9 +246,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 30,
-		name: 'troll',
+		name: 'Troll',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 31,

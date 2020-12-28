@@ -335,30 +335,33 @@ export default class BankImageTask extends Task {
 					itemSize * 1.5
 			) - 2;
 		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
-
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
-		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(
-			bgImage!.image,
-			0,
-			0,
-			wide ? canvas.width : bgImage.image!.width!,
-			wide ? canvas.height : bgImage.image!.height!
-		);
+		const isTransparent = bankBackgroundID === 12;
+
+		if (!isTransparent) {
+			ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.drawImage(
+				bgImage!.image,
+				0,
+				0,
+				wide ? canvas.width : bgImage.image!.width!,
+				wide ? canvas.height : bgImage.image!.height!
+			);
+		}
 
 		// Skips border if noBorder is set
-		if (noBorder !== 1) {
+		if (noBorder !== 1 && !isTransparent) {
 			this.drawBorder(canvas, bgImage.name === 'Default');
 		}
 
 		// Adds hamstare
-		if (bgImage.name === 'Default') {
+		if (bgImage.name === 'Default' && !isTransparent) {
 			this.addsHamstare(canvas, Boolean(wide));
 		}
 
