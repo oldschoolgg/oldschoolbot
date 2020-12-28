@@ -218,7 +218,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 26,
-		name: 'weeb',
+		name: 'Weeb (26)',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
@@ -226,7 +226,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 27,
-		name: 'K-Pop',
+		name: 'K-Pop (27)',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
@@ -260,9 +260,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 32,
-		name: 'peeposcooter',
+		name: 'Peepo Scooter (32)',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 33,
