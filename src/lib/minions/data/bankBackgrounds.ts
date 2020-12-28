@@ -204,9 +204,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 24,
-		name: "mstr meeseek's Background (24)",
+		name: 'CoX Pixel Art (24)',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 26,
@@ -252,9 +254,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 33,
-		name: 'high',
+		name: 'Halloween Bot Avatar',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 34,
