@@ -16,8 +16,7 @@ export default class extends BotCommand {
 			requiredPermissions: ['EMBED_LINKS'],
 			oneAtTime: true,
 			categoryFlags: ['minion', 'utility'],
-			examples: ['+dice', '+dice 1m'],
-			restrictedChannels: ['792692390778896424']
+			examples: ['+dice', '+dice 1m']
 		});
 	}
 
