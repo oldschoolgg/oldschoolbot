@@ -17,7 +17,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> <price:int{1,100000000000}> <items:TradeableBank>',
+			usage: '<member:member> <price:int{1,100000000000}> (items:...TradeableBank)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,
@@ -75,7 +75,7 @@ export default class extends BotCommand {
 			msg.author
 		}, say \`confirm\` to confirm that you want to sell ${bankStr} to \`${
 			buyerMember.user.username
-		}#${buyerMember.user.discriminator}\` for a *total* of ${price.toLocaleString()}.`;
+		}#${buyerMember.user.discriminator}\` for a *total* of ${price.toLocaleString()} GP.`;
 
 		const botPays = Math.floor(totalPrice);
 

@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
+import { TradeableItemBankArgumentType } from '../../arguments/tradeableItemBank';
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
 import minionIcons from '../../lib/minions/data/minionIcons';
@@ -12,7 +13,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[items:TradeableBank]',
+			usage: '(items:TradeableBank)',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
@@ -20,16 +21,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [itemArray]: [[Bank, number]]) {
-		if (!itemArray) {
-			return msg.send(
-				`Your current sacrificed amount is: ${msg.author.settings
-					.get(UserSettings.SacrificedValue)
-					.toLocaleString()}. You can see the icons you can unlock here: <https://www.oldschool.gg/oldschoolbot/minions?Minion%20Icons>`
-			);
-		}
-		const [bankToSac, totalPrice] = itemArray;
-
+	async run(msg: KlasaMessage, [[bankToSac, totalPrice]]: [TradeableItemBankArgumentType]) {
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
 				`${

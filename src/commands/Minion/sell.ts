@@ -32,7 +32,7 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(
 				`${
 					msg.author
-				}, say \`confirm\` to sell ${bankToSell} for ${totalPrice.toLocaleString()} (${Util.toKMB(
+				}, say \`confirm\` to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${Util.toKMB(
 					totalPrice
 				)}).`
 			);
@@ -66,12 +66,12 @@ export default class extends BotCommand {
 			Math.floor(itemSellTaxBank + Math.round(dividedAmount * 100) / 100)
 		);
 
-		msg.author.log(`sold ${bankToSell} for ${totalPrice}`);
+		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
 		return msg.send(
-			`Sold ${bankToSell} for ${totalPrice.toLocaleString()}gp (${Util.toKMB(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
-			)}). Tax: ${tax.toLocaleString()}`
+			)})**. Tax: ${Util.toKMB(tax)}`
 		);
 	}
 }
