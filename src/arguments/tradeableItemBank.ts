@@ -2,7 +2,9 @@ import { objectEntries } from 'e';
 import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { bankHasAllItemsFromBank } from '../lib/util';
+import { filterableTypes } from '../lib/filterables';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { bankHasAllItemsFromBank, stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import itemIsTradeable from '../lib/util/itemIsTradeable';
 import { ItemResult, parseStringBank } from '../lib/util/parseStringBank';
@@ -22,12 +24,34 @@ export default class TradeableItemBankArgument extends Argument {
 
 		const invalidBank = new Bank();
 		const userBank = msg.author.bank();
+		const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
+
+		// Adds every non-favorited item
 		if (msg.flagArgs.all) {
-			let res: ItemResult[] = objectEntries(userBank.bank).map(ent => ({
-				item: getOSItem(ent[0]),
-				qty: ent[1]
-			}));
-			items = items.concat(res);
+			const entries = objectEntries(userBank.bank);
+			for (let i = 0; i < entries.length; i++) {
+				let [id, qty] = entries[i];
+				id = Number(id);
+				const item = {
+					item: getOSItem(id),
+					qty
+				};
+				if (!favorites.includes(id) && !items.some(i => i.item === item.item)) {
+					items.push(item);
+				}
+			}
+		}
+
+		// Add filterables
+		for (const flag of Object.keys(msg.flagArgs)) {
+			const matching = filterableTypes.find(type =>
+				type.aliases.some(alias => stringMatches(alias, flag))
+			);
+			if (matching) {
+				for (const item of matching.items) {
+					items.push({ item: getOSItem(item), qty: 0 });
+				}
+			}
 		}
 
 		if (items.length === 0) {
