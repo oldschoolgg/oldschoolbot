@@ -61,6 +61,7 @@ export const enum Emoji {
 	Woodcutting = '<:woodcutting:630911040099450892>',
 	Runecraft = '<:runecraft:630911040435257364>',
 	Prayer = '<:prayer:630911040426868746>',
+	Construction = '<:construction:630911040493715476>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
