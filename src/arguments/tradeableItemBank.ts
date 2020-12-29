@@ -16,12 +16,8 @@ export default class TradeableItemBankArgument extends Argument {
 
 	async run(arg: string, _: Possible, msg: KlasaMessage): Promise<TradeableItemBankArgumentType> {
 		await msg.author.settings.sync(true);
-		let items: ItemResult[] = [];
-		try {
-			items = parseStringBank(arg);
-		} catch (err) {
-			throw err;
-		}
+		let items: ItemResult[] = parseStringBank(arg);
+
 		let bank = new Bank();
 
 		const invalidBank = new Bank();
