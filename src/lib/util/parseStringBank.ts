@@ -13,7 +13,9 @@ export interface ItemResult {
 function parseQuantityAndItem(str = ''): ItemResult | null {
 	str = str.trim();
 	if (!str) return null;
-	const [potentialQty, ...potentialName] = str.split(' ');
+	let [potentialQty, ...potentialName] = str.split(' ');
+	// Fix for 3rd age items
+	if (potentialQty === '3rd') potentialQty = '';
 	const parsedQty = numbro(potentialQty).value() as number | undefined;
 	const parsedName = parsedQty === undefined ? str : potentialName.join('');
 	let osItem: Item | undefined = undefined;
