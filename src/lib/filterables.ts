@@ -854,7 +854,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Pets',
 		aliases: ['pets', 'pmb'],
-		items: allPetIDs
+		items: allPetIDs.flat(Infinity) as number[]
 	},
 	{
 		name: 'Holiday',
