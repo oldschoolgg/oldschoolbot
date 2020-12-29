@@ -4,10 +4,7 @@ import { Bank, Util } from 'oldschooljs';
 import { BotCommand } from '../../lib/BotCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { itemID } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { ItemResult } from '../../lib/util/parseStringBank';
+import { addBanks, itemID } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -19,7 +16,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<items:BankArray>',
+			usage: '(items:TradeableBank)',
 			oneAtTime: true,
 			ironCantUse: true,
 			categoryFlags: ['minion'],
@@ -28,37 +25,19 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [items]: [ItemResult[]]) {
+	async run(msg: KlasaMessage, [[bankToSell, totalPrice]]: [[Bank, number]]) {
 		if (msg.author.isIronman) return msg.send(`Iron players can't sell items.`);
-		let bankToSell = new Bank();
-		const userBank = msg.author.bank();
-		let totalPrice = 0;
-		for (const item of items) {
-			const { id } = item.item;
-			if (itemIsTradeable(id) && userBank.amount(id) >= item.qty) {
-				bankToSell.add(id, item.qty);
-				totalPrice += (await this.client.fetchItemPrice(id)) * item.qty;
-			}
-		}
-
-		if (Object.keys(bankToSell.bank).length === 0) {
-			return msg.send(
-				`You don't have enough of the items you provided, or none of them are tradeable.`
-			);
-		}
-
 		const hasSkipper =
 			msg.author.equippedPet() === itemID('Skipper') ||
 			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
-
+		const tax = hasSkipper ? 0 : Math.ceil((totalPrice / 0.8) * 0.2);
 		totalPrice = hasSkipper ? totalPrice : Math.floor(totalPrice * 0.8);
-		const readableStr = await createReadableItemListFromBank(this.client, bankToSell.bank);
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
 				`${
 					msg.author
-				}, say \`confirm\` to sell ${readableStr} for ${totalPrice.toLocaleString()} (${Util.toKMB(
+				}, say \`confirm\` to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${Util.toKMB(
 					totalPrice
 				)}).`
 			);
@@ -75,8 +54,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		const tax = hasSkipper ? 0 : Math.ceil((totalPrice / 0.8) * 0.2);
-
 		await msg.author.removeItemsFromBank(bankToSell.bank);
 		await msg.author.settings.update(
 			UserSettings.GP,
@@ -86,16 +63,26 @@ export default class extends BotCommand {
 		const itemSellTaxBank = this.client.settings.get(
 			ClientSettings.EconomyStats.ItemSellTaxBank
 		);
-		const dividedAmount = tax / 1_000_000;
-		this.client.settings.update(
-			ClientSettings.EconomyStats.ItemSellTaxBank,
-			Math.floor(itemSellTaxBank + Math.round(dividedAmount * 100) / 100)
+		if (tax > 0) {
+			const dividedAmount = tax / 1_000_000;
+			this.client.settings.update(
+				ClientSettings.EconomyStats.ItemSellTaxBank,
+				Math.floor(itemSellTaxBank + Math.round(dividedAmount * 100) / 100)
+			);
+		}
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.SoldItemsBank,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.SoldItemsBank),
+				bankToSell.bank
+			])
 		);
 
-		msg.author.log(`sold ${readableStr} for ${totalPrice}`);
+		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
 		return msg.send(
-			`Sold ${readableStr} for ${totalPrice.toLocaleString()}gp (${Util.toKMB(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
 			)}). Tax: ${tax.toLocaleString()} ${
 				hasSkipper
