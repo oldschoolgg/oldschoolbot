@@ -4,6 +4,7 @@ import { Bank, Util } from 'oldschooljs';
 import { BotCommand } from '../../lib/BotCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { addBanks } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -64,6 +65,14 @@ export default class extends BotCommand {
 		this.client.settings.update(
 			ClientSettings.EconomyStats.ItemSellTaxBank,
 			Math.floor(itemSellTaxBank + Math.round(dividedAmount * 100) / 100)
+		);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.SoldItemsBank,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.SoldItemsBank),
+				bankToSell.bank
+			])
 		);
 
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
