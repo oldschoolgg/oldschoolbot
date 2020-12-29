@@ -6,7 +6,7 @@ import { continuationChars, PerkTier, Time } from '../constants';
 import { getRandomMysteryBox } from '../openables';
 import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { ActivityTaskOptions } from '../types/minions';
-import { itemID, itemNameFromID, randomItemFromArray, roll } from '../util';
+import { itemID, randomItemFromArray, roll } from '../util';
 import { channelIsSendable } from './channelIsSendable';
 import createReadableItemListFromBank from './createReadableItemListFromTuple';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -40,7 +40,7 @@ export async function handleTripFinish(
 				loot.add(SeedTable.roll());
 			}
 		}
-		await user.addItemsToBank(loot.bank);
+		await user.addItemsToBank(loot.bank, true);
 		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${await createReadableItemListFromBank(
 			client,
 			loot.bank
@@ -51,7 +51,7 @@ export async function handleTripFinish(
 		for (let i = 0; i < rolls; i++) {
 			loot.add(RuneTable.roll());
 		}
-		await user.addItemsToBank(loot.bank);
+		await user.addItemsToBank(loot.bank, true);
 		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${await createReadableItemListFromBank(
 			client,
 			loot.bank
@@ -62,7 +62,7 @@ export async function handleTripFinish(
 		for (let i = 0; i < rolls; i++) {
 			loot.add(WoodTable.roll());
 		}
-		await user.addItemsToBank(loot.bank);
+		await user.addItemsToBank(loot.bank, true);
 		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${await createReadableItemListFromBank(
 			client,
 			loot.bank
@@ -73,17 +73,22 @@ export async function handleTripFinish(
 		for (let i = 0; i < rolls; i++) {
 			loot.add(WilvusTable.roll());
 		}
-		await user.addItemsToBank(loot.bank);
+		await user.addItemsToBank(loot.bank, true);
 		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${await createReadableItemListFromBank(
 			client,
 			loot.bank
 		)}.`;
-	} else if (pet === itemID('Smokey') && roll(15)) {
-		let box = getRandomMysteryBox();
-		await user.addItemsToBank({ [box]: 1 });
-		message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you a ${itemNameFromID(
-			box
-		)}.`;
+	} else if (pet === itemID('Smokey')) {
+		let loot = new Bank();
+		for (let i = 0; i < minutes; i++) {
+			if (roll(450)) {
+				loot.add(getRandomMysteryBox());
+			}
+		}
+		if (loot.length > 0) {
+			await user.addItemsToBank(loot.bank, true);
+			message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${loot}.`;
+		}
 	}
 
 	client.queuePromise(() => {
