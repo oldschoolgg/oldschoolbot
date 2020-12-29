@@ -11,7 +11,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<user:user>',
-			perkTier: PerkTier.One
+			perkTier: PerkTier.One,
+			restrictedChannels: ['732207379818479756', '792691343284764693']
 		});
 	}
 
