@@ -1,27 +1,19 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
+import { TradeableItemBankArgumentType } from '../../arguments/tradeableItemBank';
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { addItemToBank, itemID, roll } from '../../lib/util';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-
-const options = {
-	max: 1,
-	time: 10000,
-	errors: ['time']
-};
+import { addBanks, itemID, roll } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] [item:...item]',
-			usageDelim: ' ',
+			usage: '(items:TradeableBank)',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
@@ -29,49 +21,12 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity, itemArray]: [number | undefined, Item[]]) {
-		if (!itemArray) {
-			return msg.send(
-				`Your current sacrificed amount is: ${msg.author.settings
-					.get(UserSettings.SacrificedValue)
-					.toLocaleString()}. You can see the icons you can unlock here: <https://www.oldschool.gg/oldschoolbot/minions?Minion%20Icons>`
-			);
-		}
-
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = itemArray.find(i => userBank[i.id]);
-
-		if (!osItem) {
-			return msg.send(
-				`You don't have any of this item to sacrifice, or it is not tradeable.`
-			);
-		}
-
-		const numItemsHas = userBank[osItem.id];
-		if (!quantity) {
-			quantity = numItemsHas;
-		}
-
-		if (quantity > numItemsHas) {
-			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
-		}
-
-		let priceOfItem = itemIsTradeable(osItem.id)
-			? await this.client.fetchItemPrice(osItem.id)
-			: 1;
-		const hasSkipper =
-			msg.author.equippedPet() === itemID('Skipper') ||
-			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
-		if (hasSkipper) {
-			priceOfItem *= 1.4;
-		}
-		const totalPrice = priceOfItem * quantity;
-
+	async run(msg: KlasaMessage, [[bankToSac, totalPrice]]: [TradeableItemBankArgumentType]) {
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to sacrifice ${quantity} ${
-					osItem.name
-				}, this will add ${totalPrice.toLocaleString()} (${Util.toKMB(
+				`${
+					msg.author
+				}, say \`confirm\` to sacrifice ${bankToSac}, this will add ${totalPrice.toLocaleString()} (${Util.toKMB(
 					totalPrice
 				)}) to your sacrificed amount.`
 			);
@@ -81,51 +36,61 @@ export default class extends BotCommand {
 					_msg =>
 						_msg.author.id === msg.author.id &&
 						_msg.content.toLowerCase() === 'confirm',
-					options
+					{
+						max: 1,
+						time: 10000,
+						errors: ['time']
+					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling sacrifice of ${quantity}x ${osItem.name}.`);
+				return sellMsg.edit(`Cancelling sacrifice of ${bankToSac}.`);
 			}
 		}
 
-		if (priceOfItem > 50_000_000 || totalPrice > 200_000_000) {
+		if (totalPrice > 200_000_000) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${msg.author.username} just sacrificed ${quantity}x ${osItem.name}!`
+				`${msg.author.username} just sacrificed ${bankToSac}!`
 			);
-		}
-
-		const gotHammy = totalPrice >= 51_530_000 && roll(140);
-		if (gotHammy) {
-			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 });
 		}
 
 		let str = '';
 
 		if (totalPrice >= 30_000_000 && roll(10)) {
 			str += `You received a *Hunk of crystal*.`;
-			await msg.author.addItemsToBank({ 742: 1 });
+			await msg.author.addItemsToBank({ 742: 1 }, true);
+		}
+
+		const gotHammy = totalPrice >= 51_530_000 && roll(140);
+		if (gotHammy) {
+			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 }, true);
+		}
+
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') ||
+			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+		if (hasSkipper) {
+			totalPrice *= 1.4;
 		}
 
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
-		await msg.author.removeItemFromBank(osItem.id, quantity);
+		await msg.author.removeItemsFromBank(bankToSac.bank);
 
 		const currentSacBank = new Bank(msg.author.settings.get(UserSettings.SacrificedBank));
-		currentSacBank.add(osItem.id, quantity);
+		currentSacBank.add(bankToSac);
 		await msg.author.settings.update(UserSettings.SacrificedBank, currentSacBank.values());
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.SacrificedBank,
-			addItemToBank(
+			addBanks([
 				this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
-				osItem.id,
-				quantity
-			)
+				bankToSac.bank
+			])
 		);
 
-		msg.author.log(`sacrificed Quantity[${quantity}] ItemID[${osItem.id}] for ${totalPrice}`);
+		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
 
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
 		for (const icon of minionIcons) {
@@ -141,16 +106,16 @@ export default class extends BotCommand {
 				break;
 			}
 		}
+
 		if (gotHammy) {
 			str += `\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.`;
 		}
-		if (hasSkipper)
+		if (hasSkipper) {
 			str += `\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +40% extra value from your sacrifice.`;
+		}
 
 		return msg.send(
-			`You sacrificed ${quantity}x ${
-				osItem.name
-			}, with a value of ${totalPrice.toLocaleString()}gp (${Util.toKMB(
+			`You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
 			)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`
 		);
