@@ -26,7 +26,8 @@ export default class extends BotCommand {
 			examples: [
 				'+sellto @Magnaboy 1b 2 Elysian sigil',
 				'+sellto @Magnaboy 500k 1 Dragon platelegs'
-			]
+			],
+			restrictedChannels: ['792691343284764693']
 		});
 	}
 
