@@ -16,6 +16,7 @@ Client.defaultUserSchema
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('favoriteItems', 'integer', { array: true, default: [] })
 	.add('selectedPrayers', 'string', { array: true, default: [] })
+	.add('selectedPotions', 'string', { array: true, default: [] })
 	.add('unlockedPrayers', 'string', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
