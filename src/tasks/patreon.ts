@@ -86,7 +86,9 @@ export default class extends Task {
 				continue;
 			}
 			const user = await this.client.users.fetch(patron.discordID);
-
+			if (user.settings.get(UserSettings.PatreonID) !== patron.patreonID) {
+				user.settings.update(UserSettings.PatreonID, patron.patreonID);
+			}
 			const userBitfield = user.settings.get(UserSettings.BitField);
 			const userBadges = user.settings.get(UserSettings.Badges);
 
