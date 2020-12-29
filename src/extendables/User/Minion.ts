@@ -373,10 +373,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
 			}
 
-			case Activity.DeliverPresents: {
-				return `${this.minionName} is currently delivering presents. ${formattedDuration}`;
-			}
-
 			case Activity.BarbarianAssault: {
 				const data = currentTask as BarbarianAssaultActivityTaskOptions;
 
@@ -385,6 +381,10 @@ export default class extends Extendable {
 
 			case Activity.AgilityArena: {
 				return `${this.minionName} is currently doing the Brimhaven Agility Arena. ${formattedDuration}`;
+			}
+
+			case Activity.ChampionsChallenge: {
+				return `${this.minionName} is currently doing the **Champion's Challenge**. ${formattedDuration}`;
 			}
 		}
 	}

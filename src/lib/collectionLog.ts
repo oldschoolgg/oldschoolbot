@@ -1198,19 +1198,22 @@ export const cluesAll: CollectionLogData = {
 	...cluesMaster
 };
 
-export const championScrolls: CollectionLogData = {
-	'Champion scrolls': resolveItems([
-		'Earth warrior champion scroll',
-		'Ghoul champion scroll',
-		'Giant champion scroll',
-		'Goblin champion scroll',
-		'Hobgoblin champion scroll',
-		'Imp champion scroll',
-		'Jogre champion scroll',
-		'Lesser demon champion scroll',
-		'Skeleton champion scroll',
-		'Zombie champion scroll'
-	])
+export const championScrolls = resolveItems([
+	'Earth warrior champion scroll',
+	'Ghoul champion scroll',
+	'Giant champion scroll',
+	'Goblin champion scroll',
+	'Hobgoblin champion scroll',
+	'Imp champion scroll',
+	'Jogre champion scroll',
+	'Lesser demon champion scroll',
+	'Skeleton champion scroll',
+	'Zombie champion scroll'
+]);
+
+export const championScrollLog: CollectionLogData = {
+	'Champion scrolls': championScrolls,
+	Cape: resolveItems(["Champion's cape"])
 };
 export const holiday: CollectionLogData = {
 	'Birthday Event': resolveItems([
@@ -1569,7 +1572,7 @@ export const collectionLogTypes: CollectionLogType[] = [
 	{
 		name: 'Champion scroll',
 		aliases: ['champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
-		items: championScrolls
+		items: championScrollLog
 	},
 	{
 		name: 'Holiday',

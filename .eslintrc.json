@@ -3,6 +3,7 @@
 	"rules": {
 		"@typescript-eslint/naming-convention": 0,
 		"@typescript-eslint/no-throw-literal": 0,
-		"@typescript-eslint/default-param-last": 0
+		"@typescript-eslint/default-param-last": 0,
+		"@typescript-eslint/no-base-to-string": 0
 	}
 }

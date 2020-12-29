@@ -1,23 +1,11 @@
 import { MessageAttachment } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
-import { bankHasItem } from 'oldschooljs/dist/util';
 
 import { continuationChars, PerkTier, Time } from '../constants';
-import { UserSettings } from '../settings/types/UserSettings';
 import { ActivityTaskOptions } from '../types/minions';
-import { itemNameFromID, randomItemFromArray, shuffle } from '../util';
+import { randomItemFromArray } from '../util';
 import { channelIsSendable } from './channelIsSendable';
 import getUsersPerkTier from './getUsersPerkTier';
-import itemID from './itemID';
-import resolveItems from './resolveItems';
-
-const santaItems = resolveItems([
-	'Santa mask',
-	'Santa jacket',
-	'Santa pantaloons',
-	'Santa gloves',
-	'Santa boots'
-]);
 
 export async function handleTripFinish(
 	client: KlasaClient,
@@ -38,20 +26,6 @@ export async function handleTripFinish(
 	const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
 	if (onContinue) {
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
-	}
-
-	// Christmas code
-	const _bank = user.settings.get(UserSettings.Bank);
-	if (bankHasItem(_bank, itemID('Carrot'))) {
-		for (const item of shuffle(santaItems)) {
-			if (user.hasItemEquippedOrInBank(item)) continue;
-			await user.removeItemFromBank(itemID('Carrot'));
-			await user.addItemsToBank({ [item]: 1 }, true);
-			message += `\n🦌 You found one of Santa's reindeer! They've eaten a Carrot from your bank and given you: ${itemNameFromID(
-				item
-			)}.`;
-			break;
-		}
 	}
 
 	client.queuePromise(() => {

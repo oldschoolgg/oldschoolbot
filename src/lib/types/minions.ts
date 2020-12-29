@@ -117,7 +117,6 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
-export interface DeliverPresentsActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
 	jadDeathChance: number;
@@ -191,7 +190,6 @@ export interface MinigameTickerTaskData {
 		| SepulchreActivityTaskOptions
 		| FishingTrawlerActivityTaskOptions
 		| TitheFarmActivityTaskOptions
-		| DeliverPresentsActivityTaskOptions
 		| PlunderActivityTaskOptions
 	)[];
 }

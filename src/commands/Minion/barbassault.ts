@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, Tasks, Time } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear/data/maxGearStats';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -22,6 +22,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { randomVariation } from '../../lib/util/randomVariation';
 
@@ -118,7 +119,9 @@ export default class extends BotCommand {
 		return msg.send(
 			`**Honour Points:** ${msg.author.settings.get(
 				UserSettings.HonourPoints
-			)} **Honour Level:** ${msg.author.settings.get(UserSettings.HonourLevel)}\n\n` +
+			)} **Honour Level:** ${msg.author.settings.get(
+				UserSettings.HonourLevel
+			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
 				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need exactly 4 people to join to start.` +
 				` We have a channel dedicated to Barbarian Assault parties in the support server (discord.gg/ob). \n` +
 				`Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points.` +
@@ -192,7 +195,30 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
 		const loot = new Bank().add(table.roll());
+		if (loot.has('Pet penance queen')) {
+			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
+			const countUsersHas =
+				parseInt(
+					(
+						await this.client.query<[{ count: string }]>(
+							`SELECT COUNT(*) FROM users WHERE "collectionLogBank"->>'12703' IS NOT NULL;`
+						)
+					)[0].count
+				) + 1;
+			this.client.emit(
+				Events.ServerNotification,
+				`<:Pet_penance_queen:324127377649303553> **${msg.author.username}'s** minion, ${
+					msg.author.minionName
+				}, just received a Pet penance queen from their ${formatOrdinal(
+					gamblesDone
+				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
+			);
+		}
 		await msg.author.addItemsToBank(loot.bank, true);
+		await msg.author.settings.update(
+			UserSettings.HighGambles,
+			msg.author.settings.get(UserSettings.HighGambles) + 1
+		);
 		const desc = await createReadableItemListFromBank(this.client, loot.bank);
 		return msg.send(
 			`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${desc}.`
@@ -251,7 +277,7 @@ export default class extends BotCommand {
 			addArrayOfNumbers(
 				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
 			) / 4;
-		const kcPercent = round(calcWhatPercent(averageKC, 200) / 5, 2);
+		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 

@@ -90,6 +90,7 @@ export const enum Emoji {
 	Timer = '<:ehpclock:352323705210142721>',
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
+	RottenPotato = '<:rottenPotato:791498767051915275>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -154,13 +155,12 @@ export const enum Tasks {
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
+	ChampionsChallenge = 'championsChallengeActivity',
 
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker',
-
-	DeliverPresents = 'deliverPresentsActivity'
+	MinigameTicker = 'minigameTicker'
 }
 
 export const enum Activity {
@@ -195,9 +195,9 @@ export const enum Activity {
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
-	DeliverPresents = 'DeliverPresents',
 	BarbarianAssault = 'BarbarianAssault',
-	AgilityArena = 'AgilityArena'
+	AgilityArena = 'AgilityArena',
+	ChampionsChallenge = 'ChampionsChallenge'
 }
 
 export const enum Events {
@@ -264,7 +264,8 @@ export const enum BitField {
 	IsPatronTier4 = 5,
 	IsPatronTier5 = 6,
 	isModerator = 7,
-	isContributor = 8
+	isContributor = 8,
+	BypassAgeRestriction = 9
 }
 
 export const enum PatronTierID {
@@ -283,3 +284,4 @@ export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
 
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
+export const MAX_INT_JAVA = 2_147_483_647;
