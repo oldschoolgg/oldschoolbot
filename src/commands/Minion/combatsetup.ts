@@ -12,12 +12,6 @@ import { Castable } from './../../lib/skilling/types';
 // No Lunar at this point, vengence etc isn't useful here.
 const castables: Castable[] = [...Standard, ...Ancient];
 
-export enum combatSkill {
-	Melee = 'melee',
-	Mage = 'mage',
-	Range = 'range'
-}
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -33,7 +27,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[combatSkill, combatStyle, combatSpell]: [combatSkill, string, string]
+		[combatSkill, combatStyle, combatSpell]: [string, string, string]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
 			return msg.send(
