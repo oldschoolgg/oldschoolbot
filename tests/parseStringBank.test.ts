@@ -54,4 +54,8 @@ test('parseStringBank', async () => {
 		{ qty: 1000, item: get('Twisted bow') }
 	]);
 	expect(psb('5 tarromin')).toEqual([{ qty: 5, item: get('Tarromin') }]);
+	expect(psb('3rd age platebody, 5 3rd age platelegs')).toEqual([
+		{ qty: 0, item: get('3rd age platebody') },
+		{ qty: 5, item: get('3rd age platelegs') }
+	]);
 });
