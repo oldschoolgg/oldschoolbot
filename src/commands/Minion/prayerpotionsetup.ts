@@ -7,29 +7,51 @@ import { generatePrayerImage } from '../../lib/minions/functions/generatePrayerI
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { itemNameFromID } from '../../lib/util';
-import { SkillsEnum } from './../../lib/skilling/types';
+import { SkillsEnum } from '../../lib/skilling/types';
+import Potions from '../../lib/minions/data/potions';
+import { generatePotionImage } from '../../lib/minions/functions/generatePotionImage';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
 			cooldown: 1,
-			usage: '[unlock] [prayer:...string]',
+			usage: '[unlock|prayer|potion] [prayerOrPotion:...string]',
 			usageDelim: ' ',
-			aliases: ['ps'],
-			description: 'Select what prayer to use or unlock prayer.',
-			examples: ['+prayersetup Thick Skin'],
+			aliases: ['ps', 'prayersetup', 'potionsetup'],
+			description: 'Select what prayer/potions to use or unlock prayer.',
+			examples: ['+prayersetup prayer Thick Skin', '+potionsetup potion Saradomin brew', '+ps unlock Rigour'],
 			categoryFlags: ['minion'],
 			subcommands: true
 		});
 	}
 
 	@requiresMinion
+	async run(msg: KlasaMessage) {
+		const currentPrayers = msg.author.settings.get(UserSettings.SelectedPrayers);
+		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
+		
+		if (currentPrayers.length === 0) {
+			const image = await generatePotionImage(this.client, msg.author);
+			return msg.send(`You have no prayers activated.`, new MessageAttachment(image, 'osbot.png'));
+		}
+
+		if (currentPotions.length === 0) {
+			const image = await generatePrayerImage(this.client, msg.author);
+			return msg.send(`You have no potions selected.`, new MessageAttachment(image, 'osbot.png'));
+		} 
+
+		const imagePrayer = await generatePrayerImage(this.client, msg.author);
+		const imagePotion = await generatePotionImage(this.client, msg.author);
+
+		return msg.send([new MessageAttachment(imagePotion, 'osbot1.png'), new MessageAttachment(imagePrayer, 'osbot2.png')]);
+	}
+
+	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [prayer]: [string | undefined]) {
+	async prayer(msg: KlasaMessage, [prayer = undefined]: [string | undefined]) {
 		const currentPrayers = msg.author.settings.get(UserSettings.SelectedPrayers);
 		const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
-
 		if (!prayer) {
 			if (currentPrayers.length === 0) {
 				return msg.send(`You have no prayers activated.`);
@@ -149,6 +171,57 @@ export default class extends BotCommand {
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 
+	@requiresMinion
+	@minionNotBusy
+	async potion(msg: KlasaMessage, [potion = undefined]: [string | undefined]) {
+		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
+
+		if (!potion) {
+			if (currentPotions.length === 0) {
+				return msg.send(`You have no potions selected.`);
+			}
+			const image = await generatePrayerImage(this.client, msg.author);
+
+			return msg.send(new MessageAttachment(image, 'osbot.png'));
+		}
+		const selectedPotion = Potions.find(
+			_potion => _potion.name.toLowerCase() === potion.toLowerCase()
+		);
+		if (!selectedPotion) {
+			return msg.send(
+				`${potion} is not a potion, the following potions are possible to be selected: ${Potions.map(
+					_potion => _potion.name
+				).join(', ')}.`
+			);
+		}
+
+		if (currentPotions.includes(selectedPotion.name.toLowerCase())) {
+			await msg.author.settings.update(
+				UserSettings.SelectedPotions,
+				selectedPotion.name.toLowerCase(),
+				{
+					arrayAction: ArrayActions.Remove
+				}
+			);
+			const image = await generatePotionImage(this.client, msg.author);
+
+			return msg.send(new MessageAttachment(image, 'osbot.png'));
+		}
+
+		await msg.author.settings.update(
+			UserSettings.SelectedPotions,
+			selectedPotion.name.toLowerCase(),
+			{
+				arrayAction: ArrayActions.Add
+			}
+		);
+
+		const image = await generatePotionImage(this.client, msg.author);
+
+		return msg.send(new MessageAttachment(image, 'osbot.png'));
+	}
+
+	@requiresMinion
 	async unlock(msg: KlasaMessage, [input]: [string | undefined]) {
 		if (!input) {
 			return msg.send(
