@@ -64,7 +64,7 @@ export default class extends BotCommand {
 
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
-		if (cookable.id === itemID('Jug of wine')) {
+		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
 		} else if (hasRemy) {
 			timeToCookSingleCookable /= 2;

@@ -16,8 +16,11 @@ function parseQuantityAndItem(str = ''): ItemResult | null {
 	let [potentialQty, ...potentialName] = str.split(' ');
 	// Fix for 3rd age items
 	if (potentialQty === '3rd') potentialQty = '';
-	const parsedQty = numbro(potentialQty).value() as number | undefined;
+	let parsedQty = numbro(potentialQty).value() as number | undefined;
+	// Can return number, NaN or undefined. We want it to be only number or undefined.
+	if (parsedQty !== undefined && isNaN(parsedQty)) parsedQty = undefined;
 	const parsedName = parsedQty === undefined ? str : potentialName.join('');
+
 	let osItem: Item | undefined = undefined;
 	try {
 		osItem = getOSItem(parsedName);
