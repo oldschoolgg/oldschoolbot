@@ -6,21 +6,15 @@ export default class extends Argument {
 	}
 
 	async run(arg: string, possible: Possible, message: KlasaMessage): Promise<any> {
-		try {
-			if (!arg) return this.store.get('TradeableBank')!.run(arg, possible, message);
+		if (!arg) return this.store.get('TradeableBank')!.run(arg, possible, message);
 
-			const {
-				args,
-				usage: { usageDelim }
-			} = message['prompter']!;
+		const {
+			args,
+			usage: { usageDelim }
+		} = message['prompter']!;
 
-			const index = args.indexOf(arg);
-			const rest = args.splice(index, args.length - index).join(usageDelim ?? '');
-			console.log({ rest });
-			return this.store.get('TradeableBank')!.run(rest, possible, message);
-		} catch (err) {
-			console.error(err);
-			throw err;
-		}
+		const index = args.indexOf(arg);
+		const rest = args.splice(index, args.length - index).join(usageDelim ?? '');
+		return this.store.get('TradeableBank')!.run(rest, possible, message);
 	}
 }
