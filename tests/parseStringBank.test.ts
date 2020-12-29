@@ -58,4 +58,15 @@ test('parseStringBank', async () => {
 		{ qty: 0, item: get('3rd age platebody') },
 		{ qty: 5, item: get('3rd age platelegs') }
 	]);
+	expect(psb('Bronze arrow, Iron arrow, Steel arrow, Rune arrow')).toEqual([
+		{ qty: 0, item: get('Bronze arrow') },
+		{ qty: 0, item: get('Iron arrow') },
+		{ qty: 0, item: get('Steel arrow') },
+		{ qty: 0, item: get('Rune arrow') }
+	]);
+	expect(psb('Steel platelegs, Adamant platelegs, Black platelegs')).toEqual([
+		{ qty: 0, item: get('Steel platelegs') },
+		{ qty: 0, item: get('Adamant platelegs') },
+		{ qty: 0, item: get('Black platelegs') }
+	]);
 });
