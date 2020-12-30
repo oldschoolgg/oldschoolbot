@@ -31,7 +31,7 @@ export namespace UserSettings {
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const SelectedPrayers = T<readonly string[]>('selectedPrayers');
-	export const SelectedPotions = T<readonly string[]>('selectedPrayers');
+	export const SelectedPotions = T<readonly string[]>('selectedPotions');
 	export const UnlockedPrayers = T<readonly string[]>('unlockedPrayers');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');

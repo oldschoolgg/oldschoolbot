@@ -30,6 +30,14 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const currentPrayers = msg.author.settings.get(UserSettings.SelectedPrayers);
 		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
+
+		console.log('potion length', currentPotions.length);
+		console.log(currentPotions[0]);
+		console.log('prayer length', currentPrayers.length);
+
+		if (currentPrayers.length === 0 && currentPotions.length === 0) {
+			return msg.send(`You have no prayers activated and no potions selected.`);
+		}
 		
 		if (currentPrayers.length === 0) {
 			const image = await generatePotionImage(this.client, msg.author);
@@ -41,10 +49,12 @@ export default class extends BotCommand {
 			return msg.send(`You have no potions selected.`, new MessageAttachment(image, 'osbot.png'));
 		} 
 
-		const imagePrayer = await generatePrayerImage(this.client, msg.author);
-		const imagePotion = await generatePotionImage(this.client, msg.author);
+		const imagePrayerBuffer = await generatePrayerImage(this.client, msg.author);
+		const imagePrayer = new MessageAttachment(imagePrayerBuffer, 'osbot2.png');
+		const imagePotionBuffer = await generatePotionImage(this.client, msg.author);
+		const imagePotion = new MessageAttachment(imagePotionBuffer, 'osbot1.png');
 
-		return msg.send([new MessageAttachment(imagePotion, 'osbot1.png'), new MessageAttachment(imagePrayer, 'osbot2.png')]);
+		return msg.send([imagePotion, imagePrayer]);
 	}
 
 	@requiresMinion
@@ -180,7 +190,7 @@ export default class extends BotCommand {
 			if (currentPotions.length === 0) {
 				return msg.send(`You have no potions selected.`);
 			}
-			const image = await generatePrayerImage(this.client, msg.author);
+			const image = await generatePotionImage(this.client, msg.author);
 
 			return msg.send(new MessageAttachment(image, 'osbot.png'));
 		}
