@@ -45,6 +45,14 @@ const Constructables: Constructable[] = [
 		nails: 8
 	},
 	{
+		name: 'Wood dining table',
+		input: resolveNameBank({ Plank: 4 }),
+		xp: 115,
+		level: 10,
+		ticks: 5,
+		nails: 4
+	},
+	{
 		name: 'Rocking chair',
 		input: resolveNameBank({ Plank: 3 }),
 		xp: 87,
@@ -67,10 +75,24 @@ const Constructables: Constructable[] = [
 		ticks: 5
 	},
 	{
+		name: 'Oak chair',
+		input: resolveNameBank({ 'Oak plank': 2 }),
+		xp: 120,
+		level: 19,
+		ticks: 5,
+	},
+	{
 		name: 'Oak dining table',
 		input: resolveNameBank({ 'Oak plank': 4 }),
 		xp: 240,
 		level: 22,
+		ticks: 5
+	},
+	{
+		name: 'Oak armchair',
+		input: resolveNameBank({ 'Oak plank': 3 }),
+		xp: 180,
+		level: 26,
 		ticks: 5
 	},
 	{
@@ -88,6 +110,13 @@ const Constructables: Constructable[] = [
 		ticks: 5
 	},
 	{
+		name: 'Teak armchair',
+		input: resolveNameBank({ 'Teak plank': 2 }),
+		xp: 180,
+		level: 35,
+		ticks: 5
+	},
+	{
 		name: 'Teak table',
 		input: resolveNameBank({ 'Teak plank': 4 }),
 		xp: 360,
@@ -96,7 +125,7 @@ const Constructables: Constructable[] = [
 	},
 	{
 		name: 'Mahogany table',
-		input: resolveNameBank({ 'Mahogany plank': 10 }),
+		input: resolveNameBank({ 'Mahogany plank': 6 }),
 		xp: 840,
 		level: 52,
 		ticks: 5
