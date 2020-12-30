@@ -79,7 +79,7 @@ const Constructables: Constructable[] = [
 		input: resolveNameBank({ 'Oak plank': 2 }),
 		xp: 120,
 		level: 19,
-		ticks: 5,
+		ticks: 5
 	},
 	{
 		name: 'Oak dining table',
@@ -121,6 +121,13 @@ const Constructables: Constructable[] = [
 		input: resolveNameBank({ 'Teak plank': 4 }),
 		xp: 360,
 		level: 38,
+		ticks: 5
+	},
+	{
+		name: 'Mahogany armchair',
+		input: resolveNameBank({ 'Mahogany plank': 2 }),
+		xp: 280,
+		level: 50,
 		ticks: 5
 	},
 	{
