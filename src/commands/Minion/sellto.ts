@@ -78,7 +78,7 @@ export default class extends BotCommand {
 			buyerMember.user.username
 		}#${buyerMember.user.discriminator}\` for a *total* of ${price.toLocaleString()} GP.`;
 
-		const botPays = Math.floor(totalPrice);
+		const botPays = Math.floor(totalPrice) * 0.8;
 
 		if (botPays > price) {
 			sellStr += `\n\nWarning: The bot would pay you more (${botPays.toLocaleString()} GP) for these items than you are selling them for!`;
