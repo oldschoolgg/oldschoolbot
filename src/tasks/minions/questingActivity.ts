@@ -1,9 +1,10 @@
 import { KlasaMessage, Task } from 'klasa';
 
-import { MAX_QP } from '../../lib/constants';
+import { Emoji, MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -38,6 +39,11 @@ export default class extends Task {
 		}
 
 		await user.addQP(qpRecieved);
+		const herbLevel = user.skillLevel(SkillsEnum.Herblore);
+		if (herbLevel === 0 && currentQP + qpRecieved > 5 && roll(2)) {
+			await user.addXP(SkillsEnum.Herblore, 250);
+			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
+		}
 
 		handleTripFinish(
 			this.client,
