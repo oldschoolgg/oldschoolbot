@@ -34,9 +34,10 @@ export default class extends Task {
 			}
 			// crushing a gem only gives 25% exp
 			xpReceived -= 0.75 * crushed * Craft.xp;
-			loot.add('crushed gem', crushed);
+			loot.add('Crushed gem', crushed);
 		}
-		loot.add(Craft.id, quantity - crushed);
+
+		loot.add(Craft.id, Craft.crushChance ? quantity - crushed : quantity);
 
 		await user.addXP(SkillsEnum.Crafting, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Crafting);
@@ -50,8 +51,6 @@ export default class extends Task {
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Crafting level is now ${newLevel}!`;
 		}
-
-		loot.add(Craft.id, quantity);
 
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {

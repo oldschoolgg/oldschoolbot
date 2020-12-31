@@ -285,9 +285,9 @@ export default class extends BotCommand {
 			}
 		}
 
-		upgradeType !== null
-			? (newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity))
-			: this.client.wtf(new Error(`Clear "possible null" error.`));
+		if (upgradeType !== null) {
+			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 

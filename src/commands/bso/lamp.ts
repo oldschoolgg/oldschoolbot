@@ -24,7 +24,7 @@ export default class extends BotCommand {
 		}
 
 		skillName = skillName.toLowerCase();
-		if (skillName === 'farming') {
+		if (skillName === 'herblore') {
 			return msg.send('Your lamp seems to not work with this skill for some reason...');
 		}
 		const isValidSkill = Object.values(Skills).some(skill => skill.id === skillName);

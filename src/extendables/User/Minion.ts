@@ -18,6 +18,7 @@ import Crafting from '../../lib/skilling/skills/crafting';
 import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
+import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
@@ -38,6 +39,7 @@ import {
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
+	HerbloreActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -82,17 +84,19 @@ export default class extends Extendable {
 
 - Visit <https://www.oldschool.gg/oldschoolbot/minions> for extensive information on minions.
 - Use \`=minion setname [name]\` to change your minions' name.
-- You can assign ${this.minionName} to kill monsters for loot using \`=minion kill\`.
-- Do clue scrolls with \`=minion clue easy\` (complete 1 easy clue)
-- Train mining with \`=mine\`
-- Train smithing with \`=smelt\` or \`=smith\`
-- Train prayer with \`=bury\` or \`=offer\`
-- Train woodcutting with \`=chop\`
-- Train firemaking with \`=light\`
-- Train crafting with \`=craft\`
-- Train fletching with \`=fletch\`
-- Gain quest points with \`=quest\`
-- Pat your minion with \`=minion pat\``;
+- You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
+- Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
+- Train mining with \`+mine\`
+- Train smithing with \`+smelt\` or \`+smith\`
+- Train prayer with \`+bury\` or \`+offer\`
+- Train woodcutting with \`+chop\`
+- Train firemaking with \`+light\`
+- Train crafting with \`+craft\`
+- Train fletching with \`+fletch\`
+- Train farming with \`+farm\` or \`+harvest\`
+- Train herblore with \`+mix\`
+- Gain quest points with \`+quest\`
+- Pat your minion with \`+minion pat\``;
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();
@@ -312,7 +316,16 @@ export default class extends Extendable {
 					Emoji.Fletching
 				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
 			}
+			case Activity.Herblore: {
+				const data = currentTask as HerbloreActivityTaskOptions;
+				const mixable = Herblore.Mixables.find(item => item.id === data.mixableID);
 
+				return `${this.minionName} is currently mixing ${data.quantity}x ${
+					mixable!.name
+				}. ${formattedDuration} Your ${Emoji.Herblore} Herblore level is ${this.skillLevel(
+					SkillsEnum.Herblore
+				)}`;
+			}
 			case Activity.Wintertodt: {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}

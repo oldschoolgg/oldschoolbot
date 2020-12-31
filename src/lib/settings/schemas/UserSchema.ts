@@ -70,6 +70,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Fletching, 'integer', { default: 0 })
 			.add(SkillsEnum.Thieving, 'integer', { default: 0 })
 			.add(SkillsEnum.Farming, 'integer', { default: 0 })
+			.add(SkillsEnum.Herblore, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
