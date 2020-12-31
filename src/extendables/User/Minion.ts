@@ -94,10 +94,7 @@ export default class extends Extendable {
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();
-		const formattedDuration =
-			durationRemaining < Time.Minute
-				? `They're on their way back now!`
-				: `Approximately ${formatDuration(durationRemaining)} remaining.`;
+		const formattedDuration = `${formatDuration(durationRemaining)} remaining.`;
 
 		switch (currentTask.type) {
 			case Activity.MonsterKilling: {

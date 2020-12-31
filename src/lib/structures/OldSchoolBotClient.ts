@@ -5,7 +5,6 @@ import PgBoss from 'pg-boss';
 import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
-import PostgresProvider from '../../providers/postgres';
 import { clientOptions } from '../config/config';
 import { initItemAliases } from '../itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
@@ -42,10 +41,10 @@ export class OldSchoolBotClient extends Client {
 		super(clientOptions);
 		this.boss = new PgBoss({ ...providerConfig?.postgres });
 		this.boss.on('error', error => console.error(error));
-		this.once('login', async () => this.boss.start());
 	}
 
 	public async login(token?: string) {
+		console.log('LOGIN');
 		await this.boss.start();
 		this.orm = await createConnection({
 			type: 'postgres',
@@ -57,15 +56,11 @@ export class OldSchoolBotClient extends Client {
 			entities: [AnalyticsTable],
 			synchronize: true
 		});
-		await this.cacheDBMinionTasks();
-		return super.login(token);
-	}
-
-	public async cacheDBMinionTasks() {
-		const existingTasks = await (this.providers.default as PostgresProvider).runAll(
+		const existingTasks = await this.orm.query(
 			`SELECT pgboss.job.data FROM pgboss.job WHERE pgboss.job.name = 'minionActivity' AND state = 'created';`
 		);
-		for (const task of existingTasks.map(t => t.data)) {
+
+		for (const task of existingTasks.map((t: any) => t.data)) {
 			if ('users' in task) {
 				for (const user of (task as GroupMonsterActivityTaskOptions).users) {
 					this.minionActivityCache.set(user, task);
@@ -74,6 +69,14 @@ export class OldSchoolBotClient extends Client {
 				this.minionActivityCache.set(task.userID, task);
 			}
 		}
+		return super.login(token);
+	}
+
+	async cancelTask(userID: string) {
+		await this.orm.query(
+			`DELETE FROM pgboss.job WHERE pgboss.job.name = 'minionActivity' AND cast(pgboss.job.data->>'userID' as text) = '${userID}' AND state = 'created';`
+		);
+		this.minionActivityCache.delete(userID);
 	}
 
 	public init = async (): Promise<this> => {

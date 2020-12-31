@@ -24,6 +24,7 @@ export default class extends Task {
 				this.client.oneCommandAtATimeCache.add(data.userID);
 				await task?.run(data);
 			} finally {
+				this.client.oneCommandAtATimeCache.delete(data.userID);
 				if ('users' in data) {
 					for (const user of (data as GroupMonsterActivityTaskOptions).users) {
 						(this.client as OldSchoolBotClient).minionActivityCache.delete(user);
