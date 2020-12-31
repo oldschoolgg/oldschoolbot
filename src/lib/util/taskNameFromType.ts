@@ -42,6 +42,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.Herblore:
+			return Tasks.HerbloreActivity;
 		case Activity.Nightmare:
 			return Tasks.NightmareActivity;
 		case Activity.AnimatedArmour:
