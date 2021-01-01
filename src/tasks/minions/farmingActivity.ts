@@ -161,7 +161,7 @@ export default class extends Task {
 				plantTime: currentDate + duration,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
-				lastPayment: patchType.lastPayment
+				lastPayment: payment ? payment : false
 			};
 
 			await user.settings.update(getPatchType, updatePatches);
