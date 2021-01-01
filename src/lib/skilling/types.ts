@@ -1,3 +1,5 @@
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
 import { Emoji } from '../constants';
 import { ItemBank } from '../types';
 
@@ -15,7 +17,8 @@ export enum SkillsEnum {
 	Fletching = 'fletching',
 	Farming = 'farming',
 	Herblore = 'herblore',
-	Thieving = 'thieving'
+	Thieving = 'thieving',
+	Hunter = 'hunter'
 }
 
 export interface Ore {
@@ -220,4 +223,20 @@ export interface Plant {
 	additionalPatchesByFarmLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+}
+
+export interface Creature {
+	name: string;
+	aliases: string[];
+	level: number;
+	hunterXp: number;
+	fishingXp?: number;
+	itemsRequired?: ItemBank;
+	itemsConsumed?: ItemBank;
+	inputItems?: ItemBank;
+	table: LootTable;
+	huntTechnique: string;
+	multiTraps?: boolean;
+	wildy?: boolean;
+	catchTime: number;
 }
