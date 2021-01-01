@@ -17,7 +17,8 @@ function hasKandarinHardDiary(user: KlasaUser): boolean {
 		prayer: 70,
 		thieving: 53,
 		woodcutting: 60,
-		farming: 26
+		farming: 26,
+		herblore: 48
 	});
 }
 
