@@ -36,6 +36,7 @@ export namespace UserSettings {
 	export const HonourLevel = T<number>('honour_level');
 	export const HonourPoints = T<number>('honour_points');
 	export const HighGambles = T<number>('high_gambles');
+	export const PatreonID = T<string | null>('patreon_id');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
@@ -79,6 +80,7 @@ export namespace UserSettings {
 		export const Fletching = T<number>(`skills.${SkillsEnum.Fletching}`);
 		export const Thieving = T<number>(`skills.${SkillsEnum.Thieving}`);
 		export const Farming = T<number>(`skills.${SkillsEnum.Farming}`);
+		export const Herblore = T<number>(`skills.${SkillsEnum.Herblore}`);
 	}
 
 	export namespace Gear {

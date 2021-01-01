@@ -62,7 +62,7 @@ export default class extends BotCommand {
 
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
-		if (cookable.id === itemID('Jug of wine')) {
+		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
 		}
 
@@ -94,9 +94,9 @@ export default class extends BotCommand {
 
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					msg.author.maxTripLength
-				} minutes, try a lower quantity. The highest amount of ${
+				)} minutes, try a lower quantity. The highest amount of ${
 					cookable.name
 				}s you can cook is ${Math.floor(
 					msg.author.maxTripLength / timeToCookSingleCookable

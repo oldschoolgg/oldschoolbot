@@ -29,6 +29,7 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Sawmill:
 		case Activity.Pickpocket:
 		case Activity.Farming:
+		case Activity.Herblore:
 			return Tasks.SkillingTicker;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
@@ -40,7 +41,6 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Zalcano:
 		case Activity.FishingTrawler:
 		case Activity.TitheFarm:
-		case Activity.DeliverPresents:
 		case Activity.BarbarianAssault:
 		case Activity.AgilityArena:
 		case Activity.ChampionsChallenge:

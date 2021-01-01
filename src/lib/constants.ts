@@ -78,6 +78,7 @@ export const enum Emoji {
 	Fletching = '<:fletching:630911040544309258>',
 	Farming = '<:farming:630911040355565599>',
 	Tangleroot = '<:tangleroot:324127378978635778>',
+	Herblore = '<:herblore:630911040535658496>',
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
 	Ely = '<:ely:784453586033049630>',
@@ -133,6 +134,7 @@ export const enum Tasks {
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
 	FarmingActivity = 'farmingActivity',
+	HerbloreActivity = 'herbloreActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -154,9 +156,7 @@ export const enum Tasks {
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
 	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker',
-
-	DeliverPresents = 'deliverPresentsActivity'
+	MinigameTicker = 'minigameTicker'
 }
 
 export const enum Activity {
@@ -181,6 +181,7 @@ export const enum Activity {
 	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
 	Pickpocket = 'Pickpocket',
+	Herblore = 'Herblore',
 	Alching = 'Alching',
 	AnimatedArmour = 'AnimatedArmour',
 	Cyclops = 'Cyclops',
@@ -191,7 +192,6 @@ export const enum Activity {
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
-	DeliverPresents = 'DeliverPresents',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge'

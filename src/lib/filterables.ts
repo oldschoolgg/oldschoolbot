@@ -670,7 +670,13 @@ const prayer = resolveItems([
 
 const food = resolveItems(Eatables.map(food => food.name));
 
-export const filterableTypes = [
+interface Filterable {
+	name: string;
+	aliases: string[];
+	items: number[];
+}
+
+export const filterableTypes: Filterable[] = [
 	{
 		name: 'Smithing',
 		aliases: ['smithing', 'smith', 'sm'],
@@ -779,7 +785,7 @@ export const filterableTypes = [
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: Object.values(wintertodt).flat(Infinity)
+		items: Object.values(wintertodt).flat(Infinity) as number[]
 	},
 	{
 		name: 'Warm gear',
@@ -789,46 +795,46 @@ export const filterableTypes = [
 	{
 		name: 'Beginner Clues',
 		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
-		items: Object.values(cluesBeginner).flat(Infinity)
+		items: Object.values(cluesBeginner).flat(Infinity) as number[]
 	},
 	{
 		name: 'Easy Clues',
 		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
-		items: Object.values(cluesEasy).flat(Infinity)
+		items: Object.values(cluesEasy).flat(Infinity) as number[]
 	},
 	{
 		name: 'Medium Clues',
 		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
-		items: Object.values(cluesMedium).flat(Infinity)
+		items: Object.values(cluesMedium).flat(Infinity) as number[]
 	},
 	{
 		name: 'Hard Clues',
 		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
-		items: Object.values(cluesHard).flat(Infinity)
+		items: Object.values(cluesHard).flat(Infinity) as number[]
 	},
 	{
 		name: 'Elite Clues',
 		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
-		items: Object.values(cluesElite).flat(Infinity)
+		items: Object.values(cluesElite).flat(Infinity) as number[]
 	},
 	{
 		name: 'Master Clues',
 		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
-		items: Object.values(cluesMaster).flat(Infinity)
+		items: Object.values(cluesMaster).flat(Infinity) as number[]
 	},
 	{
 		name: 'All Clues',
 		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
-		items: Object.values(cluesAll).flat(Infinity)
+		items: Object.values(cluesAll).flat(Infinity) as number[]
 	},
 	{
 		name: 'Clues Shared',
 		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
-		items: Object.values(cluesShared).flat(Infinity)
+		items: Object.values(cluesShared).flat(Infinity) as number[]
 	},
 	{
 		name: 'Clues Rares',
 		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
-		items: Object.values(cluesRares).flat(Infinity)
+		items: Object.values(cluesRares).flat(Infinity) as number[]
 	}
 ];

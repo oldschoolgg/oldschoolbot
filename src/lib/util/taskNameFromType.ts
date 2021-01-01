@@ -42,6 +42,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.Herblore:
+			return Tasks.HerbloreActivity;
 		case Activity.Nightmare:
 			return Tasks.NightmareActivity;
 		case Activity.AnimatedArmour:
@@ -64,8 +66,6 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FarmingActivity;
 		case Activity.TitheFarm:
 			return Tasks.TitheFarmActivity;
-		case Activity.DeliverPresents:
-			return Tasks.DeliverPresents;
 		case Activity.BarbarianAssault:
 			return Tasks.BarbarianAssault;
 		case Activity.AgilityArena:
