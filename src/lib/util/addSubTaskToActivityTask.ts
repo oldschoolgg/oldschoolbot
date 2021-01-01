@@ -31,6 +31,8 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		for (const user of (newSubtask as GroupMonsterActivityTaskOptions).users) {
 			(client as OldSchoolBotClient).minionActivityCache.set(user, newSubtask);
 		}
+	} else {
+		(client as OldSchoolBotClient).minionActivityCache.set(newSubtask.userID, newSubtask);
 	}
 
 	return (client as OldSchoolBotClient).boss.publishAfter(
