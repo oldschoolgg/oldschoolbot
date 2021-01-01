@@ -1,6 +1,7 @@
 import { Client } from 'klasa';
 
 import { Tasks } from '../constants';
+import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { OldSchoolBotClient } from '../structures/OldSchoolBotClient';
 import { ActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
@@ -26,7 +27,11 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		id: uuid()
 	};
 
-	(client as OldSchoolBotClient).minionActivityCache.set(newSubtask.userID, newSubtask);
+	if ('users' in newSubtask) {
+		for (const user of (newSubtask as GroupMonsterActivityTaskOptions).users) {
+			(client as OldSchoolBotClient).minionActivityCache.set(user, newSubtask);
+		}
+	}
 
 	return (client as OldSchoolBotClient).boss.publishAfter(
 		'minionActivity',
