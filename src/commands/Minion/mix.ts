@@ -3,14 +3,17 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import {
+	addBanks,
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
+	multiplyBank,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
@@ -156,6 +159,14 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.HerbloreCostBank,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.HerbloreCostBank),
+				multiplyBank(mixableItem.inputItems, quantity)
+			])
+		);
 
 		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>(
 			this.client,
