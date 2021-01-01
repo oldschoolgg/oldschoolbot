@@ -94,9 +94,9 @@ export default class extends BotCommand {
 
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					msg.author.maxTripLength
-				} minutes, try a lower quantity. The highest amount of ${
+				)} minutes, try a lower quantity. The highest amount of ${
 					cookable.name
 				}s you can cook is ${Math.floor(
 					msg.author.maxTripLength / timeToCookSingleCookable
