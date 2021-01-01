@@ -18,7 +18,8 @@ function hasKandarinHardDiary(user: KlasaUser): boolean {
 		thieving: 53,
 		woodcutting: 60,
 		farming: 26,
-		herblore: 48
+		herblore: 48,
+		smithing: 75
 	});
 }
 
