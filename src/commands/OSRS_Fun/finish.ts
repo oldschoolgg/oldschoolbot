@@ -1,12 +1,12 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import pets from '../../lib/pets';
-import tob = require('../../lib/data/monsters/tob');
-import raids = require('../../lib/data/monsters/raids');
-import alchemicalHydra = require('../../lib/data/monsters/alchemicalHydra');
-import hespori = require('../../lib/data/monsters/hespori');
 import { BotCommand } from '../../lib/BotCommand';
+import alchemicalHydra from '../../lib/data/monsters/alchemicalHydra';
+import hespori from '../../lib/data/monsters/hespori';
+import raids from '../../lib/data/monsters/raids';
+import tob from '../../lib/data/monsters/tob';
+import pets from '../../lib/pets';
 import { roll } from '../../lib/util';
 
 // Use if Drop rate is X/Y

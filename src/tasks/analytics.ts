@@ -1,37 +1,39 @@
 import { Task } from 'klasa';
-import PgBoss from 'pg-boss';
-import { createConnection } from 'typeorm';
 
-import { providerConfig } from '../config';
 import { Tasks } from '../lib/constants';
+import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
+import { OldSchoolBotClient } from '../lib/structures/OldSchoolBotClient';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
-import { TickerTaskData } from '../lib/types/minions';
+import { ActivityTaskOptions, TickerTaskData } from '../lib/types/minions';
 import { activityTaskFilter } from '../lib/util';
-
-const { port, user, password, database } = providerConfig!.postgres!;
+import { taskNameFromType } from '../lib/util/taskNameFromType';
 
 export default class extends Task {
 	async init() {
-		if (this.client.orm) return;
-		this.client.orm = await createConnection({
-			type: 'postgres',
-			host: 'localhost',
-			port,
-			username: user,
-			password,
-			database,
-			entities: [AnalyticsTable],
-			synchronize: true
-		});
-
-		const boss = new PgBoss({ ...providerConfig?.postgres });
-		boss.on('error', error => console.error(error));
-		await boss.start();
-		await boss.schedule('analytics', `*/20 * * * *`);
-		await boss.subscribe('analytics', async job => {
+		await this.client.boss.schedule('analytics', `*/20 * * * *`);
+		await this.client.boss.subscribe('analytics', async job => {
 			await this.analyticsTick();
 			job.done();
+		});
+		await this.client.boss.subscribe('minionActivity', async job => {
+			const data = job.data as ActivityTaskOptions;
+			const taskName = taskNameFromType(data.type);
+			const task = this.client.tasks.get(taskName);
+			try {
+				this.client.oneCommandAtATimeCache.add(data.userID);
+				await task?.run(data);
+			} finally {
+				this.client.oneCommandAtATimeCache.delete(data.userID);
+				if ('users' in data) {
+					for (const user of (data as GroupMonsterActivityTaskOptions).users) {
+						(this.client as OldSchoolBotClient).minionActivityCache.delete(user);
+					}
+				} else {
+					(this.client as OldSchoolBotClient).minionActivityCache.delete(data.userID);
+				}
+				job.done();
+			}
 		});
 	}
 
