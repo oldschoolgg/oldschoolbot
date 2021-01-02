@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -121,18 +121,14 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(itemID('Pure essence'), quantity);
 
-		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				runeID: rune.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				essenceQuantity: quantity,
-				duration,
-				type: Activity.Runecraft
-			}
-		);
+		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>(this.client, {
+			runeID: rune.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			essenceQuantity: quantity,
+			duration,
+			type: Activity.Runecraft
+		});
 
 		const response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${
 			rune.name

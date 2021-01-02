@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -147,21 +147,17 @@ export default class extends BotCommand {
 			])
 		);
 
-		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				monsterID: pickpocketable.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Pickpocket,
-				damageTaken,
-				successfulQuantity,
-				xpReceived
-			}
-		);
+		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(this.client, {
+			monsterID: pickpocketable.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Pickpocket,
+			damageTaken,
+			successfulQuantity,
+			xpReceived
+		});
 
 		return msg.send(
 			`${msg.author.minionName} is now going to pickpocket a ${
