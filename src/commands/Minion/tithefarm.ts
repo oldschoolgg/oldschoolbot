@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -65,18 +65,14 @@ export default class extends BotCommand {
 
 		const [duration, boostStr] = this.determineDuration(msg.author);
 
-		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				minigameID: MinigameIDsEnum.TitheFarm,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity: 1,
-				duration,
-				type: Activity.TitheFarm
-			}
-		);
+		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>(this.client, {
+			minigameID: MinigameIDsEnum.TitheFarm,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity: 1,
+			duration,
+			type: Activity.TitheFarm
+		});
 
 		return msg.send(
 			`Your minion is off completing a round of the ${

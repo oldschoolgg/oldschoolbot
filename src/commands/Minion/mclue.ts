@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -90,7 +90,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, Tasks.ClueTicker, {
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, {
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

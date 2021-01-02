@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -129,18 +129,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				logID: log.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Woodcutting
-			}
-		);
+		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>(this.client, {
+			logID: log.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Woodcutting
+		});
 
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${
 			log.name

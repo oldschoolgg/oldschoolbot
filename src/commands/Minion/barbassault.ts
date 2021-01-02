@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Events, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, Time } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear/data/maxGearStats';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -296,21 +296,17 @@ export default class extends BotCommand {
 
 		str += `The Fighter is ${fighter.username}'s minion, their melee gear strength bonus is giving a ${strengthPercent}% boost.`;
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-		await addSubTaskToActivityTask<BarbarianAssaultActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.BarbarianAssault,
-				leader: msg.author.id,
-				users: users.map(u => u.id),
-				minigameID: MinigameIDsEnum.BarbarianAssault,
-				totalLevel
-			}
-		);
+		await addSubTaskToActivityTask<BarbarianAssaultActivityTaskOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.BarbarianAssault,
+			leader: msg.author.id,
+			users: users.map(u => u.id),
+			minigameID: MinigameIDsEnum.BarbarianAssault,
+			totalLevel
+		});
 
 		return msg.channel.send(str, {
 			split: true

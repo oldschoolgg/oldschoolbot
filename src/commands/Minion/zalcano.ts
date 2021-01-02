@@ -2,7 +2,7 @@ import { calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -86,20 +86,16 @@ export default class extends BotCommand {
 			attackStylesUsed: []
 		});
 
-		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Zalcano,
-				minigameID: MinigameIDsEnum.Zalcano,
-				performance: this.calcPerformance(kcLearned, skillPercentage),
-				isMVP: percentChance(80)
-			}
-		);
+		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Zalcano,
+			minigameID: MinigameIDsEnum.Zalcano,
+			performance: this.calcPerformance(kcLearned, skillPercentage),
+			isMVP: percentChance(80)
+		});
 
 		return msg.send(
 			`${
