@@ -7,6 +7,7 @@ Client.defaultClientSchema
 	.add('pollQuestions', 'any', { default: {} })
 	.add('bank_lottery', 'any', { default: {} })
 	.add('sold_items_bank', 'any', { default: {} })
+	.add('herblore_cost_bank', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
