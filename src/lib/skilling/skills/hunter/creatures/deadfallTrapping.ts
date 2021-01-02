@@ -1,7 +1,7 @@
+import { resolveNameBank } from 'oldschooljs/dist/util';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Creature } from '../../../types';
-// Logs and bait?
 
 const deadfallTrappingCreatures: Creature[] = [
 	{
@@ -45,10 +45,11 @@ const deadfallTrappingCreatures: Creature[] = [
 		aliases: ['maniacal monkey'],
 		level: 60,
 		hunterXp: 1000,
+		itemsConsumed: resolveNameBank({ 'Banana': 1 }),
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
 		huntTechnique: 'deadfall trapping',
 		catchTime: 0,
-		qpRequired: 0 //checking slayer
+		qpRequired: 175
 	}
 ];
 

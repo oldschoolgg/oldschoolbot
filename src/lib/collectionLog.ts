@@ -74,6 +74,38 @@ export const anglerOutfit = resolveItems([
 	'Angler waders',
 	'Angler boots'
 ]);
+
+const hunterGear: CollectionLogData = {
+	CamouflageGear: resolveItems([
+		'Polar camo top',
+		'Polar cam legs',
+		'Wood camo top',
+		'Wood camo legs',
+		'Jungle camo top',
+		'Jungle camo legs',
+		'Desert camo top',
+		'Desert camo legs'
+	]),
+	HunterGear: resolveItems([
+		'Larupia hat',
+		'Larupia top',
+		'Larupia legs',
+		'Graahk headdress',
+		'Graahk top',
+		'Graahk legs',
+		'Kyatt hat',
+		'Kyatt top',
+		'Kyatt legs'
+	]),
+	Other: resolveItems([
+		'Spotted cape',
+		'Spottier cape',
+		'Gloves of silence',
+		'Baby chinchompa',
+		'Herbi'
+	])
+};
+
 const fishingTrawler: CollectionLogData = {
 	AnglerOutfit: anglerOutfit,
 	Junk: resolveItems([
@@ -1478,7 +1510,20 @@ export const skillingLog: CollectionLogData = {
 	Farmer: farmersOutfit,
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
-	AgilityArena: agilityArenaLog
+	AgilityArena: agilityArenaLog,
+	Hunter: resolveItems([
+		'Graahk headdress',
+		'Graahk top',
+		'Graahk legs',
+		'Kyatt hat',
+		'Kyatt top',
+		'Kyatt legs',
+		'Spotted cape',
+		'Spottier cape',
+		'Gloves of silence',
+		'Baby chinchompa',
+		'Herbi'
+	])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1647,5 +1692,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Agility Arena',
 		aliases: ['aa', 'agility arena'],
 		items: { 1: agilityArenaLog }
+	},
+	{
+		name: 'Hunter Gear',
+		aliases: ['hunter gear'],
+		items: hunterGear
 	}
 ];
