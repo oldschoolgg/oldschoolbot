@@ -42,7 +42,7 @@ export default async function removeFoodFromUser({
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 17.5);
 		reductions.push(`17.5% for Ely ${Emoji.Ely}`);
 	}
-	const foodToRemove = getUserFoodFromBank(userBank, totalHealingNeeded);
+	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded);
 	if (!foodToRemove) {
 		throw `You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
 			i => i.name

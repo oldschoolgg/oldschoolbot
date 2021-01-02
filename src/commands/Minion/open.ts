@@ -22,7 +22,11 @@ const itemsToNotifyOf = Object.values(cluesRares)
 	)
 	.concat([itemID('Bloodhound')]);
 
-const allOpenables = [...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID)];
+const allOpenables = [
+	...ClueTiers.map(i => i.id),
+	...botOpenables.map(i => i.itemID),
+	...Openables.map(i => i.id)
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -64,6 +68,12 @@ export default class extends BotCommand {
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
+		}
+		const osjsOpenable = Openables.find(openable =>
+			openable.aliases.some(alias => stringMatches(alias, name))
+		);
+		if (osjsOpenable) {
+			return this.osjsOpenablesOpen(msg, quantity, osjsOpenable);
 		}
 
 		return this.botOpenablesOpen(msg, quantity, name);
