@@ -1,17 +1,33 @@
+import { KlasaUser } from 'klasa';
 import { addBanks } from 'oldschooljs/dist/util';
-import { O } from 'ts-toolbelt';
 
 import { Eatables } from '../../eatables';
+import { UserSettings } from '../../settings/types/UserSettings';
+import { Eatable } from '../../skilling/types';
 import { ItemBank } from '../../types';
+import itemID from '../../util/itemID';
 
 export default function getUserFoodFromBank(
-	userBank: O.Readonly<ItemBank>,
+	user: KlasaUser,
 	totalHealingNeeded: number
 ): false | ItemBank {
+	const userBank = user.settings.get(UserSettings.Bank);
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove: ItemBank = {};
+
+	let eatables: Eatable[] =
+		user.id === '294448484847976449'
+			? [
+					{
+						name: 'Bucket of sand',
+						id: itemID('Bucket of sand'),
+						healAmount: 5
+					}
+			  ]
+			: Eatables;
+
 	// Gets all the eatables in the user bank
-	for (const eatable of Eatables.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))) {
+	for (const eatable of eatables.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))) {
 		const inBank = userBank[eatable.id];
 		const toRemove = Math.ceil(totalHealingCalc / eatable.healAmount);
 		if (!inBank) continue;
