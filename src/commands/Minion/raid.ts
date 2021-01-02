@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import { GearTypes } from '../../lib/gear';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -968,7 +968,7 @@ export default class extends BotCommand {
 			})
 		};
 
-		await addSubTaskToActivityTask(this.client, Tasks.MinigameTicker, data);
+		await addSubTaskToActivityTask(this.client, data);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -55,6 +55,7 @@ export default class extends BotCommand {
 		);
 
 		timeToFinish /= 2;
+		boosts.push(`👻 2x Boost`);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
@@ -92,9 +93,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		boosts.push(`👻 2x Boost`);
-
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, Tasks.ClueTicker, {
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, {
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

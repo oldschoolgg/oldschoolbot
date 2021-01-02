@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -73,18 +73,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<AgilityActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				courseID: course.name,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Agility
-			}
-		);
+		await addSubTaskToActivityTask<AgilityActivityTaskOptions>(this.client, {
+			courseID: course.name,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Agility
+		});
 
 		const response = `${msg.author.minionName} is now doing ${quantity}x ${
 			course.name

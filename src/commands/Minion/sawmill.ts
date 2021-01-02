@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { Planks } from '../../lib/minions/data/planks';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -99,18 +99,14 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(plank!.inputItem, quantity);
 		await msg.author.removeGP(cost);
 
-		await addSubTaskToActivityTask<SawmillActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				type: Activity.Sawmill,
-				duration,
-				plankID: plank!.outputItem,
-				plankQuantity: quantity,
-				userID: msg.author.id,
-				channelID: msg.channel.id
-			}
-		);
+		await addSubTaskToActivityTask<SawmillActivityTaskOptions>(this.client, {
+			type: Activity.Sawmill,
+			duration,
+			plankID: plank!.outputItem,
+			plankQuantity: quantity,
+			userID: msg.author.id,
+			channelID: msg.channel.id
+		});
 
 		let response = `${msg.author.minionName} is now creating ${quantity} ${itemNameFromID(
 			plank.outputItem

@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -177,18 +177,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<MiningActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				oreID: ore.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Mining
-			}
-		);
+		await addSubTaskToActivityTask<MiningActivityTaskOptions>(this.client, {
+			oreID: ore.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Mining
+		});
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name

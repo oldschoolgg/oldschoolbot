@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
@@ -88,18 +88,14 @@ export default class extends BotCommand {
 		// Remove the logs from their bank.
 		await msg.author.removeItemFromBank(log.inputLogs, quantity);
 
-		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				burnableID: log.inputLogs,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Firemaking
-			}
-		);
+		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>(this.client, {
+			burnableID: log.inputLogs,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Firemaking
+		});
 
 		return msg.send(
 			`${msg.author.minionName} is now lighting ${quantity}x ${
