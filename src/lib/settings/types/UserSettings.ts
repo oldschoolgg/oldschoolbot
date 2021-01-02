@@ -81,6 +81,7 @@ export namespace UserSettings {
 		export const Thieving = T<number>(`skills.${SkillsEnum.Thieving}`);
 		export const Farming = T<number>(`skills.${SkillsEnum.Farming}`);
 		export const Herblore = T<number>(`skills.${SkillsEnum.Herblore}`);
+		export const Hunter = T<number>(`skills.${SkillsEnum.Hunter}`);
 	}
 
 	export namespace Gear {
