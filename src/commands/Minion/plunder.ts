@@ -2,7 +2,7 @@ import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
@@ -68,19 +68,15 @@ export default class extends BotCommand {
 		const maxQuantity = Math.floor(msg.author.maxTripLength / plunderTime);
 		const tripLength = maxQuantity * plunderTime;
 
-		await addSubTaskToActivityTask<PlunderActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				rooms: completableRooms.map(room => room.number),
-				quantity: maxQuantity,
-				userID: msg.author.id,
-				duration: tripLength,
-				type: Activity.Plunder,
-				channelID: msg.channel.id,
-				minigameID: MinigameIDsEnum.PyramidPlunder
-			}
-		);
+		await addSubTaskToActivityTask<PlunderActivityTaskOptions>(this.client, {
+			rooms: completableRooms.map(room => room.number),
+			quantity: maxQuantity,
+			userID: msg.author.id,
+			duration: tripLength,
+			type: Activity.Plunder,
+			channelID: msg.channel.id,
+			minigameID: MinigameIDsEnum.PyramidPlunder
+		});
 
 		let str = `${
 			msg.author.minionName

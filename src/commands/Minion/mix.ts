@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -168,20 +168,15 @@ export default class extends BotCommand {
 			])
 		);
 
-		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-
-			{
-				mixableID: mixableItem.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				zahur,
-				quantity,
-				duration,
-				type: Activity.Herblore
-			}
-		);
+		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>(this.client, {
+			mixableID: mixableItem.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			zahur,
+			quantity,
+			duration,
+			type: Activity.Herblore
+		});
 
 		return msg.send(
 			`${msg.author.minionName} ${cost} Making ${quantity} ${sets} ${

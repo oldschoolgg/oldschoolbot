@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { GearSetupTypes } from '../../lib/gear/types';
@@ -219,20 +219,16 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Nightmare,
-				leader: msg.author.id,
-				users: users.map(u => u.id),
-				minigameID: MinigameIDsEnum.Nightmare
-			}
-		);
+		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Nightmare,
+			leader: msg.author.id,
+			users: users.map(u => u.id),
+			minigameID: MinigameIDsEnum.Nightmare
+		});
 
 		let str =
 			type === 'solo'

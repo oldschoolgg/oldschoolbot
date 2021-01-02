@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { Eatables } from '../../lib/eatables';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -135,18 +135,14 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				minigameID: MinigameIDsEnum.Wintertodt,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Wintertodt
-			}
-		);
+		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(this.client, {
+			minigameID: MinigameIDsEnum.Wintertodt,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Wintertodt
+		});
 
 		return msg.send(
 			`${

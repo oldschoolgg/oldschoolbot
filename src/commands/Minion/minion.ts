@@ -5,15 +5,7 @@ import { Monsters, Util } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	Activity,
-	Color,
-	Emoji,
-	MIMIC_MONSTER_ID,
-	PerkTier,
-	Tasks,
-	Time
-} from '../../lib/constants';
+import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -472,6 +464,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		);
 
 		timeToFinish /= 2;
+		boosts.push(`👻2x Boost`);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
@@ -535,20 +528,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		boosts.push(`👻2x Boost`);
-
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
-			this.client,
-			Tasks.MonsterKillingTicker,
-			{
-				monsterID: monster.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.MonsterKilling
-			}
-		);
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
+			monsterID: monster.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.MonsterKilling
+		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
