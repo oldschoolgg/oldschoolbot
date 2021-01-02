@@ -78,7 +78,7 @@ export const anglerOutfit = resolveItems([
 const hunterGear: CollectionLogData = {
 	CamouflageGear: resolveItems([
 		'Polar camo top',
-		'Polar cam legs',
+		'Polar camo legs',
 		'Wood camo top',
 		'Wood camo legs',
 		'Jungle camo top',

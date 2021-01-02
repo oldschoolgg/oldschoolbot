@@ -266,19 +266,19 @@ const hunterClothing: Createable[] = [
 	},
 	{
 		name: 'Larupia hunter gear',
-		inputItems: resolveNameBank({ 'Larupia fur': 1, 'Tattty larupa fur': 2 }),
+		inputItems: resolveNameBank({ 'Larupia fur': 1, 'Tatty larupia fur': 2 }),
 		outputItems: resolveNameBank({ 'Larupia hat': 1, 'Larupia top': 1, 'Larupia legs': 1 }),
 		GPCost: 700
 	},
 	{
 		name: 'Graahk hunter gear',
-		inputItems: resolveNameBank({ 'Graahk fur': 1, 'Tattty graahk fur': 2 }),
+		inputItems: resolveNameBank({ 'Graahk fur': 1, 'Tatty graahk fur': 2 }),
 		outputItems: resolveNameBank({ 'Graahk headdress': 1, 'Graahk top': 1, 'Graahk legs': 1 }),
 		GPCost: 1000
 	},
 	{
 		name: 'Kyatt hunter gear',
-		inputItems: resolveNameBank({ 'Kyatt fur': 1, 'Tattty kyatt fur': 2 }),
+		inputItems: resolveNameBank({ 'Kyatt fur': 1, 'Tatty kyatt fur': 2 }),
 		outputItems: resolveNameBank({ 'Kyatt hat': 1, 'Kyatt top': 1, 'Kyatt legs': 1 }),
 		GPCost: 1400
 	},
