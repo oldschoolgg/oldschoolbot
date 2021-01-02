@@ -5,7 +5,8 @@ Client.defaultClientSchema
 	.add('totalCommandsUsed', 'integer', { default: 0 })
 	.add('prices', 'any', { default: {} })
 	.add('pollQuestions', 'any', { default: {} })
-	.add('petRecords', 'any', { default: { lowest: {}, highest: {} } })
+	.add('sold_items_bank', 'any', { default: {} })
+	.add('herblore_cost_bank', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
@@ -18,4 +19,5 @@ Client.defaultClientSchema
 			.add('wintertodtLoot', 'any', { default: {} })
 			.add('fightCavesCost', 'any', { default: {} })
 			.add('PVMCost', 'any', { default: {} })
+			.add('thievingCost', 'any', { default: {} })
 	);

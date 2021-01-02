@@ -10,7 +10,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[item:item]',
 			aliases: ['fav'],
-			description: 'Favorites an item so it displays at the top of your bank.'
+			description: 'Favorites an item so it displays at the top of your bank.',
+			examples: ['+favorite twisted bow'],
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -42,6 +44,6 @@ export default class extends BotCommand {
 			arrayAction: ArrayActions.Add
 		});
 
-		return msg.send(`Added ${item.name} from your favorite items.`);
+		return msg.send(`Added ${item.name} to your favorite items.`);
 	}
 }

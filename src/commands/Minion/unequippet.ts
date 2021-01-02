@@ -9,14 +9,17 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion'],
+			description: 'Unequips your pet.',
+			examples: ['+unequippet']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage): Promise<KlasaMessage> {
 		const equippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
-		if (!equippedPet) throw `You don't have a pet equipped.`;
+		if (!equippedPet) return msg.send(`You don't have a pet equipped.`);
 
 		await msg.author.settings.update([
 			[UserSettings.Minion.EquippedPet, null],

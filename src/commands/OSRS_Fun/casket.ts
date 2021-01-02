@@ -1,19 +1,23 @@
 import { MessageAttachment } from 'discord.js';
-import { Command, CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Misc } from 'oldschooljs';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import { addBanks, roll } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { Workers } from '../../lib/workers';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
+			oneAtTime: true,
 			aliases: ['clue'],
 			usage: '<ClueTier:string> [quantity:int{1}]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			examples: ['+casket easy 5k', '+casket hard 10'],
+			description: 'Simulates opening clue caskets.',
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 
@@ -23,13 +27,20 @@ export default class extends Command {
 		}
 
 		const perkTier = getUsersPerkTier(user);
-
-		if (perkTier >= PerkTier.Four) {
+		if (perkTier >= PerkTier.Six) {
 			return 100_000;
 		}
 
+		if (perkTier >= PerkTier.Five) {
+			return 80_000;
+		}
+
+		if (perkTier >= PerkTier.Four) {
+			return 60_000;
+		}
+
 		if (perkTier === PerkTier.Three) {
-			return 50_000;
+			return 40_000;
 		}
 
 		if (perkTier === PerkTier.Two) {
@@ -46,47 +57,26 @@ export default class extends Command {
 	async run(msg: KlasaMessage, [tier, quantity = 1]: [string, number]) {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
-			throw `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 50,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
+			return msg.send(
+				`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`
+			);
 		}
 
 		const clueTier = clueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());
 
 		if (!clueTier) {
-			throw `Not a valid clue tier. The valid tiers are: ${clueTiers
-				.map(_tier => _tier.name)
-				.join(', ')}`;
-		}
-
-		let loot = clueTier.table.open(quantity);
-		let mimicNumber = 0;
-		if (clueTier.mimicChance) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(clueTier.mimicChance)) {
-					loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
-					mimicNumber++;
-				}
-			}
-		}
-
-		const opened = `You opened ${quantity} ${clueTier.name} 
-		Clue Casket${quantity > 1 ? 's' : ''}
-		${
-			mimicNumber > 0
-				? ` and defeated ${mimicNumber} 
-					mimic${mimicNumber > 1 ? 's' : ''}`
-				: ''
-		}`;
-
-		if (Object.keys(loot).length === 0) return msg.send(`${opened} and got nothing :(`);
-
-		const image = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot,
-				`Loot from ${quantity} ${clueTier.name} Clue${quantity > 1 ? 's' : ''}${
-					mimicNumber > 0 ? ` with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
-				}`
+			return msg.send(
+				`Not a valid clue tier. The valid tiers are: ${clueTiers
+					.map(_tier => _tier.name)
+					.join(', ')}`
 			);
+		}
+
+		const [loot, title] = await Workers.casketOpen({ quantity, clueTierID: clueTier.id });
+
+		if (Object.keys(loot).length === 0) return msg.send(`${title} and got nothing :(`);
+
+		const image = await this.client.tasks.get('bankImage')!.generateBankImage(loot, title);
 
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}

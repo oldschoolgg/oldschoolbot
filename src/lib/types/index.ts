@@ -10,7 +10,6 @@ export interface SettingsEntry {
 	id: string;
 	RSN?: string;
 	GP?: number;
-	autoupdate?: boolean;
 	badges?: string[];
 	bank?: ItemBank;
 	clueScores?: ItemBank;
@@ -40,12 +39,6 @@ export interface Pet {
 	formatFinish(num: number): string;
 }
 
-export interface KillWorkerOptions {
-	bossName: string;
-	quantity: number;
-	limit: number;
-}
-
 export interface CachedItemPrice {
 	price: number;
 	fetchedAt: number;
@@ -70,11 +63,6 @@ export interface PollVotes {
 	Yes: string;
 	No: string;
 	'Skip question': string;
-}
-
-export interface PetRecords {
-	highest: ItemBank;
-	lowest: ItemBank;
 }
 
 export interface JMod {
@@ -144,6 +132,7 @@ export interface MakePartyOptions {
 	minSize: number;
 	leader: KlasaUser;
 	message: string;
+	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
 	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
@@ -154,3 +143,14 @@ export type Skills = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export type CategoryFlag =
+	| 'minion'
+	| 'settings'
+	| 'patron'
+	| 'skilling'
+	| 'pvm'
+	| 'minigame'
+	| 'utility'
+	| 'fun'
+	| 'simulation';

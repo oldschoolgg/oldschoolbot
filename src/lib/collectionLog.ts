@@ -15,7 +15,123 @@ const nightmareLog = resolveItems([
 	'Little nightmare'
 ]);
 
-export const bosses = {
+const wintertodtLog = resolveItems([
+	'Phoenix',
+	'Pyromancer hood',
+	'Pyromancer garb',
+	'Pyromancer robe',
+	'Pyromancer boots',
+	'Warm gloves',
+	'Bruma torch',
+	'Burnt page',
+	'Tome of fire',
+	'Dragon axe'
+]);
+
+const barbAssaultLog = resolveItems([
+	'Pet penance queen',
+	'Fighter torso',
+	'Fighter hat',
+	'Healer hat',
+	'Runner hat',
+	'Ranger hat',
+	'Runner boots',
+	'Penance gloves',
+	'Penance skirt'
+]);
+
+const agilityArenaLog = resolveItems([
+	'Agility arena ticket',
+	"Pirate's hook",
+	'Brimhaven graceful hood',
+	'Brimhaven graceful top',
+	'Brimhaven graceful legs',
+	'Brimhaven graceful gloves',
+	'Brimhaven graceful boots',
+	'Brimhaven graceful cape'
+]);
+
+const zalcanoLog = resolveItems([
+	'Crystal shard',
+	'Zalcano shard',
+	'Smolcano',
+	'Uncut onyx',
+	'Crystal tool seed	'
+]);
+
+export const farmersOutfit = resolveItems([
+	`Farmer's strawhat`,
+	`Farmer's jacket`,
+	`Farmer's shirt`,
+	`Farmer's boro trousers`,
+	`Farmer's boots`,
+	`Tangleroot`
+]);
+
+export const anglerOutfit = resolveItems([
+	'Angler hat',
+	'Angler top',
+	'Angler waders',
+	'Angler boots'
+]);
+const fishingTrawler: CollectionLogData = {
+	AnglerOutfit: anglerOutfit,
+	Junk: resolveItems([
+		'Broken arrow',
+		'Broken glass',
+		'Broken staff',
+		'Buttons',
+		'Damaged armour',
+		'Old boot',
+		'Oyster',
+		'Pot',
+		'Rusty sword'
+	]),
+	Fish: resolveItems([
+		'Raw shrimps',
+		'Raw sardine',
+		'Raw anchovies',
+		'Raw tuna',
+		'Raw lobster',
+		'Raw swordfish',
+		'Raw shark',
+		'Raw sea turtle',
+		'Raw manta ray'
+	])
+};
+
+const barrows: CollectionLogData = {
+	Barrows: resolveItems([
+		"Ahrim's staff",
+		"Ahrim's hood",
+		"Ahrim's robetop",
+		"Ahrim's robeskirt",
+		"Dharok's greataxe",
+		"Dharok's helm",
+		"Dharok's platebody",
+		"Dharok's platelegs",
+		"Guthan's warspear",
+		"Guthan's helm",
+		"Guthan's platebody",
+		"Guthan's chainskirt"
+	]),
+	'Barrows 2': resolveItems([
+		"Karil's crossbow",
+		"Karil's coif",
+		"Karil's leathertop",
+		"Karil's leatherskirt",
+		"Torag's hammers",
+		"Torag's helm",
+		"Torag's platebody",
+		"Torag's platelegs",
+		"Verac's flail",
+		"Verac's helm",
+		"Verac's brassard",
+		"Verac's plateskirt"
+	])
+};
+
+export const bosses: CollectionLogData = {
 	Zulrah: resolveItems([
 		'Uncut onyx',
 		'Tanzanite fang',
@@ -91,34 +207,6 @@ export const bosses = {
 		'Jar of decay',
 		'Vorki'
 	]),
-	Barrows: resolveItems([
-		"Ahrim's staff",
-		"Ahrim's hood",
-		"Ahrim's robetop",
-		"Ahrim's robeskirt",
-		"Dharok's greataxe",
-		"Dharok's helm",
-		"Dharok's platebody",
-		"Dharok's platelegs",
-		"Guthan's warspear",
-		"Guthan's helm",
-		"Guthan's platebody",
-		"Guthan's chainskirt"
-	]),
-	'Barrows 2': resolveItems([
-		"Karil's crossbow",
-		"Karil's coif",
-		"Karil's leathertop",
-		"Karil's leatherskirt",
-		"Torag's hammers",
-		"Torag's helm",
-		"Torag's platebody",
-		"Torag's platelegs",
-		"Verac's flail",
-		"Verac's helm",
-		"Verac's brassard",
-		"Verac's plateskirt"
-	]),
 	'Giant Mole': resolveItems(['Long bone', 'Curved bone', 'Baby mole']),
 	'Kalphite queen': resolveItems([
 		'Dragon chainbody',
@@ -128,11 +216,6 @@ export const bosses = {
 		'Kalphite princess'
 	]),
 	'Lizardman shaman': resolveItems(['Dragon warhammer']),
-	/* 'Boss Shared':resolveItems([
-		'Dragon pickaxe',
-		'Dragon 2h sword'
-		])*/
-
 	Callisto: resolveItems([
 		'Dragon pickaxe',
 		'Dragon 2h sword',
@@ -158,9 +241,12 @@ export const bosses = {
 	'Crazy Arch': resolveItems(['Malediction shard 2', 'Odium shard 2', 'Fedora']),
 	Scorpia: resolveItems(['Malediction shard 3', 'Odium shard 3', "Scorpia's offspring"]),
 	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
-	Nightmare: nightmareLog
+	Nightmare: nightmareLog,
+	Zalcano: zalcanoLog,
+	Wintertodt: wintertodtLog
 };
-export const pets = {
+
+export const pets: CollectionLogData = {
 	'Skilling Pets': resolveItems([
 		'Heron',
 		'Rock golem',
@@ -219,7 +305,8 @@ export const pets = {
 	]),
 	Special: resolveItems(['Dark squirrel'])
 };
-export const cluesShared = {
+
+export const cluesShared: CollectionLogData = {
 	'God Pages': resolveItems([
 		'Saradomin page 1',
 		'Saradomin page 2',
@@ -257,7 +344,8 @@ export const cluesShared = {
 		'Ancient blessing'
 	])
 };
-export const cluesBeginner = {
+
+export const cluesBeginner: CollectionLogData = {
 	'Beginner Clues': resolveItems([
 		'Mole slippers',
 		'Frog slippers',
@@ -441,7 +529,8 @@ export const cluesEasy = {
 		"Monk's robe (g)"
 	])
 };
-export const cluesMedium = {
+
+export const cluesMedium: CollectionLogData = {
 	'Mithril trimmed armor': resolveItems([
 		'Mithril full helm (t)',
 		'Mithril platebody (t)',
@@ -586,7 +675,8 @@ export const cluesMedium = {
 		'Yew comp bow'
 	])
 };
-export const cluesHard = {
+
+export const cluesHard: CollectionLogData = {
 	'Hard ornament kits': resolveItems([
 		'Dragon boots ornament kit',
 		'Tzhaar-ket-om ornament kit',
@@ -713,7 +803,6 @@ export const cluesHard = {
 		"Bandos d'hide boots",
 		"Bandos d'hide shield"
 	]),
-
 	'Hard Vestiment gear': resolveItems([
 		'Guthix stole',
 		'Guthix crozier',
@@ -784,7 +873,8 @@ export const cluesHard = {
 		'Gilded hasta'
 	])
 };
-export const cluesElite = {
+
+export const cluesElite: CollectionLogData = {
 	'Elite ornament kits': resolveItems([
 		'Dragon full helm ornament kit',
 		'Dragon chainbody ornament kit',
@@ -810,7 +900,6 @@ export const cluesElite = {
 		"Black d'hide body (g)",
 		"Black d'hide chaps (g)"
 	]),
-
 	'Tuxedo sets': resolveItems([
 		'Dark bow tie',
 		'Dark tuxedo jacket',
@@ -912,7 +1001,8 @@ export const cluesElite = {
 		'Gilded spade'
 	])
 };
-export const cluesMaster = {
+
+export const cluesMaster: CollectionLogData = {
 	'Samurai and Mummy sets': resolveItems([
 		'Samurai kasa',
 		'Samurai shirt',
@@ -950,7 +1040,6 @@ export const cluesMaster = {
 		'Anguish ornament kit',
 		'Dragon platebody ornament kit'
 	]),
-
 	'Master misc.': resolveItems([
 		'Bloodhound',
 		'Fancy tiara',
@@ -1034,7 +1123,8 @@ export const cluesMaster = {
 		'Gilded spade'
 	])
 };
-export const cluesRares = {
+
+export const cluesRares: CollectionLogData = {
 	'3rd Age Melee': resolveItems([
 		'3rd age full helmet',
 		'3rd age platebody',
@@ -1096,7 +1186,8 @@ export const cluesRares = {
 		'Gilded spade'
 	])
 };
-export const cluesAll = {
+
+export const cluesAll: CollectionLogData = {
 	...cluesShared,
 	...cluesRares,
 	...cluesBeginner,
@@ -1106,33 +1197,59 @@ export const cluesAll = {
 	...cluesElite,
 	...cluesMaster
 };
-export const championScrolls = {
-	'Champion scrolls': resolveItems([
-		'Earth warrior champion scroll',
-		'Ghoul champion scroll',
-		'Giant champion scroll',
-		'Goblin champion scroll',
-		'Hobgoblin champion scroll',
-		'Imp champion scroll',
-		'Jogre champion scroll',
-		'Lesser demon champion scroll',
-		'Skeleton champion scroll',
-		'Zombie champion scroll'
-	])
+
+export const championScrolls = resolveItems([
+	'Earth warrior champion scroll',
+	'Ghoul champion scroll',
+	'Giant champion scroll',
+	'Goblin champion scroll',
+	'Hobgoblin champion scroll',
+	'Imp champion scroll',
+	'Jogre champion scroll',
+	'Lesser demon champion scroll',
+	'Skeleton champion scroll',
+	'Zombie champion scroll'
+]);
+
+export const championScrollLog: CollectionLogData = {
+	'Champion scrolls': championScrolls,
+	Cape: resolveItems(["Champion's cape"])
 };
-export const holiday = {
+export const holiday: CollectionLogData = {
 	'Birthday Event': resolveItems([
 		'Cow mask',
 		'Cow top',
 		'Cow trousers',
 		'Cow gloves',
 		'Cow shoes',
-		'Slice of birthday cake',
-		'War ship'
+		'Slice of birthday cake'
 	]),
-	'Easter Event': resolveItems(['Bunny ears', 'Easter egg'])
+	'Easter Event': resolveItems(['Bunny ears', 'Easter egg']),
+	'Halloween Event': resolveItems([
+		'Pumpkin',
+		'Scythe',
+		'Red halloween mask',
+		'Blue halloween mask',
+		'Green halloween mask',
+		'Skeleton mask',
+		'Skeleton shirt',
+		'Skeleton leggings',
+		'Skeleton gloves',
+		'Skeleton boots'
+	]),
+	Christmas: resolveItems([
+		'Santa mask',
+		'Santa jacket',
+		'Santa pantaloons',
+		'Santa gloves',
+		'Santa boots',
+		'Sack of presents',
+		'Christmas cracker',
+		'Santa hat'
+	])
 };
-export const diangoCollectionLog = {
+
+export const diangoCollectionLog: CollectionLogData = {
 	Common: resolveItems([
 		'Event rpg',
 		'Green banner',
@@ -1164,8 +1281,9 @@ export const diangoCollectionLog = {
 	]),
 	Other: resolveItems(['Mystery box', 'Stale baguette'])
 };
-export const capes = {
-	hoods: resolveItems([
+
+export const capes: CollectionLogData = {
+	hoods1: resolveItems([
 		'Mining hood',
 		'Smithing hood',
 		'Woodcutting hood',
@@ -1177,7 +1295,7 @@ export const capes = {
 		'Prayer hood',
 		'Fletching hood',
 		'Runecraft hood',
-		'Quest point hood'
+		'Thieving hood'
 	]),
 	capes: resolveItems([
 		'Mining cape',
@@ -1191,7 +1309,7 @@ export const capes = {
 		'Prayer cape',
 		'Fletching cape',
 		'Runecraft cape',
-		'Quest point cape'
+		'Thieving cape'
 	]),
 	'trimmed capes': resolveItems([
 		'Mining cape(t)',
@@ -1205,10 +1323,14 @@ export const capes = {
 		'Prayer cape(t)',
 		'Fletching cape(t)',
 		'Runecraft cape(t)',
-		'Quest point cape (t)'
-	])
+		'Thieving cape(t)'
+	]),
+	hoods2: resolveItems(['Farming hood', 'Herblore hood', 'Quest point hood']),
+	capes2: resolveItems(['Farming cape', 'Herblore cape', 'Quest point cape']),
+	'trimmed capes2': resolveItems(['Farming cape(t)', 'Herblore cape(t)', 'Quest point cape (t)'])
 };
-export const quest = {
+
+export const quest: CollectionLogData = {
 	various: resolveItems([
 		'Quest point hood',
 		'Quest point cape',
@@ -1232,41 +1354,11 @@ export const quest = {
 	])
 };
 
-export const wintertodt = {
-	'': resolveItems([
-		'Phoenix',
-		'Pyromancer hood',
-		'Pyromancer garb',
-		'Pyromancer robe',
-		'Pyromancer boots',
-		'Warm gloves',
-		'Bruma torch',
-		'Burnt page',
-		'Tome of fire',
-		'Dragon axe'
-	])
+export const wintertodt: CollectionLogData = {
+	'': wintertodtLog
 };
 
-export const skillingLog = {
-	Mining: resolveItems([
-		'Prospector helmet',
-		'Prospector jacket',
-		'Prospector legs',
-		'Prospector boots',
-		'Mining gloves',
-		'Superior mining gloves',
-		'Expert mining gloves',
-		'Golden nugget',
-		'Unidentified minerals',
-		'Rock golem'
-	]),
-	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
-	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
-	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
-	Firemaking: Object.values(wintertodt).flat(Infinity)
-};
-
-export const coxLog = {
+export const coxLog: CollectionLogData = {
 	Misc: resolveItems([
 		'Dexterous prayer scroll',
 		'Torn prayer scroll',
@@ -1299,7 +1391,7 @@ export const coxLog = {
 	])
 };
 
-export const miscLog = {
+export const miscLog: CollectionLogData = {
 	'God Books': resolveItems([
 		'Holy book',
 		'Unholy book',
@@ -1311,7 +1403,7 @@ export const miscLog = {
 	Tzhaar: resolveItems(['Fire cape'])
 };
 
-export const sepulchreLog = {
+export const sepulchreLog: CollectionLogData = {
 	Misc: resolveItems([
 		'Hallowed mark',
 		'Hallowed token',
@@ -1325,7 +1417,7 @@ export const sepulchreLog = {
 		'Dark dye',
 		'Dark acorn',
 		'Strange old lockpick',
-		'Ring of endurance'
+		'Ring of endurance (uncharged)'
 	]),
 	Graceful: resolveItems([
 		'Dark graceful hood',
@@ -1336,6 +1428,52 @@ export const sepulchreLog = {
 		'Dark graceful cape'
 	]),
 	Pets: resolveItems(['Giant squirrel', 'Dark squirrel'])
+};
+
+export const skillingLog: CollectionLogData = {
+	Mining: resolveItems([
+		'Prospector helmet',
+		'Prospector jacket',
+		'Prospector legs',
+		'Prospector boots',
+		'Mining gloves',
+		'Superior mining gloves',
+		'Expert mining gloves',
+		'Golden nugget',
+		'Unidentified minerals',
+		'Rock golem'
+	]),
+	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
+	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
+	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
+	Firemaking: wintertodtLog,
+	Sepulchre1: resolveItems([
+		'Hallowed mark',
+		'Hallowed token',
+		'Hallowed grapple',
+		'Hallowed focus',
+		'Hallowed symbol',
+		'Hallowed hammer',
+		'Hallowed ring',
+		'Dark dye',
+		'Dark acorn',
+		'Strange old lockpick',
+		'Ring of endurance (uncharged)'
+	]),
+	Sepulchre2: resolveItems([
+		'Dark graceful hood',
+		'Dark graceful top',
+		'Dark graceful legs',
+		'Dark graceful boots',
+		'Dark graceful gloves',
+		'Dark graceful cape',
+		'Dark squirrel'
+	]),
+	Angler: anglerOutfit,
+	Farmer: farmersOutfit,
+	Zalcano: zalcanoLog,
+	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
+	AgilityArena: agilityArenaLog
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1354,13 +1492,21 @@ export const allCollectionLogItems = removeDuplicatesFromArray(
 		...Object.values(nightmareLog),
 		...Object.values(sepulchreLog)
 	].flat(Infinity)
-);
+) as number[];
 
-export const collectionLogTypes = [
+export type CollectionLogData = Record<string, number[]>;
+
+export interface CollectionLogType {
+	name: string;
+	aliases: string[];
+	items: CollectionLogData;
+}
+
+export const collectionLogTypes: CollectionLogType[] = [
 	{
 		name: 'Overall',
 		aliases: ['all', 'overall'],
-		items: allCollectionLogItems
+		items: { '': allCollectionLogItems }
 	},
 	{
 		name: 'Boss',
@@ -1420,7 +1566,7 @@ export const collectionLogTypes = [
 	{
 		name: 'Champion scroll',
 		aliases: ['champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
-		items: championScrolls
+		items: championScrollLog
 	},
 	{
 		name: 'Holiday',
@@ -1471,5 +1617,30 @@ export const collectionLogTypes = [
 		name: 'Hallowed Sepulchre',
 		aliases: ['sepulchre', 'hallowed sepulchre'],
 		items: sepulchreLog
+	},
+	{
+		name: 'Fishing Trawler',
+		aliases: ['trawler', 'ft', 'fishing trawler'],
+		items: fishingTrawler
+	},
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		items: { 1: zalcanoLog }
+	},
+	{
+		name: 'Barrows',
+		aliases: ['barrows'],
+		items: barrows
+	},
+	{
+		name: 'Barbarian Assault',
+		aliases: ['ba', 'barb assault', 'barbarian assault'],
+		items: { 1: barbAssaultLog }
+	},
+	{
+		name: 'Agility Arena',
+		aliases: ['aa', 'agility arena'],
+		items: { 1: agilityArenaLog }
 	}
 ];

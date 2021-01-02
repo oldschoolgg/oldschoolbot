@@ -6,6 +6,7 @@ import { PerkTier } from '../../lib/constants';
 import backgroundImages from '../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ItemBank } from '../../lib/types';
+import PostgresProvider from '../../providers/postgres';
 
 type BankQueryResult = { bankBackground: number; count: string }[];
 
@@ -17,14 +18,24 @@ export default class extends BotCommand {
 			subcommands: true,
 			usage: '<servers|minions|ironmen|sacrificed|bankbg|monsters|clues|icons>',
 			oneAtTime: true,
-			cooldown: 60
+			cooldown: 60,
+			description: 'Allows you to see various statistics about the bot.',
+			examples: [
+				'+bstats servers',
+				'+bstats minions',
+				'+bstats ironmen',
+				'+bstats sacrificed',
+				'+bstats bankbg',
+				'+bstats monsters',
+				'+bstats clues',
+				'+bstats icons'
+			],
+			categoryFlags: ['patron', 'utility']
 		});
 	}
 
 	async _query(str: string): Promise<any> {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		return this.client.providers.default.runAll(str);
+		return (this.client.providers.default as PostgresProvider).runAll(str);
 	}
 
 	async servers(msg: KlasaMessage) {
@@ -41,11 +52,11 @@ export default class extends BotCommand {
 
 	async icons(msg: KlasaMessage) {
 		const result: { icon: string | null; qty: number }[] = await this._query(
-			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users group by "minion.icon" order by qty asc;`
+			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;`
 		);
 		return msg.send(
 			`**Current minion tiers and their number of users:**\n${Object.values(result)
-				.map(row => `${row.icon ?? '<:minion:759120536860229732>'} : ${row.qty}`)
+				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
 				.join('\n')}`
 		);
 	}

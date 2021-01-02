@@ -10,13 +10,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({
-		runeID,
-		essenceQuantity,
-		userID,
-		channelID,
-		duration
-	}: RunecraftActivityTaskOptions) {
+	async run(data: RunecraftActivityTaskOptions) {
+		const { runeID, essenceQuantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Runecraft);

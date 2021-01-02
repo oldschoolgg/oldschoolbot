@@ -16,7 +16,10 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 10,
 			aliases: ['cl'],
-			usage: '[type:string]'
+			usage: '[type:string]',
+			examples: ['+cl boss'],
+			description: 'Allows you to view your collection log, which works the same as ingame.',
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -31,23 +34,25 @@ export default class extends BotCommand {
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
 
-		if (!type && (!monster || !monster.uniques)) {
-			throw `That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
-				.map(type => type.name)
-				.join(', ')}`;
+		if (!type && !monster) {
+			return msg.send(
+				`That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
+					.map(type => type.name)
+					.join(', ')}`
+			);
 		}
 
-		let items = Array.from(new Set(Object.values(type?.items ?? monster!.uniques!).flat(100)));
+		const items = Array.from(
+			new Set(Object.values(type?.items ?? Monsters.get(monster!.id)!.allItems!).flat(100))
+		) as number[];
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
+		let i = 0;
 		if (monster) {
-			if (msg.flagArgs.all) {
-				items = Monsters.get(monster.id)?.allItems!;
-			}
 			for (const itemChunk of chunk(items, 12)) {
-				chunkedMonsterItems[itemChunk[0]] = itemChunk;
+				chunkedMonsterItems[++i] = itemChunk;
 			}
 		}
 

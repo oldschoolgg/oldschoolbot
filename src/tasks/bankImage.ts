@@ -2,7 +2,7 @@ import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Util } from 'oldschooljs';
+import { Items, Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -15,7 +15,6 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
-	canvasImageFromBuffer,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	itemNameFromID,
@@ -23,17 +22,18 @@ import {
 	saveCtx,
 	stringMatches
 } from '../lib/util';
+import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
 import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import filterByCategory from '../lib/util/filterByCategory';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 
-registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
-registerFont('./resources/osrs-font-compact.otf', { family: 'Regular' });
-registerFont('./resources/osrs-font-bold.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 
-const bankImageFile = fs.readFileSync('./resources/images/bank_backgrounds/1.jpg');
-const bankRepeaterFile = fs.readFileSync('./resources/images/bank_backgrounds/r1.jpg');
+const bankImageFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/1.jpg');
+const bankRepeaterFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/r1.jpg');
 
 const CACHE_DIR = './icon_cache';
 const spacer = 12;
@@ -75,24 +75,28 @@ export default class BankImageTask extends Task {
 			backgroundImages.map(async img => ({
 				...img,
 				image: await canvasImageFromBuffer(
-					fs.readFileSync(`./resources/images/bank_backgrounds/${img.id}.jpg`)
+					fs.readFileSync(`./src/lib/resources/images/bank_backgrounds/${img.id}.jpg`)
 				),
-				repeatImage: fs.existsSync(`./resources/images/bank_backgrounds/r${img.id}.jpg`)
+				repeatImage: fs.existsSync(
+					`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`
+				)
 					? await canvasImageFromBuffer(
-							fs.readFileSync(`./resources/images/bank_backgrounds/r${img.id}.jpg`)
+							fs.readFileSync(
+								`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`
+							)
 					  )
 					: null
 			}))
 		);
 
 		this.borderCorner = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_c.png')
+			fs.readFileSync('./src/lib/resources/images/bank_border_c.png')
 		);
 		this.borderHorizontal = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_h.png')
+			fs.readFileSync('./src/lib/resources/images/bank_border_h.png')
 		);
 		this.borderVertical = await canvasImageFromBuffer(
-			fs.readFileSync('./resources/images/bank_border_v.png')
+			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
 	}
 
@@ -109,13 +113,22 @@ export default class BankImageTask extends Task {
 		}
 	}
 
-	async getItemImage(itemID: number): Promise<Image> {
+	async getItemImage(itemID: number, quantity: number): Promise<Image> {
 		const isOnDisk = this.itemIconsList.has(itemID);
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 
+		const item = Items.get(itemID);
+		if (item?.stackedVariants) {
+			for (const variant of item.stackedVariants) {
+				if (quantity >= variant.qty) {
+					return this.getItemImage(variant.id, quantity);
+				}
+			}
+		}
+
 		if (!isOnDisk) {
 			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID);
+			return this.getItemImage(itemID, quantity);
 		}
 
 		if (!cachedImage) {
@@ -123,7 +136,7 @@ export default class BankImageTask extends Task {
 			const image = await canvasImageFromBuffer(imageBuffer);
 
 			this.itemIconImagesCache.set(itemID, image);
-			return this.getItemImage(itemID);
+			return this.getItemImage(itemID, quantity);
 		}
 
 		return cachedImage;
@@ -131,7 +144,7 @@ export default class BankImageTask extends Task {
 
 	async fetchAndCacheImage(itemID: number) {
 		const imageBuffer = await fetch(
-			`https://static.runelite.net/cache/item/icon/${itemID}.png`
+			`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`
 		).then(result => result.buffer());
 
 		await fs.promises.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
@@ -146,30 +159,30 @@ export default class BankImageTask extends Task {
 		const ctx = canvas.getContext('2d');
 		// Draw top border
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal!.height);
 
 		// Draw bottom border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
 		ctx.translate(0, canvas.height);
 		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+		ctx.fillRect(0, 0, canvas.width, this.borderHorizontal!.height);
 		ctx.restore();
 
 		// Draw title line
 		if (titleLine) {
 			ctx.save();
 			ctx.fillStyle = ctx.createPattern(this.borderHorizontal, 'repeat-x');
-			ctx.translate(this.borderVertical?.width!, 27);
-			ctx.fillRect(0, 0, canvas.width, this.borderHorizontal?.height!);
+			ctx.translate(this.borderVertical!.width, 27);
+			ctx.fillRect(0, 0, canvas.width, this.borderHorizontal!.height);
 			ctx.restore();
 		}
 
 		// Draw left border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(this.borderVertical, 'repeat-y');
-		ctx.translate(0, this.borderVertical?.width!);
-		ctx.fillRect(0, 0, this.borderVertical?.width!, canvas.height);
+		ctx.translate(0, this.borderVertical!.width);
+		ctx.fillRect(0, 0, this.borderVertical!.width, canvas.height);
 		ctx.restore();
 
 		// Draw right border
@@ -177,7 +190,7 @@ export default class BankImageTask extends Task {
 		ctx.save();
 		ctx.translate(canvas.width, 0);
 		ctx.scale(-1, 1);
-		ctx.fillRect(0, 0, this.borderVertical?.width!, canvas.height);
+		ctx.fillRect(0, 0, this.borderVertical!.width, canvas.height);
 		ctx.restore();
 
 		// Draw corner borders
@@ -285,10 +298,10 @@ export default class BankImageTask extends Task {
 		}
 
 		let width = wide
-			? 5 + this.borderVertical?.width! + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
+			? 5 + this.borderVertical!.width + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
 			: 488;
 		if (width < 488) width = 488;
-		const itemsPerRow = Math.floor((width - this.borderVertical?.width! * 2) / (36 + 20));
+		const itemsPerRow = Math.floor((width - this.borderVertical!.width * 2) / (36 + 21));
 		const canvasHeight =
 			Math.floor(
 				Math.floor(
@@ -311,8 +324,8 @@ export default class BankImageTask extends Task {
 			bgImage!.image,
 			0,
 			0,
-			wide ? canvas.width : bgImage!.image?.width!,
-			wide ? canvas.height : bgImage!.image?.height!
+			wide ? canvas.width : bgImage.image!.width!,
+			wide ? canvas.height : bgImage.image!.height!
 		);
 
 		// Skips border if noBorder is set
@@ -346,9 +359,9 @@ export default class BankImageTask extends Task {
 			// Adds the border width
 			// Adds distance from side
 			// 36 + 21 is the itemLength + the space between each item
-			xLoc = 2 + this.borderVertical?.width! + 20 + (i % itemsPerRow) * (36 + 21);
+			xLoc = 2 + this.borderVertical!.width + 20 + (i % itemsPerRow) * (36 + 21);
 			const [id, quantity, value] = items[i];
-			const item = await this.getItemImage(id);
+			const item = await this.getItemImage(id, quantity);
 			if (!item) {
 				this.client.emit(Events.Warn, `Item with ID[${id}] has no item image.`);
 				continue;
@@ -356,7 +369,7 @@ export default class BankImageTask extends Task {
 
 			ctx.drawImage(
 				item,
-				Math.floor(xLoc + (itemSize - item.width) / 2),
+				Math.floor(xLoc + (itemSize - item.width) / 2) + 2,
 				Math.floor(yLoc + (itemSize - item.height) / 2),
 				item.width,
 				item.height
@@ -391,9 +404,7 @@ export default class BankImageTask extends Task {
 
 			// Check for names flag and draw its shadow and name
 			if (flags.names) {
-				const __name = `${itemNameFromID(id)!
-					.replace('Grimy', 'Grmy')
-					.slice(0, 7)}..`;
+				const __name = `${itemNameFromID(id)!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
 				ctx.fillStyle = 'black';
 				fillTextXTimesInCtx(
 					ctx,
@@ -478,7 +489,7 @@ export default class BankImageTask extends Task {
 			quantity: number,
 			completed: boolean
 		) => {
-			const item = await this.getItemImage(itemID);
+			const item = await this.getItemImage(itemID, 100_000);
 			if (!item) return;
 
 			x += (32 - item.width) / 2;

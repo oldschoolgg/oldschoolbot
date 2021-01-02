@@ -21,7 +21,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
-			aliases: ['tks']
+			aliases: ['tks'],
+			categoryFlags: ['minion'],
+			description: 'Allows you to buy and sell items to the Tzhaar Tokkul shop.',
+			examples: ['+tks buy Obsidian platebody', '+tks sell 5k Chaos rune']
 		});
 	}
 
@@ -72,10 +75,10 @@ export default class extends BotCommand {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
 
-		let outItems: ItemBank;
-		let inItems: ItemBank;
-		let itemString: string;
-		let inItemString: string;
+		let outItems: ItemBank = {};
+		let inItems: ItemBank = {};
+		let itemString: string = '';
+		let inItemString: string = '';
 		if (type === 'buy') {
 			outItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulCost! };
 			inItems = { [shopInventory.inputItem]: quantity };

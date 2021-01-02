@@ -1,44 +1,39 @@
-import { Client } from 'discord.js';
+import { Client } from 'klasa';
 
-import { Activity, Tasks } from '../constants';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { OldSchoolBotClient } from '../structures/OldSchoolBotClient';
 import { ActivityTaskOptions } from '../types/minions';
 import { uuid } from '../util';
+import getActivityOfUser from './getActivityOfUser';
 
 export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 	client: Client,
-	taskName: Tasks,
 	subTaskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
-	const task = client.schedule.tasks.find(_task => _task.taskName === taskName);
-
-	if (!task) throw `Missing activity task: ${taskName}.`;
-	if (
-		task.data.subTasks.some((subTask: ActivityTaskOptions) => {
-			if (subTask.userID === subTaskToAdd.userID) return true;
-			if (
-				subTask.type === Activity.GroupMonsterKilling &&
-				(subTask as GroupMonsterActivityTaskOptions).users.includes(subTaskToAdd.userID)
-			) {
-				return true;
-			}
-		})
-	) {
+	const usersTask = getActivityOfUser(client, subTaskToAdd.userID);
+	if (usersTask) {
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 
+	const finishDate = Date.now() + subTaskToAdd.duration;
 	const newSubtask: ActivityTaskOptions = {
 		...subTaskToAdd,
-		finishDate: Date.now() + subTaskToAdd.duration,
+		finishDate,
 		id: uuid()
 	};
 
-	return task.update({
-		data: {
-			...task.data,
-			subTasks: [...task.data.subTasks, newSubtask].sort(
-				(a, b) => a.finishDate - b.finishDate
-			)
+	if ('users' in newSubtask) {
+		for (const user of (newSubtask as GroupMonsterActivityTaskOptions).users) {
+			(client as OldSchoolBotClient).minionActivityCache.set(user, newSubtask);
 		}
-	});
+	} else {
+		(client as OldSchoolBotClient).minionActivityCache.set(newSubtask.userID, newSubtask);
+	}
+
+	return (client as OldSchoolBotClient).boss.publishAfter(
+		'minionActivity',
+		newSubtask,
+		{},
+		new Date(finishDate)
+	);
 }

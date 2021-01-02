@@ -7,7 +7,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { GearTypes } from '..';
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { canvasImageFromBuffer } from '../../util';
+import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
 import { drawItemQuantityText } from '../../util/drawItemQuantityText';
 import { drawTitleText } from '../../util/drawTitleText';
 import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
@@ -15,7 +15,7 @@ import { maxDefenceStats, maxOffenceStats } from '../data/maxGearStats';
 import readableGearTypeName from './readableGearTypeName';
 import { sumOfSetupStats } from './sumOfSetupStats';
 
-const gearTemplateFile = fs.readFileSync('./resources/images/gear_template.png');
+const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -78,7 +78,7 @@ export async function generateGearImage(
 	}
 
 	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-	const userBg = bankTask?.backgroundImages.find(i => i.id === userBgID)?.image;
+	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
 
 	const gearStats = sumOfSetupStats(gearSetup);
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
@@ -88,8 +88,8 @@ export async function generateGearImage(
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.drawImage(
 		userBg,
-		(canvas.width - userBg?.width!) * 0.5,
-		(canvas.height - userBg?.height!) * 0.5
+		(canvas.width - userBg.width) * 0.5,
+		(canvas.height - userBg.height) * 0.5
 	);
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 	bankTask?.drawBorder(canvas, false);
@@ -142,7 +142,7 @@ export async function generateGearImage(
 	);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask.borderVertical?.width! * 2, 0);
+	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Defence bonus`, 0, 25);
@@ -195,7 +195,7 @@ export async function generateGearImage(
 	// drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask?.borderVertical?.width! * 2, 0);
+	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
 	ctx.font = '16px OSRSFontCompact';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
@@ -205,7 +205,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await client.tasks.get('bankImage')!.getItemImage(petID);
+		const image = await client.tasks.get('bankImage')!.getItemImage(petID, 1);
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
@@ -218,7 +218,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await client.tasks.get('bankImage')!.getItemImage(item.item);
+		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
 		const [x, y] = slotCoordinates[enumName];
 

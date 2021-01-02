@@ -1,9 +1,10 @@
 import { createCanvas, Image, registerFont } from 'canvas';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import * as fs from 'fs';
-import { Command, CommandStore, KlasaMessage, util } from 'klasa';
+import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Items } from 'oldschooljs';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
@@ -16,22 +17,24 @@ import {
 } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
-const bg = fs.readFileSync('./resources/images/coins.png');
+const bg = fs.readFileSync('./src/lib/resources/images/coins.png');
 const canvas = createCanvas(50, 50);
 const ctx = canvas.getContext('2d');
 
 ctx.font = '14px OSRSFont';
 
-registerFont('./resources/osrs-font.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows how much virtual GP you have',
+			description: 'Shows your bank, with all your items and GP.',
 			cooldown: 3,
 			usage: '[page:int|name:string]',
 			requiredPermissions: ['ATTACH_FILES'],
-			aliases: ['b']
+			aliases: ['b'],
+			examples: ['+b'],
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -51,8 +54,6 @@ export default class extends Command {
 		return new MessageAttachment(canvas.toBuffer(), `bank.jpg`);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-	// @ts-ignore
 	async run(msg: KlasaMessage, [pageNumberOrItemName = 1]: [number | string]) {
 		await msg.author.settings.sync(true);
 		const coins = msg.author.settings.get(UserSettings.GP);
@@ -63,17 +64,17 @@ export default class extends Command {
 		if (typeof pageNumberOrItemName === 'string') {
 			if (pageNumberOrItemName.includes(',')) {
 				const arrItemNameOrID = pageNumberOrItemName.split(',');
-				let view = {};
+				let view: ItemBank = {};
 				for (const nameOrID of arrItemNameOrID) {
 					try {
 						const item = getOSItem(nameOrID);
-						if (bank[item.id]) {
+						if (bank[item.id] && !view[item.id]) {
 							view = addItemToBank(view, item.id, bank[item.id]);
 						}
 					} catch (_) {}
 				}
 				if (Object.keys(view).length === 0) {
-					throw `You have none of those items!`;
+					return msg.send(`You have none of those items!`);
 				}
 				return msg.channel.sendBankImage({
 					bank: view,
@@ -94,7 +95,9 @@ export default class extends Command {
 		const hasItemsInBank = bankKeys.length > 0;
 
 		if (coins === 0 && !hasItemsInBank) {
-			throw `You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`;
+			return msg.send(
+				`You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`
+			);
 		}
 
 		if (msg.flagArgs.text) {
@@ -116,7 +119,6 @@ export default class extends Command {
 				);
 			}
 
-			msg.channel.assertCanManageMessages();
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 			const display = new UserRichDisplay();
 			display.setFooterPrefix(`Page `);
@@ -129,10 +131,11 @@ export default class extends Command {
 				);
 			}
 
-			return display.start(loadingMsg as KlasaMessage, msg.author.id, {
+			await display.start(loadingMsg as KlasaMessage, msg.author.id, {
 				jump: false,
 				stop: false
 			});
+			return null;
 		}
 
 		if (!hasItemsInBank) return msg.send(this.generateImage(coins));
@@ -150,7 +153,7 @@ export default class extends Command {
 		const chunkedObject = chunkObject(bank, 56);
 		const bankPage = chunkedObject[pageNumberOrItemName - 1];
 
-		if (!bankPage) throw "You don't have any items on that page!";
+		if (!bankPage) return msg.send("You don't have any items on that page!");
 
 		if (msg.flagArgs.full) {
 			return msg.channel.sendBankImage({

@@ -10,14 +10,8 @@ import itemID from '../../lib/util/itemID';
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export default class extends Task {
-	async run({
-		itemID,
-		quantity,
-		channelID,
-		alchValue,
-		userID,
-		duration
-	}: AlchingActivityTaskOptions) {
+	async run(data: AlchingActivityTaskOptions) {
+		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMinionDailyDuration(duration);
 		await user.addGP(alchValue);

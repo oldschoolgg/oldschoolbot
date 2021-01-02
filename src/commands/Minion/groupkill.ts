@@ -1,7 +1,8 @@
+import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { findMonster } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -16,13 +17,16 @@ import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[quantity:int] <monster:string>',
+			usage: '<monster:string> [quantity:int{2,50}]',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
-			aliases: ['mass']
+			aliases: ['mass'],
+			description: 'Allows you to mass/groupkill bosses with other people.',
+			examples: ['+mass corp', '+mass bandos'],
+			categoryFlags: ['minion', 'pvm']
 		});
 	}
 
@@ -49,10 +53,9 @@ export default class extends BotCommand {
 			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
 					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough food. You need at least ${monster?.healAmountNeeded! *
-					quantity} HP in food to ${
-					users.length === 1 ? 'start the mass' : 'enter the mass'
-				}.`;
+				} have enough food. You need at least ${
+					monster!.healAmountNeeded! * quantity
+				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
 			}
 		}
 	}
@@ -60,18 +63,27 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	@ironsCantUse
-	async run(msg: KlasaMessage, [inputQuantity, monsterName]: [number | undefined, string]) {
+	async run(msg: KlasaMessage, [monsterName, maximumSizeForParty]: [string, number]) {
 		const monster = findMonster(monsterName);
 		if (!monster) throw `That monster doesn't exist!`;
 		if (!monster.groupKillable) throw `This monster can't be killed in groups!`;
 
 		this.checkReqs([msg.author], monster, 2);
 
+		const maximumSize = 50;
+
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
-			maxSize: 50,
-			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
+			ironmanAllowed: false,
+			message: `${msg.author.username} is doing a ${
+				monster.name
+			} mass! Anyone can click the ${
+				Emoji.Join
+			} reaction to join, click it again to leave. The maximum size for this mass is ${
+				maximumSizeForParty ?? maximumSize
+			}.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -96,8 +108,9 @@ export default class extends BotCommand {
 					if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
 						return [
 							true,
-							`You don't have enough food. You need at least ${monster.healAmountNeeded *
-								2} HP in food to enter the mass.`
+							`You don't have enough food. You need at least ${
+								monster.healAmountNeeded * 2
+							} HP in food to enter the mass.`
 						];
 					}
 				}
@@ -108,37 +121,34 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		const [quantity, duration, perKillTime] = calcDurQty(users, monster, inputQuantity);
+		const [quantity, duration, perKillTime] = calcDurQty(users, monster, undefined);
 
 		this.checkReqs(users, monster, quantity);
 
 		if (1 > 2 && monster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
-				await removeFoodFromUser(
-					this.client,
+				await removeFoodFromUser({
+					client: this.client,
 					user,
-					Math.ceil(healAmountNeeded / users.length) * quantity,
-					Math.ceil(healAmountNeeded / quantity),
-					monster.name
-				);
+					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: monster.name,
+					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+				});
 			}
 		}
 
-		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
-			this.client,
-			Tasks.MonsterKillingTicker,
-			{
-				monsterID: monster.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.GroupMonsterKilling,
-				leader: msg.author.id,
-				users: users.map(u => u.id)
-			}
-		);
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(this.client, {
+			monsterID: monster.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.GroupMonsterKilling,
+			leader: msg.author.id,
+			users: users.map(u => u.id)
+		});
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

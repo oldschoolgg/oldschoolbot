@@ -6,13 +6,8 @@ import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({
-		smithedBarID,
-		quantity,
-		userID,
-		channelID,
-		duration
-	}: SmithingActivityTaskOptions) {
+	async run(data: SmithingActivityTaskOptions) {
+		const { smithedBarID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
@@ -25,10 +20,9 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		let str = `${user}, ${user.minionName} finished smithing ${quantity *
-			smithedItem.outputMultiple}x ${
-			smithedItem.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
+		let str = `${user}, ${user.minionName} finished smithing ${
+			quantity * smithedItem.outputMultiple
+		}x ${smithedItem.name}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;

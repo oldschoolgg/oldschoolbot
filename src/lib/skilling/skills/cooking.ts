@@ -194,6 +194,16 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Burnt monkfish')
 	},
 	{
+		level: 65,
+		xp: 200,
+		id: itemID('Wine of zamorak'),
+		name: 'Wine of zamorak',
+		inputCookables: { [itemID(`Zamorak's grapes`)]: 1, [itemID('Jug of water')]: 1 },
+		stopBurnAt: 125,
+		stopBurnAtCG: 125,
+		burntCookable: itemID('Jug of bad wine')
+	},
+	{
 		level: 80,
 		xp: 210,
 		id: itemID('Shark'),
@@ -202,6 +212,16 @@ export const Cookables: Cookable[] = [
 		stopBurnAt: 99,
 		stopBurnAtCG: 94,
 		burntCookable: itemID('Burnt shark')
+	},
+	{
+		level: 82,
+		xp: 211,
+		id: itemID('Sea turtle'),
+		name: 'Sea turtle',
+		inputCookables: { [itemID('Raw sea turtle')]: 1 },
+		stopBurnAt: 99,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt sea turtle')
 	},
 	{
 		level: 84,
@@ -239,7 +259,8 @@ const Cooking = {
 	aliases: ['cooking', 'cook'],
 	Cookables,
 	id: SkillsEnum.Cooking,
-	emoji: Emoji.Cooking
+	emoji: Emoji.Cooking,
+	name: 'Cooking'
 };
 
 export default Cooking;

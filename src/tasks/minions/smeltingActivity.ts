@@ -8,7 +8,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ barID, quantity, userID, channelID, duration }: SmeltingActivityTaskOptions) {
+	async run(data: SmeltingActivityTaskOptions) {
+		let { barID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
@@ -21,7 +22,7 @@ export default class extends Task {
 		if (bar.chanceOfFail > 0) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (randInt(0, 100) < bar.chanceOfFail) {
+				if (randInt(0, 100) > bar.chanceOfFail) {
 					newQuantity++;
 				}
 			}

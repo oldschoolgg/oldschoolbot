@@ -17,7 +17,10 @@ export default class extends BotCommand {
 			usage: '<amount:int{1,30}> [points:int{1,100000}] [names:...str]',
 			usageDelim: ' ',
 			aliases: ['cox'],
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			description: 'Simulates a Cox raid.',
+			examples: ['+cox 30 30k', '+cox 5 30k Magnaboy, Woox'],
+			categoryFlags: ['fun', 'simulation']
 		});
 	}
 
@@ -68,7 +71,8 @@ export default class extends BotCommand {
 
 		const arrayOfNames = names.split(' ');
 
-		if (arrayOfNames.length > 5) throw `You can't have more than 5 members in a raid team.`;
+		if (arrayOfNames.length > 5)
+			return msg.send(`You can't have more than 5 members in a raid team.`);
 
 		const team = arrayOfNames.map(member => ({
 			id: member,

@@ -8,8 +8,11 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
+			oneAtTime: true,
 			usage: '<name:str>',
-			aliases: ['is']
+			aliases: ['is'],
+			description: 'Debug command for identifying items',
+			examples: ['+is Dragon scimitar']
 		});
 	}
 
@@ -23,6 +26,10 @@ export default class extends BotCommand {
 		if (items.length === 0) return msg.send(`No results for that item.`);
 
 		const gettedItem = Items.get(name);
+
+		if (msg.flagArgs.raw) {
+			return msg.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
+		}
 
 		return msg.send(
 			`Found ${items.length} items:\n${(items as Item[])

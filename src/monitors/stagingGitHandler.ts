@@ -24,8 +24,8 @@ export default class extends Monitor {
 		try {
 			await util.exec('yarn');
 			await util.exec('git fetch && git pull');
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
+
+			// @ts-expect-error Running command with fake message object
 			await this.client.commands.get('reload')!.everything!({
 				sendLocale: () => null,
 				sendMessage: () => null,

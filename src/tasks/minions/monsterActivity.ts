@@ -17,6 +17,7 @@ export default class extends Task {
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		const loot = monster.table.kill(quantity);
+
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);

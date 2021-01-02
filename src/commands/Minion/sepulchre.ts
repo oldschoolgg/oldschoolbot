@@ -2,7 +2,7 @@ import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulchre';
@@ -17,7 +17,10 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion', 'skilling', 'minigame'],
+			description: 'Sends your minion to complete the Hallowed Sepulchre.',
+			examples: ['+sepulchre']
 		});
 	}
 
@@ -53,7 +56,7 @@ export default class extends BotCommand {
 			10
 		);
 
-		boosts.push(`${percentReduced.toFixed(1)}% for experience`);
+		boosts.push(`${percentReduced.toFixed(1)}% for minion learning`);
 
 		lapLength = reduceNumByPercent(lapLength, percentReduced);
 
@@ -66,18 +69,15 @@ export default class extends BotCommand {
 		const maxLaps = Math.floor(msg.author.maxTripLength / lapLength);
 		const tripLength = maxLaps * lapLength;
 
-		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				floors: completableFloors.map(fl => fl.number),
-				quantity: maxLaps,
-				userID: msg.author.id,
-				duration: tripLength,
-				type: Activity.Sepulchre,
-				channelID: msg.channel.id
-			}
-		);
+		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>(this.client, {
+			floors: completableFloors.map(fl => fl.number),
+			quantity: maxLaps,
+			userID: msg.author.id,
+			duration: tripLength,
+			type: Activity.Sepulchre,
+			channelID: msg.channel.id,
+			minigameID: MinigameIDsEnum.Sepulchre
+		});
 
 		let str = `${
 			msg.author.minionName

@@ -6,7 +6,8 @@ import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ boneID, quantity, userID, channelID, duration }: BuryingActivityTaskOptions) {
+	async run(data: BuryingActivityTaskOptions) {
+		const { boneID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 

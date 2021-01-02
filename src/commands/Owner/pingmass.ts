@@ -18,6 +18,9 @@ export default class extends BotCommand {
 		if (!msg.member.roles.has('734055552933429280') && !msg.member.roles.has(Roles.Moderator)) {
 			return;
 		}
+		if (msg.channel.id === '789717054902763520') {
+			return msg.send(`<@&789724904885846016>`);
+		}
 		return msg.send('<@&711215501543473182>');
 	}
 }

@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Message, MessageReaction } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
-import { debounce } from 'lodash';
+import { debounce } from 'ts-debounce';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
@@ -53,7 +53,7 @@ async function _setup(
 				confirmMessage,
 				(reaction: MessageReaction, user: KlasaUser) => {
 					if (
-						user.isIronman ||
+						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
 						user.minionIsBusy ||
 						!reaction.emoji.id ||
@@ -120,15 +120,15 @@ async function _setup(
 							return;
 						}
 
-						// +1 because of leader
-						if (usersWhoConfirmed.length >= options.maxSize + 1) {
+						// Add the user
+						usersWhoConfirmed.push(user);
+						updateUsersIn();
+
+						if (usersWhoConfirmed.length >= options.maxSize) {
 							collector.stop('everyoneJoin');
 							break;
 						}
 
-						// Add the user
-						usersWhoConfirmed.push(user);
-						updateUsersIn();
 						break;
 					}
 
@@ -156,7 +156,7 @@ async function _setup(
 
 			collector.once('end', () => {
 				confirmMessage.removeAllReactions();
-				startTrip();
+				setTimeout(() => startTrip(), 750);
 			});
 		});
 

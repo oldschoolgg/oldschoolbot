@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -21,6 +21,11 @@ const axes = [
 	{
 		id: itemID('3rd age axe'),
 		reductionPercent: 13,
+		wcLvl: 61
+	},
+	{
+		id: itemID('Crystal axe'),
+		reductionPercent: 12,
 		wcLvl: 61
 	},
 	{
@@ -47,7 +52,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			description: 'Sends your minion to chop logs.',
+			examples: ['+chop 100 logs', '+chop magic logs'],
+			categoryFlags: ['skilling', 'minion']
 		});
 	}
 
@@ -72,7 +80,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) < log.level) {
-			throw `${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
+			return msg.send(
+				`${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`
+			);
 		}
 
 		const QP = msg.author.settings.get(UserSettings.QP);
@@ -119,18 +129,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				logID: log.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Woodcutting
-			}
-		);
+		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>(this.client, {
+			logID: log.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Woodcutting
+		});
 
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${
 			log.name

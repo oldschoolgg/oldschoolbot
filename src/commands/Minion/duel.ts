@@ -7,6 +7,7 @@ import { Emoji, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { noOp, sleep } from '../../lib/util';
+import BankCommand from './bank';
 
 const options = {
 	max: 1,
@@ -17,13 +18,16 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Simulates dueling another player.',
+			description:
+				'Simulates dueling another player, or allows you to duel another player for their bot GP.',
 			usage: '<user:user|user:str> [amount:int{10000}]',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
-			ironCantUse: true
+			ironCantUse: true,
+			examples: ['+duel @Magnaboy', '+duel @Magnaboy 1m'],
+			categoryFlags: ['minion', 'utility']
 		});
 	}
 
@@ -41,12 +45,12 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.isIronman) throw `You can't duel someone as an ironman.`;
-		if (user.isIronman) throw `You can't duel someone as an ironman.`;
-		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
-		if (user.id === msg.author.id) throw `You cant duel yourself.`;
-		if (user.bot) throw `You cant duel a bot.`;
-		if (user.isBusy) throw `That user is busy right now.`;
+		if (msg.author.isIronman) return msg.send(`You can't duel someone as an ironman.`);
+		if (user.isIronman) return msg.send(`You can't duel someone as an ironman.`);
+		if (!(user instanceof User)) return msg.send(`You didn't mention a user to duel.`);
+		if (user.id === msg.author.id) return msg.send(`You cant duel yourself.`);
+		if (user.bot) return msg.send(`You cant duel a bot.`);
+		if (user.isBusy) return msg.send(`That user is busy right now.`);
 
 		user.toggleBusy(true);
 		msg.author.toggleBusy(true);
@@ -64,7 +68,7 @@ export default class extends BotCommand {
 		}
 
 		if (!(await this.checkBal(user, amount))) {
-			return msg.send('That person doesnt have enough GP to duel that much.');
+			return msg.send("That person doesn't have enough GP to duel that much.");
 		}
 
 		const duelMsg = await msg.channel.send(
@@ -129,9 +133,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
+		const gpImage = (this.client.commands.get('bank') as BankCommand).generateImage(
+			winningAmount
+		);
+
 		return msg.channel.send(
 			`Congratulations ${winner.username}! You won ${Util.toKMB(
 				winningAmount

@@ -1,16 +1,19 @@
 import { Util } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BotCommand } from '../../lib/BotCommand';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Allows you to create, remove or show tags.',
+			examples: ['+tag add test Hello', `+test`],
 			runIn: ['text'],
 			subcommands: true,
 			usage: '<add|remove|source|list|show:default> (tag:string) [content:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['utility']
 		});
 		this.createCustomResolver('string', (arg, possible, message, [action]) => {
 			if (action === 'list') {
@@ -23,7 +26,7 @@ export default class extends Command {
 	async add(message: KlasaMessage, [tag, content]: [string, string]) {
 		const isStaff = await message.hasAtLeastPermissionLevel(6);
 		if (!message.member || !isStaff) {
-			throw `You must be a staff of this server to add tags.`;
+			return message.send(`You must be a staff of this server to add tags.`);
 		}
 
 		if (!content || content.length === 0) {

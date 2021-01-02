@@ -10,7 +10,10 @@ export default class extends BotCommand {
 			aliases: ['sbank'],
 			perkTier: PerkTier.Two,
 			oneAtTime: true,
-			cooldown: 60 * 10
+			cooldown: 60 * 10,
+			description: 'Shows a huge bank containing all items ever sacrificed.',
+			examples: ['+sbank'],
+			categoryFlags: ['patron', 'minion']
 		});
 	}
 

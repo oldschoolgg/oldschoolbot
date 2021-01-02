@@ -15,7 +15,10 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '(item:...item)'
+			usage: '(item:...item)',
+			description: 'Equips a pet, like dropping it on the floor ingame.',
+			examples: ['+equippet smolcano'],
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -24,7 +27,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {
-			throw `That's not a pet, or you do not own this pet.`;
+			return msg.send(`That's not a pet, or you do not own this pet.`);
 		}
 
 		const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);

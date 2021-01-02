@@ -7,7 +7,8 @@ import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ boneID, quantity, userID, channelID, duration }: OfferingActivityTaskOptions) {
+	async run(data: OfferingActivityTaskOptions) {
+		const { boneID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);

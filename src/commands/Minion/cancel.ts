@@ -1,11 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
-import { tickerTaskFromActivity } from '../../lib/minions/functions/tickerTaskFromActivity';
+import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import removeSubTasksFromActivityTask from '../../lib/util/removeSubTasksFromActivityTask';
 import { NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 const options = {
@@ -18,34 +17,43 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			oneAtTime: true,
-			cooldown: 180
+			cooldown: 180,
+			examples: ['+cancel'],
+			description: 'Cancels your minions current task.',
+			categoryFlags: ['minion']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const currentTask = getActivityOfUser(this.client, msg.author);
+		const currentTask = getActivityOfUser(this.client, msg.author.id);
 
 		if (!currentTask) {
-			throw `${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`;
-		}
-
-		if (currentTask.finishDate - Date.now() < Time.Minute * 1.5) {
-			throw `${msg.author.minionName} is already on their way back from the trip, returning in around a minute, no point in cancelling now!`;
+			return msg.send(
+				`${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`
+			);
 		}
 
 		if (currentTask.type === Activity.GroupMonsterKilling) {
-			throw `${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`;
+			return msg.send(
+				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
+			);
 		}
 
 		if (currentTask.type === Activity.Nightmare) {
 			const data = currentTask as NightmareActivityTaskOptions;
 			if (data.users.length > 1) {
-				throw `${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`;
+				return msg.send(
+					`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
+				);
 			}
 		}
 
-		const taskTicker = tickerTaskFromActivity(currentTask.type);
+		if (currentTask.type === Activity.BarbarianAssault) {
+			return msg.send(
+				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`
+			);
+		}
 
 		const cancelMsg = await msg.channel.send(
 			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
@@ -62,7 +70,7 @@ export default class extends BotCommand {
 			return cancelMsg.edit(`Halting cancellation of minion task.`);
 		}
 
-		await removeSubTasksFromActivityTask(this.client, taskTicker, [currentTask.id]);
+		await (this.client as OldSchoolBotClient).cancelTask(msg.author.id);
 
 		return msg.send(
 			`${msg.author.minionName}'s trip was cancelled, and they're now available.`

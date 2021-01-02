@@ -13,7 +13,10 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 60
+			cooldown: 5,
+			categoryFlags: ['minion'],
+			examples: ['+capegamble'],
+			description: 'Allows you to gamble fire capes for a chance at the jad pet.'
 		});
 	}
 
@@ -21,7 +24,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const capesOwned = await msg.author.numberOfItemInBank(itemID('Fire cape'), true);
 
-		if (capesOwned < 1) throw `You have no Fire capes to gamble!`;
+		if (capesOwned < 1) return msg.send(`You have no Fire capes to gamble!`);
 
 		const sellMsg = await msg.channel.send(
 			`Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say \`confirm\` to confirm.`

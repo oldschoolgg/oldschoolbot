@@ -16,8 +16,10 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['emoteservers'],
-			description: 'Shows all the emote servers that the bot uses.',
-			requiredPermissions: ['EMBED_LINKS']
+			description: 'Shows the invites to all the OSRS Emoji discord servers.',
+			examples: ['+emotes'],
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

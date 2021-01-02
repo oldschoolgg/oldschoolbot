@@ -42,9 +42,35 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.Herblore:
+			return Tasks.HerbloreActivity;
 		case Activity.Nightmare:
 			return Tasks.NightmareActivity;
+		case Activity.AnimatedArmour:
+			return Tasks.AnimatedArmourActivity;
+		case Activity.Cyclops:
+			return Tasks.CyclopsActivity;
+		case Activity.Sawmill:
+			return Tasks.SawmillActivity;
 		case Activity.Sepulchre:
 			return Tasks.SepulchreActivity;
+		case Activity.Plunder:
+			return Tasks.PlunderActivity;
+		case Activity.FishingTrawler:
+			return Tasks.FishingTrawler;
+		case Activity.Zalcano:
+			return Tasks.ZalcanoActivity;
+		case Activity.Pickpocket:
+			return Tasks.PickpocketActivity;
+		case Activity.Farming:
+			return Tasks.FarmingActivity;
+		case Activity.TitheFarm:
+			return Tasks.TitheFarmActivity;
+		case Activity.BarbarianAssault:
+			return Tasks.BarbarianAssault;
+		case Activity.AgilityArena:
+			return Tasks.AgilityArena;
+		case Activity.ChampionsChallenge:
+			return Tasks.ChampionsChallenge;
 	}
 }

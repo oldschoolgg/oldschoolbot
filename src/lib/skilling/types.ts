@@ -129,6 +129,7 @@ export interface Craftable {
 	xp: number;
 	inputItems: ItemBank;
 	tickRate: number;
+	crushChance?: number[];
 }
 
 export interface Fletchable {
@@ -139,6 +140,21 @@ export interface Fletchable {
 	inputItems: ItemBank;
 	tickRate: number;
 	outputMultiple?: number;
+}
+
+export interface Mixable {
+	name: string;
+	aliases: string[];
+	id: number;
+	level: number;
+	xp: number;
+	inputItems: ItemBank;
+	tickRate: number;
+	bankTimePerPotion: number;
+	outputMultiple?: number;
+	zahur?: boolean;
+	wesley?: boolean;
+	qpRequired?: number;
 }
 
 export interface Bone {
@@ -158,4 +174,50 @@ export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
 	emoji: Emoji;
+	name: string;
+}
+
+export interface Plankable {
+	name: string;
+	inputItem: number;
+	outputItem: number;
+	gpCost: number;
+}
+
+export interface Plant {
+	level: number;
+	plantXp: number;
+	checkXp: number;
+	harvestXp: number;
+	name: string;
+	inputItems: ItemBank;
+	aliases: string[];
+	outputCrop?: number;
+	outputLogs?: number;
+	outputRoots?: number;
+	treeWoodcuttingLevel?: number;
+	fixedOutputAmount?: number;
+	variableYield?: boolean;
+	variableOutputAmount?: [string | null, number, number][];
+	woodcuttingXp?: number;
+	needsChopForHarvest: boolean;
+	fixedOutput: boolean;
+	givesLogs: boolean;
+	givesCrops: boolean;
+	petChance: number;
+	seedType: string;
+	growthTime: number;
+	numOfStages: number;
+	chance1: number;
+	chance99: number;
+	chanceOfDeath: number;
+	protectionPayment?: ItemBank;
+	defaultNumOfPatches: number;
+	canPayFarmer: boolean;
+	canCompostPatch: boolean;
+	canCompostandPay: boolean;
+	additionalPatchesByQP: number[][];
+	additionalPatchesByFarmLvl: number[][];
+	timePerPatchTravel: number;
+	timePerHarvest: number;
 }

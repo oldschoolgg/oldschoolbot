@@ -18,7 +18,15 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<melee|mage|range|skilling|misc> [quantity:integer{1}] (item:...item)',
-			usageDelim: ' '
+			usageDelim: ' ',
+			description:
+				'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
+			examples: [
+				'+equip skilling graceful hood',
+				'+equip melee bandos godsword',
+				'+equip mage staff of fire'
+			],
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -28,7 +36,9 @@ export default class extends BotCommand {
 		[gearType, quantity = 1, itemArray]: [GearTypes.GearSetupTypes, number, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			throw `${msg.author.minionName} is currently out on a trip, so you can't change their gear!`;
+			return msg.send(
+				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
+			);
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 
@@ -38,7 +48,7 @@ export default class extends BotCommand {
 		);
 
 		if (!itemToEquip) {
-			throw `You don't have enough of this item to equip, or its not equippable.`;
+			return msg.send(`You don't have enough of this item to equip, or its not equippable.`);
 		}
 
 		const { slot } = itemToEquip.equipment!;
@@ -51,18 +61,24 @@ export default class extends BotCommand {
 			slot === EquipmentSlot.TwoHanded &&
 			(currentEquippedGear[EquipmentSlot.Weapon] || currentEquippedGear[EquipmentSlot.Shield])
 		) {
-			throw `You can't equip this two-handed item because you have items equipped in your weapon/shield slots.`;
+			return msg.send(
+				`You can't equip this two-handed item because you have items equipped in your weapon/shield slots.`
+			);
 		}
 
 		if (
 			[EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) &&
 			currentEquippedGear[EquipmentSlot.TwoHanded]
 		) {
-			throw `You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first.`;
+			return msg.send(
+				`You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first.`
+			);
 		}
 
 		if (!itemToEquip.stackable && quantity > 1) {
-			throw `You can't equip more than 1 of this item at once, as it isn't stackable!`;
+			return msg.send(
+				`You can't equip more than 1 of this item at once, as it isn't stackable!`
+			);
 		}
 
 		/**

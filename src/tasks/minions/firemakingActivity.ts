@@ -8,13 +8,8 @@ import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({
-		burnableID,
-		quantity,
-		userID,
-		channelID,
-		duration
-	}: FiremakingActivityTaskOptions) {
+	async run(data: FiremakingActivityTaskOptions) {
+		const { burnableID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);

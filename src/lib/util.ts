@@ -1,6 +1,5 @@
-import { Image } from 'canvas';
 import { Client, Guild } from 'discord.js';
-import { KlasaClient, ScheduledTask, util } from 'klasa';
+import { KlasaClient, KlasaUser, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -8,8 +7,11 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { Events, Tasks } from './constants';
+import { Events } from './constants';
+import hasItemEquipped from './gear/functions/hasItemEquipped';
+import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
+import itemID from './util/itemID';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -17,7 +19,8 @@ export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
-export function cleanMentions(guild: Guild | null, input: string) {
+export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
+	const at = showAt ? '@' : '';
 	return input
 		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
 		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
@@ -25,11 +28,11 @@ export function cleanMentions(guild: Guild | null, input: string) {
 				case '@':
 				case '@!': {
 					const tag = guild?.client.users.get(id);
-					return tag ? `@${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
+					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				case '@&': {
 					const role = guild?.roles.get(id);
-					return role ? `@${role.name}` : match;
+					return role ? `${at}${role.name}` : match;
 				}
 				case '#': {
 					const channel = guild?.channels.get(id);
@@ -62,16 +65,6 @@ export function formatItemStackQuantity(quantity: number) {
 	return quantity.toString();
 }
 
-export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return new Promise((resolve, reject) => {
-		const canvasImage = new Image();
-
-		canvasImage.onload = () => resolve(canvasImage);
-		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
-		canvasImage.src = imageBuffer;
-	});
-}
-
 export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
 }
@@ -96,8 +89,8 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): undefined {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function noOp(_any: any) {
 	return undefined;
 }
 
@@ -127,15 +120,6 @@ export function formatDuration(ms: number) {
 		.filter(val => val[1] !== 0)
 		.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`)
 		.join(', ');
-}
-
-export function activityTaskFilter(task: ScheduledTask) {
-	return ([
-		Tasks.ClueTicker,
-		Tasks.MonsterKillingTicker,
-		Tasks.SkillingTicker,
-		Tasks.MinigameTicker
-	] as string[]).includes(task.taskName);
 }
 
 export function inlineCodeblock(input: string) {
@@ -299,4 +283,36 @@ export function values<T extends {}>(obj: T) {
 
 export function keys<T extends {}>(obj: T) {
 	return Object.keys(obj) as (keyof T)[];
+}
+
+export const anglerBoosts = [
+	[itemID('Angler hat'), 0.4],
+	[itemID('Angler top'), 0.8],
+	[itemID('Angler waders'), 0.6],
+	[itemID('Angler boots'), 0.2]
+];
+
+export function anglerBoostPercent(user: KlasaUser) {
+	const skillingSetup = user.settings.get(UserSettings.Gear.Skilling);
+	let amountEquipped = 0;
+	let boostPercent = 0;
+	for (const [id, percent] of anglerBoosts) {
+		if (hasItemEquipped(id, skillingSetup)) {
+			boostPercent += percent;
+			amountEquipped++;
+		}
+	}
+	if (amountEquipped === 4) {
+		boostPercent += 0.5;
+	}
+	return round(boostPercent, 1);
+}
+
+export function shuffle<T>(array: readonly T[]): T[] {
+	let copy = [...array];
+	for (let i = copy.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[copy[i], copy[j]] = [copy[j], copy[i]];
+	}
+	return copy;
 }

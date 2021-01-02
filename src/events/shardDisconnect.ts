@@ -1,3 +1,4 @@
+import { CloseEvent } from 'discord.js';
 import { Event, EventStore } from 'klasa';
 
 import { Events } from '../lib/constants';
@@ -10,6 +11,6 @@ export default class extends Event {
 	}
 
 	async run(event: CloseEvent) {
-		this.client.emit(Events.Log, `Shard Disconnect: ${event}`);
+		this.client.emit(Events.Log, `Shard Disconnect: ${event.reason} ${event.code}`);
 	}
 }

@@ -9,7 +9,8 @@ import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ channelID, quantity, floors, duration, userID }: SepulchreActivityTaskOptions) {
+	async run(data: SepulchreActivityTaskOptions) {
+		const { channelID, quantity, floors, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore(MinigameIDsEnum.Sepulchre, quantity);
@@ -43,7 +44,7 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Agility, agilityXP);
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
-		let str = `${
+		let str = `${user}, ${
 			user.minionName
 		} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${floors[0]}-${
 			floors[floors.length - 1]

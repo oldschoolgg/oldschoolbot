@@ -1,37 +1,39 @@
 import { Task } from 'klasa';
-import PgBoss from 'pg-boss';
-import { createConnection } from 'typeorm';
 
-import { providerConfig } from '../config';
-import { Tasks } from '../lib/constants';
+import { ActivityGroup } from '../lib/constants';
+import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
+import { OldSchoolBotClient } from '../lib/structures/OldSchoolBotClient';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
-import { TickerTaskData } from '../lib/types/minions';
-import { activityTaskFilter } from '../lib/util';
-
-const { port, user, password, database } = providerConfig!.postgres!;
+import { ActivityTaskOptions } from '../lib/types/minions';
+import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
+import { taskNameFromType } from '../lib/util/taskNameFromType';
 
 export default class extends Task {
 	async init() {
-		if (this.client.orm) return;
-		this.client.orm = await createConnection({
-			type: 'postgres',
-			host: 'localhost',
-			port,
-			username: user,
-			password,
-			database,
-			entities: [AnalyticsTable],
-			synchronize: true
-		});
-
-		const boss = new PgBoss({ ...providerConfig?.postgres });
-		boss.on('error', error => console.error(error));
-		await boss.start();
-		await boss.schedule('analytics', `*/20 * * * *`);
-		await boss.subscribe('analytics', async job => {
+		await this.client.boss.schedule('analytics', `*/20 * * * *`);
+		await this.client.boss.subscribe('analytics', async job => {
 			await this.analyticsTick();
 			job.done();
+		});
+		await this.client.boss.subscribe('minionActivity', async job => {
+			const data = job.data as ActivityTaskOptions;
+			const taskName = taskNameFromType(data.type);
+			const task = this.client.tasks.get(taskName);
+			try {
+				this.client.oneCommandAtATimeCache.add(data.userID);
+				await task?.run(data);
+			} finally {
+				this.client.oneCommandAtATimeCache.delete(data.userID);
+				if ('users' in data) {
+					for (const user of (data as GroupMonsterActivityTaskOptions).users) {
+						(this.client as OldSchoolBotClient).minionActivityCache.delete(user);
+					}
+				} else {
+					(this.client as OldSchoolBotClient).minionActivityCache.delete(data.userID);
+				}
+				job.done();
+			}
 		});
 	}
 
@@ -39,22 +41,29 @@ export default class extends Task {
 		this.analyticsTick();
 	}
 
-	calculateMinionTaskCounts() {
-		const minionTaskCounts = {
-			[Tasks.ClueTicker]: 0,
-			[Tasks.MinigameTicker]: 0,
-			[Tasks.MonsterKillingTicker]: 0,
-			[Tasks.SkillingTicker]: 0
+	async calculateMinionTaskCounts() {
+		const minionTaskCounts: Record<ActivityGroup, number> = {
+			[ActivityGroup.Clue]: 0,
+			[ActivityGroup.Minigame]: 0,
+			[ActivityGroup.Monster]: 0,
+			[ActivityGroup.Skilling]: 0
 		};
-		for (const task of this.client.schedule.tasks.filter(activityTaskFilter)) {
-			const taskData = task.data as TickerTaskData;
-			const taskName = task.taskName as
-				| Tasks.ClueTicker
-				| Tasks.MinigameTicker
-				| Tasks.MonsterKillingTicker
-				| Tasks.SkillingTicker;
 
-			minionTaskCounts[taskName] = taskData.subTasks.length;
+		const tasks: (
+			| ActivityTaskOptions
+			| GroupMonsterActivityTaskOptions
+		)[] = await this.client.query(
+			`SELECT pgboss.job.data FROM pgboss.job WHERE pgboss.job.name = 'minionActivity' AND state = 'created';`
+		);
+
+		for (const task of tasks) {
+			const group = taskGroupFromActivity(task.type);
+
+			if ('users' in task) {
+				minionTaskCounts[group] += task.users.length;
+			} else {
+				minionTaskCounts[group] += 1;
+			}
 		}
 		return minionTaskCounts;
 	}
@@ -80,16 +89,16 @@ export default class extends Task {
 			)
 		).map((result: any) => parseInt(result[0].count)) as number[];
 
-		const taskCounts = this.calculateMinionTaskCounts();
+		const taskCounts = await this.calculateMinionTaskCounts();
 
 		await AnalyticsTable.insert({
 			guildsCount: this.client.guilds.size,
 			membersCount: this.client.guilds.reduce((acc, curr) => (acc += curr.memberCount), 0),
 			timestamp: Math.floor(Date.now() / 1000),
-			clueTasksCount: taskCounts.clueTicker,
-			minigameTasksCount: taskCounts.minigameTicker,
-			monsterTasksCount: taskCounts.monsterKillingTicker,
-			skillingTasksCount: taskCounts.skillingTicker,
+			clueTasksCount: taskCounts.Clue,
+			minigameTasksCount: taskCounts.Minigame,
+			monsterTasksCount: taskCounts.Monster,
+			skillingTasksCount: taskCounts.Skilling,
 			ironMinionsCount: numberOfIronmen,
 			minionsCount: numberOfMinions,
 			totalSacrificed,

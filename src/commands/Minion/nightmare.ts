@@ -1,7 +1,10 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks, Time } from '../../lib/constants';
+import { Activity, Emoji, Time } from '../../lib/constants';
+import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { GearSetupTypes } from '../../lib/gear/types';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -15,6 +18,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
+import resolveItems from '../../lib/util/resolveItems';
 import { ZAM_HASTA_CRUSH } from './../../lib/constants';
 import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
@@ -34,14 +38,25 @@ function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
 }
 
+const inquisitorItems = resolveItems([
+	"Inquisitor's great helm",
+	"Inquisitor's hauberk",
+	"Inquisitor's plateskirt",
+	"Inquisitor's mace"
+]);
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<mass|solo>',
+			usage: '<mass|solo> [maximumSize:int{2,10}]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			categoryFlags: ['minion', 'pvm', 'minigame'],
+			description:
+				'Sends your minion to kill the nightmare. Requires food and melee gear. Your minion gets better at it over time.',
+			examples: ['+nightmare mass', '+nightmare solo']
 		});
 	}
 
@@ -64,24 +79,32 @@ export default class extends BotCommand {
 			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
 					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough food. You need at least ${monster.healAmountNeeded! *
-					quantity} HP in food to ${
-					users.length === 1 ? 'start the mass' : 'enter the mass'
-				}.`;
+				} have enough food. You need at least ${
+					monster.healAmountNeeded! * quantity
+				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
 			}
 		}
 	}
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [type]: ['mass' | 'solo']) {
+	async run(msg: KlasaMessage, [type, maximumSizeForParty]: ['mass' | 'solo', number]) {
 		this.checkReqs([msg.author], NightmareMonster, 2);
+
+		const maximumSize = 10;
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
-			maxSize: 10,
-			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
+			ironmanAllowed: true,
+			message: `${msg.author.username} is doing a ${
+				NightmareMonster.name
+			} mass! Anyone can click the ${
+				Emoji.Join
+			} reaction to join, click it again to leave. The maximum size for this mass is ${
+				maximumSizeForParty ?? maximumSize
+			}.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -106,8 +129,9 @@ export default class extends BotCommand {
 					if (!hasEnoughFoodForMonster(NightmareMonster, user, 2)) {
 						return [
 							true,
-							`You don't have enough food. You need at least ${NightmareMonster.healAmountNeeded *
-								2} HP in food to enter the mass.`
+							`You don't have enough food. You need at least ${
+								NightmareMonster.healAmountNeeded * 2
+							} HP in food to enter the mass.`
 						];
 					}
 				}
@@ -124,6 +148,18 @@ export default class extends BotCommand {
 				user,
 				users.map(u => u.id)
 			);
+
+			// Special inquisitor outfit damage boost
+			const meleeGear = user.settings.get(UserSettings.Gear.Melee);
+			if (hasArrayOfItemsEquipped(inquisitorItems, meleeGear)) {
+				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
+			} else {
+				for (const inqItem of inquisitorItems) {
+					if (hasItemEquipped(inqItem, meleeGear)) {
+						effectiveTime *= users.length === 1 ? 0.98 : 0.995;
+					}
+				}
+			}
 
 			// Increase duration for each bad weapon.
 			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
@@ -167,32 +203,27 @@ export default class extends BotCommand {
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-				await removeFoodFromUser(
-					this.client,
+				await removeFoodFromUser({
+					client: this.client,
 					user,
-					Math.ceil(healAmountNeeded / users.length) * quantity,
-					Math.ceil(healAmountNeeded / quantity),
-					NightmareMonster.name
-				);
+					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: NightmareMonster.name,
+					attackStylesUsed: [GearSetupTypes.Melee]
+				});
 			}
 		}
 
-		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Nightmare,
-				leader: msg.author.id,
-				users: users.map(u => u.id),
-				minigameID: MinigameIDsEnum.Nightmare
-			}
-		);
-
-		for (const user of users) user.incrementMinionDailyDuration(duration);
+		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Nightmare,
+			leader: msg.author.id,
+			users: users.map(u => u.id),
+			minigameID: MinigameIDsEnum.Nightmare
+		});
 
 		const str =
 			type === 'solo'

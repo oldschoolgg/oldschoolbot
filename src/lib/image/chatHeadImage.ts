@@ -2,18 +2,36 @@ import { registerFont } from 'canvas';
 import { Canvas } from 'canvas-constructor';
 import * as fs from 'fs';
 
-registerFont('./resources/osrs-font-quill-8.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
-const textBoxFile = fs.readFileSync('./resources/images/textbox.png');
-const mejJalChatHead = fs.readFileSync('./resources/images/mejJal.png');
+const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
+const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
+const janeChatHead = fs.readFileSync('./src/lib/resources/images/jane.png');
+const santaChatHead = fs.readFileSync('./src/lib/resources/images/santa.png');
+const izzyChatHead = fs.readFileSync('./src/lib/resources/images/izzy.png');
 
-export default function chatHeadImage({ content, name }: { content: string; name: string }) {
+export const chatHeads = {
+	mejJal: mejJalChatHead,
+	jane: janeChatHead,
+	santa: santaChatHead,
+	izzy: izzyChatHead
+};
+
+export default function chatHeadImage({
+	content,
+	name,
+	head
+}: {
+	content: string;
+	name: string;
+	head: keyof typeof chatHeads;
+}) {
 	const canvas = new Canvas(519, 142);
 	canvas.context.imageSmoothingEnabled = false;
 
 	return canvas
 		.addImage(textBoxFile, 0, 0)
-		.addImage(mejJalChatHead, 28, 21)
+		.addImage(chatHeads[head], 28, 21)
 		.setTextAlign('center')
 		.setTextFont('16px RuneScape Quill 8')
 
