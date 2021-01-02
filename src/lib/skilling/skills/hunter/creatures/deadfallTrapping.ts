@@ -47,7 +47,8 @@ const deadfallTrappingCreatures: Creature[] = [
 		hunterXp: 1000,
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
 		huntTechnique: 'deadfall trapping',
-		catchTime: 0
+		catchTime: 0,
+		qpRequired: 0 //checking slayer
 	}
 ];
 

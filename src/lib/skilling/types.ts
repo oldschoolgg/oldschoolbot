@@ -239,4 +239,5 @@ export interface Creature {
 	multiTraps?: boolean;
 	wildy?: boolean;
 	catchTime: number;
+	qpRequired?: number;
 }
