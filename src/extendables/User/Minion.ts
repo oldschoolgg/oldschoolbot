@@ -100,10 +100,7 @@ export default class extends Extendable {
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();
-		let formattedDuration =
-			durationRemaining < Time.Minute
-				? `They're on their way back now!`
-				: `Approximately ${formatDuration(durationRemaining)} remaining.`;
+		let formattedDuration = `${formatDuration(durationRemaining)} remaining.`;
 
 		if (this.settings.get('troll')) {
 			formattedDuration = `Approximately ${formatDuration(
