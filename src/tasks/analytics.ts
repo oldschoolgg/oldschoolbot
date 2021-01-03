@@ -49,14 +49,13 @@ export default class extends Task {
 			[ActivityGroup.Skilling]: 0
 		};
 
-		const tasks: (
-			| ActivityTaskOptions
-			| GroupMonsterActivityTaskOptions
-		)[] = await this.client.query(
+		const tasks: {
+			data: ActivityTaskOptions | GroupMonsterActivityTaskOptions;
+		}[] = await this.client.query(
 			`SELECT pgboss.job.data FROM pgboss.job WHERE pgboss.job.name = 'minionActivity' AND state = 'created';`
 		);
 
-		for (const task of tasks) {
+		for (const task of tasks.map(t => t.data)) {
 			const group = taskGroupFromActivity(task.type);
 
 			if ('users' in task) {
