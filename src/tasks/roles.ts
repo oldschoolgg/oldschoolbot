@@ -1,10 +1,12 @@
 import { Guild } from 'discord.js';
 import { Task } from 'klasa';
 
+import { SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { collectionLogTypes } from '../lib/collectionLog';
 import { Roles } from '../lib/constants';
 import Skills from '../lib/skilling/skills';
+import { convertXPtoLVL } from '../lib/util';
 import { Workers } from '../lib/workers';
 import { CLUser } from '../lib/workers/leaderboard.worker';
 
@@ -54,6 +56,7 @@ export default class extends Task {
 			topSkillers.push(rankOne.id);
 		}
 
+		// Rank 1 XP
 		const rankOne = await this.client.query<
 			{
 				id: string;
@@ -64,6 +67,29 @@ export default class extends Task {
 				.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 1;`
 		);
 		topSkillers.push(rankOne[0].id);
+
+		// Rank 1 Total Level
+		const rankOneTotal = (
+			await this.client.query<SkillUser[]>(
+				`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
+					.map(s => `"skills.${s.id}"`)
+					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
+			)
+		)
+			.map(u => {
+				let totalLevel = 0;
+				for (const skill of skillVals) {
+					totalLevel += convertXPtoLVL(
+						Number(u[`skills.${skill.id}` as keyof SkillUser]) as any
+					);
+				}
+				return {
+					id: u.id,
+					totalLevel
+				};
+			})
+			.sort((a, b) => b.totalLevel - a.totalLevel)[0];
+		topSkillers.push(rankOneTotal.id);
 
 		let result = await addRoles(g, topSkillers, Roles.TopSkiller);
 
