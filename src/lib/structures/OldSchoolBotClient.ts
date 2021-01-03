@@ -45,7 +45,6 @@ export class OldSchoolBotClient extends Client {
 	}
 
 	public async login(token?: string) {
-		console.log('LOGIN');
 		await this.boss.start();
 		this.orm = await createConnection({
 			type: 'postgres',
