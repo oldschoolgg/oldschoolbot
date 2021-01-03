@@ -42,7 +42,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.ChampionsChallenge:
 			return ActivityGroup.Minigame;
 		default: {
-			throw new Error(`Unrecognized activity`);
+			throw new Error(`Unrecognized activity: ${type}`);
 		}
 	}
 }
