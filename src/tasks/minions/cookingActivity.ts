@@ -63,9 +63,18 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, res => {
-			user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
-			return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
+				return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
+			},
+			data,
+			undefined,
+			undefined
+		);
 	}
 }

@@ -41,9 +41,22 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, res => {
-			user.log(`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`);
-			return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(
+					`continued trip of ${quantity}x ${fletchableItem.name}[${fletchableItem.id}]`
+				);
+				return this.client.commands
+					.get('fletch')!
+					.run(res, [quantity, fletchableItem.name]);
+			},
+			data,
+			undefined,
+			undefined
+		);
 	}
 }

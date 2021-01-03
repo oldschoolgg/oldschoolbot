@@ -49,12 +49,13 @@ export default class extends Task {
 			user,
 			channelID,
 			responses.join('\n'),
-			undefined,
-			undefined,
 			res => {
 				user.log(`continued trip of alching ${quantity}x ${item.name}`);
 				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
-			}
+			},
+			data,
+			undefined,
+			undefined
 		);
 	}
 }

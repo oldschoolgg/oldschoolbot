@@ -100,9 +100,18 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, res => {
-			user.log(`continued trip of ${quantity}x ${course.name} laps`);
-			return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${course.name} laps`);
+				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
+			},
+			data,
+			undefined,
+			undefined
+		);
 	}
 }

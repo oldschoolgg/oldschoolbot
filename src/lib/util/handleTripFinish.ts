@@ -5,6 +5,7 @@ import MinionCommand from '../../commands/Minion/minion';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { continuationChars, Emoji, PerkTier, Time } from '../constants';
+import { ActivityTaskOptions } from '../types/minions';
 import { randomItemFromArray } from '../util';
 import { ItemBank } from './../types';
 import { channelIsSendable } from './channelIsSendable';
@@ -15,16 +16,19 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
+	onContinue:
+		| undefined
+		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
+	_data: ActivityTaskOptions,
 	loot?: ItemBank,
-	attachment?: Buffer,
-	onContinue?: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>
+	attachment?: Buffer
 ) {
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;
 
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
-	let clueTiersReceived: ClueTier[];
+	let clueTiersReceived: ClueTier[] = [];
 	loot
 		? (clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0))
 		: (clueTiersReceived = []);

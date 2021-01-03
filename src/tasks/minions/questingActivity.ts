@@ -50,16 +50,15 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			undefined,
-			undefined,
 			hasMaxQP
 				? undefined
 				: res => {
 						user.log(`continued trip of Questing.`);
 						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
 				  },
+			data,
 			undefined,
-			data
+			undefined
 		);
 	}
 }

@@ -39,9 +39,9 @@ export default class extends Task {
 
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${
 			monster.name
-		}. Your ${monster.name} KC is now ${(user.settings.get(UserSettings.MonsterScores)[
-			monster.id
-		] ?? 0) + quantity}.`;
+		}. Your ${monster.name} KC is now ${
+			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
+		}.`;
 
 		user.incrementMonsterScore(monsterID, quantity);
 

@@ -105,8 +105,9 @@ export default class extends Task {
 				user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
 				return this.client.commands.get('pickpocket')!.run(res, [quantity, npc.name]);
 			},
+			data,
 			undefined,
-			data
+			undefined
 		);
 	}
 }

@@ -59,9 +59,18 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, res => {
-			user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
-			return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
+				return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
+			},
+			data,
+			undefined,
+			undefined
+		);
 	}
 }
