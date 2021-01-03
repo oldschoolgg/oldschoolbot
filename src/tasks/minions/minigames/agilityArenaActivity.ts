@@ -75,7 +75,6 @@ export default class extends Task {
 				user.log(`continued trip of agility arena`);
 				return this.client.commands.get('agilityarena')!.run(res, []);
 			},
-			undefined,
 			data
 		);
 	}

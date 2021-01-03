@@ -20,8 +20,8 @@ export async function handleTripFinish(
 		| undefined
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	_data: ActivityTaskOptions,
-	loot?: ItemBank,
-	attachment?: Buffer
+	attachment?: Buffer,
+	loot?: ItemBank
 ) {
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;

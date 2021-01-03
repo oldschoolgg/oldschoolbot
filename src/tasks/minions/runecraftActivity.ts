@@ -61,9 +61,7 @@ export default class extends Task {
 				user.log(`continued trip of ${runeQuantity}x ${rune.name}[${rune.id}]`);
 				return this.client.commands.get('rc')!.run(res, [essenceQuantity, rune.name]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

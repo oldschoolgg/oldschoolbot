@@ -44,7 +44,7 @@ export default class extends Task {
 			},
 			data,
 			undefined,
-			undefined
+			loot
 		);
 	}
 }

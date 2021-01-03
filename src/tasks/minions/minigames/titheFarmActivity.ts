@@ -135,7 +135,6 @@ export default class extends Task {
 				user.log(`attemped another run of the Tithe Farm.`);
 				return this.client.commands.get('tithefarm')!.run(res, []);
 			},
-			undefined,
 			data
 		);
 	}

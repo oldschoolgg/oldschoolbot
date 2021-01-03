@@ -53,9 +53,7 @@ export default class extends Task {
 				user.log(`continued trip of alching ${quantity}x ${item.name}`);
 				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

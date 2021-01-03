@@ -1,4 +1,3 @@
-import { MessageAttachment } from 'discord.js';
 import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -14,6 +13,7 @@ import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, bankHasItem, noOp } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 const PointsTable = new SimpleTable<number>()
@@ -40,7 +40,8 @@ const PointsTable = new SimpleTable<number>()
 	.add(850);
 
 export default class extends Task {
-	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
+	async run(data: WintertodtActivityTaskOptions) {
+		const { userID, channelID, quantity, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
@@ -146,6 +147,18 @@ export default class extends Task {
 			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 
-		return channel.send(output, new MessageAttachment(image));
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			output,
+			res => {
+				user.log(`continued trip of Wintertodt`);
+				return this.client.commands.get('wt')!.run(res, []);
+			},
+			data,
+			image,
+			loot
+		);
 	}
 }

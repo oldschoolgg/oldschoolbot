@@ -35,9 +35,7 @@ export default class extends Task {
 				user.log(`continued trip of ${plankQuantity}x ${plank.name}`);
 				return this.client.commands.get('sawmill')!.run(res, [plankQuantity, plank.name]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

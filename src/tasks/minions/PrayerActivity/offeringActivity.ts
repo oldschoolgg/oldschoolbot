@@ -53,9 +53,16 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, res => {
-			user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
-			return this.client.commands.get('offer')!.run(res, [quantity, bone.name]);
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of offering ${quantity}x ${bone.name}[${bone.inputId}]`);
+				return this.client.commands.get('offer')!.run(res, [quantity, bone.name]);
+			},
+			data
+		);
 	}
 }

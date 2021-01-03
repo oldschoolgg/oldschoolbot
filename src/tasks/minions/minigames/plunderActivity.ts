@@ -65,8 +65,9 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x plunder`);
 				return this.client.commands.get('plunder')!.run(res, []);
 			},
+			data,
 			image,
-			data
+			loot.bank
 		);
 	}
 }

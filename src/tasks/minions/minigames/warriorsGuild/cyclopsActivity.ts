@@ -109,8 +109,9 @@ export default class extends Task {
 				user.log(`continued cyclops`);
 				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
 			},
+			data,
 			image,
-			data
+			loot.bank
 		);
 	}
 }

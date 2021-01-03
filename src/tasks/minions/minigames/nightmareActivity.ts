@@ -146,8 +146,8 @@ export default class extends Task {
 					return this.client.commands.get('nightmare')!.run(res, ['solo']);
 				},
 				data,
-				teamsLoot[leader]!,
-				image!
+				image,
+				teamsLoot[leader]
 			);
 		}
 	}

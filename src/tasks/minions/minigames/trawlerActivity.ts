@@ -84,8 +84,9 @@ export default class extends Task {
 				user.log(`continued fishing trawler`);
 				return this.client.commands.get('fishingtrawler')!.run(res, []);
 			},
+			data,
 			image,
-			data
+			loot.bank
 		);
 	}
 }

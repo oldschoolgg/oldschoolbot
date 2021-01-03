@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Emoji, Events } from '../../../lib/constants';
+import chatHeadImage from '../../../lib/image/chatHeadImage';
 import mejJalImage from '../../../lib/image/mejJalImage';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -19,19 +20,15 @@ import {
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 const TokkulID = itemID('Tokkul');
 const TzrekJadPet = itemID('Tzrek-jad');
 
 export default class extends Task {
-	async run({
-		userID,
-		channelID,
-		jadDeathChance,
-		preJadDeathTime,
-		duration
-	}: FightCavesActivityTaskOptions) {
+	async run(data: FightCavesActivityTaskOptions) {
+		const { userID, channelID, jadDeathChance, preJadDeathTime, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
@@ -113,13 +110,27 @@ export default class extends Task {
 		const lootText = await createReadableItemListFromBank(this.client, loot);
 
 		if (!channelIsSendable(channel)) return;
-		return channel.send(
-			`${user}`,
-			await mejJalImage(
-				`You defeated TzTok-Jad for the ${formatOrdinal(
-					user.getKC(Monsters.TzTokJad)
-				)} time! I am most impressed, I give you... ${lootText}.`
-			)
+		const str = `${user}`;
+		const image = await chatHeadImage({
+			content: `You defeated TzTok-Jad for the ${formatOrdinal(
+				user.getKC(Monsters.TzTokJad)
+			)} time! I am most impressed, I give you... ${lootText}.`,
+			name: 'TzHaar-Mej-Jal',
+			head: 'mejJal'
+		});
+
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of fight caves`);
+				return this.client.commands.get('fightcaves')!.run(res, []);
+			},
+			data,
+			image,
+			loot
 		);
 	}
 }

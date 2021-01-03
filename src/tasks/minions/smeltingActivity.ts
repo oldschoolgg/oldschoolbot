@@ -68,9 +68,7 @@ export default class extends Task {
 				user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
 				return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

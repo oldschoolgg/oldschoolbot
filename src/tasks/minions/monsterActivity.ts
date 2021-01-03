@@ -9,7 +9,8 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
+	async run(data: MonsterActivityTaskOptions) {
+		const { monsterID, userID, channelID, quantity, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
@@ -48,12 +49,21 @@ export default class extends Task {
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 
-		handleTripFinish(this.client, user, channelID, str, loot, image, res => {
-			user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
-			return this.client.commands
-				.get('minion')!
-				.kill(res as KlasaMessage, [quantity, monster.name])
-				.catch(err => channel.send(err));
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
+				return this.client.commands
+					.get('minion')!
+					.kill(res as KlasaMessage, [quantity, monster.name])
+					.catch(err => channel.send(err));
+			},
+			data,
+			image,
+			loot
+		);
 	}
 }

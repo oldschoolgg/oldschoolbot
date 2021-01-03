@@ -60,9 +60,7 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x ${Craft.name}[${Craft.id}]`);
 				return this.client.commands.get('craft')!.run(res, [quantity, Craft.name]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

@@ -65,9 +65,7 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.inputLogs}]`);
 				return this.client.commands.get('light')!.run(res, [quantity, Burn.name]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

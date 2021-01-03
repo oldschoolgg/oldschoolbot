@@ -54,9 +54,7 @@ export default class extends Task {
 					.get('fletch')!
 					.run(res, [quantity, fletchableItem.name]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

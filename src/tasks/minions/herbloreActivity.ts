@@ -46,9 +46,7 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x ${mixableItem.name}[${mixableItem.id}]`);
 				return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
 			},
-			data,
-			undefined,
-			undefined
+			data
 		);
 	}
 }

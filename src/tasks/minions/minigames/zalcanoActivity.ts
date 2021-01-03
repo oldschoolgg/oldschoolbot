@@ -75,8 +75,9 @@ export default class extends Task {
 				user.log(`continued zalcano`);
 				return this.client.commands.get('zalcano')!.run(res, []);
 			},
+			data,
 			image,
-			data
+			loot.bank
 		);
 	}
 }

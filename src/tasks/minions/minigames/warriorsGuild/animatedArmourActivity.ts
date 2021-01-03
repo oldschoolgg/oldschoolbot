@@ -32,7 +32,6 @@ export default class extends Task {
 				user.log(`continued trip of animated armor`);
 				return this.client.commands.get('warriorsguild')!.run(res, [quantity, 'tokens']);
 			},
-			undefined,
 			data
 		);
 	}
