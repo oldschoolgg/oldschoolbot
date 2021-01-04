@@ -72,6 +72,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (clueTier.name === 'Grandmaster') {
+			return msg.send(`Error.`);
+		}
+
 		const [loot, title] = await Workers.casketOpen({ quantity, clueTierID: clueTier.id });
 
 		if (Object.keys(loot).length === 0) return msg.send(`${title} and got nothing :(`);
