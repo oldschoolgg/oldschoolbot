@@ -488,9 +488,36 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			}
 		}
 
+		const hasBlessing = msg.author.hasItemEquippedAnywhere(itemID('Dwarven blessing'));
+		if (hasBlessing) {
+			timeToFinish *= 0.8;
+			boosts.push(`20% for Dwarven blessing`);
+		}
+
 		// If no quantity provided, set it to the max.
-		if (quantity === null) {
+		if (!quantity) {
 			quantity = Math.max(1, floor(msg.author.maxTripLength / timeToFinish));
+		}
+
+		let duration = timeToFinish * quantity;
+		if (duration > msg.author.maxTripLength && quantity > 1) {
+			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
+				msg.author.maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${
+				monster.name
+			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
+		}
+
+		// If you have dwarven blessing, you need 1 prayer pot per 5 mins
+		const prayerPots = msg.author.bank().amount('Prayer potion(4)');
+		const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
+		const prayerPotsNeeded = Math.max(1, fiveMinIncrements);
+		if (hasBlessing) {
+			if (prayerPots < prayerPotsNeeded) {
+				return msg.send(
+					`You don't have enough Prayer potion(4)'s to power your Dwarven blessing.`
+				);
+			}
 		}
 
 		// Check food
@@ -511,15 +538,6 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			foodStr = result;
 		}
 
-		let duration = timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength && quantity > 1) {
-			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				monster.name
-			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
-		}
-
 		const randomAddedDuration = randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
@@ -528,6 +546,9 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
+		if (hasBlessing) {
+			await msg.author.removeItemFromBank(itemID('Prayer potion(4)'), prayerPotsNeeded);
+		}
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,
 			userID: msg.author.id,
@@ -542,6 +563,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 		if (foodStr) {
 			response += ` Removed ${foodStr}.`;
+		}
+
+		if (hasBlessing) {
+			response += `\nRemoved ${prayerPotsNeeded}x Prayer potion(4) to power Dwarven blessing.`;
 		}
 
 		if (boosts.length > 0) {
