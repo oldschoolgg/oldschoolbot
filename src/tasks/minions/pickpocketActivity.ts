@@ -6,7 +6,7 @@ import { Events, Time } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, roll } from '../../lib/util';
+import { itemID, multiplyBankNotClues, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -75,7 +75,7 @@ export default class extends Task {
 		let boosts = [];
 		if (user.hasItemEquippedAnywhere(itemID("Thieves' armband"))) {
 			boosts.push(`3x loot for Thieves armband`);
-			loot.bank = multiplyBank(loot.bank, 3);
+			loot.bank = multiplyBankNotClues(loot.bank, 3);
 		}
 
 		const minutes = duration / Time.Minute;

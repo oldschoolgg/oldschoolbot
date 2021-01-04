@@ -9,6 +9,7 @@ const emojiRegex = require('emoji-regex');
 
 import { Events } from './constants';
 import hasItemEquipped from './gear/functions/hasItemEquipped';
+import ClueTiers from './minions/data/clueTiers';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
 import itemID from './util/itemID';
@@ -319,4 +320,13 @@ export function shuffle<T>(array: readonly T[]): T[] {
 		[copy[i], copy[j]] = [copy[j], copy[i]];
 	}
 	return copy;
+}
+
+export function multiplyBankNotClues(bank: ItemBank, multiplier: number) {
+	let newBank: ItemBank = {};
+	for (const [id, qty] of Object.entries(bank)) {
+		if (ClueTiers.some(t => t.scrollID === parseInt(id))) continue;
+		newBank[id] = qty * multiplier;
+	}
+	return newBank;
 }
