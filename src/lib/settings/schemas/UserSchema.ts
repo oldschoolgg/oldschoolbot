@@ -20,6 +20,7 @@ Client.defaultUserSchema
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
+	.add('creatureScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
 	.add('minigameScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })

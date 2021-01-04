@@ -97,6 +97,12 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	zahur: boolean;
 }
 
+export interface HunterActivityTaskOptions extends ActivityTaskOptions {
+	creatureName: string;
+	channelID: string;
+	quantity: number;
+}
+
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
@@ -106,6 +112,18 @@ export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	plantsName: string | null;
+	channelID: string;
+	quantity: number;
+	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
+	payment?: boolean;
+	patchType: PatchTypes.PatchData;
+	getPatchType: string;
+	planting: boolean;
+	currentDate: number;
+}
+
+export interface BirdHouseActivityTaskOptions extends ActivityTaskOptions {
 	plantsName: string | null;
 	channelID: string;
 	quantity: number;

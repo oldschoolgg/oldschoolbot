@@ -416,7 +416,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Rope',
 		outputItems: {
-			[itemID('rope')]: 1
+			[itemID('Rope')]: 1
 		},
 		qpRequired: 0,
 		gpCost: 500

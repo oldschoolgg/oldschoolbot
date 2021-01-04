@@ -22,6 +22,7 @@ export namespace UserSettings {
 	export const Pets = T<O.Readonly<ItemBank>>('pets');
 	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');
 	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
+	export const CreatureScores = T<O.Readonly<ItemBank>>('creatureScores');
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const MinigameScores = T<O.Readonly<ItemBank>>('minigameScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
