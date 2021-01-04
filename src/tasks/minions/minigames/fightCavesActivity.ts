@@ -120,7 +120,6 @@ export default class extends Task {
 
 			const lootText = await createReadableItemListFromBank(this.client, loot);
 
-			if (!channelIsSendable(channel)) return;
 			image = await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad)
