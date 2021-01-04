@@ -2,6 +2,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity } from '../../lib/constants';
+import { GearTypes } from '../../lib/gear';
+import { hasGearEquipped } from '../../lib/gear/functions/hasGearEquipped';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -10,6 +12,18 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
+
+function hasClueHunterEquipped(setup: GearTypes.GearSetup) {
+	return hasGearEquipped(setup, {
+		head: resolveItems(['Helm of raedwald']),
+		body: resolveItems(['Clue hunter garb']),
+		legs: resolveItems(['Clue hunter trousers']),
+		feet: resolveItems(['Clue hunter boots']),
+		hands: resolveItems(['Clue hunter gloves']),
+		cape: resolveItems(['Clue hunter cloak'])
+	});
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -58,6 +72,11 @@ export default class extends BotCommand {
 		boosts.push(`👻 2x Boost`);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
+
+		if (hasClueHunterEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+			timeToFinish /= 2;
+			boosts.push(`2x Boost for Clue hunter outfit`);
+		}
 
 		let duration = timeToFinish * quantity;
 
