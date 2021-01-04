@@ -73,11 +73,9 @@ export default class extends Task {
 		}
 
 		let boosts = [];
-		if (npc.name === 'Master Farmer') {
-			if (user.hasItemEquippedAnywhere(itemID("Thieves' armband"))) {
-				boosts.push(`3x loot for Thieves armband`);
-				loot.bank = multiplyBank(loot.bank, 3);
-			}
+		if (user.hasItemEquippedAnywhere(itemID("Thieves' armband"))) {
+			boosts.push(`3x loot for Thieves armband`);
+			loot.bank = multiplyBank(loot.bank, 3);
 		}
 
 		const minutes = duration / Time.Minute;
