@@ -274,4 +274,25 @@ export function initCustomItems() {
 	});
 	setCustomItem(5020, 'Lottery ticket', getOSItem('Paramaya ticket'));
 	setCustomItem(5021, 'Bank lottery ticket', getOSItem('Paramaya ticket'));
+	// setCustomItem(25238, 'Dwarven defender', getOSItem('Dragon defender'));
+	setCustomItem(19839, 'Dwarven blessing', getOSItem('Holy blessing'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 5,
+			slot: EquipmentSlot.Ammo,
+			requirements: null
+		}
+	});
 }

@@ -23,7 +23,8 @@ const LowRunes = new LootTable()
 	.add('Body rune', [50, 100])
 	.add('Cosmic rune', [50, 100])
 	.add('Chaos rune', [50, 100]);
-const HighRuneTable = new LootTable()
+
+export const HighRuneTable = new LootTable()
 	.add('Nature rune', [20, 50])
 	.add('Law rune', [20, 50])
 	.add('Death rune', [20, 50])

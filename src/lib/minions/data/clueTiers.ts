@@ -3,6 +3,7 @@ import { Clues } from 'oldschooljs';
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
 import { Time } from '../../constants';
+import { GrandmasterClueTable } from '../../simulation/grandmasterClue';
 import itemID from '../../util/itemID';
 import { ClueTier } from '../types';
 
@@ -70,6 +71,14 @@ const ClueTiers: ClueTier[] = [
 			scoreNeeded: 100
 		},
 		mimicChance: 15
+	},
+	{
+		name: 'Grandmaster',
+		table: GrandmasterClueTable,
+		id: 19838,
+		scrollID: 19837,
+		timeToFinish: Time.Minute * 23.3,
+		mimicChance: false
 	}
 ];
 
