@@ -46,7 +46,7 @@ export default class extends Task {
 		} in your bank. You can open this casket using \`=open ${clueTier.name}\``;
 
 		let loot = { [clueTier.id]: quantity };
-		if (roll(10)) {
+		if (duration > Time.Minute * 20 && roll(10)) {
 			loot = multiplyBank(loot, 2);
 			loot[getRandomMysteryBox()] = 1;
 		}

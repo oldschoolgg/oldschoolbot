@@ -40,12 +40,11 @@ export default class extends Task {
 			[rune.id]: runeQuantity
 		};
 
-		if (roll(10)) {
-			if (duration > Time.Minute * 10) {
-				loot = multiplyBank(loot, 2);
-				loot[getRandomMysteryBox()] = 1;
-			}
+		if (duration > Time.Minute * 20 && roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[getRandomMysteryBox()] = 1;
 		}
+
 		const minutes = duration / Time.Minute;
 		if (roll(Math.floor(2000 / minutes)) && !user.hasItemEquippedOrInBank('Obis')) {
 			loot[itemID('Obis')] = 1;

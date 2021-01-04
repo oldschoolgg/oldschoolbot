@@ -39,11 +39,9 @@ export default class extends Task {
 		}
 
 		let loot = monster.table.kill(Math.ceil(quantity * abyssalBonus));
-		if (roll(10)) {
-			if (duration > Time.Minute * 14) {
-				loot = multiplyBank(loot, 2);
-				loot[getRandomMysteryBox()] = 1;
-			}
+		if (duration > Time.Minute * 20 && roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[getRandomMysteryBox()] = 1;
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(4000)) {

@@ -40,7 +40,7 @@ export default class extends Task {
 				})
 			]);
 		}
-		if (roll(10)) {
+		if (duration > Time.Minute * 20 && roll(10)) {
 			loot = multiplyBank(loot, 4);
 			loot[getRandomMysteryBox()] = 1;
 		}

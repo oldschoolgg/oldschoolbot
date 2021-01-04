@@ -61,7 +61,7 @@ export default class extends Task {
 			[bar.id]: quantity
 		};
 
-		if (roll(10)) {
+		if (duration > Time.Minute * 20 && roll(10)) {
 			loot = multiplyBank(loot, 4);
 			loot[getRandomMysteryBox()] = 1;
 		}

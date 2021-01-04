@@ -59,7 +59,7 @@ export default class extends Task {
 		let loot = {
 			[cookable.id]: quantity - burnedAmount
 		};
-		if (roll(10)) {
+		if (duration > Time.Minute * 20 && roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;

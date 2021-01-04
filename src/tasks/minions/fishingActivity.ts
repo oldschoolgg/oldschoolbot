@@ -114,11 +114,9 @@ export default class extends Task {
 			}
 		}
 
-		if (roll(10)) {
-			if (duration > Time.Minute * 10) {
-				loot = multiplyBank(loot, 2);
-				loot[getRandomMysteryBox()] = 1;
-			}
+		if (duration > Time.Minute * 20 && roll(10)) {
+			loot = multiplyBank(loot, 2);
+			loot[getRandomMysteryBox()] = 1;
 		}
 
 		if (fish.clueScrollChance) {
