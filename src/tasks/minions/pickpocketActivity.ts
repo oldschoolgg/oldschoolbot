@@ -6,9 +6,10 @@ import { Events, Time } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBankNotClues, roll } from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { multiplyBankNotClues } from '../../lib/util/mbnc';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,

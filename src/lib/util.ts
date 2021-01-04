@@ -321,12 +321,3 @@ export function shuffle<T>(array: readonly T[]): T[] {
 	}
 	return copy;
 }
-
-export function multiplyBankNotClues(bank: ItemBank, multiplier: number) {
-	let newBank: ItemBank = {};
-	for (const [id, qty] of Object.entries(bank)) {
-		if (ClueTiers.some(t => t.scrollID === parseInt(id))) continue;
-		newBank[id] = qty * multiplier;
-	}
-	return newBank;
-}
