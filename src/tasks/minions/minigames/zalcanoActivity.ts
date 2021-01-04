@@ -1,11 +1,13 @@
-import { randInt } from 'e';
+import { randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
+import { Events, Time } from '../../../lib/constants';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
+import { getRandomMysteryBox } from '../../../lib/openables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
+import { multiplyBank } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -48,6 +50,11 @@ export default class extends Task {
 					(kc || 1) + quantity
 				)}!`
 			);
+		}
+
+		if (duration > Time.Minute * 20 && roll(10)) {
+			loot.bank = multiplyBank(loot.bank, 2);
+			loot.bank[getRandomMysteryBox()] = 1;
 		}
 
 		await user.addItemsToBank(loot.bank, true);

@@ -2,13 +2,14 @@ import { percentChance, roll } from 'e';
 import { Task } from 'klasa';
 import { Misc } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji, Time } from '../../../lib/constants';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
+import { getRandomMysteryBox } from '../../../lib/openables';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, queuedMessageSend } from '../../../lib/util';
+import { addBanks, multiplyBank, noOp, queuedMessageSend } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -69,12 +70,17 @@ export default class extends Task {
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NightmareMonster.name}!\n\n`;
 
-		for (const [userID, loot] of Object.entries(teamsLoot)) {
+		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 
 			if (roll(4000)) {
 				loot[23929] = 1;
+			}
+
+			if (duration > Time.Minute * 20 && roll(10)) {
+				loot = multiplyBank(loot, 2);
+				loot[getRandomMysteryBox()] = 1;
 			}
 
 			await user.addItemsToBank(loot, true);
