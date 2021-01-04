@@ -63,6 +63,13 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
+		if (
+			clueTier.name === 'Grandmaster' &&
+			msg.author.settings.get(UserSettings.ClueScores)[19836] < 50
+		) {
+			return msg.send(`You aren't experienced enough to complete a Grandmaster clue.`);
+		}
+
 		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
 			msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1
