@@ -48,7 +48,7 @@ export default class extends Task {
 
 		const attemptsStr = `You have tried Fight caves ${attempts + 1}x times.`;
 
-		if (preJadDeathTime && stillAlive) {
+		if (preJadDeathTime) {
 			// Give back supplies based on how far in they died, for example if they
 			// died 80% of the way through, give back approximately 20% of their supplies.
 			const percSuppliesToRefund = 100 - calcWhatPercent(preJadDeathTime, duration);
