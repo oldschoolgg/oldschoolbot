@@ -6,7 +6,7 @@ import { Events, Time } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { itemID, multiplyBank, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -71,6 +71,15 @@ export default class extends Task {
 		for (let i = 0; i < successfulQuantity; i++) {
 			loot.add(npc.table.roll());
 		}
+
+		let boosts = [];
+		if (npc.name === 'Master Farmer') {
+			if (user.hasItemEquippedAnywhere(itemID("Thieves' armband"))) {
+				boosts.push(`3x loot for Thieves armband`);
+				loot.bank = multiplyBank(loot.bank, 3);
+			}
+		}
+
 		const minutes = duration / Time.Minute;
 		let gotWil = false;
 		if (roll(Math.floor(2000 / minutes))) {
