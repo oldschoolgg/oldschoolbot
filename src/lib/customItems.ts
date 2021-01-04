@@ -295,4 +295,6 @@ export function initCustomItems() {
 			requirements: null
 		}
 	});
+	setCustomItem(19837, 'Clue scroll (grandmaster)', getOSItem('Clue scroll (easy)'));
+	setCustomItem(19838, 'Reward casket (grandmaster)', getOSItem('Reward casket (master)'));
 }
