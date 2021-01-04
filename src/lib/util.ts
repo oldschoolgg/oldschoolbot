@@ -9,7 +9,6 @@ const emojiRegex = require('emoji-regex');
 
 import { Events } from './constants';
 import hasItemEquipped from './gear/functions/hasItemEquipped';
-import ClueTiers from './minions/data/clueTiers';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
 import itemID from './util/itemID';
