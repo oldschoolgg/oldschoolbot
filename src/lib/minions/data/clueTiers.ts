@@ -77,7 +77,7 @@ const ClueTiers: ClueTier[] = [
 		table: GrandmasterClueTable,
 		id: 19838,
 		scrollID: 19837,
-		timeToFinish: Time.Minute * 23.3,
+		timeToFinish: Time.Minute * 29.3,
 		mimicChance: false
 	}
 ];
