@@ -1,5 +1,5 @@
 import { Client, Guild } from 'discord.js';
-import { KlasaClient, KlasaUser, ScheduledTask, util } from 'klasa';
+import { KlasaClient, KlasaUser, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -7,7 +7,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { Events, Tasks } from './constants';
+import { Events } from './constants';
 import hasItemEquipped from './gear/functions/hasItemEquipped';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
@@ -120,15 +120,6 @@ export function formatDuration(ms: number) {
 		.filter(val => val[1] !== 0)
 		.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`)
 		.join(', ');
-}
-
-export function activityTaskFilter(task: ScheduledTask) {
-	return ([
-		Tasks.ClueTicker,
-		Tasks.MonsterKillingTicker,
-		Tasks.SkillingTicker,
-		Tasks.MinigameTicker
-	] as string[]).includes(task.taskName);
 }
 
 export function inlineCodeblock(input: string) {

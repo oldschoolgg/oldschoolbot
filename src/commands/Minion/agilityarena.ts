@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import chatHeadImage from '../../lib/image/chatHeadImage';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -135,18 +135,14 @@ export default class extends BotCommand {
 			boosts.push(`10% extra tickets for Karamja Elite diary`);
 		}
 
-		await addSubTaskToActivityTask<AgilityArenaActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				duration,
-				type: Activity.AgilityArena,
-				quantity: 1,
-				minigameID: MinigameIDsEnum.AgilityArena
-			}
-		);
+		await addSubTaskToActivityTask<AgilityArenaActivityTaskOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			duration,
+			type: Activity.AgilityArena,
+			quantity: 1,
+			minigameID: MinigameIDsEnum.AgilityArena
+		});
 
 		let str = `${
 			msg.author.minionName

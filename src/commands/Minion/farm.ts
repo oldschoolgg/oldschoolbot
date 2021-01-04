@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -321,24 +321,20 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				plantsName: plants.name,
-				patchType,
-				getPatchType,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				upgradeType,
-				payment,
-				planting: true,
-				duration,
-				currentDate,
-				type: Activity.Farming
-			}
-		);
+		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(this.client, {
+			plantsName: plants.name,
+			patchType,
+			getPatchType,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			upgradeType,
+			payment,
+			planting: true,
+			duration,
+			currentDate,
+			type: Activity.Farming
+		});
 
 		return msg.send(
 			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${

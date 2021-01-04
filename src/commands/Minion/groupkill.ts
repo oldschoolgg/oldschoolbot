@@ -2,7 +2,7 @@ import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { findMonster } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -139,20 +139,16 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
-			this.client,
-			Tasks.MonsterKillingTicker,
-			{
-				monsterID: monster.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.GroupMonsterKilling,
-				leader: msg.author.id,
-				users: users.map(u => u.id)
-			}
-		);
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(this.client, {
+			monsterID: monster.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.GroupMonsterKilling,
+			leader: msg.author.id,
+			users: users.map(u => u.id)
+		});
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		return msg.channel.send(

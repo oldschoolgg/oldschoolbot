@@ -1,16 +1,12 @@
-import { Activity, Tasks } from '../../constants';
+import { Activity, ActivityGroup } from '../constants';
 
-/**
- * Returns what ticker task an activity uses.
- * @param type The activity.
- */
-export function tickerTaskFromActivity(type: Activity): Tasks {
+export function taskGroupFromActivity(type: Activity): ActivityGroup {
 	switch (type) {
 		case Activity.ClueCompletion:
-			return Tasks.ClueTicker;
+			return ActivityGroup.Clue;
 		case Activity.GroupMonsterKilling:
 		case Activity.MonsterKilling:
-			return Tasks.MonsterKillingTicker;
+			return ActivityGroup.Monster;
 		case Activity.Fishing:
 		case Activity.Agility:
 		case Activity.Burying:
@@ -30,7 +26,7 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Pickpocket:
 		case Activity.Farming:
 		case Activity.Herblore:
-			return Tasks.SkillingTicker;
+			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
 		case Activity.Nightmare:
@@ -44,9 +40,9 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.BarbarianAssault:
 		case Activity.AgilityArena:
 		case Activity.ChampionsChallenge:
-			return Tasks.MinigameTicker;
+			return ActivityGroup.Minigame;
 		default: {
-			throw new Error(`Unrecognized activity`);
+			throw new Error(`Unrecognized activity: ${type}`);
 		}
 	}
 }
