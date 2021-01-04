@@ -297,4 +297,5 @@ export function initCustomItems() {
 	});
 	setCustomItem(19837, 'Clue scroll (grandmaster)', getOSItem('Clue scroll (easy)'));
 	setCustomItem(19838, 'Reward casket (grandmaster)', getOSItem('Reward casket (master)'));
+	setCustomItem(508, 'Nuts of monkey', getOSItem('Rune platelegs'));
 }

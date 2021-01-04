@@ -79,7 +79,7 @@ const Supplies = new LootTable()
 const table = new LootTable()
 	.tertiary(90, ClueHunterTable)
 	.tertiary(270, BlessingTable)
-
+	.tertiary(300, 'Nuts of monkey')
 	.add(ClueTable)
 	.add(boxTable, 1, 2)
 	.add(DragonTable, [1, 2], 2)
