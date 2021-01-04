@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, Time } from '../../lib/constants';
 import { PatchTypes } from '../../lib/farming';
 import { FarmingContract } from '../../lib/farming/types';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
