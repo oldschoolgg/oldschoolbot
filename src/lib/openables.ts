@@ -3,6 +3,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { allPetIDs } from '../commands/Minion/equippet';
 import { coxLog, customBossLog } from './collectionLog';
 import { Emoji } from './constants';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
@@ -366,7 +367,8 @@ const cantBeDropped = [
 		'White partyhat',
 		'Christmas cracker',
 		'Santa hat'
-	])
+	]),
+	...allPetIDs
 ] as number[];
 
 export const tmbTable = Items.filter(i => {

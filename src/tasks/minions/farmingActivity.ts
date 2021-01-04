@@ -5,13 +5,14 @@ import { Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/farming';
 import { FarmingContract } from '../../lib/farming/types';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
+import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, rand, roll } from '../../lib/util';
+import { bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
@@ -180,15 +181,17 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			for (let i = 0; i < patchType.lastQuantity; i++) {
-				for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
-					const deathRoll = Math.random();
-					if (
-						deathRoll <
-						Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128
-					) {
-						quantityDead += 1;
-						break;
+			if (user.equippedPet() !== itemID('Plopper')) {
+				for (let i = 0; i < patchType.lastQuantity; i++) {
+					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
+						const deathRoll = Math.random();
+						if (
+							deathRoll <
+							Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128
+						) {
+							quantityDead += 1;
+							break;
+						}
 					}
 				}
 			}
@@ -343,6 +346,11 @@ export default class extends Task {
 				);
 			}
 
+			if (roll(10)) {
+				loot = multiplyBank(loot, 2);
+				loot[getRandomMysteryBox()] = 1;
+			}
+
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
@@ -364,6 +372,17 @@ export default class extends Task {
 			) {
 				loot[itemID('Tangleroot')] = 1;
 				tangleroot = true;
+			} else if (
+				patchType.patchPlanted &&
+				plantToHarvest.petChance &&
+				alivePlants > 0 &&
+				roll(
+					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
+						alivePlants /
+						5
+				)
+			) {
+				loot[itemID('Plopper')] = 1;
 			}
 
 			if (plantToHarvest.seedType !== 'hespori') {
@@ -441,6 +460,12 @@ export default class extends Task {
 			} else {
 				infoStr.push(
 					`\n${user.minionName} tells you to come back after your plants have finished growing!`
+				);
+			}
+
+			if (loot[itemID('Plopper')]) {
+				infoStr.push(
+					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
 				);
 			}
 

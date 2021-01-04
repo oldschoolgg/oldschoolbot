@@ -6,6 +6,7 @@ import { Events, Time } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
+import { roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -13,7 +14,8 @@ export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Pickpockable,
 	quantity: number,
-	hasThievingCape: boolean
+	hasThievingCape: boolean,
+	armband: boolean
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -25,8 +27,11 @@ export function calcLootXPPickpocketing(
 	const diary = 1;
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
-	const chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
-
+	let chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
+	if (armband) {
+		// 50% better success chance if has armband
+		chanceOfSuccess += chanceOfSuccess / 2;
+	}
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
 			// The minion has just been stunned, and cant pickpocket for a few ticks, therefore
@@ -62,10 +67,15 @@ export default class extends Task {
 			return;
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
-
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity; i++) {
 			loot.add(npc.table.roll());
+		}
+		const minutes = duration / Time.Minute;
+		let gotWil = false;
+		if (roll(Math.floor(2000 / minutes))) {
+			loot.add('Wilvus');
+			gotWil = true;
 		}
 
 		await user.addItemsToBank(loot.values(), true);
@@ -79,6 +89,10 @@ export default class extends Task {
 		} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
 		}x pickpockets, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
+
+		if (gotWil) {
+			str += `<:wilvus:787320791011164201> A raccoon saw you thieving and partners with you to help you steal more stuff!`;
+		}
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Thieving level is now ${newLevel}!`;

@@ -45,6 +45,12 @@ export default class extends Task {
 			}
 		}
 
+		const minutes = duration / Time.Minute;
+		if (roll(Math.floor(2000 / minutes))) {
+			loot[itemID('Peky')] = 1;
+			str += `<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.`;
+		}
+
 		// Add clue scrolls
 		if (Log.clueScrollChance) {
 			loot = addSkillingClueToLoot(

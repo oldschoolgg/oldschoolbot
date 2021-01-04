@@ -10,7 +10,7 @@ import { ItemBank } from '../../lib/types';
 import { bankHasItem, rand, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
-const LowSeedPackTable = new LootTable()
+export const LowSeedPackTable = new LootTable()
 	.add('Potato seed', [8, 12], 2)
 	.add('Onion seed', [8, 12], 2)
 	.add('Cabbage seed', [8, 12], 2)
@@ -43,7 +43,7 @@ const LowSeedPackTable = new LootTable()
 	.add('Mushroom spore', [4, 6], 1)
 	.add('Belladonna seed', [4, 6], 1);
 
-const MediumSeedPackTable = new LootTable()
+export const MediumSeedPackTable = new LootTable()
 	.add('Irit seed', [2, 6], 3)
 	.add('Limpwurt seed', [4, 8], 3)
 	.add('Watermelon seed', [8, 12], 2)
@@ -64,7 +64,7 @@ const MediumSeedPackTable = new LootTable()
 	.add('Calquat tree seed', [3, 6], 1)
 	.add('Teak seed', [1, 3], 1);
 
-const HighSeedPackTable = new LootTable()
+export const HighSeedPackTable = new LootTable()
 	.add('Papaya tree seed', [1, 3], 5)
 	.add('Palm tree seed', [1, 2], 5)
 	.add('Hespori seed', 1, 5)

@@ -46,6 +46,10 @@ export default class extends Task {
 				loot[getRandomMysteryBox()] = 1;
 			}
 		}
+		const minutes = duration / Time.Minute;
+		if (roll(Math.floor(2000 / minutes)) && !user.hasItemEquippedOrInBank('Obis')) {
+			loot[itemID('Obis')] = 1;
+		}
 
 		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
 			loot[itemID('Rift guardian')] = 1;

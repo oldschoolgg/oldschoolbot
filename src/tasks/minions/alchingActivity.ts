@@ -41,7 +41,7 @@ export default class extends Task {
 		let gotLamb = false;
 		if (duration > Time.Minute * 20 && roll(200)) {
 			gotLamb = true;
-			user.addItemsToBank({ 9619: 1 });
+			user.addItemsToBank({ 9619: 1 }, true);
 		}
 
 		const saved =

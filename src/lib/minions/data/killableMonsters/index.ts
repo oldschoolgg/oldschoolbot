@@ -9,6 +9,7 @@ import { KillableMonster } from '../../types';
 import bosses from './bosses';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
 import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
+import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
 import low from './low';
 
@@ -453,6 +454,29 @@ const killableMonsters: KillableMonster[] = [
 				[GearStat.AttackCrush]: 65
 			}
 		}
+	},
+	{
+		id: Koschei.id,
+		name: Koschei.name,
+		aliases: Koschei.aliases,
+		timeToFinish: Time.Hour * 2,
+		table: {
+			kill: makeKillTable(koscheiTable)
+		},
+		emoji: '',
+		wildy: true,
+		canBeKilled: true,
+		difficultyRating: 9,
+		qpRequired: 100,
+		healAmountNeeded: 2000 * 25,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.AttackSlash]: 168
+			}
+		},
+		respawnTime: Time.Second * 20
 	}
 ];
 

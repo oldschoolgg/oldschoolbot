@@ -10,7 +10,7 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -63,6 +63,11 @@ export default class extends BotCommand {
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
+
+		if (msg.author.equippedPet() === itemID('Obis')) {
+			baseTime /= 2;
+			boosts.push(`2x boost for Obis`);
+		}
 
 		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
 			baseTime *= 1.15;

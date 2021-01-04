@@ -490,7 +490,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = floor(msg.author.maxTripLength / timeToFinish);
+			quantity = Math.max(1, floor(msg.author.maxTripLength / timeToFinish));
 		}
 
 		// Check food
@@ -512,7 +512,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 		}
 
 		let duration = timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength) {
+		if (duration > msg.author.maxTripLength && quantity > 1) {
 			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 				msg.author.maxTripLength
 			)}, try a lower quantity. The highest amount you can do for ${

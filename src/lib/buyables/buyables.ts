@@ -339,7 +339,7 @@ const Buyables: Buyable[] = [
 			[itemID('Compost')]: 1
 		},
 		qpRequired: 0,
-		gpCost: 400
+		gpCost: 500
 	},
 	{
 		name: 'Lottery ticket',
