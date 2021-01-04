@@ -74,7 +74,7 @@ export default class extends Task {
 		}
 
 		let boosts = [];
-		if (user.hasItemEquippedAnywhere(itemID("Thieves' armband"))) {
+		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push(`3x loot for Thieves armband`);
 			loot.bank = multiplyBankNotClues(loot.bank, 3);
 		}
