@@ -33,7 +33,9 @@ export async function handleTripFinish(
 
 	const minutes = data.duration / Time.Minute;
 	const pet = user.equippedPet();
-	if (pet === itemID('Peky')) {
+	if (minutes < 5) {
+		// Do nothing
+	} else if (pet === itemID('Peky')) {
 		let loot = new Bank();
 		for (let i = 0; i < minutes; i++) {
 			if (roll(10)) {
