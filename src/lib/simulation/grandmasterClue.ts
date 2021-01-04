@@ -77,8 +77,8 @@ const Supplies = new LootTable()
 	.add('Purple sweets', [50, 210]);
 
 const table = new LootTable()
-	.tertiary(75, ClueHunterTable)
-	.tertiary(200, BlessingTable)
+	.tertiary(90, ClueHunterTable)
+	.tertiary(270, BlessingTable)
 
 	.add(ClueTable)
 	.add(boxTable, 1, 2)

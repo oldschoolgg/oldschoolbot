@@ -469,6 +469,10 @@ export default class extends Task {
 				);
 			}
 
+			if (user.equippedPet() === itemID('Plopper')) {
+				loot = multiplyBank(loot, 4);
+			}
+
 			await user.addItemsToBank(loot, true);
 
 			const channel = this.client.channels.get(channelID);
