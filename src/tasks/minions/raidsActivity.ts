@@ -70,7 +70,7 @@ export default class extends Task {
 				userLoot[itemID('Takon')] = 1;
 			}
 			if (roll(140)) {
-				userLoot[itemID('Clue scroll (grandmaster)')] = 1;
+				userLoot[itemID('Clue scroll grandmaster')] = 1;
 			}
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
