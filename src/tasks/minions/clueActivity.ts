@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 
 import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -38,10 +39,14 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${clueTier.name} clues`);
-				return this.client.commands.get('nightmare')!.run(res, ['solo']);
-			},
+			user.settings.get(UserSettings.Bank)[clueTier.scrollID]
+				? res => {
+						user.log(`continued trip of ${quantity}x ${clueTier.name} clues`);
+						return this.client.commands
+							.get('mclue')!
+							.run(res, [quantity, clueTier.name]);
+				  }
+				: undefined,
 			data,
 			undefined,
 			loot
