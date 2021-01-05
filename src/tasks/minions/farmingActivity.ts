@@ -469,9 +469,9 @@ export default class extends Task {
 				);
 			}
 
-			if (user.equippedPet() === itemID('Plopper')) {
-				loot = multiplyBank(loot, 4);
-			}
+			// if (user.equippedPet() === itemID('Plopper')) {
+			// 	loot = multiplyBank(loot, 4);
+			// }
 
 			await user.addItemsToBank(loot, true);
 
