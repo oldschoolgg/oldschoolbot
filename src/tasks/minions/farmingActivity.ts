@@ -141,7 +141,7 @@ export default class extends Task {
 			}
 
 			await user.addXP(SkillsEnum.Farming, Math.floor(farmingXpReceived + bonusXP));
-			const newLevel = user.skillLevel(SkillsEnum.Farming);
+			const newLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 
 			if (newLevel > currentFarmingLevel) {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
@@ -221,7 +221,7 @@ export default class extends Task {
 							Math.floor(
 								plantToHarvest.chance1 +
 									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((user.skillLevel(SkillsEnum.Farming) - 1) / 98)
+										((currentFarmingLevel - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = (plantChanceFactor + 1) / 256;
@@ -333,8 +333,8 @@ export default class extends Task {
 			await user.addXP(SkillsEnum.Farming, Math.floor(farmingXpReceived + bonusXP));
 			await user.addXP(SkillsEnum.Woodcutting, Math.floor(woodcuttingXp));
 
-			const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-			const newWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+			const newFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
+			const newWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 
 			if (newFarmingLevel > currentFarmingLevel) {
 				infoStr.push(`\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
@@ -365,10 +365,7 @@ export default class extends Task {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll(
-					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
-						alivePlants
-				)
+				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants)
 			) {
 				loot[itemID('Tangleroot')] = 1;
 				tangleroot = true;
@@ -376,11 +373,7 @@ export default class extends Task {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll(
-					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
-						alivePlants /
-						5
-				)
+				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5)
 			) {
 				loot[itemID('Plopper')] = 1;
 			}
