@@ -59,11 +59,6 @@ interface KCUser {
 	minigameScores: ItemBank;
 }
 
-interface CreatureUser {
-	id: string;
-	CreatureScores: ItemBank;
-}
-
 interface GPLeaderboard {
 	lastUpdated: number;
 	list: GPUser[];
@@ -111,7 +106,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -512,13 +507,15 @@ WHERE u."logBankLength" > 300 ORDER BY u."logBankLength" DESC;`
 				.chunk(data, 10)
 				.map(subList =>
 					subList
-						.map(({ id, creatureCount }) => `**${this.getUsername(id)}:** ${creatureCount} Creatures`)
+						.map(
+							({ id, creatureCount }) =>
+								`**${this.getUsername(id)}:** ${creatureCount} Creatures`
+						)
 						.join('\n')
 				),
 			`Catch LeaderBoard for ${creature.name}`
 		);
 	}
-
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
 		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));

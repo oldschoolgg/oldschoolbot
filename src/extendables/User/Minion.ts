@@ -1,4 +1,3 @@
-import { CreatureScores } from './../../lib/settings/types/UserSettings';
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -41,6 +40,7 @@ import {
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	HerbloreActivityTaskOptions,
+	HunterActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -49,8 +49,7 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
-	ZalcanoActivityTaskOptions,
-	HunterActivityTaskOptions
+	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
 import {
 	addItemToBank,
@@ -70,7 +69,6 @@ import {
 	PlunderActivityTaskOptions,
 	SepulchreActivityTaskOptions
 } from './../../lib/types/minions';
-import creatures from '../../lib/skilling/skills/hunter/creatures';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -414,7 +412,9 @@ export default class extends Extendable {
 							stringMatches(alias.split(' ')[0], data.creatureName)
 					)
 				);
-				return `${this.minionName} is currently hunting ${data.quantity}x ${creature!.name}. ${formattedDuration}`;
+				return `${this.minionName} is currently hunting ${data.quantity}x ${
+					creature!.name
+				}. ${formattedDuration}`;
 			}
 
 			case Activity.BirdHouse: {
