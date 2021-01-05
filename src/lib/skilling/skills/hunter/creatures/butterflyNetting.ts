@@ -13,7 +13,9 @@ const butterflyNettingCreatures: Creature[] = [
 		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Ruby harvest'),
 		huntTechnique: 'butterfly netting',
-		catchTime: 0
+		catchTime: 8,
+		slope: 1.3,
+		intercept: 35
 	},
 	{
 		name: `Sapphire glacialis`,
@@ -24,7 +26,9 @@ const butterflyNettingCreatures: Creature[] = [
 		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Sapphire glacialis'),
 		huntTechnique: 'butterfly netting',
-		catchTime: 0
+		catchTime: 8,
+		slope: 1.2,
+		intercept: 40
 	},
 	{
 		name: `Snowy knight`,
@@ -35,7 +39,9 @@ const butterflyNettingCreatures: Creature[] = [
 		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Snowy knight'),
 		huntTechnique: 'butterfly netting',
-		catchTime: 0
+		catchTime: 9,
+		slope: 1.35,
+		intercept: 30
 	},
 	{
 		name: `Black warlock`,
@@ -46,7 +52,9 @@ const butterflyNettingCreatures: Creature[] = [
 		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Black warlock'),
 		huntTechnique: 'butterfly netting',
-		catchTime: 0
+		catchTime: 9,
+		slope: 1.35,
+		intercept: 35
 	}
 ];
 

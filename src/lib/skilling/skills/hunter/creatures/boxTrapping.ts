@@ -13,8 +13,10 @@ const boxTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Ferret'),
 		huntTechnique: 'box trapping',
 		multiTraps: true,
-		catchTime: 0,
-		qpRequired: 2
+		catchTime: 10,
+		qpRequired: 2,
+		slope: 1,
+		intercept: 15
 	},
 	{
 		name: `Chinchompa`,
@@ -25,8 +27,10 @@ const boxTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Chinchompa'),
 		huntTechnique: 'box trapping',
 		multiTraps: true,
-		catchTime: 0,
-		qpRequired: 2
+		catchTime: 15,
+		qpRequired: 2,
+		slope: 1.03479,
+		intercept: 1.69495
 	},
 	{
 		name: `Carnivorous chinchompa`,
@@ -37,8 +41,10 @@ const boxTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Red chinchompa'),
 		huntTechnique: 'box trapping',
 		multiTraps: true,
-		catchTime: 0,
-		qpRequired: 2
+		catchTime: 15,
+		qpRequired: 2,
+		slope: 1.22,
+		intercept: -31.33
 	},
 	{
 		name: `Black chinchompa`,
@@ -50,8 +56,10 @@ const boxTrappingCreatures: Creature[] = [
 		huntTechnique: 'box trapping',
 		multiTraps: true,
 		wildy: true,
-		catchTime: 0,
-		qpRequired: 2
+		catchTime: 15,
+		qpRequired: 2,
+		slope: 1.22,
+		intercept: -31.33
 	}
 ];
 

@@ -4,6 +4,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
@@ -12,6 +13,7 @@ import {
 	formatDuration,
 	itemNameFromID,
 	removeItemFromBank,
+	round,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -34,6 +36,28 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, creatureName = '']: [null | number | string, string]) {
+		if (msg.flagArgs.xphr) {
+			let str = 'Approximate XP/Hr (varies based on RNG)\n\n';
+			for (let i = 1; i < 100; i += 5) {
+				str += `\n---- Level ${i} ----`;
+				let results: [string, number, number][] = [];
+				for (const creature of Hunter.Creatures) {
+					if (i < creature.level) continue;
+					let traps = 1;
+					if (creature.multiTraps) {
+						traps += Math.floor(i / 20) + (creature.wildy ? 1 : 0);
+					}
+					const [, xpReceived] = calcLootXPHunting( i, creature, 18_000 / (creature.catchTime / traps));
+					results.push([creature.name, round(xpReceived, 2) / 5, traps]);
+				}
+				for (const [name, xp, traps] of results.sort((a, b) => a[1] - b[1])) {
+					str += `\n${name} amount of traps ${traps} and ${xp.toLocaleString()} XP/HR`;
+				}
+				str += '\n\n\n';
+			}
+			return msg.channel.sendFile(Buffer.from(str), 'output.txt');
+		}
+
 		if (msg.flagArgs.creatures) {
 			return msg.channel.sendFile(
 				Buffer.from(
@@ -90,16 +114,17 @@ export default class extends BotCommand {
 			}
 		}
 
+		// Reduce time if user is experienced hunting the creature, every three hours become 1% better to a cap of 10% or 20% if tracking technique.
+		const THREE_HOURS = Time.Hour * 2;
+		const percentReduced = Math.min(Math.floor(msg.author.settings.get(UserSettings.CreatureScores)[creature.name] ?? 1 / (THREE_HOURS / (creature.catchTime * Time.Second))), creature.huntTechnique === 'tracking' ? 20 : 10);
+		
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = 1 //Calculate correct quantity
 		}
 		
 		let duration = quantity * 5 * Time.Second; //Add correct duration
-
-		// Reduce time if user is experienced hunting the creature, every two hours become 1% better to a cap of 5%
-		const TWO_HOURS = Time.Hour * 2;
-		const percentReduced = Math.min(Math.floor(msg.author.settings.get(UserSettings.CreatureScores)[creature.name] ?? 1 / (TWO_HOURS / (creature.catchTime * Time.Second))), 5);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature.`);
 

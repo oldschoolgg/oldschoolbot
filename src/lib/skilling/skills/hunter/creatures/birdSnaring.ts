@@ -13,7 +13,9 @@ const birdSnaringCreatures: Creature[] = [
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Red feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 20,
+		slope: 1,
+		intercept: 20
 	},
 	{
 		name: `Golden warbler`,
@@ -27,7 +29,9 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Yellow feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 20,
+		slope: 1,
+		intercept: 15
 	},
 	{
 		name: `Copper longtail`,
@@ -41,7 +45,9 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Orange feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 20,
+		slope: 1.2,
+		intercept: 12
 	},
 	{
 		name: `Cerulean twitch`,
@@ -52,7 +58,9 @@ const birdSnaringCreatures: Creature[] = [
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Blue feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 20,
+		slope: 1.3,
+		intercept: 10
 	},
 	{
 		name: `Tropical wagtail`,
@@ -66,7 +74,9 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Stripy feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 20,
+		slope: 1.4,
+		intercept: 5
 	}
 ];
 

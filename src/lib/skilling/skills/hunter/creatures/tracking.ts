@@ -12,7 +12,9 @@ const trackingCreatures: Creature[] = [
 		itemsRequired: resolveNameBank({ 'Noose wand': 1 }),
 		table: new LootTable().every('Bones').every('Polar kebbit fur').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 0
+		catchTime: 30,
+		slope: 0,
+		intercept: 99
 	},
 	{
 		name: `Common kebbit`,
@@ -22,7 +24,9 @@ const trackingCreatures: Creature[] = [
 		itemsRequired: resolveNameBank({ 'Noose wand': 1 }),
 		table: new LootTable().every('Bones').every('Common kebbit fur').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 0
+		catchTime: 30,
+		slope: 0,
+		intercept: 99
 	},
 	{
 		name: `Feldip weasel`,
@@ -32,7 +36,9 @@ const trackingCreatures: Creature[] = [
 		itemsRequired: resolveNameBank({ 'Noose wand': 1 }),
 		table: new LootTable().every('Bones').every('Feldip weasel fur').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 0
+		catchTime: 30,
+		slope: 0,
+		intercept: 99
 	},
 	{
 		name: `Desert devil`,
@@ -42,7 +48,9 @@ const trackingCreatures: Creature[] = [
 		itemsRequired: resolveNameBank({ 'Noose wand': 1 }),
 		table: new LootTable().every('Bones').every('Desert devil fur').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 0
+		catchTime: 30,
+		slope: 0,
+		intercept: 99
 	},
 	{
 		name: `Razor-backed kebbit`,
@@ -52,7 +60,9 @@ const trackingCreatures: Creature[] = [
 		itemsRequired: resolveNameBank({ 'Noose wand': 1 }),
 		table: new LootTable().every('Bones').every('Long kebbit spike').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 0
+		catchTime: 30,
+		slope: 0,
+		intercept: 99
 	},
 	{
 		name: `Herbiboar`,
@@ -62,7 +72,9 @@ const trackingCreatures: Creature[] = [
 		itemsRequired: resolveNameBank({ 'Magic secateurs': 1 }),
 		table: new LootTable().tertiary(6500, 'Herbi') /* Scaleable loot table */,
 		huntTechnique: 'tracking',
-		catchTime: 0
+		catchTime: 59,
+		slope: 0,
+		intercept: 99
 	}
 ];
 

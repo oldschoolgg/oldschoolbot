@@ -240,4 +240,6 @@ export interface Creature {
 	wildy?: boolean;
 	catchTime: number;
 	qpRequired?: number;
+	slope: number;
+	intercept: number;
 }

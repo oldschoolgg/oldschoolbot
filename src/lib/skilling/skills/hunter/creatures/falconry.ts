@@ -10,7 +10,9 @@ const falconryCreatures: Creature[] = [
 		hunterXp: 104,
 		table: new LootTable().every('Bones').every('Spotted kebbit fur'),
 		huntTechnique: 'falconry',
-		catchTime: 0
+		catchTime: 10,
+		slope: 1,
+		intercept: 10
 	},
 	{
 		name: `Dark kebbit`,
@@ -19,7 +21,9 @@ const falconryCreatures: Creature[] = [
 		hunterXp: 132,
 		table: new LootTable().every('Bones').every('Dark kebbit fur'),
 		huntTechnique: 'falconry',
-		catchTime: 0
+		catchTime: 10,
+		slope: 1,
+		intercept: 10
 	},
 	{
 		name: `Dashing kebbit`,
@@ -28,7 +32,9 @@ const falconryCreatures: Creature[] = [
 		hunterXp: 156,
 		table: new LootTable().every('Bones').every('Dashing kebbit fur'),
 		huntTechnique: 'falconry',
-		catchTime: 0
+		catchTime: 10,
+		slope: 1,
+		intercept: 10
 	}
 ];
 

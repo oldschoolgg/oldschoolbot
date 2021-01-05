@@ -14,7 +14,9 @@ const rabbitSnaringCreatures: Creature[] = [
 		table: new LootTable().every('Bones').every('Raw rabbit').every('Rabbit foot'),
 		huntTechnique: 'rabbit snaring',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 20,
+		slope: 1.3,
+		intercept: 5
 	}
 ];
 

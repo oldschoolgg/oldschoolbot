@@ -13,7 +13,9 @@ const pitfallTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Big bones').add('Larupia fur').add('Tatty larupia fur'),
 		huntTechnique: 'pitfall trapping',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 30,
+		slope: 0.4,
+		intercept: 15
 	},
 	{
 		name: `Horned graahk`,
@@ -24,7 +26,9 @@ const pitfallTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Big bones').add('Graahk fur').add('Tatty graahk fur'),
 		huntTechnique: 'pitfall trapping',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 30,
+		slope: 0.7,
+		intercept: 15
 	},
 	{
 		name: `Sabre-toothed kyatt`,
@@ -35,7 +39,9 @@ const pitfallTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Big bones').add('Kyatt fur').add('Tatty kyatt fur'),
 		huntTechnique: 'pitfall trapping',
 		multiTraps: true,
-		catchTime: 0
+		catchTime: 30,
+		slope: 0.5,
+		intercept: 15
 	}
 ];
 
