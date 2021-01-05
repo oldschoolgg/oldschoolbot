@@ -16,25 +16,32 @@ export default class extends Task {
 			await this.analyticsTick();
 			job.done();
 		});
-		await this.client.boss.subscribe('minionActivity', async job => {
-			const data = job.data as ActivityTaskOptions;
-			const taskName = taskNameFromType(data.type);
-			const task = this.client.tasks.get(taskName);
-			try {
-				this.client.oneCommandAtATimeCache.add(data.userID);
-				await task?.run(data);
-			} finally {
-				this.client.oneCommandAtATimeCache.delete(data.userID);
-				if ('users' in data) {
-					for (const user of (data as GroupMonsterActivityTaskOptions).users) {
-						(this.client as OldSchoolBotClient).minionActivityCache.delete(user);
+		await this.client.boss.subscribe(
+			'minionActivity',
+			{
+				teamSize: 10,
+				teamConcurrency: 10
+			},
+			async job => {
+				const data = job.data as ActivityTaskOptions;
+				const taskName = taskNameFromType(data.type);
+				const task = this.client.tasks.get(taskName);
+				try {
+					this.client.oneCommandAtATimeCache.add(data.userID);
+					await task?.run(data);
+				} finally {
+					this.client.oneCommandAtATimeCache.delete(data.userID);
+					if ('users' in data) {
+						for (const user of (data as GroupMonsterActivityTaskOptions).users) {
+							(this.client as OldSchoolBotClient).minionActivityCache.delete(user);
+						}
+					} else {
+						(this.client as OldSchoolBotClient).minionActivityCache.delete(data.userID);
 					}
-				} else {
-					(this.client as OldSchoolBotClient).minionActivityCache.delete(data.userID);
+					job.done();
 				}
-				job.done();
 			}
-		});
+		);
 	}
 
 	async run() {
