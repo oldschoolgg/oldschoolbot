@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { randInt } from 'e';
+import { objectKeys, randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
@@ -15,7 +15,13 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
+import {
+	formatDuration,
+	isWeekend,
+	itemNameFromID,
+	randomItemFromArray,
+	removeDuplicatesFromArray
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
@@ -574,7 +580,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: [monster.attackStyleToUse]
+				attackStylesUsed: removeDuplicatesFromArray([
+					...objectKeys(monster.minimumGearRequirements ?? {}),
+					monster.attackStyleToUse
+				])
 			});
 
 			foodStr = result;
