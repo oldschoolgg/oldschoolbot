@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
@@ -9,8 +10,7 @@ import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, calcPercentOfNum, multiplyBank, roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { anglerBoostPercent, calcPercentOfNum, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -101,56 +101,42 @@ export default class extends Task {
 		if (fish.id === itemID('Raw karambwanji')) {
 			quantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		}
-		let loot = {
+		let loot = new Bank({
 			[fish.id]: quantity
-		};
+		});
 
 		if (user.equippedPet() === itemID('Klik')) {
 			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
 			if (cookedFish) {
-				delete loot[fish.id];
-				loot[cookedFish.id] = quantity;
+				loot.remove(fish.id, quantity);
+				loot.add(cookedFish.id, quantity);
 				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!`;
 			}
 		}
 
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
-				loot = multiplyBank(loot, 2);
-				loot[getRandomMysteryBox()] = 1;
+				loot.bank = multiplyBank(loot.bank, 2);
+				loot.add(getRandomMysteryBox());
 			}
 		}
 
 		if (fish.clueScrollChance) {
-			loot = addSkillingClueToLoot(
+			loot.bank = addSkillingClueToLoot(
 				user,
 				SkillsEnum.Fishing,
 				quantity,
 				fish.clueScrollChance,
-				loot
+				loot.bank
 			);
 		}
 
 		// Add barbarian fish to loot
 		if (fish.name === 'Barbarian fishing') {
-			loot[fish.id] = 0;
-			loot[itemID('Leaping sturgeon')] = leapingSturgeon;
-			loot[itemID('Leaping salmon')] = leapingSalmon;
-			loot[itemID('Leaping trout')] = leapingTrout;
-		}
-
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
-		if (fish.name === 'Barbarian fishing') {
-			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
-				fish.name
-			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP.
-\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
-			if (newLevel > currentLevel) {
-				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
-			}
-			if (newAgilityLevel > currentAgilityLevel) {
-				str += `\n\n${user.minionName}'s Agility level is now ${newAgilityLevel}!`;
-			}
+			loot.bank[fish.id] = 0;
+			loot.add('Leaping sturgeon', leapingSturgeon);
+			loot.add('Leaping salmon', leapingSalmon);
+			loot.add('Leaping trout', leapingTrout);
 		}
 
 		const xpBonusPercent = anglerBoostPercent(user);
@@ -167,7 +153,7 @@ export default class extends Task {
 			fish.petChance &&
 			roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)
 		) {
-			loot[itemID('Heron')] = 1;
+			loot.add('Heron');
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,
@@ -175,21 +161,38 @@ export default class extends Task {
 			);
 		}
 
-		// Roll for big fish
-		if (fish.bigFish && roll(fish.bigFishRate! / quantity)) {
-			loot[fish.bigFish] = 1;
+		if (fish.bigFishRate && fish.bigFish) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(fish.bigFishRate)) {
+					loot.add(fish.bigFish);
+				}
+			}
 		}
 
 		const minutesInTrip = Math.ceil(duration / 1000 / 60);
 		for (let i = 0; i < minutesInTrip; i++) {
 			if (roll(3000)) {
-				loot[itemID('Shelldon')] = 1;
+				loot.add('Shelldon');
 				str += `\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!`;
 				break;
 			}
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank(loot.bank, true);
+
+		str += `\n\nYou received: ${loot}.`;
+		if (fish.name === 'Barbarian fishing') {
+			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
+				fish.name
+			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP.
+\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
+			if (newLevel > currentLevel) {
+				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
+			}
+			if (newAgilityLevel > currentAgilityLevel) {
+				str += `\n\n${user.minionName}'s Agility level is now ${newAgilityLevel}!`;
+			}
+		}
 
 		handleTripFinish(
 			this.client,

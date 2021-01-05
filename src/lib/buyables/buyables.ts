@@ -348,6 +348,13 @@ const Buyables: Buyable[] = [
 		},
 		gpCost: 50_000_000
 	},
+	{
+		name: 'Amylase pack',
+		outputItems: {
+			[itemID('Amylase crystal')]: 100
+		},
+		itemCost: resolveNameBank({ 'Mark of grace': 10 })
+	},
 	...sepulchreBuyables
 ];
 
