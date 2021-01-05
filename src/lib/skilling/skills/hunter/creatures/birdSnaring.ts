@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const birdSnaringCreatures: Creature[] = [
 	{
 		name: `Crimson swift`,
+		id: 1,
 		aliases: ['crimson swift'],
 		level: 1,
 		hunterXp: 34,
@@ -19,6 +20,7 @@ const birdSnaringCreatures: Creature[] = [
 	},
 	{
 		name: `Golden warbler`,
+		id: 2,
 		aliases: ['golden warbler'],
 		level: 5,
 		hunterXp: 47,
@@ -35,6 +37,7 @@ const birdSnaringCreatures: Creature[] = [
 	},
 	{
 		name: `Copper longtail`,
+		id: 3,
 		aliases: ['copper longtail'],
 		level: 9,
 		hunterXp: 61.2,
@@ -51,6 +54,7 @@ const birdSnaringCreatures: Creature[] = [
 	},
 	{
 		name: `Cerulean twitch`,
+		id: 4,
 		aliases: ['cerulean twitch'],
 		level: 11,
 		hunterXp: 64.5,
@@ -64,6 +68,7 @@ const birdSnaringCreatures: Creature[] = [
 	},
 	{
 		name: `Tropical wagtail`,
+		id: 5,
 		aliases: ['tropical wagtail'],
 		level: 19,
 		hunterXp: 95.2,

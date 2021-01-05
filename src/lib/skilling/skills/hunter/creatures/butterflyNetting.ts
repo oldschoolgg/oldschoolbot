@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const butterflyNettingCreatures: Creature[] = [
 	{
 		name: `Ruby harvest`,
+		id: 10,
 		aliases: ['ruby harvest'],
 		level: 15,
 		hunterXp: 24,
@@ -19,6 +20,7 @@ const butterflyNettingCreatures: Creature[] = [
 	},
 	{
 		name: `Sapphire glacialis`,
+		id: 11,
 		aliases: ['sapphire glacialis'],
 		level: 25,
 		hunterXp: 34,
@@ -32,6 +34,7 @@ const butterflyNettingCreatures: Creature[] = [
 	},
 	{
 		name: `Snowy knight`,
+		id: 12,
 		aliases: ['snowy knight'],
 		level: 35,
 		hunterXp: 44,
@@ -45,6 +48,7 @@ const butterflyNettingCreatures: Creature[] = [
 	},
 	{
 		name: `Black warlock`,
+		id: 13,
 		aliases: ['black warlock'],
 		level: 45,
 		hunterXp: 54,

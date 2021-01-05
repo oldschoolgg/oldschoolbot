@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const trackingCreatures: Creature[] = [
 	{
 		name: `Polar kebbit`,
+		id: 31,
 		aliases: ['polar kebbit'],
 		level: 1,
 		hunterXp: 30,
@@ -18,6 +19,7 @@ const trackingCreatures: Creature[] = [
 	},
 	{
 		name: `Common kebbit`,
+		id: 32,
 		aliases: ['common kebbit'],
 		level: 3,
 		hunterXp: 36,
@@ -30,6 +32,7 @@ const trackingCreatures: Creature[] = [
 	},
 	{
 		name: `Feldip weasel`,
+		id: 33,
 		aliases: ['feldip weasel'],
 		level: 7,
 		hunterXp: 48,
@@ -42,6 +45,7 @@ const trackingCreatures: Creature[] = [
 	},
 	{
 		name: `Desert devil`,
+		id: 34,
 		aliases: ['desert devil'],
 		level: 13,
 		hunterXp: 66,
@@ -54,6 +58,7 @@ const trackingCreatures: Creature[] = [
 	},
 	{
 		name: `Razor-backed kebbit`,
+		id: 35,
 		aliases: ['razor-backed kebbit', 'razor kebbit'],
 		level: 49,
 		hunterXp: 348.5,
@@ -66,6 +71,7 @@ const trackingCreatures: Creature[] = [
 	},
 	{
 		name: `Herbiboar`,
+		id: 36,
 		aliases: ['herbiboar'],
 		level: 80,
 		hunterXp: 1950, // Scaleable xp depending on hunting lvl

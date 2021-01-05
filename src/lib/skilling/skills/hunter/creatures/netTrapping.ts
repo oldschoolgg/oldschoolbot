@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const netTrappingCreatures: Creature[] = [
 	{
 		name: `Swamp lizard`,
+		id: 23,
 		aliases: ['swamp lizard'],
 		level: 29,
 		hunterXp: 152,
@@ -19,6 +20,7 @@ const netTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Orange salamander`,
+		id: 24,
 		aliases: ['orange salamander'],
 		level: 47,
 		hunterXp: 224,
@@ -32,6 +34,7 @@ const netTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Red salamander`,
+		id: 25,
 		aliases: ['red salamander'],
 		level: 59,
 		hunterXp: 272,
@@ -45,6 +48,7 @@ const netTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Black salamander`,
+		id: 26,
 		aliases: ['Black salamander'],
 		level: 67,
 		hunterXp: 319.2,

@@ -227,6 +227,7 @@ export interface Plant {
 
 export interface Creature {
 	name: string;
+	id: number;
 	aliases: string[];
 	level: number;
 	hunterXp: number;

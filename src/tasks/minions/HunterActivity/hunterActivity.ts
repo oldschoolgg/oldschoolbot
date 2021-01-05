@@ -105,6 +105,7 @@ export default class extends Task {
 				newGear[EquipmentSlot.Legs] = null;
 				await user.settings.update(UserSettings.Gear.Misc, newGear);
 				diedStr = `${user}, ${user.minionName} got killed during the activity and lost some gear, saradomin brew and Super restore.`;
+				successfulQuantity *= 0.5;
 			}
 			if (gotPked && !died) {
 				if (
@@ -114,7 +115,7 @@ export default class extends Task {
 					user.removeItemFromBank(itemID('Saradomin brew(4)'), rand(1, 15));
 					user.removeItemFromBank(itemID('Super restore(4)'), rand(1, 5));
 					pkStr = `${user}, ${user.minionName} got attacked during the activity, escaped and lost some saradomin brew and super restore.`;
-					successfulQuantity -= 33;
+					successfulQuantity *= 0.9;
 				}
 			}
 		}
@@ -140,6 +141,7 @@ export default class extends Task {
 			}
 		}
 
+		await user.incrementCreatureScore(creature.id, successfulQuantity);
 		await user.addItemsToBank(loot.values(), true);
 		await user.addXP(SkillsEnum.Thieving, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Hunter);

@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const pitfallTrappingCreatures: Creature[] = [
 	{
 		name: `Spined larupia`,
+		id: 27,
 		aliases: ['spined larupia'],
 		level: 31,
 		hunterXp: 180,
@@ -19,6 +20,7 @@ const pitfallTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Horned graahk`,
+		id: 28,
 		aliases: ['horned graahk'],
 		level: 41,
 		hunterXp: 240,
@@ -32,6 +34,7 @@ const pitfallTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Sabre-toothed kyatt`,
+		id: 29,
 		aliases: ['sabre-toothed kyatt'],
 		level: 55,
 		hunterXp: 300,

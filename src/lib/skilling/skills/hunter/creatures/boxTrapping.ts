@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const boxTrappingCreatures: Creature[] = [
 	{
 		name: `Ferret`,
+		id: 6,
 		aliases: ['ferret'],
 		level: 27,
 		hunterXp: 115.2,
@@ -20,6 +21,7 @@ const boxTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Chinchompa`,
+		id: 7,
 		aliases: ['chinchompa'],
 		level: 53,
 		hunterXp: 198.4,
@@ -34,6 +36,7 @@ const boxTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Carnivorous chinchompa`,
+		id: 8,
 		aliases: ['carnivorous chinchompa'],
 		level: 63,
 		hunterXp: 265,
@@ -48,6 +51,7 @@ const boxTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Black chinchompa`,
+		id: 9,
 		aliases: ['black chinchompa'],
 		level: 73,
 		hunterXp: 315,

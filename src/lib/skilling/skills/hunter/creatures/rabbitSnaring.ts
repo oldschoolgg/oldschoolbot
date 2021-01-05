@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const rabbitSnaringCreatures: Creature[] = [
 	{
 		name: `White rabbit`,
+		id: 30,
 		aliases: ['white rabbit'],
 		level: 27,
 		hunterXp: 144,

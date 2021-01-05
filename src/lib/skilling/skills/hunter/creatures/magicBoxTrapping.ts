@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const magicBoxTrappingCreatures: Creature[] = [
 	{
 		name: `Imp`,
+		id: 22,
 		aliases: ['imp'],
 		level: 71,
 		hunterXp: 450,

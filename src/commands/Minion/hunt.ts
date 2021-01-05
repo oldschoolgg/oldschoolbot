@@ -160,7 +160,7 @@ export default class extends BotCommand {
 		const THREE_HOURS = Time.Hour * 2;
 		const percentReduced = Math.min(
 			Math.floor(
-				msg.author.settings.get(UserSettings.CreatureScores)[creature.name] ??
+				msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ??
 					1 / (THREE_HOURS / (creature.catchTime * Time.Second))
 			),
 			creature.huntTechnique === 'tracking' ? 20 : 10

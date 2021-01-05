@@ -6,6 +6,7 @@ import { Creature } from '../../../types';
 const deadfallTrappingCreatures: Creature[] = [
 	{
 		name: `Wild kebbit`,
+		id: 14,
 		aliases: ['wild kebbit'],
 		level: 23,
 		hunterXp: 128,
@@ -17,6 +18,7 @@ const deadfallTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Barb-tailed kebbit`,
+		id: 15,
 		aliases: ['barb-tailed kebbit'],
 		level: 33,
 		hunterXp: 168,
@@ -28,6 +30,7 @@ const deadfallTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Prickly kebbit`,
+		id: 16,
 		aliases: ['prickly kebbit'],
 		level: 37,
 		hunterXp: 204,
@@ -39,6 +42,7 @@ const deadfallTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Sabre-toothed kebbit`,
+		id: 17,
 		aliases: ['sabre-toothed kebbit'],
 		level: 51,
 		hunterXp: 200,
@@ -50,6 +54,7 @@ const deadfallTrappingCreatures: Creature[] = [
 	},
 	{
 		name: `Maniacal monkey`,
+		id: 18,
 		aliases: ['maniacal monkey'],
 		level: 60,
 		hunterXp: 1000,

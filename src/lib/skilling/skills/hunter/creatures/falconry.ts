@@ -5,6 +5,7 @@ import { Creature } from '../../../types';
 const falconryCreatures: Creature[] = [
 	{
 		name: `Spotted kebbit`,
+		id: 19,
 		aliases: ['spotted kebbit'],
 		level: 43,
 		hunterXp: 104,
@@ -16,6 +17,7 @@ const falconryCreatures: Creature[] = [
 	},
 	{
 		name: `Dark kebbit`,
+		id: 20,
 		aliases: ['dark kebbit'],
 		level: 57,
 		hunterXp: 132,
@@ -27,6 +29,7 @@ const falconryCreatures: Creature[] = [
 	},
 	{
 		name: `Dashing kebbit`,
+		id: 21,
 		aliases: ['dashing kebbit'],
 		level: 69,
 		hunterXp: 156,
