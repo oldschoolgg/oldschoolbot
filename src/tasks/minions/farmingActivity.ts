@@ -32,8 +32,8 @@ export default class extends Task {
 		currentDate
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
-		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
+		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;
 		let bonusXP = 0;
 		let plantXp = 0;
