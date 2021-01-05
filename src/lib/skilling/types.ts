@@ -238,6 +238,7 @@ export interface Creature {
 	huntTechnique: string;
 	multiTraps?: boolean;
 	wildy?: boolean;
+	prayerLvl?: number;
 	catchTime: number;
 	qpRequired?: number;
 	slope: number;

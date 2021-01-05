@@ -1,3 +1,4 @@
+import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity, Tasks } from '../constants';
 import { PatchTypes } from '../farming';
 import { MinigameIDsEnum } from '../minions/data/minigames';
@@ -101,6 +102,8 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	creatureName: string;
 	channelID: string;
 	quantity: number;
+	usingHuntPotion: boolean;
+	wildyPeak: Peak | null;
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {

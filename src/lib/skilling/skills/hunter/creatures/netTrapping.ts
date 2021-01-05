@@ -53,6 +53,7 @@ const netTrappingCreatures: Creature[] = [
 		huntTechnique: 'net trapping',
 		multiTraps: true,
 		wildy: true,
+		prayerLvl: 43,
 		catchTime: 12,
 		slope: 1.2,
 		intercept: -5

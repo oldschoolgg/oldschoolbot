@@ -2,13 +2,13 @@ import { Time } from '../lib/constants';
 import { rand, shuffle } from "../lib/util";
 import { Task } from 'klasa';
 
-const enum PeakTier {
+export const enum PeakTier {
     High = 'high',
     Medium = 'medium',
     Low = 'low'
 }
 
-interface Peak {
+export interface Peak {
     startTime: number
     finishTime: number
     peakTier: PeakTier
@@ -25,7 +25,7 @@ export default class extends Task {
 
     WildernessPeakTimes() {    
         let hoursUsed = 0;
-        let peakIntervall: Peak[] = [];
+        let peakInterval: Peak[] = [];
         const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
     
         //Divide the current day into interverals
@@ -37,7 +37,7 @@ export default class extends Task {
                 finishTime: randomedTime,
                 peakTier: peakTier
             }
-            peakIntervall.push(peak);
+            peakInterval.push(peak);
             hoursUsed += randomedTime;
         }
         
@@ -47,13 +47,13 @@ export default class extends Task {
             peakTier: PeakTier.Low
         }
     
-        peakIntervall.push(lastPeak);
+        peakInterval.push(lastPeak);
     
-        peakIntervall = shuffle(peakIntervall);
+        peakInterval = shuffle(peakInterval);
 
         let currentTime= new Date().getTime();
         
-        for (let peak of peakIntervall) {
+        for (let peak of peakInterval) {
             peak.startTime = currentTime;
             currentTime += peak.finishTime * Time.Hour;
             peak.finishTime = currentTime;
@@ -62,7 +62,7 @@ export default class extends Task {
         //Automatic updates Wilderness Peak times once every 24 hour
         setInterval(this.WildernessPeakTimes, Time.Hour * 24);
     
-        return peakIntervall;
+        return peakInterval;
     }
     
 }

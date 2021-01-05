@@ -56,6 +56,7 @@ const boxTrappingCreatures: Creature[] = [
 		huntTechnique: 'box trapping',
 		multiTraps: true,
 		wildy: true,
+		prayerLvl: 43,
 		catchTime: 15,
 		qpRequired: 2,
 		slope: 1.22,
