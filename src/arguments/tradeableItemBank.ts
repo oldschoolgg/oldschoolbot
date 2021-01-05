@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { MAX_INT_JAVA } from '../lib/constants';
 import { filterableTypes } from '../lib/filterables';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { bankHasAllItemsFromBank, stringMatches } from '../lib/util';
+import { bankHasAllItemsFromBank, shuffle, stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import itemIsTradeable from '../lib/util/itemIsTradeable';
 import { ItemResult, parseStringBank } from '../lib/util/parseStringBank';
@@ -35,7 +35,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 		// Adds every non-favorited item
 		if (msg.flagArgs.all) {
-			const entries = objectEntries(userBank.bank);
+			const entries = shuffle(objectEntries(userBank.bank));
 			for (let i = 0; i < entries.length; i++) {
 				let [id, qty] = entries[i];
 				id = Number(id);
