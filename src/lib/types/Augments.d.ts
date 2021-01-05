@@ -33,6 +33,7 @@ declare module 'klasa' {
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
+		public _peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
 		osggDB?: Db;
 		commentStream?: CommentStream;

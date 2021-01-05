@@ -21,10 +21,10 @@ export default class extends Task {
 	}
 
 	async run() {
-		this.WildernessPeakTimes();
+		this.WildernessPeakTimesCache();
 	}
 
-	WildernessPeakTimes() {
+	WildernessPeakTimesCache() {
 		let hoursUsed = 0;
 		let peakInterval: Peak[] = [];
 		const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
@@ -61,8 +61,8 @@ export default class extends Task {
 		}
 
 		// Automatic updates Wilderness Peak times once every 24 hour
-		setInterval(this.WildernessPeakTimes, Time.Hour * 24);
+		setInterval(this.WildernessPeakTimesCache, Time.Hour * 24);
 
-		return peakInterval;
+		this.client._peakIntervalCache = peakInterval;
 	}
 }

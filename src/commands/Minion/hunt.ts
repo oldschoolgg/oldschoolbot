@@ -20,6 +20,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import { Peak } from './../../tasks/WildernessPeakInterval';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -279,19 +280,24 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let wildyPeak = null;
-		/*
+		let wildyStr = '';
+
 		if (creature.wildy) {
 			const date = new Date().getTime();
+			const cachedPeakInterval: Peak[] = this.client._peakIntervalCache;
 			// not the correct function just placeholder, real function in WildernessPeakInterval
-			for (const peak of generatedWildernessPeakTimes()) {
-				if (peak.startDate.getTime() < date && peak.finishDate.getTime() > date) {
+			for (const peak of cachedPeakInterval) {
+				if (peak.startTime < date && peak.finishTime > date) {
 					wildyPeak = peak;
 					break;
 				}
 			}
-			const wildyStr = `You are hunting ${creature.name} in the Wilderness during ${wildyPeak.peakTier} peak time and potentially risking Black d'hide / Karil's setup and potions. If you feel unsure \`${msg.cmdPrefix}cancel\` the activity.`;
+			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
+				wildyPeak!.peakTier
+			} peak time and potentially risking Black d'hide / Karil's setup and potions. If you feel unsure \`${
+				msg.cmdPrefix
+			}cancel\` the activity.`;
 		}
-		*/
 
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>(
 			this.client,
@@ -318,11 +324,9 @@ export default class extends BotCommand {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		/*
 		if (wildyStr.length > 0) {
 			response += `\n\n${wildyStr}.`;
 		}
-		*/
 
 		return msg.send(response);
 	}
