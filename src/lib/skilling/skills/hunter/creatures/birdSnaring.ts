@@ -1,5 +1,4 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Creature } from '../../../types';
 
@@ -10,7 +9,6 @@ const birdSnaringCreatures: Creature[] = [
 		aliases: ['crimson swift'],
 		level: 1,
 		hunterXp: 34,
-		itemsRequired: resolveNameBank({ 'Bird snare': 1 }),
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Red feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
@@ -24,7 +22,6 @@ const birdSnaringCreatures: Creature[] = [
 		aliases: ['golden warbler'],
 		level: 5,
 		hunterXp: 47,
-		itemsRequired: resolveNameBank({ 'Bird snare': 1 }),
 		table: new LootTable()
 			.every('Bones')
 			.every('Raw bird meat')
@@ -41,7 +38,6 @@ const birdSnaringCreatures: Creature[] = [
 		aliases: ['copper longtail'],
 		level: 9,
 		hunterXp: 61.2,
-		itemsRequired: resolveNameBank({ 'Bird snare': 1 }),
 		table: new LootTable()
 			.every('Bones')
 			.every('Raw bird meat')
@@ -58,7 +54,6 @@ const birdSnaringCreatures: Creature[] = [
 		aliases: ['cerulean twitch'],
 		level: 11,
 		hunterXp: 64.5,
-		itemsRequired: resolveNameBank({ 'Bird snare': 1 }),
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Blue feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
@@ -72,7 +67,6 @@ const birdSnaringCreatures: Creature[] = [
 		aliases: ['tropical wagtail'],
 		level: 19,
 		hunterXp: 95.2,
-		itemsRequired: resolveNameBank({ 'Bird snare': 1 }),
 		table: new LootTable()
 			.every('Bones')
 			.every('Raw bird meat')

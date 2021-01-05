@@ -38,6 +38,7 @@ export default class extends Task {
 		let died = false;
 		let diedStr = '';
 		let pkStr = '';
+		let pkedQuantity = 0;
 
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
@@ -57,13 +58,13 @@ export default class extends Task {
 
 		if (creature.wildy) {
 			let riskPkChance =
-				(creature.name === 'Black chinchompa' ? 60 : 200) +
+				(creature.name === 'Black chinchompa' ? 100 : 200) +
 				(wildyPeak?.peakTier === PeakTier.High
 					? -30
 					: wildyPeak?.peakTier === PeakTier.Medium
-					? -20
+					? -10
 					: wildyPeak?.peakTier === PeakTier.Low
-					? 30
+					? 50
 					: 0);
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
@@ -94,18 +95,18 @@ export default class extends Task {
 			if (gotPked && roll(riskDeathChance)) {
 				died = true;
 				if (
-					bankHasItem(userBank, itemID('Saradomin brew(4)'), 15) &&
+					bankHasItem(userBank, itemID('Saradomin brew(4)'), 10) &&
 					bankHasItem(userBank, itemID('Super restore(4)'), 5)
 				) {
-					user.removeItemFromBank(itemID('Saradomin brew(4)'), rand(1, 15));
+					user.removeItemFromBank(itemID('Saradomin brew(4)'), rand(1, 10));
 					user.removeItemFromBank(itemID('Super restore(4)'), rand(1, 5));
 				}
 				const newGear = { ...user.settings.get(UserSettings.Gear.Misc) };
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
 				await user.settings.update(UserSettings.Gear.Misc, newGear);
-				diedStr = `${user}, ${user.minionName} got killed during the activity and lost some gear, saradomin brew and Super restore.`;
-				successfulQuantity *= 0.5;
+				pkedQuantity *= 0.5;
+				diedStr = `${user}, ${user.minionName} got killed during the activity and lost some gear, catch quantity, saradomin brew and Super restore.`;
 			}
 			if (gotPked && !died) {
 				if (
@@ -114,8 +115,8 @@ export default class extends Task {
 				) {
 					user.removeItemFromBank(itemID('Saradomin brew(4)'), rand(1, 15));
 					user.removeItemFromBank(itemID('Super restore(4)'), rand(1, 5));
-					pkStr = `${user}, ${user.minionName} got attacked during the activity, escaped and lost some saradomin brew and super restore.`;
-					successfulQuantity *= 0.9;
+					pkStr = `${user}, ${user.minionName} got attacked during the activity, escaped and lost some catch quantity, saradomin brew and super restore.`;
+					pkedQuantity *= 0.1;
 				}
 			}
 		}
@@ -126,24 +127,28 @@ export default class extends Task {
 		}
 
 		let creatureTable = creature.table;
+		let magicSecStr = '';
 		if (creature.name === 'Herbiboar') {
 			creatureTable = generateHerbiTable(
 				user.skillLevel(SkillsEnum.Herblore),
 				creature,
 				user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))
 			);
+			if (user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))) {
+				magicSecStr = `Extra Yield for Magic secateurs`;
+			}
 		}
 		const loot = new Bank();
-		for (let i = 0; i < successfulQuantity; i++) {
+		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
 			loot.add(creatureTable.roll());
-			if (roll(babyChinChance)) {
+			if (roll(babyChinChance) && creature.name.toLowerCase().includes('chinchompa')) {
 				loot.add(itemID('Baby chinchompa'));
 			}
 		}
 
 		await user.incrementCreatureScore(creature.id, successfulQuantity);
 		await user.addItemsToBank(loot.values(), true);
-		await user.addXP(SkillsEnum.Thieving, xpReceived);
+		await user.addXP(SkillsEnum.Hunter, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Hunter);
 
 		const xpHr = `${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
@@ -162,7 +167,7 @@ export default class extends Task {
 		str += `\n\nYou received: ${await createReadableItemListFromBank(
 			this.client,
 			loot.values()
-		)}.`;
+		)}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
 		if (gotPked && !died) {
 			str += `\n${pkStr}`;

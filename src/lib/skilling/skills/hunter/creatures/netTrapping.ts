@@ -1,6 +1,4 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-
-import { resolveNameBank } from '../../../../util';
 import { Creature } from '../../../types';
 
 const netTrappingCreatures: Creature[] = [
@@ -10,7 +8,6 @@ const netTrappingCreatures: Creature[] = [
 		aliases: ['swamp lizard'],
 		level: 29,
 		hunterXp: 152,
-		itemsRequired: resolveNameBank({ Rope: 1, 'Small fishing net': 1 }),
 		table: new LootTable().every('Swamp lizard'),
 		huntTechnique: 'net trapping',
 		multiTraps: true,
@@ -24,7 +21,6 @@ const netTrappingCreatures: Creature[] = [
 		aliases: ['orange salamander'],
 		level: 47,
 		hunterXp: 224,
-		itemsRequired: resolveNameBank({ Rope: 1, 'Small fishing net': 1 }),
 		table: new LootTable().every('Orange salamander'),
 		huntTechnique: 'net trapping',
 		multiTraps: true,
@@ -38,7 +34,6 @@ const netTrappingCreatures: Creature[] = [
 		aliases: ['red salamander'],
 		level: 59,
 		hunterXp: 272,
-		itemsRequired: resolveNameBank({ Rope: 1, 'Small fishing net': 1 }),
 		table: new LootTable().every('Red salamander'),
 		huntTechnique: 'net trapping',
 		multiTraps: true,
@@ -52,7 +47,6 @@ const netTrappingCreatures: Creature[] = [
 		aliases: ['Black salamander'],
 		level: 67,
 		hunterXp: 319.2,
-		itemsRequired: resolveNameBank({ Rope: 1, 'Small fishing net': 1 }),
 		table: new LootTable().every('Black salamander'),
 		huntTechnique: 'net trapping',
 		multiTraps: true,

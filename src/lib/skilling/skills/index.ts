@@ -13,6 +13,7 @@ import Runecraft from './runecraft';
 import Smithing from './smithing';
 import Thieving from './thieving';
 import Woodcutting from './woodcutting';
+import Hunter from './hunter/hunter';
 
 export const Skills: Record<string, Skill> = {
 	Crafting,
@@ -28,7 +29,8 @@ export const Skills: Record<string, Skill> = {
 	Fletching,
 	Thieving,
 	Farming,
-	Herblore
+	Herblore,
+	Hunter
 };
 
 export default Skills;

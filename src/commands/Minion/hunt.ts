@@ -158,7 +158,7 @@ export default class extends BotCommand {
 		let { catchTime } = creature;
 
 		// Reduce time if user is experienced hunting the creature, every three hours become 1% better to a cap of 10% or 20% if tracking technique.
-		const THREE_HOURS = Time.Hour * 2;
+		const THREE_HOURS = Time.Hour * 3;
 		const percentReduced = Math.min(
 			Math.floor(
 				msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ??
@@ -184,11 +184,11 @@ export default class extends BotCommand {
 				);
 			}
 			if (
-				!bankHasItem(userBank, itemID('Saradomin brew(4)'), 15) ||
+				!bankHasItem(userBank, itemID('Saradomin brew(4)'), 10) ||
 				!bankHasItem(userBank, itemID('Super restore(4)'), 5)
 			) {
 				return msg.send(
-					`To hunt ${creature.name} in the wilderness you need to have 15x Saradomin brew(4) and 5x Super restore(4) for safety.`
+					`To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`
 				);
 			}
 		}
@@ -198,7 +198,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(msg.author.maxTripLength / ((catchTime * Time.Second) / traps));
 		}
 
-		let duration = quantity * creature.catchTime * Time.Second;
+		let duration = Math.floor(quantity * catchTime / traps * Time.Second);
 
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
@@ -314,9 +314,9 @@ export default class extends BotCommand {
 			}
 		);
 
-		let response = `${msg.author.minionName} is now hunting ${quantity}x ${
+		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${
 			creature.name
-		} using ${traps}x trap${traps > 1 ? 's' : ''}, it'll take around ${formatDuration(
+		}, it'll take around ${formatDuration(
 			duration
 		)} to finish.`;
 
@@ -325,7 +325,7 @@ export default class extends BotCommand {
 		}
 
 		if (wildyStr.length > 0) {
-			response += `\n\n${wildyStr}.`;
+			response += `\n\n${wildyStr}`;
 		}
 
 		return msg.send(response);
