@@ -32,7 +32,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			description: `Allows a player to hunt different creatures for hunter.`,
 			examples: ['+hunt 5 herbiboar'],
-			categoryFlags: ['minion', 'skilling'],
+			categoryFlags: ['minion', 'skilling']
 		});
 	}
 
@@ -50,7 +50,11 @@ export default class extends BotCommand {
 					if (creature.multiTraps) {
 						traps += Math.floor(i / 20) + (creature.wildy ? 1 : 0);
 					}
-					const [, xpReceived] = calcLootXPHunting( i, creature, 18_000 / (creature.catchTime / traps));
+					const [, xpReceived] = calcLootXPHunting(
+						i,
+						creature,
+						18_000 / (creature.catchTime / traps)
+					);
 					results.push([creature.name, round(xpReceived, 2) / 5, traps]);
 				}
 				for (const [name, xp, traps] of results.sort((a, b) => a[1] - b[1])) {
@@ -65,8 +69,7 @@ export default class extends BotCommand {
 			return msg.channel.sendFile(
 				Buffer.from(
 					Hunter.Creatures.map(
-						creature =>
-							`${creature.name} - lvl required: ${creature.level}`
+						creature => `${creature.name} - lvl required: ${creature.level}`
 					).join('\n')
 				),
 				`Available Creatures.txt`
@@ -80,7 +83,12 @@ export default class extends BotCommand {
 		let traps = 1;
 		let usingHuntPotion = false;
 
-		if (msg.flagArgs.pot || msg.flagArgs.potion || msg.flagArgs.huntpotion || msg.flagArgs.hunterpotion) {
+		if (
+			msg.flagArgs.pot ||
+			msg.flagArgs.potion ||
+			msg.flagArgs.huntpotion ||
+			msg.flagArgs.hunterpotion
+		) {
 			usingHuntPotion = true;
 		}
 
@@ -92,48 +100,75 @@ export default class extends BotCommand {
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
 				alias =>
-					stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
+					stringMatches(alias, creatureName) ||
+					stringMatches(alias.split(' ')[0], creatureName)
 			)
 		);
 
 		if (!creature) {
-			return msg.send(`That's not a valid creature to hunt. Valid creatures are ${Hunter.Creatures.map(
-				creature => creature.name
-			).join(', ')}. *for more creature info write \`${msg.cmdPrefix}hunt --creatures\`.*`);
+			return msg.send(
+				`That's not a valid creature to hunt. Valid creatures are ${Hunter.Creatures.map(
+					creature => creature.name
+				).join(', ')}. *for more creature info write \`${msg.cmdPrefix}hunt --creatures\`.*`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
-			return msg.send(`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`);
+			return msg.send(
+				`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.qpRequired && userQP < creature.qpRequired) {
-			return msg.send(`${msg.author.minionName} needs ${creature.qpRequired} Questpoints to hunt ${creature.name}.`);
+			return msg.send(
+				`${msg.author.minionName} needs ${creature.qpRequired} Questpoints to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.prayerLvl && msg.author.skillLevel(SkillsEnum.Prayer) < creature.prayerLvl) {
-			return msg.send(`${msg.author.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`);
+			return msg.send(
+				`${msg.author.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.itemsRequired) {
 			if (creature.multiTraps) {
-				traps += Math.min(Math.floor((msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0))  / 20), 5) + (creature.wildy ? 1 : 0);
+				traps +=
+					Math.min(
+						Math.floor(
+							(msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) /
+								20
+						),
+						5
+					) + (creature.wildy ? 1 : 0);
 			}
 			const requiredItems: [string, number][] = Object.entries(creature.itemsRequired);
 			for (const [itemID] of requiredItems) {
 				if (!bankHasItem(userBank, parseInt(itemID), traps)) {
-					return msg.send(`You don't have ${traps}x ${itemNameFromID(parseInt(itemID))}, hunter tools can be bought using \`${msg.cmdPrefix}buy\`.`);
+					return msg.send(
+						`You don't have ${traps}x ${itemNameFromID(
+							parseInt(itemID)
+						)}, hunter tools can be bought using \`${msg.cmdPrefix}buy\`.`
+					);
 				}
 			}
 		}
 
-		let catchTime = creature.catchTime;
+		let { catchTime } = creature;
 
 		// Reduce time if user is experienced hunting the creature, every three hours become 1% better to a cap of 10% or 20% if tracking technique.
 		const THREE_HOURS = Time.Hour * 2;
-		const percentReduced = Math.min(Math.floor(msg.author.settings.get(UserSettings.CreatureScores)[creature.name] ?? 1 / (THREE_HOURS / (creature.catchTime * Time.Second))), creature.huntTechnique === 'tracking' ? 20 : 10);
+		const percentReduced = Math.min(
+			Math.floor(
+				msg.author.settings.get(UserSettings.CreatureScores)[creature.name] ??
+					1 / (THREE_HOURS / (creature.catchTime * Time.Second))
+			),
+			creature.huntTechnique === 'tracking' ? 20 : 10
+		);
 		catchTime *= (100 - percentReduced) / 100;
 
-		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature.`);
+		if (percentReduced >= 1)
+			boosts.push(`${percentReduced}% for being experienced hunting this creature.`);
 
 		// Reduce time by 5% if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
@@ -141,26 +176,39 @@ export default class extends BotCommand {
 			catchTime *= 0.95;
 		}
 
-		if(creature.wildy) {
+		if (creature.wildy) {
 			if (!hasWildyHuntGearEquipped(msg.author.settings.get(UserSettings.Gear.Misc))) {
-				return msg.send(`To hunt ${creature.name} in the wilderness you need to have Karil's leathertop/Black d'hide body and Karil's leatherskirt/Black d'hide chaps equipped in \`${msg.cmdPrefix}gear misc\`.`);
+				return msg.send(
+					`To hunt ${creature.name} in the wilderness you need to have Karil's leathertop/Black d'hide body and Karil's leatherskirt/Black d'hide chaps equipped in \`${msg.cmdPrefix}gear misc\`.`
+				);
 			}
-			if (!bankHasItem(userBank, itemID('Saradomin brew(4)'), 15) || !bankHasItem(userBank, itemID('Super restore(4)'), 5)) { 
-				return msg.send(`To hunt ${creature.name} in the wilderness you need to have 15x Saradomin brew(4) and 5x Super restore(4) for safety.`);
+			if (
+				!bankHasItem(userBank, itemID('Saradomin brew(4)'), 15) ||
+				!bankHasItem(userBank, itemID('Super restore(4)'), 5)
+			) {
+				return msg.send(
+					`To hunt ${creature.name} in the wilderness you need to have 15x Saradomin brew(4) and 5x Super restore(4) for safety.`
+				);
 			}
 		}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / (catchTime * Time.Second / traps));
+			quantity = Math.floor(msg.author.maxTripLength / ((catchTime * Time.Second) / traps));
 		}
-		
+
 		let duration = quantity * creature.catchTime * Time.Second;
 
 		if (duration > msg.author.maxTripLength) {
-			return msg.send(`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(msg.author.maxTripLength / (catchTime * Time.Second / traps))}.`);
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount of ${
+					creature.name
+				} you can hunt is ${Math.floor(
+					msg.author.maxTripLength / ((catchTime * Time.Second) / traps)
+				)}.`
+			);
 		}
 
 		let newBank = { ...userBank };
@@ -170,9 +218,13 @@ export default class extends BotCommand {
 			for (const [itemID, qty] of consumedItems) {
 				if (!bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
 					if (msg.author.numItemsInBankSync(parseInt(itemID)) > qty) {
-						quantity = Math.floor(msg.author.numItemsInBankSync(parseInt(itemID)) / qty);
+						quantity = Math.floor(
+							msg.author.numItemsInBankSync(parseInt(itemID)) / qty
+						);
 					} else {
-						return msg.send(`You don't have enough ${itemNameFromID(parseInt(itemID))}s.`);
+						return msg.send(
+							`You don't have enough ${itemNameFromID(parseInt(itemID))}s.`
+						);
 					}
 				}
 				newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
@@ -181,31 +233,47 @@ export default class extends BotCommand {
 
 		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
 		if (creature.name === 'Herbiboar' || creature.name === 'Razor-backed kebbit') {
-			let staminaPotionQuantity = creature.name === 'Herbiboar' ? Math.round(duration / (7.5 * Time.Minute)) : Math.round(duration / (15 * Time.Minute));
+			let staminaPotionQuantity =
+				creature.name === 'Herbiboar'
+					? Math.round(duration / (7.5 * Time.Minute))
+					: Math.round(duration / (15 * Time.Minute));
 			let usingRing = false;
-			
-			if (msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance`)) || msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance (uncharged)`))) {
+
+			if (
+				msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance`)) ||
+				msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance (uncharged)`))
+			) {
 				staminaPotionQuantity = Math.round(0.5 * staminaPotionQuantity);
 				usingRing = true;
 			}
 
-			if (bankHasItem(userBank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {	
-				newBank = removeItemFromBank(newBank, itemID('Stamina potion(4)'), staminaPotionQuantity);
+			if (bankHasItem(userBank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {
+				newBank = removeItemFromBank(
+					newBank,
+					itemID('Stamina potion(4)'),
+					staminaPotionQuantity
+				);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4).`);
 				duration *= 0.8;
 				if (usingRing) {
-					boosts.push('Saved half amount of Stamina potion(4) for having Ring of endurance or Ring of endurance (uncharged).');
+					boosts.push(
+						'Saved half amount of Stamina potion(4) for having Ring of endurance or Ring of endurance (uncharged).'
+					);
 				}
 			}
 		}
 
 		if (usingHuntPotion) {
 			const hunterPotionQuantity = Math.round(duration / (8 * Time.Minute));
-			if (!bankHasItem(userBank, itemID('Hunter potion(4)'), hunterPotionQuantity)) {	
-				return msg.send(`You need ${hunterPotionQuantity}x Hunter potion(4) to boost your level for the whole trip, try a lower quantity or make/buy more potions.`);
+			if (!bankHasItem(userBank, itemID('Hunter potion(4)'), hunterPotionQuantity)) {
+				return msg.send(
+					`You need ${hunterPotionQuantity}x Hunter potion(4) to boost your level for the whole trip, try a lower quantity or make/buy more potions.`
+				);
 			}
 			newBank = removeItemFromBank(newBank, itemID('Hunter potion(4)'), hunterPotionQuantity);
-			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
+			boosts.push(
+				`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`
+			);
 		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
@@ -241,8 +309,10 @@ export default class extends BotCommand {
 		);
 
 		let response = `${msg.author.minionName} is now hunting ${quantity}x ${
-			creature.name 
-		} using ${traps}x trap${traps > 1 ? 's' : ''}, it'll take around ${formatDuration(duration)} to finish.`;
+			creature.name
+		} using ${traps}x trap${traps > 1 ? 's' : ''}, it'll take around ${formatDuration(
+			duration
+		)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

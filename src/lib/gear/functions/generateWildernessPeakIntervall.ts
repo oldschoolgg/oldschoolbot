@@ -1,57 +1,57 @@
-import { Time } from "../../constants";
-import { rand, shuffle } from "../../util";
+import { Time } from '../../constants';
+import { rand, shuffle } from '../../util';
 
-//Automatic updates Wilderness Peak times once every 24 hour
+// Automatic updates Wilderness Peak times once every 24 hour
 setInterval(generatedWildernessPeakTimes, Time.Hour * 24);
 
 const enum PeakTier {
-    High = 'high',
-    Medium = 'medium',
-    Low = 'low'
+	High = 'high',
+	Medium = 'medium',
+	Low = 'low'
 }
 
 interface Peak {
-    startDate: Date
-    finishDate: Date
-    peakTier: PeakTier
+	startDate: Date;
+	finishDate: Date;
+	peakTier: PeakTier;
 }
 
 export function generatedWildernessPeakTimes() {
-    let startDate = new Date();
-    let finishDate = startDate;
-    let hoursUsed = 0;
-    let peakIntervall: Peak[] = [];
-    const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
+	let startDate = new Date();
+	let finishDate = startDate;
+	let hoursUsed = 0;
+	let peakIntervall: Peak[] = [];
+	const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
 
-    //Divide the current day into interverals
-    for (let i = 0; i <= 10 ; i++) {
-        let randomedTime= rand(1, 2);
-        const [peakTier] = shuffle(peakTiers);
-        finishDate.setHours(startDate.getHours() + randomedTime); 
-        const peak: Peak = {
-            startDate: startDate,
-            finishDate: finishDate,
-            peakTier: peakTier
-        }
-        peakIntervall.push(peak);
-        hoursUsed += randomedTime;
-        startDate.setHours(finishDate.getHours());
-    }
-    
-    //Add remaining time
-    finishDate.setHours(startDate.getHours() + 24 - hoursUsed);
+	// Divide the current day into interverals
+	for (let i = 0; i <= 10; i++) {
+		let randomedTime = rand(1, 2);
+		const [peakTier] = shuffle(peakTiers);
+		finishDate.setHours(startDate.getHours() + randomedTime);
+		const peak: Peak = {
+			startDate,
+			finishDate,
+			peakTier
+		};
+		peakIntervall.push(peak);
+		hoursUsed += randomedTime;
+		startDate.setHours(finishDate.getHours());
+	}
 
-    const lastPeak: Peak = {
-        startDate: startDate,
-        finishDate: finishDate,
-        peakTier: PeakTier.Low
-    }
+	// Add remaining time
+	finishDate.setHours(startDate.getHours() + 24 - hoursUsed);
 
-    peakIntervall.push(lastPeak);
+	const lastPeak: Peak = {
+		startDate,
+		finishDate,
+		peakTier: PeakTier.Low
+	};
 
-    peakIntervall = shuffle(peakIntervall);
+	peakIntervall.push(lastPeak);
 
-    console.log(peakIntervall);
+	peakIntervall = shuffle(peakIntervall);
 
-    return peakIntervall;
+	console.log(peakIntervall);
+
+	return peakIntervall;
 }
