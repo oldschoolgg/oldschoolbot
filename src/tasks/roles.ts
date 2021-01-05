@@ -112,6 +112,23 @@ WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 		}
 
 		result += await addRoles(g, topCollectors, Roles.TopCollector);
+
+		// Top sacrificers
+		let topSacrificers = [];
+		const mostValue = await this.client.query<SkillUser[]>(
+			`SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 1;`
+		);
+		topSacrificers.push(mostValue[0].id);
+		const mostUniques = await this.client.query<
+			SkillUser[]
+		>(`SELECT u.id, u.sacbanklength FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+) u
+ORDER BY u.sacbanklength DESC LIMIT 1;`);
+		topSacrificers.push(mostUniques[0].id);
+
+		result += await addRoles(g, topSacrificers, Roles.TopSacrificer);
+
 		return result;
 	}
 }
