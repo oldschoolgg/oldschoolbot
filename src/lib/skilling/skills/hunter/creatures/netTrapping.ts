@@ -1,4 +1,5 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
+
 import { Creature } from '../../../types';
 
 const netTrappingCreatures: Creature[] = [

@@ -198,7 +198,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(msg.author.maxTripLength / ((catchTime * Time.Second) / traps));
 		}
 
-		let duration = Math.floor(quantity * catchTime / traps * Time.Second);
+		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
@@ -316,9 +316,7 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${
 			creature.name
-		}, it'll take around ${formatDuration(
-			duration
-		)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

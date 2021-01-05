@@ -7,13 +7,13 @@ import Firemaking from './firemaking';
 import Fishing from './fishing';
 import Fletching from './fletching';
 import Herblore from './herblore/herblore';
+import Hunter from './hunter/hunter';
 import Mining from './mining';
 import Prayer from './prayer';
 import Runecraft from './runecraft';
 import Smithing from './smithing';
 import Thieving from './thieving';
 import Woodcutting from './woodcutting';
-import Hunter from './hunter/hunter';
 
 export const Skills: Record<string, Skill> = {
 	Crafting,
