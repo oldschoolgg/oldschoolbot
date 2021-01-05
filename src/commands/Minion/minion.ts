@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { randInt } from 'e';
+import { objectKeys, randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -21,7 +21,8 @@ import {
 	isWeekend,
 	itemID,
 	itemNameFromID,
-	randomItemFromArray
+	randomItemFromArray,
+	removeDuplicatesFromArray
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -532,7 +533,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: [monster.attackStyleToUse]
+				attackStylesUsed: removeDuplicatesFromArray([
+					...objectKeys(monster.minimumGearRequirements ?? {}),
+					monster.attackStyleToUse
+				])
 			});
 
 			foodStr = result;
