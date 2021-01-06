@@ -49,6 +49,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '[run|collect|check] [type:...string]',
+			aliases: ['bhr', 'bh'],
 			usageDelim: ' ',
 			subcommands: true,
 			description: `Allows a player to set up a bird house or collect and retrap new house for hunter.`,
