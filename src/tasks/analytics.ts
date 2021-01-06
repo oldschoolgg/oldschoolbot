@@ -4,7 +4,7 @@ import { ActivityGroup } from '../lib/constants';
 import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { OldSchoolBotClient } from '../lib/structures/OldSchoolBotClient';
-import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
+import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable.entity';
 import { ActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 import { taskNameFromType } from '../lib/util/taskNameFromType';
