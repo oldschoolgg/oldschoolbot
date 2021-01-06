@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 
 export default class extends BotCommand {
@@ -18,6 +19,9 @@ export default class extends BotCommand {
 	}
 
 	async on(msg: KlasaMessage) {
+		if (msg.guild!.memberCount < 20 && getUsersPerkTier(msg.author) < PerkTier.Four) {
+			return msg.send(TWEETS_RATELIMITING);
+		}
 		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) === msg.channel.id) {
 			return msg.sendLocale('STREAMER_TWEETS_ALREADY_ENABLED');
 		}
