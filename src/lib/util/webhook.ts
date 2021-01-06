@@ -54,9 +54,10 @@ export async function sendToChannelID(
 		embed?: MessageEmbed;
 	}
 ) {
-	const channel = await resolveChannel(client, channelID);
-	if (!channel) return;
-	queue.add(() => {
+	queue.add(async () => {
+		const channel = await resolveChannel(client, channelID);
+		if (!channel) return;
+
 		client.emit('log', `Sending to channelID[${channelID}].`);
 		let files = data.image ? [data.image] : undefined;
 		if (channel instanceof WebhookClient) {
