@@ -1,5 +1,6 @@
 import { MessageOptions, TextChannel, WebhookClient } from 'discord.js';
 import { KlasaClient } from 'klasa';
+import PQueue from 'p-queue';
 
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
 import { channelIsSendable } from './channelIsSendable';
@@ -42,6 +43,8 @@ export async function resolveChannel(
 	}
 }
 
+const queue = new PQueue({ concurrency: 10 });
+
 export async function sendToChannelID(
 	client: KlasaClient,
 	channelID: string,
@@ -49,6 +52,8 @@ export async function sendToChannelID(
 ) {
 	const channel = await resolveChannel(client, channelID);
 	if (!channel) return;
-	client.emit('log', `Sending to channelID[${channelID}].`);
-	channel.send(data);
+	queue.add(() => {
+		client.emit('log', `Sending to channelID[${channelID}].`);
+		channel.send(data);
+	});
 }
