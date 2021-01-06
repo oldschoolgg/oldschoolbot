@@ -234,7 +234,6 @@ export interface Creature {
 	fishingXp?: number;
 	itemsRequired?: ItemBank;
 	itemsConsumed?: ItemBank;
-	inputItems?: ItemBank;
 	table: LootTable;
 	huntTechnique: string;
 	multiTraps?: boolean;

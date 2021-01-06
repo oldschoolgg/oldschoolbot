@@ -1,3 +1,4 @@
+import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity, Tasks } from '../constants';
 import { PatchTypes } from '../farming';
@@ -127,14 +128,9 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface BirdHouseActivityTaskOptions extends ActivityTaskOptions {
-	plantsName: string | null;
-	channelID: string;
-	quantity: number;
-	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
-	payment?: boolean;
-	patchType: PatchTypes.PatchData;
-	getPatchType: string;
-	planting: boolean;
+	birdhouseName: string | null;
+	placing: boolean;
+	birdhouseData: BirdhouseData;
 	currentDate: number;
 }
 

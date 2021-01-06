@@ -30,6 +30,8 @@ export function tickerTaskFromActivity(type: Activity): Tasks {
 		case Activity.Pickpocket:
 		case Activity.Farming:
 		case Activity.Herblore:
+		case Activity.Hunter:
+		case Activity.BirdHouse:
 			return Tasks.SkillingTicker;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:

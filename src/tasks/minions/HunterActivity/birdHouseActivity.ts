@@ -17,19 +17,16 @@ import createReadableItemListFromBank from '../../../lib/util/createReadableItem
 import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
-	async run({
-		plantsName,
-		patchType,
-		getPatchType,
-		quantity,
-		upgradeType,
-		payment,
-		userID,
-		channelID,
-		planting,
-		duration,
-		currentDate
-	}: BirdHouseActivityTaskOptions) {
+	async run(data: BirdHouseActivityTaskOptions) {
+		const {
+			birdhouseName,
+			birdhouseData,
+			userID,
+			channelID,
+			duration,
+			placing,
+			currentDate,
+		} = data;
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);

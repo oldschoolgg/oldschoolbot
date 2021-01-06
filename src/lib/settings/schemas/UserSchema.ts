@@ -4,6 +4,7 @@ import Farming from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
 import { FarmingPatchTypes } from '../../farming/types';
 import Gear from '../../gear';
+import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
@@ -41,6 +42,7 @@ Client.defaultUserSchema
 			.add('farmingContract', 'any', { default: defaultContracts })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultPay', 'boolean', { default: false })
+			.add('birdhouseTraps', 'any', { default: defaultBirdHouseTrap })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
