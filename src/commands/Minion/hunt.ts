@@ -41,7 +41,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity, creatureName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.xphr) {
 			let str = 'Approximate XP/Hr (varies based on RNG)\n\n';
-			for (let i = 1; i < 100; i ++) {
+			for (let i = 1; i < 100; i++) {
 				str += `\n---- Level ${i} ----`;
 				let results: [string, number, number][] = [];
 				for (const creature of Hunter.Creatures) {
@@ -53,7 +53,12 @@ export default class extends BotCommand {
 					const [, xpReceived] = calcLootXPHunting(
 						i,
 						creature,
-						90_000 / ((creature.catchTime * (creature.huntTechnique === 'tracking' ? 0.8 : 0.9) * (creature.name === 'Herbiboar' ? 0.8 : 1) * (creature.wildy ? 1 : 0.95) ) / traps)
+						90_000 /
+							((creature.catchTime *
+								(creature.huntTechnique === 'tracking' ? 0.8 : 0.9) *
+								(creature.name === 'Herbiboar' ? 0.8 : 1) *
+								(creature.wildy ? 1 : 0.95)) /
+								traps)
 					);
 					results.push([creature.name, Math.round(xpReceived / 25), traps]);
 				}
@@ -131,13 +136,11 @@ export default class extends BotCommand {
 			);
 		}
 
-
 		if (creature.multiTraps) {
 			traps +=
 				Math.min(
 					Math.floor(
-						(msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) /
-							20
+						(msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) / 20
 					),
 					5
 				) + (creature.wildy ? 1 : 0);
@@ -162,8 +165,8 @@ export default class extends BotCommand {
 		const HOUR = Time.Hour;
 		const percentReduced = Math.min(
 			Math.floor(
-				(msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ??
-					1) / (HOUR / ((creature.catchTime  * Time.Second) / traps))
+				(msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ?? 1) /
+					(HOUR / ((creature.catchTime * Time.Second) / traps))
 			),
 			creature.huntTechnique === 'tracking' ? 20 : 10
 		);
@@ -173,7 +176,10 @@ export default class extends BotCommand {
 			boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (!creature.wildy && hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (
+			!creature.wildy &&
+			hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))
+		) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
 		}

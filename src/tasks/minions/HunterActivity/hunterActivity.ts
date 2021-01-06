@@ -151,7 +151,9 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Hunter, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Hunter);
 
-		const xpHr = `${Math.round(((xpReceived / (duration / Time.Minute)) * 60)).toLocaleString()} XP/Hr`;
+		const xpHr = `${Math.round(
+			(xpReceived / (duration / Time.Minute)) * 60
+		).toLocaleString()} XP/Hr`;
 
 		let str = `${user}, ${user.minionName} finished hunting ${
 			creature.name
