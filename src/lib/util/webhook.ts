@@ -1,4 +1,4 @@
-import { MessageOptions, TextChannel, WebhookClient } from 'discord.js';
+import { MessageEmbed, TextChannel, WebhookClient } from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
@@ -48,12 +48,21 @@ const queue = new PQueue({ concurrency: 10 });
 export async function sendToChannelID(
 	client: KlasaClient,
 	channelID: string,
-	data: MessageOptions
+	data: {
+		content?: string;
+		image?: Buffer;
+		embed?: MessageEmbed;
+	}
 ) {
 	const channel = await resolveChannel(client, channelID);
 	if (!channel) return;
 	queue.add(() => {
 		client.emit('log', `Sending to channelID[${channelID}].`);
-		channel.send(data);
+		let files = data.image ? [data.image] : undefined;
+		if (channel instanceof WebhookClient) {
+			channel.send(data.content, { files, embeds: data.embed ? [data.embed] : undefined });
+		} else {
+			channel.send(data.content, { files, embed: data.embed });
+		}
 	});
 }
