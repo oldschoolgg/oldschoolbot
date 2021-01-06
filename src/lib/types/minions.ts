@@ -1,9 +1,9 @@
-import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity, Tasks } from '../constants';
 import { PatchTypes } from '../farming';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -130,6 +130,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 export interface BirdHouseActivityTaskOptions extends ActivityTaskOptions {
 	birdhouseName: string | null;
 	placing: boolean;
+	gotCraft: boolean;
 	birdhouseData: BirdhouseData;
 	currentDate: number;
 }

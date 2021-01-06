@@ -1,12 +1,12 @@
-import { BirdHouseActivityTaskOptions } from './../../lib/types/minions';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Tasks } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import birdHouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	bankHasItem,
@@ -16,7 +16,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import birdHouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import { BirdHouseActivityTaskOptions } from './../../lib/types/minions';
 
 const birdhouseSeedReq = resolveNameBank({
 	'Hammerstone seed': 10,
@@ -52,7 +52,12 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			subcommands: true,
 			description: `Allows a player to set up a bird house or collect and retrap new house for hunter.`,
-			examples: ['+birdhouse run yew', '+birdhouse', '+birdhouse check', '+birdhouse collect'],
+			examples: [
+				'+birdhouse run yew',
+				'+birdhouse',
+				'+birdhouse check',
+				'+birdhouse collect'
+			],
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
@@ -60,7 +65,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [type = '']: [string]) {
-
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const questPoints = msg.author.settings.get(UserSettings.QP);
@@ -70,23 +74,28 @@ export default class extends BotCommand {
 
 		const birdhouse = birdHouses.find(_birdhouse =>
 			_birdhouse.aliases.some(
-				alias =>
-					stringMatches(alias, type) || stringMatches(alias.split(' ')[0], type)
+				alias => stringMatches(alias, type) || stringMatches(alias.split(' ')[0], type)
 			)
 		);
 
 		if (!birdhouse) {
-			return msg.send(`That's not a valid birdhouse. Valid bird houses are ${birdHouses.map(
-				_birdhouse => _birdhouse.name
-			).join(', ')}.`);
+			return msg.send(
+				`That's not a valid birdhouse. Valid bird houses are ${birdHouses
+					.map(_birdhouse => _birdhouse.name)
+					.join(', ')}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) < birdhouse.huntLvl) {
-			return msg.send(`${msg.author.minionName} needs ${birdhouse.huntLvl} Hunter to place ${birdhouse.name}.`);
+			return msg.send(
+				`${msg.author.minionName} needs ${birdhouse.huntLvl} Hunter to place ${birdhouse.name}.`
+			);
 		}
 
 		if (questPoints < birdhouse.qpRequired) {
-			return msg.send(`${msg.author.minionName} needs ${birdhouse.qpRequired} QP to do Birdhouse runs.`);
+			return msg.send(
+				`${msg.author.minionName} needs ${birdhouse.qpRequired} QP to do Birdhouse runs.`
+			);
 		}
 
 		const previousBirdhouseTraps = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps);
@@ -109,8 +118,11 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (prevBirdhouse && difference < prevBirdhouse.waitTime) {
-			return msg.send(`Please come back when your birdhouses are full in ${formatDuration(
-				lastPlacedTime + prevBirdhouse.waitTime - currentDate)}!`);
+			return msg.send(
+				`Please come back when your birdhouses are full in ${formatDuration(
+					lastPlacedTime + prevBirdhouse.waitTime - currentDate
+				)}!`
+			);
 		}
 
 		let duration: number = timeBirdHouseRun;
@@ -122,34 +134,40 @@ export default class extends BotCommand {
 		}
 
 		let newBank = { ...userBank };
+		let gotCraft = false;
 		if (!prevBirdhouse || msg.flagArgs.nocraft) {
 			const requiredHouse: [string, number][] = Object.entries(birdhouse.houseItemReq);
 			for (const [houseID, qty] of requiredHouse) {
 				if (!bankHasItem(userBank, parseInt(houseID), qty * 4)) {
-						return msg.send(`You don't have enough ${itemNameFromID(parseInt(houseID))}s.`);
-					}
+					return msg.send(`You don't have enough ${itemNameFromID(parseInt(houseID))}s.`);
+				}
 				newBank = removeItemFromBank(newBank, parseInt(houseID), qty * 4);
 			}
-		}
-		else {
+		} else {
 			if (msg.author.skillLevel(SkillsEnum.Crafting) < birdhouse.craftLvl) {
-				return msg.send(`${msg.author.minionName} needs ${birdhouse.craftLvl} Crafting to make ${birdhouse.name} during the run or write \`${msg.cmdPrefix}birdhouse run ${type} --nocraft\`.`);
+				return msg.send(
+					`${msg.author.minionName} needs ${birdhouse.craftLvl} Crafting to make ${birdhouse.name} during the run or write \`${msg.cmdPrefix}birdhouse run ${type} --nocraft\`.`
+				);
 			}
+			gotCraft = true;
 			const requiredLogs: [string, number][] = Object.entries(birdhouse.craftItemReq);
 			for (const [craftID, qty] of requiredLogs) {
 				if (!bankHasItem(userBank, parseInt(craftID), qty * 4)) {
-						return msg.send(`You don't have enough ${itemNameFromID(parseInt(craftID))}.`);
-					}
+					return msg.send(`You don't have enough ${itemNameFromID(parseInt(craftID))}.`);
+				}
 				newBank = removeItemFromBank(newBank, parseInt(craftID), qty * 4);
 			}
-
 		}
 
 		let canPay = false;
 		const requiredSeeds: [string, number][] = Object.entries(birdhouseSeedReq);
 		for (const [paymentID, qty] of requiredSeeds) {
 			if (bankHasItem(userBank, parseInt(paymentID), qty * 4)) {
-				infoStr.push(`You baited the birdhouses with ${qty * 4}x ${itemNameFromID(parseInt(paymentID))} .`);
+				infoStr.push(
+					`You baited the birdhouses with ${qty * 4}x ${itemNameFromID(
+						parseInt(paymentID)
+					)} .`
+				);
 				newBank = removeItemFromBank(newBank, parseInt(paymentID), qty * 4);
 				canPay = true;
 				break;
@@ -164,9 +182,7 @@ export default class extends BotCommand {
 
 		// If user does not have something already placed, just place the new birdhouses.
 		if (!previousBirdhouseTraps.birdHousePlaced) {
-			infoStr.unshift(
-				`${msg.author.minionName} is now placing 4x ${birdhouse.name}.`
-			);
+			infoStr.unshift(`${msg.author.minionName} is now placing 4x ${birdhouse.name}.`);
 		} else {
 			infoStr.unshift(
 				`${msg.author.minionName} is now collecting 4x ${storePreviousBirdhouse}, and then placing 4x ${birdhouse.name}.`
@@ -183,6 +199,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				duration,
 				placing: true,
+				gotCraft,
 				currentDate,
 				type: Activity.BirdHouse
 			}
@@ -194,7 +211,6 @@ export default class extends BotCommand {
 			}${boostStr.join(', ')}`
 		);
 	}
-
 
 	@minionNotBusy
 	@requiresMinion
@@ -217,7 +233,9 @@ export default class extends BotCommand {
 			: null;
 
 		if (!prevBirdhouse || prevBirdhouse === null) {
-			return msg.send(`There is no birdhouses available to collect from, try set up some birdhouses, \`${msg.cmdPrefix}birdhouse run normal\`.`);
+			return msg.send(
+				`There is no birdhouses available to collect from, try set up some birdhouses, \`${msg.cmdPrefix}birdhouse run normal\`.`
+			);
 		}
 
 		const lastPlacedTime: number = previousBirdhouseTraps.birdhouseTime;
@@ -226,8 +244,11 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (prevBirdhouse && difference < prevBirdhouse.waitTime) {
-			return msg.send(`Please come back when your birdhouses are full in ${formatDuration(
-				lastPlacedTime + prevBirdhouse.waitTime - currentDate)}!`);
+			return msg.send(
+				`Please come back when your birdhouses are full in ${formatDuration(
+					lastPlacedTime + prevBirdhouse.waitTime - currentDate
+				)}!`
+			);
 		}
 
 		const timeBirdHouseRun = prevBirdhouse.runTime;
@@ -241,14 +262,13 @@ export default class extends BotCommand {
 
 		// If user does not have something already placed.
 		if (!previousBirdhouseTraps.birdHousePlaced) {
-			return msg.send `There is no placed birdhouses to collect from!`;
-		} else {
-			returnMessageStr = `${
-				msg.author.minionName
-			} is now collecting 4x ${storePreviousBirdhouse}.\nIt'll take around ${formatDuration(
-				duration
-			)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
+			return msg.send`There is no placed birdhouses to collect from!`;
 		}
+		returnMessageStr = `${
+			msg.author.minionName
+		} is now collecting 4x ${storePreviousBirdhouse}.\nIt'll take around ${formatDuration(
+			duration
+		)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
 
 		await addSubTaskToActivityTask<BirdHouseActivityTaskOptions>(
 			this.client,
@@ -260,6 +280,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				duration,
 				placing: false,
+				gotCraft: false,
 				currentDate,
 				type: Activity.BirdHouse
 			}
@@ -286,13 +307,16 @@ export default class extends BotCommand {
 			const birdhouse = birdHouses.find(_birdhouse =>
 				_birdhouse.aliases.some(
 					alias =>
-						stringMatches(alias, lastPlaced) || stringMatches(alias.split(' ')[0], lastPlaced)
+						stringMatches(alias, lastPlaced) ||
+						stringMatches(alias.split(' ')[0], lastPlaced)
 				)
 			);
 
 			if (!birdhouse) {
 				this.client.wtf(
-					new Error(`${msg.author.sanitizedName}'s birdhouse traps had no birdhouse found in it.`)
+					new Error(
+						`${msg.author.sanitizedName}'s birdhouse traps had no birdhouse found in it.`
+					)
 				);
 				return;
 			}
@@ -310,11 +334,11 @@ export default class extends BotCommand {
 				contentStr = `Your 4x ${birdhouse.name} is ready to be collected!\n`;
 			}
 
-			finalStr += emojiStr + baseStr + contentStr; 
+			finalStr += emojiStr + baseStr + contentStr;
 		} else {
 			nothingPlaced = true;
 		}
-	
+
 		if (nothingPlaced) {
 			const emptyEmoji = `${Emoji.RedX} `;
 			const emptyContentStr = `You don't have any birdhouses placed!`;
