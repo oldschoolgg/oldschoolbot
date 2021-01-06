@@ -106,7 +106,7 @@ export default class extends Task {
 				newGear[EquipmentSlot.Legs] = null;
 				await user.settings.update(UserSettings.Gear.Misc, newGear);
 				pkedQuantity *= 0.5;
-				diedStr = `${user}, ${user.minionName} got killed during the activity and lost some gear, catch quantity, saradomin brew and Super restore.`;
+				diedStr = `Your minion got killed during the activity and lost some gear, catch quantity, saradomin brew and Super restore.`;
 			}
 			if (gotPked && !died) {
 				if (
@@ -115,7 +115,7 @@ export default class extends Task {
 				) {
 					user.removeItemFromBank(itemID('Saradomin brew(4)'), rand(1, 15));
 					user.removeItemFromBank(itemID('Super restore(4)'), rand(1, 5));
-					pkStr = `${user}, ${user.minionName} got attacked during the activity, escaped and lost some catch quantity, saradomin brew and super restore.`;
+					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, saradomin brew and super restore.`;
 					pkedQuantity *= 0.1;
 				}
 			}
@@ -135,7 +135,7 @@ export default class extends Task {
 				user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))
 			);
 			if (user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))) {
-				magicSecStr = `Extra Yield for Magic secateurs`;
+				magicSecStr = ` Extra herbs for Magic secateurs`;
 			}
 		}
 		const loot = new Bank();
@@ -151,11 +151,11 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Hunter, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Hunter);
 
-		const xpHr = `${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
+		const xpHr = `${Math.round(((xpReceived / (duration / Time.Minute)) * 60)).toLocaleString()} XP/Hr`;
 
 		let str = `${user}, ${user.minionName} finished hunting ${
 			creature.name
-		} ${successfulQuantity}x times, due to clever creatures you missed out on ${
+		} ${quantity}x times, due to clever creatures you missed out on ${
 			quantity - successfulQuantity
 		}x catches, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
 

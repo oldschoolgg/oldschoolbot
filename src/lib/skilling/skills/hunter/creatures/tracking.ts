@@ -1,6 +1,4 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-
-import { resolveNameBank } from '../../../../util';
 import { Creature } from '../../../types';
 
 const trackingCreatures: Creature[] = [
@@ -24,19 +22,19 @@ const trackingCreatures: Creature[] = [
 		hunterXp: 36,
 		table: new LootTable().every('Bones').every('Common kebbit fur').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 30,
+		catchTime: 34,
 		slope: 0,
 		intercept: 99
 	},
 	{
 		name: `Feldip weasel`,
 		id: 33,
-		aliases: ['feldip weasel'],
+		aliases: ['feldip weasel', 'feldips'],
 		level: 7,
 		hunterXp: 48,
 		table: new LootTable().every('Bones').every('Feldip weasel fur').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 30,
+		catchTime: 38,
 		slope: 0,
 		intercept: 99
 	},
@@ -48,7 +46,7 @@ const trackingCreatures: Creature[] = [
 		hunterXp: 66,
 		table: new LootTable().every('Bones').every('Desert devil fur').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 30,
+		catchTime: 32,
 		slope: 0,
 		intercept: 99
 	},
@@ -60,19 +58,19 @@ const trackingCreatures: Creature[] = [
 		hunterXp: 348.5,
 		table: new LootTable().every('Bones').every('Long kebbit spike').every('Raw beast meat'),
 		huntTechnique: 'tracking',
-		catchTime: 30,
+		catchTime: 47,
 		slope: 0,
 		intercept: 99
 	},
 	{
 		name: `Herbiboar`,
 		id: 36,
-		aliases: ['herbiboar'],
+		aliases: ['herbiboar', 'herbi'],
 		level: 80,
 		hunterXp: 1950, // Scaleable xp depending on hunting lvl
 		table: new LootTable().tertiary(6500, 'Herbi') /* Scaleable loot table */,
 		huntTechnique: 'tracking',
-		catchTime: 59,
+		catchTime: 91,
 		slope: 0,
 		intercept: 99
 	}

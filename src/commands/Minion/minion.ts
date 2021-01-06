@@ -488,7 +488,7 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 	async hunt(msg: KlasaMessage, [quantity, creatureName]: [number, string]) {
 		await this.client.commands
-			.get('mix')!
+			.get('hunt')!
 			.run(msg, [quantity, creatureName])
 			.catch(err => {
 				throw err;

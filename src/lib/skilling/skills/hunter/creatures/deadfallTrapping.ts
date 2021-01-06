@@ -12,14 +12,14 @@ const deadfallTrappingCreatures: Creature[] = [
 		hunterXp: 128,
 		table: new LootTable().every('Bones').every('Kebbit claws'),
 		huntTechnique: 'deadfall trapping',
-		catchTime: 20,
+		catchTime: 17,
 		slope: 1,
 		intercept: 15
 	},
 	{
 		name: `Barb-tailed kebbit`,
 		id: 15,
-		aliases: ['barb-tailed kebbit'],
+		aliases: ['barb-tailed kebbit', 'barb kebbit', 'barb tail kebbit'],
 		level: 33,
 		hunterXp: 168,
 		table: new LootTable().every('Bones').every('Barb-tail harpoon'),
@@ -36,19 +36,19 @@ const deadfallTrappingCreatures: Creature[] = [
 		hunterXp: 204,
 		table: new LootTable().every('Bones').every('Kebbit spike'),
 		huntTechnique: 'deadfall trapping',
-		catchTime: 20,
+		catchTime: 17,
 		slope: 1.3,
 		intercept: 10
 	},
 	{
 		name: `Sabre-toothed kebbit`,
 		id: 17,
-		aliases: ['sabre-toothed kebbit'],
+		aliases: ['sabre-toothed kebbit', 'sabre kebbit', 'sab tooth kebbit'],
 		level: 51,
 		hunterXp: 200,
 		table: new LootTable().every('Bones').every('Kebbit teeth'),
 		huntTechnique: 'deadfall trapping',
-		catchTime: 20,
+		catchTime: 25,
 		slope: 1.6,
 		intercept: -3
 	},
@@ -61,9 +61,9 @@ const deadfallTrappingCreatures: Creature[] = [
 		itemsConsumed: resolveNameBank({ Banana: 1 }),
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
 		huntTechnique: 'deadfall trapping',
-		catchTime: 20,
+		catchTime: 40,
 		qpRequired: 175,
-		slope: 1.2,
+		slope: 0.8,
 		intercept: 20
 	}
 ];

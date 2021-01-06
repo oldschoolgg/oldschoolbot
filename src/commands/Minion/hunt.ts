@@ -15,7 +15,6 @@ import {
 	formatDuration,
 	itemNameFromID,
 	removeItemFromBank,
-	round,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -42,7 +41,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity, creatureName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.xphr) {
 			let str = 'Approximate XP/Hr (varies based on RNG)\n\n';
-			for (let i = 1; i < 100; i += 5) {
+			for (let i = 1; i < 100; i ++) {
 				str += `\n---- Level ${i} ----`;
 				let results: [string, number, number][] = [];
 				for (const creature of Hunter.Creatures) {
@@ -54,16 +53,16 @@ export default class extends BotCommand {
 					const [, xpReceived] = calcLootXPHunting(
 						i,
 						creature,
-						18_000 / (creature.catchTime / traps)
+						90_000 / ((creature.catchTime * (creature.huntTechnique === 'tracking' ? 0.8 : 0.9) * (creature.name === 'Herbiboar' ? 0.8 : 1) * (creature.wildy ? 1 : 0.95) ) / traps)
 					);
-					results.push([creature.name, round(xpReceived, 2) / 5, traps]);
+					results.push([creature.name, Math.round(xpReceived / 25), traps]);
 				}
 				for (const [name, xp, traps] of results.sort((a, b) => a[1] - b[1])) {
-					str += `\n${name} amount of traps ${traps} and ${xp.toLocaleString()} XP/HR`;
+					str += `\n${name} ${xp.toLocaleString()} XP/HR, amount of traps ${traps}.`;
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'output.txt');
+			return msg.channel.sendFile(Buffer.from(str), 'hunterXPHR.txt');
 		}
 
 		if (msg.flagArgs.creatures) {
@@ -132,20 +131,22 @@ export default class extends BotCommand {
 			);
 		}
 
+
+		if (creature.multiTraps) {
+			traps +=
+				Math.min(
+					Math.floor(
+						(msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) /
+							20
+					),
+					5
+				) + (creature.wildy ? 1 : 0);
+		}
+
 		if (creature.itemsRequired) {
-			if (creature.multiTraps) {
-				traps +=
-					Math.min(
-						Math.floor(
-							(msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) /
-								20
-						),
-						5
-					) + (creature.wildy ? 1 : 0);
-			}
 			const requiredItems: [string, number][] = Object.entries(creature.itemsRequired);
-			for (const [itemID] of requiredItems) {
-				if (!bankHasItem(userBank, parseInt(itemID), traps)) {
+			for (const [itemID, qty] of requiredItems) {
+				if (!bankHasItem(userBank, parseInt(itemID), qty)) {
 					return msg.send(
 						`You don't have ${traps}x ${itemNameFromID(
 							parseInt(itemID)
@@ -157,22 +158,22 @@ export default class extends BotCommand {
 
 		let { catchTime } = creature;
 
-		// Reduce time if user is experienced hunting the creature, every three hours become 1% better to a cap of 10% or 20% if tracking technique.
-		const THREE_HOURS = Time.Hour * 3;
+		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.
+		const HOUR = Time.Hour;
 		const percentReduced = Math.min(
 			Math.floor(
-				msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ??
-					1 / (THREE_HOURS / (creature.catchTime * Time.Second))
+				(msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ??
+					1) / (HOUR / ((creature.catchTime  * Time.Second) / traps))
 			),
 			creature.huntTechnique === 'tracking' ? 20 : 10
 		);
 		catchTime *= (100 - percentReduced) / 100;
 
 		if (percentReduced >= 1)
-			boosts.push(`${percentReduced}% for being experienced hunting this creature.`);
+			boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (!creature.wildy && hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
 		}
@@ -254,11 +255,11 @@ export default class extends BotCommand {
 					itemID('Stamina potion(4)'),
 					staminaPotionQuantity
 				);
-				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4).`);
+				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
 				if (usingRing) {
 					boosts.push(
-						'Saved half amount of Stamina potion(4) for having Ring of endurance or Ring of endurance (uncharged).'
+						'Saved half amount of Stamina potion(4) for having Ring of endurance or Ring of endurance (uncharged)'
 					);
 				}
 			}

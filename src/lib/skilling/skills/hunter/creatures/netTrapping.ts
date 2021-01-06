@@ -12,7 +12,7 @@ const netTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Swamp lizard'),
 		huntTechnique: 'net trapping',
 		multiTraps: true,
-		catchTime: 12,
+		catchTime: 26,
 		slope: 1,
 		intercept: 15
 	},
@@ -25,7 +25,7 @@ const netTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Orange salamander'),
 		huntTechnique: 'net trapping',
 		multiTraps: true,
-		catchTime: 14,
+		catchTime: 35,
 		slope: 1.2,
 		intercept: 5
 	},
@@ -38,7 +38,7 @@ const netTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Red salamander'),
 		huntTechnique: 'net trapping',
 		multiTraps: true,
-		catchTime: 14,
+		catchTime: 40,
 		slope: 0.9,
 		intercept: 25
 	},
@@ -53,7 +53,7 @@ const netTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		wildy: true,
 		prayerLvl: 43,
-		catchTime: 12,
+		catchTime: 48,
 		slope: 1.2,
 		intercept: -5
 	}

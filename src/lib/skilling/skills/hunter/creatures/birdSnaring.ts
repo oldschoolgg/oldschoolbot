@@ -12,7 +12,7 @@ const birdSnaringCreatures: Creature[] = [
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Red feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 20,
+		catchTime: 10,
 		slope: 1,
 		intercept: 20
 	},
@@ -28,7 +28,7 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Yellow feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 20,
+		catchTime: 10,
 		slope: 1,
 		intercept: 15
 	},
@@ -44,8 +44,8 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Orange feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 20,
-		slope: 1.2,
+		catchTime: 11,
+		slope: 1,
 		intercept: 12
 	},
 	{
@@ -57,8 +57,8 @@ const birdSnaringCreatures: Creature[] = [
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Blue feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 20,
-		slope: 1.3,
+		catchTime: 12,
+		slope: 1,
 		intercept: 10
 	},
 	{
@@ -73,8 +73,8 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Stripy feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
-		catchTime: 20,
-		slope: 1.4,
+		catchTime: 16,
+		slope: 1,
 		intercept: 5
 	}
 ];

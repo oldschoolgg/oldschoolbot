@@ -14,7 +14,7 @@ const magicBoxTrappingCreatures: Creature[] = [
 		table: new LootTable().every('Imp-in-a-box(2)'),
 		huntTechnique: 'magic box trapping',
 		multiTraps: true,
-		catchTime: 20,
+		catchTime: 120,
 		slope: 0.5,
 		intercept: 40
 	}
