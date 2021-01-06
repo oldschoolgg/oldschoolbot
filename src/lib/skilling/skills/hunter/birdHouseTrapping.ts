@@ -44,7 +44,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -62,7 +62,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -80,7 +80,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -98,7 +98,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -116,7 +116,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -134,7 +134,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -152,7 +152,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -170,7 +170,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
 	{
@@ -188,7 +188,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
-		runTime: 73 * Time.Second,
+		runTime: 81 * Time.Second,
 		qpRequired: 3
 	}
 ];
