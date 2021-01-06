@@ -19,7 +19,6 @@ export async function resolveChannel(
 	const db = await WebhookTable.findOne({ channelID });
 	if (db) {
 		client.emit('log', `Restoring webhook from DB.`);
-		console.log('Restoring webhook from db');
 		webhookCache.set(db.channelID, new WebhookClient(db.webhookID, db.webhookToken));
 		return webhookCache.get(db.channelID);
 	}
