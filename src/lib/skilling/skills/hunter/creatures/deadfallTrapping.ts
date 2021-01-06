@@ -61,7 +61,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		itemsConsumed: resolveNameBank({ Banana: 1 }),
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
 		huntTechnique: 'deadfall trapping',
-		catchTime: 40,
+		catchTime: 33,
 		qpRequired: 175,
 		slope: 0.8,
 		intercept: 20
