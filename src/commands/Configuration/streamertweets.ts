@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
