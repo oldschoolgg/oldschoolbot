@@ -243,17 +243,8 @@ export default class extends BotCommand {
 		if (creature.name === 'Herbiboar' || creature.name === 'Razor-backed kebbit') {
 			let staminaPotionQuantity =
 				creature.name === 'Herbiboar'
-					? Math.round(duration / (7.5 * Time.Minute))
-					: Math.round(duration / (15 * Time.Minute));
-			let usingRing = false;
-
-			if (
-				msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance`)) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance (uncharged)`))
-			) {
-				staminaPotionQuantity = Math.round(0.5 * staminaPotionQuantity);
-				usingRing = true;
-			}
+					? Math.round(duration / (9 * Time.Minute))
+					: Math.round(duration / (18 * Time.Minute));
 
 			if (bankHasItem(userBank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {
 				newBank = removeItemFromBank(
@@ -263,11 +254,6 @@ export default class extends BotCommand {
 				);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
-				if (usingRing) {
-					boosts.push(
-						'Saved half amount of Stamina potion(4) for having Ring of endurance or Ring of endurance (uncharged)'
-					);
-				}
 			}
 		}
 
