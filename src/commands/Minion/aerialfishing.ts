@@ -1,12 +1,67 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Tasks, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AerialFishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, randFloat } from '../../lib/util';
+import { formatDuration, randFloat, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
+
+const buyables = [
+	{
+		item: getOSItem('Angler hat'),
+		cost: 100,
+		aliases: []
+	},
+	{
+		item: getOSItem('Angler top'),
+		cost: 100,
+		aliases: []
+	},
+	{
+		item: getOSItem('Angler waders'),
+		cost: 100,
+		aliases: ['angler legs']
+	},
+	{
+		item: getOSItem('Angler boots'),
+		cost: 100,
+		aliases: []
+	},
+	{
+		item: getOSItem('Pearl fishing rod'),
+		cost: 100,
+		aliases: []
+	},
+	{
+		item: getOSItem('Pearl fly fishing rod'),
+		cost: 120,
+		aliases: ['pearl fly rod']
+	},
+	{
+		item: getOSItem('Pearl barbarian rod'),
+		cost: 150,
+		aliases: ['pearl barb rod']
+	},
+	{
+		item: getOSItem('Fish sack'),
+		cost: 1000,
+		aliases: []
+	}
+];
+
+const sellables = [
+	{
+		item: getOSItem('Golden tench'),
+		cost: 100,
+		aliases: []
+	}
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -65,20 +120,65 @@ export default class extends BotCommand {
 			)} to finish.`
 		);
 	}
-	/*
 
 	@requiresMinion
 	async buy(msg: KlasaMessage, [itemName = '']: [string]) {
-		await msg.author.settings.sync(true);
 
-		return;
+		const buyable = buyables.find(
+			i =>
+				stringMatches(itemName, i.item.name) ||
+				i.aliases.some(alias => stringMatches(alias, itemName))
+		);
+
+		if (!buyable) {
+			return msg.send(
+				`Here are the items you can buy: \n\n${buyables
+					.map(i => `**${i.item.name}:** ${i.cost} Molch pearls`)
+					.join('\n')}.`
+				);
+		}
+		await msg.author.settings.sync(true);
+		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
+		const amountPearlsHas = bank.amount('Molch pearl');
+		if (amountPearlsHas === 0) {
+			return msg.send(`You have no Molch pearls, but here is joke, Where do fish keep their money? \nIn a riverbank. Hehe!`);
+		}
+		if (amountPearlsHas < buyable.cost) {
+			return msg.send(`You don't have enough Molch pearls.`);
+		}
+		await msg.author.removeItemFromBank(itemID('Molch pearl'), buyable.cost);
+		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
+		return msg.send(
+			`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`
+		);
 	}
 
 	@requiresMinion
 	async sell(msg: KlasaMessage, [itemName = '']: [string]) {
-		await msg.author.settings.sync(true);
 
-		return;
+		const sellable = sellables.find(
+			i =>
+				stringMatches(itemName, i.item.name) ||
+				i.aliases.some(alias => stringMatches(alias, itemName))
+		);
+
+		if (!sellable) {
+			return msg.send(
+				`Here are the items you can sell: \n\n${sellables
+					.map(i => `**${i.item.name}:** ${i.cost} Molch pearls`)
+					.join('\n')}.`
+				);
+		}
+		await msg.author.settings.sync(true);
+		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
+		const amount = bank.amount(sellable.item.name);
+		if (amount < 1) {
+			return msg.send(`You have no ${sellable.item.name}.`);
+		}
+		await msg.author.removeItemFromBank(sellable.item.id, 1);
+		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);
+		return msg.send(
+			`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`
+		);
 	}
-	*/
 }
