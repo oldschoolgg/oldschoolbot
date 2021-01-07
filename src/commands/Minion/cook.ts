@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cooking from '../../lib/skilling/skills/cooking';
@@ -94,9 +94,9 @@ export default class extends BotCommand {
 
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
-				`${msg.author.minionName} can't go on trips longer than ${
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					msg.author.maxTripLength
-				} minutes, try a lower quantity. The highest amount of ${
+				)} minutes, try a lower quantity. The highest amount of ${
 					cookable.name
 				}s you can cook is ${Math.floor(
 					msg.author.maxTripLength / timeToCookSingleCookable
@@ -118,18 +118,14 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				cookableID: cookable.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Cooking
-			}
-		);
+		await addSubTaskToActivityTask<CookingActivityTaskOptions>(this.client, {
+			cookableID: cookable.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Cooking
+		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(

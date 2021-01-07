@@ -19,7 +19,7 @@ import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
 
-interface SkillUser {
+export interface SkillUser {
 	id: string;
 	totalxp?: number;
 	['minion.ironman']: boolean;

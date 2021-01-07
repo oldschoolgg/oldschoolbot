@@ -8,6 +8,7 @@ import { redditAppConfig } from '../config';
 import JagexMods from '../lib/data/jagexMods';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { JMod } from '../lib/types';
+import { sendToChannelID } from '../lib/util/webhook';
 
 const jmodAccounts = JagexMods.filter(jmod => jmod.redditUsername).map(jmod => jmod.redditUsername);
 
@@ -106,7 +107,7 @@ export default class extends Event {
 			.map(guild => {
 				const channel = guild.channels.get(guild.settings.get(GuildSettings.JMODComments));
 				if (channel && channel instanceof TextChannel && channel.postable) {
-					channel.send(`<${url}>`, { embed }).catch(() => null);
+					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
 				}
 			});
 	}

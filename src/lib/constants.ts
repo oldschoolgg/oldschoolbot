@@ -26,7 +26,11 @@ export const enum Roles {
 	PatronTier1 = '678970545789730826',
 	PatronTier2 = '678967943979204608',
 	PatronTier3 = '687408140832342043',
-	Patron = '679620175838183424'
+	Patron = '679620175838183424',
+	// Status Roles
+	TopSkiller = '795266465329709076',
+	TopCollector = '795271210141351947',
+	TopSacrificer = '795933981715464192'
 }
 
 export const enum Emoji {
@@ -204,6 +208,13 @@ export const enum Activity {
 	AerialFishing = 'AerialFishing'
 }
 
+export enum ActivityGroup {
+	Skilling = 'Skilling',
+	Clue = 'Clue',
+	Monster = 'Monster',
+	Minigame = 'Minigame'
+}
+
 export const enum Events {
 	Debug = 'debug',
 	Error = 'error',
@@ -289,3 +300,6 @@ export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
+export const TWEETS_RATELIMITING =
+	`Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.` +
+	`You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.`;

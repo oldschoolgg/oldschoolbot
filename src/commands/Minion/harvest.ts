@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { FarmingPatchTypes } from '../../lib/farming/types';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
@@ -161,23 +161,19 @@ export default class extends BotCommand {
 			)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
 		}
 
-		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				plantsName: patchType.lastPlanted,
-				patchType,
-				getPatchType,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				upgradeType,
-				duration,
-				quantity: patchType.lastQuantity,
-				planting: false,
-				currentDate,
-				type: Activity.Farming
-			}
-		);
+		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(this.client, {
+			plantsName: patchType.lastPlanted,
+			patchType,
+			getPatchType,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			upgradeType,
+			duration,
+			quantity: patchType.lastQuantity,
+			planting: false,
+			currentDate,
+			type: Activity.Farming
+		});
 
 		return msg.send(returnMessageStr);
 	}

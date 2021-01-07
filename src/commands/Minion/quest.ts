@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, MAX_QP, Tasks, Time } from '../../lib/constants';
+import { Activity, MAX_QP, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -39,16 +39,12 @@ export default class extends BotCommand {
 			boosts.push(`10% for Graceful`);
 		}
 
-		await addSubTaskToActivityTask<QuestingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				type: Activity.Questing,
-				duration,
-				userID: msg.author.id,
-				channelID: msg.channel.id
-			}
-		);
+		await addSubTaskToActivityTask<QuestingActivityTaskOptions>(this.client, {
+			type: Activity.Questing,
+			duration,
+			userID: msg.author.id,
+			channelID: msg.channel.id
+		});
 		let response = `${
 			msg.author.minionName
 		} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;

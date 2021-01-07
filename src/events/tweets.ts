@@ -4,6 +4,7 @@ import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
 
 import { twitterAppConfig } from '../config';
+import { sendToChannelID } from '../lib/util/webhook';
 
 const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
@@ -134,7 +135,7 @@ interface Tweet {
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
-		super(store, file, directory, { once: true, event: 'klasaReady', enabled: false });
+		super(store, file, directory, { once: true, event: 'klasaReady' });
 	}
 
 	async init() {
@@ -217,7 +218,7 @@ export default class extends Event {
 					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
 					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
 				) {
-					channel.send(`<${url}>`, { embed }).catch(() => null);
+					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
 				}
 			});
 	}
