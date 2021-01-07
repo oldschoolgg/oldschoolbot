@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -292,20 +292,16 @@ export default class extends BotCommand {
 			}cancel\` the activity.`;
 		}
 
-		await addSubTaskToActivityTask<HunterActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				creatureName: creature.name,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				usingHuntPotion,
-				wildyPeak,
-				type: Activity.Hunter
-			}
-		);
+		await addSubTaskToActivityTask<HunterActivityTaskOptions>(this.client, {
+			creatureName: creature.name,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			usingHuntPotion,
+			wildyPeak,
+			type: Activity.Hunter
+		});
 
 		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${
 			creature.name

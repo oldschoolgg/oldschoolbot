@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -112,17 +112,13 @@ export default class extends BotCommand {
 		const quantity = tripLength / (randValue * Time.Second);
 		const duration = quantity * (randValue * Time.Second);
 
-		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.AerialFishing
-			}
-		);
+		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.AerialFishing
+		});
 
 		return msg.send(
 			`${

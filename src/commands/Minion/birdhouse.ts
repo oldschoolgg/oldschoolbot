@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Emoji, Tasks } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -190,21 +190,17 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				birdhouseName: birdhouse.name,
-				birdhouseData: previousBirdhouseTraps,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				duration,
-				placing: true,
-				gotCraft,
-				currentDate,
-				type: Activity.Birdhouse
-			}
-		);
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(this.client, {
+			birdhouseName: birdhouse.name,
+			birdhouseData: previousBirdhouseTraps,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			duration,
+			placing: true,
+			gotCraft,
+			currentDate,
+			type: Activity.Birdhouse
+		});
 
 		return msg.send(
 			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
@@ -271,21 +267,17 @@ export default class extends BotCommand {
 			duration
 		)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
 
-		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				birdhouseName: previousBirdhouseTraps.lastPlaced,
-				birdhouseData: previousBirdhouseTraps,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				duration,
-				placing: false,
-				gotCraft: false,
-				currentDate,
-				type: Activity.Birdhouse
-			}
-		);
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(this.client, {
+			birdhouseName: previousBirdhouseTraps.lastPlaced,
+			birdhouseData: previousBirdhouseTraps,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			duration,
+			placing: false,
+			gotCraft: false,
+			currentDate,
+			type: Activity.Birdhouse
+		});
 
 		return msg.send(returnMessageStr);
 	}
