@@ -471,11 +471,6 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 2000 * 25,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
-		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
-				[GearStat.AttackSlash]: 168
-			}
-		},
 		respawnTime: Time.Second * 20
 	}
 ];

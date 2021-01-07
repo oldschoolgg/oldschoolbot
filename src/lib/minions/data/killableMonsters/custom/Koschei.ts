@@ -5,7 +5,7 @@ import setCustomMonster from '../../../../util/setCustomMonster';
 
 export const koscheiTable = new LootTable().add('Fremennik blade');
 
-setCustomMonster(234262, 'Koschei the deathless', koscheiTable, Monsters.Vorkath, {
+setCustomMonster(234262, 'Koschei the deathless', koscheiTable, Monsters.GeneralGraardor, {
 	id: 234262,
 	name: 'Koschei the deathless',
 	aliases: ['koschei the deathless', 'koschei', 'ko']
