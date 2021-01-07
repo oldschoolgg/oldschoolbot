@@ -6,7 +6,7 @@ import { Activity, Emoji, Tasks } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import birdHouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import birdHouses from '../../lib/skilling/skills/hunter/birdhouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	bankHasItem,
@@ -16,7 +16,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { BirdHouseActivityTaskOptions } from './../../lib/types/minions';
+import { BirdhouseActivityTaskOptions } from './../../lib/types/minions';
 
 const birdhouseSeedReq = resolveNameBank({
 	'Hammerstone seed': 10,
@@ -182,7 +182,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		// If user does not have something already placed, just place the new birdhouses.
-		if (!previousBirdhouseTraps.birdHousePlaced) {
+		if (!previousBirdhouseTraps.birdhousePlaced) {
 			infoStr.unshift(`${msg.author.minionName} is now placing 4x ${birdhouse.name}.`);
 		} else {
 			infoStr.unshift(
@@ -190,7 +190,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<BirdHouseActivityTaskOptions>(
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(
 			this.client,
 			Tasks.SkillingTicker,
 			{
@@ -262,7 +262,7 @@ export default class extends BotCommand {
 		}
 
 		// If user does not have something already placed.
-		if (!previousBirdhouseTraps.birdHousePlaced) {
+		if (!previousBirdhouseTraps.birdhousePlaced) {
 			return msg.send`There is no placed birdhouses to collect from!`;
 		}
 		returnMessageStr = `${
@@ -271,7 +271,7 @@ export default class extends BotCommand {
 			duration
 		)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
 
-		await addSubTaskToActivityTask<BirdHouseActivityTaskOptions>(
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(
 			this.client,
 			Tasks.SkillingTicker,
 			{

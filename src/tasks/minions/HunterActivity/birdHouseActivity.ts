@@ -2,15 +2,15 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import birdHouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
+import birdHouses from '../../../lib/skilling/skills/hunter/birdhouseTrapping';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { BirdHouseActivityTaskOptions } from '../../../lib/types/minions';
+import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
-import { BirdhouseData } from './../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
+import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 
 export default class extends Task {
-	async run(data: BirdHouseActivityTaskOptions) {
+	async run(data: BirdhouseActivityTaskOptions) {
 		const {
 			birdhouseName,
 			birdhouseData,
@@ -31,7 +31,7 @@ export default class extends Task {
 		const birdhouse = birdHouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 
-		if (!birdhouseData.birdHousePlaced) {
+		if (!birdhouseData.birdhousePlaced) {
 			let str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name}.`;
 
 			if (placing && gotCraft) {
@@ -46,7 +46,7 @@ export default class extends Task {
 
 			const updateBirdhouseData: BirdhouseData = {
 				lastPlaced: birdhouse.name,
-				birdHousePlaced: true,
+				birdhousePlaced: true,
 				birdhouseTime: currentDate + duration
 			};
 
@@ -57,7 +57,7 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 			channel.send(str);
-		} else if (birdhouseData.birdHousePlaced) {
+		} else if (birdhouseData.birdhousePlaced) {
 			let str = '';
 			const birdhouseToCollect = birdHouses.find(
 				_birdhouse => _birdhouse.name === birdhouseData.lastPlaced
@@ -100,14 +100,14 @@ export default class extends Task {
 
 			let updateBirdhouseData: BirdhouseData = {
 				lastPlaced: null,
-				birdHousePlaced: false,
+				birdhousePlaced: false,
 				birdhouseTime: 0
 			};
 
 			if (placing) {
 				updateBirdhouseData = {
 					lastPlaced: birdhouse.name,
-					birdHousePlaced: true,
+					birdhousePlaced: true,
 					birdhouseTime: currentDate + duration
 				};
 			}

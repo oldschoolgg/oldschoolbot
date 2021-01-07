@@ -231,6 +231,7 @@ export interface Creature {
 	aliases: string[];
 	level: number;
 	hunterXp: number;
+	fishLvl?: number;
 	fishingXp?: number;
 	itemsRequired?: ItemBank;
 	itemsConsumed?: ItemBank;

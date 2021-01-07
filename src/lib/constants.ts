@@ -154,7 +154,7 @@ export const enum Tasks {
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
 	ChampionsChallenge = 'championsChallengeActivity',
-	BirdHouseActivity = 'birdHouseActivity',
+	BirdhouseActivity = 'birdhouseActivity',
 
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -186,7 +186,7 @@ export const enum Activity {
 	Pickpocket = 'Pickpocket',
 	Herblore = 'Herblore',
 	Hunter = 'Hunter',
-	BirdHouse = 'BirdHouse',
+	Birdhouse = 'Birdhouse',
 	Alching = 'Alching',
 	AnimatedArmour = 'AnimatedArmour',
 	Cyclops = 'Cyclops',

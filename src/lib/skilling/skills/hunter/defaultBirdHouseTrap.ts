@@ -1,16 +1,16 @@
 export interface BirdhouseData {
 	lastPlaced: string | null;
-	birdHousePlaced: boolean; // false -> nothing placed, true -> something placed
+	birdhousePlaced: boolean; // false -> nothing placed, true -> something placed
 	birdhouseTime: number;
 }
 
 /**
  * The default birdhouse information when hunter is not yet trained.
  */
-const defaultBirdHouseTrap: BirdhouseData = {
+const defaultBirdhouseTrap: BirdhouseData = {
 	lastPlaced: null,
-	birdHousePlaced: false,
+	birdhousePlaced: false,
 	birdhouseTime: 0
 };
 
-export default defaultBirdHouseTrap;
+export default defaultBirdhouseTrap;

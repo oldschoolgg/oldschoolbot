@@ -127,7 +127,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	currentDate: number;
 }
 
-export interface BirdHouseActivityTaskOptions extends ActivityTaskOptions {
+export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	birdhouseName: string | null;
 	placing: boolean;
 	gotCraft: boolean;

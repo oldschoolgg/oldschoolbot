@@ -74,7 +74,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.ChampionsChallenge;
 		case Activity.Hunter:
 			return Tasks.HunterActivity;
-		case Activity.BirdHouse:
-			return Tasks.BirdHouseActivity;
+		case Activity.Birdhouse:
+			return Tasks.BirdhouseActivity;
 	}
 }

@@ -2,10 +2,10 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Time } from '../../../constants';
 import { resolveNameBank } from '../../../util';
-import { NestBoxes } from './../../../openables';
-import { ItemBank } from './../../../types/index';
+import { NestBoxes } from '../../../openables';
+import { ItemBank } from '../../../types/index';
 
-interface BirdHouse {
+interface Birdhouse {
 	name: string;
 	aliases: string[];
 	huntLvl: number;
@@ -21,7 +21,7 @@ interface BirdHouse {
 	qpRequired: number;
 }
 
-const birdHouses: BirdHouse[] = [
+const birdHouses: Birdhouse[] = [
 	{
 		name: 'Bird house',
 		aliases: [
@@ -43,7 +43,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes)
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -61,7 +61,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 2])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -79,7 +79,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 3])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -97,7 +97,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 4])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -115,7 +115,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 5])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -133,7 +133,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 6])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -151,7 +151,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 7])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -169,7 +169,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 8])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	},
@@ -187,7 +187,7 @@ const birdHouses: BirdHouse[] = [
 			.tertiary(2, NestBoxes, [1, 9])
 			.tertiary(3, 'Feather', 10),
 		huntTechnique: 'bird house trapping',
-		waitTime: 50 * Time.Minute,
+		waitTime: 50 * Time.Minute / 9999999999,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
 	}
