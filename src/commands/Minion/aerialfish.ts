@@ -68,8 +68,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			usage: '[buy|sell] [tripTime:int{1}|name:...string]',
+			usage: '[buy|sell|run] [name:...string|tripTime:int{1}]',
 			subcommands: true,
+			usageDelim: ' ',
 			cooldown: 1,
 			aliases: ['aerial', 'af'],
 			description: 'Sends your minion to aerial fish, allowing you to get the angler outfit.',

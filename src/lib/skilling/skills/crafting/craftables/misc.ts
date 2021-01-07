@@ -134,6 +134,22 @@ const Misc: Craftable[] = [
 		xp: 15,
 		inputItems: resolveNameBank({ Sinew: 1 }),
 		tickRate: 3
+	},
+	{
+		name: 'Crossbow string',
+		id: itemID('Crossbow string'),
+		level: 10,
+		xp: 15,
+		inputItems: resolveNameBank({ Sinew: 1 }),
+		tickRate: 3
+	},
+	{
+		name: 'Clockwork',
+		id: itemID('Clockwork'),
+		level: 8,
+		xp: 15,
+		inputItems: resolveNameBank({ 'Steel bar': 1 }),
+		tickRate: 3
 	}
 ];
 

@@ -102,6 +102,7 @@ const hunterGear: CollectionLogData = {
 		'Spottier cape',
 		'Gloves of silence',
 		'Golden tench',
+		'Fish sack',
 		'Baby chinchompa',
 		'Herbi'
 	])
@@ -1513,15 +1514,13 @@ export const skillingLog: CollectionLogData = {
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
 	AgilityArena: agilityArenaLog,
 	Hunter: resolveItems([
-		'Graahk headdress',
-		'Graahk top',
-		'Graahk legs',
 		'Kyatt hat',
 		'Kyatt top',
 		'Kyatt legs',
 		'Spotted cape',
 		'Spottier cape',
 		'Gloves of silence',
+		'Fish sack',
 		'Golden tench',
 		'Baby chinchompa',
 		'Herbi'

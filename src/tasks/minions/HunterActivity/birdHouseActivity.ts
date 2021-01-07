@@ -31,6 +31,10 @@ export default class extends Task {
 		const birdhouse = birdHouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 
+		if (!placing) {
+			loot.add('Clockwork', 4);
+		}
+
 		if (!birdhouseData.birdhousePlaced) {
 			let str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name}.`;
 

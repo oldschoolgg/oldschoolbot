@@ -143,7 +143,7 @@ export default class extends Task {
 					}x minutes Aerial fishing.`
 				);
 				return this.client.commands
-					.get('aerialfishing')!
+					.get('aerialfish')!
 					.run(res, [
 						Math.floor(duration / Time.Minute) > user.maxTripLength
 							? Math.floor(user.maxTripLength / Time.Minute)
