@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { percentChance, rand } from '../../../lib/util';
+import { rand, roll } from '../../../lib/util';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { Bank } from 'oldschooljs';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
@@ -38,7 +38,7 @@ export default class extends Task {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			if (percentChance(100 - (maxRoll - 40) * 25 / 59)) {
+			if (roll((100 - (maxRoll - 40) * 25 / 59))) {
 				molchPearls++;
 			}
 			let currentRoll = rand(0, maxRoll);
@@ -96,7 +96,7 @@ export default class extends Task {
 			str += `\n\n**The cormorant has brought you a very strange tench.**`;
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received a **Golden tench** <:Golden_tench:324127378647285771> while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
+				`**${user.username}'s** minion, ${user.minionName}, just received a **Golden tench** while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
 			);
 		}
 

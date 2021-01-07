@@ -6,7 +6,7 @@ import { Activity, Emoji, Tasks } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import birdHouses from '../../lib/skilling/skills/hunter/birdhouseTrapping';
+import birdhouses from '../../lib/skilling/skills/hunter/birdhouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	bankHasItem,
@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		const infoStr: string[] = [];
 		const boostStr: string[] = [];
 
-		const birdhouse = birdHouses.find(_birdhouse =>
+		const birdhouse = birdhouses.find(_birdhouse =>
 			_birdhouse.aliases.some(
 				alias => stringMatches(alias, type) || stringMatches(alias.split(' ')[0], type)
 			)
@@ -81,7 +81,7 @@ export default class extends BotCommand {
 
 		if (!birdhouse) {
 			return msg.send(
-				`That's not a valid birdhouse. Valid bird houses are ${birdHouses
+				`That's not a valid birdhouse. Valid bird houses are ${birdhouses
 					.map(_birdhouse => _birdhouse.name)
 					.join(', ')}.`
 			);
@@ -106,7 +106,7 @@ export default class extends BotCommand {
 		const storePreviousBirdhouse = previousBirdhouseTraps.lastPlaced;
 
 		const prevBirdhouse = storePreviousBirdhouse
-			? birdHouses.find(
+			? birdhouses.find(
 					_birdhouse =>
 						stringMatches(_birdhouse.name, storePreviousBirdhouse) ||
 						stringMatches(_birdhouse.name.split(' ')[0], storePreviousBirdhouse)
@@ -202,7 +202,7 @@ export default class extends BotCommand {
 				placing: true,
 				gotCraft,
 				currentDate,
-				type: Activity.BirdHouse
+				type: Activity.Birdhouse
 			}
 		);
 
@@ -226,7 +226,7 @@ export default class extends BotCommand {
 		const storePreviousBirdhouse = previousBirdhouseTraps.lastPlaced;
 
 		const prevBirdhouse = storePreviousBirdhouse
-			? birdHouses.find(
+			? birdhouses.find(
 					_birdhouse =>
 						stringMatches(_birdhouse.name, storePreviousBirdhouse) ||
 						stringMatches(_birdhouse.name.split(' ')[0], storePreviousBirdhouse)
@@ -283,7 +283,7 @@ export default class extends BotCommand {
 				placing: false,
 				gotCraft: false,
 				currentDate,
-				type: Activity.BirdHouse
+				type: Activity.Birdhouse
 			}
 		);
 
@@ -305,7 +305,7 @@ export default class extends BotCommand {
 
 		if (currentBirdHouses.lastPlaced) {
 			const { lastPlaced } = currentBirdHouses;
-			const birdhouse = birdHouses.find(_birdhouse =>
+			const birdhouse = birdhouses.find(_birdhouse =>
 				_birdhouse.aliases.some(
 					alias =>
 						stringMatches(alias, lastPlaced) ||

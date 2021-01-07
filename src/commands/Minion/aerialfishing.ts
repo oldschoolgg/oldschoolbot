@@ -26,23 +26,24 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [tripTime = 0]: [number]) {
+	async run(msg: KlasaMessage, [tripTime = Math.floor(msg.author.maxTripLength / Time.Minute)]: [number]) {
 		await msg.author.settings.sync(true);
 
 		if (msg.author.skillLevel(SkillsEnum.Fishing) < 43 || msg.author.skillLevel(SkillsEnum.Hunter) < 35) {
 			return msg.send(`You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.`);
 		}
 
-		if (tripTime > msg.author.maxTripLength) {
+		let tripLength = Time.Minute * tripTime;
+
+		if (tripLength > msg.author.maxTripLength) {
 			return msg.send(`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				msg.author.maxTripLength
-			)}, try a lower trip length. The highest amount of minutes you can send out is ${msg.author.maxTripLength}.`);
+			)}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(msg.author.maxTripLength / Time.Minute)}.`);
 		}
-
-		let tripLength = Time.Minute * tripTime;
 		
-		const quantity = tripLength / (randFloat(1.85, 2.15) * Time.Second);
-		const duration = quantity * tripLength;
+		const randValue = randFloat(1.85, 2.15);
+		const quantity = tripLength / (randValue * Time.Second);
+		const duration = quantity * (randValue * Time.Second);
 
 		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>(
 			this.client,
@@ -64,6 +65,7 @@ export default class extends BotCommand {
 			)} to finish.`
 		);
 	}
+	/*
 
 	@requiresMinion
 	async buy(msg: KlasaMessage, [itemName = '']: [string]) {
@@ -78,4 +80,5 @@ export default class extends BotCommand {
 
 		return;
 	}
+	*/
 }

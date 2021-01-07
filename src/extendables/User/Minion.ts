@@ -417,8 +417,12 @@ export default class extends Extendable {
 				}. ${formattedDuration}`;
 			}
 
-			case Activity.BirdHouse: {
+			case Activity.Birdhouse: {
 				return `${this.minionName} is currently doing a bird house run. ${formattedDuration}`;
+			}
+
+			case Activity.AerialFishing: {
+				return `${this.minionName} is currently aerial fishing. ${formattedDuration}`;
 			}
 		}
 	}
