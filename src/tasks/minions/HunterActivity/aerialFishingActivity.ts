@@ -1,12 +1,13 @@
 import { Task } from 'klasa';
-import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { rand, roll } from '../../../lib/util';
-import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { Bank } from 'oldschooljs';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
+
 import { Events, Time } from '../../../lib/constants';
+import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
+import { rand, roll } from '../../../lib/util';
+import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: AerialFishingActivityTaskOptions) {
@@ -38,21 +39,33 @@ export default class extends Task {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			if (roll((100 - (maxRoll - 40) * 25 / 59))) {
+			if (roll(100 - ((maxRoll - 40) * 25) / 59)) {
 				molchPearls++;
 			}
 			let currentRoll = rand(0, maxRoll);
 			loot.add(bluegill.table.roll());
 
-			if (currentRoll > 82 && currentFishLevel > greaterSiren.fishLvl! && currentHuntLevel > greaterSiren.level!) {
+			if (
+				currentRoll > 82 &&
+				currentFishLevel > greaterSiren.fishLvl! &&
+				currentHuntLevel > greaterSiren.level!
+			) {
 				greaterSirenCaught++;
 				continue;
 			}
-			if (currentRoll > 67 && currentFishLevel > mottledEel.fishLvl! && currentHuntLevel > mottledEel.level!) {
+			if (
+				currentRoll > 67 &&
+				currentFishLevel > mottledEel.fishLvl! &&
+				currentHuntLevel > mottledEel.level!
+			) {
 				mottledEelCaught++;
 				continue;
 			}
-			if (currentRoll > 52 && currentFishLevel > commonTench.fishLvl! && currentHuntLevel > commonTench.level!) {
+			if (
+				currentRoll > 52 &&
+				currentFishLevel > commonTench.fishLvl! &&
+				currentHuntLevel > commonTench.level!
+			) {
 				commonTenchCaught++;
 				continue;
 			}
@@ -61,8 +74,16 @@ export default class extends Task {
 
 		loot.add('Molch pearl', molchPearls);
 
-		const huntXpReceived = greaterSirenCaught * greaterSiren.hunterXp + mottledEelCaught * mottledEel.hunterXp + commonTenchCaught * commonTench.hunterXp + bluegillCaught * bluegill.hunterXp;
-		const fishXpReceived = greaterSirenCaught * greaterSiren.fishingXp! + mottledEelCaught * mottledEel.fishingXp! + commonTenchCaught * commonTench.fishingXp! + bluegillCaught * bluegill.fishingXp!;
+		const huntXpReceived =
+			greaterSirenCaught * greaterSiren.hunterXp +
+			mottledEelCaught * mottledEel.hunterXp +
+			commonTenchCaught * commonTench.hunterXp +
+			bluegillCaught * bluegill.hunterXp;
+		const fishXpReceived =
+			greaterSirenCaught * greaterSiren.fishingXp! +
+			mottledEelCaught * mottledEel.fishingXp! +
+			commonTenchCaught * commonTench.fishingXp! +
+			bluegillCaught * bluegill.fishingXp!;
 
 		await user.addXP(SkillsEnum.Fishing, fishXpReceived);
 		await user.addXP(SkillsEnum.Agility, huntXpReceived);
@@ -75,7 +96,15 @@ export default class extends Task {
 		const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const newFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		let str = `${user}, ${user.minionName} finished aerial fishing and caught ${greaterSirenCaught}x ${greaterSiren.name}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${commonTench.name}, ${bluegillCaught}x ${bluegill.name}, you also received ${huntXpReceived.toLocaleString()} Hunter XP and ${fishXpReceived.toLocaleString()} Fishing XP. ${
+		let str = `${user}, ${
+			user.minionName
+		} finished aerial fishing and caught ${greaterSirenCaught}x ${
+			greaterSiren.name
+		}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${
+			commonTench.name
+		}, ${bluegillCaught}x ${
+			bluegill.name
+		}, you also received ${huntXpReceived.toLocaleString()} Hunter XP and ${fishXpReceived.toLocaleString()} Fishing XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
 
@@ -106,8 +135,20 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of ${Math.floor(duration / Time.Minute) > user.maxTripLength ? Math.floor(user.maxTripLength / Time.Minute) : Math.floor(duration / Time.Minute)}x minutes Aerial fishing.`);
-				return this.client.commands.get('aerialfishing')!.run(res, [Math.floor(duration / Time.Minute) > user.maxTripLength ? Math.floor(user.maxTripLength / Time.Minute) : Math.floor(duration / Time.Minute)]);
+				user.log(
+					`continued trip of ${
+						Math.floor(duration / Time.Minute) > user.maxTripLength
+							? Math.floor(user.maxTripLength / Time.Minute)
+							: Math.floor(duration / Time.Minute)
+					}x minutes Aerial fishing.`
+				);
+				return this.client.commands
+					.get('aerialfishing')!
+					.run(res, [
+						Math.floor(duration / Time.Minute) > user.maxTripLength
+							? Math.floor(user.maxTripLength / Time.Minute)
+							: Math.floor(duration / Time.Minute)
+					]);
 			},
 			undefined,
 			data

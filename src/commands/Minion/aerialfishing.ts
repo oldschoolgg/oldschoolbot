@@ -72,8 +72,7 @@ export default class extends BotCommand {
 			subcommands: true,
 			cooldown: 1,
 			aliases: ['aerial', 'af'],
-			description:
-				'Sends your minion to aerial fish, allowing you to get the angler outfit.',
+			description: 'Sends your minion to aerial fish, allowing you to get the angler outfit.',
 			examples: ['+aerialfishing 30', '+aerialfishing buy fish sack'],
 			categoryFlags: ['minion', 'skilling']
 		});
@@ -81,21 +80,33 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [tripTime = Math.floor(msg.author.maxTripLength / Time.Minute)]: [number]) {
+	async run(
+		msg: KlasaMessage,
+		[tripTime = Math.floor(msg.author.maxTripLength / Time.Minute)]: [number]
+	) {
 		await msg.author.settings.sync(true);
 
-		if (msg.author.skillLevel(SkillsEnum.Fishing) < 43 || msg.author.skillLevel(SkillsEnum.Hunter) < 35) {
-			return msg.send(`You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.`);
+		if (
+			msg.author.skillLevel(SkillsEnum.Fishing) < 43 ||
+			msg.author.skillLevel(SkillsEnum.Hunter) < 35
+		) {
+			return msg.send(
+				`You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.`
+			);
 		}
 
 		let tripLength = Time.Minute * tripTime;
 
 		if (tripLength > msg.author.maxTripLength) {
-			return msg.send(`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(msg.author.maxTripLength / Time.Minute)}.`);
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(
+					msg.author.maxTripLength / Time.Minute
+				)}.`
+			);
 		}
-		
+
 		const randValue = randFloat(1.85, 2.15);
 		const quantity = tripLength / (randValue * Time.Second);
 		const duration = quantity * (randValue * Time.Second);
@@ -108,7 +119,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.AerialFishing,
+				type: Activity.AerialFishing
 			}
 		);
 
@@ -123,7 +134,6 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async buy(msg: KlasaMessage, [itemName = '']: [string]) {
-
 		const buyable = buyables.find(
 			i =>
 				stringMatches(itemName, i.item.name) ||
@@ -135,13 +145,15 @@ export default class extends BotCommand {
 				`Here are the items you can buy: \n\n${buyables
 					.map(i => `**${i.item.name}:** ${i.cost} Molch pearls`)
 					.join('\n')}.`
-				);
+			);
 		}
 		await msg.author.settings.sync(true);
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
 		const amountPearlsHas = bank.amount('Molch pearl');
 		if (amountPearlsHas === 0) {
-			return msg.send(`You have no Molch pearls, but here is joke, Where do fish keep their money? \nIn a riverbank. Hehe!`);
+			return msg.send(
+				`You have no Molch pearls, but here is joke, Where do fish keep their money? \nIn a riverbank. Hehe!`
+			);
 		}
 		if (amountPearlsHas < buyable.cost) {
 			return msg.send(`You don't have enough Molch pearls.`);
@@ -155,7 +167,6 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async sell(msg: KlasaMessage, [itemName = '']: [string]) {
-
 		const sellable = sellables.find(
 			i =>
 				stringMatches(itemName, i.item.name) ||
@@ -167,7 +178,7 @@ export default class extends BotCommand {
 				`Here are the items you can sell: \n\n${sellables
 					.map(i => `**${i.item.name}:** ${i.cost} Molch pearls`)
 					.join('\n')}.`
-				);
+			);
 		}
 		await msg.author.settings.sync(true);
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));

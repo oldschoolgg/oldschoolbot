@@ -3,11 +3,11 @@ import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import birdHouses from '../../../lib/skilling/skills/hunter/birdhouseTrapping';
+import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
-import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 
 export default class extends Task {
 	async run(data: BirdhouseActivityTaskOptions) {
