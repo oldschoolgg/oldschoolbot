@@ -140,6 +140,7 @@ export const enum Tasks {
 	FletchingActivity = 'fletchingActivity',
 	FarmingActivity = 'farmingActivity',
 	HerbloreActivity = 'herbloreActivity',
+	ConstructionActivity = 'constructionActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -192,6 +193,7 @@ export const enum Activity {
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
+	Construction = 'Construction',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge'

@@ -1,149 +1,193 @@
-import { resolveNameBank } from 'oldschooljs/dist/util';
-
-import { ItemBank } from '../../../types';
+import { itemID } from 'oldschooljs/dist/util';
 
 export interface Constructable {
+	id: number;
 	name: string;
-	input: ItemBank;
+	input: [Plank, number];
 	xp: number;
 	level: number;
 	nails?: number;
 	ticks: number;
 }
 
+export enum Plank {
+	Plank = itemID('Plank'),
+	OakPlank = itemID('Oak plank'),
+	TeakPlank = itemID('Teak plank'),
+	MahoganyPlank = itemID('Mahogany plank')
+}
+
 const Constructables: Constructable[] = [
 	{
+		id: itemID('Crude wooden chair'),
 		name: 'Crude wooden chair',
-		input: resolveNameBank({ Plank: 2 }),
+		input: [Plank.Plank, 2],
 		xp: 58,
 		level: 1,
 		ticks: 5,
 		nails: 2
 	},
 	{
+		id: itemID('Wooden bookcase'),
 		name: 'Wooden bookcase',
-		input: resolveNameBank({ Plank: 4 }),
+		input: [Plank.Plank, 4],
 		xp: 115,
 		level: 4,
 		ticks: 5,
 		nails: 4
 	},
 	{
+		id: itemID('Wooden chair'),
 		name: 'Wooden chair',
-		input: resolveNameBank({ Plank: 3 }),
+		input: [Plank.Plank, 3],
 		xp: 87,
 		level: 8,
 		ticks: 5,
 		nails: 3
 	},
 	{
+		id: itemID('Wooden larder'),
 		name: 'Wooden larder',
-		input: resolveNameBank({ Plank: 4 }),
+		input: [Plank.Plank, 4],
 		xp: 228,
 		level: 9,
 		ticks: 5,
 		nails: 8
 	},
 	{
+		id: itemID('Wood dining table'),
 		name: 'Wood dining table',
-		input: resolveNameBank({ Plank: 4 }),
+		input: [Plank.Plank, 4],
 		xp: 115,
 		level: 10,
 		ticks: 5,
 		nails: 4
 	},
 	{
+		id: itemID('Rocking chair'),
 		name: 'Rocking chair',
-		input: resolveNameBank({ Plank: 3 }),
+		input: [Plank.Plank, 3],
 		xp: 87,
 		level: 14,
 		ticks: 5,
 		nails: 3
 	},
 	{
+		id: itemID('Repair bench'),
 		name: 'Repair bench',
-		input: resolveNameBank({ 'Oak plank': 2 }),
+		input: [Plank.OakPlank, 2],
 		xp: 120,
 		level: 15,
 		ticks: 5
 	},
 	{
+		id: itemID('Crafting table 1'),
 		name: 'Crafting table 1',
-		input: resolveNameBank({ 'Oak plank': 4 }),
+		input: [Plank.OakPlank, 4],
 		xp: 240,
 		level: 16,
 		ticks: 5
 	},
 	{
+		id: itemID('Oak chair'),
 		name: 'Oak chair',
-		input: resolveNameBank({ 'Oak plank': 2 }),
+		input: [Plank.OakPlank, 2],
 		xp: 120,
 		level: 19,
 		ticks: 5
 	},
 	{
+		id: itemID('Oak dining table'),
 		name: 'Oak dining table',
-		input: resolveNameBank({ 'Oak plank': 4 }),
+		input: [Plank.OakPlank, 4],
 		xp: 240,
 		level: 22,
 		ticks: 5
 	},
 	{
+		id: itemID('Oak armchair'),
 		name: 'Oak armchair',
-		input: resolveNameBank({ 'Oak plank': 3 }),
+		input: [Plank.OakPlank, 3],
 		xp: 180,
 		level: 26,
 		ticks: 5
 	},
 	{
+		id: itemID('Carved oak table'),
 		name: 'Carved oak table',
-		input: resolveNameBank({ 'Oak plank': 6 }),
+		input: [Plank.OakPlank, 6],
 		xp: 360,
 		level: 31,
 		ticks: 5
 	},
 	{
+		id: itemID('Oak larder'),
 		name: 'Oak larder',
-		input: resolveNameBank({ 'Oak plank': 8 }),
+		input: [Plank.OakPlank, 8],
 		xp: 480,
 		level: 33,
 		ticks: 5
 	},
 	{
+		id: itemID('Teak armchair'),
 		name: 'Teak armchair',
-		input: resolveNameBank({ 'Teak plank': 2 }),
+		input: [Plank.TeakPlank, 2],
 		xp: 180,
 		level: 35,
 		ticks: 5
 	},
 	{
+		id: itemID('Teak table'),
 		name: 'Teak table',
-		input: resolveNameBank({ 'Teak plank': 4 }),
+		input: [Plank.TeakPlank, 4],
 		xp: 360,
 		level: 38,
 		ticks: 5
 	},
 	{
+		id: itemID('Mahogany armchair'),
 		name: 'Mahogany armchair',
-		input: resolveNameBank({ 'Mahogany plank': 2 }),
+		input: [Plank.MahoganyPlank, 2],
 		xp: 280,
 		level: 50,
 		ticks: 5
 	},
 	{
+		id: itemID('Mahogany table'),
 		name: 'Mahogany table',
-		input: resolveNameBank({ 'Mahogany plank': 6 }),
+		input: [Plank.MahoganyPlank, 6],
 		xp: 840,
 		level: 52,
 		ticks: 5
 	},
 	{
+		id: itemID('Teak garden bench'),
+		name: 'Teak garden bench',
+		input: [Plank.TeakPlank, 6],
+		xp: 540,
+		level: 66,
+		ticks: 5
+	},
+	{
+		id: itemID('Oak door'),
 		name: 'Oak door',
-		input: resolveNameBank({ 'Oak plank': 10 }),
+		input: [Plank.OakPlank, 10],
 		xp: 600,
 		level: 74,
 		ticks: 5
+	},
+	{
+		id: itemID('Gnome bench'),
+		name: 'Gnome bench',
+		input: [Plank.MahoganyPlank, 6],
+		xp: 840,
+		level: 77,
+		ticks: 5
 	}
 ];
+
+for (const obj of Constructables) {
+	obj.ticks *= 2.6;
+}
 
 export default Constructables;

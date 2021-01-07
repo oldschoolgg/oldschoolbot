@@ -22,6 +22,11 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
+	objectID: number;
+	quantity: number;
+}
+
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
