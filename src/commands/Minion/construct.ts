@@ -95,7 +95,7 @@ export default class extends BotCommand {
 
 		const totalPlanksNeeded = planksQtyCost * quantity;
 
-		const objectsPerInv = 27 / planksQtyCost;
+		const objectsPerInv = 26 / planksQtyCost;
 		const invsPerTrip = round(quantity / objectsPerInv, 2);
 
 		const duration = quantity * timeToBuildSingleObject;
