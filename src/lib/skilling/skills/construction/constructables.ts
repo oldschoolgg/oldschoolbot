@@ -48,7 +48,7 @@ const Constructables: Constructable[] = [
 	{
 		id: itemID('Wooden larder'),
 		name: 'Wooden larder',
-		input: [Plank.Plank, 4],
+		input: [Plank.Plank, 8],
 		xp: 228,
 		level: 9,
 		ticks: 5,

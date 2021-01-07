@@ -3,10 +3,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, round, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -94,8 +95,8 @@ export default class extends BotCommand {
 
 		const totalPlanksNeeded = planksQtyCost * quantity;
 
-		// const objectsPerInv = 27 / planksQtyCost;
-		// const _invsPerTrip = quantity / objectsPerInv;
+		const objectsPerInv = 27 / planksQtyCost;
+		const invsPerTrip = round(quantity / objectsPerInv, 2);
 
 		const duration = quantity * timeToBuildSingleObject;
 		// const butlercost
@@ -112,6 +113,11 @@ export default class extends BotCommand {
 			);
 		}
 
+		const gpNeeded = Math.floor(10_000 * (invsPerTrip / 8));
+		if (msg.author.settings.get(UserSettings.GP) < gpNeeded) {
+			return msg.send(`You don't have enough GP to pay your Butler.`);
+		}
+		await msg.author.removeGP(gpNeeded);
 		await msg.author.removeItemFromBank(plank, totalPlanksNeeded);
 
 		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>(this.client, {
@@ -136,6 +142,8 @@ export default class extends BotCommand {
 			)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(
 				plank
 			)} from your bank. **${xpHr}**
+
+You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `
 		);
 	}
