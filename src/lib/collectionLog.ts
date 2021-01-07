@@ -101,6 +101,7 @@ const hunterGear: CollectionLogData = {
 		'Spotted cape',
 		'Spottier cape',
 		'Gloves of silence',
+		'Golden tench',
 		'Baby chinchompa',
 		'Herbi'
 	])
@@ -1521,6 +1522,7 @@ export const skillingLog: CollectionLogData = {
 		'Spotted cape',
 		'Spottier cape',
 		'Gloves of silence',
+		'Golden tench',
 		'Baby chinchompa',
 		'Herbi'
 	])

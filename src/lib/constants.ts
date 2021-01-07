@@ -155,6 +155,7 @@ export const enum Tasks {
 	AgilityArena = 'agilityArenaActivity',
 	ChampionsChallenge = 'championsChallengeActivity',
 	BirdhouseActivity = 'birdhouseActivity',
+	AerialFishingActivity = 'aerialFishingActivity',
 
 	MonsterKillingTicker = 'monsterKillingTicker',
 	ClueTicker = 'clueTicker',
@@ -199,7 +200,8 @@ export const enum Activity {
 	Farming = 'Farming',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
-	ChampionsChallenge = 'ChampionsChallenge'
+	ChampionsChallenge = 'ChampionsChallenge',
+	AerialFishing = 'AerialFishing'
 }
 
 export const enum Events {

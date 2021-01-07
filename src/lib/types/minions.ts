@@ -135,6 +135,10 @@ export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	currentDate: number;
 }
 
+export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameIDsEnum;
 	quantity: number;
