@@ -2,7 +2,7 @@ import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -41,18 +41,14 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength / tripLength);
 		const duration = quantity * tripLength;
 
-		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				type: Activity.FishingTrawler,
-				minigameID: MinigameIDsEnum.FishingTrawler,
-				quantity,
-				duration
-			}
-		);
+		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			type: Activity.FishingTrawler,
+			minigameID: MinigameIDsEnum.FishingTrawler,
+			quantity,
+			duration
+		});
 
 		return msg.send(
 			`${

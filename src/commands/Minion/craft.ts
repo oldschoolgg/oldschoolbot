@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
@@ -135,18 +135,14 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask<CraftingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				craftableID: Craft.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Crafting
-			}
-		);
+		await addSubTaskToActivityTask<CraftingActivityTaskOptions>(this.client, {
+			craftableID: Craft.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Crafting
+		});
 
 		return msg.send(
 			`${msg.author.minionName} is now crafting ${quantity}x ${

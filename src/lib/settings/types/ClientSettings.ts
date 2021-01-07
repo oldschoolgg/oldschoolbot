@@ -31,5 +31,6 @@ export namespace ClientSettings {
 		export const PVMCost = T<O.Readonly<ItemBank>>('economyStats.PVMCost');
 		export const ThievingCost = T<O.Readonly<ItemBank>>('economyStats.thievingCost');
 		export const SoldItemsBank = T<O.Readonly<ItemBank>>('sold_items_bank');
+		export const HerbloreCostBank = T<O.Readonly<ItemBank>>('herblore_cost_bank');
 	}
 }

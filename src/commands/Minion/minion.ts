@@ -1,18 +1,10 @@
 import { MessageEmbed } from 'discord.js';
-import { randInt } from 'e';
+import { objectKeys, randInt } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import {
-	Activity,
-	Color,
-	Emoji,
-	MIMIC_MONSTER_ID,
-	PerkTier,
-	Tasks,
-	Time
-} from '../../lib/constants';
+import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -23,7 +15,13 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, itemNameFromID, randomItemFromArray } from '../../lib/util';
+import {
+	formatDuration,
+	isWeekend,
+	itemNameFromID,
+	randomItemFromArray,
+	removeDuplicatesFromArray
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
@@ -57,7 +55,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -477,6 +475,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			});
 	}
 
+	async mix(msg: KlasaMessage, [quantity, mixName]: [number, string]) {
+		await this.client.commands
+			.get('mix')!
+			.run(msg, [quantity, mixName])
+			.catch(err => {
+				throw err;
+			});
+	}
+
 	async quest(msg: KlasaMessage) {
 		await this.client.commands
 			.get('quest')!
@@ -573,7 +580,10 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: [monster.attackStyleToUse]
+				attackStylesUsed: removeDuplicatesFromArray([
+					...objectKeys(monster.minimumGearRequirements ?? {}),
+					monster.attackStyleToUse
+				])
 			});
 
 			foodStr = result;
@@ -596,18 +606,14 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			duration *= 0.9;
 		}
 
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(
-			this.client,
-			Tasks.MonsterKillingTicker,
-			{
-				monsterID: monster.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.MonsterKilling
-			}
-		);
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
+			monsterID: monster.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.MonsterKilling
+		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name

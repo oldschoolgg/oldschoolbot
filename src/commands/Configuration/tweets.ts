@@ -1,7 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import { PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -19,6 +21,9 @@ export default class extends BotCommand {
 	}
 
 	async on(msg: KlasaMessage) {
+		if (msg.guild!.memberCount < 20 && getUsersPerkTier(msg.author) < PerkTier.Four) {
+			return msg.send(TWEETS_RATELIMITING);
+		}
 		const tweetChannel = msg.guild!.settings.get(GuildSettings.JModTweets);
 		if (tweetChannel === msg.channel.id) return msg.sendLocale('JMOD_TWEETS_ALREADY_ENABLED');
 		if (tweetChannel) {

@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -110,18 +110,14 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(fish.bait, quantity);
 		}
 
-		await addSubTaskToActivityTask<FishingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				fishID: fish.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Fishing
-			}
-		);
+		await addSubTaskToActivityTask<FishingActivityTaskOptions>(this.client, {
+			fishID: fish.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Fishing
+		});
 
 		let response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name

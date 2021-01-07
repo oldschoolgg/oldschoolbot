@@ -7,6 +7,7 @@ import Farming from './farming';
 import Firemaking from './firemaking';
 import Fishing from './fishing';
 import Fletching from './fletching';
+import Herblore from './herblore/herblore';
 import Mining from './mining';
 import Prayer from './prayer';
 import Runecraft from './runecraft';
@@ -28,6 +29,7 @@ export const Skills: Record<string, Skill> = {
 	Fletching,
 	Thieving,
 	Farming,
+	Herblore,
 	Construction
 };
 

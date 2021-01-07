@@ -26,7 +26,11 @@ export const enum Roles {
 	PatronTier1 = '678970545789730826',
 	PatronTier2 = '678967943979204608',
 	PatronTier3 = '687408140832342043',
-	Patron = '679620175838183424'
+	Patron = '679620175838183424',
+	// Status Roles
+	TopSkiller = '795266465329709076',
+	TopCollector = '795271210141351947',
+	TopSacrificer = '795933981715464192'
 }
 
 export const enum Emoji {
@@ -79,6 +83,7 @@ export const enum Emoji {
 	Fletching = '<:fletching:630911040544309258>',
 	Farming = '<:farming:630911040355565599>',
 	Tangleroot = '<:tangleroot:324127378978635778>',
+	Herblore = '<:herblore:630911040535658496>',
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
 	Ely = '<:ely:784453586033049630>',
@@ -134,6 +139,7 @@ export const enum Tasks {
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
 	FarmingActivity = 'farmingActivity',
+	HerbloreActivity = 'herbloreActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -150,12 +156,7 @@ export const enum Tasks {
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
-	ChampionsChallenge = 'championsChallengeActivity',
-
-	MonsterKillingTicker = 'monsterKillingTicker',
-	ClueTicker = 'clueTicker',
-	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker'
+	ChampionsChallenge = 'championsChallengeActivity'
 }
 
 export const enum Activity {
@@ -180,6 +181,7 @@ export const enum Activity {
 	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
 	Pickpocket = 'Pickpocket',
+	Herblore = 'Herblore',
 	Alching = 'Alching',
 	AnimatedArmour = 'AnimatedArmour',
 	Cyclops = 'Cyclops',
@@ -193,6 +195,13 @@ export const enum Activity {
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge'
+}
+
+export enum ActivityGroup {
+	Skilling = 'Skilling',
+	Clue = 'Clue',
+	Monster = 'Monster',
+	Minigame = 'Minigame'
 }
 
 export const enum Events {
@@ -280,3 +289,6 @@ export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
+export const TWEETS_RATELIMITING =
+	`Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.` +
+	`You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.`;
