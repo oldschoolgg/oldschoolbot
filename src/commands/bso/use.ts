@@ -52,6 +52,16 @@ export default class extends BotCommand {
 			return msg.send(`You uh... tried to use ${firstItem.name} on ${secondItem.name}....`);
 		}
 
+		if (
+			[firstItem.name.toLowerCase(), secondItem.name.toLowerCase()].some(name =>
+				name.includes('mystery')
+			)
+		) {
+			return msg.send(
+				`You used ${firstItem.name} on ${secondItem.name}..... Mysteriously... Nothing interesting happens.`
+			);
+		}
+
 		return msg.send(
 			`You used ${firstItem.name} on ${secondItem.name}..... Nothing interesting happens.`
 		);
