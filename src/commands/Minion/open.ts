@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank, Misc, Openables } from 'oldschooljs';
+import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { cluesRares } from '../../lib/collectionLog';
@@ -21,6 +21,8 @@ const itemsToNotifyOf = Object.values(cluesRares)
 		ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward)
 	)
 	.concat([itemID('Bloodhound')]);
+
+const Openables = _Openables.filter(i => i.name !== 'Mystery box');
 
 const allOpenables = [
 	...ClueTiers.map(i => i.id),
