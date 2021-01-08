@@ -12,13 +12,16 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[qty:integer{1,1000000}] (item:...item)',
 			usageDelim: ' ',
-			oneAtTime: true,
-			testingCommand: true
+			oneAtTime: true
 		});
 		this.enabled = !this.client.production;
 	}
 
 	async run(msg: KlasaMessage, [qty = 1, itemArray]: [number, Item[]]) {
+		if (this.client.production && msg.author.id !== '157797566833098752') {
+			return;
+		}
+
 		if (msg.flagArgs.all) {
 			const items: ItemBank = {};
 			for (const item of itemArray) {
