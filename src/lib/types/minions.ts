@@ -127,6 +127,12 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
+	xp: number;
+	quantity: number;
+	points: number;
+}
+
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
