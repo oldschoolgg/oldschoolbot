@@ -14,7 +14,6 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true
 		});
-		this.enabled = !this.client.production;
 	}
 
 	async run(msg: KlasaMessage, [qty = 1, itemArray]: [number, Item[]]) {
