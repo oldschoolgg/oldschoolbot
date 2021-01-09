@@ -19,6 +19,21 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { PeakTier } from './../../WildernessPeakInterval';
 
+const riskDeathNumbers = [
+	{
+		peakTier: PeakTier.High,
+		extraChance: -80
+	},
+	{
+		peakTier: PeakTier.Medium,
+		extraChance: -20
+	},
+	{
+		peakTier: PeakTier.Low,
+		extraChance: 80
+	}
+];
+
 export default class extends Task {
 	async run(data: HunterActivityTaskOptions) {
 		const {
@@ -57,15 +72,10 @@ export default class extends Task {
 		);
 
 		if (creature.wildy) {
-			let riskPkChance =
-				(creature.name === 'Black chinchompa' ? 100 : 200) +
-				(wildyPeak?.peakTier === PeakTier.High
-					? -30
-					: wildyPeak?.peakTier === PeakTier.Medium
-					? -10
-					: wildyPeak?.peakTier === PeakTier.Low
-					? 50
-					: 0);
+			let riskPkChance = creature.name === 'Black chinchompa' ? 100 : 200;
+			riskPkChance +=
+				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)
+					?.extraChance ?? 0;
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
 			riskDeathChance += Math.min(
@@ -74,18 +84,17 @@ export default class extends Task {
 				),
 				200
 			);
-			riskDeathChance +=
-				(hasGearEquipped(user.settings.get(UserSettings.Gear.Misc), {
-					body: [itemID("Karil's leathertop")]
-				})
-					? 15
-					: 0) +
-				(hasGearEquipped(user.settings.get(UserSettings.Gear.Misc), {
-					legs: [itemID("Karil's leatherskirt")]
-				})
-					? 15
-					: 0);
-
+			// Gives lower death chance if the user got karil's top and/or bottom equipped.
+			riskDeathChance += hasGearEquipped(user.settings.get(UserSettings.Gear.Misc), {
+				body: [itemID("Karil's leathertop")]
+			})
+				? 15
+				: 0;
+			riskDeathChance += hasGearEquipped(user.settings.get(UserSettings.Gear.Misc), {
+				legs: [itemID("Karil's leatherskirt")]
+			})
+				? 15
+				: 0;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (roll(riskPkChance)) {
 					gotPked = true;

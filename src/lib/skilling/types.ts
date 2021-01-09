@@ -230,9 +230,9 @@ export interface Creature {
 	id: number;
 	aliases: string[];
 	level: number;
-	hunterXp: number;
+	hunterXP: number;
 	fishLvl?: number;
-	fishingXp?: number;
+	fishingXP?: number;
 	itemsRequired?: ItemBank;
 	itemsConsumed?: ItemBank;
 	table: LootTable;

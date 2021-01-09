@@ -6,7 +6,6 @@ import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFi
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll } from '../../../lib/util';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -18,15 +17,10 @@ export default class extends Task {
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		// Current fishable creatures
-		const bluegill = aerialFishingCreatures.find(_fish => _fish.name === 'Bluegill');
-		const commonTench = aerialFishingCreatures.find(_fish => _fish.name === 'Common tench');
-		const mottledEel = aerialFishingCreatures.find(_fish => _fish.name === 'Mottled eel');
-		const greaterSiren = aerialFishingCreatures.find(_fish => _fish.name === 'Greater siren');
-
-		if (!bluegill || !commonTench || !mottledEel || !greaterSiren) {
-			this.client.wtf(new Error(`one of the aerial fishing creatures couldn't be found.`));
-			return;
-		}
+		const bluegill = aerialFishingCreatures.find(_fish => _fish.name === 'Bluegill')!;
+		const commonTench = aerialFishingCreatures.find(_fish => _fish.name === 'Common tench')!;
+		const mottledEel = aerialFishingCreatures.find(_fish => _fish.name === 'Mottled eel')!;
+		const greaterSiren = aerialFishingCreatures.find(_fish => _fish.name === 'Greater siren')!;
 
 		let bluegillCaught = 0;
 		let commonTenchCaught = 0;
@@ -75,15 +69,15 @@ export default class extends Task {
 		loot.add('Molch pearl', molchPearls);
 
 		const huntXpReceived =
-			greaterSirenCaught * greaterSiren.hunterXp +
-			mottledEelCaught * mottledEel.hunterXp +
-			commonTenchCaught * commonTench.hunterXp +
-			bluegillCaught * bluegill.hunterXp;
+			greaterSirenCaught * greaterSiren.hunterXP +
+			mottledEelCaught * mottledEel.hunterXP +
+			commonTenchCaught * commonTench.hunterXP +
+			bluegillCaught * bluegill.hunterXP;
 		const fishXpReceived =
-			greaterSirenCaught * greaterSiren.fishingXp! +
-			mottledEelCaught * mottledEel.fishingXp! +
-			commonTenchCaught * commonTench.fishingXp! +
-			bluegillCaught * bluegill.fishingXp!;
+			greaterSirenCaught * greaterSiren.fishingXP! +
+			mottledEelCaught * mottledEel.fishingXP! +
+			commonTenchCaught * commonTench.fishingXP! +
+			bluegillCaught * bluegill.fishingXP!;
 
 		await user.addXP(SkillsEnum.Fishing, fishXpReceived);
 		await user.addXP(SkillsEnum.Agility, huntXpReceived);
@@ -116,10 +110,7 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newFishLevel}!`;
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			loot.values()
-		)}.`;
+		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.amount('Golden tench') > 0) {
 			str += `\n\n**The cormorant has brought you a very strange tench.**`;

@@ -9,7 +9,7 @@ const magicBoxTrappingCreatures: Creature[] = [
 		id: 22,
 		aliases: ['imp'],
 		level: 71,
-		hunterXp: 450,
+		hunterXP: 450,
 		itemsConsumed: resolveNameBank({ 'Magic box': 1 }),
 		table: new LootTable().every('Imp-in-a-box(2)'),
 		huntTechnique: 'magic box trapping',

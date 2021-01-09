@@ -9,7 +9,7 @@ const rabbitSnaringCreatures: Creature[] = [
 		id: 30,
 		aliases: ['white rabbit', 'rabbit'],
 		level: 27,
-		hunterXp: 144,
+		hunterXP: 144,
 		itemsConsumed: resolveNameBank({ Ferret: 1 }),
 		table: new LootTable().every('Bones').every('Raw rabbit').every('Rabbit foot'),
 		huntTechnique: 'rabbit snaring',

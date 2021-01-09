@@ -8,7 +8,7 @@ const birdSnaringCreatures: Creature[] = [
 		id: 1,
 		aliases: ['crimson swift'],
 		level: 1,
-		hunterXp: 34,
+		hunterXP: 34,
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Red feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
@@ -21,7 +21,7 @@ const birdSnaringCreatures: Creature[] = [
 		id: 2,
 		aliases: ['golden warbler'],
 		level: 5,
-		hunterXp: 47,
+		hunterXP: 47,
 		table: new LootTable()
 			.every('Bones')
 			.every('Raw bird meat')
@@ -37,7 +37,7 @@ const birdSnaringCreatures: Creature[] = [
 		id: 3,
 		aliases: ['copper longtail'],
 		level: 9,
-		hunterXp: 61.2,
+		hunterXP: 61.2,
 		table: new LootTable()
 			.every('Bones')
 			.every('Raw bird meat')
@@ -53,7 +53,7 @@ const birdSnaringCreatures: Creature[] = [
 		id: 4,
 		aliases: ['cerulean twitch'],
 		level: 11,
-		hunterXp: 64.5,
+		hunterXP: 64.5,
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Blue feather', [5, 10]),
 		huntTechnique: 'bird snaring',
 		multiTraps: true,
@@ -66,7 +66,7 @@ const birdSnaringCreatures: Creature[] = [
 		id: 5,
 		aliases: ['tropical wagtail'],
 		level: 19,
-		hunterXp: 95.2,
+		hunterXP: 95.2,
 		table: new LootTable()
 			.every('Bones')
 			.every('Raw bird meat')

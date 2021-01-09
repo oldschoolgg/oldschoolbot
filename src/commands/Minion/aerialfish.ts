@@ -1,10 +1,10 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
+import chatHeadImage from '../../lib/image/chatHeadImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AerialFishingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, randFloat, stringMatches } from '../../lib/util';
@@ -62,6 +62,15 @@ const sellables = [
 		aliases: []
 	}
 ];
+
+export async function alryChat(str: string) {
+	const image = await chatHeadImage({
+		content: str,
+		name: 'Alry the Angler',
+		head: 'alryTheAngler'
+	});
+	return new MessageAttachment(image);
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -145,15 +154,17 @@ export default class extends BotCommand {
 			);
 		}
 		await msg.author.settings.sync(true);
-		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
+		const bank = msg.author.bank();
 		const amountPearlsHas = bank.amount('Molch pearl');
 		if (amountPearlsHas === 0) {
 			return msg.send(
-				`You have no Molch pearls, but here is joke, Where do fish keep their money? \nIn a riverbank. Hehe!`
+				await alryChat(
+					`You have no Molch pearls, but here is joke, Where do fish keep their money? \nIn a riverbank. Hehe!`
+				)
 			);
 		}
 		if (amountPearlsHas < buyable.cost) {
-			return msg.send(`You don't have enough Molch pearls.`);
+			return msg.send(await alryChat(`You don't have enough Molch pearls.`));
 		}
 		await msg.author.removeItemFromBank(itemID('Molch pearl'), buyable.cost);
 		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
@@ -178,10 +189,10 @@ export default class extends BotCommand {
 			);
 		}
 		await msg.author.settings.sync(true);
-		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
+		const bank = msg.author.bank();
 		const amount = bank.amount(sellable.item.name);
 		if (amount < 1) {
-			return msg.send(`You have no ${sellable.item.name}.`);
+			return msg.send(await alryChat(`You have no ${sellable.item.name}.`));
 		}
 		await msg.author.removeItemFromBank(sellable.item.id, 1);
 		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);

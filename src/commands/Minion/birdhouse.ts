@@ -333,13 +333,9 @@ export default class extends BotCommand {
 		}
 
 		if (nothingPlaced) {
-			const emptyEmoji = `${Emoji.RedX} `;
-			const emptyContentStr = `You don't have any birdhouses placed!`;
-			finalStr += emptyEmoji + emptyContentStr;
+			finalStr += `${Emoji.RedX} ` + `You don't have any birdhouses placed!`;
 		}
 
-		return msg.send(finalStr, {
-			split: true
-		});
+		return msg.send(finalStr);
 	}
 }
