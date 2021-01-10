@@ -4,7 +4,7 @@ import { ActivityGroup } from '../lib/constants';
 import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { OldSchoolBotClient } from '../lib/structures/OldSchoolBotClient';
-import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
+import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable.entity';
 import { ActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 import { taskNameFromType } from '../lib/util/taskNameFromType';
@@ -29,6 +29,8 @@ export default class extends Task {
 				try {
 					this.client.oneCommandAtATimeCache.add(data.userID);
 					await task?.run(data);
+				} catch (err) {
+					console.error(err);
 				} finally {
 					this.client.oneCommandAtATimeCache.delete(data.userID);
 					if ('users' in data) {

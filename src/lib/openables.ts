@@ -320,6 +320,20 @@ const Openables: Openable[] = [
 		aliases: ['dwarven crate', 'dc'],
 		table: DwarvenCrateTable,
 		emoji: Emoji.MysteryBox
+	},
+	{
+		name: 'Builders supply crate',
+		itemID: 24884,
+		aliases: ['builders supply crate'],
+		table: new LootTable()
+			.add('Oak plank', [28, 30])
+			.add('Teak plank', [15, 16])
+			.add('Mahogany plank', [6, 7])
+			.add('Steel bar', [23, 24])
+			.add('Soft clay', [45, 48])
+			.add('Bolt of cloth', 15)
+			.add('Limestone brick', 9),
+		emoji: Emoji.Casket
 	}
 ];
 

@@ -15,7 +15,8 @@ export enum SkillsEnum {
 	Fletching = 'fletching',
 	Farming = 'farming',
 	Herblore = 'herblore',
-	Thieving = 'thieving'
+	Thieving = 'thieving',
+	Construction = 'construction'
 }
 
 export interface Ore {

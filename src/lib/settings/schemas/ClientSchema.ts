@@ -8,6 +8,10 @@ Client.defaultClientSchema
 	.add('bank_lottery', 'any', { default: {} })
 	.add('sold_items_bank', 'any', { default: {} })
 	.add('herblore_cost_bank', 'any', { default: {} })
+	.add('construction_cost_bank', 'any', { default: {} })
+	.add('farming_cost_bank', 'any', { default: {} })
+	.add('farming_loot_bank', 'any', { default: {} })
+	.add('buy_cost_bank', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
