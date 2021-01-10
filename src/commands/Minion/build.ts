@@ -18,9 +18,9 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
 			usageDelim: ' ',
-			description: 'Sends your minion to cook food.',
+			description: 'Sends your minion to train Construction by building things.',
 			categoryFlags: ['minion', 'skilling'],
-			examples: ['+cook manta ray', '+cook 50 shrimps']
+			examples: ['+build crude wooden chair', '+build 20 mahogany table']
 		});
 	}
 
@@ -59,7 +59,7 @@ export default class extends BotCommand {
 
 		if (!object) {
 			return msg.send(
-				`Thats not a valid object to construct. Valid objects are ${Constructables.map(
+				`Thats not a valid object to build. Valid objects are ${Constructables.map(
 					object => object.name
 				).join(', ')}.`
 			);
@@ -78,7 +78,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 		const planksHas = userBank.amount(plank);
 
-		// // If no quantity provided, set it to the max the player can make by either the items in bank or time.
+		// If no quantity provided, set it to the max the player can make by either the items in bank or time.
 		if (quantity === null) {
 			const maxForMaterials = planksHas / planksQtyCost;
 			const maxForTime = Math.floor(msg.author.maxTripLength / timeToBuildSingleObject);
@@ -99,7 +99,6 @@ export default class extends BotCommand {
 		const invsPerTrip = round(quantity / objectsPerInv, 2);
 
 		const duration = quantity * timeToBuildSingleObject;
-		// const butlercost
 
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
@@ -107,7 +106,7 @@ export default class extends BotCommand {
 					msg.author.maxTripLength
 				)} minutes, try a lower quantity. The highest amount of ${
 					object.name
-				}s you can construct is ${Math.floor(
+				}s you can build is ${Math.floor(
 					msg.author.maxTripLength / timeToBuildSingleObject
 				)}.`
 			);
