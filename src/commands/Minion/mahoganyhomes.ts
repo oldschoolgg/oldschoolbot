@@ -7,6 +7,7 @@ import { Activity, Time } from '../../lib/constants';
 import { roll } from '../../lib/data/monsters/raids';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Plank } from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -198,6 +199,13 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 			return msg.send(`You don't have enough items for this trip. You need: ${itemsNeeded}.`);
 		}
 		await msg.author.removeItemsFromBank(itemsNeeded.bank);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.ConstructCostBank,
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.ConstructCostBank)).add(
+				itemsNeeded
+			).bank
+		);
 
 		await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>(this.client, {
 			userID: msg.author.id,

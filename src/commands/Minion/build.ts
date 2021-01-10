@@ -1,8 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -118,6 +120,13 @@ export default class extends BotCommand {
 		}
 		await msg.author.removeGP(gpNeeded);
 		await msg.author.removeItemFromBank(plank, totalPlanksNeeded);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.ConstructCostBank,
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.ConstructCostBank))
+				.add('Coins', gpNeeded)
+				.add(plank, totalPlanksNeeded).bank
+		);
 
 		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>(this.client, {
 			objectID: object.id,
