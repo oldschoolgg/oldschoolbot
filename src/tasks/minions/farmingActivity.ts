@@ -1,10 +1,11 @@
 import { Task } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/farming';
 import { FarmingContract } from '../../lib/farming/types';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
@@ -153,6 +154,12 @@ export default class extends Task {
 				)}.`;
 			}
 
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.FarmingLootBank,
+				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(
+					loot
+				).bank
+			);
 			await user.addItemsToBank(loot, true);
 
 			const updatePatches: PatchTypes.PatchData = {
@@ -444,6 +451,12 @@ export default class extends Task {
 				);
 			}
 
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.FarmingLootBank,
+				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(
+					loot
+				).bank
+			);
 			await user.addItemsToBank(loot, true);
 
 			const channel = this.client.channels.get(channelID);
