@@ -40,7 +40,7 @@ export default class extends Task {
 
 		await user.addQP(qpRecieved);
 		const herbLevel = user.skillLevel(SkillsEnum.Herblore);
-		if (herbLevel === 0 && currentQP + qpRecieved > 5 && roll(2)) {
+		if ((herbLevel === 1 || herbLevel === 0) && currentQP + qpRecieved > 5 && roll(2)) {
 			await user.addXP(SkillsEnum.Herblore, 250);
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
 		}
