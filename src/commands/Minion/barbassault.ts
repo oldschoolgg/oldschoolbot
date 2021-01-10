@@ -104,8 +104,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
-			description:
-				'Sends your minion to kill the nightmare. Requires food and melee gear. Your minion gets better at it over time.',
+			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
 			examples: ['+barbassault [start]'],
 			subcommands: true,
 			usage: '[start|level|buy|gamble] [buyableOrGamble:...string]',
