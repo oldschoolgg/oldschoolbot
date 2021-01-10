@@ -100,6 +100,18 @@ const fishingTrawler: CollectionLogData = {
 	])
 };
 
+export const carpenterOutfit = resolveItems([
+	"Carpenter's helmet",
+	"Carpenter's shirt",
+	"Carpenter's trousers",
+	"Carpenter's boots"
+]);
+
+export const mahoganyHomesLog: CollectionLogData = {
+	Carpenter: carpenterOutfit,
+	Other: resolveItems(["Amy's saw", 'Plank sack', 'Hosidius blueprints', 'Builders supply crate'])
+};
+
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([
 		"Ahrim's staff",
@@ -1325,9 +1337,14 @@ export const capes: CollectionLogData = {
 		'Runecraft cape(t)',
 		'Thieving cape(t)'
 	]),
-	hoods2: resolveItems(['Farming hood', 'Herblore hood', 'Quest point hood']),
-	capes2: resolveItems(['Farming cape', 'Herblore cape', 'Quest point cape']),
-	'trimmed capes2': resolveItems(['Farming cape(t)', 'Herblore cape(t)', 'Quest point cape (t)'])
+	hoods2: resolveItems(['Farming hood', 'Herblore hood', 'Quest point hood', 'Construct. hood']),
+	capes2: resolveItems(['Farming cape', 'Herblore cape', 'Quest point cape', 'Construct. cape']),
+	'trimmed capes2': resolveItems([
+		'Farming cape(t)',
+		'Herblore cape(t)',
+		'Quest point cape (t)',
+		'Construct. cape(t)'
+	])
 };
 
 export const quest: CollectionLogData = {
@@ -1473,7 +1490,8 @@ export const skillingLog: CollectionLogData = {
 	Farmer: farmersOutfit,
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
-	AgilityArena: agilityArenaLog
+	AgilityArena: agilityArenaLog,
+	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[]
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1490,7 +1508,8 @@ export const allCollectionLogItems = removeDuplicatesFromArray(
 		...Object.values(coxLog),
 		...Object.values(miscLog),
 		...Object.values(nightmareLog),
-		...Object.values(sepulchreLog)
+		...Object.values(sepulchreLog),
+		...Object.values(mahoganyHomesLog)
 	].flat(Infinity)
 ) as number[];
 
@@ -1642,5 +1661,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Agility Arena',
 		aliases: ['aa', 'agility arena'],
 		items: { 1: agilityArenaLog }
+	},
+	{
+		name: 'Mahogany Homes',
+		aliases: ['mh', 'mahogany homes'],
+		items: mahoganyHomesLog
 	}
 ];

@@ -72,5 +72,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.AgilityArena;
 		case Activity.ChampionsChallenge:
 			return Tasks.ChampionsChallenge;
+		case Activity.Construction:
+			return Tasks.ConstructionActivity;
+		case Activity.MahoganyHomes:
+			return Tasks.MahoganyHomes;
 	}
 }

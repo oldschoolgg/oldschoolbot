@@ -29,6 +29,8 @@ export default class extends Task {
 				try {
 					this.client.oneCommandAtATimeCache.add(data.userID);
 					await task?.run(data);
+				} catch (err) {
+					console.error(err);
 				} finally {
 					this.client.oneCommandAtATimeCache.delete(data.userID);
 					if ('users' in data) {

@@ -29,6 +29,7 @@ Client.defaultUserSchema
 	.add('honour_points', 'integer', { default: 0 })
 	.add('high_gambles', 'integer', { default: 0 })
 	.add('patreon_id', 'string', { default: null })
+	.add('carpenter_points', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
@@ -69,6 +70,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Thieving, 'integer', { default: 0 })
 			.add(SkillsEnum.Farming, 'integer', { default: 0 })
 			.add(SkillsEnum.Herblore, 'integer', { default: 0 })
+			.add(SkillsEnum.Construction, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
