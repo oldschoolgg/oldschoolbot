@@ -1,10 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
@@ -213,6 +215,7 @@ export default class extends BotCommand {
 		}
 
 		let newBank = { ...userBank };
+		let econBank = new Bank();
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
@@ -223,6 +226,7 @@ export default class extends BotCommand {
 				}
 			}
 			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
+			econBank.add(parseInt(seedID), qty * quantity);
 		}
 
 		let paymentBank = { ...newBank };
@@ -243,6 +247,7 @@ export default class extends BotCommand {
 					break;
 				}
 				paymentBank = removeItemFromBank(paymentBank, parseInt(paymentID), qty * quantity);
+				econBank.add(parseInt(paymentID), qty * quantity);
 				canPay = true;
 			}
 		}
@@ -286,11 +291,17 @@ export default class extends BotCommand {
 		}
 
 		if (upgradeType !== null) {
+			econBank.add(itemID(upgradeType), quantity);
 			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
 		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
-
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.FarmingCostBank,
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingCostBank)).add(
+				econBank
+			).bank
+		);
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
 			infoStr.unshift(
