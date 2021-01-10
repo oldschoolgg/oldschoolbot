@@ -92,6 +92,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Herblore hood'),
 		untrimmed: itemID('Herblore cape'),
 		trimmed: itemID('Herblore cape(t)')
+	},
+	{
+		skill: SkillsEnum.Construction,
+		hood: itemID('Construct. hood'),
+		untrimmed: itemID('Construct. cape'),
+		trimmed: itemID('Construct. cape(t)')
 	}
 ];
 

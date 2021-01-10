@@ -5,10 +5,18 @@ import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { Planks } from '../../lib/minions/data/planks';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
+import {
+	addItemToBank,
+	formatDuration,
+	itemID,
+	itemNameFromID,
+	stringMatches,
+	toKMB
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -103,6 +111,15 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(plank!.inputItem, quantity);
 		await msg.author.removeGP(cost);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.ConstructCostBank,
+			addItemToBank(
+				this.client.settings.get(ClientSettings.EconomyStats.ConstructCostBank),
+				itemID('Coins'),
+				cost
+			)
+		);
 
 		await addSubTaskToActivityTask<SawmillActivityTaskOptions>(this.client, {
 			type: Activity.Sawmill,

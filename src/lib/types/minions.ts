@@ -24,6 +24,11 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
+	objectID: number;
+	quantity: number;
+}
+
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
@@ -122,6 +127,12 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameIDsEnum;
 	quantity: number;
+}
+
+export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
+	xp: number;
+	quantity: number;
+	points: number;
 }
 
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
