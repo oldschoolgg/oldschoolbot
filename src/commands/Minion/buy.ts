@@ -1,9 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import Buyables from '../../lib/buyables/buyables';
 import { Time } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	bankHasAllItemsFromBank,
@@ -109,8 +111,11 @@ export default class extends BotCommand {
 			}
 		}
 
+		const econBankChanges = new Bank();
+
 		await msg.author.settings.sync(true);
 		if (buyable.itemCost) {
+			econBankChanges.add(multiplyBank(buyable.itemCost, quantity));
 			await msg.author.settings.update(
 				UserSettings.Bank,
 				removeBankFromBank(
@@ -124,8 +129,16 @@ export default class extends BotCommand {
 			if (GP < totalGPCost) {
 				return msg.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
 			}
+			econBankChanges.add('Coins', totalGPCost);
 			await msg.author.removeGP(totalGPCost);
 		}
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.BuyCostBank,
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(
+				econBankChanges
+			).bank
+		);
 
 		await msg.author.addItemsToBank(outItems, true);
 

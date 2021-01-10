@@ -348,6 +348,14 @@ const Buyables: Buyable[] = [
 		},
 		itemCost: resolveNameBank({ 'Mark of grace': 10 })
 	},
+	{
+		name: 'Mythical cape',
+		outputItems: {
+			[itemID('Mythical cape')]: 1
+		},
+		gpCost: 1_000_000,
+		qpRequired: 205
+	},
 	...sepulchreBuyables
 ];
 
