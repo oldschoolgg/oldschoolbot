@@ -89,4 +89,7 @@ export function initItemAliases() {
 	setItemAlias(25078, 'Trailblazer graceful legs');
 	setItemAlias(25081, 'Trailblazer graceful gloves');
 	setItemAlias(25084, 'Trailblazer graceful boots');
+
+	// Supply crate (Mahogany Homes)
+	setItemAlias(24884, 'Builders supply crate');
 }

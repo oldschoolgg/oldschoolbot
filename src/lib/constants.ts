@@ -65,6 +65,7 @@ export const enum Emoji {
 	Woodcutting = '<:woodcutting:630911040099450892>',
 	Runecraft = '<:runecraft:630911040435257364>',
 	Prayer = '<:prayer:630911040426868746>',
+	Construction = '<:construction:630911040493715476>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
@@ -139,6 +140,7 @@ export const enum Tasks {
 	FletchingActivity = 'fletchingActivity',
 	FarmingActivity = 'farmingActivity',
 	HerbloreActivity = 'herbloreActivity',
+	ConstructionActivity = 'constructionActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
@@ -155,7 +157,8 @@ export const enum Tasks {
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
-	ChampionsChallenge = 'championsChallengeActivity'
+	ChampionsChallenge = 'championsChallengeActivity',
+	MahoganyHomes = 'mahoganyHomesActivity'
 }
 
 export const enum Activity {
@@ -191,9 +194,11 @@ export const enum Activity {
 	FishingTrawler = 'FishingTrawler',
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
+	Construction = 'Construction',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
-	ChampionsChallenge = 'ChampionsChallenge'
+	ChampionsChallenge = 'ChampionsChallenge',
+	MahoganyHomes = 'MahoganyHomes'
 }
 
 export enum ActivityGroup {
