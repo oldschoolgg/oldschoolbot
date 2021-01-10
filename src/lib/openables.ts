@@ -43,7 +43,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Builders supply crate',
 		itemID: 24884,
-		aliases: ['supply crate'],
+		aliases: ['builders supply crate'],
 		table: new LootTable()
 			.add('Oak plank', [28, 30])
 			.add('Teak plank', [15, 16])

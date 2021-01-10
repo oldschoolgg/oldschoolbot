@@ -215,7 +215,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		)}. Removed ${itemsNeeded} from your bank.`;
 
 		if (hasSack) {
-			str += `\nYour getting more XP/Hr because of your Plank sack!`;
+			str += `\nYou're getting more XP/Hr because of your Plank sack!`;
 		}
 
 		return msg.send(str);
