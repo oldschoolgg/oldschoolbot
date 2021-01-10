@@ -114,7 +114,9 @@ export default class MahoganyHomesCommand extends BotCommand {
 			usage: '[build|buy] [action:...string]',
 			usageDelim: ' ',
 			aliases: ['mh'],
-			subcommands: true
+			subcommands: true,
+			description: 'Sends your minion to do the Mahogany Homes minigame, or buy rewards.',
+			examples: ['+mh build', '+mh buy plank sack']
 		});
 	}
 
