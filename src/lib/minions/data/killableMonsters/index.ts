@@ -478,7 +478,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Treebeard.id,
 		name: Treebeard.name,
 		aliases: Treebeard.aliases,
-		timeToFinish: Time.Minute * 17,
+		timeToFinish: Time.Minute * 10,
 		table: {
 			kill: makeKillTable(TreebeardLootTable)
 		},
