@@ -56,6 +56,13 @@ export default class extends BotCommand {
 
 		let str = '';
 
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') ||
+			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+		if (hasSkipper) {
+			totalPrice *= 1.4;
+		}
+
 		if (totalPrice >= 30_000_000 && roll(10)) {
 			str += `You received a *Hunk of crystal*.`;
 			await msg.author.addItemsToBank({ 742: 1 }, true);
@@ -64,13 +71,6 @@ export default class extends BotCommand {
 		const gotHammy = totalPrice >= 51_530_000 && roll(140);
 		if (gotHammy) {
 			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 }, true);
-		}
-
-		const hasSkipper =
-			msg.author.equippedPet() === itemID('Skipper') ||
-			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
-		if (hasSkipper) {
-			totalPrice *= 1.4;
 		}
 
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
