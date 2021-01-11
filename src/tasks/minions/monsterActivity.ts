@@ -52,7 +52,7 @@ export default class extends Task {
 		const minutes = Math.ceil(duration / Time.Minute);
 		if (fullMonster.data.attributes.includes(MonsterAttribute.Dragon)) {
 			for (let i = 0; i < minutes; i++) {
-				if (roll(2500)) {
+				if (roll(7500)) {
 					gotKlik = true;
 					loot[itemID('Klik')] = 1;
 					break;

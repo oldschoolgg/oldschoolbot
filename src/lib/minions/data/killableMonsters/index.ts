@@ -490,7 +490,12 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 50 * 25,
 		attackStyleToUse: GearSetupTypes.Mage,
 		attackStylesUsed: [GearStat.AttackMagic],
-		respawnTime: Time.Second * 40
+		respawnTime: Time.Second * 40,
+		minimumGearRequirements: {
+			[GearSetupTypes.Mage]: {
+				[GearStat.AttackMagic]: 30 + 10 + 10 + 6 + 6 + 22 + 6
+			}
+		}
 	}
 ];
 

@@ -66,7 +66,7 @@ export default class extends Task {
 			if (roll(2000)) {
 				userLoot[23931] = 1;
 			}
-			if (roll(1500)) {
+			if (roll(4500)) {
 				userLoot[itemID('Takon')] = 1;
 			}
 			if (roll(140)) {
