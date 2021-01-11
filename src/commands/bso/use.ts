@@ -26,6 +26,8 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const firstItem = getOSItem(firstItemStr);
 		const secondItem = getOSItem(secondItemStr);
+		const firstName = firstItem.name.toLowerCase();
+		const secondName = secondItem.name.toLowerCase();
 		if (!bank.has(firstItem.id)) {
 			return msg.send(`You don't have a ${firstItem.name}.`);
 		}
@@ -45,21 +47,27 @@ export default class extends BotCommand {
 		}
 
 		if (
-			[firstItem.name.toLowerCase(), secondItem.name.toLowerCase()].some(
-				name => name.includes('dwarven') || name.includes('dwarf')
-			)
+			[firstName, secondName].some(name => name.includes('dwarven') || name.includes('dwarf'))
 		) {
 			return msg.send(`You uh... tried to use ${firstItem.name} on ${secondItem.name}....`);
 		}
 
-		if (
-			[firstItem.name.toLowerCase(), secondItem.name.toLowerCase()].some(name =>
-				name.includes('mystery')
-			)
-		) {
+		if ([firstName, secondName].some(name => name.includes('mystery'))) {
 			return msg.send(
 				`You used ${firstItem.name} on ${secondItem.name}..... Mysteriously... Nothing interesting happens.`
 			);
+		}
+
+		if (firstName.includes('a') && secondName.includes('i')) {
+			return msg.send(`Nothing interesting didn't happen.`);
+		}
+
+		if (firstName.startsWith('a') || firstName.startsWith('e')) {
+			return msg.send(`Nothing interesting was going to happen.`);
+		}
+
+		if (firstName.includes('x') || secondName.includes('x')) {
+			return msg.send(`Nothing happens.`);
 		}
 
 		return msg.send(
