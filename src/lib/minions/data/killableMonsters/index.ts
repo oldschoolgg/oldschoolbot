@@ -11,6 +11,7 @@ import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
 import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
 import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
+import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
 import low from './low';
 
 const killableMonsters: KillableMonster[] = [
@@ -472,6 +473,24 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
 		respawnTime: Time.Second * 20
+	},
+	{
+		id: Treebeard.id,
+		name: Treebeard.name,
+		aliases: Treebeard.aliases,
+		timeToFinish: Time.Minute * 17,
+		table: {
+			kill: makeKillTable(TreebeardLootTable)
+		},
+		emoji: '',
+		wildy: true,
+		canBeKilled: true,
+		difficultyRating: 9,
+		qpRequired: 100,
+		healAmountNeeded: 50 * 25,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackMagic],
+		respawnTime: Time.Second * 40
 	}
 ];
 
