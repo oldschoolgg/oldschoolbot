@@ -227,7 +227,7 @@ export default class extends BotCommand {
 			  )
 			: null;
 
-		if (!prevBirdhouse || prevBirdhouse === null) {
+		if (!prevBirdhouse) {
 			return msg.send(
 				`There is no birdhouses available to collect from, try set up some birdhouses, \`${msg.cmdPrefix}birdhouse run normal\`.`
 			);
@@ -238,7 +238,7 @@ export default class extends BotCommand {
 		/* Initiate a cooldown feature for the birdhouses.
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
-		if (prevBirdhouse && difference < prevBirdhouse.waitTime) {
+		if (difference < prevBirdhouse.waitTime) {
 			throw `Please come back when your birdhouses are full in ${formatDuration(
 				lastPlacedTime + prevBirdhouse.waitTime - currentDate
 			)}!`;

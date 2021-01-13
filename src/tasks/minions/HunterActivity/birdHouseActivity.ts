@@ -7,7 +7,6 @@ import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHo
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 
 export default class extends Task {
 	async run(data: BirdhouseActivityTaskOptions) {
@@ -61,7 +60,7 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 			channel.send(str);
-		} else if (birdhouseData.birdhousePlaced) {
+		} else {
 			let str = '';
 			const birdhouseToCollect = birdhouses.find(
 				_birdhouse => _birdhouse.name === birdhouseData.lastPlaced
@@ -97,10 +96,7 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Hunter level is now ${newHuntLevel}!`;
 			}
 
-			str += `\n\nYou received: ${await createReadableItemListFromBank(
-				this.client,
-				loot.values()
-			)}.`;
+			str += `\n\nYou received: ${loot}.`;
 
 			let updateBirdhouseData: BirdhouseData = {
 				lastPlaced: null,
@@ -127,8 +123,6 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 			channel.send(str);
-		} else {
-			this.client.wtf(new Error(`${user.sanitizedName}'s had no birdhouseTrap Data stored.`));
 		}
 	}
 }
