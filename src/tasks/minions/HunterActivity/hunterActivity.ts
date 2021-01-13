@@ -14,7 +14,6 @@ import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { bankHasItem, rand, roll, stringMatches } from '../../../lib/util';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { PeakTier } from './../../WildernessPeakInterval';
@@ -176,7 +175,6 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Hunter level is now ${newLevel}!`;
 		}
 
-		createReadableItemListFromBank;
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
 		if (gotPked && !died) {
