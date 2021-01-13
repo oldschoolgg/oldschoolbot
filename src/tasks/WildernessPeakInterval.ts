@@ -21,7 +21,8 @@ export default class extends Task {
 	}
 
 	async run() {
-		this.WildernessPeakTimesCache();
+		// Automatic updates Wilderness Peak times once every 24 hour
+		setInterval(() => this.WildernessPeakTimesCache(), 24 * Time.Hour);
 	}
 
 	WildernessPeakTimesCache() {
@@ -59,9 +60,6 @@ export default class extends Task {
 			currentTime += peak.finishTime * Time.Hour;
 			peak.finishTime = currentTime;
 		}
-
-		// Automatic updates Wilderness Peak times once every 24 hour
-		setInterval(this.WildernessPeakTimesCache, Time.Hour * 24);
 
 		this.client._peakIntervalCache = peakInterval;
 	}
