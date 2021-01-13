@@ -21,7 +21,7 @@ interface Birdhouse {
 	qpRequired: number;
 }
 
-const birdHouses: Birdhouse[] = [
+const birdhouses: Birdhouse[] = [
 	{
 		name: 'Bird house',
 		aliases: [
@@ -193,4 +193,4 @@ const birdHouses: Birdhouse[] = [
 	}
 ];
 
-export default birdHouses;
+export default birdhouses;

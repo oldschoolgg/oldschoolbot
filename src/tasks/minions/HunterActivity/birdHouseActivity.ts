@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import birdHouses from '../../../lib/skilling/skills/hunter/birdhouseTrapping';
+import birdhouses from '../../../lib/skilling/skills/hunter/birdhouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
@@ -28,7 +28,7 @@ export default class extends Task {
 		let hunterXP = 0;
 		let craftingXP = 0;
 		const loot = new Bank();
-		const birdhouse = birdHouses.find(_birdhouse => _birdhouse.name === birdhouseName);
+		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 
 		if (!placing) {
@@ -63,7 +63,7 @@ export default class extends Task {
 			channel.send(str);
 		} else if (birdhouseData.birdhousePlaced) {
 			let str = '';
-			const birdhouseToCollect = birdHouses.find(
+			const birdhouseToCollect = birdhouses.find(
 				_birdhouse => _birdhouse.name === birdhouseData.lastPlaced
 			);
 			if (!birdhouseToCollect) return;

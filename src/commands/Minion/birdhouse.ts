@@ -6,7 +6,7 @@ import { Activity, Emoji } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import birdhouses from '../../lib/skilling/skills/hunter/birdhouseTrapping';
+import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	bankHasItem,
