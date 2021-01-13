@@ -119,11 +119,9 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (prevBirdhouse && difference < prevBirdhouse.waitTime) {
-			return msg.send(
-				`Please come back when your birdhouses are full in ${formatDuration(
-					lastPlacedTime + prevBirdhouse.waitTime - currentDate
-				)}!`
-			);
+			throw `Please come back when your birdhouses are full in ${formatDuration(
+				lastPlacedTime + prevBirdhouse.waitTime - currentDate
+			)}!`;
 		}
 
 		let duration: number = timeBirdHouseRun;
@@ -241,11 +239,9 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (prevBirdhouse && difference < prevBirdhouse.waitTime) {
-			return msg.send(
-				`Please come back when your birdhouses are full in ${formatDuration(
-					lastPlacedTime + prevBirdhouse.waitTime - currentDate
-				)}!`
-			);
+			throw `Please come back when your birdhouses are full in ${formatDuration(
+				lastPlacedTime + prevBirdhouse.waitTime - currentDate
+			)}!`;
 		}
 
 		const timeBirdHouseRun = prevBirdhouse.runTime;
@@ -317,9 +313,7 @@ export default class extends BotCommand {
 			const difference = currentDate - lastPlaceTime;
 			if (difference < birdhouse.waitTime) {
 				emojiStr = `${Emoji.Timer} `;
-				contentStr = `Your 4x ${
-					birdhouse.name
-				} will be ready to collect in ${formatDuration(
+				contentStr = `Your ${birdhouse.name}s will be ready to collect in ${formatDuration(
 					lastPlaceTime + birdhouse.waitTime - currentDate
 				)}!\n`;
 			} else {
@@ -333,7 +327,7 @@ export default class extends BotCommand {
 		}
 
 		if (nothingPlaced) {
-			finalStr += `${Emoji.RedX} ` + `You don't have any birdhouses placed!`;
+			finalStr += `${Emoji.RedX} You don't have any birdhouses placed!`;
 		}
 
 		return msg.send(finalStr);
