@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import birdhouses from '../../../lib/skilling/skills/hunter/birdhouseTrapping';
+import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
@@ -27,6 +27,7 @@ export default class extends Task {
 		let hunterXP = 0;
 		let craftingXP = 0;
 		const loot = new Bank();
+
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 

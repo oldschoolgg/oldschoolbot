@@ -177,10 +177,7 @@ export default class extends Task {
 		}
 
 		createReadableItemListFromBank;
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			loot.values()
-		)}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
+		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
 		if (gotPked && !died) {
 			str += `\n${pkStr}`;
