@@ -32,5 +32,9 @@ export namespace ClientSettings {
 		export const ThievingCost = T<O.Readonly<ItemBank>>('economyStats.thievingCost');
 		export const SoldItemsBank = T<O.Readonly<ItemBank>>('sold_items_bank');
 		export const HerbloreCostBank = T<O.Readonly<ItemBank>>('herblore_cost_bank');
+		export const ConstructCostBank = T<O.Readonly<ItemBank>>('construction_cost_bank');
+		export const FarmingCostBank = T<O.Readonly<ItemBank>>('farming_cost_bank');
+		export const FarmingLootBank = T<O.Readonly<ItemBank>>('farming_loot_bank');
+		export const BuyCostBank = T<O.Readonly<ItemBank>>('buy_cost_bank');
 	}
 }

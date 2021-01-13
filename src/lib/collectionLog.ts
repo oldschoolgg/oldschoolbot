@@ -134,6 +134,18 @@ const fishingTrawler: CollectionLogData = {
 	])
 };
 
+export const carpenterOutfit = resolveItems([
+	"Carpenter's helmet",
+	"Carpenter's shirt",
+	"Carpenter's trousers",
+	"Carpenter's boots"
+]);
+
+export const mahoganyHomesLog: CollectionLogData = {
+	Carpenter: carpenterOutfit,
+	Other: resolveItems(["Amy's saw", 'Plank sack', 'Hosidius blueprints', 'Builders supply crate'])
+};
+
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([
 		"Ahrim's staff",
@@ -1359,12 +1371,13 @@ export const capes: CollectionLogData = {
 		'Runecraft cape(t)',
 		'Thieving cape(t)'
 	]),
-	hoods2: resolveItems(['Farming hood', 'Herblore hood', 'Hunter hood', 'Quest point hood']),
-	capes2: resolveItems(['Farming cape', 'Herblore cape', 'Hunter cape', 'Quest point cape']),
+	hoods2: resolveItems(['Farming hood', 'Herblore hood', 'Hunter hood', 'Construct. hood', 'Quest point hood']),
+	capes2: resolveItems(['Farming cape', 'Herblore cape', 'Hunter cape', 'Construct. cape', 'Quest point cape']),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
 		'Herblore cape(t)',
 		'Hunter cape(t)',
+		'Construct. cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1524,7 +1537,8 @@ export const skillingLog: CollectionLogData = {
 		'Golden tench',
 		'Baby chinchompa',
 		'Herbi'
-	])
+	]),
+	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[]
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
@@ -1541,7 +1555,8 @@ export const allCollectionLogItems = removeDuplicatesFromArray(
 		...Object.values(coxLog),
 		...Object.values(miscLog),
 		...Object.values(nightmareLog),
-		...Object.values(sepulchreLog)
+		...Object.values(sepulchreLog),
+		...Object.values(mahoganyHomesLog)
 	].flat(Infinity)
 ) as number[];
 
@@ -1698,5 +1713,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Hunter Gear',
 		aliases: ['hunter gear'],
 		items: hunterGear
+	},
+	{
+		name: 'Mahogany Homes',
+		aliases: ['mh', 'mahogany homes'],
+		items: mahoganyHomesLog
 	}
 ];

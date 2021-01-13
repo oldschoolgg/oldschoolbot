@@ -32,6 +32,7 @@ import {
 	BarbarianAssaultActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ClueActivityTaskOptions,
+	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -420,6 +421,13 @@ export default class extends Extendable {
 
 			case Activity.AerialFishing: {
 				return `${this.minionName} is currently aerial fishing. ${formattedDuration}`;
+			}
+			
+			case Activity.Construction: {
+				const data = currentTask as ConstructionActivityTaskOptions;
+				return `${this.minionName} is currently building ${data.quantity}x ${itemNameFromID(
+					data.objectID
+				)}. ${formattedDuration}`;
 			}
 		}
 	}

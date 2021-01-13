@@ -429,6 +429,14 @@ const Buyables: Buyable[] = [
 		qpRequired: 0,
 		gpCost: 500
 	},
+	{
+		name: 'Mythical cape',
+		outputItems: {
+			[itemID('Mythical cape')]: 1
+		},
+		gpCost: 1_000_000,
+		qpRequired: 205
+	},
 	...sepulchreBuyables
 ];
 

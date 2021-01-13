@@ -78,5 +78,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.BirdhouseActivity;
 		case Activity.AerialFishing:
 			return Tasks.AerialFishingActivity;
+		case Activity.Construction:
+			return Tasks.ConstructionActivity;
+		case Activity.MahoganyHomes:
+			return Tasks.MahoganyHomes;
 	}
 }

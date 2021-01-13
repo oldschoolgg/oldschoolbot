@@ -1,5 +1,6 @@
 import { Skill } from '../types';
 import Agility from './agility';
+import Construction from './construction';
 import Cooking from './cooking';
 import Crafting from './crafting';
 import Farming from './farming';
@@ -30,7 +31,8 @@ export const Skills: Record<string, Skill> = {
 	Thieving,
 	Farming,
 	Herblore,
-	Hunter
+	Hunter,
+	Construction
 };
 
 export default Skills;
