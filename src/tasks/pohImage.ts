@@ -18,7 +18,9 @@ const FOLDERS = [
 	'throne',
 	'jewellery_box',
 	'spellbook_altar',
-	'guard'
+	'guard',
+	'pool',
+	'teleport'
 ];
 
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');

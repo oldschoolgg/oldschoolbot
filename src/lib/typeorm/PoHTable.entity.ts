@@ -15,9 +15,6 @@ export class PoHTable extends BaseEntity {
 	@Column({ type: 'integer', default: null, nullable: true })
 	public throne!: number | null;
 
-	@Column({ type: 'integer', default: null, nullable: true })
-	public pool!: number | null;
-
 	@Column({ type: 'integer', name: 'mounted_cape', default: null, nullable: true })
 	public mountedCape!: number | null;
 
@@ -37,6 +34,13 @@ export class PoHTable extends BaseEntity {
 	public spellbookAltar!: number | null;
 
 	// Dungeon
-	@Column({ type: 'integer', name: 'guard', default: null, nullable: true })
+	@Column({ type: 'integer', default: null, nullable: true })
 	public guard!: number | null;
+
+	// Garden
+	@Column({ type: 'integer', default: null, nullable: true })
+	public pool!: number | null;
+
+	@Column({ type: 'integer', default: null, nullable: true })
+	public teleport!: number | null;
 }
