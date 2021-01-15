@@ -26,10 +26,10 @@ export default class extends BotCommand {
 	}
 
 	async getPOH(msg: KlasaMessage): Promise<PoHTable> {
-		const poh = await PoHTable.findOne({ user_id: msg.author.id });
+		const poh = await PoHTable.findOne({ userID: msg.author.id });
 		if (poh !== undefined) return poh;
-		await PoHTable.insert({ user_id: msg.author.id });
-		const created = await PoHTable.findOne({ user_id: msg.author.id });
+		await PoHTable.insert({ userID: msg.author.id });
+		const created = await PoHTable.findOne({ userID: msg.author.id });
 		if (!created) {
 			throw new Error('Failed to find POH after creation.');
 		}
