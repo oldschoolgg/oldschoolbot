@@ -20,7 +20,10 @@ const FOLDERS = [
 	'spellbook_altar',
 	'guard',
 	'pool',
-	'teleport'
+	'teleport',
+	'torch',
+	'dungeon_decoration',
+	'prison'
 ];
 
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
@@ -55,15 +58,19 @@ export default class PoHImage extends Task {
 		return [canvas, ctx];
 	}
 
-	async run(poh: PoHTable) {
+	async run(poh: PoHTable, showSpaces = true) {
 		const [canvas, ctx] = this.generateCanvas();
-		for (const [key, obj] of objectEntries(Placeholders)) {
-			if (obj === null) continue;
-			const [id, [x, y]] = obj;
-			const image = this.imageCache.get(poh[key] ?? id);
-			if (!image) throw new Error(`Missing image: ${poh[key] ?? id}.`);
-			const { width, height } = image;
-			ctx.drawImage(image, x - width / 2, y - height, width, height);
+		for (const [key, objects] of objectEntries(Placeholders)) {
+			const [placeholder, coordArr] = objects;
+			for (const obj of coordArr) {
+				const [x, y] = obj;
+				const id = poh[key] ?? placeholder;
+				const image = this.imageCache.get(id);
+				if (!image) throw new Error(`Missing image: ${id}.`);
+				const { width, height } = image;
+				if (!showSpaces && id === placeholder) continue;
+				ctx.drawImage(image, x - width / 2, y - height, width, height);
+			}
 		}
 		return new MessageAttachment(canvas.toBuffer('image/png'));
 	}

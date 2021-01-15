@@ -12,6 +12,7 @@ export const Pools: PoHObject[] = [
 			.add('Limestone brick', 5)
 			.add('Bucket of water', 5)
 			.add('Soul rune', 1000)
+			.add('Body rune', 1000)
 	},
 	{
 		id: 29238,

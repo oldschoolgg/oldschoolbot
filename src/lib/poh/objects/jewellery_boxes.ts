@@ -11,8 +11,8 @@ export const JewelleryBoxes: PoHObject[] = [
 		itemCost: new Bank()
 			.add('Bolt of cloth')
 			.add('Steel bar')
-			.add('Games necklace(8)', 99999)
-			.add('Ring of dueling(8)', 9999)
+			.add('Games necklace(8)', 20)
+			.add('Ring of dueling(8)', 20)
 	},
 	{
 		id: 37501,
@@ -21,8 +21,8 @@ export const JewelleryBoxes: PoHObject[] = [
 		level: 86,
 		itemCost: new Bank()
 			.add('Gold leaf')
-			.add('Skills necklace(4)', 9999)
-			.add('Combat bracelet(4)', 9999),
+			.add('Skills necklace(4)', 20)
+			.add('Combat bracelet(4)', 20),
 		requiredInPlace: 37492
 	},
 	{
@@ -32,7 +32,7 @@ export const JewelleryBoxes: PoHObject[] = [
 		level: 91,
 		itemCost: new Bank()
 			.add('Gold leaf', 2)
-			.add('Amulet of glory(4)', 9999)
+			.add('Amulet of glory(4)', 20)
 			.add('Ring of wealth (5)'),
 		requiredInPlace: 37501
 	}

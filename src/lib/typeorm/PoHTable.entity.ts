@@ -37,6 +37,15 @@ export class PoHTable extends BaseEntity {
 	@Column({ type: 'integer', default: null, nullable: true })
 	public guard!: number | null;
 
+	@Column({ type: 'integer', default: null, nullable: true })
+	public torch!: number | null;
+
+	@Column({ type: 'integer', name: 'dungeon_decoration', default: null, nullable: true })
+	public dungeonDecoration!: number | null;
+
+	@Column({ type: 'integer', default: null, nullable: true })
+	public prison!: number | null;
+
 	// Garden
 	@Column({ type: 'integer', default: null, nullable: true })
 	public pool!: number | null;
