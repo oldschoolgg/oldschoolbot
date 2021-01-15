@@ -47,7 +47,8 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Fairy enchantment',
 		outputItems: resolveNameBank({ 'Fairy enchantment': 1 }),
-		gpCost: 100_000
+		gpCost: 100_000,
+		qpRequired: 23
 	},
 	{
 		name: 'Ancient signet',

@@ -11,7 +11,7 @@ export const SpellbookAltars: PoHObject[] = [
 		itemCost: new Bank()
 			.add('Limestone brick', 10)
 			.add('Magic stone')
-			.add("Pharaoh's sceptre")
+			.add("Pharaoh's sceptre (3)")
 			.add('Ancient signet')
 	},
 	{
