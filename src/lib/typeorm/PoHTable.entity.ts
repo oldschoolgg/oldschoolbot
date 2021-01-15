@@ -1,13 +1,13 @@
 import { BaseEntity, Check, Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Check('background_id > 0 AND background_id < 100')
-@Entity()
+@Entity('poh')
 export class PoHTable extends BaseEntity {
-	@PrimaryColumn('varchar', { length: 19, name: 'webhook_id' })
-	public user_id!: string;
+	@PrimaryColumn('varchar', { length: 19, name: 'user_id' })
+	public userID!: string;
 
-	@Column({ type: 'integer', default: 1 })
-	public background_id!: number;
+	@Column({ type: 'integer', default: 1, name: 'background_id' })
+	public backgroundID!: number;
 
 	@Column({ type: 'integer', default: null, nullable: true })
 	public altar!: number | null;
