@@ -53,6 +53,7 @@ const ores: Ore[] = [
 		name: 'Iron ore',
 		respawnTime: -0.2,
 		petChance: 750_000,
+		minerals: 100,
 		clueScrollChance: 741_600
 	},
 	{

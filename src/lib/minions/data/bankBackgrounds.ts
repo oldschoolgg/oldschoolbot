@@ -95,7 +95,8 @@ const backgroundImages: BankBackground[] = [
 		}),
 		itemCost: resolveNameBank({
 			'Spectral spirit shield': 1,
-			'Arcane spirit shield': 1
+			'Arcane spirit shield': 1,
+			'Elysian spirit shield': 1
 		}),
 		gpCost: 100_000_000
 	},

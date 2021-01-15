@@ -25,7 +25,8 @@ describe('Item Alias', () => {
 			],
 			['Black graceful cape', [getOSItem(24746)]],
 			['Dark graceful cape', [getOSItem(24746)]],
-			[24746, [getOSItem(24746)]]
+			[24746, [getOSItem(24746)]],
+			['Mythical cape', [getOSItem(22114)]]
 		];
 		for (const [input, output] of expectedResults) {
 			expect(itemArg.run(input)).resolves.toEqual(output);
