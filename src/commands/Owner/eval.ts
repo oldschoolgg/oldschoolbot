@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, Stopwatch, Type, util } from 'klasa';
 import { inspect } from 'util';
 
@@ -15,7 +16,9 @@ export default class extends BotCommand {
 
 	async run(message: KlasaMessage, [code]: [string]) {
 		if (!this.client.owners.has(message.author)) return null;
-		const { success, result, time, type } = await this.eval(message, code);
+		const res = await this.eval(message, code);
+		if (res === undefined) return;
+		const { success, result, time, type } = res;
 		if (typeof result !== 'string') return null;
 
 		const footer = util.codeBlock('ts', type);
@@ -85,6 +88,11 @@ export default class extends BotCommand {
 		stopwatch.stop();
 		if (msg.flagArgs.bk) {
 			msg.channel.sendBankImage({ bank: result });
+		}
+
+		if (Buffer.isBuffer(result)) {
+			msg.channel.send(new MessageAttachment(result));
+			return;
 		}
 
 		if (typeof result !== 'string') {
