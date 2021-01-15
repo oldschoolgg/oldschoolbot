@@ -12,6 +12,58 @@ interface Buyable {
 	aliases?: string[];
 }
 
+const constructionBuyables: Buyable[] = [
+	{ name: 'Bolt of cloth', outputItems: resolveNameBank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
+	{
+		name: 'Limestone brick',
+		outputItems: resolveNameBank({ 'Limestone brick': 1 }),
+		gpCost: 1000
+	},
+	{
+		name: 'Gold leaf',
+		outputItems: resolveNameBank({ 'Gold leaf': 1 }),
+		gpCost: 500_000
+	},
+	{
+		name: 'Marble block',
+		outputItems: resolveNameBank({ 'Marble block': 1 }),
+		gpCost: 1_000_000
+	},
+	{
+		name: 'Magic stone',
+		outputItems: resolveNameBank({ 'Magic stone': 1 }),
+		gpCost: 4_000_000
+	},
+	{
+		name: 'Red dye',
+		outputItems: resolveNameBank({ 'Red dye': 1 }),
+		gpCost: 100_000
+	},
+	{
+		name: 'Skull',
+		outputItems: resolveNameBank({ Skull: 1 }),
+		gpCost: 100_000
+	},
+	{
+		name: 'Fairy enchantment',
+		outputItems: resolveNameBank({ 'Fairy enchantment': 1 }),
+		gpCost: 100_000,
+		qpRequired: 23
+	},
+	{
+		name: 'Ancient signet',
+		outputItems: resolveNameBank({ 'Ancient signet': 1 }),
+		gpCost: 100_000,
+		qpRequired: 105
+	},
+	{
+		name: 'Lunar signet',
+		outputItems: resolveNameBank({ 'Lunar signet': 1 }),
+		gpCost: 100_000,
+		qpRequired: 52
+	}
+];
+
 const sepulchreBuyables: Buyable[] = [
 	{
 		name: 'Hallowed crystal shard',
@@ -363,7 +415,8 @@ const Buyables: Buyable[] = [
 		gpCost: 1_000_000,
 		qpRequired: 205
 	},
-	...sepulchreBuyables
+	...sepulchreBuyables,
+	...constructionBuyables
 ];
 
 export default Buyables;

@@ -92,7 +92,8 @@ export default class extends BotCommand {
 
 		const GP = msg.author.settings.get(UserSettings.GP);
 
-		const cost = hasHammy ? 1 : plank!.gpCost * quantity;
+		const cost = hasHammy ? 1 : plank!.gpCost * 2 * quantity;
+
 		if (GP < cost) {
 			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
 		}

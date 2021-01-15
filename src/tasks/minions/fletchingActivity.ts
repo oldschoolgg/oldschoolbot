@@ -31,8 +31,12 @@ export default class extends Task {
 		const newLevel = user.skillLevel(SkillsEnum.Fletching);
 
 		let str = `${user}, ${user.minionName} finished fletching ${quantity} ${
-			fletchableItem.name
-		}s, you also received ${xpReceived.toLocaleString()} XP.`;
+			fletchableItem.name +
+				fletchableItem.name.charAt(fletchableItem.name.length - 1).toLowerCase() ===
+			's'
+				? ''
+				: 's'
+		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Fletching level is now ${newLevel}!`;
