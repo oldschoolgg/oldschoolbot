@@ -10,6 +10,7 @@ import { initCustomItems } from '../customItems';
 import { initItemAliases } from '../itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
+import { PoHTable } from '../typeorm/PoHTable.entity';
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
 import { piscinaPool } from '../workers';
@@ -54,8 +55,8 @@ export class OldSchoolBotClient extends Client {
 			username: user,
 			password,
 			database,
-			entities: [AnalyticsTable, WebhookTable],
-			synchronize: true
+			entities: [AnalyticsTable, WebhookTable, PoHTable],
+			synchronize: !production
 		});
 		const existingTasks = await this.orm.query(
 			`SELECT pgboss.job.data FROM pgboss.job WHERE pgboss.job.name = 'minionActivity' AND state = 'created';`
