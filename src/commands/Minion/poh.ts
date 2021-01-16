@@ -16,9 +16,14 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			altProtection: true,
-			categoryFlags: ['minion', 'minigame'],
-			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
-			examples: ['+pohfff [start]'],
+			categoryFlags: ['minion'],
+			description: 'Allows you to access and build in your POH.',
+			examples: [
+				'+poh build demonic throne',
+				'+poh',
+				'+poh items',
+				'+poh destroy demonic throne'
+			],
 			subcommands: true,
 			usage: '[build|destroy|items] [input:...str]',
 			usageDelim: ' '
