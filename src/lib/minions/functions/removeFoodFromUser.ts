@@ -65,11 +65,11 @@ export default async function removeFoodFromUser({
 		);
 
 		let reductionsStr =
-			reductions.length > 0 ? `**Base Food Reductions:** ${reductions.join(', ')}` : '';
+			reductions.length > 0 ? `**Base Food Reductions:** ${reductions.join(', ')}. ` : '';
 		return [
 			`${await createReadableItemListFromBank(client, foodToRemove)} from ${
 				user.username
-			}. ${reductionsStr}`,
+			}${reductionsStr}`,
 			foodToRemove
 		];
 	}

@@ -31,6 +31,13 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
+		},
+		pohBoosts: {
+			pool: {
+				'Rejuvenation pool': 10,
+				'Fancy rejuvenation pool': 10,
+				'Ornate rejuvenation pool': 10
+			}
 		}
 	},
 	{

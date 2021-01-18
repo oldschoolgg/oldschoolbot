@@ -113,6 +113,13 @@ const killableBosses: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
+		},
+		pohBoosts: {
+			pool: {
+				'Rejuvenation pool': 10,
+				'Fancy rejuvenation pool': 10,
+				'Ornate rejuvenation pool': 10
+			}
 		}
 	},
 	{
@@ -120,7 +127,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.CorporealBeast.name,
 		aliases: Monsters.CorporealBeast.aliases,
 		table: Monsters.CorporealBeast,
-		timeToFinish: Time.Minute * 18,
+		timeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
 		canBeKilled: true,
@@ -142,7 +149,14 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: bosses['Corp Beast']
+		uniques: bosses['Corp Beast'],
+		pohBoosts: {
+			pool: {
+				'Rejuvenation pool': 50,
+				'Fancy rejuvenation pool': 50,
+				'Ornate rejuvenation pool': 50
+			}
+		}
 	},
 	{
 		id: Monsters.Cerberus.id,
