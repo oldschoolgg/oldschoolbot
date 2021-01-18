@@ -10,6 +10,7 @@ import { KillableMonster } from '../../lib/minions/types';
 import { userQueues } from '../../lib/queueing';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
 import { itemNameFromID, toTitleCase } from '../../lib/util';
 import { formatItemReqs } from '../../lib/util/formatItemReqs';
@@ -130,5 +131,16 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get perkTier(this: User): PerkTier {
 		return getUsersPerkTier(this);
+	}
+
+	public async getPOH(this: User) {
+		const poh = await PoHTable.findOne({ userID: this.id });
+		if (poh !== undefined) return poh;
+		await PoHTable.insert({ userID: this.id });
+		const created = await PoHTable.findOne({ userID: this.id });
+		if (!created) {
+			throw new Error('Failed to find POH after creation.');
+		}
+		return created;
 	}
 }
