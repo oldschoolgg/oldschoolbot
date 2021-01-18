@@ -1,13 +1,20 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
 import { MessageAttachment } from 'discord.js';
-import { objectEntries } from 'e';
+import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
 import { Task } from 'klasa';
 import path from 'path';
 
-import { Placeholders } from '../lib/poh';
+import {
+	DUNGEON_FLOOR_Y,
+	GROUND_FLOOR_Y,
+	HOUSE_WIDTH,
+	Placeholders,
+	TOP_FLOOR_Y
+} from '../lib/poh';
 import { PoHTable } from '../lib/typeorm/PoHTable.entity';
 import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
+import getActivityOfUser from '../lib/util/getActivityOfUser';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -23,7 +30,8 @@ const FOLDERS = [
 	'teleport',
 	'torch',
 	'dungeon_decoration',
-	'prison'
+	'prison',
+	'minion'
 ];
 
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
@@ -58,6 +66,23 @@ export default class PoHImage extends Task {
 		return [canvas, ctx];
 	}
 
+	randMinionCoords(): [number, number] {
+		const roll = randInt(1, 4);
+		const x = randInt(1, HOUSE_WIDTH);
+		switch (roll) {
+			case 1:
+				return [x, TOP_FLOOR_Y];
+			case 2:
+				return [x, GROUND_FLOOR_Y];
+			case 3:
+				return [x, DUNGEON_FLOOR_Y];
+			case 4:
+				return [x + randInt(1, HOUSE_WIDTH), GROUND_FLOOR_Y];
+			default:
+				throw new Error('Unmatched case');
+		}
+	}
+
 	async run(poh: PoHTable, showSpaces = true) {
 		const [canvas, ctx] = this.generateCanvas();
 		for (const [key, objects] of objectEntries(Placeholders)) {
@@ -71,6 +96,12 @@ export default class PoHImage extends Task {
 				if (!showSpaces && id === placeholder) continue;
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
+		}
+		const activity = getActivityOfUser(this.client, poh.userID);
+		if (!activity) {
+			const image = this.imageCache.get(11)!;
+			const [x, y] = this.randMinionCoords();
+			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
 		return new MessageAttachment(canvas.toBuffer('image/png'));
 	}

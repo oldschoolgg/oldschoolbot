@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Color, Emoji, Events, Image } from '../../lib/constants';
+import { Color, Emoji, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { rand, roll } from '../../lib/util';
@@ -74,15 +74,6 @@ export default class extends BotCommand {
 					won ? 'won' : 'lost'
 				} ${Util.toKMB(amountToAdd - gp)} GP. ${rolled === 73 ? Emoji.Bpaptu : ''}`
 			);
-
-			if (amount >= 1_000_000_000) {
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Dice} **${msg.author.username}** just diced **${Util.toKMB(
-						amount
-					)}** and ${won ? 'won' : 'lost'}.`
-				);
-			}
 		}
 
 		return msg.send({ embed });

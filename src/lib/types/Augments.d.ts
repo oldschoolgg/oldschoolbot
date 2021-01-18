@@ -12,12 +12,13 @@ import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
-import { BitField } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
+import { PoHTable } from '../typeorm/PoHTable.entity';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
@@ -180,6 +181,8 @@ declare module 'discord.js' {
 		 */
 		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
 		bank(): Bank;
+		getPOH(): Promise<PoHTable>;
+		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.
 		 */

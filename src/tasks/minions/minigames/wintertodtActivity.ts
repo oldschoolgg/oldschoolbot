@@ -1,4 +1,5 @@
 import { MessageAttachment } from 'discord.js';
+import { randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../../lib/constants';
@@ -76,10 +77,18 @@ export default class extends Task {
 		const numberOfRoots = Math.floor((totalPoints - 50 * quantity) / 10);
 		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
+		const conLevel = user.skillLevel(SkillsEnum.Construction);
 
 		let fmXpToGive = Math.floor(fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3));
 		let fmBonusXP = 0;
 		const wcXpToGive = Math.floor(numberOfRoots * (wcLvl * 0.3));
+		const constructionXPPerBrazier = conLevel * 4;
+		let numberOfBraziers = 0;
+		for (let i = 0; i < quantity; i++) {
+			numberOfBraziers += randInt(1, 7);
+		}
+		const conXP = numberOfBraziers * constructionXPPerBrazier;
+		user.addXP(SkillsEnum.Construction, conXP);
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -123,7 +132,7 @@ export default class extends Task {
 
 		let output = `${user} ${
 			user.minionName
-		} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP and ${wcXpToGive.toLocaleString()} Woodcutting XP, you cut ${numberOfRoots}x Bruma roots.`;
+		} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
