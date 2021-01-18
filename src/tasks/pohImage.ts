@@ -77,7 +77,7 @@ export default class PoHImage extends Task {
 			case 3:
 				return [x, DUNGEON_FLOOR_Y];
 			case 4:
-				return [x + randInt(1, HOUSE_WIDTH), TOP_FLOOR_Y];
+				return [x + randInt(1, HOUSE_WIDTH), GROUND_FLOOR_Y];
 			default:
 				throw new Error('Unmatched case');
 		}
