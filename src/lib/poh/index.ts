@@ -35,11 +35,12 @@ export interface PoH {
 	prison: number | null;
 }
 
-const HOUSE_WIDTH = 585;
-const TOP_FLOOR_Y = 118;
-const GROUND_FLOOR_Y = 236;
-const DUNGEON_FLOOR_Y = 351;
-const FLOOR_HEIGHT = 112;
+export const HOUSE_WIDTH = 585;
+export const TOP_FLOOR_Y = 118;
+
+export const GROUND_FLOOR_Y = 236;
+export const DUNGEON_FLOOR_Y = 351;
+export const FLOOR_HEIGHT = 112;
 const GARDEN_X = 587;
 const GARDEN_Y = 236;
 
