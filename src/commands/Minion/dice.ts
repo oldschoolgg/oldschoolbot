@@ -70,15 +70,6 @@ export default class extends BotCommand {
 					won ? 'won' : 'lost'
 				} ${Util.toKMB(amountToAdd - gp)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
 			);
-
-			if (amount >= 1_000_000_000) {
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Dice} **${msg.author.username}** just diced **${Util.toKMB(
-						amount
-					)}** and ${won ? 'won' : 'lost'}.`
-				);
-			}
 		}
 
 		return msg.send({ embed });
