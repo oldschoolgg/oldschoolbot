@@ -583,7 +583,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				attackStylesUsed: removeDuplicatesFromArray([
 					...objectKeys(monster.minimumGearRequirements ?? {}),
 					monster.attackStyleToUse
-				])
+				]),
+				learningPercentage: percentReduced
 			});
 
 			foodStr = result;
@@ -619,15 +620,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 		if (foodStr) {
-			response += ` Removed ${foodStr}.`;
+			response += ` Removed ${foodStr}.\n`;
 		}
 
 		if (boosts.length > 0) {
-			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+			response += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		if (messages.length > 0) {
-			response += `\n\n**Messages:** ${messages.join('\n')}.`;
+			response += `\n**Messages:** ${messages.join('\n')}.`;
 		}
 
 		return msg.send(response);

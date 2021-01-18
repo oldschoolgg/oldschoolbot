@@ -18,7 +18,8 @@ export default async function removeFoodFromUser({
 	totalHealingNeeded,
 	healPerAction,
 	activityName,
-	attackStylesUsed
+	attackStylesUsed,
+	learningPercentage
 }: {
 	client: KlasaClient;
 	user: KlasaUser;
@@ -26,6 +27,7 @@ export default async function removeFoodFromUser({
 	healPerAction: number;
 	activityName: string;
 	attackStylesUsed: GearSetupTypes[];
+	learningPercentage?: number;
 }): Promise<[string, ItemBank]> {
 	await user.settings.sync(true);
 	const userBank = user.settings.get(UserSettings.Bank);
@@ -42,6 +44,12 @@ export default async function removeFoodFromUser({
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 17.5);
 		reductions.push(`17.5% for Ely ${Emoji.Ely}`);
 	}
+
+	if (learningPercentage && learningPercentage > 1) {
+		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, learningPercentage);
+		reductions.push(`${learningPercentage}% for experience`);
+	}
+
 	const foodToRemove = getUserFoodFromBank(userBank, totalHealingNeeded);
 	if (!foodToRemove) {
 		throw `You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
@@ -56,11 +64,12 @@ export default async function removeFoodFromUser({
 			addBanks([client.settings.get(ClientSettings.EconomyStats.PVMCost), foodToRemove])
 		);
 
-		let reductionsStr = reductions.length > 0 ? ` (Reductions: ${reductions.join(', ')})` : '';
+		let reductionsStr =
+			reductions.length > 0 ? `Food Reductions: ${reductions.join(', ')}` : '';
 		return [
 			`${await createReadableItemListFromBank(client, foodToRemove)} from ${
 				user.username
-			}${reductionsStr}`,
+			}. ${reductionsStr}`,
 			foodToRemove
 		];
 	}
