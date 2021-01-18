@@ -11,7 +11,7 @@ import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { stringMatches } from '../../lib/util';
 import PoHImage from '../../tasks/pohImage';
 
-export default class extends BotCommand {
+export default class POHCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			oneAtTime: true,
@@ -30,20 +30,9 @@ export default class extends BotCommand {
 		});
 	}
 
-	async getPOH(msg: KlasaMessage): Promise<PoHTable> {
-		const poh = await PoHTable.findOne({ userID: msg.author.id });
-		if (poh !== undefined) return poh;
-		await PoHTable.insert({ userID: msg.author.id });
-		const created = await PoHTable.findOne({ userID: msg.author.id });
-		if (!created) {
-			throw new Error('Failed to find POH after creation.');
-		}
-		return created;
-	}
-
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const poh = await this.getPOH(msg);
+		const poh = await msg.author.getPOH();
 		return msg.send(await this.genImage(poh));
 	}
 
@@ -60,7 +49,7 @@ export default class extends BotCommand {
 	}
 
 	async build(msg: KlasaMessage, [name]: [string]) {
-		const poh = await this.getPOH(msg);
+		const poh = await msg.author.getPOH();
 
 		if (!name) {
 			return msg.send(await this.genImage(poh, true));
@@ -138,7 +127,7 @@ export default class extends BotCommand {
 			return msg.send(`That's not a valid thing to build in your PoH.`);
 		}
 
-		const poh = await this.getPOH(msg);
+		const poh = await msg.author.getPOH();
 
 		const inPlace = poh[obj.slot];
 		if (inPlace !== obj.id) {

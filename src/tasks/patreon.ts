@@ -90,6 +90,13 @@ export default class extends Task {
 				user.settings.update(UserSettings.PatreonID, patron.patreonID);
 			}
 			const userBitfield = user.settings.get(UserSettings.BitField);
+			if (
+				[BitField.isModerator, BitField.isContributor].some(bit =>
+					userBitfield.includes(bit)
+				)
+			) {
+				continue;
+			}
 			const userBadges = user.settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
