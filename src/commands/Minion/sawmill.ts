@@ -87,9 +87,6 @@ export default class extends BotCommand {
 
 		const GP = msg.author.settings.get(UserSettings.GP);
 		let cost = plank!.gpCost * quantity;
-		if (!msg.author.isIronman) {
-			cost *= 1.5;
-		}
 
 		if (GP < cost) {
 			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
