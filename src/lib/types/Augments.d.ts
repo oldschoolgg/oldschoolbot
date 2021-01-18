@@ -12,7 +12,7 @@ import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
-import { BitField } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
@@ -174,6 +174,7 @@ declare module 'discord.js' {
 		 */
 		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
 		bank(): Bank;
+		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.
 		 */
