@@ -3,16 +3,18 @@ import { objectEntries } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 import PromiseQueue from 'p-queue';
 
-import { Events } from '../../lib/constants';
+import { Events, PerkTier } from '../../lib/constants';
 import readableStatName from '../../lib/gear/functions/readableStatName';
 import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
 import { userQueues } from '../../lib/queueing';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
 import { itemNameFromID, toTitleCase } from '../../lib/util';
 import { formatItemReqs } from '../../lib/util/formatItemReqs';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -124,5 +126,21 @@ export default class extends Extendable {
 	public async queueFn(this: User, fn: (...args: any[]) => Promise<any>) {
 		const queue = this.getUpdateQueue();
 		await queue.add(fn);
+	}
+
+	// @ts-ignore 2784
+	public get perkTier(this: User): PerkTier {
+		return getUsersPerkTier(this);
+	}
+
+	public async getPOH(this: User) {
+		const poh = await PoHTable.findOne({ userID: this.id });
+		if (poh !== undefined) return poh;
+		await PoHTable.insert({ userID: this.id });
+		const created = await PoHTable.findOne({ userID: this.id });
+		if (!created) {
+			throw new Error('Failed to find POH after creation.');
+		}
+		return created;
 	}
 }

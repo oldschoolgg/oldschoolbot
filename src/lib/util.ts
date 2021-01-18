@@ -1,4 +1,5 @@
 import { Client, Guild } from 'discord.js';
+import { randInt } from 'e';
 import { KlasaClient, KlasaUser, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -7,7 +8,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { Events } from './constants';
+import { CENA_CHARS, continuationChars, Events, PerkTier, Time } from './constants';
 import hasItemEquipped from './gear/functions/hasItemEquipped';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
@@ -319,4 +320,17 @@ export function shuffle<T>(array: readonly T[]): T[] {
 		[copy[i], copy[j]] = [copy[j], copy[i]];
 	}
 	return copy;
+}
+
+export function generateContinuationChar(user: KlasaUser) {
+	const baseChar =
+		user.perkTier > PerkTier.One
+			? 'y'
+			: Date.now() - user.createdTimestamp < Time.Month * 6
+			? shuffle(continuationChars).slice(0, randInt(1, 2)).join('')
+			: randomItemFromArray(continuationChars);
+
+	return `${shuffle(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffle(CENA_CHARS)
+		.slice(0, randInt(1, 2))
+		.join('')}`;
 }

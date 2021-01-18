@@ -1,6 +1,8 @@
+import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { LevelRequirements } from '../skilling/types';
+import { PoHTable } from '../typeorm/PoHTable.entity';
 import { DungeonDecorations } from './objects/dungeon_decorations';
 import { Guards } from './objects/guards';
 import { JewelleryBoxes } from './objects/jewellery_boxes';
@@ -33,15 +35,16 @@ export interface PoH {
 	prison: number | null;
 }
 
-const HOUSE_WIDTH = 585;
-const TOP_FLOOR_Y = 118;
-const GROUND_FLOOR_Y = 236;
-const DUNGEON_FLOOR_Y = 351;
-const FLOOR_HEIGHT = 112;
+export const HOUSE_WIDTH = 585;
+export const TOP_FLOOR_Y = 118;
+
+export const GROUND_FLOOR_Y = 236;
+export const DUNGEON_FLOOR_Y = 351;
+export const FLOOR_HEIGHT = 112;
 const GARDEN_X = 587;
 const GARDEN_Y = 236;
 
-type PoHSlot = keyof Omit<PoH, 'background'>;
+export type PoHSlot = keyof Omit<PoH, 'background'>;
 
 export interface PoHObject {
 	id: number;
@@ -110,8 +113,26 @@ export const GroupedPohObjects = {
 
 export const PoHObjects = Object.values(GroupedPohObjects).flat(Infinity) as PoHObject[];
 
-export const getPOHObject = (id: number) => {
-	let obj = PoHObjects.find(i => i.id === id);
-	if (!obj) throw new Error(`POH Object with id ${id} doesn't exist.`);
+export const getPOHObject = (idOrName: number | string) => {
+	const key = typeof idOrName === 'string' ? 'name' : 'id';
+	let obj = PoHObjects.find(i => i[key] === idOrName);
+	if (!obj) throw new Error(`POH Object with id/name ${idOrName} doesn't exist.`);
 	return obj;
 };
+
+export type POHBoosts = Partial<Record<PoHSlot, Record<string, number>>>;
+
+export function calcPOHBoosts(poh: PoHTable, boosts: POHBoosts): [number, string[]] {
+	let boost = 0;
+	let messages = [];
+	for (const [slot, objBoosts] of objectEntries(boosts)) {
+		if (objBoosts === undefined) continue;
+		for (const [name, boostPercent] of objectEntries(objBoosts)) {
+			if (poh[slot] === getPOHObject(name).id) {
+				messages.push(`${boostPercent}% for ${name}`);
+				boost += boostPercent;
+			}
+		}
+	}
+	return [boost, messages];
+}

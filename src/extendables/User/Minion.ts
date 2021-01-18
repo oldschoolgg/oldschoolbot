@@ -418,6 +418,10 @@ export default class extends Extendable {
 					data.objectID
 				)}. ${formattedDuration}`;
 			}
+
+			case Activity.MahoganyHomes: {
+				return `${this.minionName} is currently doing Mahogany Homes. ${formattedDuration}`;
+			}
 		}
 	}
 

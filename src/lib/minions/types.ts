@@ -8,6 +8,7 @@ import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
+import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
@@ -80,6 +81,10 @@ export interface KillableMonster {
 	 * The minimum *required* gear stats to fight this monster.
 	 */
 	minimumGearRequirements?: GearRequirements;
+	/**
+	 * Boosts for POH objects.
+	 */
+	pohBoosts?: POHBoosts;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
