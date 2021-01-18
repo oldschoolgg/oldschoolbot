@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			const xp = quantity * specialBone.xp;
 			await Promise.all([
 				msg.author.addXP(SkillsEnum.Construction, xp),
-				msg.author.removeItemFromBank(specialBone.item.id)
+				msg.author.removeItemFromBank(specialBone.item.id, quantity)
 			]);
 			return msg.send(
 				`You handed over ${quantity} ${specialBone.item.name}${
