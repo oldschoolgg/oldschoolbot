@@ -9,6 +9,18 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
+
+const specialBones = [
+	{
+		item: getOSItem('Long bone'),
+		xp: 4500
+	},
+	{
+		item: getOSItem('Curved bone'),
+		xp: 6750
+	}
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,17 +39,43 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, boneName = '']: [null | number | string, string]) {
-		// default bury speed
-		const speedMod = 4.8;
-
-		// will be used if another altar is added
-		let altar = '';
-		altar = 'at the chaos altar';
+		const userBank = msg.author.bank();
 
 		if (typeof quantity === 'string') {
 			boneName = quantity;
 			quantity = null;
 		}
+
+		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, boneName));
+		if (specialBone) {
+			if (msg.author.settings.get(UserSettings.QP) < 8) {
+				return msg.send(`You need atleast 8 QP to offer long/curved bones for XP.`);
+			}
+			if (msg.author.skillLevel(SkillsEnum.Construction) < 30) {
+				return msg.send(
+					`You need atleast level 30 Construction to offer long/curved bones for XP.`
+				);
+			}
+			const amountHas = userBank.amount(specialBone.item.id);
+			if (quantity === null) quantity = Math.max(amountHas, 1);
+			if (amountHas < quantity) {
+				return msg.send(
+					`You don't have ${quantity}x ${specialBone.item.name}, you have ${amountHas}.`
+				);
+			}
+			const xp = quantity * specialBone.xp;
+			await Promise.all([
+				msg.author.addXP(SkillsEnum.Construction, xp),
+				msg.author.removeItemFromBank(specialBone.item.id)
+			]);
+			return msg.send(
+				`You handed over ${quantity} ${specialBone.item.name}${
+					quantity > 1 ? "'s" : ''
+				} to Barlak and received ${xp} Construction XP.`
+			);
+		}
+
+		const speedMod = 4.8;
 
 		const bone = Prayer.Bones.find(
 			bone =>
@@ -61,19 +99,19 @@ export default class extends BotCommand {
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
+		const amountOfThisBone = userBank.amount(bone.inputId);
+		if (!amountOfThisBone) return msg.send(`You have no ${bone.name}.`);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			const amountOfBonesOwned = msg.author.settings.get(UserSettings.Bank)[bone.inputId];
-			if (!amountOfBonesOwned) return msg.send(`You have no ${bone.name}.`);
 			quantity = Math.min(
 				Math.floor(msg.author.maxTripLength / timeToBuryABone),
-				amountOfBonesOwned
+				amountOfThisBone
 			);
 		}
 
 		// Check the user has the required bones to bury.
-		const hasRequiredBones = await msg.author.hasItem(bone.inputId, quantity);
-		if (!hasRequiredBones) {
+		if (amountOfThisBone < quantity) {
 			return msg.send(`You dont have ${quantity}x ${bone.name}.`);
 		}
 
@@ -102,7 +140,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now offering ${quantity}x ${
 				bone.name
-			} ${altar}, it'll take around ${formatDuration(duration)} to finish.`
+			} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }
