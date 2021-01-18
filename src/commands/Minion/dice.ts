@@ -33,7 +33,7 @@ export default class extends BotCommand {
 		} else {
 			if (msg.author.isIronman) return msg.send(`You're an ironman and you cant play dice.`);
 
-			if (amount > 500_000) {
+			if (amount > 500_000_000) {
 				return msg.send(`You can only dice up to 500m at a time!`);
 			}
 
