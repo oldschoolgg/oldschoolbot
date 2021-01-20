@@ -61,6 +61,11 @@ const constructionBuyables: Buyable[] = [
 		outputItems: resolveNameBank({ 'Lunar signet': 1 }),
 		gpCost: 100_000,
 		qpRequired: 52
+	},
+	{
+		name: 'Bucket of water',
+		outputItems: resolveNameBank({ 'Bucket of water': 1 }),
+		gpCost: 500
 	}
 ];
 
