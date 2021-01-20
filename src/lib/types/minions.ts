@@ -134,6 +134,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	birdhouseName: string | null;
+	channelID: string;
 	placing: boolean;
 	gotCraft: boolean;
 	birdhouseData: BirdhouseData;

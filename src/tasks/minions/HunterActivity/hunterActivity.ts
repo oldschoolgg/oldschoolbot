@@ -106,8 +106,8 @@ export default class extends Task {
 					bankHasItem(userBank, itemID('Saradomin brew(4)'), 10) &&
 					bankHasItem(userBank, itemID('Super restore(4)'), 5)
 				) {
-					user.removeItemFromBank(itemID('Saradomin brew(4)'), 10);
-					user.removeItemFromBank(itemID('Super restore(4)'), 5);
+					await user.removeItemFromBank(itemID('Saradomin brew(4)'), 10);
+					await user.removeItemFromBank(itemID('Super restore(4)'), 5);
 				}
 				const newGear = { ...user.settings.get(UserSettings.Gear.Misc) };
 				newGear[EquipmentSlot.Body] = null;
@@ -115,16 +115,18 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Gear.Misc, newGear);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
-				diedStr = `Your minion got killed during the activity and lost some gear, catch quantity, saradomin brew and Super restore.`;
+				diedStr = `Your minion got killed during the activity and lost gear, catch quantity, 10x Saradomin brew and 5x Super restore.`;
 			}
 			if (gotPked && !died) {
 				if (
 					bankHasItem(userBank, itemID('Saradomin brew(4)'), 10) &&
 					bankHasItem(userBank, itemID('Super restore(4)'), 5)
 				) {
-					user.removeItemFromBank(itemID('Saradomin brew(4)'), rand(1, 10));
-					user.removeItemFromBank(itemID('Super restore(4)'), rand(1, 5));
-					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, saradomin brew and super restore.`;
+					let lostBrew = rand(1, 10);
+					let lostRestore = rand(1, 5);
+					await user.removeItemFromBank(itemID('Saradomin brew(4)'), lostBrew);
+					await user.removeItemFromBank(itemID('Super restore(4)'), lostRestore);
+					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, ${lostBrew}x Saradomin brew and ${lostRestore}x Super restore.`;
 					pkedQuantity = 0.1 * successfulQuantity;
 					xpReceived *= 0.9;
 				}
@@ -141,7 +143,6 @@ export default class extends Task {
 		if (creature.name === 'Herbiboar') {
 			creatureTable = generateHerbiTable(
 				user.skillLevel(SkillsEnum.Herblore),
-				creature,
 				user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))
 			);
 			if (user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))) {

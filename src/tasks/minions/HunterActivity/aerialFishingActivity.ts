@@ -2,10 +2,13 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events, Time } from '../../../lib/constants';
+import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll } from '../../../lib/util';
+import { anglerBoostPercent, calcPercentOfNum, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -73,11 +76,34 @@ export default class extends Task {
 			mottledEelCaught * mottledEel.hunterXP +
 			commonTenchCaught * commonTench.hunterXP +
 			bluegillCaught * bluegill.hunterXP;
-		const fishXpReceived =
+		let fishXpReceived =
 			greaterSirenCaught * greaterSiren.fishingXP! +
 			mottledEelCaught * mottledEel.fishingXP! +
 			commonTenchCaught * commonTench.fishingXP! +
 			bluegillCaught * bluegill.fishingXP!;
+
+		let bonusXP = 0;
+
+		// If they have the entire angler outfit, give an extra 2.5% xp bonus
+		if (
+			hasArrayOfItemsEquipped(
+				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
+				user.settings.get(UserSettings.Gear.Skilling)
+			)
+		) {
+			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
+			fishXpReceived += amountToAdd;
+			bonusXP += amountToAdd;
+		} else {
+			// For each angler item, check if they have it, give its' XP boost if so.
+			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
+				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
+					fishXpReceived += amountToAdd;
+					bonusXP += amountToAdd;
+				}
+			}
+		}
 
 		await user.addXP(SkillsEnum.Fishing, fishXpReceived);
 		await user.addXP(SkillsEnum.Agility, huntXpReceived);
@@ -90,6 +116,11 @@ export default class extends Task {
 		const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const newFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
+		const xpBonusPercent = anglerBoostPercent(user);
+		if (xpBonusPercent > 0) {
+			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
+		}
+
 		let str = `${user}, ${
 			user.minionName
 		} finished aerial fishing and caught ${greaterSirenCaught}x ${
@@ -101,6 +132,10 @@ export default class extends Task {
 		}, you also received ${huntXpReceived.toLocaleString()} Hunter XP and ${fishXpReceived.toLocaleString()} Fishing XP. ${
 			user.minionName
 		} asks if you'd like them to do another of the same trip.`;
+
+		if (bonusXP > 0) {
+			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
 
 		if (newHuntLevel > currentHuntLevel) {
 			str += `\n\n${user.minionName}'s Hunter level is now ${newHuntLevel}!`;

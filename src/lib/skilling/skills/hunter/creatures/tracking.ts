@@ -69,7 +69,8 @@ const trackingCreatures: Creature[] = [
 		aliases: ['herbiboar', 'herbi'],
 		level: 80,
 		hunterXP: 1950, // Scaleable xp depending on hunting lvl
-		table: new LootTable().tertiary(6500, 'Herbi') /* Scaleable loot table */,
+		table: new LootTable() /* Scaleable loot table */,
+		qpRequired: 3,
 		huntTechnique: 'tracking',
 		catchTime: 91,
 		slope: 0,

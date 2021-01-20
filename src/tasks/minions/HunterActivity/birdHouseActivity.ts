@@ -20,6 +20,7 @@ export default class extends Task {
 			gotCraft,
 			currentDate
 		} = data;
+
 		const user = await this.client.users.fetch(userID);
 		const currentHunterLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);

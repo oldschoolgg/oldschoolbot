@@ -227,6 +227,7 @@ export default class extends BotCommand {
 						quantity = Math.floor(
 							msg.author.numItemsInBankSync(parseInt(itemID)) / qty
 						);
+						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 					} else {
 						return msg.send(
 							`You don't have enough ${itemNameFromID(parseInt(itemID))}s.`
@@ -272,7 +273,6 @@ export default class extends BotCommand {
 		if (creature.wildy) {
 			const date = new Date().getTime();
 			const cachedPeakInterval: Peak[] = this.client._peakIntervalCache;
-			// not the correct function just placeholder, real function in WildernessPeakInterval
 			for (const peak of cachedPeakInterval) {
 				if (peak.startTime < date && peak.finishTime > date) {
 					wildyPeak = peak;
