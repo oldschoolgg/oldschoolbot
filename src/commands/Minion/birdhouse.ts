@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
@@ -12,7 +13,6 @@ import {
 	bankHasItem,
 	formatDuration,
 	itemNameFromID,
-	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -119,9 +119,9 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (prevBirdhouse && difference < prevBirdhouse.waitTime) {
-			throw `Please come back when your birdhouses are full in ${formatDuration(
+			return msg.send(`Please come back when your birdhouses are full in ${formatDuration(
 				lastPlacedTime + prevBirdhouse.waitTime - currentDate
-			)}!`;
+			)}!`);
 		}
 
 		let duration: number = timeBirdHouseRun;
@@ -132,7 +132,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		let newBank = { ...userBank };
+		let removeBank = new Bank;
 		let gotCraft = false;
 		if (!prevBirdhouse || msg.flagArgs.nocraft) {
 			const requiredHouse: [string, number][] = Object.entries(birdhouse.houseItemReq);
@@ -140,7 +140,7 @@ export default class extends BotCommand {
 				if (!bankHasItem(userBank, parseInt(houseID), qty * 4)) {
 					return msg.send(`You don't have enough ${itemNameFromID(parseInt(houseID))}s.`);
 				}
-				newBank = removeItemFromBank(newBank, parseInt(houseID), qty * 4);
+				removeBank.add(parseInt(houseID), qty * 4);
 			}
 		} else {
 			if (msg.author.skillLevel(SkillsEnum.Crafting) < birdhouse.craftLvl) {
@@ -154,7 +154,7 @@ export default class extends BotCommand {
 				if (!bankHasItem(userBank, parseInt(craftID), qty * 4)) {
 					return msg.send(`You don't have enough ${itemNameFromID(parseInt(craftID))}.`);
 				}
-				newBank = removeItemFromBank(newBank, parseInt(craftID), qty * 4);
+				removeBank.add(parseInt(craftID), qty * 4);
 			}
 		}
 
@@ -167,7 +167,7 @@ export default class extends BotCommand {
 						parseInt(paymentID)
 					)} .`
 				);
-				newBank = removeItemFromBank(newBank, parseInt(paymentID), qty * 4);
+				removeBank.add(parseInt(paymentID), qty * 4);
 				canPay = true;
 				break;
 			}
@@ -177,7 +177,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough seeds to bait the birdhouses.`);
 		}
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(removeBank.bank);
 
 		// If user does not have something already placed, just place the new birdhouses.
 		if (!previousBirdhouseTraps.birdhousePlaced) {
@@ -239,9 +239,9 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (difference < prevBirdhouse.waitTime) {
-			throw `Please come back when your birdhouses are full in ${formatDuration(
+			return msg.send(`Please come back when your birdhouses are full in ${formatDuration(
 				lastPlacedTime + prevBirdhouse.waitTime - currentDate
-			)}!`;
+			)}!`);
 		}
 
 		const timeBirdHouseRun = prevBirdhouse.runTime;

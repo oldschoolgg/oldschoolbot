@@ -114,7 +114,7 @@ export default class extends BotCommand {
 			return msg.send(
 				`That's not a valid creature to hunt. Valid creatures are ${Hunter.Creatures.map(
 					creature => creature.name
-				).join(', ')}. *for more creature info write \`${msg.cmdPrefix}hunt --creatures\`.*`
+				).join(', ')}. *For more information about creatures write \`${msg.cmdPrefix}hunt --creatures\`.*`
 			);
 		}
 
@@ -126,7 +126,7 @@ export default class extends BotCommand {
 
 		if (creature.qpRequired && userQP < creature.qpRequired) {
 			return msg.send(
-				`${msg.author.minionName} needs ${creature.qpRequired} Questpoints to hunt ${creature.name}.`
+				`${msg.author.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`
 			);
 		}
 
