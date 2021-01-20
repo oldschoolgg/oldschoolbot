@@ -32,6 +32,7 @@ export default class extends BotCommand {
 		if (bankToSell.amount('Bank lottery ticket')) {
 			bankToSell.remove('Bank lottery ticket', bankToSell.amount('Bank lottery ticket'));
 		}
+		if (bankToSell.length === 0) return msg.send('wtf');
 		let amountOfTickets = Math.floor(totalPrice / 10_000_000);
 
 		if (amountOfTickets < 1) {
