@@ -42,7 +42,6 @@ import {
 	FletchingActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
-	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -432,8 +431,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.MahoganyHomes: {
-				const data = currentTask as MahoganyHomesActivityTaskOptions;
-				return `${this.minionName} is currently doing ${data.quantity}x mahogany home contracts. ${formattedDuration}`;
+				return `${this.minionName} is currently doing Mahogany Homes. ${formattedDuration}`;
 			}
 		}
 	}

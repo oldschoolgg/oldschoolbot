@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { objectKeys, randInt } from 'e';
+import { objectKeys, randInt, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
@@ -12,6 +12,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -564,6 +565,17 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
+		if (monster.pohBoosts) {
+			const [boostPercent, messages] = calcPOHBoosts(
+				await msg.author.getPOH(),
+				monster.pohBoosts
+			);
+			if (boostPercent > 0) {
+				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
+				boosts.push(messages.join(' + '));
+			}
+		}
+
 		if (monster.itemInBankBoosts) {
 			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
 				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
@@ -592,7 +604,8 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 				attackStylesUsed: removeDuplicatesFromArray([
 					...objectKeys(monster.minimumGearRequirements ?? {}),
 					monster.attackStyleToUse
-				])
+				]),
+				learningPercentage: percentReduced
 			});
 
 			foodStr = result;
@@ -628,15 +641,15 @@ ${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 		if (foodStr) {
-			response += ` Removed ${foodStr}.`;
+			response += ` Removed ${foodStr}.\n`;
 		}
 
 		if (boosts.length > 0) {
-			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+			response += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		if (messages.length > 0) {
-			response += `\n\n**Messages:** ${messages.join('\n')}.`;
+			response += `\n**Messages:** ${messages.join('\n')}.`;
 		}
 
 		return msg.send(response);

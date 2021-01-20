@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Color, Emoji, Events, Image } from '../../lib/constants';
+import { Color, Emoji, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { rand } from '../../lib/util';
@@ -33,8 +33,8 @@ export default class extends BotCommand {
 		} else {
 			if (msg.author.isIronman) return msg.send(`You're an ironman and you cant play dice.`);
 
-			if (amount > 2_000_000_000) {
-				return msg.send(`You can only dice up to 2b at a time!`);
+			if (amount > 500_000_000) {
+				return msg.send(`You can only dice up to 500m at a time!`);
 			}
 
 			if (amount < 200_000) {
@@ -70,15 +70,6 @@ export default class extends BotCommand {
 					won ? 'won' : 'lost'
 				} ${Util.toKMB(amountToAdd - gp)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
 			);
-
-			if (amount >= 1_000_000_000) {
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Dice} **${msg.author.username}** just diced **${Util.toKMB(
-						amount
-					)}** and ${won ? 'won' : 'lost'}.`
-				);
-			}
 		}
 
 		return msg.send({ embed });

@@ -76,6 +76,17 @@ const Runes: Rune[] = [
 		tripLength: Time.Minute
 	},
 	{
+		xp: 7.5,
+		id: itemID('Body rune'),
+		name: 'Body rune',
+		levels: [
+			[20, 1],
+			[46, 2],
+			[92, 3]
+		],
+		tripLength: Time.Minute
+	},
+	{
 		xp: 8,
 		id: itemID('Cosmic rune'),
 		name: 'Cosmic rune',

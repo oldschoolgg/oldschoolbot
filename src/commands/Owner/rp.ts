@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { BitField, Emoji } from '../../lib/constants';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import PatreonTask from '../../tasks/patreon';
 
@@ -45,6 +46,33 @@ export default class extends BotCommand {
 			case 'bank': {
 				if (!input) return;
 				return msg.channel.sendBankImage({ bank: input.allItemsOwned() });
+			}
+			case 'genmon': {
+				const data = killableMonsters.map(i => ({
+					id: i.id,
+					name: i.name,
+					aliases: i.aliases,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					allItems: i.table?.allItems || [],
+					itemsRequired: i.itemsRequired,
+					qpRequired: i.qpRequired,
+					itemInBankBoosts: i.itemInBankBoosts,
+					groupKillable: i.groupKillable,
+					respawnTime: i.respawnTime,
+					levelRequirements: i.levelRequirements,
+					healAmountNeeded: i.healAmountNeeded,
+					attackStylesUsed: i.attackStylesUsed,
+					attackStyleToUse: i.attackStyleToUse,
+					minimumGearRequirements: i.minimumGearRequirements,
+					pohBoosts: i.pohBoosts,
+					timeToFinish: i.timeToFinish
+				}));
+
+				return msg.channel.sendFile(
+					Buffer.from(JSON.stringify(data, null, 4)),
+					`monsters.json`
+				);
 			}
 		}
 	}
