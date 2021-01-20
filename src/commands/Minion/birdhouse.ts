@@ -9,12 +9,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	stringMatches
-} from '../../lib/util';
+import { bankHasItem, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { BirdhouseActivityTaskOptions } from './../../lib/types/minions';
 
@@ -119,9 +114,11 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (prevBirdhouse && difference < prevBirdhouse.waitTime) {
-			return msg.send(`Please come back when your birdhouses are full in ${formatDuration(
-				lastPlacedTime + prevBirdhouse.waitTime - currentDate
-			)}!`);
+			return msg.send(
+				`Please come back when your birdhouses are full in ${formatDuration(
+					lastPlacedTime + prevBirdhouse.waitTime - currentDate
+				)}!`
+			);
 		}
 
 		let duration: number = timeBirdHouseRun;
@@ -132,7 +129,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		let removeBank = new Bank;
+		let removeBank = new Bank();
 		let gotCraft = false;
 		if (!prevBirdhouse || msg.flagArgs.nocraft) {
 			const requiredHouse: [string, number][] = Object.entries(birdhouse.houseItemReq);
@@ -239,9 +236,11 @@ export default class extends BotCommand {
 			Allows for a run of birdhouses to only be possible after the
 			previous run's birdhouses have been filled.*/
 		if (difference < prevBirdhouse.waitTime) {
-			return msg.send(`Please come back when your birdhouses are full in ${formatDuration(
-				lastPlacedTime + prevBirdhouse.waitTime - currentDate
-			)}!`);
+			return msg.send(
+				`Please come back when your birdhouses are full in ${formatDuration(
+					lastPlacedTime + prevBirdhouse.waitTime - currentDate
+				)}!`
+			);
 		}
 
 		const timeBirdHouseRun = prevBirdhouse.runTime;

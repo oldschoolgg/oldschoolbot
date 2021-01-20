@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
@@ -10,13 +11,7 @@ import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { bankHasItem, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { Peak } from './../../tasks/WildernessPeakInterval';
@@ -114,7 +109,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`That's not a valid creature to hunt. Valid creatures are ${Hunter.Creatures.map(
 					creature => creature.name
-				).join(', ')}. *For more information about creatures write \`${msg.cmdPrefix}hunt --creatures\`.*`
+				).join(', ')}. *For more information about creatures write \`${
+					msg.cmdPrefix
+				}hunt --creatures\`.*`
 			);
 		}
 
@@ -159,17 +156,18 @@ export default class extends BotCommand {
 			}
 		}
 
-		let { catchTime } = creature;
-
 		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.
-		const HOUR = Time.Hour;
-		const percentReduced = Math.min(
-			Math.floor(
-				(msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ?? 1) /
-					(HOUR / ((creature.catchTime * Time.Second) / traps))
+		let [percentReduced, catchTime] = [
+			Math.min(
+				Math.floor(
+					(msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ?? 1) /
+						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
+				),
+				creature.huntTechnique === 'tracking' ? 20 : 10
 			),
-			creature.huntTechnique === 'tracking' ? 20 : 10
-		);
+			creature.catchTime
+		];
+
 		catchTime *= (100 - percentReduced) / 100;
 
 		if (percentReduced >= 1)
@@ -219,7 +217,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		let newBank = { ...userBank };
+		let removeBank = new Bank();
 
 		if (creature.itemsConsumed) {
 			const consumedItems: [string, number][] = Object.entries(creature.itemsConsumed);
@@ -235,7 +233,7 @@ export default class extends BotCommand {
 						);
 					}
 				}
-				newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
+				removeBank.add(parseInt(itemID), qty * quantity);
 			}
 		}
 
@@ -247,11 +245,7 @@ export default class extends BotCommand {
 					: Math.round(duration / (18 * Time.Minute));
 
 			if (bankHasItem(userBank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {
-				newBank = removeItemFromBank(
-					newBank,
-					itemID('Stamina potion(4)'),
-					staminaPotionQuantity
-				);
+				removeBank.add(itemID('Stamina potion(4)'), staminaPotionQuantity);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
 			}
@@ -264,13 +258,13 @@ export default class extends BotCommand {
 					`You need ${hunterPotionQuantity}x Hunter potion(4) to boost your level for the whole trip, try a lower quantity or make/buy more potions.`
 				);
 			}
-			newBank = removeItemFromBank(newBank, itemID('Hunter potion(4)'), hunterPotionQuantity);
+			removeBank.add(itemID('Hunter potion(4)'), hunterPotionQuantity);
 			boosts.push(
 				`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(removeBank.bank);
 
 		let wildyPeak = null;
 		let wildyStr = '';
