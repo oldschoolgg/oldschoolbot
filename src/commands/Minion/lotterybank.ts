@@ -26,6 +26,13 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [[bankToSell, totalPrice]]: [[Bank, number]]) {
+		if (bankToSell.amount('Lottery ticket')) {
+			bankToSell.remove('Lottery ticket', bankToSell.amount('Lottery ticket'));
+		}
+		if (bankToSell.amount('Bank lottery ticket')) {
+			bankToSell.remove('Bank lottery ticket', bankToSell.amount('Bank lottery ticket'));
+		}
+		if (bankToSell.length === 0) return msg.send('wtf');
 		let amountOfTickets = Math.floor(totalPrice / 10_000_000);
 
 		if (amountOfTickets < 1) {
