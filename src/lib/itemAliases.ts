@@ -92,4 +92,7 @@ export function initItemAliases() {
 
 	// Supply crate (Mahogany Homes)
 	setItemAlias(24884, 'Builders supply crate');
+
+	// Lamp (Genie event)
+	setItemAlias(2528, 'Genie lamp');
 }
