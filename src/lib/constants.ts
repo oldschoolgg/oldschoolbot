@@ -159,7 +159,8 @@ export const enum Tasks {
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
 	ChampionsChallenge = 'championsChallengeActivity',
-	MahoganyHomes = 'mahoganyHomesActivity'
+	MahoganyHomes = 'mahoganyHomesActivity',
+	NexActivity = 'nexActivity'
 }
 
 export const enum Activity {
@@ -200,7 +201,8 @@ export const enum Activity {
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
-	MahoganyHomes = 'MahoganyHomes'
+	MahoganyHomes = 'MahoganyHomes',
+	Nex = 'Nex'
 }
 
 export enum ActivityGroup {

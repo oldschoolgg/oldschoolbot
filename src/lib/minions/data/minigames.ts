@@ -56,6 +56,10 @@ export const Minigames: Minigame[] = [
 	{
 		id: 20315,
 		name: 'Mahogany Homes'
+	},
+	{
+		id: 23416,
+		name: 'Nex'
 	}
 ];
 
@@ -73,5 +77,6 @@ export enum MinigameIDsEnum {
 	PyramidPlunder = 6001,
 	AgilityArena = 49592,
 	ChampionsChallenge = 95284,
-	MahoganyHomes = 20315
+	MahoganyHomes = 20315,
+	Nex = 23416
 }
