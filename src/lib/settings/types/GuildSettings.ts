@@ -15,4 +15,5 @@ export namespace GuildSettings {
 	export const StreamerTweets = T<string>('streamertweets');
 	export const PetChannel = T<string>('petchannel');
 	export const JModTweets = T<string>('tweetchannel');
+	export const RandomEventsEnabled = T<boolean>('random_events_enabled');
 }
