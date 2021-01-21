@@ -1,10 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 const typeString = (
 	pre: string
@@ -20,8 +19,9 @@ Random events are disabled for all servers, and for all users, by default - **yo
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			runIn: ['text'],
+			runIn: ['text', 'dm'],
 			usage: '[enable|disable] [type:str]',
+			usageDelim: ' ',
 			categoryFlags: ['settings'],
 			examples: ['+randomevents enable user', '+randomevents disable server'],
 			description:
@@ -31,7 +31,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [command, type]: [string | undefined, string | undefined]) {
 		if (!type || !['server', 'user'].includes(type)) {
-			return typeString(msg.cmdPrefix);
+			return msg.send(typeString(msg.cmdPrefix));
 		}
 		if (type === 'server') {
 			if (!msg.guild) {

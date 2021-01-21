@@ -1,14 +1,12 @@
-import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { ItemBank } from '../types';
 import resolveItems from '../util/resolveItems';
 
-interface RandomEvent {
+export interface RandomEvent {
 	id: number;
 	name: string;
 	outfit?: number[];
-	loot: number[] | LootTable | ((userBank: Bank) => ItemBank);
+	loot: LootTable;
 }
 
 export const beekeeperOutfit = resolveItems([
@@ -124,7 +122,6 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 13,
 		name: 'Certers',
-		// ['Niles', 'Miles', 'Giles']
 		loot: new LootTable()
 			.add('Coins', [20, 100])
 			.add('Uncut ruby')
@@ -132,7 +129,7 @@ export const RandomEvents: RandomEvent[] = [
 			.add('Cosmic talisman')
 			.add('Nature talisman')
 			.add('Spinach roll')
-			.add('Tooth half of a key')
-			.add('Loop half of a key')
+			.add('Tooth half of key')
+			.add('Loop half of key')
 	}
 ];
