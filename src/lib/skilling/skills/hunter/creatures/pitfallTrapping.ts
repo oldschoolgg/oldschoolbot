@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const pitfallTrappingCreatures: Creature[] = [
 	{
@@ -10,7 +10,7 @@ const pitfallTrappingCreatures: Creature[] = [
 		level: 31,
 		hunterXP: 180,
 		table: new LootTable().every('Big bones').add('Larupia fur').add('Tatty larupia fur'),
-		huntTechnique: 'pitfall trapping',
+		huntTechnique: HunterTechniqueEnum.PitfallTrapping,
 		multiTraps: true,
 		catchTime: 35,
 		slope: 0.4,
@@ -23,7 +23,7 @@ const pitfallTrappingCreatures: Creature[] = [
 		level: 41,
 		hunterXP: 240,
 		table: new LootTable().every('Big bones').add('Graahk fur').add('Tatty graahk fur'),
-		huntTechnique: 'pitfall trapping',
+		huntTechnique: HunterTechniqueEnum.PitfallTrapping,
 		multiTraps: true,
 		catchTime: 50,
 		slope: 0.7,
@@ -36,7 +36,7 @@ const pitfallTrappingCreatures: Creature[] = [
 		level: 55,
 		hunterXP: 300,
 		table: new LootTable().every('Big bones').add('Kyatt fur').add('Tatty kyatt fur'),
-		huntTechnique: 'pitfall trapping',
+		huntTechnique: HunterTechniqueEnum.PitfallTrapping,
 		multiTraps: true,
 		catchTime: 45,
 		slope: 0.5,

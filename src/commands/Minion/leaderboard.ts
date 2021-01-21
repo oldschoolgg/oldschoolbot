@@ -513,7 +513,7 @@ WHERE u."logBankLength" > 300 ORDER BY u."logBankLength" DESC;`
 						)
 						.join('\n')
 				),
-			`Catch LeaderBoard for ${creature.name}`
+			`Catch Leaderboard for ${creature.name}`
 		);
 	}
 

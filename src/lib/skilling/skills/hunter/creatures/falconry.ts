@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const falconryCreatures: Creature[] = [
 	{
@@ -10,7 +10,7 @@ const falconryCreatures: Creature[] = [
 		level: 43,
 		hunterXP: 104,
 		table: new LootTable().every('Bones').every('Spotted kebbit fur'),
-		huntTechnique: 'falconry',
+		huntTechnique: HunterTechniqueEnum.Falconry,
 		catchTime: 4,
 		slope: 1,
 		intercept: 10
@@ -22,7 +22,7 @@ const falconryCreatures: Creature[] = [
 		level: 57,
 		hunterXP: 132,
 		table: new LootTable().every('Bones').every('Dark kebbit fur'),
-		huntTechnique: 'falconry',
+		huntTechnique: HunterTechniqueEnum.Falconry,
 		catchTime: 4.8,
 		slope: 1,
 		intercept: 10
@@ -34,7 +34,7 @@ const falconryCreatures: Creature[] = [
 		level: 69,
 		hunterXP: 156,
 		table: new LootTable().every('Bones').every('Dashing kebbit fur'),
-		huntTechnique: 'falconry',
+		huntTechnique: HunterTechniqueEnum.Falconry,
 		catchTime: 6,
 		slope: 1,
 		intercept: 10

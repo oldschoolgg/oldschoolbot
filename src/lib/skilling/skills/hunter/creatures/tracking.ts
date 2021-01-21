@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const trackingCreatures: Creature[] = [
 	{
@@ -10,7 +10,7 @@ const trackingCreatures: Creature[] = [
 		level: 1,
 		hunterXP: 30,
 		table: new LootTable().every('Bones').every('Polar kebbit fur').every('Raw beast meat'),
-		huntTechnique: 'tracking',
+		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 30,
 		slope: 0,
 		intercept: 99
@@ -22,7 +22,7 @@ const trackingCreatures: Creature[] = [
 		level: 3,
 		hunterXP: 36,
 		table: new LootTable().every('Bones').every('Common kebbit fur').every('Raw beast meat'),
-		huntTechnique: 'tracking',
+		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 34,
 		slope: 0,
 		intercept: 99
@@ -34,7 +34,7 @@ const trackingCreatures: Creature[] = [
 		level: 7,
 		hunterXP: 48,
 		table: new LootTable().every('Bones').every('Feldip weasel fur').every('Raw beast meat'),
-		huntTechnique: 'tracking',
+		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 38,
 		slope: 0,
 		intercept: 99
@@ -46,7 +46,7 @@ const trackingCreatures: Creature[] = [
 		level: 13,
 		hunterXP: 66,
 		table: new LootTable().every('Bones').every('Desert devil fur').every('Raw beast meat'),
-		huntTechnique: 'tracking',
+		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 32,
 		slope: 0,
 		intercept: 99
@@ -58,7 +58,7 @@ const trackingCreatures: Creature[] = [
 		level: 49,
 		hunterXP: 348.5,
 		table: new LootTable().every('Bones').every('Long kebbit spike').every('Raw beast meat'),
-		huntTechnique: 'tracking',
+		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 47,
 		slope: 0,
 		intercept: 99
@@ -71,7 +71,7 @@ const trackingCreatures: Creature[] = [
 		hunterXP: 1950, // Scaleable xp depending on hunting lvl
 		table: new LootTable() /* Scaleable loot table */,
 		qpRequired: 3,
-		huntTechnique: 'tracking',
+		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 91,
 		slope: 0,
 		intercept: 99

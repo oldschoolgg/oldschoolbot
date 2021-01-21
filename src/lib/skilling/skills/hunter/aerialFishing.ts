@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature } from '../../types';
+import { Creature, HunterTechniqueEnum } from '../../types';
 
 const aerialFishingCreatures: Creature[] = [
 	{
@@ -12,7 +12,7 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 43,
 		fishingXP: 11.5,
 		table: new LootTable().tertiary(20_000, 'Golden tench'),
-		huntTechnique: 'aerial fishing',
+		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
 		intercept: 100
@@ -26,7 +26,7 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 56,
 		fishingXP: 40,
 		table: new LootTable().tertiary(20_000, 'Golden tench'),
-		huntTechnique: 'aerial fishing',
+		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
 		intercept: 100
@@ -40,7 +40,7 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 73,
 		fishingXP: 65,
 		table: new LootTable().tertiary(20_000, 'Golden tench'),
-		huntTechnique: 'aerial fishing',
+		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
 		intercept: 100
@@ -54,7 +54,7 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 91,
 		fishingXP: 100,
 		table: new LootTable().tertiary(20_000, 'Golden tench'),
-		huntTechnique: 'aerial fishing',
+		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
 		intercept: 100

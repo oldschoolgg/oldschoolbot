@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const netTrappingCreatures: Creature[] = [
 	{
@@ -10,7 +10,7 @@ const netTrappingCreatures: Creature[] = [
 		level: 29,
 		hunterXP: 152,
 		table: new LootTable().every('Swamp lizard'),
-		huntTechnique: 'net trapping',
+		huntTechnique: HunterTechniqueEnum.NetTrapping,
 		multiTraps: true,
 		catchTime: 26,
 		slope: 1,
@@ -23,7 +23,7 @@ const netTrappingCreatures: Creature[] = [
 		level: 47,
 		hunterXP: 224,
 		table: new LootTable().every('Orange salamander'),
-		huntTechnique: 'net trapping',
+		huntTechnique: HunterTechniqueEnum.NetTrapping,
 		multiTraps: true,
 		catchTime: 35,
 		slope: 1.2,
@@ -36,7 +36,7 @@ const netTrappingCreatures: Creature[] = [
 		level: 59,
 		hunterXP: 272,
 		table: new LootTable().every('Red salamander'),
-		huntTechnique: 'net trapping',
+		huntTechnique: HunterTechniqueEnum.NetTrapping,
 		multiTraps: true,
 		catchTime: 40,
 		slope: 0.9,
@@ -49,7 +49,7 @@ const netTrappingCreatures: Creature[] = [
 		level: 67,
 		hunterXP: 319.2,
 		table: new LootTable().every('Black salamander'),
-		huntTechnique: 'net trapping',
+		huntTechnique: HunterTechniqueEnum.NetTrapping,
 		multiTraps: true,
 		wildy: true,
 		prayerLvl: 43,

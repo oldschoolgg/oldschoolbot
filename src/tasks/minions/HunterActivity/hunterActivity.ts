@@ -78,11 +78,10 @@ export default class extends Task {
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
 			riskDeathChance += Math.min(
-				Math.floor(
-					user.settings.get(UserSettings.CreatureScores)[creature.name] ?? 1 / 100
-				),
+				Math.floor(user.getCreatureScore(creature) ?? 1 / 100),
 				200
 			);
+
 			// Gives lower death chance if the user got karil's top and/or bottom equipped.
 			riskDeathChance += hasGearEquipped(user.settings.get(UserSettings.Gear.Misc), {
 				body: [itemID("Karil's leathertop")]

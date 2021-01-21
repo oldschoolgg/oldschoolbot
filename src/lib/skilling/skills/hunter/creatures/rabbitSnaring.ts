@@ -1,7 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { resolveNameBank } from '../../../../util';
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const rabbitSnaringCreatures: Creature[] = [
 	{
@@ -12,7 +12,7 @@ const rabbitSnaringCreatures: Creature[] = [
 		hunterXP: 144,
 		itemsConsumed: resolveNameBank({ Ferret: 1 }),
 		table: new LootTable().every('Bones').every('Raw rabbit').every('Rabbit foot'),
-		huntTechnique: 'rabbit snaring',
+		huntTechnique: HunterTechniqueEnum.RabbitSnaring,
 		multiTraps: true,
 		catchTime: 40,
 		slope: 1.2,

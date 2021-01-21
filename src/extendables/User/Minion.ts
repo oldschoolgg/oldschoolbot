@@ -444,7 +444,7 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.MinigameScores)[id] ?? 0;
 	}
 
-	getCreaureScore(this: KlasaUser, creature: Creature) {
+	getCreatureScore(this: KlasaUser, creature: Creature) {
 		return this.settings.get(UserSettings.CreatureScores)[creature.id] ?? 0;
 	}
 

@@ -77,7 +77,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const userBank = msg.author.bank();
 		const userQP = msg.author.settings.get(UserSettings.QP);
 		const boosts = [];
 		let traps = 1;
@@ -146,7 +146,7 @@ export default class extends BotCommand {
 		if (creature.itemsRequired) {
 			const requiredItems: [string, number][] = Object.entries(creature.itemsRequired);
 			for (const [itemID, qty] of requiredItems) {
-				if (!bankHasItem(userBank, parseInt(itemID), qty)) {
+				if (!bankHasItem(userBank.bank, parseInt(itemID), qty)) {
 					return msg.send(
 						`You don't have ${traps}x ${itemNameFromID(
 							parseInt(itemID)
@@ -189,8 +189,8 @@ export default class extends BotCommand {
 				);
 			}
 			if (
-				!bankHasItem(userBank, itemID('Saradomin brew(4)'), 10) ||
-				!bankHasItem(userBank, itemID('Super restore(4)'), 5)
+				!bankHasItem(userBank.bank, itemID('Saradomin brew(4)'), 10) ||
+				!bankHasItem(userBank.bank, itemID('Super restore(4)'), 5)
 			) {
 				return msg.send(
 					`To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`
@@ -222,7 +222,7 @@ export default class extends BotCommand {
 		if (creature.itemsConsumed) {
 			const consumedItems: [string, number][] = Object.entries(creature.itemsConsumed);
 			for (const [itemID, qty] of consumedItems) {
-				if (!bankHasItem(userBank, parseInt(itemID), qty * quantity)) {
+				if (!bankHasItem(userBank.bank, parseInt(itemID), qty * quantity)) {
 					if (msg.author.numItemsInBankSync(parseInt(itemID)) > qty) {
 						quantity = Math.floor(
 							msg.author.numItemsInBankSync(parseInt(itemID)) / qty
@@ -245,7 +245,7 @@ export default class extends BotCommand {
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
-			if (bankHasItem(userBank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {
+			if (bankHasItem(userBank.bank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {
 				removeBank.add(itemID('Stamina potion(4)'), staminaPotionQuantity);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
@@ -254,7 +254,7 @@ export default class extends BotCommand {
 
 		if (usingHuntPotion) {
 			const hunterPotionQuantity = Math.round(duration / (8 * Time.Minute));
-			if (!bankHasItem(userBank, itemID('Hunter potion(4)'), hunterPotionQuantity)) {
+			if (!bankHasItem(userBank.bank, itemID('Hunter potion(4)'), hunterPotionQuantity)) {
 				return msg.send(
 					`You need ${hunterPotionQuantity}x Hunter potion(4) to boost your level for the whole trip, try a lower quantity or make/buy more potions.`
 				);

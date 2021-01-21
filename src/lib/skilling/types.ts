@@ -226,6 +226,20 @@ export interface Plant {
 	timePerHarvest: number;
 }
 
+export enum HunterTechniqueEnum {
+	AerialFishing = 'aerial fishing',
+	BirdSnaring = 'bird snaring',
+	BoxTrapping = 'box trapping',
+	ButterflyNetting = 'butterfly netting',
+	DeadfallTrapping = 'deadfall trapping',
+	Falconry = 'falconry',
+	MagicBoxTrapping = 'magic box trapping',
+	NetTrapping = 'net trapping',
+	PitfallTrapping = 'pitfall trapping',
+	RabbitSnaring = 'rabbit snaring',
+	Tracking = 'tracking'
+}
+
 export interface Creature {
 	name: string;
 	id: number;
@@ -237,7 +251,7 @@ export interface Creature {
 	itemsRequired?: ItemBank;
 	itemsConsumed?: ItemBank;
 	table: LootTable;
-	huntTechnique: string;
+	huntTechnique: HunterTechniqueEnum;
 	multiTraps?: boolean;
 	wildy?: boolean;
 	prayerLvl?: number;

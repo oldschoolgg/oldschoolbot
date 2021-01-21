@@ -40,7 +40,7 @@ export default class extends Task {
 			let str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name}.`;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXp * 4;
+				craftingXP = birdhouse.craftXP * 4;
 				await user.addXP(SkillsEnum.Crafting, craftingXP);
 				str += ` You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
 				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);
@@ -74,7 +74,7 @@ export default class extends Task {
 				str = `${user}, ${user.minionName} finished collecting 4x full ${birdhouseToCollect.name}.`;
 			}
 
-			hunterXP = birdhouseToCollect.huntXp * 4;
+			hunterXP = birdhouseToCollect.huntXP * 4;
 			for (let i = 0; i < 4; i++) {
 				loot.add(birdhouseToCollect.table.roll());
 			}
@@ -85,7 +85,7 @@ export default class extends Task {
 			str += `\n\nYou received ${hunterXP.toLocaleString()} XP from collecting the birdhouses.`;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXp * 4;
+				craftingXP = birdhouse.craftXP * 4;
 				await user.addXP(SkillsEnum.Crafting, craftingXP);
 				str += `You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
 				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);

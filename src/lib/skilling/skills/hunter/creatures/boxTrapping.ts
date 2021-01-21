@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const boxTrappingCreatures: Creature[] = [
 	{
@@ -10,7 +10,7 @@ const boxTrappingCreatures: Creature[] = [
 		level: 27,
 		hunterXP: 115.2,
 		table: new LootTable().every('Ferret'),
-		huntTechnique: 'box trapping',
+		huntTechnique: HunterTechniqueEnum.BoxTrapping,
 		multiTraps: true,
 		catchTime: 22,
 		qpRequired: 2,
@@ -24,7 +24,7 @@ const boxTrappingCreatures: Creature[] = [
 		level: 53,
 		hunterXP: 198.4,
 		table: new LootTable().every('Chinchompa'),
-		huntTechnique: 'box trapping',
+		huntTechnique: HunterTechniqueEnum.BoxTrapping,
 		multiTraps: true,
 		catchTime: 30,
 		qpRequired: 2,
@@ -38,7 +38,7 @@ const boxTrappingCreatures: Creature[] = [
 		level: 63,
 		hunterXP: 265,
 		table: new LootTable().every('Red chinchompa'),
-		huntTechnique: 'box trapping',
+		huntTechnique: HunterTechniqueEnum.BoxTrapping,
 		multiTraps: true,
 		catchTime: 28,
 		qpRequired: 2,
@@ -52,7 +52,7 @@ const boxTrappingCreatures: Creature[] = [
 		level: 73,
 		hunterXP: 315,
 		table: new LootTable().every('Black chinchompa'),
-		huntTechnique: 'box trapping',
+		huntTechnique: HunterTechniqueEnum.BoxTrapping,
 		multiTraps: true,
 		wildy: true,
 		prayerLvl: 43,

@@ -1,7 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const deadfallTrappingCreatures: Creature[] = [
 	{
@@ -11,7 +11,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		level: 23,
 		hunterXP: 128,
 		table: new LootTable().every('Bones').every('Kebbit claws'),
-		huntTechnique: 'deadfall trapping',
+		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 17,
 		slope: 1,
 		intercept: 15
@@ -23,7 +23,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		level: 33,
 		hunterXP: 168,
 		table: new LootTable().every('Bones').every('Barb-tail harpoon'),
-		huntTechnique: 'deadfall trapping',
+		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 20,
 		slope: 1.2,
 		intercept: 17
@@ -35,7 +35,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		level: 37,
 		hunterXP: 204,
 		table: new LootTable().every('Bones').every('Kebbit spike'),
-		huntTechnique: 'deadfall trapping',
+		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 17,
 		slope: 1.3,
 		intercept: 10
@@ -47,7 +47,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		level: 51,
 		hunterXP: 200,
 		table: new LootTable().every('Bones').every('Kebbit teeth'),
-		huntTechnique: 'deadfall trapping',
+		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 25,
 		slope: 1.6,
 		intercept: -3
@@ -60,7 +60,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		hunterXP: 1000,
 		itemsConsumed: resolveNameBank({ Banana: 1 }),
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
-		huntTechnique: 'deadfall trapping',
+		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 33,
 		qpRequired: 175,
 		slope: 0.8,

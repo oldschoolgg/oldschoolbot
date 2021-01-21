@@ -1,6 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Creature } from '../../../types';
+import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const birdSnaringCreatures: Creature[] = [
 	{
@@ -10,7 +10,7 @@ const birdSnaringCreatures: Creature[] = [
 		level: 1,
 		hunterXP: 34,
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Red feather', [5, 10]),
-		huntTechnique: 'bird snaring',
+		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 10,
 		slope: 1,
@@ -26,7 +26,7 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Bones')
 			.every('Raw bird meat')
 			.every('Yellow feather', [5, 10]),
-		huntTechnique: 'bird snaring',
+		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 11,
 		slope: 0.95,
@@ -42,7 +42,7 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Bones')
 			.every('Raw bird meat')
 			.every('Orange feather', [5, 10]),
-		huntTechnique: 'bird snaring',
+		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 12,
 		slope: 0.9,
@@ -55,7 +55,7 @@ const birdSnaringCreatures: Creature[] = [
 		level: 11,
 		hunterXP: 64.5,
 		table: new LootTable().every('Bones').every('Raw bird meat').every('Blue feather', [5, 10]),
-		huntTechnique: 'bird snaring',
+		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 15,
 		slope: 0.85,
@@ -71,7 +71,7 @@ const birdSnaringCreatures: Creature[] = [
 			.every('Bones')
 			.every('Raw bird meat')
 			.every('Stripy feather', [5, 10]),
-		huntTechnique: 'bird snaring',
+		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 17,
 		slope: 0.85,
