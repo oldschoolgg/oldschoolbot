@@ -1,5 +1,5 @@
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Creature, HunterTechniqueEnum } from '../../../types';
 
@@ -58,7 +58,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		aliases: ['maniacal monkey'],
 		level: 60,
 		hunterXP: 1000,
-		itemsConsumed: resolveNameBank({ Banana: 1 }),
+		itemsConsumed: new Bank({ Banana: 1 }),
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 33,

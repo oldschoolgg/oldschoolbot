@@ -303,3 +303,5 @@ export const MAX_INT_JAVA = 2_147_483_647;
 export const TWEETS_RATELIMITING =
 	`Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.` +
 	`You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.`;
+export const HERBIBOAR_ID = 36;
+export const RAZOR_KEBBIT_ID = 35;

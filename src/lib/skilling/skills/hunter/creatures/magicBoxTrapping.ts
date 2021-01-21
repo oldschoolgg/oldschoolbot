@@ -1,6 +1,6 @@
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { resolveNameBank } from '../../../../util';
 import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const magicBoxTrappingCreatures: Creature[] = [
@@ -10,7 +10,7 @@ const magicBoxTrappingCreatures: Creature[] = [
 		aliases: ['imp'],
 		level: 71,
 		hunterXP: 450,
-		itemsConsumed: resolveNameBank({ 'Magic box': 1 }),
+		itemsConsumed: new Bank({ 'Magic box': 1 }),
 		table: new LootTable().every('Imp-in-a-box(2)'),
 		huntTechnique: HunterTechniqueEnum.MagicBoxTrapping,
 		multiTraps: true,

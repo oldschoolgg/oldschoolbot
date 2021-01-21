@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji } from '../../lib/constants';
@@ -9,11 +8,11 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { bankHasItem, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { BirdhouseActivityTaskOptions } from './../../lib/types/minions';
 
-const birdhouseSeedReq = resolveNameBank({
+const birdhouseSeedReq = new Bank({
 	'Hammerstone seed': 10,
 	'Asgarnian seed': 10,
 	'Marrentill seed': 10,
@@ -62,7 +61,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [type = '']: [string]) {
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const userBank = msg.author.bank();
 		const questPoints = msg.author.settings.get(UserSettings.QP);
 		const currentDate = new Date().getTime();
 		const infoStr: string[] = [];
@@ -132,13 +131,12 @@ export default class extends BotCommand {
 		let removeBank = new Bank();
 		let gotCraft = false;
 		if (!prevBirdhouse || msg.flagArgs.nocraft) {
-			const requiredHouse: [string, number][] = Object.entries(birdhouse.houseItemReq);
-			for (const [houseID, qty] of requiredHouse) {
-				if (!bankHasItem(userBank, parseInt(houseID), qty * 4)) {
-					return msg.send(`You don't have enough ${itemNameFromID(parseInt(houseID))}s.`);
+			birdhouse.houseItemReq.forEach((item, quantity) => {
+				if (userBank.amount(item.name) < quantity * 4) {
+					return msg.send(`You don't have enough ${item.name}s.`);
 				}
-				removeBank.add(parseInt(houseID), qty * 4);
-			}
+				removeBank.add(item.id, quantity * 4);
+			});
 		} else {
 			if (msg.author.skillLevel(SkillsEnum.Crafting) < birdhouse.craftLvl) {
 				return msg.send(
@@ -146,19 +144,18 @@ export default class extends BotCommand {
 				);
 			}
 			gotCraft = true;
-			const requiredLogs: [string, number][] = Object.entries(birdhouse.craftItemReq);
-			for (const [craftID, qty] of requiredLogs) {
-				if (!bankHasItem(userBank, parseInt(craftID), qty * 4)) {
-					return msg.send(`You don't have enough ${itemNameFromID(parseInt(craftID))}.`);
+			birdhouse.craftItemReq.forEach((item, quantity) => {
+				if (userBank.amount(item.name) < quantity * 4) {
+					return msg.send(`You don't have enough ${item.name}s.`);
 				}
-				removeBank.add(parseInt(craftID), qty * 4);
-			}
+				removeBank.add(item.id, quantity * 4);
+			});
 		}
 
 		let canPay = false;
 		const requiredSeeds: [string, number][] = Object.entries(birdhouseSeedReq);
 		for (const [paymentID, qty] of requiredSeeds) {
-			if (bankHasItem(userBank, parseInt(paymentID), qty * 4)) {
+			if (userBank.amount(paymentID) >= qty * 4) {
 				infoStr.push(
 					`You baited the birdhouses with ${qty * 4}x ${itemNameFromID(
 						parseInt(paymentID)

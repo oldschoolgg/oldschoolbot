@@ -1,5 +1,5 @@
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Creature, HunterTechniqueEnum } from '../../../types';
 
@@ -10,7 +10,7 @@ const butterflyNettingCreatures: Creature[] = [
 		aliases: ['ruby harvest'],
 		level: 15,
 		hunterXP: 24,
-		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
+		itemsConsumed: new Bank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Ruby harvest'),
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 4.8,
@@ -23,7 +23,7 @@ const butterflyNettingCreatures: Creature[] = [
 		aliases: ['sapphire glacialis'],
 		level: 25,
 		hunterXP: 34,
-		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
+		itemsConsumed: new Bank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Sapphire glacialis'),
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5.8,
@@ -36,7 +36,7 @@ const butterflyNettingCreatures: Creature[] = [
 		aliases: ['snowy knight'],
 		level: 35,
 		hunterXP: 44,
-		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
+		itemsConsumed: new Bank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Snowy knight'),
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 6,
@@ -49,7 +49,7 @@ const butterflyNettingCreatures: Creature[] = [
 		aliases: ['black warlock'],
 		level: 45,
 		hunterXP: 54,
-		itemsConsumed: resolveNameBank({ 'Butterfly jar': 1 }),
+		itemsConsumed: new Bank({ 'Butterfly jar': 1 }),
 		table: new LootTable().every('Black warlock'),
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
 		catchTime: 5,

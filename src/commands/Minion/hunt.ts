@@ -9,11 +9,12 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from './../../lib/constants';
 import { Peak } from './../../tasks/WildernessPeakInterval';
 
 export default class extends BotCommand {
@@ -50,8 +51,10 @@ export default class extends BotCommand {
 						creature,
 						90_000 /
 							((creature.catchTime *
-								(creature.huntTechnique === 'tracking' ? 0.8 : 0.9) *
-								(creature.name === 'Herbiboar' ? 0.8 : 1) *
+								(creature.huntTechnique === HunterTechniqueEnum.Tracking
+									? 0.8
+									: 0.9) *
+								(creature.id === HERBIBOAR_ID ? 0.8 : 1) *
 								(creature.wildy ? 1 : 0.95)) /
 								traps)
 					);
@@ -144,26 +147,23 @@ export default class extends BotCommand {
 		}
 
 		if (creature.itemsRequired) {
-			const requiredItems: [string, number][] = Object.entries(creature.itemsRequired);
-			for (const [itemID, qty] of requiredItems) {
-				if (!bankHasItem(userBank.bank, parseInt(itemID), qty)) {
+			creature.itemsRequired.forEach((item, quantity) => {
+				if (userBank.amount(item.name) < quantity * traps) {
 					return msg.send(
-						`You don't have ${traps}x ${itemNameFromID(
-							parseInt(itemID)
-						)}, hunter tools can be bought using \`${msg.cmdPrefix}buy\`.`
+						`You don't have ${traps}x ${item.name}, hunter tools can be bought using \`${msg.cmdPrefix}buy\`.`
 					);
 				}
-			}
+			});
 		}
 
 		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.
 		let [percentReduced, catchTime] = [
 			Math.min(
 				Math.floor(
-					(msg.author.settings.get(UserSettings.CreatureScores)[creature.id] ?? 1) /
+					(msg.author.getCreatureScore(creature) ?? 1) /
 						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
 				),
-				creature.huntTechnique === 'tracking' ? 20 : 10
+				creature.huntTechnique === HunterTechniqueEnum.Tracking ? 20 : 10
 			),
 			creature.catchTime
 		];
@@ -189,8 +189,8 @@ export default class extends BotCommand {
 				);
 			}
 			if (
-				!bankHasItem(userBank.bank, itemID('Saradomin brew(4)'), 10) ||
-				!bankHasItem(userBank.bank, itemID('Super restore(4)'), 5)
+				userBank.amount(itemID('Saradomin brew(4)')) < 10 ||
+				userBank.amount(itemID('Super restore(4)')) < 5
 			) {
 				return msg.send(
 					`To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`
@@ -239,9 +239,9 @@ export default class extends BotCommand {
 		}
 
 		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
-		if (creature.name === 'Herbiboar' || creature.name === 'Razor-backed kebbit') {
+		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
 			let staminaPotionQuantity =
-				creature.name === 'Herbiboar'
+				creature.id === HERBIBOAR_ID
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 

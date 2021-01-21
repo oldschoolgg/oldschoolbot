@@ -1,3 +1,4 @@
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
@@ -248,8 +249,8 @@ export interface Creature {
 	hunterXP: number;
 	fishLvl?: number;
 	fishingXP?: number;
-	itemsRequired?: ItemBank;
-	itemsConsumed?: ItemBank;
+	itemsRequired?: Bank;
+	itemsConsumed?: Bank;
 	table: LootTable;
 	huntTechnique: HunterTechniqueEnum;
 	multiTraps?: boolean;

@@ -1,6 +1,6 @@
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { resolveNameBank } from '../../../../util';
 import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const rabbitSnaringCreatures: Creature[] = [
@@ -10,7 +10,7 @@ const rabbitSnaringCreatures: Creature[] = [
 		aliases: ['white rabbit', 'rabbit'],
 		level: 27,
 		hunterXP: 144,
-		itemsConsumed: resolveNameBank({ Ferret: 1 }),
+		itemsConsumed: new Bank({ Ferret: 1 }),
 		table: new LootTable().every('Bones').every('Raw rabbit').every('Rabbit foot'),
 		huntTechnique: HunterTechniqueEnum.RabbitSnaring,
 		multiTraps: true,

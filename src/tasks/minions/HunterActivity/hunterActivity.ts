@@ -13,9 +13,10 @@ import {
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { bankHasItem, rand, roll, stringMatches } from '../../../lib/util';
+import { rand, roll, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { HERBIBOAR_ID } from './../../../lib/constants';
 import { PeakTier } from './../../WildernessPeakInterval';
 
 const riskDeathNumbers = [
@@ -45,7 +46,7 @@ export default class extends Task {
 			duration
 		} = data;
 		const user = await this.client.users.fetch(userID);
-		const userBank = user.settings.get(UserSettings.Bank);
+		const userBank = user.bank();
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		let gotPked = false;
@@ -102,8 +103,8 @@ export default class extends Task {
 			if (gotPked && roll(riskDeathChance)) {
 				died = true;
 				if (
-					bankHasItem(userBank, itemID('Saradomin brew(4)'), 10) &&
-					bankHasItem(userBank, itemID('Super restore(4)'), 5)
+					userBank.amount(itemID('Saradomin brew(4)')) >= 10 &&
+					userBank.amount(itemID('Super restore(4)')) >= 5
 				) {
 					await user.removeItemFromBank(itemID('Saradomin brew(4)'), 10);
 					await user.removeItemFromBank(itemID('Super restore(4)'), 5);
@@ -118,8 +119,8 @@ export default class extends Task {
 			}
 			if (gotPked && !died) {
 				if (
-					bankHasItem(userBank, itemID('Saradomin brew(4)'), 10) &&
-					bankHasItem(userBank, itemID('Super restore(4)'), 5)
+					userBank.amount(itemID('Saradomin brew(4)')) >= 10 &&
+					userBank.amount(itemID('Super restore(4)')) >= 5
 				) {
 					let lostBrew = rand(1, 10);
 					let lostRestore = rand(1, 5);
@@ -139,7 +140,7 @@ export default class extends Task {
 
 		let creatureTable = creature.table;
 		let magicSecStr = '';
-		if (creature.name === 'Herbiboar') {
+		if (creature.id === HERBIBOAR_ID) {
 			creatureTable = generateHerbiTable(
 				user.skillLevel(SkillsEnum.Herblore),
 				user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))

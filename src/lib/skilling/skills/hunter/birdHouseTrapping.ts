@@ -1,9 +1,8 @@
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Time } from '../../../constants';
 import { NestBoxes } from '../../../openables';
-import { ItemBank } from '../../../types/index';
-import { resolveNameBank } from '../../../util';
 
 interface Birdhouse {
 	name: string;
@@ -12,8 +11,8 @@ interface Birdhouse {
 	huntXP: number;
 	craftLvl: number;
 	craftXP: number;
-	houseItemReq: ItemBank;
-	craftItemReq: ItemBank;
+	houseItemReq: Bank;
+	craftItemReq: Bank;
 	table: LootTable;
 	huntTechnique: string;
 	waitTime: number;
@@ -36,8 +35,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 280,
 		craftLvl: 5,
 		craftXP: 15,
-		houseItemReq: resolveNameBank({ 'Bird house': 1 }),
-		craftItemReq: resolveNameBank({ Logs: 1 }),
+		houseItemReq: new Bank({ 'Bird house': 1 }),
+		craftItemReq: new Bank({ Logs: 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes)
@@ -54,8 +53,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 420,
 		craftLvl: 15,
 		craftXP: 20,
-		houseItemReq: resolveNameBank({ 'Oak bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'Oak logs': 1 }),
+		houseItemReq: new Bank({ 'Oak bird house': 1 }),
+		craftItemReq: new Bank({ 'Oak logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 2])
@@ -72,8 +71,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 560,
 		craftLvl: 25,
 		craftXP: 25,
-		houseItemReq: resolveNameBank({ 'Willow bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'Willow logs': 1 }),
+		houseItemReq: new Bank({ 'Willow bird house': 1 }),
+		craftItemReq: new Bank({ 'Willow logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 3])
@@ -90,8 +89,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 700,
 		craftLvl: 35,
 		craftXP: 30,
-		houseItemReq: resolveNameBank({ 'Teak bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'Teak logs': 1 }),
+		houseItemReq: new Bank({ 'Teak bird house': 1 }),
+		craftItemReq: new Bank({ 'Teak logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 4])
@@ -108,8 +107,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 820,
 		craftLvl: 45,
 		craftXP: 35,
-		houseItemReq: resolveNameBank({ 'Maple bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'maple logs': 1 }),
+		houseItemReq: new Bank({ 'Maple bird house': 1 }),
+		craftItemReq: new Bank({ 'maple logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 5])
@@ -126,8 +125,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 960,
 		craftLvl: 50,
 		craftXP: 40,
-		houseItemReq: resolveNameBank({ 'Mahogany bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'Mahogany logs': 1 }),
+		houseItemReq: new Bank({ 'Mahogany bird house': 1 }),
+		craftItemReq: new Bank({ 'Mahogany logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 6])
@@ -144,8 +143,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1020,
 		craftLvl: 60,
 		craftXP: 45,
-		houseItemReq: resolveNameBank({ 'Yew bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'Yew logs': 1 }),
+		houseItemReq: new Bank({ 'Yew bird house': 1 }),
+		craftItemReq: new Bank({ 'Yew logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 7])
@@ -162,8 +161,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1140,
 		craftLvl: 75,
 		craftXP: 50,
-		houseItemReq: resolveNameBank({ 'Magic bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'Magic logs': 1 }),
+		houseItemReq: new Bank({ 'Magic bird house': 1 }),
+		craftItemReq: new Bank({ 'Magic logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 8])
@@ -180,8 +179,8 @@ const birdhouses: Birdhouse[] = [
 		huntXP: 1200,
 		craftLvl: 90,
 		craftXP: 55,
-		houseItemReq: resolveNameBank({ 'Redwood bird house': 1 }),
-		craftItemReq: resolveNameBank({ 'Redwood logs': 1 }),
+		houseItemReq: new Bank({ 'Redwood bird house': 1 }),
+		craftItemReq: new Bank({ 'Redwood logs': 1 }),
 		table: new LootTable()
 			.every('Raw bird meat')
 			.tertiary(2, NestBoxes, [1, 9])
