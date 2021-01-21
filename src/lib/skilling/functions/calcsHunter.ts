@@ -41,6 +41,7 @@ export function calcBabyChinchompaChance(currentLevel: number, creature: Creatur
 
 export function generateHerbiTable(currentHerbLvl: number, magicSec: boolean): LootTable {
 	let herbiTable = new LootTable();
+	if (currentHerbLvl < 31) return herbiTable;
 	herbiTable.tertiary(6500, 'Herbi');
 	let gotMagicSec = magicSec ? 2 : 1;
 	herbiTable

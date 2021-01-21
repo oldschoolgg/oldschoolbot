@@ -11,7 +11,7 @@ import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from './../../lib/constants';
@@ -147,13 +147,13 @@ export default class extends BotCommand {
 		}
 
 		if (creature.itemsRequired) {
-			creature.itemsRequired.forEach((item, quantity) => {
+			for (const [item, quantity] of creature.itemsRequired.items()) {
 				if (userBank.amount(item.name) < quantity * traps) {
 					return msg.send(
 						`You don't have ${traps}x ${item.name}, hunter tools can be bought using \`${msg.cmdPrefix}buy\`.`
 					);
 				}
-			});
+			}
 		}
 
 		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.
@@ -220,21 +220,16 @@ export default class extends BotCommand {
 		let removeBank = new Bank();
 
 		if (creature.itemsConsumed) {
-			const consumedItems: [string, number][] = Object.entries(creature.itemsConsumed);
-			for (const [itemID, qty] of consumedItems) {
-				if (!bankHasItem(userBank.bank, parseInt(itemID), qty * quantity)) {
-					if (msg.author.numItemsInBankSync(parseInt(itemID)) > qty) {
-						quantity = Math.floor(
-							msg.author.numItemsInBankSync(parseInt(itemID)) / qty
-						);
+			for (const [item, qty] of creature.itemsConsumed.items()) {
+				if (userBank.amount(item.id) < qty * quantity) {
+					if (userBank.amount(item.id) > qty) {
+						quantity = Math.floor(userBank.amount(item.id) / qty);
 						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 					} else {
-						return msg.send(
-							`You don't have enough ${itemNameFromID(parseInt(itemID))}s.`
-						);
+						return msg.send(`You don't have enough ${item.name}s.`);
 					}
 				}
-				removeBank.add(parseInt(itemID), qty * quantity);
+				removeBank.add(item.id, qty * quantity);
 			}
 		}
 

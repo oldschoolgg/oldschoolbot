@@ -8,33 +8,32 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { BirdhouseActivityTaskOptions } from './../../lib/types/minions';
 
-const birdhouseSeedReq = new Bank({
-	'Hammerstone seed': 10,
-	'Asgarnian seed': 10,
-	'Marrentill seed': 10,
-	'Barley seed': 10,
-	'Guam seed': 10,
-	'Yanillian seed': 10,
-	'Krandorian seed': 10,
-	'Tarromin seed': 10,
-	'Irit seed': 5,
-	'Wildblood seed': 5,
-	'Jute seed': 10,
-	'Harralander seed': 10,
-	'Dwarf weed seed': 5,
-	'Kwuarm seed': 5,
-	'Cadantine seed': 5,
-	'Lantadyme seed': 5,
-	'Avantoe seed': 5,
-	'Toadflax seed': 5,
-	'Ranarr seed': 5,
-	'Snapdragon seed': 5,
-	'Torstol seed': 5
-});
+const birdhouseSeedReq = new Bank()
+	.add('Hammerstone seed', 10)
+	.add('Asgarnian seed', 10)
+	.add('Marrentill seed', 10)
+	.add('Barley seed', 10)
+	.add('Guam seed', 10)
+	.add('Yanillian seed', 10)
+	.add('Krandorian seed', 10)
+	.add('Tarromin seed', 10)
+	.add('Irit seed', 5)
+	.add('Wildblood seed', 5)
+	.add('Jute seed', 10)
+	.add('Harralander seed', 10)
+	.add('Dwarf weed seed', 5)
+	.add('Kwuarm seed', 5)
+	.add('Cadantine seed', 5)
+	.add('Lantadyme seed', 5)
+	.add('Avantoe seed', 5)
+	.add('Toadflax seed', 5)
+	.add('Ranarr seed', 5)
+	.add('Snapdragon seed', 5)
+	.add('Torstol seed', 5);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -131,12 +130,12 @@ export default class extends BotCommand {
 		let removeBank = new Bank();
 		let gotCraft = false;
 		if (!prevBirdhouse || msg.flagArgs.nocraft) {
-			birdhouse.houseItemReq.forEach((item, quantity) => {
+			for (const [item, quantity] of birdhouse.houseItemReq.items()) {
 				if (userBank.amount(item.name) < quantity * 4) {
 					return msg.send(`You don't have enough ${item.name}s.`);
 				}
 				removeBank.add(item.id, quantity * 4);
-			});
+			}
 		} else {
 			if (msg.author.skillLevel(SkillsEnum.Crafting) < birdhouse.craftLvl) {
 				return msg.send(
@@ -144,24 +143,19 @@ export default class extends BotCommand {
 				);
 			}
 			gotCraft = true;
-			birdhouse.craftItemReq.forEach((item, quantity) => {
+			for (const [item, quantity] of birdhouse.craftItemReq.items()) {
 				if (userBank.amount(item.name) < quantity * 4) {
-					return msg.send(`You don't have enough ${item.name}s.`);
+					return msg.send(`You don't have enough ${item.name}.`);
 				}
 				removeBank.add(item.id, quantity * 4);
-			});
+			}
 		}
 
 		let canPay = false;
-		const requiredSeeds: [string, number][] = Object.entries(birdhouseSeedReq);
-		for (const [paymentID, qty] of requiredSeeds) {
-			if (userBank.amount(paymentID) >= qty * 4) {
-				infoStr.push(
-					`You baited the birdhouses with ${qty * 4}x ${itemNameFromID(
-						parseInt(paymentID)
-					)} .`
-				);
-				removeBank.add(parseInt(paymentID), qty * 4);
+		for (const [paymentID, qty] of birdhouseSeedReq.items()) {
+			if (userBank.amount(paymentID.name) >= qty * 4) {
+				infoStr.push(`You baited the birdhouses with ${qty * 4}x ${paymentID.name} .`);
+				removeBank.add(paymentID.name, qty * 4);
 				canPay = true;
 				break;
 			}

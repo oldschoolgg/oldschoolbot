@@ -58,7 +58,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		aliases: ['maniacal monkey'],
 		level: 60,
 		hunterXP: 1000,
-		itemsConsumed: new Bank({ Banana: 1 }),
+		itemsConsumed: new Bank().add('Banana', 1),
 		table: new LootTable().every('Damaged monkey tail').tertiary(5000, 'Monkey tail'),
 		huntTechnique: HunterTechniqueEnum.DeadfallTrapping,
 		catchTime: 33,

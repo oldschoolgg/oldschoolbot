@@ -297,7 +297,7 @@ const hunterClothing: Createable[] = [
 	{
 		name: 'Gloves of silence',
 		inputItems: resolveNameBank({ 'Dark kebbit fur': 2 }),
-		outputItems: resolveNameBank({ 'Spottier cape': 1 }),
+		outputItems: resolveNameBank({ 'Gloves of silence': 1 }),
 		GPCost: 600
 	}
 ];

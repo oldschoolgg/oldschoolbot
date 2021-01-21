@@ -49,6 +49,7 @@ export default class extends Task {
 		const userBank = user.bank();
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
+		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 		let gotPked = false;
 		let died = false;
 		let diedStr = '';
@@ -140,6 +141,7 @@ export default class extends Task {
 
 		let creatureTable = creature.table;
 		let magicSecStr = '';
+		let herbXP = 0;
 		if (creature.id === HERBIBOAR_ID) {
 			creatureTable = generateHerbiTable(
 				user.skillLevel(SkillsEnum.Herblore),
@@ -147,6 +149,11 @@ export default class extends Task {
 			);
 			if (user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))) {
 				magicSecStr = ` Extra herbs for Magic secateurs`;
+			}
+			// TODO: Check wiki in future for herblore xp from herbiboar
+			if (currentHerbLevel >= 31) {
+				herbXP += quantity * rand(25, 75);
+				await user.addXP(SkillsEnum.Herblore, herbXP);
 			}
 		}
 		const loot = new Bank();
@@ -157,11 +164,11 @@ export default class extends Task {
 			}
 		}
 
-		await user.incrementCreatureScore(creature.id, successfulQuantity);
+		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
 		await user.addItemsToBank(loot.values(), true);
 		await user.addXP(SkillsEnum.Hunter, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Hunter);
-
+		const newHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 		const xpHr = `${Math.round(
 			(xpReceived / (duration / Time.Minute)) * 60
 		).toLocaleString()} XP/Hr`;
@@ -172,8 +179,16 @@ export default class extends Task {
 			quantity - successfulQuantity
 		}x catches, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
 
+		if (herbXP > 0) {
+			str += `\nYou also received ${herbXP} Herblore XP from harvesting ${creature.name}!`;
+		}
+
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Hunter level is now ${newLevel}!`;
+		}
+
+		if (newHerbLevel > currentHerbLevel) {
+			str += `\n\n${user.minionName}'s Herblore level is now ${newHerbLevel}!`;
 		}
 
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
