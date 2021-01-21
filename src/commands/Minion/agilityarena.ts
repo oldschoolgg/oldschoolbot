@@ -240,8 +240,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			bank.add(brimhavenGraceful);
 			await msg.author.settings.update(UserSettings.Bank, bank.bank);
 			await msg.author.addItemsToCollectionLog({
-				...brimhavenGraceful,
-				[itemID('Agility arena ticket')]: cost
+				...brimhavenGraceful
 			});
 			return msg.send(
 				await izzyChat(`I've recolored ye Graceful set, and taken your tickets!`)
