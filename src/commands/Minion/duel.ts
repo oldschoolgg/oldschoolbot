@@ -137,6 +137,11 @@ export default class extends BotCommand {
 			winningAmount
 		);
 
+		this.client.emit(
+			Events.EconomyLog,
+			`${winner.sanitizedName} won ${winningAmount} GP in a duel with ${loser.sanitizedName}.`
+		);
+
 		return msg.channel.send(
 			`Congratulations ${winner.username}! You won ${Util.toKMB(
 				winningAmount

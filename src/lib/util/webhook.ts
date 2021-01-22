@@ -61,9 +61,13 @@ export async function sendToChannelID(
 		client.emit('log', `Sending to channelID[${channelID}].`);
 		let files = data.image ? [data.image] : undefined;
 		if (channel instanceof WebhookClient) {
-			channel.send(data.content, { files, embeds: data.embed ? [data.embed] : undefined });
+			channel.send(data.content, {
+				files,
+				embeds: data.embed ? [data.embed] : undefined,
+				split: true
+			});
 		} else {
-			channel.send(data.content, { files, embed: data.embed });
+			channel.send(data.content, { files, embed: data.embed, split: true });
 		}
 	});
 }
