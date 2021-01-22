@@ -46,7 +46,4 @@ export class AnalyticsTable extends BaseEntity {
 
 	@Column({ type: 'bigint', nullable: true })
 	public dailiesAmount!: number;
-
-	@Column({ type: 'bigint', nullable: true })
-	public totalTransactions!: number;
 }
