@@ -103,7 +103,10 @@ export const enum Emoji {
 	Hammer = '<:hammer:778418736595206184>',
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
-	Crab = '<:crab:778418736432021505>'
+	Crab = '<:crab:778418736432021505>',
+	Skiller = '<:skiller:802136963775463435>',
+	Incinerator = '<:incinerator:802136963674275882>',
+	CollectionLog = '<:collectionLog:802136964027121684>'
 }
 
 export const enum ReactionEmoji {
