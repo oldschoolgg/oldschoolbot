@@ -1461,7 +1461,11 @@ export const skillingLog: CollectionLogData = {
 		'Rock golem'
 	]),
 	Fishing: resolveItems(['Big swordfish', 'Big shark', 'Big bass', 'Heron']),
-	Agility: resolveItems([...gracefulItems, 'Mark of grace', 'Giant squirrel']),
+	Agility: resolveItems([
+		...gracefulItems.filter(i => i !== 'Agility cape'),
+		'Mark of grace',
+		'Giant squirrel'
+	]),
 	MonkeyBackpacks: Agility.MonkeyBackpacks.map(i => i.id),
 	Firemaking: wintertodtLog,
 	Sepulchre1: resolveItems([

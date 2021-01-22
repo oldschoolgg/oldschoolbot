@@ -1203,6 +1203,15 @@ const Createables: Createable[] = [
 			[itemID(`Zamorak's grapes`)]: 1
 		}
 	},
+	{
+		name: `Toad's legs`,
+		inputItems: resolveNameBank({
+			'Swamp toad': 1
+		}),
+		outputItems: {
+			[itemID(`Toad's legs`)]: 1
+		}
+	},
 	...crystalTools,
 	...ornamentKits
 ];
