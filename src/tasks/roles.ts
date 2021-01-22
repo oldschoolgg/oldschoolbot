@@ -20,7 +20,7 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number): 
 			if (production) {
 				await mem.roles.remove(role);
 			}
-			await mem.user.settings.update(UserSettings.Bank, badge, {
+			await mem.user.settings.update(UserSettings.Badges, badge, {
 				arrayAction: 'remove'
 			});
 			removed.push(mem.user.username);
@@ -30,7 +30,7 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number): 
 			if (production && !mem.roles.has(role)) {
 				await mem.roles.add(role);
 			}
-			await mem.user.settings.update(UserSettings.Bank, badge, {
+			await mem.user.settings.update(UserSettings.Badges, badge, {
 				arrayAction: 'add'
 			});
 			added.push(mem.user.username);
