@@ -16,7 +16,8 @@ export const enum Channel {
 	Suggestions = '668441710703149074',
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',
-	BlacklistLogs = '782459317218967602'
+	BlacklistLogs = '782459317218967602',
+	EconomyLogs = '802029843712573510'
 }
 
 export const enum Roles {
@@ -216,7 +217,8 @@ export const enum Events {
 	Warn = 'warn',
 	Wtf = 'wtf',
 	ServerNotification = 'serverNotification',
-	SkillLevelUp = 'skillLevelUp'
+	SkillLevelUp = 'skillLevelUp',
+	EconomyLog = 'economyLog'
 }
 
 export const enum BadgesEnum {

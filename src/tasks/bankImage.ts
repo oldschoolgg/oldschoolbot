@@ -2,7 +2,7 @@ import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Items, Util } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -116,15 +116,6 @@ export default class BankImageTask extends Task {
 	async getItemImage(itemID: number, quantity: number): Promise<Image> {
 		const isOnDisk = this.itemIconsList.has(itemID);
 		const cachedImage = this.itemIconImagesCache.get(itemID);
-
-		const item = Items.get(itemID);
-		if (item?.stackedVariants) {
-			for (const variant of item.stackedVariants) {
-				if (quantity >= variant.qty) {
-					return this.getItemImage(variant.id, quantity);
-				}
-			}
-		}
 
 		if (!isOnDisk) {
 			await this.fetchAndCacheImage(itemID);

@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
 
+import { providerConfig } from '../config';
 import { ActivityGroup } from '../lib/constants';
 import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -98,6 +99,11 @@ export default class extends Task {
 		).map((result: any) => parseInt(result[0].count)) as number[];
 
 		const taskCounts = await this.calculateMinionTaskCounts();
+		const transactions = await this.client
+			.query<{ count: string }[]>(
+				`SELECT xact_commit+xact_rollback as count FROM pg_stat_database WHERE datname = '${providerConfig?.postgres?.database}';`
+			)
+			.then(res => res[0].count);
 
 		await AnalyticsTable.insert({
 			guildsCount: this.client.guilds.size,
@@ -114,7 +120,8 @@ export default class extends Task {
 			totalXP,
 			dicingBank: this.client.settings.get(ClientSettings.EconomyStats.DicingBank),
 			duelTaxBank: this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank),
-			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount)
+			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount),
+			totalTransactions: parseInt(transactions)
 		});
 	}
 }
