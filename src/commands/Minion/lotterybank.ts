@@ -27,9 +27,11 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [[initBankToSell, totalPrice]]: [[Bank, number]]) {
-		const bankToSell = initBankToSell.filter(
-			i => i.tradeable_on_ge || allPetIDs.includes(i.id)
-		);
+		const bankToSell = initBankToSell.filter((i, qty) => {
+			let stackPrice =
+				(this.client.settings!.get(ClientSettings.Prices)[i.id]?.price ?? 1) * qty;
+			return allPetIDs.includes(i.id) || (i.tradeable_on_ge && stackPrice > 5_000_000);
+		});
 
 		if (bankToSell.amount('Lottery ticket')) {
 			bankToSell.remove('Lottery ticket', bankToSell.amount('Lottery ticket'));
