@@ -159,7 +159,7 @@ export default class extends BotCommand {
 		if (amountPearlsHas === 0) {
 			return msg.send(
 				await alryChat(
-					`You have no Molch pearls, but here is joke, \nwhere do fish keep their money? \nIn a riverbank. Hehe!`
+					`You have no Molch pearls, but here is a joke... \nWhere do fish keep their money? \nIn a riverbank. Hehe!`
 				)
 			);
 		}

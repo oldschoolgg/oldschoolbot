@@ -183,9 +183,12 @@ export default class extends BotCommand {
 		}
 
 		if (creature.wildy) {
-			if (!hasWildyHuntGearEquipped(msg.author.settings.get(UserSettings.Gear.Misc))) {
+			const [bol, reason] = hasWildyHuntGearEquipped(
+				msg.author.settings.get(UserSettings.Gear.Misc)
+			);
+			if (!bol) {
 				return msg.send(
-					`To hunt ${creature.name} in the wilderness you need to have Karil's leathertop/Black d'hide body and Karil's leatherskirt/Black d'hide chaps equipped in \`${msg.cmdPrefix}gear misc\`.`
+					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason}. To check current equipped gear in misc write \`${msg.cmdPrefix}gear misc\`.`
 				);
 			}
 			if (
@@ -276,7 +279,7 @@ export default class extends BotCommand {
 			}
 			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
 				wildyPeak!.peakTier
-			} peak time and potentially risking Black d'hide / Karil's setup and potions. If you feel unsure \`${
+			} peak time and potentially risking your equipped body and legs in the misc setup and potions. If you feel unsure \`${
 				msg.cmdPrefix
 			}cancel\` the activity.`;
 		}

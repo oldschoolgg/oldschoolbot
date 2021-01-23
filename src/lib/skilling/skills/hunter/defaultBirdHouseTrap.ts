@@ -1,6 +1,7 @@
+/** @birdhousePlaced false -> nothing placed, true -> something placed  */
 export interface BirdhouseData {
 	lastPlaced: string | null;
-	birdhousePlaced: boolean; // false -> nothing placed, true -> something placed
+	birdhousePlaced: boolean;
 	birdhouseTime: number;
 }
 

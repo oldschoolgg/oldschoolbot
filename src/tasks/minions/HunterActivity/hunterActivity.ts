@@ -4,6 +4,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Events, Time } from '../../../lib/constants';
 import { hasGearEquipped } from '../../../lib/gear/functions/hasGearEquipped';
+import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import {
 	calcBabyChinchompaChance,
@@ -84,17 +85,9 @@ export default class extends Task {
 				200
 			);
 
-			// Gives lower death chance if the user got karil's top and/or bottom equipped.
-			riskDeathChance += hasGearEquipped(user.settings.get(UserSettings.Gear.Misc), {
-				body: [itemID("Karil's leathertop")]
-			})
-				? 15
-				: 0;
-			riskDeathChance += hasGearEquipped(user.settings.get(UserSettings.Gear.Misc), {
-				legs: [itemID("Karil's leatherskirt")]
-			})
-				? 15
-				: 0;
+			// Gives lower death chance depending on what the user got equipped in misc.
+			const [, , score] = hasWildyHuntGearEquipped(user.settings.get(UserSettings.Gear.Misc));
+			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (roll(riskPkChance)) {
 					gotPked = true;
