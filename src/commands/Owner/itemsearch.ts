@@ -3,7 +3,7 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { allNexItems } from '../../lib/nex';
+// import { allNexItems } from '../../lib/nex';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -22,7 +22,7 @@ export default class extends BotCommand {
 			if (msg.flagArgs.includes) {
 				return i.name.toLowerCase().includes(name.toLowerCase());
 			}
-			if (allNexItems.includes(i.id)) return false;
+			// if (allNexItems.includes(i.id)) return false;
 			return i.name.toLowerCase() === name.toLowerCase();
 		}).array();
 		if (items.length === 0) return msg.send(`No results for that item.`);

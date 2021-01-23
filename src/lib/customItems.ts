@@ -306,31 +306,31 @@ export function initCustomItems() {
 	/**
 	 * Nex
 	 */
-	setCustomItem(3741, 'Frozen key', getOSItem('Key'));
-	setCustomItem(11039, 'Key piece 1', getOSItem('Key'));
-	setCustomItem(11040, 'Key piece 2', getOSItem('Key'));
-	setCustomItem(11041, 'Key piece 3', getOSItem('Key'));
-	setCustomItem(11042, 'Key piece 4', getOSItem('Key'));
+	// setCustomItem(3741, 'Frozen key', getOSItem('Key'));
+	// setCustomItem(11039, 'Key piece 1', getOSItem('Key'));
+	// setCustomItem(11040, 'Key piece 2', getOSItem('Key'));
+	// setCustomItem(11041, 'Key piece 3', getOSItem('Key'));
+	// setCustomItem(11042, 'Key piece 4', getOSItem('Key'));
 
-	setCustomItem(432, 'Torva full helm', getOSItem('Rune full helm'));
-	setCustomItem(709, 'Torva platebody', getOSItem('Rune platebody'));
-	setCustomItem(2404, 'Torva platelegs', getOSItem('Rune platelegs'));
-	setCustomItem(2838, 'Torva boots', getOSItem('Rune boots'));
-	setCustomItem(4273, 'Torva gloves', getOSItem('Rune gloves'));
+	// setCustomItem(432, 'Torva full helm', getOSItem('Rune full helm'));
+	// setCustomItem(709, 'Torva platebody', getOSItem('Rune platebody'));
+	// setCustomItem(2404, 'Torva platelegs', getOSItem('Rune platelegs'));
+	// setCustomItem(2838, 'Torva boots', getOSItem('Rune boots'));
+	// setCustomItem(4273, 'Torva gloves', getOSItem('Rune gloves'));
 
-	setCustomItem(601, 'Pernix cowl', getOSItem('Rune full helm'));
-	setCustomItem(605, 'Pernix body', getOSItem('Rune platebody'));
-	setCustomItem(4272, 'Pernix chaps', getOSItem('Rune platelegs'));
-	setCustomItem(758, 'Pernix boots', getOSItem('Rune boots'));
-	setCustomItem(759, 'Pernix gloves', getOSItem('Rune gloves'));
+	// setCustomItem(601, 'Pernix cowl', getOSItem('Rune full helm'));
+	// setCustomItem(605, 'Pernix body', getOSItem('Rune platebody'));
+	// setCustomItem(4272, 'Pernix chaps', getOSItem('Rune platelegs'));
+	// setCustomItem(758, 'Pernix boots', getOSItem('Rune boots'));
+	// setCustomItem(759, 'Pernix gloves', getOSItem('Rune gloves'));
 
-	setCustomItem(788, 'Virtus mask', getOSItem('Rune full helm'));
-	setCustomItem(983, 'Virtus robe top', getOSItem('Rune platebody'));
-	setCustomItem(2409, 'Virtus robe legs', getOSItem('Rune platelegs'));
-	setCustomItem(9654, 'Virtus boots', getOSItem('Rune boots'));
-	setCustomItem(2423, 'Virtus gloves', getOSItem('Rune gloves'));
+	// setCustomItem(788, 'Virtus mask', getOSItem('Rune full helm'));
+	// setCustomItem(983, 'Virtus robe top', getOSItem('Rune platebody'));
+	// setCustomItem(2409, 'Virtus robe legs', getOSItem('Rune platelegs'));
+	// setCustomItem(9654, 'Virtus boots', getOSItem('Rune boots'));
+	// setCustomItem(2423, 'Virtus gloves', getOSItem('Rune gloves'));
 
-	setCustomItem(2832, 'Zaryte bow', getOSItem('Twisted bow'));
-	setCustomItem(2834, 'Virtus wand', getOSItem('Master wand'));
-	setCustomItem(2836, 'Virtus book', getOSItem('Holy book'));
+	// setCustomItem(2832, 'Zaryte bow', getOSItem('Twisted bow'));
+	// setCustomItem(2834, 'Virtus wand', getOSItem('Master wand'));
+	// setCustomItem(2836, 'Virtus book', getOSItem('Holy book'));
 }

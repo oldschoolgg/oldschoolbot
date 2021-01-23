@@ -1,4 +1,5 @@
 import { MessageAttachment } from 'discord.js';
+import { randArrItem } from 'e';
 import { KlasaMessage, Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -8,6 +9,7 @@ import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/cons
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { allKeyPieces } from '../../lib/nex';
 import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -39,6 +41,14 @@ export default class extends Task {
 		}
 
 		let loot = monster.table.kill(Math.ceil(quantity * abyssalBonus));
+		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(500)) {
+					loot[randArrItem(allKeyPieces)] = 1;
+				}
+			}
+		}
+
 		if (duration > Time.Minute * 20 && roll(10)) {
 			loot = multiplyBank(loot, 2);
 			loot[getRandomMysteryBox()] = 1;

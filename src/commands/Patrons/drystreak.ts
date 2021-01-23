@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
+// import { allNexItems } from '../../lib/nex';
 import { stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import LeaderboardCommand from '../Minion/leaderboard';
@@ -29,6 +30,9 @@ export default class extends BotCommand {
 		}
 
 		const item = getOSItem(itemName);
+		// if (allNexItems.includes(item.id)) {
+		// 	 return msg.send(`That item doesn't exist.`)
+		// }
 
 		const ironmanPart = msg.flagArgs.im ? 'AND "minion.ironman" = true' : '';
 		const query = `SELECT "id", "monsterScores"->>'${mon.id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "monsterScores"->>'${mon.id}' IS NOT NULL ${ironmanPart} ORDER BY ("monsterScores"->>'${mon.id}')::int DESC LIMIT 10;`;

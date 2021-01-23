@@ -148,10 +148,10 @@ export interface NightmareActivityTaskOptions extends MinigameActivityTaskOption
 	users: string[];
 }
 
-export interface NexActivityTaskOptions extends MinigameActivityTaskOptions {
-	leader: string;
-	users: string[];
-}
+// export interface NexActivityTaskOptions extends MinigameActivityTaskOptions {
+// 	leader: string;
+// 	users: string[];
+// }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
