@@ -16,7 +16,7 @@ import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { HERBIBOAR_ID } from './../../../lib/constants';
+import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 import { PeakTier } from './../../WildernessPeakInterval';
 
 const riskDeathNumbers = [
@@ -73,14 +73,14 @@ export default class extends Task {
 		);
 
 		if (creature.wildy) {
-			let riskPkChance = creature.name === 'Black chinchompa' ? 100 : 200;
+			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
 			riskPkChance +=
 				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)
 					?.extraChance ?? 0;
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
 			riskDeathChance += Math.min(
-				Math.floor(user.getCreatureScore(creature) ?? 1 / 100),
+				Math.floor((user.getCreatureScore(creature) ?? 1) / 100),
 				200
 			);
 

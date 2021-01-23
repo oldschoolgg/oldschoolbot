@@ -190,7 +190,7 @@ export default class extends BotCommand {
 			wildyScore = score;
 			if (!bol) {
 				return msg.send(
-					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason}. To check current equipped gear in misc write \`${msg.cmdPrefix}gear misc\`.`
+					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason} To check current equipped gear in misc write \`${msg.cmdPrefix}gear misc\`.`
 				);
 			}
 			if (

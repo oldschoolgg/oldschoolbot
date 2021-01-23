@@ -305,3 +305,4 @@ export const TWEETS_RATELIMITING =
 	`You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.`;
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
+export const BLACK_CHIN_ID = 9;
