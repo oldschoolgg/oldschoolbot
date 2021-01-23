@@ -8,7 +8,6 @@ import { addArrayOfNumbers, toKMB } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<user:user>',
 			perkTier: PerkTier.Four
 		});
 	}
