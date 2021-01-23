@@ -1,4 +1,4 @@
-import { Command, Inhibitor, InhibitorStore, KlasaMessage } from 'klasa';
+import { Inhibitor, InhibitorStore, KlasaMessage } from 'klasa';
 
 import { BitField, PerkTier, Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -9,8 +9,7 @@ export default class extends Inhibitor {
 		super(store, file, directory);
 	}
 
-	public async run(msg: KlasaMessage, command: Command) {
-		if (!command.altProtection) return;
+	public async run(msg: KlasaMessage) {
 		if (getUsersPerkTier(msg.author) >= PerkTier.Four) return;
 
 		if (
