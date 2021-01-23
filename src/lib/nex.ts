@@ -30,6 +30,13 @@ export const virtusOutfit = resolveItems([
 export const ancientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Zaryte bow']);
 
 export const allNexItems = [torvaOutfit, pernixOutfit, virtusOutfit, ancientWeapons].flat();
+export const allKeys = resolveItems([
+	'Frozen key',
+	'Key piece 1',
+	'Key piece 2',
+	'Key piece 3',
+	'Key piece 4'
+]);
 
 export const NexMonster: KillableMonster = {
 	id: 46274,
