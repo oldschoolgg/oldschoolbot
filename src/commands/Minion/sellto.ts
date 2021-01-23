@@ -133,6 +133,13 @@ export default class extends BotCommand {
 			return msg.send(`Fatal error occurred. Please seek help in the support server.`);
 		}
 
+		this.client.emit(
+			Events.EconomyLog,
+			`${msg.author.sanitizedName} sold ${bankStr} to ${
+				buyerMember.user.sanitizedName
+			} for ${price.toLocaleString()} GP.`
+		);
+
 		msg.author.log(`sold ${bankStr} to ${buyerMember.user.sanitizedName} for ${price}`);
 
 		return msg.send(`Sale of ${bankStr} complete!`);

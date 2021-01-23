@@ -32,10 +32,12 @@ export default class extends BotCommand {
 
 		await msg.author.removeGP(amount);
 		await user.addGP(amount);
+
 		this.client.emit(
-			Events.Log,
-			`${msg.author.sanitizedName} sent ${amount} to ${user.sanitizedName}`
+			Events.EconomyLog,
+			`${msg.author.sanitizedName} paid ${amount} GP to ${user.sanitizedName}.`
 		);
+
 		return msg.send(`You sent ${amount.toLocaleString()} GP to ${user}.`);
 	}
 }
