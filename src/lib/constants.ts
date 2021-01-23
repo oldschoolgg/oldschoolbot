@@ -16,7 +16,8 @@ export const enum Channel {
 	Suggestions = '668441710703149074',
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',
-	BlacklistLogs = '782459317218967602'
+	BlacklistLogs = '782459317218967602',
+	EconomyLogs = '802029843712573510'
 }
 
 export const enum Roles {
@@ -102,7 +103,10 @@ export const enum Emoji {
 	Hammer = '<:hammer:778418736595206184>',
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
-	Crab = '<:crab:778418736432021505>'
+	Crab = '<:crab:778418736432021505>',
+	Skiller = '<:skiller:802136963775463435>',
+	Incinerator = '<:incinerator:802136963674275882>',
+	CollectionLog = '<:collectionLog:802136964027121684>'
 }
 
 export const enum ReactionEmoji {
@@ -218,7 +222,8 @@ export const enum Events {
 	Warn = 'warn',
 	Wtf = 'wtf',
 	ServerNotification = 'serverNotification',
-	SkillLevelUp = 'skillLevelUp'
+	SkillLevelUp = 'skillLevelUp',
+	EconomyLog = 'economyLog'
 }
 
 export const enum BadgesEnum {
