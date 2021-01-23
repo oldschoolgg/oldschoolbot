@@ -69,6 +69,8 @@ export function hasWildyHuntGearEquipped(setup: GearTypes.GearSetup): [boolean, 
 
 	score *= 100;
 
+	score = Math.round(score);
+
 	return [
 		true,
 		`The combined defensive stats for the body and legs equipped in misc setup is ${score}% of maximum possible stats in each defensive stats.`,

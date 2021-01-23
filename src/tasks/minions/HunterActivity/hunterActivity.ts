@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Events, Time } from '../../../lib/constants';
-import { hasGearEquipped } from '../../../lib/gear/functions/hasGearEquipped';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import {

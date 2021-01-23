@@ -85,6 +85,7 @@ export default class extends BotCommand {
 		const boosts = [];
 		let traps = 1;
 		let usingHuntPotion = false;
+		let wildyScore = 0;
 
 		if (
 			msg.flagArgs.pot ||
@@ -183,9 +184,10 @@ export default class extends BotCommand {
 		}
 
 		if (creature.wildy) {
-			const [bol, reason] = hasWildyHuntGearEquipped(
+			const [bol, reason, score] = hasWildyHuntGearEquipped(
 				msg.author.settings.get(UserSettings.Gear.Misc)
 			);
+			wildyScore = score;
 			if (!bol) {
 				return msg.send(
 					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason}. To check current equipped gear in misc write \`${msg.cmdPrefix}gear misc\`.`
@@ -279,7 +281,7 @@ export default class extends BotCommand {
 			}
 			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
 				wildyPeak!.peakTier
-			} peak time and potentially risking your equipped body and legs in the misc setup and potions. If you feel unsure \`${
+			} peak time and potentially risking your equipped body and legs in the misc setup with a score ${wildyScore} out of 100 and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
 				msg.cmdPrefix
 			}cancel\` the activity.`;
 		}
