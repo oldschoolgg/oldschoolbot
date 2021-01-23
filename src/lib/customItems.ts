@@ -306,11 +306,11 @@ export function initCustomItems() {
 	/**
 	 * Nex
 	 */
-	// setCustomItem(3741, 'Frozen key', getOSItem('Key'));
-	// setCustomItem(11039, 'Key piece 1', getOSItem('Key'));
-	// setCustomItem(11040, 'Key piece 2', getOSItem('Key'));
-	// setCustomItem(11041, 'Key piece 3', getOSItem('Key'));
-	// setCustomItem(11042, 'Key piece 4', getOSItem('Key'));
+	setCustomItem(3741, 'Frozen key', getOSItem('Key'));
+	setCustomItem(11039, 'Key piece 1', getOSItem('Key'));
+	setCustomItem(11040, 'Key piece 2', getOSItem('Key'));
+	setCustomItem(11041, 'Key piece 3', getOSItem('Key'));
+	setCustomItem(11042, 'Key piece 4', getOSItem('Key'));
 
 	// setCustomItem(432, 'Torva full helm', getOSItem('Rune full helm'));
 	// setCustomItem(709, 'Torva platebody', getOSItem('Rune platebody'));
