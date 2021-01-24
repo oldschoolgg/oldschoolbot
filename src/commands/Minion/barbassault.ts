@@ -122,7 +122,7 @@ export default class extends BotCommand {
 				UserSettings.HonourLevel
 			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
 				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need exactly 4 people to join to start.` +
-				` We have a channel dedicated to Barbarian Assault parties in the support server (discord.gg/ob). \n` +
+				` Barbarian Assault is **restricted** to the main server to make it easier to find a team. (discord.gg/ob). \n` +
 				`Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points.` +
 				`\n\nYou can buy rewards with \`${msg.cmdPrefix}ba buy\`, level up your Honour Level with \`${msg.cmdPrefix}ba level\`.` +
 				` You can gamble using \`${msg.cmdPrefix}ba gamble high/medium/low\`.`
@@ -227,6 +227,12 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async start(msg: KlasaMessage) {
+		if (msg.channel.id !== '789717054902763520') {
+			return msg.send(
+				`Barbarian Assault is limited to the support server, due to the difficulty there is in finding a team, this makes it easier to get a team going. Please use the #barbarian-assault channel in our server. Thank you.`
+			);
+		}
+
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 4,
