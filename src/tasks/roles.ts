@@ -5,12 +5,13 @@ import { SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { collectionLogTypes } from '../lib/collectionLog';
 import { Roles } from '../lib/constants';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 import { Workers } from '../lib/workers';
 import { CLUser } from '../lib/workers/leaderboard.worker';
 
-async function addRoles(g: Guild, users: string[], role: Roles): Promise<string> {
+async function addRoles(g: Guild, users: string[], role: Roles, badge: number): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
 	const roleName = g.roles.get(role)!.name!;
@@ -19,12 +20,22 @@ async function addRoles(g: Guild, users: string[], role: Roles): Promise<string>
 			if (production) {
 				await mem.roles.remove(role);
 			}
+			if (mem.user.settings.get(UserSettings.Badges).includes(badge)) {
+				await mem.user.settings.update(UserSettings.Badges, badge, {
+					arrayAction: 'remove'
+				});
+			}
 			removed.push(mem.user.username);
 		}
 
 		if (users.includes(mem.user.id)) {
 			if (production && !mem.roles.has(role)) {
 				await mem.roles.add(role);
+			}
+			if (!mem.user.settings.get(UserSettings.Badges).includes(badge)) {
+				await mem.user.settings.update(UserSettings.Badges, badge, {
+					arrayAction: 'add'
+				});
 			}
 			added.push(mem.user.username);
 		}
@@ -91,7 +102,7 @@ export default class extends Task {
 			.sort((a, b) => b.totalLevel - a.totalLevel)[0];
 		topSkillers.push(rankOneTotal.id);
 
-		let result = await addRoles(g, topSkillers, Roles.TopSkiller);
+		let result = await addRoles(g, topSkillers, Roles.TopSkiller, 9);
 
 		// Top Collectors
 		const topCollectors = [];
@@ -111,7 +122,7 @@ WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 			topCollectors.push(users[0].id);
 		}
 
-		result += await addRoles(g, topCollectors, Roles.TopCollector);
+		result += await addRoles(g, topCollectors, Roles.TopCollector, 10);
 
 		// Top sacrificers
 		let topSacrificers = [];
@@ -127,7 +138,7 @@ WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
 
-		result += await addRoles(g, topSacrificers, Roles.TopSacrificer);
+		result += await addRoles(g, topSacrificers, Roles.TopSacrificer, 8);
 
 		return result;
 	}

@@ -8,7 +8,10 @@ const badges: { [key: number]: string } = {
 	4: Emoji.Hammer,
 	5: Emoji.GreenGem,
 	6: Emoji.Bug,
-	7: Emoji.Trophy
+	7: Emoji.Trophy,
+	8: Emoji.Incinerator,
+	9: Emoji.Skiller,
+	10: Emoji.CollectionLog
 };
 
 export default badges;

@@ -8,7 +8,8 @@ import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { stringMatches } from '../../lib/util';
+import { itemNameFromID, stringMatches } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import PoHImage from '../../tasks/pohImage';
 
 export default class POHCommand extends BotCommand {
@@ -25,7 +26,7 @@ export default class POHCommand extends BotCommand {
 				'+poh destroy demonic throne'
 			],
 			subcommands: true,
-			usage: '[build|destroy|items] [input:...str]',
+			usage: '[build|destroy|items|mountItem] [input:...str]',
 			usageDelim: ' '
 		});
 	}
@@ -68,6 +69,11 @@ export default class POHCommand extends BotCommand {
 		}
 
 		const inPlace = poh[obj.slot];
+		if (obj.slot === 'mountedItem' && inPlace !== null) {
+			return msg.send(
+				`You already have a item mount built. Use \`${msg.cmdPrefix}poh mountitem <tem>\` to mount an item on it.`
+			);
+		}
 
 		if (obj.requiredInPlace && inPlace !== obj.requiredInPlace) {
 			return msg.send(
@@ -121,6 +127,47 @@ export default class POHCommand extends BotCommand {
 		);
 	}
 
+	async mountItem(msg: KlasaMessage, [name]: [string]) {
+		const poh = await msg.author.getPOH();
+		if (!name) {
+			return msg.send(await this.genImage(poh, true));
+		}
+
+		if (poh.mountedItem === 1111) {
+			return msg.send(`You need to build a mount for the item first.`);
+		}
+
+		const item = getOSItem(name);
+		if (['Magic stone', 'Coins'].includes(item.name)) {
+			return msg.send(`You can't mount this item.`);
+		}
+
+		const userBank = msg.author.bank();
+		if (!userBank.has(item.id)) {
+			return msg.send(`You don't have 1x ${item.name}.`);
+		}
+		if (userBank.amount('Magic stone') < 2) {
+			return msg.send(`You don't have 2x Magic stone.`);
+		}
+		const currItem = poh.mountedItem === 1112 ? null : poh.mountedItem;
+
+		userBank.remove(item.id);
+		if (currItem) {
+			userBank.add(item.id);
+		}
+		await msg.author.settings.update(UserSettings.Bank, userBank.bank);
+		poh.mountedItem = item.id;
+		await poh.save();
+		return msg.send(
+			`You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
+				item.name
+			} (given back when another item is mounted).${
+				currItem ? ` Refunded 1x ${itemNameFromID(currItem)}.` : ''
+			}`,
+			await this.genImage(poh)
+		);
+	}
+
 	async destroy(msg: KlasaMessage, [name]: [string]) {
 		const obj = PoHObjects.find(i => stringMatches(i.name, name));
 		if (!obj) {
@@ -130,6 +177,17 @@ export default class POHCommand extends BotCommand {
 		const poh = await msg.author.getPOH();
 
 		const inPlace = poh[obj.slot];
+		if (obj.slot === 'mountedItem' && ![1111, 1112, null].includes(inPlace)) {
+			poh[obj.slot] = null;
+			await poh.save();
+			await msg.author.addItemsToBank({ [inPlace!]: 1 });
+			return msg.send(
+				`You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(
+					inPlace!
+				)}.`,
+				await this.genImage(poh)
+			);
+		}
 		if (inPlace !== obj.id) {
 			return msg.send(`You don't have a ${obj.name} built in your house.`);
 		}
