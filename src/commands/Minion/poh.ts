@@ -138,6 +138,10 @@ export default class POHCommand extends BotCommand {
 		}
 
 		const item = getOSItem(name);
+		if (['Magic stone', 'Coins'].includes(item.name)) {
+			return msg.send(`You can't mount this item.`);
+		}
+
 		const userBank = msg.author.bank();
 		if (!userBank.has(item.id)) {
 			return msg.send(`You don't have 1x ${item.name}.`);
