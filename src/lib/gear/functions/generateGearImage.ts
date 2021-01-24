@@ -86,8 +86,8 @@ export async function generateGearImage(
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	const isTransparent = userBgID === 12;
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	if (!isTransparent) {
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(
 			userBg,
 			(canvas.width - userBg.width) * 0.5,
