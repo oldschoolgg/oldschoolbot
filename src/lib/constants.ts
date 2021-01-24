@@ -87,6 +87,7 @@ export const enum Emoji {
 	Herblore = '<:herblore:630911040535658496>',
 	Purple = '🟪',
 	Thieving = '<:thieving:630910829352452123>',
+	Hunter = '<:hunter:630911040166559784>',
 	Ely = '<:ely:784453586033049630>',
 	Timer = '<:ehpclock:352323705210142721>',
 	ChristmasCracker = '<:cracker:785389969962958858>',
@@ -144,6 +145,7 @@ export const enum Tasks {
 	FletchingActivity = 'fletchingActivity',
 	FarmingActivity = 'farmingActivity',
 	HerbloreActivity = 'herbloreActivity',
+	HunterActivity = 'hunterActivity',
 	ConstructionActivity = 'constructionActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
@@ -162,6 +164,8 @@ export const enum Tasks {
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
 	ChampionsChallenge = 'championsChallengeActivity',
+	BirdhouseActivity = 'birdhouseActivity',
+	AerialFishingActivity = 'aerialFishingActivity',
 	MahoganyHomes = 'mahoganyHomesActivity'
 }
 
@@ -188,6 +192,8 @@ export const enum Activity {
 	Fletching = 'Fletching',
 	Pickpocket = 'Pickpocket',
 	Herblore = 'Herblore',
+	Hunter = 'Hunter',
+	Birdhouse = 'Birdhouse',
 	Alching = 'Alching',
 	AnimatedArmour = 'AnimatedArmour',
 	Cyclops = 'Cyclops',
@@ -202,6 +208,7 @@ export const enum Activity {
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
+	AerialFishing = 'AerialFishing',
 	MahoganyHomes = 'MahoganyHomes'
 }
 
@@ -301,3 +308,6 @@ export const MAX_INT_JAVA = 2_147_483_647;
 export const TWEETS_RATELIMITING =
 	`Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.` +
 	`You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.`;
+export const HERBIBOAR_ID = 36;
+export const RAZOR_KEBBIT_ID = 35;
+export const BLACK_CHIN_ID = 9;

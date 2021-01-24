@@ -5,6 +5,7 @@ import { PatchTypes } from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
 import { CompostTier, FarmingPatchTypes } from '../../farming/types';
 import { GearTypes } from '../../gear';
+import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
 
@@ -22,6 +23,7 @@ export namespace UserSettings {
 	export const Pets = T<O.Readonly<ItemBank>>('pets');
 	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');
 	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
+	export const CreatureScores = T<O.Readonly<ItemBank>>('creatureScores');
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const MinigameScores = T<O.Readonly<ItemBank>>('minigameScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
@@ -65,6 +67,7 @@ export namespace UserSettings {
 		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
 		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
+		export const BirdhouseTraps = T<BirdhouseData>('minion.birdhouseTraps');
 	}
 
 	export namespace Skills {
@@ -82,6 +85,7 @@ export namespace UserSettings {
 		export const Thieving = T<number>(`skills.${SkillsEnum.Thieving}`);
 		export const Farming = T<number>(`skills.${SkillsEnum.Farming}`);
 		export const Herblore = T<number>(`skills.${SkillsEnum.Herblore}`);
+		export const Hunter = T<number>(`skills.${SkillsEnum.Hunter}`);
 		export const Construction = T<number>(`skills.${SkillsEnum.Construction}`);
 	}
 

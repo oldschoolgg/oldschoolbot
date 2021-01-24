@@ -74,6 +74,40 @@ export const anglerOutfit = resolveItems([
 	'Angler waders',
 	'Angler boots'
 ]);
+
+const hunterGear: CollectionLogData = {
+	CamouflageGear: resolveItems([
+		'Polar camo top',
+		'Polar camo legs',
+		'Wood camo top',
+		'Wood camo legs',
+		'Jungle camo top',
+		'Jungle camo legs',
+		'Desert camo top',
+		'Desert camo legs'
+	]),
+	HunterGear: resolveItems([
+		'Larupia hat',
+		'Larupia top',
+		'Larupia legs',
+		'Graahk headdress',
+		'Graahk top',
+		'Graahk legs',
+		'Kyatt hat',
+		'Kyatt top',
+		'Kyatt legs'
+	]),
+	Other: resolveItems([
+		'Spotted cape',
+		'Spottier cape',
+		'Gloves of silence',
+		'Golden tench',
+		'Fish sack',
+		'Baby chinchompa',
+		'Herbi'
+	])
+};
+
 const fishingTrawler: CollectionLogData = {
 	AnglerOutfit: anglerOutfit,
 	Junk: resolveItems([
@@ -1337,13 +1371,26 @@ export const capes: CollectionLogData = {
 		'Runecraft cape(t)',
 		'Thieving cape(t)'
 	]),
-	hoods2: resolveItems(['Farming hood', 'Herblore hood', 'Quest point hood', 'Construct. hood']),
-	capes2: resolveItems(['Farming cape', 'Herblore cape', 'Quest point cape', 'Construct. cape']),
+	hoods2: resolveItems([
+		'Farming hood',
+		'Herblore hood',
+		'Hunter hood',
+		'Construct. hood',
+		'Quest point hood'
+	]),
+	capes2: resolveItems([
+		'Farming cape',
+		'Herblore cape',
+		'Hunter cape',
+		'Construct. cape',
+		'Quest point cape'
+	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
 		'Herblore cape(t)',
-		'Quest point cape (t)',
-		'Construct. cape(t)'
+		'Hunter cape(t)',
+		'Construct. cape(t)',
+		'Quest point cape (t)'
 	])
 };
 
@@ -1495,6 +1542,18 @@ export const skillingLog: CollectionLogData = {
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
 	AgilityArena: agilityArenaLog,
+	Hunter: resolveItems([
+		'Kyatt hat',
+		'Kyatt top',
+		'Kyatt legs',
+		'Spotted cape',
+		'Spottier cape',
+		'Gloves of silence',
+		'Fish sack',
+		'Golden tench',
+		'Baby chinchompa',
+		'Herbi'
+	]),
 	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[]
 };
 
@@ -1665,6 +1724,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Agility Arena',
 		aliases: ['aa', 'agility arena'],
 		items: { 1: agilityArenaLog }
+	},
+	{
+		name: 'Hunter Gear',
+		aliases: ['hunter gear'],
+		items: hunterGear
 	},
 	{
 		name: 'Mahogany Homes',
