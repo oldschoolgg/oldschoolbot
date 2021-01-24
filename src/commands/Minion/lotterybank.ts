@@ -34,7 +34,7 @@ export default class extends BotCommand {
 			return (
 				hasSet.has(i.id) ||
 				allPetIDs.includes(i.id) ||
-				(i.tradeable_on_ge && stackPrice > 5_000_000)
+				(i.tradeable_on_ge && stackPrice > 3_000_000)
 			);
 		});
 
