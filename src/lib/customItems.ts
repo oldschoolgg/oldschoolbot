@@ -13,7 +13,7 @@ export function isCustomItem(itemID: number) {
 	return customItem.includes(itemID);
 }
 
-let hasSet = new Set();
+export const hasSet = new Set();
 
 function setCustomItem(
 	id: number,

@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
+import { hasSet } from '../../lib/customItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { addBanks, itemID } from '../../lib/util';
 import { allPetIDs } from './equippet';
@@ -30,7 +31,11 @@ export default class extends BotCommand {
 		const bankToSell = initBankToSell.filter((i, qty) => {
 			let stackPrice =
 				(this.client.settings!.get(ClientSettings.Prices)[i.id]?.price ?? 1) * qty;
-			return allPetIDs.includes(i.id) || (i.tradeable_on_ge && stackPrice > 5_000_000);
+			return (
+				hasSet.has(i.id) ||
+				allPetIDs.includes(i.id) ||
+				(i.tradeable_on_ge && stackPrice > 5_000_000)
+			);
 		});
 
 		if (bankToSell.amount('Lottery ticket')) {
