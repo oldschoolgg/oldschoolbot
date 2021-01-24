@@ -227,12 +227,6 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async start(msg: KlasaMessage) {
-		if (msg.channel.id !== '789717054902763520') {
-			return msg.send(
-				`Barbarian Assault is limited to the support server, due to the difficulty there is in finding a team, this makes it easier to get a team going. Please use the #barbarian-assault channel in our server. Thank you.`
-			);
-		}
-
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 4,
