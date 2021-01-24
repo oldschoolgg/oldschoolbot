@@ -9,12 +9,14 @@ const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
 const janeChatHead = fs.readFileSync('./src/lib/resources/images/jane.png');
 const santaChatHead = fs.readFileSync('./src/lib/resources/images/santa.png');
 const izzyChatHead = fs.readFileSync('./src/lib/resources/images/izzy.png');
+const alryTheAnglerChatHead = fs.readFileSync('./src/lib/resources/images/alryTheAngler.png');
 
 export const chatHeads = {
 	mejJal: mejJalChatHead,
 	jane: janeChatHead,
 	santa: santaChatHead,
-	izzy: izzyChatHead
+	izzy: izzyChatHead,
+	alryTheAngler: alryTheAnglerChatHead
 };
 
 export default function chatHeadImage({

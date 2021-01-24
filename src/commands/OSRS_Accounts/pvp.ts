@@ -12,11 +12,10 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
-			aliases: ['bh'],
 			description: 'Shows the BH & LMS scores of an account.',
 			usage: '(username:rsn)',
 			requiredPermissions: ['EMBED_LINKS'],
-			examples: ['+bh d3adscene'],
+			examples: ['+pvp d3adscene'],
 			categoryFlags: ['utility']
 		});
 	}
