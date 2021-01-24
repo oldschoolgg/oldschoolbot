@@ -133,7 +133,7 @@ export default class POHCommand extends BotCommand {
 			return msg.send(await this.genImage(poh, true));
 		}
 
-		if (poh.mountedItem === 1111) {
+		if (poh.mountedItem === null) {
 			return msg.send(`You need to build a mount for the item first.`);
 		}
 
