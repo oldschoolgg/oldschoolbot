@@ -85,12 +85,16 @@ export async function generateGearImage(
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
+	const isTransparent = userBgID === 12;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(
-		userBg,
-		(canvas.width - userBg.width) * 0.5,
-		(canvas.height - userBg.height) * 0.5
-	);
+	if (!isTransparent) {
+		ctx.drawImage(
+			userBg,
+			(canvas.width - userBg.width) * 0.5,
+			(canvas.height - userBg.height) * 0.5
+		);
+	}
+
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 	bankTask?.drawBorder(canvas, false);
 
