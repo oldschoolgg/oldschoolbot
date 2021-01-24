@@ -170,7 +170,7 @@ const hunterBuyables: Buyable[] = [
 	{
 		name: 'Magic box',
 		outputItems: {
-			[itemID('Magix box')]: 1
+			[itemID('Magic box')]: 1
 		},
 		gpCost: 1500
 	},
