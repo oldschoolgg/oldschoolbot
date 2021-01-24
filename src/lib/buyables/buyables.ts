@@ -152,6 +152,86 @@ const sepulchreBuyables: Buyable[] = [
 	}
 ];
 
+const hunterBuyables: Buyable[] = [
+	{
+		name: 'Butterfly net',
+		outputItems: {
+			[itemID('Butterfly net')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Butterfly jar',
+		outputItems: {
+			[itemID('Butterfly jar')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Magic box',
+		outputItems: {
+			[itemID('Magix box')]: 1
+		},
+		gpCost: 1500
+	},
+	{
+		name: 'Noose wand',
+		outputItems: {
+			[itemID('Noose wand')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Bird snare',
+		outputItems: {
+			[itemID('Bird snare')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Box trap',
+		outputItems: {
+			[itemID('Box trap')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Teasing stick',
+		outputItems: {
+			[itemID('Teasing stick')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Unlit torch',
+		outputItems: {
+			[itemID('Unlit torch')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Rabbit snare',
+		outputItems: {
+			[itemID('Rabbit snare')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Rope',
+		outputItems: {
+			[itemID('Rope')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Small fishing net',
+		outputItems: {
+			[itemID('Small fishing net')]: 1
+		},
+		gpCost: 500
+	}
+];
+
 const Buyables: Buyable[] = [
 	{
 		name: 'Quest Cape',
@@ -288,7 +368,6 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Fishing bait')]: 1
 		},
-		qpRequired: 0,
 		gpCost: 20
 	},
 	{
@@ -297,7 +376,6 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Jug of water')]: 1
 		},
-		qpRequired: 0,
 		gpCost: 100
 	},
 	{
@@ -324,7 +402,6 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Feather')]: 1
 		},
-		qpRequired: 0,
 		gpCost: 50
 	},
 	{
@@ -342,7 +419,6 @@ const Buyables: Buyable[] = [
 		outputItems: resolveNameBank({
 			'Eye of newt': 1
 		}),
-		qpRequired: 0,
 		gpCost: 300
 	},
 	{
@@ -351,7 +427,6 @@ const Buyables: Buyable[] = [
 		outputItems: resolveNameBank({
 			'Vial of water': 1
 		}),
-		qpRequired: 0,
 		gpCost: 60
 	},
 	{
@@ -360,7 +435,6 @@ const Buyables: Buyable[] = [
 		outputItems: resolveNameBank({
 			Vial: 1
 		}),
-		qpRequired: 0,
 		gpCost: 30
 	},
 	{
@@ -369,7 +443,6 @@ const Buyables: Buyable[] = [
 		outputItems: resolveNameBank({
 			'Cup of hot water': 1
 		}),
-		qpRequired: 0,
 		gpCost: 1500
 	},
 	{
@@ -378,7 +451,6 @@ const Buyables: Buyable[] = [
 		outputItems: resolveNameBank({
 			'Chocolate bar': 1
 		}),
-		qpRequired: 0,
 		gpCost: 1000
 	},
 	{
@@ -387,7 +459,6 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Ball of wool')]: 1
 		},
-		qpRequired: 0,
 		gpCost: 300
 	},
 	{
@@ -395,7 +466,6 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Compost')]: 1
 		},
-		qpRequired: 0,
 		gpCost: 500
 	},
 	{
@@ -406,13 +476,6 @@ const Buyables: Buyable[] = [
 		gpCost: 50_000_000
 	},
 	{
-		name: 'Amylase pack',
-		outputItems: {
-			[itemID('Amylase crystal')]: 100
-		},
-		itemCost: resolveNameBank({ 'Mark of grace': 10 })
-	},
-	{
 		name: 'Mythical cape',
 		outputItems: {
 			[itemID('Mythical cape')]: 1
@@ -420,8 +483,16 @@ const Buyables: Buyable[] = [
 		gpCost: 1_000_000,
 		qpRequired: 205
 	},
+	{
+		name: 'Amylase pack',
+		outputItems: {
+			[itemID('Amylase crystal')]: 100
+		},
+		itemCost: resolveNameBank({ 'Mark of grace': 10 })
+	},
 	...sepulchreBuyables,
-	...constructionBuyables
+	...constructionBuyables,
+	...hunterBuyables
 ];
 
 export default Buyables;

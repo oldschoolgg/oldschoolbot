@@ -19,13 +19,14 @@ import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
+import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Creature, SkillsEnum } from '../../lib/skilling/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -41,6 +42,7 @@ import {
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	HerbloreActivityTaskOptions,
+	HunterActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -58,6 +60,7 @@ import {
 	formatDuration,
 	itemID,
 	itemNameFromID,
+	stringMatches,
 	toTitleCase,
 	Util
 } from '../../lib/util';
@@ -412,6 +415,29 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing the **Champion's Challenge**. ${formattedDuration}`;
 			}
 
+			case Activity.Hunter: {
+				const data = currentTask as HunterActivityTaskOptions;
+
+				const creature = Hunter.Creatures.find(creature =>
+					creature.aliases.some(
+						alias =>
+							stringMatches(alias, data.creatureName) ||
+							stringMatches(alias.split(' ')[0], data.creatureName)
+					)
+				);
+				return `${this.minionName} is currently hunting ${data.quantity}x ${
+					creature!.name
+				}. ${formattedDuration}`;
+			}
+
+			case Activity.Birdhouse: {
+				return `${this.minionName} is currently doing a bird house run. ${formattedDuration}`;
+			}
+
+			case Activity.AerialFishing: {
+				return `${this.minionName} is currently aerial fishing. ${formattedDuration}`;
+			}
+
 			case Activity.Construction: {
 				const data = currentTask as ConstructionActivityTaskOptions;
 				return `${this.minionName} is currently building ${data.quantity}x ${itemNameFromID(
@@ -431,6 +457,10 @@ export default class extends Extendable {
 
 	getMinigameScore(this: KlasaUser, id: MinigameIDsEnum) {
 		return this.settings.get(UserSettings.MinigameScores)[id] ?? 0;
+	}
+
+	getCreatureScore(this: KlasaUser, creature: Creature) {
+		return this.settings.get(UserSettings.CreatureScores)[creature.id] ?? 0;
 	}
 
 	// @ts-ignore 2784
@@ -631,6 +661,18 @@ export default class extends Extendable {
 		return this.settings.update(
 			UserSettings.MinigameScores,
 			addItemToBank(currentMinigameScores, minigameID, amountToAdd)
+		);
+	}
+
+	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
+
+		this.log(`had Quantity[${amountToAdd}] Score added to Creature[${creatureID}]`);
+
+		return this.settings.update(
+			UserSettings.CreatureScores,
+			addItemToBank(currentCreatureScores, creatureID, amountToAdd)
 		);
 	}
 }

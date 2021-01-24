@@ -580,6 +580,69 @@ const ornamentKits: Createable[] = [
 	}
 ];
 
+const hunterClothing: Createable[] = [
+	{
+		name: 'Polar camouflage gear',
+		inputItems: resolveNameBank({ 'Polar kebbit fur': 4 }),
+		outputItems: resolveNameBank({ 'Polar camo top': 1, 'Polar camo legs': 1 }),
+		GPCost: 40
+	},
+	{
+		name: 'Woodland camouflage gear',
+		inputItems: resolveNameBank({ 'Common kebbit fur': 4 }),
+		outputItems: resolveNameBank({ 'Wood camo top': 1, 'Wood camo legs': 1 }),
+		GPCost: 40
+	},
+	{
+		name: 'Jungle camouflage gear',
+		inputItems: resolveNameBank({ 'Feldip weasel fur': 4 }),
+		outputItems: resolveNameBank({ 'Jungle camo top': 1, 'Jungle camo legs': 1 }),
+		GPCost: 40
+	},
+	{
+		name: 'Desert camouflage gear',
+		inputItems: resolveNameBank({ 'Desert devil fur': 4 }),
+		outputItems: resolveNameBank({ 'Desert camo top': 1, 'Desert camo legs': 1 }),
+		GPCost: 40
+	},
+	{
+		name: 'Larupia hunter gear',
+		inputItems: resolveNameBank({ 'Larupia fur': 1, 'Tatty larupia fur': 2 }),
+		outputItems: resolveNameBank({ 'Larupia hat': 1, 'Larupia top': 1, 'Larupia legs': 1 }),
+		GPCost: 700
+	},
+	{
+		name: 'Graahk hunter gear',
+		inputItems: resolveNameBank({ 'Graahk fur': 1, 'Tatty graahk fur': 2 }),
+		outputItems: resolveNameBank({ 'Graahk headdress': 1, 'Graahk top': 1, 'Graahk legs': 1 }),
+		GPCost: 1000
+	},
+	{
+		name: 'Kyatt hunter gear',
+		inputItems: resolveNameBank({ 'Kyatt fur': 1, 'Tatty kyatt fur': 2 }),
+		outputItems: resolveNameBank({ 'Kyatt hat': 1, 'Kyatt top': 1, 'Kyatt legs': 1 }),
+		GPCost: 1400
+	},
+	{
+		name: 'Spotted cape',
+		inputItems: resolveNameBank({ 'Spotted kebbit fur': 2 }),
+		outputItems: resolveNameBank({ 'Spotted cape': 1 }),
+		GPCost: 400
+	},
+	{
+		name: 'Spottier cape',
+		inputItems: resolveNameBank({ 'Dashing kebbit fur': 2 }),
+		outputItems: resolveNameBank({ 'Spottier cape': 1 }),
+		GPCost: 800
+	},
+	{
+		name: 'Gloves of silence',
+		inputItems: resolveNameBank({ 'Dark kebbit fur': 2 }),
+		outputItems: resolveNameBank({ 'Gloves of silence': 1 }),
+		GPCost: 600
+	}
+];
+
 const Createables: Createable[] = [
 	{
 		name: 'Godsword blade',
@@ -4063,7 +4126,8 @@ const Createables: Createable[] = [
 	...crystalTools,
 	...brokenItems,
 	...lockedItems,
-	...ornamentKits
+	...ornamentKits,
+	...hunterClothing
 ];
 
 export default Createables;
