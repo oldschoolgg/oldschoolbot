@@ -239,5 +239,9 @@ export async function generateGearImage(
 		}
 	}
 
+	if (isTransparent) {
+		return canvas.toBuffer('image/png');
+	}
+
 	return canvas.toBuffer();
 }
