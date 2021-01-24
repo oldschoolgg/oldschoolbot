@@ -1,9 +1,11 @@
 import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity, Tasks } from '../constants';
 import { PatchTypes } from '../farming';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -104,6 +106,14 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	zahur: boolean;
 }
 
+export interface HunterActivityTaskOptions extends ActivityTaskOptions {
+	creatureName: string;
+	channelID: string;
+	quantity: number;
+	usingHuntPotion: boolean;
+	wildyPeak: Peak | null;
+}
+
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
@@ -122,6 +132,19 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	getPatchType: string;
 	planting: boolean;
 	currentDate: number;
+}
+
+export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
+	birdhouseName: string | null;
+	channelID: string;
+	placing: boolean;
+	gotCraft: boolean;
+	birdhouseData: BirdhouseData;
+	currentDate: number;
+}
+
+export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {

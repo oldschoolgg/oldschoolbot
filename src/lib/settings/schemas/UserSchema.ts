@@ -4,6 +4,7 @@ import Farming from '../../farming';
 import defaultContracts from '../../farming/defaultContracts';
 import { FarmingPatchTypes } from '../../farming/types';
 import Gear from '../../gear';
+import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
@@ -21,6 +22,7 @@ Client.defaultUserSchema
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
+	.add('creatureScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
 	.add('minigameScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
@@ -43,6 +45,7 @@ Client.defaultUserSchema
 			.add('farmingContract', 'any', { default: defaultContracts })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultPay', 'boolean', { default: false })
+			.add('birdhouseTraps', 'any', { default: defaultBirdHouseTrap })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder
@@ -72,6 +75,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Thieving, 'integer', { default: 0 })
 			.add(SkillsEnum.Farming, 'integer', { default: 0 })
 			.add(SkillsEnum.Herblore, 'integer', { default: 0 })
+			.add(SkillsEnum.Hunter, 'integer', { default: 0 })
 			.add(SkillsEnum.Construction, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
