@@ -22,6 +22,7 @@ const FOLDERS = [
 	'mounted_cape',
 	'mounted_fish',
 	'mounted_head',
+	'mounted_item',
 	'throne',
 	'jewellery_box',
 	'spellbook_altar',
@@ -89,7 +90,30 @@ export default class PoHImage extends Task {
 			const [placeholder, coordArr] = objects;
 			for (const obj of coordArr) {
 				const [x, y] = obj;
-				const id = poh[key] ?? placeholder;
+				let id = poh[key] ?? placeholder;
+				const isMountedItem = key === 'mountedItem' && id !== 1111;
+				if (isMountedItem) {
+					const hasCustomItem = id !== 1112;
+					const mount = this.imageCache.get(1112)!;
+					const { width, height } = mount;
+					const mX = x - width / 2;
+					const mY = y - height / 2;
+					ctx.drawImage(mount, mX, mY, width, height);
+					if (hasCustomItem) {
+						const image = await this.client.tasks.get('bankImage')!.getItemImage(id, 1);
+						const h = image.height * 0.8;
+						const w = image.width * 0.8;
+						ctx.drawImage(
+							image,
+							mX + (mount.width - w) / 2,
+							mY + (mount.height - h) / 2,
+							w,
+							h
+						);
+					}
+
+					continue;
+				}
 				const image = this.imageCache.get(id);
 				if (!image) throw new Error(`Missing image: ${id}.`);
 				const { width, height } = image;
