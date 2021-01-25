@@ -113,8 +113,8 @@ export default class extends Task {
 		}
 
 		let debug = production
-			? `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``
-			: '';
+			? ''
+			: `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
