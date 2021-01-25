@@ -70,7 +70,7 @@ export const NexMonster: KillableMonster = {
 				.tertiary(250, 'Ancient emblem')
 				.tertiary(5, 'Tradeable mystery box')
 				.tertiary(5, 'Clue scroll grandmaster')
-				.tertiary(1000, 'Bloodsoaked feather')
+				.tertiary(3000, 'Bloodsoaked feather')
 		)
 	},
 	emoji: '',

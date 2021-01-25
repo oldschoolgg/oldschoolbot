@@ -1,3 +1,4 @@
+import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } from './nex';
 import Agility, { gracefulItems } from './skilling/skills/agility';
 import { removeDuplicatesFromArray } from './util';
 import resolveItems from './util/resolveItems';
@@ -140,6 +141,15 @@ export const carpenterOutfit = resolveItems([
 	"Carpenter's trousers",
 	"Carpenter's boots"
 ]);
+
+export const nexLog = {
+	torva: torvaOutfit,
+	pernix: pernixOutfit,
+	virtus: virtusOutfit,
+	weapons: ancientWeapons,
+	keys: allKeyItems,
+	other: resolveItems(['Bloodsoaked feather', 'Ancient emblem'])
+};
 
 export const mahoganyHomesLog: CollectionLogData = {
 	Carpenter: carpenterOutfit,
@@ -1761,5 +1771,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Mahogany Homes',
 		aliases: ['mh', 'mahogany homes'],
 		items: mahoganyHomesLog
+	},
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		items: nexLog
 	}
 ];

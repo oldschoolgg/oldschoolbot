@@ -314,17 +314,17 @@ export function initCustomItems() {
 
 	setCustomItem(432, 'Torva full helm', getOSItem('Rune full helm'), {
 		equipment: {
-			attack_stab: 18,
+			attack_stab: 35,
 			attack_slash: 18,
 			attack_crush: 18,
 			attack_magic: -5,
 			attack_ranged: 0,
 
-			defence_stab: 50,
-			defence_slash: 50,
-			defence_crush: 50,
+			defence_stab: 70,
+			defence_slash: 75,
+			defence_crush: 75,
 			defence_magic: -5,
-			defence_ranged: 20,
+			defence_ranged: 55,
 
 			melee_strength: 5,
 			ranged_strength: 0,
@@ -336,17 +336,17 @@ export function initCustomItems() {
 	});
 	setCustomItem(709, 'Torva platebody', getOSItem('Rune platebody'), {
 		equipment: {
-			attack_stab: 18,
+			attack_stab: 35,
 			attack_slash: 18,
 			attack_crush: 18,
 			attack_magic: -5,
 			attack_ranged: 0,
 
-			defence_stab: 150,
+			defence_stab: 160,
 			defence_slash: 150,
 			defence_crush: 150,
 			defence_magic: 0,
-			defence_ranged: 0,
+			defence_ranged: 165,
 
 			melee_strength: 5,
 			ranged_strength: 0,
@@ -358,17 +358,17 @@ export function initCustomItems() {
 	});
 	setCustomItem(2404, 'Torva platelegs', getOSItem('Rune platelegs'), {
 		equipment: {
-			attack_stab: 18,
+			attack_stab: 35,
 			attack_slash: 18,
 			attack_crush: 18,
 			attack_magic: -5,
 			attack_ranged: 0,
 
-			defence_stab: 110,
-			defence_slash: 110,
-			defence_crush: 110,
+			defence_stab: 130,
+			defence_slash: 130,
+			defence_crush: 130,
 			defence_magic: 0,
-			defence_ranged: 0,
+			defence_ranged: 130,
 
 			melee_strength: 5,
 			ranged_strength: 0,
@@ -380,7 +380,7 @@ export function initCustomItems() {
 	});
 	setCustomItem(2838, 'Torva boots', getOSItem('Rune boots'), {
 		equipment: {
-			attack_stab: 2,
+			attack_stab: 22,
 			attack_slash: 2,
 			attack_crush: 2,
 			attack_magic: -5,
@@ -390,7 +390,7 @@ export function initCustomItems() {
 			defence_slash: 24,
 			defence_crush: 24,
 			defence_magic: 0,
-			defence_ranged: 15,
+			defence_ranged: 35,
 
 			melee_strength: 5,
 			ranged_strength: 0,
@@ -402,7 +402,7 @@ export function initCustomItems() {
 	});
 	setCustomItem(4273, 'Torva gloves', getOSItem('Rune gloves'), {
 		equipment: {
-			attack_stab: 16,
+			attack_stab: 26,
 			attack_slash: 16,
 			attack_crush: 16,
 			attack_magic: -5,
@@ -412,7 +412,7 @@ export function initCustomItems() {
 			defence_slash: 18,
 			defence_crush: 18,
 			defence_magic: 0,
-			defence_ranged: 24,
+			defence_ranged: 35,
 
 			melee_strength: 5,
 			ranged_strength: 0,
