@@ -287,7 +287,8 @@ export const enum BitField {
 	IsPatronTier5 = 6,
 	isModerator = 7,
 	isContributor = 8,
-	BypassAgeRestriction = 9
+	BypassAgeRestriction = 9,
+	HasHosidiusWallkit = 10
 }
 
 export const enum PatronTierID {

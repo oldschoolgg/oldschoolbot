@@ -80,6 +80,38 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 14,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.ChaosDruid.id,
+		name: Monsters.ChaosDruid.name,
+		aliases: Monsters.ChaosDruid.aliases,
+		timeToFinish: Time.Second * 17.5,
+		table: Monsters.ChaosDruid,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 1,
+		qpRequired: 0,
+		respawnTime: Time.Second,
+		healAmountNeeded: 10,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.Unicorn.id,
+		name: Monsters.Unicorn.name,
+		aliases: Monsters.Unicorn.aliases,
+		timeToFinish: Time.Second * 15.5,
+		table: Monsters.Unicorn,
+		emoji: '',
+		wildy: false,
+		canBeKilled: false,
+		difficultyRating: 1,
+		qpRequired: 0,
+		respawnTime: Time.Second * 10,
+		healAmountNeeded: 8,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
 
