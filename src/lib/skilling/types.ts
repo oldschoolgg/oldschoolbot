@@ -1,3 +1,6 @@
+import { Bank } from 'oldschooljs';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
 import { Emoji } from '../constants';
 import { ItemBank } from '../types';
 
@@ -16,6 +19,7 @@ export enum SkillsEnum {
 	Farming = 'farming',
 	Herblore = 'herblore',
 	Thieving = 'thieving',
+	Hunter = 'hunter',
 	Construction = 'construction'
 }
 
@@ -221,4 +225,39 @@ export interface Plant {
 	additionalPatchesByFarmLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+}
+
+export enum HunterTechniqueEnum {
+	AerialFishing = 'aerial fishing',
+	BirdSnaring = 'bird snaring',
+	BoxTrapping = 'box trapping',
+	ButterflyNetting = 'butterfly netting',
+	DeadfallTrapping = 'deadfall trapping',
+	Falconry = 'falconry',
+	MagicBoxTrapping = 'magic box trapping',
+	NetTrapping = 'net trapping',
+	PitfallTrapping = 'pitfall trapping',
+	RabbitSnaring = 'rabbit snaring',
+	Tracking = 'tracking'
+}
+
+export interface Creature {
+	name: string;
+	id: number;
+	aliases: string[];
+	level: number;
+	hunterXP: number;
+	fishLvl?: number;
+	fishingXP?: number;
+	itemsRequired?: Bank;
+	itemsConsumed?: Bank;
+	table: LootTable;
+	huntTechnique: HunterTechniqueEnum;
+	multiTraps?: boolean;
+	wildy?: boolean;
+	prayerLvl?: number;
+	catchTime: number;
+	qpRequired?: number;
+	slope: number;
+	intercept: number;
 }

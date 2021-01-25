@@ -17,7 +17,7 @@ import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
-import { SkillsEnum } from '../skilling/types';
+import { Creature, SkillsEnum } from '../skilling/types';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
@@ -34,6 +34,7 @@ declare module 'klasa' {
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
 		public _badgeCache: Map<string, string>;
+		public _peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
 		osggDB?: Db;
 		commentStream?: CommentStream;
@@ -110,6 +111,10 @@ declare module 'discord.js' {
 			minigameID: number,
 			numberToAdd?: number
 		): Promise<SettingsUpdateResult>;
+		incrementCreatureScore(
+			creatureID: number,
+			numberToAdd?: number
+		): Promise<SettingsUpdateResult>;
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
@@ -155,6 +160,10 @@ declare module 'discord.js' {
 		 * Returns minigame score
 		 */
 		getMinigameScore(id: MinigameIDsEnum): number;
+		/**
+		 * Returns Creature score
+		 */
+		getCreatureScore(creature: Creature): number;
 		/**
 		 * Gets the CL count for an item.
 		 */

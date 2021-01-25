@@ -24,6 +24,9 @@ export class PoHTable extends BaseEntity {
 	@Column({ type: 'integer', name: 'mounted_head', default: null, nullable: true })
 	public mountedHead!: number | null;
 
+	@Column({ type: 'integer', name: 'mounted_item', default: null, nullable: true })
+	public mountedItem!: number | null;
+
 	@Column({ type: 'integer', name: 'jewellery_box', default: null, nullable: true })
 	public jewelleryBox!: number | null;
 

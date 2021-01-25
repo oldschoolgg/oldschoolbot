@@ -9,6 +9,7 @@ import { Time } from '../../lib/constants';
 import { Minigames } from '../../lib/minions/data/minigames';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
+import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
@@ -105,7 +106,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -482,6 +483,37 @@ WHERE u."logBankLength" > 300 ORDER BY u."logBankLength" DESC;`
 						.join('\n')
 				),
 			`${course.name} Laps Leaderboard`
+		);
+	}
+
+	async creatures(msg: KlasaMessage, [creatureName = '']: [string]) {
+		const creature = Hunter.Creatures.find(creature =>
+			creature.aliases.some(
+				alias =>
+					stringMatches(alias, creatureName) ||
+					stringMatches(alias.split(' ')[0], creatureName)
+			)
+		);
+
+		if (!creature) return msg.send(`Thats not a valid creature.`);
+
+		const data: { id: string; creatureCount: number }[] = await this.query(
+			`SELECT id, "creatureScores"->>'${creature.id}' as "creatureCount" FROM users WHERE "creatureScores"->>'${creature.id}' IS NOT NULL ORDER BY ("creatureScores"->>'${creature.id}')::int DESC LIMIT 50;`
+		);
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(data, 10)
+				.map(subList =>
+					subList
+						.map(
+							({ id, creatureCount }) =>
+								`**${this.getUsername(id)}:** ${creatureCount} Catched`
+						)
+						.join('\n')
+				),
+			`Catch Leaderboard for ${creature.name}`
 		);
 	}
 
