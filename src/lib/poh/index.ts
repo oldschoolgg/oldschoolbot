@@ -59,7 +59,7 @@ export interface PoHObject {
 }
 
 export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
-	mountedHead: [15382, [[350, GROUND_FLOOR_Y - 60]]],
+	mountedHead: [15382, [[430, GROUND_FLOOR_Y - 60]]],
 	mountedFish: [15383, [[240, GROUND_FLOOR_Y - 70]]],
 
 	throne: [15426, [[HOUSE_WIDTH / 2, GROUND_FLOOR_Y]]],
@@ -67,7 +67,7 @@ export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
 	jewelleryBox: [29142, [[369, GROUND_FLOOR_Y]]],
 	prayerAltar: [15270, [[175, TOP_FLOOR_Y]]],
 	spellbookAltar: [29140, [[60, TOP_FLOOR_Y]]],
-	mountedItem: [1111, [[120, GROUND_FLOOR_Y - 50]]],
+	mountedItem: [1111, [[80, GROUND_FLOOR_Y - 70]]],
 
 	// Dungeon
 	guard: [15323, [[350, DUNGEON_FLOOR_Y]]],

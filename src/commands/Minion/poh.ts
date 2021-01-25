@@ -2,15 +2,28 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { Time } from '../../lib/constants';
+import { BitField, Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { itemNameFromID, stringMatches } from '../../lib/util';
+import { itemID, itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import PoHImage from '../../tasks/pohImage';
+
+const wallkits = [
+	{
+		bitfield: null,
+		name: 'Default',
+		imageID: 1
+	},
+	{
+		bitfield: BitField.HasHosidiusWallkit,
+		name: 'Hosidius',
+		imageID: 2
+	}
+];
 
 export default class POHCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -26,7 +39,7 @@ export default class POHCommand extends BotCommand {
 				'+poh destroy demonic throne'
 			],
 			subcommands: true,
-			usage: '[build|destroy|items|mountItem] [input:...str]',
+			usage: '[build|destroy|items|mountItem|wallkit] [input:...str]',
 			usageDelim: ' '
 		});
 	}
@@ -35,6 +48,39 @@ export default class POHCommand extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const poh = await msg.author.getPOH();
 		return msg.send(await this.genImage(poh));
+	}
+
+	@requiresMinion
+	async wallkit(msg: KlasaMessage, [input]: [string]) {
+		const poh = await msg.author.getPOH();
+		const currentWallkit = wallkits.find(i => i.imageID === poh.backgroundID)!;
+		const selectedKit = wallkits.find(i => stringMatches(i.name, input));
+
+		if (!input || !selectedKit) {
+			return msg.send(
+				`Your current wallkit is the '${
+					currentWallkit.name
+				}' wallkit. The available wallkits are: ${wallkits.map(i => i.name).join(', ')}.`
+			);
+		}
+
+		if (currentWallkit.imageID === selectedKit.imageID) {
+			return msg.send(`This is already your wallkit.`);
+		}
+
+		const bitfield = msg.author.settings.get(UserSettings.BitField);
+		const userBank = msg.author.bank();
+		if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
+			if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
+				await msg.author.removeItemFromBank(itemID('Hosidius blueprints'));
+				msg.author.settings.update(UserSettings.BitField, selectedKit.bitfield);
+			} else {
+				return msg.send(`You haven't unlocked the ${selectedKit.name} wallkit!`);
+			}
+		}
+		poh.backgroundID = selectedKit.imageID;
+		await poh.save();
+		return msg.send(``, await this.genImage(poh));
 	}
 
 	async items(msg: KlasaMessage) {

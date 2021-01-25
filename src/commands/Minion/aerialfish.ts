@@ -105,6 +105,12 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (!Number(tripTime)) {
+			return msg.send(
+				`Specify a valid trip length for example \`${msg.cmdPrefix}aerialfish 10\` will send you out on a 10 minute trip.`
+			);
+		}
+
 		let tripLength = Time.Minute * tripTime;
 
 		if (tripLength > msg.author.maxTripLength) {
