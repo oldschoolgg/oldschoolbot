@@ -312,25 +312,406 @@ export function initCustomItems() {
 	setCustomItem(11041, 'Key piece 3', getOSItem('Key'));
 	setCustomItem(11042, 'Key piece 4', getOSItem('Key'));
 
-	// setCustomItem(432, 'Torva full helm', getOSItem('Rune full helm'));
-	// setCustomItem(709, 'Torva platebody', getOSItem('Rune platebody'));
-	// setCustomItem(2404, 'Torva platelegs', getOSItem('Rune platelegs'));
-	// setCustomItem(2838, 'Torva boots', getOSItem('Rune boots'));
-	// setCustomItem(4273, 'Torva gloves', getOSItem('Rune gloves'));
+	setCustomItem(432, 'Torva full helm', getOSItem('Rune full helm'), {
+		equipment: {
+			attack_stab: 18,
+			attack_slash: 18,
+			attack_crush: 18,
+			attack_magic: -5,
+			attack_ranged: 0,
 
-	// setCustomItem(601, 'Pernix cowl', getOSItem('Rune full helm'));
-	// setCustomItem(605, 'Pernix body', getOSItem('Rune platebody'));
-	// setCustomItem(4272, 'Pernix chaps', getOSItem('Rune platelegs'));
-	// setCustomItem(758, 'Pernix boots', getOSItem('Rune boots'));
-	// setCustomItem(759, 'Pernix gloves', getOSItem('Rune gloves'));
+			defence_stab: 50,
+			defence_slash: 50,
+			defence_crush: 50,
+			defence_magic: -5,
+			defence_ranged: 20,
 
-	// setCustomItem(788, 'Virtus mask', getOSItem('Rune full helm'));
-	// setCustomItem(983, 'Virtus robe top', getOSItem('Rune platebody'));
-	// setCustomItem(2409, 'Virtus robe legs', getOSItem('Rune platelegs'));
-	// setCustomItem(9654, 'Virtus boots', getOSItem('Rune boots'));
-	// setCustomItem(2423, 'Virtus gloves', getOSItem('Rune gloves'));
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	});
+	setCustomItem(709, 'Torva platebody', getOSItem('Rune platebody'), {
+		equipment: {
+			attack_stab: 18,
+			attack_slash: 18,
+			attack_crush: 18,
+			attack_magic: -5,
+			attack_ranged: 0,
 
-	// setCustomItem(2832, 'Zaryte bow', getOSItem('Twisted bow'));
-	// setCustomItem(2834, 'Virtus wand', getOSItem('Master wand'));
-	// setCustomItem(2836, 'Virtus book', getOSItem('Holy book'));
+			defence_stab: 150,
+			defence_slash: 150,
+			defence_crush: 150,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	});
+	setCustomItem(2404, 'Torva platelegs', getOSItem('Rune platelegs'), {
+		equipment: {
+			attack_stab: 18,
+			attack_slash: 18,
+			attack_crush: 18,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 110,
+			defence_slash: 110,
+			defence_crush: 110,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	});
+	setCustomItem(2838, 'Torva boots', getOSItem('Rune boots'), {
+		equipment: {
+			attack_stab: 2,
+			attack_slash: 2,
+			attack_crush: 2,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 24,
+			defence_slash: 24,
+			defence_crush: 24,
+			defence_magic: 0,
+			defence_ranged: 15,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	});
+	setCustomItem(4273, 'Torva gloves', getOSItem('Rune gloves'), {
+		equipment: {
+			attack_stab: 16,
+			attack_slash: 16,
+			attack_crush: 16,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 18,
+			defence_slash: 18,
+			defence_crush: 18,
+			defence_magic: 0,
+			defence_ranged: 24,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	});
+
+	setCustomItem(601, 'Pernix cowl', getOSItem('Rune full helm'), {
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 20,
+
+			defence_stab: 25,
+			defence_slash: 25,
+			defence_crush: 17,
+			defence_magic: 25,
+			defence_ranged: 58,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	});
+	setCustomItem(605, 'Pernix body', getOSItem('Rune platebody'), {
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 45,
+
+			defence_stab: 25,
+			defence_slash: 25,
+			defence_crush: 25,
+			defence_magic: 73,
+			defence_ranged: 62,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	});
+	setCustomItem(4272, 'Pernix chaps', getOSItem('Rune platelegs'), {
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 25,
+
+			defence_stab: 25,
+			defence_slash: 15,
+			defence_crush: 5,
+			defence_magic: 45,
+			defence_ranged: 38,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	});
+	setCustomItem(758, 'Pernix boots', getOSItem('Rune boots'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: -12,
+			attack_ranged: 19,
+
+			defence_stab: 4,
+			defence_slash: 4,
+			defence_crush: 3,
+			defence_magic: 6,
+			defence_ranged: 6,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	});
+	setCustomItem(759, 'Pernix gloves', getOSItem('Rune gloves'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: -5,
+			attack_magic: -5,
+			attack_ranged: 15,
+
+			defence_stab: 4,
+			defence_slash: 4,
+			defence_crush: 1,
+			defence_magic: 27,
+			defence_ranged: 15,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	});
+
+	setCustomItem(788, 'Virtus mask', getOSItem('Rune full helm'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 20,
+			attack_ranged: -3,
+
+			defence_stab: 35,
+			defence_slash: 35,
+			defence_crush: 35,
+			defence_magic: 85,
+			defence_ranged: 75,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	});
+	setCustomItem(983, 'Virtus robe top', getOSItem('Rune platebody'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 45,
+			attack_ranged: -5,
+
+			defence_stab: 44,
+			defence_slash: 44,
+			defence_crush: 55,
+			defence_magic: 65,
+			defence_ranged: 5,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	});
+	setCustomItem(2409, 'Virtus robe legs', getOSItem('Rune platelegs'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 40,
+			attack_ranged: -5,
+
+			defence_stab: 22,
+			defence_slash: 20,
+			defence_crush: 15,
+			defence_magic: 65,
+			defence_ranged: 15,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	});
+	setCustomItem(9654, 'Virtus boots', getOSItem('Rune boots'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 22,
+			attack_ranged: -5,
+
+			defence_stab: 9,
+			defence_slash: 9,
+			defence_crush: 9,
+			defence_magic: 12,
+			defence_ranged: 9,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	});
+	setCustomItem(2423, 'Virtus gloves', getOSItem('Rune gloves'), {
+		equipment: {
+			attack_stab: 15,
+			attack_slash: 15,
+			attack_crush: 15,
+			attack_magic: 22,
+			attack_ranged: 12,
+
+			defence_stab: 9,
+			defence_slash: 9,
+			defence_crush: 9,
+			defence_magic: 12,
+			defence_ranged: 9,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 1,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	});
+
+	setCustomItem(2832, 'Zaryte bow', getOSItem('Twisted bow'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 190,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 2,
+			magic_damage: 0,
+			prayer: 6,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: null
+		}
+	});
+	setCustomItem(2834, 'Virtus wand', getOSItem('Master wand'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 200,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 20,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 15,
+			prayer: 0,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		}
+	});
+	setCustomItem(2836, 'Virtus book', getOSItem('Holy book'), {
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 35,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 25,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 5,
+			slot: EquipmentSlot.Shield,
+			requirements: null
+		}
+	});
+
+	setCustomItem(21807, 'Ancient emblem', getOSItem('Ancient emblem'));
+	setCustomItem(11196, 'Bloodsoaked feather', getOSItem('Feather'));
 }

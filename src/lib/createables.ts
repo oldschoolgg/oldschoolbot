@@ -4127,7 +4127,19 @@ const Createables: Createable[] = [
 	...brokenItems,
 	...lockedItems,
 	...ornamentKits,
-	...hunterClothing
+	...hunterClothing,
+	{
+		name: `Frozen key`,
+		inputItems: resolveNameBank({
+			'Key piece 1': 1,
+			'Key piece 2': 1,
+			'Key piece 3': 1,
+			'Key piece 4': 1
+		}),
+		outputItems: {
+			[itemID(`Frozen key`)]: 1
+		}
+	}
 ];
 
 export default Createables;

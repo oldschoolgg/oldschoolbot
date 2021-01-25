@@ -5,7 +5,6 @@ import { Eatables } from '../../eatables';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { Eatable } from '../../skilling/types';
 import { ItemBank } from '../../types';
-import itemID from '../../util/itemID';
 
 export default function getUserFoodFromBank(
 	user: KlasaUser,
@@ -15,16 +14,7 @@ export default function getUserFoodFromBank(
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove: ItemBank = {};
 
-	let eatables: Eatable[] =
-		user.id === '294448484847976449'
-			? [
-					{
-						name: 'Bucket of sand',
-						id: itemID('Bucket of sand'),
-						healAmount: 5
-					}
-			  ]
-			: Eatables;
+	let eatables: Eatable[] = Eatables;
 
 	// Gets all the eatables in the user bank
 	for (const eatable of eatables.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))) {

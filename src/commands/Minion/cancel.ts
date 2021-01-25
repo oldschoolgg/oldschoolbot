@@ -5,7 +5,7 @@ import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
-import { NightmareActivityTaskOptions } from './../../lib/types/minions';
+import { NexActivityTaskOptions, NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 const options = {
 	max: 1,
@@ -49,6 +49,15 @@ export default class extends BotCommand {
 			if (data.users.length > 1) {
 				return msg.send(
 					`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
+				);
+			}
+		}
+
+		if (currentTask.type === Activity.Nex) {
+			const data = currentTask as NexActivityTaskOptions;
+			if (data.users.length > 1) {
+				return msg.send(
+					`${msg.author.minionName} is fighting Nex with a team, they cant leave their team!`
 				);
 			}
 		}

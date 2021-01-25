@@ -4,6 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { maxOffenceStats } from '../gear/data/maxGearStats';
 import { GearSetupTypes } from '../gear/types';
+import { NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 
 export function getNexGearStats(

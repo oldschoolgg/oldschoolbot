@@ -6,6 +6,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Emoji } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { allNexItems, NexMonster } from '../../../lib/nex';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NexActivityTaskOptions } from '../../../lib/types/minions';

@@ -7,7 +7,7 @@ import { allPetIDs } from '../commands/Minion/equippet';
 import { coxLog, customBossLog } from './collectionLog';
 import { Emoji } from './constants';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
-import { allKeyPieces } from './nex';
+import { allKeyPieces, allNexItems } from './nex';
 import BirthdayPresentTable from './simulation/birthdayPresent';
 import CasketTable from './simulation/casket';
 import CrystalChestTable from './simulation/crystalChest';
@@ -388,10 +388,12 @@ const cantBeDropped = [
 		'Green partyhat',
 		'White partyhat',
 		'Christmas cracker',
-		'Santa hat'
+		'Santa hat',
+		'Ancient emblem'
 	]),
 	...allPetIDs,
-	...allKeyPieces
+	...allKeyPieces,
+	...allNexItems
 ] as number[];
 
 export const tmbTable = Items.filter(i => {

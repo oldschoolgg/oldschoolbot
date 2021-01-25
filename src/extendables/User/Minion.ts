@@ -45,6 +45,7 @@ import {
 	HunterActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	NexActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	RaidsActivityTaskOptions,
@@ -447,6 +448,11 @@ export default class extends Extendable {
 
 			case Activity.MahoganyHomes: {
 				return `${this.minionName} is currently doing Mahogany Homes. ${formattedDuration}`;
+			}
+			case Activity.Nex: {
+				const data = currentTask as NexActivityTaskOptions;
+
+				return `${this.minionName} is currently killing Nex, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 		}
 	}

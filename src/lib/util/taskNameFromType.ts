@@ -84,7 +84,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.ConstructionActivity;
 		case Activity.MahoganyHomes:
 			return Tasks.MahoganyHomes;
-		// case Activity.Nex:
-		// 	return Tasks.NexActivity;
+		case Activity.Nex:
+			return Tasks.NexActivity;
 	}
 }
