@@ -12,8 +12,8 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 43,
 		fishingXP: 11.5,
 		table: new LootTable()
-		  .tertiary(20_000, 'Golden tench')
-		  .tertiary(636_833, 'Heron'),
+		.tertiary(20_000, 'Golden tench')
+		.tertiary(636_833, 'Heron'),
 		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
@@ -28,8 +28,8 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 56,
 		fishingXP: 40,
 		table: new LootTable()
-		  .tertiary(20_000, 'Golden tench')
-		  .tertiary(636_833, 'Heron'),
+		.tertiary(20_000, 'Golden tench')
+		.tertiary(636_833, 'Heron'),
 		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
@@ -44,8 +44,8 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 73,
 		fishingXP: 65,
 		table: new LootTable()
-		  .tertiary(20_000, 'Golden tench')
-		  .tertiary(636_833, 'Heron'),
+		.tertiary(20_000, 'Golden tench')
+		.tertiary(636_833, 'Heron'),
 		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
@@ -60,8 +60,8 @@ const aerialFishingCreatures: Creature[] = [
 		fishLvl: 91,
 		fishingXP: 100,
 		table: new LootTable()
-		  .tertiary(20_000, 'Golden tench')
-		  .tertiary(636_833, 'Heron'),
+		.tertiary(20_000, 'Golden tench')
+		.tertiary(636_833, 'Heron'),
 		huntTechnique: HunterTechniqueEnum.AerialFishing,
 		catchTime: 2,
 		slope: 0,
