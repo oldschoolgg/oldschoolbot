@@ -46,7 +46,6 @@ export default class extends Task {
 
 			let teamFailed = false;
 			for (const user of parsedUsers.sort((a, b) => b.chanceOfDeath - a.chanceOfDeath)) {
-				console.log({ user });
 				const currentDeaths = Object.keys(deaths).length;
 				if (calcWhatPercent(currentDeaths, users.length) >= 50) {
 					// If over 50% of the team died, the entire team dies.
