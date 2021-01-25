@@ -36,12 +36,14 @@ const FOLDERS = [
 ];
 
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
+const bg2 = fs.readFileSync('./src/lib/poh/images/bg_2.jpg');
 
 export default class PoHImage extends Task {
 	public imageCache: Map<number, Image> = new Map();
-	public bgImage!: Image;
+	public bgImages: Image[] = [];
 	async init() {
-		this.bgImage = await canvasImageFromBuffer(bg);
+		this.bgImages.push(await canvasImageFromBuffer(bg));
+		this.bgImages.push(await canvasImageFromBuffer(bg2));
 		for (const folder of FOLDERS) {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);
@@ -55,14 +57,15 @@ export default class PoHImage extends Task {
 		}
 	}
 
-	generateCanvas(): [Canvas, CanvasRenderingContext2D] {
-		const canvas = createCanvas(this.bgImage.width, this.bgImage.height);
+	generateCanvas(bgId: number): [Canvas, CanvasRenderingContext2D] {
+		const bgImage = this.bgImages[bgId - 1]!;
+		const canvas = createCanvas(bgImage.width, bgImage.height);
 
 		const ctx = canvas.getContext('2d');
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(this.bgImage, 0, 0, this.bgImage.width, this.bgImage.height);
+		ctx.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height);
 
 		return [canvas, ctx];
 	}
@@ -85,7 +88,7 @@ export default class PoHImage extends Task {
 	}
 
 	async run(poh: PoHTable, showSpaces = true) {
-		const [canvas, ctx] = this.generateCanvas();
+		const [canvas, ctx] = this.generateCanvas(poh.backgroundID);
 		for (const [key, objects] of objectEntries(Placeholders)) {
 			const [placeholder, coordArr] = objects;
 			for (const obj of coordArr) {
