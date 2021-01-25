@@ -389,7 +389,8 @@ const cantBeDropped = [
 		'White partyhat',
 		'Christmas cracker',
 		'Santa hat',
-		'Ancient emblem'
+		'Ancient emblem',
+		'Bloodsoaked feather'
 	]),
 	...allPetIDs,
 	...allKeyPieces,
