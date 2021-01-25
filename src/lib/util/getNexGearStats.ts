@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { maxOffenceStats } from '../gear/data/maxGearStats';
-import { GearSetupTypes } from '../gear/types';
+import { GearSetupTypes, GearStats } from '../gear/types';
 import { NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 
@@ -19,6 +19,7 @@ export function getNexGearStats(
 		percentWeaponAttackRanged: number;
 		attackRangedStat: number;
 		kc: number;
+		gearStats: GearStats;
 	},
 	string
 ] {
@@ -26,8 +27,8 @@ export function getNexGearStats(
 	const weapon = user.equippedWeapon(GearSetupTypes.Range);
 	const gearStats = user.setupStats(GearSetupTypes.Range);
 	const percentRangeStrength = calcWhatPercent(
-		gearStats.attack_ranged,
-		maxOffenceStats.attack_ranged
+		gearStats.attack_ranged + gearStats.ranged_strength,
+		maxOffenceStats.attack_ranged + gearStats.ranged_strength
 	);
 	const attackRangedStat = weapon?.equipment?.attack_ranged ?? 0;
 	const percentWeaponAttackRanged = Math.min(calcWhatPercent(attackRangedStat, 95), 100);
@@ -84,7 +85,8 @@ export function getNexGearStats(
 			totalGearPercent,
 			percentWeaponAttackRanged,
 			attackRangedStat,
-			kc
+			kc,
+			gearStats
 		},
 		debugString
 	];

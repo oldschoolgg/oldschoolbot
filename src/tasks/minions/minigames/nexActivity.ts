@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
@@ -112,14 +113,18 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
-		let debug = `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
+		let debug = production
+			? `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``
+			: '';
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
 				queuedMessageSend(
 					this.client,
 					channelID,
-					`Your team all died, and failed to defeat Nex. ${debug}`
+					`${users
+						.map(id => `<@${id}>`)
+						.join(' ')} Your team all died, and failed to defeat Nex. ${debug}`
 				);
 			} else {
 				queuedMessageSend(this.client, channelID, resultStr + debug);

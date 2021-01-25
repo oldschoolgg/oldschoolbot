@@ -1,5 +1,7 @@
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
+import { production } from '../../config.example';
 import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
@@ -120,50 +122,78 @@ export default class extends BotCommand {
 		};
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
-
+		let debug = [];
 		let effectiveTime = NexMonster.timeToFinish;
+		const isSolo = users.length === 1;
+
 		for (const user of users) {
 			const [data] = getNexGearStats(
 				user,
 				users.map(u => u.id)
 			);
+			debug.push(`${user.username} debug messages:`);
 
 			// Special inquisitor outfit damage boost
 			const rangeGear = user.settings.get(UserSettings.Gear.Range);
 			if (hasArrayOfItemsEquipped(pernixOutfit, rangeGear)) {
-				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
+				const percent = isSolo ? 10 : 3;
+				effectiveTime = reduceNumByPercent(effectiveTime, percent);
+				debug.push(`${percent} boost for full pernix`);
 			} else {
 				for (const inqItem of pernixOutfit) {
 					if (hasItemEquipped(inqItem, rangeGear)) {
-						effectiveTime *= users.length === 1 ? 0.98 : 0.995;
+						const percent = isSolo ? 2 : 0.5;
+						debug.push(`${percent} boost for pernix item`);
 					}
 				}
 			}
 
+			if (data.gearStats.attack_ranged < 200) {
+				const percent = isSolo ? 20 : 10;
+				effectiveTime = increaseNumByPercent(effectiveTime, percent);
+				debug.push(`-${effectiveTime}% penalty for <200 ranged attack>`);
+			}
+
 			if (rangeGear.weapon?.item === itemID('Twisted bow')) {
-				effectiveTime *= users.length === 1 ? 0.9 : 0.95;
+				const percent = isSolo ? 10 : 5;
+				effectiveTime = increaseNumByPercent(effectiveTime, percent);
+				debug.push(`${percent}% boost for Twisted bow`);
 			}
 
 			// Increase duration for lower melee-strength gear.
+			let rangeStrBonus = 0;
 			if (data.percentRangeStrength < 40) {
-				effectiveTime *= 1.06;
+				rangeStrBonus = 6;
 			} else if (data.percentRangeStrength < 50) {
-				effectiveTime *= 1.03;
+				rangeStrBonus = 3;
 			} else if (data.percentRangeStrength < 60) {
-				effectiveTime *= 1.02;
+				rangeStrBonus = 2;
+			}
+			if (rangeStrBonus !== 0) {
+				effectiveTime = increaseNumByPercent(effectiveTime, rangeStrBonus);
+				debug.push(
+					`-${rangeStrBonus}% penalty for ${data.percentRangeStrength}% range strength`
+				);
 			}
 
 			// Increase duration for lower KC.
+			let kcBonus = -4;
 			if (data.kc < 10) {
-				effectiveTime *= 1.15;
+				kcBonus = 15;
 			} else if (data.kc < 25) {
-				effectiveTime *= 1.05;
+				kcBonus = 5;
 			} else if (data.kc < 50) {
-				effectiveTime *= 1.02;
+				kcBonus = 2;
 			} else if (data.kc < 100) {
-				effectiveTime *= 0.98;
+				kcBonus = -2;
+			}
+
+			if (kcBonus < 0) {
+				effectiveTime = reduceNumByPercent(effectiveTime, Math.abs(kcBonus));
+				debug.push(`${kcBonus}% penalty for KC`);
 			} else {
-				effectiveTime *= 0.96;
+				effectiveTime = increaseNumByPercent(effectiveTime, kcBonus);
+				debug.push(`${kcBonus}% boost for KC`);
 			}
 		}
 
@@ -196,7 +226,7 @@ export default class extends BotCommand {
 		}
 		for (const user of users) {
 			let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
-			if (users.length === 1) {
+			if (isSolo) {
 				const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
 				if (kc > 200) healAmountNeeded *= 0.5;
 				else if (kc > 150) healAmountNeeded *= 0.6;
@@ -238,7 +268,11 @@ export default class extends BotCommand {
 						NexMonster.name
 				  }. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 						NexMonster.timeToFinish
-				  )} - the total trip will take ${formatDuration(duration)}. ${foodString}.`;
+				  )} - the total trip will take ${formatDuration(duration)}. ${foodString}`;
+
+		if (!production) {
+			str += ` \n\n${debug.join(', ')}`;
+		}
 
 		return msg.channel.send(str, {
 			split: true
