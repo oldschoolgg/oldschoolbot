@@ -106,7 +106,7 @@ export default class extends Task {
 		}
 
 		await user.addXP(SkillsEnum.Fishing, fishXpReceived);
-		await user.addXP(SkillsEnum.Agility, huntXpReceived);
+		await user.addXP(SkillsEnum.Hunter, huntXpReceived);
 		await user.addItemsToBank(loot.values(), true);
 		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
 		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
