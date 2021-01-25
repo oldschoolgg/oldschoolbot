@@ -28,6 +28,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Herblore:
 		case Activity.Hunter:
 		case Activity.Birdhouse:
+		case Activity.Construction:
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
