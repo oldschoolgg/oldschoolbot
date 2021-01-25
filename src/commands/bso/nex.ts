@@ -63,7 +63,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [type]: [string | undefined]) {
 		const userBank = msg.author.bank();
 		if (!userBank.has('Frozen key')) {
-			return null;
+			return msg.send(
+				`${msg.author.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`
+			);
 		}
 
 		if (!type || (type !== 'mass' && type !== 'solo')) {
