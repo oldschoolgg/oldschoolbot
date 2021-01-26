@@ -7,6 +7,7 @@ import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
 import { Time } from '../../lib/constants';
 import { Minigames } from '../../lib/minions/data/minigames';
+import { NexMonster } from '../../lib/nex';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -283,13 +284,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			);
 		}
 
-		const monster = Monsters.find(
+		const monster = [...Monsters.values(), NexMonster].find(
 			mon =>
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
 		const minigame = Minigames.find(game => stringMatches(game.name, name));
-
 		if (!monster && !minigame) {
 			return msg.send(`That's not a valid monster or minigame!`);
 		}
