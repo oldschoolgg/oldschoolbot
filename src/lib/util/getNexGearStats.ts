@@ -61,14 +61,16 @@ export function getNexGearStats(
 		damageDone /= 1.5;
 	}
 
-	if (kc < 3) {
-		percentChanceOfDeath = randInt(80, 90);
+	if (kc < 2) {
+		percentChanceOfDeath = randInt(50, 70);
+	} else if (kc < 5) {
+		percentChanceOfDeath = randInt(30, 50);
 	} else if (kc < 10) {
-		percentChanceOfDeath = randInt(40, 75);
-	} else if (kc < 20) {
 		percentChanceOfDeath = randInt(20, 40);
-	} else if (kc < 30) {
-		percentChanceOfDeath = randInt(5, 30);
+	} else if (kc < 20) {
+		percentChanceOfDeath = randInt(10, 30);
+	} else {
+		percentChanceOfDeath = randInt(1, 4);
 	}
 
 	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(
