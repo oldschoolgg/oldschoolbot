@@ -224,7 +224,7 @@ export default class extends BotCommand {
 		for (const user of users) {
 			const [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-			const restoresNeeded = Math.ceil(brewsNeeded / 3) * quantity;
+			const restoresNeeded = Math.ceil(brewsNeeded / 3);
 			if (
 				!user.bank().has(
 					resolveNameBank({
@@ -238,16 +238,14 @@ export default class extends BotCommand {
 		}
 		for (const user of users) {
 			let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
-			if (isSolo) {
-				const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
-				if (kc > 200) healAmountNeeded *= 0.5;
-				else if (kc > 150) healAmountNeeded *= 0.6;
-				else if (kc > 100) healAmountNeeded *= 0.7;
-				else if (kc > 50) healAmountNeeded *= 0.8;
-				else if (kc > 25) healAmountNeeded *= 0.9;
-			}
+			const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
+			if (kc > 50) healAmountNeeded *= 0.5;
+			else if (kc > 30) healAmountNeeded *= 0.6;
+			else if (kc > 15) healAmountNeeded *= 0.7;
+			else if (kc > 10) healAmountNeeded *= 0.8;
+			else if (kc > 5) healAmountNeeded *= 0.9;
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-			const restoresNeeded = Math.ceil(brewsNeeded / 3) * quantity;
+			const restoresNeeded = Math.ceil(brewsNeeded / 3);
 			await user.removeItemsFromBank(
 				resolveNameBank({
 					'Saradomin brew(4)': brewsNeeded,
