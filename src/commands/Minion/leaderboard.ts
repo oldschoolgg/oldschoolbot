@@ -289,7 +289,9 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
-		const minigame = Minigames.find(game => stringMatches(game.name, name));
+		const minigame = Boolean(monster)
+			? undefined
+			: Minigames.find(game => stringMatches(game.name, name));
 		if (!monster && !minigame) {
 			return msg.send(`That's not a valid monster or minigame!`);
 		}
