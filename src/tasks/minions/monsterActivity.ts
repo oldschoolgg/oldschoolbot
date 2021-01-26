@@ -43,7 +43,7 @@ export default class extends Task {
 		let loot = monster.table.kill(Math.ceil(quantity * abyssalBonus));
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
-				if (roll(100)) {
+				if (roll(20)) {
 					loot[randArrItem(allKeyPieces)] = 1;
 				}
 			}
