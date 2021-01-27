@@ -232,7 +232,16 @@ export default class extends BotCommand {
 		let foodString = 'Removed brews/restores from users: ';
 		let foodRemoved = [];
 		for (const user of users) {
-			const [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
+			let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
+			if (kc > 50) healAmountNeeded *= 0.5;
+			else if (kc > 30) healAmountNeeded *= 0.6;
+			else if (kc > 15) healAmountNeeded *= 0.7;
+			else if (kc > 10) healAmountNeeded *= 0.8;
+			else if (kc > 5) healAmountNeeded *= 0.9;
+			if (users.length > 1) {
+				healAmountNeeded /= (users.length + 1) / 1.5;
+			}
+
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
 			const restoresNeeded = Math.ceil(brewsNeeded / 3);
 			if (
@@ -254,6 +263,11 @@ export default class extends BotCommand {
 			else if (kc > 15) healAmountNeeded *= 0.7;
 			else if (kc > 10) healAmountNeeded *= 0.8;
 			else if (kc > 5) healAmountNeeded *= 0.9;
+
+			if (users.length > 1) {
+				healAmountNeeded /= (users.length + 1) / 1.5;
+			}
+
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
 			const restoresNeeded = Math.ceil(brewsNeeded / 3);
 			await user.removeItemsFromBank(
