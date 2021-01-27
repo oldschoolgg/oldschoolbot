@@ -281,7 +281,7 @@ export default class extends BotCommand {
 			}
 			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
 				wildyPeak!.peakTier
-			} peak time and potentially risking your equipped body and legs in the misc setup with a score ${wildyScore} out of 100 and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
+			} peak time and potentially risking your equipped body and legs in the misc setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
 				msg.cmdPrefix
 			}cancel\` the activity.`;
 		}
