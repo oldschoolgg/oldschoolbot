@@ -55,8 +55,8 @@ export const NexMonster: KillableMonster = {
 				.every('Big bones')
 				.add(
 					new LootTable()
-						.every('Saradomin brew(4)', [10, 30])
-						.every('Super restore(4)', [10, 30])
+						.every('Saradomin brew(4)', [10, 80])
+						.every('Super restore(4)', [10, 80])
 				)
 				.add('Magic logs', 375)
 				.add('Green dragonhide', 400)

@@ -53,7 +53,7 @@ export default class extends Task {
 				}
 
 				if (teamFailed || percentChance(user.chanceOfDeath)) {
-					deaths[user.id] = deaths[user.id] ? ++deaths[user.id] : 1;
+					deaths[user.id] = Boolean(deaths[user.id]) ? deaths[user.id] + 1 : 1;
 				} else {
 					// weight on damagedone
 					teamTable.add(user.id, user.damageDone);

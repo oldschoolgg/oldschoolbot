@@ -209,6 +209,8 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (users.length === 1) effectiveTime *= 1.5;
+
 		let [quantity, duration, perKillTime] = calcDurQty(
 			users,
 			{ ...NexMonster, timeToFinish: effectiveTime },
