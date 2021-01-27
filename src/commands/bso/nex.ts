@@ -132,7 +132,7 @@ export default class extends BotCommand {
 			isSolo &&
 			(users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) < 200
 		) {
-			effectiveTime *= 1.5;
+			effectiveTime = increaseNumByPercent(effectiveTime, 20);
 		}
 
 		for (const user of users) {
