@@ -233,6 +233,7 @@ export default class extends BotCommand {
 		let foodRemoved = [];
 		for (const user of users) {
 			let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
+			const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
 			if (kc > 50) healAmountNeeded *= 0.5;
 			else if (kc > 30) healAmountNeeded *= 0.6;
 			else if (kc > 15) healAmountNeeded *= 0.7;
