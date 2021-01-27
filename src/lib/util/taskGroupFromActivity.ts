@@ -28,6 +28,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Herblore:
 		case Activity.Hunter:
 		case Activity.Birdhouse:
+		case Activity.Construction:
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
@@ -42,6 +43,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.BarbarianAssault:
 		case Activity.AgilityArena:
 		case Activity.ChampionsChallenge:
+		case Activity.MahoganyHomes:
 			return ActivityGroup.Minigame;
 		default: {
 			throw new Error(`Unrecognized activity: ${type}`);
