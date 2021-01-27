@@ -124,7 +124,7 @@ export default class extends BotCommand {
 		};
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
-		let debug = [];
+		let debugStr = '';
 		let effectiveTime = NexMonster.timeToFinish;
 		const isSolo = users.length === 1;
 
@@ -140,7 +140,8 @@ export default class extends BotCommand {
 				user,
 				users.map(u => u.id)
 			);
-			debug.push(`**${user.username}** debug messages:`);
+			debugStr += `**${user.username}**: `;
+			let msgs = [];
 
 			// Special inquisitor outfit damage boost
 			const rangeGear = user.settings.get(UserSettings.Gear.Range);
@@ -148,7 +149,7 @@ export default class extends BotCommand {
 			if (hasArrayOfItemsEquipped(pernixOutfit, rangeGear)) {
 				const percent = isSolo ? 10 : 3;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
-				debug.push(`${percent}% boost for full pernix`);
+				msgs.push(`${percent}% boost for full pernix`);
 			} else {
 				let i = 0;
 				for (const inqItem of pernixOutfit) {
@@ -158,7 +159,7 @@ export default class extends BotCommand {
 					}
 				}
 				if (i > 0) {
-					debug.push(`${i}% boost for pernix items`);
+					msgs.push(`${i}% boost for pernix items`);
 					effectiveTime = reduceNumByPercent(effectiveTime, i);
 				}
 			}
@@ -166,17 +167,17 @@ export default class extends BotCommand {
 			if (data.gearStats.attack_ranged < 200) {
 				const percent = isSolo ? 20 : 10;
 				effectiveTime = increaseNumByPercent(effectiveTime, percent);
-				debug.push(`-${percent}% penalty for <200 ranged attack`);
+				msgs.push(`-${percent}% penalty for <200 ranged attack`);
 			}
 
 			if (equippedWeapon?.id === itemID('Twisted bow')) {
 				const percent = isSolo ? 10 : 5;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
-				debug.push(`${percent}% boost for Twisted bow`);
+				msgs.push(`${percent}% boost for Twisted bow`);
 			} else if (equippedWeapon?.id === itemID('Zaryte bow')) {
 				const percent = isSolo ? 15 : 8;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
-				debug.push(`${percent}% boost for Zaryte bow`);
+				msgs.push(`${percent}% boost for Zaryte bow`);
 			}
 
 			// Increase duration for lower melee-strength gear.
@@ -190,7 +191,7 @@ export default class extends BotCommand {
 			}
 			if (rangeStrBonus !== 0) {
 				effectiveTime = increaseNumByPercent(effectiveTime, rangeStrBonus);
-				debug.push(
+				msgs.push(
 					`-${rangeStrBonus}% penalty for ${data.percentRangeStrength}% range strength`
 				);
 			}
@@ -209,11 +210,13 @@ export default class extends BotCommand {
 
 			if (kcBonus < 0) {
 				effectiveTime = reduceNumByPercent(effectiveTime, Math.abs(kcBonus));
-				debug.push(`${Math.abs(kcBonus)}% boost for KC`);
+				msgs.push(`${Math.abs(kcBonus)}% boost for KC`);
 			} else {
 				effectiveTime = increaseNumByPercent(effectiveTime, kcBonus);
-				debug.push(`-${kcBonus}% penalty for KC`);
+				msgs.push(`-${kcBonus}% penalty for KC`);
 			}
+
+			debugStr += `${msgs.join(', ')}. `;
 		}
 
 		let [quantity, duration, perKillTime] = calcDurQty(
@@ -287,7 +290,7 @@ export default class extends BotCommand {
 						NexMonster.timeToFinish
 				  )} - the total trip will take ${formatDuration(duration)}. ${foodString}`;
 
-		str += ` \n\n${debug.join(', ')}`;
+		str += ` \n\n${debugStr}`;
 
 		return msg.channel.send(str, {
 			split: true
