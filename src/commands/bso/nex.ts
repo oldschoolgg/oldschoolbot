@@ -128,6 +128,13 @@ export default class extends BotCommand {
 		let effectiveTime = NexMonster.timeToFinish;
 		const isSolo = users.length === 1;
 
+		if (
+			isSolo &&
+			(users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) < 200
+		) {
+			effectiveTime *= 1.5;
+		}
+
 		for (const user of users) {
 			const [data] = getNexGearStats(
 				user,
@@ -208,8 +215,6 @@ export default class extends BotCommand {
 				debug.push(`-${kcBonus}% penalty for KC`);
 			}
 		}
-
-		if (users.length === 1) effectiveTime *= 1.5;
 
 		let [quantity, duration, perKillTime] = calcDurQty(
 			users,
