@@ -46,14 +46,14 @@ export default class extends Task {
 	}: BarbarianAssaultActivityTaskOptions) {
 		let basePoints = 35;
 		let resultStr = `The base amount of points is 35. `;
-		resultStr += `Your teams total level is ${totalLevel}/20. `;
+		resultStr += `Your teams total level is ${totalLevel}/${users.length * 5}. `;
 
-		const teamSkillPercent = calcWhatPercent(totalLevel, 4 * 5);
+		const teamSkillPercent = calcWhatPercent(totalLevel, users.length * 5);
 		// You get up to 20% extra points for your team being higher levelled
 		basePoints += calcPercentOfNum(teamSkillPercent, 20);
 		resultStr += `Your team receives ${calcPercentOfNum(
 			teamSkillPercent,
-			20
+			users.length * 5
 		)} extra points for your honour levels. \n`;
 
 		for (const id of users) {
