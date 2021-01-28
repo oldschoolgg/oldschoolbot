@@ -3,8 +3,10 @@ import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
+import { hasSet } from '../../lib/customItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { addBanks, itemID } from '../../lib/util';
+import { allPetIDs } from './equippet';
 
 const options = {
 	max: 1,
@@ -25,7 +27,17 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [[bankToSell, totalPrice]]: [[Bank, number]]) {
+	async run(msg: KlasaMessage, [[initBankToSell, totalPrice]]: [[Bank, number]]) {
+		const bankToSell = initBankToSell.filter((i, qty) => {
+			let stackPrice =
+				(this.client.settings!.get(ClientSettings.Prices)[i.id]?.price ?? 1) * qty;
+			return (
+				hasSet.has(i.id) ||
+				allPetIDs.includes(i.id) ||
+				(i.tradeable_on_ge && stackPrice > 3_000_000)
+			);
+		});
+
 		if (bankToSell.amount('Lottery ticket')) {
 			bankToSell.remove('Lottery ticket', bankToSell.amount('Lottery ticket'));
 		}
@@ -35,7 +47,7 @@ export default class extends BotCommand {
 		if (bankToSell.length === 0) return msg.send('wtf');
 		let amountOfTickets = Math.floor(totalPrice / 10_000_000);
 
-		if (amountOfTickets < 1) {
+		if (amountOfTickets < 5) {
 			return msg.send(`Those items aren't worth enough.`);
 		}
 
