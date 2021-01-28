@@ -121,7 +121,7 @@ export default class extends BotCommand {
 			)} **Honour Level:** ${msg.author.settings.get(
 				UserSettings.HonourLevel
 			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
-				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need exactly 4 people to join to start.` +
+				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need 2+ people to join to start.` +
 				` Barbarian Assault is **restricted** to the main server to make it easier to find a team. (discord.gg/ob). \n` +
 				`Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points.` +
 				`\n\nYou can buy rewards with \`${msg.cmdPrefix}ba buy\`, level up your Honour Level with \`${msg.cmdPrefix}ba level\`.` +
@@ -235,10 +235,10 @@ export default class extends BotCommand {
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 4,
+			minSize: 2,
 			maxSize: 4,
 			ironmanAllowed: true,
-			message: `${msg.author.username} has created a Barbarian Assault party! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. There must be exactly 4 users in the party.`,
+			message: `${msg.author.username} has created a Barbarian Assault party! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. There must be 2+ users in the party.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -273,7 +273,7 @@ export default class extends BotCommand {
 		boosts.push(`${strengthPercent}% for ${fighter.username}'s melee gear`);
 
 		// Up to 30% speed boost for team total honour level
-		const totalLevelPercent = round(calcWhatPercent(totalLevel - 4, 20 - 4) / 3.3, 2);
+		const totalLevelPercent = round(calcWhatPercent(totalLevel, 5 * users.length) / 3.3, 2);
 		boosts.push(`${totalLevelPercent}% for team honour levels`);
 		waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
 
@@ -281,7 +281,7 @@ export default class extends BotCommand {
 		const averageKC =
 			addArrayOfNumbers(
 				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
-			) / 4;
+			) / users.length;
 		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
