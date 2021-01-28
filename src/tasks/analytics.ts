@@ -11,9 +11,7 @@ import { taskNameFromType } from '../lib/util/taskNameFromType';
 
 export default class extends Task {
 	async init() {
-		await this.client.boss.schedule('analytics', `*/20 * * * *`, undefined, {
-			retentionMinutes: 1
-		});
+		await this.client.boss.schedule('analytics', `*/20 * * * *`);
 		await this.client.boss.subscribe('analytics', async job => {
 			await this.analyticsTick();
 			job.done();
