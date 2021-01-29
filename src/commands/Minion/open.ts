@@ -3,9 +3,9 @@ import { Bank, Misc, Openables } from 'oldschooljs';
 
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { cluesRares } from '../../lib/data/collectionLog';
+import botOpenables from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
-import botOpenables from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, roll, stringMatches } from '../../lib/util';

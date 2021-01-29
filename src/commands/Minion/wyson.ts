@@ -2,10 +2,10 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { NestBoxes } from '../../lib/data/openables';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import { NestBoxes } from './../../lib/openables';
 
 interface MolePartItem {
 	name: string;

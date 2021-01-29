@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Time } from '../../../constants';
-import { NestBoxes } from '../../../openables';
+import { NestBoxes } from '../../../data/openables';
 
 interface Birdhouse {
 	name: string;
