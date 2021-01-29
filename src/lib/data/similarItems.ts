@@ -1,5 +1,5 @@
-import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
+import itemID from '../util/itemID';
+import resolveItems from '../util/resolveItems';
 
 const slayerHelmSimilar = resolveItems([
 	'Black slayer helmet (i)',
