@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const youtubers = [
 	'[Swampletics](https://www.youtube.com/channel/UCs-w7E2HZWwXmjt9RTvBB_A)',

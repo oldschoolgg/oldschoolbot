@@ -6,9 +6,9 @@ import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { allCollectionLogItems } from '../lib/collectionLog';
 import { Events } from '../lib/constants';
-import { filterableTypes } from '../lib/filterables';
+import { allCollectionLogItems } from '../lib/data/collectionLog';
+import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';

@@ -3,11 +3,10 @@ import { objectEntries } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 import PromiseQueue from 'p-queue';
 
-import { Events, PerkTier } from '../../lib/constants';
+import { Events, PerkTier, userQueues } from '../../lib/constants';
 import readableStatName from '../../lib/gear/functions/readableStatName';
 import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
-import { userQueues } from '../../lib/queueing';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';

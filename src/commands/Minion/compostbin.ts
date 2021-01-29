@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { addItemToBank, bankHasItem, removeItemFromBank, stringMatches } from '../../lib/util';
 
 const SuperCompostables = [

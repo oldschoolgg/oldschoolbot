@@ -1,12 +1,12 @@
 import { chunk, sleep } from '@klasa/utils';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import LastManStandingUsage, {
 	LMS_FINAL,
 	LMS_PREP,
 	LMS_ROUND
-} from '../../lib/LastManStandingUsage';
+} from '../../lib/structures/LastManStandingUsage';
 import { cleanMentions } from '../../lib/util';
 
 export default class extends BotCommand {

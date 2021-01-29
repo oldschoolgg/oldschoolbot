@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 let triviaQuestions: any = null;
 try {
