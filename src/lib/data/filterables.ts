@@ -1,4 +1,4 @@
-import { warmGear } from '../commands/Minion/wt';
+import { warmGear } from '../../commands/Minion/wt';
 import {
 	cluesAll,
 	cluesBeginner,
@@ -10,12 +10,12 @@ import {
 	cluesRares,
 	cluesShared,
 	wintertodt
-} from './collectionLog';
-import { Eatables } from './eatables';
-import { gracefulItems } from './skilling/skills/agility';
-import Crafting from './skilling/skills/crafting';
-import Fletching from './skilling/skills/fletching';
-import resolveItems from './util/resolveItems';
+} from '../collectionLog';
+import { Eatables } from '../eatables';
+import { gracefulItems } from '../skilling/skills/agility';
+import Crafting from '../skilling/skills/crafting';
+import Fletching from '../skilling/skills/fletching';
+import resolveItems from '../util/resolveItems';
 
 const ores = resolveItems([
 	`Copper ore`,

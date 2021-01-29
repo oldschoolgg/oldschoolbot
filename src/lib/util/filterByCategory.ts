@@ -1,4 +1,4 @@
-import { filterableTypes } from '../filterables';
+import { filterableTypes } from '../data/filterables';
 import { ItemTuple } from '../types';
 import { stringMatches } from '../util';
 
