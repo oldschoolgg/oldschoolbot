@@ -1,5 +1,5 @@
-import { ItemBank } from '../types';
-import itemID from '../util/itemID';
+import { ItemBank } from '../../types';
+import itemID from '../../util/itemID';
 
 interface TitheFarmBuyable {
 	name: string;

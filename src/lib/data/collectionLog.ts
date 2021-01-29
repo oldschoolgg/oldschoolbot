@@ -1,6 +1,6 @@
-import Agility, { gracefulItems } from './skilling/skills/agility';
-import { removeDuplicatesFromArray } from './util';
-import resolveItems from './util/resolveItems';
+import Agility, { gracefulItems } from '../skilling/skills/agility';
+import { removeDuplicatesFromArray } from '../util';
+import resolveItems from '../util/resolveItems';
 
 const nightmareLog = resolveItems([
 	"Inquisitor's great helm",

@@ -3,7 +3,7 @@ import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MAX_INT_JAVA } from '../lib/constants';
-import { filterableTypes } from '../lib/filterables';
+import { filterableTypes } from '../lib/data/filterables';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { bankHasAllItemsFromBank, shuffle, stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';

@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Events, Time } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear/data/maxGearStats';
 import { GearSetupTypes } from '../../lib/gear/types';
@@ -11,6 +10,7 @@ import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { BarbarianAssaultActivityTaskOptions } from '../../lib/types/minions';
 import {

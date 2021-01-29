@@ -2,10 +2,10 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Color, Emoji, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { rand } from '../../lib/util';
 
 export default class extends BotCommand {

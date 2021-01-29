@@ -2,11 +2,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { BotCommand } from '../../lib/BotCommand';
-import Buyables from '../../lib/buyables/buyables';
 import { Time } from '../../lib/constants';
+import Buyables from '../../lib/data/buyables/buyables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	bankHasAllItemsFromBank,
 	multiplyBank,

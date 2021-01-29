@@ -1,6 +1,6 @@
-import raids from '../lib/data/monsters/raids';
-import { Emoji } from './constants';
-import { Pet } from './types';
+import { Emoji } from '../constants';
+import { Pet } from '../types';
+import raids from './monsters/raids';
 
 const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;

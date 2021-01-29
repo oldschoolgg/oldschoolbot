@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
+import { bosses } from '../../../../data/collectionLog';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';

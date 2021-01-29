@@ -3,7 +3,7 @@ import { MessageAttachment } from 'discord.js';
 import fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const bg = fs.readFileSync('./src/lib/resources/images/pm-bg.png');
 const canvas = createCanvas(376, 174);

@@ -4,9 +4,9 @@ import * as fs from 'fs';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Items } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { ItemBank } from '../../lib/types';
 import {

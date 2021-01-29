@@ -3,8 +3,8 @@ import { Task } from 'klasa';
 
 import { SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
-import { collectionLogTypes } from '../lib/collectionLog';
 import { Roles } from '../lib/constants';
+import { collectionLogTypes } from '../lib/data/collectionLog';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';

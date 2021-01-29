@@ -1,5 +1,6 @@
 import { registerFont } from 'canvas';
 import { Canvas } from 'canvas-constructor';
+import { MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
 
 registerFont('./src/lib/resources/osrs-font-quill-8.ttf', { family: 'Regular' });
@@ -16,32 +17,40 @@ export const chatHeads = {
 	jane: janeChatHead,
 	santa: santaChatHead,
 	izzy: izzyChatHead,
-	alryTheAngler: alryTheAnglerChatHead
+	alry: alryTheAnglerChatHead
 };
 
-export default function chatHeadImage({
+const names: Record<keyof typeof chatHeads, string> = {
+	mejJal: 'TzHaar-Mej-Jal',
+	jane: 'Guildmaster Jane',
+	santa: 'Santa',
+	izzy: "Cap'n Izzy No-Beard",
+	alry: 'Alry the Angler'
+};
+
+export default async function chatHeadImage({
 	content,
-	name,
 	head
 }: {
 	content: string;
-	name: string;
 	head: keyof typeof chatHeads;
 }) {
 	const canvas = new Canvas(519, 142);
 	canvas.context.imageSmoothingEnabled = false;
 
-	return canvas
+	const image = await canvas
 		.addImage(textBoxFile, 0, 0)
 		.addImage(chatHeads[head], 28, 21)
 		.setTextAlign('center')
 		.setTextFont('16px RuneScape Quill 8')
 
 		.setColor('#810303')
-		.addText(name, 307, 36)
+		.addText(names[head], 307, 36)
 
 		.setColor('#000')
 		.addMultilineText(content, 307, 58, 361, 18)
 
 		.toBufferAsync();
+
+	return new MessageAttachment(image);
 }

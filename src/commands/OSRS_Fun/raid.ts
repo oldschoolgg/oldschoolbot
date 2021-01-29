@@ -3,8 +3,8 @@ import { Util } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { coxLog } from '../../lib/collectionLog';
+import { coxLog } from '../../lib/data/collectionLog';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';

@@ -6,7 +6,7 @@ import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
-import { initItemAliases } from '../itemAliases';
+import { initItemAliases } from '../data/itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';

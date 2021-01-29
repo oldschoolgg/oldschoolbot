@@ -1,7 +1,7 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { initItemAliases } from '../src/lib/data/itemAliases';
 import { GearTypes } from '../src/lib/gear';
-import { initItemAliases } from '../src/lib/itemAliases';
 import { itemID } from '../src/lib/util';
 
 export function mockArgument(arg: any) {
