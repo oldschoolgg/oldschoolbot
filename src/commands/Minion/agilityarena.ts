@@ -1,10 +1,8 @@
-import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import chatHeadImage from '../../lib/image/chatHeadImage';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -13,6 +11,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityArenaActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, resolveNameBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { skillsMeetRequirements } from '../../lib/util/skillsMeetRequirements';
 
@@ -33,11 +32,6 @@ const buyables = [
 		aliases: ['pirates']
 	}
 ];
-
-export async function izzyChat(str: string) {
-	const image = await chatHeadImage({ content: str, name: "Cap'n Izzy No-Beard", head: 'izzy' });
-	return new MessageAttachment(image);
-}
 
 export function hasKaramjaEliteDiary(user: KlasaUser): boolean {
 	return skillsMeetRequirements(user.rawSkills, {
@@ -123,9 +117,10 @@ export default class extends BotCommand {
 
 		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
 			return msg.send(
-				await izzyChat(
-					`Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!`
-				)
+				await chatHeadImage({
+					content: `Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!`,
+					head: 'izzy'
+				})
 			);
 		}
 
@@ -180,7 +175,10 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		const amountTicketsHas = bank.amount('Agility arena ticket');
 		if (amountTicketsHas === 0) {
 			return msg.send(
-				await izzyChat(`Are ye serious! You have no tickets, you can't buy anythin!`)
+				await chatHeadImage({
+					content: `Are ye serious! You have no tickets, you can't buy anythin!`,
+					head: 'izzy'
+				})
 			);
 		}
 
@@ -222,17 +220,19 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			let cost = 250;
 			if (!bank.has(plainGraceful)) {
 				return msg.send(
-					await izzyChat(
-						`Ye don't have a full set of Graceful in your bank for me to recolor!`
-					)
+					await chatHeadImage({
+						content: `Ye don't have a full set of Graceful in your bank for me to recolor!`,
+						head: 'izzy'
+					})
 				);
 			}
 
 			if (amountTicketsHas < cost) {
 				return msg.send(
-					await izzyChat(
-						`Ye don't have enough tickets, I charge ${cost} tickets for a recoloring.`
-					)
+					await chatHeadImage({
+						content: `Ye don't have enough tickets, I charge ${cost} tickets for a recoloring.`,
+						head: 'izzy'
+					})
 				);
 			}
 			bank.remove('Agility arena ticket', cost);
@@ -243,7 +243,10 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 				...brimhavenGraceful
 			});
 			return msg.send(
-				await izzyChat(`I've recolored ye Graceful set, and taken your tickets!`)
+				await chatHeadImage({
+					content: `I've recolored ye Graceful set, and taken your tickets!`,
+					head: 'izzy'
+				})
 			);
 		}
 	}

@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Emoji, Events } from '../../lib/constants';
-import mejJalImage from '../../lib/image/mejJalImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { roll } from '../../lib/util';
+import chatHeadImage from '../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
@@ -66,18 +66,20 @@ export default class extends BotCommand {
 				)} time!`
 			);
 			return msg.channel.send(
-				await mejJalImage(
-					'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
-				)
+				await chatHeadImage({
+					content: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.',
+					head: 'mejJal'
+				})
 			);
 		}
 
 		return msg.channel.send(
-			await mejJalImage(
-				`You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
+			await chatHeadImage({
+				content: `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
 					newSacrificedCount
-				)} time you gamble cape.`
-			)
+				)} time you gamble cape.`,
+				head: 'mejJal'
+			})
 		);
 	}
 }

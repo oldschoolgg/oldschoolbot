@@ -4,7 +4,6 @@ import { Monsters } from 'oldschooljs';
 import { Activity, Time } from '../../lib/constants';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { GearSetupTypes } from '../../lib/gear/types';
-import mejJalImage from '../../lib/image/mejJalImage';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -23,6 +22,7 @@ import {
 	removeBankFromBank
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import chatHeadImage from '../../lib/util/chatHeadImage';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
@@ -120,7 +120,7 @@ export default class extends BotCommand {
 			await this.checkGear(msg.author);
 		} catch (err) {
 			if (typeof err === 'string') {
-				return msg.channel.send(await mejJalImage(err));
+				return msg.channel.send(await chatHeadImage({ content: err, head: 'mejJal' }));
 			}
 			throw err;
 		}
@@ -181,9 +181,10 @@ export default class extends BotCommand {
 				this.client,
 				fightCavesSupplies
 			)}`,
-			await mejJalImage(
-				`You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`
-			)
+			await chatHeadImage({
+				content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
+				head: 'mejJal'
+			})
 		);
 	}
 }

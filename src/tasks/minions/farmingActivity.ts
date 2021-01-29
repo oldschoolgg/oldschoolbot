@@ -2,7 +2,6 @@ import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
-import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -14,6 +13,7 @@ import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, rand, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import chatHeadImage from '../../lib/util/chatHeadImage';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
@@ -467,11 +467,12 @@ export default class extends Task {
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send(
-					await guildmasterJaneImage(
-						`You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+					await chatHeadImage({
+						content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
 							contractsCompleted + 1
-						} farming contracts.`
-					)
+						} farming contracts.`,
+						head: 'jane'
+					})
 				);
 			}
 		}
