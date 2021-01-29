@@ -1,3 +1,4 @@
+import PQueue from 'p-queue';
 import { join } from 'path';
 
 export const enum Time {
@@ -326,3 +327,8 @@ export const TWEETS_RATELIMITING =
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
+
+/**
+ * Map<user_id, PromiseQueue>
+ */
+export const userQueues: Map<string, PQueue> = new Map();
