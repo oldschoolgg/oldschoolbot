@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import TitheFarmBuyables from '../../lib/buyables/titheFarmBuyables';
 import { Time } from '../../lib/constants';
+import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';

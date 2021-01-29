@@ -2,8 +2,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
-import TokkulShopItem from '../../lib/buyables/tokkulBuyables';
 import { Time } from '../../lib/constants';
+import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
