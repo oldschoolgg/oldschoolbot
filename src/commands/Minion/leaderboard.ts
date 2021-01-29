@@ -2,10 +2,9 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import badges from '../../lib/badges';
 import { BotCommand } from '../../lib/BotCommand';
 import { collectionLogTypes } from '../../lib/collectionLog';
-import { Time } from '../../lib/constants';
+import { badges, Time } from '../../lib/constants';
 import { Minigames } from '../../lib/minions/data/minigames';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
