@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage, RichDisplay } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import pets from '../../lib/pets';
+import pets from '../../lib/data/pets';
 import { toTitleCase } from '../../lib/util';
 
 // Emojis for bosses with no pets

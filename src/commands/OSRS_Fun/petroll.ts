@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
-import pets from '../../lib/pets';
+import pets from '../../lib/data/pets';
 import { roll } from '../../lib/util';
 
 export default class extends BotCommand {

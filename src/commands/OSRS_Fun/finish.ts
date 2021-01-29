@@ -6,7 +6,7 @@ import alchemicalHydra from '../../lib/data/monsters/alchemicalHydra';
 import hespori from '../../lib/data/monsters/hespori';
 import raids from '../../lib/data/monsters/raids';
 import tob from '../../lib/data/monsters/tob';
-import pets from '../../lib/pets';
+import pets from '../../lib/data/pets';
 import { roll } from '../../lib/util';
 
 // Use if Drop rate is X/Y
