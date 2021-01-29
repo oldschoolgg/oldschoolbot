@@ -2,9 +2,9 @@ import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
-import { PatchTypes } from '../../lib/farming';
-import { FarmingContract } from '../../lib/farming/types';
 import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
+import { PatchTypes } from '../../lib/minions/farming';
+import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';

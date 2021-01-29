@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
-import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
-import { FarmingPatchTypes } from '../../lib/farming/types';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
+import { FarmingPatchTypes } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';

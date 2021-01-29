@@ -2,9 +2,9 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
