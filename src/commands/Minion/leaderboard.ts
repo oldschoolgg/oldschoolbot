@@ -3,8 +3,8 @@ import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { collectionLogTypes } from '../../lib/collectionLog';
 import { badges, Time } from '../../lib/constants';
+import { collectionLogTypes } from '../../lib/data/collectionLog';
 import { Minigames } from '../../lib/minions/data/minigames';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';

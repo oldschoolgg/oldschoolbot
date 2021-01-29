@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { collectionLogTypes } from '../../lib/collectionLog';
+import { collectionLogTypes } from '../../lib/data/collectionLog';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { stringMatches } from '../../lib/util';

@@ -2,8 +2,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/BotCommand';
-import { cluesRares } from '../../lib/collectionLog';
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
+import { cluesRares } from '../../lib/data/collectionLog';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import botOpenables from '../../lib/openables';

@@ -1,4 +1,8 @@
 import { warmGear } from '../../commands/Minion/wt';
+import { gracefulItems } from '../skilling/skills/agility';
+import Crafting from '../skilling/skills/crafting';
+import Fletching from '../skilling/skills/fletching';
+import resolveItems from '../util/resolveItems';
 import {
 	cluesAll,
 	cluesBeginner,
@@ -10,11 +14,7 @@ import {
 	cluesRares,
 	cluesShared,
 	wintertodt
-} from '../collectionLog';
-import { gracefulItems } from '../skilling/skills/agility';
-import Crafting from '../skilling/skills/crafting';
-import Fletching from '../skilling/skills/fletching';
-import resolveItems from '../util/resolveItems';
+} from './collectionLog';
 import { Eatables } from './eatables';
 
 const ores = resolveItems([
