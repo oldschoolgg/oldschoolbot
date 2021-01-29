@@ -3,8 +3,8 @@ import { chunk } from 'e';
 import { CommandStore, KlasaMessage, RichDisplay } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import pets from '../../lib/data/pets';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { toTitleCase } from '../../lib/util';
 
 // Emojis for bosses with no pets

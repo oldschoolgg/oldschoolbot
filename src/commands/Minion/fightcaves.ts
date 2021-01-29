@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { GearSetupTypes } from '../../lib/gear/types';
@@ -11,6 +10,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addBanks,

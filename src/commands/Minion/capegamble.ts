@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Emoji, Events } from '../../lib/constants';
 import mejJalImage from '../../lib/image/mejJalImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { roll } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';

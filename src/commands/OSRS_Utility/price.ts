@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Util } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

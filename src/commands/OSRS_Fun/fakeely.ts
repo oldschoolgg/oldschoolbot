@@ -4,7 +4,7 @@ import { randInt } from 'e';
 import fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
 const canvas = createCanvas(399, 100);

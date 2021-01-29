@@ -3,8 +3,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Color } from '../../lib/constants';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {

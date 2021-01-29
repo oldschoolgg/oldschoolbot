@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends BotCommand {

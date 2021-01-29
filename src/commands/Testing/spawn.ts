@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 

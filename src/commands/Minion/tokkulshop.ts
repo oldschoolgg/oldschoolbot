@@ -2,10 +2,10 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import TokkulShopItem from '../../lib/buyables/tokkulBuyables';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { stringMatches } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';

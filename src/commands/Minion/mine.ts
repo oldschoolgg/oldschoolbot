@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import {
 	determineScaledOreTime,

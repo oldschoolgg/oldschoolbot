@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks } from '../../lib/util';
 
 const options = {

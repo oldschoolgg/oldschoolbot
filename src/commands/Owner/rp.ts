@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { BitField, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import PatreonTask from '../../tasks/patreon';
 
 export default class extends BotCommand {

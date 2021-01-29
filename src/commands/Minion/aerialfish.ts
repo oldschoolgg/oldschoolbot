@@ -1,11 +1,11 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import chatHeadImage from '../../lib/image/chatHeadImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { AerialFishingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, randFloat, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

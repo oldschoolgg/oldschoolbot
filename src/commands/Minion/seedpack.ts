@@ -3,9 +3,9 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { bankHasItem, rand, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';

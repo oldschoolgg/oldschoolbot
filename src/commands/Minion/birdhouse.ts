@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';

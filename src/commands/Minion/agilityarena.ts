@@ -2,7 +2,6 @@ import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import chatHeadImage from '../../lib/image/chatHeadImage';
@@ -10,6 +9,7 @@ import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityArenaActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, resolveNameBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

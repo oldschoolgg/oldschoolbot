@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -10,6 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

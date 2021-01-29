@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { CompostTier } from '../../lib/farming/types';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
 const CompostTiers = [
