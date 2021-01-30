@@ -44,24 +44,24 @@ export default class extends Task {
 
 			if (
 				currentRoll > 82 &&
-				currentFishLevel > greaterSiren.fishLvl! &&
-				currentHuntLevel > greaterSiren.level!
+				currentFishLevel >= greaterSiren.fishLvl! &&
+				currentHuntLevel >= greaterSiren.level!
 			) {
 				greaterSirenCaught++;
 				continue;
 			}
 			if (
 				currentRoll > 67 &&
-				currentFishLevel > mottledEel.fishLvl! &&
-				currentHuntLevel > mottledEel.level!
+				currentFishLevel >= mottledEel.fishLvl! &&
+				currentHuntLevel >= mottledEel.level!
 			) {
 				mottledEelCaught++;
 				continue;
 			}
 			if (
 				currentRoll > 52 &&
-				currentFishLevel > commonTench.fishLvl! &&
-				currentHuntLevel > commonTench.level!
+				currentFishLevel >= commonTench.fishLvl! &&
+				currentHuntLevel >= commonTench.level!
 			) {
 				commonTenchCaught++;
 				continue;
