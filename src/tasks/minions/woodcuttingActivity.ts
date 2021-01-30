@@ -1,8 +1,8 @@
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { getRandomMysteryBox } from '../../lib/openables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';

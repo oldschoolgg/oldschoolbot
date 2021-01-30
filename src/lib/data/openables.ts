@@ -12,7 +12,7 @@ import CrystalChestTable from '../simulation/crystalChest';
 import { itemID, itemNameFromID, removeDuplicatesFromArray } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { coxLog } from './collectionLog';
+import { coxLog, customBossLog } from './collectionLog';
 
 interface Openable {
 	name: string;

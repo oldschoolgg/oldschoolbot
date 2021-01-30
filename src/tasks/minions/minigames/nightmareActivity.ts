@@ -3,9 +3,9 @@ import { Task } from 'klasa';
 import { Misc } from 'oldschooljs';
 
 import { Emoji, Time } from '../../../lib/constants';
+import { getRandomMysteryBox } from '../../../lib/data/openables';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
-import { getRandomMysteryBox } from '../../../lib/openables';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';

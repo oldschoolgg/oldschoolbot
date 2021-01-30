@@ -1,8 +1,8 @@
 import { Task } from 'klasa';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
-import { getRandomMysteryBox } from '../../lib/openables';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,

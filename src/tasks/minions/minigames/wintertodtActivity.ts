@@ -3,9 +3,9 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../../lib/constants';
+import { getRandomMysteryBox } from '../../../lib/data/openables';
 import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
-import { getRandomMysteryBox } from '../../../lib/openables';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';

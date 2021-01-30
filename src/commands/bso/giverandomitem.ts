@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 
 const options = {

@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
 
 import { Emoji } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
-import { getRandomMysteryBox } from '../../lib/openables';
 import { ItemBank } from '../../lib/types';
 import {
 	addBanks,

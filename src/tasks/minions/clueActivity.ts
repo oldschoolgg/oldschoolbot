@@ -2,8 +2,8 @@ import { Task } from 'klasa';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Events, Time } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import { getRandomMysteryBox } from '../../lib/openables';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { addBanks, addItemToBank, itemID, multiplyBank, rand, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';

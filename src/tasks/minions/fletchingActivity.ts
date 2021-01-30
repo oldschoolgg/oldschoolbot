@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 
 import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/openables';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import Fletching from '../../lib/skilling/skills/fletching/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';

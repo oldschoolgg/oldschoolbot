@@ -2,7 +2,7 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/openables';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';

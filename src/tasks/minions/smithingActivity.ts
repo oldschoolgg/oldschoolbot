@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 
 import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/openables';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import Smithing from '../../lib/skilling/skills/smithing/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';

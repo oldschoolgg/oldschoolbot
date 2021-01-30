@@ -3,8 +3,8 @@ import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
 import { Events, Time } from '../../../lib/constants';
+import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
-import { getRandomMysteryBox } from '../../../lib/openables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { multiplyBank } from '../../../lib/util';

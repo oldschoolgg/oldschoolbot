@@ -1,11 +1,11 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Time } from '../../lib/constants';
 import { GearTypes } from '../../lib/gear';
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, rand } from '../../lib/util';

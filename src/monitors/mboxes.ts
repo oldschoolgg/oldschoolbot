@@ -3,7 +3,7 @@ import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 import fetch from 'node-fetch';
 
 import { Color, SupportServer, Time } from '../lib/constants';
-import { getRandomMysteryBox } from '../lib/openables';
+import { getRandomMysteryBox } from '../lib/data/openables';
 import { itemID, roll, stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 

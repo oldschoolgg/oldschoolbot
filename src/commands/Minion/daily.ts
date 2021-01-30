@@ -24,7 +24,7 @@ import pets from '../../lib/data/pets';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isWeekend, itemID, roll, stringMatches } from '../../lib/util';
+import { formatDuration, isWeekend, itemID, rand, roll, stringMatches } from '../../lib/util';
 
 const options = {
 	max: 1,
