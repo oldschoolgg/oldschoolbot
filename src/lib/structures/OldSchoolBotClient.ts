@@ -41,7 +41,7 @@ export class OldSchoolBotClient extends Client {
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
-		this.boss = new PgBoss({ ...providerConfig?.postgres });
+		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterMinutes: 1 });
 		this.boss.on('error', error => console.error(error));
 	}
 
