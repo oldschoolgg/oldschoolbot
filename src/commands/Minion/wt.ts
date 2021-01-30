@@ -1,14 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
-import { Eatables } from '../../lib/eatables';
+import { Eatables } from '../../lib/data/eatables';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addItemToBank,

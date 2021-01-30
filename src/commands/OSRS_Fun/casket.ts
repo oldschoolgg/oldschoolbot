@@ -1,9 +1,9 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Workers } from '../../lib/workers';
 

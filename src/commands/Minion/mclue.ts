@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity } from '../../lib/constants';
 import { GearTypes } from '../../lib/gear';
 import { hasGearEquipped } from '../../lib/gear/functions/hasGearEquipped';
@@ -9,6 +8,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

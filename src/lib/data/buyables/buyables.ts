@@ -1,7 +1,7 @@
-import { MAX_QP } from '../constants';
-import { ItemBank } from '../types';
-import { resolveNameBank } from '../util';
-import itemID from '../util/itemID';
+import { MAX_QP } from '../../constants';
+import { ItemBank } from '../../types';
+import { resolveNameBank } from '../../util';
+import itemID from '../../util/itemID';
 
 interface Buyable {
 	name: string;

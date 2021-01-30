@@ -1,4 +1,4 @@
-import { CollectionLogType } from '../collectionLog';
+import { CollectionLogType } from '../data/collectionLog';
 import { ItemBank } from '../types';
 
 export type LeaderboardType = 'cl';

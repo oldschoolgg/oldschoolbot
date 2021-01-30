@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes from '../../lib/skilling/skillcapes';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertXPtoLVL, stringMatches, toTitleCase } from '../../lib/util';
 import countSkillsAtleast99 from '../../lib/util/countSkillsAtleast99';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';

@@ -1,16 +1,16 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
-import resolvePatchTypeSetting from '../../lib/farming/functions/resolvePatchTypeSettings';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,

@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import decantPotionFromBank from '../../lib/minions/functions/decantPotionFromBank';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import createReadableItemListFromTuple from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {

@@ -2,7 +2,6 @@ import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { GearTypes } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
@@ -10,6 +9,7 @@ import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName'
 import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

@@ -1,3 +1,4 @@
+import PQueue from 'p-queue';
 import { join } from 'path';
 
 export const enum Time {
@@ -300,6 +301,19 @@ export const enum PatronTierID {
 }
 
 export const MAX_QP = 5000;
+export const badges: { [key: number]: string } = {
+	0: Emoji.Spanner,
+	1: Emoji.PinkGem,
+	2: Emoji.Crab,
+	3: Emoji.BigOrangeGem,
+	4: Emoji.Hammer,
+	5: Emoji.GreenGem,
+	6: Emoji.Bug,
+	7: Emoji.Trophy,
+	8: Emoji.Incinerator,
+	9: Emoji.Skiller,
+	10: Emoji.CollectionLog
+};
 
 export const MIMIC_MONSTER_ID = 23184;
 
@@ -314,3 +328,8 @@ export const TWEETS_RATELIMITING =
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
+
+/**
+ * Map<user_id, PromiseQueue>
+ */
+export const userQueues: Map<string, PQueue> = new Map();

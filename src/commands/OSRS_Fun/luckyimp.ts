@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Openables } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

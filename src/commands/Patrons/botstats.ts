@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import backgroundImages from '../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../lib/minions/data/clueTiers';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import PostgresProvider from '../../providers/postgres';
 

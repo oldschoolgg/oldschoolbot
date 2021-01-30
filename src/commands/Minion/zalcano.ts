@@ -1,7 +1,6 @@
 import { calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -9,6 +8,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ZalcanoActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

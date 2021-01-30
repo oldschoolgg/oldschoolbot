@@ -1,7 +1,7 @@
 import { Command, CommandOptions, CommandStore, KlasaMessage, util } from 'klasa';
 
-import { BitField } from './constants';
-import { CategoryFlag } from './types';
+import { BitField } from '../constants';
+import { CategoryFlag } from '../types';
 
 export abstract class BotCommand extends Command {
 	public altProtection: boolean;

@@ -2,7 +2,6 @@ import { objectEntries, randArrItem, randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Time } from '../../lib/constants';
 import { roll } from '../../lib/data/monsters/raids';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -11,6 +10,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Plank } from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MahoganyHomesActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addArrayOfNumbers,

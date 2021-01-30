@@ -1,4 +1,4 @@
-import itemID from '../util/itemID';
+import itemID from '../../util/itemID';
 
 interface TokkulShopItem {
 	name: string;

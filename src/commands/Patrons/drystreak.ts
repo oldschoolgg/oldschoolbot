@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import { Minigames } from '../../lib/minions/data/minigames';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import LeaderboardCommand from '../Minion/leaderboard';

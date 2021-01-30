@@ -3,16 +3,16 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { allPetIDs } from '../commands/Minion/equippet';
-import { coxLog, customBossLog } from './collectionLog';
-import { Emoji } from './constants';
-import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
-import BirthdayPresentTable from './simulation/birthdayPresent';
-import CasketTable from './simulation/casket';
-import CrystalChestTable from './simulation/crystalChest';
-import { itemID, itemNameFromID, removeDuplicatesFromArray } from './util';
-import resolveItems from './util/resolveItems';
-import { LampTable } from './xpLamps';
+import { allPetIDs } from '../../commands/Minion/equippet';
+import { Emoji } from '../constants';
+import { FishTable } from '../minions/data/killableMonsters/custom/SeaKraken';
+import BirthdayPresentTable from '../simulation/birthdayPresent';
+import CasketTable from '../simulation/casket';
+import CrystalChestTable from '../simulation/crystalChest';
+import { itemID, itemNameFromID, removeDuplicatesFromArray } from '../util';
+import resolveItems from '../util/resolveItems';
+import { LampTable } from '../xpLamps';
+import { coxLog } from './collectionLog';
 
 interface Openable {
 	name: string;

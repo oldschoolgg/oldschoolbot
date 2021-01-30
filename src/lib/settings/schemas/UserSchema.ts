@@ -1,9 +1,9 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import Farming from '../../farming';
-import defaultContracts from '../../farming/defaultContracts';
-import { FarmingPatchTypes } from '../../farming/types';
 import Gear from '../../gear';
+import Farming from '../../minions/farming';
+import defaultContracts from '../../minions/farming/defaultContracts';
+import { FarmingPatchTypes } from '../../minions/farming/types';
 import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 

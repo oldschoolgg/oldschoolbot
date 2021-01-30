@@ -3,7 +3,7 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { addBanks, itemID, removeBankFromBank } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../constants';
-import { Eatables } from '../../eatables';
+import { Eatables } from '../../data/eatables';
 import { GearSetupTypes } from '../../gear/types';
 import { ClientSettings } from '../../settings/types/ClientSettings';
 import { UserSettings } from '../../settings/types/UserSettings';

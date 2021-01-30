@@ -2,8 +2,8 @@ import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeri
 
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity, Tasks } from '../constants';
-import { PatchTypes } from '../farming';
 import { MinigameIDsEnum } from '../minions/data/minigames';
+import { PatchTypes } from '../minions/farming';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
