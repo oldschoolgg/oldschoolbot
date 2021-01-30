@@ -1,9 +1,9 @@
 import { Guild, User } from 'discord.js';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { BitField, Channel } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { toTitleCase } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getSupportGuild from '../../lib/util/getSupportGuild';

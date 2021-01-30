@@ -1,7 +1,11 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { allPetIDs } from '../commands/Minion/equippet';
-import { warmGear } from '../commands/Minion/wt';
+import { allPetIDs } from '../../commands/Minion/equippet';
+import { warmGear } from '../../commands/Minion/wt';
+import { gracefulItems } from '../skilling/skills/agility';
+import Crafting from '../skilling/skills/crafting';
+import Fletching from '../skilling/skills/fletching';
+import resolveItems from '../util/resolveItems';
 import {
 	cluesAll,
 	cluesBeginner,
@@ -16,10 +20,6 @@ import {
 } from './collectionLog';
 import { Eatables } from './eatables';
 import Openables, { tmbTable, umbTable } from './openables';
-import { gracefulItems } from './skilling/skills/agility';
-import Crafting from './skilling/skills/crafting';
-import Fletching from './skilling/skills/fletching';
-import resolveItems from './util/resolveItems';
 
 const ores = resolveItems([
 	`Copper ore`,

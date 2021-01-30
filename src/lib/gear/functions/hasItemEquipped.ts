@@ -1,5 +1,5 @@
 import { GearTypes } from '..';
-import { getSimilarItems } from '../../similarItems';
+import { getSimilarItems } from '../../data/similarItems';
 import getOSItem from '../../util/getOSItem';
 
 export default function hasItemEquipped(item: number, setup: GearTypes.GearSetup) {

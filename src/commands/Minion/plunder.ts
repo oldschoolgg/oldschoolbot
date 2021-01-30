@@ -1,7 +1,6 @@
 import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
@@ -9,6 +8,7 @@ import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { PlunderActivityTaskOptions } from './../../lib/types/minions';

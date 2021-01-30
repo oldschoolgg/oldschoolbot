@@ -2,11 +2,11 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { getSimilarItems } from '../../lib/data/similarItems';
 import itemInSlot from '../../lib/gear/functions/itemInSlot';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { GearSetupTypes, UserFullGearSetup } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { getSimilarItems } from '../../lib/similarItems';
 import { itemID } from '../../lib/util';
 
 export default class extends Extendable {

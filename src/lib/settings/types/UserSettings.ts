@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import { PatchTypes } from '../../farming';
-import defaultContracts from '../../farming/defaultContracts';
-import { CompostTier, FarmingPatchTypes } from '../../farming/types';
 import { GearTypes } from '../../gear';
+import { PatchTypes } from '../../minions/farming';
+import defaultContracts from '../../minions/farming/defaultContracts';
+import { CompostTier, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';

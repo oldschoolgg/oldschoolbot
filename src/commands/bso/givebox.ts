@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier, Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/openables';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 

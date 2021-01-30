@@ -32,7 +32,7 @@ export default class extends Task {
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 
-		if (!placing) {
+		if (!placing || !gotCraft) {
 			loot.add('Clockwork', 4);
 		}
 

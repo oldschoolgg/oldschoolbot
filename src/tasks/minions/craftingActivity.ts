@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/openables';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import Crafting from '../../lib/skilling/skills/crafting/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';

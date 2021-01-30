@@ -2,11 +2,12 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { cleanString } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Color, PerkTier } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/openables';
-import { itemID, roll, stripPunctuation } from '../../lib/util';
+import { getRandomMysteryBox } from '../../lib/data/openables';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
@@ -38,8 +39,8 @@ export default class extends BotCommand {
 		try {
 			const collected = await msg.channel.awaitMessages(
 				_msg =>
-					stripPunctuation(_msg.content.toLowerCase()) ===
-					stripPunctuation(randomItem.name.toLowerCase()),
+					cleanString(_msg.content.toLowerCase()) ===
+					cleanString(randomItem.name.toLowerCase()),
 				{
 					max: 1,
 					time: 14_000,

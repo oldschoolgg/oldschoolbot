@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { round } from '../../lib/util';
 
 export default class extends BotCommand {

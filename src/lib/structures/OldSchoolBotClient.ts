@@ -7,7 +7,7 @@ import { Connection, createConnection } from 'typeorm';
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
 import { initCustomItems } from '../customItems';
-import { initItemAliases } from '../itemAliases';
+import { initItemAliases } from '../data/itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
@@ -42,7 +42,7 @@ export class OldSchoolBotClient extends Client {
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
-		this.boss = new PgBoss({ ...providerConfig?.postgres });
+		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterMinutes: 1 });
 		this.boss.on('error', error => console.error(error));
 	}
 

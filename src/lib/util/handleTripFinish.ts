@@ -3,7 +3,7 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { PerkTier, Time } from '../constants';
-import { getRandomMysteryBox } from '../openables';
+import { getRandomMysteryBox } from '../data/openables';
 import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { ActivityTaskOptions } from '../types/minions';
 import { generateContinuationChar, itemID, roll, stringMatches } from '../util';

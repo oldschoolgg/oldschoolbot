@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { cluesRares } from '../../lib/collectionLog';
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
+import { cluesRares } from '../../lib/data/collectionLog';
+import botOpenables from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
-import botOpenables from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { addBanks, itemNameFromID, rand, roll, stringMatches } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';

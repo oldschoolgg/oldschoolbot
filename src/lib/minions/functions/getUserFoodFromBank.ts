@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { addBanks } from 'oldschooljs/dist/util';
 
-import { Eatables } from '../../eatables';
+import { Eatables } from '../../data/eatables';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { Eatable } from '../../skilling/types';
 import { ItemBank } from '../../types';

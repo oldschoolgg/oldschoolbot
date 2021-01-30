@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
-import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
+import { bosses } from '../../../../data/collectionLog';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import { CorporealBeastTable } from '../../../../simulation/Corp';
 import itemID from '../../../../util/itemID';

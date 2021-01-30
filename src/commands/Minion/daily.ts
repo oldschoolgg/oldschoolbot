@@ -19,11 +19,11 @@ const { triviaQuestions } = JSON.parse(
 	fs.readFileSync('./src/lib/resources/trivia-questions.json').toString()
 );
 
-import { BotCommand } from '../../lib/BotCommand';
 import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
-import pets from '../../lib/pets';
+import pets from '../../lib/data/pets';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, isWeekend, itemID, rand, roll, stringMatches } from '../../lib/util';
 
 const options = {

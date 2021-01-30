@@ -2,11 +2,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
 import { TradeableItemBankArgumentType } from '../../arguments/tradeableItemBank';
-import { BotCommand } from '../../lib/BotCommand';
 import { Events } from '../../lib/constants';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, itemID, roll } from '../../lib/util';
 
 export default class extends BotCommand {

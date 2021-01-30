@@ -3,9 +3,9 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, Time } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';

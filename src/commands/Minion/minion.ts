@@ -4,7 +4,6 @@ import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -16,6 +15,7 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,

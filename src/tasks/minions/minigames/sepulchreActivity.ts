@@ -2,9 +2,9 @@ import { Task } from 'klasa';
 import { Bank, Openables } from 'oldschooljs';
 
 import { Time } from '../../../lib/constants';
+import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { getRandomMysteryBox } from '../../../lib/openables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { multiplyBank, roll } from '../../../lib/util';

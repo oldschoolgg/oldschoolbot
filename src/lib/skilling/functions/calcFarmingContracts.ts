@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 
-import { PlantTier } from '../../../lib/farming/types';
 import { rand } from '../../../lib/util';
+import { PlantTier } from '../../minions/farming/types';
 import { SkillsEnum } from '../types';
 
 export type PlantsList = [number, string, number][];

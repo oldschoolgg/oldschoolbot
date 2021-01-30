@@ -1,6 +1,6 @@
 import { Task } from 'klasa';
 
-import badges from '../lib/badges';
+import { badges } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 
 export default class extends Task {

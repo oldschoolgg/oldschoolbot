@@ -1,5 +1,5 @@
 import { PatchTypes } from '..';
-import { UserSettings } from '../../settings/types/UserSettings';
+import { UserSettings } from '../../../settings/types/UserSettings';
 
 export default function resolvePatchTypeSetting(type: string) {
 	switch (type) {

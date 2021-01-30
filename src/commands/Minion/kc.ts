@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Minigames } from '../../lib/minions/data/minigames';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { NexMonster } from '../../lib/nex';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import KillableMonsters, { NightmareMonster } from './../../lib/minions/data/killableMonsters';
 

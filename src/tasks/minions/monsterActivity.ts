@@ -6,11 +6,11 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import MinionCommand from '../../commands/Minion/minion';
 import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { allKeyPieces } from '../../lib/nex';
-import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, multiplyBank, rand, randomItemFromArray, roll } from '../../lib/util';

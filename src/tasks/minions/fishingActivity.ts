@@ -2,9 +2,9 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, Time } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { getRandomMysteryBox } from '../../lib/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';

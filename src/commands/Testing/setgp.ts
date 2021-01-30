@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

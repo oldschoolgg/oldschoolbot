@@ -1,7 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
@@ -12,6 +11,7 @@ import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodFo
 import { KillableMonster } from '../../lib/minions/types';
 import { NexMonster, pernixOutfit } from '../../lib/nex';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { NexActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, resolveNameBank } from '../../lib/util';

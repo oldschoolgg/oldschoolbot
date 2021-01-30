@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { BitField } from '../../lib/constants';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemID } from '../../lib/util';
 
 export default class extends BotCommand {

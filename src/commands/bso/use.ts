@@ -1,7 +1,7 @@
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 

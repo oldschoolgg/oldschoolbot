@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { NexActivityTaskOptions, NightmareActivityTaskOptions } from './../../lib/types/minions';

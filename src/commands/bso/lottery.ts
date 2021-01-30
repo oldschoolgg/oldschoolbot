@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { PerkTier } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { addArrayOfNumbers, toKMB } from '../../lib/util';
 
 export default class extends BotCommand {

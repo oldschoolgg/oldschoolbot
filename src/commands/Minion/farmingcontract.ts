@@ -1,14 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
-import guildmasterJaneImage from '../../lib/image/guildmasterJaneImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getPlantToGrow } from '../../lib/skilling/functions/calcFarmingContracts';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { bankHasItem } from '../../lib/util';
+import chatHeadImage from '../../lib/util/chatHeadImage';
 import itemID from '../../lib/util/itemID';
-import { FarmingContract } from './../../lib/farming/types';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -40,36 +40,45 @@ export default class extends BotCommand {
 		if (contractLevel === 'completed') {
 			if (currentContract.contractsCompleted > 0) {
 				return msg.send(
-					await guildmasterJaneImage(
-						`I have checked my diary and you have completed a total of ${currentContract.contractsCompleted} farming contracts!`
-					)
+					await chatHeadImage({
+						content: `I have checked my diary and you have completed a total of ${currentContract.contractsCompleted} farming contracts!`,
+						head: 'jane'
+					})
 				);
 			}
 			return msg.send(
-				await guildmasterJaneImage(
-					`I tried to check my diary but you haven't completed any farming contracts yet...`
-				)
+				await chatHeadImage({
+					content: `I tried to check my diary but you haven't completed any farming contracts yet...`,
+					head: 'jane'
+				})
 			);
 		}
 
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
 			return msg.send(
-				await guildmasterJaneImage(
-					`You need to open your seed pack before receiving a new contract!`
-				)
+				await chatHeadImage({
+					content: `You need to open your seed pack before receiving a new contract!`,
+					head: 'jane'
+				})
 			);
 		}
 
 		if (!currentContract.hasContract && contractLevel === 'easier') {
 			return msg.send(
-				await guildmasterJaneImage(
-					`You currently don't have a contract, so you can't ask for something easier!`
-				)
+				await chatHeadImage({
+					content: `You currently don't have a contract, so you can't ask for something easier!`,
+					head: 'jane'
+				})
 			);
 		}
 
 		if (!currentContract.hasContract && contractLevel === 'current') {
-			return msg.send(await guildmasterJaneImage(`You currently don't have a contract!`));
+			return msg.send(
+				await chatHeadImage({
+					content: `You currently don't have a contract!`,
+					head: 'jane'
+				})
+			);
 		}
 
 		const contractToFarmingLevel = {
@@ -84,9 +93,10 @@ export default class extends BotCommand {
 			farmingLevel < contractToFarmingLevel[contractLevel]
 		) {
 			return msg.send(
-				await guildmasterJaneImage(
-					`You need ${contractToFarmingLevel[contractLevel]} farming to receive a contract of ${contractLevel} difficulty!`
-				)
+				await chatHeadImage({
+					content: `You need ${contractToFarmingLevel[contractLevel]} farming to receive a contract of ${contractLevel} difficulty!`,
+					head: 'jane'
+				})
 			);
 		}
 
@@ -94,9 +104,10 @@ export default class extends BotCommand {
 			if (contractLevel === 'easier') {
 				if (currentContract.difficultyLevel === 'easy') {
 					return msg.send(
-						await guildmasterJaneImage(
-							`Pardon me, but you already have the easiest contract level available!`
-						)
+						await chatHeadImage({
+							content: `Pardon me, but you already have the easiest contract level available!`,
+							head: 'jane'
+						})
 					);
 				}
 				const newContractLevel = 'easy';
@@ -118,9 +129,10 @@ export default class extends BotCommand {
 				);
 
 				return msg.send(
-					await guildmasterJaneImage(
-						`I suppose you were too chicken for the challange. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
-					)
+					await chatHeadImage({
+						content: `I suppose you were too chicken for the challange. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`,
+						head: 'jane'
+					})
 				);
 			}
 
@@ -129,9 +141,10 @@ export default class extends BotCommand {
 				easierStr = `\nYou can request an easier contract if you'd like.`;
 			}
 			return msg.send(
-				await guildmasterJaneImage(
-					`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
-				)
+				await chatHeadImage({
+					content: `Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`,
+					head: 'jane'
+				})
 			);
 		}
 
@@ -155,9 +168,10 @@ export default class extends BotCommand {
 		);
 
 		return msg.send(
-			await guildmasterJaneImage(
-				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
-			)
+			await chatHeadImage({
+				content: `Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`,
+				head: 'jane'
+			})
 		);
 	}
 }

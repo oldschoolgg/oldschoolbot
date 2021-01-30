@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 
 import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/openables';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';

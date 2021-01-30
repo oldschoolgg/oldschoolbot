@@ -3,8 +3,8 @@ import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { convertXPtoLVL } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Color, PerkTier } from '../../lib/constants';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
 import { LampTable } from '../../lib/xpLamps';
 

@@ -4,9 +4,9 @@ import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
 
 import { Events } from '../../lib/constants';
+import SimilarItems from '../../lib/data/similarItems';
 import { GearTypes } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import SimilarItems from '../../lib/similarItems';
 import { ItemBank } from '../../lib/types';
 import { addBanks, addItemToBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 
