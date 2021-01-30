@@ -43,7 +43,7 @@ export default class extends Task {
 			loot.add(bluegill.table.roll());
 
 			if (
-				currentRoll > 82 &&
+				currentRoll >= 82 &&
 				currentFishLevel >= greaterSiren.fishLvl! &&
 				currentHuntLevel >= greaterSiren.level!
 			) {
@@ -51,7 +51,7 @@ export default class extends Task {
 				continue;
 			}
 			if (
-				currentRoll > 67 &&
+				currentRoll >= 67 &&
 				currentFishLevel >= mottledEel.fishLvl! &&
 				currentHuntLevel >= mottledEel.level!
 			) {
@@ -59,7 +59,7 @@ export default class extends Task {
 				continue;
 			}
 			if (
-				currentRoll > 52 &&
+				currentRoll >= 52 &&
 				currentFishLevel >= commonTench.fishLvl! &&
 				currentHuntLevel >= commonTench.level!
 			) {
