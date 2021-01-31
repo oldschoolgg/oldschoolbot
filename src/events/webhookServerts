@@ -1,0 +1,25 @@
+import { createServer } from 'https';
+import { Event, EventStore } from 'klasa';
+
+import { httpPort } from '../config';
+
+export default class extends Event {
+	public constructor(store: EventStore, file: string[], directory: string) {
+		super(store, file, directory, { once: false, event: 'klasaReady' });
+	}
+
+	public async run() {
+		if (this.client.httpServer) {
+			console.log('Closing server');
+			await this.client.httpServer.close();
+		}
+		console.log('Starting server');
+		this.client.httpServer = createServer((req, res) => {
+			console.log(req);
+			res.writeHead(200, { 'Content-Type': 'text/html' });
+			res.write(req.url);
+			res.end();
+		});
+		this.client.httpServer.listen(httpPort);
+	}
+}
