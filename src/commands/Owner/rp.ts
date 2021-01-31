@@ -1,6 +1,7 @@
+import { notEmpty } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BitField, Emoji } from '../../lib/constants';
+import { BitField, BitFieldData, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -30,6 +31,16 @@ export default class extends BotCommand {
 				return msg.send(
 					`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`
 				);
+			}
+			case 'check': {
+				if (!input) return;
+				const bitfields = `${input.settings
+					.get(UserSettings.BitField)
+					.map(i => BitFieldData[i])
+					.filter(notEmpty)
+					.map(i => i.name)
+					.join(', ')}.`;
+				return msg.send(`**${input.username}**\nBitfields: ${bitfields}`);
 			}
 		}
 
