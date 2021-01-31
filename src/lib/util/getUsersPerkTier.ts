@@ -1,3 +1,4 @@
+import { User } from 'discord.js';
 import { KlasaUser } from 'klasa';
 
 import { BitField, PerkTier, Roles } from '../constants';
@@ -6,12 +7,17 @@ import getSupportGuild from './getSupportGuild';
 
 const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
 
-export default function getUsersPerkTier(user: KlasaUser): PerkTier {
-	if (user.client.owners.has(user)) {
-		return PerkTier.Six;
+export default function getUsersPerkTier(
+	userOrBitfield: KlasaUser | readonly BitField[]
+): PerkTier {
+	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
+		return 10;
 	}
 
-	const bitfield = user.settings.get(UserSettings.BitField);
+	const bitfield =
+		userOrBitfield instanceof User
+			? userOrBitfield.settings.get(UserSettings.BitField)
+			: userOrBitfield;
 
 	if (bitfield.includes(BitField.IsPatronTier5)) {
 		return PerkTier.Six;
@@ -33,10 +39,12 @@ export default function getUsersPerkTier(user: KlasaUser): PerkTier {
 		return PerkTier.Two;
 	}
 
-	const supportGuild = getSupportGuild(user.client);
-	const member = supportGuild.members.get(user.id);
-	if (member && [Roles.Booster].some(roleID => member.roles.has(roleID))) {
-		return PerkTier.One;
+	if (userOrBitfield instanceof User) {
+		const supportGuild = getSupportGuild(userOrBitfield.client);
+		const member = supportGuild.members.get(userOrBitfield.id);
+		if (member && [Roles.Booster].some(roleID => member.roles.has(roleID))) {
+			return PerkTier.One;
+		}
 	}
 
 	return 0;

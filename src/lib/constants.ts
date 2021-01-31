@@ -292,6 +292,22 @@ export const enum BitField {
 	HasHosidiusWallkit = 10
 }
 
+interface BitFieldData {
+	name: string;
+}
+
+export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
+	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron' },
+	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron' },
+	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron' },
+	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron' },
+	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron' },
+	[BitField.isModerator]: { name: 'Moderator' },
+	[BitField.isContributor]: { name: 'Contributor' },
+	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' }
+} as const;
+
 export const enum PatronTierID {
 	One = '4608201',
 	Two = '4608226',
