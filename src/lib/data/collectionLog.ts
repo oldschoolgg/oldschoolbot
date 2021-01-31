@@ -1585,7 +1585,14 @@ export const skillingLog: CollectionLogData = {
 		'Baby chinchompa',
 		'Herbi'
 	]),
-	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[]
+	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[],
+	Runecraft: resolveItems([
+		'Small pouch',
+		'Medium pouch',
+		'Large pouch',
+		'Giant pouch',
+		'Rift guardian'
+	])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(
