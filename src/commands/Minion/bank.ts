@@ -104,11 +104,15 @@ export default class extends BotCommand {
 			const debug = Boolean(msg.flagArgs.debug);
 			const textBank = [];
 			for (const [id, qty] of Object.entries(bank)) {
-				textBank.push(
-					`${Items.get(parseInt(id))!.name}${
-						debug ? `[${id}]` : ''
-					}: ${qty.toLocaleString()}`
-				);
+				const item = Items.get(parseInt(id))!;
+				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search)) {
+					continue;
+				}
+				textBank.push(`${item.name}${debug ? `[${id}]` : ''}: ${qty.toLocaleString()}`);
+			}
+
+			if (textBank.length === 0) {
+				return msg.send(`No items found.`);
 			}
 
 			if (msg.flagArgs.full) {
