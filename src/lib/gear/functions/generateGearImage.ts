@@ -23,12 +23,12 @@ const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_templa
 const slotCoordinates: { [key in EquipmentSlot]: [number, number] } = {
 	[EquipmentSlot.TwoHanded]: [15, 110],
 	[EquipmentSlot.Ammo]: [112, 71],
-	[EquipmentSlot.Body]: [71, 110],
+	[EquipmentSlot.Body]: [70, 110],
 	[EquipmentSlot.Cape]: [30, 71],
-	[EquipmentSlot.Feet]: [71, 190],
+	[EquipmentSlot.Feet]: [70, 190],
 	[EquipmentSlot.Hands]: [16, 190],
-	[EquipmentSlot.Head]: [71, 31],
-	[EquipmentSlot.Legs]: [71, 149],
+	[EquipmentSlot.Head]: [70, 31],
+	[EquipmentSlot.Legs]: [70, 150],
 	[EquipmentSlot.Neck]: [70, 71],
 	[EquipmentSlot.Ring]: [127, 190],
 	[EquipmentSlot.Shield]: [127, 110],
@@ -69,7 +69,7 @@ export async function generateGearImage(
 	client: KlasaClient,
 	user: KlasaUser,
 	gearSetup: GearTypes.GearSetup,
-	gearType: GearTypes.GearSetupTypes,
+	gearType: GearTypes.GearSetupTypes | null,
 	petID: number | null
 ) {
 	// Init the background images if they are not already
@@ -96,7 +96,9 @@ export async function generateGearImage(
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
-	drawTitleText(ctx, readableGearTypeName(gearType), Math.floor(176 / 2), 25);
+	if (gearType) {
+		drawTitleText(ctx, readableGearTypeName(gearType), Math.floor(176 / 2), 25);
+	}
 
 	// Draw stats
 	ctx.save();
@@ -220,15 +222,10 @@ export async function generateGearImage(
 		if (!item) continue;
 		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
-		const [x, y] = slotCoordinates[enumName];
-
-		ctx.drawImage(
-			image,
-			x + slotSize / 2 - image.width / 2,
-			y + slotSize / 2 - image.height / 2,
-			image.width,
-			image.height
-		);
+		let [x, y] = slotCoordinates[enumName];
+		x = x + slotSize / 2 - image.width / 2;
+		y = y + slotSize / 2 - image.height / 2;
+		ctx.drawImage(image, x, y, image.width, image.height);
 
 		if (item.quantity > 1) {
 			drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);
