@@ -127,9 +127,9 @@ WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 		// Top sacrificers
 		let topSacrificers = [];
 		const mostValue = await this.client.query<SkillUser[]>(
-			`SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 1;`
+			`SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;`
 		);
-		topSacrificers.push(mostValue[0].id);
+		for (const u of mostValue) topSacrificers.push(u.id);
 		const mostUniques = await this.client.query<
 			SkillUser[]
 		>(`SELECT u.id, u.sacbanklength FROM (
