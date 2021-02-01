@@ -1877,6 +1877,11 @@ e@^0.1.3:
   resolved "https://registry.yarnpkg.com/e/-/e-0.1.3.tgz#3f4f59d859632128d07c17b97fab3d52f5d6ad1f"
   integrity sha512-+bCYG6ppcG/nZDhQozzGKqqD6ttbcwWoVlICxQZnNOEkEo5Wnqmhzsiosvc34f9qN635P+23Fb8+Ya9bG1EzFQ==
 
+e@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/e/-/e-0.2.0.tgz#6ecc0558a5845616054856054884a76901dc5d49"
+  integrity sha512-+Pmk1Wh5M3HKmGkgmvuQfbDzmNbRbpHvjEORN8lW6Zc5Qo2HlTVgTQsbCw9y3V6J84LAy987QGRdZnJ8sBXjtw==
+
 ecc-jsbn@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.2.tgz#3a83a904e54353287874c564b7549386849a98c9"
@@ -4007,12 +4012,12 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oldschooljs@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.6.1.tgz#ec4a59d55e46fa63a534f8466c52b569437c37a9"
-  integrity sha512-29C52s05jPYJjL9bMLaIzEi85qWWVdHwc+W4nmF45haHNdk6+Pp96gCdptfT5mqFgoWNIP/nIw/8m51p2OKGXg==
+oldschooljs@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.6.3.tgz#c044b2baea8f637ded981b58380e06775381ea7a"
+  integrity sha512-VrgyRcVsecyGLhiT3MZQuEJCC+/pVDyEa1pbrNRPZsMf1LYgrQs33gpn5+Ne9TAOQFp/JFPFdpNKbdXcPfaMPw==
   dependencies:
-    e "^0.1.3"
+    e "^0.2.0"
     jsdom "^16.0.1"
     node-fetch "^2.6.0"
 

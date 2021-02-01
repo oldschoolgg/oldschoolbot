@@ -5,7 +5,7 @@ const Magic = {
 	aliases: ['mage', 'magic'],
 	id: SkillsEnum.Magic,
 	emoji: Emoji.Magic,
-	name: 'Hunter'
+	name: 'Magic'
 };
 
 export default Magic;

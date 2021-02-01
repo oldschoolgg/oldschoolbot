@@ -2,13 +2,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
+import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
+import { CastingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { determineRunes } from '../../lib/util/determineRunes';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,39 +31,38 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const enchantable = Enchantables.find(item => stringMatches(item.name, name));
+		const spell = Castables.find(spell => stringMatches(spell.name, name));
 
-		if (!enchantable) {
+		if (!spell) {
 			return msg.send(
-				`That is not a valid item to enchant, the items you can enchant are: ${Enchantables.map(
+				`That is not a valid spell to cast, the spells you can cast are: ${Castables.map(
 					i => i.name
 				).join(', ')}.`
 			);
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Magic) < enchantable.level) {
+		if (msg.author.skillLevel(SkillsEnum.Magic) < spell.level) {
 			return msg.send(
-				`${msg.author.minionName} needs ${enchantable.level} Magic to enchant ${enchantable.name}.`
+				`${msg.author.minionName} needs ${spell.level} Magic to cast ${spell.name}.`
 			);
 		}
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
-		let timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
+		let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToEnchantTen);
-			const max = userBank.fits(enchantable.input);
+			const max = userBank.fits(spell.input);
 			if (max < quantity) quantity = max;
 		}
 
-		const cost = determineRunes(msg.author, enchantable.input.clone().multiply(quantity));
-
+		const cost = spell.input.clone().multiply(quantity);
 		if (!userBank.has(cost.bank)) {
 			return msg.send(
-				`You don't have the materials needed to enchant ${enchantable.name}, you need ${
-					enchantable.input
+				`You don't have the materials needed to cast ${spell.name}, you need ${
+					spell.input
 				}, you're missing **${cost.clone().remove(userBank)}**.`
 			);
 		}
@@ -77,26 +75,24 @@ export default class extends BotCommand {
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					msg.author.maxTripLength
 				)}, try a lower quantity. The highest amount of ${
-					enchantable.name
-				}s you can enchant is ${Math.floor(msg.author.maxTripLength / timeToEnchantTen)}.`
+					spell.name
+				}s you can cast is ${Math.floor(msg.author.maxTripLength / timeToEnchantTen)}.`
 			);
 		}
 
-		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>(this.client, {
-			itemID: enchantable.id,
+		await addSubTaskToActivityTask<CastingActivityTaskOptions>(this.client, {
+			spellID: spell.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Enchanting
+			type: Activity.Casting
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now enchanting ${quantity * 10}x ${
-				enchantable.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${cost} from your bank.`
+			`${msg.author.minionName} is now casting ${quantity}x ${
+				spell.name
+			}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }
