@@ -94,6 +94,7 @@ export const enum Emoji {
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
 	RottenPotato = '<:rottenPotato:791498767051915275>',
+	Magic = '<:magic:630911040334331917>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
