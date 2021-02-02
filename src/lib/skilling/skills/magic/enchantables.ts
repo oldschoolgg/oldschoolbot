@@ -11,6 +11,219 @@ interface Enchantable {
 }
 
 const jewelery: Enchantable[] = [
+	// Zenyte
+	{
+		name: 'Zenyte ring',
+		id: itemID('Zenyte ring'),
+		input: new Bank()
+			.add('Zenyte ring')
+			.add('Cosmic rune', 1)
+			.add('Soul rune', 20)
+			.add('Blood rune', 20),
+		output: new Bank().add('Ring of suffering'),
+		xp: 110,
+		level: 93
+	},
+	{
+		name: 'Zenyte amulet',
+		id: itemID('Zenyte amulet'),
+		input: new Bank()
+			.add('Zenyte amulet')
+			.add('Cosmic rune', 1)
+			.add('Soul rune', 20)
+			.add('Blood rune', 20),
+		output: new Bank().add('Amulet of torture'),
+		xp: 110,
+		level: 93
+	},
+	{
+		name: 'Zenyte necklace',
+		id: itemID('Zenyte necklace'),
+		input: new Bank()
+			.add('Zenyte necklace')
+			.add('Cosmic rune', 1)
+			.add('Soul rune', 20)
+			.add('Blood rune', 20),
+		output: new Bank().add('Necklace of anguish'),
+		xp: 110,
+		level: 93
+	},
+	{
+		name: 'Zenyte bracelet',
+		id: itemID('Zenyte bracelet'),
+		input: new Bank()
+			.add('Zenyte bracelet')
+			.add('Cosmic rune', 1)
+			.add('Soul rune', 20)
+			.add('Blood rune', 20),
+		output: new Bank().add('Tormented bracelet'),
+		xp: 110,
+		level: 93
+	},
+	// Onyx
+	{
+		name: 'Onyx necklace',
+		id: itemID('Onyx necklace'),
+		input: new Bank()
+			.add('Onyx necklace')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 20)
+			.add('Fire rune', 20),
+		output: new Bank().add('Berserker necklace'),
+		xp: 97,
+		level: 87
+	},
+	{
+		name: 'Onyx amulet',
+		id: itemID('Onyx amulet'),
+		input: new Bank()
+			.add('Onyx amulet')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 20)
+			.add('Fire rune', 20),
+		output: new Bank().add('Amulet of fury'),
+		xp: 97,
+		level: 82
+	},
+	{
+		name: 'Onyx ring',
+		id: itemID('Onyx ring'),
+		input: new Bank()
+			.add('Onyx ring')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 20)
+			.add('Fire rune', 20),
+		output: new Bank().add('Ring of stone'),
+		xp: 97,
+		level: 87
+	},
+	{
+		name: 'Onyx bracelet',
+		id: itemID('Onyx bracelet'),
+		input: new Bank()
+			.add('Onyx bracelet')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 20)
+			.add('Fire rune', 20),
+		output: new Bank().add('Regen bracelet'),
+		xp: 97,
+		level: 87
+	},
+	// Dragonstone
+	{
+		name: 'Dragon necklace',
+		id: itemID('Dragon necklace'),
+		input: new Bank()
+			.add('Dragon necklace')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 15)
+			.add('Water rune', 15),
+		output: new Bank().add('Skills necklace'),
+		xp: 78,
+		level: 68
+	},
+	{
+		name: 'Dragonstone amulet',
+		id: itemID('Dragonstone amulet'),
+		input: new Bank()
+			.add('Dragonstone amulet')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 15)
+			.add('Water rune', 15),
+		output: new Bank().add('Amulet of glory'),
+		xp: 78,
+		level: 68
+	},
+	{
+		name: 'Dragonstone ring',
+		id: itemID('Dragonstone ring'),
+		input: new Bank()
+			.add('Dragonstone ring')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 15)
+			.add('Water rune', 15),
+		output: new Bank().add('Ring of wealth'),
+		xp: 78,
+		level: 68
+	},
+	{
+		name: 'Dragonstone bracelet',
+		id: itemID('Dragonstone bracelet'),
+		input: new Bank()
+			.add('Dragonstone bracelet')
+			.add('Cosmic rune', 1)
+			.add('Earth rune', 15)
+			.add('Water rune', 15),
+		output: new Bank().add('Combat bracelet'),
+		xp: 78,
+		level: 68
+	},
+	// Diamond
+	{
+		name: 'Ruby necklace',
+		id: itemID('Ruby necklace'),
+		input: new Bank().add('Ruby necklace').add('Cosmic rune', 1).add('Fire rune', 5),
+		output: new Bank().add('Digsite pendant (5)'),
+		xp: 59,
+		level: 49
+	},
+	{
+		name: 'Ruby amulet',
+		id: itemID('Ruby amulet'),
+		input: new Bank().add('Ruby amulet').add('Cosmic rune', 1).add('Fire rune', 5),
+		output: new Bank().add('Amulet of strength'),
+		xp: 59,
+		level: 49
+	},
+	{
+		name: 'Ruby ring',
+		id: itemID('Ruby ring'),
+		input: new Bank().add('Ruby ring').add('Cosmic rune', 1).add('Fire rune', 5),
+		output: new Bank().add('Ring of forging'),
+		xp: 59,
+		level: 49
+	},
+	{
+		name: 'Ruby bracelet',
+		id: itemID('Ruby bracelet'),
+		input: new Bank().add('Ruby bracelet').add('Cosmic rune', 1).add('Fire rune', 5),
+		output: new Bank().add('Inoculation bracelet'),
+		xp: 59,
+		level: 49
+	},
+	// Diamond
+	{
+		name: 'Diamond necklace',
+		id: itemID('Diamond necklace'),
+		input: new Bank().add('Diamond necklace').add('Cosmic rune', 1).add('Earth rune', 10),
+		output: new Bank().add('Phoenix necklace'),
+		xp: 67,
+		level: 57
+	},
+	{
+		name: 'Diamond amulet',
+		id: itemID('Diamond amulet'),
+		input: new Bank().add('Diamond amulet').add('Cosmic rune', 1).add('Earth rune', 10),
+		output: new Bank().add('Amulet of power'),
+		xp: 67,
+		level: 57
+	},
+	{
+		name: 'Diamond ring',
+		id: itemID('Diamond ring'),
+		input: new Bank().add('Diamond ring').add('Cosmic rune', 1).add('Earth rune', 10),
+		output: new Bank().add('Ring of life'),
+		xp: 67,
+		level: 57
+	},
+	{
+		name: 'Diamond bracelet',
+		id: itemID('Diamond bracelet'),
+		input: new Bank().add('Diamond bracelet').add('Cosmic rune', 1).add('Earth rune', 10),
+		output: new Bank().add('Abyssal bracelet(5)'),
+		xp: 67,
+		level: 57
+	},
 	// Emerald
 	{
 		name: 'Emerald necklace',
@@ -21,10 +234,26 @@ const jewelery: Enchantable[] = [
 		level: 27
 	},
 	{
-		name: 'Emerald necklace',
-		id: itemID('Emerald necklace'),
-		input: new Bank().add('Emerald necklace').add('Cosmic rune', 1).add('Air rune', 3),
-		output: new Bank().add('Binding necklace'),
+		name: 'Emerald amulet',
+		id: itemID('Emerald amulet'),
+		input: new Bank().add('Emerald amulet').add('Cosmic rune', 1).add('Air rune', 3),
+		output: new Bank().add('Amulet of defence'),
+		xp: 37,
+		level: 27
+	},
+	{
+		name: 'Emerald ring',
+		id: itemID('Emerald ring'),
+		input: new Bank().add('Emerald ring').add('Cosmic rune', 1).add('Air rune', 3),
+		output: new Bank().add('Ring of dueling(8)'),
+		xp: 37,
+		level: 27
+	},
+	{
+		name: 'Emerald bracelet',
+		id: itemID('Emerald bracelet'),
+		input: new Bank().add('Emerald bracelet').add('Cosmic rune', 1).add('Air rune', 3),
+		output: new Bank().add('Castle wars bracelet(3)'),
 		xp: 37,
 		level: 27
 	},
@@ -49,7 +278,7 @@ const jewelery: Enchantable[] = [
 		name: 'Topaz amulet',
 		id: itemID('Topaz amulet'),
 		input: new Bank().add('Topaz amulet').add('Cosmic rune', 1).add('Fire rune', 5),
-		output: new Bank().add('Burning amulet'),
+		output: new Bank().add('Burning amulet(5)'),
 		xp: 59,
 		level: 49
 	},
@@ -154,7 +383,7 @@ const jewelery: Enchantable[] = [
 	}
 ];
 
-export const Enchantables: Enchantable[] = [
+const bolts = [
 	{
 		name: 'Opal bolts',
 		id: itemID('Opal bolts'),
@@ -252,3 +481,5 @@ export const Enchantables: Enchantable[] = [
 		level: 87
 	}
 ];
+
+export const Enchantables: Enchantable[] = [...bolts, ...jewelery];

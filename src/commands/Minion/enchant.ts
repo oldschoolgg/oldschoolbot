@@ -18,8 +18,8 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
-			description: 'Sends your minion to enchant items.',
-			examples: ['+enchant 100 opal bolts', '+enchant ruby bolts'],
+			description: 'Sends your minion to enchant items with Magic.',
+			examples: ['+enchant 100 opal bolts', '+enchant onyx amulet'],
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
@@ -27,6 +27,18 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+		if (msg.flagArgs.items) {
+			let str = `Enchantable Items\n\n`;
+			for (const item of Enchantables.sort((a, b) => b.level - a.level)) {
+				str += `${item.name.padEnd(20)} - Level ${item.level
+					.toString()
+					.padEnd(2)} - ${item.xp.toString().padEnd(3)} XP - Input: ${
+					item.input
+				} - Output: ${item.output}\n`;
+			}
+			return msg.channel.sendFile(Buffer.from(str), 'enchantables.txt');
+		}
+
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
@@ -92,7 +104,7 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now enchanting ${quantity * 10}x ${
+			`${msg.author.minionName} is now enchanting ${quantity}x ${
 				enchantable.name
 			}, it'll take around ${formatDuration(
 				duration
