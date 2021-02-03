@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { table } from 'table';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -6,7 +7,7 @@ import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 
@@ -28,15 +29,17 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		if (msg.flagArgs.items) {
-			let str = `Enchantable Items\n\n`;
-			for (const item of Enchantables.sort((a, b) => b.level - a.level)) {
-				str += `${item.name.padEnd(20)} - Level ${item.level
-					.toString()
-					.padEnd(2)} - ${item.xp.toString().padEnd(3)} XP - Input: ${
-					item.input
-				} - Output: ${item.output}\n`;
-			}
-			return msg.channel.sendFile(Buffer.from(str), 'enchantables.txt');
+			const tableStr = table([
+				['Item Name', 'Lvl', 'XP', 'Items Required', 'Items Given'],
+				...Enchantables.sort((a, b) => b.level - a.level).map(en => [
+					en.name,
+					en.level,
+					en.xp,
+					en.input,
+					en.output
+				])
+			]);
+			return msg.channel.sendFile(Buffer.from(tableStr), 'enchantables.txt');
 		}
 
 		if (typeof quantity === 'string') {
@@ -44,7 +47,9 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const enchantable = Enchantables.find(item => stringMatches(item.name, name));
+		const enchantable = Enchantables.find(
+			item => stringMatches(item.name, name) || stringMatches(itemNameFromID(item.id)!, name)
+		);
 
 		if (!enchantable) {
 			return msg.send(
@@ -67,20 +72,10 @@ export default class extends BotCommand {
 
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToEnchantTen);
-			const max = userBank.fits(enchantable.input);
-			if (max < quantity) quantity = max;
+			const spellRunes = determineRunes(msg.author, enchantable.input.clone());
+			const max = userBank.fits(spellRunes);
+			if (max < quantity && max !== 0) quantity = max;
 		}
-
-		const cost = determineRunes(msg.author, enchantable.input.clone().multiply(quantity));
-
-		if (!userBank.has(cost.bank)) {
-			return msg.send(
-				`You don't have the materials needed to enchant ${enchantable.name}, you need ${
-					enchantable.input
-				}, you're missing **${cost.clone().remove(userBank)}**.`
-			);
-		}
-		await msg.author.removeItemsFromBank(cost.bank);
 
 		const duration = quantity * timeToEnchantTen;
 
@@ -93,6 +88,19 @@ export default class extends BotCommand {
 				}s you can enchant is ${Math.floor(msg.author.maxTripLength / timeToEnchantTen)}.`
 			);
 		}
+
+		const cost = determineRunes(msg.author, enchantable.input.clone().multiply(quantity));
+
+		if (!userBank.has(cost.bank)) {
+			return msg.send(
+				`You don't have the materials needed to enchant ${quantity}x ${
+					enchantable.name
+				}, you need ${enchantable.input}, you're missing **${cost
+					.clone()
+					.remove(userBank)}**.`
+			);
+		}
+		await msg.author.removeItemsFromBank(cost.bank);
 
 		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>(this.client, {
 			itemID: enchantable.id,

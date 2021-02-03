@@ -385,7 +385,7 @@ const jewelery: Enchantable[] = [
 
 const bolts = [
 	{
-		name: 'Opal bolts',
+		name: '10x Opal bolts',
 		id: itemID('Opal bolts'),
 		input: new Bank().add('Opal bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Opal bolts (e)', 10),
@@ -393,7 +393,7 @@ const bolts = [
 		level: 4
 	},
 	{
-		name: 'Sapphire bolts',
+		name: '10x Sapphire bolts',
 		id: itemID('Sapphire bolts'),
 		input: new Bank()
 			.add('Sapphire bolts', 10)
@@ -405,7 +405,7 @@ const bolts = [
 		level: 7
 	},
 	{
-		name: 'Pearl bolts',
+		name: '10x Pearl bolts',
 		id: itemID('Pearl bolts'),
 		input: new Bank().add('Pearl bolts', 10).add('Water rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Pearl bolts (e)', 10),
@@ -413,7 +413,7 @@ const bolts = [
 		level: 24
 	},
 	{
-		name: 'Emerald bolts',
+		name: '10x Emerald bolts',
 		id: itemID('Emerald bolts'),
 		input: new Bank()
 			.add('Emerald bolts', 10)
@@ -425,7 +425,7 @@ const bolts = [
 		level: 27
 	},
 	{
-		name: 'Topaz bolts',
+		name: '10x Topaz bolts',
 		id: itemID('Topaz bolts'),
 		input: new Bank().add('Topaz bolts', 10).add('Fire rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Topaz bolts (e)', 10),
@@ -433,7 +433,7 @@ const bolts = [
 		level: 29
 	},
 	{
-		name: 'Ruby bolts',
+		name: '10x Ruby bolts',
 		id: itemID('Ruby bolts'),
 		input: new Bank()
 			.add('Ruby bolts', 10)
@@ -445,7 +445,7 @@ const bolts = [
 		level: 49
 	},
 	{
-		name: 'Diamond bolts',
+		name: '10x Diamond bolts',
 		id: itemID('Diamond bolts'),
 		input: new Bank()
 			.add('Diamond bolts', 10)
@@ -457,7 +457,7 @@ const bolts = [
 		level: 57
 	},
 	{
-		name: 'Dragonstone bolts',
+		name: '10x Dragonstone bolts',
 		id: itemID('Dragonstone bolts'),
 		input: new Bank()
 			.add('Dragonstone bolts', 10)
@@ -469,7 +469,7 @@ const bolts = [
 		level: 68
 	},
 	{
-		name: 'Onyx bolts',
+		name: '10x Onyx bolts',
 		id: itemID('Onyx bolts'),
 		input: new Bank()
 			.add('Onyx bolts', 10)
@@ -479,6 +479,111 @@ const bolts = [
 		output: new Bank().add('Onyx bolts (e)', 10),
 		xp: 97,
 		level: 87
+	},
+	// Dragon
+	{
+		name: '10x Diamond dragon bolts',
+		id: itemID('Diamond dragon bolts'),
+		input: new Bank()
+			.add('Diamond dragon bolts', 10)
+			.add('Earth rune', 10)
+			.add('Law rune', 2)
+			.add('Cosmic rune', 1),
+		output: new Bank().add('Diamond bolts (e)', 10),
+		xp: 67,
+		level: 57
+	},
+	{
+		name: '10x Dragonstone dragon bolts',
+		id: itemID('Dragonstone dragon bolts'),
+		input: new Bank()
+			.add('Dragonstone dragon bolts', 10)
+			.add('Earth rune', 15)
+			.add('Soul rune')
+			.add('Cosmic rune', 1),
+		output: new Bank().add('Dragonstone dragon bolts (e)', 10),
+		xp: 78,
+		level: 68
+	},
+	{
+		name: '10x Emerald dragon bolts',
+		id: itemID('Emerald dragon bolts'),
+		input: new Bank()
+			.add('Emerald dragon bolts', 10)
+			.add('Air rune', 3)
+			.add('Nature rune')
+			.add('Cosmic rune', 1),
+		output: new Bank().add('Emerald dragon bolts (e)', 10),
+		xp: 37,
+		level: 27
+	},
+	{
+		name: '10x Jade dragon bolts',
+		id: itemID('Jade dragon bolts'),
+		input: new Bank().add('Jade dragon bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
+		output: new Bank().add('Jade dragon bolts (e)', 10),
+		xp: 19,
+		level: 14
+	},
+	{
+		name: '10x Onyx dragon bolts',
+		id: itemID('Onyx dragon bolts'),
+		input: new Bank()
+			.add('Onyx dragon bolts', 10)
+			.add('Fire rune', 20)
+			.add('Death rune', 20)
+			.add('Cosmic rune', 1),
+		output: new Bank().add('Onyx dragon bolts (e)', 10),
+		xp: 97,
+		level: 87
+	},
+	{
+		name: '10x Opal dragon bolts',
+		id: itemID('Opal dragon bolts'),
+		input: new Bank().add('Opal dragon bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
+		output: new Bank().add('Opal dragon bolts (e)', 10),
+		xp: 9,
+		level: 4
+	},
+	{
+		name: '10x Pearl dragon bolts',
+		id: itemID('Pearl dragon bolts'),
+		input: new Bank().add('Pearl dragon bolts', 10).add('Water rune', 2).add('Cosmic rune', 1),
+		output: new Bank().add('Pearl dragon bolts (e)', 10),
+		xp: 29,
+		level: 24
+	},
+	{
+		name: '10x Ruby dragon bolts',
+		id: itemID('Ruby dragon bolts'),
+		input: new Bank()
+			.add('Ruby dragon bolts', 10)
+			.add('Fire rune', 5)
+			.add('Blood rune')
+			.add('Cosmic rune', 1),
+		output: new Bank().add('Ruby dragon bolts (e)', 10),
+		xp: 59,
+		level: 49
+	},
+	{
+		name: '10x Sapphire dragon bolts',
+		id: itemID('Sapphire dragon bolts'),
+		input: new Bank()
+			.add('Sapphire dragon bolts', 10)
+			.add('Water rune')
+			.add('Mind rune')
+			.add('Cosmic rune', 1),
+		output: new Bank().add('Sapphire dragon bolts (e)', 10),
+		xp: 17.5,
+		level: 7
+	},
+	{
+		name: '10x Topaz dragon bolts',
+		id: itemID('Topaz dragon bolts'),
+		input: new Bank().add('Topaz dragon bolts', 10).add('Fire rune', 2).add('Cosmic rune', 1),
+		output: new Bank().add('Topaz dragon bolts (e)', 10),
+		xp: 33,
+		level: 49
 	}
 ];
 

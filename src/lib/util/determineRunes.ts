@@ -15,7 +15,8 @@ const staves: [number[], number[]][] = [
 	[res(['Mystic steam staff', 'Steam battlestaff']), res(['Fire rune', 'Water rune'])],
 	[res(['Mystic smoke staff', 'Smoke battlestaff']), res(['Fire rune', 'Air rune'])],
 	[res(['Mystic mist staff', 'Mist battlestaff']), res(['Water rune', 'Air rune'])],
-	[res(['Mystic dust staff', 'Dust battlestaff']), res(['Earth rune', 'Air rune'])]
+	[res(['Mystic dust staff', 'Dust battlestaff']), res(['Earth rune', 'Air rune'])],
+	[res(['Kodai wand']), res(['Water rune'])]
 ];
 
 export function determineRunes(user: KlasaUser, runeBank: Bank): Bank {

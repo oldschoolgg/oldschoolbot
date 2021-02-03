@@ -16,15 +16,17 @@ export default class extends Task {
 
 		const currentLevel = user.skillLevel(SkillsEnum.Magic);
 		const xpReceived = quantity * spell.xp;
-		await user.addXP(SkillsEnum.Fletching, xpReceived);
+		await user.addXP(SkillsEnum.Magic, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Magic);
 
-		const loot = spell.output.clone().multiply(quantity);
-		await user.addItemsToBank(loot.bank, true);
+		const loot = spell.output?.clone().multiply(quantity);
+		if (loot) {
+			await user.addItemsToBank(loot.bank, true);
+		}
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
 			spell.name
-		}, you received ${xpReceived.toLocaleString()} Magic XP and ${loot}.`;
+		}, you received ${xpReceived.toLocaleString()} Magic XP and ${loot ?? 'no items'}.`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Magic level is now ${newLevel}!`;
@@ -37,7 +39,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${spell.name}[${spell.id}]`);
-				return this.client.commands.get('enchant')!.run(res, [quantity, spell.name]);
+				return this.client.commands.get('cast')!.run(res, [quantity, spell.name]);
 			},
 			undefined,
 			data

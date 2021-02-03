@@ -16,13 +16,13 @@ export default class extends Task {
 
 		const currentLevel = user.skillLevel(SkillsEnum.Magic);
 		const xpReceived = quantity * enchantable.xp;
-		await user.addXP(SkillsEnum.Fletching, xpReceived);
+		await user.addXP(SkillsEnum.Magic, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Magic);
 
 		const loot = enchantable.output.clone().multiply(quantity);
 		await user.addItemsToBank(loot.bank, true);
 
-		let str = `${user}, ${user.minionName} finished enchanting ${quantity * 10}x ${
+		let str = `${user}, ${user.minionName} finished enchanting ${quantity}x ${
 			enchantable.name
 		}, you received ${xpReceived.toLocaleString()} Magic XP and ${loot}.`;
 

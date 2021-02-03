@@ -8,6 +8,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { determineRunes } from '../../lib/util/determineRunes';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -54,19 +55,10 @@ export default class extends BotCommand {
 
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToEnchantTen);
-			const max = userBank.fits(spell.input);
-			if (max < quantity) quantity = max;
+			const spellRunes = determineRunes(msg.author, spell.input.clone());
+			const max = userBank.fits(spellRunes);
+			if (max < quantity && max !== 0) quantity = max;
 		}
-
-		const cost = spell.input.clone().multiply(quantity);
-		if (!userBank.has(cost.bank)) {
-			return msg.send(
-				`You don't have the materials needed to cast ${spell.name}, you need ${
-					spell.input
-				}, you're missing **${cost.clone().remove(userBank)}**.`
-			);
-		}
-		await msg.author.removeItemsFromBank(cost.bank);
 
 		const duration = quantity * timeToEnchantTen;
 
@@ -79,6 +71,15 @@ export default class extends BotCommand {
 				}s you can cast is ${Math.floor(msg.author.maxTripLength / timeToEnchantTen)}.`
 			);
 		}
+		const cost = determineRunes(msg.author, spell.input.clone().multiply(quantity));
+		if (!userBank.has(cost.bank)) {
+			return msg.send(
+				`You don't have the materials needed to cast ${quantity}x ${spell.name}, you need ${
+					spell.input
+				}, you're missing **${cost.clone().remove(userBank)}** (Cost: ${cost}).`
+			);
+		}
+		await msg.author.removeItemsFromBank(cost.bank);
 
 		await addSubTaskToActivityTask<CastingActivityTaskOptions>(this.client, {
 			spellID: spell.id,
@@ -92,7 +93,9 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now casting ${quantity}x ${
 				spell.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			}, it'll take around ${formatDuration(
+				duration
+			)} to finish. Removed ${cost} from your bank.`
 		);
 	}
 }
