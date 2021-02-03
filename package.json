@@ -13,6 +13,7 @@
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
 		"@sentry/node": "5.20.1",
+		"@types/table": "^6.0.0",
 		"bufferutil": "^4.0.3",
 		"canvas": "^2.6.1",
 		"canvas-constructor": "^1.1.2",
@@ -37,6 +38,7 @@
 		"rss-parser": "^3.10.0",
 		"snoostorm": "^1.5.2",
 		"snoowrap": "github:gc/snoowrap#master",
+		"table": "^6.0.7",
 		"ts-debounce": "^2.2.0",
 		"ts-toolbelt": "^8.0.7",
 		"twit": "^2.2.9",
