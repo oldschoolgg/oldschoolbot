@@ -137,6 +137,15 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (
+			creature.herbloreLvl &&
+			msg.author.skillLevel(SkillsEnum.Herblore) < creature.herbloreLvl
+		) {
+			return msg.send(
+				`${msg.author.minionName} needs ${creature.herbloreLvl} Herblore to hunt ${creature.name}.`
+			);
+		}
+
 		if (creature.multiTraps) {
 			traps +=
 				Math.min(
