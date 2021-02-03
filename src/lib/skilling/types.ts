@@ -256,6 +256,7 @@ export interface Creature {
 	multiTraps?: boolean;
 	wildy?: boolean;
 	prayerLvl?: number;
+	herbloreLvl?: number;
 	catchTime: number;
 	qpRequired?: number;
 	slope: number;
