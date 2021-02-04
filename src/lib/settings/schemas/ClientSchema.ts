@@ -27,4 +27,3 @@ export default () => {
 				.add('PVMCost', 'any', { default: {} })
 				.add('thievingCost', 'any', { default: {} })
 		);
-};
