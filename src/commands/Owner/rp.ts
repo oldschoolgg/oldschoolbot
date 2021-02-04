@@ -69,7 +69,9 @@ export default class extends BotCommand {
 					return msg.send(`Someone already has this Github account connected.`);
 				}
 				await input.settings.update(UserSettings.GithubID, parseInt(res.id));
-				await (this.client.tasks.get('patreon') as PatreonTask).syncGithub();
+				if (!msg.flagArgs.nosync) {
+					await (this.client.tasks.get('patreon') as PatreonTask).syncGithub();
+				}
 				return msg.send(
 					`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`
 				);
