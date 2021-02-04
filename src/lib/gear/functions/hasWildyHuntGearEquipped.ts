@@ -14,7 +14,7 @@ export function hasWildyHuntGearEquipped(setup: GearTypes.GearSetup): [boolean, 
 	};
 
 	if (!userBodyID || !userLegsID) {
-		return [false, `No body and or legs equipped in misc setup.`, 0];
+		return [false, `Body and leg armour equipped in misc setup.`, 0];
 	}
 
 	const userBodyItem = getOSItem(userBodyID);

@@ -1376,6 +1376,7 @@ export const capes: CollectionLogData = {
 		'Herblore hood',
 		'Hunter hood',
 		'Construct. hood',
+		'Magic hood',
 		'Quest point hood'
 	]),
 	capes2: resolveItems([
@@ -1383,6 +1384,7 @@ export const capes: CollectionLogData = {
 		'Herblore cape',
 		'Hunter cape',
 		'Construct. cape',
+		'Magic cape',
 		'Quest point cape'
 	]),
 	'trimmed capes2': resolveItems([
@@ -1390,6 +1392,7 @@ export const capes: CollectionLogData = {
 		'Herblore cape(t)',
 		'Hunter cape(t)',
 		'Construct. cape(t)',
+		'Magic cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1538,7 +1541,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	Angler: anglerOutfit,
-	Farmer: farmersOutfit,
+	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
 	AgilityArena: agilityArenaLog,
@@ -1554,7 +1557,14 @@ export const skillingLog: CollectionLogData = {
 		'Baby chinchompa',
 		'Herbi'
 	]),
-	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[]
+	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[],
+	Runecraft: resolveItems([
+		'Small pouch',
+		'Medium pouch',
+		'Large pouch',
+		'Giant pouch',
+		'Rift guardian'
+	])
 };
 
 export const allCollectionLogItems = removeDuplicatesFromArray(

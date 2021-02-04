@@ -42,6 +42,11 @@ export default class extends BotCommand {
 					.join(', ')}.`;
 				return msg.send(`**${input.username}**\nBitfields: ${bitfields}`);
 			}
+			case 'patreon': {
+				msg.channel.send('Running patreon task...');
+				await this.client.tasks.get('patreon')?.run();
+				return msg.channel.send(`Finished syncing patrons.`);
+			}
 		}
 
 		if (!isOwner) return null;

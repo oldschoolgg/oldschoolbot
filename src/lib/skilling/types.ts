@@ -20,7 +20,8 @@ export enum SkillsEnum {
 	Herblore = 'herblore',
 	Thieving = 'thieving',
 	Hunter = 'hunter',
-	Construction = 'construction'
+	Construction = 'construction',
+	Magic = 'magic'
 }
 
 export interface Ore {
@@ -256,6 +257,7 @@ export interface Creature {
 	multiTraps?: boolean;
 	wildy?: boolean;
 	prayerLvl?: number;
+	herbloreLvl?: number;
 	catchTime: number;
 	qpRequired?: number;
 	slope: number;

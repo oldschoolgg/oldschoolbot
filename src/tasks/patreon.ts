@@ -1,9 +1,8 @@
 import { TextChannel } from 'discord.js';
-import { ArrayActions, KlasaUser, Task } from 'klasa';
+import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
-import { O } from 'ts-toolbelt';
 
-import { patreonConfig } from '../config';
+import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -43,12 +42,18 @@ export default class extends Task {
 		}
 	}
 
-	async removePerks(user: O.Readonly<KlasaUser>) {
-		const userBitfield = user.settings.get(UserSettings.BitField);
-		const userBadges = user.settings.get(UserSettings.Badges);
+	async removePerks(userID: string) {
+		const settings = await (this.client.gateways.get('users') as Gateway)!
+			.acquire({
+				id: userID
+			})
+			.sync(true);
+
+		const userBitfield = settings.get(UserSettings.BitField);
+		const userBadges = settings.get(UserSettings.Badges);
 
 		// Remove any/all the patron bits from this user.
-		await user.settings.update(
+		await settings.update(
 			UserSettings.BitField,
 			userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
 			{
@@ -57,7 +62,7 @@ export default class extends Task {
 		);
 
 		// Remove patreon badge(s)
-		await user.settings.update(
+		await settings.update(
 			UserSettings.Badges,
 			userBadges.filter(
 				number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)
@@ -68,28 +73,37 @@ export default class extends Task {
 		);
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(
-			bg => bg.id === user.settings.get(UserSettings.BankBackground)
-		);
+		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));
 		if (bg?.perkTierNeeded) {
-			await user.settings.update(UserSettings.BankBackground, 1);
+			await settings.update(UserSettings.BankBackground, 1);
 		}
 	}
 
 	async run() {
-		const channel = this.client.channels.get(Channel.ErrorLogs) as TextChannel;
 		const fetchedPatrons = await this.fetchPatrons();
 		const result = [];
+		let messages = [];
+
 		for (const patron of fetchedPatrons) {
 			if (!patron.discordID) {
 				result.push(`Patron[${patron.patreonID}] has no discord connected, so continuing.`);
 				continue;
 			}
-			const user = await this.client.users.fetch(patron.discordID);
-			if (user.settings.get(UserSettings.PatreonID) !== patron.patreonID) {
-				user.settings.update(UserSettings.PatreonID, patron.patreonID);
+
+			const settings = await (this.client.gateways.get('users') as Gateway)!
+				.acquire({
+					id: patron.discordID
+				})
+				.sync(true);
+
+			const username =
+				this.client.users.get(patron.discordID)?.username ??
+				`${patron.discordID}|${patron.patreonID}`;
+
+			if (settings.get(UserSettings.PatreonID) !== patron.patreonID) {
+				settings.update(UserSettings.PatreonID, patron.patreonID);
 			}
-			const userBitfield = user.settings.get(UserSettings.BitField);
+			const userBitfield = settings.get(UserSettings.BitField);
 			if (
 				[BitField.isModerator, BitField.isContributor].some(bit =>
 					userBitfield.includes(bit)
@@ -97,22 +111,20 @@ export default class extends Task {
 			) {
 				continue;
 			}
-			const userBadges = user.settings.get(UserSettings.Badges);
+			const userBadges = settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (
 				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
 				patron.patronStatus !== 'active_patron'
 			) {
-				const perkTier = getUsersPerkTier(user);
+				const perkTier = getUsersPerkTier(userBitfield);
 				if (perkTier < PerkTier.Two) continue;
-				result.push(
-					`${user.username}[${patron.patreonID}] hasn't paid in over 1 month, so removing perks.`
+				result.push(`${username} hasn't paid in over 1 month, so removing perks.`);
+				messages.push(
+					`Removing T${perkTier} patron perks from ${username} PatreonID[${patron.patreonID}]`
 				);
-				channel.send(
-					`Removing T${perkTier} patron perks from ${user.username}[${patron.patreonID}] PatreonID[${patron.patreonID}]`
-				);
-				this.removePerks(user);
+				this.removePerks(patron.discordID);
 				continue;
 			}
 
@@ -122,15 +134,15 @@ export default class extends Task {
 				if (!patron.entitledTiers.includes(tierID)) continue;
 				if (userBitfield.includes(bitFieldId)) continue;
 
-				result.push(`${user.username}[${patron.discordID}] was given Tier ${i + 1}.`);
-				channel.send(
-					`Giving T${i + 1} patron perks to ${user.username}[${
-						patron.patreonID
-					}] PatreonID[${patron.patreonID}]`
+				result.push(`${username} was given Tier ${i + 1}.`);
+				messages.push(
+					`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`
 				);
-				await user.settings.update(UserSettings.BitField, bitFieldId, {
-					arrayAction: ArrayActions.Add
-				});
+				try {
+					await settings.update(UserSettings.BitField, bitFieldId, {
+						arrayAction: ArrayActions.Add
+					});
+				} catch (_) {}
 				break;
 			}
 
@@ -139,14 +151,20 @@ export default class extends Task {
 				!userBadges.includes(BadgesEnum.Patron) &&
 				!userBadges.includes(BadgesEnum.LimitedPatron)
 			) {
-				result.push(`${user.username}[${patron.patreonID}] was given Patron badge.`);
-				await user.settings.update(UserSettings.Badges, BadgesEnum.Patron, {
-					arrayAction: ArrayActions.Add
-				});
+				result.push(`${username} was given Patron badge.`);
+				try {
+					await settings.update(UserSettings.Badges, BadgesEnum.Patron, {
+						arrayAction: ArrayActions.Add
+					});
+				} catch (_) {}
 			}
 		}
 
-		channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
+		const channel = this.client.channels.get(Channel.ErrorLogs) as TextChannel;
+		if (production) {
+			channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
+			channel.send(messages.join(', '));
+		}
 
 		this.client.tasks.get('badges')?.run();
 	}

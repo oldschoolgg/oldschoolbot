@@ -72,6 +72,7 @@ const trackingCreatures: Creature[] = [
 		table: new LootTable() /* Scaleable loot table */,
 		qpRequired: 3,
 		huntTechnique: HunterTechniqueEnum.Tracking,
+		herbloreLvl: 31,
 		catchTime: 91,
 		slope: 0,
 		intercept: 99
