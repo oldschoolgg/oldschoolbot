@@ -18,7 +18,8 @@ export const enum Channel {
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',
 	BlacklistLogs = '782459317218967602',
-	EconomyLogs = '802029843712573510'
+	EconomyLogs = '802029843712573510',
+	NewSponsors = '806744016309714966'
 }
 
 export const enum Roles {
