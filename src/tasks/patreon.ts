@@ -231,6 +231,8 @@ export default class PatreonTask extends Task {
 				})
 				.sync(true);
 
+			if (settings.get(UserSettings.GithubID)) continue;
+
 			const username =
 				this.client.users.get(patron.discordID)?.username ??
 				`${patron.discordID}|${patron.patreonID}`;
