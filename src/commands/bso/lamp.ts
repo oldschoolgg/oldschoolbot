@@ -28,7 +28,7 @@ export default class extends BotCommand {
 			return msg.send('Your lamp seems to not work with this skill for some reason...');
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Magic) > 10) {
+		if (skillName === 'magic' && msg.author.skillLevel(SkillsEnum.Magic) > 10) {
 			return msg.send('Your lamp seems to not work with this skill for some reason...');
 		}
 
