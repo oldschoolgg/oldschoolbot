@@ -18,7 +18,8 @@ export const enum Channel {
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',
 	BlacklistLogs = '782459317218967602',
-	EconomyLogs = '802029843712573510'
+	EconomyLogs = '802029843712573510',
+	NewSponsors = '806744016309714966'
 }
 
 export const enum Roles {
@@ -94,6 +95,7 @@ export const enum Emoji {
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
 	RottenPotato = '<:rottenPotato:791498767051915275>',
+	Magic = '<:magic:630911040334331917>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -162,6 +164,8 @@ export const enum Tasks {
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
 	PickpocketActivity = 'pickpocketActivity',
+	Enchanting = 'enchantingActivity',
+	Casting = 'castingActivity',
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
@@ -209,6 +213,8 @@ export const enum Activity {
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
 	Construction = 'Construction',
+	Enchanting = 'Enchanting',
+	Casting = 'Casting',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',

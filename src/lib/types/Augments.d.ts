@@ -39,6 +39,7 @@ declare module 'klasa' {
 		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
+		fastifyServer: FastifyInstance;
 	}
 
 	interface Command {

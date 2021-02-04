@@ -86,5 +86,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.MahoganyHomes;
 		case Activity.Nex:
 			return Tasks.NexActivity;
+		case Activity.Enchanting:
+			return Tasks.Enchanting;
+		case Activity.Casting:
+			return Tasks.Casting;
 	}
 }
