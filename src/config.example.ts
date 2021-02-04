@@ -26,3 +26,4 @@ export const customClientOptions: KlasaClientOptions = {
 export const sentryDSN: string | null = null;
 export const httpPort = 1234;
 export const clientSecret = '';
+export const githubToken = '';
