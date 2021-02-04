@@ -42,7 +42,7 @@
 		"piscina": "^1.6.3",
 		"random-js": "^2.1.0",
 		"reflect-metadata": "^0.1.13",
-		"rss-parser": "^3.10.0",
+		"rss-parser": "^3.11.0",
 		"snoostorm": "^1.5.2",
 		"snoowrap": "github:gc/snoowrap#master",
 		"table": "^6.0.7",
