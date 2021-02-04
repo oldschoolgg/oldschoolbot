@@ -130,6 +130,7 @@ export default class BankImageTask extends Task {
 				return this.getItemImage(itemID, quantity);
 			} catch (err) {
 				console.error(`Failed to load item icon with id: ${itemID}`);
+				return this.getItemImage(1, 1);
 			}
 		}
 
