@@ -8,7 +8,6 @@ import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
 import { initItemAliases } from '../data/itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { initSchemas } from '../settings/schemas';
 import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
@@ -25,6 +24,10 @@ if (typeof production !== 'boolean') {
 
 const { port, user, password, database } = providerConfig!.postgres!;
 
+import('../settings/schemas/UserSchema');
+import('../settings/schemas/GuildSchema');
+import('../settings/schemas/ClientSchema');
+
 export class OldSchoolBotClient extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();
@@ -38,7 +41,6 @@ export class OldSchoolBotClient extends Client {
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
-		initSchemas();
 		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterMinutes: 1 });
 		this.boss.on('error', error => console.error(error));
 	}
