@@ -1,5 +1,8 @@
+import { TextChannel } from 'discord.js';
+
 import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
+import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
@@ -35,6 +38,11 @@ const githubSponsors = (server: FastifyServer) =>
 							tier
 						);
 					}
+					boxFrenzy(
+						client.channels.get('732207379818479756') as TextChannel,
+						`${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.`,
+						tier * 4
+					);
 					break;
 				}
 				case 'tier_changed':
