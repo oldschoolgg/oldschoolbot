@@ -31,6 +31,7 @@ Client.defaultUserSchema
 	.add('honour_points', 'integer', { default: 0 })
 	.add('high_gambles', 'integer', { default: 0 })
 	.add('patreon_id', 'string', { default: null })
+	.add('github_id', 'string', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
