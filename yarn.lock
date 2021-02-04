@@ -557,6 +557,13 @@
     eslint-plugin-simple-import-sort "^5.0.3"
     prettier "^2.1.2"
 
+"@sapphire/discord-utilities@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.0.1.tgz#47b159b848bcc7d30647a127d88482d8e567795b"
+  integrity sha512-+70TerQgp1IFgDBuzZ5jNGsTwcyGlOd1STELqmWKtALY2JnKm5Nzxs8/rtCsfwMLABHQ54O9007UzuymcXhDnA==
+  dependencies:
+    twemoji-parser "^13.0.0"
+
 "@sentry/apm@5.20.1":
   version "5.20.1"
   resolved "https://registry.yarnpkg.com/@sentry/apm/-/apm-5.20.1.tgz#2126407ec8ecc6f78f42a8a8de99b90dec982036"
@@ -5413,6 +5420,11 @@ tweetnacl@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
+
+twemoji-parser@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/twemoji-parser/-/twemoji-parser-13.0.0.tgz#bd9d1b98474f1651dc174696b45cabefdfa405af"
+  integrity sha512-zMaGdskpH8yKjT2RSE/HwE340R4Fm+fbie4AaqjDa4H/l07YUmAvxkSfNl6awVWNRRQ0zdzLQ8SAJZuY5MgstQ==
 
 twit@^2.2.9:
   version "2.2.11"
