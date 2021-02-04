@@ -24,9 +24,14 @@ export default class extends BotCommand {
 		}
 
 		skillName = skillName.toLowerCase();
-		if (skillName === 'hunter') {
+		if (skillName === 'magic' && lamp.itemID !== 6796) {
 			return msg.send('Your lamp seems to not work with this skill for some reason...');
 		}
+
+		if (msg.author.skillLevel(SkillsEnum.Magic) > 10) {
+			return msg.send('Your lamp seems to not work with this skill for some reason...');
+		}
+
 		const isValidSkill = Object.values(Skills).some(skill => skill.id === skillName);
 		if (!isValidSkill) {
 			return msg.send(`That's not a valid skill.`);
