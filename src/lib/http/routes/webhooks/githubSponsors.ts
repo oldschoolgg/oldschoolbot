@@ -19,9 +19,8 @@ const githubSponsors = (server: FastifyServer) =>
 				throw reply.badRequest();
 			}
 			const data = request.body as GithubSponsorsWebhookData;
-			console.log(JSON.stringify(data, null, 4));
-			console.log(`Received webhook from Github sponsors`);
 			const user = await getUserFromGithubID(data.sender.id.toString());
+			// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 			switch (data.action) {
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
