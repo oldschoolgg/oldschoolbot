@@ -1,3 +1,4 @@
+import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
 import { objectKeys, randInt, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
@@ -58,7 +59,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+				'[seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -70,6 +71,23 @@ export default class MinionCommand extends BotCommand {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 		return msg.send(msg.author.minionStatus);
+	}
+
+	@requiresMinion
+	async seticon(msg: KlasaMessage, [icon]: [string]) {
+		if (msg.author.perkTier < PerkTier.Six) {
+			return msg.send(
+				`You need to be a Tier 5 Patron to change your minion's icon to a custom icon.`
+			);
+		}
+
+		const res = FormattedCustomEmoji.exec(icon);
+		if (!res || res[0]) {
+			return msg.channel.send(`That's not a valid emoji.`);
+		}
+		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
+
+		return msg.send(`Changed your minion icon to ${res}.`);
 	}
 
 	async pat(msg: KlasaMessage) {

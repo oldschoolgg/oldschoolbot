@@ -104,6 +104,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Construct. hood'),
 		untrimmed: itemID('Construct. cape'),
 		trimmed: itemID('Construct. cape(t)')
+	},
+	{
+		skill: SkillsEnum.Magic,
+		hood: itemID('Magic hood'),
+		untrimmed: itemID('Magic cape'),
+		trimmed: itemID('Magic cape(t)')
 	}
 ];
 

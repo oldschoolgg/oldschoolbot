@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -57,6 +58,10 @@ export default class extends BotCommand {
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
 			return msg.send(`You don't have any of this item to alch.`);
+		}
+
+		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
+			return msg.send(`You need level 55 Magic to cast High Alchemy`);
 		}
 
 		// 5 tick action

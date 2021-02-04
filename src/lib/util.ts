@@ -117,10 +117,9 @@ export function formatDuration(ms: number) {
 		minute: Math.floor(ms / 60000) % 60,
 		second: Math.floor(ms / 1000) % 60
 	};
-	return Object.entries(time)
-		.filter(val => val[1] !== 0)
-		.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`)
-		.join(', ');
+	let nums = Object.entries(time).filter(val => val[1] !== 0);
+	if (nums.length === 0) return '1 second';
+	return nums.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`).join(', ');
 }
 
 export function inlineCodeblock(input: string) {

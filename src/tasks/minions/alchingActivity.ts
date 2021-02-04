@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { resolveNameBank, toKMB } from 'oldschooljs/dist/util';
 
-import { Time } from '../../lib/constants';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
@@ -43,27 +44,31 @@ export default class extends Task {
 			gotLamb = true;
 			user.addItemsToBank({ 9619: 1 }, true);
 		}
+		const currentLevel = user.skillLevel(SkillsEnum.Magic);
+		const xpReceived = quantity * 65;
+		await user.addXP(SkillsEnum.Magic, xpReceived);
+		const newLevel = user.skillLevel(SkillsEnum.Magic);
 
 		const saved =
 			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
-		const responses = [
-			`${user}, ${user.minionName} has finished alching ${quantity}x ${
-				item.name
-			}! ${alchValue.toLocaleString()}gp (${toKMB(
-				alchValue
-			)}) has been added to your bank. ${saved}`
-		];
+		let responses = `${user}, ${user.minionName} has finished alching ${quantity}x ${
+			item.name
+		}! ${alchValue.toLocaleString()}gp (${toKMB(
+			alchValue
+		)}) has been added to your bank. You received ${xpReceived} Magic XP. ${saved}`;
+
 		if (gotLamb) {
-			responses.push(
-				`<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.`
-			);
+			responses += `<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.`;
+		}
+		if (newLevel > currentLevel) {
+			responses += `\n\n${user.minionName}'s Magic level is now ${newLevel}!`;
 		}
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			responses.join('\n'),
+			responses,
 			res => {
 				user.log(`continued trip of alching ${quantity}x ${item.name}`);
 				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);

@@ -20,6 +20,8 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
+import { Castables } from '../../lib/skilling/skills/magic/castables';
+import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
@@ -32,10 +34,12 @@ import {
 	AlchingActivityTaskOptions,
 	BarbarianAssaultActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
@@ -448,6 +452,22 @@ export default class extends Extendable {
 			case Activity.MahoganyHomes: {
 				return `${this.minionName} is currently doing Mahogany Homes. ${formattedDuration}`;
 			}
+
+			case Activity.Enchanting: {
+				const data = currentTask as EnchantingActivityTaskOptions;
+				const enchantable = Enchantables.find(i => i.id === data.itemID);
+				return `${this.minionName} is currently enchanting ${data.quantity}x ${
+					enchantable!.name
+				}. ${formattedDuration}`;
+			}
+
+			case Activity.Casting: {
+				const data = currentTask as CastingActivityTaskOptions;
+				const spell = Castables.find(i => i.id === data.spellID);
+				return `${this.minionName} is currently casting ${data.quantity}x ${
+					spell!.name
+				}. ${formattedDuration}`;
+			}
 		}
 	}
 
@@ -555,14 +575,25 @@ export default class extends Extendable {
 				}[]
 			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
 
-			this.client.emit(
-				Events.ServerNotification,
-				`${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
-				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-					parseInt(usersWith.count) + 1
-				)} to get 99 ${skillNameCased}.`
-			);
+			let str = `${skill.emoji} **${this.username}'s** minion, ${
+				this.minionName
+			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+				parseInt(usersWith.count) + 1
+			)} to get 99 ${skillNameCased}.`;
+
+			if (this.isIronman) {
+				const [ironmenWith] = await this.client.query<
+					{
+						count: string;
+					}[]
+				>(
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
+				);
+				str += ` They are the ${formatOrdinal(
+					parseInt(ironmenWith.count) + 1
+				)} Ironman to get 99.`;
+			}
+			this.client.emit(Events.ServerNotification, str);
 		}
 
 		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));

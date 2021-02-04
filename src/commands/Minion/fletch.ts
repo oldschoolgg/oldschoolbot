@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { table } from 'table';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -16,6 +17,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
@@ -36,17 +38,18 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, fletchName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.items) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Fletching.Fletchables.map(
-						item =>
-							`${item.name} - lvl ${item.level} : ${Object.entries(item.inputItems)
-								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-								.join(', ')}`
-					).join('\n')
-				),
-				`Available fletching items.txt`
-			);
+			const normalTable = table([
+				['Item Name', 'Lvl', 'XP', 'Items Required'],
+				...(await Promise.all(
+					Fletching.Fletchables.map(async i => [
+						i.name,
+						`${i.level}`,
+						`${i.xp}`,
+						await createReadableItemListFromBank(this.client, i.inputItems)
+					])
+				))
+			]);
+			return msg.channel.sendFile(Buffer.from(normalTable), `Fletchables.txt`);
 		}
 
 		if (typeof quantity === 'string') {
