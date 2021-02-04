@@ -28,15 +28,20 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+		let timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
+
 		if (msg.flagArgs.items) {
 			const tableStr = table([
-				['Item Name', 'Lvl', 'XP', 'Items Required', 'Items Given'],
+				['Item Name', 'Lvl', 'XP', 'Items Required', 'Items Given', 'XP/Hr'],
 				...Enchantables.sort((a, b) => b.level - a.level).map(en => [
 					en.name,
 					en.level,
 					en.xp,
 					en.input,
-					en.output
+					en.output,
+					`${Math.round(
+						((en.xp * Time.Hour) / timeToEnchantTen / (Time.Hour / Time.Minute)) * 60
+					).toLocaleString()}`
 				])
 			]);
 			return msg.channel.sendFile(Buffer.from(tableStr), 'enchantables.txt');
@@ -67,8 +72,6 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
-
-		let timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToEnchantTen);
@@ -111,12 +114,16 @@ export default class extends BotCommand {
 			type: Activity.Enchanting
 		});
 
+		const xpHr = `${Math.round(
+			((enchantable.xp * quantity) / (duration / Time.Minute)) * 60
+		).toLocaleString()} XP/Hr`;
+
 		return msg.send(
 			`${msg.author.minionName} is now enchanting ${quantity}x ${
 				enchantable.name
 			}, it'll take around ${formatDuration(
 				duration
-			)} to finish. Removed ${cost} from your bank.`
+			)} to finish. Removed ${cost} from your bank. ${xpHr}`
 		);
 	}
 }

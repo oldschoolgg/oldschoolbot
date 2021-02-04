@@ -90,12 +90,16 @@ export default class extends BotCommand {
 			type: Activity.Casting
 		});
 
+		const xpHr = `${Math.round(
+			((spell.xp * quantity) / (duration / Time.Minute)) * 60
+		).toLocaleString()} XP/Hr`;
+
 		return msg.send(
 			`${msg.author.minionName} is now casting ${quantity}x ${
 				spell.name
 			}, it'll take around ${formatDuration(
 				duration
-			)} to finish. Removed ${cost} from your bank.`
+			)} to finish. Removed ${cost} from your bank. **${xpHr}**`
 		);
 	}
 }
