@@ -124,10 +124,13 @@ export default class BankImageTask extends Task {
 
 		if (!cachedImage) {
 			const imageBuffer = await fs.promises.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-			const image = await canvasImageFromBuffer(imageBuffer);
-
-			this.itemIconImagesCache.set(itemID, image);
-			return this.getItemImage(itemID, quantity);
+			try {
+				const image = await canvasImageFromBuffer(imageBuffer);
+				this.itemIconImagesCache.set(itemID, image);
+				return this.getItemImage(itemID, quantity);
+			} catch (err) {
+				console.error(`Failed to load item icon with id: ${itemID}`);
+			}
 		}
 
 		return cachedImage;
