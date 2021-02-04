@@ -147,10 +147,19 @@ export default class PatreonTask extends Task {
 			} catch (_) {}
 		}
 
+		const userBitfield = settings.get(UserSettings.BitField);
+
 		try {
-			await settings.update(UserSettings.BitField, bitFieldFromPerkTier(perkTier), {
-				arrayAction: ArrayActions.Add
-			});
+			await settings.update(
+				UserSettings.BitField,
+				[
+					...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
+					bitFieldFromPerkTier(perkTier)
+				],
+				{
+					arrayAction: ArrayActions.Overwrite
+				}
+			);
 		} catch (_) {}
 	}
 
@@ -189,6 +198,20 @@ export default class PatreonTask extends Task {
 		if (bg?.perkTierNeeded) {
 			await settings.update(UserSettings.BankBackground, 1);
 		}
+	}
+
+	async syncGithub() {
+		let messages = [];
+		const sponsors = await fetchSponsors();
+		for (const sponsor of sponsors) {
+			const user = await getUserFromGithubID(sponsor.githubID);
+			if (!user) continue;
+			let res = await this.validatePerks(user.id, sponsor.tier);
+			if (res) {
+				messages.push(res);
+			}
+		}
+		return messages;
 	}
 
 	async run() {
@@ -254,15 +277,8 @@ export default class PatreonTask extends Task {
 			}
 		}
 
-		const sponsors = await fetchSponsors();
-		for (const sponsor of sponsors) {
-			const user = await getUserFromGithubID(sponsor.githubID);
-			if (!user) continue;
-			let res = await this.validatePerks(user.id, sponsor.tier);
-			if (res) {
-				messages.push(res);
-			}
-		}
+		const githubResult = await this.syncGithub();
+		messages = messages.concat(githubResult);
 
 		const channel = this.client.channels.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
