@@ -555,14 +555,25 @@ export default class extends Extendable {
 				}[]
 			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
 
-			this.client.emit(
-				Events.ServerNotification,
-				`${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
-				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-					parseInt(usersWith.count) + 1
-				)} to get 99 ${skillNameCased}.`
-			);
+			let str = `${skill.emoji} **${this.username}'s** minion, ${
+				this.minionName
+			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+				parseInt(usersWith.count) + 1
+			)} to get 99 ${skillNameCased}.`;
+
+			if (this.isIronman) {
+				const [ironmenWith] = await this.client.query<
+					{
+						count: string;
+					}[]
+				>(
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
+				);
+				str += ` They are the ${formatOrdinal(
+					parseInt(ironmenWith.count) + 1
+				)} Ironman to get 99.`;
+			}
+			this.client.emit(Events.ServerNotification, str);
 		}
 
 		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
