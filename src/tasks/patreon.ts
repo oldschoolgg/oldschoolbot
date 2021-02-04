@@ -92,7 +92,7 @@ export default class PatreonTask extends Task {
 			await this.givePerks(userID, shouldHave);
 			return `Failed validation, giving ${shouldHave} to ${userID}`;
 		}
-		if (perkTier && perkTier !== shouldHave) {
+		if (perkTier !== shouldHave) {
 			await this.changeTier(userID, perkTier, shouldHave);
 			return `Failed validation, wrong tier, changing to ${shouldHave} for ${userID}`;
 		}
