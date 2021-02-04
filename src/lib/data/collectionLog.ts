@@ -1541,7 +1541,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	Angler: anglerOutfit,
-	Farmer: farmersOutfit,
+	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
 	AgilityArena: agilityArenaLog,
