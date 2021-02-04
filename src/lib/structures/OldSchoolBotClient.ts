@@ -8,6 +8,7 @@ import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
 import { initItemAliases } from '../data/itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { initSchemas } from '../settings/schemas';
 import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
@@ -15,10 +16,6 @@ import { ActivityTaskOptions } from '../types/minions';
 import { piscinaPool } from '../workers';
 
 Client.use(TagsClient);
-
-import('../settings/schemas/ClientSchema');
-import('../settings/schemas/UserSchema');
-import('../settings/schemas/GuildSchema');
 
 const { production } = clientOptions;
 
@@ -41,6 +38,7 @@ export class OldSchoolBotClient extends Client {
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
+		initSchemas();
 		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterMinutes: 1 });
 		this.boss.on('error', error => console.error(error));
 	}

@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
+import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
@@ -35,11 +36,122 @@ const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.Five, BitField.IsPatronTier5]
 ];
 
-export default class extends Task {
+function bitFieldFromPerkTier(tier: PerkTier): BitField {
+	switch (tier) {
+		case PerkTier.Two:
+			return BitField.IsPatronTier1;
+		case PerkTier.Three:
+			return BitField.IsPatronTier2;
+		case PerkTier.Four:
+			return BitField.IsPatronTier3;
+		case PerkTier.Five:
+			return BitField.IsPatronTier4;
+		case PerkTier.Six:
+			return BitField.IsPatronTier5;
+		default: {
+			throw new Error(`Unmatched bitFieldFromPerkTier ${tier}`);
+		}
+	}
+}
+
+function perkTierFromBitfield(bit: BitField): PerkTier {
+	switch (bit) {
+		case BitField.IsPatronTier1:
+			return PerkTier.Two;
+		case BitField.IsPatronTier2:
+			return PerkTier.Three;
+		case BitField.IsPatronTier3:
+			return PerkTier.Four;
+		case BitField.IsPatronTier4:
+			return PerkTier.Five;
+		case BitField.IsPatronTier5:
+			return PerkTier.Six;
+		default: {
+			throw new Error(`Unmatched perkTierFromBitfield ${bit}`);
+		}
+	}
+}
+
+export default class PatreonTask extends Task {
 	async init() {
 		if (!patreonConfig) {
 			this.disable();
 		}
+	}
+
+	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
+		const settings = await (this.client.gateways.get('users') as Gateway)!
+			.acquire({
+				id: userID
+			})
+			.sync(true);
+		let perkTier: PerkTier | null = getUsersPerkTier(settings.get(UserSettings.BitField));
+		if (perkTier === 0 || perkTier === 1) perkTier = null;
+
+		if (!perkTier) {
+			await this.givePerks(userID, shouldHave);
+			return `Failed validation, giving ${shouldHave} to ${userID}`;
+		}
+		if (perkTier && perkTier !== shouldHave) {
+			await this.changeTier(userID, perkTier, shouldHave);
+			return `Failed validation, wrong tier, changing to ${shouldHave} for ${userID}`;
+		}
+		return null;
+	}
+
+	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
+		const settings = await (this.client.gateways.get('users') as Gateway)!
+			.acquire({
+				id: userID
+			})
+			.sync(true);
+
+		const userBitfield = settings.get(UserSettings.BitField);
+
+		const bitFieldToRemove = bitFieldFromPerkTier(from);
+		const bitFieldToAdd = bitFieldFromPerkTier(to);
+		const newBitfield = [...userBitfield, bitFieldToAdd].filter(i => i !== bitFieldToRemove);
+
+		// Remove any/all the patron bits from this user.
+		try {
+			await settings.update(UserSettings.BitField, newBitfield, {
+				arrayAction: ArrayActions.Overwrite
+			});
+		} catch (_) {}
+
+		// Remove patron bank background
+		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));
+		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
+			await settings.update(UserSettings.BankBackground, 1);
+		}
+	}
+
+	async givePerks(userID: string, perkTier: PerkTier) {
+		const settings = await (this.client.gateways.get('users') as Gateway)!
+			.acquire({
+				id: userID
+			})
+			.sync(true);
+
+		const userBadges = settings.get(UserSettings.Badges);
+
+		// If they have neither the limited time badge or normal badge, give them the normal one.
+		if (
+			!userBadges.includes(BadgesEnum.Patron) &&
+			!userBadges.includes(BadgesEnum.LimitedPatron)
+		) {
+			try {
+				await settings.update(UserSettings.Badges, BadgesEnum.Patron, {
+					arrayAction: ArrayActions.Add
+				});
+			} catch (_) {}
+		}
+
+		try {
+			await settings.update(UserSettings.BitField, bitFieldFromPerkTier(perkTier), {
+				arrayAction: ArrayActions.Add
+			});
+		} catch (_) {}
 	}
 
 	async removePerks(userID: string) {
@@ -111,7 +223,6 @@ export default class extends Task {
 			) {
 				continue;
 			}
-			const userBadges = settings.get(UserSettings.Badges);
 
 			// If their last payment was more than a month ago, remove their status and continue.
 			if (
@@ -129,34 +240,27 @@ export default class extends Task {
 			}
 
 			for (let i = 0; i < tiers.length; i++) {
-				const [tierID, bitFieldId] = tiers[i];
+				const [tierID, bitField] = tiers[i];
 
 				if (!patron.entitledTiers.includes(tierID)) continue;
-				if (userBitfield.includes(bitFieldId)) continue;
+				if (userBitfield.includes(bitField)) continue;
 
 				result.push(`${username} was given Tier ${i + 1}.`);
 				messages.push(
 					`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`
 				);
-				try {
-					await settings.update(UserSettings.BitField, bitFieldId, {
-						arrayAction: ArrayActions.Add
-					});
-				} catch (_) {}
+				await this.givePerks(patron.discordID, perkTierFromBitfield(bitField));
 				break;
 			}
+		}
 
-			// If they have neither the limited time badge or normal badge, give them the normal one.
-			if (
-				!userBadges.includes(BadgesEnum.Patron) &&
-				!userBadges.includes(BadgesEnum.LimitedPatron)
-			) {
-				result.push(`${username} was given Patron badge.`);
-				try {
-					await settings.update(UserSettings.Badges, BadgesEnum.Patron, {
-						arrayAction: ArrayActions.Add
-					});
-				} catch (_) {}
+		const sponsors = await fetchSponsors();
+		for (const sponsor of sponsors) {
+			const user = await getUserFromGithubID(sponsor.githubID);
+			if (!user) continue;
+			let res = await this.validatePerks(user.id, sponsor.tier);
+			if (res) {
+				messages.push(res);
 			}
 		}
 
@@ -164,6 +268,8 @@ export default class extends Task {
 		if (production) {
 			channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
 			channel.send(messages.join(', '));
+		} else {
+			console.log(messages.join('\n'));
 		}
 
 		this.client.tasks.get('badges')?.run();

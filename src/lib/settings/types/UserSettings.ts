@@ -40,7 +40,7 @@ export namespace UserSettings {
 	export const HonourPoints = T<number>('honour_points');
 	export const HighGambles = T<number>('high_gambles');
 	export const PatreonID = T<string | null>('patreon_id');
-	export const GithubID = T<string | null>('github_id');
+	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
 
 	export namespace Stats {
