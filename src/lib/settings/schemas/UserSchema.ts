@@ -75,6 +75,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Herblore, 'integer', { default: 0 })
 			.add(SkillsEnum.Hunter, 'integer', { default: 0 })
 			.add(SkillsEnum.Construction, 'integer', { default: 0 })
+			.add(SkillsEnum.Magic, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
