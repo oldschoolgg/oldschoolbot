@@ -9,7 +9,7 @@ import Fishing from './fishing';
 import Fletching from './fletching';
 import Herblore from './herblore/herblore';
 import Hunter from './hunter/hunter';
-import Magic from './Magic';
+import Magic from './magic';
 import Mining from './mining';
 import Prayer from './prayer';
 import Runecraft from './runecraft';
