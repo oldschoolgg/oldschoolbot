@@ -5358,10 +5358,10 @@ tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-ts-debounce@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/ts-debounce/-/ts-debounce-2.2.0.tgz#2c415c5281b3578138be591330c31def802d1049"
-  integrity sha512-TsrY1lxPA1XIkF+75pd1XmAVAdjr+dGREi8GhIQvU+kL9Eyr0oCi7jrt11OGe4bLxebxXH5t9RYxbY+fufnfmQ==
+ts-debounce@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/ts-debounce/-/ts-debounce-2.3.0.tgz#a360a8bd29402ce0ea9970f7cfc0df44dfae7139"
+  integrity sha512-j63IP7/unAzovrhVHE7U+fNkvDKwIaLH11dCO9TcRbYOZw1chPL054poqq3ZloyRJ5KwJMeB8csN/vGPPpQJjw==
 
 ts-jest@^26.5.0:
   version "26.5.0"
