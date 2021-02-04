@@ -47,7 +47,7 @@ export default class extends Task {
 				item.name
 			}! ${alchValue.toLocaleString()}gp (${toKMB(
 				alchValue
-			)}) has been added to your bank. ${saved}`
+			)}) has been added to your bank. You received ${xpReceived} Magic XP. ${saved}`
 		].join('\n');
 
 		if (newLevel > currentLevel) {

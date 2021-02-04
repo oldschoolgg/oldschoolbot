@@ -489,7 +489,7 @@ const bolts = [
 			.add('Earth rune', 10)
 			.add('Law rune', 2)
 			.add('Cosmic rune', 1),
-		output: new Bank().add('Diamond bolts (e)', 10),
+		output: new Bank().add('Diamond dragon bolts (e)', 10),
 		xp: 67,
 		level: 57
 	},
