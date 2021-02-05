@@ -1,10 +1,10 @@
 import { Emoji } from '../../../constants';
 import { SkillsEnum } from '../../types';
-import fletchables from './fletchables/index';
+import { Fletchables } from './fletchables';
 
 const Fletching = {
 	aliases: ['fletch', 'fletching'],
-	Fletchables: fletchables,
+	Fletchables,
 	id: SkillsEnum.Fletching,
 	emoji: Emoji.Fletching,
 	name: 'Fletching'
