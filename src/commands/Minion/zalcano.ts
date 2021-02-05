@@ -50,7 +50,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const kc = msg.author.getMinigameScore(MinigameIDsEnum.Zalcano);
+		const kc = await msg.author.getMinigameScore(MinigameIDsEnum.Zalcano);
 		const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 		const boosts = [];

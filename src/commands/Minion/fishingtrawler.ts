@@ -31,7 +31,7 @@ export default class extends BotCommand {
 			return msg.send(`You need atleast level 15 Fishing to do the Fishing Trawler.`);
 		}
 
-		const tripsDone = msg.author.getMinigameScore(MinigameIDsEnum.FishingTrawler);
+		const tripsDone = await msg.author.getMinigameScore(MinigameIDsEnum.FishingTrawler);
 
 		let tripLength = Time.Minute * 13;
 		// 10% boost for 50 trips done

@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -91,7 +90,7 @@ export default class extends BotCommand {
 			}
 
 			await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>(this.client, {
-				minigameID: MinigameIDsEnum.AnimatedArmour,
+				minigameID: 1231234,
 				armourID: armorSet.name,
 				userID: msg.author.id,
 				channelID: msg.channel.id,

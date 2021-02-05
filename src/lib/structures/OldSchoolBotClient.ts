@@ -9,6 +9,7 @@ import { clientOptions } from '../config/config';
 import { initItemAliases } from '../data/itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
+import { MinigameTable } from '../typeorm/Minigames.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
@@ -54,7 +55,7 @@ export class OldSchoolBotClient extends Client {
 			username: user,
 			password,
 			database,
-			entities: [AnalyticsTable, WebhookTable, PoHTable],
+			entities: [AnalyticsTable, WebhookTable, PoHTable, MinigameTable],
 			synchronize: !production
 		});
 		const existingTasks = await this.orm.query(

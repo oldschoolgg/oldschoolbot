@@ -10,6 +10,7 @@ import { PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
+import { MinigameTable } from '../typeorm/Minigames.entity';
 import { ArrayItemsResolved, ItemBank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 
@@ -95,4 +96,5 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 export interface Minigame {
 	id: number;
 	name: string;
+	key: keyof MinigameTable;
 }

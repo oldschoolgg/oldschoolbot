@@ -274,7 +274,9 @@ export default class extends BotCommand {
 		// Up to 10%, at 200 kc, speed boost for team average kc
 		const averageKC =
 			addArrayOfNumbers(
-				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
+				await Promise.all(
+					users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
+				)
 			) / users.length;
 		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);

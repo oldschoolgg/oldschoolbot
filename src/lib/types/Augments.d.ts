@@ -18,6 +18,7 @@ import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
+import { MinigameTable } from '../typeorm/Minigames.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
@@ -160,7 +161,11 @@ declare module 'discord.js' {
 		/**
 		 * Returns minigame score
 		 */
-		getMinigameScore(id: MinigameIDsEnum): number;
+		getMinigameScore(id: MinigameIDsEnum): Promise<number>;
+		/**
+		 * Returns minigame entity
+		 */
+		getMinigameEntity(): Promise<MinigameTable>;
 		/**
 		 * Returns Creature score
 		 */

@@ -185,7 +185,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		}
 
 		const conLevel = msg.author.skillLevel(SkillsEnum.Construction);
-		const kc = msg.author.getMinigameScore(MinigameIDsEnum.MahoganyHomes);
+		const kc = await msg.author.getMinigameScore(MinigameIDsEnum.MahoganyHomes);
 
 		const hasSack = msg.author.hasItemEquippedOrInBank('Plank sack');
 		const [quantity, itemsNeeded, xp, duration, points] = calcTrip(

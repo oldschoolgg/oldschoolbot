@@ -36,7 +36,7 @@ export default class extends Task {
 		user.addXP(SkillsEnum.Smithing, smithingXP);
 		user.addXP(SkillsEnum.Runecraft, runecraftXP);
 
-		const kc = user.getMinigameScore(MinigameIDsEnum.Zalcano);
+		const kc = await user.getMinigameScore(MinigameIDsEnum.Zalcano);
 
 		if (loot.amount('Smolcano') > 0) {
 			this.client.emit(
