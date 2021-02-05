@@ -88,14 +88,6 @@ export function minionStatsEmbed(user: KlasaUser) {
 **QP** ${QP}`,
 		true
 	);
-	// 		.addField(
-	// 			`<:minigame_icon:630400565070921761> Minigame Scores`,
-	// 			`**BH:** ${minigames.bountyHunter.score.toLocaleString()}
-	// **BH-Rogue:** ${minigames.bountyHunterRogue.score.toLocaleString()}
-	// **LMS:** ${minigames.LMS.score.toLocaleString()}
-	// `,
-	// 			true
-	// 		)
 
 	if (clueEntries.length > 0) {
 		embed.addField(
