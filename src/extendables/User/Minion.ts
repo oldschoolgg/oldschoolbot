@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { production } from '../../config';
@@ -584,9 +584,7 @@ export default class extends Extendable {
 	}
 
 	public totalLevel(this: User, returnXP = false) {
-		const userXPs = Object.values(
-			(this.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>
-		);
+		const userXPs = Object.values(this.rawSkills) as number[];
 		let totalLevel = 0;
 		for (const xp of userXPs) {
 			totalLevel += returnXP ? xp : convertXPtoLVL(xp);

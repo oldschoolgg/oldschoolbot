@@ -14,7 +14,6 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -26,6 +25,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -195,27 +195,10 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(randomPatMessage(msg.author.minionName));
 	}
 
+	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		let str = '';
-		for (const skill of Object.values(Skills)) {
-			str += `${skill.emoji} ${skill.name}: ${msg.author.skillLevel(
-				skill.id
-			)} (${(msg.author.settings.get(
-				`skills.${skill.id}`
-			) as number).toLocaleString()} xp)\n`;
-		}
-
-		return msg.send(`${msg.author.minionName}'s Stats:
-${str}
-${Emoji.XP} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
-			.totalLevel(true)
-			.toLocaleString()} xp)
-${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
-`);
+		const embed = minionStatsEmbed(msg.author);
+		return msg.send(embed);
 	}
 
 	async kc(msg: KlasaMessage) {
