@@ -32,7 +32,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}',
+			usage: '[quantity:int{1}]',
 			usageDelim: ' ',
 			description: 'Sends your minion to charge inventories of glory',
 			examples: ['+chargeglories 5'],
