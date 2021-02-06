@@ -25,30 +25,11 @@ export function gearPresetToStr(preset: GearPresetsTable) {
 		let val = preset[key];
 		if (val) parsed.push(itemNameFromID(val));
 	}
-	console.log({ parsed, preset });
-
 	if (preset.Ammo) {
 		parsed.push(`${preset.AmmoQuantity}x ${itemNameFromID(preset.Ammo)}`);
 	}
 	return parsed.join(', ');
 }
-
-// export function bankToGearPreset(bank: Bank) {
-// 	const preset = new GearPresetsTable();
-// 	const items = bank.items();
-// 	for (const [item, qty] of items) {
-// 		if (!item.equipment || !item.equipment.slot) {
-// 			throw new Error(`${item.name} isn't equippable.`);
-// 		}
-
-// 		if (item.equipment.slot === EquipmentSlot.Ammo) {
-// 			preset.AmmoQuantity = qty;
-// 		}
-
-// 	}
-
-// 	return preset;
-// }
 
 export function gearPresetToBank(preset: GearPresetsTable) {
 	const bank = new Bank();

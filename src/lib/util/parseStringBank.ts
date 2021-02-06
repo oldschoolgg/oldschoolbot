@@ -120,11 +120,8 @@ export function parseRichStringBank({
 		const qty = qtyOverride ?? (item.qty === 0 ? Math.max(1, userBank.amount(id)) : item.qty);
 
 		if (type === 'tradeables' && !item.item.tradeable) continue;
-		console.log(1);
 		if (type === 'untradeables' && item.item.tradeable) continue;
-		console.log(2);
 		if (type === 'equippables' && !item.item.equipment?.slot) continue;
-		console.log(3);
 		if (owned && userBank.amount(id) < qty) continue;
 		bank.add(id, qty);
 	}
