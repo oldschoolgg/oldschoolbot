@@ -38,12 +38,18 @@ export default class extends BotCommand {
 		}
 		let str = '**Your presets:**\n';
 		for (const pre of presets) {
-			str += `${pre.name}: ${gearPresetToStr(pre)}\n`;
+			str += `**${pre.name}:** ${gearPresetToStr(pre)}\n`;
 		}
 		return msg.send(str);
 	}
 
 	async equip(msg: KlasaMessage, [name, setup]: [string, string]) {
+		if (msg.author.minionIsBusy) {
+			return msg.send(
+				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
+			);
+		}
+
 		if (!name) return msg.send(`You didn't supply a name.`);
 		if (!setup) return msg.send(`You didn't supply a setup.`);
 
