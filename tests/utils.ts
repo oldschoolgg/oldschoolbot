@@ -1,7 +1,6 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearTypes } from '../src/lib/gear';
-import { initItemAliases } from '../src/lib/itemAliases';
 import { itemID } from '../src/lib/util';
 
 export function mockArgument(arg: any) {
@@ -42,8 +41,4 @@ export function constructGearSetup(setup: PartialGearSetup): GearTypes.GearSetup
 		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	};
-}
-
-export async function testSetup() {
-	initItemAliases();
 }

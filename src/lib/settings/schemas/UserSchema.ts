@@ -1,9 +1,9 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import Farming from '../../farming';
-import defaultContracts from '../../farming/defaultContracts';
-import { FarmingPatchTypes } from '../../farming/types';
 import Gear from '../../gear';
+import Farming from '../../minions/farming';
+import defaultContracts from '../../minions/farming/defaultContracts';
+import { FarmingPatchTypes } from '../../minions/farming/types';
 import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 
@@ -31,6 +31,7 @@ Client.defaultUserSchema
 	.add('honour_points', 'integer', { default: 0 })
 	.add('high_gambles', 'integer', { default: 0 })
 	.add('patreon_id', 'string', { default: null })
+	.add('github_id', 'integer', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
@@ -75,6 +76,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Herblore, 'integer', { default: 0 })
 			.add(SkillsEnum.Hunter, 'integer', { default: 0 })
 			.add(SkillsEnum.Construction, 'integer', { default: 0 })
+			.add(SkillsEnum.Magic, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

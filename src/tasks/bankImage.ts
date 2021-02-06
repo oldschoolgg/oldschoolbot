@@ -6,9 +6,9 @@ import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { allCollectionLogItems } from '../lib/collectionLog';
 import { Events } from '../lib/constants';
-import { filterableTypes } from '../lib/filterables';
+import { allCollectionLogItems } from '../lib/data/collectionLog';
+import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -124,10 +124,14 @@ export default class BankImageTask extends Task {
 
 		if (!cachedImage) {
 			const imageBuffer = await fs.promises.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-			const image = await canvasImageFromBuffer(imageBuffer);
-
-			this.itemIconImagesCache.set(itemID, image);
-			return this.getItemImage(itemID, quantity);
+			try {
+				const image = await canvasImageFromBuffer(imageBuffer);
+				this.itemIconImagesCache.set(itemID, image);
+				return this.getItemImage(itemID, quantity);
+			} catch (err) {
+				console.error(`Failed to load item icon with id: ${itemID}`);
+				return this.getItemImage(1, 1);
+			}
 		}
 
 		return cachedImage;
@@ -352,7 +356,9 @@ export default class BankImageTask extends Task {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + this.borderVertical!.width + 20 + (i % itemsPerRow) * (36 + 21);
 			const [id, quantity, value] = items[i];
-			const item = await this.getItemImage(id, quantity);
+			const item = await this.getItemImage(id, quantity).catch(() => {
+				console.error(`Failed to load item image for item with id: ${id}`);
+			});
 			if (!item) {
 				this.client.emit(Events.Warn, `Item with ID[${id}] has no item image.`);
 				continue;

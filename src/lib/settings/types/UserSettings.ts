@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import { PatchTypes } from '../../farming';
-import defaultContracts from '../../farming/defaultContracts';
-import { CompostTier, FarmingPatchTypes } from '../../farming/types';
+import { BitField } from '../../constants';
 import { GearTypes } from '../../gear';
+import { PatchTypes } from '../../minions/farming';
+import defaultContracts from '../../minions/farming/defaultContracts';
+import { CompostTier, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
@@ -28,7 +29,7 @@ export namespace UserSettings {
 	export const MinigameScores = T<O.Readonly<ItemBank>>('minigameScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
-	export const BitField = T<readonly number[]>('bitfield');
+	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
@@ -39,6 +40,7 @@ export namespace UserSettings {
 	export const HonourPoints = T<number>('honour_points');
 	export const HighGambles = T<number>('high_gambles');
 	export const PatreonID = T<string | null>('patreon_id');
+	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
 
 	export namespace Stats {
@@ -87,6 +89,7 @@ export namespace UserSettings {
 		export const Herblore = T<number>(`skills.${SkillsEnum.Herblore}`);
 		export const Hunter = T<number>(`skills.${SkillsEnum.Hunter}`);
 		export const Construction = T<number>(`skills.${SkillsEnum.Construction}`);
+		export const Magic = T<number>(`skills.${SkillsEnum.Magic}`);
 	}
 
 	export namespace Gear {

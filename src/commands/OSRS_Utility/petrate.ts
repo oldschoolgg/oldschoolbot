@@ -1,7 +1,7 @@
 import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export const petRates = {
 	hunter: {

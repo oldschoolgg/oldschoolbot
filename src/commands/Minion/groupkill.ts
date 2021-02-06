@@ -1,7 +1,6 @@
 import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { findMonster } from '../../lib/minions/functions';
@@ -9,6 +8,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

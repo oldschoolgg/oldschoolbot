@@ -3,7 +3,6 @@ import { Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Emoji, Events } from '../../../lib/constants';
-import mejJalImage from '../../../lib/image/mejJalImage';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
@@ -17,6 +16,7 @@ import {
 	removeItemFromBank
 } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import chatHeadImage from '../../../lib/util/chatHeadImage';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import itemID from '../../../lib/util/itemID';
@@ -67,9 +67,10 @@ export default class extends Task {
 					this.client,
 					removeItemFromBank(itemLootBank, TokkulID, itemLootBank[TokkulID])
 				)}.`,
-				await mejJalImage(
-					`You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`
-				)
+				await chatHeadImage({
+					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					head: 'mejJal'
+				})
 			);
 		}
 
@@ -79,9 +80,10 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 			return channel.send(
 				`${user}`,
-				await mejJalImage(
-					`TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}`
-				)
+				await chatHeadImage({
+					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					head: 'mejJal'
+				})
 			);
 		}
 
@@ -115,11 +117,12 @@ export default class extends Task {
 		if (!channelIsSendable(channel)) return;
 		return channel.send(
 			`${user}`,
-			await mejJalImage(
-				`You defeated TzTok-Jad for the ${formatOrdinal(
+			await chatHeadImage({
+				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad)
-				)} time! I am most impressed, I give you... ${lootText}.`
-			)
+				)} time! I am most impressed, I give you... ${lootText}.`,
+				head: 'mejJal'
+			})
 		);
 	}
 }

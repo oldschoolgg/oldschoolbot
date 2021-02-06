@@ -3,7 +3,7 @@ import { Hiscores } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const xpLeft = (xp: number) => {
 	const level = convertXPtoLVL(xp);

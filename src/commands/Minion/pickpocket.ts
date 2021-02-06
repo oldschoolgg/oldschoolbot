@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -9,6 +8,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addBanks,

@@ -33,7 +33,7 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 	return (client as OldSchoolBotClient).boss.publishAfter(
 		'minionActivity',
 		newSubtask,
-		{},
+		{ retentionHours: 2 },
 		new Date(finishDate)
 	);
 }

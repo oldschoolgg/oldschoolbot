@@ -4,9 +4,9 @@ import * as fs from 'fs';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Items } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { ItemBank } from '../../lib/types';
 import {
@@ -104,11 +104,15 @@ export default class extends BotCommand {
 			const debug = Boolean(msg.flagArgs.debug);
 			const textBank = [];
 			for (const [id, qty] of Object.entries(bank)) {
-				textBank.push(
-					`${Items.get(parseInt(id))!.name}${
-						debug ? `[${id}]` : ''
-					}: ${qty.toLocaleString()}`
-				);
+				const item = Items.get(parseInt(id))!;
+				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search)) {
+					continue;
+				}
+				textBank.push(`${item.name}${debug ? `[${id}]` : ''}: ${qty.toLocaleString()}`);
+			}
+
+			if (textBank.length === 0) {
+				return msg.send(`No items found.`);
 			}
 
 			if (msg.flagArgs.full) {

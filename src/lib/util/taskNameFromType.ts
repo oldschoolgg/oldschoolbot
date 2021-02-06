@@ -82,5 +82,11 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.ConstructionActivity;
 		case Activity.MahoganyHomes:
 			return Tasks.MahoganyHomes;
+		case Activity.Enchanting:
+			return Tasks.Enchanting;
+		case Activity.Casting:
+			return Tasks.Casting;
+		case Activity.GloryCharging:
+			return Tasks.GloryCharging;
 	}
 }

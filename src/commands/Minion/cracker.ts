@@ -3,9 +3,9 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { cleanMentions, itemID, itemNameFromID, shuffle } from '../../lib/util';
 
 const HatTable = new LootTable()

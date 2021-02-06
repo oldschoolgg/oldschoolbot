@@ -1,9 +1,11 @@
+import { notEmpty } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import fetch from 'node-fetch';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { BitField, Emoji } from '../../lib/constants';
+import { BitField, BitFieldData, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import PatreonTask from '../../tasks/patreon';
 
 export default class extends BotCommand {
@@ -11,12 +13,15 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			enabled: true,
 			runIn: ['text'],
-			usage: '<cmd:str> [user:user]',
+			usage: '<cmd:str> [user:user] [str:...str]',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg: KlasaMessage, [cmd, input]: [string, KlasaUser | undefined]) {
+	async run(
+		msg: KlasaMessage,
+		[cmd, input, str]: [string, KlasaUser | undefined, string | undefined]
+	) {
 		if (msg.guild!.id !== '342983479501389826') return null;
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
 		const isOwner = this.client.owners.has(msg.author);
@@ -29,6 +34,46 @@ export default class extends BotCommand {
 				await input.settings.update(UserSettings.BitField, BitField.BypassAgeRestriction);
 				return msg.send(
 					`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`
+				);
+			}
+			case 'check': {
+				if (!input) return;
+				const bitfields = `${input.settings
+					.get(UserSettings.BitField)
+					.map(i => BitFieldData[i])
+					.filter(notEmpty)
+					.map(i => i.name)
+					.join(', ')}.`;
+				return msg.send(`**${input.username}**\nBitfields: ${bitfields}`);
+			}
+			case 'patreon': {
+				msg.channel.send('Running patreon task...');
+				await this.client.tasks.get('patreon')?.run();
+				return msg.channel.send(`Finished syncing patrons.`);
+			}
+			case 'setgh': {
+				if (!input) return;
+				if (!str) return;
+				const res = await fetch(`https://api.github.com/users/${encodeURIComponent(str)}`)
+					.then(res => res.json())
+					.catch(() => null);
+				if (!res || !res.id) {
+					return msg.send(
+						`Could not find user in github API. Is the username written properly?`
+					);
+				}
+				const alreadyHasName = await this.client.query<{ github_id: string }[]>(
+					`SELECT github_id FROM users WHERE github_id = '${res.id}'`
+				);
+				if (alreadyHasName.length > 0) {
+					return msg.send(`Someone already has this Github account connected.`);
+				}
+				await input.settings.update(UserSettings.GithubID, parseInt(res.id));
+				if (!msg.flagArgs.nosync) {
+					await (this.client.tasks.get('patreon') as PatreonTask).syncGithub();
+				}
+				return msg.send(
+					`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`
 				);
 			}
 		}

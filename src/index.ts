@@ -12,4 +12,6 @@ if (sentryDSN) {
 	});
 }
 
-new OldSchoolBotClient(clientOptions).init().then(client => client.login(botToken));
+export const client = new OldSchoolBotClient(clientOptions);
+
+client.init().then(client => client.login(botToken));

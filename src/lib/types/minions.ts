@@ -1,7 +1,7 @@
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity, Tasks } from '../constants';
-import { PatchTypes } from '../farming';
 import { MinigameIDsEnum } from '../minions/data/minigames';
+import { PatchTypes } from '../minions/farming';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
@@ -12,6 +12,10 @@ export interface ActivityTaskOptions {
 	id: string;
 	finishDate: number;
 	channelID: string;
+}
+
+export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
@@ -79,6 +83,15 @@ export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface EnchantingActivityTaskOptions extends ActivityTaskOptions {
+	itemID: number;
+	quantity: number;
+}
+
+export interface CastingActivityTaskOptions extends ActivityTaskOptions {
+	spellID: number;
+	quantity: number;
+}
 export interface PickpocketActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;

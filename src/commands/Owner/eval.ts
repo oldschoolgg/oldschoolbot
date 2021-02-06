@@ -2,7 +2,7 @@ import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, Stopwatch, Type, util } from 'klasa';
 import { inspect } from 'util';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

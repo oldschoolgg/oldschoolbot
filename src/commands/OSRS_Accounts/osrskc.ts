@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { toTitleCase } from '../../lib/util';
 
 const aliasNameMap: Record<string, string> = {

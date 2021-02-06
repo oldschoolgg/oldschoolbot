@@ -6,19 +6,16 @@ import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
-import { initItemAliases } from '../itemAliases';
+import { initItemAliases } from '../data/itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
+import { GearPresetsTable } from '../typeorm/GearPresetsTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
 import { piscinaPool } from '../workers';
 
 Client.use(TagsClient);
-
-import('../settings/schemas/ClientSchema');
-import('../settings/schemas/UserSchema');
-import('../settings/schemas/GuildSchema');
 
 const { production } = clientOptions;
 
@@ -27,6 +24,10 @@ if (typeof production !== 'boolean') {
 }
 
 const { port, user, password, database } = providerConfig!.postgres!;
+
+import('../settings/schemas/UserSchema');
+import('../settings/schemas/GuildSchema');
+import('../settings/schemas/ClientSchema');
 
 export class OldSchoolBotClient extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
@@ -41,7 +42,7 @@ export class OldSchoolBotClient extends Client {
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
-		this.boss = new PgBoss({ ...providerConfig?.postgres });
+		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterMinutes: 1 });
 		this.boss.on('error', error => console.error(error));
 	}
 
@@ -54,7 +55,7 @@ export class OldSchoolBotClient extends Client {
 			username: user,
 			password,
 			database,
-			entities: [AnalyticsTable, WebhookTable, PoHTable],
+			entities: [AnalyticsTable, WebhookTable, PoHTable, GearPresetsTable],
 			synchronize: !production
 		});
 		const existingTasks = await this.orm.query(

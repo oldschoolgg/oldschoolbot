@@ -10,6 +10,7 @@ const emojiRegex = require('emoji-regex');
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, Time } from './constants';
 import hasItemEquipped from './gear/functions/hasItemEquipped';
+import { GearSetupTypes } from './gear/types';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
 import itemID from './util/itemID';
@@ -117,10 +118,9 @@ export function formatDuration(ms: number) {
 		minute: Math.floor(ms / 60000) % 60,
 		second: Math.floor(ms / 1000) % 60
 	};
-	return Object.entries(time)
-		.filter(val => val[1] !== 0)
-		.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`)
-		.join(', ');
+	let nums = Object.entries(time).filter(val => val[1] !== 0);
+	if (nums.length === 0) return '1 second';
+	return nums.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`).join(', ');
 }
 
 export function inlineCodeblock(input: string) {
@@ -329,4 +329,8 @@ export function generateContinuationChar(user: KlasaUser) {
 	return `${shuffle(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffle(CENA_CHARS)
 		.slice(0, randInt(1, 2))
 		.join('')}`;
+}
+
+export function isValidGearSetup(str: string): str is GearSetupTypes {
+	return ['melee', 'mage', 'range', 'skilling', 'misc'].includes(str);
 }

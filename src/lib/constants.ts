@@ -1,3 +1,4 @@
+import PQueue from 'p-queue';
 import { join } from 'path';
 
 export const enum Time {
@@ -17,7 +18,8 @@ export const enum Channel {
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',
 	BlacklistLogs = '782459317218967602',
-	EconomyLogs = '802029843712573510'
+	EconomyLogs = '802029843712573510',
+	NewSponsors = '806744016309714966'
 }
 
 export const enum Roles {
@@ -93,6 +95,7 @@ export const enum Emoji {
 	ChristmasCracker = '<:cracker:785389969962958858>',
 	SantaHat = '<:santaHat:785874868905181195>',
 	RottenPotato = '<:rottenPotato:791498767051915275>',
+	Magic = '<:magic:630911040334331917>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -160,6 +163,9 @@ export const enum Tasks {
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
 	PickpocketActivity = 'pickpocketActivity',
+	Enchanting = 'enchantingActivity',
+	Casting = 'castingActivity',
+	GloryCharging = 'gloryChargingActivity',
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
@@ -205,6 +211,9 @@ export const enum Activity {
 	Zalcano = 'Zalcano',
 	Farming = 'Farming',
 	Construction = 'Construction',
+	Enchanting = 'Enchanting',
+	Casting = 'Casting',
+	GloryCharging = 'GloryCharging',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
@@ -290,6 +299,22 @@ export const enum BitField {
 	EnabledRandomEvents = 11
 }
 
+interface BitFieldData {
+	name: string;
+}
+
+export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
+	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron' },
+	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron' },
+	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron' },
+	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron' },
+	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron' },
+	[BitField.isModerator]: { name: 'Moderator' },
+	[BitField.isContributor]: { name: 'Contributor' },
+	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' }
+} as const;
+
 export const enum PatronTierID {
 	One = '4608201',
 	Two = '4608226',
@@ -297,6 +322,20 @@ export const enum PatronTierID {
 	Four = '5262065',
 	Five = '5262216'
 }
+
+export const badges: { [key: number]: string } = {
+	0: Emoji.Spanner,
+	1: Emoji.PinkGem,
+	2: Emoji.Crab,
+	3: Emoji.BigOrangeGem,
+	4: Emoji.Hammer,
+	5: Emoji.GreenGem,
+	6: Emoji.Bug,
+	7: Emoji.Trophy,
+	8: Emoji.Incinerator,
+	9: Emoji.Skiller,
+	10: Emoji.CollectionLog
+};
 
 export const MAX_QP = 279;
 
@@ -313,3 +352,8 @@ export const TWEETS_RATELIMITING =
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
+
+/**
+ * Map<user_id, PromiseQueue>
+ */
+export const userQueues: Map<string, PQueue> = new Map();

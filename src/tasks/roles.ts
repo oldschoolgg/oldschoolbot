@@ -3,8 +3,8 @@ import { Task } from 'klasa';
 
 import { SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
-import { collectionLogTypes } from '../lib/collectionLog';
 import { Roles } from '../lib/constants';
+import { collectionLogTypes } from '../lib/data/collectionLog';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
@@ -127,9 +127,9 @@ WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 		// Top sacrificers
 		let topSacrificers = [];
 		const mostValue = await this.client.query<SkillUser[]>(
-			`SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 1;`
+			`SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;`
 		);
-		topSacrificers.push(mostValue[0].id);
+		for (const u of mostValue) topSacrificers.push(u.id);
 		const mostUniques = await this.client.query<
 			SkillUser[]
 		>(`SELECT u.id, u.sacbanklength FROM (

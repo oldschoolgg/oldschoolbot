@@ -1,39 +1,104 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Emoji } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import itemID from '../../lib/util/itemID';
 import { BirdhouseActivityTaskOptions } from './../../lib/types/minions';
 
-const birdhouseSeedReq = new Bank()
-	.add('Hammerstone seed', 10)
-	.add('Asgarnian seed', 10)
-	.add('Marrentill seed', 10)
-	.add('Barley seed', 10)
-	.add('Guam seed', 10)
-	.add('Yanillian seed', 10)
-	.add('Krandorian seed', 10)
-	.add('Tarromin seed', 10)
-	.add('Irit seed', 5)
-	.add('Wildblood seed', 5)
-	.add('Jute seed', 10)
-	.add('Harralander seed', 10)
-	.add('Dwarf weed seed', 5)
-	.add('Kwuarm seed', 5)
-	.add('Cadantine seed', 5)
-	.add('Lantadyme seed', 5)
-	.add('Avantoe seed', 5)
-	.add('Toadflax seed', 5)
-	.add('Ranarr seed', 5)
-	.add('Snapdragon seed', 5)
-	.add('Torstol seed', 5);
+const birdhouseSeedReq = [
+	{
+		itemID: itemID('Hammerstone seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Asgarnian seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Barley seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Yanillian seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Krandorian seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Wildblood seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Jute seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Marrentill seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Guam seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Tarromin seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Irit seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Harralander seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Dwarf weed seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Kwuarm seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Cadantine seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Lantadyme seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Avantoe seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Toadflax seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Ranarr seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Snapdragon seed'),
+		amount: 5
+	},
+	{
+		itemID: itemID('Torstol seed'),
+		amount: 5
+	}
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -152,10 +217,14 @@ export default class extends BotCommand {
 		}
 
 		let canPay = false;
-		for (const [paymentID, qty] of birdhouseSeedReq.items()) {
-			if (userBank.amount(paymentID.name) >= qty * 4) {
-				infoStr.push(`You baited the birdhouses with ${qty * 4}x ${paymentID.name} .`);
-				removeBank.add(paymentID.name, qty * 4);
+		for (const currentSeed of birdhouseSeedReq) {
+			if (userBank.amount(currentSeed.itemID) >= currentSeed.amount * 4) {
+				infoStr.push(
+					`You baited the birdhouses with ${currentSeed.amount * 4}x ${itemNameFromID(
+						currentSeed.itemID
+					)}.`
+				);
+				removeBank.add(currentSeed.itemID, currentSeed.amount * 4);
 				canPay = true;
 				break;
 			}

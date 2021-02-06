@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Time } from '../../../constants';
-import { NestBoxes } from '../../../openables';
+import { NestBoxes } from '../../../data/openables';
 
 interface Birdhouse {
 	name: string;
@@ -38,9 +38,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Bird house', 1),
 		craftItemReq: new Bank().add('Logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 5])
 			.tertiary(2, NestBoxes)
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -56,9 +56,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Oak bird house', 1),
 		craftItemReq: new Bank().add('Oak logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 5])
 			.tertiary(2, NestBoxes, [1, 2])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -74,9 +74,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Willow bird house', 1),
 		craftItemReq: new Bank().add('Willow logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 5])
 			.tertiary(2, NestBoxes, [1, 3])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -92,9 +92,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Teak bird house', 1),
 		craftItemReq: new Bank().add('Teak logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 5])
 			.tertiary(2, NestBoxes, [1, 4])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -110,9 +110,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Maple bird house', 1),
 		craftItemReq: new Bank().add('Maple logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 5])
 			.tertiary(2, NestBoxes, [1, 5])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -128,9 +128,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Mahogany bird house', 1),
 		craftItemReq: new Bank().add('Mahogany logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 4])
 			.tertiary(2, NestBoxes, [1, 6])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -146,9 +146,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Yew bird house', 1),
 		craftItemReq: new Bank().add('Yew logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 4])
 			.tertiary(2, NestBoxes, [1, 7])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -164,9 +164,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Magic bird house', 1),
 		craftItemReq: new Bank().add('Magic logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 3])
 			.tertiary(2, NestBoxes, [1, 8])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -182,9 +182,9 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Redwood bird house', 1),
 		craftItemReq: new Bank().add('Redwood logs', 1),
 		table: new LootTable()
-			.every('Raw bird meat')
+			.every('Raw bird meat', [1, 3])
 			.tertiary(2, NestBoxes, [1, 9])
-			.tertiary(3, 'Feather', 10),
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,

@@ -1,9 +1,9 @@
+import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
 import { objectKeys, randInt, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -14,7 +14,7 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Skills from '../../lib/skilling/skills';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
@@ -25,6 +25,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -56,7 +57,7 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage:
-				'[clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+				'[seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -68,6 +69,23 @@ export default class MinionCommand extends BotCommand {
 			throw hasNoMinion(msg.cmdPrefix);
 		}
 		return msg.send(msg.author.minionStatus);
+	}
+
+	@requiresMinion
+	async seticon(msg: KlasaMessage, [icon]: [string]) {
+		if (msg.author.perkTier < PerkTier.Six) {
+			return msg.send(
+				`You need to be a Tier 5 Patron to change your minion's icon to a custom icon.`
+			);
+		}
+
+		const res = FormattedCustomEmoji.exec(icon);
+		if (!res || res[0]) {
+			return msg.channel.send(`That's not a valid emoji.`);
+		}
+		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
+
+		return msg.send(`Changed your minion icon to ${res}.`);
 	}
 
 	async ironman(msg: KlasaMessage) {
@@ -177,27 +195,10 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(randomPatMessage(msg.author.minionName));
 	}
 
+	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		let str = '';
-		for (const skill of Object.values(Skills)) {
-			str += `${skill.emoji} ${skill.name}: ${msg.author.skillLevel(
-				skill.id
-			)} (${(msg.author.settings.get(
-				`skills.${skill.id}`
-			) as number).toLocaleString()} xp)\n`;
-		}
-
-		return msg.send(`${msg.author.minionName}'s Stats:
-${str}
-${Emoji.XP} Total Level: ${msg.author.totalLevel().toLocaleString()} (${msg.author
-			.totalLevel(true)
-			.toLocaleString()} xp)
-${Emoji.QuestIcon} QP: ${msg.author.settings.get(UserSettings.QP)}
-`);
+		const embed = minionStatsEmbed(msg.author);
+		return msg.send(embed);
 	}
 
 	async kc(msg: KlasaMessage) {

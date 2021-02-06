@@ -20,7 +20,8 @@ export enum SkillsEnum {
 	Herblore = 'herblore',
 	Thieving = 'thieving',
 	Hunter = 'hunter',
-	Construction = 'construction'
+	Construction = 'construction',
+	Magic = 'magic'
 }
 
 export interface Ore {
@@ -97,12 +98,6 @@ export interface Cookable {
 	stopBurnAt: number;
 	stopBurnAtCG: number;
 	burntCookable: number;
-}
-
-export interface Eatable {
-	name: string;
-	id: number;
-	healAmount: number;
 }
 
 export interface Bar {
@@ -256,6 +251,7 @@ export interface Creature {
 	multiTraps?: boolean;
 	wildy?: boolean;
 	prayerLvl?: number;
+	herbloreLvl?: number;
 	catchTime: number;
 	qpRequired?: number;
 	slope: number;

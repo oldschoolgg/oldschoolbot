@@ -1,9 +1,8 @@
 import ItemArgument from '../src/arguments/item';
 import getOSItem from '../src/lib/util/getOSItem';
-import { mockArgument, testSetup } from './utils';
+import { mockArgument } from './utils';
 
 describe('Item Alias', () => {
-	beforeAll(testSetup);
 	test('itemArg parameter', () => {
 		const itemArg = mockArgument(ItemArgument);
 		const expectedResults = [
