@@ -32,11 +32,11 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
+			usage: '[quantity:int{1}',
 			usageDelim: ' ',
-			description: 'Sends your minion to enchant items.',
-			examples: ['+enchant 100 opal bolts', '+enchant ruby bolts'],
-			categoryFlags: ['minion', 'skilling']
+			description: 'Sends your minion to charge inventories of glory',
+			examples: ['+chargeglories 5'],
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -101,7 +101,7 @@ export default class extends BotCommand {
 			} is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDuration(
 				duration
 			)} to finish. Removed ${quantityGlories}x Amulet of glory from your bank.${
-				hasDiary ? ' 2x Boost for Wilderness Elite diary.' : ''
+				hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
 			}`
 		);
 	}
