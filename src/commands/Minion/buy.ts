@@ -140,6 +140,16 @@ export default class extends BotCommand {
 			).bank
 		);
 
+		if (buyable.name === 'Bank lottery ticket') {
+			await this.client.settings.update(
+				ClientSettings.BankLottery,
+				new Bank(this.client.settings.get(ClientSettings.BankLottery)).add(
+					995,
+					buyable.gpCost
+				).bank
+			);
+		}
+
 		await msg.author.addItemsToBank(outItems, true);
 
 		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : ''} ${buyable.name}.`);
