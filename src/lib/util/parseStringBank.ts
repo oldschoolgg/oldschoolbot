@@ -1,8 +1,11 @@
+import { objectEntries } from 'e';
 import numbro from 'numbro';
+import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../constants';
-import { cleanMentions } from '../util';
+import { filterableTypes } from '../data/filterables';
+import { bankHasAllItemsFromBank, cleanMentions, shuffle, stringMatches } from '../util';
 import getOSItem from './getOSItem';
 
 export interface ItemResult {
@@ -25,7 +28,7 @@ function parseQuantityAndItem(str = ''): ItemResult | null {
 	try {
 		osItem = getOSItem(parsedName);
 	} catch (_) {
-		throw `\`${cleanMentions(null, parsedName)}\` is not a valid item name`;
+		throw new Error(`\`${cleanMentions(null, parsedName)}\` is not a valid item name`);
 	}
 	let quantity = parsedQty ?? 0;
 	if (quantity < 0) quantity = 0;
@@ -48,4 +51,85 @@ export function parseStringBank(str = ''): ItemResult[] {
 		}
 	}
 	return items;
+}
+
+interface RichStringBankOptions {
+	userBank?: Bank;
+	favorites?: number[];
+	str: string;
+	flags?: Record<string, string>;
+	type: 'tradeables' | 'untradeables' | 'equippables' | 'any';
+	owned?: boolean;
+}
+
+export function parseRichStringBank({
+	str,
+	flags = {},
+	userBank = new Bank(),
+	type,
+	owned = false,
+	favorites = []
+}: RichStringBankOptions): Bank {
+	let items: ItemResult[] = parseStringBank(str);
+
+	let bank = new Bank();
+
+	let parsedQtyOverride = parseInt(flags.qty);
+	const qtyOverride: number | null = isNaN(parsedQtyOverride) ? null : parsedQtyOverride;
+	if (qtyOverride !== null && (qtyOverride < 1 || qtyOverride > MAX_INT_JAVA)) {
+		throw new Error(`The quantity override you gave was too low, or too high.`);
+	}
+
+	// Adds every non-favorited item
+	if (flags.all) {
+		const entries = shuffle(objectEntries(userBank.bank));
+		for (let i = 0; i < entries.length; i++) {
+			let [id, qty] = entries[i];
+			id = Number(id);
+			const item = {
+				item: getOSItem(id),
+				qty: qtyOverride ?? qty
+			};
+			if (!favorites.includes(id) && !items.some(i => i.item === item.item)) {
+				items.push(item);
+			}
+		}
+	}
+
+	// Add filterables
+	for (const flag of Object.keys(flags)) {
+		const matching = filterableTypes.find(type =>
+			type.aliases.some(alias => stringMatches(alias, flag))
+		);
+		if (matching) {
+			for (const item of matching.items) {
+				items.push({ item: getOSItem(item), qty: qtyOverride ?? 0 });
+			}
+		}
+	}
+
+	if (items.length === 0) {
+		throw new Error(
+			"You didn't write any items for the command to use, for example: `5k monkfish, 20 trout`."
+		);
+	}
+
+	for (const item of items) {
+		const { id } = item.item;
+		if (bank.length === 70) break;
+		const qty = qtyOverride ?? (item.qty === 0 ? Math.max(1, userBank.amount(id)) : item.qty);
+
+		if (type === 'tradeables' && !item.item.tradeable) continue;
+		console.log(1);
+		if (type === 'untradeables' && item.item.tradeable) continue;
+		console.log(2);
+		if (type === 'equippables' && !item.item.equipment?.slot) continue;
+		console.log(3);
+		if (owned && userBank.amount(id) < qty) continue;
+		bank.add(id, qty);
+	}
+	if (owned && !bankHasAllItemsFromBank(userBank.bank, bank.bank)) {
+		throw new Error("User bank doesn't have all items in the target bank");
+	}
+	return bank;
 }
