@@ -22,11 +22,15 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			cooldown: 1,
-			description: 'Shows your equipped gear.',
+			description: 'Allows you to manage your gear presets.',
 			usageDelim: ' ',
 			usage: '[new|delete|equip] [name:str{1,12}] [setup:str]',
 			subcommands: true,
-			examples: ['+gear melee', '+gear misc'],
+			examples: [
+				'+gearpresets new pvm melee',
+				'+gearpresets delete pvm',
+				'+gearpresets equip pvm melee'
+			],
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
