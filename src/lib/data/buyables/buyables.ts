@@ -406,11 +406,11 @@ const Buyables: Buyable[] = [
 		gpCost: 500
 	},
 	{
-		name: 'Lottery ticket',
+		name: 'Bank lottery ticket',
 		outputItems: {
-			[itemID('Lottery ticket')]: 1
+			[itemID('Bank lottery ticket')]: 1
 		},
-		gpCost: 50_000_000
+		gpCost: 10_000_000
 	},
 	{
 		name: 'Mythical cape',
