@@ -10,7 +10,7 @@ import Misc from './misc';
 import Silver from './silver';
 import Tanning from './tanning';
 
-const craftables: Craftable[] = [
+export const Craftables: Craftable[] = [
 	...Birdhouse,
 	...Built,
 	...Dragonhide,
@@ -22,5 +22,3 @@ const craftables: Craftable[] = [
 	...Silver,
 	...Tanning
 ];
-
-export default craftables;

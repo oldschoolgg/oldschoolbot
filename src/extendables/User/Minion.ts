@@ -44,6 +44,7 @@ import {
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
+	GloryChargingActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	MiningActivityTaskOptions,
@@ -452,6 +453,11 @@ export default class extends Extendable {
 				return `${this.minionName} is currently casting ${data.quantity}x ${
 					spell!.name
 				}. ${formattedDuration}`;
+			}
+
+			case Activity.GloryCharging: {
+				const data = currentTask as GloryChargingActivityTaskOptions;
+				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 		}
 	}

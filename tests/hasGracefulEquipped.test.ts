@@ -1,8 +1,7 @@
 import { hasGracefulEquipped } from '../src/lib/gear/functions/hasGracefulEquipped';
-import { constructGearSetup, testSetup } from './utils';
+import { constructGearSetup } from './utils';
 
 describe('hasGracefulEquipped', () => {
-	beforeAll(testSetup);
 	test('has graceful equipped', () => {
 		expect(
 			hasGracefulEquipped(
