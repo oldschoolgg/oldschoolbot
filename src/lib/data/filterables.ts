@@ -1,7 +1,6 @@
-import { warmGear } from '../../commands/Minion/wt';
 import { gracefulItems } from '../skilling/skills/agility';
-import Crafting from '../skilling/skills/crafting';
-import Fletching from '../skilling/skills/fletching';
+import { Craftables } from '../skilling/skills/crafting/craftables';
+import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
 import {
 	cluesAll,
@@ -16,6 +15,30 @@ import {
 	wintertodt
 } from './collectionLog';
 import { Eatables } from './eatables';
+
+export const warmGear = resolveItems([
+	'Staff of fire',
+	'Fire battlestaff',
+	'Lava battlestaff',
+	'Steam battlestaff',
+	'Smoke battlestaff',
+	'Mystic fire staff',
+	'Mystic lava staff',
+	'Mystic steam staff',
+	'Mystic smoke staff',
+	'Infernal axe',
+	'Infernal pickaxe',
+	'Bruma torch',
+	'Tome of fire',
+	'Pyromancer hood',
+	'Pyromancer garb',
+	'Pyromancer robe',
+	'Pyromancer boots',
+	'Warm gloves',
+	'Fire cape',
+	'Firemaking cape(t)',
+	'Firemaking cape'
+]) as number[];
 
 const ores = resolveItems([
 	`Copper ore`,
@@ -88,7 +111,7 @@ const gems = resolveItems([
 	`Zenyte shard`
 ]);
 
-const craftingItems = Crafting.Craftables.flatMap(item =>
+const craftingItems = Craftables.flatMap(item =>
 	Object.keys(item.inputItems).map(key => parseInt(key))
 );
 
@@ -261,7 +284,7 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const fletchingItems = Fletching.Fletchables.flatMap(item =>
+const fletchingItems = Fletchables.flatMap(item =>
 	Object.keys(item.inputItems).map(key => parseInt(key))
 );
 
