@@ -40,6 +40,10 @@ export default class extends Task {
 			} glories.`;
 		}
 
+		if (loot.has('Amulet of eternal glory')) {
+			str += `\n**Your minion received an Amulet of eternal glory.**`;
+		}
+
 		await user.addItemsToBank(loot.bank, true);
 		handleTripFinish(
 			this.client,
