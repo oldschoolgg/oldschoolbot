@@ -2,11 +2,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { addBanks, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 
@@ -80,6 +81,13 @@ export default class extends BotCommand {
 			);
 		}
 		await msg.author.removeItemsFromBank(cost.bank);
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.MagicCostBank,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank),
+				cost.bank
+			])
+		);
 
 		await addSubTaskToActivityTask<CastingActivityTaskOptions>(this.client, {
 			spellID: spell.id,
