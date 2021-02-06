@@ -145,7 +145,7 @@ export default class extends BotCommand {
 				ClientSettings.BankLottery,
 				new Bank(this.client.settings.get(ClientSettings.BankLottery)).add(
 					995,
-					buyable.gpCost
+					buyable.gpCost! * quantity
 				).bank
 			);
 		}
