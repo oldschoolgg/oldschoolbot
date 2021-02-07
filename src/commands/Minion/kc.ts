@@ -4,6 +4,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { Minigames } from '../../lib/minions/data/minigames';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { NexMonster } from '../../lib/nex';
+import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import KillableMonsters, { NightmareMonster } from './../../lib/minions/data/killableMonsters';
@@ -26,15 +27,20 @@ export default class extends BotCommand {
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
 		const minigame = Minigames.find(game => stringMatches(game.name, name));
+		const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, name)));
 
-		if (!mon && !minigame) {
-			return msg.send(`That's not a valid monster or minigame.`);
+		if (!mon && !minigame && !creature) {
+			return msg.send(`That's not a valid monster, minigame or hunting creature.`);
 		}
 
 		const kc = mon
 			? msg.author.getKC((mon as unknown) as Monster)
-			: msg.author.getMinigameScore(minigame!.id);
+			: minigame
+			? msg.author.getMinigameScore(minigame!.id)
+			: msg.author.getCreatureScore(creature!);
 
-		return msg.send(`Your ${minigame ? minigame.name : mon!.name} KC is: ${kc}.`);
+		return msg.send(
+			`Your ${minigame ? minigame.name : mon ? mon!.name : creature?.name} KC is: ${kc}.`
+		);
 	}
 }

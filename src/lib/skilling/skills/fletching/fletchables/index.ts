@@ -11,7 +11,7 @@ import TippedBolts from './tippedBolts';
 import TippedDragonBolts from './tippedDragonBolts';
 import Tips from './tips';
 
-const fletchables: Fletchable[] = [
+export const Fletchables: Fletchable[] = [
 	...Bows,
 	...Shafts,
 	...Shields,
@@ -24,5 +24,3 @@ const fletchables: Fletchable[] = [
 	...Darts,
 	...Crossbows
 ];
-
-export default fletchables;

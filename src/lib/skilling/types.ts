@@ -100,12 +100,6 @@ export interface Cookable {
 	burntCookable: number;
 }
 
-export interface Eatable {
-	name: string;
-	id: number;
-	healAmount: number;
-}
-
 export interface Bar {
 	level: number;
 	xp: number;

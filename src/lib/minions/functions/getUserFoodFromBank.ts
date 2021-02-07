@@ -1,9 +1,8 @@
 import { KlasaUser } from 'klasa';
 import { addBanks } from 'oldschooljs/dist/util';
 
-import { Eatables } from '../../data/eatables';
+import { Eatable, Eatables } from '../../data/eatables';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { Eatable } from '../../skilling/types';
 import { ItemBank } from '../../types';
 
 export default function getUserFoodFromBank(

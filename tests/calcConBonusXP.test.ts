@@ -1,8 +1,7 @@
 import { calcConBonusXP } from '../src/lib/util/calcConBonusXP';
-import { constructGearSetup, testSetup } from './utils';
+import { constructGearSetup } from './utils';
 
 describe('calcConBonusXP.test', () => {
-	beforeAll(testSetup);
 	test('calcConBonusXP', () => {
 		expect(
 			calcConBonusXP(
