@@ -2,7 +2,6 @@ import { Task } from 'klasa';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { getRandomMysteryBox } from '../../lib/data/openables';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
@@ -58,7 +57,7 @@ export default class extends Task {
 			const purple = Object.keys(filterBankFromArrayOfItems(uniques, userLoot)).length > 0;
 			if (!user) continue;
 			const personalPoints = team.find(u => u.id === user.id)?.personalPoints;
-			user.incrementMinigameScore(MinigameIDsEnum.ChambersOfXeric, 1);
+			user.incrementMinigameScore('Raids', 1);
 			if (roll(10)) {
 				userLoot = multiplyBank(userLoot, 2);
 				userLoot[getRandomMysteryBox()] = 1;

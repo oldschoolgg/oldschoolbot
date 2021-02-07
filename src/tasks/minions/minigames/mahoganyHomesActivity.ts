@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 
 import MahoganyHomesCommand from '../../../commands/Minion/mahoganyhomes';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
@@ -14,7 +13,7 @@ export default class extends Task {
 		const { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.MahoganyHomes, quantity);
+		user.incrementMinigameScore('MahoganyHomes', quantity);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Construction);
 		let bonusXP = 0;

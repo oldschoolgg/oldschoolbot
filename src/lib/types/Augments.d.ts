@@ -5,19 +5,19 @@ import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
 import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
 import { Limit } from 'p-limit';
 import PQueue from 'p-queue';
 import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
+import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
-import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
+import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
@@ -95,6 +95,7 @@ declare module 'discord.js' {
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
 	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(items: ItemBank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		removeItemsFromBank(
@@ -109,10 +110,7 @@ declare module 'discord.js' {
 		): Promise<SettingsUpdateResult>;
 
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementMinigameScore(
-			minigameID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1): Promise<number>;
 		incrementCreatureScore(
 			creatureID: number,
 			numberToAdd?: number
@@ -161,11 +159,16 @@ declare module 'discord.js' {
 		/**
 		 * Returns the KC the user has for this monster.
 		 */
-		getKC(monster: Monster): number;
+		getKC(id: number): number;
 		/**
 		 * Returns minigame score
 		 */
-		getMinigameScore(id: MinigameIDsEnum): number;
+		getMinigameScore(id: MinigameKey): Promise<number>;
+		getAllMinigameScores(): Promise<MinigameScore[]>;
+		/**
+		 * Returns minigame entity
+		 */
+		getMinigameEntity(): Promise<MinigameTable>;
 		/**
 		 * Returns Creature score
 		 */

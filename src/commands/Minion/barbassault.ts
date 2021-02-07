@@ -6,7 +6,6 @@ import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 import { Activity, Emoji, Events, Time } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear/data/maxGearStats';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
@@ -274,7 +273,7 @@ export default class extends BotCommand {
 		// Up to 10%, at 200 kc, speed boost for team average kc
 		const averageKC =
 			addArrayOfNumbers(
-				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
+				await Promise.all(users.map(u => u.getMinigameScore('BarbarianAssault')))
 			) / users.length;
 		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
@@ -303,7 +302,7 @@ export default class extends BotCommand {
 			type: Activity.BarbarianAssault,
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			minigameID: MinigameIDsEnum.BarbarianAssault,
+			minigameID: 'BarbarianAssault',
 			totalLevel
 		});
 

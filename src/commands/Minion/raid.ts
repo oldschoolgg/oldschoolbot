@@ -898,7 +898,7 @@ export default class extends BotCommand {
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: msg.author.getMinigameScore(6969) > 199 ? 1 : 2,
+			minSize: (await msg.author.getMinigameScore('Raids')) > 199 ? 1 : 2,
 			maxSize: 50,
 			ironmanAllowed: true,
 			message: `${msg.author.username} is starting a party to defeat the Chambers of Xeric! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
@@ -918,7 +918,7 @@ export default class extends BotCommand {
 		// Gives experienced players a small time boost to raid
 		let teamKCBoost = 0;
 		for (const user of users) {
-			teamKCBoost += Math.floor(user.getMinigameScore(6969) / 10);
+			teamKCBoost += Math.floor((await user.getMinigameScore('Raids')) / 10);
 		}
 
 		let duration = Time.Hour;
@@ -948,24 +948,26 @@ export default class extends BotCommand {
 			id: rand(1, 10_000_000).toString(),
 			finishDate: Date.now() + (duration as number),
 			users: users.map(u => u.id),
-			team: users.map(u => {
-				let points = (this.gearPointCalc(u)[0] * (100 - rand(0, 20))) / 100;
-				const kc = msg.author.getMinigameScore(6969);
-				if (kc < 5) {
-					points /= 5;
-				} else if (kc < 20) {
-					points /= 3;
-				} else if (kc > 1000) {
-					points *= 1.2;
-				}
-				points = Math.round(points);
-				return {
-					id: u.id,
-					personalPoints: points,
-					canReceiveDust: rand(1, 10) <= 7,
-					canReceiveAncientTablet: u.hasItemEquippedOrInBank('Ancient tablet')
-				};
-			})
+			team: await Promise.all(
+				users.map(async u => {
+					let points = (this.gearPointCalc(u)[0] * (100 - rand(0, 20))) / 100;
+					const kc = await msg.author.getMinigameScore('Raids');
+					if (kc < 5) {
+						points /= 5;
+					} else if (kc < 20) {
+						points /= 3;
+					} else if (kc > 1000) {
+						points *= 1.2;
+					}
+					points = Math.round(points);
+					return {
+						id: u.id,
+						personalPoints: points,
+						canReceiveDust: rand(1, 10) <= 7,
+						canReceiveAncientTablet: u.hasItemEquippedOrInBank('Ancient tablet')
+					};
+				})
+			)
 		};
 
 		await addSubTaskToActivityTask(this.client, data);

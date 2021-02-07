@@ -2,7 +2,6 @@ import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -31,7 +30,7 @@ export default class extends BotCommand {
 			return msg.send(`You need atleast level 15 Fishing to do the Fishing Trawler.`);
 		}
 
-		const tripsDone = msg.author.getMinigameScore(MinigameIDsEnum.FishingTrawler);
+		const tripsDone = await msg.author.getMinigameScore('FishingTrawler');
 
 		let tripLength = Time.Minute * 13;
 		// 10% boost for 50 trips done
@@ -45,7 +44,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			type: Activity.FishingTrawler,
-			minigameID: MinigameIDsEnum.FishingTrawler,
+			minigameID: 'FishingTrawler',
 			quantity,
 			duration
 		});

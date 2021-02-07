@@ -352,6 +352,8 @@ export const TWEETS_RATELIMITING =
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
+export const ZALCANO_ID = 9049;
+export const NIGHTMARE_ID = 9415;
 
 /**
  * Map<user_id, PromiseQueue>

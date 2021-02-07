@@ -2,9 +2,8 @@ import { randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Events, Time } from '../../../lib/constants';
+import { Events, Time, ZALCANO_ID } from '../../../lib/constants';
 import { getRandomMysteryBox } from '../../../lib/data/openables';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { multiplyBank } from '../../../lib/util';
@@ -15,7 +14,7 @@ export default class extends Task {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.Zalcano, quantity);
+		user.incrementMonsterScore(ZALCANO_ID, quantity);
 
 		const loot = new Bank();
 
@@ -38,7 +37,7 @@ export default class extends Task {
 		user.addXP(SkillsEnum.Smithing, smithingXP);
 		user.addXP(SkillsEnum.Runecraft, runecraftXP);
 
-		const kc = user.getMinigameScore(MinigameIDsEnum.Zalcano);
+		const kc = user.getKC(ZALCANO_ID);
 
 		if (loot.amount('Smolcano') > 0) {
 			this.client.emit(
