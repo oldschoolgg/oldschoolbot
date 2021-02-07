@@ -3,11 +3,12 @@ import { table } from 'table';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { addBanks, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 
@@ -104,6 +105,13 @@ export default class extends BotCommand {
 			);
 		}
 		await msg.author.removeItemsFromBank(cost.bank);
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.MagicCostBank,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank),
+				cost.bank
+			])
+		);
 
 		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>(this.client, {
 			itemID: enchantable.id,

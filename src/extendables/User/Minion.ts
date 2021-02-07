@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { production } from '../../config';
@@ -43,6 +43,7 @@ import {
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
+	GloryChargingActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	MiningActivityTaskOptions,
@@ -452,6 +453,11 @@ export default class extends Extendable {
 					spell!.name
 				}. ${formattedDuration}`;
 			}
+
+			case Activity.GloryCharging: {
+				const data = currentTask as GloryChargingActivityTaskOptions;
+				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
+			}
 		}
 	}
 
@@ -579,9 +585,7 @@ export default class extends Extendable {
 	}
 
 	public totalLevel(this: User, returnXP = false) {
-		const userXPs = Object.values(
-			(this.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>
-		);
+		const userXPs = Object.values(this.rawSkills) as number[];
 		let totalLevel = 0;
 		for (const xp of userXPs) {
 			totalLevel += returnXP ? xp : convertXPtoLVL(xp);
