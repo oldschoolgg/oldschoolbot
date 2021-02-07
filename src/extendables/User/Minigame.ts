@@ -1,5 +1,6 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { EntityFieldsNames } from 'typeorm/common/EntityFieldsNames';
 
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 
@@ -14,16 +15,7 @@ export interface MinigameScore {
 	score: number;
 }
 
-export type MinigameKey =
-	| 'TitheFarm'
-	| 'Wintertodt'
-	| 'Sepulchre'
-	| 'FishingTrawler'
-	| 'BarbarianAssault'
-	| 'PyramidPlunder'
-	| 'AgilityArena'
-	| 'ChampionsChallenge'
-	| 'MahoganyHomes';
+export type MinigameKey = EntityFieldsNames<Omit<MinigameTable, 'userID'>>;
 
 export const Minigames: Minigame[] = [
 	{
