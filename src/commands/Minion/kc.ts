@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { Minigames } from '../../lib/minions/data/minigames';
+import { Minigames } from '../../extendables/User/Minigame';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { NexMonster } from '../../lib/nex';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -34,9 +34,9 @@ export default class extends BotCommand {
 		}
 
 		const kc = mon
-			? msg.author.getKC((mon as unknown) as Monster)
+			? msg.author.getKC(((mon as unknown) as Monster).id)
 			: minigame
-			? msg.author.getMinigameScore(minigame!.id)
+			? await msg.author.getMinigameScore(minigame!.key)
 			: msg.author.getCreatureScore(creature!);
 
 		return msg.send(

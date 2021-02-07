@@ -4,7 +4,6 @@ import { Activity, Time } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -112,7 +111,7 @@ export default class extends BotCommand {
 		const duration = durationPerTodt * quantity;
 
 		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(this.client, {
-			minigameID: MinigameIDsEnum.Wintertodt,
+			minigameID: 'Wintertodt',
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

@@ -2,15 +2,16 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
+import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Time } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
-import { Minigames } from '../../lib/minions/data/minigames';
 import { NexMonster } from '../../lib/nex';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import { Workers } from '../../lib/workers';
@@ -106,7 +107,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures] [name:...string]',
+			usage:
+				'[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -276,29 +278,47 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		);
 	}
 
-	async kc(msg: KlasaMessage, [name]: [string]) {
-		if (!name) {
+	async minigame(msg: KlasaMessage, [name = '']: [string]) {
+		const minigame = Minigames.find(m => stringMatches(m.name, name));
+		if (!minigame) {
 			return msg.send(
-				`Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``
+				`That's not a valid minigame. Valid minigames are: ${Minigames.map(
+					m => m.name
+				).join(', ')}.`
 			);
 		}
 
+		const res: MinigameTable[] = await MinigameTable.getRepository()
+			.createQueryBuilder('user')
+			.orderBy(minigame.key, 'DESC')
+			.limit(100)
+			.getMany();
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(res, 10)
+				.map(subList =>
+					subList
+						.map(u => `**${this.getUsername(u.userID)}:** ${u[minigame.key]}`)
+						.join('\n')
+				),
+			`${minigame.name} Leaderboard`
+		);
+	}
+
+	async kc(msg: KlasaMessage, [name = '']: [string]) {
 		const monster = [...Monsters.values(), NexMonster].find(
 			mon =>
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
-		const minigame = Boolean(monster)
-			? undefined
-			: Minigames.find(game => stringMatches(game.name, name));
-		if (!monster && !minigame) {
-			return msg.send(`That's not a valid monster or minigame!`);
+		if (!monster) {
+			return msg.send(`That's not a valid monster!`);
 		}
 
-		let key: 'minigameScores' | 'monsterScores' = Boolean(minigame)
-			? 'minigameScores'
-			: 'monsterScores';
-		let entityID = (minigame?.id ?? monster?.id)!.toString();
+		let key = 'monsterScores' as const;
+		let entityID = monster.id;
 		let list = (
 			await this.query(
 				`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5;`
@@ -325,7 +345,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 						.map(user => `**${this.getUsername(user.id)}:** ${user[key][entityID]} KC`)
 						.join('\n')
 				),
-			`KC Leaderboard for ${(monster ?? minigame)!.name}`
+			`KC Leaderboard for ${monster.name}`
 		);
 	}
 

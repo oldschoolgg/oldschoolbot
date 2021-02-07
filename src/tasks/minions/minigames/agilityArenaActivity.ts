@@ -6,7 +6,6 @@ import {
 } from '../../../commands/Minion/agilityarena';
 import { Time } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
 import { calcWhatPercent, formatDuration, itemID, reduceNumByPercent } from '../../../lib/util';
@@ -37,7 +36,7 @@ export default class extends Task {
 		}
 		ticketsReceived += bonusTickets;
 
-		user.incrementMinigameScore(MinigameIDsEnum.AgilityArena, ticketsReceived);
+		user.incrementMinigameScore('AgilityArena', ticketsReceived);
 
 		await user.addXP(SkillsEnum.Agility, agilityXP);
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);

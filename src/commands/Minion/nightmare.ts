@@ -4,7 +4,6 @@ import { Activity, Emoji, Time } from '../../lib/constants';
 import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -226,8 +225,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Nightmare,
 			leader: msg.author.id,
-			users: users.map(u => u.id),
-			minigameID: MinigameIDsEnum.Nightmare
+			users: users.map(u => u.id)
 		});
 
 		let str =

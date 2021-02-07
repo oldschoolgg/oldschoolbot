@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -12,7 +11,7 @@ export default class extends Task {
 		const { channelID, quantity, rooms, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.PyramidPlunder, quantity);
+		user.incrementMinigameScore('PyramidPlunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
 			allRooms.length < 2 ? allRooms[allRooms.length - 1] : allRooms[allRooms.length - 2],

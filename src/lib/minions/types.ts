@@ -91,8 +91,3 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	leader: string;
 	users: string[];
 }
-
-export interface Minigame {
-	id: number;
-	name: string;
-}

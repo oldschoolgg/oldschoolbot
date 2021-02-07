@@ -104,7 +104,7 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		const embed = minionStatsEmbed(msg.author);
+		const embed = await minionStatsEmbed(msg.author);
 		return msg.send(embed);
 	}
 

@@ -1,13 +1,11 @@
 import { User } from 'discord.js';
 import { randInt } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { production } from '../../config';
 import { Activity, Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -483,12 +481,8 @@ export default class extends Extendable {
 		}
 	}
 
-	getKC(this: KlasaUser, monster: Monster) {
-		return this.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
-	}
-
-	getMinigameScore(this: KlasaUser, id: MinigameIDsEnum) {
-		return this.settings.get(UserSettings.MinigameScores)[id] ?? 0;
+	getKC(this: KlasaUser, id: number) {
+		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
 	}
 
 	getCreatureScore(this: KlasaUser, creature: Creature) {
@@ -690,18 +684,6 @@ export default class extends Extendable {
 		return this.settings.update(
 			UserSettings.ClueScores,
 			addItemToBank(currentClueScores, clueID, amountToAdd)
-		);
-	}
-
-	public async incrementMinigameScore(this: User, minigameID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentMinigameScores = this.settings.get(UserSettings.MinigameScores);
-
-		this.log(`had Quantity[${amountToAdd}] Score added to Minigame[${minigameID}]`);
-
-		return this.settings.update(
-			UserSettings.MinigameScores,
-			addItemToBank(currentMinigameScores, minigameID, amountToAdd)
 		);
 	}
 
