@@ -96,7 +96,7 @@ export default class extends Task {
 				`**${user.username}** just received their ${formatOrdinal(
 					user.getCL(TzrekJadPet) + 1
 				)} ${Emoji.TzRekJad} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(
-					user.getKC(TzTokJad)
+					user.getKC(TzTokJad.id)
 				)} kill!`
 			);
 		}
@@ -119,7 +119,7 @@ export default class extends Task {
 			`${user}`,
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
-					user.getKC(Monsters.TzTokJad)
+					user.getKC(Monsters.TzTokJad.id)
 				)} time! I am most impressed, I give you... ${lootText}.`,
 				head: 'mejJal'
 			})

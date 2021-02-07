@@ -49,7 +49,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad) < 1) {
+		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad.id) < 1) {
 			return msg.send(
 				`You are not worthy JalYt. Before you can ${type} an ${shopInventory.name}, you need to have defeated the might TzTok-Jad!`
 			);

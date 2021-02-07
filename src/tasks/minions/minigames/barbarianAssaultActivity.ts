@@ -1,7 +1,6 @@
 import { randInt } from 'e';
 import { KlasaUser, Task } from 'klasa';
 
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
 import { calcPercentOfNum, calcWhatPercent, noOp, queuedMessageSend } from '../../../lib/util';
@@ -66,7 +65,7 @@ export default class extends Task {
 			}
 			let totalPoints = Math.floor(pts * quantity);
 
-			user.incrementMinigameScore(MinigameIDsEnum.BarbarianAssault, quantity);
+			user.incrementMinigameScore('BarbarianAssault', quantity);
 
 			await user.settings.update(
 				UserSettings.HonourPoints,

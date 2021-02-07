@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulchre';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -50,9 +49,7 @@ export default class extends BotCommand {
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentReduced = Math.min(
-			Math.floor(
-				msg.author.getMinigameScore(MinigameIDsEnum.Sepulchre) / (Time.Hour / lapLength)
-			),
+			Math.floor((await msg.author.getMinigameScore('Sepulchre')) / (Time.Hour / lapLength)),
 			10
 		);
 
@@ -76,7 +73,7 @@ export default class extends BotCommand {
 			duration: tripLength,
 			type: Activity.Sepulchre,
 			channelID: msg.channel.id,
-			minigameID: MinigameIDsEnum.Sepulchre
+			minigameID: 'Sepulchre'
 		});
 
 		let str = `${

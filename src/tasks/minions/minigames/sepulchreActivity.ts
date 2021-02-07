@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank, Openables } from 'oldschooljs';
 
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
@@ -13,7 +12,7 @@ export default class extends Task {
 		const { channelID, quantity, floors, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.Sepulchre, quantity);
+		user.incrementMinigameScore('Sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
 		const loot = new Bank();

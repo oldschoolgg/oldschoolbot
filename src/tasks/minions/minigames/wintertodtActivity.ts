@@ -5,7 +5,6 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
 import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -77,7 +76,7 @@ export default class extends Task {
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
-					user.getMinigameScore(MinigameIDsEnum.Wintertodt) + quantity
+					(await user.getMinigameScore('Wintertodt')) + quantity
 				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}
@@ -129,7 +128,7 @@ export default class extends Task {
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		await user.addItemsToBank(loot, true);
-		user.incrementMinigameScore(MinigameIDsEnum.Wintertodt, quantity);
+		user.incrementMinigameScore('Wintertodt', quantity);
 
 		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,

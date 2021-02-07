@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -136,7 +135,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.AgilityArena,
 			quantity: 1,
-			minigameID: MinigameIDsEnum.AgilityArena
+			minigameID: 'AgilityArena'
 		});
 
 		let str = `${
