@@ -15,7 +15,6 @@ import { Connection } from 'typeorm';
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
-import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
@@ -159,7 +158,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns minigame score
 		 */
-		getMinigameScore(id: MinigameIDsEnum): Promise<number>;
+		getMinigameScore(id: MinigameKey): Promise<number>;
 		/**
 		 * Returns minigame entity
 		 */

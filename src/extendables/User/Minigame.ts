@@ -85,21 +85,6 @@ export const Minigames: Minigame[] = [
 	}
 ];
 
-export enum MinigameIDsEnum {
-	Wintertodt = 20693,
-	Nightmare = 9415,
-	Sepulchre = 35236,
-	TrickOrTreat = 3719,
-	FishingTrawler = 9525,
-	Zalcano = 2312,
-	TitheFarm = 20661,
-	BarbarianAssault = 2007,
-	PyramidPlunder = 6001,
-	AgilityArena = 49592,
-	ChampionsChallenge = 95284,
-	MahoganyHomes = 20315
-}
-
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });

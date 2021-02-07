@@ -3,7 +3,6 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { MinigameIDsEnum } from '../../../extendables/User/Minigame';
 import { Emoji, Events } from '../../../lib/constants';
 import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -77,7 +76,7 @@ export default class extends Task {
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
-					(await user.getMinigameScore(MinigameIDsEnum.Wintertodt)) + quantity
+					(await user.getMinigameScore('Wintertodt')) + quantity
 				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}
