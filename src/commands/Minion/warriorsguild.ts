@@ -90,7 +90,6 @@ export default class extends BotCommand {
 			}
 
 			await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>(this.client, {
-				minigameID: 1231234,
 				armourID: armorSet.name,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
@@ -148,7 +147,6 @@ export default class extends BotCommand {
 			}
 
 			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>(this.client, {
-				minigameID: 2097,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,

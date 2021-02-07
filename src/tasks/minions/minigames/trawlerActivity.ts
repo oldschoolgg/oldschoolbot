@@ -1,7 +1,6 @@
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
@@ -27,7 +26,7 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.FishingTrawler, quantity);
+		user.incrementMinigameScore('FishingTrawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 

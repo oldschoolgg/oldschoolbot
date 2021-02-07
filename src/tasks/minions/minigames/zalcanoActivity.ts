@@ -2,8 +2,8 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
+import { MinigameIDsEnum } from '../../../extendables/User/Minigame';
 import { Events } from '../../../lib/constants';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -13,7 +13,7 @@ export default class extends Task {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.Zalcano, quantity);
+		user.incrementMinigameScore('Zalcano', quantity);
 
 		const loot = new Bank();
 

@@ -12,6 +12,7 @@ import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
+import { MinigameKey } from '../../extendables/User/Minigame';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
 import { MinigameIDsEnum } from '../minions/data/minigames';
@@ -109,10 +110,7 @@ declare module 'discord.js' {
 		): Promise<SettingsUpdateResult>;
 
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementMinigameScore(
-			minigameID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1): Promise<number>;
 		incrementCreatureScore(
 			creatureID: number,
 			numberToAdd?: number

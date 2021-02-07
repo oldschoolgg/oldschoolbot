@@ -143,7 +143,6 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(this.client, {
-			minigameID: TzTokJad.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,

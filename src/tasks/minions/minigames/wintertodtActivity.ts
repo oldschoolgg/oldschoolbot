@@ -3,9 +3,9 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { MinigameIDsEnum } from '../../../extendables/User/Minigame';
 import { Emoji, Events } from '../../../lib/constants';
 import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -129,7 +129,7 @@ export default class extends Task {
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		await user.addItemsToBank(loot, true);
-		user.incrementMinigameScore(MinigameIDsEnum.Wintertodt, quantity);
+		user.incrementMinigameScore('Wintertodt', quantity);
 
 		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,

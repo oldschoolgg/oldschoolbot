@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -48,10 +47,7 @@ export default class extends BotCommand {
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(
-			Math.floor(
-				(await msg.author.getMinigameScore(MinigameIDsEnum.PyramidPlunder)) /
-					(Time.Hour / plunderTime)
-			),
+			Math.floor((await msg.author.getMinigameScore('Pyrea')) / (Time.Hour / plunderTime)),
 			10
 		);
 
@@ -75,7 +71,7 @@ export default class extends BotCommand {
 			duration: tripLength,
 			type: Activity.Plunder,
 			channelID: msg.channel.id,
-			minigameID: MinigameIDsEnum.PyramidPlunder
+			minigameID: 'PyramidPlunder'
 		});
 
 		let str = `${
