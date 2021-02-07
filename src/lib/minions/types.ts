@@ -10,7 +10,7 @@ import { PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
-import { MinigameTable } from '../typeorm/Minigames.entity';
+import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { ArrayItemsResolved, ItemBank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 

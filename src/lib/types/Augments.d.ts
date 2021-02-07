@@ -18,7 +18,7 @@ import { MinigameIDsEnum } from '../minions/data/minigames';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
-import { MinigameTable } from '../typeorm/Minigames.entity';
+import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 

@@ -2,7 +2,7 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
 import { MinigameIDsEnum, Minigames } from '../../lib/minions/data/minigames';
-import { MinigameTable } from '../../lib/typeorm/Minigames.entity';
+import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {

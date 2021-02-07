@@ -16,6 +16,8 @@ import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
+import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
@@ -161,7 +163,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.GP,
 				UserSettings.QP,
 				UserSettings.MonsterScores,
-				UserSettings.MinigameScores,
 				UserSettings.ClueScores,
 				UserSettings.BankBackground,
 				UserSettings.SacrificedValue,
@@ -172,6 +173,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				'minion',
 				'farmingPatches'
 			]);
+
+			await PoHTable.delete({ userID: msg.author.id });
+			await MinigameTable.delete({ userID: msg.author.id });
 
 			await msg.author.settings.update([
 				[UserSettings.Minion.Ironman, true],
