@@ -15,6 +15,8 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
+import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
@@ -161,7 +163,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.GP,
 				UserSettings.QP,
 				UserSettings.MonsterScores,
-				UserSettings.MinigameScores,
 				UserSettings.ClueScores,
 				UserSettings.BankBackground,
 				UserSettings.SacrificedValue,
@@ -172,6 +173,11 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				'minion',
 				'farmingPatches'
 			]);
+
+			try {
+				await PoHTable.delete({ userID: msg.author.id });
+				await MinigameTable.delete({ userID: msg.author.id });
+			} catch (_) {}
 
 			await msg.author.settings.update([
 				[UserSettings.Minion.Ironman, true],
@@ -197,7 +203,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		const embed = minionStatsEmbed(msg.author);
+		const embed = await minionStatsEmbed(msg.author);
 		return msg.send(embed);
 	}
 

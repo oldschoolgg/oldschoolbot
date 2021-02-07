@@ -1,6 +1,6 @@
+import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity, Tasks } from '../constants';
-import { MinigameIDsEnum } from '../minions/data/minigames';
 import { PatchTypes } from '../minions/farming';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
@@ -110,6 +110,15 @@ export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface CyclopsActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
+export interface AnimatedArmourActivityTaskOptions extends ActivityTaskOptions {
+	armourID: string;
+	quantity: number;
+}
+
 export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	mixableID: number;
 	channelID: string;
@@ -129,6 +138,13 @@ export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
 	alchValue: number;
+}
+
+export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
+	jadDeathChance: number;
+	preJadDeathChance: number;
+	preJadDeathTime: number | null;
+	quantity: number;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
@@ -159,7 +175,7 @@ export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
-	minigameID: MinigameIDsEnum;
+	minigameID: MinigameKey;
 	quantity: number;
 }
 
@@ -171,15 +187,10 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
 
-export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
-	jadDeathChance: number;
-	preJadDeathChance: number;
-	preJadDeathTime: number | null;
-}
-
-export interface NightmareActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
+	quantity: number;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -187,15 +198,6 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 }
 
 export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
-
-export interface AnimatedArmourActivityTaskOptions extends MinigameActivityTaskOptions {
-	armourID: string;
-	quantity: number;
-}
-
-export interface CyclopsActivityTaskOptions extends MinigameActivityTaskOptions {
-	quantity: number;
-}
 
 export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
 	floors: number[];
@@ -205,9 +207,10 @@ export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions 
 	rooms: number[];
 }
 
-export interface ZalcanoActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	isMVP: boolean;
 	performance: number;
+	quantity: number;
 }
 
 export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -234,23 +237,5 @@ export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 	plankID: number;
 	plankQuantity: number;
 }
-
-export interface MinigameTickerTaskData {
-	subTasks: (
-		| FightCavesActivityTaskOptions
-		| WintertodtActivityTaskOptions
-		| NightmareActivityTaskOptions
-		| SepulchreActivityTaskOptions
-		| FishingTrawlerActivityTaskOptions
-		| TitheFarmActivityTaskOptions
-		| PlunderActivityTaskOptions
-	)[];
-}
-
-export type TickerTaskData =
-	| MonsterKillingTickerTaskData
-	| ClueTickerTaskData
-	| SkillingTickerTaskData
-	| MinigameTickerTaskData;
 
 export type MinionActivityTask = Tasks;

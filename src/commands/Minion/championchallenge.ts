@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
 import { championScrolls } from '../../lib/data/collectionLog';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -40,7 +39,7 @@ export default class extends BotCommand {
 			quantity: 1,
 			duration: randomVariation(Time.Minute * 20, 5),
 			type: Activity.ChampionsChallenge,
-			minigameID: MinigameIDsEnum.ChampionsChallenge
+			minigameID: 'ChampionsChallenge'
 		});
 
 		return msg.send(

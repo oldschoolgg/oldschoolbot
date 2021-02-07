@@ -5,12 +5,11 @@ import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
 import emoji from '../../lib/data/skill-emoji';
 import ClueTiers from '../minions/data/clueTiers';
-import { Minigames } from '../minions/data/minigames';
 import { UserSettings } from '../settings/types/UserSettings';
 import { Skills } from '../types';
 import { addArrayOfNumbers, toTitleCase } from '../util';
 
-export function minionStatsEmbed(user: KlasaUser) {
+export async function minionStatsEmbed(user: KlasaUser) {
 	const { rawSkills } = user;
 	const QP = user.settings.get(UserSettings.QP);
 
@@ -28,9 +27,9 @@ export function minionStatsEmbed(user: KlasaUser) {
 	};
 
 	const clueEntries = Object.entries(user.settings.get(UserSettings.ClueScores));
-	const minigameEntries = Object.entries(user.settings.get(UserSettings.MinigameScores)).sort(
-		(a, b) => b[1] - a[1]
-	);
+	const minigameScores = (await user.getAllMinigameScores())
+		.filter(i => i.score > 0)
+		.sort((a, b) => b.score - a.score);
 
 	const embed = new MessageEmbed()
 		.setTitle(`${user.settings.get(UserSettings.Badges).join('')}${user.minionName}`)
@@ -104,16 +103,13 @@ export function minionStatsEmbed(user: KlasaUser) {
 		);
 	}
 
-	if (minigameEntries.length > 0) {
+	if (minigameScores.length > 0) {
 		embed.addField(
 			'<:minigameIcon:630400565070921761> Minigames',
-			minigameEntries.slice(0, 4).map(([id, qty]) => {
-				const minigame = Minigames.find(t => t.id === parseInt(id));
-				if (!minigame) {
-					console.error(`No minigame: ${id}`);
-					return;
-				}
-				return `**${toTitleCase(minigame.name)}:** ${qty.toLocaleString()}`;
+			minigameScores.slice(0, 4).map(minigame => {
+				return `**${toTitleCase(
+					minigame.minigame.name
+				)}:** ${minigame.score.toLocaleString()}`;
 			}),
 			true
 		);
