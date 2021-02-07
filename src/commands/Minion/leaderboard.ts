@@ -292,7 +292,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			.orderBy(minigame.key, 'DESC')
 			.limit(100)
 			.getMany();
-		console.log({ res });
+
 		this.doMenu(
 			msg,
 			util
