@@ -26,7 +26,7 @@ try {
 	).triviaQuestions;
 } catch (_) {}
 
-function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChannel) {
+async function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChannel) {
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {
@@ -37,7 +37,7 @@ function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChannel) {
 		}
 	}
 	loot.add(event.loot.roll());
-	user.addItemsToBank(loot.bank);
+	await user.addItemsToBank(loot.bank, true);
 	ch.send(`You finished the ${event.name} event, and received... ${loot}.`);
 }
 
@@ -63,7 +63,8 @@ export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
 	}
 
 	const event = randArrItem(RandomEvents);
-	const roll = randInt(1, 2);
+	const roll = randInt(1, 4);
+	user.log(`getting ${event.name} random event.`);
 	switch (roll) {
 		case 1: {
 			const randTrivia = randArrItem(triviaQuestions);
@@ -110,7 +111,45 @@ export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
 				return ch.send(`You didn't give the right answer - random event failed!`);
 			}
 		}
-
+		case 3: {
+			const embed = new MessageEmbed().setImage(
+				'https://cdn.discordapp.com/attachments/342983479501389826/807737932072747018/nmgilesre.gif'
+			);
+			await ch.send(
+				`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`,
+				embed
+			);
+			try {
+				await ch.awaitMessages(
+					answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a',
+					{
+						max: 1,
+						time: 30_000,
+						errors: ['time']
+					}
+				);
+				finalizeEvent(event, user, ch);
+				return;
+			} catch (err) {
+				return ch.send(`You didn't give the right answer - random event failed!`);
+			}
+		}
+		case 4: {
+			const message = await ch.send(
+				`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
+			);
+			try {
+				await message.awaitReactions((_, _user) => user.id === _user.id, {
+					max: 1,
+					time: 30_000,
+					errors: ['time']
+				});
+				finalizeEvent(event, user, ch);
+				return;
+			} catch (err) {
+				return ch.send(`You didn't react - you failed the random event!`);
+			}
+		}
 		default: {
 			throw new Error('Unmatched switch case');
 		}

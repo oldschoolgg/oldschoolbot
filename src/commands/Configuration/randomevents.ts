@@ -1,9 +1,10 @@
+import { Permissions } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { BitField } from '../../lib/constants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const typeString = (
 	pre: string
@@ -37,7 +38,7 @@ export default class extends BotCommand {
 			if (!msg.guild) {
 				return msg.send(`This isn't a server.`);
 			}
-			if (!msg.hasAtLeastPermissionLevel(7)) {
+			if (!msg.member!.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
 				return msg.send(
 					`You don't have permission to enable/disable random events for this server.`
 				);
