@@ -94,11 +94,7 @@ export function minionStatsEmbed(user: KlasaUser) {
 			'<:Clue_scroll:365003979840552960> Clue Scores',
 			clueEntries.map(([id, qty]) => {
 				const clueTier = ClueTiers.find(t => t.id === parseInt(id));
-				if (!clueTier) {
-					console.error(`No clueTier: ${id}`);
-					return;
-				}
-				return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
+				return `**${clueTier ? toTitleCase(clueTier.name) : id}:** ${qty.toLocaleString()}`;
 			}),
 			true
 		);
@@ -109,11 +105,7 @@ export function minionStatsEmbed(user: KlasaUser) {
 			'<:minigameIcon:630400565070921761> Minigames',
 			minigameEntries.slice(0, 4).map(([id, qty]) => {
 				const minigame = Minigames.find(t => t.id === parseInt(id));
-				if (!minigame) {
-					console.error(`No minigame: ${id}`);
-					return;
-				}
-				return `**${toTitleCase(minigame.name)}:** ${qty.toLocaleString()}`;
+				return `**${minigame ? toTitleCase(minigame.name) : id}:** ${qty.toLocaleString()}`;
 			}),
 			true
 		);
