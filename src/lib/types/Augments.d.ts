@@ -5,7 +5,6 @@ import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
 import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
 import { Limit } from 'p-limit';
 import PQueue from 'p-queue';
 import PgBoss from 'pg-boss';
@@ -95,6 +94,7 @@ declare module 'discord.js' {
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
 	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(items: ItemBank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		removeItemsFromBank(
