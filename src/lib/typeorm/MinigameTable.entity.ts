@@ -11,17 +11,11 @@ export class MinigameTable extends BaseEntity {
 	@Column({ name: 'wintertodt', type: 'int', nullable: false, default: 0 })
 	public Wintertodt = 0;
 
-	@Column({ name: 'nightmare', type: 'int', nullable: false, default: 0 })
-	public Nightmare = 0;
-
 	@Column({ name: 'sepulchre', type: 'int', nullable: false, default: 0 })
 	public Sepulchre = 0;
 
 	@Column({ name: 'fishing_trawler', type: 'int', nullable: false, default: 0 })
 	public FishingTrawler = 0;
-
-	@Column({ name: 'zalcano', type: 'int', nullable: false, default: 0 })
-	public Zalcano = 0;
 
 	@Column({ name: 'barb_assault', type: 'int', nullable: false, default: 0 })
 	public BarbarianAssault = 0;
