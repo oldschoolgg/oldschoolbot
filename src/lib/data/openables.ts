@@ -23,6 +23,16 @@ interface Openable {
 	emoji: Emoji;
 }
 
+export const ALL_PRIMAL = resolveItems([
+	'Primal full helm',
+	'Primal platebody',
+	'Primal platelegs',
+	'Primal gauntlets',
+	'Primal boots',
+	'Offhand drygore longsword',
+	'Drygore longsword'
+]);
+
 const HolidayItems = new LootTable()
 	.add('Chicken head')
 	.add('Chicken wings')
@@ -394,7 +404,8 @@ const cantBeDropped = [
 	]),
 	...allPetIDs,
 	...allKeyPieces,
-	...allNexItems
+	...allNexItems,
+	...ALL_PRIMAL
 ] as number[];
 
 export const tmbTable = Items.filter(i => {

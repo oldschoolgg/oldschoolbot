@@ -714,4 +714,166 @@ export function initCustomItems() {
 
 	setCustomItem(21807, 'Ancient emblem', getOSItem('Ancient emblem'));
 	setCustomItem(11196, 'Bloodsoaked feather', getOSItem('Feather'));
+
+	/**
+	 *
+	 *
+	 * Primal
+	 *
+	 *
+	 */
+	setCustomItem(4614, 'Primal full helm', getOSItem('Rune full helm'), {
+		equipment: {
+			attack_stab: 75,
+			attack_slash: 78,
+			attack_crush: 78,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 120,
+			defence_slash: 125,
+			defence_crush: 125,
+			defence_magic: -5,
+			defence_ranged: 125,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	});
+	setCustomItem(4655, 'Primal platebody', getOSItem('Rune platebody'), {
+		equipment: {
+			attack_stab: 55,
+			attack_slash: 58,
+			attack_crush: 58,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 260,
+			defence_slash: 250,
+			defence_crush: 250,
+			defence_magic: 0,
+			defence_ranged: 265,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	});
+	setCustomItem(4622, 'Primal platelegs', getOSItem('Rune platelegs'), {
+		equipment: {
+			attack_stab: 55,
+			attack_slash: 58,
+			attack_crush: 58,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 210,
+			defence_slash: 210,
+			defence_crush: 210,
+			defence_magic: 0,
+			defence_ranged: 200,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	});
+	setCustomItem(6167, 'Primal boots', getOSItem('Rune boots'), {
+		equipment: {
+			attack_stab: 22,
+			attack_slash: 2,
+			attack_crush: 2,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 24,
+			defence_slash: 24,
+			defence_crush: 24,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	});
+	setCustomItem(5839, 'Primal gauntlets', getOSItem('Rune gloves'), {
+		equipment: {
+			attack_stab: 26,
+			attack_slash: 16,
+			attack_crush: 16,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 18,
+			defence_slash: 18,
+			defence_crush: 18,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	});
+	setCustomItem(6519, 'Offhand drygore longsword', getOSItem('Elysian spirit shield'), {
+		equipment: {
+			attack_stab: 60,
+			attack_slash: 60,
+			attack_crush: 50,
+			attack_magic: -5,
+			attack_ranged: -5,
+
+			defence_stab: 5,
+			defence_slash: 5,
+			defence_crush: 5,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 1,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Shield,
+			requirements: null
+		}
+	});
+	setCustomItem(6515, 'Drygore longsword', getOSItem('Ghrazi rapier'), {
+		equipment: {
+			attack_stab: 120,
+			attack_slash: 120,
+			attack_crush: 80,
+			attack_magic: -5,
+			attack_ranged: -5,
+
+			defence_stab: 5,
+			defence_slash: 5,
+			defence_crush: 5,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 1,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		}
+	});
 }
