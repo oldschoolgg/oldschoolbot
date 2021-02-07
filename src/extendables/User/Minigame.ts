@@ -9,7 +9,7 @@ export interface Minigame {
 	key: MinigameKey;
 }
 
-interface MinigameScore {
+export interface MinigameScore {
 	minigame: Minigame;
 	score: number;
 }
@@ -17,10 +17,8 @@ interface MinigameScore {
 export type MinigameKey =
 	| 'TitheFarm'
 	| 'Wintertodt'
-	| 'Nightmare'
 	| 'Sepulchre'
 	| 'FishingTrawler'
-	| 'Zalcano'
 	| 'BarbarianAssault'
 	| 'PyramidPlunder'
 	| 'AgilityArena'
@@ -39,11 +37,6 @@ export const Minigames: Minigame[] = [
 		key: 'Wintertodt'
 	},
 	{
-		id: 9415,
-		name: 'The Nightmare',
-		key: 'Nightmare'
-	},
-	{
 		id: 35236,
 		name: 'Hallowed Sepulchre',
 		key: 'Sepulchre'
@@ -52,11 +45,6 @@ export const Minigames: Minigame[] = [
 		id: 9525,
 		name: 'Fishing Trawler',
 		key: 'FishingTrawler'
-	},
-	{
-		id: 2312,
-		name: 'Zalcano',
-		key: 'Zalcano'
 	},
 	{
 		id: 2007,

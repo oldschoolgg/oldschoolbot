@@ -220,8 +220,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Nightmare,
 			leader: msg.author.id,
-			users: users.map(u => u.id),
-			minigameID: 'Nightmare'
+			users: users.map(u => u.id)
 		});
 
 		const str =

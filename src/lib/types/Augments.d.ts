@@ -12,7 +12,7 @@ import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
-import { MinigameKey } from '../../extendables/User/Minigame';
+import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
 import { KillableMonster } from '../minions/types';
@@ -154,11 +154,12 @@ declare module 'discord.js' {
 		/**
 		 * Returns the KC the user has for this monster.
 		 */
-		getKC(monster: Monster): number;
+		getKC(id: number): number;
 		/**
 		 * Returns minigame score
 		 */
 		getMinigameScore(id: MinigameKey): Promise<number>;
+		getAllMinigameScores(): Promise<MinigameScore[]>;
 		/**
 		 * Returns minigame entity
 		 */

@@ -201,7 +201,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		const embed = minionStatsEmbed(msg.author);
+		const embed = await minionStatsEmbed(msg.author);
 		return msg.send(embed);
 	}
 

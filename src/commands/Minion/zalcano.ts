@@ -1,7 +1,7 @@
 import { calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, ZALCANO_ID } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -49,7 +49,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const kc = await msg.author.getMinigameScore('asdf');
+		const kc = msg.author.getKC(ZALCANO_ID);
 		const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 		const boosts = [];
@@ -91,7 +91,6 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			type: Activity.Zalcano,
-			minigameID: 'Zalcano',
 			performance: this.calcPerformance(kcLearned, skillPercentage),
 			isMVP: percentChance(80)
 		});

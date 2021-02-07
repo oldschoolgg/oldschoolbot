@@ -1,6 +1,5 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { production } from '../../config';
 import { Activity, Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../../lib/constants';
@@ -461,8 +460,8 @@ export default class extends Extendable {
 		}
 	}
 
-	getKC(this: KlasaUser, monster: Monster) {
-		return this.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
+	getKC(this: KlasaUser, id: number) {
+		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
 	}
 
 	getCreatureScore(this: KlasaUser, creature: Creature) {

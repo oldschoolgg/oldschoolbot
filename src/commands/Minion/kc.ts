@@ -33,7 +33,7 @@ export default class extends BotCommand {
 		}
 
 		const kc = mon
-			? msg.author.getKC((mon as unknown) as Monster)
+			? msg.author.getKC(((mon as unknown) as Monster).id)
 			: minigame
 			? await msg.author.getMinigameScore(minigame!.key)
 			: msg.author.getCreatureScore(creature!);

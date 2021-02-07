@@ -187,9 +187,10 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
 
-export interface NightmareActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
+	quantity: number;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -206,9 +207,10 @@ export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions 
 	rooms: number[];
 }
 
-export interface ZalcanoActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	isMVP: boolean;
 	performance: number;
+	quantity: number;
 }
 
 export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {

@@ -47,7 +47,9 @@ export default class extends BotCommand {
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(
-			Math.floor((await msg.author.getMinigameScore('Pyrea')) / (Time.Hour / plunderTime)),
+			Math.floor(
+				(await msg.author.getMinigameScore('PyramidPlunder')) / (Time.Hour / plunderTime)
+			),
 			10
 		);
 

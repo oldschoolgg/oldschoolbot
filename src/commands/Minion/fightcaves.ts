@@ -47,7 +47,7 @@ export default class extends BotCommand {
 		let debugStr = '';
 
 		// Reduce time based on KC
-		const jadKC = user.getKC(TzTokJad);
+		const jadKC = user.getKC(TzTokJad.id);
 		const percentIncreaseFromKC = Math.min(50, jadKC);
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 		debugStr += `${percentIncreaseFromKC}% from KC`;
@@ -131,7 +131,7 @@ export default class extends BotCommand {
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.FightCavesAttempts);
 		const usersRangeStats = sumOfSetupStats(msg.author.settings.get(UserSettings.Gear.Range));
-		const jadKC = msg.author.getKC(TzTokJad);
+		const jadKC = msg.author.getKC(TzTokJad.id);
 
 		duration += (rand(1, 5) * duration) / 100;
 
