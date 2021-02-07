@@ -174,8 +174,10 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				'farmingPatches'
 			]);
 
-			await PoHTable.delete({ userID: msg.author.id });
-			await MinigameTable.delete({ userID: msg.author.id });
+			try {
+				await PoHTable.delete({ userID: msg.author.id });
+				await MinigameTable.delete({ userID: msg.author.id });
+			} catch (_) {}
 
 			await msg.author.settings.update([
 				[UserSettings.Minion.Ironman, true],
