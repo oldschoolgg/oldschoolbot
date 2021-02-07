@@ -1,5 +1,6 @@
+import { uniqueArr } from 'e';
+
 import Agility, { gracefulItems } from '../skilling/skills/agility';
-import { removeDuplicatesFromArray } from '../util';
 import resolveItems from '../util/resolveItems';
 
 const nightmareLog = resolveItems([
@@ -1588,7 +1589,7 @@ export const skillingLog: CollectionLogData = {
 	])
 };
 
-export const allCollectionLogItems = removeDuplicatesFromArray(
+export const allCollectionLogItems = uniqueArr(
 	[
 		...Object.values(bosses),
 		...Object.values(cluesAll),

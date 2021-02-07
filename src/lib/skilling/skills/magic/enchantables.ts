@@ -366,6 +366,14 @@ const jewelery: Enchantable[] = [
 		level: 7
 	},
 	{
+		name: 'Sapphire amulet',
+		id: itemID('Sapphire amulet'),
+		input: new Bank().add('Sapphire amulet').add('Cosmic rune', 1).add('Water rune', 1),
+		output: new Bank().add('Amulet of magic'),
+		xp: 17.5,
+		level: 7
+	},
+	{
 		name: 'Sapphire ring',
 		id: itemID('Sapphire ring'),
 		input: new Bank().add('Sapphire ring').add('Cosmic rune', 1).add('Water rune', 1),

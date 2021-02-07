@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { warmGear } from '../../lib/data/filterables';
 import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
 import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -19,31 +20,6 @@ import {
 	reduceNumByPercent
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import resolveItems from '../../lib/util/resolveItems';
-
-export const warmGear = resolveItems([
-	'Staff of fire',
-	'Fire battlestaff',
-	'Lava battlestaff',
-	'Steam battlestaff',
-	'Smoke battlestaff',
-	'Mystic fire staff',
-	'Mystic lava staff',
-	'Mystic steam staff',
-	'Mystic smoke staff',
-	'Infernal axe',
-	'Infernal pickaxe',
-	'Bruma torch',
-	'Tome of fire',
-	'Pyromancer hood',
-	'Pyromancer garb',
-	'Pyromancer robe',
-	'Pyromancer boots',
-	'Warm gloves',
-	'Fire cape',
-	'Firemaking cape(t)',
-	'Firemaking cape'
-]) as number[];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
