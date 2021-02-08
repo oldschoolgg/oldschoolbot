@@ -62,6 +62,11 @@ export const Minigames: Minigame[] = [
 		id: 20315,
 		name: 'Mahogany Homes',
 		key: 'MahoganyHomes'
+	},
+	{
+		id: 6969,
+		name: 'Chambers of Xeric',
+		key: 'Raids'
 	}
 ];
 
