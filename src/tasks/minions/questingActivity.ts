@@ -50,10 +50,10 @@ export default class extends Task {
 		const magicXP = user.settings.get(UserSettings.Skills.Magic);
 		if (magicXP === 0 && roll(2)) {
 			await user.addXP(SkillsEnum.Magic, 325);
-			str += `${Emoji.Herblore} You received 325 Magic XP for completing Witch's Potion.`;
+			str += `${Emoji.Magic} You received 325 Magic XP for completing Witch's Potion.`;
 		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
 			await user.addXP(SkillsEnum.Magic, 1000);
-			str += `${Emoji.Herblore} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
+			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
 		} else if (
 			user.skillLevel(SkillsEnum.Cooking) >= 40 &&
 			newQP > 50 &&
@@ -61,7 +61,7 @@ export default class extends Task {
 			roll(2)
 		) {
 			await user.addXP(SkillsEnum.Magic, 2500);
-			str += `${Emoji.Herblore} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
+			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
 		handleTripFinish(
