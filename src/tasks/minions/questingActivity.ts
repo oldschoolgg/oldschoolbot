@@ -53,14 +53,14 @@ export default class extends Task {
 			str += `${Emoji.Herblore} You received 325 Magic XP for completing Witch's Potion.`;
 		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
 			await user.addXP(SkillsEnum.Magic, 1000);
-			str += `${Emoji.Herblore} You received 2150 Magic XP for completing Fairytale I - Growing Pains.`;
+			str += `${Emoji.Herblore} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
 		} else if (
 			user.skillLevel(SkillsEnum.Cooking) >= 40 &&
 			newQP > 50 &&
 			magicXP < 2500 &&
 			roll(2)
 		) {
-			await user.addXP(SkillsEnum.Magic, 2150);
+			await user.addXP(SkillsEnum.Magic, 2500);
 			str += `${Emoji.Herblore} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
