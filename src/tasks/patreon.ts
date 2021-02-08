@@ -275,7 +275,6 @@ export default class PatreonTask extends Task {
 					`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`
 				);
 				await this.givePerks(patron.discordID, perkTierFromBitfield(bitField));
-				break;
 			}
 		}
 
