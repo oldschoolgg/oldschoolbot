@@ -20,7 +20,6 @@ Client.defaultUserSchema
 	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
-	.add('monsterScores', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
 	.add('minigameScores', 'any', { default: {} })
