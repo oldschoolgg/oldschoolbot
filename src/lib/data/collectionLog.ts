@@ -8,7 +8,8 @@ const gnomeRestaurantLog = resolveItems([
 	'Gnome goggles',
 	'Snake charm',
 	'Mint cake',
-	'Grand seed pod'
+	'Grand seed pod',
+	'Gnomeball'
 ]);
 
 const nightmareLog = resolveItems([

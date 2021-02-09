@@ -14,6 +14,7 @@ const tipTable = new LootTable()
 	.oneIn(50, 'Mint cake')
 	.oneIn(50, 'Grand seed pod')
 	.oneIn(230, 'Snake charm')
+	.oneIn(50, 'Gnomeball')
 
 	// Herbs
 	.add('Toadflax', 3)
