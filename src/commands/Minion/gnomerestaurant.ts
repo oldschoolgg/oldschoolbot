@@ -19,11 +19,11 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			description: 'Sends your minion to complete the Brimhaven Agility Arena.',
-			examples: ['+agilityarena'],
-			categoryFlags: ['minion', 'skilling'],
+			description: 'Sends your minion to work at the Gnome Restaurant.',
+			examples: ['+gnomerestaurant'],
+			categoryFlags: ['minion', 'minigame'],
 			subcommands: true,
-			aliases: ['aa']
+			aliases: []
 		});
 	}
 
