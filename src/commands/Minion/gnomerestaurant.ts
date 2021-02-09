@@ -59,7 +59,10 @@ export default class extends BotCommand {
 		const itemsToRemove = new Bank();
 		switch (randInt(1, 3)) {
 			case 1: {
-				if (bank.has('Amulet of glory(6)')) {
+				if (msg.author.hasItemEquippedOrInBank('Amulet of eternal glory')) {
+					deliveryLength = reduceNumByPercent(deliveryLength, 20);
+					boosts.push(`20% for Amulet of eternal glory`);
+				} else if (bank.has('Amulet of glory(6)')) {
 					itemsToRemove.add('Amulet of glory(6)');
 					deliveryLength = reduceNumByPercent(deliveryLength, 20);
 					boosts.push(`20% for Amulet of glory(6)`);
