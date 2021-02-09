@@ -3,9 +3,10 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { incrementMinionDailyDuration, roll } from '../../../lib/util';
+import { addBanks, incrementMinionDailyDuration, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const tipTable = new LootTable()
@@ -89,6 +90,13 @@ export default class extends Task {
 		if (currentLevel !== newLevel) {
 			str += `\n\n${minionName}'s Cooking level is now ${newLevel}!`;
 		}
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.GnomeRestaurantLootBank,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.GnomeRestaurantLootBank),
+				loot.bank
+			])
+		);
 
 		handleTripFinish(
 			this.client,

@@ -5,11 +5,12 @@ import { Bank } from 'oldschooljs';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GnomeRestaurantActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, randomVariation } from '../../lib/util';
+import { addBanks, formatDuration, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -31,10 +32,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		let deliveryLength = Time.Minute * 7;
 
+		const itemsToRemove = new Bank();
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < 5000) {
 			return msg.send(`You need atleast 5k GP to work at the Gnome Restaurant.`);
 		}
+		itemsToRemove.add('Coins', 5000);
 
 		const boosts = [];
 
@@ -56,7 +59,6 @@ export default class extends BotCommand {
 		}
 
 		const bank = msg.author.bank();
-		const itemsToRemove = new Bank();
 		switch (randInt(1, 3)) {
 			case 1: {
 				if (msg.author.hasItemEquippedOrInBank('Amulet of eternal glory')) {
@@ -94,12 +96,14 @@ export default class extends BotCommand {
 			itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
 		}
 
-		if (!bank.has(itemsToRemove.bank)) {
-			return msg.send(`You don't have the items required, you need: ${itemsToRemove}.`);
-		}
-
 		await msg.author.removeItemsFromBank(itemsToRemove.bank);
-
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.GnomeRestaurantCostBank,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.GnomeRestaurantCostBank),
+				itemsToRemove.bank
+			])
+		);
 		await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
