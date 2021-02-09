@@ -9,10 +9,10 @@ import { incrementMinionDailyDuration } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const tipTable = new LootTable()
-	.oneIn(190, 'Gnome scarf')
-	.oneIn(190, 'Gnome goggles')
-	.oneIn(60, 'Mint cake')
-	.oneIn(40, 'Grand seed pod')
+	.oneIn(210, 'Gnome scarf')
+	.oneIn(210, 'Gnome goggles')
+	.oneIn(50, 'Mint cake')
+	.oneIn(50, 'Grand seed pod')
 	.oneIn(230, 'Snake charm')
 
 	// Herbs
@@ -82,7 +82,7 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		await user.addItemsToBank(loot.bank, true);
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
-		await user.addXP(SkillsEnum.Fishing, totalXP);
+		await user.addXP(SkillsEnum.Cooking, totalXP);
 		const newLevel = user.skillLevel(SkillsEnum.Cooking);
 		if (currentLevel !== newLevel) {
 			str += `\n\n${minionName}'s Cooking level is now ${newLevel}!`;
