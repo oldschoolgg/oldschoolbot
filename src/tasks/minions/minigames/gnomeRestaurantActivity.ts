@@ -62,7 +62,7 @@ export default class extends Task {
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 
-		incrementMinionDailyDuration(userID, duration);
+		incrementMinionDailyDuration(this.client, userID, duration);
 		incrementMinigameScore(userID, 'GnomeRestaurant', quantity);
 
 		const loot = new Bank();

@@ -5,7 +5,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { client } from '..';
 import { production } from '../config';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -350,7 +349,11 @@ export function randomVariation(value: number, percentage: number) {
 	return randFloat(lowerLimit, upperLimit);
 }
 
-export async function incrementMinionDailyDuration(userID: string, duration: number) {
+export async function incrementMinionDailyDuration(
+	client: KlasaClient,
+	userID: string,
+	duration: number
+) {
 	const settings = await (client.gateways.get('users') as Gateway)!
 		.acquire({
 			id: userID
