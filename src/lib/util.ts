@@ -1,7 +1,6 @@
 import { Client, Guild } from 'discord.js';
 import { randInt } from 'e';
-import { Gateway } from 'klasa';
-import { KlasaClient, KlasaUser, util } from 'klasa';
+import { Gateway, KlasaClient, KlasaUser, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
