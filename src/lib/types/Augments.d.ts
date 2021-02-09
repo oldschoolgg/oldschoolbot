@@ -29,7 +29,7 @@ declare module 'klasa' {
 		public secondaryUserBusyCache: Set<string>;
 		public queuePromise: Limit;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
-		public query<T>(query: string): Promise<T>;
+		public query<T>(query: string, values?: string[]): Promise<T>;
 		public settings: Settings;
 		public production: boolean;
 		public _fileChangeWatcher?: FSWatcher;
@@ -58,7 +58,7 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
-			user?: KlasaUser
+			user?: KlasaUser | string
 		): Promise<Buffer>;
 		generateCollectionLogImage(
 			collectionLog: ItemBank,

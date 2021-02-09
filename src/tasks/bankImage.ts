@@ -11,6 +11,7 @@ import { allCollectionLogItems } from '../lib/data/collectionLog';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
+import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { ItemBank } from '../lib/types';
 import {
@@ -223,11 +224,18 @@ export default class BankImageTask extends Task {
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
-		user?: KlasaUser
+		user?: KlasaUser | string
 	): Promise<Buffer> {
+		const settings =
+			typeof user === 'undefined'
+				? null
+				: typeof user === 'string'
+				? await getUserSettings(user)
+				: user.settings;
+
 		const bankBackgroundID =
-			user?.settings.get(UserSettings.BankBackground) ?? flags.background ?? 1;
-		const currentCL = user?.settings.get(UserSettings.CollectionLogBank);
+			settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1;
+		const currentCL = settings?.get(UserSettings.CollectionLogBank);
 
 		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
 
@@ -258,8 +266,8 @@ export default class BankImageTask extends Task {
 		items = items.sort((a, b) => b[2] - a[2]);
 
 		// Sorting by favorites
-		if (user) {
-			const favorites = user.settings.get(UserSettings.FavoriteItems);
+		if (settings) {
+			const favorites = settings.get(UserSettings.FavoriteItems);
 			if (favorites.length > 0) {
 				// Sort favorite items to the front
 				items = items.sort((a, b) => {

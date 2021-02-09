@@ -8,9 +8,14 @@ import { Time } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import { calcWhatPercent, formatDuration, itemID, reduceNumByPercent } from '../../../lib/util';
+import {
+	calcWhatPercent,
+	formatDuration,
+	itemID,
+	randomVariation,
+	reduceNumByPercent
+} from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { randomVariation } from '../../../lib/util/randomVariation';
 
 export default class extends Task {
 	async run(data: AgilityArenaActivityTaskOptions) {

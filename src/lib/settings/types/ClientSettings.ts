@@ -37,5 +37,8 @@ export namespace ClientSettings {
 		export const FarmingLootBank = T<O.Readonly<ItemBank>>('farming_loot_bank');
 		export const BuyCostBank = T<O.Readonly<ItemBank>>('buy_cost_bank');
 		export const MagicCostBank = T<O.Readonly<ItemBank>>('magic_cost_bank');
+
+		export const GnomeRestaurantCostBank = T<O.Readonly<ItemBank>>('gnome_res_cost');
+		export const GnomeRestaurantLootBank = T<O.Readonly<ItemBank>>('gnome_res_loot');
 	}
 }
