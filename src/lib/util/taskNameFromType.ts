@@ -88,5 +88,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.Casting;
 		case Activity.GloryCharging:
 			return Tasks.GloryCharging;
+		case Activity.GnomeRestaurant:
+			return Tasks.GnomeRestaurant;
 	}
 }

@@ -6,8 +6,8 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
+import { randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { randomVariation } from '../../lib/util/randomVariation';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

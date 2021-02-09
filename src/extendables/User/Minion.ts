@@ -1,8 +1,7 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 
-import { production } from '../../config';
-import { Activity, Channel, Emoji, Events, MAX_QP, PerkTier, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, PerkTier, Time } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -59,12 +58,12 @@ import {
 	addItemToBank,
 	convertXPtoLVL,
 	formatDuration,
+	incrementMinionDailyDuration,
 	itemNameFromID,
 	stringMatches,
 	toTitleCase,
 	Util
 } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -457,6 +456,10 @@ export default class extends Extendable {
 				const data = currentTask as GloryChargingActivityTaskOptions;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
+
+			case Activity.GnomeRestaurant: {
+				return `${this.minionName} is currently doing Gnome Restaurant deliveries. ${formattedDuration}`;
+			}
 		}
 	}
 
@@ -502,23 +505,7 @@ export default class extends Extendable {
 	}
 
 	public async incrementMinionDailyDuration(this: User, duration: number) {
-		await this.settings.sync(true);
-
-		const currentDuration = this.settings.get(UserSettings.Minion.DailyDuration);
-		const newDuration = currentDuration + duration;
-		if (newDuration > Time.Hour * 18) {
-			const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
-
-			this.log(log);
-			if (production) {
-				const channel = this.client.channels.get(Channel.ErrorLogs);
-				if (channelIsSendable(channel)) {
-					channel.send(`${this.sanitizedName} ${log}`);
-				}
-			}
-		}
-
-		return this.settings.update(UserSettings.Minion.DailyDuration, newDuration);
+		return incrementMinionDailyDuration(this.client as KlasaClient, this.id, duration);
 	}
 
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
