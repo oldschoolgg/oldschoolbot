@@ -1,14 +1,18 @@
 import { Client, Guild } from 'discord.js';
 import { randInt } from 'e';
+import { Gateway } from 'klasa';
 import { KlasaClient, KlasaUser, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
+import { client } from '..';
+import { production } from '../config';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, Time } from './constants';
+import { CENA_CHARS, Channel, continuationChars, Events, PerkTier, Time } from './constants';
 import hasItemEquipped from './gear/functions/hasItemEquipped';
 import { GearSetupTypes } from './gear/types';
 import { UserSettings } from './settings/types/UserSettings';
@@ -333,4 +337,40 @@ export function generateContinuationChar(user: KlasaUser) {
 
 export function isValidGearSetup(str: string): str is GearSetupTypes {
 	return ['melee', 'mage', 'range', 'skilling', 'misc'].includes(str);
+}
+
+/**
+ * Adds random variation to a number. For example, if you pass 10%, it can at most lower the value by 10%,
+ * or increase it by 10%, and everything in between.
+ * @param value The value to add variation too.
+ * @param percentage The max percentage to fluctuate the value by, in both negative/positive.
+ */
+export function randomVariation(value: number, percentage: number) {
+	const lowerLimit = value * (1 - percentage / 100);
+	const upperLimit = value * (1 + percentage / 100);
+	return randFloat(lowerLimit, upperLimit);
+}
+
+export async function incrementMinionDailyDuration(userID: string, duration: number) {
+	const settings = await (client.gateways.get('users') as Gateway)!
+		.acquire({
+			id: userID
+		})
+		.sync(true);
+
+	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
+	const newDuration = currentDuration + duration;
+	if (newDuration > Time.Hour * 18) {
+		const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
+		const user = await client.users.fetch(userID);
+		user.log(log);
+		if (production) {
+			const channel = client.channels.get(Channel.ErrorLogs);
+			if (channelIsSendable(channel)) {
+				channel.send(`${user.sanitizedName} ${log}`);
+			}
+		}
+	}
+
+	return settings.update(UserSettings.Minion.DailyDuration, newDuration);
 }

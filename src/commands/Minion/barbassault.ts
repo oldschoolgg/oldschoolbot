@@ -15,6 +15,7 @@ import { BarbarianAssaultActivityTaskOptions } from '../../lib/types/minions';
 import {
 	calcWhatPercent,
 	formatDuration,
+	randomVariation,
 	reduceNumByPercent,
 	round,
 	stringMatches
@@ -23,7 +24,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
-import { randomVariation } from '../../lib/util/randomVariation';
 
 const BarbBuyables = [
 	{

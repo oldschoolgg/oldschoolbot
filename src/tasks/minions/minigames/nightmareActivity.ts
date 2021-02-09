@@ -8,11 +8,10 @@ import isImportantItemForMonster from '../../../lib/minions/functions/isImportan
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, queuedMessageSend } from '../../../lib/util';
+import { addBanks, noOp, queuedMessageSend, randomVariation } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
-import { randomVariation } from '../../../lib/util/randomVariation';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 interface NightmareUser {
