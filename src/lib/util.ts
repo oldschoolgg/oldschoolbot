@@ -5,8 +5,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { production } from '../config';
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
@@ -366,7 +364,7 @@ export async function incrementMinionDailyDuration(
 		const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
 		const user = await client.users.fetch(userID);
 		user.log(log);
-		if (production) {
+		if (client.production) {
 			const channel = client.channels.get(Channel.ErrorLogs);
 			if (channelIsSendable(channel)) {
 				channel.send(`${user.sanitizedName} ${log}`);
