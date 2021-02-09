@@ -505,7 +505,7 @@ export default class extends Extendable {
 	}
 
 	public async incrementMinionDailyDuration(this: User, duration: number) {
-		return incrementMinionDailyDuration(this.id, duration);
+		return incrementMinionDailyDuration(this.client as KlasaClient, this.id, duration);
 	}
 
 	public async addXP(this: User, skillName: SkillsEnum, amount: number) {
