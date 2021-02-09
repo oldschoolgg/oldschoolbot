@@ -5,7 +5,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { incrementMinionDailyDuration } from '../../../lib/util';
+import { incrementMinionDailyDuration, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const tipTable = new LootTable()
@@ -73,6 +73,7 @@ export default class extends Task {
 		let totalXP = 0;
 		for (let i = 0; i < quantity; i++) {
 			totalXP += 1000;
+			if (roll(5)) continue;
 			loot.add(tipTable.roll());
 		}
 
