@@ -22,7 +22,8 @@ export async function minionStatsEmbed(user: KlasaUser) {
 
 		const skillXP = rawSkills[skill as keyof Skills] ?? 1;
 		return `${emoji[skill as keyof typeof emoji] as keyof SkillsScore} ${convertXPtoLVL(
-			skillXP
+			skillXP,
+			120
 		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
