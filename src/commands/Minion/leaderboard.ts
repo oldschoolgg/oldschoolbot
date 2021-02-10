@@ -12,7 +12,13 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
-import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import {
+	convertXPtoLVL,
+	stringMatches,
+	stripEmojis,
+	toSnakeCase,
+	toTitleCase
+} from '../../lib/util';
 import { Workers } from '../../lib/workers';
 import { CLUser } from '../../lib/workers/leaderboard.worker';
 import PostgresProvider from '../../providers/postgres';
@@ -289,7 +295,8 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		const res: MinigameTable[] = await MinigameTable.getRepository()
 			.createQueryBuilder('user')
-			.orderBy(minigame.key, 'DESC')
+			.orderBy(toSnakeCase(minigame.key), 'DESC')
+			.where(`${toSnakeCase(minigame.key)} > 10`)
 			.limit(100)
 			.getMany();
 
