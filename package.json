@@ -15,6 +15,7 @@
 		"@octokit/graphql": "^4.6.0",
 		"@sapphire/discord-utilities": "^2.0.1",
 		"@sentry/node": "5.20.1",
+		"@sinclair/typebox": "^0.12.7",
 		"@types/table": "^6.0.0",
 		"bufferutil": "^4.0.3",
 		"canvas": "^2.6.1",

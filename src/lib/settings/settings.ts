@@ -31,7 +31,6 @@ export async function syncNewUserUsername(id: string, username: string) {
 }
 
 export async function batchSyncNewUserUsernames(arr: [string, string][]) {
-	console.log(`Syncing ${JSON.stringify(arr)}`);
 	await getConnection()
 		.createQueryBuilder()
 		.insert()

@@ -16,7 +16,7 @@ export interface MinigameScore {
 	score: number;
 }
 
-export type MinigameKey = EntityFieldsNames<Omit<MinigameTable, 'userID'>>;
+export type MinigameKey = EntityFieldsNames<Omit<MinigameTable, 'userID' | 'id'>>;
 
 export const Minigames: Minigame[] = [
 	{
