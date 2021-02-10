@@ -29,10 +29,12 @@ export async function incrementMinigameScore(
 	minigame: MinigameKey,
 	amountToAdd = 1
 ) {
-	const UserMinigames = await getMinigameEntity(userID);
-	UserMinigames[minigame] += amountToAdd;
-	await UserMinigames.save();
-	return UserMinigames[minigame];
+	await getConnection()
+		.createQueryBuilder()
+		.update(MinigameTable)
+		.set({ [minigame]: () => `${toSnakeCase(minigame)} + ${amountToAdd}` })
+		.where('userID = :userID', { userID })
+		.execute();
 }
 
 export async function getMinionName(userID: string): Promise<string> {
