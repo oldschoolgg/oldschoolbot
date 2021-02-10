@@ -71,6 +71,10 @@ export const Minigames: Minigame[] = [
 	}
 ];
 
+export function isMinigameKey(str: string): str is MinigameKey {
+	return Minigames.some(m => m.key === str);
+}
+
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
