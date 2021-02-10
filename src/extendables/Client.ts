@@ -74,8 +74,8 @@ export default class extends Extendable {
 		return price;
 	}
 
-	async query(this: KlasaClient, query: string) {
-		return (this.providers.default as PostgresProvider).runAll(query);
+	async query(this: KlasaClient, query: string, values?: string[]) {
+		return (this.providers.default as PostgresProvider).runAll(query, values);
 	}
 
 	async wtf(this: KlasaClient, error: Error) {

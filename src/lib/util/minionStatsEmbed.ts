@@ -31,8 +31,11 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		.filter(i => i.score > 0)
 		.sort((a, b) => b.score - a.score);
 
+	const badges = user.settings.get(UserSettings.Badges);
+	const rawBadges = badges.map(num => badges[num]).join(' ');
+
 	const embed = new MessageEmbed()
-		.setTitle(`${user.settings.get(UserSettings.Badges).join('')}${user.minionName}`)
+		.setTitle(`${rawBadges}${user.minionName}`)
 		.addField(
 			'\u200b',
 			[
