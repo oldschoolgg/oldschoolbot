@@ -308,6 +308,14 @@ const backgroundImages: BankBackground[] = [
 		name: 'Asuna',
 		image: null,
 		available: false
+	},
+	{
+		id: 39,
+		name: 'Zuk',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	}
 ];
 
