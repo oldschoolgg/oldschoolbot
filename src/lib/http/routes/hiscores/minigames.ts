@@ -5,6 +5,7 @@ import { MinigameTable } from '../../../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../../typeorm/NewUserTable.entity';
 import { toSnakeCase } from '../../../util';
 import { FastifyServer } from '../../types';
+import { rateLimit } from '../../util';
 
 const QuerySchema = Type.Object(
 	{
@@ -46,7 +47,8 @@ const minigamesGetRoute = (server: FastifyServer) =>
 			reply.send({ res });
 		},
 		config: {
-			requiresAuth: false
+			requiresAuth: false,
+			...rateLimit(10, '30 seconds')
 		}
 	});
 
