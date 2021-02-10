@@ -155,6 +155,10 @@ export default class extends Task {
 				)}.`;
 			}
 
+			if (user.equippedPet() === itemID('Plopper')) {
+				loot = multiplyBank(loot, 4);
+			}
+
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.FarmingLootBank,
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(
