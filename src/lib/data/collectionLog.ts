@@ -4,6 +4,15 @@ import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } 
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
+const gnomeRestaurantLog = resolveItems([
+	'Gnome scarf',
+	'Gnome goggles',
+	'Snake charm',
+	'Mint cake',
+	'Grand seed pod',
+	'Gnomeball'
+]);
+
 const nightmareLog = resolveItems([
 	"Inquisitor's great helm",
 	"Inquisitor's hauberk",
@@ -1787,5 +1796,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Nex',
 		aliases: ['nex'],
 		items: nexLog
+	},
+	{
+		name: 'Gnome Restaurant',
+		aliases: ['gnome restaurant'],
+		items: { 1: gnomeRestaurantLog }
 	}
 ];

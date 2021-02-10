@@ -2,7 +2,7 @@ import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeri
 
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
-import { Activity, Tasks } from '../constants';
+import { Activity } from '../constants';
 import { PatchTypes } from '../minions/farming';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
@@ -255,4 +255,6 @@ export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 	plankQuantity: number;
 }
 
-export type MinionActivityTask = Tasks;
+export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTaskOptions {
+	gloriesRemoved: number;
+}

@@ -233,7 +233,8 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Earmuffs')]: slayerHelmSimilar,
 	[itemID('Spiny helmet')]: slayerHelmSimilar,
 	[itemID('Facemask')]: slayerHelmSimilar,
-	[itemID('Reinforced goggles')]: slayerHelmSimilar
+	[itemID('Reinforced goggles')]: slayerHelmSimilar,
+	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002])
 };
 
 export function getSimilarItems(itemID: number) {

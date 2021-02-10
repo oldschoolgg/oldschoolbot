@@ -2,6 +2,7 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import { EntityFieldsNames } from 'typeorm/common/EntityFieldsNames';
 
+import { getMinigameEntity, incrementMinigameScore } from '../../lib/settings/settings';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 
 export interface Minigame {
@@ -67,6 +68,11 @@ export const Minigames: Minigame[] = [
 		id: 6969,
 		name: 'Chambers of Xeric',
 		key: 'Raids'
+	},
+	{
+		id: 52362,
+		name: 'Gnome Restaurant',
+		key: 'GnomeRestaurant'
 	}
 ];
 
@@ -81,21 +87,11 @@ export default class extends Extendable {
 	}
 
 	async getMinigameEntity(this: KlasaUser): Promise<MinigameTable> {
-		let value = await MinigameTable.findOne({ userID: this.id });
-		if (!value) {
-			value = new MinigameTable();
-			value.userID = this.id;
-			await value.save();
-		}
-		return value;
+		return getMinigameEntity(this.id);
 	}
 
 	public async incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1) {
-		const UserMinigames = await this.getMinigameEntity();
-		UserMinigames[minigame] += amountToAdd;
-		this.log(`had Quantity[${amountToAdd}] Score added to ${minigame}`);
-		await UserMinigames.save();
-		return UserMinigames[minigame];
+		return incrementMinigameScore(this.id, minigame, amountToAdd);
 	}
 
 	async getAllMinigameScores(this: User): Promise<MinigameScore[]> {

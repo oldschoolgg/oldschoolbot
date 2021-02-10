@@ -34,4 +34,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'raids', type: 'int', nullable: false, default: 0 })
 	public Raids = 0;
+
+	@Column({ name: 'gnome_restaurant', type: 'int', nullable: false, default: 0 })
+	public GnomeRestaurant = 0;
 }

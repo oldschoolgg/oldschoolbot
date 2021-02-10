@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { Minigames } from '../../extendables/User/Minigame';
+import { ZALCANO_ID } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { NexMonster } from '../../lib/nex';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -21,7 +22,12 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [name]: [string]): Promise<KlasaMessage> {
-		const mon = [...KillableMonsters, NightmareMonster, NexMonster].find(
+		const mon = [
+			...KillableMonsters,
+			NightmareMonster,
+			NexMonster,
+			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
+		].find(
 			mon =>
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))

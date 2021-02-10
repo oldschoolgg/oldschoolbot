@@ -174,7 +174,8 @@ export const enum Tasks {
 	BirdhouseActivity = 'birdhouseActivity',
 	AerialFishingActivity = 'aerialFishingActivity',
 	MahoganyHomes = 'mahoganyHomesActivity',
-	NexActivity = 'nexActivity'
+	NexActivity = 'nexActivity',
+	GnomeRestaurant = 'gnomeRestaurantActivity'
 }
 
 export const enum Activity {
@@ -222,7 +223,8 @@ export const enum Activity {
 	ChampionsChallenge = 'ChampionsChallenge',
 	AerialFishing = 'AerialFishing',
 	MahoganyHomes = 'MahoganyHomes',
-	Nex = 'Nex'
+	Nex = 'Nex',
+	GnomeRestaurant = 'GnomeRestaurant'
 }
 
 export enum ActivityGroup {

@@ -17,9 +17,11 @@ export default class extends Task {
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
 		let qpRecieved = rand(1, 30);
 
+		const newQP = currentQP + qpRecieved;
+
 		// The minion could be at (MAX_QP - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
-		if (currentQP + qpRecieved > MAX_QP) {
-			qpRecieved -= currentQP + qpRecieved - MAX_QP;
+		if (newQP > MAX_QP) {
+			qpRecieved -= newQP - MAX_QP;
 		}
 
 		let str = `${user}, ${
@@ -28,14 +30,14 @@ export default class extends Task {
 			currentQP + qpRecieved
 		}.`;
 
-		const hasMaxQP = currentQP + qpRecieved >= MAX_QP;
+		const hasMaxQP = newQP >= MAX_QP;
 		if (hasMaxQP) {
 			str += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
 		}
 
 		await user.addQP(qpRecieved);
 		const herbLevel = user.skillLevel(SkillsEnum.Herblore);
-		if (herbLevel === 1 && currentQP + qpRecieved > 5 && roll(2)) {
+		if (herbLevel === 1 && newQP > 5 && roll(2)) {
 			await user.addXP(SkillsEnum.Herblore, 250);
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
 		}
@@ -43,6 +45,23 @@ export default class extends Task {
 		if (roll(350)) {
 			str += `\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!`;
 			user.addItemsToBank({ 10092: 1 }, true);
+		}
+
+		const magicXP = user.settings.get(UserSettings.Skills.Magic);
+		if (magicXP === 0 && roll(2)) {
+			await user.addXP(SkillsEnum.Magic, 325);
+			str += `${Emoji.Magic} You received 325 Magic XP for completing Witch's Potion.`;
+		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
+			await user.addXP(SkillsEnum.Magic, 1000);
+			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
+		} else if (
+			user.skillLevel(SkillsEnum.Cooking) >= 40 &&
+			newQP > 50 &&
+			magicXP < 2500 &&
+			roll(2)
+		) {
+			await user.addXP(SkillsEnum.Magic, 2500);
+			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
 		handleTripFinish(
