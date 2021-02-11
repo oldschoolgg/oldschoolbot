@@ -697,6 +697,11 @@
     "@sentry/types" "5.20.1"
     tslib "^1.9.3"
 
+"@sinclair/typebox@^0.12.7":
+  version "0.12.7"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.12.7.tgz#4ff89150cabd1395fd8a7dc30c8a613fb6c626e1"
+  integrity sha512-Smss1Ju5lx6pu0CwufPDyx7ncK8iqb9L4nMi2vXSLMHYFSlVcwTITChC78v0l/CpUpzlRSn1IWhHv1hnSGMgRg==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.1.tgz#e7df00f98a203324f6dc7cc606cad9d4a8ab2217"

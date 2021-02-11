@@ -381,3 +381,7 @@ export function toSnakeCase(text: string) {
 		.replace(/([a-z0-9])([A-Z])/, '$1_$2')
 		.toLowerCase();
 }
+
+export function parseUsername(str: string) {
+	return str.slice(0, 32);
+}

@@ -16,7 +16,7 @@ export interface MinigameScore {
 	score: number;
 }
 
-export type MinigameKey = EntityFieldsNames<Omit<MinigameTable, 'userID'>>;
+export type MinigameKey = EntityFieldsNames<Omit<MinigameTable, 'userID' | 'id'>>;
 
 export const Minigames: Minigame[] = [
 	{
@@ -70,6 +70,10 @@ export const Minigames: Minigame[] = [
 		key: 'GnomeRestaurant'
 	}
 ];
+
+export function isMinigameKey(str: string): str is MinigameKey {
+	return Minigames.some(m => m.key === str);
+}
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
