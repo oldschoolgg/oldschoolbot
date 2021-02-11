@@ -9,6 +9,7 @@ export interface Minigame {
 	id: number;
 	name: string;
 	key: MinigameKey;
+	column: string;
 }
 
 export interface MinigameScore {
@@ -22,58 +23,64 @@ export const Minigames: Minigame[] = [
 	{
 		id: 20661,
 		name: 'Tithe farm',
-		key: 'TitheFarm'
+		key: 'TitheFarm',
+		column: 'tithe_farm'
 	},
 	{
 		id: 20693,
 		name: 'Wintertodt',
-		key: 'Wintertodt'
+		key: 'Wintertodt',
+		column: 'wintertodt'
 	},
 	{
 		id: 35236,
 		name: 'Hallowed Sepulchre',
-		key: 'Sepulchre'
+		key: 'Sepulchre',
+		column: 'sepulchre'
 	},
 	{
 		id: 9525,
 		name: 'Fishing Trawler',
-		key: 'FishingTrawler'
+		key: 'FishingTrawler',
+		column: 'fishing_trawler'
 	},
 	{
 		id: 2007,
 		name: 'Barbarian Assault',
-		key: 'BarbarianAssault'
+		key: 'BarbarianAssault',
+		column: 'barb_assault'
 	},
 	{
 		id: 6001,
 		name: 'Pyramid Plunder',
-		key: 'PyramidPlunder'
+		key: 'PyramidPlunder',
+		column: 'pyramid_plunder'
 	},
 	{
 		id: 49592,
 		name: 'Brimhaven Agility Arena',
-		key: 'AgilityArena'
+		key: 'AgilityArena',
+		column: 'agility_arena'
 	},
 	{
 		id: 95284,
 		name: "Champions' Challenge",
-		key: 'ChampionsChallenge'
+		key: 'ChampionsChallenge',
+		column: 'champions_challenge'
 	},
 	{
 		id: 20315,
 		name: 'Mahogany Homes',
-		key: 'MahoganyHomes'
+		key: 'MahoganyHomes',
+		column: 'mahogany_homes'
 	},
 	{
 		id: 52362,
 		name: 'Gnome Restaurant',
-		key: 'GnomeRestaurant'
+		key: 'GnomeRestaurant',
+		column: 'gnome_restaurant'
 	}
 ];
-
-export function isMinigameKey(str: string): str is MinigameKey {
-	return Minigames.some(m => m.key === str);
-}
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {

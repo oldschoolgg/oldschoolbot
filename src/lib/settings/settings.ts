@@ -3,11 +3,11 @@ import { Gateway, Settings } from 'klasa';
 import { getConnection } from 'typeorm';
 
 import { client } from '../..';
-import { MinigameKey } from '../../extendables/User/Minigame';
+import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
 import { Emoji } from '../constants';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../typeorm/NewUserTable.entity';
-import { parseUsername, toSnakeCase } from '../util';
+import { parseUsername } from '../util';
 
 export async function getUserSettings(userID: string): Promise<Settings> {
 	return (client.gateways.get('users') as Gateway)!
@@ -58,10 +58,11 @@ export async function incrementMinigameScore(
 	minigame: MinigameKey,
 	amountToAdd = 1
 ) {
+	const game = Minigames.find(m => m.key === minigame)!;
 	await getConnection()
 		.createQueryBuilder()
 		.update(MinigameTable)
-		.set({ [minigame]: () => `${toSnakeCase(minigame)} + ${amountToAdd}` })
+		.set({ [minigame]: () => `${game.column} + ${amountToAdd}` })
 		.where('userID = :userID', { userID })
 		.execute();
 }
