@@ -1,19 +1,15 @@
-import { objectEntries } from 'e';
+import { objectEntries, shuffleArr } from 'e';
 import numbro from 'numbro';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { client } from '../..';
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { bankHasAllItemsFromBank, cleanMentions, shuffle, stringMatches } from '../util';
+import { bankHasAllItemsFromBank, cleanMentions, stringMatches } from '../util';
 import getOSItem from './getOSItem';
 
-export interface ItemResult {
-	qty: number;
-	item: Item;
-}
-
-function parseQuantityAndItem(str = ''): ItemResult | null {
+function parseQuantityAndItem(str = ''): [Item, number] | null {
 	str = str.trim();
 	if (!str) return null;
 	let [potentialQty, ...potentialName] = str.split(' ');
@@ -35,42 +31,47 @@ function parseQuantityAndItem(str = ''): ItemResult | null {
 
 	quantity = Math.floor(Math.min(MAX_INT_JAVA, quantity));
 
-	return { item: osItem, qty: quantity };
+	return [osItem, quantity];
 }
 
-export function parseStringBank(str = ''): ItemResult[] {
+export function parseStringBank(str = ''): [Item, number][] {
 	str = str.trim().replace(/\s\s+/g, ' ');
 	if (!str) return [];
 	const split = str.split(',');
 	if (split.length === 0) return [];
-	let items: ItemResult[] = [];
+	let items: [Item, number][] = [];
 	for (let i = 0; i < split.length; i++) {
 		let res = parseQuantityAndItem(split[i]);
-		if (res !== null && !items.some(i => i.item === res!.item)) {
+		if (res !== null && !items.some(i => i[0] === res![0])) {
 			items.push(res);
 		}
 	}
 	return items;
 }
 
+export const RichBankTypes = ['any', 'tradeables', 'untradeables', 'equippables'] as const;
+
 interface RichStringBankOptions {
 	userBank?: Bank;
-	favorites?: number[];
-	str: string;
+	favorites?: readonly number[];
+	input: string | Bank;
 	flags?: Record<string, string>;
-	type: 'tradeables' | 'untradeables' | 'equippables' | 'any';
+	type: typeof RichBankTypes[number];
 	owned?: boolean;
+	maxLength?: number;
 }
 
 export function parseRichStringBank({
-	str,
+	input,
 	flags = {},
 	userBank = new Bank(),
 	type,
 	owned = false,
-	favorites = []
+	favorites = [],
+	maxLength = Infinity
 }: RichStringBankOptions): Bank {
-	let items: ItemResult[] = parseStringBank(str);
+	let items: [Item, number][] =
+		typeof input === 'string' ? parseStringBank(input) : input.items();
 
 	let bank = new Bank();
 
@@ -82,15 +83,12 @@ export function parseRichStringBank({
 
 	// Adds every non-favorited item
 	if (flags.all) {
-		const entries = shuffle(objectEntries(userBank.bank));
+		const entries = shuffleArr(objectEntries(userBank.bank));
 		for (let i = 0; i < entries.length; i++) {
 			let [id, qty] = entries[i];
 			id = Number(id);
-			const item = {
-				item: getOSItem(id),
-				qty: qtyOverride ?? qty
-			};
-			if (!favorites.includes(id) && !items.some(i => i.item === item.item)) {
+			const item: [Item, number] = [getOSItem(id), qtyOverride ?? qty];
+			if (!favorites.includes(id) && !items.some(i => i[0] === item[0])) {
 				items.push(item);
 			}
 		}
@@ -103,7 +101,7 @@ export function parseRichStringBank({
 		);
 		if (matching) {
 			for (const item of matching.items) {
-				items.push({ item: getOSItem(item), qty: qtyOverride ?? 0 });
+				items.push([getOSItem(item), qtyOverride ?? 0]);
 			}
 		}
 	}
@@ -114,16 +112,20 @@ export function parseRichStringBank({
 		);
 	}
 
-	for (const item of items) {
-		const { id } = item.item;
-		if (bank.length === 70) break;
-		const qty = qtyOverride ?? (item.qty === 0 ? Math.max(1, userBank.amount(id)) : item.qty);
+	const over = numbro(flags.over).value() ?? -1;
 
-		if (type === 'tradeables' && !item.item.tradeable) continue;
-		if (type === 'untradeables' && item.item.tradeable) continue;
-		if (type === 'equippables' && !item.item.equipment?.slot) continue;
-		if (owned && userBank.amount(id) < qty) continue;
-		bank.add(id, qty);
+	for (const [item, _qty] of items) {
+		if (bank.length === maxLength) break;
+		const qty = qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty);
+		const stackPrice = client.syncItemPrice(item.id) * qty;
+
+		if (stackPrice < over) continue;
+
+		if (type === 'tradeables' && !item.tradeable) continue;
+		if (type === 'untradeables' && item.tradeable) continue;
+		if (type === 'equippables' && !item.equipment?.slot) continue;
+		if (owned && userBank.amount(item.id) < qty) continue;
+		bank.add(item.id, qty);
 	}
 	if (owned && !bankHasAllItemsFromBank(userBank.bank, bank.bank)) {
 		throw new Error("User bank doesn't have all items in the target bank");
