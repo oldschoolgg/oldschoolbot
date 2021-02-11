@@ -26,27 +26,18 @@ describe('Bank Parsers', () => {
 
 		const output = psb(` 1 twisted bow, coal,  5k egg,  1b trout `);
 		const expected = [
-			{ qty: 1, item: get('Twisted bow') },
-			{
-				qty: 0,
-				item: get('Coal')
-			},
-			{
-				qty: 5000,
-				item: get('Egg')
-			},
-			{
-				qty: 1_000_000_000,
-				item: get('Trout')
-			}
+			[get('Twisted bow'), 1],
+			[get('Coal'), 0],
+			[get('Egg'), 5000],
+			[get('Trout'), 1_000_000_000]
 		];
 		expect(expected).toEqual(expect.arrayContaining(output));
 		expect(output.length).toEqual(expected.length);
 		for (let i = 0; i < output.length; i++) {
-			let res = output[i];
-			let exp = expected[i];
-			expect(res.qty).toEqual(exp.qty);
-			expect(res.item).toEqual(exp.item);
+			let [resItem, resQty] = output[i];
+			let [expItem, expQty] = expected[i];
+			expect(resItem).toEqual(expItem);
+			expect(resQty).toEqual(expQty);
 		}
 
 		expect(psb('')).toEqual([]);
@@ -80,7 +71,7 @@ describe('Bank Parsers', () => {
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'equippables'
 		});
@@ -91,7 +82,7 @@ describe('Bank Parsers', () => {
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'untradeables',
 			owned: false
@@ -103,7 +94,7 @@ describe('Bank Parsers', () => {
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'tradeables',
 			owned: false
@@ -115,7 +106,7 @@ describe('Bank Parsers', () => {
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'tradeables',
 			owned: true
