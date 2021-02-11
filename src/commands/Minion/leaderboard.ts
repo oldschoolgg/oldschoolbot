@@ -5,6 +5,8 @@ import { Monsters } from 'oldschooljs';
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Time } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -144,7 +146,14 @@ export default class extends BotCommand {
 			false
 		);
 
+		const usernameEntries: [string, string][] = [];
+
 		for (const user of this.client.users.values()) {
+			if (!user.username) continue;
+			if (user.settings.get(UserSettings.Minion.HasBought)) {
+				usernameEntries.push([user.id, user.username]);
+			}
+
 			this.usernameCache.map.set(user.id, user.username);
 		}
 
@@ -153,6 +162,8 @@ export default class extends BotCommand {
 			const rawBadges = user.badges.map(num => badges[num]).join(' ');
 			this.usernameCache.map.set(user.id, `${rawBadges} ${stripEmojis(rawName)}`);
 		}
+
+		batchSyncNewUserUsernames(usernameEntries);
 	}
 
 	async run(msg: KlasaMessage) {
