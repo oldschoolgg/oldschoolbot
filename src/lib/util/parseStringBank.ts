@@ -1,11 +1,10 @@
-import { objectEntries, shuffleArr } from 'e';
 import numbro from 'numbro';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { getItemPrice, MAX_INT_JAVA } from '../constants';
+import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { bankHasAllItemsFromBank, cleanMentions, stringMatches } from '../util';
+import { cleanMentions } from '../util';
 import getOSItem from './getOSItem';
 
 function parseQuantityAndItem(str = ''): [Item, number] | null {
@@ -48,86 +47,44 @@ export function parseStringBank(str = ''): [Item, number][] {
 	return items;
 }
 
-export const RichBankTypes = ['any', 'tradeables', 'untradeables', 'equippables'] as const;
-
-interface RichStringBankOptions {
-	userBank?: Bank;
-	favorites?: readonly number[];
-	input: string | Bank;
+interface ParseBankOptions {
+	inputBank: Bank;
 	flags?: Record<string, string>;
-	type: typeof RichBankTypes[number];
-	owned?: boolean;
-	maxLength?: number;
+	inputStr?: string;
 }
 
-export function parseRichStringBank({
-	input,
-	flags = {},
-	userBank = new Bank(),
-	type,
-	owned = false,
-	favorites = [],
-	maxLength = Infinity
-}: RichStringBankOptions): Bank {
-	let items: [Item, number][] =
-		typeof input === 'string' ? parseStringBank(input) : input.items();
+export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
+	const items = inputBank.items();
 
-	let bank = new Bank();
-
-	let parsedQtyOverride = parseInt(flags.qty);
-	const qtyOverride: number | null = isNaN(parsedQtyOverride) ? null : parsedQtyOverride;
-	if (qtyOverride !== null && (qtyOverride < 1 || qtyOverride > MAX_INT_JAVA)) {
-		throw new Error(`The quantity override you gave was too low, or too high.`);
-	}
-
-	// Adds every non-favorited item
-	if (flags.all) {
-		const entries = shuffleArr(objectEntries(userBank.bank));
-		for (let i = 0; i < entries.length; i++) {
-			let [id, qty] = entries[i];
-			id = Number(id);
-			const item: [Item, number] = [getOSItem(id), qtyOverride ?? qty];
-			if (!favorites.includes(id) && !items.some(i => i[0] === item[0])) {
-				items.push(item);
-			}
-		}
+	if (inputStr) {
+		let _bank = new Bank();
+		const strItems = parseStringBank(inputStr);
+		for (const [item] of strItems) _bank.add(item.id, inputBank.amount(item.id));
+		return _bank;
 	}
 
 	// Add filterables
-	for (const flag of Object.keys(flags)) {
-		const matching = filterableTypes.find(type =>
-			type.aliases.some(alias => stringMatches(alias, flag))
-		);
-		if (matching) {
-			for (const item of matching.items) {
-				items.push([getOSItem(item), qtyOverride ?? 0]);
-			}
-		}
-	}
+	const flagsKeys = Object.keys(flags);
+	const filter = filterableTypes.find(type =>
+		type.aliases.some(alias => flagsKeys.includes(alias))
+	);
 
-	if (items.length === 0) {
-		throw new Error(
-			"You didn't write any items for the command to use, for example: `5k monkfish, 20 trout`."
-		);
-	}
-
-	const over = numbro(flags.over).value() ?? -1;
+	const outputBank = new Bank();
 
 	for (const [item, _qty] of items) {
-		if (bank.length === maxLength) break;
-		const qty = qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty);
-		const stackPrice = getItemPrice(item.id) * qty;
+		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
+		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
+		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
+		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search)) {
+			continue;
+		}
 
-		if (stackPrice < over) continue;
+		const qty = _qty === 0 ? Math.max(1, inputBank.amount(item.id)) : _qty;
+		if (filter && !filter.items.includes(item.id)) continue;
 
-		if (type === 'tradeables' && !item.tradeable) continue;
-		if (type === 'untradeables' && item.tradeable) continue;
-		if (type === 'equippables' && !item.equipment?.slot) continue;
-		if (owned && userBank.amount(item.id) < qty) continue;
-		bank.addItem(item.id, qty);
+		if (inputBank.amount(item.id) < qty) continue;
+		outputBank.addItem(item.id, qty);
 	}
-	if (owned && !bankHasAllItemsFromBank(userBank.bank, bank.bank)) {
-		throw new Error("User bank doesn't have all items in the target bank");
-	}
-	return bank;
+
+	return outputBank;
 }
