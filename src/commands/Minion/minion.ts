@@ -82,7 +82,7 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		const res = FormattedCustomEmoji.exec(icon);
-		if (!res || res[0]) {
+		if (!res || !res[0]) {
 			return msg.channel.send(`That's not a valid emoji.`);
 		}
 		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
