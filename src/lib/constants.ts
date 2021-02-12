@@ -1,6 +1,7 @@
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+import { NexMonster } from '../lib/nex';
 import KillableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 
 export const enum Time {
