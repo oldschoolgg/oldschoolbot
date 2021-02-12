@@ -4,7 +4,7 @@ import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
-import { Events, Time } from '../lib/constants';
+import { Events, itemPrices, Time } from '../lib/constants';
 import { customPrices } from '../lib/customItems';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { rand } from '../lib/util';
@@ -14,6 +14,18 @@ import PostgresProvider from '../providers/postgres';
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [Client] });
+	}
+
+	syncItemPrice(this: KlasaClient, itemID: number | string): number {
+		if (typeof itemID === 'string') itemID = parseInt(itemID);
+
+		if (itemID === 995) {
+			return 1;
+		}
+
+		const currentItems = this.settings!.get(ClientSettings.Prices);
+
+		return currentItems[itemID]?.price ?? 0;
 	}
 
 	async fetchItemPrice(this: KlasaClient, itemID: number | string) {
@@ -44,6 +56,9 @@ export default class extends Extendable {
 			currentItem &&
 			Date.now() - currentItem.fetchedAt < Time.Day * rand(20, 300)
 		) {
+			if (!itemPrices.has(osItem.id)) {
+				itemPrices.set(osItem.id, currentItem.price);
+			}
 			return currentItem.price;
 		}
 

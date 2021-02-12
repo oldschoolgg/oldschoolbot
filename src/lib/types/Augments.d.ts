@@ -11,6 +11,7 @@ import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
+import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
@@ -28,6 +29,7 @@ declare module 'klasa' {
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
 		public queuePromise: Limit;
+		public syncItemPrice(itemID: number | string): number;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
 		public settings: Settings;
@@ -193,7 +195,7 @@ declare module 'discord.js' {
 		 * Queue a function to run on a per-user queue.
 		 */
 		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
-		bank(): Bank;
+		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		perkTier: PerkTier;
 		/**

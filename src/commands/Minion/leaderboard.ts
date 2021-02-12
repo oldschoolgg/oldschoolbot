@@ -6,6 +6,8 @@ import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Time } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
 import { NexMonster } from '../../lib/nex';
+import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -13,13 +15,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
-import {
-	convertXPtoLVL,
-	stringMatches,
-	stripEmojis,
-	toSnakeCase,
-	toTitleCase
-} from '../../lib/util';
+import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import { Workers } from '../../lib/workers';
 import { CLUser } from '../../lib/workers/leaderboard.worker';
 import PostgresProvider from '../../providers/postgres';
@@ -145,7 +141,14 @@ export default class extends BotCommand {
 			false
 		);
 
+		const usernameEntries: [string, string][] = [];
+
 		for (const user of this.client.users.values()) {
+			if (!user.username) continue;
+			if (user.settings.get(UserSettings.Minion.HasBought)) {
+				usernameEntries.push([user.id, user.username]);
+			}
+
 			this.usernameCache.map.set(user.id, user.username);
 		}
 
@@ -154,6 +157,8 @@ export default class extends BotCommand {
 			const rawBadges = user.badges.map(num => badges[num]).join(' ');
 			this.usernameCache.map.set(user.id, `${rawBadges} ${stripEmojis(rawName)}`);
 		}
+
+		batchSyncNewUserUsernames(usernameEntries);
 	}
 
 	async run(msg: KlasaMessage) {
@@ -296,8 +301,8 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		const res: MinigameTable[] = await MinigameTable.getRepository()
 			.createQueryBuilder('user')
-			.orderBy(toSnakeCase(minigame.key), 'DESC')
-			.where(`${toSnakeCase(minigame.key)} > 10`)
+			.orderBy(minigame.column, 'DESC')
+			.where(`${minigame.column} > 10`)
 			.limit(100)
 			.getMany();
 
