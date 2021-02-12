@@ -4,7 +4,7 @@ import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
-import { Events, Time } from '../lib/constants';
+import { Events, itemPrices, Time } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { rand } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
@@ -51,6 +51,9 @@ export default class extends Extendable {
 			currentItem &&
 			Date.now() - currentItem.fetchedAt < Time.Day * rand(20, 50)
 		) {
+			if (!itemPrices.has(osItem.id)) {
+				itemPrices.set(osItem.id, currentItem.price);
+			}
 			return currentItem.price;
 		}
 

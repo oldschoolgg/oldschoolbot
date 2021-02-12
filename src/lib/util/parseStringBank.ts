@@ -3,8 +3,7 @@ import numbro from 'numbro';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../..';
-import { MAX_INT_JAVA } from '../constants';
+import { getItemPrice, MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import { bankHasAllItemsFromBank, cleanMentions, stringMatches } from '../util';
 import getOSItem from './getOSItem';
@@ -117,7 +116,7 @@ export function parseRichStringBank({
 	for (const [item, _qty] of items) {
 		if (bank.length === maxLength) break;
 		const qty = qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty);
-		const stackPrice = client.syncItemPrice(item.id) * qty;
+		const stackPrice = getItemPrice(item.id) * qty;
 
 		if (stackPrice < over) continue;
 
