@@ -33,7 +33,8 @@ export default class extends BotCommand {
 
 		const bank = parseBank({
 			inputBank: baseBank,
-			flags: msg.flagArgs
+			flags: msg.flagArgs,
+			inputStr: typeof pageNumberOrItemName === 'string' ? pageNumberOrItemName : undefined
 		});
 
 		if (msg.flagArgs.text) {

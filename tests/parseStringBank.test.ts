@@ -123,4 +123,31 @@ describe('Bank Parsers', () => {
 		expect(res.amount('Rune platebody')).toEqual(1);
 		expect(res.amount('Rune arrow')).toEqual(1);
 	});
+
+	test('parseBank - inputStr', async () => {
+		const bank = new Bank()
+			.add('Steel arrow')
+			.add('Bones', 2)
+			.add('Coal', 6)
+			.add('Clue scroll (easy)')
+			.add('Rune arrow')
+			.add('Mind rune', 50)
+			.add('Rune platebody');
+		const res = parseBank({
+			inputBank: bank,
+			flags: {},
+			inputStr: 'coal'
+		});
+		expect(res.length).toEqual(1);
+		expect(res.amount('Coal')).toEqual(6);
+
+		const res2 = parseBank({
+			inputBank: bank,
+			flags: {},
+			inputStr: 'coal, bones'
+		});
+		expect(res2.length).toEqual(2);
+		expect(res2.amount('Coal')).toEqual(6);
+		expect(res2.amount('Bones')).toEqual(2);
+	});
 });
