@@ -1,4 +1,5 @@
 import { GuildMember } from 'discord.js';
+import { shuffleArr } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -6,7 +7,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { cleanMentions, itemID, itemNameFromID, shuffle } from '../../lib/util';
+import { cleanMentions, itemID, itemNameFromID } from '../../lib/util';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)
@@ -83,7 +84,7 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(itemID('Christmas cracker'), 1);
 		const winnerLoot = HatTable.roll()[0].item;
 		const loserLoot = JunkTable.roll()[0].item;
-		const [winner, loser] = shuffle([buyerMember.user, msg.author]);
+		const [winner, loser] = shuffleArr([buyerMember.user, msg.author]);
 		await winner.addItemsToBank({ [winnerLoot]: 1 }, true);
 		await loser.addItemsToBank({ [loserLoot]: 1 }, true);
 

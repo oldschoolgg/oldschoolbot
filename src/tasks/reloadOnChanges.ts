@@ -20,7 +20,10 @@ export default class extends Task {
 
 		for (const module of Object.keys(require.cache)) {
 			if (!module.includes(nodeModules) && extname(module) !== '.node') {
-				if (module.endsWith('.entity.js')) continue;
+				if (module.includes('.entity.js')) continue;
+				if (module.includes(`${sep}typeorm${sep}`)) continue;
+				if (module.includes(`OldSchoolBotClient`)) continue;
+				if (module.includes(`dist${sep}index`)) continue;
 				delete require.cache[module];
 			}
 		}

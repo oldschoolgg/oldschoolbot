@@ -19,34 +19,23 @@ describe('Bank Parsers', () => {
 		];
 
 		for (const [input, output] of quantities) {
-			expect(psb(`${input} twisted bow`)).toEqual([
-				{ qty: output, item: get('Twisted bow') }
-			]);
+			expect(psb(`${input} twisted bow`)).toEqual([[get('Twisted bow'), output]]);
 		}
 
 		const output = psb(` 1 twisted bow, coal,  5k egg,  1b trout `);
 		const expected = [
-			{ qty: 1, item: get('Twisted bow') },
-			{
-				qty: 0,
-				item: get('Coal')
-			},
-			{
-				qty: 5000,
-				item: get('Egg')
-			},
-			{
-				qty: 1_000_000_000,
-				item: get('Trout')
-			}
+			[get('Twisted bow'), 1],
+			[get('Coal'), 0],
+			[get('Egg'), 5000],
+			[get('Trout'), 1_000_000_000]
 		];
 		expect(expected).toEqual(expect.arrayContaining(output));
 		expect(output.length).toEqual(expected.length);
 		for (let i = 0; i < output.length; i++) {
-			let res = output[i];
-			let exp = expected[i];
-			expect(res.qty).toEqual(exp.qty);
-			expect(res.item).toEqual(exp.item);
+			let [resItem, resQty] = output[i];
+			let [expItem, expQty] = expected[i];
+			expect(resItem).toEqual(expItem);
+			expect(resQty).toEqual(expQty);
 		}
 
 		expect(psb('')).toEqual([]);
@@ -54,33 +43,33 @@ describe('Bank Parsers', () => {
 		expect(psb(', ')).toEqual([]);
 		expect(psb(',, , , , ,, , , , ,')).toEqual([]);
 		expect(psb('twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([
-			{ qty: 0, item: get('Twisted bow') }
+			[get('Twisted bow'), 0]
 		]);
 
 		expect(psb('1k twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([
-			{ qty: 1000, item: get('Twisted bow') }
+			[get('Twisted bow'), 1000]
 		]);
-		expect(psb('5 tarromin')).toEqual([{ qty: 5, item: get('Tarromin') }]);
+		expect(psb('5 tarromin')).toEqual([[get('Tarromin'), 5]]);
 		expect(psb('3rd age platebody, 5 3rd age platelegs')).toEqual([
-			{ qty: 0, item: get('3rd age platebody') },
-			{ qty: 5, item: get('3rd age platelegs') }
+			[get('3rd age platebody'), 0],
+			[get('3rd age platelegs'), 5]
 		]);
 		expect(psb('Bronze arrow, Iron arrow, Steel arrow, Rune arrow')).toEqual([
-			{ qty: 0, item: get('Bronze arrow') },
-			{ qty: 0, item: get('Iron arrow') },
-			{ qty: 0, item: get('Steel arrow') },
-			{ qty: 0, item: get('Rune arrow') }
+			[get('Bronze arrow'), 0],
+			[get('Iron arrow'), 0],
+			[get('Steel arrow'), 0],
+			[get('Rune arrow'), 0]
 		]);
 		expect(psb('Steel platelegs, Adamant platelegs, Black platelegs')).toEqual([
-			{ qty: 0, item: get('Steel platelegs') },
-			{ qty: 0, item: get('Adamant platelegs') },
-			{ qty: 0, item: get('Black platelegs') }
+			[get('Steel platelegs'), 0],
+			[get('Adamant platelegs'), 0],
+			[get('Black platelegs'), 0]
 		]);
 	});
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'equippables'
 		});
@@ -91,7 +80,7 @@ describe('Bank Parsers', () => {
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'untradeables',
 			owned: false
@@ -103,7 +92,7 @@ describe('Bank Parsers', () => {
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'tradeables',
 			owned: false
@@ -115,7 +104,7 @@ describe('Bank Parsers', () => {
 
 	test('parseRichStringBank', async () => {
 		const parsed = parseRichStringBank({
-			str: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
+			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
 			userBank: new Bank().add('Bronze arrow', 1000),
 			type: 'tradeables',
 			owned: true
