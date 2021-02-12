@@ -1,7 +1,6 @@
 import PQueue from 'p-queue';
 import { join } from 'path';
 
-import { NexMonster } from '../lib/nex';
 import KillableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 
 export const enum Time {
@@ -369,5 +368,10 @@ export const userQueues: Map<string, PQueue> = new Map();
 export const effectiveMonsters = [
 	...KillableMonsters,
 	NightmareMonster,
-	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID, NexMonster }
+	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
+	{
+		id: 46274,
+		name: 'Nex',
+		aliases: ['nex']
+	}
 ];
