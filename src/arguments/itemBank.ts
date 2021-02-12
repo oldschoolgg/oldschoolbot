@@ -12,9 +12,8 @@ export default class extends Argument {
 		const items = parseStringBank(arg);
 		let bank = new Bank();
 		const userBank = message.author.bank();
-		for (const item of items) {
-			const { id } = item.item;
-			bank.add(id, item.qty === 0 ? Math.max(1, userBank.amount(id)) : item.qty);
+		for (const [item, qty] of items) {
+			bank.add(item.id, qty === 0 ? Math.max(1, userBank.amount(item.id)) : qty);
 		}
 		const keys = Object.keys(bank.bank);
 		if (keys.length === 0) {

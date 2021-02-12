@@ -6,7 +6,6 @@ import { Emoji, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { noOp, sleep } from '../../lib/util';
-import BankCommand from './bank';
 
 const options = {
 	max: 1,
@@ -125,10 +124,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		const gpImage = (this.client.commands.get('bank') as BankCommand).generateImage(
-			winningAmount
-		);
-
 		this.client.emit(
 			Events.EconomyLog,
 			`${winner.sanitizedName} won ${winningAmount} GP in a duel with ${loser.sanitizedName}.`
@@ -137,8 +132,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`Congratulations ${winner.username}! You won ${Util.toKMB(
 				winningAmount
-			)}, and paid 0 tax.`,
-			gpImage
+			)}, and paid 0 tax.`
 		);
 	}
 }

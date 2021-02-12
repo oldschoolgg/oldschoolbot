@@ -361,3 +361,11 @@ export const NIGHTMARE_ID = 9415;
  * Map<user_id, PromiseQueue>
  */
 export const userQueues: Map<string, PQueue> = new Map();
+
+/**
+ * Map<ItemID, Price>
+ */
+export const itemPrices: Map<number, number> = new Map();
+export function getItemPrice(id: number) {
+	return itemPrices.get(id) ?? 0;
+}
