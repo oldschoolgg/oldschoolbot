@@ -50,18 +50,26 @@ export function parseStringBank(str = ''): [Item, number][] {
 interface ParseBankOptions {
 	inputBank: Bank;
 	flags?: Record<string, string>;
+	inputStr?: string;
 }
 
-export function parseBank({ inputBank, flags = {} }: ParseBankOptions): Bank {
-	const outputBank = new Bank();
-
+export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
 	const items = inputBank.items();
+
+	if (inputStr) {
+		let _bank = new Bank();
+		const strItems = parseStringBank(inputStr);
+		for (const [item] of strItems) _bank.add(item.id, inputBank.amount(item.id));
+		return _bank;
+	}
 
 	// Add filterables
 	const flagsKeys = Object.keys(flags);
 	const filter = filterableTypes.find(type =>
 		type.aliases.some(alias => flagsKeys.includes(alias))
 	);
+
+	const outputBank = new Bank();
 
 	for (const [item, _qty] of items) {
 		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
