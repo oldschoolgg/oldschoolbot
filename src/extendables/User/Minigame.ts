@@ -77,7 +77,8 @@ export const Minigames: Minigame[] = [
 	{
 		id: 6969,
 		name: 'Chambers of Xeric',
-		key: 'Raids'
+		key: 'Raids',
+		column: 'raids'
 	},
 	{
 		id: 52362,
