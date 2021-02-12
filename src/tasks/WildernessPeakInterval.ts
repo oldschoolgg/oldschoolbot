@@ -1,7 +1,8 @@
+import { shuffleArr } from 'e';
 import { Task } from 'klasa';
 
 import { Time } from '../lib/constants';
-import { rand, shuffle } from '../lib/util';
+import { rand } from '../lib/util';
 
 export const enum PeakTier {
 	High = 'high',
@@ -34,7 +35,7 @@ export default class extends Task {
 		// Divide the current day into interverals
 		for (let i = 0; i <= 10; i++) {
 			let randomedTime = rand(1, 2);
-			const [peakTier] = shuffle(peakTiers);
+			const [peakTier] = shuffleArr(peakTiers);
 			const peak: Peak = {
 				startTime: randomedTime,
 				finishTime: randomedTime,
@@ -52,7 +53,7 @@ export default class extends Task {
 
 		peakInterval.push(lastPeak);
 
-		peakInterval = shuffle(peakInterval);
+		peakInterval = shuffleArr(peakInterval);
 
 		let currentTime = new Date().getTime();
 
