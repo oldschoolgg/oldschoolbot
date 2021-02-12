@@ -19,7 +19,7 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	public bank(this: User, { withGP = false }: GetUserBankOptions) {
+	public bank(this: User, { withGP = false }: GetUserBankOptions = {}) {
 		const bank = new Bank(this.settings.get(UserSettings.Bank));
 		if (withGP) bank.add('Coins', this.settings.get(UserSettings.GP));
 		return bank;
