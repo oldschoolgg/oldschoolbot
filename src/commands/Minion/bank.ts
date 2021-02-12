@@ -6,7 +6,7 @@ import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
-import { parseRichStringBank, RichBankTypes } from '../../lib/util/parseStringBank';
+import { parseBank } from '../../lib/util/parseStringBank';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -31,12 +31,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		const bank = parseRichStringBank({
-			input: typeof pageNumberOrItemName === 'string' ? pageNumberOrItemName : baseBank,
-			userBank: baseBank,
-			type: RichBankTypes.find(t => msg.flagArgs[t]) ?? 'any',
-			owned: true,
-			favorites: msg.author.settings.get(UserSettings.FavoriteItems),
+		const bank = parseBank({
+			inputBank: baseBank,
 			flags: msg.flagArgs
 		});
 
@@ -46,7 +42,7 @@ export default class extends BotCommand {
 				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search)) {
 					continue;
 				}
-				textBank.push(`${item.name}}: ${qty.toLocaleString()}`);
+				textBank.push(`${item.name}: ${qty.toLocaleString()}`);
 			}
 
 			if (textBank.length === 0) {

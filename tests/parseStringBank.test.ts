@@ -1,8 +1,7 @@
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../src/lib/util/getOSItem';
-import { parseRichStringBank, parseStringBank } from '../src/lib/util/parseStringBank';
+import { parseBank, parseStringBank } from '../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
 const get = getOSItem;
@@ -67,49 +66,61 @@ describe('Bank Parsers', () => {
 		]);
 	});
 
-	test('parseRichStringBank', async () => {
-		const parsed = parseRichStringBank({
-			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout',
-			userBank: new Bank().add('Bronze arrow', 1000),
-			type: 'equippables'
+	test('parseBank - flags', async () => {
+		const bank = new Bank()
+			.add('Steel arrow')
+			.add('Bones')
+			.add('Coal')
+			.add('Clue scroll (easy)');
+		const res = parseBank({
+			inputBank: bank,
+			flags: { equippables: '' }
 		});
-		const items = parsed.items();
-		expect(items.every(i => i[0].equipment?.slot === EquipmentSlot.Ammo)).toBeTruthy();
-		expect(items.find(i => i[0].name === 'Bronze arrow')?.[1] === 1000);
+		expect(res.length).toEqual(1);
+
+		const res2 = parseBank({
+			inputBank: bank,
+			flags: { tradeables: '' }
+		});
+		expect(res2.length).toEqual(3);
+
+		const res3 = parseBank({
+			inputBank: bank,
+			flags: { untradeables: '' }
+		});
+		expect(res3.length).toEqual(1);
 	});
 
-	test('parseRichStringBank', async () => {
-		const parsed = parseRichStringBank({
-			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
-			userBank: new Bank().add('Bronze arrow', 1000),
-			type: 'untradeables',
-			owned: false
+	test('parseBank - filters', async () => {
+		const bank = new Bank()
+			.add('Steel arrow')
+			.add('Bones')
+			.add('Coal')
+			.add('Clue scroll (easy)');
+		const res = parseBank({
+			inputBank: bank,
+			flags: { tt: '' }
 		});
-		const items = parsed.items();
-		expect(items.length).toEqual(1);
-		expect(items[0][0].name).toEqual('Tangleroot');
+		expect(res.length).toEqual(1);
+		expect(res.amount('Clue scroll (easy)')).toEqual(1);
 	});
 
-	test('parseRichStringBank', async () => {
-		const parsed = parseRichStringBank({
-			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
-			userBank: new Bank().add('Bronze arrow', 1000),
-			type: 'tradeables',
-			owned: false
+	test('parseBank - search', async () => {
+		const bank = new Bank()
+			.add('Steel arrow')
+			.add('Bones')
+			.add('Coal')
+			.add('Clue scroll (easy)')
+			.add('Rune arrow')
+			.add('Mind rune', 50)
+			.add('Rune platebody');
+		const res = parseBank({
+			inputBank: bank,
+			flags: { search: 'rune' }
 		});
-		const items = parsed.items();
-		expect(items.length).toEqual(5);
-		expect(items.every(i => i[0].tradeable)).toBeTruthy();
-	});
-
-	test('parseRichStringBank', async () => {
-		const parsed = parseRichStringBank({
-			input: 'Bronze arrow, Iron arrow, Steel arrow, Rune arrow, Trout, Tangleroot',
-			userBank: new Bank().add('Bronze arrow', 1000),
-			type: 'tradeables',
-			owned: true
-		});
-		const items = parsed.items();
-		expect(items.length).toEqual(1);
+		expect(res.length).toEqual(3);
+		expect(res.amount('Mind rune')).toEqual(50);
+		expect(res.amount('Rune platebody')).toEqual(1);
+		expect(res.amount('Rune arrow')).toEqual(1);
 	});
 });
