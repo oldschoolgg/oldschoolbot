@@ -124,7 +124,7 @@ export function parseRichStringBank({
 		if (type === 'untradeables' && item.tradeable) continue;
 		if (type === 'equippables' && !item.equipment?.slot) continue;
 		if (owned && userBank.amount(item.id) < qty) continue;
-		bank.add(item.id, qty);
+		bank.addItem(item.id, qty);
 	}
 	if (owned && !bankHasAllItemsFromBank(userBank.bank, bank.bank)) {
 		throw new Error("User bank doesn't have all items in the target bank");
