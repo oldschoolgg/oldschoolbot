@@ -1,6 +1,8 @@
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+import KillableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
+
 export const enum Time {
 	Millisecond = 1,
 	Second = 1000,
@@ -361,11 +363,8 @@ export const NIGHTMARE_ID = 9415;
  * Map<user_id, PromiseQueue>
  */
 export const userQueues: Map<string, PQueue> = new Map();
-
-/**
- * Map<ItemID, Price>
- */
-export const itemPrices: Map<number, number> = new Map();
-export function getItemPrice(id: number) {
-	return itemPrices.get(id) ?? 0;
-}
+export const effectiveMonsters = [
+	...KillableMonsters,
+	NightmareMonster,
+	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
+];
