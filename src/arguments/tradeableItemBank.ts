@@ -67,7 +67,7 @@ export default class TradeableItemBankArgument extends Argument {
 			if (bank.length === 70) break;
 			const qty = qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty);
 
-			if (userBank.amount(item.id) >= qty) {
+			if (userBank.amount(item.id) >= qty && item.id !== 995) {
 				bank.add(item.id, qty);
 				totalPrice += (await this.client.fetchItemPrice(item.id)) * qty;
 			} else {

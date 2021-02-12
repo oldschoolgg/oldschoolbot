@@ -54,6 +54,10 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (bankToSell.has('Coins')) {
+			return msg.send(`You cant sell coins.`);
+		}
+
 		await msg.author.removeItemsFromBank(bankToSell.bank);
 		await msg.author.settings.update(
 			UserSettings.GP,
