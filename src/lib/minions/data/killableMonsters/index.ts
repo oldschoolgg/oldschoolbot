@@ -562,5 +562,10 @@ export default killableMonsters;
 export const effectiveMonsters = [
 	...killableMonsters,
 	NightmareMonster,
-	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
+	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
+	{
+		id: 46274,
+		name: 'Nex',
+		aliases: ['nex']
+	}
 ];
