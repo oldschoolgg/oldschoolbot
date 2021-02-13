@@ -4,7 +4,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { cleanMentions } from '../util';
 import getOSItem from './getOSItem';
 
 function parseQuantityAndItem(str = ''): [Item, number] | null {
@@ -22,7 +21,7 @@ function parseQuantityAndItem(str = ''): [Item, number] | null {
 	try {
 		osItem = getOSItem(parsedName);
 	} catch (_) {
-		throw new Error(`\`${cleanMentions(null, parsedName)}\` is not a valid item name`);
+		return null;
 	}
 	let quantity = parsedQty ?? 0;
 	if (quantity < 0) quantity = 0;
