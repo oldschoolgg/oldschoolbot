@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters } from 'oldschooljs';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { PerkTier } from '../../lib/constants';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -23,7 +23,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [monName, itemName]: [string, string]) {
-		const mon = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monName)));
+		const mon = effectiveMonsters.find(mon =>
+			mon.aliases.some(alias => stringMatches(alias, monName))
+		);
 		const minigame = Minigames.find(min => stringMatches(min.name, monName));
 		if (!mon && !minigame) {
 			return msg.send(`That's not a valid monster or minigame.`);

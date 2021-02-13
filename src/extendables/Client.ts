@@ -15,6 +15,18 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [Client] });
 	}
 
+	syncItemPrice(this: KlasaClient, itemID: number | string): number {
+		if (typeof itemID === 'string') itemID = parseInt(itemID);
+
+		if (itemID === 995) {
+			return 1;
+		}
+
+		const currentItems = this.settings!.get(ClientSettings.Prices);
+
+		return currentItems[itemID]?.price ?? 0;
+	}
+
 	async fetchItemPrice(this: KlasaClient, itemID: number | string) {
 		if (!this.production) {
 			return 73;

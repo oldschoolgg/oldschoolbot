@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { Time } from '../../../constants';
+import { Time, ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
@@ -409,3 +409,9 @@ export const NightmareMonster: KillableMonster = {
 };
 
 export default killableMonsters;
+
+export const effectiveMonsters = [
+	...killableMonsters,
+	NightmareMonster,
+	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
+];

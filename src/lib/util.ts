@@ -1,5 +1,5 @@
 import { Client, Guild } from 'discord.js';
-import { randInt } from 'e';
+import { randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -69,14 +69,6 @@ export function formatItemStackQuantity(quantity: number) {
 
 export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
-}
-
-export function chunkObject(obj: { [key: string]: any }, limit: number) {
-	const chunkedObjects = [];
-	for (const chunk of util.chunk(Object.entries(obj), limit)) {
-		chunkedObjects.push(Object.fromEntries(chunk));
-	}
-	return chunkedObjects;
 }
 
 export function toTitleCase(str: string) {
@@ -309,24 +301,17 @@ export function anglerBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
-export function shuffle<T>(array: readonly T[]): T[] {
-	let copy = [...array];
-	for (let i = copy.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[copy[i], copy[j]] = [copy[j], copy[i]];
-	}
-	return copy;
-}
-
 export function generateContinuationChar(user: KlasaUser) {
 	const baseChar =
 		user.perkTier > PerkTier.One
 			? 'y'
 			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffle(continuationChars).slice(0, randInt(1, 2)).join('')
+			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
 			: randomItemFromArray(continuationChars);
 
-	return `${shuffle(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffle(CENA_CHARS)
+	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(
+		CENA_CHARS
+	)
 		.slice(0, randInt(1, 2))
 		.join('')}`;
 }

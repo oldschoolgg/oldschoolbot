@@ -293,7 +293,7 @@ export default class BankImageTask extends Task {
 		}
 
 		// Paging
-		if (typeof page === 'number') {
+		if (typeof page === 'number' && !flags.full) {
 			const chunked = util.chunk(items, 56);
 			const pageLoot = chunked[page];
 			if (!pageLoot) throw 'You have no items on this page.';

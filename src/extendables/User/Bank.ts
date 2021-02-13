@@ -11,13 +11,19 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks, addItemToBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 
+export interface GetUserBankOptions {
+	withGP?: boolean;
+}
+
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	public bank(this: User) {
-		return new Bank(this.settings.get(UserSettings.Bank));
+	public bank(this: User, { withGP = false }: GetUserBankOptions = {}) {
+		const bank = new Bank(this.settings.get(UserSettings.Bank));
+		if (withGP) bank.add('Coins', this.settings.get(UserSettings.GP));
+		return bank;
 	}
 
 	public numOfItemsOwned(this: User, itemID: number) {

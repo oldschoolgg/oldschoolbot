@@ -8,7 +8,6 @@ import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseT
 import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
-	.add('totalCommandsUsed', 'integer', { default: 0 })
 	.add('GP', 'integer', { default: 0 })
 	.add('QP', 'integer', { default: 0 })
 	.add('RSN', 'string', { default: null })
