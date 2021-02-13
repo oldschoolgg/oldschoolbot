@@ -37,6 +37,10 @@ export default class extends BotCommand {
 			inputStr: typeof pageNumberOrItemName === 'string' ? pageNumberOrItemName : undefined
 		});
 
+		if (bank.length === 0) {
+			return msg.send(`No items found.`);
+		}
+
 		if (msg.flagArgs.text) {
 			const textBank = [];
 			for (const [item, qty] of bank.items()) {

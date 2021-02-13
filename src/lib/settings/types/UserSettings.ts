@@ -33,7 +33,6 @@ export namespace UserSettings {
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
-	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
 	export const SacrificedValue = T<number>('sacrificedValue');
 	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
 	export const HonourLevel = T<number>('honour_level');
