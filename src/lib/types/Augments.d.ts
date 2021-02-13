@@ -156,6 +156,11 @@ declare module 'discord.js' {
 		 */
 		getKC(id: number): number;
 		/**
+		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
+		 * If the search doesn't return anything then returns [null, 0].
+		 */
+		getKCByName(kcName: string): [string, number] | [null, 0];
+		/**
 		 * Returns minigame score
 		 */
 		getMinigameScore(id: MinigameKey): Promise<number>;
