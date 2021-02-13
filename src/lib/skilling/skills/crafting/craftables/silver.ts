@@ -114,7 +114,7 @@ const Silver: Craftable[] = [
 		xp: 84,
 		inputItems: resolveNameBank({
 			'Red topaz': 1,
-			'Silver bar': 1,
+			'Silver bar': 1
 		}),
 		tickRate: 3
 	},
