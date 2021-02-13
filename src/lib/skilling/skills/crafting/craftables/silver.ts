@@ -28,12 +28,20 @@ const Silver: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Opal amulet',
-		id: itemID('Opal amulet'),
+		name: 'Opal amulet (u)',
+		id: itemID('Opal amulet (u)'),
 		level: 27,
 		xp: 59,
-		inputItems: resolveNameBank({ Opal: 1, 'Silver bar': 1, 'Ball of wool': 1 }),
+		inputItems: resolveNameBank({ Opal: 1, 'Silver bar': 1 }),
 		tickRate: 3
+	},
+	{
+		name: 'Opal amulet',
+		id: itemID('Opal amulet'),
+		level: 1,
+		xp: 4,
+		inputItems: resolveNameBank({ 'Opal amulet (u)': 1, 'Ball of wool': 1 }),
+		tickRate: 2
 	},
 	{
 		name: 'Jade ring',
@@ -70,7 +78,7 @@ const Silver: Craftable[] = [
 	{
 		name: 'Jade amulet',
 		id: itemID('Jade amulet'),
-		level: 34,
+		level: 1,
 		xp: 4,
 		inputItems: resolveNameBank({ 'Jade amulet (u)': 1, 'Ball of wool': 1 }),
 		tickRate: 2
@@ -100,16 +108,26 @@ const Silver: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Topaz amulet',
-		id: itemID('Topaz amulet'),
+		name: 'Topaz amulet (u)',
+		id: itemID('Topaz amulet (u)'),
 		level: 45,
 		xp: 84,
 		inputItems: resolveNameBank({
 			'Red topaz': 1,
 			'Silver bar': 1,
-			'Ball of wool': 1
 		}),
 		tickRate: 3
+	},
+	{
+		name: 'Topaz amulet',
+		id: itemID('Topaz amulet'),
+		level: 1,
+		xp: 4,
+		inputItems: resolveNameBank({
+			'Topaz amulet (u)': 1,
+			'Ball of wool': 1
+		}),
+		tickRate: 2
 	},
 	{
 		name: 'Unstrung symbol',
