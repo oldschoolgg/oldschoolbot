@@ -62,7 +62,7 @@ export default class extends Task {
 
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1));
-			if (roll(64 + users.length * 10)) {
+			if (roll(64 + users.length * 2)) {
 				loot.add(randomItemFromArray(allNexItems), 1);
 			}
 			const winner = teamTable.roll()?.item;
