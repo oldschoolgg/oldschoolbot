@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { requiresMinion } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getPlantToGrow } from '../../lib/skilling/functions/calcFarmingContracts';
@@ -25,6 +25,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
@@ -33,28 +34,8 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
 		const currentContract = msg.author.settings.get(UserSettings.Minion.FarmingContract);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		if (contractLevel === 'current') {
-			if (!currentContract.hasContract) {
-				return msg.send(
-					await chatHeadImage({
-						content: `You currently don't have a contract!`,
-						head: 'jane'
-					})
-				);
-			}
-			let easierStr = '';
-			if (currentContract.difficultyLevel !== 'easy') {
-				easierStr = `\nYou can request an easier contract if you'd like.`;
-			}
-			return msg.send(
-				await chatHeadImage({
-					content: `Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`,
-					head: 'jane'
-				})
-			);
-		}
+		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		if (contractLevel === 'completed') {
 			if (currentContract.contractsCompleted > 0) {
@@ -71,10 +52,6 @@ export default class extends BotCommand {
 					head: 'jane'
 				})
 			);
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
 		}
 
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
@@ -95,13 +72,26 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (!currentContract.hasContract && contractLevel === 'current') {
+			return msg.send(
+				await chatHeadImage({
+					content: `You currently don't have a contract!`,
+					head: 'jane'
+				})
+			);
+		}
+
 		const contractToFarmingLevel = {
 			easy: 45,
 			medium: 65,
 			hard: 85
 		};
 
-		if (contractLevel !== 'easier' && farmingLevel < contractToFarmingLevel[contractLevel]) {
+		if (
+			contractLevel !== 'easier' &&
+			contractLevel !== 'current' &&
+			farmingLevel < contractToFarmingLevel[contractLevel]
+		) {
 			return msg.send(
 				await chatHeadImage({
 					content: `You need ${contractToFarmingLevel[contractLevel]} farming to receive a contract of ${contractLevel} difficulty!`,
@@ -140,14 +130,25 @@ export default class extends BotCommand {
 
 				return msg.send(
 					await chatHeadImage({
-						content: `I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`,
+						content: `I suppose you were too chicken for the challange. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`,
 						head: 'jane'
 					})
 				);
 			}
+
+			let easierStr = '';
+			if (currentContract.difficultyLevel !== 'easy') {
+				easierStr = `\nYou can request an easier contract if you'd like.`;
+			}
+			return msg.send(
+				await chatHeadImage({
+					content: `Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`,
+					head: 'jane'
+				})
+			);
 		}
 
-		if (contractLevel === 'easier') return;
+		if (contractLevel === 'current' || contractLevel === 'easier') return;
 
 		const plantInformation = getPlantToGrow(msg.author, contractLevel);
 		const plantToGrow = plantInformation[0] as string;
