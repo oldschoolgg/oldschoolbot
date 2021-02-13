@@ -19,7 +19,6 @@ export interface SettingsEntry {
 	pets?: number[];
 	lastDailyTimestamp?: number;
 	bitfield?: number[];
-	totalCommandsUsed?: number;
 	minion?: {
 		name?: string;
 		hasBought: boolean;
