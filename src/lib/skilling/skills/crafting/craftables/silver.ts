@@ -60,12 +60,20 @@ const Silver: Craftable[] = [
 		tickRate: 3
 	},
 	{
+		name: 'Jade amulet (u)',
+		id: itemID('Jade amulet (u)'),
+		level: 34,
+		xp: 74,
+		inputItems: resolveNameBank({ Jade: 1, 'Silver bar': 1 }),
+		tickRate: 3
+	},
+	{
 		name: 'Jade amulet',
 		id: itemID('Jade amulet'),
 		level: 34,
-		xp: 74,
-		inputItems: resolveNameBank({ Jade: 1, 'Silver bar': 1, 'Ball of wool': 1 }),
-		tickRate: 3
+		xp: 4,
+		inputItems: resolveNameBank({ 'Jade amulet (u)': 1, 'Ball of wool': 1 }),
+		tickRate: 2
 	},
 	{
 		name: 'Topaz ring',
