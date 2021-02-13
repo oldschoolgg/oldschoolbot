@@ -79,7 +79,7 @@ export const NexMonster: KillableMonster = {
 	difficultyRating: 10,
 	qpRequired: 0,
 	groupKillable: true,
-	respawnTime: Time.Minute * 4,
+	respawnTime: Time.Second * 10,
 	levelRequirements: {
 		prayer: 95
 	},
