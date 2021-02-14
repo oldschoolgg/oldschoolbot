@@ -1,11 +1,16 @@
 import { MessageEmbed } from 'discord.js';
+import { shuffleArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
 import emoji from '../../lib/data/skill-emoji';
+import { badges } from '../constants';
 import ClueTiers from '../minions/data/clueTiers';
+import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { UserSettings } from '../settings/types/UserSettings';
+import { courses } from '../skilling/skills/agility';
+import creatures from '../skilling/skills/hunter/creatures';
 import { Skills } from '../types';
 import { addArrayOfNumbers, toTitleCase } from '../util';
 
@@ -31,11 +36,11 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		.filter(i => i.score > 0)
 		.sort((a, b) => b.score - a.score);
 
-	const badges = user.settings.get(UserSettings.Badges);
-	const rawBadges = badges.map(num => badges[num]).join(' ');
+	const rawBadges = user.settings.get(UserSettings.Badges);
+	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
 	const embed = new MessageEmbed()
-		.setTitle(`${rawBadges}${user.minionName}`)
+		.setTitle(`${badgesStr}${user.minionName}`)
 		.addField(
 			'\u200b',
 			[
@@ -117,6 +122,57 @@ export async function minionStatsEmbed(user: KlasaUser) {
 			true
 		);
 	}
+
+	const otherStats: [string, number | string][] = [
+		['Fight Caves Attempts', user.settings.get(UserSettings.Stats.FightCavesAttempts)],
+		['Fire Capes Sacrificed', user.settings.get(UserSettings.Stats.FireCapesSacrificed)],
+		['Tithe Farm Score', user.settings.get(UserSettings.Stats.TitheFarmsCompleted)],
+		['Dice Wins', user.settings.get(UserSettings.Stats.DiceWins)],
+		['Dice Losses', user.settings.get(UserSettings.Stats.DiceLosses)],
+		['Duel Wins', user.settings.get(UserSettings.Stats.DuelWins)],
+		['Duel Losses', user.settings.get(UserSettings.Stats.DuelLosses)],
+		['High Gambles', user.settings.get(UserSettings.HighGambles)],
+		['Carpenter Points', user.settings.get(UserSettings.CarpenterPoints)],
+		['Honour Level', user.settings.get(UserSettings.HonourLevel)],
+		['Sacrificed', toKMB(user.settings.get(UserSettings.SacrificedValue))]
+	];
+
+	const lapCounts = Object.entries(user.settings.get(UserSettings.LapsScores)).sort(
+		(a, b) => a[1] - b[1]
+	);
+	if (lapCounts.length > 0) {
+		const [id, score] = lapCounts[0];
+		const res = courses.find(c => c.id === parseInt(id))!;
+		otherStats.push([`${res.name} Laps`, score]);
+	}
+
+	const monsterScores = Object.entries(user.settings.get(UserSettings.MonsterScores)).sort(
+		(a, b) => a[1] - b[1]
+	);
+	if (monsterScores.length > 0) {
+		const [id, score] = monsterScores[0];
+		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
+		otherStats.push([`${res.name} KC`, score]);
+	}
+
+	const hunterScores = Object.entries(user.settings.get(UserSettings.CreatureScores)).sort(
+		(a, b) => a[1] - b[1]
+	);
+	if (hunterScores.length > 0) {
+		const [id, score] = lapCounts[0];
+		const res = creatures.find(c => c.id === parseInt(id))!;
+		otherStats.push([`${res.name}'s Caught`, score]);
+	}
+
+	embed.addField(
+		'Other',
+		shuffleArr(otherStats)
+			.slice(0, 4)
+			.map(([name, text]) => {
+				return `**${name}:** ${text}`;
+			}),
+		true
+	);
 
 	return embed;
 }
