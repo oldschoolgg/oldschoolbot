@@ -134,6 +134,13 @@ export default class extends BotCommand {
 			effectiveTime = increaseNumByPercent(effectiveTime, 20);
 		}
 
+		if (
+			isSolo &&
+			(users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) > 500
+		) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 20);
+		}
+
 		for (const user of users) {
 			const [data] = getNexGearStats(
 				user,
@@ -215,19 +222,26 @@ export default class extends BotCommand {
 				msgs.push(`-${kcBonus}% penalty for KC`);
 			}
 
+			if (data.kc > 500) {
+				effectiveTime = reduceNumByPercent(effectiveTime, 10);
+			} else if (data.kc > 300) {
+				effectiveTime = reduceNumByPercent(effectiveTime, 7);
+			} else if (data.kc > 200) {
+				effectiveTime = reduceNumByPercent(effectiveTime, 5);
+			}
+
 			debugStr += `${msgs.join(', ')}. `;
 		}
 
-		let [quantity, duration, perKillTime] = calcDurQty(
+		let [quantity, duration, perKillTime] = await calcDurQty(
 			users,
 			{ ...NexMonster, timeToFinish: effectiveTime },
 			undefined,
-			Time.Minute * 5,
+			Time.Minute * 2,
 			Time.Minute * 30
 		);
 		this.checkReqs(users, NexMonster, quantity);
 
-		duration = quantity * perKillTime - NexMonster.respawnTime!;
 		let foodString = 'Removed brews/restores from users: ';
 		let foodRemoved = [];
 		for (const user of users) {
