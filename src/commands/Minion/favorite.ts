@@ -9,7 +9,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[item:item]',
-			aliases: ['fav'],
+			aliases: ['fav', 'favourite'],
 			description: 'Favorites an item so it displays at the top of your bank.',
 			examples: ['+favorite twisted bow'],
 			categoryFlags: ['minion']
