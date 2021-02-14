@@ -38,18 +38,15 @@ export class OldSchoolBotClient extends Client {
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
 	public orm!: Connection;
-	public boss: PgBoss;
+	public boss!: PgBoss;
 
 	public minionActivityCache = new Map<string, ActivityTaskOptions>();
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
-		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterHours: 2 });
-		this.boss.on('error', error => console.error(error));
 	}
 
 	public async login(token?: string) {
-		await this.boss.start();
 		this.orm = await createConnection({
 			type: 'postgres',
 			host: 'localhost',
@@ -80,6 +77,11 @@ export class OldSchoolBotClient extends Client {
 				this.minionActivityCache.set(task.userID, task);
 			}
 		}
+
+		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterHours: 2 });
+		this.boss.on('error', error => console.error(error));
+		await this.boss.start();
+
 		return super.login(token);
 	}
 
