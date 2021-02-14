@@ -152,7 +152,11 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
-		otherStats.push([`${res.name} KC`, score]);
+		if (!res) {
+			console.error(`No monster found with id ${id} for stats embed`);
+		} else {
+			otherStats.push([`${res.name} KC`, score]);
+		}
 	}
 
 	const hunterScores = Object.entries(user.settings.get(UserSettings.CreatureScores)).sort(
@@ -161,7 +165,11 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;
-		otherStats.push([`${res.name}'s Caught`, score]);
+		if (!res) {
+			console.error(`No creature found with id ${id} for stats embed`);
+		} else {
+			otherStats.push([`${res.name}'s Caught`, score]);
+		}
 	}
 
 	embed.addField(
