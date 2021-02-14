@@ -153,14 +153,14 @@ export default class extends BotCommand {
 			const rangeGear = user.settings.get(UserSettings.Gear.Range);
 			const equippedWeapon = user.equippedWeapon(GearSetupTypes.Range);
 			if (hasArrayOfItemsEquipped(pernixOutfit, rangeGear)) {
-				const percent = isSolo ? 10 : 7;
+				const percent = isSolo ? 20 : 8;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for full pernix`);
 			} else {
 				let i = 0;
 				for (const inqItem of pernixOutfit) {
 					if (hasItemEquipped(inqItem, rangeGear)) {
-						const percent = isSolo ? 1.4 : 0.7;
+						const percent = isSolo ? 2.4 : 1;
 						i += percent;
 					}
 				}
@@ -177,11 +177,11 @@ export default class extends BotCommand {
 			}
 
 			if (equippedWeapon?.id === itemID('Twisted bow')) {
-				const percent = isSolo ? 10 : 8;
+				const percent = isSolo ? 15 : 9;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Twisted bow`);
 			} else if (equippedWeapon?.id === itemID('Zaryte bow')) {
-				const percent = isSolo ? 15 : 12;
+				const percent = isSolo ? 20 : 14;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Zaryte bow`);
 			}
@@ -223,14 +223,20 @@ export default class extends BotCommand {
 			}
 
 			if (data.kc > 500) {
-				effectiveTime = reduceNumByPercent(effectiveTime, 12);
-				msgs.push(`12% for ${user.username} over 500 kc`);
+				effectiveTime = reduceNumByPercent(effectiveTime, 15);
+				msgs.push(`15% for ${user.username} over 500 kc`);
 			} else if (data.kc > 300) {
-				effectiveTime = reduceNumByPercent(effectiveTime, 10);
-				msgs.push(`10% for ${user.username} over 300 kc`);
+				effectiveTime = reduceNumByPercent(effectiveTime, 13);
+				msgs.push(`13% for ${user.username} over 300 kc`);
 			} else if (data.kc > 200) {
+				effectiveTime = reduceNumByPercent(effectiveTime, 10);
+				msgs.push(`10% for ${user.username} over 200 kc`);
+			} else if (data.kc > 100) {
 				effectiveTime = reduceNumByPercent(effectiveTime, 7);
 				msgs.push(`7% for ${user.username} over 200 kc`);
+			} else if (data.kc > 50) {
+				effectiveTime = reduceNumByPercent(effectiveTime, 5);
+				msgs.push(`5% for ${user.username} over 200 kc`);
 			}
 
 			debugStr += `${msgs.join(', ')}. `;
