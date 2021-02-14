@@ -51,6 +51,11 @@ export default class extends BotCommand {
 				await this.client.tasks.get('patreon')?.run();
 				return msg.channel.send(`Finished syncing patrons.`);
 			}
+			case 'roles': {
+				msg.channel.send('Running roles task...');
+				const result = await this.client.tasks.get('roles')?.run();
+				return msg.send(result);
+			}
 			case 'setgh': {
 				if (!input) return;
 				if (!str) return;
