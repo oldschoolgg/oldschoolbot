@@ -159,7 +159,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		(a, b) => a[1] - b[1]
 	);
 	if (hunterScores.length > 0) {
-		const [id, score] = lapCounts[0];
+		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;
 		otherStats.push([`${res.name}'s Caught`, score]);
 	}
