@@ -47,6 +47,7 @@ export default class extends BotCommand {
 		) as number[];
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;
+		const { name } = type || monster!;
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
 		let i = 0;
@@ -61,13 +62,17 @@ export default class extends BotCommand {
 				.get('bankImage')!
 				.generateCollectionLogImage(
 					log,
-					`${msg.author.username}'s ${(type || monster!).name} Collection Log (${num}/${
-						items.length
-					})`,
+					`${msg.author.username}'s ${name} Collection Log (${num}/${items.length})`,
 					monster ? { ...monster, items: chunkedMonsterItems } : type
 				)
 		);
 
-		return msg.send(attachment);
+		const [kcName, kcAmount] = await msg.author.getKCByName(name);
+
+		if (!kcName) {
+			return msg.send(attachment);
+		}
+
+		return msg.send(`Your ${kcName} KC is: ${kcAmount}.`, attachment);
 	}
 }

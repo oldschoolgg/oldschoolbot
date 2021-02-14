@@ -1,9 +1,10 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { Activity, Emoji, Events, MAX_QP, PerkTier, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -15,6 +16,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
+import Creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
@@ -72,6 +74,7 @@ import {
 	PlunderActivityTaskOptions,
 	SepulchreActivityTaskOptions
 } from './../../lib/types/minions';
+import { Minigames } from './Minigame';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -465,6 +468,33 @@ export default class extends Extendable {
 
 	getKC(this: KlasaUser, id: number) {
 		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
+	}
+
+	public async getKCByName(this: KlasaUser, kcName: string) {
+		const mon = [
+			...killableMonsters,
+			NightmareMonster,
+			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
+		].find(
+			mon =>
+				stringMatches(mon.name, kcName) ||
+				mon.aliases.some(alias => stringMatches(alias, kcName))
+		);
+		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+
+		if (!mon && !minigame && !creature) {
+			return [null, 0];
+		}
+
+		const kc = mon
+			? this.getKC(((mon as unknown) as Monster).id)
+			: minigame
+			? await this.getMinigameScore(minigame!.key)
+			: this.getCreatureScore(creature!);
+
+		const name = minigame ? minigame.name : mon ? mon!.name : creature?.name;
+		return [name, kc];
 	}
 
 	getCreatureScore(this: KlasaUser, creature: Creature) {
