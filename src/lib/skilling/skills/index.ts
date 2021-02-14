@@ -37,4 +37,6 @@ export const Skills: Record<string, Skill> = {
 	Magic
 };
 
+export const skillsValues = Object.values(Skills);
+
 export default Skills;
