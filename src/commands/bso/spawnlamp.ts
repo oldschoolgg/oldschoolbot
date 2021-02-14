@@ -14,7 +14,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			perkTier: PerkTier.Four,
-			cooldown: 60 * 45,
 			oneAtTime: true
 		});
 	}
