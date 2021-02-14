@@ -205,7 +205,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 23,
-		name: "Turbos's Background (23)",
+		name: 'ReZeros Background (23)',
 		image: null,
 		available: false
 	},
