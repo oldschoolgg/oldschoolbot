@@ -1,10 +1,12 @@
 import { MessageEmbed } from 'discord.js';
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { convertXPtoLVL } from 'oldschooljs/dist/util';
 
 import { Color, PerkTier } from '../../lib/constants';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { formatDuration } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { LampTable } from '../../lib/xpLamps';
 
@@ -18,9 +20,22 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (msg.author.id !== '157797566833098752') {
-			return msg.send(`Sucessfully deleted all items from your bank.`);
+		if (!msg.guild || msg.guild.id !== '342983479501389826') {
+			return msg.send(`You can only do this in the Oldschool.gg server.`);
 		}
+		const currentDate = Date.now();
+		const lastDate = msg.author.settings.get(UserSettings.LastSpawnLamp);
+		const difference = currentDate - lastDate;
+
+		const cooldown = [PerkTier.Six, PerkTier.Five].includes(msg.author.perkTier)
+			? Time.Hour * 12
+			: Time.Hour * 24;
+
+		if (difference < cooldown && msg.author.id !== '157797566833098752') {
+			const duration = formatDuration(Date.now() - (lastDate + cooldown));
+			return msg.send(`You can spawn another lamp in ${duration}.`);
+		}
+		await msg.author.settings.update(UserSettings.LastSpawnLamp, currentDate);
 
 		const xp = randInt(1, 13_400_000);
 		const level = convertXPtoLVL(xp);

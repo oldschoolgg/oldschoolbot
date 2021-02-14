@@ -28,6 +28,7 @@ export namespace UserSettings {
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
+	export const LastSpawnLamp = T<number>('lastSpawnLamp');
 	export const LastGivenBox = T<number>('lastGivenBoxx');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
