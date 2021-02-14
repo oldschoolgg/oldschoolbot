@@ -21,7 +21,7 @@ export default async function reducedTimeForGroup(
 				messages.push(`${users[i].username} has no pool`);
 				continue;
 			}
-			const [boosts] = await calcPOHBoosts(poh, monster.pohBoosts!);
+			const [boosts] = calcPOHBoosts(poh, monster.pohBoosts!);
 			reductionMultiplier += boosts / 100;
 		}
 	}
