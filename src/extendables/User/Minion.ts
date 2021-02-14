@@ -454,7 +454,7 @@ export default class extends Extendable {
 			case Activity.Nex: {
 				const data = currentTask as NexActivityTaskOptions;
 
-				return `${this.minionName} is currently killing Nex, with a party of ${data.users.length}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing ${data.quantity} Nex, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 
 			case Activity.Enchanting: {

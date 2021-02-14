@@ -309,7 +309,7 @@ export default class extends BotCommand {
 
 		let str =
 			type === 'solo'
-				? `Your minion is now attempting to kill Nex. ${foodString}. The trip will take ${formatDuration(
+				? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString}. The trip will take ${formatDuration(
 						duration
 				  )}.`
 				: `${partyOptions.leader.username}'s party (${users
