@@ -1,7 +1,7 @@
 import { Emoji } from '../../constants';
 import { Course, SkillsEnum } from '../types';
 
-const courses: Course[] = [
+export const courses: Course[] = [
 	{
 		id: 1,
 		name: 'Gnome Stronghold Agility Course',

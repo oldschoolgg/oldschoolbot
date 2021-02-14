@@ -1,4 +1,4 @@
-import { objectKeys } from 'e';
+import { objectKeys, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji } from '../../lib/constants';
@@ -123,7 +123,12 @@ export default class extends BotCommand {
 		if (users.length < 3 && monster.id === 696969) {
 			throw `You need at least 3 people to fight the Dwarf king.`;
 		}
-		const [quantity, duration, perKillTime] = calcDurQty(users, monster, undefined);
+
+		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(
+			users,
+			monster,
+			undefined
+		);
 
 		this.checkReqs(users, monster, quantity);
 
@@ -153,6 +158,13 @@ export default class extends BotCommand {
 		});
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
+		let killsPerHr = `${Math.round(
+			(quantity / (duration / Time.Minute)) * 60
+		).toLocaleString()} Kills/hr`;
+
+		if (boostMsgs.length > 0) {
+			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
+		}
 		return msg.channel.send(
 			`${partyOptions.leader.username}'s party (${users
 				.map(u => u.username)
@@ -160,7 +172,7 @@ export default class extends BotCommand {
 				monster.name
 			}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 				monster.timeToFinish
-			)}- the total trip will take ${formatDuration(duration)}`
+			)}- the total trip will take ${formatDuration(duration)}. ${killsPerHr}`
 		);
 	}
 }

@@ -13,7 +13,7 @@ const QuerySchema = Type.Object(
 	{ additionalProperties: false }
 );
 
-const minigamesGetRoute = (server: FastifyServer) =>
+export const minigamesGetRoute = (server: FastifyServer) =>
 	server.route<{ Querystring: Static<typeof QuerySchema> }>({
 		method: 'GET',
 		url: '/hiscores/minigame',
@@ -23,7 +23,7 @@ const minigamesGetRoute = (server: FastifyServer) =>
 		async handler(request, reply) {
 			const minigame = Minigames.find(m => m.key === request.query.minigame)!;
 			if (!minigame) {
-				throw reply.badRequest();
+				return reply.badRequest();
 			}
 
 			const query = MinigameTable.createQueryBuilder('minigames')
@@ -49,5 +49,3 @@ const minigamesGetRoute = (server: FastifyServer) =>
 			...rateLimit(10, '30 seconds')
 		}
 	});
-
-export default minigamesGetRoute;
