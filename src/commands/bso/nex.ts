@@ -153,14 +153,14 @@ export default class extends BotCommand {
 			const rangeGear = user.settings.get(UserSettings.Gear.Range);
 			const equippedWeapon = user.equippedWeapon(GearSetupTypes.Range);
 			if (hasArrayOfItemsEquipped(pernixOutfit, rangeGear)) {
-				const percent = isSolo ? 10 : 3;
+				const percent = isSolo ? 10 : 5;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for full pernix`);
 			} else {
 				let i = 0;
 				for (const inqItem of pernixOutfit) {
 					if (hasItemEquipped(inqItem, rangeGear)) {
-						const percent = isSolo ? 1.4 : 0.3;
+						const percent = isSolo ? 1.4 : 0.4;
 						i += percent;
 					}
 				}
@@ -177,11 +177,11 @@ export default class extends BotCommand {
 			}
 
 			if (equippedWeapon?.id === itemID('Twisted bow')) {
-				const percent = isSolo ? 10 : 5;
+				const percent = isSolo ? 10 : 8;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Twisted bow`);
 			} else if (equippedWeapon?.id === itemID('Zaryte bow')) {
-				const percent = isSolo ? 15 : 8;
+				const percent = isSolo ? 15 : 12;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Zaryte bow`);
 			}
@@ -224,10 +224,13 @@ export default class extends BotCommand {
 
 			if (data.kc > 500) {
 				effectiveTime = reduceNumByPercent(effectiveTime, 10);
+				msgs.push(`10% for ${user.username} over 500 kc`);
 			} else if (data.kc > 300) {
 				effectiveTime = reduceNumByPercent(effectiveTime, 7);
+				msgs.push(`7% for ${user.username} over 300 kc`);
 			} else if (data.kc > 200) {
-				effectiveTime = reduceNumByPercent(effectiveTime, 5);
+				effectiveTime = reduceNumByPercent(effectiveTime, 4);
+				msgs.push(`4% for ${user.username} over 200 kc`);
 			}
 
 			debugStr += `${msgs.join(', ')}. `;
