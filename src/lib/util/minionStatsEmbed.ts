@@ -140,7 +140,9 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (lapCounts.length > 0) {
 		const [id, score] = lapCounts[0];
 		const res = courses.find(c => c.id === parseInt(id))!;
-		otherStats.push([`${res.name} Laps`, score]);
+		if (res) {
+			otherStats.push([`${res.name} Laps`, score]);
+		}
 	}
 
 	const monsterScores = Object.entries(user.settings.get(UserSettings.MonsterScores)).sort(
@@ -148,8 +150,10 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	);
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
-		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
-		otherStats.push([`${res.name} KC`, score]);
+		const res = effectiveMonsters.find(c => c.id === parseInt(id));
+		if (res) {
+			otherStats.push([`${res.name} KC`, score]);
+		}
 	}
 
 	const hunterScores = Object.entries(user.settings.get(UserSettings.CreatureScores)).sort(
@@ -158,7 +162,9 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;
-		otherStats.push([`${res.name}'s Caught`, score]);
+		if (res) {
+			otherStats.push([`${res.name}'s Caught`, score]);
+		}
 	}
 
 	embed.addField(
