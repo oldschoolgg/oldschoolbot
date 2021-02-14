@@ -188,7 +188,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		let [quantity, duration, perKillTime] = calcDurQty(
+		let [quantity, duration, perKillTime] = await calcDurQty(
 			users,
 			{ ...NightmareMonster, timeToFinish: effectiveTime },
 			undefined,
