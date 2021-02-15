@@ -137,7 +137,7 @@ export interface Fletchable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	outputMultiple?: number;
 }
