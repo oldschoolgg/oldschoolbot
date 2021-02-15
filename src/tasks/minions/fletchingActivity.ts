@@ -14,13 +14,7 @@ export default class extends Task {
 
 		const fletchableItem = Fletching.Fletchables.find(
 			fletchable => fletchable.name === fletchableName
-		);
-
-		if (!fletchableItem) return;
-
-		if (fletchableItem.outputMultiple) {
-			quantity *= fletchableItem.outputMultiple;
-		}
+		)!;
 
 		const xpRes = await user.addXP(
 			SkillsEnum.Fletching,
@@ -28,8 +22,11 @@ export default class extends Task {
 			duration
 		);
 
-		const loot = new Bank();
-		loot.addItem(fletchableItem.id, quantity);
+		if (fletchableItem.outputMultiple) {
+			quantity *= fletchableItem.outputMultiple;
+		}
+
+		const loot = new Bank({ [fletchableItem.id]: quantity });
 		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(
