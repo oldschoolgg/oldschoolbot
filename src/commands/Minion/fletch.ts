@@ -30,7 +30,7 @@ export default class extends BotCommand {
 		if (msg.flagArgs.items) {
 			const normalTable = table([
 				['Item Name', 'Lvl', 'XP', 'Items Required'],
-				...Fletching.Fletchables.map(async i => [
+				...Fletching.Fletchables.map(i => [
 					i.name,
 					`${i.level}`,
 					`${i.xp}`,
@@ -96,7 +96,7 @@ export default class extends BotCommand {
 			return msg.send(
 				`You don't have enough items. For ${quantity}x ${
 					fletchable.name
-				}, you're missing' **${itemsNeeded.clone().remove(userBank)}**.`
+				}, you're missing **${itemsNeeded.clone().remove(userBank)}**.`
 			);
 		}
 
@@ -114,7 +114,9 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now Fletching ${quantity}${sets} ${
 				fletchable.name
-			}s, it'll take around ${formatDuration(duration)} to finish.`
+			}, it'll take around ${formatDuration(
+				duration
+			)} to finish. Removed ${itemsNeeded} from your bank.`
 		);
 	}
 }

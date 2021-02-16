@@ -22,11 +22,11 @@ export default class extends Task {
 			duration
 		);
 
-		if (fletchableItem.outputMultiple) {
-			quantity *= fletchableItem.outputMultiple;
-		}
+		let quantityToGive = fletchableItem.outputMultiple
+			? quantity * fletchableItem.outputMultiple
+			: quantity;
 
-		const loot = new Bank({ [fletchableItem.id]: quantity });
+		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
 		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(

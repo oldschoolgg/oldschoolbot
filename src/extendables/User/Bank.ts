@@ -161,7 +161,8 @@ export default class extends Extendable {
 		);
 	}
 
-	public async removeItemsFromBank(this: User, itemBank: O.Readonly<ItemBank>) {
+	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
+		const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
 		await this.settings.sync(true);
 
 		const items = {
