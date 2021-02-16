@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
 
@@ -8,7 +9,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Headless arrow'),
 		level: 1,
 		xp: 1,
-		inputItems: resolveNameBank({ 'Arrow shaft': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Arrow shaft': 1, Feather: 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -16,7 +17,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Bronze arrow'),
 		level: 1,
 		xp: 1.3,
-		inputItems: resolveNameBank({ 'Bronze arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Bronze arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -24,7 +25,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Iron arrow'),
 		level: 15,
 		xp: 2.5,
-		inputItems: resolveNameBank({ 'Iron arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Iron arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -32,7 +33,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Steel arrow'),
 		level: 30,
 		xp: 5,
-		inputItems: resolveNameBank({ 'Steel arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Steel arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -40,7 +41,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Mithril arrow'),
 		level: 45,
 		xp: 7.5,
-		inputItems: resolveNameBank({ 'Mithril arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Mithril arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -48,7 +49,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Broad arrows'),
 		level: 52,
 		xp: 10,
-		inputItems: resolveNameBank({ 'Broad arrowheads': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Broad arrowheads': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -56,7 +57,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Adamant arrow'),
 		level: 60,
 		xp: 10,
-		inputItems: resolveNameBank({ 'Adamant arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Adamant arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -64,7 +65,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Rune arrow'),
 		level: 75,
 		xp: 12.5,
-		inputItems: resolveNameBank({ 'Rune arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Rune arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -72,7 +73,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Amethyst arrow'),
 		level: 82,
 		xp: 13.5,
-		inputItems: resolveNameBank({ 'Amethyst arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Amethyst arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -80,7 +81,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Dragon arrow'),
 		level: 90,
 		xp: 15,
-		inputItems: resolveNameBank({ 'Dragon arrowtips': 1, 'Headless arrow': 1 }),
+		inputItems: new Bank({ 'Dragon arrowtips': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	}
 ];

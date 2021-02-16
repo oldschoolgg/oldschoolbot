@@ -98,9 +98,12 @@ declare module 'discord.js' {
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
-		addItemsToBank(items: ItemBank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		addItemsToBank(
+			items: ItemBank | Bank,
+			collectionLog?: boolean
+		): Promise<SettingsUpdateResult>;
 		removeItemsFromBank(
-			items: ItemBank,
+			items: ItemBank | Bank,
 			collectionLog?: boolean
 		): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
@@ -122,7 +125,7 @@ declare module 'discord.js' {
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
-		addXP(skillName: SkillsEnum, amount: number): Promise<SettingsUpdateResult>;
+		addXP(skillName: SkillsEnum, amount: number, duration?: number): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
