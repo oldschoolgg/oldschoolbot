@@ -1,7 +1,7 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { objectKeys, randInt, reduceNumByPercent } from 'e';
-import { CommandStore, KlasaMessage, util } from 'klasa';
+import { chunk, objectKeys, reduceNumByPercent, sleep } from 'e';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
 import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
@@ -23,6 +23,7 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomItemFromArray,
+	randomVariation,
 	removeDuplicatesFromArray
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -72,10 +73,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
+	@requiresMinion
 	async run(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
 		return msg.send(msg.author.minionStatus);
 	}
 
@@ -96,15 +95,9 @@ export default class MinionCommand extends BotCommand {
 		return msg.send(`Changed your minion icon to ${res}.`);
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async ironman(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		/**
 		 * If the user is an ironman already, lets ask them if they want to de-iron.
 		 */
@@ -173,6 +166,10 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.BankBackground,
 				UserSettings.SacrificedValue,
 				UserSettings.SacrificedBank,
+				UserSettings.HonourLevel,
+				UserSettings.HonourPoints,
+				UserSettings.HighGambles,
+				UserSettings.CarpenterPoints,
 				'gear',
 				'stats',
 				'skills',
@@ -195,15 +192,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		}
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async pat(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		return msg.send(randomPatMessage(msg.author.minionName));
 	}
 
@@ -213,11 +204,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(embed);
 	}
 
+	@requiresMinion
 	async kc(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
 		const entries = Object.entries(monsterScores);
 		if (entries.length === 0) throw `${msg.author.minionName} hasn't killed any monsters yet!`;
@@ -229,7 +217,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				`These are your minions Kill Counts for all monsters, to see your Clue Scores, use \`${msg.cmdPrefix}m clues\`.`
 			);
 
-		for (const monsterScoreChunk of util.chunk(entries, 10)) {
+		for (const monsterScoreChunk of chunk(entries, 10)) {
 			embed.addField(
 				'\u200b',
 				monsterScoreChunk
@@ -249,11 +237,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(embed);
 	}
 
+	@requiresMinion
 	async qp(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
 		return msg.send(
 			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(
 				UserSettings.QP
@@ -261,11 +246,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		);
 	}
 
+	@requiresMinion
 	async clues(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
 		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
 		if (Object.keys(clueScores).length === 0) throw `You haven't done any clues yet.`;
 
@@ -321,13 +303,13 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				`${Emoji.Search} Finding the right minion for you...`
 			);
 
-			await util.sleep(3000);
+			await sleep(3000);
 
 			await response.edit(
 				`${Emoji.FancyLoveheart} Letting your new minion say goodbye to the unadopted minions...`
 			);
 
-			await util.sleep(3000);
+			await sleep(3000);
 
 			await msg.author.settings.sync(true);
 			const balance = msg.author.settings.get(UserSettings.GP);
@@ -470,7 +452,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(
 			monster,
-			msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 1
+			msg.author.getKC(monster.id)
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
@@ -532,8 +514,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			);
 		}
 
-		const randomAddedDuration = randInt(1, 10);
-		duration += (randomAddedDuration * duration) / 100;
+		duration = randomVariation(duration, 10);
 
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
