@@ -6,7 +6,7 @@ import { getRandomMysteryBox } from '../../lib/data/openables';
 import Fletching from '../../lib/skilling/skills/fletching/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { multiplyBank, roll } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {

@@ -12,7 +12,7 @@ export const enum Time {
 }
 
 export const enum Channel {
-	Notifications = '469523207691436042',
+	Notifications = '811589869314899980',
 	ErrorLogs = '665678499578904596',
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',

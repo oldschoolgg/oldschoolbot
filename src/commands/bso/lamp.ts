@@ -42,7 +42,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have any ${lamp.name} lamps!`);
 		}
 
-		await msg.author.addXP(skillName as SkillsEnum, lamp.amount, false);
+		await msg.author.addXP(skillName as SkillsEnum, lamp.amount, undefined, false);
 		await msg.author.removeItemFromBank(lamp.itemID);
 
 		return msg.send(
