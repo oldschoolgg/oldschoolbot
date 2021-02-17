@@ -1,14 +1,14 @@
 import { Static, Type } from '@sinclair/typebox';
+import { getConnection } from 'typeorm';
 
 import { Minigames } from '../../../../extendables/User/Minigame';
-import { MinigameTable } from '../../../typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../../typeorm/NewUserTable.entity';
 import { FastifyServer } from '../../types';
 import { rateLimit } from '../../util';
 
 const QuerySchema = Type.Object(
 	{
-		minigame: Type.String({ minLength: 1, maxLength: 20 })
+		minigame: Type.String({ minLength: 1, maxLength: 20 }),
+		ironmen: Type.Boolean()
 	},
 	{ additionalProperties: false }
 );
@@ -26,23 +26,24 @@ export const minigamesGetRoute = (server: FastifyServer) =>
 				return reply.badRequest();
 			}
 
-			const query = MinigameTable.createQueryBuilder('minigames')
-				.leftJoin(NewUserTable, 'user', 'user.id = minigames.userID')
-				.select(['user.username', `minigames.${request.query.minigame}`])
-				.where(`${minigame.column} > 10`)
-				.orderBy(`${minigame.column}`, 'DESC')
-				.limit(100);
+			const minToShow = minigame.key === 'ChampionsChallenge' ? 1 : 10;
 
-			const res = await query.getRawMany();
-
-			for (const item of res) {
-				item[minigame.column] = item[`minigames_${minigame.column}`];
-				delete item[`minigames_${minigame.column}`];
-				item.username = item.user_username;
-				delete item.user_username;
+			let where = ` WHERE ${minigame.column} > ${minToShow}`;
+			if (request.query.ironmen) {
+				where += ` AND is_iron = true`;
 			}
 
-			reply.send({ res });
+			const res = await getConnection().query(
+				`SELECT "user"."badges", "user"."minion.ironman" as is_iron, "new_user"."username", ${minigame.column}
+				 FROM minigames
+				 INNER JOIN "new_users" "new_user" ON minigames.user_id = "new_user"."id"
+				 INNER JOIN "users" "user" ON minigames.user_id = "user"."id"
+				 ${where}
+				 ORDER BY ${minigame.column} DESC
+				 LIMIT 100;`
+			);
+
+			reply.send(res);
 		},
 		config: {
 			requiresAuth: false,

@@ -1,12 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { Minigames } from '../../extendables/User/Minigame';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
-import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,26 +15,12 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [name]: [string]): Promise<KlasaMessage> {
-		const mon = effectiveMonsters.find(
-			mon =>
-				stringMatches(mon.name, name) ||
-				mon.aliases.some(alias => stringMatches(alias, name))
-		);
-		const minigame = Minigames.find(game => stringMatches(game.name, name));
-		const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, name)));
+		const [kcName, kcAmount] = await msg.author.getKCByName(name);
 
-		if (!mon && !minigame && !creature) {
+		if (!kcName) {
 			return msg.send(`That's not a valid monster, minigame or hunting creature.`);
 		}
 
-		const kc = mon
-			? msg.author.getKC(((mon as unknown) as Monster).id)
-			: minigame
-			? await msg.author.getMinigameScore(minigame!.key)
-			: msg.author.getCreatureScore(creature!);
-
-		return msg.send(
-			`Your ${minigame ? minigame.name : mon ? mon!.name : creature?.name} KC is: ${kc}.`
-		);
+		return msg.send(`Your ${kcName} KC is: ${kcAmount}.`);
 	}
 }

@@ -1605,7 +1605,8 @@ export const skillingLog: CollectionLogData = {
 		'Large pouch',
 		'Giant pouch',
 		'Rift guardian'
-	])
+	]),
+	CrystalTools: resolveItems(['Crystal pickaxe', 'Crystal axe', 'Crystal harpoon'])
 };
 
 export const allCollectionLogItems = uniqueArr(

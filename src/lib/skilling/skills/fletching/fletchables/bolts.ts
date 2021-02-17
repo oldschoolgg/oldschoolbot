@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
 
@@ -8,7 +9,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Bronze bolts'),
 		level: 9,
 		xp: 0.5,
-		inputItems: resolveNameBank({ 'Bronze bolts (unf)': 1, feather: 1 }),
+		inputItems: new Bank({ 'Bronze bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -16,7 +17,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Iron bolts'),
 		level: 39,
 		xp: 1.5,
-		inputItems: resolveNameBank({ 'Iron bolts (unf)': 1, feather: 1 }),
+		inputItems: new Bank({ 'Iron bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -24,7 +25,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Steel bolts'),
 		level: 46,
 		xp: 3.5,
-		inputItems: resolveNameBank({ 'Steel bolts (unf)': 1, feather: 1 }),
+		inputItems: new Bank({ 'Steel bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -32,7 +33,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Mithril bolts'),
 		level: 54,
 		xp: 5,
-		inputItems: resolveNameBank({ 'Mithril bolts (unf)': 1, feather: 1 }),
+		inputItems: new Bank({ 'Mithril bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -40,7 +41,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Broad bolts'),
 		level: 55,
 		xp: 3,
-		inputItems: resolveNameBank({ 'Unfinished broad bolts': 1, feather: 1 }),
+		inputItems: new Bank({ 'Unfinished broad bolts': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -48,7 +49,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Adamant bolts'),
 		level: 61,
 		xp: 7,
-		inputItems: resolveNameBank({ 'Adamant bolts (unf)': 1, feather: 1 }),
+		inputItems: new Bank({ 'Adamant bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -56,7 +57,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Runite bolts'),
 		level: 69,
 		xp: 10,
-		inputItems: resolveNameBank({ 'Runite bolts (unf)': 1, feather: 1 }),
+		inputItems: new Bank({ 'Runite bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	},
 	{
@@ -64,7 +65,7 @@ const Bolts: Fletchable[] = [
 		id: itemID('Dragon bolts'),
 		level: 84,
 		xp: 12,
-		inputItems: resolveNameBank({ 'Dragon bolts (unf)': 1, feather: 1 }),
+		inputItems: new Bank({ 'Dragon bolts (unf)': 1, feather: 1 }),
 		tickRate: 0.2
 	}
 ];

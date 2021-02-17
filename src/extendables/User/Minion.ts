@@ -1,10 +1,12 @@
 import { User } from 'discord.js';
 import { randInt } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
+import Monster from 'oldschooljs/dist/structures/Monster';
+import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Activity, Emoji, Events, MAX_QP, PerkTier, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -16,6 +18,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
+import Creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
@@ -76,6 +79,23 @@ import {
 	PlunderActivityTaskOptions,
 	SepulchreActivityTaskOptions
 } from './../../lib/types/minions';
+import { Minigames } from './Minigame';
+
+const suffixes = new SimpleTable<string>()
+	.add('🎉', 200)
+	.add('🎆', 100)
+	.add('🙌', 100)
+	.add('🎇', 100)
+	.add('🥳', 100)
+	.add('🍻', 100)
+	.add('🎊', 100)
+	.add(Emoji.PeepoNoob, 1)
+	.add(Emoji.PeepoRanger, 1)
+	.add(Emoji.PeepoSlayer);
+
+function levelUpSuffix() {
+	return suffixes.roll().item;
+}
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -488,6 +508,33 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
 	}
 
+	public async getKCByName(this: KlasaUser, kcName: string) {
+		const mon = [
+			...killableMonsters,
+			NightmareMonster,
+			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
+		].find(
+			mon =>
+				stringMatches(mon.name, kcName) ||
+				mon.aliases.some(alias => stringMatches(alias, kcName))
+		);
+		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+
+		if (!mon && !minigame && !creature) {
+			return [null, 0];
+		}
+
+		const kc = mon
+			? this.getKC(((mon as unknown) as Monster).id)
+			: minigame
+			? await this.getMinigameScore(minigame!.key)
+			: this.getCreatureScore(creature!);
+
+		const name = minigame ? minigame.name : mon ? mon!.name : creature?.name;
+		return [name, kc];
+	}
+
 	getCreatureScore(this: KlasaUser, creature: Creature) {
 		return this.settings.get(UserSettings.CreatureScores)[creature.id] ?? 0;
 	}
@@ -531,18 +578,31 @@ export default class extends Extendable {
 		return incrementMinionDailyDuration(this.client as KlasaClient, this.id, duration);
 	}
 
-	public async addXP(this: User, skillName: SkillsEnum, amount: number, multiplier = true) {
+	public async addXP(
+		this: User,
+		skillName: SkillsEnum,
+		amount: number,
+		duration?: number,
+		multiplier = true
+	): Promise<string> {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
+		const currentLevel = this.skillLevel(skillName);
 
-		const skill = Object.values(Skills).find(skill => skill.id === skillName);
-		if (!skill) return;
+		const name = toTitleCase(skillName);
+
+		if (currentXP >= 5_000_000_000) {
+			return `You received no XP because you have 5b ${name} XP already.`;
+		}
+
+		const skill = Object.values(Skills).find(skill => skill.id === skillName)!;
 
 		if (multiplier) {
 			amount *= 5;
 		}
 
-		let newXP = currentXP + amount;
+		const newXP = Math.min(5_000_000_000, currentXP + amount);
+		const newLevel = convertXPtoLVL(newXP);
 
 		// If they reached a XP milestone, send a server notification.
 		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {
@@ -560,7 +620,7 @@ export default class extends Extendable {
 		}
 
 		// If they just reached 99, send a server notification.
-		if (convertXPtoLVL(currentXP) < 99 && convertXPtoLVL(newXP) >= 99) {
+		if (currentLevel < 99 && newLevel >= 99) {
 			const skillNameCased = toTitleCase(skillName);
 			const [usersWith] = await this.client.query<
 				{
@@ -589,7 +649,19 @@ export default class extends Extendable {
 			this.client.emit(Events.ServerNotification, str);
 		}
 
-		return this.settings.update(`skills.${skillName}`, Math.floor(newXP));
+		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
+
+		let str = `You received ${amount.toLocaleString()} ${name} XP, you now have ${newXP.toLocaleString()} ${name} XP.`;
+		if (duration) {
+			const xpHr = `(${Math.round(
+				(amount / (duration / Time.Minute)) * 60
+			).toLocaleString()} XP/Hr`;
+			str += ` ${xpHr})`;
+		}
+		if (currentLevel !== newLevel) {
+			str += `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+		}
+		return str;
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {

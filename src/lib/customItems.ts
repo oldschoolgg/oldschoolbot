@@ -876,4 +876,27 @@ export function initCustomItems() {
 			requirements: null
 		}
 	});
+
+	/**
+	 * Exclusive Items
+	 *
+	 * Items from 40_000 to 49_999 will not be droped by any mystery box.
+	 */
+	setCustomItem(40_000, 'Construction master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_001, 'Cooking master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_002, 'Crafting master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_003, 'Farming master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_004, 'Firemaking master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_005, 'Fishing master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_006, 'Fletching master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_007, 'Herblore master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_008, 'Hunter master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_009, 'Magic master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_010, 'Mining master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_011, 'Prayer master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_012, 'Runecraft master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_013, 'Smithing master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_014, 'Thieving master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_015, 'Woodcutting master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'));
 }

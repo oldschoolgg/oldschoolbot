@@ -426,6 +426,7 @@ function getRandomItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
 	let result = table[Math.floor(Math.random() * table.length)];
 	if (cantBeDropped.includes(result)) return getRandomItem(tradeables);
+	if (result >= 40_000 && result <= 49_999) return getRandomItem(tradeables);
 	return result;
 }
 

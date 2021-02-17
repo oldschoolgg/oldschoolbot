@@ -97,7 +97,9 @@ export default class extends Extendable {
 		return this.queueFn(() => this.settings.update(UserSettings.GP, currentGP + amount));
 	}
 
-	public async addItemsToBank(this: User, _items: ItemBank, collectionLog = false) {
+	public async addItemsToBank(this: User, inputItems: ItemBank | Bank, collectionLog = false) {
+		const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
+
 		await this.settings.sync(true);
 
 		const items = {
@@ -146,7 +148,8 @@ export default class extends Extendable {
 		);
 	}
 
-	public async removeItemsFromBank(this: User, itemBank: O.Readonly<ItemBank>) {
+	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
+		const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
 		await this.settings.sync(true);
 
 		const items = {

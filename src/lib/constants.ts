@@ -12,14 +12,14 @@ export const enum Time {
 }
 
 export const enum Channel {
-	Notifications = '469523207691436042',
+	Notifications = '811589869314899980',
 	ErrorLogs = '665678499578904596',
-	Suggestions = '668441710703149074',
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',
 	BlacklistLogs = '782459317218967602',
 	EconomyLogs = '802029843712573510',
-	NewSponsors = '806744016309714966'
+	NewSponsors = '806744016309714966',
+	SupportChannel = '668073484731154462'
 }
 
 export const enum Roles {

@@ -3,22 +3,12 @@ import { table } from 'table';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemID,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -40,14 +30,12 @@ export default class extends BotCommand {
 		if (msg.flagArgs.items) {
 			const normalTable = table([
 				['Item Name', 'Lvl', 'XP', 'Items Required'],
-				...(await Promise.all(
-					Fletching.Fletchables.map(async i => [
-						i.name,
-						`${i.level}`,
-						`${i.xp}`,
-						await createReadableItemListFromBank(this.client, i.inputItems)
-					])
-				))
+				...Fletching.Fletchables.map(i => [
+					i.name,
+					`${i.level}`,
+					`${i.xp}`,
+					`${i.inputItems}`
+				])
 			]);
 			return msg.channel.sendFile(Buffer.from(normalTable), `Fletchables.txt`);
 		}
@@ -57,34 +45,31 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const fletchableItem = Fletching.Fletchables.find(item =>
-			stringMatches(item.name, fletchName)
-		);
+		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, fletchName));
 
-		if (!fletchableItem) {
+		if (!fletchable) {
 			return msg.send(
 				`That is not a valid fletchable item, to see the items available do \`${msg.cmdPrefix}fletch --items\``
 			);
 		}
 		let sets = 'x';
-		if (fletchableItem.outputMultiple) {
-			sets = 'sets of';
+		if (fletchable.outputMultiple) {
+			sets = ' sets of';
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Fletching) < fletchableItem.level) {
+		if (msg.author.skillLevel(SkillsEnum.Fletching) < fletchable.level) {
 			return msg.send(
-				`${msg.author.minionName} needs ${fletchableItem.level} Fletching to fletch ${fletchableItem.name}.`
+				`${msg.author.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`
 			);
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const requiredItems: [string, number][] = Object.entries(fletchableItem.inputItems);
+		const userBank = msg.author.bank();
 
 		// Get the base time to fletch the item then add on quarter of a second per item to account for banking/etc.
-		let timeToFletchSingleItem = fletchableItem.tickRate * Time.Second * 0.6 + Time.Second / 4;
-		if (fletchableItem.tickRate < 1) {
-			timeToFletchSingleItem = fletchableItem.tickRate * Time.Second * 0.6;
+		let timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4;
+		if (fletchable.tickRate < 1) {
+			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
 		let hasScruffy = false;
@@ -96,45 +81,36 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToFletchSingleItem);
-			for (const [itemID, qty] of requiredItems) {
-				const itemsOwned = userBank[getOSItem(itemID).id] ?? 0;
-				if (itemsOwned < qty) {
-					return msg.send(`You dont have enough **${getOSItem(itemID).name}**.`);
-				}
-				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
-			}
+			const max = userBank.fits(fletchable.inputItems);
+			if (max < quantity && max !== 0) quantity = max;
 		}
-		const duration = quantity * timeToFletchSingleItem;
 
+		const duration = quantity * timeToFletchSingleItem;
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					msg.author.maxTripLength
 				)}, try a lower quantity. The highest amount of ${
-					fletchableItem.name
+					fletchable.name
 				}s you can fletch is ${Math.floor(
 					msg.author.maxTripLength / timeToFletchSingleItem
 				)}.`
 			);
 		}
 
-		// Check the user has the required items to fletch.
-		for (const [itemID, qty] of requiredItems) {
-			const { id } = getOSItem(itemID);
-			if (!bankHasItem(userBank, id, qty * quantity)) {
-				return msg.send(`You don't have enough **${itemNameFromID(id)}**.`);
-			}
+		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
+		if (!userBank.has(itemsNeeded.bank)) {
+			return msg.send(
+				`You don't have enough items. For ${quantity}x ${
+					fletchable.name
+				}, you're missing **${itemsNeeded.clone().remove(userBank)}**.`
+			);
 		}
 
-		// Remove the required items from their bank.
-		let newBank = { ...userBank };
-		for (const [itemID, qty] of requiredItems) {
-			newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
-		}
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(itemsNeeded);
 
 		await addSubTaskToActivityTask<FletchingActivityTaskOptions>(this.client, {
-			fletchableName: fletchableItem.name,
+			fletchableName: fletchable.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -143,9 +119,11 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now Fletching ${quantity} ${sets} ${
-				fletchableItem.name
-			}s, it'll take around ${formatDuration(duration)} to finish. ${
+			`${msg.author.minionName} is now Fletching ${quantity}${sets} ${
+				fletchable.name
+			}, it'll take around ${formatDuration(
+				duration
+			)} to finish. Removed ${itemsNeeded} from your bank. ${
 				hasScruffy
 					? '\n<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy.'
 					: ''
