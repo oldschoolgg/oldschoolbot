@@ -47,6 +47,9 @@ export default class extends BotCommand {
 		if (buyerMember.user.isBusy) {
 			throw `That user is busy right now.`;
 		}
+		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 49_999)) {
+			return msg.send(`You are trying to sell unsellable items.`);
+		}
 
 		await Promise.all([buyerMember.user.settings.sync(true), msg.author.settings.sync(true)]);
 
