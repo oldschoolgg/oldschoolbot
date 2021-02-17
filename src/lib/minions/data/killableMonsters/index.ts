@@ -28,7 +28,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
@@ -64,7 +64,6 @@ const killableMonsters: KillableMonster[] = [
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth prime']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Armadyl chestplate')]: 2,
@@ -92,7 +91,6 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos chestplate', "Torag's platebody"],
 			['Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 5,
@@ -120,7 +118,6 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos chestplate', "Torag's platebody"],
 			['Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Bandos chestplate')]: 2,
