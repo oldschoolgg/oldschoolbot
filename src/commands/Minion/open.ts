@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
-import { customItems } from '../../lib/customItems';
 import botOpenables from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
@@ -15,7 +14,7 @@ import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItem
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
-const itemsToNotifyOf = [...customItems];
+const itemsToNotifyOf = [itemID('Dwarven blessing')];
 
 const Openables = _Openables.filter(i => i.name !== 'Mystery box');
 
