@@ -38,11 +38,17 @@ const githubSponsors = (server: FastifyServer) =>
 							tier
 						);
 					}
-					boxFrenzy(
-						client.channels.get('732207379818479756') as TextChannel,
-						`${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.`,
-						tier * 4
-					);
+					for (const id of ['732207379818479756', '792691343284764693']) {
+						boxFrenzy(
+							client.channels.get('732207379818479756') as TextChannel,
+							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
+🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
+${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
+🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
+🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉`,
+							tier * 3
+						);
+					}
 					break;
 				}
 				case 'tier_changed':
