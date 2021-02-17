@@ -35,9 +35,6 @@ const invalidMonster = (prefix: string) =>
 		.map(mon => mon.name)
 		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
 
-const hasNoMinion = (prefix: string) =>
-	`You don't have a minion yet. You can buy one by typing \`${prefix}minion buy\`.`;
-
 const patMessages = [
 	'You pat {name} on the head.',
 	'You gently pat {name} on the head, they look back at you happily.',
