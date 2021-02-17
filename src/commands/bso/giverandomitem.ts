@@ -47,6 +47,10 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const bank = msg.author.bank();
 		const item = bank.random();
+		if (!item) return msg.send(`No items found.`);
+		if (item.id >= 40_000 && item.id <= 49_999) {
+			return msg.send(`You can't give away your ${itemNameFromID(item.id)}!`);
+		}
 		if (!item) return msg.send(`You have no items!`);
 		await msg.author.removeItemFromBank(item.id, item.qty);
 		await user.addItemsToBank({ [item.id]: item.qty });
