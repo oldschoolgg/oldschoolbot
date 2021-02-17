@@ -99,9 +99,12 @@ declare module 'discord.js' {
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
-		addItemsToBank(items: ItemBank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		addItemsToBank(
+			items: ItemBank | Bank,
+			collectionLog?: boolean
+		): Promise<SettingsUpdateResult>;
 		removeItemsFromBank(
-			items: ItemBank,
+			items: ItemBank | Bank,
 			collectionLog?: boolean
 		): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
@@ -126,8 +129,9 @@ declare module 'discord.js' {
 		addXP(
 			skillName: SkillsEnum,
 			amount: number,
+			duration?: number,
 			multiplier = true
-		): Promise<SettingsUpdateResult>;
+		): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
 		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
@@ -162,6 +166,11 @@ declare module 'discord.js' {
 		 * Returns the KC the user has for this monster.
 		 */
 		getKC(id: number): number;
+		/**
+		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
+		 * If the search doesn't return anything then returns [null, 0].
+		 */
+		getKCByName(kcName: string): [string, number] | [null, 0];
 		/**
 		 * Returns minigame score
 		 */
