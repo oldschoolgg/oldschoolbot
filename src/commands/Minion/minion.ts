@@ -50,9 +50,13 @@ const randomPatMessage = (minionName: string) =>
 const { floor } = Math;
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
-	const command = msg.client.commands.get(name)!;
-	await msg.client.inhibitors.run(msg, command);
-	await command!.run(msg, args);
+	try {
+		const command = msg.client.commands.get(name)!;
+		await msg.client.inhibitors.run(msg, command);
+		await command!.run(msg, args);
+	} catch (err) {
+		msg.send(typeof err === 'string' ? err : err.message);
+	}
 }
 
 export default class MinionCommand extends BotCommand {
