@@ -1,4 +1,5 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { Time } from './constants';
 import { GearSetupTypes, GearStat } from './gear/types';
@@ -49,6 +50,7 @@ export const NexMonster: KillableMonster = {
 	name: 'Nex',
 	aliases: ['nex'],
 	timeToFinish: Time.Minute * 25,
+	notifyDrops: [...allNexItems, itemID('Bloodsoaked feather')],
 	table: {
 		kill: makeKillTable(
 			new LootTable()

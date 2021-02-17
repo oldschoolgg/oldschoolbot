@@ -17,9 +17,7 @@ export default async function announceLoot(
 ) {
 	if (!monster.notifyDrops) return;
 	const kc = (user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity;
-	const items = new Bank(loot).filter(
-		i => monster.notifyDrops?.includes(i.id) || customItems.includes(i.id)
-	);
+	const items = new Bank(loot).filter(i => monster.notifyDrops?.includes(i.id));
 
 	if (items.length > 0) {
 		let notif = '';
