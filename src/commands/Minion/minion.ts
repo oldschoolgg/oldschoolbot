@@ -1,13 +1,13 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { objectKeys, randInt, reduceNumByPercent } from 'e';
-import { CommandStore, KlasaMessage, util } from 'klasa';
+import { chunk, objectKeys, reduceNumByPercent, sleep } from 'e';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
 import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { requiresMinion } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
@@ -23,6 +23,7 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomItemFromArray,
+	randomVariation,
 	removeDuplicatesFromArray
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -33,9 +34,6 @@ const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
 		.map(mon => mon.name)
 		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
-
-const hasNoMinion = (prefix: string) =>
-	`You don't have a minion yet. You can buy one by typing \`${prefix}minion buy\`.`;
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -50,6 +48,12 @@ const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
 
 const { floor } = Math;
+
+async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
+	const command = msg.client.commands.get(name)!;
+	await msg.client.inhibitors.run(msg, command);
+	await command!.run(msg, args);
+}
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -66,10 +70,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
+	@requiresMinion
 	async run(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
 		return msg.send(msg.author.minionStatus);
 	}
 
@@ -90,15 +92,9 @@ export default class MinionCommand extends BotCommand {
 		return msg.send(`Changed your minion icon to ${res}.`);
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async ironman(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		/**
 		 * If the user is an ironman already, lets ask them if they want to de-iron.
 		 */
@@ -167,6 +163,10 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.BankBackground,
 				UserSettings.SacrificedValue,
 				UserSettings.SacrificedBank,
+				UserSettings.HonourLevel,
+				UserSettings.HonourPoints,
+				UserSettings.HighGambles,
+				UserSettings.CarpenterPoints,
 				'gear',
 				'stats',
 				'skills',
@@ -189,15 +189,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		}
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async pat(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.send(msg.author.minionStatus);
-		}
-
 		return msg.send(randomPatMessage(msg.author.minionName));
 	}
 
@@ -207,11 +201,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(embed);
 	}
 
+	@requiresMinion
 	async kc(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
 		const entries = Object.entries(monsterScores);
 		if (entries.length === 0) throw `${msg.author.minionName} hasn't killed any monsters yet!`;
@@ -223,7 +214,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				`These are your minions Kill Counts for all monsters, to see your Clue Scores, use \`${msg.cmdPrefix}m clues\`.`
 			);
 
-		for (const monsterScoreChunk of util.chunk(entries, 10)) {
+		for (const monsterScoreChunk of chunk(entries, 10)) {
 			embed.addField(
 				'\u200b',
 				monsterScoreChunk
@@ -243,11 +234,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.send(embed);
 	}
 
+	@requiresMinion
 	async qp(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
 		return msg.send(
 			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(
 				UserSettings.QP
@@ -255,11 +243,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		);
 	}
 
+	@requiresMinion
 	async clues(msg: KlasaMessage) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
 		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
 		if (Object.keys(clueScores).length === 0) throw `You haven't done any clues yet.`;
 
@@ -315,13 +300,13 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				`${Emoji.Search} Finding the right minion for you...`
 			);
 
-			await util.sleep(3000);
+			await sleep(3000);
 
 			await response.edit(
 				`${Emoji.FancyLoveheart} Letting your new minion say goodbye to the unadopted minions...`
 			);
 
-			await util.sleep(3000);
+			await sleep(3000);
 
 			await msg.author.settings.sync(true);
 			const balance = msg.author.settings.get(UserSettings.GP);
@@ -338,195 +323,97 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		}
 	}
 
+	@requiresMinion
 	async setname(msg: KlasaMessage, [name]: [string]) {
-		if (!msg.author.hasMinion) {
-			throw hasNoMinion(msg.cmdPrefix);
-		}
-
 		if (
 			!name ||
 			typeof name !== 'string' ||
 			name.length < 2 ||
 			name.length > 30 ||
-			['\n', '`', '@'].some(char => name.includes(char))
+			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
 		) {
-			throw 'Please specify a valid name for your minion!';
+			return msg.send(`That's not a valid name for your minion.`);
 		}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
-		return msg.send(`Renamed your minion to ${msg.author.minionName}.`);
+		return msg.send(`Renamed your minion to \`${msg.author.minionName}\`.`);
 	}
 
 	async fish(msg: KlasaMessage, [quantity, fishName]: [number, string]) {
-		await this.client.commands
-			.get('fish')!
-			.run(msg, [quantity, fishName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'fish', [quantity, fishName]);
 	}
 
 	async laps(msg: KlasaMessage, [quantity, courseName]: [number, string]) {
-		await this.client.commands
-			.get('laps')!
-			.run(msg, [quantity, courseName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'laps', [quantity, courseName]);
 	}
 
 	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		await this.client.commands
-			.get('mine')!
-			.run(msg, [quantity, oreName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'mine', [quantity, oreName]);
 	}
 
 	async smelt(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		await this.client.commands
-			.get('smelt')!
-			.run(msg, [quantity, barName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'smelt', [quantity, barName]);
 	}
 
 	async cook(msg: KlasaMessage, [quantity, cookableName]: [number | string, string]) {
-		await this.client.commands
-			.get('cook')!
-			.run(msg, [quantity, cookableName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'cook', [quantity, cookableName]);
 	}
 
 	async smith(msg: KlasaMessage, [quantity, smithableItemName]: [number, string]) {
-		this.client.commands
-			.get('smith')!
-			.run(msg, [quantity, smithableItemName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'smith', [quantity, smithableItemName]);
 	}
 
 	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands
-			.get('chop')!
-			.run(msg, [quantity, logName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'chop', [quantity, logName]);
 	}
 
 	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		this.client.commands
-			.get('light')!
-			.run(msg, [quantity, logName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'light', [quantity, logName]);
 	}
 
 	async craft(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		await this.client.commands
-			.get('craft')!
-			.run(msg, [quantity, itemName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'craft', [quantity, itemName]);
 	}
 
 	async fletch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		await this.client.commands
-			.get('fletch')!
-			.run(msg, [quantity, itemName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'fletch', [quantity, itemName]);
 	}
 
 	async bury(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
-		await this.client.commands
-			.get('bury')!
-			.run(msg, [quantity, boneName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'bury', [quantity, boneName]);
 	}
 
 	async farm(msg: KlasaMessage, [quantity, seedName, upgradeType]: [number, string, string]) {
-		await this.client.commands
-			.get('farm')!
-			.run(msg, [quantity, seedName, upgradeType])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'farm', [quantity, seedName, upgradeType]);
 	}
 
 	async harvest(msg: KlasaMessage, [seedType]: [string]) {
-		await this.client.commands
-			.get('harvest')!
-			.run(msg, [seedType])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'harvest', [seedType]);
 	}
 
 	async offer(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
-		await this.client.commands
-			.get('offer')!
-			.run(msg, [quantity, boneName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'offer', [quantity, boneName]);
 	}
 
 	async mix(msg: KlasaMessage, [quantity, mixName]: [number, string]) {
-		await this.client.commands
-			.get('mix')!
-			.run(msg, [quantity, mixName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'mix', [quantity, mixName]);
 	}
 
 	async hunt(msg: KlasaMessage, [quantity, creatureName]: [number, string]) {
-		await this.client.commands
-			.get('hunt')!
-			.run(msg, [quantity, creatureName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'hunt', [quantity, creatureName]);
 	}
 
 	async quest(msg: KlasaMessage) {
-		await this.client.commands
-			.get('quest')!
-			.run(msg, [])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'quest', []);
 	}
 
 	async cancel(msg: KlasaMessage) {
-		await this.client.commands
-			.get('cancel')!
-			.run(msg, [])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'cancel', []);
 	}
 
 	@requiresMinion
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		await this.client.commands
-			.get('mclue')!
-			.run(msg, [quantity, tierName])
-			.catch(err => {
-				throw err;
-			});
+		runCommand(msg, 'mclue', [quantity, tierName]);
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
@@ -536,6 +423,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	}
 
 	@requiresMinion
+	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		const boosts = [];
 		let messages: string[] = [];
@@ -543,12 +431,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
-		}
-
-		await msg.author.settings.sync(true);
-		if (msg.author.minionIsBusy) {
-			msg.author.log(`[TTK-BUSY] ${quantity} ${name}`);
-			return msg.send(msg.author.minionStatus);
 		}
 
 		if (!name) throw invalidMonster(msg.cmdPrefix);
@@ -567,7 +449,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(
 			monster,
-			msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 1
+			msg.author.getKC(monster.id)
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
@@ -620,15 +502,16 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				monster.name
-			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
+			return msg.send(
+				`${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
+					msg.author.maxTripLength
+				)}, try a lower quantity. The highest amount you can do for ${
+					monster.name
+				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`
+			);
 		}
 
-		const randomAddedDuration = randInt(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
+		duration = randomVariation(duration, 10);
 
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
