@@ -22,7 +22,6 @@ const killableBosses: KillableMonster[] = [
 			"Verac's plateskirt",
 			"Verac's flail"
 		]),
-		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
@@ -45,7 +44,6 @@ const killableBosses: KillableMonster[] = [
 			"Verac's plateskirt",
 			"Verac's flail"
 		]),
-		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 3
@@ -67,7 +65,6 @@ const killableBosses: KillableMonster[] = [
 			"Verac's plateskirt",
 			"Verac's flail"
 		]),
-		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 3
@@ -87,7 +84,6 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide body", "Karil's leathertop"],
 			["Black d'hide chaps", "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Archers ring')]: 3,
@@ -104,7 +100,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 6,
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID("Karil's leathertop")]: 3,
@@ -152,7 +147,6 @@ const killableBosses: KillableMonster[] = [
 				"Karil's leatherskirt"
 			]
 		]),
-		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Armadyl crossbow')]: 10
@@ -168,7 +162,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 10

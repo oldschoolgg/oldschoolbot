@@ -7,10 +7,10 @@ import getOSItem from './util/getOSItem';
 
 export const customPrices: Record<number, number> = [];
 
-const customItem: number[] = [];
+export const customItems: number[] = [];
 
 export function isCustomItem(itemID: number) {
-	return customItem.includes(itemID);
+	return customItems.includes(itemID);
 }
 
 export const hasSet = new Set();
@@ -35,7 +35,7 @@ function setCustomItem(
 	// Set the item custom price
 	customPrices[id] = price ? price : baseItem.tradeable_on_ge ? 1 : 0;
 	// Add the item to the custom items array
-	customItem.push(id);
+	customItems.push(id);
 }
 
 export function initCustomItems() {

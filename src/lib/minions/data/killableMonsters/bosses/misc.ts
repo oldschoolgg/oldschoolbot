@@ -26,7 +26,6 @@ const killableBosses: KillableMonster[] = [
 			"Dharok's platelegs",
 			"Dharok's greataxe"
 		]),
-		notifyDrops: resolveItems(['Baby mole']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 5,
@@ -47,7 +46,6 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 8,
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
-		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
@@ -66,12 +64,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		notifyDrops: resolveItems([
-			'Tanzanite mutagen',
-			'Magma mutagen',
-			'Jar of swamp',
-			'Pet snakeling'
-		]),
 		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 5,
@@ -108,7 +100,6 @@ const killableBosses: KillableMonster[] = [
 			"Verac's plateskirt",
 			["Black d'hide body", "Karil's leathertop"]
 		]),
-		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 10
@@ -144,7 +135,8 @@ const killableBosses: KillableMonster[] = [
 			'Spectral sigil',
 			'Arcane sigil',
 			'Elysian sigil',
-			'Pet dark core'
+			'Pet dark core',
+			'Divine sigil'
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: {
@@ -180,7 +172,6 @@ const killableBosses: KillableMonster[] = [
 			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
 			'Zamorakian spear'
 		]),
-		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Spectral spirit shield')]: 10,

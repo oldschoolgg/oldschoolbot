@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
-import { cluesRares } from '../../lib/data/collectionLog';
+import { customItems } from '../../lib/customItems';
 import botOpenables from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
@@ -15,12 +15,7 @@ import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItem
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
-const itemsToNotifyOf = Object.values(cluesRares)
-	.flat(Infinity)
-	.concat(
-		ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward)
-	)
-	.concat([itemID('Bloodhound')]);
+const itemsToNotifyOf = [...customItems];
 
 const Openables = _Openables.filter(i => i.name !== 'Mystery box');
 
