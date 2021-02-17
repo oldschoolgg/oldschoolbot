@@ -40,7 +40,7 @@ const githubSponsors = (server: FastifyServer) =>
 					}
 					for (const id of ['732207379818479756', '792691343284764693']) {
 						boxFrenzy(
-							client.channels.get('732207379818479756') as TextChannel,
+							client.channels.get(id) as TextChannel,
 							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 ${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
