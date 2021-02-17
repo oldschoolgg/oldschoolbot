@@ -2,7 +2,6 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../constants';
-import { customItems } from '../../customItems';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
 import { KillableMonster } from '../types';
@@ -17,7 +16,7 @@ export default async function announceLoot(
 ) {
 	if (!monster.notifyDrops) return;
 	const kc = (user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity;
-	const items = new Bank(loot).filter(i => monster.notifyDrops?.includes(i.id));
+	const items = new Bank(loot).filter(i => monster.notifyDrops?.includes(i.id) ?? false);
 
 	if (items.length > 0) {
 		let notif = '';
