@@ -339,6 +339,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 26,
+		notifyDrops: resolveItems(['Dwarven ore', 'Dwarven warhammer']),
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackCrush],
@@ -353,8 +354,7 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: resolveItems(['Dwarven warhammer', 'Dwarven crate', 'Dwarven ore']),
-		notifyDrops: resolveItems(['Dwarven warhammer'])
+		uniques: resolveItems(['Dwarven warhammer', 'Dwarven crate', 'Dwarven ore'])
 	},
 	{
 		id: SeaKraken.id,
@@ -365,6 +365,7 @@ const killableMonsters: KillableMonster[] = [
 			kill: makeKillTable(KrakenTable)
 		},
 		emoji: '',
+		notifyDrops: resolveItems(['Fish sack', 'Fishing trophy', 'Pufferfish']),
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -513,18 +514,6 @@ export const NightmareMonster: KillableMonster = {
 	wildy: false,
 	canBeKilled: false,
 	difficultyRating: 7,
-	notifyDrops: resolveItems([
-		'Little nightmare',
-		'Jar of dreams',
-		'Nightmare staff',
-		"Inquisitor's great helm",
-		"Inquisitor's hauberk",
-		"Inquisitor's plateskirt",
-		"Inquisitor's mace",
-		'Eldritch orb',
-		'Harmonised orb',
-		'Volatile orb'
-	]),
 	qpRequired: 10,
 	groupKillable: true,
 	respawnTime: Time.Minute * 2.5,
