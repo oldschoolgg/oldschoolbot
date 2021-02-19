@@ -152,7 +152,7 @@ const killableBosses: KillableMonster[] = [
 				"Karil's leatherskirt"
 			]
 		]),
-		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
+		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Armadyl crossbow')]: 10
