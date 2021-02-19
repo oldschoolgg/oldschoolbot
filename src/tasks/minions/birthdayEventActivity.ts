@@ -33,7 +33,7 @@ export default class extends Task {
 			loot.add('Slice of birthday cake');
 		}
 
-		if (roll(200)) {
+		if (roll(150)) {
 			loot.add('Flappy');
 		}
 

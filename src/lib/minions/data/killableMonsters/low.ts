@@ -137,7 +137,7 @@ const killableMonsters: KillableMonster[] = [
 					.tertiary(5000, 'Curved bone')
 					.tertiary(400, 'Long bone')
 					.tertiary(1200, 'Shaman mask')
-					.tertiary(3500, 'Ishi')
+					.tertiary(6500, 'Ishi')
 			)
 		},
 		emoji: '',
