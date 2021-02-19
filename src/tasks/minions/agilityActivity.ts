@@ -46,7 +46,7 @@ export default class extends Task {
 		}
 
 		if (user.equippedPet() === itemID('Harry')) {
-			totalMarks = randomVariation(totalMarks * 2, 10);
+			totalMarks = Math.ceil(randomVariation(totalMarks * 2, 10));
 		} else if (user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}

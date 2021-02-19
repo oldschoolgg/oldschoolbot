@@ -4123,6 +4123,39 @@ const Createables: Createable[] = [
 			[itemID(`Toad's legs`)]: 1
 		}
 	},
+	{
+		name: 'Pegasian boots',
+		inputItems: {
+			[itemID('Pegasian crystal')]: 1,
+			[itemID('Ranger boots')]: 1
+		},
+		outputItems: {
+			[itemID('Pegasian boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Primordial boots',
+		inputItems: {
+			[itemID('Primordial crystal')]: 1,
+			[itemID('Dragon boots')]: 1
+		},
+		outputItems: {
+			[itemID('Primordial boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Eternal boots',
+		inputItems: {
+			[itemID('Eternal crystal')]: 1,
+			[itemID('Infinity boots')]: 1
+		},
+		outputItems: {
+			[itemID('Eternal boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
 	...crystalTools,
 	...brokenItems,
 	...lockedItems,

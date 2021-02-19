@@ -81,6 +81,29 @@ import {
 } from './../../lib/types/minions';
 import { Minigames } from './Minigame';
 
+const bdayMsgs = [
+	'eating a banana',
+	'running around like a monkey',
+	'getting their rewards',
+	'returning the trapped monkeys to where they should be',
+	'catching a monkey on the west side of the Lumbridge swamp',
+	'catching a monkey north of the Lumbridge mill',
+	'catching a monkey outside the Lumbridge general store',
+	'catching a monkey in the Lumbridge church',
+	"catching a monkey in Bob's Axes",
+	'waiting for monkeys to be trapped in the cage',
+	'eating a banana',
+	'building monkey cages',
+	'cutting bamboo',
+	'eating monkey nuts',
+	'on their way to al kharid',
+	'their banana was stolen by a monkey',
+	'eating a banana',
+	'getting chased by monkeys',
+	'chasing a monkey around lumbridge',
+	'on the way to the event'
+] as const;
+
 const suffixes = new SimpleTable<string>()
 	.add('🎉', 200)
 	.add('🎆', 100)
@@ -500,6 +523,15 @@ export default class extends Extendable {
 
 			case Activity.GnomeRestaurant: {
 				return `${this.minionName} is currently doing Gnome Restaurant deliveries. ${formattedDuration}`;
+			}
+
+			case Activity.BirthdayEvent: {
+				const minsRemaining = Math.floor(durationRemaining / Time.Minute);
+				return `${
+					this.minionName
+				} is currently doing the Birthday Event, currently they are ${
+					bdayMsgs[minsRemaining] ?? 'eating a banana'
+				}. ${formattedDuration}`;
 			}
 		}
 	}

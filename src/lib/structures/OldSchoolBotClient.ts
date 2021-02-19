@@ -1,6 +1,7 @@
 import { Client as TagsClient } from '@kcp/tags';
 import { Client, KlasaClientOptions } from 'klasa';
 import pLimit from 'p-limit';
+import { join } from 'path';
 import PgBoss from 'pg-boss';
 import { Connection, createConnection } from 'typeorm';
 
@@ -9,12 +10,6 @@ import { clientOptions } from '../config/config';
 import { initCustomItems } from '../customItems';
 import { initItemAliases } from '../data/itemAliases';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { AnalyticsTable } from '../typeorm/AnalyticsTable.entity';
-import { GearPresetsTable } from '../typeorm/GearPresetsTable.entity';
-import { MinigameTable } from '../typeorm/MinigameTable.entity';
-import { NewUserTable } from '../typeorm/NewUserTable.entity';
-import { PoHTable } from '../typeorm/PoHTable.entity';
-import { WebhookTable } from '../typeorm/WebhookTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
 import { piscinaPool } from '../workers';
 
@@ -55,14 +50,7 @@ export class OldSchoolBotClient extends Client {
 			username: user,
 			password,
 			database,
-			entities: [
-				AnalyticsTable,
-				WebhookTable,
-				PoHTable,
-				GearPresetsTable,
-				MinigameTable,
-				NewUserTable
-			],
+			entities: [join(__dirname, '..', 'typeorm', '*.entity{.ts,.js}')],
 			synchronize: !production
 		});
 		const existingTasks = await this.orm.query(
