@@ -9,8 +9,6 @@ import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, roll, stringMatches } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
@@ -42,17 +40,13 @@ export default class extends BotCommand {
 	}
 
 	async showAvailable(msg: KlasaMessage) {
-		const available = filterBankFromArrayOfItems(
-			allOpenables,
-			msg.author.settings.get(UserSettings.Bank)
-		);
+		const available = msg.author.bank().filter(i => allOpenables.includes(i.id));
 
-		if (Object.keys(available).length === 0) {
+		if (available.length === 0) {
 			return `You have no openable items.`;
 		}
 
-		const itemsAvailable = await createReadableItemListFromBank(this.client, available);
-		return `You have ${itemsAvailable}.`;
+		return `You have ${available}.`;
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
@@ -118,17 +112,15 @@ export default class extends BotCommand {
 
 		// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 		// and send a notification if they got one.
-		const keys = Object.keys(loot);
-		if (keys.some(key => itemsToNotifyOf.includes(parseInt(key)))) {
-			const lootStr = await createReadableItemListFromBank(this.client, loot);
-
+		const announcedLoot = new Bank(loot).filter(i => itemsToNotifyOf.includes(i.id));
+		if (announcedLoot.length > 0) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${msg.author.username}'s** minion, ${
 					msg.author.minionName
 				}, just opened their ${formatOrdinal(nthCasket)} ${
 					clueTier.name
-				} casket and received **${lootStr}**!`
+				} casket and received **${announcedLoot}**!`
 			);
 		}
 
