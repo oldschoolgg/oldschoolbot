@@ -553,5 +553,7 @@ export const effectiveMonsters = [
 		id: 46274,
 		name: 'Nex',
 		aliases: ['nex']
-	}
+	},
+	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127 },
+	{ name: 'Mimic', aliases: ['mimic'], id: 23184 }
 ];

@@ -240,7 +240,7 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
-		return msg.send(`Renamed your minion to \`${msg.author.minionName}\`.`);
+		return msg.send(`Renamed your minion to ${msg.author.minionName}.`);
 	}
 
 	async fish(msg: KlasaMessage, [quantity, fishName]: [number, string]) {

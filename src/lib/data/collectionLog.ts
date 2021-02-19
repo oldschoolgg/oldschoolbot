@@ -4,6 +4,13 @@ import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } 
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
+const monkeyHuntLog = resolveItems([
+	'Cursed banana',
+	'Banana cape',
+	'Gnome child hat',
+	'Slice of birthday cake'
+]);
+
 const gnomeRestaurantLog = resolveItems([
 	'Gnome scarf',
 	'Gnome goggles',
@@ -1328,7 +1335,8 @@ export const holiday: CollectionLogData = {
 		'Sack of presents',
 		'Christmas cracker',
 		'Santa hat'
-	])
+	]),
+	SecondBirthday: monkeyHuntLog
 };
 
 export const diangoCollectionLog: CollectionLogData = {
