@@ -90,5 +90,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.GloryCharging;
 		case Activity.GnomeRestaurant:
 			return Tasks.GnomeRestaurant;
+		case Activity.BirthdayEvent:
+			return Tasks.BirthdayEvent;
 	}
 }
