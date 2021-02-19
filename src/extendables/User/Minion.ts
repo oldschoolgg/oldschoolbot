@@ -505,7 +505,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.BirthdayEvent: {
-				const minsRemaining = durationRemaining / Time.Second / Time.Minute;
+				const minsRemaining = Math.floor(durationRemaining / Time.Minute);
 				return `${
 					this.minionName
 				} is currently doing the Birthday Event, currently they are ${
