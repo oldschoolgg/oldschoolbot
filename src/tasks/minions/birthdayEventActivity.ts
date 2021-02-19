@@ -34,7 +34,7 @@ export default class extends Task {
 			loot.add('Slice of birthday cake');
 		}
 
-		if (roll(150)) {
+		if (roll(250)) {
 			loot.add('Flappy');
 			this.client.emit(
 				Events.ServerNotification,
