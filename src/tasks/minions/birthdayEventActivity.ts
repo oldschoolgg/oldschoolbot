@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
@@ -35,6 +36,10 @@ export default class extends Task {
 
 		if (roll(150)) {
 			loot.add('Flappy');
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}** just received the birthday event pet!`
+			);
 		}
 
 		if (roll(20)) {
