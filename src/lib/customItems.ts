@@ -882,6 +882,8 @@ export function initCustomItems() {
 	 *
 	 * Items from 40_000 to 49_999 will not be droped by any mystery box.
 	 */
+
+	// Master capes
 	setCustomItem(40_000, 'Construction master cape', getOSItem('Abyssal cape'));
 	setCustomItem(40_001, 'Cooking master cape', getOSItem('Abyssal cape'));
 	setCustomItem(40_002, 'Crafting master cape', getOSItem('Abyssal cape'));
@@ -899,4 +901,8 @@ export function initCustomItems() {
 	setCustomItem(40_014, 'Thieving master cape', getOSItem('Abyssal cape'));
 	setCustomItem(40_015, 'Woodcutting master cape', getOSItem('Abyssal cape'));
 	setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'));
+
+	// Pets
+	setCustomItem(40_100, 'Flappy', getOSItem('Herbi'));
+	setCustomItem(40_102, 'Ishi', getOSItem('Herbi'));
 }
