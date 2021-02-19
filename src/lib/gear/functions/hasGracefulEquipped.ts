@@ -70,7 +70,8 @@ export function hasGracefulEquipped(setup: GearTypes.GearSetup) {
 			'Brimhaven graceful cape',
 			'Dark graceful cape',
 			'Agility cape',
-			'Agility cape (t)'
+			'Agility cape (t)',
+			'Agility master cape'
 		])
 	});
 }

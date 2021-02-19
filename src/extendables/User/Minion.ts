@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { randInt } from 'e';
+import { increaseNumByPercent, notEmpty, objectValues, randInt } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -10,6 +10,7 @@ import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killa
 import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
@@ -633,6 +634,19 @@ export default class extends Extendable {
 			amount *= 5;
 		}
 
+		const rawGear = this.rawGear();
+		const allCapes = objectValues(rawGear)
+			.map(val => val.cape)
+			.filter(notEmpty)
+			.map(i => i.item);
+		const masterCape = multiplier
+			? MasterSkillcapes.find(cape => allCapes.includes(cape.item.id))
+			: undefined;
+		const isMatchingCape = masterCape?.skill === skillName;
+		if (masterCape) {
+			amount = increaseNumByPercent(amount, isMatchingCape ? 8 : 3);
+		}
+
 		const newXP = Math.min(5_000_000_000, currentXP + amount);
 		const newLevel = convertXPtoLVL(newXP);
 
@@ -684,6 +698,13 @@ export default class extends Extendable {
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
 		let str = `You received ${amount.toLocaleString()} ${name} XP, you now have ${newXP.toLocaleString()} ${name} XP.`;
+		if (masterCape) {
+			if (isMatchingCape) {
+				str += ` You received 8% bonus XP for having a ${masterCape.item.name}.`;
+			} else {
+				str += ` You received 3% bonus XP for having a ${masterCape.item.name}.`;
+			}
+		}
 		if (duration) {
 			const xpHr = `(${Math.round(
 				(amount / (duration / Time.Minute)) * 60
