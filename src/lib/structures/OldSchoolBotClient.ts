@@ -49,7 +49,7 @@ export class OldSchoolBotClient extends Client {
 			username: user,
 			password,
 			database,
-			entities: [join(__dirname, '/src/lib/typeorm/*.entity{.ts,.js}')],
+			entities: [join(__dirname, 'src', 'lib', 'typeorm', '*.entity{.ts,.js}')],
 			synchronize: !production
 		});
 		const existingTasks = await this.orm.query(
