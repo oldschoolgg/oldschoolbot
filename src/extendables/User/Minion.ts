@@ -78,26 +78,26 @@ import {
 import { Minigames } from './Minigame';
 
 const bdayMsgs = [
-	'on the way to the event',
-	'chasing a monkey around lumbridge',
-	'getting chased by monkeys',
 	'eating a banana',
-	'their banana was stolen by a monkey',
-	'on their way to al kharid',
-	'eating monkey nuts',
-	'cutting bamboo',
-	'building monkey cages',
-	'eating a banana',
-	'waiting for monkeys to be trapped in the cage',
-	"catching a monkey in Bob's Axes",
-	'catching a monkey in the Lumbridge church',
-	'catching a monkey outside the Lumbridge general store',
-	'catching a monkey north of the Lumbridge mill',
-	'catching a monkey on the west side of the Lumbridge swamp',
-	'returning the trapped monkeys to where they should be',
-	'getting their rewards',
 	'running around like a monkey',
-	'eating a banana'
+	'getting their rewards',
+	'returning the trapped monkeys to where they should be',
+	'catching a monkey on the west side of the Lumbridge swamp',
+	'catching a monkey north of the Lumbridge mill',
+	'catching a monkey outside the Lumbridge general store',
+	'catching a monkey in the Lumbridge church',
+	"catching a monkey in Bob's Axes",
+	'waiting for monkeys to be trapped in the cage',
+	'eating a banana',
+	'building monkey cages',
+	'cutting bamboo',
+	'eating monkey nuts',
+	'on their way to al kharid',
+	'their banana was stolen by a monkey',
+	'eating a banana',
+	'getting chased by monkeys',
+	'chasing a monkey around lumbridge',
+	'on the way to the event'
 ] as const;
 
 const suffixes = new SimpleTable<string>()
