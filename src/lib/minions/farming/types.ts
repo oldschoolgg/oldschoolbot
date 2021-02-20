@@ -20,7 +20,7 @@ export enum FarmingPatchTypes {
 	Belladonna = 'belladonna'
 }
 
-export interface PatchData {
+export interface IPatchData {
 	lastPlanted: string | null;
 	patchPlanted: boolean; // false -> nothing planted, true -> something planted
 	plantTime: number;
@@ -28,6 +28,8 @@ export interface PatchData {
 	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | 'null' | null;
 	lastPayment: boolean;
 }
+
+export type PatchData = IPatchData | null;
 
 export type PlantTier = 0 | 1 | 2 | 3 | 4 | 5;
 

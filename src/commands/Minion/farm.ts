@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import defaultPatches from '../../lib/minions/farming/defaultPatches';
 import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -80,7 +81,7 @@ export default class extends BotCommand {
 
 		const getPatchType = resolvePatchTypeSetting(plants.seedType);
 		if (!getPatchType) return;
-		const patchType = msg.author.settings.get(getPatchType);
+		const patchType = msg.author.settings.get(getPatchType) ?? defaultPatches;
 
 		const timePerPatchTravel = Time.Second * plants.timePerPatchTravel;
 		const timePerPatchHarvest = Time.Second * plants.timePerHarvest;
