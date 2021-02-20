@@ -8,8 +8,9 @@ import MinionCommand from '../../commands/Minion/minion';
 import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -19,9 +20,8 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
 	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
-		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const monster = effectiveMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
-		if (!fullMonster) throw 'No full monster';
 		const user = await this.client.users.fetch(userID);
 		const perkTier = getUsersPerkTier(user);
 		const channel = this.client.channels.get(channelID);
@@ -40,7 +40,7 @@ export default class extends Task {
 			abyssalBonus += 0.25;
 		}
 
-		let loot = monster.table.kill(Math.ceil(quantity * abyssalBonus));
+		let loot = (monster as any).table.kill(Math.ceil(quantity * abyssalBonus));
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
@@ -60,7 +60,7 @@ export default class extends Task {
 
 		let gotKlik = false;
 		const minutes = Math.ceil(duration / Time.Minute);
-		if (fullMonster.data.attributes.includes(MonsterAttribute.Dragon)) {
+		if (fullMonster?.data.attributes.includes(MonsterAttribute.Dragon)) {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(7500)) {
 					gotKlik = true;
@@ -98,7 +98,7 @@ export default class extends Task {
 			}
 		}
 
-		announceLoot(this.client, user, monster, quantity, loot);
+		announceLoot(this.client, user, monster as KillableMonster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);
 
