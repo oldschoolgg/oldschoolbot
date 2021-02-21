@@ -151,13 +151,8 @@ const fishingTrawler: CollectionLogData = {
 
 export const aerialFishing: CollectionLogData = {
 	Angler: anglerOutfit,
-	Other: resolveItems([
-		'Pearl fishing rod',
-		'Pearl fly fishing rod',
-		'Pearl barbarian rod',
-		'Fish sack',
-		'Golden tench'
-	])
+	Rods: resolveItems(['Pearl fishing rod', 'Pearl fly fishing rod', 'Pearl barbarian rod']),
+	Other: resolveItems(['Fish sack', 'Golden tench'])
 };
 
 export const carpenterOutfit = resolveItems([
