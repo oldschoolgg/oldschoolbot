@@ -68,7 +68,7 @@ export default class extends BotCommand {
 			boosts.push(`2x boost for Obis`);
 		}
 
-		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			baseTime *= 1.15;
 			boosts.push(`-15% time penalty for not having graceful equipped`);
 		}

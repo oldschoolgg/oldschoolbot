@@ -2,8 +2,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import { GearTypes } from '../../lib/gear';
-import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
@@ -828,15 +826,9 @@ export default class extends BotCommand {
 
 	gearPointCalc(user: KlasaUser) {
 		// Calculates the amount of raid points based on current gear
-		const currentEquippedMeleeGear = user.settings.get(
-			resolveGearTypeSetting(GearTypes.GearSetupTypes.Melee)
-		);
-		const currentEquippedRangeGear = user.settings.get(
-			resolveGearTypeSetting(GearTypes.GearSetupTypes.Range)
-		);
-		const currentEquippedMageGear = user.settings.get(
-			resolveGearTypeSetting(GearTypes.GearSetupTypes.Mage)
-		);
+		const currentEquippedMeleeGear = user.getGear('melee');
+		const currentEquippedRangeGear = user.getGear('range');
+		const currentEquippedMageGear = user.getGear('mage');
 		let meleeGearPoints = 0;
 		let rangeGearPoints = 0;
 		let mageGearPoints = 0;

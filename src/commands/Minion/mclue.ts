@@ -1,8 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
-import { GearTypes } from '../../lib/gear';
-import { hasGearEquipped } from '../../lib/gear/functions/hasGearEquipped';
+import { GearSetup, hasGearEquipped } from '../../lib/gear';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -14,7 +13,7 @@ import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
 
-function hasClueHunterEquipped(setup: GearTypes.GearSetup) {
+function hasClueHunterEquipped(setup: GearSetup) {
 	return hasGearEquipped(setup, {
 		head: resolveItems(['Helm of raedwald']),
 		body: resolveItems(['Clue hunter garb']),
@@ -80,7 +79,7 @@ export default class extends BotCommand {
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
-		if (hasClueHunterEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasClueHunterEquipped(msg.author.getGear('skilling'))) {
 			timeToFinish /= 2;
 			boosts.push(`2x Boost for Clue hunter outfit`);
 		}
@@ -109,7 +108,7 @@ export default class extends BotCommand {
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			boosts.push(`10% for Graceful`);
 			duration *= 0.9;
 		}

@@ -1,6 +1,6 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { GearTypes } from '../src/lib/gear';
+import { GearSetup } from '../src/lib/gear';
 import { itemID } from '../src/lib/util';
 
 export function mockArgument(arg: any) {
@@ -26,7 +26,7 @@ type PartialGearSetup = Partial<
 		[key in EquipmentSlot]: string;
 	}
 >;
-export function constructGearSetup(setup: PartialGearSetup): GearTypes.GearSetup {
+export function constructGearSetup(setup: PartialGearSetup): GearSetup {
 	return {
 		'2h': setup['2h'] ? { item: itemID(setup['2h']), quantity: 1 } : null,
 		ammo: setup.ammo ? { item: itemID(setup.ammo), quantity: 1 } : null,

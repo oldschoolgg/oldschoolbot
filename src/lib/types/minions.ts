@@ -3,7 +3,7 @@ import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeri
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
-import { PatchTypes } from '../minions/farming';
+import { IPatchData } from '../minions/farming/types';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
@@ -157,7 +157,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
 	payment?: boolean;
-	patchType: PatchTypes.PatchData;
+	patchType: IPatchData;
 	getPatchType: string;
 	planting: boolean;
 	currentDate: number;

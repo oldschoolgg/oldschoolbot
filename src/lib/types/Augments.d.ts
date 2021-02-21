@@ -14,7 +14,13 @@ import { Connection } from 'typeorm';
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BitField, PerkTier } from '../constants';
-import { GearSetupTypes, GearStats, UserFullGearSetup } from '../gear/types';
+import {
+	GearSetup,
+	GearSetupType,
+	GearSetupTypes,
+	GearStats,
+	UserFullGearSetup
+} from '../gear/types';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
@@ -206,6 +212,7 @@ declare module 'discord.js' {
 		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
+		getGear(gearType: GearSetupType): GearSetup;
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

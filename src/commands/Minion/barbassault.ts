@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { Activity, Emoji, Events, Time } from '../../lib/constants';
-import { maxOtherStats } from '../../lib/gear/data/maxGearStats';
+import { maxOtherStats } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

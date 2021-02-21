@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import defaultPatches from '../../lib/minions/farming/defaultPatches';
 import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
 import { FarmingPatchTypes } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -49,7 +50,7 @@ export default class extends BotCommand {
 			)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 		}
 
-		const patchType = msg.author.settings.get(getPatchType);
+		const patchType = msg.author.settings.get(getPatchType) ?? defaultPatches;
 
 		const upgradeType = null;
 		let returnMessageStr = '';
@@ -106,7 +107,7 @@ export default class extends BotCommand {
 		let duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}

@@ -2,7 +2,7 @@ import { calcWhatPercent } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { NIGHTMARES_HP, ZAM_HASTA_CRUSH } from '../constants';
-import { maxOtherStats } from '../gear/data/maxGearStats';
+import { maxOtherStats } from '../gear';
 import { GearSetupTypes } from '../gear/types';
 import { NightmareMonster } from '../minions/data/killableMonsters';
 import { UserSettings } from '../settings/types/UserSettings';
