@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems } from '../../lib/data/similarItems';
@@ -14,9 +14,19 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	public rawGear(this: User) {
-		const gear = (this.settings.get('gear') as SettingsFolder).toJSON() as UserFullGearSetup;
-		return gear;
+	public rawGear(this: User): UserFullGearSetup {
+		const range = this.getGear('range');
+		const melee = this.getGear('melee');
+		const misc = this.getGear('misc');
+		const mage = this.getGear('mage');
+		const skilling = this.getGear('skilling');
+		return {
+			melee,
+			range,
+			misc,
+			skilling,
+			mage
+		};
 	}
 
 	public hasItemEquippedAnywhere(this: User, itemID: number) {
