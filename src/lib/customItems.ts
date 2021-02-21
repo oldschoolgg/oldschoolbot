@@ -905,4 +905,13 @@ export function initCustomItems() {
 	// Pets
 	setCustomItem(40_100, 'Flappy', getOSItem('Herbi'));
 	setCustomItem(40_101, 'Ishi', getOSItem('Herbi'));
+
+	/**
+	 * Misc Items
+	 *
+	 * 50_000 - 59_999
+	 */
+
+	setCustomItem(50_001, 'Raw rocktail', getOSItem('Raw trout'));
+	setCustomItem(50_002, 'Rocktail', getOSItem('Trout'));
 }
