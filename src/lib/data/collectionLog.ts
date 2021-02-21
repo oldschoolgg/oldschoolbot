@@ -118,8 +118,6 @@ const hunterGear: CollectionLogData = {
 		'Spotted cape',
 		'Spottier cape',
 		'Gloves of silence',
-		'Golden tench',
-		'Fish sack',
 		'Baby chinchompa',
 		'Herbi'
 	])
@@ -148,6 +146,17 @@ const fishingTrawler: CollectionLogData = {
 		'Raw shark',
 		'Raw sea turtle',
 		'Raw manta ray'
+	])
+};
+
+export const aerialFishing: CollectionLogData = {
+	Angler: anglerOutfit,
+	Other: resolveItems([
+		'Pearl fishing rod',
+		'Pearl fly fishing rod',
+		'Pearl barbarian rod',
+		'Fish sack',
+		'Golden tench'
 	])
 };
 
@@ -1558,16 +1567,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark graceful cape',
 		'Dark squirrel'
 	]),
-	AerialFishing: [
-		...anglerOutfit,
-		...resolveItems([
-			'Pearl fishing rod',
-			'Pearl fly fishing rod',
-			'Pearl barbarian rod',
-			'Fish sack',
-			'Golden tench'
-		])
-	],
+	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
 	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
@@ -1765,6 +1765,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Hunter Gear',
 		aliases: ['hunter gear'],
 		items: hunterGear
+	},
+	{
+		name: 'Aerial Fishing',
+		aliases: ['af', 'aerial fishing'],
+		items: aerialFishing
 	},
 	{
 		name: 'Mahogany Homes',
