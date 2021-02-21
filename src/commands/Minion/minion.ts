@@ -521,20 +521,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			await removeAmmoFromUser(this.client, msg.author, hits);
 		}
 
-		const combatCalcInfo = combatCalculator(monster, msg.author, quantity);
-
-		if (!combatCalcInfo) {
-			throw `Something went wrong with combatCalculator`;
-		}
-		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
-
-		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'mage') {
-			await removeRunesFromUser(this.client, msg.author, hits);
-		}
-		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'range') {
-			await removeAmmoFromUser(this.client, msg.author, hits);
-		}
-
 		let duration = timeToFinish * quantity;
 		if (duration > msg.author.maxTripLength) {
 			return msg.send(
