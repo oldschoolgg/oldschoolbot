@@ -2,7 +2,7 @@ import { calcWhatPercent, randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { maxOffenceStats } from '../gear/data/maxGearStats';
+import { maxOffenceStats } from '../gear';
 import { GearSetupTypes, GearStats } from '../gear/types';
 import { NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
