@@ -208,7 +208,7 @@ const fishes: Fish[] = [
 		name: 'Raw rocktail',
 		petChance: 129_434,
 		timePerFish: 7.7,
-		clueScrollChance: 49_434
+		clueScrollChance: 25_434
 	}
 ];
 
