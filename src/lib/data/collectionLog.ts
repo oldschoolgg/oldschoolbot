@@ -1560,7 +1560,13 @@ export const skillingLog: CollectionLogData = {
 	]),
 	AerialFishing: [
 		...anglerOutfit,
-		...resolveItems(['Pearl fishing rod', 'Pearl fly fishing rod', 'Pearl barbarian rod'])
+		...resolveItems([
+			'Pearl fishing rod',
+			'Pearl fly fishing rod',
+			'Pearl barbarian rod',
+			'Fish sack',
+			'Golden tench'
+		])
 	],
 	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
 	Zalcano: zalcanoLog,
@@ -1573,8 +1579,6 @@ export const skillingLog: CollectionLogData = {
 		'Spotted cape',
 		'Spottier cape',
 		'Gloves of silence',
-		'Fish sack',
-		'Golden tench',
 		'Baby chinchompa',
 		'Herbi'
 	]),
