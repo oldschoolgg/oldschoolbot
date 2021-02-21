@@ -75,7 +75,7 @@ export namespace UserSettings {
 		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');
 		export const MageAttackStyle = T<string | null>('minion.mageAttackStyle');
 		export const CastedSpell = T<string | null>('minion.castedSpell');
-		export const CombatSkill = T<string | null>('minion.combatSkill');
+		export const CombatSkill = T<string>('minion.combatSkill');
 		export const MeleeCombatStyle = T<string | null>('minion.meleeCombatStyle');
 		export const RangeCombatStyle = T<string | null>('minion.rangeCombatStyle');
 		export const MageCombatStyle = T<string | null>('minion.mageCombatStyle');
