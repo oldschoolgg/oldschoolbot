@@ -63,6 +63,7 @@ import {
 } from '../../lib/types/minions';
 import {
 	addItemToBank,
+	convertLVLtoXP,
 	convertXPtoLVL,
 	formatDuration,
 	incrementMinionDailyDuration,
@@ -665,34 +666,42 @@ export default class extends Extendable {
 			}
 		}
 
-		// If they just reached 99, send a server notification.
-		if (currentLevel < 99 && newLevel >= 99) {
-			const skillNameCased = toTitleCase(skillName);
-			const [usersWith] = await this.client.query<
-				{
-					count: string;
-				}[]
-			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
-
-			let str = `${skill.emoji} **${this.username}'s** minion, ${
-				this.minionName
-			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-				parseInt(usersWith.count) + 1
-			)} to get 99 ${skillNameCased}.`;
-
-			if (this.isIronman) {
-				const [ironmenWith] = await this.client.query<
+		for (const num of [99, 120]) {
+			// If they just reached 99, send a server notification.
+			if (currentLevel < num && newLevel >= num) {
+				const skillNameCased = toTitleCase(skillName);
+				const [usersWith] = await this.client.query<
 					{
 						count: string;
 					}[]
 				>(
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
+					`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > ${
+						convertLVLtoXP(num) - 1
+					};`
 				);
-				str += ` They are the ${formatOrdinal(
-					parseInt(ironmenWith.count) + 1
-				)} Ironman to get 99.`;
+
+				let str = `${skill.emoji} **${this.username}'s** minion, ${
+					this.minionName
+				}, just achieved level ${num} in ${skillNameCased}! They are the ${formatOrdinal(
+					parseInt(usersWith.count) + 1
+				)} to get ${num} ${skillNameCased}.`;
+
+				if (this.isIronman) {
+					const [ironmenWith] = await this.client.query<
+						{
+							count: string;
+						}[]
+					>(
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > ${
+							convertLVLtoXP(num) - 1
+						};`
+					);
+					str += ` They are the ${formatOrdinal(
+						parseInt(ironmenWith.count) + 1
+					)} Ironman to get ${num}.`;
+				}
+				this.client.emit(Events.ServerNotification, str);
 			}
-			this.client.emit(Events.ServerNotification, str);
 		}
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
