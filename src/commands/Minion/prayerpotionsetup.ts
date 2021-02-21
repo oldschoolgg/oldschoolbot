@@ -2,14 +2,14 @@ import { MessageAttachment } from 'discord.js';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/BotCommand';
+import Potions from '../../lib/minions/data/potions';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { generatePotionImage } from '../../lib/minions/functions/generatePotionImage';
 import { generatePrayerImage } from '../../lib/minions/functions/generatePrayerImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
-import { itemNameFromID } from '../../lib/util';
 import { SkillsEnum } from '../../lib/skilling/types';
-import Potions from '../../lib/minions/data/potions';
-import { generatePotionImage } from '../../lib/minions/functions/generatePotionImage';
+import { itemNameFromID } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,7 +20,11 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			aliases: ['ps', 'prayersetup', 'potionsetup'],
 			description: 'Select what prayer/potions to use or unlock prayer.',
-			examples: ['+prayersetup prayer Thick Skin', '+potionsetup potion Saradomin brew', '+ps unlock Rigour'],
+			examples: [
+				'+prayersetup prayer Thick Skin',
+				'+potionsetup potion Saradomin brew',
+				'+ps unlock Rigour'
+			],
 			categoryFlags: ['minion'],
 			subcommands: true
 		});
@@ -38,16 +42,22 @@ export default class extends BotCommand {
 		if (currentPrayers.length === 0 && currentPotions.length === 0) {
 			return msg.send(`You have no prayers activated and no potions selected.`);
 		}
-		
+
 		if (currentPrayers.length === 0) {
 			const image = await generatePotionImage(this.client, msg.author);
-			return msg.send(`You have no prayers activated.`, new MessageAttachment(image, 'osbot.png'));
+			return msg.send(
+				`You have no prayers activated.`,
+				new MessageAttachment(image, 'osbot.png')
+			);
 		}
 
 		if (currentPotions.length === 0) {
 			const image = await generatePrayerImage(this.client, msg.author);
-			return msg.send(`You have no potions selected.`, new MessageAttachment(image, 'osbot.png'));
-		} 
+			return msg.send(
+				`You have no potions selected.`,
+				new MessageAttachment(image, 'osbot.png')
+			);
+		}
 
 		const imagePrayerBuffer = await generatePrayerImage(this.client, msg.author);
 		const imagePrayer = new MessageAttachment(imagePrayerBuffer, 'osbot2.png');

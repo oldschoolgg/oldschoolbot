@@ -1,11 +1,11 @@
 import { Skill } from '../types';
 import Agility from './agility';
-import Construction from './construction';
 import Attack from './combat/attack';
 import Defence from './combat/defence';
 import Hitpoints from './combat/hitpoints';
 import Ranged from './combat/ranged';
 import Strength from './combat/strength';
+import Construction from './construction';
 import Cooking from './cooking';
 import Crafting from './crafting';
 import Farming from './farming';

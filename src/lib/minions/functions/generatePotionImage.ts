@@ -1,14 +1,14 @@
-import { ItemBank } from './../../types/index';
 import { createCanvas } from 'canvas';
 import { KlasaClient, KlasaUser } from 'klasa';
+import { addItemToBank } from 'oldschooljs/dist/util';
 
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
-import Potions from '../data/potions';
-import getOSItem from '../../util/getOSItem';
-import { addItemToBank } from 'oldschooljs/dist/util';
 import { stringMatches } from '../../util';
+import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
+import getOSItem from '../../util/getOSItem';
+import Potions from '../data/potions';
+import { ItemBank } from './../../types/index';
 
 let bankTask: BankImageTask | null = null;
 
@@ -35,8 +35,14 @@ export async function generatePotionImage(client: KlasaClient, user: KlasaUser) 
 		} catch (_) {}
 	}
 	const potionBankImage = await client.tasks
-	.get('bankImage')!
-	.generateBankImage(viewPotions, `Currently selected potions to use.`, false, {userBgID, names:'names'}, user);
+		.get('bankImage')!
+		.generateBankImage(
+			viewPotions,
+			`Currently selected potions to use.`,
+			false,
+			{ userBgID, names: 'names' },
+			user
+		);
 	const potionTemplateImage = await canvasImageFromBuffer(potionBankImage);
 	const canvas = createCanvas(potionTemplateImage.width, potionTemplateImage.height);
 	const ctx = canvas.getContext('2d');
