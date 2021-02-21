@@ -1,5 +1,6 @@
 import { Client } from 'klasa';
 
+import { production } from '../../config';
 import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { OldSchoolBotClient } from '../structures/OldSchoolBotClient';
 import { ActivityTaskOptions } from '../types/minions';
@@ -15,7 +16,7 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 
-	const finishDate = Date.now() + 1;
+	const finishDate = Date.now() + (production ? subTaskToAdd.duration : 1);
 	const newSubtask: ActivityTaskOptions = {
 		...subTaskToAdd,
 		finishDate,
