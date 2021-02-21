@@ -476,6 +476,29 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			}
 		}
 
+		if (monster.exclusiveItemInBankBoosts) {
+			for (const boostSet of monster.exclusiveItemInBankBoosts) {
+				let highestBoostAmount = null;
+				let highestBoostItem = null;
+
+				// find the highest boost that the player has
+				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+					if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
+					if (!highestBoostAmount || boostAmount > highestBoostAmount) {
+						highestBoostAmount = boostAmount;
+						highestBoostItem = itemID;
+					}
+				}
+
+				if (highestBoostAmount && highestBoostItem) {
+					timeToFinish *= (100 - highestBoostAmount) / 100;
+					boosts.push(
+						`${highestBoostAmount}% for ${itemNameFromID(parseInt(highestBoostItem))}`
+					);
+				}
+			}
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = floor(msg.author.maxTripLength / timeToFinish);

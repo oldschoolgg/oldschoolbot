@@ -49,6 +49,29 @@ export default class MinionCommand extends BotCommand {
 				ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 			}
 		}
+
+		if (monster.exclusiveItemInBankBoosts) {
+			for (const boostSet of monster.exclusiveItemInBankBoosts) {
+				let highestBoostAmount = null;
+				let highestBoostItem = null;
+
+				// find the highest boost that the player has
+				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+					if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
+					if (!highestBoostAmount || boostAmount > highestBoostAmount) {
+						highestBoostAmount = boostAmount;
+						highestBoostItem = itemID;
+					}
+				}
+
+				if (highestBoostAmount && highestBoostItem) {
+					timeToFinish *= (100 - highestBoostAmount) / 100;
+					totalItemBoost += highestBoostAmount;
+					ownedBoostItems.push(itemNameFromID(parseInt(highestBoostItem)));
+				}
+			}
+		}
+
 		const maxCanKill = Math.floor(msg.author.maxTripLength / timeToFinish);
 
 		const QP = msg.author.settings.get(UserSettings.QP);

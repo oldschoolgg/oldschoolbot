@@ -65,6 +65,12 @@ export interface KillableMonster {
 	 */
 	itemInBankBoosts?: ItemBank;
 	/**
+	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
+	 * this monster. For each set, only the item with the greatest boost (that the user also possesses)
+	 * will be used as boost.
+	 */
+	exclusiveItemInBankBoosts?: ItemBank[];
+	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
 	groupKillable?: true;
