@@ -1,8 +1,7 @@
-import { GearTypes } from '..';
+import { GearSetup, hasGearEquipped } from '..';
 import resolveItems from '../../util/resolveItems';
-import { hasGearEquipped } from './hasGearEquipped';
 
-export function hasRangedVoidEquipped(setup: GearTypes.GearSetup) {
+export function hasRangedVoidEquipped(setup: GearSetup) {
 	return hasGearEquipped(setup, {
 		head: resolveItems(['Void ranger helm']),
 		body: resolveItems(['Void knight top']),

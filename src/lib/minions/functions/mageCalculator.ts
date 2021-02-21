@@ -5,15 +5,13 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { hasEliteMagicVoidEquipped } from '../../gear/functions/hasEliteMagicVoidEquipped';
-import hasItemEquipped from '../../gear/functions/hasItemEquipped';
 import { hasMagicVoidEquipped } from '../../gear/functions/hasMagicVoidEquipped';
-import resolveGearTypeSetting from '../../gear/functions/resolveGearTypeSetting';
+import { GearSetupTypes, resolveGearTypeSetting, hasItemEquipped } from '../../../lib/gear';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
 import { KillableMonster } from '../types';
-import { GearSetupTypes } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 
 export default function mageCalculator(

@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import Potions from '../../lib/minions/data/potions';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { generatePotionImage } from '../../lib/minions/functions/generatePotionImage';
