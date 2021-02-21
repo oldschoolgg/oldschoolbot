@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../../lib/data/eatables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -24,7 +25,16 @@ export default class extends BotCommand {
 		const loot: Record<string, number> = Object.fromEntries(
 			Eatables.map(({ id }) => [id, 1000])
 		);
-		msg.author.addItemsToBank(loot);
-		return msg.send(`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all eatable foods`);
+		const bank = new Bank(loot);
+		bank.add('Zamorakian spear');
+		bank.add('Dragon warhammer');
+		bank.add('Bandos godsword');
+		const poh = await msg.author.getPOH();
+		poh.pool = 29241;
+		await poh.save();
+		msg.author.addItemsToBank(bank.bank);
+		return msg.send(
+			`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
+		);
 	}
 }

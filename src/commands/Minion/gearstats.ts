@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearTypes } from '../../lib/gear';
+import { defaultGear } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
@@ -20,20 +20,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [itemNames]: [string]) {
-		const gear: GearTypes.GearSetup = {
-			'2h': null,
-			ammo: null,
-			body: null,
-			cape: null,
-			feet: null,
-			hands: null,
-			head: null,
-			legs: null,
-			neck: null,
-			ring: null,
-			shield: null,
-			weapon: null
-		};
+		const gear = { ...defaultGear };
 		for (const name of itemNames.split(',')) {
 			const item = getOSItem(name);
 			if (item.equipment) {

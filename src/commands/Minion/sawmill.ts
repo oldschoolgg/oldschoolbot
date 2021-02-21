@@ -65,7 +65,7 @@ export default class extends BotCommand {
 			boosts.push(`2x for Hammy`);
 		}
 
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			timePerPlank *= 0.9;
 			boosts.push(`10% for Graceful`);
 		}

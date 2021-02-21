@@ -1,9 +1,8 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearTypes } from '../../lib/gear';
+import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import getUserBestGearFromBank from '../../lib/minions/functions/getUserBestGearFromBank';
@@ -31,19 +30,14 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, type, style, extra = null]: [
-			GearTypes.GearSetupTypes,
-			string,
-			string,
-			string | null
-		]
+		[gearType, type, style, extra = null]: [GearSetupTypes, string, string, string | null]
 	) {
 		await msg.author.settings.sync(true);
 
 		await msg.author.queueFn(async () => {
 			const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
 				msg.author.settings.get(UserSettings.Bank),
-				msg.author.rawGear()[gearType],
+				msg.author.getGear(gearType),
 				gearType,
 				type,
 				style,
@@ -56,7 +50,7 @@ export default class extends BotCommand {
 		const image = await generateGearImage(
 			this.client,
 			msg.author,
-			msg.author.settings.get(resolveGearTypeSetting(gearType)),
+			msg.author.getGear(gearType),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);

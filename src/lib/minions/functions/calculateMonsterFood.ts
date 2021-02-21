@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { maxDefenceStats, maxOffenceStats } from '../../gear/data/maxGearStats';
+import { maxDefenceStats, maxOffenceStats } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import { calcWhatPercent, itemID, reduceNumByPercent } from '../../util';
 import killableMonsters from '../data/killableMonsters';

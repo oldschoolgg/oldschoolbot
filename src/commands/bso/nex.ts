@@ -2,8 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -150,7 +149,7 @@ export default class extends BotCommand {
 			let msgs = [];
 
 			// Special inquisitor outfit damage boost
-			const rangeGear = user.settings.get(UserSettings.Gear.Range);
+			const rangeGear = user.getGear('range');
 			const equippedWeapon = user.equippedWeapon(GearSetupTypes.Range);
 			if (hasArrayOfItemsEquipped(pernixOutfit, rangeGear)) {
 				const percent = isSolo ? 20 : 8;

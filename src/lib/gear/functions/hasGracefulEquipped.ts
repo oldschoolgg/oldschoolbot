@@ -1,8 +1,7 @@
-import { GearTypes } from '..';
+import { GearSetup, hasGearEquipped } from '..';
 import resolveItems from '../../util/resolveItems';
-import { hasGearEquipped } from './hasGearEquipped';
 
-export function hasGracefulEquipped(setup: GearTypes.GearSetup) {
+export function hasGracefulEquipped(setup: GearSetup) {
 	return hasGearEquipped(setup, {
 		head: resolveItems([
 			'Graceful hood',
