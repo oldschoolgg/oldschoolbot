@@ -15,7 +15,7 @@ export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 
-	const finishDate = Date.now() + subTaskToAdd.duration;
+	const finishDate = Date.now() + 1;
 	const newSubtask: ActivityTaskOptions = {
 		...subTaskToAdd,
 		finishDate,

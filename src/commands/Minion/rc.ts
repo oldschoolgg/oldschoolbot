@@ -65,7 +65,7 @@ export default class extends BotCommand {
 
 		let { tripLength } = rune;
 		const boosts = [];
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			tripLength -= rune.tripLength * 0.1;
 			boosts.push(`10% for Graceful`);
 		}

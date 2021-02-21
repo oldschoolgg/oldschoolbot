@@ -38,7 +38,7 @@ export default class extends BotCommand {
 			: boostStr.push('');
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(user.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(user.getGear('skilling'))) {
 			nonGracefulTimeAddition = 0;
 			boostStr.push('10% from graceful outfit');
 		}

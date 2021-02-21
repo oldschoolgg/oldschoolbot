@@ -34,7 +34,7 @@ export default class extends BotCommand {
 
 		let duration = Time.Minute * 30;
 
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			duration *= 0.9;
 			boosts.push(`10% for Graceful`);
 		}

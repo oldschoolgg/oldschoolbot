@@ -4,9 +4,8 @@ import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
-import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -106,7 +105,7 @@ export default class extends Task {
 		if (
 			hasArrayOfItemsEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				user.getGear('skilling')
 			)
 		) {
 			const amountToAdd = Math.floor(fmXpToGive * (2.5 / 100));

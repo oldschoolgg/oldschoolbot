@@ -63,7 +63,7 @@ export default class extends BotCommand {
 		baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
 
-		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			baseTime *= 1.15;
 			boosts.push(`-15% time penalty for not having graceful equipped`);
 		}
