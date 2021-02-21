@@ -1558,7 +1558,10 @@ export const skillingLog: CollectionLogData = {
 		'Dark graceful cape',
 		'Dark squirrel'
 	]),
-	Angler: anglerOutfit,
+	AerialFishing: [
+		...anglerOutfit,
+		...resolveItems(['Pearl fishing rod', 'Pearl fly fishing rod', 'Pearl barbarian rod'])
+	],
 	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
