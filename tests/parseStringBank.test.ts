@@ -82,13 +82,13 @@ describe('Bank Parsers', () => {
 			inputBank: bank,
 			flags: { tradeables: '' }
 		});
-		expect(res2.length).toEqual(3);
+		expect(res2.length).toEqual(2);
 
 		const res3 = parseBank({
 			inputBank: bank,
 			flags: { untradeables: '' }
 		});
-		expect(res3.length).toEqual(1);
+		expect(res3.length).toEqual(0);
 	});
 
 	test('parseBank - filters', async () => {
