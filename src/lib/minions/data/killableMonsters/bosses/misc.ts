@@ -73,9 +73,14 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 5,
-			[itemID('Ranger boots')]: 5,
 			[itemID("Iban's staff")]: 2
 		},
+		exclusiveItemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 5,
+				[itemID('Pegasian boots')]: 7
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},

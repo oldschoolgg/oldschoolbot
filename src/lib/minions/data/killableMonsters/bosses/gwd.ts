@@ -41,8 +41,13 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 75,
+		exclusiveItemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 5,
+				[itemID('Pegasian boots')]: 7
+			}
+		],
 		itemInBankBoosts: {
-			[itemID('Ranger boots')]: 5,
 			[itemID('Armadyl crossbow')]: 5
 		},
 		groupKillable: true,
