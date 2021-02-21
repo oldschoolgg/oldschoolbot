@@ -17,7 +17,7 @@ export default class extends Task {
 
 		const currentLevel = user.skillLevel(SkillsEnum.Construction);
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.settings.get(UserSettings.Gear.Skilling));
+		const outfitMultiplier = calcConBonusXP(user.getGear('skilling'));
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}

@@ -3,10 +3,9 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util';
 
-import defaultGear from '../../lib/gear/defaultGear';
+import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { gearPresetToStr, globalPresets } from '../../lib/gear/functions/gearPresets';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -114,7 +113,7 @@ export default class extends BotCommand {
 		const image = await generateGearImage(
 			this.client,
 			msg.author,
-			msg.author.settings.get(resolveGearTypeSetting(setup)),
+			msg.author.getGear(setup),
 			setup,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);

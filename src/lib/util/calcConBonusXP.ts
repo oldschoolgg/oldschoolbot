@@ -1,8 +1,8 @@
-import { GearTypes } from '../gear';
+import { GearSetup } from '../gear';
 import { round } from '../util';
 import itemID from './itemID';
 
-export function calcConBonusXP(setup: GearTypes.GearSetup): number {
+export function calcConBonusXP(setup: GearSetup): number {
 	let bonusMultiplier = 0;
 	let numberOfItems = 0;
 

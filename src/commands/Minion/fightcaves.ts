@@ -53,7 +53,7 @@ export default class extends BotCommand {
 		debugStr += `${percentIncreaseFromKC}% from KC`;
 
 		// Reduce time based on Gear
-		const usersRangeStats = sumOfSetupStats(user.settings.get(UserSettings.Gear.Range));
+		const usersRangeStats = sumOfSetupStats(user.getGear('range'));
 		const percentIncreaseFromRangeStats =
 			Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
@@ -86,7 +86,7 @@ export default class extends BotCommand {
 	async checkGear(user: KlasaUser) {
 		const equippedWeapon = user.equippedWeapon(GearSetupTypes.Range);
 
-		const usersRangeStats = sumOfSetupStats(user.settings.get(UserSettings.Gear.Range));
+		const usersRangeStats = sumOfSetupStats(user.getGear('range'));
 
 		if (
 			!equippedWeapon ||
@@ -130,7 +130,7 @@ export default class extends BotCommand {
 		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.FightCavesAttempts);
-		const usersRangeStats = sumOfSetupStats(msg.author.settings.get(UserSettings.Gear.Range));
+		const usersRangeStats = sumOfSetupStats(msg.author.getGear('range'));
 		const jadKC = msg.author.getKC(TzTokJad.id);
 
 		duration += (rand(1, 5) * duration) / 100;

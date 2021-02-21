@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
@@ -25,7 +24,7 @@ export default class extends Task {
 		if (
 			hasArrayOfItemsEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				user.getGear('skilling')
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));

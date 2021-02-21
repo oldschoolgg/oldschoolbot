@@ -1,10 +1,10 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { GearTypes } from '..';
+import { GearSetup, GearStats } from '..';
 import { keys, values } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
-const baseSumObj: GearTypes.GearStats = {
+const baseSumObj: GearStats = {
 	attack_stab: 0,
 	attack_slash: 0,
 	attack_crush: 0,
@@ -21,7 +21,7 @@ const baseSumObj: GearTypes.GearStats = {
 	prayer: 0
 };
 
-export function sumOfSetupStats(setup: GearTypes.GearSetup): GearTypes.GearStats {
+export function sumOfSetupStats(setup: GearSetup): GearStats {
 	const sum = { ...baseSumObj };
 
 	// For each item slot that there is...

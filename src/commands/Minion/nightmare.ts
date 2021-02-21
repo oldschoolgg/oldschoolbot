@@ -1,8 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -149,7 +148,7 @@ export default class extends BotCommand {
 			);
 
 			// Special inquisitor outfit damage boost
-			const meleeGear = user.settings.get(UserSettings.Gear.Melee);
+			const meleeGear = user.getGear('melee');
 			if (hasArrayOfItemsEquipped(inquisitorItems, meleeGear)) {
 				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
 			} else {

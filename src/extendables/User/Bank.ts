@@ -1,11 +1,10 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
 
 import { Events } from '../../lib/constants';
 import SimilarItems from '../../lib/data/similarItems';
-import { GearTypes } from '../../lib/gear';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
@@ -35,11 +34,7 @@ export default class extends Extendable {
 			numOwned += bank[itemID];
 		}
 
-		const gear = (this.settings.get('gear') as SettingsFolder).toJSON() as {
-			[key: string]: GearTypes.GearSetup;
-		};
-
-		for (const setup of Object.values(gear)) {
+		for (const setup of Object.values(this.rawGear())) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === itemID);
 			if (thisItemEquipped) numOwned += thisItemEquipped.quantity;
 		}

@@ -1,6 +1,5 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import Gear from '../../gear';
 import defaultContracts from '../../minions/farming/defaultContracts';
 import { FarmingPatchTypes } from '../../minions/farming/types';
 import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
@@ -77,11 +76,11 @@ Client.defaultUserSchema
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
-			.add('melee', 'any', { default: Gear.defaultGear })
-			.add('mage', 'any', { default: Gear.defaultGear })
-			.add('range', 'any', { default: Gear.defaultGear })
-			.add('misc', 'any', { default: Gear.defaultGear })
-			.add('skilling', 'any', { default: Gear.defaultGear })
+			.add('melee', 'any', { default: null })
+			.add('mage', 'any', { default: null })
+			.add('range', 'any', { default: null })
+			.add('misc', 'any', { default: null })
+			.add('skilling', 'any', { default: null })
 	)
 	.add('farmingPatches', (folder: SchemaFolder) =>
 		folder

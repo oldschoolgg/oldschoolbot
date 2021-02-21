@@ -4,7 +4,7 @@ import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa'
 import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
-import readableStatName from '../../lib/gear/functions/readableStatName';
+import { readableStatName } from '../../lib/gear';
 import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

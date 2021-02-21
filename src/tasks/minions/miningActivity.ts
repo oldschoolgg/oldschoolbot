@@ -3,9 +3,8 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, Time } from '../../lib/constants';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
@@ -31,7 +30,7 @@ export default class extends Task {
 		if (
 			hasArrayOfItemsEquipped(
 				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				user.getGear('skilling')
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));

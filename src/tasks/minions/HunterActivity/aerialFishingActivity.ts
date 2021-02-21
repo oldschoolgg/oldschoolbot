@@ -2,8 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events, Time } from '../../../lib/constants';
-import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -88,7 +87,7 @@ export default class extends Task {
 		if (
 			hasArrayOfItemsEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				user.getGear('skilling')
 			)
 		) {
 			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));

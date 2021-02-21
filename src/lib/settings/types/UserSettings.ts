@@ -2,7 +2,7 @@
 import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
-import { GearTypes } from '../../gear';
+import { GearSetup } from '../../gear';
 import { PatchTypes } from '../../minions/farming';
 import defaultContracts from '../../minions/farming/defaultContracts';
 import { CompostTier, FarmingPatchTypes } from '../../minions/farming/types';
@@ -91,11 +91,11 @@ export namespace UserSettings {
 	}
 
 	export namespace Gear {
-		export const Melee = T<GearTypes.GearSetup>(`gear.melee`);
-		export const Range = T<GearTypes.GearSetup>(`gear.range`);
-		export const Mage = T<GearTypes.GearSetup>(`gear.mage`);
-		export const Misc = T<GearTypes.GearSetup>(`gear.misc`);
-		export const Skilling = T<GearTypes.GearSetup>(`gear.skilling`);
+		export const Melee = T<GearSetup | null>(`gear.melee`);
+		export const Range = T<GearSetup | null>(`gear.range`);
+		export const Mage = T<GearSetup | null>(`gear.mage`);
+		export const Misc = T<GearSetup | null>(`gear.misc`);
+		export const Skilling = T<GearSetup | null>(`gear.skilling`);
 	}
 
 	export namespace FarmingPatches {
