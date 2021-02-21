@@ -1,6 +1,6 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { chunk, objectKeys, reduceNumByPercent, sleep } from 'e';
+import { chunk, objectEntries, objectKeys, reduceNumByPercent, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -351,6 +351,13 @@ export default class MinionCommand extends BotCommand {
 			throw `You would be foolish to try to face King Goldemar in a solo fight.`;
 		}
 
+		if (msg.author.usingPet('Ishi') && monster.name !== 'Ogress Warrior') {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			this.kill(msg, ['Ogress Warrior']);
+			return msg.channel.send(`Let's kill some ogress warriors instead? 🥰 🐳`);
+		}
+
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
@@ -420,7 +427,18 @@ export default class MinionCommand extends BotCommand {
 		// If you have dwarven blessing, you need 1 prayer pot per 5 mins
 		const prayerPots = msg.author.bank().amount('Prayer potion(4)');
 		const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
-		const prayerPotsNeeded = Math.max(1, fiveMinIncrements);
+		const gearSetupsUsed = objectEntries(msg.author.rawGear()).filter(entry =>
+			monster.attackStyleToUse?.includes(entry[0])
+		);
+		let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
+		const hasPrayerMasterCape = gearSetupsUsed.some(
+			c => c[1].cape?.item === itemID('Prayer master cape')
+		);
+		if (hasPrayerMasterCape && hasBlessing) {
+			boosts.push(`40% less prayer pots`);
+			prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
+		}
+		prayerPotsNeeded = Math.max(1, prayerPotsNeeded);
 		if (hasBlessing) {
 			if (prayerPots < prayerPotsNeeded) {
 				return msg.send(
@@ -456,7 +474,7 @@ export default class MinionCommand extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (hasBlessing) {
+		if (hasBlessing && prayerPotsNeeded) {
 			await msg.author.removeItemFromBank(itemID('Prayer potion(4)'), prayerPotsNeeded);
 		}
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
