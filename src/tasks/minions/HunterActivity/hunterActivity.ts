@@ -85,7 +85,7 @@ export default class extends Task {
 			);
 
 			// Gives lower death chance depending on what the user got equipped in misc.
-			const [, , score] = hasWildyHuntGearEquipped(user.settings.get(UserSettings.Gear.Misc));
+			const [, , score] = hasWildyHuntGearEquipped(user.getGear('misc'));
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (roll(riskPkChance)) {

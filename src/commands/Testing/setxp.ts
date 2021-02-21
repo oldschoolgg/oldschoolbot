@@ -6,7 +6,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<skillName:string> <amount:int{1,200000000}>',
+			usage: '<skillName:string> <amount:int{1,600000000}>',
 			usageDelim: ' ',
 			testingCommand: true
 		});

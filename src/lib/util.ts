@@ -9,7 +9,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 const emojiRegex = require('emoji-regex');
 
 import { CENA_CHARS, Channel, continuationChars, Events, PerkTier, Time } from './constants';
-import hasItemEquipped from './gear/functions/hasItemEquipped';
+import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
@@ -286,7 +286,7 @@ export const anglerBoosts = [
 ];
 
 export function anglerBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.settings.get(UserSettings.Gear.Skilling);
+	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {

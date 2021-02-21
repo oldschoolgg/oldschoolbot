@@ -2,9 +2,8 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
+import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
@@ -63,7 +62,7 @@ export default class extends Task {
 		if (
 			hasArrayOfItemsEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				user.getGear('skilling')
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));

@@ -1,7 +1,7 @@
-import { GearTypes } from '..';
+import { GearSetup } from '..';
 import getOSItem from '../../util/getOSItem';
 
-export function hasWildyHuntGearEquipped(setup: GearTypes.GearSetup): [boolean, string, number] {
+export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, number] {
 	const userBodyID = setup.body?.item;
 	const userLegsID = setup.legs?.item;
 

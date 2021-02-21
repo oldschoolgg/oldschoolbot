@@ -11,6 +11,7 @@ export enum GearSetupTypes {
 	Misc = 'misc',
 	Skilling = 'skilling'
 }
+export type GearSetupType = 'melee' | 'mage' | 'range' | 'misc' | 'skilling';
 
 export enum GearStat {
 	AttackStab = 'attack_stab',
@@ -74,3 +75,9 @@ export type OtherGearStat =
 	| GearStat.RangedStrength
 	| GearStat.MagicDamage
 	| GearStat.Prayer;
+
+export type GearRequired = Partial<
+	{
+		[key in EquipmentSlot]: number[];
+	}
+>;
