@@ -767,14 +767,14 @@ export default class extends Extendable {
 		const boosts = new Bank();
 		if (monster.itemInBankBoosts) {
 			for (const boostSet of monster.itemInBankBoosts) {
-				let highestBoostAmount = null;
-				let highestBoostItem = null;
+				let highestBoostAmount = 0;
+				let highestBoostItem = 0;
 
 				// find the highest boost that the player has
 				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 					const parsedId = parseInt(itemID);
 					if (!this.hasItemEquippedOrInBank(parsedId)) continue;
-					if (!highestBoostAmount || boostAmount > highestBoostAmount) {
+					if (boostAmount > highestBoostAmount) {
 						highestBoostAmount = boostAmount;
 						highestBoostItem = parsedId;
 					}

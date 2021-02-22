@@ -31,10 +31,7 @@ export default async function reducedTimeForGroup(
 		const userKc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 1;
 		const [, userKcReduction] = reducedTimeFromKC(monster, userKc);
 		let userItemBoost = 0;
-		for (const [itemID, boostAmount] of Object.entries(
-			user.resolveAvailableItemBoosts(monster)
-		)) {
-			if (!user.hasItemEquippedOrInBank(parseInt(itemID))) continue;
+		for (const [, boostAmount] of Object.entries(user.resolveAvailableItemBoosts(monster))) {
 			userItemBoost += boostAmount;
 		}
 		// 1 per user, i/15 for incentive to group (more people compounding i bonus), then add the users kc and item boost percent
