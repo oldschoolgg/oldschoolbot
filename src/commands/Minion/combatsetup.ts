@@ -9,6 +9,14 @@ import Standard from '../../lib/skilling/skills/combat/magic/castables/Standard'
 import { stringMatches } from '../../lib/util';
 import { Castable } from './../../lib/skilling/types';
 
+export enum CombatsEnum {
+	Melee = 'melee',
+	Range = 'range',
+	Mage = 'mage',
+	Auto = 'auto',
+	NoCombat = 'nocombat'
+}
+
 // No Lunar at this point, vengence etc isn't useful here.
 const castables: Castable[] = [...Standard, ...Ancient];
 
@@ -18,7 +26,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[melee|mage|range] [combatSkill:string] [combatSpell:...string]',
+			usage: '[melee|mage|range|auto|nocombat] [combatSkill:string] [combatSpell:...string]',
 			usageDelim: ' ',
 			aliases: ['cs']
 		});
@@ -37,12 +45,17 @@ export default class extends BotCommand {
 		const oldCombatSkill = msg.author.settings.get(UserSettings.Minion.CombatSkill);
 		if (!combatSkill) {
 			return msg.send(
-				`${msg.author.minionName} is currently using combat skill ${oldCombatSkill}. To swap skill type \`${msg.cmdPrefix}combatsetup melee/range/mage\`.`
+				`${msg.author.minionName} is currently using combat skill ${oldCombatSkill}. To swap skill type \`${msg.cmdPrefix}combatsetup melee/range/mage/auto/nocombat\`.`
 			);
 		}
 
 		if (!combatStyle) {
-			await msg.author.settings.update(UserSettings.Minion.CombatSkill, combatSkill);
+			for (const currentEnum of Object.values(CombatsEnum)) {
+				if (currentEnum.valueOf().toLowerCase() === combatSkill.toLowerCase()) {
+					await msg.author.settings.update(UserSettings.Minion.CombatSkill, currentEnum);
+				}
+				break;
+			}
 
 			msg.author.log(`Changed combat skill to ${combatSkill}`);
 
@@ -57,7 +70,7 @@ export default class extends BotCommand {
 			if (weapon === null || weapon.weapon === null) {
 				throw `No weapon is equipped.`;
 			}
-			await msg.author.settings.update(UserSettings.Minion.CombatSkill, combatSkill);
+			await msg.author.settings.update(UserSettings.Minion.CombatSkill, CombatsEnum.Melee);
 
 			for (let stance of weapon!.weapon!.stances) {
 				if (stance === null) {
@@ -90,7 +103,7 @@ export default class extends BotCommand {
 			if (weapon === null || weapon.weapon === null) {
 				throw `No weapon is equipped.`;
 			}
-			await msg.author.settings.update(UserSettings.Minion.CombatSkill, combatSkill);
+			await msg.author.settings.update(UserSettings.Minion.CombatSkill, CombatsEnum.Range);
 
 			for (let stance of weapon!.weapon!.stances) {
 				if (stance === null) {
@@ -119,7 +132,7 @@ export default class extends BotCommand {
 
 		if (combatSkill === 'mage') {
 			combatStyle = combatStyle.toLowerCase();
-			await msg.author.settings.update(UserSettings.Minion.CombatSkill, combatSkill);
+			await msg.author.settings.update(UserSettings.Minion.CombatSkill, CombatsEnum.Mage);
 
 			if (combatStyle === 'standard' || combatStyle === 'defensive') {
 				if (!combatSpell) {

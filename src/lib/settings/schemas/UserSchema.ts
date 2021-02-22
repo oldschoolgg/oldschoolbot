@@ -4,6 +4,7 @@ import defaultContracts from '../../minions/farming/defaultContracts';
 import { FarmingPatchTypes } from '../../minions/farming/types';
 import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
+import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 
 Client.defaultUserSchema
 	.add('GP', 'integer', { default: 0 })
@@ -44,11 +45,10 @@ Client.defaultUserSchema
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultPay', 'boolean', { default: false })
 			.add('birdhouseTraps', 'any', { default: defaultBirdHouseTrap })
-			.add('combatStyle', 'any', { default: 'melee' })
+			.add('combatStyle', 'any', { default: CombatsEnum.Auto })
 			.add('meleeAttackStyle', 'any', { default: null })
 			.add('rangeAttackStyle', 'any', { default: null })
 			.add('mageAttackStyle', 'any', { default: null })
-			.add('castedSpell', 'any', { default: null })
 			.add('combatSkill', 'any', { default: null })
 			.add('meleeCombatStyle', 'any', { default: null })
 			.add('rangeCombatStyle', 'any', { default: null })

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
+import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
@@ -15,7 +16,6 @@ export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 	return k as CustomGet<string, Readonly<TCustom>>;
 }
-
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
@@ -74,8 +74,7 @@ export namespace UserSettings {
 		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');
 		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');
 		export const MageAttackStyle = T<string | null>('minion.mageAttackStyle');
-		export const CastedSpell = T<string | null>('minion.castedSpell');
-		export const CombatSkill = T<string>('minion.combatSkill');
+		export const CombatSkill = T<CombatsEnum>('minion.combatSkill');
 		export const MeleeCombatStyle = T<string | null>('minion.meleeCombatStyle');
 		export const RangeCombatStyle = T<string | null>('minion.rangeCombatStyle');
 		export const MageCombatStyle = T<string | null>('minion.mageCombatStyle');
