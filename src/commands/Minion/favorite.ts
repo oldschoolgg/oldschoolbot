@@ -24,14 +24,19 @@ export default class extends BotCommand {
 			if (currentFavorites.length === 0) {
 				return msg.send(`You have no favorited items.`);
 			}
-			return msg.send(
+			return msg.channel.send(
 				`Your current favorite items are: ${currentFavorites
 					.map(id => itemNameFromID(id))
-					.join(', ')}.`
+					.join(', ')}.`,
+				{ split: true }
 			);
 		}
 
 		const [item] = items;
+
+		if (currentFavorites.length >= 50) {
+			return msg.send(`You cant favorite anymore items.`);
+		}
 
 		if (currentFavorites.includes(item.id)) {
 			await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {
