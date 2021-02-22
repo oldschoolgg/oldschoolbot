@@ -46,7 +46,7 @@ export default class extends BotCommand {
 			return msg.send(`Removed ${item.name} from your favorite items.`);
 		}
 
-		if (currentFavorites.length >= 50) {
+		if (currentFavorites.length >= 100) {
 			return msg.send(`You cant favorite anymore items.`);
 		}
 
