@@ -39,15 +39,15 @@ export default class extends BotCommand {
 
 		const [item] = items;
 
-		if (currentFavorites.length >= 50) {
-			return msg.send(`You cant favorite anymore items.`);
-		}
-
 		if (currentFavorites.includes(item.id)) {
 			await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {
 				arrayAction: ArrayActions.Remove
 			});
 			return msg.send(`Removed ${item.name} from your favorite items.`);
+		}
+
+		if (currentFavorites.length >= 50) {
+			return msg.send(`You cant favorite anymore items.`);
 		}
 
 		await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {
