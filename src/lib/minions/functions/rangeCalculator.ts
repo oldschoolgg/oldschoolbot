@@ -5,13 +5,11 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { hasEliteRangedVoidEquipped } from '../../gear/functions/hasEliteRangedVoidEquipped';
-import hasItemEquipped from '../../gear/functions/hasItemEquipped';
+import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
 import { hasRangedVoidEquipped } from '../../gear/functions/hasRangedVoidEquipped';
-import resolveGearTypeSetting from '../../gear/functions/resolveGearTypeSetting';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
-import { GearSetupTypes } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 
 interface RangeMaxHitWeaponBonus {
@@ -52,9 +50,9 @@ export default function rangeCalculator(
 		throw 'No range weapon is equipped or combatStyle is not choosen.';
 	}
 	const rangeGear = user.settings.get(UserSettings.Gear.Range);
-	const gearStats = sumOfSetupStats(
-		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Range))
-	);
+
+	if (!rangeGear) throw `No range gear on user.`;
+	const gearStats = sumOfSetupStats(user.getGear('range'));
 
 	// Calculate effective ranged strength
 	let effectiveRangeStr =
@@ -220,8 +218,8 @@ export default function rangeCalculator(
 		let hitpointsLeft = monsterHP;
 		while (hitpointsLeft > 0) {
 			let hitdamage = 0;
-			if (hitChance >= Math.random()) {
-				hitdamage = randInt(1, maxHit);
+			if (Math.random() <= hitChance) {
+				hitdamage = randInt(0, maxHit);
 			}
 			hitpointsLeft -= hitdamage;
 			hits++;

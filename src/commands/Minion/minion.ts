@@ -552,16 +552,15 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish OLD SYSTEM.\n`;
 		if (foodStr) {
 			response += ` Removed ${foodStr}.\n`;
 		}
-		response += `it'll take around ${formatDuration(
+		response += ` it'll take around ${formatDuration(
 			combatDuration * 1000
-		)} to finish. Your DPS is ${round(DPS, 2)} and average monster kill speed is ${round(
-			monsterKillSpeed,
-			2
-		)} seconds.`;
+		)} to finish. Your DPS is ${round(DPS, 2)} and average monster kill speed is ${formatDuration(
+			monsterKillSpeed * 1000
+		)} `;
 
 		if (boosts.length > 0) {
 			response += `\n**Boosts:** ${boosts.join(', ')}.`;

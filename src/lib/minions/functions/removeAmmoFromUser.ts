@@ -3,7 +3,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { addBanks, bankHasItem } from 'oldschooljs/dist/util';
 
 import { roll } from '../../../lib/util';
-import itemInSlot from '../../gear/functions/itemInSlot';
+import { itemInSlot } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types/index';
 import { itemNameFromID } from '../../util';

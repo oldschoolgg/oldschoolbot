@@ -6,7 +6,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { hasEliteMagicVoidEquipped } from '../../gear/functions/hasEliteMagicVoidEquipped';
 import { hasMagicVoidEquipped } from '../../gear/functions/hasMagicVoidEquipped';
-import { GearSetupTypes, resolveGearTypeSetting, hasItemEquipped } from '../../../lib/gear';
+import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
@@ -41,9 +41,10 @@ export default function mageCalculator(
 		throw 'No mage weapon is equipped or combatStyle is not choosen.';
 	}
 	const mageGear = user.settings.get(UserSettings.Gear.Mage);
-	const gearStats = sumOfSetupStats(
-		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Mage))
-	);
+
+	if (!mageGear) throw `No mage gear on user.`;
+
+	const gearStats = sumOfSetupStats(user.getGear('mage'));
 
 	// Calculate effective magic level
 	let effectiveMageLvl =
@@ -183,8 +184,8 @@ export default function mageCalculator(
 		let hitpointsLeft = monsterHP;
 		while (hitpointsLeft > 0) {
 			let hitdamage = 0;
-			if (hitChance >= Math.random()) {
-				hitdamage = randInt(1, maxHit);
+			if (Math.random() <= hitChance) {
+				hitdamage = randInt(0, maxHit);
 			}
 			hitpointsLeft -= hitdamage;
 			hits++;

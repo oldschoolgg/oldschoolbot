@@ -4,13 +4,11 @@ import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
-import hasItemEquipped from '../../gear/functions/hasItemEquipped';
+import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
 import { hasMeleeVoidEquipped } from '../../gear/functions/hasMeleeVoidEquipped';
-import resolveGearTypeSetting from '../../gear/functions/resolveGearTypeSetting';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
-import { GearSetupTypes } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 
 interface MeleeStrengthWeaponBonus {
@@ -61,9 +59,9 @@ export default function meleeCalculator(
 		throw 'No melee weapon is equipped or combatStyle is not choosen.';
 	}
 	const meleeGear = user.settings.get(UserSettings.Gear.Melee);
-	const gearStats = sumOfSetupStats(
-		user.settings.get(resolveGearTypeSetting(GearSetupTypes.Melee))
-	);
+
+	if (!meleeGear) throw `No melee gear on user.`
+	const gearStats = sumOfSetupStats(user.getGear('melee'));
 
 	// Calculate effective strength level
 	let effectiveStrLvl =
@@ -240,9 +238,9 @@ export default function meleeCalculator(
 	let hitChance = 0;
 
 	if (attackRoll > defenceRoll) {
-		hitChance = 1 - (defenceRoll + 2) / (2 * attackRoll + 1);
+		hitChance = 1 - (defenceRoll + 2) / (2 * (attackRoll + 1));
 	} else {
-		hitChance = attackRoll / (2 * defenceRoll + 1);
+		hitChance = attackRoll / (2 * (defenceRoll + 1));
 	}
 
 	// Calculate average damage per hit and dps
@@ -251,15 +249,16 @@ export default function meleeCalculator(
 
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
+
 	const monsterKillSpeed = monsterHP / DPS;
 	let hits = 0;
-
+	console.log(hitChance);
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
 		while (hitpointsLeft > 0) {
 			let hitdamage = 0;
-			if (hitChance >= Math.random()) {
-				hitdamage = randInt(1, maxHit);
+			if (Math.random() <= hitChance) {
+				hitdamage = randInt(0, maxHit);
 			}
 			hitpointsLeft -= hitdamage;
 			hits++;
