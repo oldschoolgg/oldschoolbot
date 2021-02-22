@@ -33,6 +33,7 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { CombatsEnum } from './combatsetup';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -514,10 +515,10 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		}
 		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
 
-		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'mage') {
+		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Mage) {
 			await removeRunesFromUser(this.client, msg.author, hits);
 		}
-		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === 'range') {
+		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Range) {
 			await removeAmmoFromUser(this.client, msg.author, hits);
 		}
 

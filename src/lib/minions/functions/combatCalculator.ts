@@ -1,3 +1,4 @@
+import { CombatsEnum } from './../../../commands/Minion/combatsetup';
 import { KlasaUser } from 'klasa';
 
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -11,7 +12,15 @@ export default function combatCalculator(
 	user: KlasaUser,
 	quantity: number
 ) {
-	const combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
+	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
+
+	if (combatSkill === CombatsEnum.NoCombat) throw `Nocombat shouldn't get here, Error in kill command.`;
+
+	/* Needs to be further looked into so stab/casting etc will work automatic.
+	if (combatSkill === CombatsEnum.Auto) {
+		combatSkill = monster.defaultCombatSkillToUse;
+	}
+	*/
 
 	if (combatSkill === null) {
 		throw `No combat skill been set in combatsetup.`;
@@ -30,11 +39,11 @@ export default function combatCalculator(
 	*/
 
 	switch (combatSkill) {
-		case 'melee':
+		case CombatsEnum.Melee:
 			return meleeCalculator(monster, user, quantity);
-		case 'range':
+		case CombatsEnum.Range:
 			return rangeCalculator(monster, user, quantity);
-		case 'mage':
+		case CombatsEnum.Mage:
 			return mageCalculator(monster, user, quantity);
 	}
 }
