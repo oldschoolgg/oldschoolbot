@@ -24,10 +24,7 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 2,
-			[itemID('Berserker ring')]: 2
-		}
+		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 2 }, { [itemID('Berserker ring')]: 2 }]
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -47,9 +44,7 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 3
-		}
+		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }]
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -69,9 +64,7 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 3
-		}
+		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }]
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -89,10 +82,7 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Archers ring')]: 3,
-			[itemID('Barrows gloves')]: 3
-		}
+		itemInBankBoosts: [{ [itemID('Archers ring')]: 3 }, { [itemID('Barrows gloves')]: 3 }]
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -106,10 +96,10 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID("Karil's leathertop")]: 3,
-			[itemID("Karil's leatherskirt")]: 3
-		}
+		itemInBankBoosts: [
+			{ [itemID("Karil's leathertop")]: 3 },
+			{ [itemID("Karil's leatherskirt")]: 3 }
+		]
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -122,9 +112,7 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		}
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -154,9 +142,7 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 10
-		}
+		itemInBankBoosts: [{ [itemID('Armadyl crossbow')]: 10 }]
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -170,9 +156,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 8,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		}
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }]
 	}
 ];
 

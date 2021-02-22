@@ -41,35 +41,12 @@ export default class MinionCommand extends BotCommand {
 
 		const ownedBoostItems = [];
 		let totalItemBoost = 0;
-		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				totalItemBoost += boostAmount;
-				ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
-			}
-		}
-
-		if (monster.exclusiveItemInBankBoosts) {
-			for (const boostSet of monster.exclusiveItemInBankBoosts) {
-				let highestBoostAmount = null;
-				let highestBoostItem = null;
-
-				// find the highest boost that the player has
-				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
-					if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-					if (!highestBoostAmount || boostAmount > highestBoostAmount) {
-						highestBoostAmount = boostAmount;
-						highestBoostItem = itemID;
-					}
-				}
-
-				if (highestBoostAmount && highestBoostItem) {
-					timeToFinish *= (100 - highestBoostAmount) / 100;
-					totalItemBoost += highestBoostAmount;
-					ownedBoostItems.push(itemNameFromID(parseInt(highestBoostItem)));
-				}
-			}
+		for (const [itemID, boostAmount] of Object.entries(
+			msg.author.resolveAvailableItemBoosts(monster)
+		)) {
+			timeToFinish *= (100 - boostAmount) / 100;
+			totalItemBoost += boostAmount;
+			ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 		}
 
 		const maxCanKill = Math.floor(msg.author.maxTripLength / timeToFinish);
@@ -102,7 +79,7 @@ export default class MinionCommand extends BotCommand {
 				str.push(
 					`You own ${ownedBoostItems.join(
 						', '
-					)} for a total boost of **${totalItemBoost}**\n`
+					)} for a total boost of **${totalItemBoost}**%.\n`
 				);
 			}
 		}

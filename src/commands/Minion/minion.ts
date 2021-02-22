@@ -468,35 +468,11 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			}
 		}
 
-		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
-			}
-		}
-
-		if (monster.exclusiveItemInBankBoosts) {
-			for (const boostSet of monster.exclusiveItemInBankBoosts) {
-				let highestBoostAmount = null;
-				let highestBoostItem = null;
-
-				// find the highest boost that the player has
-				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
-					if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-					if (!highestBoostAmount || boostAmount > highestBoostAmount) {
-						highestBoostAmount = boostAmount;
-						highestBoostItem = itemID;
-					}
-				}
-
-				if (highestBoostAmount && highestBoostItem) {
-					timeToFinish *= (100 - highestBoostAmount) / 100;
-					boosts.push(
-						`${highestBoostAmount}% for ${itemNameFromID(parseInt(highestBoostItem))}`
-					);
-				}
-			}
+		for (const [itemID, boostAmount] of Object.entries(
+			msg.author.resolveAvailableItemBoosts(monster)
+		)) {
+			timeToFinish *= (100 - boostAmount) / 100;
+			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
 
 		// If no quantity provided, set it to the max.

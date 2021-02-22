@@ -107,7 +107,7 @@ export default class extends BotCommand {
 					allItems: i.table?.allItems || [],
 					itemsRequired: i.itemsRequired,
 					qpRequired: i.qpRequired,
-					itemInBankBoosts: i.itemInBankBoosts,
+					exclusiveItemInBankBoosts: i.itemInBankBoosts,
 					groupKillable: i.groupKillable,
 					respawnTime: i.respawnTime,
 					levelRequirements: i.levelRequirements,

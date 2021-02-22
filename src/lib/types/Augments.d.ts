@@ -206,6 +206,11 @@ declare module 'discord.js' {
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		getGear(gearType: GearSetupType): GearSetup;
+
+		/**
+		 * Get item boosts the user has available for the given `KillableMonster`.
+		 */
+		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

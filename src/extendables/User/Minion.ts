@@ -1,5 +1,6 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -7,7 +8,7 @@ import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
-import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
+import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -760,5 +761,30 @@ export default class extends Extendable {
 			UserSettings.CreatureScores,
 			addItemToBank(currentCreatureScores, creatureID, amountToAdd)
 		);
+	}
+
+	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {
+		const boosts = new Bank();
+		if (monster.itemInBankBoosts) {
+			for (const boostSet of monster.itemInBankBoosts) {
+				let highestBoostAmount = null;
+				let highestBoostItem = null;
+
+				// find the highest boost that the player has
+				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+					const parsedId = parseInt(itemID);
+					if (!this.hasItemEquippedOrInBank(parsedId)) continue;
+					if (!highestBoostAmount || boostAmount > highestBoostAmount) {
+						highestBoostAmount = boostAmount;
+						highestBoostItem = parsedId;
+					}
+				}
+
+				if (highestBoostAmount && highestBoostItem) {
+					boosts.add(highestBoostItem, highestBoostAmount);
+				}
+			}
+		}
+		return boosts.bank;
 	}
 }
