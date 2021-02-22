@@ -32,6 +32,7 @@ function setCustomItem(
 	});
 	const cleanName = cleanString(name);
 	itemNameMap.set(cleanName, id);
+	itemNameMap.set(name, id);
 	// Set the item custom price
 	customPrices[id] = price ? price : baseItem.tradeable_on_ge ? 1 : 0;
 	// Add the item to the custom items array
@@ -880,9 +881,8 @@ export function initCustomItems() {
 	/**
 	 * Exclusive Items
 	 *
-	 * Items from 40_000 to 49_999 will not be droped by any mystery box.
+	 * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
 	 */
-
 	// Master capes
 	setCustomItem(40_000, 'Construction master cape', getOSItem('Abyssal cape'));
 	setCustomItem(40_001, 'Cooking master cape', getOSItem('Abyssal cape'));
@@ -907,11 +907,36 @@ export function initCustomItems() {
 	setCustomItem(40_101, 'Ishi', getOSItem('Herbi'));
 
 	/**
-	 * Misc Items
+	 * Non-mystery box items
 	 *
-	 * 50_000 - 59_999
+	 * Items from 45_000 - 50_000 will not be dropped by mystery boxes, but can be traded.
 	 */
 
+	// Birthday pack
+	setCustomItem(45_003, 'Glass of bubbly', getOSItem('Bronze dagger'));
+	setCustomItem(45_004, 'Party horn', getOSItem('Coal'));
+	setCustomItem(45_005, 'Party popper', getOSItem('Bronze dagger'));
+	setCustomItem(45_006, 'Party cake', getOSItem('Coal'));
+	setCustomItem(45_007, 'Cake hat', getOSItem('Coif'));
+	setCustomItem(45_008, 'Sparkler', getOSItem('Coal'));
+	setCustomItem(45_009, 'Party music box', getOSItem('Coal'));
+	setCustomItem(45_010, 'Birthday pack', getOSItem('Coal'));
+
+	// Gamblers box
+	// setCustomItem(45_010, 'Die (4 sides)
+	// setCustomItem(45_010, 'Die (6 sides)
+	// setCustomItem(45_010, 'Die (8 sides)
+	// setCustomItem(45_010, 'Die (10 sides)
+	// setCustomItem(45_010, 'Die (12 sides)
+	// setCustomItem(45_010, 'Die (20 sides)
+	// setCustomItem(45_010, 'Dice (2, 6 sides)
+	// setCustomItem(45_010, 'Dice (up to 100)
+
+	/**
+	 * Misc Items
+	 *
+	 * 50_000 - 60_000
+	 */
 	setCustomItem(50_001, 'Raw rocktail', getOSItem('Raw trout'));
 	setCustomItem(50_002, 'Rocktail', getOSItem('Trout'));
 }
