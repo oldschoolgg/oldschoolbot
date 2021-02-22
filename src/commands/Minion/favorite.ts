@@ -17,6 +17,11 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [items]: [Item[] | undefined]) {
+		if (msg.flagArgs.clear) {
+			await msg.author.settings.reset(UserSettings.FavoriteItems);
+			return msg.send(`Reset your favorite items.`);
+		}
+
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
 		if (!items) {
