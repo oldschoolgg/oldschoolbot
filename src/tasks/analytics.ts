@@ -1,10 +1,11 @@
 import { Time } from 'e';
 import { Task } from 'klasa';
+import { LessThan, MoreThan } from 'typeorm';
 
 import { ActivityGroup } from '../lib/constants';
 import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
-import { getActiveTasks } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
+import { ActivityTable } from '../lib/typeorm/ActivityTable.entity';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable.entity';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 
@@ -23,9 +24,13 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const finishedTasks = await getActiveTasks();
+				const finishedTasks = await ActivityTable.find({
+					where: {
+						completed: false,
+						finishDate: LessThan('now()')
+					}
+				});
 				await Promise.all(finishedTasks.map(t => t.complete()));
-				console.log(finishedTasks);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -47,7 +52,12 @@ export default class extends Task {
 			[ActivityGroup.Skilling]: 0
 		};
 
-		const currentTasks = await getActiveTasks();
+		const currentTasks = await ActivityTable.find({
+			where: {
+				completed: false,
+				finishDate: MoreThan('now()')
+			}
+		});
 
 		for (const task of currentTasks) {
 			const group = taskGroupFromActivity(task.type);

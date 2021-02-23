@@ -1,7 +1,7 @@
 import { Util } from 'discord.js';
 import { Gateway, Settings } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { getConnection, LessThan } from 'typeorm';
+import { getConnection } from 'typeorm';
 
 import { client } from '../..';
 import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
@@ -96,13 +96,4 @@ export async function setActivityLoot(id: string, loot: ItemBank) {
 		.set({ loot })
 		.where('id = :id', { id })
 		.execute();
-}
-
-export async function getActiveTasks() {
-	return ActivityTable.find({
-		where: {
-			completed: false,
-			finishDate: LessThan('now()')
-		}
-	});
 }

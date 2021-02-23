@@ -7,7 +7,6 @@ import { Connection, createConnection } from 'typeorm';
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
 import { initItemAliases } from '../data/itemAliases';
-import { getActiveTasks } from '../settings/settings';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { piscinaPool } from '../workers';
 
@@ -48,25 +47,21 @@ export class OldSchoolBotClient extends Client {
 			password,
 			database,
 			entities: [join(__dirname, '..', 'typeorm', '*.entity{.ts,.js}')],
-			synchronize: !production,
-			logging: true
+			synchronize: !production
 		});
 
-		// for (const task of existingTasks.map((t: any) => t.data)) {
-		// 	if ('users' in task) {
-		// 		for (const user of (task as GroupMonsterActivityTaskOptions).users) {
-		// 			this.minionActivityCache.set(user, task);
-		// 		}
-		// 	} else {
-		// 		this.minionActivityCache.set(task.userID, task);
-		// 	}
-		// }
+		await this.syncActivityCache();
 
 		return super.login(token);
 	}
 
 	public async syncActivityCache() {
-		const tasks = await getActiveTasks();
+		const tasks = await ActivityTable.find({
+			where: {
+				completed: false
+			}
+		});
+		this.minionActivityCache.clear();
 		for (const task of tasks) {
 			for (const u of task.getUsers()) {
 				this.minionActivityCache.set(u, task.taskData);
