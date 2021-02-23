@@ -70,6 +70,10 @@ export class OldSchoolBotClient extends Client {
 	}
 
 	async cancelTask(userID: string) {
+		await ActivityTable.delete({
+			userID,
+			completed: false
+		});
 		this.minionActivityCache.delete(userID);
 	}
 
