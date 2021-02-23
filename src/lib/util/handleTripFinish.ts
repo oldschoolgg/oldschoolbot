@@ -17,7 +17,7 @@ export async function handleTripFinish(
 	onContinue:
 		| undefined
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
-	attachment: Buffer | undefined,
+	attachment: MessageAttachment | Buffer | undefined,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_data: ActivityTaskOptions,
 	loot: ItemBank | null
@@ -35,7 +35,13 @@ export async function handleTripFinish(
 	client.queuePromise(() => {
 		const channel = client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
-		channel.send(message, attachment ? new MessageAttachment(attachment) : undefined);
+
+		const attachable = attachment
+			? attachment instanceof MessageAttachment
+				? attachment
+				: new MessageAttachment(attachment)
+			: undefined;
+		channel.send(message, attachable);
 		if (!onContinue) return;
 
 		channel

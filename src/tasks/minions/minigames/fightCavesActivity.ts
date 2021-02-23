@@ -19,19 +19,15 @@ import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 const TokkulID = itemID('Tokkul');
 const TzrekJadPet = itemID('Tzrek-jad');
 
 export default class extends Task {
-	async run({
-		userID,
-		channelID,
-		jadDeathChance,
-		preJadDeathTime,
-		duration
-	}: FightCavesActivityTaskOptions) {
+	async run(data: FightCavesActivityTaskOptions) {
+		const { userID, channelID, jadDeathChance, preJadDeathTime, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
@@ -114,15 +110,23 @@ export default class extends Task {
 
 		const lootText = await createReadableItemListFromBank(this.client, loot);
 
-		if (!channelIsSendable(channel)) return;
-		return channel.send(
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
 			`${user}`,
+			res => {
+				user.log(`continued trip of fightcaves`);
+				return this.client.commands.get('fightcaves')!.run(res, []);
+			},
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
 				)} time! I am most impressed, I give you... ${lootText}.`,
 				head: 'mejJal'
-			})
+			}),
+			data,
+			loot
 		);
 	}
 }
