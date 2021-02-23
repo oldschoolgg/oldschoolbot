@@ -1,7 +1,9 @@
 import { MessageAttachment } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { PerkTier, Time } from '../constants';
+import { setActivityLoot } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
 import { generateContinuationChar, stringMatches } from '../util';
 import { channelIsSendable } from './channelIsSendable';
@@ -17,10 +19,12 @@ export async function handleTripFinish(
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: Buffer | undefined,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_data: ActivityTaskOptions
+	_data: ActivityTaskOptions,
+	loot: ItemBank | null
 ) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
+	if (loot) {
+		setActivityLoot(_data.id, loot);
+	}
 
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
@@ -29,8 +33,9 @@ export async function handleTripFinish(
 	}
 
 	client.queuePromise(() => {
+		const channel = client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
 		channel.send(message, attachment ? new MessageAttachment(attachment) : undefined);
-
 		if (!onContinue) return;
 
 		channel

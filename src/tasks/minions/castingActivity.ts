@@ -42,7 +42,8 @@ export default class extends Task {
 				return this.client.commands.get('cast')!.run(res, [quantity, spell.name]);
 			},
 			undefined,
-			data
+			data,
+			loot?.bank ?? null
 		);
 	}
 }

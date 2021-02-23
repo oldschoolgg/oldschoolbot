@@ -123,7 +123,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = getActivityOfUser(this.client, this.id);
+		const currentTask = getActivityOfUser(this.client, this.id) as any;
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.

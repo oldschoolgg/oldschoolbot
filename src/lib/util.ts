@@ -11,6 +11,7 @@ const emojiRegex = require('emoji-regex');
 import { CENA_CHARS, Channel, continuationChars, Events, PerkTier, Time } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
+import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
 import itemID from './util/itemID';
@@ -362,4 +363,8 @@ export async function incrementMinionDailyDuration(
 
 export function parseUsername(str: string) {
 	return str.slice(0, 32);
+}
+
+export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
+	return 'users' in data;
 }

@@ -41,7 +41,8 @@ export default class extends Task {
 				return this.client.commands.get('bury')!.run(res, [quantity, bone.name]);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

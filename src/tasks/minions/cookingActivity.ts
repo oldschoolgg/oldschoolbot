@@ -73,7 +73,8 @@ export default class extends Task {
 				return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

@@ -65,7 +65,8 @@ export default class extends Task {
 				return this.client.commands.get('plunder')!.run(res, []);
 			},
 			image,
-			data
+			data,
+			loot.bank
 		);
 	}
 }
