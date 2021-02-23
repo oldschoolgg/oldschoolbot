@@ -11,6 +11,7 @@ import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { allKeyPieces } from '../../lib/nex';
+import { setActivityLoot } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, multiplyBank, rand, randomItemFromArray, roll } from '../../lib/util';
@@ -18,7 +19,14 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
+	async run({
+		id,
+		monsterID,
+		userID,
+		channelID,
+		quantity,
+		duration
+	}: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
 		if (!fullMonster) throw 'No full monster';
@@ -98,6 +106,9 @@ export default class extends Task {
 			}
 		}
 
+		if (loot) {
+			setActivityLoot(id, loot);
+		}
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);

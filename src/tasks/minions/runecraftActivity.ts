@@ -73,7 +73,8 @@ export default class extends Task {
 				return this.client.commands.get('rc')!.run(res, [essenceQuantity, rune.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

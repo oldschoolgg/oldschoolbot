@@ -215,7 +215,8 @@ export default class extends Task {
 				return this.client.commands.get('hunt')!.run(res, [quantity, creatureName]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

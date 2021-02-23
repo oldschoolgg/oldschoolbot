@@ -89,7 +89,8 @@ export default class extends Task {
 				return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

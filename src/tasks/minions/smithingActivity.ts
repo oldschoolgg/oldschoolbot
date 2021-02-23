@@ -52,7 +52,8 @@ export default class extends Task {
 				return this.client.commands.get('smith')!.run(res, [quantity, smithedItem.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

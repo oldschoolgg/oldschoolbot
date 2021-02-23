@@ -50,7 +50,8 @@ export default class extends Task {
 				return (this.client.commands.get('mh') as MahoganyHomesCommand).build(res);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

@@ -1,14 +1,15 @@
 import { MessageAttachment } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { PerkTier, Time } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
+import { setActivityLoot } from '../settings/settings';
 import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { ActivityTaskOptions } from '../types/minions';
 import { generateContinuationChar, itemID, roll, stringMatches } from '../util';
 import { channelIsSendable } from './channelIsSendable';
-import createReadableItemListFromBank from './createReadableItemListFromTuple';
 import getUsersPerkTier from './getUsersPerkTier';
 
 export async function handleTripFinish(
@@ -20,10 +21,13 @@ export async function handleTripFinish(
 		| undefined
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: Buffer | undefined,
-	data: ActivityTaskOptions
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	data: ActivityTaskOptions,
+	loot: ItemBank | null
 ) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
+	if (loot) {
+		setActivityLoot(data.id, loot);
+	}
 
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
@@ -43,10 +47,7 @@ export async function handleTripFinish(
 			}
 		}
 		await user.addItemsToBank(loot.bank, true);
-		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${await createReadableItemListFromBank(
-			client,
-			loot.bank
-		)}.`;
+		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${loot}.`;
 	} else if (pet === itemID('Obis')) {
 		let loot = new Bank();
 		let rolls = minutes / 3;
@@ -54,10 +55,7 @@ export async function handleTripFinish(
 			loot.add(RuneTable.roll());
 		}
 		await user.addItemsToBank(loot.bank, true);
-		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${await createReadableItemListFromBank(
-			client,
-			loot.bank
-		)}.`;
+		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${loot}.`;
 	} else if (pet === itemID('Brock')) {
 		let loot = new Bank();
 		let rolls = minutes / 3;
@@ -65,10 +63,7 @@ export async function handleTripFinish(
 			loot.add(WoodTable.roll());
 		}
 		await user.addItemsToBank(loot.bank, true);
-		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${await createReadableItemListFromBank(
-			client,
-			loot.bank
-		)}.`;
+		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${loot}.`;
 	} else if (pet === itemID('Wilvus')) {
 		let loot = new Bank();
 		let rolls = minutes / 6;
@@ -76,10 +71,7 @@ export async function handleTripFinish(
 			loot.add(WilvusTable.roll());
 		}
 		await user.addItemsToBank(loot.bank, true);
-		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${await createReadableItemListFromBank(
-			client,
-			loot.bank
-		)}.`;
+		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${loot}.`;
 	} else if (pet === itemID('Smokey')) {
 		let loot = new Bank();
 		for (let i = 0; i < minutes; i++) {
@@ -94,8 +86,9 @@ export async function handleTripFinish(
 	}
 
 	client.queuePromise(() => {
+		const channel = client.channels.get(channelID);
+		if (!channelIsSendable(channel)) return;
 		channel.send(message, attachment ? new MessageAttachment(attachment) : undefined);
-
 		if (!onContinue) return;
 
 		channel

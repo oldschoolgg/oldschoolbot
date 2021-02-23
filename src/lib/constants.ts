@@ -179,7 +179,7 @@ export const enum Tasks {
 	BirthdayEvent = 'birthdayEventActivity'
 }
 
-export const enum Activity {
+export enum Activity {
 	Agility = 'Agility',
 	Cooking = 'Cooking',
 	MonsterKilling = 'MonsterKilling',

@@ -5,6 +5,7 @@ import { Emoji, Events, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
+import { setActivityLoot } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
@@ -30,7 +31,8 @@ export default class extends Task {
 		channelID,
 		planting,
 		duration,
-		currentDate
+		currentDate,
+		id
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
@@ -166,7 +168,7 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-
+			setActivityLoot(id, loot);
 			const updatePatches: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
@@ -484,7 +486,7 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-
+			setActivityLoot(id, loot);
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 

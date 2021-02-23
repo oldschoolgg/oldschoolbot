@@ -7,7 +7,6 @@ import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Limit } from 'p-limit';
 import PQueue from 'p-queue';
-import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
@@ -30,7 +29,6 @@ import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
-		public boss: PgBoss;
 		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
@@ -48,6 +46,9 @@ declare module 'klasa' {
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
+		minionTicker: NodeJS.Timeout;
+		analyticsInterval: NodeJS.Timeout;
+		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
 
 	interface Command {

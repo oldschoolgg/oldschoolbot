@@ -48,7 +48,8 @@ export default class extends Task {
 					.run(res, [quantity, fletchableItem.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

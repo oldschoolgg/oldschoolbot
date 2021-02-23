@@ -80,7 +80,8 @@ export default class extends Task {
 				return this.client.commands.get('sepulchre')!.run(res, []);
 			},
 			image,
-			data
+			data,
+			loot.bank
 		);
 	}
 }
