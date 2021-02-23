@@ -45,7 +45,8 @@ export default class extends Task {
 				return this.client.commands.get('build')!.run(res, [quantity, object.name]);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

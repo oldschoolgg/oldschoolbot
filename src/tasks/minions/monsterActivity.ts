@@ -6,6 +6,7 @@ import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/cons
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { setActivityLoot } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { randomItemFromArray } from '../../lib/util';
@@ -13,7 +14,14 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
+	async run({
+		id,
+		monsterID,
+		userID,
+		channelID,
+		quantity,
+		duration
+	}: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		const perkTier = getUsersPerkTier(user);
@@ -22,7 +30,9 @@ export default class extends Task {
 		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		const loot = monster.table.kill(quantity);
-
+		if (loot) {
+			setActivityLoot(id, loot);
+		}
 		announceLoot(this.client, user, monster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);

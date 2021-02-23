@@ -128,7 +128,8 @@ export default class extends Task {
 				return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }
