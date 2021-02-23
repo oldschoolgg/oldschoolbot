@@ -1,8 +1,8 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Armours } from '../../../../commands/Minion/warriorsguild';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
-import { resolveNameBank } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -16,12 +16,11 @@ export default class extends Task {
 			armour.name
 		} armour and received ${quantity * armour.tokens}x Warrior guild tokens.`;
 
-		await user.addItemsToBank(
-			resolveNameBank({
-				'Warrior guild token': quantity * armour.tokens
-			}),
-			true
-		);
+		const loot = new Bank({
+			'Warrior guild token': quantity * armour.tokens
+		});
+
+		await user.addItemsToBank(loot.bank, true);
 
 		handleTripFinish(
 			this.client,
@@ -33,7 +32,8 @@ export default class extends Task {
 				return this.client.commands.get('warriorsguild')!.run(res, [quantity, 'tokens']);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

@@ -43,7 +43,8 @@ export default class extends Task {
 				return this.client.commands.get('birthdayevent')!.run(res, []);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

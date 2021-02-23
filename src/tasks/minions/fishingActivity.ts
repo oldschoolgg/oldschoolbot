@@ -177,7 +177,8 @@ export default class extends Task {
 				return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

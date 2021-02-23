@@ -55,7 +55,8 @@ export default class extends Task {
 				return this.client.commands.get('chargeglories')!.run(res, [quantity]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

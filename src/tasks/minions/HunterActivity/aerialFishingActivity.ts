@@ -176,7 +176,8 @@ export default class extends Task {
 					]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

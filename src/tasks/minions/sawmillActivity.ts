@@ -36,7 +36,8 @@ export default class extends Task {
 				return this.client.commands.get('sawmill')!.run(res, [plankQuantity, plank.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }
