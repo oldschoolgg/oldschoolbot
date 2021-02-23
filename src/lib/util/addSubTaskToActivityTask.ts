@@ -15,7 +15,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 
-	const finishDate = Date.now() + (production ? subTaskToAdd.duration : 1);
+	const finishDate = Date.now() + (production ? taskToAdd.duration : 1);
 
 	let newData: Record<string, any> = { ...taskToAdd };
 	delete newData.type;
