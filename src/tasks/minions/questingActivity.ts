@@ -76,7 +76,8 @@ export default class extends Task {
 						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
 				  },
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

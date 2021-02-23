@@ -47,7 +47,8 @@ export default class extends Task {
 				return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

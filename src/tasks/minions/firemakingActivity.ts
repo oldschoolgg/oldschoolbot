@@ -65,7 +65,8 @@ export default class extends Task {
 				return this.client.commands.get('light')!.run(res, [quantity, Burn.name]);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

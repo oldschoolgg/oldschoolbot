@@ -40,7 +40,8 @@ export default class extends Task {
 				return this.client.commands.get('enchant')!.run(res, [quantity, enchantable.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

@@ -61,7 +61,8 @@ export default class extends Task {
 				return this.client.commands.get('craft')!.run(res, [quantity, Craft.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

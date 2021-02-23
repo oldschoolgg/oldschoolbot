@@ -84,7 +84,8 @@ export default class extends Task {
 				return this.client.commands.get('fishingtrawler')!.run(res, []);
 			},
 			image,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

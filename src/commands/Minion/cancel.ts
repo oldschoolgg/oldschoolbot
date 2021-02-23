@@ -26,7 +26,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const currentTask = getActivityOfUser(this.client, msg.author.id);
+		const currentTask = getActivityOfUser(this.client, msg.author.id) as any;
 
 		if (!currentTask) {
 			return msg.send(
