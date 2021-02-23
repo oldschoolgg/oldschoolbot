@@ -8,11 +8,10 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
-			requiredPermissions: ['EMBED_LINKS'],
-			oneAtTime: true,
+			description: "Shows recent activities you've done.",
 			categoryFlags: ['minion', 'utility'],
-			examples: ['+dice', '+dice 1m']
+			examples: ['+activities'],
+			aliases: ['log']
 		});
 	}
 
