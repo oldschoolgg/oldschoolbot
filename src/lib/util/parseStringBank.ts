@@ -1,3 +1,4 @@
+import { KlasaClient } from 'klasa';
 import numbro from 'numbro';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -47,12 +48,55 @@ export function parseStringBank(str = ''): [Item, number][] {
 }
 
 interface ParseBankOptions {
+	client: KlasaClient;
 	inputBank: Bank;
 	flags?: Record<string, string>;
 	inputStr?: string;
 }
 
-export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
+enum FilterType {
+	lessThan,
+	equals,
+	greaterThan
+}
+
+function satisfiesQuantitativeFilter(subject: number, filter: FilterType, target: number): boolean {
+	switch (filter) {
+		case FilterType.lessThan:
+			return subject < target;
+		case FilterType.equals:
+			return subject === target;
+		case FilterType.greaterThan:
+			return subject > target;
+	}
+	return true;
+}
+
+function parseFilterAndTarget(input: string | null): [FilterType, number] | [null, null] {
+	if (!input) return [null, null];
+
+	if (parseInt(input)) {
+		return [FilterType.equals, parseInt(input)];
+	} else if (input.startsWith('>')) {
+		const value = input.replace('>', '');
+		if (parseInt(value)) {
+			return [FilterType.greaterThan, parseInt(value)];
+		}
+	} else if (input.startsWith('<')) {
+		const value = input.replace('<', '');
+		if (parseInt(value)) {
+			return [FilterType.lessThan, parseInt(value)];
+		}
+	}
+	return [null, null];
+}
+
+export async function parseBank({
+	client,
+	inputBank,
+	inputStr,
+	flags = {}
+}: ParseBankOptions): Promise<Bank> {
 	const items = inputBank.items();
 
 	if (inputStr) {
@@ -67,6 +111,8 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 	const filter = filterableTypes.find(type =>
 		type.aliases.some(alias => flagsKeys.includes(alias))
 	);
+	const [valueFilter, valueTarget] = parseFilterAndTarget(flags.value);
+	const [quantityFilter, quantityTarget] = parseFilterAndTarget(flags.quantity);
 
 	const outputBank = new Bank();
 
@@ -75,6 +121,24 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
 		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search)) {
+			continue;
+		}
+		if (
+			valueFilter !== null &&
+			valueTarget !== null &&
+			!satisfiesQuantitativeFilter(
+				await client.fetchItemPrice(item.id),
+				valueFilter,
+				valueTarget
+			)
+		) {
+			continue;
+		}
+		if (
+			quantityFilter !== null &&
+			quantityTarget !== null &&
+			!satisfiesQuantitativeFilter(_qty, quantityFilter, quantityTarget)
+		) {
 			continue;
 		}
 

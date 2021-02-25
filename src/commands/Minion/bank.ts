@@ -31,7 +31,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		const bank = parseBank({
+		const bank = await parseBank({
+			client: this.client,
 			inputBank: baseBank,
 			flags: msg.flagArgs,
 			inputStr: typeof pageNumberOrItemName === 'string' ? pageNumberOrItemName : undefined
