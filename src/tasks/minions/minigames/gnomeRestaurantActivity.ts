@@ -124,7 +124,8 @@ export default class extends Task {
 				return this.client.commands.get('gnomerestaurant')!.run(res, []);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

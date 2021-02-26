@@ -7,7 +7,6 @@ import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Limit } from 'p-limit';
 import PQueue from 'p-queue';
-import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
@@ -30,7 +29,6 @@ import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
-		public boss: PgBoss;
 		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
@@ -44,10 +42,14 @@ declare module 'klasa' {
 		public _badgeCache: Map<string, string>;
 		public _peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
+		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
+		minionTicker: NodeJS.Timeout;
+		analyticsInterval: NodeJS.Timeout;
+		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
 
 	interface Command {
@@ -102,6 +104,7 @@ declare module 'discord.js' {
 	interface Client {
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
+		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {

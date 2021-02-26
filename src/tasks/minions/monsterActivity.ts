@@ -12,6 +12,7 @@ import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
+import { setActivityLoot } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, multiplyBank, rand, randomItemFromArray, roll } from '../../lib/util';
@@ -19,7 +20,14 @@ import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
+	async run({
+		id,
+		monsterID,
+		userID,
+		channelID,
+		quantity,
+		duration
+	}: MonsterActivityTaskOptions) {
 		const monster = effectiveMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
@@ -98,6 +106,9 @@ export default class extends Task {
 			}
 		}
 
+		if (loot) {
+			setActivityLoot(id, loot);
+		}
 		announceLoot(this.client, user, monster as KillableMonster, quantity, loot);
 
 		await user.addItemsToBank(loot, true);
@@ -175,32 +186,45 @@ export default class extends Task {
 						max: 1
 					}
 				)
-				.then(messages => {
+				.then(async messages => {
 					const response = messages.first();
 
 					if (response) {
+						await this.client.inhibitors.run(
+							response as KlasaMessage,
+							this.client.commands.get('mine')!
+						);
 						if (response.author.minionIsBusy) return;
+						if (this.client.oneCommandAtATimeCache.has(response.author.id)) return;
+						this.client.oneCommandAtATimeCache.add(response.author.id);
+						try {
+							if (
+								clueTiersReceived.length > 0 &&
+								perkTier > PerkTier.One &&
+								response.content.toLowerCase() === 'c'
+							) {
+								(this.client.commands.get(
+									'minion'
+								) as MinionCommand).clue(response as KlasaMessage, [
+									1,
+									clueTiersReceived[0].name
+								]);
+								return;
+							}
 
-						if (
-							clueTiersReceived.length > 0 &&
-							perkTier > PerkTier.One &&
-							response.content.toLowerCase() === 'c'
-						) {
-							(this.client.commands.get(
-								'minion'
-							) as MinionCommand).clue(response as KlasaMessage, [
-								1,
-								clueTiersReceived[0].name
-							]);
-							return;
+							user.log(
+								`continued trip of ${quantity}x ${monster.name}[${monster.id}]`
+							);
+
+							this.client.commands
+								.get('minion')!
+								.kill(response as KlasaMessage, [quantity, monster.name])
+								.catch(err => channel.send(err));
+						} catch (err) {
+							response.channel.send(err);
+						} finally {
+							this.client.oneCommandAtATimeCache.delete(response.author.id);
 						}
-
-						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
-
-						this.client.commands
-							.get('minion')!
-							.kill(response as KlasaMessage, [quantity, monster.name])
-							.catch(err => channel.send(err));
 					}
 				});
 		});

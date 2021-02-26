@@ -4,7 +4,6 @@ import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
-import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import { NexActivityTaskOptions, NightmareActivityTaskOptions } from './../../lib/types/minions';
 
 const options = {
@@ -26,7 +25,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const currentTask = getActivityOfUser(this.client, msg.author.id);
+		const currentTask = this.client.getActivityOfUser(msg.author.id) as any;
 
 		if (!currentTask) {
 			return msg.send(

@@ -87,7 +87,8 @@ export default class extends Task {
 				return this.client.commands.get('chop')!.run(res, [quantity, Log.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

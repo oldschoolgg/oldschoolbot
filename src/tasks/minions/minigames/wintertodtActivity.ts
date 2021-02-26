@@ -1,4 +1,3 @@
-import { MessageAttachment } from 'discord.js';
 import { randInt } from 'e';
 import { Task } from 'klasa';
 
@@ -13,10 +12,12 @@ import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, bankHasItem, multiplyBank, noOp, rand, roll } from '../../../lib/util';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
+	async run(data: WintertodtActivityTaskOptions) {
+		const { userID, channelID, quantity, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
@@ -143,6 +144,19 @@ export default class extends Task {
 		if (gotToad) {
 			output += `\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!`;
 		}
-		return channel.send(output, new MessageAttachment(image));
+
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			output,
+			res => {
+				user.log(`continued trip of wintertodt`);
+				return this.client.commands.get('wintertodt')!.run(res, []);
+			},
+			image,
+			data,
+			loot
+		);
 	}
 }

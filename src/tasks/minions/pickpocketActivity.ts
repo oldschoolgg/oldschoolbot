@@ -128,7 +128,8 @@ export default class extends Task {
 				return this.client.commands.get('pickpocket')!.run(res, [quantity, npc.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }
