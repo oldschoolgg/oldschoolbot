@@ -7,6 +7,7 @@ import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHo
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: BirdhouseActivityTaskOptions) {
@@ -122,9 +123,16 @@ export default class extends Task {
 				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
 			}
 
-			const channel = this.client.channels.get(channelID);
-			if (!channelIsSendable(channel)) return;
-			channel.send(str);
+			handleTripFinish(
+				this.client,
+				user,
+				channelID,
+				str,
+				undefined,
+				undefined,
+				data,
+				loot.bank
+			);
 		}
 	}
 }

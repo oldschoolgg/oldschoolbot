@@ -20,7 +20,7 @@ export async function handleTripFinish(
 	onContinue:
 		| undefined
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
-	attachment: Buffer | undefined,
+	attachment: MessageAttachment | Buffer | undefined,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	data: ActivityTaskOptions,
 	loot: ItemBank | null
@@ -88,7 +88,13 @@ export async function handleTripFinish(
 	client.queuePromise(() => {
 		const channel = client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
-		channel.send(message, attachment ? new MessageAttachment(attachment) : undefined);
+
+		const attachable = attachment
+			? attachment instanceof MessageAttachment
+				? attachment
+				: new MessageAttachment(attachment)
+			: undefined;
+		channel.send(message, attachable);
 		if (!onContinue) return;
 
 		channel
@@ -101,13 +107,24 @@ export async function handleTripFinish(
 			)
 			.then(async messages => {
 				const response = messages.first();
-				if (response && !user.minionIsBusy) {
+				if (
+					response &&
+					!user.minionIsBusy &&
+					!client.oneCommandAtATimeCache.has(response.author.id)
+				) {
+					client.oneCommandAtATimeCache.add(response.author.id);
 					try {
+						await client.inhibitors.run(
+							response as KlasaMessage,
+							client.commands.get('mine')!
+						);
 						await onContinue(response as KlasaMessage).catch(err => {
 							channel.send(err);
 						});
 					} catch (err) {
 						channel.send(err);
+					} finally {
+						client.oneCommandAtATimeCache.delete(response.author.id);
 					}
 				}
 			});

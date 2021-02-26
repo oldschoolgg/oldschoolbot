@@ -42,6 +42,7 @@ declare module 'klasa' {
 		public _badgeCache: Map<string, string>;
 		public _peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
+		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
@@ -103,6 +104,7 @@ declare module 'discord.js' {
 	interface Client {
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
+		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {

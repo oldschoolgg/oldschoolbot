@@ -72,7 +72,6 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import {
 	NightmareActivityTaskOptions,
@@ -127,7 +126,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = getActivityOfUser(this.client, this.id) as any;
+		const currentTask = this.client.getActivityOfUser(this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
@@ -590,7 +589,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.client, this.id);
+		const usersTask = this.client.getActivityOfUser(this.id);
 		return Boolean(usersTask);
 	}
 

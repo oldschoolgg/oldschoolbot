@@ -186,32 +186,45 @@ export default class extends Task {
 						max: 1
 					}
 				)
-				.then(messages => {
+				.then(async messages => {
 					const response = messages.first();
 
 					if (response) {
+						await this.client.inhibitors.run(
+							response as KlasaMessage,
+							this.client.commands.get('mine')!
+						);
 						if (response.author.minionIsBusy) return;
+						if (this.client.oneCommandAtATimeCache.has(response.author.id)) return;
+						this.client.oneCommandAtATimeCache.add(response.author.id);
+						try {
+							if (
+								clueTiersReceived.length > 0 &&
+								perkTier > PerkTier.One &&
+								response.content.toLowerCase() === 'c'
+							) {
+								(this.client.commands.get(
+									'minion'
+								) as MinionCommand).clue(response as KlasaMessage, [
+									1,
+									clueTiersReceived[0].name
+								]);
+								return;
+							}
 
-						if (
-							clueTiersReceived.length > 0 &&
-							perkTier > PerkTier.One &&
-							response.content.toLowerCase() === 'c'
-						) {
-							(this.client.commands.get(
-								'minion'
-							) as MinionCommand).clue(response as KlasaMessage, [
-								1,
-								clueTiersReceived[0].name
-							]);
-							return;
+							user.log(
+								`continued trip of ${quantity}x ${monster.name}[${monster.id}]`
+							);
+
+							this.client.commands
+								.get('minion')!
+								.kill(response as KlasaMessage, [quantity, monster.name])
+								.catch(err => channel.send(err));
+						} catch (err) {
+							response.channel.send(err);
+						} finally {
+							this.client.oneCommandAtATimeCache.delete(response.author.id);
 						}
-
-						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
-
-						this.client.commands
-							.get('minion')!
-							.kill(response as KlasaMessage, [quantity, monster.name])
-							.catch(err => channel.send(err));
 					}
 				});
 		});
