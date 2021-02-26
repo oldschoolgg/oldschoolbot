@@ -28,6 +28,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`**Your last 10 activities:**\n
 ${res
+	.slice(0, 10)
 	.map(
 		(i, ind) =>
 			`${ind + 1}. **${i.type}** trip for **${formatDuration(i.duration)}**, got ${

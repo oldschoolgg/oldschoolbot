@@ -1,5 +1,5 @@
 import { Task } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -10,12 +10,9 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	formatDuration,
-	noOp,
 	percentChance,
-	rand,
-	removeItemFromBank
+	rand
 } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -30,7 +27,6 @@ export default class extends Task {
 		const { userID, channelID, jadDeathChance, preJadDeathTime, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
 		const tokkulReward = rand(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
@@ -44,43 +40,58 @@ export default class extends Task {
 			// Give back supplies based on how far in they died, for example if they
 			// died 80% of the way through, give back approximately 20% of their supplies.
 			const percSuppliesToRefund = 100 - calcWhatPercent(preJadDeathTime, duration);
-			const itemLootBank = { [itemID('Tokkul')]: tokkulReward };
+			const itemLootBank = new Bank();
 
 			for (const [itemID, qty] of Object.entries(fightCavesSupplies)) {
 				const amount = Math.floor(calcPercentOfNum(percSuppliesToRefund, qty));
 				if (amount > 0) {
-					itemLootBank[parseInt(itemID)] = amount;
+					itemLootBank.add(parseInt(itemID), amount);
 				}
 			}
 
 			await user.addItemsToBank(itemLootBank, true);
 
-			if (!channelIsSendable(channel)) return;
-			return channel.send(
+			handleTripFinish(
+				this.client,
+				user,
+				channelID,
 				`${user} You died ${formatDuration(
 					preJadDeathTime
-				)} into your attempt. The following supplies were refunded back into your bank: ${await createReadableItemListFromBank(
-					this.client,
-					removeItemFromBank(itemLootBank, TokkulID, itemLootBank[TokkulID])
-				)}.`,
+				)} into your attempt. The following supplies were refunded back into your bank: ${itemLootBank}.`,
+				res => {
+					user.log(`continued trip of fightcaves`);
+					return this.client.commands.get('fightcaves')!.run(res, []);
+				},
 				await chatHeadImage({
 					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
-				})
+				}),
+				data,
+				itemLootBank.bank
 			);
 		}
 
 		if (diedToJad) {
-			await user.addItemsToBank({ [TokkulID]: tokkulReward }, true);
+			const failBank = new Bank({ [TokkulID]: tokkulReward });
+			await user.addItemsToBank(failBank, true);
 
-			if (!channelIsSendable(channel)) return;
-			return channel.send(
+			handleTripFinish(
+				this.client,
+				user,
+				channelID,
 				`${user}`,
+				res => {
+					user.log(`continued trip of fightcaves`);
+					return this.client.commands.get('fightcaves')!.run(res, []);
+				},
 				await chatHeadImage({
 					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
-				})
+				}),
+				data,
+				failBank.bank
 			);
+			return;
 		}
 
 		await user.incrementMonsterScore(Monsters.TzTokJad.id);
