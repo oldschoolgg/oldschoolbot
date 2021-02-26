@@ -8,6 +8,7 @@ import { Emoji } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
+import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NexActivityTaskOptions } from '../../../lib/types/minions';
@@ -23,7 +24,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
+	async run({ id, channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -76,11 +77,11 @@ export default class extends Task {
 
 		const leaderUser = await this.client.users.fetch(leader);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
-
+		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-
+			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
@@ -111,6 +112,8 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
+
+		setActivityLoot(id, totalLoot.bank);
 
 		let debug = production
 			? ''
