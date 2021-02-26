@@ -54,13 +54,24 @@ export async function handleTripFinish(
 			)
 			.then(async messages => {
 				const response = messages.first();
-				if (response && !user.minionIsBusy) {
+				if (
+					response &&
+					!user.minionIsBusy &&
+					!client.oneCommandAtATimeCache.has(response.author.id)
+				) {
+					client.oneCommandAtATimeCache.add(response.author.id);
 					try {
+						await client.inhibitors.run(
+							response as KlasaMessage,
+							client.commands.get('mine')!
+						);
 						await onContinue(response as KlasaMessage).catch(err => {
 							channel.send(err);
 						});
 					} catch (err) {
 						channel.send(err);
+					} finally {
+						client.oneCommandAtATimeCache.delete(response.author.id);
 					}
 				}
 			});

@@ -4,13 +4,12 @@ import { production } from '../../config';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
-import getActivityOfUser from './getActivityOfUser';
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 	client: Client,
 	taskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
-	const usersTask = getActivityOfUser(client, taskToAdd.userID);
+	const usersTask = client.getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
