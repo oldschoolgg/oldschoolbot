@@ -59,7 +59,7 @@ export class ActivityTable extends BaseEntity {
 			type: this.type,
 			userID: this.userID,
 			channelID: this.channelID,
-			duration: this.finishDate.getMilliseconds() - this.startDate.getMilliseconds(),
+			duration: this.duration,
 			finishDate: this.finishDate,
 			id: this.id
 		};
