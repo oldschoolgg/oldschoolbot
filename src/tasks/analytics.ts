@@ -1,7 +1,8 @@
 import { Time } from 'e';
 import { Task } from 'klasa';
-import { LessThan, MoreThan } from 'typeorm';
+import { createQueryBuilder, MoreThan } from 'typeorm';
 
+import { production } from '../config';
 import { ActivityGroup } from '../lib/constants';
 import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -24,13 +25,12 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const finishedTasks = await ActivityTable.find({
-					where: {
-						completed: false,
-						finishDate: LessThan('now()')
-					}
-				});
-				await Promise.all(finishedTasks.map(t => t.complete()));
+				const query = createQueryBuilder(ActivityTable).select().where('completed = false');
+				if (production) {
+					query.andWhere(`finish_date < now()`);
+				}
+				const result = await query.getMany();
+				await Promise.all(result.map(t => t.complete()));
 			} catch (err) {
 				console.error(err);
 			} finally {
