@@ -2440,10 +2440,10 @@ fastify-plugin@^3.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
   integrity sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
 
-fastify-rate-limit@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.3.0.tgz#50984a2ad6ab6376e0a6b51b60eb1bea0267b8c1"
-  integrity sha512-yS5eSc/+7adV0jFKydgUtGFxs0pJwHt7VmsF5zc7conZK3l2WIQAsCs8HQU8JrQPqW65KiH5FDNi8WJNZDyIyQ==
+fastify-rate-limit@^5.4.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.4.1.tgz#07d091c65f4847b085b0e7db0840a87d2410d295"
+  integrity sha512-rrtRyo3sqY+tvgg8ykboMVZYK8ZBRQefJvpjlDvU7zsAyVEoNTEIweDAcneMQIwjaQ29QzwARJh4ZZ5bXSAXEA==
   dependencies:
     fastify-plugin "^3.0.0"
     ms "^2.1.1"
