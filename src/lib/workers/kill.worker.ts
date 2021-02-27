@@ -1,8 +1,6 @@
 import { Misc, Monsters } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
-import { initCustomItems } from '../customItems';
-import { initItemAliases } from '../data/itemAliases';
 import abyssalSire from '../data/monsters/abyssalSire';
 import alchemicalHydra from '../data/monsters/alchemicalHydra';
 import brutalBlackDragon from '../data/monsters/brutalBlackDragon';
@@ -32,8 +30,6 @@ export function stringMatches(str: string, str2: string) {
 }
 
 export default ({ quantity, bossName, limit }: KillWorkerArgs) => {
-	initCustomItems();
-	initItemAliases();
 	const osjsMonster = Monsters.find(mon =>
 		mon.aliases.some(alias => stringMatches(alias, bossName))
 	);

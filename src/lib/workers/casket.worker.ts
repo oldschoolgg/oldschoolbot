@@ -2,15 +2,11 @@ import { roll } from 'e';
 import { Misc } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util';
 
-import { initCustomItems } from '../customItems';
-import { initItemAliases } from '../data/itemAliases';
 import ClueTiers from '../minions/data/clueTiers';
 import { ItemBank } from '../types';
 import { CasketWorkerArgs } from '.';
 
 export default ({ clueTierID, quantity }: CasketWorkerArgs): [ItemBank, string] => {
-	initCustomItems();
-	initItemAliases();
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 	let loot = clueTier.table.open(quantity);
 	let mimicNumber = 0;
