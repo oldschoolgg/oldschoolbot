@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { randInt } from 'e';
+import { increaseNumByPercent, notEmpty, objectValues, randInt } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -10,6 +10,7 @@ import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killa
 import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
@@ -62,6 +63,7 @@ import {
 } from '../../lib/types/minions';
 import {
 	addItemToBank,
+	convertLVLtoXP,
 	convertXPtoLVL,
 	formatDuration,
 	incrementMinionDailyDuration,
@@ -632,6 +634,19 @@ export default class extends Extendable {
 			amount *= 5;
 		}
 
+		const rawGear = this.rawGear();
+		const allCapes = objectValues(rawGear)
+			.map(val => val.cape)
+			.filter(notEmpty)
+			.map(i => i.item);
+		const masterCape = multiplier
+			? MasterSkillcapes.find(cape => allCapes.includes(cape.item.id))
+			: undefined;
+		const isMatchingCape = masterCape?.skill === skillName;
+		if (masterCape) {
+			amount = increaseNumByPercent(amount, isMatchingCape ? 8 : 3);
+		}
+
 		const newXP = Math.min(5_000_000_000, currentXP + amount);
 		const newLevel = convertXPtoLVL(newXP);
 
@@ -650,39 +665,54 @@ export default class extends Extendable {
 			}
 		}
 
-		// If they just reached 99, send a server notification.
-		if (currentLevel < 99 && newLevel >= 99) {
-			const skillNameCased = toTitleCase(skillName);
-			const [usersWith] = await this.client.query<
-				{
-					count: string;
-				}[]
-			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
-
-			let str = `${skill.emoji} **${this.username}'s** minion, ${
-				this.minionName
-			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-				parseInt(usersWith.count) + 1
-			)} to get 99 ${skillNameCased}.`;
-
-			if (this.isIronman) {
-				const [ironmenWith] = await this.client.query<
+		for (const num of [99, 120]) {
+			// If they just reached 99, send a server notification.
+			if (currentLevel < num && newLevel >= num) {
+				const skillNameCased = toTitleCase(skillName);
+				const [usersWith] = await this.client.query<
 					{
 						count: string;
 					}[]
 				>(
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
+					`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > ${
+						convertLVLtoXP(num) - 1
+					};`
 				);
-				str += ` They are the ${formatOrdinal(
-					parseInt(ironmenWith.count) + 1
-				)} Ironman to get 99.`;
+
+				let str = `${skill.emoji} **${this.username}'s** minion, ${
+					this.minionName
+				}, just achieved level ${num} in ${skillNameCased}! They are the ${formatOrdinal(
+					parseInt(usersWith.count) + 1
+				)} to get ${num} ${skillNameCased}.`;
+
+				if (this.isIronman) {
+					const [ironmenWith] = await this.client.query<
+						{
+							count: string;
+						}[]
+					>(
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > ${
+							convertLVLtoXP(num) - 1
+						};`
+					);
+					str += ` They are the ${formatOrdinal(
+						parseInt(ironmenWith.count) + 1
+					)} Ironman to get ${num}.`;
+				}
+				this.client.emit(Events.ServerNotification, str);
 			}
-			this.client.emit(Events.ServerNotification, str);
 		}
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
 		let str = `You received ${amount.toLocaleString()} ${name} XP, you now have ${newXP.toLocaleString()} ${name} XP.`;
+		if (masterCape) {
+			if (isMatchingCape) {
+				str += ` You received 8% bonus XP for having a ${masterCape.item.name}.`;
+			} else {
+				str += ` You received 3% bonus XP for having a ${masterCape.item.name}.`;
+			}
+		}
 		if (duration) {
 			const xpHr = `(${Math.round(
 				(amount / (duration / Time.Minute)) * 60

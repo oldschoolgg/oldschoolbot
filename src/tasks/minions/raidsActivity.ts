@@ -61,6 +61,8 @@ export default class extends Task {
 			if (roll(10)) {
 				userLoot = multiplyBank(userLoot, 2);
 				userLoot[getRandomMysteryBox()] = 1;
+			} else if (user.usingPet('Flappy')) {
+				userLoot = multiplyBank(userLoot, 2);
 			}
 			if (roll(2000)) {
 				userLoot[23931] = 1;
@@ -71,6 +73,7 @@ export default class extends Task {
 			if (roll(140)) {
 				userLoot[itemID('Clue scroll grandmaster')] = 1;
 			}
+
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
 			} ||${await createReadableItemListFromBank(
@@ -78,7 +81,11 @@ export default class extends Task {
 				userLoot
 			)}||, personal points: ${personalPoints}, ${
 				Math.round((personalPoints! / totalPoints) * 10000) / 100
-			}%`;
+			}% ${
+				user.usingPet('Flappy')
+					? `<:flappy:812280578195456002> Flappy helps ${user.username}, granting them 2x loot.`
+					: ''
+			}`;
 			await user.addItemsToBank(userLoot, true);
 		}
 

@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MahoganyHomesActivityTaskOptions) {
-		const { channelID, quantity, xp, duration, userID, points } = data;
+		let { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('MahoganyHomes', quantity);
@@ -23,6 +23,11 @@ export default class extends Task {
 		}
 		await user.addXP(SkillsEnum.Construction, xp + bonusXP);
 		const nextLevel = user.skillLevel(SkillsEnum.Construction);
+
+		if (user.usingPet('Flappy')) {
+			points *= 2;
+		}
+
 		await user.settings.update(
 			UserSettings.CarpenterPoints,
 			user.settings.get(UserSettings.CarpenterPoints) + points
@@ -30,7 +35,11 @@ export default class extends Task {
 
 		let str = `${user}, ${
 			user.minionName
-		} finished doing ${quantity}x Mahogany Homes contracts, you received ${xp.toLocaleString()} Construction XP and ${points} Carpenter points.`;
+		} finished doing ${quantity}x Mahogany Homes contracts, you received ${xp.toLocaleString()} Construction XP and ${points} Carpenter points. ${
+			user.usingPet('Flappy')
+				? ` \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.`
+				: ''
+		}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;

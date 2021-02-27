@@ -39,7 +39,12 @@ export default class extends Task {
 				if (roll(10)) bonusTickets++;
 			}
 		}
+
 		ticketsReceived += bonusTickets;
+
+		if (user.usingPet('Flappy')) {
+			ticketsReceived *= 2;
+		}
 
 		user.incrementMinigameScore('AgilityArena', ticketsReceived);
 
@@ -52,7 +57,11 @@ export default class extends Task {
 			duration
 		)}, you received ${Math.floor(
 			agilityXP
-		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
+		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.${
+			user.usingPet('Flappy')
+				? ` \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.`
+				: ''
+		}`;
 
 		if (nextLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;

@@ -63,6 +63,12 @@ export default class extends Task {
 				pts *= 1.1;
 				resultStr += `${user.username} received 10% extra pts for kandarin hard diary. `;
 			}
+
+			if (user.usingPet('Flappy')) {
+				pts *= 2;
+				resultStr += `<:flappy:812280578195456002> Flappy helps ${user.username}, granting them 2x points.`;
+			}
+
 			let totalPoints = Math.floor(pts * quantity);
 
 			user.incrementMinigameScore('BarbarianAssault', quantity);

@@ -259,7 +259,12 @@ const baseTGBTable = new LootTable()
 	.add('Tchiki monkey nuts')
 	.add('Magic seed', [20, 50]);
 
-const testerGiftTable = new LootTable().every(baseTGBTable, [2, 4]);
+const testerGiftTable = new LootTable()
+	.every(baseTGBTable, [2, 4])
+	.every('Clue scroll grandmaster', [1, 3])
+	.add('Rocktail', [30, 60])
+	.add('Tradeable mystery box', [1, 3])
+	.add(baseTGBTable);
 
 const Openables: Openable[] = [
 	{
@@ -345,6 +350,20 @@ const Openables: Openable[] = [
 			.add('Bolt of cloth', 15)
 			.add('Limestone brick', 9),
 		emoji: Emoji.Casket
+	},
+	{
+		name: 'Birthday pack',
+		itemID: itemID('Birthday pack'),
+		aliases: ['bp', 'birthday pack'],
+		table: new LootTable()
+			.add('Glass of bubbly')
+			.add('Party horn')
+			.add('Party popper')
+			.add('Party cake')
+			.add('Sparkler', [2, 10])
+			.add('Party music box')
+			.tertiary(12, 'Cake hat'),
+		emoji: Emoji.BirthdayPresent
 	}
 ];
 
@@ -426,7 +445,7 @@ function getRandomItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
 	let result = table[Math.floor(Math.random() * table.length)];
 	if (cantBeDropped.includes(result)) return getRandomItem(tradeables);
-	if (result >= 40_000 && result <= 49_999) return getRandomItem(tradeables);
+	if (result >= 40_000 && result <= 50_000) return getRandomItem(tradeables);
 	return result;
 }
 

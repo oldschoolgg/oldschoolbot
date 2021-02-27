@@ -38,7 +38,7 @@ export default class extends BotCommand {
 			);
 		});
 
-		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 49_999)) {
+		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
 			return msg.send(`You can't add that item to the lottery.`);
 		}
 

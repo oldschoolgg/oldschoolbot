@@ -69,7 +69,8 @@ export function hasGracefulEquipped(setup: GearSetup) {
 			'Brimhaven graceful cape',
 			'Dark graceful cape',
 			'Agility cape',
-			'Agility cape (t)'
+			'Agility cape (t)',
+			'Agility master cape'
 		])
 	});
 }

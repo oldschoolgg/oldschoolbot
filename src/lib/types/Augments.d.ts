@@ -203,6 +203,7 @@ declare module 'discord.js' {
 		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
 		equippedPet(): number | null;
+		usingPet(name: string): boolean;
 		allItemsOwned(): ItemBank;
 		setupStats(setup: GearSetupTypes): GearStats;
 		/**

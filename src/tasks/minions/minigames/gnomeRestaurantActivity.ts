@@ -79,10 +79,26 @@ export default class extends Task {
 		}
 
 		const minionName = await getMinionName(userID);
-
-		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received ${totalXP.toLocaleString()} Cooking XP and **${loot}**.`;
-
 		const user = await this.client.users.fetch(userID);
+
+		if (user.usingPet('Flappy')) {
+			loot.multiply(2);
+		}
+
+		if (roll(500)) {
+			loot.add('Flappy');
+		}
+
+		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received ${totalXP.toLocaleString()} Cooking XP and **${loot}**.${
+			user.usingPet('Flappy')
+				? ` \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.`
+				: ''
+		}`;
+
+		if (loot.has('Flappy')) {
+			str += `\n\n<:flappy:812280578195456002> Your minion has adopted a Terrorbird from the Gnome Stronghold.`;
+		}
+
 		await user.addItemsToBank(loot.bank, true);
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
 		await user.addXP(SkillsEnum.Cooking, totalXP);
