@@ -415,5 +415,6 @@ export const effectiveMonsters = [
 	NightmareMonster,
 	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127 },
-	{ name: 'Mimic', aliases: ['mimic'], id: 23184 }
+	{ name: 'Mimic', aliases: ['mimic'], id: 23184 },
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583 }
 ];
