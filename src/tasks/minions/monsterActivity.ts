@@ -1,13 +1,10 @@
-import { MessageAttachment } from 'discord.js';
 import { randArrItem } from 'e';
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import MinionCommand from '../../commands/Minion/minion';
-import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
+import { Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
-import clueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
@@ -15,23 +12,16 @@ import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, rand, randomItemFromArray, roll } from '../../lib/util';
+import { itemID, multiplyBank, rand, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({
-		id,
-		monsterID,
-		userID,
-		channelID,
-		quantity,
-		duration
-	}: MonsterActivityTaskOptions) {
+	async run(data: MonsterActivityTaskOptions) {
+		const { id, monsterID, userID, channelID, quantity, duration } = data;
 		const monster = effectiveMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
-		const perkTier = getUsersPerkTier(user);
 		const channel = this.client.channels.get(channelID);
 		if (!channelIsSendable(channel)) return;
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
@@ -39,8 +29,6 @@ export default class extends Task {
 		}
 
 		user.incrementMinionDailyDuration(duration);
-
-		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let abyssalBonus = 1;
@@ -123,11 +111,6 @@ export default class extends Task {
 				user
 			);
 
-		this.client.emit(
-			Events.Log,
-			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
-		);
-
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
 		} KC is now ${
@@ -136,19 +119,6 @@ export default class extends Task {
 
 		if (gotBrock) {
 			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
-		}
-
-		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
-
-		if (clueTiersReceived.length > 0) {
-			str += `\n ${Emoji.Casket} You got clue scrolls in your loot (${clueTiersReceived
-				.map(tier => tier.name)
-				.join(', ')}).`;
-			if (perkTier > PerkTier.One) {
-				str += `\n\nSay \`c\` if you want to complete this ${clueTiersReceived[0].name} clue now.`;
-			} else {
-				str += `\n\nYou can get your minion to complete them using \`=minion clue easy/medium/etc \``;
-			}
 		}
 
 		if (gotKlik) {
@@ -163,70 +133,18 @@ export default class extends Task {
 			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
 		}
 
-		user.incrementMonsterScore(monsterID, quantity);
-
-		const continuationChar =
-			perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
-
-		str += `\n\nSay \`${continuationChar}\` to repeat this trip.`;
-
-		this.client.queuePromise(() => {
-			channel.send(str, new MessageAttachment(image));
-			channel
-				.awaitMessages(
-					(msg: KlasaMessage) => {
-						if (msg.author !== user) return false;
-						return (
-							(perkTier > PerkTier.One && msg.content.toLowerCase() === 'c') ||
-							msg.content.toLowerCase() === continuationChar
-						);
-					},
-					{
-						time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
-						max: 1
-					}
-				)
-				.then(async messages => {
-					const response = messages.first();
-
-					if (response) {
-						await this.client.inhibitors.run(
-							response as KlasaMessage,
-							this.client.commands.get('mine')!
-						);
-						if (response.author.minionIsBusy) return;
-						if (this.client.oneCommandAtATimeCache.has(response.author.id)) return;
-						this.client.oneCommandAtATimeCache.add(response.author.id);
-						try {
-							if (
-								clueTiersReceived.length > 0 &&
-								perkTier > PerkTier.One &&
-								response.content.toLowerCase() === 'c'
-							) {
-								(this.client.commands.get(
-									'minion'
-								) as MinionCommand).clue(response as KlasaMessage, [
-									1,
-									clueTiersReceived[0].name
-								]);
-								return;
-							}
-
-							user.log(
-								`continued trip of ${quantity}x ${monster.name}[${monster.id}]`
-							);
-
-							this.client.commands
-								.get('minion')!
-								.kill(response as KlasaMessage, [quantity, monster.name])
-								.catch(err => channel.send(err));
-						} catch (err) {
-							response.channel.send(err);
-						} finally {
-							this.client.oneCommandAtATimeCache.delete(response.author.id);
-						}
-					}
-				});
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of killing ${monster.name}`);
+				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
+			},
+			image,
+			data,
+			loot
+		);
 	}
 }

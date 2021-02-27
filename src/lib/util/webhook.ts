@@ -1,4 +1,4 @@
-import { MessageEmbed, TextChannel, WebhookClient } from 'discord.js';
+import { MessageAttachment, MessageEmbed, TextChannel, WebhookClient } from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
@@ -50,7 +50,7 @@ export async function sendToChannelID(
 	channelID: string,
 	data: {
 		content?: string;
-		image?: Buffer;
+		image?: Buffer | MessageAttachment;
 		embed?: MessageEmbed;
 	}
 ) {
