@@ -110,7 +110,8 @@ export default class extends Task {
 				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

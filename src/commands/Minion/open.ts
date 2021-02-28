@@ -136,6 +136,9 @@ export default class extends BotCommand {
 		await msg.author.addItemsToBank(loot, true);
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
+
+		msg.author.incrementOpenableScore(clueTier.id, quantity);
+
 		if (mimicNumber > 0) {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
@@ -167,6 +170,7 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
 
+		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
 		await msg.author.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
@@ -204,9 +208,25 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
 		const loot = new Bank();
+		const score = msg.author.getOpenableScore(itemID('Spoils of war'));
 		for (let i = 0; i < quantity; i++) {
-			loot.add(botOpenable.table.roll());
+			const rollLoot = botOpenable.table.roll();
+			if (rollLoot.some(i => i.item === itemID("Lil' creator"))) {
+				this.client.emit(
+					Events.ServerNotification,
+					`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
+						msg.author.minionName
+					}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
+						'SoulWars'
+					)} Soul wars games, and this is their ${formatOrdinal(
+						score + i
+					)} Spoils of war crate.`
+				);
+			}
+			loot.add(rollLoot);
 		}
+
+		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
 
 		await msg.author.addItemsToBank(loot.values(), true);
 

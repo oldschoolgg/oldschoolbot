@@ -80,7 +80,8 @@ export default class extends Task {
 				return this.client.commands.get('agilityarena')!.run(res, []);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }
