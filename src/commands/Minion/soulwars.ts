@@ -175,6 +175,10 @@ export default class extends BotCommand {
 				`You don't have enough Zeal Tokens to imbue a ${item.input.name}. You have ${bal} but need ${item.tokens}.`
 			);
 		}
+		const bank = msg.author.bank();
+		if (!bank.has(item.input.id)) {
+			return msg.send(`You don't have a ${item.input.name}.`);
+		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
 		await msg.author.removeItemsFromBank({ [item.input.id]: 1 });
 		await msg.author.addItemsToBank({ [item.output.id]: 1 }, true);
