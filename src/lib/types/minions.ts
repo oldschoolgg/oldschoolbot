@@ -241,3 +241,9 @@ export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTaskOptions {
 	gloriesRemoved: number;
 }
+
+export interface SoulWarsOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+}

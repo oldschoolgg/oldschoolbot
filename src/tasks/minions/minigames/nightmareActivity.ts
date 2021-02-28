@@ -1,10 +1,11 @@
 import { percentChance } from 'e';
 import { Task } from 'klasa';
-import { Misc } from 'oldschooljs';
+import { Bank, Misc } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
+import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
@@ -23,11 +24,12 @@ interface NightmareUser {
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
+	async run({ id, channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NightmareUser[] = [];
+		const totalLoot = new Bank();
 
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
@@ -72,6 +74,7 @@ export default class extends Task {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 
+			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
@@ -104,6 +107,8 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
+
+		setActivityLoot(id, totalLoot.bank);
 
 		if (users.length > 1) {
 			queuedMessageSend(this.client, channelID, resultStr);

@@ -14,7 +14,6 @@ import {
 } from '../lib/poh';
 import { PoHTable } from '../lib/typeorm/PoHTable.entity';
 import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
-import getActivityOfUser from '../lib/util/getActivityOfUser';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -124,7 +123,7 @@ export default class PoHImage extends Task {
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
 		}
-		const activity = getActivityOfUser(this.client, poh.userID);
+		const activity = this.client.getActivityOfUser(poh.userID);
 		if (!activity) {
 			const image = this.imageCache.get(11)!;
 			const [x, y] = this.randMinionCoords();

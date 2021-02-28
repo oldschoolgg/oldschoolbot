@@ -81,4 +81,9 @@ export class OldSchoolBotClient extends Client {
 		initItemAliases();
 		return this;
 	};
+
+	getActivityOfUser(userID: string) {
+		const task = this.minionActivityCache.get(userID);
+		return task ?? null;
+	}
 }
