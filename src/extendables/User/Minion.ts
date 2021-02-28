@@ -518,6 +518,10 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
 	}
 
+	getOpenableScore(this: KlasaUser, id: number) {
+		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
+	}
+
 	public async getKCByName(this: KlasaUser, kcName: string) {
 		const mon = [
 			...killableMonsters,
@@ -734,6 +738,16 @@ export default class extends Extendable {
 		return this.settings.update(
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
+		);
+	}
+
+	public async incrementOpenableScore(this: User, openableID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const scores = this.settings.get(UserSettings.OpenableScores);
+
+		return this.settings.update(
+			UserSettings.OpenableScores,
+			addItemToBank(scores, openableID, amountToAdd)
 		);
 	}
 
