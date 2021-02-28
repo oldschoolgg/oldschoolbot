@@ -6,7 +6,7 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 
-import { PerkTier } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
@@ -23,6 +23,7 @@ export interface BankBackground {
 	gpCost?: number;
 	itemCost?: ItemBank;
 	repeatImage?: Image | null;
+	bitfield?: BitField;
 }
 
 export interface ClueMilestoneReward {

@@ -36,6 +36,8 @@ registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 const bankImageFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/1.jpg');
 const bankRepeaterFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/r1.jpg');
 
+const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
+
 const CACHE_DIR = './icon_cache';
 const spacer = 12;
 const itemSize = 32;
@@ -224,7 +226,8 @@ export default class BankImageTask extends Task {
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
-		user?: KlasaUser | string
+		user?: KlasaUser | string,
+		collectionLog?: ItemBank
 	): Promise<Buffer> {
 		const settings =
 			typeof user === 'undefined'
@@ -235,7 +238,7 @@ export default class BankImageTask extends Task {
 
 		const bankBackgroundID =
 			settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1;
-		const currentCL = settings?.get(UserSettings.CollectionLogBank);
+		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
 
 		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
 
@@ -320,7 +323,20 @@ export default class BankImageTask extends Task {
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
+		let bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
+
+		const isPurple: boolean =
+			bankBackgroundID === 14 &&
+			flags.showNewCL !== undefined &&
+			currentCL !== undefined &&
+			Object.keys(itemLoot).some(
+				i => !currentCL[i] && allCollectionLogItems.includes(parseInt(i))
+			);
+
+		if (isPurple) {
+			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
+		}
+
 		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(
