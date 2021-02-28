@@ -133,6 +133,7 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
@@ -148,7 +149,8 @@ export default class extends BotCommand {
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
 			title: opened,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -171,13 +173,15 @@ export default class extends BotCommand {
 		);
 
 		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -227,14 +231,15 @@ export default class extends BotCommand {
 		}
 
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
-
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot.values(), true);
 
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 }

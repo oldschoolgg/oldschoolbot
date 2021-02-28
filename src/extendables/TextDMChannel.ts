@@ -16,7 +16,8 @@ export default class extends Extendable {
 			title,
 			background,
 			flags,
-			user
+			user,
+			cl
 		}: {
 			bank: ItemBank;
 			content?: string;
@@ -24,11 +25,19 @@ export default class extends Extendable {
 			background?: number;
 			flags?: Record<string, string>;
 			user?: KlasaUser;
+			cl?: ItemBank;
 		}
 	) {
 		const image = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user);
+			.generateBankImage(
+				bank,
+				title,
+				true,
+				{ background: background ?? 1, ...flags },
+				user,
+				cl
+			);
 		return this.send(content, new MessageAttachment(image));
 	}
 }
