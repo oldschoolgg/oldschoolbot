@@ -105,7 +105,17 @@ export default class extends BotCommand {
 			minSize: 1,
 			maxSize: 99,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is starting a Soul Wars mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`
+			message: `${msg.author.username} is starting a Soul Wars mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			customDenier: user => {
+				if (!user.hasMinion) {
+					return [true, "you don't have a minion."];
+				}
+				if (user.minionIsBusy) {
+					return [true, 'your minion is busy.'];
+				}
+
+				return [false];
+			}
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);
