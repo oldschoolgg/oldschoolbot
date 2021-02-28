@@ -88,8 +88,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'minigame'],
-			description:
-				'Sends your minion to kill the nightmare. Requires food and melee gear. Your minion gets better at it over time.',
+			description: 'Sends your minion to do the Soul Wars minigame.',
 			examples: ['+soulwars'],
 			subcommands: true,
 			usage: '[buy|imbue] [str:...str]',
