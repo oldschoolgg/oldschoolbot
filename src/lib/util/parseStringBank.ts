@@ -1,6 +1,6 @@
 import { KlasaClient } from 'klasa';
 import numbro from 'numbro';
-import { Bank } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../constants';
@@ -48,19 +48,23 @@ export function parseStringBank(str = ''): [Item, number][] {
 }
 
 interface ParseBankOptions {
-	client: KlasaClient;
+	client?: KlasaClient;
 	inputBank: Bank;
 	flags?: Record<string, string>;
 	inputStr?: string;
 }
 
-enum FilterType {
+export enum FilterType {
 	lessThan,
 	equals,
 	greaterThan
 }
 
-function satisfiesQuantitativeFilter(subject: number, filter: FilterType, target: number): boolean {
+export function satisfiesQuantitativeFilter(
+	subject: number,
+	filter: FilterType,
+	target: number
+): boolean {
 	switch (filter) {
 		case FilterType.lessThan:
 			return subject < target;
@@ -72,22 +76,24 @@ function satisfiesQuantitativeFilter(subject: number, filter: FilterType, target
 	return true;
 }
 
-function parseFilterAndTarget(input: string | null): [FilterType, number] | [null, null] {
+export function parseFilterAndTarget(input: string | null): [FilterType, number] | [null, null] {
 	if (!input) return [null, null];
+	let value = Util.fromKMB(input);
 
-	if (parseInt(input)) {
-		return [FilterType.equals, parseInt(input)];
+	if (value || input === '0') {
+		return [FilterType.equals, value];
 	} else if (input.startsWith('>')) {
-		const value = input.replace('>', '');
-		if (parseInt(value)) {
-			return [FilterType.greaterThan, parseInt(value)];
+		value = Util.fromKMB(input.replace('>', ''));
+		if (value) {
+			return [FilterType.greaterThan, value];
 		}
 	} else if (input.startsWith('<')) {
-		const value = input.replace('<', '');
-		if (parseInt(value)) {
-			return [FilterType.lessThan, parseInt(value)];
+		value = Util.fromKMB(input.replace('<', ''));
+		if (value) {
+			return [FilterType.lessThan, value];
 		}
 	}
+
 	return [null, null];
 }
 
@@ -126,6 +132,7 @@ export async function parseBank({
 		if (
 			valueFilter !== null &&
 			valueTarget !== null &&
+			client &&
 			!satisfiesQuantitativeFilter(
 				await client.fetchItemPrice(item.id),
 				valueFilter,
