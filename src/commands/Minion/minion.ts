@@ -170,6 +170,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.HonourPoints,
 				UserSettings.HighGambles,
 				UserSettings.CarpenterPoints,
+				UserSettings.ZealTokens,
 				'gear',
 				'stats',
 				'skills',

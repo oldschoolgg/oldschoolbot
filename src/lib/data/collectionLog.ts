@@ -32,6 +32,14 @@ const nightmareLog = resolveItems([
 	'Little nightmare'
 ]);
 
+const soulwarsLog = resolveItems([
+	"Lil' creator",
+	'Red soul cape',
+	'Blue soul cape',
+	'Ectoplasmator',
+	'Spoils of war'
+]);
+
 const wintertodtLog = resolveItems([
 	'Phoenix',
 	'Pyromancer hood',
@@ -364,7 +372,8 @@ export const pets: CollectionLogData = {
 		'Pet penance queen',
 		'Phoenix',
 		'Smolcano',
-		'Youngllef'
+		'Youngllef',
+		"Lil' creator"
 	]),
 	Special: resolveItems(['Dark squirrel'])
 };
@@ -1768,5 +1777,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Gnome Restaurant',
 		aliases: ['gnome restaurant'],
 		items: { 1: gnomeRestaurantLog }
+	},
+	{
+		name: 'Soul wars',
+		aliases: ['soul wars', 'sw'],
+		items: { 1: soulwarsLog }
 	}
 ];

@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Minigames } from '../../extendables/User/Minigame';
 import { PerkTier } from '../../lib/constants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -26,16 +25,15 @@ export default class extends BotCommand {
 		const mon = effectiveMonsters.find(mon =>
 			mon.aliases.some(alias => stringMatches(alias, monName))
 		);
-		const minigame = Minigames.find(min => stringMatches(min.name, monName));
-		if (!mon && !minigame) {
+		if (!mon) {
 			return msg.send(`That's not a valid monster or minigame.`);
 		}
 
 		const item = getOSItem(itemName);
 
 		const ironmanPart = msg.flagArgs.im ? 'AND "minion.ironman" = true' : '';
-		const key = Boolean(minigame) ? 'minigameScores' : 'monsterScores';
-		const id = minigame?.id ?? mon?.id;
+		const key = 'monsterScores';
+		const { id } = mon;
 		const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
 
 		const result = await this.client.query<
@@ -50,7 +48,7 @@ export default class extends BotCommand {
 		const command = this.client.commands.get('leaderboard') as LeaderboardCommand;
 
 		return msg.send(
-			`**Dry Streaks for ${item.name} from ${(mon || minigame)!.name}:**\n${result
+			`**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
 				.map(
 					({ id, KC }) =>
 						`${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`
