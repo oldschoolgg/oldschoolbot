@@ -1846,7 +1846,7 @@ export const collectionLogTypes: CollectionLogType[] = [
 	},
 	{
 		name: 'Gamblers',
-		aliases: ['gamblers bag'],
+		aliases: ['gamblers bag', 'gb', 'gamblers'],
 		items: { 1: gamblersBag }
 	}
 ];
