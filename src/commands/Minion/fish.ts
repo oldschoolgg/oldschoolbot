@@ -80,17 +80,35 @@ export default class extends BotCommand {
 			scaledTimePerFish /= 2;
 		}
 
-		let { maxTripLength } = msg.author;
-		if (msg.author.hasItemEquippedAnywhere(itemID('Fish sack'))) {
-			maxTripLength += Time.Minute * 9;
-		}
-		if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
-			scaledTimePerFish *= 0.95;
-			boosts.push(`5% for Crystal harpoon`);
+		switch (fish.bait) {
+			case itemID('Fishing bait'):
+				if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fishing rod'))) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl fishing rod`);
+				}
+				break;
+			case itemID('Feather'):
+				if (
+					fish.name === 'Barbarian fishing' &&
+					msg.author.hasItemEquippedAnywhere(itemID('Pearl barbarian rod'))
+				) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl barbarian rod`);
+				} else if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod'))) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl fly fishing rod`);
+				}
+				break;
+			default:
+				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Crystal harpoon`);
+				}
+				break;
 		}
 
 		if (quantity === null) {
-			quantity = Math.floor(maxTripLength / scaledTimePerFish);
+			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
 		}
 
 		let duration = quantity * scaledTimePerFish;

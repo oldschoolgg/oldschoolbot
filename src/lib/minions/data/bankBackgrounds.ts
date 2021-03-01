@@ -1,4 +1,4 @@
-import { PerkTier } from '../../constants';
+import { BitField, PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
 
@@ -156,6 +156,13 @@ const backgroundImages: BankBackground[] = [
 		name: 'Hween',
 		image: null,
 		available: false
+	},
+	{
+		id: 14,
+		name: 'CoX',
+		image: null,
+		available: true,
+		bitfield: BitField.HasCoxBackground
 	},
 	{
 		id: 15,

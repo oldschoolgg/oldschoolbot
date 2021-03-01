@@ -100,6 +100,7 @@ export default class extends Task {
 		}
 		announceLoot(this.client, user, monster as KillableMonster, quantity, loot);
 
+		const previousCL = user.settings.get(UserSettings.CollectionLogBank);
 		await user.addItemsToBank(loot, true);
 
 		const image = await this.client.tasks
@@ -109,7 +110,8 @@ export default class extends Task {
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
 				{ showNewCL: 1 },
-				user
+				user,
+				previousCL
 			);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${

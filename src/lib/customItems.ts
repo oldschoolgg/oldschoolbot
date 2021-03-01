@@ -903,8 +903,6 @@ export function initCustomItems() {
 	setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'));
 
 	// Pets
-	setCustomItem(40_100, 'Flappy', getOSItem('Herbi'));
-	setCustomItem(40_101, 'Ishi', getOSItem('Herbi'));
 
 	/**
 	 * Non-mystery box items
@@ -923,14 +921,20 @@ export function initCustomItems() {
 	setCustomItem(45_010, 'Birthday pack', getOSItem('Coal'));
 
 	// Gamblers box
-	// setCustomItem(45_010, 'Die (4 sides)
-	// setCustomItem(45_010, 'Die (6 sides)
-	// setCustomItem(45_010, 'Die (8 sides)
-	// setCustomItem(45_010, 'Die (10 sides)
-	// setCustomItem(45_010, 'Die (12 sides)
-	// setCustomItem(45_010, 'Die (20 sides)
-	// setCustomItem(45_010, 'Dice (2, 6 sides)
-	// setCustomItem(45_010, 'Dice (up to 100)
+	setCustomItem(45_100, 'Gamblers bag', getOSItem('Coal'));
+	setCustomItem(45_101, '4 sided die', getOSItem('Coal'));
+	setCustomItem(45_102, '6 sided die', getOSItem('Coal'));
+	setCustomItem(45_103, '8 sided die', getOSItem('Coal'));
+	setCustomItem(45_104, '10 sided die', getOSItem('Coal'));
+	setCustomItem(45_105, '12 sided die', getOSItem('Coal'));
+	setCustomItem(45_106, '20 sided die', getOSItem('Coal'));
+	setCustomItem(45_107, '100 sided die', getOSItem('Coal'));
+	setCustomItem(45_108, 'Ring of luck', getOSItem('Coal'));
+
+	// Pets
+	setCustomItem(47_000, 'Flappy', getOSItem('Herbi'));
+	setCustomItem(47_001, 'Ishi', getOSItem('Herbi'));
+	setCustomItem(47_002, 'Corgi', getOSItem('Herbi'));
 
 	/**
 	 * Misc Items

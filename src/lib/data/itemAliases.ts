@@ -98,4 +98,7 @@ export function initItemAliases() {
 
 	// Supply crate (Mahogany Homes)
 	setItemAlias(24884, 'Builders supply crate');
+
+	setItemAlias(25344, 'Red soul cape');
+	setItemAlias(25346, 'Blue soul cape');
 }

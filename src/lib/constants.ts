@@ -176,7 +176,8 @@ export const enum Tasks {
 	MahoganyHomes = 'mahoganyHomesActivity',
 	NexActivity = 'nexActivity',
 	GnomeRestaurant = 'gnomeRestaurantActivity',
-	BirthdayEvent = 'birthdayEventActivity'
+	BirthdayEvent = 'birthdayEventActivity',
+	SoulWars = 'soulWarsActivity'
 }
 
 export enum Activity {
@@ -226,7 +227,8 @@ export enum Activity {
 	MahoganyHomes = 'MahoganyHomes',
 	Nex = 'Nex',
 	GnomeRestaurant = 'GnomeRestaurant',
-	BirthdayEvent = 'BirthdayEvent'
+	BirthdayEvent = 'BirthdayEvent',
+	SoulWars = 'SoulWars'
 }
 
 export enum ActivityGroup {
@@ -304,6 +306,7 @@ export const enum BitField {
 	isContributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
+	HasCoxBackground = 11,
 	HasGivenBirthdayPack = 200
 }
 

@@ -223,6 +223,49 @@ const DwarvenCrateTable = new LootTable()
 	.add('Beer')
 	.add('Kebab');
 
+export const SpoilsOfWarBaseTable = new LootTable()
+	.add('Pure essence', [4000, 6000], 6)
+	.add('Coins', [20_000, 30_000], 5)
+	.add('Raw lobster', [30, 60], 5)
+	.add('Raw swordfish', [30, 60], 5)
+	.add('Raw shark', [30, 60], 5)
+	.add('Blood rune', [150, 300], 5)
+	.add('Death rune', [150, 300], 5)
+	.add('Nature rune', [150, 300], 5)
+	.add('Adamant bolts', [200, 400], 5)
+	.add('Runite bolts', [100, 200], 5)
+	.add('Adamant arrow', [200, 400], 5)
+	.add('Rune arrow', [100, 200], 5)
+	.add('Coal', [150, 300], 5)
+	.add('Mithril ore', [80, 100], 5)
+	.add('Coins', [2000, 3000], 4)
+	.add('Uncut ruby', [15, 30], 4)
+	.add('Uncut diamond', [15, 30], 4)
+	.add('Soul rune', [150, 300], 2)
+	.add('Soul rune', [500, 600], 2)
+	.add('Rune full helm')
+	.add('Rune platebody')
+	.add('Rune platelegs')
+	.add('Runite ore', [4, 8])
+	.add('Tooth half of key')
+	.add('Loop half of key')
+	.add('Snapdragon seed')
+	.add('Ranarr seed')
+	.add(
+		new LootTable()
+			.add('Dragon med helm')
+			.add('Dragon scimitar')
+			.add('Dragon mace')
+			.add('Dragon dagger')
+			.add('Dragon longsword')
+			.add('Bones')
+			.add('Cabbage')
+	);
+
+export const SpoilsOfWarTable = new LootTable()
+	.tertiary(400, "Lil' creator")
+	.every(SpoilsOfWarBaseTable, 3);
+
 export const NestBoxes = new LootTable()
 	.add('Nest box (seeds)', 1, 12)
 	.add('Nest box (ring)', 1, 5)
@@ -363,6 +406,28 @@ const Openables: Openable[] = [
 			.add('Sparkler', [2, 10])
 			.add('Party music box')
 			.tertiary(12, 'Cake hat'),
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Spoils of war',
+		itemID: itemID('Spoils of war'),
+		aliases: ['Spoils of war'],
+		table: SpoilsOfWarTable,
+		emoji: Emoji.Casket
+	},
+	{
+		name: 'Gamblers bag',
+		itemID: itemID('Gamblers bag'),
+		aliases: ['gamblers bag', 'gb'],
+		table: new LootTable()
+			.add('4 sided die', 1, 6)
+			.add('6 sided die', 1, 6)
+			.add('8 sided die', 1, 4)
+			.add('10 sided die', 1, 4)
+			.add('12 sided die', 1, 3)
+			.add('20 sided die', 1, 3)
+			.add('100 sided die')
+			.tertiary(100, 'Ring of luck'),
 		emoji: Emoji.BirthdayPresent
 	}
 ];

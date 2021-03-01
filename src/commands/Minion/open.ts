@@ -135,9 +135,13 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
+
+		msg.author.incrementOpenableScore(clueTier.id, quantity);
+
 		if (mimicNumber > 0) {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
@@ -153,7 +157,8 @@ export default class extends BotCommand {
 			}`,
 			title: opened,
 			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -175,13 +180,16 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
 
+		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -219,7 +227,8 @@ export default class extends BotCommand {
 				if (roll(10)) smokeyBonus++;
 			}
 		}
-		for (let i = 0; i < quantity + smokeyBonus; i++) {
+
+		for (let i = 0; i < quantity; i++) {
 			if (typeof botOpenable.table === 'function') {
 				loot.add(botOpenable.table());
 			} else {
@@ -227,6 +236,21 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (loot.has("Lil' creator")) {
+			this.client.emit(
+				Events.ServerNotification,
+				`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
+					msg.author.minionName
+				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
+					'SoulWars'
+				)} Soul wars games, and this is their ${formatOrdinal(
+					msg.author.getOpenableScore(botOpenable.itemID) + quantity
+				)} Spoils of war crate.`
+			);
+		}
+
+		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot.values(), true);
 
 		return msg.channel.sendBankImage({
@@ -234,7 +258,8 @@ export default class extends BotCommand {
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1, wide: Object.keys(loot.values()).length > 250 ? 1 : 0 },
 			user: msg.author,
-			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined
+			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined,
+			cl: previousCL
 		});
 	}
 }
