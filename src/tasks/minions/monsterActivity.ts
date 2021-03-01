@@ -1,9 +1,12 @@
 import { Task } from 'klasa';
+import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { addMonsterXP } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -18,6 +21,8 @@ export default class extends Task {
 		announceLoot(this.client, user, monster, quantity, loot);
 		const previousCL = user.settings.get(UserSettings.CollectionLogBank);
 		await user.addItemsToBank(loot, true);
+
+		const xpRes = addMonsterXP(user, Monsters.get(monster.id)!, quantity);
 
 		const image = await this.client.tasks
 			.get('bankImage')!
@@ -34,7 +39,7 @@ export default class extends Task {
 			monster.name
 		} KC is now ${
 			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
-		}.`;
+		}. You received ${xpRes.join(', ')}.`;
 
 		handleTripFinish(
 			this.client,

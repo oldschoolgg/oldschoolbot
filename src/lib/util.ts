@@ -3,6 +3,7 @@ import { randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
+import Monster from 'oldschooljs/dist/structures/Monster';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -13,6 +14,7 @@ import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
+import { SkillsEnum } from './skilling/types';
 import { channelIsSendable } from './util/channelIsSendable';
 import itemID from './util/itemID';
 
@@ -367,4 +369,29 @@ export function parseUsername(str: string) {
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
+}
+
+export type AttackStyles =
+	| SkillsEnum.Attack
+	| SkillsEnum.Strength
+	| SkillsEnum.Defence
+	| SkillsEnum.Magic
+	| SkillsEnum.Ranged;
+
+export function addMonsterXP(user: KlasaUser, mon: Monster | number, quantity: number) {
+	const setStyles = user.getAttackStyles();
+	const monsterStyles = typeof mon === 'number' ? [] : ;
+
+	const hp = typeof mon === 'number' ? mon : mon.data.hitpoints;
+	const totalXP = hp * 4 * quantity;
+	const xpPerSkill = totalXP / attackStyles.length;
+
+	let res = [];
+
+	for (const style of attackStyles) {
+		res.push(`${xpPerSkill.toLocaleString()} ${toTitleCase(style)} XP`);
+		user.addXP(style, xpPerSkill);
+	}
+
+	return res;
 }

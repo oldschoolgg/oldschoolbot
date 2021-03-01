@@ -219,6 +219,8 @@ declare module 'discord.js' {
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		getGear(gearType: GearSetupType): GearSetup;
+		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
+		getAttackStyles(): SkillsEnum[];
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

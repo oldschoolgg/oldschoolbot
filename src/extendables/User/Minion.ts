@@ -60,6 +60,7 @@ import {
 } from '../../lib/types/minions';
 import {
 	addItemToBank,
+	AttackStyles,
 	convertXPtoLVL,
 	formatDuration,
 	incrementMinionDailyDuration,
@@ -779,5 +780,15 @@ export default class extends Extendable {
 			UserSettings.CreatureScores,
 			addItemToBank(currentCreatureScores, creatureID, amountToAdd)
 		);
+	}
+
+	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {
+		await this.settings.update(UserSettings.AttackStyle, newStyles, {
+			arrayAction: 'overwrite'
+		});
+	}
+
+	public async getAttackStyles(this: User) {
+		return this.settings.get(UserSettings.AttackStyle);
 	}
 }

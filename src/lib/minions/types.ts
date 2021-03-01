@@ -12,6 +12,7 @@ import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
+import { AttackStyles } from '../util';
 
 export interface BankBackground {
 	image: Image | null;
@@ -86,6 +87,8 @@ export interface KillableMonster {
 	 * Boosts for POH objects.
 	 */
 	pohBoosts?: POHBoosts;
+	defaultAttackStyles?: AttackStyles[];
+	disallowedAttackStyles?: AttackStyles[];
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
