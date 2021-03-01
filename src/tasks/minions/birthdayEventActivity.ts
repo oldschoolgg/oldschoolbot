@@ -34,7 +34,8 @@ export default class extends Task {
 			loot.add('Slice of birthday cake');
 		}
 
-		if (roll(400)) {
+		const flappyRate = cl.has('Flappy') ? 600 : 300;
+		if (roll(flappyRate)) {
 			loot.add('Flappy');
 			this.client.emit(
 				Events.ServerNotification,
