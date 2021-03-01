@@ -69,7 +69,7 @@ export default class extends BotCommand {
 				msg.author.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
 			}
 
-			if (amount >= 100_000_000 && won && roll(20)) {
+			if (amount >= 100_000_000 && won && roll(30)) {
 				await msg.author.addItemsToBank(new Bank().add('Gamblers bag'), true);
 				return msg.send(
 					`${
