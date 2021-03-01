@@ -114,6 +114,10 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
+		if (user.usingPet('Flappy')) {
+			loot = multiplyBank(loot, 2);
+		}
+
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
