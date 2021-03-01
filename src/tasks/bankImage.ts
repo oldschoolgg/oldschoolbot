@@ -379,16 +379,6 @@ export default class BankImageTask extends Task {
 			);
 		}
 
-		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(
-			bgImage!.image,
-			0,
-			0,
-			wide ? canvas.width : bgImage.image!.width!,
-			wide ? canvas.height : bgImage.image!.height!
-		);
-
 		// Skips border if noBorder is set
 		if (noBorder !== 1 && !isTransparent) {
 			this.drawBorder(canvas, bgImage.name === 'Default');
