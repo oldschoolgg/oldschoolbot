@@ -228,7 +228,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		for (let i = 0; i < quantity; i++) {
+		for (let i = 0; i < quantity + smokeyBonus; i++) {
 			if (typeof botOpenable.table === 'function') {
 				loot.add(botOpenable.table());
 			} else {
