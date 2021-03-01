@@ -11,6 +11,7 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	formatDuration,
+	multiplyBank,
 	percentChance,
 	rand
 } from '../../../lib/util';
@@ -96,7 +97,7 @@ export default class extends Task {
 		}
 
 		await user.incrementMonsterScore(Monsters.TzTokJad.id);
-		const loot = Monsters.TzTokJad.kill();
+		let loot = Monsters.TzTokJad.kill();
 
 		if (loot[TzrekJadPet]) {
 			this.client.emit(
@@ -120,6 +121,10 @@ export default class extends Task {
 
 		if (roll(2000)) {
 			loot[23939] = 1;
+		}
+
+		if (user.usingPet('Flappy')) {
+			loot = multiplyBank(loot, 2);
 		}
 
 		await user.addItemsToBank(loot, true);
