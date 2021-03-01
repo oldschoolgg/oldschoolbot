@@ -50,6 +50,10 @@ export default class extends Task {
 			loot.add('Glowing dagger');
 		}
 
+		if (roll(100)) {
+			loot.add('Birthday pack');
+		}
+
 		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(
