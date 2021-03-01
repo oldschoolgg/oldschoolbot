@@ -405,7 +405,8 @@ const Openables: Openable[] = [
 			.add('Party cake')
 			.add('Sparkler', [2, 10])
 			.add('Party music box')
-			.tertiary(12, 'Cake hat'),
+			.tertiary(20, 'Cake hat')
+			.tertiary(15, 'Corgi'),
 		emoji: Emoji.BirthdayPresent
 	},
 	{
