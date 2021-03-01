@@ -45,6 +45,10 @@ export default class extends Task {
 			loot.bank[getRandomMysteryBox()] = 1;
 		}
 
+		if (user.usingPet('Flappy')) {
+			loot.multiply(2);
+		}
+
 		await user.addItemsToBank(loot.bank, true);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 		await user.addXP(SkillsEnum.Agility, agilityXP);
