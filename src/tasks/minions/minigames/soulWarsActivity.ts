@@ -35,6 +35,10 @@ export default class extends Task {
 				points += calcPoints();
 			}
 
+			if (user.usingPet('Flappy')) {
+				points *= 2;
+			}
+
 			await user.settings.update(
 				UserSettings.ZealTokens,
 				user.settings.get(UserSettings.ZealTokens) + points
