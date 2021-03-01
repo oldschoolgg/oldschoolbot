@@ -29,6 +29,7 @@ export default class extends Task {
 		}
 
 		user.incrementMinionDailyDuration(duration);
+		user.incrementMonsterScore(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let abyssalBonus = 1;
