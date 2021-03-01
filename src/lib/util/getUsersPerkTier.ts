@@ -39,6 +39,10 @@ export default function getUsersPerkTier(
 		return PerkTier.Two;
 	}
 
+	if (bitfield.includes(BitField.HasPermanentTierOne)) {
+		return PerkTier.Two;
+	}
+
 	if (userOrBitfield instanceof User) {
 		const supportGuild = getSupportGuild(userOrBitfield.client);
 		const member = supportGuild.members.get(userOrBitfield.id);

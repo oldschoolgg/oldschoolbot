@@ -302,7 +302,8 @@ export const enum BitField {
 	isContributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
-	HasCoxBackground = 11
+	HasCoxBackground = 11,
+	HasPermanentTierOne = 12
 }
 
 interface BitFieldData {
