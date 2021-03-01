@@ -50,7 +50,7 @@ export default class extends Task {
 			loot.add('Glowing dagger');
 		}
 
-		if (roll(100)) {
+		if (user.usingPet('Flappy') && roll(100)) {
 			loot.add('Birthday pack');
 		}
 
