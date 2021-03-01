@@ -96,5 +96,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.GnomeRestaurant;
 		case Activity.BirthdayEvent:
 			return Tasks.BirthdayEvent;
+		case Activity.SoulWars:
+			return Tasks.SoulWars;
 	}
 }

@@ -42,6 +42,8 @@ export namespace UserSettings {
 	export const PatreonID = T<string | null>('patreon_id');
 	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
+	export const ZealTokens = T<number>('zeal_tokens');
+	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

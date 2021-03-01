@@ -40,4 +40,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'gnome_restaurant', type: 'int', nullable: false, default: 0 })
 	public GnomeRestaurant!: number;
+
+	@Column({ name: 'soul_wars', type: 'int', nullable: false, default: 0 })
+	public SoulWars!: number;
 }

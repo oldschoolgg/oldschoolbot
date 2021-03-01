@@ -20,6 +20,18 @@ const gnomeRestaurantLog = resolveItems([
 	'Gnomeball'
 ]);
 
+const gamblersBag = resolveItems([
+	'Gamblers bag',
+	'4 sided die',
+	'6 sided die',
+	'8 sided die',
+	'10 sided die',
+	'12 sided die',
+	'20 sided die',
+	'100 sided die',
+	'Ring of luck'
+]);
+
 const nightmareLog = resolveItems([
 	"Inquisitor's great helm",
 	"Inquisitor's hauberk",
@@ -31,6 +43,14 @@ const nightmareLog = resolveItems([
 	'Harmonised orb',
 	'Jar of dreams',
 	'Little nightmare'
+]);
+
+const soulwarsLog = resolveItems([
+	"Lil' creator",
+	'Red soul cape',
+	'Blue soul cape',
+	'Ectoplasmator',
+	'Spoils of war'
 ]);
 
 const wintertodtLog = resolveItems([
@@ -119,8 +139,6 @@ const hunterGear: CollectionLogData = {
 		'Spotted cape',
 		'Spottier cape',
 		'Gloves of silence',
-		'Golden tench',
-		'Fish sack',
 		'Baby chinchompa',
 		'Herbi'
 	])
@@ -150,6 +168,12 @@ const fishingTrawler: CollectionLogData = {
 		'Raw sea turtle',
 		'Raw manta ray'
 	])
+};
+
+export const aerialFishing: CollectionLogData = {
+	Angler: anglerOutfit,
+	Rods: resolveItems(['Pearl fishing rod', 'Pearl fly fishing rod', 'Pearl barbarian rod']),
+	Other: resolveItems(['Fish sack', 'Golden tench'])
 };
 
 export const carpenterOutfit = resolveItems([
@@ -375,7 +399,8 @@ export const pets: CollectionLogData = {
 		'Pet penance queen',
 		'Phoenix',
 		'Smolcano',
-		'Youngllef'
+		'Youngllef',
+		"Lil' creator"
 	]),
 	Special: resolveItems(['Dark squirrel']),
 	BSOpets: resolveItems([
@@ -1589,7 +1614,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark graceful cape',
 		'Dark squirrel'
 	]),
-	Angler: anglerOutfit,
+	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
 	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
@@ -1601,8 +1626,6 @@ export const skillingLog: CollectionLogData = {
 		'Spotted cape',
 		'Spottier cape',
 		'Gloves of silence',
-		'Fish sack',
-		'Golden tench',
 		'Baby chinchompa',
 		'Herbi'
 	]),
@@ -1797,6 +1820,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: hunterGear
 	},
 	{
+		name: 'Aerial Fishing',
+		aliases: ['af', 'aerial fishing'],
+		items: aerialFishing
+	},
+	{
 		name: 'Mahogany Homes',
 		aliases: ['mh', 'mahogany homes'],
 		items: mahoganyHomesLog
@@ -1810,5 +1838,15 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Gnome Restaurant',
 		aliases: ['gnome restaurant'],
 		items: { 1: gnomeRestaurantLog }
+	},
+	{
+		name: 'Soul wars',
+		aliases: ['soul wars', 'sw'],
+		items: { 1: soulwarsLog }
+	},
+	{
+		name: 'Gamblers',
+		aliases: ['gamblers bag'],
+		items: { 1: gamblersBag }
 	}
 ];

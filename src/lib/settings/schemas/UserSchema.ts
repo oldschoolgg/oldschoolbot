@@ -32,6 +32,8 @@ Client.defaultUserSchema
 	.add('patreon_id', 'string', { default: null })
 	.add('github_id', 'integer', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
+	.add('zeal_tokens', 'integer', { default: 0 })
+	.add('openable_scores', 'any', { default: {} })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
