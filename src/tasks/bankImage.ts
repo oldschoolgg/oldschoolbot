@@ -353,20 +353,6 @@ export default class BankImageTask extends Task {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		let bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
-		const isTransparent = bankBackgroundID === 12;
-
-		if (!isTransparent) {
-			ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-			ctx.drawImage(
-				bgImage!.image,
-				0,
-				0,
-				wide ? canvas.width : bgImage.image!.width!,
-				wide ? canvas.height : bgImage.image!.height!
-			);
-		}
-
 		const isPurple: boolean =
 			bankBackgroundID === 14 &&
 			flags.showNewCL !== undefined &&
@@ -377,6 +363,20 @@ export default class BankImageTask extends Task {
 
 		if (isPurple) {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
+		}
+
+		const isTransparent = bankBackgroundID === 12;
+
+		if (bankBackgroundID !== 12) {
+			ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.drawImage(
+				bgImage!.image,
+				0,
+				0,
+				wide ? canvas.width : bgImage.image!.width!,
+				wide ? canvas.height : bgImage.image!.height!
+			);
 		}
 
 		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
