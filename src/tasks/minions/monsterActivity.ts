@@ -4,7 +4,6 @@ import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { addMonsterXP } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';

@@ -378,19 +378,23 @@ export type AttackStyles =
 	| SkillsEnum.Magic
 	| SkillsEnum.Ranged;
 
-export function addMonsterXP(user: KlasaUser, mon: Monster | number, quantity: number) {
-	const setStyles = user.getAttackStyles();
-	const monsterStyles = typeof mon === 'number' ? [] : ;
+export async function addMonsterXP(
+	user: KlasaUser,
+	mon: Monster | number,
+	quantity: number,
+	duration: number
+) {
+	const attackStyles = user.getAttackStyles();
+	// const monsterStyles = typeof mon === 'number' ? [] : [];
 
 	const hp = typeof mon === 'number' ? mon : mon.data.hitpoints;
 	const totalXP = hp * 4 * quantity;
 	const xpPerSkill = totalXP / attackStyles.length;
 
-	let res = [];
+	let res: string[] = [];
 
 	for (const style of attackStyles) {
-		res.push(`${xpPerSkill.toLocaleString()} ${toTitleCase(style)} XP`);
-		user.addXP(style, xpPerSkill);
+		res.push(await user.addXP(style, xpPerSkill, duration));
 	}
 
 	return res;
