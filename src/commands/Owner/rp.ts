@@ -81,6 +81,18 @@ export default class extends BotCommand {
 					`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`
 				);
 			}
+			case 'giveperm': {
+				if (!input) return;
+				return input.settings.update(
+					UserSettings.BitField,
+					[
+						...input.settings.get(UserSettings.BitField),
+						BitField.HasPermanentTierOne,
+						BitField.HasPermanentEventBackgrounds
+					],
+					{ arrayAction: 'overwrite' }
+				);
+			}
 		}
 
 		if (!isOwner) return null;
