@@ -29,7 +29,7 @@ export default class extends Task {
 		}
 
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMonsterScore(monsterID, quantity);
+		await user.incrementMonsterScore(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let abyssalBonus = 1;
@@ -116,9 +116,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${
-			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
-		}.`;
+		} KC is now ${user.getKC(monsterID)}.`;
 
 		if (gotBrock) {
 			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
