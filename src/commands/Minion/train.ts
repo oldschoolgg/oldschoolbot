@@ -33,7 +33,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [_styles]: [string]) {
-		const styles =
+		const styles: AttackStyles[] =
 			_styles === 'shared'
 				? [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]
 				: isValidAttackStyle(_styles)
@@ -52,6 +52,9 @@ export default class extends BotCommand {
 				);
 			}
 		}
+
+		await msg.author.setAttackStyle(styles);
+
 		return msg.send(
 			`You're now training: ${styles
 				.map(toTitleCase)

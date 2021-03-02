@@ -1,5 +1,4 @@
 import { Task } from 'klasa';
-import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -21,7 +20,7 @@ export default class extends Task {
 		const previousCL = user.settings.get(UserSettings.CollectionLogBank);
 		await user.addItemsToBank(loot, true);
 
-		const xpRes = addMonsterXP(user, Monsters.get(monster.id)!, quantity);
+		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
 
 		const image = await this.client.tasks
 			.get('bankImage')!

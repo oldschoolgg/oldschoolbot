@@ -25,6 +25,7 @@ import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
+import { AttackStyles } from '../util';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
@@ -220,7 +221,7 @@ declare module 'discord.js' {
 		getPOH(): Promise<PoHTable>;
 		getGear(gearType: GearSetupType): GearSetup;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
-		getAttackStyles(): SkillsEnum[];
+		getAttackStyles(): AttackStyles[];
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

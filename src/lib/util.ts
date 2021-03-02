@@ -1,9 +1,9 @@
 import { Client, Guild } from 'discord.js';
 import { randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, util } from 'klasa';
+import { Monsters } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
-import Monster from 'oldschooljs/dist/structures/Monster';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -12,6 +12,7 @@ const emojiRegex = require('emoji-regex');
 import { CENA_CHARS, Channel, continuationChars, Events, PerkTier, Time } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
+import killableMonsters from './minions/data/killableMonsters';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
@@ -380,14 +381,36 @@ export type AttackStyles =
 
 export async function addMonsterXP(
 	user: KlasaUser,
-	mon: Monster | number,
+	monsterID: number,
 	quantity: number,
 	duration: number
 ) {
-	const attackStyles = user.getAttackStyles();
-	// const monsterStyles = typeof mon === 'number' ? [] : [];
+	const killableMon = killableMonsters.find(m => m.id === monsterID);
+	const osjsMon = Monsters.get(monsterID);
+	if (!killableMon || !osjsMon) {
+		throw new Error(`Missing killableMonster or osjsMon for ${monsterID}`);
+	}
 
-	const hp = typeof mon === 'number' ? mon : mon.data.hitpoints;
+	// The styles chosen by this user to use.
+	let attackStyles = user.getAttackStyles();
+
+	// The default attack styles to use for this monster, defaults to shared (melee)
+	const monsterStyles = killableMon.defaultAttackStyles ?? [
+		SkillsEnum.Attack,
+		SkillsEnum.Strength,
+		SkillsEnum.Defence
+	];
+
+	// If their attack style can't be used on this monster, or they have no selected attack styles selected,
+	// use the monsters default attack style.
+	if (
+		attackStyles.length === 0 ||
+		attackStyles.some(s => killableMon.disallowedAttackStyles?.includes(s))
+	) {
+		attackStyles = monsterStyles;
+	}
+
+	const hp = osjsMon.data.hitpoints;
 	const totalXP = hp * 4 * quantity;
 	const xpPerSkill = totalXP / attackStyles.length;
 

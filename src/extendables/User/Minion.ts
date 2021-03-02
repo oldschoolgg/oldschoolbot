@@ -788,7 +788,7 @@ export default class extends Extendable {
 		});
 	}
 
-	public async getAttackStyles(this: User) {
+	public getAttackStyles(this: User) {
 		return this.settings.get(UserSettings.AttackStyle);
 	}
 }
