@@ -1,4 +1,4 @@
-import { calcWhatPercent, reduceNumByPercent } from 'e';
+import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
@@ -36,14 +36,9 @@ export default class extends BotCommand {
 			return msg.send("To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.");
 		}
 
-		const kc = await msg.author.getMinigameScore('RoguesDenMaze');
-		const kcLearned = Math.min(5, calcWhatPercent(kc, 10));
-
 		const staminasToRemove = new Bank();
 		const boosts = [];
 		let baseTime = Time.Minute * 10;
-		baseTime = reduceNumByPercent(baseTime, kcLearned);
-		boosts.push(`${kcLearned.toFixed(2)}% boost for learning`);
 
 		let skillPercentage =
 			(msg.author.skillLevel(SkillsEnum.Agility) +
@@ -62,7 +57,7 @@ export default class extends BotCommand {
 
 		if (msg.author.hasItemEquippedOrInBank('Stamina potion(4)')) {
 			const potionCount = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
-			const potionsRequired = Math.max(1, Math.floor(quantity / 4));
+			const potionsRequired = Math.max(1, Math.floor(quantity / 4)); // always use at least one pot
 
 			if (potionCount < potionsRequired) {
 				boosts.push(`-50% not enough Stamina potions`);
