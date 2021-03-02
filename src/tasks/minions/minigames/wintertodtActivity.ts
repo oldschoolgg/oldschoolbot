@@ -118,6 +118,10 @@ export default class extends Task {
 			loot = multiplyBank(loot, 2);
 		}
 
+		if (user.hasItemEquippedAnywhere(itemID('Firemaking master cape'))) {
+			loot = multiplyBank(loot, 2);
+		}
+
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 

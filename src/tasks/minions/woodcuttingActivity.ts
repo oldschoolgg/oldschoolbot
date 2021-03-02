@@ -43,6 +43,10 @@ export default class extends Task {
 			loot[getRandomMysteryBox()] = 1;
 		}
 
+		if (user.hasItemEquippedAnywhere(itemID('Woodcutting master cape'))) {
+			loot = multiplyBank(loot, 2);
+		}
+
 		const minutes = duration / Time.Minute;
 		if (roll(Math.floor(2000 / minutes))) {
 			loot[itemID('Peky')] = 1;
