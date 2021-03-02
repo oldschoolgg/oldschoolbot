@@ -147,16 +147,19 @@ export default class PatreonTask extends Task {
 		const userBitfield = settings.get(UserSettings.BitField);
 
 		try {
-			await settings.update(
-				UserSettings.BitField,
-				[
-					...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
-					bitFieldFromPerkTier(perkTier)
-				],
-				{
-					arrayAction: ArrayActions.Overwrite
-				}
-			);
+			let newField = [
+				...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
+				bitFieldFromPerkTier(perkTier)
+			];
+
+			if (perkTier === PerkTier.Six) {
+				newField.push(BitField.HasPermanentEventBackgrounds);
+				newField.push(BitField.HasPermanentTierOne);
+			}
+
+			await settings.update(UserSettings.BitField, newField, {
+				arrayAction: ArrayActions.Overwrite
+			});
 		} catch (_) {}
 	}
 

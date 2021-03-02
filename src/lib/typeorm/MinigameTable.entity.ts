@@ -1,10 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('minigames')
 export class MinigameTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
 	public id!: string;
 
+	@Index()
 	@Column({ name: 'user_id', length: 19, type: 'varchar', nullable: false })
 	public userID!: string;
 
