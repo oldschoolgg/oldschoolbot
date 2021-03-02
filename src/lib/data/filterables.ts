@@ -404,6 +404,7 @@ const dagannothkings = resolveItems([
 	'Rock-shell gloves',
 	'Berserker helm',
 	'Warrior helm',
+	'Farseer helm',
 	'Pet dagannoth rex',
 	'Seercull',
 	'Spined helm',
