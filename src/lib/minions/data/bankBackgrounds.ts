@@ -166,7 +166,14 @@ const backgroundImages: BankBackground[] = [
 		name: 'CoX',
 		image: null,
 		available: true,
-		bitfield: BitField.HasCoxBackground
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 15,
+		name: 'OSB',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
 	}
 ];
 
