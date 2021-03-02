@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent, calcPercentOfNum } from '../../../lib/util';
+import { addBanks, anglerBoostPercent, calcPercentOfNum, itemID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { skillsMeetRequirements } from '../../../lib/util/skillsMeetRequirements';
 
@@ -53,6 +53,11 @@ export default class extends Task {
 			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
 			str += `\n\n${xpBonusPercent}% Bonus XP (${bonusXP}) for Angler outfit pieces.`;
 			totalXP += bonusXP;
+		}
+
+		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
+			loot.multiply(4);
+			str += `\n\nYou received **4x** extra fish because you are a master at Fishing.`;
 		}
 
 		await user.addItemsToBank(loot.bank, true);
