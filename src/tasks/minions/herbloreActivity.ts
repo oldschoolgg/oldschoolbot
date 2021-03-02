@@ -17,7 +17,7 @@ export default class extends Task {
 		if (!mixableItem) return;
 
 		const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
-		const hasHerbMasterCape = user.hasItemEquippedAnywhere(itemID('Prayer master cape'));
+		const hasHerbMasterCape = user.hasItemEquippedAnywhere(itemID('Herblore master cape'));
 		const herbCapePerk = isMixingPotion && hasHerbMasterCape;
 		let bonus = 0;
 		if (herbCapePerk) {
