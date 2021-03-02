@@ -21,7 +21,8 @@ export default class extends BotCommand {
 			aliases: ['rd', 'rogues'],
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'skilling', 'minigame'],
-			description: 'Sends your minion to fight Zalcano. Requires food and 150 QP.',
+			description:
+				"Sends your minion to run laps of the Rogues' Den maze. Requires 50 Agility and Thieving.",
 			examples: ['+roguesden']
 		});
 	}
@@ -56,12 +57,13 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
 
 		if (msg.author.hasItemEquippedOrInBank('Stamina potion(4)')) {
-			const potionCount = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
+			const potionsInBank = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
 			const potionsRequired = Math.max(1, Math.floor(quantity / 4)); // always use at least one pot
 
-			if (potionCount < potionsRequired) {
+			if (potionsInBank < potionsRequired) {
 				boosts.push(`-50% not enough Stamina potions`);
 			} else {
+				// we reduce instead of increase so we don't go over the max trip length, and instead opt for shorter trips
 				baseTime = reduceNumByPercent(baseTime, 50);
 				staminasToRemove.add('Stamina potion(4)', potionsRequired);
 			}

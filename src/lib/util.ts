@@ -9,6 +9,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 const emojiRegex = require('emoji-regex');
 
 import { CENA_CHARS, Channel, continuationChars, Events, PerkTier, Time } from './constants';
+import { rogueOutfit } from './data/collectionLog';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
@@ -300,6 +301,21 @@ export function anglerBoostPercent(user: KlasaUser) {
 		boostPercent += 0.5;
 	}
 	return round(boostPercent, 1);
+}
+
+export function rogueOutfitPercentBonus(user: KlasaUser): number {
+	const skillingSetup = user.getGear('skilling');
+	let amountEquipped = 0;
+	for (const id of rogueOutfit) {
+		if (hasItemEquipped(id, skillingSetup)) {
+			amountEquipped++;
+		}
+	}
+	return amountEquipped * 20;
+}
+
+export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
+	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
 }
 
 export function generateContinuationChar(user: KlasaUser) {
