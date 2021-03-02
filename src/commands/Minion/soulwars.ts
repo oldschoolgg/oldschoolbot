@@ -118,7 +118,10 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = await msg.makePartyAwaiter(partyOptions);
+		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+		if (users.length === 0) {
+			return;
+		}
 
 		const perDuration = randomVariation(Time.Minute * 7, 5);
 		const quantity = Math.floor(msg.author.maxTripLength / perDuration);
