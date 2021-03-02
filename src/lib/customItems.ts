@@ -936,6 +936,11 @@ export function initCustomItems() {
 	setCustomItem(47_001, 'Ishi', getOSItem('Herbi'));
 	setCustomItem(47_002, 'Corgi', getOSItem('Herbi'));
 
+	// Royal mystery box
+	setCustomItem(47_500, 'Diamond sceptre', getOSItem('Rune sword'));
+	setCustomItem(47_501, 'Diamond crown', getOSItem('Bronze full helm'));
+	setCustomItem(47_502, 'Royal mystery box', getOSItem('Mystery box'));
+
 	/**
 	 * Misc Items
 	 *

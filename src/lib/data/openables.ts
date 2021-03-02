@@ -405,8 +405,7 @@ const Openables: Openable[] = [
 			.add('Party cake')
 			.add('Sparkler', [2, 10])
 			.add('Party music box')
-			.tertiary(20, 'Cake hat')
-			.tertiary(15, 'Corgi'),
+			.tertiary(20, 'Cake hat'),
 		emoji: Emoji.BirthdayPresent
 	},
 	{
@@ -429,6 +428,13 @@ const Openables: Openable[] = [
 			.add('20 sided die', 1, 3)
 			.add('100 sided die')
 			.tertiary(100, 'Ring of luck'),
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Royal mystery box',
+		itemID: itemID('Royal mystery box'),
+		aliases: ['royal mystery box', 'rmb'],
+		table: new LootTable().add('Diamond crown', 1, 2).add('Diamond sceptre', 1, 2).add('Corgi'),
 		emoji: Emoji.BirthdayPresent
 	}
 ];

@@ -306,7 +306,8 @@ export const enum BitField {
 	isContributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
-	HasCoxBackground = 11,
+	HasPermanentEventBackgrounds = 11,
+	HasPermanentTierOne = 12,
 	HasGivenBirthdayPack = 200
 }
 

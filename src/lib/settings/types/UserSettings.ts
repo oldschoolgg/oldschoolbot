@@ -44,6 +44,7 @@ export namespace UserSettings {
 	export const CarpenterPoints = T<number>('carpenter_points');
 	export const ZealTokens = T<number>('zeal_tokens');
 	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
+	export const HasSpawnedRMB = T<boolean>('spawned_rmb');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

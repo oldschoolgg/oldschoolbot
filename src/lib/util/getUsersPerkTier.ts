@@ -31,7 +31,10 @@ export default function getUsersPerkTier(
 		return PerkTier.Four;
 	}
 
-	if (bitfield.includes(BitField.IsPatronTier2)) {
+	if (
+		bitfield.includes(BitField.IsPatronTier2) ||
+		bitfield.includes(BitField.HasPermanentTierOne)
+	) {
 		return PerkTier.Three;
 	}
 
