@@ -27,4 +27,5 @@ Client.defaultClientSchema
 			.add('fightCavesCost', 'any', { default: {} })
 			.add('PVMCost', 'any', { default: {} })
 			.add('thievingCost', 'any', { default: {} })
+			.add('roguesDenStaminas', 'any', { default: {} })
 	);

@@ -94,5 +94,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.BirthdayEvent;
 		case Activity.SoulWars:
 			return Tasks.SoulWars;
+		case Activity.RoguesDenMaze:
+			return Tasks.RoguesDenMaze;
 	}
 }
