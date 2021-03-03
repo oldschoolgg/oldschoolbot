@@ -94,7 +94,10 @@ export default class extends BotCommand {
 				) {
 					scaledTimePerFish *= 0.95;
 					boosts.push(`5% for Pearl barbarian rod`);
-				} else if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod'))) {
+				} else if (
+					msg.author.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod')) &&
+					fish.name !== 'Barbarian fishing'
+				) {
 					scaledTimePerFish *= 0.95;
 					boosts.push(`5% for Pearl fly fishing rod`);
 				}
