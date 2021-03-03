@@ -1,3 +1,4 @@
+import { percentChance } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -8,11 +9,20 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, rand, roll, stringMatches } from '../../lib/util';
+import { addBanks, addItemToBank, rand, roll, stringMatches } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
+import { hasClueHunterEquipped } from './mclue';
 
-const itemsToNotifyOf = [itemID('Dwarven blessing')];
+const itemsToNotifyOf = resolveItems([
+	'Dwarven blessing',
+	'First age tiara',
+	'First age amulet',
+	'First age cape',
+	'First age bracelet',
+	'First age ring'
+]);
 
 const Openables = _Openables.filter(i => i.name !== 'Mystery box');
 
@@ -77,12 +87,17 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
+		const hasCHEquipped = hasClueHunterEquipped(msg.author.getGear('skilling'));
+
 		let extraClueRolls = 0;
 		let loot: ItemBank = {};
 		for (let i = 0; i < quantity; i++) {
 			const roll = rand(1, 3);
 			extraClueRolls += roll - 1;
 			loot = addBanks([clueTier.table.open(roll), loot]);
+			if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 30 : 10)) {
+				loot = addItemToBank(loot, itemID('Clue scroll grandmaster'));
+			}
 		}
 
 		let mimicNumber = 0;

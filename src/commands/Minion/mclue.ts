@@ -13,7 +13,7 @@ import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
 
-function hasClueHunterEquipped(setup: GearSetup) {
+export function hasClueHunterEquipped(setup: GearSetup) {
 	return hasGearEquipped(setup, {
 		head: resolveItems(['Helm of raedwald']),
 		body: resolveItems(['Clue hunter garb']),

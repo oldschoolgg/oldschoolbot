@@ -942,7 +942,7 @@ export function initCustomItems() {
 	setCustomItem(47_502, 'Royal mystery box', getOSItem('Mystery box'));
 
 	// 1st age
-	setCustomItem(47_503, 'First age tiara', getOSItem('Rune fll helm'));
+	setCustomItem(47_503, 'First age tiara', getOSItem('Rune full helm'));
 	setCustomItem(47_504, 'First age amulet', getOSItem('Amulet of strength'));
 	setCustomItem(47_505, 'First age cape', getOSItem('Fire cape'));
 	setCustomItem(47_506, 'First age bracelet', getOSItem('Barrows gloves'));
