@@ -1,10 +1,10 @@
 import { Task } from 'klasa';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { addMonsterXP } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {

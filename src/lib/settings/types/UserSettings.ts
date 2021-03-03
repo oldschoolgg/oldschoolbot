@@ -95,6 +95,7 @@ export namespace UserSettings {
 		export const Strength = T<number>(`skills.${SkillsEnum.Strength}`);
 		export const Defence = T<number>(`skills.${SkillsEnum.Defence}`);
 		export const Ranged = T<number>(`skills.${SkillsEnum.Ranged}`);
+		export const Hitpoints = T<number>(`skills.${SkillsEnum.Hitpoints}`);
 	}
 
 	export namespace Gear {

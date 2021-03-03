@@ -1,8 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { AttackStyles } from '../../lib/minions/functions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { AttackStyles, toTitleCase } from '../../lib/util';
+import { toTitleCase } from '../../lib/util';
 
 function isValidAttackStyle(str: string): str is AttackStyles {
 	return ([

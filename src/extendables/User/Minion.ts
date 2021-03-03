@@ -7,6 +7,7 @@ import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
+import { AttackStyles } from '../../lib/minions/functions';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
@@ -60,7 +61,6 @@ import {
 } from '../../lib/types/minions';
 import {
 	addItemToBank,
-	AttackStyles,
 	convertXPtoLVL,
 	formatDuration,
 	incrementMinionDailyDuration,

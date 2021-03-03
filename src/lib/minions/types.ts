@@ -12,7 +12,7 @@ import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
-import { AttackStyles } from '../util';
+import { AttackStyles } from './functions';
 
 export interface BankBackground {
 	image: Image | null;
