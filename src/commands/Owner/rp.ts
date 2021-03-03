@@ -2,10 +2,11 @@ import { notEmpty } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
-import { BitField, BitFieldData, Emoji } from '../../lib/constants';
+import { BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
 
 export default class extends BotCommand {
@@ -80,6 +81,22 @@ export default class extends BotCommand {
 				return msg.send(
 					`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`
 				);
+			}
+			case 'giveperm': {
+				if (!input) return;
+				await input.settings.update(
+					UserSettings.BitField,
+					[
+						...input.settings.get(UserSettings.BitField),
+						BitField.HasPermanentTierOne,
+						BitField.HasPermanentEventBackgrounds
+					],
+					{ arrayAction: 'overwrite' }
+				);
+				sendToChannelID(this.client, Channel.ErrorLogs, {
+					content: `${msg.author.username} gave permanent t1/bgs to ${input.username}`
+				});
+				return msg.channel.send(`Gave permanent perks to ${input.username}.`);
 			}
 		}
 

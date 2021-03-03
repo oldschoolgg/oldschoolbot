@@ -54,6 +54,7 @@ import {
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SoulWarsOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -510,6 +511,11 @@ export default class extends Extendable {
 				} is currently doing the Birthday Event, currently they are ${
 					bdayMsgs[minsRemaining] ?? 'eating a banana'
 				}. ${formattedDuration}`;
+			}
+
+			case Activity.SoulWars: {
+				const data = currentTask as SoulWarsOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 			}
 		}
 	}

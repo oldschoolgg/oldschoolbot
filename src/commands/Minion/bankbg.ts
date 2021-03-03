@@ -44,6 +44,13 @@ export default class extends BotCommand {
 			return msg.send(`This is already your bank background.`);
 		}
 
+		if (
+			selectedImage.bitfield &&
+			!msg.author.settings.get(UserSettings.BitField).includes(selectedImage.bitfield)
+		) {
+			return msg.send(`You're not elligible to use this bank background.`);
+		}
+
 		// Check they have required collection log items.
 		if (
 			selectedImage.collectionLogItemsNeeded &&

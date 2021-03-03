@@ -54,6 +54,12 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (currentTask.type === Activity.SoulWars) {
+			return msg.send(
+				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
+			);
+		}
+
 		const cancelMsg = await msg.channel.send(
 			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
 				`They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`

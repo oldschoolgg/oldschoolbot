@@ -68,7 +68,8 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
-			user?: KlasaUser | string
+			user?: KlasaUser | string,
+			cl?: ItemBank
 		): Promise<Buffer>;
 		generateCollectionLogImage(
 			collectionLog: ItemBank,
@@ -247,6 +248,7 @@ declare module 'discord.js' {
 			background?: number;
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
+			cl?: ItemBank;
 		}): Promise<KlasaMessage>;
 		__triviaQuestionsDone: any;
 	}

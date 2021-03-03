@@ -1,4 +1,4 @@
-import { PerkTier } from '../../constants';
+import { BitField, PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
 
@@ -160,6 +160,20 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000
+	},
+	{
+		id: 14,
+		name: 'CoX',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 15,
+		name: 'OSB',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
 	}
 ];
 
