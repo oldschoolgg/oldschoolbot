@@ -174,6 +174,9 @@ export default class POHCommand extends BotCommand {
 	}
 
 	async mountItem(msg: KlasaMessage, [name]: [string]) {
+		if (1 < 2) {
+			return msg.send(`Item mounting is currently disabled.`);
+		}
 		const poh = await msg.author.getPOH();
 		if (!name) {
 			return msg.send(await this.genImage(poh, true));
