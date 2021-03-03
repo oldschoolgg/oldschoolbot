@@ -73,20 +73,27 @@ const Supplies = new LootTable()
 const table = new LootTable()
 	.tertiary(90, ClueHunterTable)
 	.tertiary(700, BlessingTable)
-	.tertiary(300, 'Nuts of monkey')
-	.tertiary(1000, 'Ancient signet')
 	.add(ClueTable, 2)
 	.add(boxTable, 1, 2)
 	.add(DragonTable, [1, 2], 2)
 	.add(runeTable)
 	.add('Coins', [5_000_000, 20_000_000])
-	.add(LampTable)
+	.tertiary(30, LampTable)
 
 	.add(AllBarrows, 2)
 	.add(PlankTable, 2)
 	// Supplies
 	.add(Supplies, 1, 3)
-	.add(CrystalChestTable, [5, 10]);
+	.add(CrystalChestTable, [5, 10])
+	.tertiary(
+		150_000,
+		new LootTable()
+			.add('First age tiara')
+			.add('First age amulet')
+			.add('First age cape')
+			.add('First age bracelet')
+			.add('First age ring')
+	);
 
 class GrandmasterClue extends Clue {
 	open(quantity: number) {

@@ -217,14 +217,6 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 24,
-		name: 'CoX Pixel Art (24)',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
 		id: 26,
 		name: 'Weeb (26)',
 		image: null,

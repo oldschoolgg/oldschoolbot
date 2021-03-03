@@ -1571,6 +1571,25 @@ export const sepulchreLog: CollectionLogData = {
 	Pets: resolveItems(['Giant squirrel', 'Dark squirrel'])
 };
 
+const gmLog: CollectionLogData = {
+	Outfit: resolveItems([
+		'Helm of raedwald',
+		'Clue hunter garb',
+		'Clue hunter gloves',
+		'Clue hunter trousers',
+		'Clue hunter boots',
+		'Clue hunter cloak'
+	]),
+	FirstAge: resolveItems([
+		'First age tiara',
+		'First age amulet',
+		'First age cape',
+		'First age bracelet',
+		'First age ring'
+	]),
+	Misc: resolveItems(['Dwarven blessing'])
+};
+
 export const skillingLog: CollectionLogData = {
 	Mining: resolveItems([
 		'Prospector helmet',
@@ -1848,5 +1867,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Gamblers',
 		aliases: ['gamblers bag', 'gb', 'gamblers'],
 		items: { 1: gamblersBag }
+	},
+	{
+		name: 'Grandmaster',
+		aliases: ['gm', 'grandmaster'],
+		items: gmLog
 	}
 ];
