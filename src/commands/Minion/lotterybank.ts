@@ -29,6 +29,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [[initBankToSell, totalPrice]]: [[Bank, number]]) {
 		const bankToSell = initBankToSell.filter((i, qty) => {
+			if (msg.flagArgs.bypass && msg.author.id === '157797566833098752') return true;
 			let stackPrice =
 				(this.client.settings!.get(ClientSettings.Prices)[i.id]?.price ?? 1) * qty;
 			return (
