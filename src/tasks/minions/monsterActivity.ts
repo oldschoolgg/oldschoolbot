@@ -12,7 +12,7 @@ export default class extends Task {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMonsterScore(monsterID, quantity);
+		await user.incrementMonsterScore(monsterID, quantity);
 		const loot = monster.table.kill(quantity);
 
 		announceLoot(this.client, user, monster, quantity, loot);
@@ -32,9 +32,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${
-			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
-		}.`;
+		} KC is now ${user.getKC(monsterID)}.`;
 
 		handleTripFinish(
 			this.client,
