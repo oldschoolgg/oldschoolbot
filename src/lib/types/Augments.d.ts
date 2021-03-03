@@ -112,7 +112,7 @@ declare module 'discord.js' {
 		addItemsToBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
-		): Promise<SettingsUpdateResult>;
+		): Promise<{ previousCL: ItemBank }>;
 		removeItemsFromBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean

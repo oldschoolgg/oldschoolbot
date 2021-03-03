@@ -1,4 +1,5 @@
 import { User } from 'discord.js';
+import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -103,12 +104,12 @@ const bdayMsgs = [
 
 const suffixes = new SimpleTable<string>()
 	.add('🎉', 200)
-	.add('🎆', 100)
-	.add('🙌', 100)
-	.add('🎇', 100)
-	.add('🥳', 100)
-	.add('🍻', 100)
-	.add('🎊', 100)
+	.add('🎆', 10)
+	.add('🙌', 10)
+	.add('🎇', 10)
+	.add('🥳', 10)
+	.add('🍻', 10)
+	.add('🎊', 10)
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
@@ -567,12 +568,18 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get maxTripLength(this: User) {
-		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) return Time.Minute * 33;
-		if (perkTier === PerkTier.Three) return Time.Minute * 36;
-		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
+		let max = Time.Minute * 30;
 
-		return Time.Minute * 30;
+		const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
+		const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
+		max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+
+		const perkTier = getUsersPerkTier(this);
+		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
+		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
+		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
+
+		return max;
 	}
 
 	// @ts-ignore 2784

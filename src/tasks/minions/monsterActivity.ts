@@ -17,8 +17,7 @@ export default class extends Task {
 		const loot = monster.table.kill(quantity);
 
 		announceLoot(this.client, user, monster, quantity, loot);
-		const previousCL = user.settings.get(UserSettings.CollectionLogBank);
-		await user.addItemsToBank(loot, true);
+		const { previousCL } = await user.addItemsToBank(loot, true);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
 

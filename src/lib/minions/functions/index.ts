@@ -1,8 +1,10 @@
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
+import { KillableMonster } from '../types';
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 export { default as findMonster } from './findMonster';
@@ -15,12 +17,10 @@ export type AttackStyles =
 	| SkillsEnum.Magic
 	| SkillsEnum.Ranged;
 
-export async function addMonsterXP(
+export function resolveAttackStyles(
 	user: KlasaUser,
-	monsterID: number,
-	quantity: number,
-	duration: number
-) {
+	monsterID: number
+): [KillableMonster, Monster, AttackStyles[]] {
 	const killableMon = killableMonsters.find(m => m.id === monsterID);
 	const osjsMon = Monsters.get(monsterID);
 	if (!killableMon) {
@@ -49,6 +49,16 @@ export async function addMonsterXP(
 		attackStyles = monsterStyles;
 	}
 
+	return [killableMon, osjsMon, attackStyles];
+}
+
+export async function addMonsterXP(
+	user: KlasaUser,
+	monsterID: number,
+	quantity: number,
+	duration: number
+) {
+	const [_, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
 	const hp = osjsMon.data.hitpoints;
 	const totalXP = hp * 4 * quantity;
 	const xpPerSkill = totalXP / attackStyles.length;
@@ -59,7 +69,7 @@ export async function addMonsterXP(
 		res.push(await user.addXP(style, xpPerSkill, duration));
 	}
 
-	res.push(await user.addXP(SkillsEnum.Hitpoints, hp * 1.33, duration));
+	res.push(await user.addXP(SkillsEnum.Hitpoints, Math.floor(hp * 1.33), duration));
 
 	return res;
 }

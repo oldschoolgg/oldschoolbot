@@ -15,6 +15,7 @@ import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
 import { channelIsSendable } from './util/channelIsSendable';
 import itemID from './util/itemID';
+import { sendToChannelID } from './util/webhook';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -347,14 +348,13 @@ export async function incrementMinionDailyDuration(
 	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
 	const newDuration = currentDuration + duration;
 	if (newDuration > Time.Hour * 18) {
-		const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
 		const user = await client.users.fetch(userID);
-		user.log(log);
 		if (client.production) {
-			const channel = client.channels.get(Channel.ErrorLogs);
-			if (channelIsSendable(channel)) {
-				channel.send(`${user.sanitizedName} ${log}`);
-			}
+			sendToChannelID(client, Channel.ErrorLogs, {
+				content: `${user.sanitizedName} Minion has been active for ${formatDuration(
+					newDuration
+				)}.`
+			});
 		}
 	}
 
