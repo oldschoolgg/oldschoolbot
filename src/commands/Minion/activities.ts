@@ -21,7 +21,7 @@ export default class extends BotCommand {
 				userID: msg.author.id
 			},
 			order: {
-				finishDate: 'DESC'
+				id: 'DESC'
 			}
 		});
 

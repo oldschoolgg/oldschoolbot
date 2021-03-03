@@ -74,9 +74,34 @@ export default class extends BotCommand {
 			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
 
 		const boosts = [];
-		if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
-			scaledTimePerFish *= 0.95;
-			boosts.push(`5% for Crystal harpoon`);
+		switch (fish.bait) {
+			case itemID('Fishing bait'):
+				if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fishing rod'))) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl fishing rod`);
+				}
+				break;
+			case itemID('Feather'):
+				if (
+					fish.name === 'Barbarian fishing' &&
+					msg.author.hasItemEquippedAnywhere(itemID('Pearl barbarian rod'))
+				) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl barbarian rod`);
+				} else if (
+					msg.author.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod')) &&
+					fish.name !== 'Barbarian fishing'
+				) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl fly fishing rod`);
+				}
+				break;
+			default:
+				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Crystal harpoon`);
+				}
+				break;
 		}
 
 		if (quantity === null) {

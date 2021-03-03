@@ -54,6 +54,7 @@ import {
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SoulWarsOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -511,11 +512,20 @@ export default class extends Extendable {
 					bdayMsgs[minsRemaining] ?? 'eating a banana'
 				}. ${formattedDuration}`;
 			}
+
+			case Activity.SoulWars: {
+				const data = currentTask as SoulWarsOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
+			}
 		}
 	}
 
 	getKC(this: KlasaUser, id: number) {
 		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
+	}
+
+	getOpenableScore(this: KlasaUser, id: number) {
+		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
@@ -734,6 +744,16 @@ export default class extends Extendable {
 		return this.settings.update(
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
+		);
+	}
+
+	public async incrementOpenableScore(this: User, openableID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const scores = this.settings.get(UserSettings.OpenableScores);
+
+		return this.settings.update(
+			UserSettings.OpenableScores,
+			addItemToBank(scores, openableID, amountToAdd)
 		);
 	}
 

@@ -1,6 +1,5 @@
 import { Client } from 'klasa';
 
-import { production } from '../../config';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
@@ -14,7 +13,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		throw `That user is busy, so they can't do this minion activity.`;
 	}
 
-	const finishDate = Date.now() + (production ? taskToAdd.duration : 1);
+	const finishDate = Date.now() + taskToAdd.duration;
 
 	let newData: Record<string, any> = { ...taskToAdd };
 	delete newData.type;
@@ -33,7 +32,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		data: newData,
 		groupActivity: isGroupActivity(taskToAdd),
 		channelID: taskToAdd.channelID,
-		duration: Math.ceil(taskToAdd.duration)
+		duration: Math.floor(taskToAdd.duration)
 	});
 
 	const newTask: ActivityTaskOptions = {

@@ -160,19 +160,13 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(
-					`continued trip of ${
-						Math.floor(duration / Time.Minute) > user.maxTripLength
-							? Math.floor(user.maxTripLength / Time.Minute)
-							: Math.floor(duration / Time.Minute)
-					}x minutes Aerial fishing.`
-				);
+				user.log(`continued trip of Aerial fishing.`);
 				return this.client.commands
 					.get('aerialfish')!
 					.run(res, [
-						Math.floor(duration / Time.Minute) > user.maxTripLength
-							? Math.floor(user.maxTripLength / Time.Minute)
-							: Math.floor(duration / Time.Minute)
+						Math.floor(
+							Math.min(user.maxTripLength / Time.Minute, duration / Time.Minute)
+						)
 					]);
 			},
 			undefined,

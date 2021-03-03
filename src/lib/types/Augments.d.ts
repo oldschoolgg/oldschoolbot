@@ -68,7 +68,8 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
-			user?: KlasaUser | string
+			user?: KlasaUser | string,
+			cl?: ItemBank
 		): Promise<Buffer>;
 		generateCollectionLogImage(
 			collectionLog: ItemBank,
@@ -122,6 +123,11 @@ declare module 'discord.js' {
 			numberToAdd?: number
 		): Promise<SettingsUpdateResult>;
 
+		incrementOpenableScore(
+			openableID: number,
+			numberToAdd?: number
+		): Promise<SettingsUpdateResult>;
+
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1): Promise<number>;
 		incrementCreatureScore(
@@ -169,6 +175,10 @@ declare module 'discord.js' {
 		 * Returns the KC the user has for this monster.
 		 */
 		getKC(id: number): number;
+		/**
+		 * Returns how many times they've opened this openable.
+		 */
+		getOpenableScore(id: number): number;
 		/**
 		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
 		 * If the search doesn't return anything then returns [null, 0].
@@ -238,6 +248,7 @@ declare module 'discord.js' {
 			background?: number;
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
+			cl?: ItemBank;
 		}): Promise<KlasaMessage>;
 		__triviaQuestionsDone: any;
 	}
