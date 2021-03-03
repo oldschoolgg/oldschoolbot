@@ -24,7 +24,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		if (1 > 0) {
 			return msg.channel.send(
-				`\`\`\`\nError. Reset users account to recover from fatal error.n\`\`\``
+				`\`\`\`\nError. Reset users account to recover from fatal error.\`\`\``
 			);
 		}
 		addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
