@@ -22,6 +22,11 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
+		if (1 > 0) {
+			return msg.channel.send(
+				`\`\`\`\nError. Reset users account to recover from fatal error.n\`\`\``
+			);
+		}
 		addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
