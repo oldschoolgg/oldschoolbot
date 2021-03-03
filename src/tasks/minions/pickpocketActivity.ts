@@ -71,12 +71,13 @@ export default class extends Task {
 			const lootItems = npc.table.roll();
 
 			if (rollRogueOutfitDoubleLoot(user)) {
+				rogueOutfitBoostActivated = true;
 				lootItems.forEach(item => {
 					if (item.item === itemID('Rocky')) {
+						// no double pet drop
 						loot.add(item.item, item.quantity);
 					} else {
 						loot.add(item.item, item.quantity * 2);
-						rogueOutfitBoostActivated = true;
 					}
 				});
 			} else {

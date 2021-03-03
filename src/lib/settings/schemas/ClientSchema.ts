@@ -14,6 +14,7 @@ Client.defaultClientSchema
 	.add('magic_cost_bank', 'any', { default: {} })
 	.add('gnome_res_cost', 'any', { default: {} })
 	.add('gnome_res_loot', 'any', { default: {} })
+	.add('rogues_den_stamina_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
@@ -27,5 +28,4 @@ Client.defaultClientSchema
 			.add('fightCavesCost', 'any', { default: {} })
 			.add('PVMCost', 'any', { default: {} })
 			.add('thievingCost', 'any', { default: {} })
-			.add('roguesDenStaminas', 'any', { default: {} })
 	);
