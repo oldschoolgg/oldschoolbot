@@ -302,7 +302,8 @@ export const enum BitField {
 	isContributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
-	HasCoxBackground = 11
+	HasPermanentEventBackgrounds = 11,
+	HasPermanentTierOne = 12
 }
 
 interface BitFieldData {
@@ -318,7 +319,9 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.isModerator]: { name: 'Moderator' },
 	[BitField.isContributor]: { name: 'Contributor' },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
-	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' }
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
+	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' }
 } as const;
 
 export const enum PatronTierID {
