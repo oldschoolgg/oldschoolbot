@@ -136,7 +136,7 @@ const ornamentKits: Createable[] = [
 		name: 'Dragon chainbody (g)',
 		inputItems: resolveNameBank({
 			'Dragon chainbody': 1,
-			'Dragon legs/skirt ornament kit': 1
+			'Dragon chainbody ornament kit': 1
 		}),
 		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
 	},
