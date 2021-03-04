@@ -28,7 +28,7 @@ export default class extends Task {
 
 		const gotLoot = loot.length > 0;
 		if (!gotLoot) {
-			str += '\n**Your minion failed to find any Rogue outfit!**';
+			str += '\n**Your minion failed to find any Rogue outfit pieces!**';
 		}
 
 		const user = await this.client.users.fetch(userID);
