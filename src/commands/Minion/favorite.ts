@@ -1,9 +1,9 @@
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -29,12 +29,14 @@ export default class extends BotCommand {
 			if (currentFavorites.length === 0) {
 				return msg.send(`You have no favorited items.`);
 			}
-			return msg.channel.send(
-				`Your current favorite items are: ${currentFavorites
-					.map(id => itemNameFromID(id))
-					.join(', ')}.`,
-				{ split: true }
-			);
+			let b = new Bank();
+			for (const id of currentFavorites) {
+				b.add(id, 1);
+			}
+			return msg.channel.sendBankImage({
+				bank: b.bank,
+				title: `${msg.author.username}'s Favorites`
+			});
 		}
 
 		const [item] = items;
