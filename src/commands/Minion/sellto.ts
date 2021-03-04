@@ -17,7 +17,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> <price:int{1,100000000000}> (items:...TradeableBank)',
+			usage: '<member:member> [price:int{1,100000000000}] (items:...TradeableBank)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,
@@ -35,6 +35,10 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[buyerMember, price, [bankToSell, totalPrice]]: [GuildMember, number, [Bank, number]]
 	) {
+		if (!price) {
+			price = 1;
+		}
+
 		// Make sure blacklisted members can't be traded.
 		const isBlacklisted = this.client.settings
 			.get(ClientSettings.UserBlacklist)
