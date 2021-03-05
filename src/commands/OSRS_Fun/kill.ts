@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			return msg.send(result);
 		}
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				result,
@@ -75,6 +75,6 @@ export default class extends BotCommand {
 				msg.flagArgs
 			);
 
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.send(new MessageAttachment(image!, 'osbot.png'));
 	}
 }

@@ -6,7 +6,7 @@ import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { Events } from '../lib/constants';
+import { bankImageCache, Events } from '../lib/constants';
 import { allCollectionLogItems } from '../lib/data/collectionLog';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -37,6 +37,18 @@ const bankImageFile = fs.readFileSync('./src/lib/resources/images/bank_backgroun
 const bankRepeaterFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/r1.jpg');
 
 const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
+
+export type BankImageResult =
+	| {
+			cachedURL: null;
+			image: Buffer;
+			cacheKey: string;
+	  }
+	| {
+			cachedURL: string;
+			image: null;
+			cacheKey: string;
+	  };
 
 const CACHE_DIR = './icon_cache';
 const spacer = 12;
@@ -228,7 +240,7 @@ export default class BankImageTask extends Task {
 		flags: { [key: string]: string | number } = {},
 		user?: KlasaUser | string,
 		collectionLog?: ItemBank
-	): Promise<Buffer> {
+	): Promise<BankImageResult> {
 		const settings =
 			typeof user === 'undefined'
 				? null
@@ -316,13 +328,7 @@ export default class BankImageTask extends Task {
 				) +
 					itemSize * 1.5
 			) - 2;
-		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
 
-		const ctx = canvas.getContext('2d');
-		ctx.font = '16px OSRSFontCompact';
-		ctx.imageSmoothingEnabled = false;
-
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		let bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
 
 		const isPurple: boolean =
@@ -336,6 +342,37 @@ export default class BankImageTask extends Task {
 		if (isPurple) {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
 		}
+
+		const cacheKey = [
+			title,
+			typeof user === 'string' ? user : user?.id ?? 'nouser',
+			showValue,
+			bankBackgroundID,
+			searchQuery,
+			items.length,
+			partial,
+			page,
+			isPurple,
+			totalValue,
+			canvasHeight
+		].join('-');
+
+		let cached = bankImageCache.get(cacheKey);
+		if (cached) {
+			return {
+				cachedURL: cached,
+				image: null,
+				cacheKey
+			};
+		}
+
+		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
+
+		const ctx = canvas.getContext('2d');
+		ctx.font = '16px OSRSFontCompact';
+		ctx.imageSmoothingEnabled = false;
+
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -461,10 +498,17 @@ export default class BankImageTask extends Task {
 				);
 			}
 		}
-		if (items.length > 5000) {
-			return canvas.toBuffer('image/jpeg', { quality: 0.75 });
-		}
-		return canvas.toBuffer('image/png');
+
+		const image =
+			items.length > 2000
+				? canvas.toBuffer('image/jpeg', { quality: 0.75 })
+				: canvas.toBuffer('image/png');
+
+		return {
+			image,
+			cacheKey,
+			cachedURL: null
+		};
 	}
 
 	async generateCollectionLogImage(

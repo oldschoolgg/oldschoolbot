@@ -45,7 +45,7 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Thieving level is now ${nextLevel}!`;
 		}
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -64,7 +64,7 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x plunder`);
 				return this.client.commands.get('plunder')!.run(res, []);
 			},
-			image,
+			image!,
 			data,
 			loot.bank
 		);
