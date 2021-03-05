@@ -372,3 +372,6 @@ export const NIGHTMARE_ID = 9415;
  * Map<user_id, PromiseQueue>
  */
 export const userQueues: Map<string, PQueue> = new Map();
+
+export const syncPriceCache = new Map<number, number>();
+export const bankImageCache = new Map<string, string>();

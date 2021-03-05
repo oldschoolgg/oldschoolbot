@@ -69,7 +69,7 @@ export default class extends Task {
 		if (currentLevel !== newLevel) {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
 		}
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -88,7 +88,7 @@ export default class extends Task {
 				user.log(`continued fishing trawler`);
 				return this.client.commands.get('fishingtrawler')!.run(res, []);
 			},
-			image,
+			image!,
 			data,
 			loot.bank
 		);

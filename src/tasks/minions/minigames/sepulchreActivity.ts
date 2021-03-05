@@ -64,7 +64,7 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
 		}
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -83,7 +83,7 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x sepulchre`);
 				return this.client.commands.get('sepulchre')!.run(res, []);
 			},
-			image,
+			image!,
 			data,
 			loot.bank
 		);

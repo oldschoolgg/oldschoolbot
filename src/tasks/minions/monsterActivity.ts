@@ -103,7 +103,7 @@ export default class extends Task {
 		const previousCL = user.settings.get(UserSettings.CollectionLogBank);
 		await user.addItemsToBank(loot, true);
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot,
@@ -143,7 +143,7 @@ export default class extends Task {
 				user.log(`continued trip of killing ${monster.name}`);
 				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
 			},
-			image,
+			image!,
 			data,
 			loot
 		);
