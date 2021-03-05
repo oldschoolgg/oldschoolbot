@@ -382,7 +382,8 @@ export default class BankImageTask extends Task {
 			page,
 			isPurple,
 			totalValue,
-			canvasHeight
+			canvasHeight,
+			Object.entries(flags).toString()
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
