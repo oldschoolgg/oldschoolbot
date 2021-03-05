@@ -59,10 +59,8 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			aliases: ['k'],
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
-			subcommands: true,
 			description: 'Sends your minion to kill monsters.'
 		});
 	}
