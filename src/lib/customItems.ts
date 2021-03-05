@@ -34,7 +34,7 @@ function setCustomItem(
 	itemNameMap.set(cleanName, id);
 	itemNameMap.set(name, id);
 	// Set the item custom price
-	customPrices[id] = (price ? price : baseItem.tradeable_on_ge ? 1 : 0) ?? 1;
+	customPrices[id] = price || 1;
 	// Add the item to the custom items array
 	customItems.push(id);
 }
