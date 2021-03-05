@@ -5,6 +5,7 @@ import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
 import { Events, syncPriceCache, Time } from '../lib/constants';
+import { customPrices } from '../lib/customItems';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import getOSItem from '../lib/util/getOSItem';
 import PostgresProvider from '../providers/postgres';
@@ -15,6 +16,10 @@ export default class extends Extendable {
 	}
 
 	async cacheItemPrice(this: KlasaClient, itemID: number): Promise<number> {
+		if (customPrices[itemID]) {
+			return customPrices[itemID];
+		}
+
 		const currentItems = this.settings!.get(ClientSettings.Prices);
 
 		const currentItem = currentItems[itemID];
