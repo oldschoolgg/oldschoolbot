@@ -125,7 +125,7 @@ export default class extends Task {
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
 			``,
 			true,
@@ -162,7 +162,7 @@ export default class extends Task {
 				user.log(`continued trip of wintertodt`);
 				return this.client.commands.get('wintertodt')!.run(res, []);
 			},
-			image,
+			image!,
 			data,
 			loot
 		);
