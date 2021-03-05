@@ -26,7 +26,7 @@ export default class extends Extendable {
 		if (
 			!needsToFetchAgain &&
 			currentItem &&
-			Date.now() - currentItem.fetchedAt < Time.Day * 50
+			Date.now() - currentItem.fetchedAt < Time.Day * 300
 		) {
 			return currentItem.price;
 		}
