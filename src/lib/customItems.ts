@@ -187,48 +187,17 @@ export function initCustomItems() {
 	);
 
 	// Abyssal pouch || 24210 = Victor's cape (10) [DUPLICATE]
-	setCustomItem(24210, 'Abyssal pouch', getOSItem('Giant pouch'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal pouch'
-	});
+	setCustomItem(24210, 'Abyssal pouch', getOSItem('Giant pouch'));
 
 	// Ori Pet || 4149	 = Abyssal demon
-	setCustomItem(4149, 'Ori', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Ori'
-	});
+	setCustomItem(4149, 'Ori', getOSItem('Herbi'));
 
 	// Abyssal bones || 24199 = Seren halo [DUPLICATE]
-	setCustomItem(
-		24199,
-		'Abyssal dragon bones',
-		getOSItem('Superior dragon bones'),
-		{
-			duplicate: false,
-			tradeable: true,
-			tradeable_on_ge: true,
-			wiki_name: 'Abyssal dragon bones'
-		},
-		50_000
-	);
+	setCustomItem(24199, 'Abyssal dragon bones', getOSItem('Superior dragon bones'));
 
-	setCustomItem(19567, 'Cob', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Cob'
-	});
+	setCustomItem(19567, 'Cob', getOSItem('Herbi'));
 
-	setCustomItem(22949, 'Takon', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Takon'
-	});
+	setCustomItem(22949, 'Takon', getOSItem('Herbi'));
 
 	setCustomItem(6796, 'Tiny lamp', getOSItem('Lamp'));
 	setCustomItem(21642, 'Small lamp', getOSItem('Lamp'));
