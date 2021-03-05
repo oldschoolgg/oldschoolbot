@@ -117,7 +117,8 @@ export async function parseBank({
 	const filter = filterableTypes.find(type =>
 		type.aliases.some(alias => flagsKeys.includes(alias))
 	);
-	const [valueFilter, valueTarget] = parseFilterAndTarget(flags.value);
+	const [priceFilter, priceTarget] = parseFilterAndTarget(flags.price);
+	const [stackPriceFilter, stackPriceTarget] = parseFilterAndTarget(flags.stackprice);
 	const [quantityFilter, quantityTarget] = parseFilterAndTarget(flags.quantity);
 
 	const outputBank = new Bank();
@@ -130,13 +131,13 @@ export async function parseBank({
 			continue;
 		}
 		if (
-			valueFilter !== null &&
-			valueTarget !== null &&
+			priceFilter !== null &&
+			priceTarget !== null &&
 			client &&
 			!satisfiesQuantitativeFilter(
 				await client.fetchItemPrice(item.id),
-				valueFilter,
-				valueTarget
+				priceFilter,
+				priceTarget
 			)
 		) {
 			continue;
@@ -150,6 +151,20 @@ export async function parseBank({
 		}
 
 		const qty = _qty === 0 ? Math.max(1, inputBank.amount(item.id)) : _qty;
+
+		if (
+			stackPriceFilter !== null &&
+			stackPriceTarget !== null &&
+			client &&
+			!satisfiesQuantitativeFilter(
+				(await client.fetchItemPrice(item.id)) * qty,
+				stackPriceFilter,
+				stackPriceTarget
+			)
+		) {
+			continue;
+		}
+
 		if (filter && !filter.items.includes(item.id)) continue;
 
 		if (inputBank.amount(item.id) < qty) continue;
