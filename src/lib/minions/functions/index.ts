@@ -69,7 +69,7 @@ export async function addMonsterXP(
 		res.push(await user.addXP(style, xpPerSkill, duration));
 	}
 
-	res.push(await user.addXP(SkillsEnum.Hitpoints, Math.floor(hp * 1.33), duration));
+	res.push(await user.addXP(SkillsEnum.Hitpoints, Math.floor(hp * quantity * 1.33), duration));
 
 	return res;
 }
