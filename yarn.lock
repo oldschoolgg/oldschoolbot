@@ -2418,10 +2418,10 @@ fastify-error@^0.3.0:
   resolved "https://registry.yarnpkg.com/fastify-error/-/fastify-error-0.3.0.tgz#08866323d521156375a8be7c7fcaf98df946fafb"
   integrity sha512-Jm2LMTB5rsJqlS1+cmgqqM9tTs0UrlgYR7TvDT3ZgXsUI5ib1NjQlqZHf+tDK5tVPdFGwyq02wAoJtyYIRSiFA==
 
-fastify-helmet@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-5.2.0.tgz#b79a9c97da94a743d478dd3133f9a84693e3188f"
-  integrity sha512-LI4CTeKmXtCRjklsuz0rP4mNDlJOO990s79ZF9tw4vc2JrHzJT3f4mX5zj7QBGBRj9yBHdKyPEBp1RRqx0uDjA==
+fastify-helmet@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-5.3.0.tgz#3e022bae382280146ef9879fbec9ac177ca7a1ac"
+  integrity sha512-YE2UBSXA89t4LIgr6cz8wz2zkDs+MtgaJa+NK1Wfyqfiao9SrDc8KqUXlJIMhugXDp1fwHI0CaB7Qdtd6HkoBQ==
   dependencies:
     fastify-plugin "^3.0.0"
     helmet "^4.0.0"
