@@ -9,8 +9,13 @@ import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, queuedMessageSend, randomVariation } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import {
+	addBanks,
+	channelIsSendable,
+	noOp,
+	queuedMessageSend,
+	randomVariation
+} from '../../../lib/util';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';

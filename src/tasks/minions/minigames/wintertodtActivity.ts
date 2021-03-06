@@ -10,8 +10,7 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, noOp } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { addBanks, bankHasItem, channelIsSendable, noOp } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
