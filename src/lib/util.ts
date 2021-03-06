@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { Client, Guild } from 'discord.js';
 import { randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, util } from 'klasa';
@@ -367,4 +368,8 @@ export function parseUsername(str: string) {
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
+}
+
+export function sha256Hash(x: string) {
+	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }

@@ -21,6 +21,7 @@ import {
 	itemNameFromID,
 	restoreCtx,
 	saveCtx,
+	sha256Hash,
 	stringMatches
 } from '../lib/util';
 import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
@@ -354,7 +355,9 @@ export default class BankImageTask extends Task {
 			page,
 			isPurple,
 			totalValue,
-			canvasHeight
+			canvasHeight,
+			Object.entries(flags).toString(),
+			sha256Hash(items.toString())
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
