@@ -87,7 +87,7 @@ export const AbyssalDragonLootTable = new LootTable()
 	/* Tertiary */
 	.tertiary(3, clueTable)
 	.tertiary(300, petTrollTable)
-	.tertiary(2400, 'Abyssal cape')
+	.tertiary(2600, 'Abyssal cape')
 	.tertiary(1024, 'Abyssal thread')
 	.tertiary(1024, 'Dragon hunter lance')
 	.tertiary(100, 'Lump of crystal')

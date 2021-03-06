@@ -40,22 +40,22 @@ function setCustomItem(
 }
 
 export function initCustomItems() {
-	setCustomItem(19939, 'Untradeable Mystery Box', getOSItem('Mystery box'));
-	setCustomItem(6199, 'Tradeable Mystery Box', getOSItem('Mystery box'));
-	setCustomItem(3062, 'Pet Mystery Box', getOSItem('Mystery box'));
-	setCustomItem(3713, 'Holiday Mystery Box', getOSItem('Mystery box'));
-	setCustomItem(13345, 'Tester Gift Box', getOSItem('Mystery box'));
-	setCustomItem(5507, 'Remy', getOSItem('Herbi'));
-	setCustomItem(3714, 'Shelldon', getOSItem('Herbi'));
-	setCustomItem(9620, 'Doug', getOSItem('Herbi'));
-	setCustomItem(9619, 'Lil Lamb', getOSItem('Herbi'));
-	setCustomItem(10092, 'Zippy', getOSItem('Herbi'));
-	setCustomItem(9058, 'Harry', getOSItem('Herbi'));
-	setCustomItem(10329, 'Wintertoad', getOSItem('Herbi'));
-	setCustomItem(3469, 'Klik', getOSItem('Herbi'));
-	setCustomItem(21313, 'Scruffy', getOSItem('Herbi'));
-	setCustomItem(9057, 'Zak', getOSItem('Herbi'));
-	setCustomItem(8441, 'Hammy', getOSItem('Herbi'));
+	setCustomItem(19939, 'Untradeable Mystery Box', getOSItem('Mystery box'), {}, 100_000);
+	setCustomItem(6199, 'Tradeable Mystery Box', getOSItem('Mystery box'), {}, 100_000);
+	setCustomItem(3062, 'Pet Mystery Box', getOSItem('Mystery box'), {}, 100_000);
+	setCustomItem(3713, 'Holiday Mystery Box', getOSItem('Mystery box'), {}, 100_000);
+	setCustomItem(13345, 'Tester Gift Box', getOSItem('Mystery box'), {}, 100_000);
+	setCustomItem(5507, 'Remy', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(3714, 'Shelldon', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(9620, 'Doug', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(9619, 'Lil Lamb', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(10092, 'Zippy', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(9058, 'Harry', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(10329, 'Wintertoad', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(3469, 'Klik', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(21313, 'Scruffy', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(9057, 'Zak', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(8441, 'Hammy', getOSItem('Herbi'), {}, 1_000_000);
 	setCustomItem(12592, 'Divine sigil', getOSItem('Elysian sigil'), {}, 930_000_000);
 	setCustomItem(
 		3454,
@@ -64,28 +64,28 @@ export function initCustomItems() {
 		{},
 		900_000_000
 	);
-	setCustomItem(500, 'Skipper', getOSItem('Herbi'));
+	setCustomItem(500, 'Skipper', getOSItem('Herbi'), {}, 1_000_000);
 
 	// Dwarven Items
 
 	// 2x faster chopping and wintertodt
-	setCustomItem(472, 'Dwarven greataxe', getOSItem('Dragon pickaxe'));
+	setCustomItem(472, 'Dwarven greataxe', getOSItem('Dragon pickaxe'), {}, 1_000_000);
 	// 2x faster mining
-	setCustomItem(476, 'Dwarven pickaxe', getOSItem('Dragon pickaxe'));
+	setCustomItem(476, 'Dwarven pickaxe', getOSItem('Dragon pickaxe'), {}, 1_000_000);
 	// 2x faster smithing and crafting
-	setCustomItem(474, 'Dwarven greathammer', getOSItem('Dragon warhammer'));
+	setCustomItem(474, 'Dwarven greathammer', getOSItem('Dragon warhammer'), {}, 1_000_000);
 	// 2x faster smelting
-	setCustomItem(12594, 'Dwarven gauntlets', getOSItem('Cooking gauntlets'));
+	setCustomItem(12594, 'Dwarven gauntlets', getOSItem('Cooking gauntlets'), {}, 1_000_000);
 
-	setCustomItem(478, 'Dwarven knife', getOSItem('Bronze knife'));
+	setCustomItem(478, 'Dwarven knife', getOSItem('Bronze knife'), {}, 1_000_000);
 	// setCustomItem(11923, 'Dwarven tinderbox', getOSItem('Tinderbox'));
 
-	setCustomItem(506, 'Dwarven bar', getOSItem('Steel bar'));
-	setCustomItem(508, 'Dwarven ore', getOSItem('Iron ore'));
+	setCustomItem(506, 'Dwarven bar', getOSItem('Steel bar'), {}, 500_000);
+	setCustomItem(508, 'Dwarven ore', getOSItem('Iron ore'), {}, 100_000);
 
-	setCustomItem(6741, 'Dwarven warhammer', getOSItem('Dragon warhammer'));
+	setCustomItem(6741, 'Dwarven warhammer', getOSItem('Dragon warhammer'), {}, 10_00_000);
 
-	setCustomItem(8871, 'Dwarven crate', getOSItem('Mystery box'));
+	setCustomItem(8871, 'Dwarven crate', getOSItem('Mystery box'), {}, 100_000);
 
 	// Abyssal Dragon
 	// Abyssal lance || 24218 = Guthixian icon [DUPLICATE]
@@ -169,7 +169,7 @@ export function initCustomItems() {
 				requirements: null
 			}
 		},
-		500_000_000
+		100_000_000
 	);
 
 	// Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
@@ -177,75 +177,41 @@ export function initCustomItems() {
 		24212,
 		'Abyssal thread',
 		getOSItem('Giant pouch'),
-		{
-			duplicate: false,
-			tradeable: true,
-			tradeable_on_ge: true,
-			wiki_name: 'Abyssal thread'
+		{	
 		},
-		100_000_000
+		10_000_000
 	);
 
 	// Abyssal pouch || 24210 = Victor's cape (10) [DUPLICATE]
-	setCustomItem(24210, 'Abyssal pouch', getOSItem('Giant pouch'));
+	setCustomItem(24210, 'Abyssal pouch', getOSItem('Giant pouch'), {}, 100_000);
 
 	// Ori Pet || 4149	 = Abyssal demon
-	setCustomItem(4149, 'Ori', getOSItem('Herbi'));
+	setCustomItem(4149, 'Ori', getOSItem('Herbi'), {}, 100_000);
 
 	// Abyssal bones || 24199 = Seren halo [DUPLICATE]
-	setCustomItem(24199, 'Abyssal dragon bones', getOSItem('Superior dragon bones'));
+	setCustomItem(24199, 'Abyssal dragon bones', getOSItem('Superior dragon bones'), {}, 20_000);
 
 	setCustomItem(19567, 'Cob', getOSItem('Herbi'));
 
 	setCustomItem(22949, 'Takon', getOSItem('Herbi'));
 
-	setCustomItem(6796, 'Tiny lamp', getOSItem('Lamp'));
-	setCustomItem(21642, 'Small lamp', getOSItem('Lamp'));
-	setCustomItem(23516, 'Average lamp', getOSItem('Lamp'));
-	setCustomItem(22320, 'Large lamp', getOSItem('Lamp'));
-	setCustomItem(11157, 'Huge lamp', getOSItem('Lamp'));
+	setCustomItem(6796, 'Tiny lamp', getOSItem('Lamp'), {}, 100_000);
+	setCustomItem(21642, 'Small lamp', getOSItem('Lamp'), {}, 300_000);
+	setCustomItem(23516, 'Average lamp', getOSItem('Lamp'), {}, 500_000);
+	setCustomItem(22320, 'Large lamp', getOSItem('Lamp'), {}, 600_000);
+	setCustomItem(11157, 'Huge lamp', getOSItem('Lamp'), {}, 1_000_000);
 
-	setCustomItem(1808, 'Peky', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Peky'
-	});
+	setCustomItem(1808, 'Peky', getOSItem('Herbi'), {}, 1_000_000);
 
-	setCustomItem(1809, 'Obis', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Obis'
-	});
+	setCustomItem(1809, 'Obis', getOSItem('Herbi'), {}, 1_000_000);
 
-	setCustomItem(1810, 'Plopper', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Plopper'
-	});
+	setCustomItem(1810, 'Plopper', getOSItem('Herbi'), {}, 1_000_000);
 
-	setCustomItem(244, 'Brock', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Brock'
-	});
+	setCustomItem(244, 'Brock', getOSItem('Herbi'), {}, 1_000_000);
 
-	setCustomItem(76, 'Wilvus', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Wilvus'
-	});
+	setCustomItem(76, 'Wilvus', getOSItem('Herbi'), {}, 1_000_000);
 
-	setCustomItem(737, 'Smokey', getOSItem('Herbi'), {
-		duplicate: false,
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Smokey'
-	});
+	setCustomItem(737, 'Smokey', getOSItem('Herbi'), {}, 1_000_000);
 	setCustomItem(5020, 'Lottery ticket', getOSItem('Paramaya ticket'));
 	setCustomItem(5021, 'Bank lottery ticket', getOSItem('Paramaya ticket'));
 	// setCustomItem(25238, 'Dwarven defender', getOSItem('Dragon defender'));
@@ -268,7 +234,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Ammo,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(19837, 'Clue scroll (grandmaster)', getOSItem('Clue scroll (easy)'));
 	setCustomItem(19838, 'Reward casket (grandmaster)', getOSItem('Reward casket (master)'));
 	setCustomItem(516, 'Nuts of monkey', getOSItem('Rune platelegs'));
@@ -303,7 +269,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Head,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(709, 'Torva platebody', getOSItem('Rune platebody'), {
 		equipment: {
 			attack_stab: 35,
@@ -325,7 +291,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Body,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(2404, 'Torva platelegs', getOSItem('Rune platelegs'), {
 		equipment: {
 			attack_stab: 35,
@@ -347,7 +313,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Legs,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(2838, 'Torva boots', getOSItem('Rune boots'), {
 		equipment: {
 			attack_stab: 22,
@@ -369,7 +335,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Feet,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(4273, 'Torva gloves', getOSItem('Rune gloves'), {
 		equipment: {
 			attack_stab: 26,
@@ -391,7 +357,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Hands,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 
 	setCustomItem(601, 'Pernix cowl', getOSItem('Rune full helm'), {
 		equipment: {
@@ -414,7 +380,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Head,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(605, 'Pernix body', getOSItem('Rune platebody'), {
 		equipment: {
 			attack_stab: -5,
@@ -436,7 +402,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Body,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(4272, 'Pernix chaps', getOSItem('Rune platelegs'), {
 		equipment: {
 			attack_stab: -5,
@@ -458,7 +424,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Legs,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(758, 'Pernix boots', getOSItem('Rune boots'), {
 		equipment: {
 			attack_stab: 0,
@@ -480,7 +446,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Feet,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(759, 'Pernix gloves', getOSItem('Rune gloves'), {
 		equipment: {
 			attack_stab: 0,
@@ -502,7 +468,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Hands,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 
 	setCustomItem(788, 'Virtus mask', getOSItem('Rune full helm'), {
 		equipment: {
@@ -525,7 +491,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Head,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(983, 'Virtus robe top', getOSItem('Rune platebody'), {
 		equipment: {
 			attack_stab: 0,
@@ -547,7 +513,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Body,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(2409, 'Virtus robe legs', getOSItem('Rune platelegs'), {
 		equipment: {
 			attack_stab: 0,
@@ -569,7 +535,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Legs,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(9654, 'Virtus boots', getOSItem('Rune boots'), {
 		equipment: {
 			attack_stab: 0,
@@ -591,7 +557,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Feet,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(2423, 'Virtus gloves', getOSItem('Rune gloves'), {
 		equipment: {
 			attack_stab: 15,
@@ -613,7 +579,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Hands,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 
 	setCustomItem(2832, 'Zaryte bow', getOSItem('Twisted bow'), {
 		equipment: {
@@ -636,7 +602,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.TwoHanded,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(2834, 'Virtus wand', getOSItem('Master wand'), {
 		equipment: {
 			attack_stab: 0,
@@ -658,7 +624,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Weapon,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 	setCustomItem(2836, 'Virtus book', getOSItem('Holy book'), {
 		equipment: {
 			attack_stab: 0,
@@ -680,7 +646,7 @@ export function initCustomItems() {
 			slot: EquipmentSlot.Shield,
 			requirements: null
 		}
-	});
+	}, 50_000_000);
 
 	setCustomItem(21807, 'Ancient emblem', getOSItem('Ancient emblem'));
 	setCustomItem(11196, 'Bloodsoaked feather', getOSItem('Feather'));
@@ -853,23 +819,23 @@ export function initCustomItems() {
 	 * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
 	 */
 	// Master capes
-	setCustomItem(40_000, 'Construction master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_001, 'Cooking master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_002, 'Crafting master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_003, 'Farming master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_004, 'Firemaking master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_005, 'Fishing master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_006, 'Fletching master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_007, 'Herblore master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_008, 'Hunter master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_009, 'Magic master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_010, 'Mining master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_011, 'Prayer master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_012, 'Runecraft master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_013, 'Smithing master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_014, 'Thieving master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_015, 'Woodcutting master cape', getOSItem('Abyssal cape'));
-	setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'));
+	setCustomItem(40_000, 'Construction master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_001, 'Cooking master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_002, 'Crafting master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_003, 'Farming master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_004, 'Firemaking master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_005, 'Fishing master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_006, 'Fletching master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_007, 'Herblore master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_008, 'Hunter master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_009, 'Magic master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_010, 'Mining master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_011, 'Prayer master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_012, 'Runecraft master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_013, 'Smithing master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_014, 'Thieving master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_015, 'Woodcutting master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+	setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
 
 	// Pets
 
@@ -880,48 +846,48 @@ export function initCustomItems() {
 	 */
 
 	// Birthday pack
-	setCustomItem(45_003, 'Glass of bubbly', getOSItem('Bronze dagger'));
-	setCustomItem(45_004, 'Party horn', getOSItem('Coal'));
-	setCustomItem(45_005, 'Party popper', getOSItem('Bronze dagger'));
-	setCustomItem(45_006, 'Party cake', getOSItem('Coal'));
-	setCustomItem(45_007, 'Cake hat', getOSItem('Coif'));
-	setCustomItem(45_008, 'Sparkler', getOSItem('Coal'));
-	setCustomItem(45_009, 'Party music box', getOSItem('Coal'));
-	setCustomItem(45_010, 'Birthday pack', getOSItem('Coal'));
+	setCustomItem(45_003, 'Glass of bubbly', getOSItem('Bronze dagger'), {}, 1000);
+	setCustomItem(45_004, 'Party horn', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_005, 'Party popper', getOSItem('Bronze dagger'), {}, 1000);
+	setCustomItem(45_006, 'Party cake', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_007, 'Cake hat', getOSItem('Coif'), {}, 1000);
+	setCustomItem(45_008, 'Sparkler', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_009, 'Party music box', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_010, 'Birthday pack', getOSItem('Coal'), {}, 1000);
 
 	// Gamblers box
-	setCustomItem(45_100, 'Gamblers bag', getOSItem('Coal'));
-	setCustomItem(45_101, '4 sided die', getOSItem('Coal'));
-	setCustomItem(45_102, '6 sided die', getOSItem('Coal'));
-	setCustomItem(45_103, '8 sided die', getOSItem('Coal'));
-	setCustomItem(45_104, '10 sided die', getOSItem('Coal'));
-	setCustomItem(45_105, '12 sided die', getOSItem('Coal'));
-	setCustomItem(45_106, '20 sided die', getOSItem('Coal'));
-	setCustomItem(45_107, '100 sided die', getOSItem('Coal'));
-	setCustomItem(45_108, 'Ring of luck', getOSItem('Coal'));
+	setCustomItem(45_100, 'Gamblers bag', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_101, '4 sided die', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_102, '6 sided die', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_103, '8 sided die', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_104, '10 sided die', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_105, '12 sided die', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_106, '20 sided die', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_107, '100 sided die', getOSItem('Coal'), {}, 1000);
+	setCustomItem(45_108, 'Ring of luck', getOSItem('Coal'), {}, 1000);
 
 	// Pets
-	setCustomItem(47_000, 'Flappy', getOSItem('Herbi'));
-	setCustomItem(47_001, 'Ishi', getOSItem('Herbi'));
-	setCustomItem(47_002, 'Corgi', getOSItem('Herbi'));
+	setCustomItem(47_000, 'Flappy', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(47_001, 'Ishi', getOSItem('Herbi'), {}, 1_000_000);
+	setCustomItem(47_002, 'Corgi', getOSItem('Herbi'), {}, 1_000_000);
 
 	// Royal mystery box
-	setCustomItem(47_500, 'Diamond sceptre', getOSItem('Rune sword'));
-	setCustomItem(47_501, 'Diamond crown', getOSItem('Bronze full helm'));
-	setCustomItem(47_502, 'Royal mystery box', getOSItem('Mystery box'));
+	setCustomItem(47_500, 'Diamond sceptre', getOSItem('Rune sword'), {}, 1_000_000);
+	setCustomItem(47_501, 'Diamond crown', getOSItem('Bronze full helm'), {}, 1_000_000);
+	setCustomItem(47_502, 'Royal mystery box', getOSItem('Mystery box'), {}, 1_000_000);
 
 	// 1st age
-	setCustomItem(47_503, 'First age tiara', getOSItem('Rune full helm'));
-	setCustomItem(47_504, 'First age amulet', getOSItem('Amulet of strength'));
-	setCustomItem(47_505, 'First age cape', getOSItem('Fire cape'));
-	setCustomItem(47_506, 'First age bracelet', getOSItem('Barrows gloves'));
-	setCustomItem(47_507, 'First age ring', getOSItem('Berserker ring'));
+	setCustomItem(47_503, 'First age tiara', getOSItem('Rune full helm'), {}, 1_000_000);
+	setCustomItem(47_504, 'First age amulet', getOSItem('Amulet of strength'), {}, 1_000_000);
+	setCustomItem(47_505, 'First age cape', getOSItem('Fire cape'), {}, 1_000_000);
+	setCustomItem(47_506, 'First age bracelet', getOSItem('Barrows gloves'), {}, 1_000_000);
+	setCustomItem(47_507, 'First age ring', getOSItem('Berserker ring'), {}, 1_000_000);
 
 	/**
 	 * Misc Items
 	 *
 	 * 50_000 - 60_000
 	 */
-	setCustomItem(50_001, 'Raw rocktail', getOSItem('Raw trout'));
-	setCustomItem(50_002, 'Rocktail', getOSItem('Trout'));
+	setCustomItem(50_001, 'Raw rocktail', getOSItem('Raw trout'), {}, 10_000);
+	setCustomItem(50_002, 'Rocktail', getOSItem('Trout'), {}, 10_000);
 }
