@@ -385,7 +385,7 @@ export default class BankImageTask extends Task {
 			totalValue,
 			canvasHeight,
 			Object.entries(flags).toString(),
-			sha256Hash(items.map(i => i[0]).join(''))
+			sha256Hash(items.toString())
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
