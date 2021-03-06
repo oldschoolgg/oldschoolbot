@@ -157,7 +157,7 @@ export default class extends Task {
 				)}.`;
 			}
 
-			if (user.equippedPet() === itemID('Plopper')) {
+			if (user.usingPet('Plopper')) {
 				loot = multiplyBank(loot, 4);
 			}
 
@@ -182,6 +182,10 @@ export default class extends Task {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
+			if (user.usingPet('Plopper')) {
+				str += `\nYou received 4x loot from Plopper`;
+			}
+
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
@@ -194,7 +198,7 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			if (user.equippedPet() !== itemID('Plopper')) {
+			if (user.usingPet('Plopper')) {
 				for (let i = 0; i < patchType.lastQuantity; i++) {
 					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 						const deathRoll = Math.random();
@@ -491,7 +495,9 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 
 			user.incrementMinionDailyDuration(duration);
-
+			if (user.usingPet('Plopper')) {
+				infoStr.push(`\nYou received 4x loot from Plopper`);
+			}
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send(
