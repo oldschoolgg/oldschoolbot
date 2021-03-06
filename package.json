@@ -27,7 +27,7 @@
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.13.0",
 		"fastify-cors": "^5.2.0",
-		"fastify-helmet": "^5.2.0",
+		"fastify-helmet": "^5.3.0",
 		"fastify-rate-limit": "^5.4.1",
 		"fastify-sensible": "^3.1.0",
 		"he": "^1.2.0",
