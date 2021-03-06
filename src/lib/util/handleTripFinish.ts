@@ -7,8 +7,7 @@ import { Emoji, PerkTier, Time } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { setActivityLoot } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
-import { generateContinuationChar, stringMatches } from '../util';
-import { channelIsSendable } from './channelIsSendable';
+import { channelIsSendable, generateContinuationChar, stringMatches } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
