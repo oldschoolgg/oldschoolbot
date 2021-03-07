@@ -1,7 +1,10 @@
+import { itemID } from 'oldschooljs/dist/util';
+
 import { GearSetup, hasGearEquipped } from '..';
 import resolveItems from '../../util/resolveItems';
 
 export function hasGracefulEquipped(setup: GearSetup) {
+	if (setup.cape?.item === itemID('Agility master cape')) return true;
 	return hasGearEquipped(setup, {
 		head: resolveItems([
 			'Graceful hood',
