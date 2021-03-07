@@ -425,6 +425,17 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 5_000_000,
 		qpRequired: 120
+	},
+	{
+		name: 'Jester Outfit',
+		outputItems: resolveNameBank({
+			'Silly jester hat': 1,
+			'Silly jester top': 1,
+			'Silly jester tights': 1,
+			'Silly jester boots': 1
+		}),
+		gpCost: 5_000_000,
+		qpRequired: 89
 	}
 ];
 
