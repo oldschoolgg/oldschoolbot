@@ -32,7 +32,17 @@ export default class extends BotCommand {
 		switch (cmd.toLowerCase()) {
 			case 'bypassage': {
 				if (!input) return;
-				await input.settings.update(UserSettings.BitField, BitField.BypassAgeRestriction);
+				await input.settings.sync(true);
+				if (
+					input.settings
+						.get(UserSettings.BitField)
+						.includes(BitField.BypassAgeRestriction)
+				) {
+					return msg.send(`This user is already bypassed.`);
+				}
+				await input.settings.update(UserSettings.BitField, BitField.BypassAgeRestriction, {
+					arrayAction: 'add'
+				});
 				return msg.send(
 					`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`
 				);
