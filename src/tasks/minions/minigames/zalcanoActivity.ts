@@ -51,7 +51,7 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot.bank, true);
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -74,7 +74,7 @@ export default class extends Task {
 				user.log(`continued zalcano`);
 				return this.client.commands.get('zalcano')!.run(res, []);
 			},
-			image,
+			image!,
 			data,
 			loot.bank
 		);

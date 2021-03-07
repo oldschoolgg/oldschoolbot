@@ -1,6 +1,7 @@
-import { Client, Guild } from 'discord.js';
+import crypto from 'crypto';
+import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
 import { randInt, shuffleArr } from 'e';
-import { Gateway, KlasaClient, KlasaUser, util } from 'klasa';
+import { Gateway, KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -8,12 +9,19 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { CENA_CHARS, Channel, continuationChars, Events, PerkTier, Time } from './constants';
+import {
+	CENA_CHARS,
+	Channel as EChannel,
+	continuationChars,
+	Events,
+	PerkTier,
+	SupportServer,
+	Time
+} from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
-import { channelIsSendable } from './util/channelIsSendable';
 import itemID from './util/itemID';
 import { sendToChannelID } from './util/webhook';
 
@@ -251,12 +259,6 @@ export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 	return Promise.all(ids.map(id => client.users.fetch(id)));
 }
 
-export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str, { split: true }));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -350,7 +352,7 @@ export async function incrementMinionDailyDuration(
 	if (newDuration > Time.Hour * 18) {
 		const user = await client.users.fetch(userID);
 		if (client.production) {
-			sendToChannelID(client, Channel.ErrorLogs, {
+			sendToChannelID(client, EChannel.ErrorLogs, {
 				content: `${user.sanitizedName} Minion has been active for ${formatDuration(
 					newDuration
 				)}.`
@@ -367,4 +369,54 @@ export function parseUsername(str: string) {
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
+}
+
+export function sha256Hash(x: string) {
+	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
+}
+
+export function countSkillsAtleast99(user: KlasaUser) {
+	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<
+		string,
+		number
+	>;
+	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
+}
+
+export function getSupportGuild(client: Client) {
+	const guild = client.guilds.get(SupportServer);
+	if (!guild) throw `Can't find support guild.`;
+	return guild;
+}
+
+export function normal(mu = 0, sigma = 1, nsamples = 6) {
+	let run_total = 0;
+
+	for (let i = 0; i < nsamples; i++) {
+		run_total += Math.random();
+	}
+
+	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
+}
+
+/**
+ * Checks if the bot can send a message to a channel object.
+ * @param channel The channel to check if the bot can send a message to.
+ */
+export function channelIsSendable(channel: Channel | undefined): channel is TextChannel {
+	if (
+		!channel ||
+		(!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) ||
+		!channel.postable
+	) {
+		return false;
+	}
+
+	return true;
+}
+
+export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
+	const channel = client.channels.get(channelID);
+	if (!channelIsSendable(channel)) return;
+	client.queuePromise(() => channel.send(str, { split: true }));
 }

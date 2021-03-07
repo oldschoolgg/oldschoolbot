@@ -85,6 +85,12 @@ export class ActivityTable extends BaseEntity {
 		}
 
 		try {
+			await getConnection()
+				.createQueryBuilder()
+				.update(ActivityTable)
+				.set({ completed: true })
+				.where('id = :id', { id: this.id })
+				.execute();
 			client.oneCommandAtATimeCache.add(this.userID);
 			await task.run(this.taskData);
 		} catch (err) {
@@ -96,12 +102,5 @@ export class ActivityTable extends BaseEntity {
 				client.minionActivityCache.delete(user);
 			}
 		}
-
-		await getConnection()
-			.createQueryBuilder()
-			.update(ActivityTable)
-			.set({ completed: true })
-			.where('id = :id', { id: this.id })
-			.execute();
 	}
 }

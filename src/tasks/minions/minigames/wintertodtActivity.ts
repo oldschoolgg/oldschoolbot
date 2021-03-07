@@ -10,8 +10,7 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, noOp } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { addBanks, bankHasItem, channelIsSendable, noOp } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -130,7 +129,7 @@ export default class extends Task {
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
 			``,
 			true,
@@ -163,7 +162,7 @@ export default class extends Task {
 				user.log(`continued trip of wintertodt`);
 				return this.client.commands.get('wintertodt')!.run(res, []);
 			},
-			image,
+			image!,
 			data,
 			loot
 		);

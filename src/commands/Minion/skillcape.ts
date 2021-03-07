@@ -7,8 +7,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes from '../../lib/skilling/skillcapes';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertXPtoLVL, stringMatches, toTitleCase } from '../../lib/util';
-import countSkillsAtleast99 from '../../lib/util/countSkillsAtleast99';
+import { convertXPtoLVL, countSkillsAtleast99, stringMatches, toTitleCase } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 const skillCapeCost = 99_000;

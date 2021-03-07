@@ -4,9 +4,8 @@ import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import fetch from 'node-fetch';
 import { Util } from 'oldschooljs';
 
-import { Events, Time } from '../lib/constants';
+import { Events, syncPriceCache, Time } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
-import { rand } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import PostgresProvider from '../providers/postgres';
 
@@ -15,29 +14,7 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [Client] });
 	}
 
-	syncItemPrice(this: KlasaClient, itemID: number | string): number {
-		if (typeof itemID === 'string') itemID = parseInt(itemID);
-
-		if (itemID === 995) {
-			return 1;
-		}
-
-		const currentItems = this.settings!.get(ClientSettings.Prices);
-
-		return currentItems[itemID]?.price ?? 0;
-	}
-
-	async fetchItemPrice(this: KlasaClient, itemID: number | string) {
-		if (!this.production) {
-			return 73;
-		}
-
-		if (typeof itemID === 'string') itemID = parseInt(itemID);
-
-		if (itemID === 995) {
-			return 1;
-		}
-
+	async cacheItemPrice(this: KlasaClient, itemID: number): Promise<number> {
 		const currentItems = this.settings!.get(ClientSettings.Prices);
 
 		const currentItem = currentItems[itemID];
@@ -49,7 +26,7 @@ export default class extends Extendable {
 		if (
 			!needsToFetchAgain &&
 			currentItem &&
-			Date.now() - currentItem.fetchedAt < Time.Day * rand(20, 50)
+			Date.now() - currentItem.fetchedAt < Time.Day * 50
 		) {
 			return currentItem.price;
 		}
@@ -77,8 +54,28 @@ export default class extends Extendable {
 		};
 
 		await this.settings!.update('prices', newItems);
-
 		return price;
+	}
+
+	async fetchItemPrice(this: KlasaClient, itemID: number | string): Promise<number> {
+		if (!this.production) {
+			return 73;
+		}
+
+		if (typeof itemID === 'string') itemID = parseInt(itemID);
+
+		if (itemID === 995) {
+			return 1;
+		}
+
+		let cached = syncPriceCache.get(itemID);
+		if (cached) {
+			return cached;
+		}
+
+		const fetchedPrice = await this.cacheItemPrice(itemID);
+		syncPriceCache.set(itemID, fetchedPrice);
+		return fetchedPrice;
 	}
 
 	async query(this: KlasaClient, query: string, values?: string[]) {

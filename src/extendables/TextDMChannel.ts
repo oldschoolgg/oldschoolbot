@@ -1,6 +1,7 @@
 import { DMChannel, MessageAttachment, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
+import { bankImageCache } from '../lib/constants';
 import { ItemBank } from './../lib/types/index';
 
 export default class extends Extendable {
@@ -28,7 +29,7 @@ export default class extends Extendable {
 			cl?: ItemBank;
 		}
 	) {
-		const image = await this.client.tasks
+		const { image, cacheKey } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				bank,
@@ -38,6 +39,24 @@ export default class extends Extendable {
 				user,
 				cl
 			);
-		return this.send(content, new MessageAttachment(image));
+
+		let cached = bankImageCache.get(cacheKey);
+		if (cached) {
+			console.log('Using cached bank image');
+		}
+
+		if (cached && content) {
+			content += `\n${cached}`;
+		}
+		const sent = await this.send(
+			content ?? cached,
+			image && !cached ? new MessageAttachment(image!) : undefined
+		);
+
+		const url = sent.attachments.first()?.proxyURL;
+		if (url) {
+			bankImageCache.set(cacheKey, url);
+		}
+		return sent;
 	}
 }
