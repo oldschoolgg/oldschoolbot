@@ -16,8 +16,8 @@ export const patreonConfig: PatreonConfig = null;
 export const customClientOptions: KlasaClientOptions = {
 	prefix: '-'
 };
-export const sentryDSN: string | null = null;
+export const SENTRY_DSN: string | null = null;
 export const HTTP_PORT = 1234;
 export const CLIENT_SECRET = '';
 export const CLIENT_ID = '';
-export const githubToken = '';
+export const GITHUB_TOKEN = '';
