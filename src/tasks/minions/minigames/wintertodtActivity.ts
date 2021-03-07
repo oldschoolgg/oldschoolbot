@@ -57,7 +57,7 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned(), loot]),
+					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
 					skills: user.rawSkills
 				})
 			]);

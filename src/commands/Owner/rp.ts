@@ -112,7 +112,7 @@ export default class extends BotCommand {
 			}
 			case 'bank': {
 				if (!input) return;
-				return msg.channel.sendBankImage({ bank: input.allItemsOwned() });
+				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
 			}
 			case 'genmon': {
 				const data = killableMonsters.map(i => ({
