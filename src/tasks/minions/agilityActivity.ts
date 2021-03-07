@@ -100,7 +100,7 @@ export default class extends Task {
 		const minutes = duration / Time.Minute;
 		if (course.id === 4) {
 			for (let i = 0; i < minutes; i++) {
-				if (roll(1600)) {
+				if (roll(3000)) {
 					loot[itemID('Scruffy')] = 1;
 					str += `\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.`;
 					break;

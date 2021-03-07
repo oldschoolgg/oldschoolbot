@@ -1,6 +1,7 @@
 import { Creature } from '../../../types';
 import birdSnaringCreatures from './birdSnaring';
 import boxTrappingCreatures from './boxTrapping';
+import customBSOCreatures from './bso';
 import butterflyNettingCreatures from './butterflyNetting';
 import deadfallTrappingCreatures from './deadfallTrapping';
 import falconryCreatures from './falconry';
@@ -18,7 +19,8 @@ const creatures: Creature[] = [
 	...magicBoxTrappingCreatures,
 	...netTrappingCreatures,
 	...pitfallTrappingCreatures,
-	...trackingCreatures
+	...trackingCreatures,
+	...customBSOCreatures
 ];
 
 export default creatures;

@@ -157,7 +157,7 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await user.addItemsToBank(loot.values(), true);
+
 		await user.addXP(SkillsEnum.Hunter, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Hunter);
 		const newHerbLevel = user.skillLevel(SkillsEnum.Herblore);
@@ -170,6 +170,20 @@ export default class extends Task {
 		} ${quantity}x times, due to clever creatures you missed out on ${
 			quantity - successfulQuantity
 		}x catches, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
+
+		if (user.usingPet('Sandy')) {
+			if (creature.id === 3251) {
+				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
+					loot.multiply(2);
+					str += `\nYou received **double** loot because of Sandy, and being a master hunter.`;
+				}
+			} else {
+				str += `\nYou received **triple** loot because of Sandy.`;
+				loot.multiply(3);
+			}
+		}
+
+		await user.addItemsToBank(loot.values(), true);
 
 		if (herbXP > 0) {
 			str += `\nYou also received ${herbXP} Herblore XP from harvesting ${creature.name}!`;

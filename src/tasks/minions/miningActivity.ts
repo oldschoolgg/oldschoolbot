@@ -124,7 +124,7 @@ export default class extends Task {
 
 		const minutesInTrip = Math.ceil(duration / Time.Minute);
 		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(3000)) {
+			if (roll(10_000)) {
 				loot.add('Doug');
 				str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
 				break;

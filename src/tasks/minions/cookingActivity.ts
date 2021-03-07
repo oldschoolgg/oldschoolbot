@@ -70,7 +70,7 @@ export default class extends Task {
 
 		const minutesInTrip = Math.ceil(duration / 1000 / 60);
 		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(3000)) {
+			if (roll(5000)) {
 				loot[itemID('Remy')] = 1;
 				str += `\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.`;
 				break;
