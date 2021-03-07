@@ -2,6 +2,7 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
@@ -52,14 +53,19 @@ export function resolveAttackStyles(
 	return [killableMon, osjsMon, attackStyles];
 }
 
+const miscHpMap: Record<number, number> = {
+	9415: NIGHTMARES_HP,
+	3127: 250
+};
+
 export async function addMonsterXP(
 	user: KlasaUser,
 	monsterID: number,
 	quantity: number,
 	duration: number
 ) {
-	const [_, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
-	const hp = osjsMon.data.hitpoints;
+	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
+	const hp = osjsMon?.data?.hitpoints || miscHpMap[monsterID] || 1;
 	const totalXP = hp * 4 * quantity;
 	const xpPerSkill = totalXP / attackStyles.length;
 

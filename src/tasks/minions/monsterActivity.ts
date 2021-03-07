@@ -3,7 +3,6 @@ import { Task } from 'klasa';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -34,7 +33,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${user.getKC(monsterID)}.\nYou received ${xpRes.join(', ')}.`;
+		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
 
 		handleTripFinish(
 			this.client,

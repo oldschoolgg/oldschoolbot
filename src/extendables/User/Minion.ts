@@ -4,7 +4,16 @@ import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../../lib/constants';
+import {
+	Activity,
+	Emoji,
+	Events,
+	MAX_QP,
+	PerkTier,
+	skillEmoji,
+	Time,
+	ZALCANO_ID
+} from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -67,6 +76,7 @@ import {
 	incrementMinionDailyDuration,
 	itemNameFromID,
 	stringMatches,
+	toKMB,
 	toTitleCase,
 	Util
 } from '../../lib/util';
@@ -672,12 +682,11 @@ export default class extends Extendable {
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
-		let str = `You received ${amount.toLocaleString()} ${name} XP, you now have ${newXP.toLocaleString()} ${name} XP.`;
+		let str = `You received ${amount.toLocaleString()} ${skillEmoji[skillName]} XP`;
 		if (duration) {
-			const xpHr = `(${Math.round(
-				(amount / (duration / Time.Minute)) * 60
-			).toLocaleString()} XP/Hr`;
-			str += ` ${xpHr})`;
+			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
+			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
 		if (currentLevel !== newLevel) {
 			str += `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;

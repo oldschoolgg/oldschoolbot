@@ -5,14 +5,16 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { toTitleCase } from '../../lib/util';
 
+const validStyles = [
+	SkillsEnum.Attack,
+	SkillsEnum.Strength,
+	SkillsEnum.Defence,
+	SkillsEnum.Ranged,
+	SkillsEnum.Magic
+];
+
 function isValidAttackStyle(str: string): str is AttackStyles {
-	return ([
-		SkillsEnum.Attack,
-		SkillsEnum.Strength,
-		SkillsEnum.Defence,
-		SkillsEnum.Ranged,
-		SkillsEnum.Magic
-	] as string[]).includes(str);
+	return (validStyles as string[]).includes(str);
 }
 
 const invalidCombinations: [AttackStyles, AttackStyles][] = [
@@ -34,6 +36,15 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [_styles]: [string]) {
+		if (!_styles) {
+			return msg.send(
+				`Your current attack style is ${msg.author
+					.getAttackStyles()
+					.map(
+						toTitleCase
+					)}, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`
+			);
+		}
 		const styles: AttackStyles[] =
 			_styles === 'shared'
 				? [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]

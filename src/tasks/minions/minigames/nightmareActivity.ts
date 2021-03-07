@@ -2,7 +2,8 @@ import { percentChance } from 'e';
 import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji, NIGHTMARE_ID } from '../../../lib/constants';
+import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { setActivityLoot } from '../../../lib/settings/settings';
@@ -78,7 +79,7 @@ export default class extends Task {
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-
+			await addMonsterXP(user, NIGHTMARE_ID, quantity, duration);
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];

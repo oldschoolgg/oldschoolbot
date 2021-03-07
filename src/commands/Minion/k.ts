@@ -43,11 +43,11 @@ function applySkillBoost(
 	if (percent < 50) {
 		percent = 50 - percent;
 		newDuration = increaseNumByPercent(newDuration, percent);
-		str = `-${percent}% for low stats`;
+		str = `-${percent.toFixed(2)}% for low stats`;
 	} else {
 		percent = Math.min(15, percent / 6.5);
 		newDuration = reduceNumByPercent(newDuration, percent);
-		str = `${percent}% for stats`;
+		str = `${percent.toFixed(2)}% for stats`;
 	}
 
 	return [newDuration, str];
