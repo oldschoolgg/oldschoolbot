@@ -2,8 +2,11 @@ import { MAX_QP } from '../../constants';
 import { ItemBank } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
+import { canifisClothes } from './canifisClothes';
+import { fremennikClothes } from './frem';
+import { gnomeClothes } from './gnomeClothes';
 
-interface Buyable {
+export interface Buyable {
 	name: string;
 	outputItems: ItemBank;
 	qpRequired?: number;
@@ -413,7 +416,7 @@ const questBuyables: Buyable[] = [
 		qpRequired: 120
 	},
 	{
-		name: 'Lunar Outfit',
+		name: 'Moonclan Outfit',
 		outputItems: resolveNameBank({
 			'Moonclan boots': 1,
 			'Moonclan cape': 1,
@@ -436,6 +439,62 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 5_000_000,
 		qpRequired: 89
+	},
+	{
+		name: 'Ardougne Knight Outfit',
+		outputItems: resolveNameBank({
+			'Ardougne knight helm': 1,
+			'Ardougne knight platebody': 1,
+			'Ardougne knight platelegs': 1
+		}),
+		gpCost: 5_000_000,
+		qpRequired: 200
+	},
+	{
+		name: 'Desert Outfit',
+		outputItems: resolveNameBank({
+			Fez: 1,
+			'Desert top': 1,
+			'Desert legs': 1,
+			'Desert robes': 1,
+			'Desert boots': 1,
+			'Desert shirt': 1,
+			'Desert robe': 1
+		}),
+		gpCost: 1_000_000,
+		qpRequired: 20
+	},
+	{
+		name: 'Pirate boots',
+		outputItems: resolveNameBank({
+			'Pirate boots': 1
+		}),
+		gpCost: 100_000,
+		qpRequired: 20
+	}
+];
+
+const noveltyFood: Buyable[] = [
+	{
+		name: 'Beer',
+		outputItems: {
+			[itemID('Beer')]: 1
+		},
+		gpCost: 1_000_000
+	},
+	{
+		name: 'Vodka',
+		outputItems: {
+			[itemID('Vodka')]: 1
+		},
+		gpCost: 1_000_000
+	},
+	{
+		name: 'Gin',
+		outputItems: {
+			[itemID('Gin')]: 1
+		},
+		gpCost: 1_000_000
 	}
 ];
 
@@ -449,7 +508,6 @@ const Buyables: Buyable[] = [
 		qpRequired: MAX_QP,
 		gpCost: 99_000
 	},
-
 	{
 		name: 'Fishing Bait',
 		aliases: ['fishing bait'],
@@ -546,10 +604,22 @@ const Buyables: Buyable[] = [
 		},
 		itemCost: resolveNameBank({ 'Mark of grace': 10 })
 	},
+	{
+		name: 'Dragon scimitar',
+		outputItems: resolveNameBank({
+			'Dragon scimitar': 1
+		}),
+		gpCost: 500_000,
+		qpRequired: 105
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
-	...questBuyables
+	...questBuyables,
+	...noveltyFood,
+	...fremennikClothes,
+	...gnomeClothes,
+	...canifisClothes
 ];
 
 export default Buyables;
