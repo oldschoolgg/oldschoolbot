@@ -13,7 +13,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
+import { addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
 import { channelIsSendable } from '../../lib/util/channelIsSendable';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -481,6 +481,10 @@ export default class extends Task {
 
 			if (user.equippedPet() === itemID('Plopper')) {
 				loot = multiplyBank(loot, 4);
+			}
+
+			if (user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
+				loot = addItemToBank(loot, getRandomMysteryBox());
 			}
 
 			await this.client.settings.update(
