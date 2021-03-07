@@ -612,6 +612,13 @@ const Buyables: Buyable[] = [
 		gpCost: 500_000,
 		qpRequired: 105
 	},
+	{
+		name: 'Fishbowl pet',
+		outputItems: {
+			6672: 1
+		},
+		gpCost: 500_000
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
