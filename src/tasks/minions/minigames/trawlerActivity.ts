@@ -1,10 +1,11 @@
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent, calcPercentOfNum, itemID } from '../../../lib/util';
+import { addBanks, anglerBoostPercent, calcPercentOfNum, itemID, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { skillsMeetRequirements } from '../../../lib/util/skillsMeetRequirements';
 
@@ -57,6 +58,9 @@ export default class extends Task {
 
 		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
 			loot.multiply(4);
+			for (let i = 0; i < quantity; i++) {
+				if (roll(2)) loot.add(getRandomMysteryBox());
+			}
 			str += `\n\nYou received **4x** extra fish because you are a master at Fishing.`;
 		}
 
