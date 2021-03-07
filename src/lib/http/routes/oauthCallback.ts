@@ -3,16 +3,23 @@ import { FastifyInstance } from 'fastify';
 import fetch from 'node-fetch';
 import { encode } from 'querystring';
 
+import { client } from '../../..';
 import { CLIENT_ID, CLIENT_SECRET } from '../../../config';
+import { UserSettings } from '../../settings/types/UserSettings';
 import { encryptJWT, rateLimit } from '../util';
 
-async function fetchUser(token: string) {
+export async function fetchUser(token: string) {
 	const apiToken = `Bearer ${token}`;
-	const user = await fetch('https://discordapp.com/api/users/@me', {
+	const apiUser = await fetch('https://discordapp.com/api/users/@me', {
 		headers: { Authorization: apiToken }
 	}).then((result: any) => result.json());
+	const user = await client.users.fetch(apiUser.id);
 
-	return user;
+	return {
+		...apiUser,
+		bitfield: user.settings.get(UserSettings.BitField),
+		badges: user.settings.get(UserSettings.Badges)
+	};
 }
 
 const OAuthCallBackBodySchema = Type.Object(
