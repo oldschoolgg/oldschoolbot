@@ -471,6 +471,16 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 100_000,
 		qpRequired: 20
+	},
+	{
+		name: 'Vyrewatch outfit',
+		outputItems: resolveNameBank({
+			'Vyrewatch top': 1,
+			'Vyrewatch legs': 1,
+			'Vyrewatch shoes': 1
+		}),
+		gpCost: 1_000_000,
+		qpRequired: 92
 	}
 ];
 
