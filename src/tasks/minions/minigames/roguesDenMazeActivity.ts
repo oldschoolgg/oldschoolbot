@@ -28,7 +28,7 @@ export default class extends Task {
 
 		const gotLoot = loot.length > 0;
 		if (!gotLoot) {
-			str += `\n**${user.minionName} failed to find any Rogue outfit!**`;
+			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
 		await user.addItemsToBank(loot.bank, true);
