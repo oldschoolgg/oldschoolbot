@@ -64,6 +64,11 @@ export default class extends Task {
 			str += `\n\nYou received **4x** extra fish because you are a master at Fishing.`;
 		}
 
+		if (user.usingPet('Shelldon')) {
+			loot.multiply(2);
+			str += `\nYou received **2x** extra fish from Shelldon helping you.`;
+		}
+
 		await user.addItemsToBank(loot.bank, true);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
