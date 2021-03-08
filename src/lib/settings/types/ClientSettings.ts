@@ -41,6 +41,6 @@ export namespace ClientSettings {
 		export const GnomeRestaurantCostBank = T<O.Readonly<ItemBank>>('gnome_res_cost');
 		export const GnomeRestaurantLootBank = T<O.Readonly<ItemBank>>('gnome_res_loot');
 
-		export const RoguesDenStaminas = T<O.Readonly<ItemBank>>('rogues_den_stamina_cost');
+		export const RoguesDenStaminas = T<O.Readonly<ItemBank>>('rogues_den_cost');
 	}
 }
