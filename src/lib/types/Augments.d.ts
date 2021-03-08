@@ -208,7 +208,7 @@ declare module 'discord.js' {
 		 */
 		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
-		allItemsOwned(): ItemBank;
+		allItemsOwned(): Bank;
 		setupStats(setup: GearSetupTypes): GearStats;
 		/**
 		 * Returns this users update promise queue.

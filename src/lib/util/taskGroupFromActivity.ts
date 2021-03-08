@@ -48,7 +48,6 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.ChampionsChallenge:
 		case Activity.MahoganyHomes:
 		case Activity.AerialFishing:
-		case Activity.BirthdayEvent:
 		case Activity.SoulWars:
 			return ActivityGroup.Minigame;
 		default: {
