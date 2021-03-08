@@ -30,7 +30,10 @@ export default class extends BotCommand {
 			? Time.Hour * 12
 			: Time.Hour * 24;
 
-		if (difference < cooldown && msg.author.id !== '157797566833098752') {
+		if (
+			difference < cooldown &&
+			!['157797566833098752', '242043489611808769'].includes(msg.author.id)
+		) {
 			const duration = formatDuration(Date.now() - (lastDate + cooldown));
 			return msg.send(`You can spawn another lamp in ${duration}.`);
 		}
