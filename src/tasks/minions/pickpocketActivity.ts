@@ -106,7 +106,7 @@ export default class extends Task {
 		)}.`;
 
 		if (rogueOutfitBoostActivated) {
-			str += `\nYour Rogue Outfit allows you to take some extra loot.`;
+			str += `\nYour rogue outfit allows you to take some extra loot.`;
 		}
 
 		if (loot.amount('Rocky') > 0) {
