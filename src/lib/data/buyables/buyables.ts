@@ -341,7 +341,7 @@ const questBuyables: Buyable[] = [
 			[itemID('Amulet of accuracy')]: 1
 		},
 		gpCost: 50_000,
-		qpRequired: 52
+		qpRequired: 5
 	},
 	{
 		name: 'Cape of legends',
