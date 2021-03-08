@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 
 import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
-import getSupportGuild from './getSupportGuild';
+import { getSupportGuild } from '../util';
 
 const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
 

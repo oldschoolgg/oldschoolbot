@@ -21,11 +21,12 @@ import {
 	itemNameFromID,
 	restoreCtx,
 	saveCtx,
+	sha256Hash,
 	stringMatches
 } from '../lib/util';
 import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
+import { fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
-import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import filterByCategory from '../lib/util/filterByCategory';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 
@@ -354,7 +355,9 @@ export default class BankImageTask extends Task {
 			page,
 			isPurple,
 			totalValue,
-			canvasHeight
+			canvasHeight,
+			Object.entries(flags).toString(),
+			sha256Hash(items.toString())
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);

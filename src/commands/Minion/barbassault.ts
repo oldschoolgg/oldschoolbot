@@ -1,4 +1,4 @@
-import { randArrItem } from 'e';
+import { increaseNumByPercent, randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
@@ -225,10 +225,10 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage) {
+	async start(msg: KlasaMessage, [input]: [string]) {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 2,
+			minSize: 1,
 			maxSize: 4,
 			ironmanAllowed: true,
 			message: `${msg.author.username} has created a Barbarian Assault party! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. There must be 2+ users in the party.`,
@@ -244,7 +244,7 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = await msg.makePartyAwaiter(partyOptions);
+		const users = input === 'solo' ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
 
 		let totalLevel = 0;
 		for (const user of users) {
@@ -269,6 +269,11 @@ export default class extends BotCommand {
 		const totalLevelPercent = round(calcWhatPercent(totalLevel, 5 * users.length) / 3.3, 2);
 		boosts.push(`${totalLevelPercent}% for team honour levels`);
 		waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
+
+		if (users.length === 1) {
+			waveTime = increaseNumByPercent(waveTime, 10);
+			boosts.push(`10% slower for solo`);
+		}
 
 		// Up to 10%, at 200 kc, speed boost for team average kc
 		const averageKC =

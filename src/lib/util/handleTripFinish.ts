@@ -7,8 +7,7 @@ import { Emoji, PerkTier, Time } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { setActivityLoot } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
-import { generateContinuationChar, stringMatches } from '../util';
-import { channelIsSendable } from './channelIsSendable';
+import { channelIsSendable, generateContinuationChar, stringMatches } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
@@ -71,7 +70,7 @@ export async function handleTripFinish(
 			channel,
 			(mes: Message) =>
 				mes.author === user &&
-				(mes.content === 'c' || stringMatches(mes.content, continuationChar)),
+				(mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
 			{
 				time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
 				max: 1
@@ -88,7 +87,7 @@ export async function handleTripFinish(
 			}
 			client.oneCommandAtATimeCache.add(mes.author.id);
 			try {
-				if (mes.content === 'c' && clueReceived && perkTier > PerkTier.One) {
+				if (mes.content === 'c'.toLowerCase() && clueReceived && perkTier > PerkTier.One) {
 					(client.commands.get('minion') as MinionCommand).clue(mes, [
 						1,
 						clueReceived.name
