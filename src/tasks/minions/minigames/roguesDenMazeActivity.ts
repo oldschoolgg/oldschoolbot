@@ -16,9 +16,9 @@ export default class extends Task {
 		incrementMinigameScore(userID, 'RoguesDenMaze', quantity);
 
 		const loot = new Bank();
-		const minionName = await getMinionName(userID);
+		const user = await this.client.users.fetch(userID);
 
-		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
+		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
 		for (let i = 0; i < quantity; i++) {
 			if (randInt(1, 8) <= 5) {
@@ -28,13 +28,12 @@ export default class extends Task {
 
 		const gotLoot = loot.length > 0;
 		if (!gotLoot) {
-			str += '\n**Your minion failed to find any Rogue outfit!**';
+			str += `\n**${user.minionName} failed to find any Rogue outfit!**`;
 		}
 
-		const user = await this.client.users.fetch(userID);
 		await user.addItemsToBank(loot.bank, true);
 
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot.bank,
 			`Loot From ${quantity}x Rogues' Den maze`,
 			false,
@@ -53,7 +52,7 @@ export default class extends Task {
 				user.log(`continued rogues den`);
 				return this.client.commands.get('roguesden')!.run(res, []);
 			},
-			gotLoot ? image : undefined,
+			gotLoot ? image! : undefined,
 			data,
 			loot.bank
 		);
