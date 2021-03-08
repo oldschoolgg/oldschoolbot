@@ -6,7 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { MAX_INT_JAVA } from '../lib/constants';
 import { filterableTypes } from '../lib/data/filterables';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { bankHasAllItemsFromBank, stringMatches } from '../lib/util';
+import { stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import itemIsTradeable from '../lib/util/itemIsTradeable';
 import { parseStringBank } from '../lib/util/parseStringBank';
@@ -59,6 +59,14 @@ export default class TradeableItemBankArgument extends Argument {
 			}
 		}
 
+		const { search } = msg.flagArgs;
+		if (search) {
+			items = [
+				...items,
+				...userBank.items().filter(i => i[0].name.toLowerCase().includes(search))
+			];
+		}
+
 		if (items.length === 0) {
 			throw "You didn't write any items for the command to use, for example: `5k monkfish, 20 trout`.";
 		}
@@ -79,10 +87,7 @@ export default class TradeableItemBankArgument extends Argument {
 		if (keys.length === 0) {
 			throw `You don't have enough of the items you provided, or none of them are tradeable.`;
 		}
-		if (!bankHasAllItemsFromBank(userBank.bank, bank.bank)) {
-			this.client.wtf(
-				new Error(`${msg.author.sanitizedName} doesn't have all items in target bank`)
-			);
+		if (!userBank.fits(bank)) {
 			throw "User bank doesn't have all items in the target bank";
 		}
 		return [bank, totalPrice, invalidBank];

@@ -12,6 +12,7 @@ import { Connection } from 'typeorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
+import { BankImageResult } from '../../tasks/bankImage';
 import { BitField, PerkTier } from '../constants';
 import {
 	GearSetup,
@@ -33,8 +34,8 @@ declare module 'klasa' {
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
 		public queuePromise: Limit;
-		public syncItemPrice(itemID: number | string): number;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
+		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
 		public settings: Settings;
 		public production: boolean;
@@ -70,7 +71,7 @@ declare module 'klasa' {
 			flags?: { [key: string]: string | number },
 			user?: KlasaUser | string,
 			cl?: ItemBank
-		): Promise<Buffer>;
+		): Promise<BankImageResult>;
 		generateCollectionLogImage(
 			collectionLog: ItemBank,
 			title: string = '',

@@ -12,14 +12,14 @@ export default class extends Task {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		user.incrementMonsterScore(monsterID, quantity);
+		await user.incrementMonsterScore(monsterID, quantity);
 		const loot = monster.table.kill(quantity);
 
 		announceLoot(this.client, user, monster, quantity, loot);
 		const previousCL = user.settings.get(UserSettings.CollectionLogBank);
 		await user.addItemsToBank(loot, true);
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot,
@@ -32,9 +32,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${
-			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
-		}.`;
+		} KC is now ${user.getKC(monsterID)}.`;
 
 		handleTripFinish(
 			this.client,
@@ -45,7 +43,7 @@ export default class extends Task {
 				user.log(`continued trip of killing ${monster.name}`);
 				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
 			},
-			image,
+			image!,
 			data,
 			loot
 		);
