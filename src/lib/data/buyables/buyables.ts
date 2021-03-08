@@ -2,8 +2,11 @@ import { MAX_QP } from '../../constants';
 import { ItemBank } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
+import { canifisClothes } from './canifisClothes';
+import { fremennikClothes } from './frem';
+import { gnomeClothes } from './gnomeClothes';
 
-interface Buyable {
+export interface Buyable {
 	name: string;
 	outputItems: ItemBank;
 	qpRequired?: number;
@@ -169,16 +172,7 @@ const hunterBuyables: Buyable[] = [
 	}
 ];
 
-const Buyables: Buyable[] = [
-	{
-		name: 'Quest Cape',
-		outputItems: {
-			[itemID('Quest point cape')]: 1,
-			[itemID('Quest point hood')]: 1
-		},
-		qpRequired: MAX_QP,
-		gpCost: 99_000
-	},
+const questBuyables: Buyable[] = [
 	{
 		name: 'Goldsmith gauntlets',
 		outputItems: {
@@ -300,22 +294,6 @@ const Buyables: Buyable[] = [
 		gpCost: 2_500_000
 	},
 	{
-		name: 'Fishing Bait',
-		aliases: ['fishing bait'],
-		outputItems: {
-			[itemID('Fishing bait')]: 1
-		},
-		gpCost: 20
-	},
-	{
-		name: 'Jug of Water',
-		aliases: ['jug of water', 'jugs of water'],
-		outputItems: {
-			[itemID('Jug of water')]: 1
-		},
-		gpCost: 100
-	},
-	{
 		name: "Iban's staff",
 		aliases: ['iban'],
 		outputItems: {
@@ -333,6 +311,230 @@ const Buyables: Buyable[] = [
 		qpRequired: 30,
 		gpCost: 2_000_000
 	},
+	{
+		name: 'Mythical cape',
+		outputItems: {
+			[itemID('Mythical cape')]: 1
+		},
+		gpCost: 1_000_000,
+		qpRequired: 205
+	},
+	{
+		name: 'Mind shield',
+		outputItems: {
+			[itemID('Mind shield')]: 1
+		},
+		gpCost: 100_000,
+		qpRequired: 35
+	},
+	{
+		name: 'Dwarven helmet',
+		outputItems: {
+			[itemID('Dwarven helmet')]: 1
+		},
+		gpCost: 100_000,
+		qpRequired: 52
+	},
+	{
+		name: 'Amulet of accuracy',
+		outputItems: {
+			[itemID('Amulet of accuracy')]: 1
+		},
+		gpCost: 50_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cape of legends',
+		outputItems: {
+			[itemID('Cape of legends')]: 1
+		},
+		gpCost: 250_000,
+		qpRequired: 105
+	},
+	{
+		name: 'Bearhead',
+		outputItems: {
+			[itemID('Bearhead')]: 1
+		},
+		gpCost: 1_000_000,
+		qpRequired: 105
+	},
+	{
+		name: 'Bonesack',
+		outputItems: {
+			[itemID('Bonesack')]: 1
+		},
+		gpCost: 1_000_000,
+		qpRequired: 82
+	},
+	{
+		name: 'Ram skull helm',
+		outputItems: {
+			[itemID('Ram skull helm')]: 1
+		},
+		gpCost: 1_000_000,
+		qpRequired: 82
+	},
+	{
+		name: 'Monkey',
+		outputItems: {
+			19556: 1
+		},
+		gpCost: 1_000_000,
+		qpRequired: 182
+	},
+	{
+		name: 'Rat pole',
+		outputItems: {
+			[itemID('Rat pole')]: 1
+		},
+		gpCost: 200_000,
+		qpRequired: 85
+	},
+	{
+		name: 'Darklight',
+		outputItems: {
+			[itemID('Darklight')]: 1
+		},
+		gpCost: 200_000,
+		qpRequired: 58
+	},
+	{
+		name: 'Lunar Outfit',
+		outputItems: resolveNameBank({
+			'Lunar boots': 1,
+			'Lunar cape': 1,
+			'Lunar gloves': 1,
+			'Lunar helm': 1,
+			'Lunar legs': 1,
+			'Lunar torso': 1,
+			'Lunar amulet': 1,
+			'Lunar ring': 1,
+			'Lunar staff': 1
+		}),
+		gpCost: 5_000_000,
+		qpRequired: 120
+	},
+	{
+		name: 'Moonclan Outfit',
+		outputItems: resolveNameBank({
+			'Moonclan boots': 1,
+			'Moonclan cape': 1,
+			'Moonclan gloves': 1,
+			'Moonclan helm': 1,
+			'Moonclan hat': 1,
+			'Moonclan skirt': 1,
+			'Moonclan armour': 1
+		}),
+		gpCost: 5_000_000,
+		qpRequired: 120
+	},
+	{
+		name: 'Jester Outfit',
+		outputItems: resolveNameBank({
+			'Silly jester hat': 1,
+			'Silly jester top': 1,
+			'Silly jester tights': 1,
+			'Silly jester boots': 1
+		}),
+		gpCost: 5_000_000,
+		qpRequired: 89
+	},
+	{
+		name: 'Ardougne Knight Outfit',
+		outputItems: resolveNameBank({
+			'Ardougne knight helm': 1,
+			'Ardougne knight platebody': 1,
+			'Ardougne knight platelegs': 1
+		}),
+		gpCost: 5_000_000,
+		qpRequired: 200
+	},
+	{
+		name: 'Desert Outfit',
+		outputItems: resolveNameBank({
+			Fez: 1,
+			'Desert top': 1,
+			'Desert legs': 1,
+			'Desert robes': 1,
+			'Desert boots': 1,
+			'Desert shirt': 1,
+			'Desert robe': 1
+		}),
+		gpCost: 1_000_000,
+		qpRequired: 20
+	},
+	{
+		name: 'Pirate boots',
+		outputItems: resolveNameBank({
+			'Pirate boots': 1
+		}),
+		gpCost: 100_000,
+		qpRequired: 20
+	},
+	{
+		name: 'Vyrewatch outfit',
+		outputItems: resolveNameBank({
+			'Vyrewatch top': 1,
+			'Vyrewatch legs': 1,
+			'Vyrewatch shoes': 1
+		}),
+		gpCost: 1_000_000,
+		qpRequired: 92
+	}
+];
+
+const noveltyFood: Buyable[] = [
+	{
+		name: 'Beer',
+		outputItems: {
+			[itemID('Beer')]: 1
+		},
+		gpCost: 1_000_000
+	},
+	{
+		name: 'Vodka',
+		outputItems: {
+			[itemID('Vodka')]: 1
+		},
+		gpCost: 1_000_000
+	},
+	{
+		name: 'Gin',
+		outputItems: {
+			[itemID('Gin')]: 1
+		},
+		gpCost: 1_000_000
+	}
+];
+
+const Buyables: Buyable[] = [
+	{
+		name: 'Quest Cape',
+		outputItems: {
+			[itemID('Quest point cape')]: 1,
+			[itemID('Quest point hood')]: 1
+		},
+		qpRequired: MAX_QP,
+		gpCost: 99_000
+	},
+	{
+		name: 'Fishing Bait',
+		aliases: ['fishing bait'],
+		outputItems: {
+			[itemID('Fishing bait')]: 1
+		},
+		gpCost: 20
+	},
+	{
+		name: 'Jug of Water',
+		aliases: ['jug of water', 'jugs of water'],
+		outputItems: {
+			[itemID('Jug of water')]: 1
+		},
+		gpCost: 100
+	},
+
 	{
 		name: 'Feather',
 		aliases: ['feather'],
@@ -406,23 +608,35 @@ const Buyables: Buyable[] = [
 		gpCost: 400
 	},
 	{
-		name: 'Mythical cape',
-		outputItems: {
-			[itemID('Mythical cape')]: 1
-		},
-		gpCost: 1_000_000,
-		qpRequired: 205
-	},
-	{
 		name: 'Amylase pack',
 		outputItems: {
 			[itemID('Amylase crystal')]: 100
 		},
 		itemCost: resolveNameBank({ 'Mark of grace': 10 })
 	},
+	{
+		name: 'Dragon scimitar',
+		outputItems: resolveNameBank({
+			'Dragon scimitar': 1
+		}),
+		gpCost: 500_000,
+		qpRequired: 105
+	},
+	{
+		name: 'Fishbowl pet',
+		outputItems: {
+			6672: 1
+		},
+		gpCost: 500_000
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
-	...hunterBuyables
+	...hunterBuyables,
+	...questBuyables,
+	...noveltyFood,
+	...fremennikClothes,
+	...gnomeClothes,
+	...canifisClothes
 ];
 
 export default Buyables;
