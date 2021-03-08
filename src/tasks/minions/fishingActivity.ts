@@ -168,7 +168,7 @@ export default class extends Task {
 
 		const minutesInTrip = Math.ceil(duration / 1000 / 60);
 		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(3000)) {
+			if (roll(6000)) {
 				loot.add('Shelldon');
 				str += `\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!`;
 				break;
