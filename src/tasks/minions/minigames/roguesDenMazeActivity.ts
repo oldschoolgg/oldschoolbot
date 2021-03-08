@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { rogueOutfit } from '../../../lib/data/collectionLog';
-import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
 import { incrementMinionDailyDuration, randomItemFromArray } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
