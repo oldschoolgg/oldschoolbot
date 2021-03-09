@@ -8,9 +8,8 @@ import { addBanks } from 'oldschooljs/dist/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
-import { calcPercentOfNum, convertXPtoLVL } from '../util';
+import { calcPercentOfNum, convertXPtoLVL, normal } from '../util';
 import itemID from '../util/itemID';
-import { normal } from '../util/normal';
 import resolveItems from '../util/resolveItems';
 
 interface WintertodtCrateOptions {

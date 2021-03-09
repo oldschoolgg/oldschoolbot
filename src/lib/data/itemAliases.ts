@@ -101,4 +101,6 @@ export function initItemAliases() {
 
 	setItemAlias(25344, 'Red soul cape');
 	setItemAlias(25346, 'Blue soul cape');
+
+	setItemAlias(6672, 'Fishbowl pet');
 }

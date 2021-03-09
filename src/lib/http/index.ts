@@ -5,12 +5,13 @@ import fastifyHelmet from 'fastify-helmet';
 import fastifyRateLimit from 'fastify-rate-limit';
 import fastifySensible from 'fastify-sensible';
 
-import { httpPort, production } from '../../config';
+import { HTTP_PORT, production } from '../../config';
+import { initHooks } from './hooks';
 import { initRoutes } from './routes';
 
 export function makeServer() {
 	const server = fastify({
-		logger: true,
+		logger: false,
 		trustProxy: true
 	});
 
@@ -42,12 +43,13 @@ export function makeServer() {
 		}
 	});
 
+	initHooks(server);
 	initRoutes(server);
 
 	server.addContentTypeParser('text/plain', async () => {
-		throw server.httpErrors.badRequest();
+		throw server.httpErrors.badRequest('Bad content type.');
 	});
 
-	server.listen(httpPort).then(() => console.log(server.printRoutes()));
+	server.listen(HTTP_PORT).then(() => console.log(server.printRoutes()));
 	return server;
 }

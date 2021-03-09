@@ -10,8 +10,15 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, multiplyBank, noOp, rand, roll } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import {
+	addBanks,
+	bankHasItem,
+	channelIsSendable,
+	multiplyBank,
+	noOp,
+	rand,
+	roll
+} from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -35,7 +42,7 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned(), loot]),
+					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
 					skills: user.rawSkills
 				})
 			]);
