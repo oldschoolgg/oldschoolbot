@@ -120,6 +120,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
+	requiresBlacksmith?: boolean;
 }
 
 export interface Craftable {

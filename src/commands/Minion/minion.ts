@@ -2,7 +2,7 @@ import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
 import { chunk, objectEntries, objectKeys, reduceNumByPercent, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters, Util } from 'oldschooljs';
+import { Bank, Monsters, Util } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
@@ -219,8 +219,22 @@ export default class MinionCommand extends BotCommand {
 			await msg.author.settings.update(UserSettings.GP, balance - cost);
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
 
+			const starter = new Bank({
+				Shark: 300,
+				'Sardomin brew(4)': 20,
+				'Super restore(4)': 10,
+				'Anti-dragon shield': 1,
+				'Tiny lamp': 3,
+				'Small lamp': 1,
+				'Tradeable mystery box': 1,
+				'Dragon bones': 50,
+				Coins: 100_000,
+				'Clue scroll (beginner)': 5,
+				'Equippable mystery box': 1
+			});
+
 			await response.edit(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.`
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them. You received: **${starter}.**`
 			);
 		} catch (err) {
 			return msg.channel.send('Cancelled minion purchase.');

@@ -1,6 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { Activity, Time } from '../../lib/constants';
+import { GearSetup, hasGearEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -10,12 +12,22 @@ import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
-	itemID,
 	itemNameFromID,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
+
+export function hasBlackSmithEquipped(setup: GearSetup) {
+	return hasGearEquipped(setup, {
+		head: resolveItems(['Blacksmith helmet']),
+		body: resolveItems(['Blacksmith top']),
+		legs: resolveItems(['Blacksmith apron']),
+		feet: resolveItems(['Blacksmith boots']),
+		hands: resolveItems(['Blacksmith gloves'])
+	});
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -63,6 +75,13 @@ export default class extends BotCommand {
 			return msg.send(
 				`That is not a valid item to smith, to see the items availible do \`${msg.cmdPrefix}smith --items\``
 			);
+		}
+
+		if (
+			smithedItem.requiresBlacksmith &&
+			!hasBlackSmithEquipped(msg.author.getGear('skilling'))
+		) {
+			return msg.send(`You need the Blacksmith outfit to smith this item.`);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {

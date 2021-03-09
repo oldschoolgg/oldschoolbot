@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
 
+import { hasBlackSmithEquipped } from '../../commands/Minion/smith';
 import { Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import Smithing from '../../lib/skilling/skills/smithing/';
@@ -18,7 +19,11 @@ export default class extends Task {
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID);
 		if (!smithedItem) return;
 
-		const xpReceived = quantity * smithedItem.xp;
+		let xpReceived = quantity * smithedItem.xp;
+		const hasBS = hasBlackSmithEquipped(user.getGear('skilling'));
+		if (hasBS) {
+			xpReceived *= 1.1;
+		}
 
 		await user.addXP(SkillsEnum.Smithing, xpReceived);
 		const newLevel = user.skillLevel(SkillsEnum.Smithing);
@@ -26,6 +31,10 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished smithing ${
 			quantity * smithedItem.outputMultiple
 		}x ${smithedItem.name}, you also received ${xpReceived.toLocaleString()} XP.`;
+
+		if (hasBS) {
+			str += `\n**10%** Bonus XP For Blacksmith Outfit`;
+		}
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;

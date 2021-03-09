@@ -4,7 +4,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
 export const KingGoldemarLootTable = new LootTable()
-	.tertiary(2300, 'Dwarven warhammer')
+	.tertiary(2300, 'Broken dwarven warhammer')
 	.tertiary(20, 'Clue scroll (master)')
 	.oneIn(
 		30,

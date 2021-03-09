@@ -991,6 +991,10 @@ export function initCustomItems() {
 	setCustomItem(47_506, 'First age bracelet', getOSItem('Barrows gloves'), {}, 1_000_000);
 	setCustomItem(47_507, 'First age ring', getOSItem('Berserker ring'), {}, 1_000_000);
 
+	setCustomItem(47_508, 'Broken dwarven warhammer', getOSItem('Rune warhammer'), {}, 1_000_000);
+
+	setCustomItem(47_509, 'Equippable mystery box', getOSItem('Mystery box'), {}, 500_000);
+
 	/**
 	 * Misc Items
 	 *
@@ -998,4 +1002,11 @@ export function initCustomItems() {
 	 */
 	setCustomItem(50_001, 'Raw rocktail', getOSItem('Raw trout'), {}, 10_000);
 	setCustomItem(50_002, 'Rocktail', getOSItem('Trout'), {}, 10_000);
+
+	// Blacksmith
+	setCustomItem(50_003, 'Blacksmith helmet', getOSItem('Rune full helm'), {}, 10_000);
+	setCustomItem(50_004, 'Blacksmith top', getOSItem('Rune platebody'), {}, 10_000);
+	setCustomItem(50_005, 'Blacksmith apron', getOSItem('Rune platelegs'), {}, 10_000);
+	setCustomItem(50_006, 'Blacksmith gloves', getOSItem('Rune gloves'), {}, 10_000);
+	setCustomItem(50_007, 'Blacksmith boots', getOSItem('Rune boots'), {}, 10_000);
 }

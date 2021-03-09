@@ -1,3 +1,4 @@
+import { randArrItem } from 'e';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
@@ -436,12 +437,20 @@ const Openables: Openable[] = [
 		aliases: ['royal mystery box', 'rmb'],
 		table: new LootTable().add('Diamond crown', 1, 2).add('Diamond sceptre', 1, 2).add('Corgi'),
 		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Equippable mystery box',
+		itemID: itemID('Equippable mystery box'),
+		aliases: ['equippable mystery box', 'emb'],
+		table: randomEquippable,
+		emoji: Emoji.BirthdayPresent
 	}
 ];
 
 export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
 	.oneIn(150, itemNameFromID(3713)!)
+	.oneIn(15, 'Equippable mystery box')
 	.add(6199)
 	.add(19939);
 
@@ -512,6 +521,19 @@ export const umbTable = Items.filter(i => {
 	}
 	return !(i as Item).tradeable && !(i as Item).duplicate;
 }).map(i => i.id);
+
+export const embTable = Items.filter((i: Item) => {
+	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
+		return false;
+	}
+	return !i.duplicate && Boolean(i.equipable_by_player) && Boolean(i.equipment?.slot);
+}).map(i => i.id);
+
+function randomEquippable(): number {
+	const res = randArrItem(embTable);
+	if (cantBeDropped.includes(res)) return randomEquippable();
+	return res;
+}
 
 function getRandomItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
