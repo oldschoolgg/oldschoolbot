@@ -5,8 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { channelIsSendable, itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 

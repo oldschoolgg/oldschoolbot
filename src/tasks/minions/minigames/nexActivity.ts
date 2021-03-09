@@ -12,8 +12,13 @@ import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NexActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, queuedMessageSend, randomItemFromArray } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import {
+	addBanks,
+	channelIsSendable,
+	noOp,
+	queuedMessageSend,
+	randomItemFromArray
+} from '../../../lib/util';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 

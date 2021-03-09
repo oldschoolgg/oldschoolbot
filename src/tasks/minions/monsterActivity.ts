@@ -12,8 +12,7 @@ import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, rand, roll } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { channelIsSendable, itemID, multiplyBank, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
