@@ -99,11 +99,6 @@ export type TwitterAppConfig = null | {
 	access_token_secret: string;
 };
 
-export type MongoDBConfig = null | {
-	dbUrl: string;
-	dbName: string;
-};
-
 export type PatreonConfig = null | {
 	campaignID: number;
 	token: string;

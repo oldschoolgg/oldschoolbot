@@ -7,7 +7,7 @@ import { Events } from '../../lib/constants';
 import SimilarItems from '../../lib/data/similarItems';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
-import { addBanks, addItemToBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
+import { addBanks, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -52,20 +52,20 @@ export default class extends Extendable {
 		return itemQty;
 	}
 
-	public allItemsOwned(this: User): ItemBank {
-		let totalBank = { ...this.settings.get(UserSettings.Bank) };
+	public allItemsOwned(this: User): Bank {
+		let totalBank = this.bank({ withGP: true });
 
 		for (const setup of Object.values(this.rawGear())) {
 			for (const equipped of Object.values(setup)) {
 				if (equipped?.item) {
-					totalBank = addItemToBank(totalBank, equipped.item, equipped.quantity);
+					totalBank.add(equipped.item, equipped.quantity);
 				}
 			}
 		}
 
 		const equippedPet = this.settings.get(UserSettings.Minion.EquippedPet);
 		if (equippedPet) {
-			totalBank = addItemToBank(totalBank, equippedPet, 1);
+			totalBank.add(equippedPet);
 		}
 
 		return totalBank;

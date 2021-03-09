@@ -31,7 +31,7 @@ export default class extends Task {
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwned = user.allItemsOwned();
+		const allItemsOwned = user.allItemsOwned().bank;
 		const loot = new Bank();
 
 		let totalXP = 0;

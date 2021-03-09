@@ -88,7 +88,7 @@ export default class extends BotCommand {
 
 		if (
 			pickpocketable.itemsRequired &&
-			!bankHasAllItemsFromBank(msg.author.allItemsOwned(), pickpocketable.itemsRequired)
+			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
 		) {
 			return msg.send(
 				`You need these items to pickpocket this NPC: ${await createReadableItemListFromBank(

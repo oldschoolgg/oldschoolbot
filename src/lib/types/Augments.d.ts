@@ -215,7 +215,7 @@ declare module 'discord.js' {
 		rawGear(): UserFullGearSetup;
 		equippedPet(): number | null;
 		usingPet(name: string): boolean;
-		allItemsOwned(): ItemBank;
+		allItemsOwned(): Bank;
 		setupStats(setup: GearSetupTypes): GearStats;
 		/**
 		 * Returns this users update promise queue.

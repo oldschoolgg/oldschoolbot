@@ -3,7 +3,7 @@ import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
-import { channelIsSendable } from './channelIsSendable';
+import { channelIsSendable } from '../util';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
 

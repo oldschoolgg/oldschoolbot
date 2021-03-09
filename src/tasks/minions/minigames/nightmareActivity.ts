@@ -12,12 +12,12 @@ import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	addBanks,
+	channelIsSendable,
 	multiplyBank,
 	noOp,
 	queuedMessageSend,
 	randomVariation
 } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';

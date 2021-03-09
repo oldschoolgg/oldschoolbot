@@ -13,8 +13,14 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import {
+	addItemToBank,
+	bankHasItem,
+	channelIsSendable,
+	multiplyBank,
+	rand,
+	roll
+} from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';

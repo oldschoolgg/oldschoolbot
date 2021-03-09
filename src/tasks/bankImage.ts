@@ -27,8 +27,8 @@ import {
 	stringMatches
 } from '../lib/util';
 import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
+import { fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
-import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
 import filterByCategory from '../lib/util/filterByCategory';
 import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 
