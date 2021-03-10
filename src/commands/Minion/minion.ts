@@ -409,6 +409,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	@requiresMinion
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand(msg, 'kill', [quantity, name]);
+		runCommand(msg, 'k', [quantity, name]);
 	}
 }
