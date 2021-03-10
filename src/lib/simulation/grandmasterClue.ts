@@ -85,14 +85,14 @@ const table = new LootTable()
 			.add('First age ring')
 	)
 	.add(ClueTable, [1, 3])
-	.add(boxTable, [1, 3], 2)
+	.add(boxTable, [1, 3])
 	.add(DragonTable, [1, 2], 2)
 	.add(runeTable)
 	.add('Coins', [5_000_000, 20_000_000])
 	.add(AllBarrows, 2)
 	.add(PlankTable, 2)
 	.add(Supplies, 1, 3)
-	.add(CrystalChestTable, [5, 10]);
+	.add(CrystalChestTable, [5, 10], 2);
 
 class GrandmasterClue extends Clue {
 	open(quantity: number) {
