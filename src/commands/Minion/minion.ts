@@ -174,7 +174,7 @@ export default class MinionCommand extends BotCommand {
 
 		const starter = new Bank({
 			Shark: 300,
-			'Sardomin brew(4)': 20,
+			'Saradomin brew(4)': 20,
 			'Super restore(4)': 10,
 			'Anti-dragon shield': 1,
 			'Tiny lamp': 3,
