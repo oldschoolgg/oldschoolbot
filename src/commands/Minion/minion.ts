@@ -172,11 +172,25 @@ export default class MinionCommand extends BotCommand {
 			cost = 0;
 		}
 
+		const starter = new Bank({
+			Shark: 300,
+			'Sardomin brew(4)': 20,
+			'Super restore(4)': 10,
+			'Anti-dragon shield': 1,
+			'Tiny lamp': 3,
+			'Small lamp': 1,
+			'Tradeable mystery box': 1,
+			'Dragon bones': 50,
+			Coins: 100_000,
+			'Clue scroll (beginner)': 5,
+			'Equippable mystery box': 1
+		});
+
 		if (cost === 0) {
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
+			await msg.author.addItemsToBank(starter, true);
 			return msg.channel.send(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules! Breaking the bot rules could result in you being banned or your account wiped - read them here: <https://www.oldschool.gg/oldschoolbot/rules>`
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules! Breaking the bot rules could result in you being banned or your account wiped - read them here: <https://www.oldschool.gg/oldschoolbot/rules>\n\nYou received: ${starter}.`
 			);
 		}
 
@@ -218,23 +232,9 @@ export default class MinionCommand extends BotCommand {
 
 			await msg.author.settings.update(UserSettings.GP, balance - cost);
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
-			const starter = new Bank({
-				Shark: 300,
-				'Sardomin brew(4)': 20,
-				'Super restore(4)': 10,
-				'Anti-dragon shield': 1,
-				'Tiny lamp': 3,
-				'Small lamp': 1,
-				'Tradeable mystery box': 1,
-				'Dragon bones': 50,
-				Coins: 100_000,
-				'Clue scroll (beginner)': 5,
-				'Equippable mystery box': 1
-			});
-
+			await msg.author.addItemsToBank(starter, true);
 			await response.edit(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them. You received: **${starter}.**`
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.\n\nYou received: **${starter}.**`
 			);
 		} catch (err) {
 			return msg.channel.send('Cancelled minion purchase.');
