@@ -9,6 +9,24 @@ import { incrementMinionDailyDuration, randomItemFromArray } from '../../../lib/
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
+	getLowestCountOutfitPiece(bank: Bank): number {
+		let lowestCountPiece = 0;
+		let lowestCountAmount = -1;
+
+		for (const piece of rogueOutfit) {
+			const amount = bank.amount(piece);
+			if (lowestCountAmount === -1 || amount < lowestCountAmount) {
+				lowestCountPiece = piece;
+				lowestCountAmount = amount;
+			}
+		}
+
+		if (lowestCountAmount === 0) {
+			return randomItemFromArray(rogueOutfit);
+		}
+		return lowestCountPiece;
+	}
+
 	async run(data: RoguesDenMazeTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
@@ -17,12 +35,15 @@ export default class extends Task {
 
 		const loot = new Bank();
 		const user = await this.client.users.fetch(userID);
+		const userBankCopy = user.bank();
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
 		for (let i = 0; i < quantity; i++) {
 			if (randInt(1, 8) <= 5) {
-				loot.add(randomItemFromArray(rogueOutfit));
+				const piece = this.getLowestCountOutfitPiece(userBankCopy);
+				userBankCopy.add(piece);
+				loot.add(piece);
 			}
 		}
 
