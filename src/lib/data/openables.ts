@@ -450,7 +450,7 @@ const Openables: Openable[] = [
 export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
 	.oneIn(150, itemNameFromID(3713)!)
-	.oneIn(15, 'Equippable mystery box')
+	.oneIn(30, 'Equippable mystery box')
 	.add(6199)
 	.add(19939);
 
@@ -532,6 +532,7 @@ export const embTable = Items.filter((i: Item) => {
 function randomEquippable(): number {
 	const res = randArrItem(embTable);
 	if (cantBeDropped.includes(res)) return randomEquippable();
+	if (res >= 40_000 && res <= 50_000) return randomEquippable();
 	return res;
 }
 

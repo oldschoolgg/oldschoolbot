@@ -9,10 +9,10 @@ const customBSOCreatures: Creature[] = [
 		id: 3251,
 		aliases: ['sand gecko'],
 		level: 120,
-		hunterXP: 1950, // Scaleable xp depending on hunting lvl
+		hunterXP: 2300,
 		table: new LootTable()
-			.tertiary(5000, 'Sandy')
-			.tertiary(8, MysteryBoxes)
+			.tertiary(6000, 'Sandy')
+			.tertiary(10, MysteryBoxes)
 			.tertiary(200, 'Clue scroll grandmaster')
 			.add('Sand')
 			.add('Sandworms', [10, 100]),

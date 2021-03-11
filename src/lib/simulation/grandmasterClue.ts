@@ -44,9 +44,9 @@ const DragonTable = new LootTable()
 	.add('Dragon plateskirt', [1, 5], 2);
 
 const boxTable = new LootTable()
-	.add('Tradeable mystery box', [1, 2], 6)
-	.add('Untradeable mystery box', 1, 2)
-	.add('Equippable mystery box', 1, 2)
+	.add('Tradeable mystery box', [1, 2], 50)
+	.add('Untradeable mystery box', 1, 20)
+	.add('Equippable mystery box', 1, 5)
 	.add('Pet mystery box');
 
 const runeTable = new LootTable()
