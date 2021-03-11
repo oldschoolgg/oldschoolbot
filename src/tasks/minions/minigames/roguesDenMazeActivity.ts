@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { rogueOutfit } from '../../../lib/data/collectionLog';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
-import { incrementMinionDailyDuration, randomItemFromArray } from '../../../lib/util';
+import { incrementMinionDailyDuration } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -21,9 +21,6 @@ export default class extends Task {
 			}
 		}
 
-		if (lowestCountAmount === 0) {
-			return randomItemFromArray(rogueOutfit);
-		}
 		return lowestCountPiece;
 	}
 
