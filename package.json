@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
-		"@octokit/graphql": "^4.6.0",
+		"@octokit/graphql": "^4.6.1",
 		"@sapphire/discord-utilities": "^2.0.5",
 		"@sentry/node": "5.20.1",
 		"@sinclair/typebox": "^0.12.9",
