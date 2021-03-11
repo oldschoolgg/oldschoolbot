@@ -47,9 +47,9 @@ export default class extends BotCommand {
 			20;
 		boosts.push(`${skillPercentage}% boost for levels`);
 
-		if (msg.author.skillLevel(SkillsEnum.Agility) >= 80) {
+		if (msg.author.skillLevel(SkillsEnum.Thieving) >= 80) {
 			skillPercentage += 40;
-			boosts.push(`40% boost for 80+ Agility`);
+			boosts.push(`40% boost for 80+ Thieving`);
 		}
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage);
