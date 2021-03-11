@@ -39,7 +39,7 @@ export default class extends BotCommand {
 
 		const staminasToRemove = new Bank();
 		const boosts = [];
-		let baseTime = Time.Minute * 10;
+		let baseTime = Time.Minute * 9;
 
 		let skillPercentage =
 			(msg.author.skillLevel(SkillsEnum.Agility) +
@@ -54,21 +54,19 @@ export default class extends BotCommand {
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage);
 
-		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
+		let quantity = Math.floor(msg.author.maxTripLength / baseTime);
 
 		if (msg.author.hasItemEquippedOrInBank('Stamina potion(4)')) {
-			const potionsInBank = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
-			const potionsRequired = Math.max(1, Math.floor(quantity / 4)); // always use at least one pot
+			baseTime = reduceNumByPercent(baseTime, 50);
 
-			if (potionsInBank < potionsRequired) {
-				boosts.push(`-50% not enough Stamina potions`);
-			} else {
-				// we reduce instead of increase so we don't go over the max trip length, and instead opt for shorter trips
-				baseTime = reduceNumByPercent(baseTime, 50);
-				staminasToRemove.add('Stamina potion(4)', potionsRequired);
-			}
+			const potionsInBank = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
+			const maxPossibleLaps = Math.floor(msg.author.maxTripLength / baseTime);
+
+			// do as many laps as possible with the current stamina potion supply
+			quantity = Math.min(potionsInBank * 4, maxPossibleLaps);
+			staminasToRemove.add('Stamina potion(4)', Math.max(1, Math.floor(quantity / 4)));
 		} else {
-			boosts.push(`-50% no Stamina potions`);
+			boosts.push(`-50% not enough Stamina potions`);
 		}
 
 		const duration = quantity * baseTime;
