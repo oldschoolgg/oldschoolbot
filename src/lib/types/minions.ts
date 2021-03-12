@@ -264,3 +264,7 @@ export interface SoulWarsOptions extends ActivityTaskOptions {
 	users: string[];
 	quantity: number;
 }
+
+export interface RoguesDenMazeTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}

@@ -139,7 +139,7 @@ export async function handleTripFinish(
 			}
 			client.oneCommandAtATimeCache.add(mes.author.id);
 			try {
-				if (mes.content === 'c'.toLowerCase() && clueReceived && perkTier > PerkTier.One) {
+				if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
 					(client.commands.get('minion') as MinionCommand).clue(mes, [
 						1,
 						clueReceived.name
