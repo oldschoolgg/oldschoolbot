@@ -73,6 +73,11 @@ export const Minigames: Minigame[] = [
 		name: 'Soul Wars',
 		key: 'SoulWars',
 		column: 'soul_wars'
+	},
+	{
+		name: "Rogues' Den",
+		key: 'RoguesDenMaze',
+		column: 'rogues_den'
 	}
 ];
 

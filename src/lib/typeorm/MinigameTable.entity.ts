@@ -41,4 +41,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'soul_wars', type: 'int', nullable: false, default: 0 })
 	public SoulWars!: number;
+
+	@Column({ name: 'rogues_den', type: 'int', nullable: false, default: 0 })
+	public RoguesDenMaze!: number;
 }
