@@ -6,8 +6,10 @@ import { Events, Time } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
+import { rollRogueOutfitDoubleLoot } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -62,10 +64,25 @@ export default class extends Task {
 			return;
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
+		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity; i++) {
-			loot.add(npc.table.roll());
+			const lootItems = npc.table.roll();
+
+			if (rollRogueOutfitDoubleLoot(user)) {
+				rogueOutfitBoostActivated = true;
+				lootItems.forEach(item => {
+					if (item.item === itemID('Rocky')) {
+						// no double pet drop
+						loot.add(item.item, item.quantity);
+					} else {
+						loot.add(item.item, item.quantity * 2);
+					}
+				});
+			} else {
+				loot.add(lootItems);
+			}
 		}
 
 		await user.addItemsToBank(loot.values(), true);
@@ -87,6 +104,10 @@ export default class extends Task {
 			this.client,
 			loot.values()
 		)}.`;
+
+		if (rogueOutfitBoostActivated) {
+			str += `\nYour rogue outfit allows you to take some extra loot.`;
+		}
 
 		if (loot.amount('Rocky') > 0) {
 			str += `\n\n**You have a funny feeling you're being followed...**`;
