@@ -2,9 +2,11 @@ import { Items } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
-import { cleanString } from './util';
 import getOSItem from './util/getOSItem';
 
+function cleanString(str: string) {
+	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
+}
 export const customPrices: Record<number, number> = [];
 
 export const customItems: number[] = [];
