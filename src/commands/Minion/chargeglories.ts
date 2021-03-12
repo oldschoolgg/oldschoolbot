@@ -4,9 +4,8 @@ import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID } from '../../lib/util';
+import { formatDuration, itemID, skillsMeetRequirements } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { skillsMeetRequirements } from '../../lib/util/skillsMeetRequirements';
 
 export const gloriesInventorySize = 26;
 export const gloriesInventoryTime = Time.Minute * 2.2;

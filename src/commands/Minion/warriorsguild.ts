@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	AnimatedArmourActivityTaskOptions,
@@ -59,6 +60,15 @@ export default class extends BotCommand {
 		[quantity = null, minigame]: [null | number, 'tokens' | 'cyclops']
 	) {
 		await msg.author.settings.sync(true);
+
+		const atkLvl = msg.author.skillLevel(SkillsEnum.Attack);
+		const strLvl = msg.author.skillLevel(SkillsEnum.Strength);
+		if (atkLvl + strLvl < 130 && atkLvl !== 99 && strLvl !== 99) {
+			return msg.send(
+				`To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either.`
+			);
+		}
+
 		const userBank = new Bank(msg.author.settings.get(UserSettings.Bank));
 
 		if (minigame === 'tokens') {

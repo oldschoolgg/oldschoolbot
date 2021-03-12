@@ -46,8 +46,10 @@ export default class extends BotCommand {
 			);
 		}
 		const parsed = _styles.split(' ').map(i => i.trim());
-		if (!parsed.every(isValidAttackStyle)) {
-			return msg.channel.send(`That is not a valid attack style.`);
+		if (_styles !== 'shared' && !parsed.every(isValidAttackStyle)) {
+			return msg.channel.send(
+				`That is not a valid attack style, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`
+			);
 		}
 		const styles: AttackStyles[] =
 			_styles === 'shared'

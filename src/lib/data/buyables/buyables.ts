@@ -1,5 +1,5 @@
 import { MAX_QP } from '../../constants';
-import { ItemBank } from '../../types';
+import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { canifisClothes } from './canifisClothes';
@@ -13,6 +13,8 @@ export interface Buyable {
 	gpCost?: number;
 	itemCost?: ItemBank;
 	aliases?: string[];
+	skillsNeeded?: Skills;
+	restockTime?: number;
 }
 
 const constructionBuyables: Buyable[] = [
@@ -628,6 +630,17 @@ const Buyables: Buyable[] = [
 			6672: 1
 		},
 		gpCost: 500_000
+	},
+	{
+		name: 'Potato with cheese',
+		outputItems: {
+			[itemID('Potato with cheese')]: 1
+		},
+		gpCost: 400,
+		skillsNeeded: {
+			attack: 65,
+			strength: 65
+		}
 	},
 	...sepulchreBuyables,
 	...constructionBuyables,

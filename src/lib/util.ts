@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
-import { randInt, shuffleArr } from 'e';
+import { objectEntries, randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -23,6 +23,7 @@ import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
+import { Skills } from './types';
 import itemID from './util/itemID';
 import { sendToChannelID } from './util/webhook';
 
@@ -435,4 +436,13 @@ export async function queuedMessageSend(client: KlasaClient, channelID: string, 
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;
 	client.queuePromise(() => channel.send(str, { split: true }));
+}
+
+export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
+	for (const [skillName, level] of objectEntries(requirements)) {
+		const xpHas = skills[skillName];
+		const levelHas = convertXPtoLVL(xpHas ?? 1);
+		if (levelHas < level!) return false;
+	}
+	return true;
 }
