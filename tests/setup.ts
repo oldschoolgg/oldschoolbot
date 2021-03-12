@@ -1,3 +1,1 @@
-import { initItemAliases } from '../src/lib/data/itemAliases';
-
-initItemAliases();
+import '../src/lib/data/itemAliases';

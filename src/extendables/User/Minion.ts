@@ -497,6 +497,10 @@ export default class extends Extendable {
 				const data = currentTask as SoulWarsOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 			}
+
+			case Activity.RoguesDenMaze: {
+				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
+			}
 		}
 	}
 

@@ -6,7 +6,6 @@ import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
-import { initItemAliases } from '../data/itemAliases';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { piscinaPool } from '../workers';
 
@@ -76,11 +75,6 @@ export class OldSchoolBotClient extends Client {
 		});
 		this.minionActivityCache.delete(userID);
 	}
-
-	public init = async (): Promise<this> => {
-		initItemAliases();
-		return this;
-	};
 
 	getActivityOfUser(userID: string) {
 		const task = this.minionActivityCache.get(userID);

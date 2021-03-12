@@ -152,11 +152,6 @@ export default class PatreonTask extends Task {
 				bitFieldFromPerkTier(perkTier)
 			];
 
-			if (perkTier === PerkTier.Six) {
-				newField.push(BitField.HasPermanentEventBackgrounds);
-				newField.push(BitField.HasPermanentTierOne);
-			}
-
 			await settings.update(UserSettings.BitField, newField, {
 				arrayAction: ArrayActions.Overwrite
 			});

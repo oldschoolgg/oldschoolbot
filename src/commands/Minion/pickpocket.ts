@@ -15,6 +15,7 @@ import {
 	bankHasAllItemsFromBank,
 	formatDuration,
 	itemID,
+	rogueOutfitPercentBonus,
 	round,
 	stringMatches
 } from '../../lib/util';
@@ -139,6 +140,16 @@ export default class extends BotCommand {
 			attackStylesUsed: []
 		});
 
+		const boosts = [];
+
+		if (rogueOutfitPercentBonus(msg.author) > 0) {
+			boosts.push(
+				`${rogueOutfitPercentBonus(
+					msg.author
+				)}% chance of x2 loot due to rogue outfit equipped`
+			);
+		}
+
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ThievingCost,
 			addBanks([
@@ -159,12 +170,16 @@ export default class extends BotCommand {
 			xpReceived
 		});
 
-		return msg.send(
-			`${msg.author.minionName} is now going to pickpocket a ${
-				pickpocketable.name
-			} ${quantity}x times, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${foodString}`
-		);
+		let str = `${msg.author.minionName} is now going to pickpocket a ${
+			pickpocketable.name
+		} ${quantity}x times, it'll take around ${formatDuration(
+			duration
+		)} to finish. Removed ${foodString}`;
+
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(str);
 	}
 }
