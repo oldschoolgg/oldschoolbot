@@ -5,9 +5,6 @@ import * as jwt from 'jwt-simple';
 
 import { client } from '../..';
 import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
-
-export { v4 as uuidv } from 'uuid';
-
 import { PerkTier } from '../constants';
 
 export function rateLimit(max: number, timeWindow: string) {
