@@ -345,6 +345,24 @@ const backgroundImages: BankBackground[] = [
 		name: 'Duck',
 		image: null,
 		available: false
+	},
+	{
+		id: 45,
+		name: 'Birdie',
+		image: null,
+		available: false
+	},
+	{
+		id: 46,
+		name: 'Jad (person)',
+		image: null,
+		available: false
+	},
+	{
+		id: 47,
+		name: 'Slav',
+		image: null,
+		available: false
 	}
 ];
 
