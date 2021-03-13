@@ -430,9 +430,3 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 
 	return true;
 }
-
-export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str, { split: true }));
-}
