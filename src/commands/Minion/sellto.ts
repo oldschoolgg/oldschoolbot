@@ -122,7 +122,10 @@ export default class extends BotCommand {
 		}
 
 		try {
-			if (buyerMember.user.settings.get(UserSettings.GP) < price) {
+			if (
+				buyerMember.user.settings.get(UserSettings.GP) < price ||
+				!msg.author.bank().fits(bankToSell)
+			) {
 				return msg.send(`One of you lacks the required GP or items to make this trade.`);
 			}
 
