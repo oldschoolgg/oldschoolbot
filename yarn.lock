@@ -618,10 +618,10 @@
     "@octokit/openapi-types" "^4.0.0"
     "@types/node" ">= 8"
 
-"@oldschoolgg/eslint-config@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@oldschoolgg/eslint-config/-/eslint-config-1.0.4.tgz#2c717c2621b6c784e7a77174b05fb136bfd1c10e"
-  integrity sha512-FOiYXUTIvJduIG77vkbcEKHLgKN1VvQ5377kzWC+7vxbK3ORpGd8bBywxynvCjzqOxDfNp7X0CQbPvTDXrjrQQ==
+"@oldschoolgg/eslint-config@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@oldschoolgg/eslint-config/-/eslint-config-1.0.5.tgz#c1c6b1147cc42d61e0332ba962e520fec6ed400e"
+  integrity sha512-r6pBh0iI8LirHkcDpczMQ2znTYxE1OoKc11IzMUvtyipacQLZrrGk/VFcS3LnRwcxWKtzSj0U6Cpsxs3x88D9w==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.4.1"
     "@typescript-eslint/parser" "^4.4.1"
