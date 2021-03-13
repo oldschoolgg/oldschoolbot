@@ -37,7 +37,6 @@
 		"node-fetch": "^2.6.1",
 		"numbro": "^2.3.2",
 		"oldschooljs": "^1.7.0",
-		"p-limit": "^2.3.0",
 		"p-queue": "^6.6.2",
 		"pg": "^8.5.1",
 		"piscina": "^1.6.3",

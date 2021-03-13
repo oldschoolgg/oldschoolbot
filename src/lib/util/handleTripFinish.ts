@@ -47,63 +47,57 @@ export async function handleTripFinish(
 		}
 	}
 
-	client.queuePromise(() => {
-		const channel = client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
+	const attachable = attachment
+		? attachment instanceof MessageAttachment
+			? attachment
+			: new MessageAttachment(attachment)
+		: undefined;
+	sendToChannelID(client, channelID, { content: message, image: attachable });
+	if (!onContinue) return;
 
-		const attachable = attachment
-			? attachment instanceof MessageAttachment
-				? attachment
-				: new MessageAttachment(attachment)
-			: undefined;
-		sendToChannelID(client, channelID, { content: message, image: attachable });
-		if (!onContinue) return;
+	const existingCollector = collectors.get(user.id);
 
-		const existingCollector = collectors.get(user.id);
+	if (existingCollector) {
+		existingCollector.stop();
+		collectors.delete(user.id);
+	}
 
-		if (existingCollector) {
-			existingCollector.stop();
-			collectors.delete(user.id);
+	const channel = client.channels.get(channelID);
+	if (!channelIsSendable(channel)) return;
+	const collector = new MessageCollector(
+		channel,
+		(mes: Message) =>
+			mes.author === user &&
+			(mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
+		{
+			time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
+			max: 1
 		}
+	);
 
-		const collector = new MessageCollector(
-			channel,
-			(mes: Message) =>
-				mes.author === user &&
-				(mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
-			{
-				time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
-				max: 1
-			}
-		);
+	collectors.set(user.id, collector);
 
-		collectors.set(user.id, collector);
-
-		collector.on('collect', async (mes: KlasaMessage) => {
-			if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
-				collector.stop();
-				collectors.delete(user.id);
+	collector.on('collect', async (mes: KlasaMessage) => {
+		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
+			collector.stop();
+			collectors.delete(user.id);
+			return;
+		}
+		client.oneCommandAtATimeCache.add(mes.author.id);
+		try {
+			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
+				(client.commands.get('minion') as MinionCommand).clue(mes, [1, clueReceived.name]);
 				return;
+			} else if (stringMatches(mes.content, continuationChar)) {
+				await onContinue(mes).catch(err => {
+					channel.send(err);
+				});
 			}
-			client.oneCommandAtATimeCache.add(mes.author.id);
-			try {
-				if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
-					(client.commands.get('minion') as MinionCommand).clue(mes, [
-						1,
-						clueReceived.name
-					]);
-					return;
-				} else if (stringMatches(mes.content, continuationChar)) {
-					await onContinue(mes).catch(err => {
-						channel.send(err);
-					});
-				}
-			} catch (err) {
-				console.log(err);
-				channel.send(err);
-			} finally {
-				setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
-			}
-		});
+		} catch (err) {
+			console.log(err);
+			channel.send(err);
+		} finally {
+			setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
+		}
 	});
 }
