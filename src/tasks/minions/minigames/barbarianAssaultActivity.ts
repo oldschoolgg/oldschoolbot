@@ -3,8 +3,9 @@ import { KlasaUser, Task } from 'klasa';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum, calcWhatPercent, noOp, queuedMessageSend } from '../../../lib/util';
+import { calcPercentOfNum, calcWhatPercent, noOp } from '../../../lib/util';
 import { skillsMeetRequirements } from '../../../lib/util/skillsMeetRequirements';
+import { sendToChannelID } from '../../../lib/util/webhook';
 
 function hasKandarinHardDiary(user: KlasaUser): boolean {
 	return skillsMeetRequirements(user.rawSkills, {
@@ -82,6 +83,6 @@ export default class extends Task {
 		)}
 ${resultStr}`;
 
-		queuedMessageSend(this.client, channelID, resultStr);
+		sendToChannelID(this.client, channelID, { content: resultStr });
 	}
 }

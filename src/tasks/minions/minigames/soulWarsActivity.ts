@@ -3,7 +3,8 @@ import { Task } from 'klasa';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
-import { noOp, queuedMessageSend, roll } from '../../../lib/util';
+import { noOp, roll } from '../../../lib/util';
+import { sendToChannelID } from '../../../lib/util/webhook';
 
 function calcPoints() {
 	let base = 42.5;
@@ -45,6 +46,6 @@ export default class extends Task {
 			str += `${user} received ${points}x Zeal Tokens.`;
 		}
 
-		queuedMessageSend(this.client, channelID, str);
+		sendToChannelID(this.client, channelID, { content: str });
 	}
 }
