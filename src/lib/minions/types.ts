@@ -47,18 +47,15 @@ export interface KillableMonster {
 	id: number;
 	name: string;
 	aliases: string[];
-	timeToFinish: number;
+	noneCombatCalcTimeToFinish: number;
 	table: {
 		kill(quantity: number): ItemBank;
 	};
 	emoji: string;
 	wildy: boolean;
-	canBeKilled: boolean;
-	difficultyRating: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	qpRequired: number;
-
 	/**
 	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
 	 * this monster.
@@ -68,19 +65,13 @@ export interface KillableMonster {
 	 * Whether or not this monster can be groupkilled.
 	 */
 	groupKillable?: true;
-	respawnTime?: number;
+	respawnTimeGroup?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
 	/**
 	 * How much healing (health points restored) is needed per kill.
 	 */
 	healAmountNeeded?: number;
-	attackStyleToUse?: GearSetupTypes;
-	attackStylesUsed?: OffenceGearStat[];
-	/**
-	 * The minimum *required* gear stats to fight this monster.
-	 */
-	minimumGearRequirements?: GearRequirements;
 	/**
 	 * Boosts for POH objects.
 	 */
@@ -89,6 +80,16 @@ export interface KillableMonster {
 	 * Whether or not this monster can be attacked using certain combatskills.
 	 */
 	immuneToCombatSkills?: GearSetupTypes[];
+	/**
+	 * Combat simulation information. The time should be specified in seconds.
+	 */
+	defaultStyleToUse: OffenceGearStat;
+	mechanicsTime?: number;
+	mechanicsDamage?: number;
+	bankTripTime: number;
+	killsPerBankTrip: number;
+	respawnTime?: number;
+	// Add variable for multiStyleFight like Zulrah. How?
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {

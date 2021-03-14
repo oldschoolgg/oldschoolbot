@@ -1,7 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/structures/BotCommand';
 import Potions from '../../lib/minions/data/potions';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { generatePotionImage } from '../../lib/minions/functions/generatePotionImage';
@@ -9,6 +8,7 @@ import { generatePrayerImage } from '../../lib/minions/functions/generatePrayerI
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 
 export default class extends BotCommand {
@@ -35,10 +35,6 @@ export default class extends BotCommand {
 		const currentPrayers = msg.author.settings.get(UserSettings.SelectedPrayers);
 		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
 
-		console.log('potion length', currentPotions.length);
-		console.log(currentPotions[0]);
-		console.log('prayer length', currentPrayers.length);
-
 		if (currentPrayers.length === 0 && currentPotions.length === 0) {
 			return msg.send(`You have no prayers activated and no potions selected.`);
 		}
@@ -64,7 +60,13 @@ export default class extends BotCommand {
 		const imagePotionBuffer = await generatePotionImage(this.client, msg.author);
 		const imagePotion = new MessageAttachment(imagePotionBuffer, 'osbot1.png');
 
-		return msg.send([imagePotion, imagePrayer]);
+		return msg.send(
+			`Currently selected potions: ${msg.author.settings
+				.get(UserSettings.SelectedPotions)
+				.map(_potion => _potion)
+				.join(', ')}`,
+			[imagePotion, imagePrayer]
+		);
 	}
 
 	@requiresMinion
@@ -225,7 +227,13 @@ export default class extends BotCommand {
 			);
 			const image = await generatePotionImage(this.client, msg.author);
 
-			return msg.send(new MessageAttachment(image, 'osbot.png'));
+			return msg.send(
+				`Currently selected potions: ${msg.author.settings
+					.get(UserSettings.SelectedPotions)
+					.map(_potion => _potion)
+					.join(', ')}`,
+				new MessageAttachment(image, 'osbot.png')
+			);
 		}
 
 		await msg.author.settings.update(
@@ -238,7 +246,13 @@ export default class extends BotCommand {
 
 		const image = await generatePotionImage(this.client, msg.author);
 
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.send(
+			`Currently selected potions: ${msg.author.settings
+				.get(UserSettings.SelectedPotions)
+				.map(_potion => _potion)
+				.join(', ')}`,
+			new MessageAttachment(image, 'osbot.png')
+		);
 	}
 
 	@requiresMinion

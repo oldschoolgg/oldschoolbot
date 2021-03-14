@@ -1,6 +1,6 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { chunk, objectKeys, reduceNumByPercent, sleep } from 'e';
+import { chunk, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
@@ -8,31 +8,21 @@ import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import combatCalculator from '../../lib/minions/functions/combatCalculator';
 import findMonster from '../../lib/minions/functions/findMonster';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeAmmoFromUser from '../../lib/minions/functions/removeAmmoFromUser';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import removePotionsFromUser from '../../lib/minions/functions/removePotionsFromUser';
 import removeRunesFromUser from '../../lib/minions/functions/removeRunesFromUser';
-import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	isWeekend,
-	itemNameFromID,
-	randomItemFromArray,
-	randomVariation,
-	removeDuplicatesFromArray,
-	round
-} from '../../lib/util';
+import { formatDuration, randomItemFromArray, round } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { GearStat } from './../../lib/gear/types';
 import { CombatsEnum } from './combatsetup';
 
 const invalidMonster = (prefix: string) =>
@@ -51,8 +41,6 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
-
-const { floor } = Math;
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
@@ -433,7 +421,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	@requiresMinion
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		const boosts = [];
 		let messages: string[] = [];
 
 		if (typeof quantity === 'string') {
@@ -455,118 +442,102 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
 
-		let [timeToFinish, percentReduced] = reducedTimeFromKC(
-			monster,
-			msg.author.getKC(monster.id)
-		);
-
-		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
-
-		if (monster.pohBoosts) {
-			const [boostPercent, messages] = calcPOHBoosts(
-				await msg.author.getPOH(),
-				monster.pohBoosts
-			);
-			if (boostPercent > 0) {
-				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
-				boosts.push(messages.join(' + '));
+		if (monster.immuneToCombatSkills) {
+			for (let cs of monster.immuneToCombatSkills) {
+				if (
+					cs.toString().toLowerCase() ===
+					msg.author.settings.get(UserSettings.Minion.CombatSkill)
+				) {
+					return msg.send(
+						`${monster.name} can not be attacked using ${msg.author.settings.get(
+							UserSettings.Minion.CombatSkill
+						)}`
+					);
+				}
 			}
 		}
-
-		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
-			}
-		}
-
-		// If no quantity provided, set it to the max.
-		if (quantity === null) {
-			quantity = floor(msg.author.maxTripLength / timeToFinish);
-		}
-
-		// Check food
-		let foodStr: undefined | string = undefined;
-		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-			messages = messages.concat(foodMessages);
-
-			const [result] = await removeFoodFromUser({
-				client: this.client,
-				user: msg.author,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				healPerAction: Math.ceil(healAmountNeeded / quantity),
-				activityName: monster.name,
-				attackStylesUsed: removeDuplicatesFromArray([
-					...objectKeys(monster.minimumGearRequirements ?? {}),
-					monster.attackStyleToUse
-				]),
-				learningPercentage: percentReduced
-			});
-
-			foodStr = result;
-		}
-
-		const combatCalcInfo = combatCalculator(monster, msg.author, quantity);
+		let combatCalcInfo: [number, number, number, number, number, string[]] | undefined;
+		combatCalcInfo = await combatCalculator(monster, msg, quantity);
 
 		if (!combatCalcInfo) {
-			throw `Something went wrong with combatCalculator`;
+			throw `Something went wrong with the combatCalculator`;
 		}
-		const [combatDuration, hits, DPS, monsterKillSpeed] = combatCalcInfo;
+		let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = combatCalcInfo;
 
-		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Mage) {
-			await removeRunesFromUser(this.client, msg.author, hits);
-		}
-		if (msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Range) {
-			await removeAmmoFromUser(this.client, msg.author, hits);
-		}
-
-		let duration = timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength) {
+		let baseDuration = monster.noneCombatCalcTimeToFinish * calcQuantity;
+		let noneCombat = false;
+		if (
+			baseDuration * 2 < combatDuration ||
+			msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.NoCombat
+		) {
+			noneCombat = true;
+			combatDuration = baseDuration;
+		} else if (combatDuration > msg.author.maxTripLength * 1.5) {
 			return msg.send(
 				`${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 					msg.author.maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${
 					monster.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`
+				} is around ${Math.floor(msg.author.maxTripLength / (monsterKillSpeed * 1.3))}.`
 			);
 		}
 
-		duration = randomVariation(duration, 10);
-
-		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
-			duration *= 0.9;
+		if (!noneCombat) {
+			if (
+				msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Range ||
+				(msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
+					monster.defaultStyleToUse === GearStat.AttackRanged)
+			) {
+				messages.push(`Removed ${await removeAmmoFromUser(this.client, msg.author, hits)}`);
+			}
+			if (
+				msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Mage ||
+				(msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
+					monster.defaultStyleToUse === GearStat.AttackMagic)
+			) {
+				messages.push(
+					`Removed ${await removeRunesFromUser(this.client, msg.author, hits)}`
+				);
+			}
+			const potionStr = await removePotionsFromUser(
+				this.client,
+				msg.author,
+				potsUsed,
+				combatDuration
+			);
+			if (potionStr.includes('x')) {
+				messages.push(
+					`Removed ${await removePotionsFromUser(
+						this.client,
+						msg.author,
+						potsUsed,
+						combatDuration
+					)}`
+				);
+			}
 		}
-		duration = 0;
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			quantity,
-			duration,
+			noneCombat,
+			quantity: calcQuantity,
+			duration: combatDuration,
 			hits,
 			type: Activity.MonsterKilling
 		});
 
-		let response = `${msg.author.minionName} is now killing ${quantity}x ${
+		let response = `${msg.author.minionName} is now killing ${calcQuantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish OLD SYSTEM.\n`;
-		if (foodStr) {
-			response += ` Removed ${foodStr}.\n`;
-		}
-		response += ` it'll take around ${formatDuration(
-			combatDuration * 1000
-		)} to finish. Your DPS is ${round(DPS, 2)} and average monster kill speed is ${formatDuration(
-			monsterKillSpeed * 1000
-		)} `;
+		}, it'll take around ${formatDuration(combatDuration)} to finish. Your DPS is ${round(
+			DPS,
+			2
+		)}. The average kill time is ${formatDuration(monsterKillSpeed)} (Without banking/mechanics/respawn).`;
 
-		if (boosts.length > 0) {
-			response += `\n**Boosts:** ${boosts.join(', ')}.`;
+		if (noneCombat) {
+			response += `\nNONE COMBAT TRIP due to bad gear/stats or minion none combat setting activated.`;
 		}
-
 		if (messages.length > 0) {
 			response += `\n**Messages:** ${messages.join('\n')}.`;
 		}

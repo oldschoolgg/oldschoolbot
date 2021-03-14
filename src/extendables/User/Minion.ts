@@ -5,7 +5,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import killableMonsters /* , { NightmareMonster }*/ from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -522,7 +522,7 @@ export default class extends Extendable {
 	public async getKCByName(this: KlasaUser, kcName: string) {
 		const mon = [
 			...killableMonsters,
-			NightmareMonster,
+			//	NightmareMonster,
 			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
 		].find(
 			mon =>

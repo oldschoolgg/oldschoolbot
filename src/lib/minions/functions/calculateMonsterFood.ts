@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+/* import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
 import { maxDefenceStats, maxOffenceStats } from '../../gear';
@@ -63,3 +63,4 @@ export default function calculateMonsterFood(
 
 	return [healAmountNeeded, messages];
 }
+*/

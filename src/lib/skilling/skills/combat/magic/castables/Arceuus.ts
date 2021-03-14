@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../../util';
+import { Bank } from 'oldschooljs';
+
 import { Castable } from '../../../../types';
 
 const Arceuus: Castable[] = [
@@ -9,7 +10,7 @@ const Arceuus: Castable[] = [
 		magicxp: 6,
 		prayerxp: 130,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled goblin head': 1,
 			'Body rune': 2,
 			'Nature rune': 1
@@ -23,7 +24,7 @@ const Arceuus: Castable[] = [
 		magicxp: 14,
 		prayerxp: 182,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled monkey head': 1,
 			'Body rune': 3,
 			'Nature rune': 1
@@ -37,7 +38,7 @@ const Arceuus: Castable[] = [
 		magicxp: 24,
 		prayerxp: 286,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Ensouled imp head': 1, 'Body rune': 3, 'Nature rune': 2 }),
+		inputItems: new Bank({ 'Ensouled imp head': 1, 'Body rune': 3, 'Nature rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -47,7 +48,7 @@ const Arceuus: Castable[] = [
 		magicxp: 32,
 		prayerxp: 364,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled minotaur head': 1,
 			'Body rune': 4,
 			'Nature rune': 2
@@ -61,7 +62,7 @@ const Arceuus: Castable[] = [
 		magicxp: 38,
 		prayerxp: 454,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled scorpion head': 1,
 			'Soul rune': 1,
 			'Nature rune': 1
@@ -75,7 +76,7 @@ const Arceuus: Castable[] = [
 		magicxp: 42,
 		prayerxp: 480,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled bear head': 1,
 			'Body rune': 1,
 			'Soul rune': 1,
@@ -90,7 +91,7 @@ const Arceuus: Castable[] = [
 		magicxp: 44,
 		prayerxp: 494,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled unicorn head': 1,
 			'Body rune': 2,
 			'Soul rune': 1,
@@ -105,7 +106,7 @@ const Arceuus: Castable[] = [
 		magicxp: 52,
 		prayerxp: 520,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled dog head': 1,
 			'Body rune': 2,
 			'Soul rune': 1,
@@ -120,7 +121,7 @@ const Arceuus: Castable[] = [
 		magicxp: 60,
 		prayerxp: 584,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled chaos druid head': 1,
 			'Body rune': 3,
 			'Soul rune': 1,
@@ -135,7 +136,7 @@ const Arceuus: Castable[] = [
 		magicxp: 74,
 		prayerxp: 650,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled giant head': 1,
 			'Body rune': 4,
 			'Soul rune': 1,
@@ -150,7 +151,7 @@ const Arceuus: Castable[] = [
 		magicxp: 80,
 		prayerxp: 716,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled ogre head': 1,
 			'Body rune': 4,
 			'Soul rune': 1,
@@ -165,7 +166,7 @@ const Arceuus: Castable[] = [
 		magicxp: 86,
 		prayerxp: 754,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled elf head': 1,
 			'Body rune': 2,
 			'Soul rune': 2,
@@ -180,7 +181,7 @@ const Arceuus: Castable[] = [
 		magicxp: 92,
 		prayerxp: 780,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled troll head': 1,
 			'Body rune': 3,
 			'Soul rune': 2,
@@ -195,7 +196,7 @@ const Arceuus: Castable[] = [
 		magicxp: 104,
 		prayerxp: 832,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled horror head': 1,
 			'Body rune': 4,
 			'Soul rune': 2,
@@ -210,7 +211,7 @@ const Arceuus: Castable[] = [
 		magicxp: 114,
 		prayerxp: 884,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled kalphite head': 1,
 			'Body rune': 4,
 			'Soul rune': 2,
@@ -225,7 +226,7 @@ const Arceuus: Castable[] = [
 		magicxp: 124,
 		prayerxp: 936,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled dagannoth head': 1,
 			'Body rune': 4,
 			'Soul rune': 3,
@@ -240,7 +241,7 @@ const Arceuus: Castable[] = [
 		magicxp: 130,
 		prayerxp: 1040,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled bloodveld head': 1,
 			'Blood rune': 1,
 			'Soul rune': 2,
@@ -255,7 +256,7 @@ const Arceuus: Castable[] = [
 		magicxp: 138,
 		prayerxp: 1104,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled tzhaar head': 1,
 			'Blood rune': 1,
 			'Soul rune': 2,
@@ -270,7 +271,7 @@ const Arceuus: Castable[] = [
 		magicxp: 144,
 		prayerxp: 1170,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled demon head': 1,
 			'Blood rune': 1,
 			'Soul rune': 2,
@@ -284,7 +285,7 @@ const Arceuus: Castable[] = [
 		level: 78,
 		magicxp: 90,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Earth rune': 25,
 			'Blood rune': 8,
 			'Soul rune': 8,
@@ -299,7 +300,7 @@ const Arceuus: Castable[] = [
 		magicxp: 156,
 		prayerxp: 1234,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled aviansie head': 1,
 			'Blood rune': 1,
 			'Soul rune': 3,
@@ -314,7 +315,7 @@ const Arceuus: Castable[] = [
 		magicxp: 170,
 		prayerxp: 1300,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled abyssal head': 1,
 			'Blood rune': 1,
 			'Soul rune': 4,
@@ -329,7 +330,7 @@ const Arceuus: Castable[] = [
 		magicxp: 186,
 		prayerxp: 1560,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ensouled dragon head': 1,
 			'Blood rune': 2,
 			'Soul rune': 4,
@@ -342,7 +343,7 @@ const Arceuus: Castable[] = [
 		level: 1,
 		magicxp: 0,
 		category: 'Teleport',
-		inputItems: resolveNameBank({}),
+		inputItems: new Bank({}),
 		tickRate: 22
 	},
 	{
@@ -350,7 +351,7 @@ const Arceuus: Castable[] = [
 		level: 6,
 		magicxp: 10,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 2, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 2, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -358,7 +359,7 @@ const Arceuus: Castable[] = [
 		level: 17,
 		magicxp: 16,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 1, 'Water rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 1, 'Water rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -366,7 +367,7 @@ const Arceuus: Castable[] = [
 		level: 23,
 		magicxp: 19,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 1, 'Fire rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 1, 'Fire rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -374,7 +375,7 @@ const Arceuus: Castable[] = [
 		level: 28,
 		magicxp: 22,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Mind rune': 2, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Mind rune': 2, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -382,7 +383,7 @@ const Arceuus: Castable[] = [
 		level: 34,
 		magicxp: 27,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Soul rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Soul rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -390,7 +391,7 @@ const Arceuus: Castable[] = [
 		level: 40,
 		magicxp: 30,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Soul rune': 2, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Soul rune': 2, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -398,7 +399,7 @@ const Arceuus: Castable[] = [
 		level: 48,
 		magicxp: 50,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 1, 'Soul rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 1, 'Soul rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -406,7 +407,7 @@ const Arceuus: Castable[] = [
 		level: 61,
 		magicxp: 68,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Soul rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Soul rune': 2, 'Law rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -414,7 +415,7 @@ const Arceuus: Castable[] = [
 		level: 65,
 		magicxp: 74,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Nature rune': 1, 'Soul rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Nature rune': 1, 'Soul rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -422,7 +423,7 @@ const Arceuus: Castable[] = [
 		level: 71,
 		magicxp: 82,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Blood rune': 1, 'Soul rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Blood rune': 1, 'Soul rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -430,7 +431,7 @@ const Arceuus: Castable[] = [
 		level: 83,
 		magicxp: 90,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Blood rune': 1, 'Soul rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Blood rune': 1, 'Soul rune': 2, 'Law rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -438,7 +439,7 @@ const Arceuus: Castable[] = [
 		level: 90,
 		magicxp: 100,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Blood rune': 2, 'Soul rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Blood rune': 2, 'Soul rune': 2, 'Law rune': 2 }),
 		tickRate: 4
 	}
 ];

@@ -34,6 +34,7 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
+	noneCombat: boolean;
 	monsterID: number;
 	quantity: number;
 	hits: number;

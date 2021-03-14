@@ -4,34 +4,47 @@ import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
+import { Time } from '../../constants';
 import { hasEliteMagicVoidEquipped } from '../../gear/functions/hasEliteMagicVoidEquipped';
 import { hasMagicVoidEquipped } from '../../gear/functions/hasMagicVoidEquipped';
-import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
 import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
+import calculatePrayerDrain from './calculatePrayerDrain';
+import potionBoostCalculator from './potionBoostCalculator';
 
-export default function mageCalculator(
+// Mage Prayer bonus
+const magePrayerBonuses = [
+	{
+		name: 'Augury',
+		boost: 1.25
+	},
+	{
+		name: 'Mystic Might',
+		boost: 1.15
+	},
+	{
+		name: 'Mystic Lore',
+		boost: 1.1
+	},
+	{
+		name: 'Mystic Will',
+		boost: 1.05
+	}
+];
+
+export default async function mageCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
-	quantity: number
-) {
+	quantity: number | null
+): Promise<[number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Magic as source.
 	const combatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle);
 	const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
-	if (combatSpell === null) {
-		console.log('Spell is null.');
-		throw `Spell is null`;
-	}
-	const spell = castables.find(_spell =>
-		stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
-	);
-	if (!spell?.baseMaxHit) {
-		throw 'Spell got no base max hit.';
-	}
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
@@ -43,14 +56,41 @@ export default function mageCalculator(
 	const mageGear = user.settings.get(UserSettings.Gear.Mage);
 
 	if (!mageGear) throw `No mage gear on user.`;
+	if (combatSpell === null) {
+		throw `Spell is null`;
+	}
+	const spell = castables.find(_spell =>
+		stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
+	);
 
+	if (!spell) {
+		throw `The default spell is wrong.`;
+	}
+
+	if (!spell.baseMaxHit) {
+		throw 'Spell got no base max hit.';
+	}
+	if (
+		spell.name.toLowerCase() === 'crumble undead' &&
+		!currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		throw 'Crumble undead can only be used against undead enemies.';
+	}
 	const gearStats = sumOfSetupStats(user.getGear('mage'));
 
 	// Calculate effective magic level
+
+	const [magePotionBoost, magePotUsed] = potionBoostCalculator(user, SkillsEnum.Magic);
+
+	let prayerMageBonus = 1;
+	for (const magePrayerBonus of magePrayerBonuses) {
+		if (user.settings.get(UserSettings.SelectedPrayers).includes(magePrayerBonus.name.toLowerCase())) {
+			prayerMageBonus = magePrayerBonus.boost;
+			break;
+		}
+	}
 	let effectiveMageLvl =
-		Math.floor(
-			user.skillLevel(SkillsEnum.Magic) /* + Magic boost: potions etc) * prayerbonus */
-		) + 8;
+		Math.floor(user.skillLevel(SkillsEnum.Magic) + magePotionBoost) * prayerMageBonus + 8;
 	let attackStyle = '';
 	for (let stance of mageWeapon.weapon.stances) {
 		if (stance.combat_style.toLowerCase() === combatStyle) {
@@ -59,13 +99,12 @@ export default function mageCalculator(
 		}
 	}
 
-	// Currently won't work, since combatStyles are only standard/defensive atm
 	if (attackStyle === 'accurate') {
 		effectiveMageLvl += 3;
 	}
 
 	if (attackStyle === 'longrange') {
-		effectiveMageLvl += 3;
+		effectiveMageLvl += 1;
 	}
 
 	// Multiply by void bonus if wearing full mage void
@@ -76,7 +115,21 @@ export default function mageCalculator(
 	effectiveMageLvl = Math.floor(effectiveMageLvl);
 
 	// Calculate max hit
-	let maxHit = spell?.baseMaxHit * (1 + gearStats.magic_damage / 100);
+	let maxHit = spell.baseMaxHit * (1 + gearStats.magic_damage / 100);
+
+	if (
+		mageWeapon.name.toLowerCase() === 'trident of the seas' ||
+		mageWeapon.name === 'Trident of the seas (e)'
+	) {
+		maxHit = Math.floor(effectiveMageLvl / 3 - 5);
+	}
+
+	if (
+		mageWeapon.name === 'Trident of the swamp' ||
+		mageWeapon.name === 'Trident of the swamp (e)'
+	) {
+		maxHit = Math.floor(effectiveMageLvl / 3 - 2);
+	}
 
 	// Multiply by void bonus if wearing full elite mage void
 	if (hasEliteMagicVoidEquipped(mageGear)) {
@@ -111,13 +164,11 @@ export default function mageCalculator(
 
 	maxHit = Math.floor(maxHit);
 
-	if (hasItemEquipped(itemID('Tome of fire'), mageGear) && spell.name.includes('fire')) {
+	if (hasItemEquipped(itemID('Tome of fire'), mageGear) && spell.name.toLowerCase().includes('fire')) {
 		maxHit *= 1.5;
 	}
 
 	maxHit = Math.floor(maxHit);
-
-	/* Handle slayer dart, tridents, salamander, ibans staff etc? https://oldschool.runescape.wiki/w/Maximum_magic_hit maybe? */
 
 	// Calculate accuracy roll
 	let accuracyRoll = effectiveMageLvl * (gearStats.attack_magic + 64);
@@ -172,17 +223,30 @@ export default function mageCalculator(
 	// Get the base time to cast a spell
 	let timeToCastSingleSpell = spell.tickRate * 0.6;
 
+	if (
+		mageWeapon.name.toLowerCase() === 'trident of the seas' ||
+		mageWeapon.name === 'Trident of the seas (e)' ||
+		mageWeapon.name === 'Trident of the swamp' ||
+		mageWeapon.name === 'Trident of the swamp (e)'
+	) {
+		timeToCastSingleSpell = 4 * 0.6;
+	}
+
 	const DPS = DamagePerHit / timeToCastSingleSpell;
-	console.log(hitChance, maxHit, timeToCastSingleSpell);
 
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
-	const monsterKillSpeed = monsterHP / DPS;
+	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
+	// If no quantity provided, set it to the max.
+	if (quantity === null || user.maxTripLength * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
+		quantity = Math.min(Math.floor(user.maxTripLength / (monsterKillSpeed * 1.3)), 5000);
+		if (quantity < 1) quantity = 1;
+	}
 	let hits = 0;
 
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
-		while (hitpointsLeft > 0) {
+		while (hitpointsLeft > 0 && hits < 1000) {
 			let hitdamage = 0;
 			if (Math.random() <= hitChance) {
 				hitdamage = randInt(0, maxHit);
@@ -191,7 +255,16 @@ export default function mageCalculator(
 			hits++;
 		}
 	}
-	const combatDuration = hits * timeToCastSingleSpell;
+	let combatDuration = hits * timeToCastSingleSpell * Time.Second;
 
-	return [combatDuration, hits, DPS, monsterKillSpeed];
+	combatDuration += monster.mechanicsTime ? monster.mechanicsTime * quantity : 0;
+
+	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
+
+	combatDuration += (monster.bankTripTime / monster.killsPerBankTrip) * quantity;
+
+	// Calculates prayer drain and removes enough prayer potion doses.
+	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
+
+	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, [magePotUsed]];
 }

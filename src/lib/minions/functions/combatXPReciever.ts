@@ -1,11 +1,12 @@
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
+import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
 import { KillableMonster } from '../types';
-import { GearSetupTypes } from './../../gear/types';
+import { GearSetupTypes, GearStat } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 
 export default async function combatXPReciever(
@@ -17,7 +18,27 @@ export default async function combatXPReciever(
 	// Returned XP and level up string.
 	let str = '';
 	let spell;
-	const combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
+	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
+	if (combatSkill === 'auto') {
+		const defaultMonsterStyle = monster.defaultStyleToUse;
+
+		if (
+			defaultMonsterStyle === GearStat.AttackCrush ||
+			defaultMonsterStyle === GearStat.AttackSlash ||
+			defaultMonsterStyle === GearStat.AttackStab
+		) {
+			combatSkill = CombatsEnum.Melee;
+		}
+
+		if (defaultMonsterStyle === GearStat.AttackRanged) {
+			combatSkill = CombatsEnum.Range;
+		}
+
+		if (defaultMonsterStyle === GearStat.AttackMagic) {
+			combatSkill = CombatsEnum.Mage;
+		}
+	}
+
 	if (combatSkill === 'mage') {
 		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 		if (combatSpell === null) {
@@ -37,17 +58,6 @@ export default async function combatXPReciever(
 		console.log('No good default');
 		return str;
 	}
-	/*
-	// Move out of function.
-	if (monster.immuneToCombatSkills && combatSkill != null) {
-		for (let cs of monster.immuneToCombatSkills) {
-			if (cs.toString().toLowerCase() === combatSkill.toLowerCase()) {
-				console.log('I do what I want, catch me outside.');
-				return;
-			}
-		}
-    }
-    */
 
 	const monsterHP = currentMonsterData.hitpoints;
 	const totalHP = monsterHP * quantity;
@@ -286,6 +296,51 @@ export default async function combatXPReciever(
 						str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
 					}
 					return str;
+					case 'accurate':
+						await user.addXP(
+							SkillsEnum.Magic,
+							Math.round(2 * totalHP));
+						await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+						newMagicLevel = user.skillLevel(SkillsEnum.Magic);
+						newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
+						str = `\nYou also received ${(
+							Math.round(2 * totalHP)
+						).toLocaleString()} Magic XP and ${Math.round(
+							1.33 * totalHP
+						).toLocaleString()} Hitpoints XP.`;
+						if (newMagicLevel > currentMagicLevel) {
+							str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
+						}
+						if (newHitpointsLevel > currentHitpointsLevel) {
+							str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
+						}
+						return str;
+					case 'longrange':
+						await user.addXP(
+							SkillsEnum.Magic,
+							Math.round(2 * totalHP));
+						await user.addXP(SkillsEnum.Defence, Number(totalHP));
+						await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+						newMagicLevel = user.skillLevel(SkillsEnum.Magic);
+						newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
+						newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
+						str = `\nYou also received ${(
+							Math.round(1.33 * totalHP)
+						).toLocaleString()} Magic XP, ${Number(
+							totalHP
+						).toLocaleString()} Defence XP and ${Math.round(
+							1.33 * totalHP
+						).toLocaleString()} Hitpoints XP.`;
+						if (newMagicLevel > currentMagicLevel) {
+							str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
+						}
+						if (newDefenceLevel > currentDefenceLevel) {
+							str += `\n\n${user.minionName}'s Defence level is now ${newDefenceLevel}!`;
+						}
+						if (newHitpointsLevel > currentHitpointsLevel) {
+							str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
+						}
+						return str;
 			}
 			break;
 	}

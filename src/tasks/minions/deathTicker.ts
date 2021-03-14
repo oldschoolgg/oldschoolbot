@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+/* import { TextChannel } from 'discord.js';
 import { Task } from 'klasa';
 
 import { Activity, Events } from '../../lib/constants';
@@ -87,3 +87,4 @@ export default class extends Task {
 		}
 	}
 }
+*/

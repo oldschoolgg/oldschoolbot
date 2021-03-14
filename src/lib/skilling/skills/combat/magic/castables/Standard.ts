@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../../util/itemID';
 import { Castable } from '../../../../types';
 
@@ -8,7 +9,7 @@ const Standard: Castable[] = [
 		level: 1,
 		magicxp: 0,
 		category: 'Teleport',
-		inputItems: resolveNameBank({}),
+		inputItems: new Bank(),
 		tickRate: 22
 	},
 	{
@@ -17,7 +18,7 @@ const Standard: Castable[] = [
 		magicxp: 5.5,
 		baseMaxHit: 2,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 1, 'Mind rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 1, 'Mind rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -25,7 +26,7 @@ const Standard: Castable[] = [
 		level: 3,
 		magicxp: 13,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 2, 'Water rune': 3, 'Body rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 2, 'Water rune': 3, 'Body rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -33,7 +34,7 @@ const Standard: Castable[] = [
 		level: 3,
 		magicxp: 13,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 2, 'Water rune': 3, 'Body rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 2, 'Water rune': 3, 'Body rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -42,7 +43,7 @@ const Standard: Castable[] = [
 		level: 4,
 		magicxp: 9,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Opal bolts': 10, 'Air rune': 2, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ 'Opal bolts': 10, 'Air rune': 2, 'Cosmic rune': 1 }),
 		tickRate: 1,
 		outputMultiple: 10
 	},
@@ -52,7 +53,7 @@ const Standard: Castable[] = [
 		magicxp: 7.5,
 		baseMaxHit: 4,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 1, 'Water rune': 1, 'Mind rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 1, 'Water rune': 1, 'Mind rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -62,7 +63,7 @@ const Standard: Castable[] = [
 		level: 7,
 		magicxp: 17.5,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ /* Jewelerysss: 1,*/ 'Water rune': 1, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ /* Jewelerysss: 1,*/ 'Water rune': 1, 'Cosmic rune': 1 }),
 		tickRate: 3
 	},
 	{
@@ -71,7 +72,7 @@ const Standard: Castable[] = [
 		level: 7,
 		magicxp: 17.5,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Sapphire bolts': 10,
 			'Water rune': 1,
 			'Cosmic rune': 1,
@@ -86,7 +87,7 @@ const Standard: Castable[] = [
 		magicxp: 9.5,
 		baseMaxHit: 6,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 1, 'Earth rune': 2, 'Mind rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 1, 'Earth rune': 2, 'Mind rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -94,7 +95,7 @@ const Standard: Castable[] = [
 		level: 11,
 		magicxp: 21,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 2, 'Water rune': 3, 'Body rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 2, 'Water rune': 3, 'Body rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -103,7 +104,7 @@ const Standard: Castable[] = [
 		magicxp: 11.5,
 		baseMaxHit: 8,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 2, 'Fire rune': 3, 'Mind rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 2, 'Fire rune': 3, 'Mind rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -112,7 +113,7 @@ const Standard: Castable[] = [
 		level: 14,
 		magicxp: 19,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Jade bolts': 10, 'Earth rune': 2, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ 'Jade bolts': 10, 'Earth rune': 2, 'Cosmic rune': 1 }),
 		tickRate: 1,
 		outputMultiple: 10
 	},
@@ -122,7 +123,7 @@ const Standard: Castable[] = [
 		level: 15,
 		magicxp: 25,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Bones: 28,
 			'Earth rune': 2,
 			'Water rune': 2,
@@ -137,7 +138,7 @@ const Standard: Castable[] = [
 		magicxp: 13.5,
 		baseMaxHit: 9,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 2, 'Chaos rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 2, 'Chaos rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -145,7 +146,7 @@ const Standard: Castable[] = [
 		level: 19,
 		magicxp: 29,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 3, 'Water rune': 2, 'Body rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 3, 'Water rune': 2, 'Body rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -153,7 +154,7 @@ const Standard: Castable[] = [
 		level: 20,
 		magicxp: 30,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 3, 'Water rune': 3, 'Nature rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 3, 'Water rune': 3, 'Nature rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -163,7 +164,7 @@ const Standard: Castable[] = [
 		level: 21,
 		magicxp: 31,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ /* AlchableITEMSS: 1,*/ 'Fire rune': 3, 'Nature rune': 1 }),
+		inputItems: new Bank({ /* AlchableITEMSS: 1,*/ 'Fire rune': 3, 'Nature rune': 1 }),
 		tickRate: 3
 	},
 	{
@@ -172,7 +173,7 @@ const Standard: Castable[] = [
 		magicxp: 16.5,
 		baseMaxHit: 10,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 2, 'Water rune': 2, 'Chaos rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 2, 'Water rune': 2, 'Chaos rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -181,7 +182,7 @@ const Standard: Castable[] = [
 		level: 24,
 		magicxp: 29,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Pearl bolts': 10, 'Water rune': 2, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ 'Pearl bolts': 10, 'Water rune': 2, 'Cosmic rune': 1 }),
 		tickRate: 1,
 		outputMultiple: 10
 	},
@@ -190,7 +191,7 @@ const Standard: Castable[] = [
 		level: 25,
 		magicxp: 35,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Fire rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Fire rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -200,7 +201,7 @@ const Standard: Castable[] = [
 		level: 27,
 		magicxp: 37,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ /* Jewelerysss: 1,*/ 'Air rune': 3, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ /* Jewelerysss: 1,*/ 'Air rune': 3, 'Cosmic rune': 1 }),
 		tickRate: 3
 	},
 	{
@@ -209,7 +210,7 @@ const Standard: Castable[] = [
 		level: 27,
 		magicxp: 37,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Emerald bolts': 10, 'Nature rune': 1, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ 'Emerald bolts': 10, 'Nature rune': 1, 'Cosmic rune': 1 }),
 		tickRate: 1,
 		outputMultiple: 10
 	},
@@ -219,7 +220,7 @@ const Standard: Castable[] = [
 		magicxp: 19.5,
 		baseMaxHit: 11,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 2, 'Earth rune': 3, 'Chaos rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 2, 'Earth rune': 3, 'Chaos rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -229,7 +230,7 @@ const Standard: Castable[] = [
 		level: 29,
 		magicxp: 33,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Topaz bolts': 10, 'Fire rune': 2, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ 'Topaz bolts': 10, 'Fire rune': 2, 'Cosmic rune': 1 }),
 		tickRate: 1,
 		outputMultiple: 10
 	},
@@ -238,7 +239,7 @@ const Standard: Castable[] = [
 		level: 31,
 		magicxp: 41,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Earth rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Earth rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -246,7 +247,7 @@ const Standard: Castable[] = [
 		level: 33,
 		magicxp: 43,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Air rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 1, 'Law rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -255,7 +256,7 @@ const Standard: Castable[] = [
 		magicxp: 22.5,
 		baseMaxHit: 12,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Fire rune': 4, 'Chaos rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Fire rune': 4, 'Chaos rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -263,7 +264,7 @@ const Standard: Castable[] = [
 		level: 37,
 		magicxp: 48,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Water rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Water rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -272,7 +273,16 @@ const Standard: Castable[] = [
 		magicxp: 24.5,
 		baseMaxHit: 15,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 2, 'Earth rune': 2, 'Chaos rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 2, 'Earth rune': 2, 'Chaos rune': 1 }),
+		tickRate: 5
+	},
+	{
+		name: 'Iban Blast',
+		level: 50,
+		magicxp: 30,
+		baseMaxHit: 25,
+		category: 'Combat',
+		inputItems: new Bank({ 'Death rune': 1, 'Fire rune': 5 }),
 		tickRate: 5
 	},
 	{
@@ -280,7 +290,7 @@ const Standard: Castable[] = [
 		level: 40,
 		magicxp: 30,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Air rune': 1, 'Earth rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 1, 'Earth rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -289,7 +299,7 @@ const Standard: Castable[] = [
 		magicxp: 25.5,
 		baseMaxHit: 13,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Death rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Death rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -299,7 +309,7 @@ const Standard: Castable[] = [
 		level: 43,
 		magicxp: 53,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ /* ORESSSS: 1,*/ 'Fire rune': 4, 'Nature rune': 1 }),
+		inputItems: new Bank({ /* ORESSSS: 1,*/ 'Fire rune': 4, 'Nature rune': 1 }),
 		tickRate: 3
 	},
 	{
@@ -307,7 +317,7 @@ const Standard: Castable[] = [
 		level: 45,
 		magicxp: 55.5,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Air rune': 5, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 5, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -316,7 +326,7 @@ const Standard: Castable[] = [
 		magicxp: 28.5,
 		baseMaxHit: 14,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Water rune': 3, 'Death rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Water rune': 3, 'Death rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -326,7 +336,7 @@ const Standard: Castable[] = [
 		level: 49,
 		magicxp: 59,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ /* Jewelerysss: 1,*/ 'Fire rune': 5, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ /* Jewelerysss: 1,*/ 'Fire rune': 5, 'Cosmic rune': 1 }),
 		tickRate: 3
 	},
 	{
@@ -335,7 +345,7 @@ const Standard: Castable[] = [
 		level: 49,
 		magicxp: 59,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ruby bolts': 10,
 			'Fire rune': 5,
 			'Blood rune': 1,
@@ -350,7 +360,7 @@ const Standard: Castable[] = [
 		magicxp: 30,
 		baseMaxHit: 25,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Fire rune': 5, 'Death rune': 1 }),
+		inputItems: new Bank({ 'Fire rune': 5, 'Death rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -358,7 +368,7 @@ const Standard: Castable[] = [
 		level: 50,
 		magicxp: 60,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 4, 'Water rune': 4, 'Nature rune': 3 }),
+		inputItems: new Bank({ 'Earth rune': 4, 'Water rune': 4, 'Nature rune': 3 }),
 		tickRate: 5
 	},
 	{
@@ -367,7 +377,7 @@ const Standard: Castable[] = [
 		magicxp: 30,
 		baseMaxHit: 15,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Mind rune': 4, 'Death rune': 1 }),
+		inputItems: new Bank({ 'Mind rune': 4, 'Death rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -375,7 +385,7 @@ const Standard: Castable[] = [
 		level: 51,
 		magicxp: 61,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Water rune': 2, 'Law rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -384,7 +394,7 @@ const Standard: Castable[] = [
 		magicxp: 31.5,
 		baseMaxHit: 15,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Earth rune': 4, 'Death rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Earth rune': 4, 'Death rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -394,7 +404,7 @@ const Standard: Castable[] = [
 		level: 55,
 		magicxp: 65,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ /* AlchableITEMSS: 1,*/ 'Fire rune': 5, 'Nature rune': 1 }),
+		inputItems: new Bank({ /* AlchableITEMSS: 1,*/ 'Fire rune': 5, 'Nature rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -403,7 +413,7 @@ const Standard: Castable[] = [
 		level: 56,
 		magicxp: 66,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Water rune': 30, 'Cosmic rune': 3 }),
+		inputItems: new Bank({ 'Unpowered orb': 1, 'Water rune': 30, 'Cosmic rune': 3 }),
 		tickRate: 3
 	},
 	{
@@ -413,7 +423,7 @@ const Standard: Castable[] = [
 		level: 57,
 		magicxp: 67,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ /* Jewelerysss: 1,*/ 'Earth rune': 10, 'Cosmic rune': 1 }),
+		inputItems: new Bank({ /* Jewelerysss: 1,*/ 'Earth rune': 10, 'Cosmic rune': 1 }),
 		tickRate: 3
 	},
 	{
@@ -422,7 +432,7 @@ const Standard: Castable[] = [
 		level: 57,
 		magicxp: 67,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Diamond bolts': 10,
 			'Earth rune': 10,
 			'Law rune': 2,
@@ -436,7 +446,7 @@ const Standard: Castable[] = [
 		level: 58,
 		magicxp: 68,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Earth rune': 2, 'Law rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -445,7 +455,7 @@ const Standard: Castable[] = [
 		magicxp: 34.5,
 		baseMaxHit: 16,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 4, 'Fire rune': 5, 'Death rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 4, 'Fire rune': 5, 'Death rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -454,7 +464,7 @@ const Standard: Castable[] = [
 		level: 60,
 		magicxp: 70,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Earth rune': 30, 'Cosmic rune': 3 }),
+		inputItems: new Bank({ 'Unpowered orb': 1, 'Earth rune': 30, 'Cosmic rune': 3 }),
 		tickRate: 3
 	},
 	{
@@ -464,7 +474,7 @@ const Standard: Castable[] = [
 		level: 60,
 		magicxp: 35.5,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Bones: 28,
 			'Earth rune': 4,
 			'Water rune': 4,
@@ -479,7 +489,7 @@ const Standard: Castable[] = [
 		magicxp: 61,
 		baseMaxHit: 20,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 4, 'Fire rune': 2, 'Blood rune': 2 }),
+		inputItems: new Bank({ 'Air rune': 4, 'Fire rune': 2, 'Blood rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -488,7 +498,7 @@ const Standard: Castable[] = [
 		magicxp: 61,
 		baseMaxHit: 20,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 4, 'Fire rune': 1, 'Blood rune': 2 }),
+		inputItems: new Bank({ 'Air rune': 4, 'Fire rune': 1, 'Blood rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -497,7 +507,7 @@ const Standard: Castable[] = [
 		magicxp: 61,
 		baseMaxHit: 20,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 1, 'Fire rune': 4, 'Blood rune': 2 }),
+		inputItems: new Bank({ 'Air rune': 1, 'Fire rune': 4, 'Blood rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -505,7 +515,7 @@ const Standard: Castable[] = [
 		level: 61,
 		magicxp: 68,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Fire rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Fire rune': 2, 'Law rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -514,7 +524,7 @@ const Standard: Castable[] = [
 		magicxp: 36,
 		baseMaxHit: 17,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 5, 'Blood rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 5, 'Blood rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -523,7 +533,7 @@ const Standard: Castable[] = [
 		level: 63,
 		magicxp: 73,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Fire rune': 30, 'Cosmic rune': 3 }),
+		inputItems: new Bank({ 'Unpowered orb': 1, 'Fire rune': 30, 'Cosmic rune': 3 }),
 		tickRate: 3
 	},
 	{
@@ -531,7 +541,7 @@ const Standard: Castable[] = [
 		level: 64,
 		magicxp: 74,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Fire rune': 2, 'Water rune': 2, 'Law rune': 2, Banana: 1 }),
+		inputItems: new Bank({ 'Fire rune': 2, 'Water rune': 2, 'Law rune': 2, Banana: 1 }),
 		tickRate: 4
 	},
 	{
@@ -540,7 +550,7 @@ const Standard: Castable[] = [
 		magicxp: 37.5,
 		baseMaxHit: 18,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 5, 'Water rune': 7, 'Blood rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 5, 'Water rune': 7, 'Blood rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -549,7 +559,7 @@ const Standard: Castable[] = [
 		level: 66,
 		magicxp: 76,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Air rune': 30, 'Cosmic rune': 3 }),
+		inputItems: new Bank({ 'Unpowered orb': 1, 'Air rune': 30, 'Cosmic rune': 3 }),
 		tickRate: 3
 	},
 	{
@@ -557,7 +567,7 @@ const Standard: Castable[] = [
 		level: 66,
 		magicxp: 76,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 5, 'Water rune': 5, 'Soul rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 5, 'Water rune': 5, 'Soul rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -567,7 +577,7 @@ const Standard: Castable[] = [
 		level: 68,
 		magicxp: 78,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//	Jewelerysss: 1,
 			'Earth rune': 15,
 			'Water rune': 15,
@@ -581,7 +591,7 @@ const Standard: Castable[] = [
 		level: 68,
 		magicxp: 78,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonstone bolts': 10,
 			'Earth rune': 15,
 			'Soul rune': 1,
@@ -595,7 +605,7 @@ const Standard: Castable[] = [
 		level: 69,
 		magicxp: 82,
 		category: 'Teleport',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Fire rune': 5,
 			'Water rune': 4,
 			'Law rune': 2,
@@ -609,7 +619,7 @@ const Standard: Castable[] = [
 		magicxp: 40,
 		baseMaxHit: 19,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 5, 'Earth rune': 7, 'Blood rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 5, 'Earth rune': 7, 'Blood rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -617,7 +627,7 @@ const Standard: Castable[] = [
 		level: 73,
 		magicxp: 83,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 8, 'Water rune': 8, 'Soul rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 8, 'Water rune': 8, 'Soul rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -625,7 +635,7 @@ const Standard: Castable[] = [
 		level: 74,
 		magicxp: 84,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 1, 'Law rune': 1, 'Soul rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 1, 'Law rune': 1, 'Soul rune': 1 }),
 		tickRate: 10
 	},
 	{
@@ -634,7 +644,7 @@ const Standard: Castable[] = [
 		magicxp: 42.5,
 		baseMaxHit: 20,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 5, 'Fire rune': 7, 'Blood rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 5, 'Fire rune': 7, 'Blood rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -642,7 +652,7 @@ const Standard: Castable[] = [
 		level: 79,
 		magicxp: 70,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 5, 'Water rune': 5, 'Nature rune': 4 }),
+		inputItems: new Bank({ 'Earth rune': 5, 'Water rune': 5, 'Nature rune': 4 }),
 		tickRate: 5
 	},
 	{
@@ -650,7 +660,7 @@ const Standard: Castable[] = [
 		level: 80,
 		magicxp: 90,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Earth rune': 12, 'Water rune': 12, 'Soul rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 12, 'Water rune': 12, 'Soul rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -658,7 +668,7 @@ const Standard: Castable[] = [
 		level: 80,
 		magicxp: 180,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 3, 'Fire rune': 3, 'Blood rune': 3 }),
+		inputItems: new Bank({ 'Air rune': 3, 'Fire rune': 3, 'Blood rune': 3 }),
 		tickRate: 175
 	},
 	{
@@ -667,7 +677,7 @@ const Standard: Castable[] = [
 		magicxp: 44.5,
 		baseMaxHit: 21,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 7, 'Wrath rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 7, 'Wrath rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -675,7 +685,7 @@ const Standard: Castable[] = [
 		level: 82,
 		magicxp: 92,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 1, 'Law rune': 1, 'Soul rune': 1 }),
+		inputItems: new Bank({ 'Water rune': 1, 'Law rune': 1, 'Soul rune': 1 }),
 		tickRate: 10
 	},
 	{
@@ -684,7 +694,7 @@ const Standard: Castable[] = [
 		magicxp: 46.5,
 		baseMaxHit: 22,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 7, 'Water rune': 10, 'Wrath rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 7, 'Water rune': 10, 'Wrath rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -692,7 +702,7 @@ const Standard: Castable[] = [
 		level: 85,
 		magicxp: 90,
 		category: 'Curse',
-		inputItems: resolveNameBank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -700,7 +710,7 @@ const Standard: Castable[] = [
 		level: 85,
 		magicxp: 45,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -710,7 +720,7 @@ const Standard: Castable[] = [
 		level: 87,
 		magicxp: 97,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//		Jewelerysss: 1,
 			'Earth rune': 20,
 			'Fire rune': 20,
@@ -724,7 +734,7 @@ const Standard: Castable[] = [
 		level: 87,
 		magicxp: 97,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Onyx bolts': 10,
 			'Fire rune': 20,
 			'Death rune': 1,
@@ -738,7 +748,7 @@ const Standard: Castable[] = [
 		level: 90,
 		magicxp: 100,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Law rune': 1, 'Soul rune': 2 }),
+		inputItems: new Bank({ 'Law rune': 1, 'Soul rune': 2 }),
 		tickRate: 10
 	},
 	{
@@ -747,7 +757,7 @@ const Standard: Castable[] = [
 		magicxp: 48.5,
 		baseMaxHit: 23,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 7, 'Earth rune': 10, 'Wrath rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 7, 'Earth rune': 10, 'Wrath rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -757,7 +767,7 @@ const Standard: Castable[] = [
 		level: 93,
 		magicxp: 110,
 		category: 'Enchantment',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//		Jewelerysss: 1,
 			'Blood rune': 20,
 			'Cosmic rune': 1,
@@ -771,7 +781,7 @@ const Standard: Castable[] = [
 		magicxp: 50.5,
 		baseMaxHit: 24,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Air rune': 7, 'Fire rune': 10, 'Wrath rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 7, 'Fire rune': 10, 'Wrath rune': 1 }),
 		tickRate: 5
 	}
 ];

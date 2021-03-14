@@ -3,12 +3,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Time } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
+// import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { calcWhatPercent, formatDuration, itemNameFromID } from '../../lib/util';
+import { /* calcWhatPercent,*/ formatDuration, itemNameFromID } from '../../lib/util';
 import { formatItemBoosts } from '../../lib/util/formatItemBoosts';
 import { formatItemReqs } from '../../lib/util/formatItemReqs';
 
@@ -62,7 +62,7 @@ export default class MinionCommand extends BotCommand {
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
 			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
 		}
-
+		/*
 		if (monster.healAmountNeeded && 1 > 2) {
 			str.push(`**Healing Required:** ${monster.healAmountNeeded}hp per kill`);
 			const [hpNeededPerKill] = calculateMonsterFood(monster, msg.author);
@@ -72,6 +72,7 @@ export default class MinionCommand extends BotCommand {
 				}% less)\n ${hpNeededPerKill * maxCanKill}hp for a full trip.\n`
 			);
 		}
+		*/
 
 		if (monster.itemInBankBoosts) {
 			str.push(`**Boosts:** ${formatItemBoosts(monster.itemInBankBoosts)}.\n`);
@@ -85,10 +86,12 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		str.push(
-			`The normal time to kill ${monster.name} is ${formatDuration(monster.timeToFinish)}.`
+			`The normal time to kill ${monster.name} is ${formatDuration(
+				monster.noneCombatCalcTimeToFinish
+			)}.`
 		);
 
-		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
+		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.noneCombatCalcTimeToFinish);
 		str.push(
 			`This time can be reduced through experience gained by killing the monster, every ${kcForOnePercent}kc you will gain a 1% boost to kill efficiency up to a maximum of 10% at ${
 				kcForOnePercent * 10

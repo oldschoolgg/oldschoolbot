@@ -1,11 +1,11 @@
 import { User } from 'discord.js';
-import { objectEntries } from 'e';
+// import { objectEntries } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
-import { readableStatName } from '../../lib/gear';
-import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
+// import { readableStatName } from '../../lib/gear';
+// import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -68,7 +68,7 @@ export default class extends Extendable {
 				}
 			}
 		}
-
+		/*
 		if (monster.minimumGearRequirements) {
 			for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
 				if (setup && requirements) {
@@ -91,6 +91,7 @@ export default class extends Extendable {
 				}
 			}
 		}
+		*/
 
 		return [true];
 	}

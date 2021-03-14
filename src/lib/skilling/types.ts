@@ -295,7 +295,7 @@ export interface Castable {
 	craftingxp?: number;
 	baseMaxHit?: number;
 	category: string;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	outputMultiple?: number;
 }

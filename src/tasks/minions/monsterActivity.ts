@@ -20,7 +20,8 @@ export default class extends Task {
 		channelID,
 		quantity,
 		duration,
-		hits
+		hits,
+		noneCombat
 	}: MonsterActivityTaskOptions) {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
@@ -69,10 +70,12 @@ export default class extends Task {
 			}
 		}
 
-		combatXPReciever(monster, user, quantity, hits);
-		const xpString = (await combatXPReciever(monster, user, quantity, hits)).toString();
+		if (!noneCombat) {
+			combatXPReciever(monster, user, quantity, hits);
+			const xpString = (await combatXPReciever(monster, user, quantity, hits)).toString();
 
-		str += xpString;
+			str += xpString;
+		}
 
 		user.incrementMonsterScore(monsterID, quantity);
 

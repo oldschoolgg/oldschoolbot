@@ -1,21 +1,79 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time, ZALCANO_ID } from '../../../constants';
-import { GearSetupTypes, GearStat } from '../../../gear/types';
-import itemID from '../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { /* GearSetupTypes,*/ GearStat } from '../../../gear/types';
+// import itemID from '../../../util/itemID';
+import resolveItems /* , { deepResolveItems }*/ from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import bosses from './bosses';
-import low from './low';
+// import low from './low';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
-	...low,
+	//	...low,
+	{
+		id: Monsters.Man.id,
+		name: Monsters.Man.name,
+		aliases: Monsters.Man.aliases,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
+		table: Monsters.Man,
+		emoji: '🧍‍♂️',
+		wildy: false,
+		qpRequired: 0,
+		defaultStyleToUse: GearStat.AttackSlash,
+		bankTripTime: Time.Second * 30,
+		killsPerBankTrip: 50,
+		respawnTime: 0.6 * Time.Second
+	},
+	{
+		id: Monsters.Woman.id,
+		name: Monsters.Woman.name,
+		aliases: Monsters.Woman.aliases,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
+		table: Monsters.Woman,
+		emoji: '🧍‍♀️',
+		wildy: false,
+		qpRequired: 0,
+		defaultStyleToUse: GearStat.AttackSlash,
+		bankTripTime: Time.Second * 29,
+		killsPerBankTrip: 49,
+		respawnTime: 0.6 * Time.Second
+	},
+	{
+		id: Monsters.Goblin.id,
+		name: Monsters.Goblin.name,
+		aliases: Monsters.Goblin.aliases,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
+		table: Monsters.Goblin,
+		emoji: '',
+		wildy: false,
+		notifyDrops: resolveItems(['Goblin champion scroll']),
+		qpRequired: 0,
+		defaultStyleToUse: GearStat.AttackSlash,
+		bankTripTime: Time.Second * 30,
+		killsPerBankTrip: 50,
+		respawnTime: 1 * Time.Second
+	},
+	{
+		id: Monsters.Guard.id,
+		name: Monsters.Guard.name,
+		aliases: Monsters.Guard.aliases,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
+		table: Monsters.Guard,
+		emoji: '',
+		wildy: false,
+		qpRequired: 0,
+		defaultStyleToUse: GearStat.AttackStab,
+		bankTripTime: Time.Second * 20,
+		killsPerBankTrip: 30,
+		respawnTime: 1 * Time.Second
+	}
+	/*
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
 		aliases: Monsters.Barrows.aliases,
-		timeToFinish: Time.Minute * 4.15,
+		noneCombatCalcTimeToFinish: Time.Minute * 4.15,
 		table: Monsters.Barrows,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
@@ -44,7 +102,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.DagannothPrime.id,
 		name: Monsters.DagannothPrime.name,
 		aliases: Monsters.DagannothPrime.aliases,
-		timeToFinish: Time.Minute * 1.9,
+		noneCombatCalcTimeToFinish: Time.Minute * 1.9,
 		table: Monsters.DagannothPrime,
 		emoji: '<:Pet_dagannoth_prime:324127376877289474>',
 		wildy: false,
@@ -72,7 +130,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.DagannothRex.id,
 		name: Monsters.DagannothRex.name,
 		aliases: Monsters.DagannothRex.aliases,
-		timeToFinish: Time.Minute * 1.9,
+		noneCombatCalcTimeToFinish: Time.Minute * 1.9,
 		table: Monsters.DagannothRex,
 		emoji: '<:Pet_dagannoth_rex:324127377091330049>',
 		wildy: false,
@@ -100,7 +158,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.DagannothSupreme.id,
 		name: Monsters.DagannothSupreme.name,
 		aliases: Monsters.DagannothSupreme.aliases,
-		timeToFinish: Time.Minute * 1.9,
+		noneCombatCalcTimeToFinish: Time.Minute * 1.9,
 		table: Monsters.DagannothSupreme,
 		emoji: '<:Pet_dagannoth_supreme:324127377066164245>',
 		wildy: false,
@@ -129,7 +187,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Man.id,
 		name: Monsters.Man.name,
 		aliases: Monsters.Man.aliases,
-		timeToFinish: Time.Second * 4.7,
+		noneCombatCalcTimeToFinish: Time.Second * 4.7,
 		table: Monsters.Man,
 		emoji: '🧍‍♂️',
 		wildy: false,
@@ -141,7 +199,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Guard.id,
 		name: Monsters.Guard.name,
 		aliases: Monsters.Guard.aliases,
-		timeToFinish: Time.Second * 7.4,
+		noneCombatCalcTimeToFinish: Time.Second * 7.4,
 		table: Monsters.Guard,
 		emoji: '',
 		wildy: false,
@@ -153,7 +211,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Woman.id,
 		name: Monsters.Woman.name,
 		aliases: Monsters.Woman.aliases,
-		timeToFinish: Time.Second * 4.69,
+		noneCombatCalcTimeToFinish: Time.Second * 4.69,
 		table: Monsters.Woman,
 		emoji: '🧍‍♀️',
 		wildy: false,
@@ -165,7 +223,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Goblin.id,
 		name: Monsters.Goblin.name,
 		aliases: Monsters.Goblin.aliases,
-		timeToFinish: Time.Second * 4.7,
+		noneCombatCalcTimeToFinish: Time.Second * 4.7,
 		table: Monsters.Goblin,
 		emoji: '',
 		wildy: false,
@@ -178,7 +236,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.LizardmanShaman.id,
 		name: Monsters.LizardmanShaman.name,
 		aliases: Monsters.LizardmanShaman.aliases,
-		timeToFinish: Time.Minute * 1.1,
+		noneCombatCalcTimeToFinish: Time.Minute * 1.1,
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
@@ -200,7 +258,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Lizardman.id,
 		name: Monsters.Lizardman.name,
 		aliases: Monsters.Lizardman.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.Lizardman,
 		emoji: '<:Xerics_talisman_inert:456176488669249539>',
 		wildy: false,
@@ -212,7 +270,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.GreaterDemon.id,
 		name: Monsters.GreaterDemon.name,
 		aliases: Monsters.GreaterDemon.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
 		emoji: '',
 		wildy: false,
@@ -224,7 +282,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Cow.id,
 		name: Monsters.Cow.name,
 		aliases: Monsters.Cow.aliases,
-		timeToFinish: Time.Second * 6,
+		noneCombatCalcTimeToFinish: Time.Second * 6,
 		table: Monsters.Cow,
 		emoji: '🐮',
 		wildy: false,
@@ -236,7 +294,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Skeleton.id,
 		name: Monsters.Skeleton.name,
 		aliases: Monsters.Skeleton.aliases,
-		timeToFinish: Time.Second * 9,
+		noneCombatCalcTimeToFinish: Time.Second * 9,
 		table: Monsters.Skeleton,
 		emoji: '☠️',
 		wildy: false,
@@ -249,7 +307,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Zombie.id,
 		name: Monsters.Zombie.name,
 		aliases: Monsters.Zombie.aliases,
-		timeToFinish: Time.Second * 9,
+		noneCombatCalcTimeToFinish: Time.Second * 9,
 		table: Monsters.Zombie,
 		emoji: '',
 		wildy: false,
@@ -262,7 +320,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Rat.id,
 		name: Monsters.Rat.name,
 		aliases: Monsters.Rat.aliases,
-		timeToFinish: Time.Second * 1.5,
+		noneCombatCalcTimeToFinish: Time.Second * 1.5,
 		table: Monsters.Rat,
 		emoji: '',
 		wildy: false,
@@ -274,7 +332,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.FireGiant.id,
 		name: Monsters.FireGiant.name,
 		aliases: Monsters.FireGiant.aliases,
-		timeToFinish: Time.Second * 16,
+		noneCombatCalcTimeToFinish: Time.Second * 16,
 		table: Monsters.FireGiant,
 		emoji: '',
 		wildy: false,
@@ -287,7 +345,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.BlueDragon.id,
 		name: Monsters.BlueDragon.name,
 		aliases: Monsters.BlueDragon.aliases,
-		timeToFinish: Time.Second * 40,
+		noneCombatCalcTimeToFinish: Time.Second * 40,
 		table: Monsters.BlueDragon,
 		emoji: '',
 		wildy: false,
@@ -303,7 +361,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Ankou.id,
 		name: Monsters.Ankou.name,
 		aliases: Monsters.Ankou.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.Ankou,
 		emoji: '',
 		wildy: false,
@@ -315,7 +373,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Dwarf.id,
 		name: Monsters.Dwarf.name,
 		aliases: Monsters.Dwarf.aliases,
-		timeToFinish: Time.Second * 6,
+		noneCombatCalcTimeToFinish: Time.Second * 6,
 		table: Monsters.Dwarf,
 		emoji: '',
 		wildy: false,
@@ -327,7 +385,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,
 		aliases: Monsters.Sarachnis.aliases,
-		timeToFinish: Time.Minute * 2.35,
+		noneCombatCalcTimeToFinish: Time.Minute * 2.35,
 		table: Monsters.Sarachnis,
 		emoji: '<:Sraracha:608231007803670529>',
 		wildy: false,
@@ -355,13 +413,15 @@ const killableMonsters: KillableMonster[] = [
 			}
 		}
 	}
+	*/
 ];
 
+/*
 export const NightmareMonster: KillableMonster = {
 	id: 9415,
 	name: 'The Nightmare',
 	aliases: ['nightmare', 'the nightmare'],
-	timeToFinish: Time.Minute * 25,
+	noneCombatCalcTimeToFinish: Time.Minute * 25,
 	table: Monsters.GeneralGraardor,
 	emoji: '<:Little_nightmare:758149284952014928>',
 	wildy: false,
@@ -381,7 +441,7 @@ export const NightmareMonster: KillableMonster = {
 	]),
 	qpRequired: 10,
 	groupKillable: true,
-	respawnTime: Time.Minute * 2.5,
+	respawnTimeGroup: Time.Minute * 2.5,
 	levelRequirements: {
 		prayer: 43
 	},
@@ -407,12 +467,13 @@ export const NightmareMonster: KillableMonster = {
 		}
 	}
 };
+*/
 
 export default killableMonsters;
 
 export const effectiveMonsters = [
 	...killableMonsters,
-	NightmareMonster,
+	//	NightmareMonster,
 	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127 },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23184 }

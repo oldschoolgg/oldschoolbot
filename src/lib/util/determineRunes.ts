@@ -5,7 +5,7 @@ import resolveItems from './resolveItems';
 
 const res = resolveItems;
 
-const staves: [number[], number[]][] = [
+export const staves: [number[], number[]][] = [
 	[res(['Staff of water', 'Mystic water staff', 'Water battlestaff']), res(['Water rune'])],
 	[res(['Staff of earth', 'Mystic earth staff', 'Earth battlestaff']), res(['Earth rune'])],
 	[res(['Staff of air', 'Mystic air staff', 'Air battlestaff']), res(['Air rune'])],

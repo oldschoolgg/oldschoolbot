@@ -5,11 +5,14 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
+import { Time } from '../../constants';
 import { hasMeleeVoidEquipped } from '../../gear/functions/hasMeleeVoidEquipped';
 import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
+import calculatePrayerDrain from './calculatePrayerDrain';
+import potionBoostCalculator from './potionBoostCalculator';
 
 interface MeleeStrengthWeaponBonus {
 	id: number;
@@ -43,11 +46,59 @@ const meleeStrengthWeaponBonuses: MeleeStrengthWeaponBonus[] = [
 	}
 ];
 
-export default function meleeCalculator(
+// Melee Strength Prayer bonus
+const meleeStrengthPrayerBonuses = [
+	{
+		name: 'Piety',
+		boost: 1.23
+	},
+	{
+		name: 'Chivalry',
+		boost: 1.18
+	},
+	{
+		name: 'Ultimate Strength',
+		boost: 1.15
+	},
+	{
+		name: 'Superhuman Strength',
+		boost: 1.1
+	},
+	{
+		name: 'Burst of Strength',
+		boost: 1.05
+	}
+];
+
+// Melee Attack Prayer bonus
+const meleeAttackPrayerBonuses = [
+	{
+		name: 'Piety',
+		boost: 1.2
+	},
+	{
+		name: 'Chivalry',
+		boost: 1.15
+	},
+	{
+		name: 'Incredible Reflexes',
+		boost: 1.15
+	},
+	{
+		name: 'Improved Reflexes',
+		boost: 1.1
+	},
+	{
+		name: 'Clarity of Thought',
+		boost: 1.05
+	}
+];
+
+export default async function meleeCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
-	quantity: number
-) {
+	quantity: number | null
+): Promise<[number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Melee as source.
 	const combatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle);
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
@@ -60,14 +111,22 @@ export default function meleeCalculator(
 	}
 	const meleeGear = user.settings.get(UserSettings.Gear.Melee);
 
-	if (!meleeGear) throw `No melee gear on user.`
+	if (!meleeGear) throw `No melee gear on user.`;
 	const gearStats = sumOfSetupStats(user.getGear('melee'));
 
 	// Calculate effective strength level
+
+	const [strengthPotionBoost, strPotUsed] = potionBoostCalculator(user, SkillsEnum.Strength);
+
+	let prayerStrBonus = 1;
+	for (const meleeStrPrayerBonus of meleeStrengthPrayerBonuses) {
+		if (user.settings.get(UserSettings.SelectedPrayers).includes(meleeStrPrayerBonus.name.toLowerCase())) {
+			prayerStrBonus = meleeStrPrayerBonus.boost;
+			break;
+		}
+	}
 	let effectiveStrLvl =
-		Math.floor(
-			user.skillLevel(SkillsEnum.Strength) /* + Strength boost: potions etc) * prayerbonus */
-		) + 8;
+		Math.floor(user.skillLevel(SkillsEnum.Strength) + strengthPotionBoost) * prayerStrBonus + 8;
 	let attackStyle = '';
 	let combatType = '';
 	for (let stance of meleeWeapon.weapon.stances) {
@@ -146,10 +205,17 @@ export default function meleeCalculator(
 	maxHit = Math.floor(maxHit);
 
 	// Calculate effective attack level
+	const [attackPotionBoost, attPotUsed] = potionBoostCalculator(user, SkillsEnum.Attack);
+
+	let prayerAttackBonus = 1;
+	for (const meleeAttackPrayerBonus of meleeAttackPrayerBonuses) {
+		if (user.settings.get(UserSettings.SelectedPrayers).includes(meleeAttackPrayerBonus.name.toLowerCase())) {
+			prayerAttackBonus = meleeAttackPrayerBonus.boost;
+			break;
+		}
+	}
 	let effectiveAttackLvl =
-		Math.floor(
-			user.skillLevel(SkillsEnum.Attack) /* + Attack boost: potions etc) * prayerbonus */
-		) + 8;
+		Math.floor(user.skillLevel(SkillsEnum.Attack) + attackPotionBoost) * prayerAttackBonus + 8;
 
 	if (attackStyle === 'accurate') {
 		effectiveAttackLvl += 3;
@@ -250,12 +316,17 @@ export default function meleeCalculator(
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
 
-	const monsterKillSpeed = monsterHP / DPS;
+	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
+	// If no quantity provided, set it to the max.
+	if (quantity === null || user.maxTripLength * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
+		quantity = Math.min(Math.floor(user.maxTripLength / (monsterKillSpeed * 1.3)), 5000);
+		if (quantity < 1) quantity = 1;
+	}
 	let hits = 0;
-	console.log(hitChance);
+
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
-		while (hitpointsLeft > 0) {
+		while (hitpointsLeft > 0 && hits < 1000) {
 			let hitdamage = 0;
 			if (Math.random() <= hitChance) {
 				hitdamage = randInt(0, maxHit);
@@ -265,7 +336,16 @@ export default function meleeCalculator(
 		}
 	}
 
-	const combatDuration = hits * meleeWeapon.weapon.attack_speed * 0.6;
+	let combatDuration = hits * meleeWeapon.weapon.attack_speed * 0.6 * Time.Second;
 
-	return [combatDuration, hits, DPS, monsterKillSpeed];
+	combatDuration += monster.mechanicsTime ? monster.mechanicsTime * quantity : 0;
+
+	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
+
+	combatDuration += (monster.bankTripTime / monster.killsPerBankTrip) * quantity;
+
+	// Calculates prayer drain and removes enough prayer potion doses.
+	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
+
+	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, [strPotUsed, attPotUsed]];
 }

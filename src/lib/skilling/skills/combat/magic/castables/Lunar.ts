@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../../util/itemID';
 import { Castable } from './../../../../types';
 
@@ -10,7 +11,7 @@ const Lunar: Castable[] = [
 		level: 65,
 		magicxp: 60,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//	PIESSSS: 1,
 			'Fire rune': 5,
 			'Water rune': 4,
@@ -24,7 +25,7 @@ const Lunar: Castable[] = [
 		level: 65,
 		magicxp: 60,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Earth rune': 8, 'Nature rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Earth rune': 8, 'Nature rune': 3, 'Astral rune': 3 }),
 		tickRate: 100
 	},
 	{
@@ -34,7 +35,7 @@ const Lunar: Castable[] = [
 		magicxp: 60,
 		farmingxp: 91.5,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Earth rune': 8, 'Astral rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 8, 'Astral rune': 1 }),
 		tickRate: 100
 	},
 	{
@@ -43,7 +44,7 @@ const Lunar: Castable[] = [
 		level: 66,
 		magicxp: 61,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Cosmic rune': 1, 'Mind rune': 1, 'Astral rune': 1 }),
+		inputItems: new Bank({ 'Cosmic rune': 1, 'Mind rune': 1, 'Astral rune': 1 }),
 		tickRate: 100
 	},
 	{
@@ -52,7 +53,7 @@ const Lunar: Castable[] = [
 		level: 67,
 		magicxp: 63,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Cosmic rune': 1, 'Air rune': 2, 'Astral rune': 1 }),
+		inputItems: new Bank({ 'Cosmic rune': 1, 'Air rune': 2, 'Astral rune': 1 }),
 		tickRate: 100
 	},
 	{
@@ -62,7 +63,7 @@ const Lunar: Castable[] = [
 		level: 68,
 		magicxp: 65,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//	emptycontainer: 28,
 			'Fire rune': 1,
 			'Water rune': 3,
@@ -78,7 +79,7 @@ const Lunar: Castable[] = [
 		level: 71,
 		magicxp: 70,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Earth rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Earth rune': 2, 'Astral rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -87,7 +88,7 @@ const Lunar: Castable[] = [
 		level: 75,
 		magicxp: 76,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Body rune': 5, 'Cosmic rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Body rune': 5, 'Cosmic rune': 2, 'Astral rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -97,7 +98,7 @@ const Lunar: Castable[] = [
 		magicxp: 75,
 		craftingxp: 75,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ Flax: 5, 'Air rune': 5, 'Astral rune': 1, 'Nature rune': 2 }),
+		inputItems: new Bank({ Flax: 5, 'Air rune': 5, 'Astral rune': 1, 'Nature rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -108,7 +109,7 @@ const Lunar: Castable[] = [
 		magicxp: 78,
 		craftingxp: 0, // 10 crafting xp depending on sand buckets consumed
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//	MoltenGLASSITEMS: 28,
 			'Air rune': 10,
 			'Fire rune': 6,
@@ -124,7 +125,7 @@ const Lunar: Castable[] = [
 		level: 78,
 		magicxp: 81,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//		hideNAME: 5,
 			'Nature rune': 1,
 			'Fire rune': 5,
@@ -139,7 +140,7 @@ const Lunar: Castable[] = [
 		level: 79,
 		magicxp: 82,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Body rune': 5, 'Cosmic rune': 1, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Body rune': 5, 'Cosmic rune': 1, 'Astral rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -150,7 +151,7 @@ const Lunar: Castable[] = [
 		magicxp: 83,
 		craftingxp: 4,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//	Jewelleries: 1,
 			'Earth rune': 10,
 			'Astral rune': 1,
@@ -165,7 +166,7 @@ const Lunar: Castable[] = [
 		level: 82,
 		magicxp: 86,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//		CombineRUNES: 1,
 			'Fire rune': 7,
 			'Astral rune': 2,
@@ -180,7 +181,7 @@ const Lunar: Castable[] = [
 		magicxp: 87,
 		farmingxp: 18,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Earth rune': 15, 'Astral rune': 3, 'Nature rune': 2 }),
+		inputItems: new Bank({ 'Earth rune': 15, 'Astral rune': 3, 'Nature rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -190,7 +191,7 @@ const Lunar: Castable[] = [
 		level: 86,
 		magicxp: 90,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//		PlankLog: 1,
 			'Earth rune': 15,
 			'Astral rune': 2,
@@ -205,7 +206,7 @@ const Lunar: Castable[] = [
 		level: 89,
 		magicxp: 97.5,
 		category: 'Skilling',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			//		UnchargedDragonjewl: 28,
 			'Water rune': 4,
 			'Astral rune': 1,
@@ -219,7 +220,7 @@ const Lunar: Castable[] = [
 		level: 96,
 		magicxp: 130,
 		category: 'Skilling',
-		inputItems: resolveNameBank({ 'Cosmic rune': 2, 'Astral rune': 3, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Cosmic rune': 2, 'Astral rune': 3, 'Law rune': 1 }),
 		tickRate: 100
 	},
 	{
@@ -228,7 +229,7 @@ const Lunar: Castable[] = [
 		level: 68,
 		magicxp: 65,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Earth rune': 10, 'Law rune': 1, 'Astral rune': 1 }),
+		inputItems: new Bank({ 'Earth rune': 10, 'Law rune': 1, 'Astral rune': 1 }),
 		tickRate: 100
 	},
 	{
@@ -237,7 +238,7 @@ const Lunar: Castable[] = [
 		level: 71,
 		magicxp: 69,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Law rune': 1, 'Cosmic rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Law rune': 1, 'Cosmic rune': 2, 'Astral rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -246,7 +247,7 @@ const Lunar: Castable[] = [
 		level: 74,
 		magicxp: 74,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Law rune': 2, 'Cosmic rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Law rune': 2, 'Cosmic rune': 2, 'Astral rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -255,7 +256,7 @@ const Lunar: Castable[] = [
 		level: 81,
 		magicxp: 84,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Earth rune': 10, 'Water rune': 10, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Earth rune': 10, 'Water rune': 10, 'Astral rune': 2 }),
 		tickRate: 100
 	},
 	{
@@ -264,7 +265,7 @@ const Lunar: Castable[] = [
 		level: 84,
 		magicxp: 88,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Earth rune': 12, 'Water rune': 10, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Earth rune': 12, 'Water rune': 10, 'Astral rune': 3 }),
 		tickRate: 100
 	},
 	{
@@ -273,7 +274,7 @@ const Lunar: Castable[] = [
 		level: 91,
 		magicxp: 100,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Law rune': 2, 'Nature rune': 1, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Law rune': 2, 'Nature rune': 1, 'Astral rune': 3 }),
 		tickRate: 100
 	},
 	{
@@ -282,7 +283,7 @@ const Lunar: Castable[] = [
 		level: 92,
 		magicxp: 101,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Blood rune': 1, 'Law rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Blood rune': 1, 'Law rune': 3, 'Astral rune': 3 }),
 		tickRate: 100
 	},
 	{
@@ -291,7 +292,7 @@ const Lunar: Castable[] = [
 		level: 93,
 		magicxp: 108,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Earth rune': 10, 'Death rune': 2, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Earth rune': 10, 'Death rune': 2, 'Astral rune': 3 }),
 		tickRate: 50
 	},
 	{
@@ -300,7 +301,7 @@ const Lunar: Castable[] = [
 		level: 94,
 		magicxp: 112,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Earth rune': 10, 'Death rune': 2, 'Astral rune': 4 }),
+		inputItems: new Bank({ 'Earth rune': 10, 'Death rune': 2, 'Astral rune': 4 }),
 		tickRate: 50
 	},
 	{
@@ -309,7 +310,7 @@ const Lunar: Castable[] = [
 		level: 95,
 		magicxp: 124,
 		category: 'Combat',
-		inputItems: resolveNameBank({ 'Blood rune': 3, 'Law rune': 6, 'Astral rune': 4 }),
+		inputItems: new Bank({ 'Blood rune': 3, 'Law rune': 6, 'Astral rune': 4 }),
 		tickRate: 100
 	},
 	{
@@ -317,7 +318,7 @@ const Lunar: Castable[] = [
 		level: 1,
 		magicxp: 0,
 		category: 'Teleport',
-		inputItems: resolveNameBank({}),
+		inputItems: new Bank({}),
 		tickRate: 22
 	},
 	{
@@ -326,7 +327,7 @@ const Lunar: Castable[] = [
 		level: 69,
 		magicxp: 66,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 2, 'Law rune': 1, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Earth rune': 2, 'Law rune': 1, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -335,7 +336,7 @@ const Lunar: Castable[] = [
 		level: 70,
 		magicxp: 67,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 4, 'Law rune': 1, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Earth rune': 4, 'Law rune': 1, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -344,7 +345,7 @@ const Lunar: Castable[] = [
 		level: 71,
 		magicxp: 69,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Earth rune': 6, 'Law rune': 1, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Earth rune': 6, 'Law rune': 1, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -353,7 +354,7 @@ const Lunar: Castable[] = [
 		level: 72,
 		magicxp: 71,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 1, 'Law rune': 1, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Water rune': 1, 'Law rune': 1, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -362,7 +363,7 @@ const Lunar: Castable[] = [
 		level: 73,
 		magicxp: 72,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 5, 'Law rune': 1, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Water rune': 5, 'Law rune': 1, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -371,7 +372,7 @@ const Lunar: Castable[] = [
 		level: 75,
 		magicxp: 76,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Fire rune': 3, 'Law rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Fire rune': 3, 'Law rune': 2, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -380,7 +381,7 @@ const Lunar: Castable[] = [
 		level: 76,
 		magicxp: 77,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Fire rune': 6, 'Law rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Fire rune': 6, 'Law rune': 2, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -389,7 +390,7 @@ const Lunar: Castable[] = [
 		level: 78,
 		magicxp: 80,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 4, 'Law rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Water rune': 4, 'Law rune': 2, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -398,7 +399,7 @@ const Lunar: Castable[] = [
 		level: 79,
 		magicxp: 81,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 8, 'Law rune': 2, 'Astral rune': 2 }),
+		inputItems: new Bank({ 'Water rune': 8, 'Law rune': 2, 'Astral rune': 2 }),
 		tickRate: 4
 	},
 	{
@@ -407,7 +408,7 @@ const Lunar: Castable[] = [
 		level: 85,
 		magicxp: 89,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 10, 'Law rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Water rune': 10, 'Law rune': 3, 'Astral rune': 3 }),
 		tickRate: 4
 	},
 	{
@@ -416,7 +417,7 @@ const Lunar: Castable[] = [
 		level: 86,
 		magicxp: 90,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 14, 'Law rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Water rune': 14, 'Law rune': 3, 'Astral rune': 3 }),
 		tickRate: 4
 	},
 	{
@@ -425,7 +426,7 @@ const Lunar: Castable[] = [
 		level: 87,
 		magicxp: 92,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 10, 'Law rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Water rune': 10, 'Law rune': 3, 'Astral rune': 3 }),
 		tickRate: 4
 	},
 	{
@@ -434,7 +435,7 @@ const Lunar: Castable[] = [
 		level: 88,
 		magicxp: 93,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 15, 'Law rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Water rune': 15, 'Law rune': 3, 'Astral rune': 3 }),
 		tickRate: 4
 	},
 	{
@@ -443,7 +444,7 @@ const Lunar: Castable[] = [
 		level: 89,
 		magicxp: 96,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 8, 'Law rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Water rune': 8, 'Law rune': 3, 'Astral rune': 3 }),
 		tickRate: 4
 	},
 	{
@@ -452,7 +453,7 @@ const Lunar: Castable[] = [
 		level: 89,
 		magicxp: 96,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 8, 'Law rune': 3, 'Astral rune': 3 }),
+		inputItems: new Bank({ 'Water rune': 8, 'Law rune': 3, 'Astral rune': 3 }),
 		tickRate: 4
 	}
 ];

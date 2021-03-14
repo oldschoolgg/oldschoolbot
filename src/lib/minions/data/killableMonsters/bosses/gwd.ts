@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+/* import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../../constants';
 import { bosses } from '../../../../data/collectionLog';
@@ -11,7 +11,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.GeneralGraardor.id,
 		name: Monsters.GeneralGraardor.name,
 		aliases: Monsters.GeneralGraardor.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		noneCombatCalcTimeToFinish: Time.Minute * 5.1,
 		table: Monsters.GeneralGraardor,
 		emoji: '<:Pet_general_graardor:324127377376673792>',
 		wildy: false,
@@ -23,7 +23,7 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Dragon warhammer')]: 10
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5,
+		respawnTimeGroup: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43
 		},
@@ -33,7 +33,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.CommanderZilyana.id,
 		name: Monsters.CommanderZilyana.name,
 		aliases: Monsters.CommanderZilyana.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		noneCombatCalcTimeToFinish: Time.Minute * 5.1,
 		table: Monsters.CommanderZilyana,
 		emoji: '<:Pet_zilyana:324127378248957952>',
 		wildy: false,
@@ -46,7 +46,7 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Armadyl crossbow')]: 5
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5,
+		respawnTimeGroup: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43,
 			agility: 70
@@ -61,7 +61,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Kreearra.id,
 		name: Monsters.Kreearra.name,
 		aliases: Monsters.Kreearra.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		noneCombatCalcTimeToFinish: Time.Minute * 5.1,
 		table: Monsters.Kreearra,
 		emoji: '<:Pet_kreearra:324127377305239555>',
 		wildy: false,
@@ -73,7 +73,7 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Armadyl crossbow')]: 5
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5,
+		respawnTimeGroup: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43
 		},
@@ -87,7 +87,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.KrilTsutsaroth.id,
 		name: Monsters.KrilTsutsaroth.name,
 		aliases: Monsters.KrilTsutsaroth.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		noneCombatCalcTimeToFinish: Time.Minute * 5.1,
 		table: Monsters.KrilTsutsaroth,
 		emoji: '<:Pet_kril_tsutsaroth:324127377527406594>',
 		wildy: false,
@@ -99,7 +99,7 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Dragon warhammer')]: 10
 		},
 		groupKillable: true,
-		respawnTime: Time.Minute * 1.5,
+		respawnTimeGroup: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43
 		},
@@ -112,3 +112,4 @@ const killableBosses: KillableMonster[] = [
 ];
 
 export default killableBosses;
+*/

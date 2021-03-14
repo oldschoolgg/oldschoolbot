@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../../util';
+import { Bank } from 'oldschooljs';
+
 import { Castable } from '../../../../types';
 
 const Ancient: Castable[] = [
@@ -8,7 +9,7 @@ const Ancient: Castable[] = [
 		magicxp: 30,
 		baseMaxHit: 13,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 1,
 			'Fire rune': 1,
 			'Chaos rune': 2,
@@ -22,7 +23,7 @@ const Ancient: Castable[] = [
 		magicxp: 31,
 		baseMaxHit: 14,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 1,
 			'Chaos rune': 2,
 			'Death rune': 2,
@@ -36,7 +37,7 @@ const Ancient: Castable[] = [
 		magicxp: 33,
 		baseMaxHit: 15,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Blood rune': 1,
 			'Chaos rune': 2,
 			'Death rune': 2
@@ -49,7 +50,7 @@ const Ancient: Castable[] = [
 		magicxp: 34,
 		baseMaxHit: 16,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Water rune': 2,
 			'Chaos rune': 2,
 			'Death rune': 2
@@ -62,7 +63,7 @@ const Ancient: Castable[] = [
 		magicxp: 36,
 		baseMaxHit: 17,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 2,
 			'Fire rune': 2,
 			'Chaos rune': 4,
@@ -76,7 +77,7 @@ const Ancient: Castable[] = [
 		magicxp: 37,
 		baseMaxHit: 18,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 1,
 			'Chaos rune': 4,
 			'Death rune': 2,
@@ -90,7 +91,7 @@ const Ancient: Castable[] = [
 		magicxp: 39,
 		baseMaxHit: 21,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Blood rune': 2,
 			'Chaos rune': 4,
 			'Death rune': 2
@@ -103,7 +104,7 @@ const Ancient: Castable[] = [
 		magicxp: 40,
 		baseMaxHit: 22,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Water rune': 4,
 			'Chaos rune': 4,
 			'Death rune': 2
@@ -116,7 +117,7 @@ const Ancient: Castable[] = [
 		magicxp: 42,
 		baseMaxHit: 23,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 2,
 			'Fire rune': 2,
 			'Blood rune': 2,
@@ -130,7 +131,7 @@ const Ancient: Castable[] = [
 		magicxp: 43,
 		baseMaxHit: 24,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 2,
 			'Blood rune': 2,
 			'Death rune': 2,
@@ -144,7 +145,7 @@ const Ancient: Castable[] = [
 		magicxp: 45,
 		baseMaxHit: 25,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Blood rune': 4,
 			'Death rune': 2
 		}),
@@ -156,7 +157,7 @@ const Ancient: Castable[] = [
 		magicxp: 46,
 		baseMaxHit: 26,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Water rune': 3,
 			'Blood rune': 2,
 			'Death rune': 2
@@ -169,7 +170,7 @@ const Ancient: Castable[] = [
 		magicxp: 48,
 		baseMaxHit: 27,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 4,
 			'Fire rune': 4,
 			'Blood rune': 2,
@@ -183,7 +184,7 @@ const Ancient: Castable[] = [
 		magicxp: 49,
 		baseMaxHit: 28,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Air rune': 4,
 			'Blood rune': 2,
 			'Death rune': 4,
@@ -197,7 +198,7 @@ const Ancient: Castable[] = [
 		magicxp: 51,
 		baseMaxHit: 29,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Blood rune': 4,
 			'Death rune': 4,
 			'Soul rune': 1
@@ -210,7 +211,7 @@ const Ancient: Castable[] = [
 		magicxp: 52,
 		baseMaxHit: 30,
 		category: 'Combat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Water rune': 6,
 			'Blood rune': 2,
 			'Death rune': 4
@@ -222,7 +223,7 @@ const Ancient: Castable[] = [
 		level: 0,
 		magicxp: 0,
 		category: 'Teleport',
-		inputItems: resolveNameBank({}),
+		inputItems: new Bank({}),
 		tickRate: 22
 	},
 	{
@@ -230,7 +231,7 @@ const Ancient: Castable[] = [
 		level: 54,
 		magicxp: 64,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Air rune': 1, 'Fire rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Air rune': 1, 'Fire rune': 1, 'Law rune': 1 }),
 		tickRate: 5
 	},
 	{
@@ -238,7 +239,7 @@ const Ancient: Castable[] = [
 		level: 60,
 		magicxp: 70,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Soul rune': 1, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Soul rune': 1, 'Law rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -246,7 +247,7 @@ const Ancient: Castable[] = [
 		level: 66,
 		magicxp: 76,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Blood rune': 1, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Blood rune': 1, 'Law rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -254,7 +255,7 @@ const Ancient: Castable[] = [
 		level: 72,
 		magicxp: 82,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 4, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Water rune': 4, 'Law rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -262,7 +263,7 @@ const Ancient: Castable[] = [
 		level: 78,
 		magicxp: 88,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Air rune': 2, 'Fire rune': 3, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Air rune': 2, 'Fire rune': 3, 'Law rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -270,7 +271,7 @@ const Ancient: Castable[] = [
 		level: 84,
 		magicxp: 94,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Soul rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Soul rune': 2, 'Law rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -278,7 +279,7 @@ const Ancient: Castable[] = [
 		level: 85,
 		magicxp: 45,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
+		inputItems: new Bank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
 		tickRate: 4
 	},
 	{
@@ -286,7 +287,7 @@ const Ancient: Castable[] = [
 		level: 90,
 		magicxp: 100,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Blood rune': 2, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Blood rune': 2, 'Law rune': 2 }),
 		tickRate: 5
 	},
 	{
@@ -294,7 +295,7 @@ const Ancient: Castable[] = [
 		level: 96,
 		magicxp: 106,
 		category: 'Teleport',
-		inputItems: resolveNameBank({ 'Water rune': 8, 'Law rune': 2 }),
+		inputItems: new Bank({ 'Water rune': 8, 'Law rune': 2 }),
 		tickRate: 5
 	}
 ];

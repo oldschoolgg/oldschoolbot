@@ -16,7 +16,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage:
-				'<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
+				'<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength] [noImage:boolean]',
 			usageDelim: ' ',
 			aliases: ['aep', 'aequip'],
 			description:
@@ -30,7 +30,13 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, type, style, extra = null]: [GearSetupTypes, string, string, string | null]
+		[gearType, type, style, extra = null, noImage = false]: [
+			GearSetupTypes,
+			string,
+			string,
+			string | null,
+			boolean
+		]
 	) {
 		await msg.author.settings.sync(true);
 
@@ -54,6 +60,11 @@ export default class extends BotCommand {
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
+
+		if (noImage) {
+			return;
+		}
+
 		return msg.send(
 			`You auto-equipped your best ${style} stat gear for ${type} in your ${gearType} preset.`,
 			new MessageAttachment(image, 'osbot.png')

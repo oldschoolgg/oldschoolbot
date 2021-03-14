@@ -100,8 +100,10 @@ export default class extends BotCommand {
 				}
 				if (gearType === 'mage') {
 					await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, null);
+					await msg.author.settings.update(UserSettings.Minion.CombatSpell, null);
 				}
 			}
+			newGear[slot] = null;
 
 			await msg.author.addItemsToBank({
 				[equippedInThisSlot.item]: equippedInThisSlot.quantity

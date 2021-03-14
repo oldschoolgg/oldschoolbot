@@ -1,64 +1,57 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../../constants';
-import { bosses } from '../../../../data/collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
-import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+// import { bosses } from '../../../../data/collectionLog';
+import {/* GearSetupTypes,*/ GearStat } from '../../../../gear/types';
+//import itemID from '../../../../util/itemID';
+import resolveItems/*, { deepResolveItems }*/ from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
 	{
-		id: Monsters.GiantMole.id,
-		name: Monsters.GiantMole.name,
-		aliases: Monsters.GiantMole.aliases,
-		timeToFinish: Time.Minute * 1.6,
-		table: Monsters.GiantMole,
-		emoji: '<:Baby_mole:324127375858204672>',
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 3,
-		itemsRequired: resolveItems([
-			"Dharok's helm",
-			"Dharok's platebody",
-			"Dharok's platelegs",
-			"Dharok's greataxe"
-		]),
-		notifyDrops: resolveItems(['Baby mole']),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 5,
-			[itemID('Berserker ring')]: 5
-		},
-		levelRequirements: {
-			prayer: 43
-		}
-	},
-	{
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Minute * 3.2,
+		noneCombatCalcTimeToFinish: Time.Minute * 3.2,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 8,
-		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},		
+		defaultStyleToUse: GearStat.AttackRanged,
+		mechanicsTime: Time.Second * 24,
+		bankTripTime: Time.Second * 40,
+		killsPerBankTrip: 5,
+		respawnTime: 2.4 * Time.Second
+
+	}/*,
+		{
+		id: Monsters.GiantMole.id,
+		name: Monsters.GiantMole.name,
+		aliases: Monsters.GiantMole.aliases,
+		noneCombatCalcTimeToFinish: Time.Minute * 1.6,
+		table: Monsters.GiantMole,
+		emoji: '<:Baby_mole:324127375858204672>',
+		wildy: false,
+		notifyDrops: resolveItems(['Baby mole']),
+		qpRequired: 0,
+		levelRequirements: {
+			prayer: 43
+		},
+		defaultStyleToUse: GearStat.AttackSlash,
+		mechanicsTime: Time.Minute * 1,
+		bankTripTime: Time.Second * 30,
+		killsPerBankTrip: 5,
+		respawnTime: 5 * Time.Second
 	},
 	{
 		id: Monsters.Zulrah.id,
 		name: Monsters.Zulrah.name,
 		aliases: Monsters.Zulrah.aliases,
-		timeToFinish: Time.Minute * 3.2,
+		noneCombatCalcTimeToFinish: Time.Minute * 3.2,
 		table: Monsters.Zulrah,
 		emoji: '<:Pet_snakeling:324127377816944642>',
 		wildy: false,
@@ -95,7 +88,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.KalphiteQueen.id,
 		name: Monsters.KalphiteQueen.name,
 		aliases: Monsters.KalphiteQueen.aliases,
-		timeToFinish: Time.Minute * 4,
+		noneCombatCalcTimeToFinish: Time.Minute * 4,
 		table: Monsters.KalphiteQueen,
 		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
 		wildy: false,
@@ -127,7 +120,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.CorporealBeast.name,
 		aliases: Monsters.CorporealBeast.aliases,
 		table: Monsters.CorporealBeast,
-		timeToFinish: Time.Minute * 30,
+		noneCombatCalcTimeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
 		canBeKilled: true,
@@ -145,7 +138,7 @@ const killableBosses: KillableMonster[] = [
 			[itemID('Dragon warhammer')]: 10
 		},
 		groupKillable: true,
-		respawnTime: 20_000,
+		respawnTimeGroup: 20_000,
 		levelRequirements: {
 			prayer: 43
 		},
@@ -162,7 +155,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Cerberus.id,
 		name: Monsters.Cerberus.name,
 		aliases: Monsters.Cerberus.aliases,
-		timeToFinish: Time.Minute * 2.65,
+		noneCombatCalcTimeToFinish: Time.Minute * 2.65,
 		table: Monsters.Cerberus,
 		emoji: '<:Hellpuppy:324127376185491458>',
 		wildy: false,
@@ -184,6 +177,8 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		}
 	}
+	*/
 ];
 
 export default killableBosses;
+

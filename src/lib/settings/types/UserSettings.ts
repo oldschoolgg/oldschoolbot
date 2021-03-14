@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
-import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 
+import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { PatchTypes } from '../../minions/farming';
@@ -69,6 +69,7 @@ export namespace UserSettings {
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
 		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
+		export const defaultDartToUse = T<string>('minion.defaultDartToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const BirdhouseTraps = T<BirdhouseData>('minion.birdhouseTraps');
 		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');

@@ -24,6 +24,6 @@ export default async function calcDurQty(
 	if (quantity > maxQty) {
 		throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
 	}
-	const duration = quantity * perKillTime - monster.respawnTime!;
+	const duration = quantity * perKillTime - monster.respawnTimeGroup!;
 	return [quantity, duration, perKillTime, messages];
 }

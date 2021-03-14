@@ -1,10 +1,10 @@
 import { Client, SchemaFolder } from 'klasa';
 
+import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import defaultContracts from '../../minions/farming/defaultContracts';
 import { FarmingPatchTypes } from '../../minions/farming/types';
 import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
-import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 
 Client.defaultUserSchema
 	.add('GP', 'integer', { default: 0 })
@@ -43,6 +43,7 @@ Client.defaultUserSchema
 			.add('equippedPet', 'integer', { default: null })
 			.add('farmingContract', 'any', { default: defaultContracts })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
+			.add('defaultDartToUse', 'string', { default: 'bronze dart' })
 			.add('defaultPay', 'boolean', { default: false })
 			.add('birdhouseTraps', 'any', { default: defaultBirdHouseTrap })
 			.add('combatStyle', 'any', { default: CombatsEnum.Auto })
