@@ -123,7 +123,6 @@ export default class extends BotCommand {
 				const bit = Number(_bit);
 				if (
 					!bit ||
-					isNaN(bit) ||
 					!(BitFieldData as any)[bit] ||
 					[7, 8].includes(bit) ||
 					(action !== 'add' && action !== 'remove')
