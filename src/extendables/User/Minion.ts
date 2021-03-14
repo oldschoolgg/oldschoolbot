@@ -76,6 +76,7 @@ import {
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import resolveItems from '../../lib/util/resolveItems';
 import {
 	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -625,6 +626,26 @@ export default class extends Extendable {
 			amount = increaseNumByPercent(amount, isMatchingCape ? 8 : 3);
 		}
 
+		let firstAgeEquipped = 0;
+		for (const item of resolveItems([
+			'First age tiara',
+			'First age amulet',
+			'First age cape',
+			'First age bracelet',
+			'First age ring'
+		])) {
+			if (this.hasItemEquippedAnywhere(item)) {
+				firstAgeEquipped += 1;
+			}
+		}
+		if (firstAgeEquipped > 0) {
+			if (firstAgeEquipped === 5) {
+				amount = increaseNumByPercent(amount, 6);
+			} else {
+				amount = increaseNumByPercent(amount, firstAgeEquipped);
+			}
+		}
+
 		const newXP = Math.min(5_000_000_000, currentXP + amount);
 		const newLevel = convertXPtoLVL(newXP);
 
@@ -691,6 +712,13 @@ export default class extends Extendable {
 				str += ` You received 3% bonus XP for having a ${masterCape.item.name}.`;
 			}
 		}
+
+		if (firstAgeEquipped) {
+			str += ` You received ${
+				firstAgeEquipped === 5 ? 6 : firstAgeEquipped
+			}% bonus XP for First age outfit items.`;
+		}
+
 		if (duration) {
 			const xpHr = `(${Math.round(
 				(amount / (duration / Time.Minute)) * 60

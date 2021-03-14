@@ -106,6 +106,10 @@ export default class extends BotCommand {
 
 		let timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
 
+		if (msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape'))) {
+			timeToPickpocket *= 0.7;
+		}
+
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToPickpocket);
@@ -173,6 +177,10 @@ export default class extends BotCommand {
 
 		if (hasWilvus) {
 			str += `\n<:wilvus:787320791011164201> 2x Speed boost from Wilvus`;
+		}
+
+		if (msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape'))) {
+			str += `\n30% faster pickpocketing for skill mastery`;
 		}
 
 		return msg.send(str);
