@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import { ItemBank, ItemPriceCache, OSRSPoll } from '../../types';
+import { ItemBank, ItemPriceCache } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -13,7 +13,6 @@ export namespace ClientSettings {
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
 	export const CommandStats = T<ItemBank>('commandStats');
 	export const Prices = T<ItemPriceCache>('prices');
-	export const PollQuestions = T<OSRSPoll>('pollQuestions');
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
 	export const UserBlacklist = T<readonly string[]>('userBlacklist');
 

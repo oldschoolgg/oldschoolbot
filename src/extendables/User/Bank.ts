@@ -8,7 +8,12 @@ import SimilarItems from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
-import { addBanks, removeBankFromBank, removeItemFromBank } from '../../lib/util';
+import {
+	addBanks,
+	bankHasAllItemsFromBank,
+	removeBankFromBank,
+	removeItemFromBank
+} from '../../lib/util';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -170,7 +175,18 @@ export default class extends Extendable {
 
 	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
 		const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
+
 		await this.settings.sync(true);
+
+		const currentBank = this.settings.get(UserSettings.Bank);
+		const GP = this.settings.get(UserSettings.GP);
+		if (!bankHasAllItemsFromBank({ ...currentBank, 995: GP }, itemBank)) {
+			throw new Error(
+				`Tried to remove ${new Bank(itemBank)} from ${
+					this.username
+				} but failed because they don't own all these items.`
+			);
+		}
 
 		const items = {
 			...itemBank
@@ -183,10 +199,7 @@ export default class extends Extendable {
 
 		this.log(`Had items removed from bank - ${JSON.stringify(items)}`);
 		return this.queueFn(() =>
-			this.settings.update(
-				UserSettings.Bank,
-				removeBankFromBank(this.settings.get(UserSettings.Bank), items)
-			)
+			this.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items))
 		);
 	}
 
@@ -202,5 +215,13 @@ export default class extends Extendable {
 
 		const bank = this.settings.get(UserSettings.Bank);
 		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
+	}
+
+	public owns(this: User, bank: ItemBank | Bank) {
+		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
+		return bankHasAllItemsFromBank(
+			{ ...this.settings.get(UserSettings.Bank), 995: this.settings.get(UserSettings.GP) },
+			itemBank
+		);
 	}
 }

@@ -4,7 +4,6 @@ Client.defaultClientSchema
 	.add('commandStats', 'any', { default: {} })
 	.add('totalCommandsUsed', 'integer', { default: 0 })
 	.add('prices', 'any', { default: {} })
-	.add('pollQuestions', 'any', { default: {} })
 	.add('sold_items_bank', 'any', { default: {} })
 	.add('herblore_cost_bank', 'any', { default: {} })
 	.add('construction_cost_bank', 'any', { default: {} })

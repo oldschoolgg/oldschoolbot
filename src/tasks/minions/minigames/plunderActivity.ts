@@ -32,18 +32,10 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot.bank, true);
-		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
-		await user.addXP(SkillsEnum.Thieving, thievingXP);
-		const nextLevel = user.skillLevel(SkillsEnum.Thieving);
+		await user.addItemsToBank(loot, true);
+		const xpRes = await user.addXP(SkillsEnum.Thieving, thievingXP);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Pyramid Plunder ${quantity}x times, you received ${thievingXP.toLocaleString()} Thieving XP. ${totalAmountUrns}x urns opened.`;
-
-		if (nextLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Thieving level is now ${nextLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}`;
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
