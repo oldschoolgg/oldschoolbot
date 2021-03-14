@@ -1,5 +1,6 @@
 import { randInt, roll } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -8,7 +9,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
@@ -17,9 +17,7 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
-		const course = Agility.Courses.find(course => course.name === courseID);
-
-		if (!course) return;
+		const course = Agility.Courses.find(course => course.name === courseID)!;
 
 		// Calculate failed laps
 		let lapsFailed = 0;
@@ -58,28 +56,22 @@ export default class extends Task {
 			)
 		);
 
-		await user.addXP(SkillsEnum.Agility, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Agility);
+		const xpRes = await user.addXP(SkillsEnum.Agility, xpReceived, duration);
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-		} laps and fell on ${lapsFailed} of them, you also received ${xpReceived.toLocaleString()} XP and ${totalMarks}x Mark of grace.`;
+		} laps and fell on ${lapsFailed} of them, you also received ${xpReceived.toLocaleString()} XP and ${totalMarks}x Mark of grace. ${xpRes}`;
 
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Agility level is now ${newLevel}!`;
-		}
-
-		const markOfGrace = itemID('Mark of grace');
-		const loot = {
-			[markOfGrace]: totalMarks
-		};
+		const loot = new Bank({
+			'Mark of grace': totalMarks
+		});
 
 		if (course.id === 6) {
 			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
 				if (!user.hasItemEquippedOrInBank(monkey.id)) {
-					loot[monkey.id] = 1;
+					loot.add(monkey.id);
 					str += `\nYou received the ${monkey.name} monkey backpack!`;
 				}
 			}
@@ -90,7 +82,7 @@ export default class extends Task {
 			course.petChance &&
 			roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)
 		) {
-			loot[itemID('Giant squirrel')] = 1;
+			loot.add('Giant squirrel');
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,
@@ -111,7 +103,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }
