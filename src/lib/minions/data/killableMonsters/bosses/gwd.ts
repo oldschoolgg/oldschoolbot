@@ -85,7 +85,8 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged]
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,

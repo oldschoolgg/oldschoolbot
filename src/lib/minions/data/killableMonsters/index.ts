@@ -197,7 +197,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
 	},
 	{
 		id: Monsters.Lizardman.id,

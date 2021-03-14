@@ -93,7 +93,8 @@ const killableBosses: KillableMonster[] = [
 				[GearStat.AttackRanged]: 47
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic]
+		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
 	},
 	{
 		id: Monsters.KalphiteQueen.id,
@@ -162,7 +163,8 @@ const killableBosses: KillableMonster[] = [
 				'Ornate rejuvenation pool': 50
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.Cerberus.id,
