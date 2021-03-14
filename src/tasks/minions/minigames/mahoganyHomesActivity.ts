@@ -15,29 +15,21 @@ export default class extends Task {
 		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('MahoganyHomes', quantity);
 
-		const currentLevel = user.skillLevel(SkillsEnum.Construction);
 		let bonusXP = 0;
 		const outfitMultiplier = calcConBonusXP(user.getGear('skilling'));
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
-		await user.addXP(SkillsEnum.Construction, xp + bonusXP);
-		const nextLevel = user.skillLevel(SkillsEnum.Construction);
+		const xpRes = await user.addXP(SkillsEnum.Construction, xp + bonusXP, duration);
 		await user.settings.update(
 			UserSettings.CarpenterPoints,
 			user.settings.get(UserSettings.CarpenterPoints) + points
 		);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing ${quantity}x Mahogany Homes contracts, you received ${xp.toLocaleString()} Construction XP and ${points} Carpenter points.`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
-		}
-
-		if (nextLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Construction level is now ${nextLevel}!`;
 		}
 
 		handleTripFinish(

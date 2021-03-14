@@ -96,6 +96,10 @@ export default class extends BotCommand {
 			itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
 		}
 
+		if (!msg.author.owns(itemsToRemove)) {
+			return msg.channel.send(`You don't own the required items: ${itemsToRemove}.`);
+		}
+
 		await msg.author.removeItemsFromBank(itemsToRemove.bank);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.GnomeRestaurantCostBank,

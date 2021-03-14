@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -27,7 +28,6 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, boneName = '']: [null | number | string, string]) {
-		// default bury speed
 		const speedMod = 1;
 
 		if (typeof quantity === 'string') {
@@ -67,10 +67,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Check the user has the required bones to bury.
-		const hasRequiredBones = await msg.author.hasItem(bone.inputId, quantity);
-		if (!hasRequiredBones) {
-			return msg.send(`You dont have ${quantity}x ${bone.name}.`);
+		const cost = new Bank({ [bone.inputId]: quantity });
+
+		if (!msg.author.owns(cost)) {
+			return msg.send(`You dont have ${cost}.`);
 		}
 
 		const duration = quantity * timeToBuryABone;
@@ -85,7 +85,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(bone.inputId, quantity);
+		await msg.author.removeItemsFromBank(cost);
 
 		await addSubTaskToActivityTask<BuryingActivityTaskOptions>(this.client, {
 			boneID: bone.inputId,
@@ -97,9 +97,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now burying ${quantity}x ${
-				bone.name
-			} , it'll take around ${formatDuration(duration)} to finish.`
+			`${msg.author.minionName} is now burying ${cost}, it'll take around ${formatDuration(
+				duration
+			)} to finish.`
 		);
 	}
 }

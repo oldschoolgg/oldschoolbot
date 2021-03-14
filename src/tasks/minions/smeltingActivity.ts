@@ -1,5 +1,6 @@
 import { randInt } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -12,10 +13,8 @@ export default class extends Task {
 		let { barID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		const bar = Smithing.Bars.find(bar => bar.id === barID);
-		if (!bar) return;
+		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const oldQuantity = quantity;
@@ -31,31 +30,21 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (
-			bar.id === itemID('Gold bar') &&
-			user.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
-		) {
+		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 
-		await user.addXP(SkillsEnum.Smithing, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Smithing);
+		const xpRes = await user.addXP(SkillsEnum.Smithing, xpReceived, duration);
 
-		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${
-			bar.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${bar.name}. ${xpRes}`;
 
 		if (bar.chanceOfFail > 0 && oldQuantity > quantity) {
 			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
 		}
 
-		const loot = {
+		const loot = new Bank({
 			[bar.id]: quantity
-		};
+		});
 
 		await user.addItemsToBank(loot, true);
 
@@ -70,7 +59,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }
