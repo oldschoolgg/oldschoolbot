@@ -6,8 +6,8 @@ import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { sendToChannelID } from '../../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: BirdhouseActivityTaskOptions) {
@@ -42,12 +42,7 @@ export default class extends Task {
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				await user.addXP(SkillsEnum.Crafting, craftingXP);
-				str += ` You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
-				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);
-				if (newCraftLevel > currentCraftingLevel) {
-					str += `\n\n${user.minionName}'s Crafting level is now ${newCraftLevel}!`;
-				}
+				str += await user.addXP(SkillsEnum.Crafting, craftingXP);
 			}
 
 			const updateBirdhouseData: BirdhouseData = {
@@ -60,9 +55,7 @@ export default class extends Task {
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
 
-			const channel = this.client.channels.get(channelID);
-			if (!channelIsSendable(channel)) return;
-			channel.send(str);
+			sendToChannelID(this.client, channelID, { content: str });
 		} else {
 			let str = '';
 			const birdhouseToCollect = birdhouses.find(
