@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\commands",
+    "\\src\\commands\\Minion",
+    "\\src\\lib",
+    "\\src\\lib\\skilling",
+    "\\src\\lib\\skilling\\skills",
+    "\\src\\lib\\skilling\\skills\\magic",
+    "\\src\\lib\\skilling\\skills\\thieving"
+  ],
+  "SelectedNode": "\\src\\commands\\Minion\\pickpocket.ts",
+  "PreviewInSolutionExplorer": false
+}
