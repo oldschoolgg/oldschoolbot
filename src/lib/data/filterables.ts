@@ -317,6 +317,7 @@ const skilling = resolveItems([
 	...gems,
 	...bars,
 	...ores,
+	...herbs,
 	...smithingMisc,
 	...craftingItemsSet
 ]);
