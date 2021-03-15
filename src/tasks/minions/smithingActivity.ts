@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -10,27 +11,17 @@ export default class extends Task {
 		const { smithedBarID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
 
-		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID);
-		if (!smithedItem) return;
+		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 
 		const xpReceived = quantity * smithedItem.xp;
+		const xpRes = await user.addXP(SkillsEnum.Smithing, xpReceived, duration);
 
-		await user.addXP(SkillsEnum.Smithing, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Smithing);
-
-		let str = `${user}, ${user.minionName} finished smithing ${
-			quantity * smithedItem.outputMultiple
-		}x ${smithedItem.name}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;
-		}
-
-		const loot = {
+		const loot = new Bank({
 			[smithedItem.id]: quantity * smithedItem.outputMultiple
-		};
+		});
+
+		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 
 		await user.addItemsToBank(loot, true);
 
@@ -45,7 +36,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }

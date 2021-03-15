@@ -1,4 +1,4 @@
-import { notEmpty } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
@@ -6,6 +6,7 @@ import { BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { formatDuration } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
 
@@ -107,6 +108,68 @@ export default class extends BotCommand {
 					content: `${msg.author.username} gave permanent t1/bgs to ${input.username}`
 				});
 				return msg.channel.send(`Gave permanent perks to ${input.username}.`);
+			}
+
+			case 'bf': {
+				if (!input || !str) {
+					return msg.send(
+						Object.entries(BitFieldData)
+							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
+							.join('\n')
+					);
+				}
+				const [action, _bit] = str.split(' ');
+
+				const bit = Number(_bit);
+				if (
+					!bit ||
+					!(BitFieldData as any)[bit] ||
+					[7, 8].includes(bit) ||
+					(action !== 'add' && action !== 'remove')
+				) {
+					return msg.send(`Invalid bitfield.`);
+				}
+
+				let newBits = [...input.settings.get(UserSettings.BitField)];
+
+				if (action === 'add') {
+					if (newBits.includes(bit)) {
+						return msg.send(`Already has this bit, so can't add.`);
+					}
+					newBits.push(bit);
+				} else {
+					if (!newBits.includes(bit)) {
+						return msg.send(`Doesn't have this bit, so can't remove.`);
+					}
+					newBits = newBits.filter(i => i !== bit);
+				}
+
+				await input.settings.update(UserSettings.BitField, uniqueArr(newBits), {
+					arrayAction: 'overwrite'
+				});
+
+				return msg.channel.send(
+					`${action === 'add' ? 'Added' : 'Removed'} '${
+						(BitFieldData as any)[bit].name
+					}' bit to ${input.username}.`
+				);
+			}
+
+			case 'mostactive': {
+				const res = await this.client.query<{ num: number; username: string }[]>(`
+SELECT sum(duration) as num, "new_user"."username", user_id
+FROM activity
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"
+WHERE start_date > now() - interval '2 days'
+GROUP BY user_id, "new_user"."username"
+ORDER BY num DESC
+LIMIT 10;
+`);
+				return msg.send(
+					`Most Active Users in past 48h\n${res
+						.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
+						.join('\n')}`
+				);
 			}
 		}
 

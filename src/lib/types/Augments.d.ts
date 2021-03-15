@@ -153,7 +153,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(itemID: number): boolean;
+		hasItemEquippedAnywhere(item: number | string): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item
@@ -218,6 +218,7 @@ declare module 'discord.js' {
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		getGear(gearType: GearSetupType): GearSetup;
+		owns(bank: ItemBank | Bank): boolean;
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

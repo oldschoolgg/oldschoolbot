@@ -143,7 +143,7 @@ export default class extends BotCommand {
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
-			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		return msg.send(response);
