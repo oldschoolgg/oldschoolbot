@@ -79,7 +79,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Green dragon leather'),
-		name: 'Tan Leather Green',
+		name: 'Tan Green Dragon Leather',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Nature rune', 1)
@@ -93,7 +93,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Blue dragon leather'),
-		name: 'Tan Leather Blue',
+		name: 'Tan Blue Dragon Leather',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Nature rune', 1)
@@ -106,8 +106,8 @@ export const Castables: Castable[] = [
 		qpRequired: 50
 	},
 	{
-		id: itemID('Red dragon leather'),
-		name: 'Tan Leather Red',
+		id: itemID('Red Dragon Leather'),
+		name: 'Tan Red Dragon Leather',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Nature rune', 1)
@@ -121,7 +121,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Black dragon leather'),
-		name: 'Tan Leather Black',
+		name: 'Tan Black Dragon Leather',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Nature rune', 1)
@@ -135,7 +135,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Gold amulet'),
-		name: 'String jewellery Gold',
+		name: 'String Gold',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Water rune', 5)
@@ -149,7 +149,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Sapphire amulet'),
-		name: 'String jewellery Sapphire',
+		name: 'String Sapphire',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Water rune', 5)
@@ -163,7 +163,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Emerald amulet'),
-		name: 'String jewellery Emerald',
+		name: 'String Emerald',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Water rune', 5)
@@ -177,7 +177,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Ruby amulet'),
-		name: 'String jewellery Ruby',
+		name: 'String Ruby',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Water rune', 5)
@@ -191,7 +191,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Diamond amulet'),
-		name: 'String jewellery Diamond',
+		name: 'String Diamond',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Water rune', 5)
@@ -205,7 +205,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Dragonstone amulet'),
-		name: 'String jewellery Dragonstone',
+		name: 'String Dragonstone',
 		input: new Bank()
 			.add('Astral rune', 2)
 			.add('Water rune', 5)
@@ -279,7 +279,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Amulet of glory (4)'),
-		name: 'Recharge Dragonstone Glory',
+		name: 'Recharge Glory',
 		input: new Bank()
 			.add('Astral rune', 1)
 			.add('Water rune', 5)
@@ -293,7 +293,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Combat bracelet (4)'),
-		name: 'Recharge Dragonstone Combat Bracelet',
+		name: 'Recharge Combat Bracelet',
 		input: new Bank()
 			.add('Astral rune', 1)
 			.add('Water rune', 5)
@@ -307,7 +307,7 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Skills necklace (4)'),
-		name: 'Recharge Dragonstone Skills Necklace',
+		name: 'Recharge Skills Necklace',
 		input: new Bank()
 			.add('Astral rune', 1)
 			.add('Water rune', 5)

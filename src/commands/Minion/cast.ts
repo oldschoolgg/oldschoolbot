@@ -122,10 +122,11 @@ export default class extends BotCommand {
 		).toLocaleString()} XP/Hr`;
 
 		return msg.send(
-			`${msg.author.minionName} is now casting ${quantity}x ${spell.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ``} from your bank. ** ${ xpHr }**`
-        );
-    }
+			`${msg.author.minionName} is now casting ${quantity}x ${
+				spell.name
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost}${
+				spell.gpCost ? ` and ${gpCost} Coins` : ``
+			} from your bank. ** ${xpHr}**`
+		);
+	}
 }
