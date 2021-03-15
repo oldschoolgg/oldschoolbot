@@ -100,7 +100,7 @@ export default class extends BotCommand {
 		let timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
 
 		const hasDiary = hasFallyHardDiary(msg.author);
-		if ((Craft.bankChest && hasDiary) || msg.author.skillLevel(SkillsEnum.Crafting) >= 99) {
+		if (Craft.bankChest && (hasDiary || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 
