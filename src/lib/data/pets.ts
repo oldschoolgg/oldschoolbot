@@ -608,6 +608,19 @@ const pets: Pet[] = [
 				num
 			)} times to get the Little nightmare pet! <:Little_nightmare:758149284952014928>`,
 		bossKeys: ['nightmare']
+	},
+	{
+		id: 47,
+		emoji: '<:Lil_creator:798221383951319111>',
+		chance: 400,
+		name: "Lil' Creator",
+		type: 'SPECIAL',
+		altNames: ['LILDESTRUCTOR', 'LILCREATOR', 'SOULWARS'],
+		formatFinish: (num: number) =>
+			`You had to open ${fm(
+				num
+			)} Spoils of war to get the Lil' Creator! <:Lil_creator:798221383951319111>`,
+		bossKeys: ['soulwars']
 	}
 ];
 

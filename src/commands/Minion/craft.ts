@@ -1,4 +1,4 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -15,6 +15,30 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { skillsMeetRequirements } from '../../lib/util/skillsMeetRequirements';
+
+export function hasFallyHardDiary(user: KlasaUser): boolean {
+	return skillsMeetRequirements(user.rawSkills, {
+		woodcutting: 71,
+		agility: 59,
+		cooking: 53,
+		firemaking: 49,
+		fishing: 53,
+		magic: 37,
+		mining: 60,
+		smithing: 13,
+		thieving: 58,
+		construction: 16,
+		herblore: 52,
+		crafting: 40,
+		farming: 45,
+		prayer: 70,
+		runecraft: 56
+		// slayer: 72,
+		// strength: 37,
+		// defense: 50
+	});
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -72,7 +96,13 @@ export default class extends BotCommand {
 		const requiredItems: [string, number][] = Object.entries(Craft.inputItems);
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
-		const timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
+
+		let timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
+
+		const hasDiary = hasFallyHardDiary(msg.author);
+		if (Craft.bankChest && (hasDiary || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {
+			timeToCraftSingleItem /= 3.25;
+		}
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {

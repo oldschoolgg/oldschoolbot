@@ -106,7 +106,8 @@ const ores: Ore[] = [
 		id: 1625,
 		name: 'Gem rock',
 		respawnTime: 6,
-		petChance: 211_886
+		petChance: 211_886,
+		clueScrollChance: 211_886
 	},
 	{
 		level: 55,
