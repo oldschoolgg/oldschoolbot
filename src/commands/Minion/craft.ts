@@ -12,10 +12,10 @@ import {
 	formatDuration,
 	itemNameFromID,
 	removeItemFromBank,
+	skillsMeetRequirements,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { skillsMeetRequirements } from '../../lib/util/skillsMeetRequirements';
 
 export function hasFallyHardDiary(user: KlasaUser): boolean {
 	return skillsMeetRequirements(user.rawSkills, {
