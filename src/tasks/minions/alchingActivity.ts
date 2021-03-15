@@ -5,7 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, itemID, roll } from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -36,32 +36,24 @@ export default class extends Task {
 				loot.add(returnedRunes);
 			}
 		}
-		await user.addItemsToBank(loot);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
-
-		let gotLamb = false;
-		if (duration > Time.Minute * 20 && roll(200)) {
-			gotLamb = true;
-			user.addItemsToBank({ 9619: 1 }, true);
+		if (duration > Time.Minute * 20 && roll(8000)) {
+			loot.add('Lil lamb');
 		}
-		const currentLevel = user.skillLevel(SkillsEnum.Magic);
+
+		await user.addItemsToBank(loot, true);
+
 		const xpReceived = quantity * 65;
-		await user.addXP(SkillsEnum.Magic, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Magic);
+		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
 
 		const saved =
 			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 		let responses = [
-			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. You received ${xpReceived} Magic XP. ${saved}`
+			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
 
-		if (gotLamb) {
+		if (loot.has('Lil Lamb')) {
 			responses += `<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.`;
-		}
-		if (newLevel > currentLevel) {
-			responses += `\n\n${user.minionName}'s Magic level is now ${newLevel}!`;
 		}
 
 		handleTripFinish(

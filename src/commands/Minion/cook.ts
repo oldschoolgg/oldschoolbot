@@ -1,19 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -74,28 +68,19 @@ export default class extends BotCommand {
 			timeToCookSingleCookable /= 3;
 		}
 
-		const requiredCookables: [string, number][] = Object.entries(cookable.inputCookables);
+		const userBank = msg.author.bank();
+		const inputCost = new Bank(cookable.inputCookables);
 
-		// // If no quantity provided, set it to the max the player can make by either the items in bank or time.
 		if (quantity === null) {
 			quantity = Math.floor(msg.author.maxTripLength / timeToCookSingleCookable);
-			for (const [cookableID, qty] of requiredCookables) {
-				const itemsOwned = msg.author.numItemsInBankSync(parseInt(cookableID));
-				if (itemsOwned === 0) {
-					return msg.send(`You have no ${itemNameFromID(parseInt(cookableID))}.`);
-				}
-				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
-			}
+			const max = userBank.fits(inputCost);
+			if (max < quantity && max !== 0) quantity = max;
 		}
 
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const totalCost = inputCost.clone().multiply(quantity);
 
-		// Check the user has the required cookables
-		// Multiplying the cookable required by the quantity
-		for (const [cookableID, qty] of requiredCookables) {
-			if (!bankHasItem(userBank, parseInt(cookableID), qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(parseInt(cookableID))}.`);
-			}
+		if (!userBank.fits(totalCost)) {
+			return msg.send(`You don't have enough items. You need: ${inputCost}.`);
 		}
 
 		const duration = quantity * timeToCookSingleCookable;
@@ -112,19 +97,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Remove the cookables from their bank.
-		let newBank = { ...userBank };
-		for (const [cookableID, qty] of requiredCookables) {
-			if (newBank[parseInt(cookableID)] < qty) {
-				this.client.wtf(
-					new Error(
-						`${msg.author.sanitizedName} had insufficient cookables to be removed.`
-					)
-				);
-				return;
-			}
-			newBank = removeItemFromBank(newBank, parseInt(cookableID), qty * quantity);
-		}
+		await msg.author.removeItemsFromBank(totalCost);
 
 		await addSubTaskToActivityTask<CookingActivityTaskOptions>(this.client, {
 			cookableID: cookable.id,
@@ -134,7 +107,6 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Cooking
 		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.send(
 			`${msg.author.minionName} is now cooking ${quantity}x ${

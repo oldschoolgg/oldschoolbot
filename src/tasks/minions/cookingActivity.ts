@@ -1,33 +1,25 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import { multiplyBank, roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: CookingActivityTaskOptions) {
 		const { cookableID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
 
-		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID);
-		if (!cookable) return;
+		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
 
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		if (
-			cookable.stopBurnAtCG > 1 &&
-			user.hasItemEquippedAnywhere(itemID('Cooking gauntlets'))
-		) {
+		if (cookable.stopBurnAtCG > 1 && user.hasItemEquippedAnywhere('Cooking gauntlets')) {
 			stopBurningLvl = cookable.stopBurnAtCG;
 		} else {
 			stopBurningLvl = cookable.stopBurnAt;
@@ -41,43 +33,28 @@ export default class extends Task {
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
-		await user.addXP(SkillsEnum.Cooking, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Cooking);
+		const xpRes = await user.addXP(SkillsEnum.Cooking, xpReceived, duration);
 
-		let str = `${user}, ${user.minionName} finished cooking ${quantity}x ${
-			cookable.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Cooking level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished cooking ${quantity}x ${cookable.name}. ${xpRes}`;
 
 		if (burnedAmount > 0) {
 			str += `\n\n${burnedAmount}x ${cookable.name} failed to cook.`;
 		}
 
-		let loot = {
-			[cookable.id]: quantity - burnedAmount
-		};
-		if (duration > Time.Minute * 20 && roll(10)) {
-			if (duration > Time.Minute * 10) {
-				loot = multiplyBank(loot, 2);
-				loot[getRandomMysteryBox()] = 1;
-			}
-		}
-
-		loot[cookable.burntCookable] = burnedAmount;
+		const loot = new Bank({ [cookable.id]: quantity });
+		loot.remove(cookable.id, burnedAmount);
+		loot.add(cookable.burntCookable, burnedAmount);
 
 		const minutesInTrip = Math.ceil(duration / 1000 / 60);
 		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(3000)) {
-				loot[itemID('Remy')] = 1;
+			if (roll(4000)) {
+				loot.add('Remy');
 				str += `\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.`;
 				break;
 			}
 		}
 
-		str += `\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		str += `\nYou received: ${loot}.`;
 
 		await user.addItemsToBank(loot, true);
 
@@ -92,7 +69,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }

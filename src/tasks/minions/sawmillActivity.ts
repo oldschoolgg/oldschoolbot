@@ -1,9 +1,8 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../lib/minions/data/planks';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { itemNameFromID } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -11,20 +10,14 @@ export default class extends Task {
 		const { userID, channelID, duration, plankID, plankQuantity } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const plank = Planks.find(plank => plank.outputItem === plankID);
-		if (!plank) return;
-		let str = `${user}, ${
-			user.minionName
-		} finished creating planks, you received ${plankQuantity}x ${itemNameFromID(plankID)}s. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		const plank = Planks.find(plank => plank.outputItem === plankID)!;
 
-		const loot = {
+		const loot = new Bank({
 			[plankID]: plankQuantity
-		};
+		});
 
+		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
 		await user.addItemsToBank(loot, true);
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
 
 		handleTripFinish(
 			this.client,
@@ -37,7 +30,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }
