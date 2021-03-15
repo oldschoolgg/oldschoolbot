@@ -354,7 +354,7 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: resolveItems(['Dwarven warhammer', 'Dwarven crate', 'Dwarven ore'])
+		uniques: resolveItems(['Broken dwarven warhammer', 'Dwarven crate', 'Dwarven ore'])
 	},
 	{
 		id: SeaKraken.id,
