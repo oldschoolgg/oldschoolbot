@@ -21,6 +21,10 @@ export default class extends BotCommand {
 			return msg.send(`You're already an ironman.`);
 		}
 
+		if (msg.author.minionIsBusy) {
+			return msg.send(`Your minion is still on a trip.`);
+		}
+
 		await msg.send(
 			`Are you sure you want to start over and play as an ironman?
 :warning: **Read the following text before confirming. This is your only warning. ** :warning:
