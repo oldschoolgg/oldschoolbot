@@ -90,10 +90,9 @@ export async function generateGearImage(
 			(canvas.width - userBg.width) * 0.5,
 			(canvas.height - userBg.height) * 0.5
 		);
+		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
+		bankTask?.drawBorder(canvas, false);
 	}
-
-	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-	bankTask?.drawBorder(canvas, false);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
