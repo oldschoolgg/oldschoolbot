@@ -88,7 +88,7 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Green dragon leather', 5),
 		xp: 81,
 		level: 78,
-		ticks: 3,
+		ticks: 3.5,
 		qpRequired: 50
 	},
 	{
@@ -102,7 +102,7 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Blue dragon leather', 5),
 		xp: 81,
 		level: 78,
-		ticks: 3,
+		ticks: 3.5,
 		qpRequired: 50
 	},
 	{
@@ -116,7 +116,7 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Red dragon leather', 5),
 		xp: 81,
 		level: 78,
-		ticks: 3,
+		ticks: 3.5,
 		qpRequired: 50
 	},
 	{
@@ -130,7 +130,7 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Black Dragon Leather', 5),
 		xp: 81,
 		level: 78,
-		ticks: 3,
+		ticks: 3.5,
 		qpRequired: 50
 	},
 	{
