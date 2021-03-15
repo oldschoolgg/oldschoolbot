@@ -1,6 +1,8 @@
+import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { production } from '../../config';
 import { Emoji, Events, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { PatchTypes } from '../../lib/minions/farming';
@@ -156,15 +158,22 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
+			if (user.usingPet('Plopper')) {
+				loot = multiplyBank(loot, 4);
+			}
+
+			if (plant.name === `Mysterious tree`) {
+				let upper = randInt(quantity, quantity * 2);
+				for (let i = 0; i < upper; i++) {
+					loot = addItemToBank(loot, getRandomMysteryBox());
+				}
+			}
+
 			if (Object.keys(loot).length > 0) {
 				str += `\n\nYou received: ${await createReadableItemListFromBank(
 					this.client,
 					loot
 				)}.`;
-			}
-
-			if (user.usingPet('Plopper')) {
-				loot = multiplyBank(loot, 4);
 			}
 
 			await this.client.settings.update(
@@ -178,7 +187,7 @@ export default class extends Task {
 			const updatePatches: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + duration,
+				plantTime: currentDate + (production ? duration : 1),
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
@@ -204,7 +213,7 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			if (user.usingPet('Plopper')) {
+			if (!user.usingPet('Plopper')) {
 				for (let i = 0; i < patchType.lastQuantity; i++) {
 					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 						const deathRoll = Math.random();
@@ -434,7 +443,7 @@ export default class extends Task {
 				updatePatches = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + duration,
+					plantTime: currentDate + (production ? duration : 1),
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
@@ -463,12 +472,6 @@ export default class extends Task {
 				janeMessage = true;
 			}
 
-			if (Object.keys(loot).length > 0) {
-				infoStr.push(
-					`\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`
-				);
-			}
-
 			if (!planting) {
 				infoStr.push(
 					`\nThe patches have been cleared. They are ready to have new seeds planted.`
@@ -491,6 +494,19 @@ export default class extends Task {
 
 			if (user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
 				loot = addItemToBank(loot, getRandomMysteryBox());
+			}
+
+			if (plantToHarvest.name === `Mysterious tree`) {
+				let upper = randInt(quantity, quantity * 2);
+				for (let i = 0; i < upper; i++) {
+					loot = addItemToBank(loot, getRandomMysteryBox());
+				}
+			}
+
+			if (Object.keys(loot).length > 0) {
+				infoStr.push(
+					`\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`
+				);
 			}
 
 			await this.client.settings.update(
