@@ -12,15 +12,10 @@ import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NexActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	addBanks,
-	channelIsSendable,
-	noOp,
-	queuedMessageSend,
-	randomItemFromArray
-} from '../../../lib/util';
+import { addBanks, channelIsSendable, noOp, randomItemFromArray } from '../../../lib/util';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
+import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
 	id: string;
@@ -126,15 +121,13 @@ export default class extends Task {
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				queuedMessageSend(
-					this.client,
-					channelID,
-					`${users
+				sendToChannelID(this.client, channelID, {
+					content: `${users
 						.map(id => `<@${id}>`)
 						.join(' ')} Your team all died, and failed to defeat Nex. ${debug}`
-				);
+				});
 			} else {
-				queuedMessageSend(this.client, channelID, resultStr + debug);
+				sendToChannelID(this.client, channelID, { content: resultStr + debug });
 			}
 		} else {
 			const channel = this.client.channels.get(channelID);

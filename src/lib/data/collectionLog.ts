@@ -113,6 +113,14 @@ export const anglerOutfit = resolveItems([
 	'Angler boots'
 ]);
 
+export const rogueOutfit = resolveItems([
+	'Rogue mask',
+	'Rogue top',
+	'Rogue trousers',
+	'Rogue gloves',
+	'Rogue boots'
+]);
+
 const hunterGear: CollectionLogData = {
 	CamouflageGear: resolveItems([
 		'Polar camo top',
@@ -1656,7 +1664,8 @@ export const skillingLog: CollectionLogData = {
 		'Giant pouch',
 		'Rift guardian'
 	]),
-	CrystalTools: resolveItems(['Crystal pickaxe', 'Crystal axe', 'Crystal harpoon'])
+	CrystalTools: resolveItems(['Crystal pickaxe', 'Crystal axe', 'Crystal harpoon']),
+	RogueOutfit: Object.values(rogueOutfit).flat(Infinity) as number[]
 };
 
 export const allCollectionLogItems = uniqueArr(
@@ -1872,5 +1881,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Grandmaster',
 		aliases: ['gm', 'grandmaster'],
 		items: gmLog
+	},
+	{
+		name: "Rogues' Den",
+		aliases: ['rogues den', 'rd'],
+		items: { 1: rogueOutfit }
 	}
 ];

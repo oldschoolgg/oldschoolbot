@@ -11,13 +11,10 @@ export default class extends Task {
 		const { burnableID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		const Burn = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID);
+		const burnable = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID)!;
 
-		if (!Burn) return;
-
-		let xpReceived = quantity * Burn.xp;
+		let xpReceived = quantity * burnable.xp;
 		let bonusXP = 0;
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
@@ -41,16 +38,10 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP(SkillsEnum.Firemaking, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
+		const xpRes = await user.addXP(SkillsEnum.Firemaking, xpReceived);
 
-		let str = `${user}, ${user.minionName} finished lighting ${quantity} ${
-			Burn.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
+		let str = `${user}, ${user.minionName} finished lighting ${quantity} ${burnable.name}. ${xpRes}`;
 
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
-		}
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
@@ -61,8 +52,8 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of ${quantity}x ${Burn.name}[${Burn.inputLogs}]`);
-				return this.client.commands.get('light')!.run(res, [quantity, Burn.name]);
+				user.log(`continued trip of ${burnable.name}`);
+				return this.client.commands.get('light')!.run(res, [quantity, burnable.name]);
 			},
 			undefined,
 			data,

@@ -18,6 +18,7 @@ import {
 	SupportServer,
 	Time
 } from './constants';
+import { rogueOutfit } from './data/collectionLog';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
@@ -26,7 +27,6 @@ import itemID from './util/itemID';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
-export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
@@ -304,6 +304,21 @@ export function anglerBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
+export function rogueOutfitPercentBonus(user: KlasaUser): number {
+	const skillingSetup = user.getGear('skilling');
+	let amountEquipped = 0;
+	for (const id of rogueOutfit) {
+		if (hasItemEquipped(id, skillingSetup)) {
+			amountEquipped++;
+		}
+	}
+	return amountEquipped * 20;
+}
+
+export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
+	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
+}
+
 export function generateContinuationChar(user: KlasaUser) {
 	const baseChar =
 		user.perkTier > PerkTier.One
@@ -413,10 +428,4 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 	}
 
 	return true;
-}
-
-export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str, { split: true }));
 }

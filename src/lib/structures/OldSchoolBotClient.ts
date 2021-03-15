@@ -1,13 +1,10 @@
 import { Client as TagsClient } from '@kcp/tags';
 import { Client, KlasaClientOptions } from 'klasa';
-import pLimit from 'p-limit';
 import { join } from 'path';
 import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
-import { initCustomItems } from '../customItems';
-import { initItemAliases } from '../data/itemAliases';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { piscinaPool } from '../workers';
 
@@ -28,7 +25,6 @@ import('../settings/schemas/ClientSchema');
 export class OldSchoolBotClient extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();
-	public queuePromise = pLimit(1);
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
 	public orm!: Connection;
@@ -77,12 +73,6 @@ export class OldSchoolBotClient extends Client {
 		});
 		this.minionActivityCache.delete(userID);
 	}
-
-	public init = async (): Promise<this> => {
-		initCustomItems();
-		initItemAliases();
-		return this;
-	};
 
 	getActivityOfUser(userID: string) {
 		const task = this.minionActivityCache.get(userID);

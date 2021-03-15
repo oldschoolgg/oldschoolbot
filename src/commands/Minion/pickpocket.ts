@@ -15,6 +15,7 @@ import {
 	bankHasAllItemsFromBank,
 	formatDuration,
 	itemID,
+	rogueOutfitPercentBonus,
 	round,
 	stringMatches
 } from '../../lib/util';
@@ -149,6 +150,16 @@ export default class extends BotCommand {
 			attackStylesUsed: []
 		});
 
+		const boosts = [];
+
+		if (rogueOutfitPercentBonus(msg.author) > 0) {
+			boosts.push(
+				`${rogueOutfitPercentBonus(
+					msg.author
+				)}% chance of x2 loot due to rogue outfit equipped`
+			);
+		}
+
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ThievingCost,
 			addBanks([
@@ -177,6 +188,9 @@ export default class extends BotCommand {
 
 		if (hasWilvus) {
 			str += `\n<:wilvus:787320791011164201> 2x Speed boost from Wilvus`;
+		}
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		if (msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape'))) {

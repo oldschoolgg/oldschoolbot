@@ -11,13 +11,10 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 
-		const spell = Castables.find(i => i.id === spellID);
-		if (!spell) return;
+		const spell = Castables.find(i => i.id === spellID)!;
 
-		const currentLevel = user.skillLevel(SkillsEnum.Magic);
 		const xpReceived = quantity * spell.xp;
-		await user.addXP(SkillsEnum.Magic, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Magic);
+		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
@@ -26,11 +23,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
 			spell.name
-		}, you received ${xpReceived.toLocaleString()} Magic XP and ${loot ?? 'no items'}.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Magic level is now ${newLevel}!`;
-		}
+		}, you received ${loot ?? 'no items'}. ${xpRes}`;
 
 		handleTripFinish(
 			this.client,

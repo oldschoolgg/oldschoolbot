@@ -15,11 +15,11 @@ import {
 	channelIsSendable,
 	multiplyBank,
 	noOp,
-	queuedMessageSend,
 	randomVariation
 } from '../../../lib/util';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
+import { sendToChannelID } from '../../../lib/util/webhook';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 interface NightmareUser {
@@ -127,7 +127,7 @@ export default class extends Task {
 		setActivityLoot(id, totalLoot.bank);
 
 		if (users.length > 1) {
-			queuedMessageSend(this.client, channelID, resultStr);
+			sendToChannelID(this.client, channelID, { content: resultStr });
 		} else {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;

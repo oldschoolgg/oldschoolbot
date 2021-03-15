@@ -19,10 +19,8 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const currentAgilityLevel = user.skillLevel(SkillsEnum.Agility);
 
-		const fish = Fishing.Fishes.find(fish => fish.id === fishID);
-		if (!fish) return;
+		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
 		let xpReceived = 0;
 		let leapingSturgeon = 0;
@@ -81,21 +79,13 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP(SkillsEnum.Fishing, xpReceived);
-		await user.addXP(SkillsEnum.Agility, agilityXpReceived);
+		const xpRes1 = await user.addXP(SkillsEnum.Fishing, xpReceived, duration);
+		const xpRes2 =
+			agilityXpReceived > 0
+				? await user.addXP(SkillsEnum.Agility, agilityXpReceived, duration)
+				: '';
 
-		const newLevel = user.skillLevel(SkillsEnum.Fishing);
-		const newAgilityLevel = user.skillLevel(SkillsEnum.Agility);
-
-		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${
-			fish.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes1} ${xpRes2}`;
 
 		if (fish.id === itemID('Raw karambwanji')) {
 			quantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
@@ -168,28 +158,16 @@ export default class extends Task {
 
 		const minutesInTrip = Math.ceil(duration / 1000 / 60);
 		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(6000)) {
+			if (roll(8000)) {
 				loot.add('Shelldon');
 				str += `\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!`;
 				break;
 			}
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank(loot, true);
 
 		str += `\n\nYou received: ${loot}.`;
-		if (fish.name === 'Barbarian fishing') {
-			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
-				fish.name
-			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP.
-\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
-			if (newLevel > currentLevel) {
-				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
-			}
-			if (newAgilityLevel > currentAgilityLevel) {
-				str += `\n\n${user.minionName}'s Agility level is now ${newAgilityLevel}!`;
-			}
-		}
 
 		handleTripFinish(
 			this.client,

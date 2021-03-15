@@ -3,16 +3,10 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	itemID,
-	multiplyBank,
-	noOp,
-	queuedMessageSend,
-	roll
-} from '../../lib/util';
+import { formatDuration, itemID, multiplyBank, noOp, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
+import { sendToChannelID } from '../../lib/util/webhook';
 
 const uniques = [
 	21034,
@@ -89,6 +83,6 @@ export default class extends Task {
 			await user.addItemsToBank(userLoot, true);
 		}
 
-		queuedMessageSend(this.client, channelID, resultMessage);
+		sendToChannelID(this.client, channelID, { content: resultMessage });
 	}
 }
