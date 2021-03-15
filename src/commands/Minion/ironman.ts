@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
@@ -14,8 +13,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@requiresMinion
-	@minionNotBusy
 	async run(msg: KlasaMessage) {
 		/**
 		 * If the user is an ironman already, lets ask them if they want to de-iron.
