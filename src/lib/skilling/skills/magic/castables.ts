@@ -47,8 +47,8 @@ export const Castables: Castable[] = [
 	},
 	{
 		id: itemID('Falador Teleport'),
-		name: 'Camelot Teleport',
-		input: new Bank().add('Law rune', 1).add('Air rune', 3).add('Warer rune', 1),
+		name: 'Falador Teleport',
+		input: new Bank().add('Law rune', 1).add('Air rune', 3).add('Water rune', 1),
 		output: null,
 		xp: 48,
 		level: 37,

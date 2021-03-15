@@ -90,6 +90,15 @@ export default class extends BotCommand {
 
 		const userGP = msg.author.settings.get(UserSettings.GP);
 
+		let gpCost = 0;
+		if (spell.gpCost) {
+			gpCost = spell.gpCost * quantity;
+			if (gpCost > userGP) {
+				return msg.send(`You need ${gpCost} GP to create ${quantity} planks.`);
+			}
+			await msg.author.removeGP(gpCost);
+		}
+
 		await msg.author.removeItemsFromBank(cost.bank);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.MagicCostBank,
@@ -98,14 +107,6 @@ export default class extends BotCommand {
 				cost.bank
 			])
 		);
-
-		if (spell.gpCost) {
-			const gpCost = spell.gpCost * quantity;
-			if (gpCost < userGP) {
-				return msg.send(`You need ${gpCost} GP to create ${quantity} planks.`);
-			}
-			await msg.author.removeGP(gpCost);
-		}
 
 		await addSubTaskToActivityTask<CastingActivityTaskOptions>(this.client, {
 			spellID: spell.id,
@@ -121,11 +122,10 @@ export default class extends BotCommand {
 		).toLocaleString()} XP/Hr`;
 
 		return msg.send(
-			`${msg.author.minionName} is now casting ${quantity}x ${
-				spell.name
+			`${msg.author.minionName} is now casting ${quantity}x ${spell.name
 			}, it'll take around ${formatDuration(
 				duration
-			)} to finish. Removed ${cost} from your bank. **${xpHr}**`
-		);
-	}
+			)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ``} from your bank. ** ${ xpHr }**`
+        );
+    }
 }
