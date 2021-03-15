@@ -67,12 +67,12 @@ export async function handleTripFinish(
 		await user.addItemsToBank(bonusLoot, true);
 		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`;
 	} else if (pet === itemID('Obis')) {
-		let loot = new Bank();
+		let bonusLoot = new Bank();
 		let rolls = minutes / 3;
 		for (let i = 0; i < rolls; i++) {
-			loot.add(RuneTable.roll());
+			bonusLoot.add(RuneTable.roll());
 		}
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank(bonusLoot.bank, true);
 		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`;
 	} else if (pet === itemID('Brock')) {
 		let bonusLoot = new Bank();

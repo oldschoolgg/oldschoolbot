@@ -19,6 +19,11 @@ import resolveItems from '../../lib/util/resolveItems';
 
 const pickaxes = [
 	{
+		id: itemID('Dwarven pickaxe'),
+		reductionPercent: 50,
+		miningLvl: 99
+	},
+	{
 		id: itemID('3rd age pickaxe'),
 		reductionPercent: 13,
 		miningLvl: 61
@@ -125,12 +130,9 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven pickaxe'))) {
-			timeToMine /= 2;
-		}
+		const boosts = [];
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
-		const boosts = [];
 		for (const pickaxe of pickaxes) {
 			if (
 				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
