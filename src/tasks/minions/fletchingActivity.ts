@@ -1,12 +1,9 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import Fletching from '../../lib/skilling/skills/fletching/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -30,10 +27,6 @@ export default class extends Task {
 			: quantity;
 
 		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
-		if (duration > Time.Minute * 20 && roll(10)) {
-			loot.multiply(2);
-			loot.add(getRandomMysteryBox());
-		}
 		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(

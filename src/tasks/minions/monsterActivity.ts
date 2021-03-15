@@ -4,7 +4,6 @@ import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
@@ -12,7 +11,7 @@ import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, itemID, multiplyBank, rand, roll } from '../../lib/util';
+import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -43,11 +42,6 @@ export default class extends Task {
 					loot[randArrItem(allKeyPieces)] = 1;
 				}
 			}
-		}
-
-		if (duration > Time.Minute * 20 && roll(10)) {
-			loot = multiplyBank(loot, 2);
-			loot[getRandomMysteryBox()] = 1;
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(4000)) {

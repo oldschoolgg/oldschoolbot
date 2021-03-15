@@ -1,12 +1,10 @@
 import { Task } from 'klasa';
 import { Bank, Openables } from 'oldschooljs';
 
-import { Time } from '../../../lib/constants';
-import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { multiplyBank, roll } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -38,11 +36,6 @@ export default class extends Task {
 			if (roll(completedFloors[completedFloors.length - 1].petChance)) {
 				loot.add('Giant squirrel');
 			}
-		}
-
-		if (duration > Time.Minute * 20 && roll(10)) {
-			loot.bank = multiplyBank(loot.bank, 2);
-			loot.bank[getRandomMysteryBox()] = 1;
 		}
 
 		if (user.usingPet('Flappy')) {

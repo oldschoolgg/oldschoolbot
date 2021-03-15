@@ -2,7 +2,6 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../../lib/constants';
-import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -46,10 +45,6 @@ export default class extends Task {
 					skills: user.rawSkills
 				})
 			]);
-		}
-		if (duration > Time.Minute * 20 && roll(10)) {
-			loot = multiplyBank(loot, 4);
-			loot[getRandomMysteryBox()] = 1;
 		}
 
 		let gotToad = false;

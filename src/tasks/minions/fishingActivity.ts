@@ -1,15 +1,14 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
+import { Emoji, Events } from '../../lib/constants';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, calcPercentOfNum, multiplyBank, roll } from '../../lib/util';
+import { anglerBoostPercent, calcPercentOfNum, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -101,11 +100,6 @@ export default class extends Task {
 				loot.add(cookedFish.id, quantity);
 				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!`;
 			}
-		}
-
-		if (duration > Time.Minute * 20 && roll(10)) {
-			loot.bank = multiplyBank(loot.bank, 2);
-			loot.add(getRandomMysteryBox());
 		}
 
 		if (fish.clueScrollChance) {
