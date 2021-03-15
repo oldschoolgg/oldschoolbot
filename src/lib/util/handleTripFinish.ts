@@ -65,7 +65,7 @@ export async function handleTripFinish(
 			}
 		}
 		await user.addItemsToBank(bonusLoot, true);
-		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${loot}.`;
+		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`;
 	} else if (pet === itemID('Obis')) {
 		let loot = new Bank();
 		let rolls = minutes / 3;
@@ -73,7 +73,7 @@ export async function handleTripFinish(
 			loot.add(RuneTable.roll());
 		}
 		await user.addItemsToBank(loot.bank, true);
-		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${loot}.`;
+		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`;
 	} else if (pet === itemID('Brock')) {
 		let bonusLoot = new Bank();
 		let rolls = minutes / 3;
@@ -81,7 +81,7 @@ export async function handleTripFinish(
 			bonusLoot.add(WoodTable.roll());
 		}
 		await user.addItemsToBank(bonusLoot.bank, true);
-		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${loot}.`;
+		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`;
 	} else if (pet === itemID('Wilvus')) {
 		let bonusLoot = new Bank();
 		let rolls = minutes / 6;
@@ -89,7 +89,7 @@ export async function handleTripFinish(
 			bonusLoot.add(WilvusTable.roll());
 		}
 		await user.addItemsToBank(bonusLoot.bank, true);
-		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${loot}.`;
+		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`;
 	} else if (pet === itemID('Smokey')) {
 		let bonusLoot = new Bank();
 		for (let i = 0; i < minutes; i++) {
@@ -99,7 +99,7 @@ export async function handleTripFinish(
 		}
 		if (bonusLoot.length > 0) {
 			await user.addItemsToBank(bonusLoot.bank, true);
-			message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${loot}.`;
+			message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`;
 		}
 	}
 	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;

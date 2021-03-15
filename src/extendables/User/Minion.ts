@@ -651,7 +651,7 @@ export default class extends Extendable {
 		}
 
 		const newXP = Math.min(5_000_000_000, currentXP + amount);
-		const newLevel = convertXPtoLVL(newXP);
+		const newLevel = convertXPtoLVL(newXP, 120);
 
 		// If they reached a XP milestone, send a server notification.
 		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {

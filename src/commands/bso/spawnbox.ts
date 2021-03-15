@@ -49,7 +49,7 @@ export default class extends BotCommand {
 			const collected = await msg.channel.awaitMessages(
 				_msg =>
 					cleanString(_msg.content.toLowerCase()) ===
-					cleanString(randomItem.name.toLowerCase()),
+						cleanString(randomItem.name.toLowerCase()) && !_msg.author.isIronman,
 				{
 					max: 1,
 					time: 14_000,

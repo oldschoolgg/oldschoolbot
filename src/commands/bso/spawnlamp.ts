@@ -53,7 +53,7 @@ export default class extends BotCommand {
 
 		try {
 			const collected = await msg.channel.awaitMessages(
-				_msg => _msg.content === level.toString(),
+				_msg => _msg.content === level.toString() && !_msg.author.isIronman,
 				{
 					max: 1,
 					time: 14_000,

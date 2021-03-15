@@ -44,6 +44,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (buyable.name === 'Bank lottery ticket' && msg.author.isIronman) {
+			return msg.send(`Ironmen cant buy this.`);
+		}
+
 		if (buyable.qpRequired) {
 			const QP = msg.author.settings.get(UserSettings.QP);
 			if (QP < buyable.qpRequired) {

@@ -28,6 +28,9 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
 		if (user.bot || user === msg.author) return;
+
+		if (msg.author.isIronman || user.isIronman) return;
+
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
 				`Are you sure you want to give a random stack of items from your bank to ${user.username}? Please type \`yes\` to confirm.`
