@@ -11,6 +11,8 @@ interface Castable {
 	ticks: number;
 	qpRequired?: number;
 	gpCost?: number;
+	craftLevel?: number;
+	craftXp?: number;
 }
 
 export const Castables: Castable[] = [
@@ -75,7 +77,9 @@ export const Castables: Castable[] = [
 		xp: 75,
 		level: 76,
 		ticks: 5,
-		qpRequired: 50
+		qpRequired: 50,
+		craftXp: 75,
+		craftLevel: 10
 	},
 	{
 		id: itemID('Green dragon leather'),
@@ -145,7 +149,9 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50
+		qpRequired: 50,
+		craftXp: 4,
+		craftLevel: 8
 	},
 	{
 		id: itemID('Sapphire amulet'),
@@ -159,7 +165,9 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50
+		qpRequired: 50,
+		craftXp: 4,
+		craftLevel: 24
 	},
 	{
 		id: itemID('Emerald amulet'),
@@ -173,7 +181,9 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50
+		qpRequired: 50,
+		craftXp: 4,
+		craftLevel: 31
 	},
 	{
 		id: itemID('Ruby amulet'),
@@ -187,7 +197,9 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50
+		qpRequired: 50,
+		craftXp: 4,
+		craftLevel: 50
 	},
 	{
 		id: itemID('Diamond amulet'),
@@ -201,7 +213,9 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50
+		qpRequired: 50,
+		craftXp: 4,
+		craftLevel: 70
 	},
 	{
 		id: itemID('Dragonstone amulet'),
@@ -215,7 +229,25 @@ export const Castables: Castable[] = [
 		xp: 83,
 		level: 80,
 		ticks: 3,
-		qpRequired: 50
+		qpRequired: 50,
+		craftXp: 4,
+		craftLevel: 80
+	},
+	{
+		id: itemID('Onyx amulet'),
+		name: 'String Onyx',
+		input: new Bank()
+			.add('Astral rune', 2)
+			.add('Water rune', 5)
+			.add('Earth rune', 10)
+			.add('Onyx amulet (u)', 1),
+		output: new Bank().add('Onyx amulet', 1),
+		xp: 83,
+		level: 80,
+		ticks: 3,
+		qpRequired: 50,
+		craftXp: 4,
+		craftLevel: 90
 	},
 	{
 		id: itemID('Plank'),
@@ -226,8 +258,8 @@ export const Castables: Castable[] = [
 			.add('Earth rune', 15)
 			.add('Logs', 1),
 		output: new Bank().add('Plank', 1),
-		xp: 88,
-		level: 90,
+		xp: 90,
+		level: 86,
 		ticks: 3,
 		qpRequired: 50,
 		gpCost: 70
@@ -241,8 +273,8 @@ export const Castables: Castable[] = [
 			.add('Earth rune', 15)
 			.add('Oak logs', 1),
 		output: new Bank().add('Oak Plank', 1),
-		xp: 88,
-		level: 90,
+		xp: 90,
+		level: 86,
 		ticks: 3,
 		qpRequired: 50,
 		gpCost: 175
@@ -256,8 +288,8 @@ export const Castables: Castable[] = [
 			.add('Earth rune', 15)
 			.add('Teak logs', 1),
 		output: new Bank().add('Teak plank', 1),
-		xp: 88,
-		level: 90,
+		xp: 90,
+		level: 86,
 		ticks: 3,
 		qpRequired: 50,
 		gpCost: 350
@@ -271,8 +303,8 @@ export const Castables: Castable[] = [
 			.add('Earth rune', 15)
 			.add('Mahogany logs', 1),
 		output: new Bank().add('Mahogany plank', 1),
-		xp: 88,
-		level: 90,
+		xp: 90,
+		level: 86,
 		ticks: 3,
 		qpRequired: 50,
 		gpCost: 1050
@@ -282,12 +314,12 @@ export const Castables: Castable[] = [
 		name: 'Recharge Glory',
 		input: new Bank()
 			.add('Astral rune', 1)
-			.add('Water rune', 5)
+			.add('Water rune', 4)
 			.add('Soul rune', 1)
-			.add('Amulet of glory', 1),
-		output: new Bank().add('Amulet of glory (4)', 1),
-		xp: 83,
-		level: 80,
+			.add('Amulet of glory', 25),
+		output: new Bank().add('Amulet of glory (4)', 25),
+		xp: 97.5,
+		level: 89,
 		ticks: 3,
 		qpRequired: 50
 	},
@@ -296,12 +328,12 @@ export const Castables: Castable[] = [
 		name: 'Recharge Combat Bracelet',
 		input: new Bank()
 			.add('Astral rune', 1)
-			.add('Water rune', 5)
+			.add('Water rune', 4)
 			.add('Soul rune', 1)
-			.add('Combat bracelet', 1),
-		output: new Bank().add('Combat bracelet (4)', 1),
-		xp: 83,
-		level: 80,
+			.add('Combat bracelet', 25),
+		output: new Bank().add('Combat bracelet (4)', 25),
+		xp: 97.5,
+		level: 89,
 		ticks: 3,
 		qpRequired: 50
 	},
@@ -310,12 +342,12 @@ export const Castables: Castable[] = [
 		name: 'Recharge Skills Necklace',
 		input: new Bank()
 			.add('Astral rune', 1)
-			.add('Water rune', 5)
+			.add('Water rune', 4)
 			.add('Soul rune', 1)
-			.add('Skills necklace', 1),
-		output: new Bank().add('Skills necklace (4)', 1),
-		xp: 83,
-		level: 80,
+			.add('Skills necklace', 25),
+		output: new Bank().add('Skills necklace (4)', 25),
+		xp: 97.5,
+		level: 89,
 		ticks: 3,
 		qpRequired: 50
 	}

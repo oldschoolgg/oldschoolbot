@@ -50,6 +50,12 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (spell.craftLevel && msg.author.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
+			return msg.send(
+				`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`
+			);
+		}
+
 		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {
 			return msg.send(
 				`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`
@@ -117,16 +123,23 @@ export default class extends BotCommand {
 			type: Activity.Casting
 		});
 
-		const xpHr = `${Math.round(
+		const magicXpHr = `${Math.round(
 			((spell.xp * quantity) / (duration / Time.Minute)) * 60
-		).toLocaleString()} XP/Hr`;
+		).toLocaleString()} Magic XP/Hr`;
+
+		let craftXpHr = '';
+		if (spell.craftXp) {
+			craftXpHr = `and** ${Math.round(
+				((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
+			).toLocaleString()} Crafting XP/Hr**`;
+		}
 
 		return msg.send(
 			`${msg.author.minionName} is now casting ${quantity}x ${
 				spell.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost}${
 				spell.gpCost ? ` and ${gpCost} Coins` : ``
-			} from your bank. ** ${xpHr}**`
+			} from your bank. **${magicXpHr}** ${craftXpHr}`
 		);
 	}
 }

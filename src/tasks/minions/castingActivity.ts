@@ -14,7 +14,25 @@ export default class extends Task {
 		const spell = Castables.find(i => i.id === spellID)!;
 
 		const xpReceived = quantity * spell.xp;
+<<<<<<< Updated upstream
 		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
+=======
+
+		let craftXpReceived = 0;
+		if (spell.craftXp) {
+			craftXpReceived = spell.craftXp * quantity;
+
+			await user.addXP(SkillsEnum.Crafting, craftXpReceived);
+		}
+
+		await user.addXP(SkillsEnum.Magic, xpReceived);
+		const newMagicLevel = user.skillLevel(SkillsEnum.Magic);
+		const newCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
+=======
+		const xpReceived = quantity * spell.xp;
+		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
+>>>>>>> 271107b42b555e15a839e61af4d4392f4dad42e4
+>>>>>>> Stashed changes
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
@@ -23,7 +41,19 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
 			spell.name
+<<<<<<< Updated upstream
 		}, you received ${loot ?? 'no items'}. ${xpRes}`;
+=======
+		}, you received ${xpReceived.toLocaleString()} Magic XP and ${loot ?? 'no items'}.`;
+
+		if (newMagicLevel > currentLevel) {
+			str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
+		}
+
+		if (newCraftingLevel > currentLevel) {
+			str += `\n\n${user.minionName}'s Magic level is now ${newCraftingLevel}!`;
+		}
+>>>>>>> Stashed changes
 
 		handleTripFinish(
 			this.client,
