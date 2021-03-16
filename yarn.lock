@@ -2343,10 +2343,10 @@ fastify-rate-limit@^5.5.0:
     ms "^2.1.1"
     tiny-lru "^7.0.0"
 
-fastify-sensible@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/fastify-sensible/-/fastify-sensible-3.1.0.tgz#259f13373e0df2d37b720e08474db96c6f62985a"
-  integrity sha512-T5ZzpZ0I+seu4WvtU3O1YD3OhYU2RLewTObaMHCxkxEw8uLFRk9zgnbYk7YeiS8azV65jTPYTElCfgrHhfqOXA==
+fastify-sensible@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/fastify-sensible/-/fastify-sensible-3.1.1.tgz#e81119389bfd955da7fdc7fc0a96428ecffcfe13"
+  integrity sha512-qWGsLEcc8VmLpbbWY7VJwXwWISsGBH9H4J2QeIc+l5Ov3a1lYs7ZaSnr0X8dkffdvzr9iy8wQyIuthpKTy5sZA==
   dependencies:
     fast-deep-equal "^3.1.1"
     fastify-plugin "^3.0.0"
