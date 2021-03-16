@@ -10,7 +10,7 @@ import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, channelIsSendable, noOp, randomVariation } from '../../../lib/util';
+import { addBanks, noOp, randomVariation } from '../../../lib/util';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -113,31 +113,29 @@ export default class extends Task {
 
 		if (users.length > 1) {
 			sendToChannelID(this.client, channelID, { content: resultStr });
+		} else if (!kcAmounts[leader]) {
+			sendToChannelID(this.client, channelID, {
+				content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
+			});
 		} else {
-			const channel = this.client.channels.get(channelID);
-			if (!channelIsSendable(channel)) return;
-
-			if (!kcAmounts[leader]) {
-				channel.send(
-					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
+			const { image } = await this.client.tasks
+				.get('bankImage')!
+				.generateBankImage(
+					teamsLoot[leader],
+					`${quantity}x Nightmare`,
+					true,
+					{ showNewCL: 1 },
+					leaderUser
 				);
-			} else {
-				channel.sendBankImage({
-					bank: teamsLoot[leader],
-					content: `${leaderUser}, ${
-						leaderUser.minionName
-					} finished killing ${quantity} ${NightmareMonster.name}, you died ${
-						deaths[leader] ?? 0
-					} times. Your Nightmare KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
-							0) + quantity
-					}.`,
-					title: `${quantity}x Nightmare`,
-					background: leaderUser.settings.get(UserSettings.BankBackground),
-					user: leaderUser,
-					flags: { showNewCL: 1 }
-				});
-			}
+			sendToChannelID(this.client, channelID, {
+				content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+					NightmareMonster.name
+				}, you died ${deaths[leader] ?? 0} times. Your Nightmare KC is now ${
+					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
+						0) + quantity
+				}.`,
+				image: image!
+			});
 		}
 	}
 }
