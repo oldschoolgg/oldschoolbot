@@ -1002,7 +1002,7 @@ setCustomItem(50_002, 'Rocktail', getOSItem('Trout'), {}, 10_000);
 setCustomItem(50_003, 'Blacksmith helmet', getOSItem('Rune full helm'), {}, 10_000);
 setCustomItem(50_004, 'Blacksmith top', getOSItem('Rune platebody'), {}, 10_000);
 setCustomItem(50_005, 'Blacksmith apron', getOSItem('Rune platelegs'), {}, 10_000);
-setCustomItem(50_006, 'Blacksmith gloves', getOSItem('Rune gloves'), {}, 10_000);
+setCustomItem(50_006, 'Blacksmith gloves', getOSItem('Leather gloves'), {}, 10_000);
 setCustomItem(50_007, 'Blacksmith boots', getOSItem('Rune boots'), {}, 10_000);
 
 setCustomItem(50_008, 'Mysterious seed', getOSItem('Magic seed'), {}, 100_000);
