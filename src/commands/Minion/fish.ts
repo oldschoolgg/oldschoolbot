@@ -63,8 +63,12 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (fish.name === 'Barbarian fishing' && msg.author.skillLevel(SkillsEnum.Agility) < 15) {
-			return msg.send(`You need at least 15 Agility to catch those!`);
+		if (
+			fish.name === 'Barbarian fishing' &&
+			(msg.author.skillLevel(SkillsEnum.Agility) < 15 ||
+				msg.author.skillLevel(SkillsEnum.Strength) < 15)
+		) {
+			return msg.send(`You need at least 15 Agility and Strength to do Barbarian Fishing.`);
 		}
 
 		// If no quantity provided, set it to the max.
