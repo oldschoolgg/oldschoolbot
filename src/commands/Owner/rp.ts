@@ -29,6 +29,10 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 		if (!isMod && !isOwner) return null;
 
+		if (input) {
+			await input.settings.sync(true);
+		}
+
 		// Mod commands
 		switch (cmd.toLowerCase()) {
 			case 'bypassage': {
