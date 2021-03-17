@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -49,6 +50,18 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (spell.craftLevel && msg.author.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
+			return msg.send(
+				`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`
+			);
+		}
+
+		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {
+			return msg.send(
+				`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`
+			);
+		}
+
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
@@ -80,6 +93,18 @@ export default class extends BotCommand {
 				}, you're missing **${cost.clone().remove(userBank)}** (Cost: ${cost}).`
 			);
 		}
+
+		const userGP = msg.author.settings.get(UserSettings.GP);
+
+		let gpCost = 0;
+		if (spell.gpCost) {
+			gpCost = spell.gpCost * quantity;
+			if (gpCost > userGP) {
+				return msg.send(`You need ${gpCost} GP to create ${quantity} planks.`);
+			}
+			await msg.author.removeGP(gpCost);
+		}
+
 		await msg.author.removeItemsFromBank(cost.bank);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.MagicCostBank,
@@ -98,16 +123,23 @@ export default class extends BotCommand {
 			type: Activity.Casting
 		});
 
-		const xpHr = `${Math.round(
+		const magicXpHr = `${Math.round(
 			((spell.xp * quantity) / (duration / Time.Minute)) * 60
-		).toLocaleString()} XP/Hr`;
+		).toLocaleString()} Magic XP/Hr`;
+
+		let craftXpHr = '';
+		if (spell.craftXp) {
+			craftXpHr = `and** ${Math.round(
+				((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
+			).toLocaleString()} Crafting XP/Hr**`;
+		}
 
 		return msg.send(
 			`${msg.author.minionName} is now casting ${quantity}x ${
 				spell.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${cost} from your bank. **${xpHr}**`
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost}${
+				spell.gpCost ? ` and ${gpCost} Coins` : ``
+			} from your bank. **${magicXpHr}** ${craftXpHr}`
 		);
 	}
 }
