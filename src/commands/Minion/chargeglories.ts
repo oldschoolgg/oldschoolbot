@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			Math.floor(maxTripLength / invDuration)
 		);
 		if (quantity === undefined) {
-			quantity = max;
+			quantity = Math.floor(max);
 		}
 
 		const duration = quantity * invDuration;
