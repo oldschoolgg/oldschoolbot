@@ -91,6 +91,12 @@ export default class extends BotCommand {
 			msg.author.getKC(monster.id)
 		);
 
+		const attackStyles = resolveAttackStyles(msg.author, monster.id)[2];
+		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
+
+		timeToFinish = newTime;
+		boosts.push(skillBoostMsg);
+
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 		if (monster.pohBoosts) {
@@ -152,19 +158,12 @@ export default class extends BotCommand {
 			);
 		}
 
-		duration = randomVariation(duration, 10);
+		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
 		}
-
-		const attackStyles = resolveAttackStyles(msg.author, monster.id)[2];
-
-		const [newDuration, skillBoostMsg] = applySkillBoost(msg.author, duration, attackStyles);
-
-		duration = newDuration;
-		boosts.push(skillBoostMsg);
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,
