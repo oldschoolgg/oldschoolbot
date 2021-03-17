@@ -36,6 +36,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [_styles]: [string]) {
+		if (msg.author.minionIsBusy) {
+			return msg.send(`You can't change your attack style in the middle of a trip.`);
+		}
 		if (!_styles) {
 			return msg.send(
 				`Your current attack style is ${msg.author
