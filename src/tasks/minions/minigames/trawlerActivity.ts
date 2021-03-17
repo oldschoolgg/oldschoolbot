@@ -4,9 +4,13 @@ import { Bank } from 'oldschooljs';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent, calcPercentOfNum } from '../../../lib/util';
+import {
+	addBanks,
+	anglerBoostPercent,
+	calcPercentOfNum,
+	skillsMeetRequirements
+} from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { skillsMeetRequirements } from '../../../lib/util/skillsMeetRequirements';
 
 function hasEliteArdougneDiary(user: KlasaUser): boolean {
 	return skillsMeetRequirements(user.rawSkills, {

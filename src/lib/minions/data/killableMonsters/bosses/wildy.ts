@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -27,7 +28,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
 			[itemID('Berserker ring')]: 2
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -49,7 +51,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -71,7 +74,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -92,7 +96,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Archers ring')]: 3,
 			[itemID('Barrows gloves')]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -109,7 +114,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID("Karil's leathertop")]: 3,
 			[itemID("Karil's leatherskirt")]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -124,7 +130,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 10
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Magic]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -156,7 +163,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Armadyl crossbow')]: 10
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -172,7 +180,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 10
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Magic]
 	}
 ];
 

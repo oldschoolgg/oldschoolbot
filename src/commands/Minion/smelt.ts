@@ -62,9 +62,11 @@ export default class extends BotCommand {
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
+			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 		}
 
 		await msg.author.settings.sync(true);
@@ -80,14 +82,13 @@ export default class extends BotCommand {
 		}
 
 		const duration = quantity * timeToSmithSingleBar;
-
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					bar.name
-				}s you can smelt is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`
+				}s you can smelt is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
 			);
 		}
 

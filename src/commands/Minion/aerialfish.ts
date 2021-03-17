@@ -81,8 +81,10 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [tripTime]: [number | string | undefined]) {
+		const maxTripLength = msg.author.maxTripLength(Activity.AerialFishing);
+
 		if (typeof tripTime !== 'number') {
-			tripTime = Math.floor(msg.author.maxTripLength / Time.Minute);
+			tripTime = Math.floor(maxTripLength / Time.Minute);
 		}
 		await msg.author.settings.sync(true);
 
@@ -103,12 +105,12 @@ export default class extends BotCommand {
 
 		let tripLength = Time.Minute * tripTime;
 
-		if (tripLength > msg.author.maxTripLength) {
+		if (tripLength > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(
-					msg.author.maxTripLength / Time.Minute
+					maxTripLength / Time.Minute
 				)}.`
 			);
 		}

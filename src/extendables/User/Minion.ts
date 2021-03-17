@@ -1,12 +1,23 @@
 import { User } from 'discord.js';
+import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../../lib/constants';
+import {
+	Activity,
+	Emoji,
+	Events,
+	MAX_QP,
+	PerkTier,
+	skillEmoji,
+	Time,
+	ZALCANO_ID
+} from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
+import { AttackStyles } from '../../lib/minions/functions';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
@@ -65,6 +76,7 @@ import {
 	incrementMinionDailyDuration,
 	itemNameFromID,
 	stringMatches,
+	toKMB,
 	toTitleCase,
 	Util
 } from '../../lib/util';
@@ -79,12 +91,12 @@ import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()
 	.add('🎉', 200)
-	.add('🎆', 100)
-	.add('🙌', 100)
-	.add('🎇', 100)
-	.add('🥳', 100)
-	.add('🍻', 100)
-	.add('🎊', 100)
+	.add('🎆', 10)
+	.add('🙌', 10)
+	.add('🎇', 10)
+	.add('🥳', 10)
+	.add('🍻', 10)
+	.add('🎊', 10)
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
@@ -537,13 +549,39 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public get maxTripLength(this: User) {
-		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) return Time.Minute * 33;
-		if (perkTier === PerkTier.Three) return Time.Minute * 36;
-		if (perkTier >= PerkTier.Four) return Time.Minute * 40;
+	public maxTripLength(this: User, activity?: Activity) {
+		let max = Time.Minute * 30;
 
-		return Time.Minute * 30;
+		const perkTier = getUsersPerkTier(this);
+		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
+		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
+		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
+
+		if (!activity) return max;
+		switch (activity) {
+			case Activity.Nightmare:
+			case Activity.GroupMonsterKilling:
+			case Activity.MonsterKilling:
+			case Activity.Wintertodt:
+			case Activity.Zalcano:
+			case Activity.BarbarianAssault:
+			case Activity.AnimatedArmour:
+			case Activity.Sepulchre:
+			case Activity.Pickpocket:
+			case Activity.SoulWars:
+			case Activity.Cyclops: {
+				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
+				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
+				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+				break;
+			}
+
+			default: {
+				break;
+			}
+		}
+
+		return max;
 	}
 
 	// @ts-ignore 2784
@@ -636,12 +674,11 @@ export default class extends Extendable {
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
-		let str = `You received ${amount.toLocaleString()} ${name} XP, you now have ${newXP.toLocaleString()} ${name} XP.`;
+		let str = `You received ${amount.toLocaleString()} ${skillEmoji[skillName]} XP`;
 		if (duration) {
-			const xpHr = `(${Math.round(
-				(amount / (duration / Time.Minute)) * 60
-			).toLocaleString()} XP/Hr`;
-			str += ` ${xpHr})`;
+			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
+			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
 		if (currentLevel !== newLevel) {
 			str += `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
@@ -751,5 +788,15 @@ export default class extends Extendable {
 			UserSettings.CreatureScores,
 			addItemToBank(currentCreatureScores, creatureID, amountToAdd)
 		);
+	}
+
+	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {
+		await this.settings.update(UserSettings.AttackStyle, newStyles, {
+			arrayAction: 'overwrite'
+		});
+	}
+
+	public getAttackStyles(this: User) {
+		return this.settings.get(UserSettings.AttackStyle);
 	}
 }
