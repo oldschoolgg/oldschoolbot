@@ -65,7 +65,7 @@ export async function addMonsterXP(
 	duration: number
 ) {
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
-	const hp = osjsMon?.data?.hitpoints || miscHpMap[monsterID] || 1;
+	const hp = osjsMon.data?.hitpoints || miscHpMap[monsterID] || 1;
 	const totalXP = hp * 4 * quantity;
 	const xpPerSkill = totalXP / attackStyles.length;
 
