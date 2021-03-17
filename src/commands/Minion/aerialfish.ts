@@ -80,10 +80,10 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(
-		msg: KlasaMessage,
-		[tripTime = Math.floor(msg.author.maxTripLength / Time.Minute)]: [number]
-	) {
+	async run(msg: KlasaMessage, [tripTime]: [number | string | undefined]) {
+		if (typeof tripTime !== 'number') {
+			tripTime = Math.floor(msg.author.maxTripLength / Time.Minute);
+		}
 		await msg.author.settings.sync(true);
 
 		if (
