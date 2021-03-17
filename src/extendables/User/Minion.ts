@@ -549,17 +549,37 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public get maxTripLength(this: User) {
+	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
-
-		const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
-		const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-		max += calcPercentOfNum(hpPercent, Time.Minute * 5);
 
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
 		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
 		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
+
+		if (!activity) return max;
+		switch (activity) {
+			case Activity.Nightmare:
+			case Activity.GroupMonsterKilling:
+			case Activity.MonsterKilling:
+			case Activity.Wintertodt:
+			case Activity.Zalcano:
+			case Activity.BarbarianAssault:
+			case Activity.AnimatedArmour:
+			case Activity.Sepulchre:
+			case Activity.Pickpocket:
+			case Activity.SoulWars:
+			case Activity.Cyclops: {
+				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
+				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
+				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+				break;
+			}
+
+			default: {
+				break;
+			}
+		}
 
 		return max;
 	}

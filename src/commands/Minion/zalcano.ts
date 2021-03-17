@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		else if (kc > 50) healAmountNeeded = 3 * 12;
 		else if (kc > 20) healAmountNeeded = 5 * 12;
 
-		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.Zalcano) / baseTime);
 		const duration = quantity * baseTime;
 
 		const [food] = await removeFoodFromUser({

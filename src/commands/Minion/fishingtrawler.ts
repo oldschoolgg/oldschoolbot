@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
 		tripLength = reduceNumByPercent(tripLength, boost);
 
-		const quantity = Math.floor(msg.author.maxTripLength / tripLength);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.FishingTrawler) / tripLength);
 		const duration = quantity * tripLength;
 
 		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>(this.client, {

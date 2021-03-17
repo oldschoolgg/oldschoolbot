@@ -117,7 +117,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
-		const duration = msg.author.maxTripLength;
+		const duration = msg.author.maxTripLength(Activity.AgilityArena);
 
 		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			return msg.send(

@@ -59,9 +59,11 @@ export default class extends BotCommand {
 			invDuration /= 3;
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.GloryCharging);
+
 		const max = Math.min(
 			amountHas / gloriesInventorySize,
-			Math.floor(msg.author.maxTripLength / invDuration)
+			Math.floor(maxTripLength / invDuration)
 		);
 		if (quantity === undefined) {
 			quantity = max;
@@ -69,12 +71,12 @@ export default class extends BotCommand {
 
 		const duration = quantity * invDuration;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of inventories of glories you can recharge is ${Math.floor(
-					msg.author.maxTripLength / invDuration
+					maxTripLength / invDuration
 				)}.`
 			);
 		}

@@ -104,9 +104,11 @@ export default class extends BotCommand {
 			timeToCraftSingleItem /= 3.25;
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Crafting);
+
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToCraftSingleItem);
+			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
 			for (const [itemID, qty] of requiredItems) {
 				const id = parseInt(itemID);
 				if (id === 995) {
@@ -127,15 +129,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToCraftSingleItem;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					Craft.name
-				}s you can craft is ${Math.floor(
-					msg.author.maxTripLength / timeToCraftSingleItem
-				)}.`
+				}s you can craft is ${Math.floor(maxTripLength / timeToCraftSingleItem)}.`
 			);
 		}
 

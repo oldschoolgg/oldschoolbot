@@ -284,7 +284,7 @@ export default class extends BotCommand {
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
-		const quantity = Math.floor(msg.author.maxTripLength / waveTime);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
 		const duration = quantity * waveTime;
 
 		boosts.push(`Each wave takes ${formatDuration(waveTime)}`);

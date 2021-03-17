@@ -12,7 +12,7 @@ import { Connection } from 'typeorm';
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
-import { BitField, PerkTier } from '../constants';
+import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
 import {
 	GearSetup,
 	GearSetupType,
@@ -239,7 +239,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength: number;
+		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
 	}
 

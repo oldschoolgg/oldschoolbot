@@ -68,7 +68,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		const { maxTripLength, minionName } = msg.author;
+		const { minionName } = msg.author;
 
 		const boosts = [];
 		let messages: string[] = [];
@@ -111,6 +111,8 @@ export default class extends BotCommand {
 				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 			}
 		}
+
+		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

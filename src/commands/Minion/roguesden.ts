@@ -54,13 +54,15 @@ export default class extends BotCommand {
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage);
 
-		let quantity = Math.floor(msg.author.maxTripLength / baseTime);
+		let quantity = Math.floor(msg.author.maxTripLength(Activity.RoguesDenMaze) / baseTime);
 
 		if (msg.author.hasItemEquippedOrInBank('Stamina potion(4)')) {
 			baseTime = reduceNumByPercent(baseTime, 50);
 
 			const potionsInBank = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
-			const maxPossibleLaps = Math.floor(msg.author.maxTripLength / baseTime);
+			const maxPossibleLaps = Math.floor(
+				msg.author.maxTripLength(Activity.RoguesDenMaze) / baseTime
+			);
 
 			// do as many laps as possible with the current stamina potion supply
 			quantity = Math.min(potionsInBank * 4, maxPossibleLaps);
