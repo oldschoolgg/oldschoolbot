@@ -117,9 +117,11 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (duration > msg.author.maxTripLength) {
+		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+
+		if (duration > maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
+				maxTripLength
 			)}, try a lower quantity.`;
 		}
 

@@ -56,20 +56,22 @@ export default class extends BotCommand {
 			);
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
+
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timePerLap);
+			quantity = Math.floor(maxTripLength / timePerLap);
 		}
 		const duration = quantity * timePerLap;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					course.name
-				} laps you can do is ${Math.floor(msg.author.maxTripLength / timePerLap)}.`
+				} laps you can do is ${Math.floor(maxTripLength / timePerLap)}.`
 			);
 		}
 
