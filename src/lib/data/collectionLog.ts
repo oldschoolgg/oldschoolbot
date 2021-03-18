@@ -260,6 +260,7 @@ export const bosses: CollectionLogData = {
 		'Spectral sigil',
 		'Arcane sigil',
 		'Elysian sigil',
+		'Jar of spirits',
 		'Pet dark core'
 	]),
 	Cerberus: resolveItems([
