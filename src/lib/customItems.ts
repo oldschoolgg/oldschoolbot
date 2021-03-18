@@ -939,6 +939,12 @@ setCustomItem(40_014, 'Thieving master cape', getOSItem('Abyssal cape'), {}, 1_0
 setCustomItem(40_015, 'Woodcutting master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
 setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
 
+setCustomItem(40_017, 'Attack master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+setCustomItem(40_018, 'Strength master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+setCustomItem(40_019, 'Defence master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+setCustomItem(40_020, 'Hitpoints master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+setCustomItem(40_021, 'Ranged master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+
 // Pets
 
 /**

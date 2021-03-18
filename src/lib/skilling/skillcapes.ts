@@ -219,6 +219,26 @@ export const MasterSkillcapes: MasterSkillcape[] = [
 	{
 		skill: SkillsEnum.Magic,
 		item: getOSItem('Magic master cape')
+	},
+	{
+		skill: SkillsEnum.Hitpoints,
+		item: getOSItem('Hitpoints master cape')
+	},
+	{
+		skill: SkillsEnum.Ranged,
+		item: getOSItem('Ranged master cape')
+	},
+	{
+		skill: SkillsEnum.Attack,
+		item: getOSItem('Attack master cape')
+	},
+	{
+		skill: SkillsEnum.Strength,
+		item: getOSItem('Strength master cape')
+	},
+	{
+		skill: SkillsEnum.Defence,
+		item: getOSItem('Defence master cape')
 	}
 ];
 
