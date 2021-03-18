@@ -4,8 +4,7 @@ import { KlasaUser } from 'klasa';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
-import emoji from '../../lib/data/skill-emoji';
-import { badges } from '../constants';
+import { badges, skillEmoji } from '../constants';
 import ClueTiers from '../minions/data/clueTiers';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -22,14 +21,15 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	const totalLevel = user.totalLevel();
 	const skillCell = (skill: string) => {
 		if (skill === 'overall') {
-			return `${emoji[skill as keyof typeof emoji] as keyof SkillsScore} ${totalLevel}`;
+			return `${
+				skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore
+			} ${totalLevel}`;
 		}
 
 		const skillXP = rawSkills[skill as keyof Skills] ?? 1;
-		return `${emoji[skill as keyof typeof emoji] as keyof SkillsScore} ${convertXPtoLVL(
-			skillXP,
-			120
-		).toLocaleString()} (${toKMB(skillXP)})`;
+		return `${
+			skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore
+		} ${convertXPtoLVL(skillXP, 120).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
 	const clueEntries = Object.entries(user.settings.get(UserSettings.ClueScores));
@@ -90,7 +90,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	}
 
 	embed.addField(
-		`${emoji.total} Overall`,
+		`${skillEmoji.total} Overall`,
 		`**Level:** ${totalLevel}
 **XP:** ${xp.toLocaleString()}
 **QP** ${QP}`,

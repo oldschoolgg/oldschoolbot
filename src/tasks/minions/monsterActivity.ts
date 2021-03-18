@@ -1,15 +1,14 @@
-import { randArrItem } from 'e';
+import { randArrItem, Time } from 'e';
 import { Task } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Time } from '../../lib/constants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -93,8 +92,9 @@ export default class extends Task {
 		}
 		announceLoot(this.client, user, monster as KillableMonster, quantity, loot);
 
-		const previousCL = user.settings.get(UserSettings.CollectionLogBank);
-		await user.addItemsToBank(loot, true);
+		const { previousCL } = await user.addItemsToBank(loot, true);
+
+		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
@@ -109,7 +109,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${user.getKC(monsterID)}.`;
+		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
 
 		if (gotBrock) {
 			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;

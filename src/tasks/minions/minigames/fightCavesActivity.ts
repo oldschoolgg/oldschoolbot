@@ -53,7 +53,7 @@ export default class extends Task {
 
 			await user.addItemsToBank(itemLootBank, true);
 
-			handleTripFinish(
+			return handleTripFinish(
 				this.client,
 				user,
 				channelID,
@@ -77,7 +77,7 @@ export default class extends Task {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
 			await user.addItemsToBank(failBank, true);
 
-			handleTripFinish(
+			return handleTripFinish(
 				this.client,
 				user,
 				channelID,
@@ -93,7 +93,6 @@ export default class extends Task {
 				data,
 				failBank.bank
 			);
-			return;
 		}
 
 		await user.incrementMonsterScore(Monsters.TzTokJad.id);

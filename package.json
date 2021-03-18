@@ -13,7 +13,7 @@
 	"dependencies": {
 		"@kcp/tags": "^1.0.0",
 		"@octokit/graphql": "^4.6.1",
-		"@sapphire/discord-utilities": "^2.0.5",
+		"@sapphire/discord-utilities": "^2.0.6",
 		"@sentry/node": "5.20.1",
 		"@sinclair/typebox": "^0.12.9",
 		"@types/table": "^6.0.0",
@@ -28,7 +28,7 @@
 		"fastify-cors": "^5.2.0",
 		"fastify-helmet": "^5.3.0",
 		"fastify-rate-limit": "^5.5.0",
-		"fastify-sensible": "^3.1.0",
+		"fastify-sensible": "^3.1.1",
 		"he": "^1.2.0",
 		"jwt-simple": "^0.5.6",
 		"klasa": "github:dirigeants/klasa#916/head",

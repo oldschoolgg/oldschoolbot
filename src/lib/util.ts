@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
-import { randInt, shuffleArr } from 'e';
+import { objectEntries, randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -23,7 +23,9 @@ import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
+import { Skills } from './types';
 import itemID from './util/itemID';
+import { sendToChannelID } from './util/webhook';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -364,14 +366,13 @@ export async function incrementMinionDailyDuration(
 	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
 	const newDuration = currentDuration + duration;
 	if (newDuration > Time.Hour * 18) {
-		const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
 		const user = await client.users.fetch(userID);
-		user.log(log);
 		if (client.production) {
-			const channel = client.channels.get(EChannel.ErrorLogs);
-			if (channelIsSendable(channel)) {
-				channel.send(`${user.sanitizedName} ${log}`);
-			}
+			sendToChannelID(client, EChannel.ErrorLogs, {
+				content: `${user.sanitizedName} Minion has been active for ${formatDuration(
+					newDuration
+				)}.`
+			});
 		}
 	}
 
@@ -427,5 +428,14 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 		return false;
 	}
 
+	return true;
+}
+
+export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
+	for (const [skillName, level] of objectEntries(requirements)) {
+		const xpHas = skills[skillName];
+		const levelHas = convertXPtoLVL(xpHas ?? 1);
+		if (levelHas < level!) return false;
+	}
 	return true;
 }

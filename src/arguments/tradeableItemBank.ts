@@ -73,7 +73,10 @@ export default class TradeableItemBankArgument extends Argument {
 		let totalPrice = 0;
 		for (const [item, _qty] of items) {
 			if (bank.length === 70) break;
-			const qty = qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty);
+			const qty = Math.max(
+				1,
+				qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty)
+			);
 
 			if (userBank.amount(item.id) >= qty && item.id !== 995) {
 				bank.add(item.id, qty);

@@ -3,7 +3,7 @@ import { Command, Extendable, ExtendableStore } from 'klasa';
 import { Player } from 'oldschooljs';
 import { CluesScore, SkillScore, SkillsScore } from 'oldschooljs/dist/meta/types';
 
-import emoji from '../lib/data/skill-emoji';
+import { skillEmoji } from '../lib/constants';
 import { toTitleCase } from '../lib/util';
 
 export default class GetStatsEmbed extends Extendable {
@@ -19,7 +19,7 @@ export default class GetStatsEmbed extends Extendable {
 		showExtra = true
 	) {
 		const skillCell = (skill: string) =>
-			`${emoji[skill as keyof typeof emoji] as keyof SkillsScore} ${skills[
+			`${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${skills[
 				skill as keyof SkillsScore
 			][key].toLocaleString()}`;
 
@@ -76,7 +76,7 @@ export default class GetStatsEmbed extends Extendable {
 		if (showExtra) {
 			embed
 				.addField(
-					`${emoji.total} Overall`,
+					`${skillEmoji.total} Overall`,
 					`**Rank:** ${skills.overall.rank.toLocaleString()}
 **Level:** ${skills.overall.level}
 **XP:** ${skills.overall.xp.toLocaleString()}

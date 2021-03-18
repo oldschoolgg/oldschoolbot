@@ -111,9 +111,11 @@ export default class extends BotCommand {
 			timeToPickpocket *= 0.7;
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Pickpocket);
+
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToPickpocket);
+			quantity = Math.floor(maxTripLength / timeToPickpocket);
 		}
 
 		const hasWilvus = msg.author.equippedPet() === itemID('Wilvus');
@@ -122,13 +124,13 @@ export default class extends BotCommand {
 		}
 		const duration = quantity * timeToPickpocket;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of times you can pickpocket a ${
 					pickpocketable.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToPickpocket)}.`
+				} is ${Math.floor(maxTripLength / timeToPickpocket)}.`
 			);
 		}
 

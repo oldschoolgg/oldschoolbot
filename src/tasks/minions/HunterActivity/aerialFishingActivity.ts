@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events, Time } from '../../../lib/constants';
+import { Activity, Events, Time } from '../../../lib/constants';
 import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
@@ -165,7 +165,10 @@ export default class extends Task {
 					.get('aerialfish')!
 					.run(res, [
 						Math.floor(
-							Math.min(user.maxTripLength / Time.Minute, duration / Time.Minute)
+							Math.min(
+								user.maxTripLength(Activity.AerialFishing) / Time.Minute,
+								duration / Time.Minute
+							)
 						)
 					]);
 			},

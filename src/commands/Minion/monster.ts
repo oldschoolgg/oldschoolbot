@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Time } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -49,7 +49,9 @@ export default class MinionCommand extends BotCommand {
 				ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 			}
 		}
-		const maxCanKill = Math.floor(msg.author.maxTripLength / timeToFinish);
+		const maxCanKill = Math.floor(
+			msg.author.maxTripLength(Activity.MonsterKilling) / timeToFinish
+		);
 
 		const QP = msg.author.settings.get(UserSettings.QP);
 
@@ -97,7 +99,11 @@ export default class MinionCommand extends BotCommand {
 
 		str.push(`You currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`);
 
-		str.push(`**Maximum Trip Length:** ${formatDuration(msg.author.maxTripLength)}.\n`);
+		str.push(
+			`**Maximum Trip Length:** ${formatDuration(
+				msg.author.maxTripLength(Activity.MonsterKilling)
+			)}.\n`
+		);
 
 		str.push(
 			`This means the most you can kill with your current item and KC boosts is ${maxCanKill} (${formatDuration(

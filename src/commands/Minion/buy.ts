@@ -11,6 +11,7 @@ import {
 	bankHasAllItemsFromBank,
 	multiplyBank,
 	removeBankFromBank,
+	skillsMeetRequirements,
 	stringMatches
 } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
@@ -53,6 +54,13 @@ export default class extends BotCommand {
 			if (QP < buyable.qpRequired) {
 				return msg.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
 			}
+		}
+
+		if (
+			buyable.skillsNeeded &&
+			!skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)
+		) {
+			return msg.send(`You don't have the required stats to buy this item.`);
 		}
 
 		await msg.author.settings.sync(true);
