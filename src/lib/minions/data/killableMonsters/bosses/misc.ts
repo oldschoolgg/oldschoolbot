@@ -143,7 +143,8 @@ const killableBosses: KillableMonster[] = [
 			'Spectral sigil',
 			'Arcane sigil',
 			'Elysian sigil',
-			'Pet dark core'
+			'Pet dark core',
+			'Jar of spirits'
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: {
