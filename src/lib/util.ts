@@ -18,13 +18,13 @@ import {
 	SupportServer,
 	Time
 } from './constants';
-import { rogueOutfit } from './data/collectionLog';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { GroupMonsterActivityTaskOptions } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
 import { Skills } from './types';
 import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
 import { sendToChannelID } from './util/webhook';
 
 export * from 'oldschooljs/dist/util/index';
@@ -305,6 +305,14 @@ export function anglerBoostPercent(user: KlasaUser) {
 	}
 	return round(boostPercent, 1);
 }
+
+const rogueOutfit = resolveItems([
+	'Rogue mask',
+	'Rogue top',
+	'Rogue trousers',
+	'Rogue gloves',
+	'Rogue boots'
+]);
 
 export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	const skillingSetup = user.getGear('skilling');
