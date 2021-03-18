@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -791,7 +791,7 @@ export default class extends Extendable {
 	}
 
 	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {
-		await this.settings.update(UserSettings.AttackStyle, newStyles, {
+		await this.settings.update(UserSettings.AttackStyle, uniqueArr(newStyles), {
 			arrayAction: 'overwrite'
 		});
 	}
