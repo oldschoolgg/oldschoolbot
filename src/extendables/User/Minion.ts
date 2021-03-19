@@ -614,6 +614,10 @@ export default class extends Extendable {
 			max *= 1.4;
 		}
 
+		if (this.hasItemEquippedAnywhere('Hitpoints master cape')) {
+			max *= 1.2;
+		}
+
 		return max;
 	}
 
