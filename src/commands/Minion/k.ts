@@ -6,13 +6,12 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
+import findMonster, {
 	addArrayOfNumbers,
 	formatDuration,
 	isWeekend,
