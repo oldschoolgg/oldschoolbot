@@ -20,9 +20,10 @@ import {
 } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import { GroupMonsterActivityTaskOptions } from './minions/types';
+import killableMonsters from './minions/data/killableMonsters';
+import { GroupMonsterActivityTaskOptions, KillableMonster } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
-import { Skills } from './types';
+import { ArrayItemsResolved, Skills } from './types';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 import { sendToChannelID } from './util/webhook';
@@ -446,4 +447,23 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		if (levelHas < level!) return false;
 	}
 	return true;
+}
+
+export default function findMonster(str: string): KillableMonster | undefined {
+	const mon = killableMonsters.find(
+		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
+	);
+	return mon;
+}
+
+export function formatItemReqs(items: ArrayItemsResolved) {
+	const str = [];
+	for (const item of items) {
+		if (Array.isArray(item)) {
+			str.push(item.map(itemNameFromID).join(' OR '));
+		} else {
+			str.push(itemNameFromID(item));
+		}
+	}
+	return str.join(', ');
 }
