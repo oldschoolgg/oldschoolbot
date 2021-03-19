@@ -20,6 +20,7 @@ import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -229,6 +230,23 @@ export default class extends BotCommand {
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
+		}
+
+		if (
+			attackStyles.includes(SkillsEnum.Ranged) &&
+			msg.author.hasItemEquippedAnywhere('Ranged master cape')
+		) {
+			duration *= 0.85;
+			boosts.push(`15% for Ranged master cape`);
+		} else if (
+			attackStyles.includes(SkillsEnum.Magic) &&
+			msg.author.hasItemEquippedAnywhere('Magic master cape')
+		) {
+			duration *= 0.85;
+			boosts.push(`15% for Magic master cape`);
+		} else if (msg.author.hasItemEquippedAnywhere('Attack master cape')) {
+			duration *= 0.85;
+			boosts.push(`15% for Attack master cape`);
 		}
 
 		if (hasBlessing && prayerPotsNeeded) {
