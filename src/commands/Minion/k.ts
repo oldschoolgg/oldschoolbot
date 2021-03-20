@@ -20,6 +20,7 @@ import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -235,6 +236,15 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(itemID('Prayer potion(4)'), prayerPotsNeeded);
 		}
 
+		const rangeSetup = { ...msg.author.getGear('range') };
+		let usedDart = false;
+		if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+			duration = 1;
+			rangeSetup.weapon = null;
+			await msg.author.settings.update(UserSettings.Gear.Range, rangeSetup);
+			usedDart = true;
+		}
+
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,
 			userID: msg.author.id,
@@ -243,6 +253,12 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.MonsterKilling
 		});
+
+		if (usedDart) {
+			return msg.send(
+				`<:deathtouched_dart:822674661967265843> ${msg.author.minionName} used a **Deathtouched dart**.`
+			);
+		}
 
 		let response = `${minionName} is now killing ${quantity}x ${
 			monster.name

@@ -921,29 +921,29 @@ setCustomItem(6515, 'Drygore longsword', getOSItem('Ghrazi rapier'), {
  * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
  */
 // Master capes
-setCustomItem(40_000, 'Construction master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_001, 'Cooking master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_002, 'Crafting master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_003, 'Farming master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_004, 'Firemaking master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_005, 'Fishing master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_006, 'Fletching master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_007, 'Herblore master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_008, 'Hunter master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_009, 'Magic master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_010, 'Mining master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_011, 'Prayer master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_012, 'Runecraft master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_013, 'Smithing master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_014, 'Thieving master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_015, 'Woodcutting master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+setCustomItem(40_000, 'Construction master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_001, 'Cooking master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_002, 'Crafting master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_003, 'Farming master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_004, 'Firemaking master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_005, 'Fishing master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_006, 'Fletching master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_007, 'Herblore master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_008, 'Hunter master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_009, 'Magic master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_010, 'Mining master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_011, 'Prayer master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_012, 'Runecraft master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_013, 'Smithing master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_014, 'Thieving master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_015, 'Woodcutting master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_016, 'Agility master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
 
-setCustomItem(40_017, 'Attack master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_018, 'Strength master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_019, 'Defence master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_020, 'Hitpoints master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
-setCustomItem(40_021, 'Ranged master cape', getOSItem('Abyssal cape'), {}, 1_00_000);
+setCustomItem(40_017, 'Attack master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_018, 'Strength master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_019, 'Defence master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_020, 'Hitpoints master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_021, 'Ranged master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
 
 // Pets
 
@@ -995,6 +995,8 @@ setCustomItem(47_507, 'First age ring', getOSItem('Berserker ring'), {}, 1_000_0
 setCustomItem(47_508, 'Broken dwarven warhammer', getOSItem('Rune warhammer'), {}, 1_000_000);
 
 setCustomItem(47_509, 'Equippable mystery box', getOSItem('Mystery box'), {}, 500_000);
+
+setCustomItem(47_510, 'Deathtouched dart', getOSItem('Rune dart'), {}, 1_000_000);
 
 /**
  * Misc Items
