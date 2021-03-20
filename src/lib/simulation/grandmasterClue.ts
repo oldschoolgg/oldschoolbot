@@ -72,9 +72,9 @@ const Supplies = new LootTable()
 	.add('Super restore(4)', [20, 30]);
 
 const table = new LootTable()
-	.tertiary(900, ClueHunterTable)
-	.tertiary(1000, BlessingTable)
-	.tertiary(40, LampTable)
+	.tertiary(2500, ClueHunterTable)
+	.tertiary(6000, BlessingTable)
+	.tertiary(50, LampTable)
 	.tertiary(
 		250_000,
 		new LootTable()
