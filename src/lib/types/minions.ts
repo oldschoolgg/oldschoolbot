@@ -201,6 +201,12 @@ export interface NexActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface KalphiteKingActivityTaskOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+}
+
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }

@@ -5,16 +5,16 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
-import { roll } from '../../../lib/data/monsters/raids';
+import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { allNexItems, NexMonster } from '../../../lib/nex';
+import { allNexItems } from '../../../lib/nex';
 import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
-import { NexActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, channelIsSendable, noOp, randomItemFromArray } from '../../../lib/util';
+import { KalphiteKingActivityTaskOptions } from '../../../lib/types/minions';
+import { addBanks, channelIsSendable, noOp } from '../../../lib/util';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
-import { getNexGearStats } from '../../../lib/util/getNexGearStats';
+import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
@@ -24,7 +24,14 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ id, channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
+	async run({
+		id,
+		channelID,
+		leader,
+		users,
+		quantity,
+		duration
+	}: KalphiteKingActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -35,7 +42,7 @@ export default class extends Task {
 			const user = await this.client.users.fetch(id).catch(noOp);
 			if (!user) continue;
 			user.incrementMinionDailyDuration(duration);
-			const [data] = getNexGearStats(user, users);
+			const [data] = getKalphiteKingGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
 		}
 
@@ -62,10 +69,7 @@ export default class extends Task {
 			}
 
 			const loot = new Bank();
-			loot.add(NexMonster.table.kill(1));
-			if (roll(80 + users.length * 2)) {
-				loot.add(randomItemFromArray(allNexItems), 1);
-			}
+			loot.add(KalphiteKingMonster.table.kill(1));
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];
@@ -76,7 +80,7 @@ export default class extends Task {
 		}
 
 		const leaderUser = await this.client.users.fetch(leader);
-		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
+		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${KalphiteKingMonster.name}!\n\n`;
 		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
@@ -84,7 +88,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
+			if (kcToAdd) user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
 
 			resultStr += `${
@@ -94,7 +98,7 @@ export default class extends Task {
 				loot
 			)}||\n`;
 
-			announceLoot(this.client, leaderUser, NexMonster, quantity, loot, {
+			announceLoot(this.client, leaderUser, KalphiteKingMonster, quantity, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
@@ -108,7 +112,7 @@ export default class extends Task {
 			for (const [id, qty] of deathEntries) {
 				const user = await this.client.users.fetch(id).catch(noOp);
 				if (!user) continue;
-				deaths.push(`**${user.username}**: ${qty}x`);
+				deaths.push(`**${user}**: ${qty}x`);
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
@@ -124,7 +128,9 @@ export default class extends Task {
 				sendToChannelID(this.client, channelID, {
 					content: `${users
 						.map(id => `<@${id}>`)
-						.join(' ')} Your team all died, and failed to defeat Nex. ${debug}`
+						.join(
+							' '
+						)} Your team all died, and failed to defeat the Kalphite King. ${debug}`
 				});
 			} else {
 				sendToChannelID(this.client, channelID, { content: resultStr + debug });
@@ -135,20 +141,21 @@ export default class extends Task {
 
 			if (!kcAmounts[leader]) {
 				channel.send(
-					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
+					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
 				);
 			} else {
 				channel.sendBankImage({
 					bank: teamsLoot[leader],
 					content: `${leaderUser}, ${
 						leaderUser.minionName
-					} finished killing ${quantity} ${NexMonster.name}, you died ${
+					} finished killing ${quantity} ${KalphiteKingMonster.name}, you died ${
 						deaths[leader] ?? 0
-					} times. Your Nex KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) +
-						quantity
+					} times. Your Kalphite King KC is now ${
+						(leaderUser.settings.get(UserSettings.MonsterScores)[
+							KalphiteKingMonster.id
+						] ?? 0) + quantity
 					}.`,
-					title: `${quantity}x Nex`,
+					title: `${quantity}x Kalphite King`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),
 					user: leaderUser,
 					flags: { showNewCL: 1 }

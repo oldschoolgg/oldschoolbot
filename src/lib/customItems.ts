@@ -870,50 +870,6 @@ setCustomItem(5839, 'Primal gauntlets', getOSItem('Rune gloves'), {
 		requirements: null
 	}
 });
-setCustomItem(6519, 'Offhand drygore longsword', getOSItem('Elysian spirit shield'), {
-	equipment: {
-		attack_stab: 60,
-		attack_slash: 60,
-		attack_crush: 50,
-		attack_magic: -5,
-		attack_ranged: -5,
-
-		defence_stab: 5,
-		defence_slash: 5,
-		defence_crush: 5,
-		defence_magic: 0,
-		defence_ranged: 0,
-
-		melee_strength: 1,
-		ranged_strength: 0,
-		magic_damage: 0,
-		prayer: 1,
-		slot: EquipmentSlot.Shield,
-		requirements: null
-	}
-});
-setCustomItem(6515, 'Drygore longsword', getOSItem('Ghrazi rapier'), {
-	equipment: {
-		attack_stab: 120,
-		attack_slash: 120,
-		attack_crush: 80,
-		attack_magic: -5,
-		attack_ranged: -5,
-
-		defence_stab: 5,
-		defence_slash: 5,
-		defence_crush: 5,
-		defence_magic: 0,
-		defence_ranged: 0,
-
-		melee_strength: 1,
-		ranged_strength: 0,
-		magic_damage: 0,
-		prayer: 1,
-		slot: EquipmentSlot.Weapon,
-		requirements: null
-	}
-});
 
 /**
  * Exclusive Items
@@ -994,9 +950,183 @@ setCustomItem(47_507, 'First age ring', getOSItem('Berserker ring'), {}, 1_000_0
 
 setCustomItem(47_508, 'Broken dwarven warhammer', getOSItem('Rune warhammer'), {}, 1_000_000);
 
-setCustomItem(47_509, 'Equippable mystery box', getOSItem('Mystery box'), {}, 500_000);
+setCustomItem(47_509, 'Equippable mystery box', getOSItem('Mystery box'), {}, 1_000_000);
 
-setCustomItem(47_510, 'Deathtouched dart', getOSItem('Rune dart'), {}, 1_000_000);
+setCustomItem(47_510, 'Deathtouched dart', getOSItem('Rune dart'), {}, 5_000_000);
+
+setCustomItem(
+	47_511,
+	'Drygore longsword',
+	getOSItem("Vesta's longsword"),
+	{
+		equipment: {
+			attack_stab: 66,
+			attack_slash: 36,
+			attack_crush: 36,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 55,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	47_512,
+	'Offhand drygore longsword',
+	getOSItem("Vesta's longsword"),
+	{
+		equipment: {
+			attack_stab: 22,
+			attack_slash: 2,
+			attack_crush: 22,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Shield,
+			requirements: null
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	47_513,
+	'Drygore mace',
+	getOSItem("Inquisitor's mace"),
+	{
+		equipment: {
+			attack_stab: 52,
+			attack_slash: -10,
+			attack_crush: 130,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	47_514,
+	'Offhand drygore mace',
+	getOSItem("Inquisitor's mace"),
+	{
+		equipment: {
+			attack_stab: 32,
+			attack_slash: -20,
+			attack_crush: 50,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			slot: EquipmentSlot.Shield,
+			requirements: null
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	47_515,
+	'Drygore rapier',
+	getOSItem('Ghrazi rapier'),
+	{
+		equipment: {
+			attack_stab: 100,
+			attack_slash: 75,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 95,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	47_516,
+	'Offhand drygore rapier',
+	getOSItem('Ghrazi rapier'),
+	{
+		equipment: {
+			attack_stab: 30,
+			attack_slash: 15,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 10,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Shield,
+			requirements: null
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(47_517, 'Perfect chitlin', getOSItem('Magic seed'), {}, 1_000_000);
+setCustomItem(47_518, 'Baby kalphite king', getOSItem('Herbi'), {}, 1_000_000);
 
 /**
  * Misc Items
@@ -1007,10 +1137,10 @@ setCustomItem(50_001, 'Raw rocktail', getOSItem('Raw trout'), {}, 10_000);
 setCustomItem(50_002, 'Rocktail', getOSItem('Trout'), {}, 10_000);
 
 // Blacksmith
-setCustomItem(50_003, 'Blacksmith helmet', getOSItem('Rune full helm'), {}, 10_000);
-setCustomItem(50_004, 'Blacksmith top', getOSItem('Rune platebody'), {}, 10_000);
-setCustomItem(50_005, 'Blacksmith apron', getOSItem('Rune platelegs'), {}, 10_000);
-setCustomItem(50_006, 'Blacksmith gloves', getOSItem('Leather gloves'), {}, 10_000);
-setCustomItem(50_007, 'Blacksmith boots', getOSItem('Rune boots'), {}, 10_000);
+setCustomItem(50_003, 'Blacksmith helmet', getOSItem('Rune full helm'), {}, 100_000);
+setCustomItem(50_004, 'Blacksmith top', getOSItem('Rune platebody'), {}, 100_000);
+setCustomItem(50_005, 'Blacksmith apron', getOSItem('Rune platelegs'), {}, 100_000);
+setCustomItem(50_006, 'Blacksmith gloves', getOSItem('Leather gloves'), {}, 100_000);
+setCustomItem(50_007, 'Blacksmith boots', getOSItem('Rune boots'), {}, 100_000);
 
 setCustomItem(50_008, 'Mysterious seed', getOSItem('Magic seed'), {}, 100_000);

@@ -105,6 +105,8 @@ export default class extends BotCommand {
 			return msg.channel.send(`Let's kill some ogress warriors instead? 🥰 🐳`);
 		}
 
+		if (monster.name === 'Koschei the deathless') return;
+
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;

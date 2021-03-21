@@ -531,6 +531,10 @@ export default class extends Extendable {
 			case Activity.RoguesDenMaze: {
 				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
 			}
+
+			case Activity.KalphiteKing: {
+				return `${this.minionName} is currently killing the Kalphite King. ${formattedDuration}`;
+			}
 		}
 	}
 

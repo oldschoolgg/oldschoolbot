@@ -61,6 +61,11 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (currentTask.type === Activity.KalphiteKing) {
+			return msg.send(
+				`${msg.author.minionName} is fighting the Kalphite King with a team, they cant leave their team!`
+			);
+		}
 		if (currentTask.type === Activity.BarbarianAssault) {
 			return msg.send(
 				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`

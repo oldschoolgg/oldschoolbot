@@ -1,0 +1,95 @@
+import { calcWhatPercent, randInt } from 'e';
+import { KlasaUser } from 'klasa';
+import { itemID } from 'oldschooljs/dist/util';
+
+import { maxOffenceStats } from '../gear';
+import { GearSetupTypes, GearStats } from '../gear/types';
+import { KalphiteKingMonster } from '../kalphiteking';
+import { UserSettings } from '../settings/types/UserSettings';
+
+export function getKalphiteKingGearStats(
+	user: KlasaUser,
+	team: string[]
+): [
+	{
+		chanceOfDeath: number;
+		damageDone: number;
+		percentAttackStrength: number;
+		totalGearPercent: number;
+		percentWeaponAttackCrush: number;
+		attackCrushStat: number;
+		kc: number;
+		gearStats: GearStats;
+	},
+	string
+] {
+	const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 1;
+	const weapon = user.equippedWeapon(GearSetupTypes.Melee);
+	const gearStats = user.setupStats(GearSetupTypes.Melee);
+	const percentAttackStrength = calcWhatPercent(
+		gearStats.attack_crush + gearStats.melee_strength,
+		maxOffenceStats.attack_crush + gearStats.melee_strength
+	);
+	const attackCrushStat = weapon?.equipment?.attack_crush ?? 0;
+	const percentWeaponAttackCrush = Math.min(calcWhatPercent(attackCrushStat, 95), 100);
+	const totalGearPercent = Math.min((attackCrushStat + percentAttackStrength) / 2, 100);
+
+	let percentChanceOfDeath = Math.floor(100 - (Math.log(kc) / Math.log(Math.sqrt(15))) * 50);
+
+	// If they have 50% best gear, -25% chance of death.
+	percentChanceOfDeath = Math.floor(percentChanceOfDeath - totalGearPercent / 2);
+
+	// Chance of death cannot be over 90% or <2%.
+	percentChanceOfDeath = Math.max(Math.min(percentChanceOfDeath, 100), 5);
+
+	// Damage done starts off as being HP divided by user size.
+	let damageDone = 6000 / team.length;
+
+	// Half it, to use a low damage amount as the base.
+	damageDone /= 1.5;
+
+	// If they have the BIS weapon, their damage is doubled.
+	// e.g. 75% of of the best = 1.5x damage done.
+	damageDone *= percentWeaponAttackCrush / 80;
+
+	if (weapon?.id === itemID('Drygore mace')) {
+		damageDone *= 1.1;
+	}
+
+	// Heavily punish them for having a weaker crush weapon than a zammy hasta.
+	if (percentAttackStrength < 95) {
+		damageDone /= 1.5;
+	}
+
+	if (kc < 2) {
+		percentChanceOfDeath = randInt(50, 70);
+	} else if (kc < 5) {
+		percentChanceOfDeath = randInt(30, 50);
+	} else if (kc < 10) {
+		percentChanceOfDeath = randInt(20, 40);
+	} else if (kc < 20) {
+		percentChanceOfDeath = randInt(10, 30);
+	} else {
+		percentChanceOfDeath = randInt(1, 4);
+	}
+
+	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(
+		damageDone
+	)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
+		percentWeaponAttackCrush
+	)}%] GearStrength[${Math.floor(percentAttackStrength)}%] TotalGear[${totalGearPercent}%]\n`;
+
+	return [
+		{
+			chanceOfDeath: percentChanceOfDeath,
+			damageDone,
+			percentAttackStrength,
+			totalGearPercent,
+			percentWeaponAttackCrush,
+			attackCrushStat,
+			kc,
+			gearStats
+		},
+		debugString
+	];
+}

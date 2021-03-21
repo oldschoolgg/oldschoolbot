@@ -1,5 +1,6 @@
 import { uniqueArr } from 'e';
 
+import { allKalphiteKingItems } from '../kalphiteking';
 import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } from '../nex';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
@@ -349,7 +350,8 @@ export const bosses: CollectionLogData = {
 	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
-	Wintertodt: wintertodtLog
+	Wintertodt: wintertodtLog,
+	KK: allKalphiteKingItems
 };
 
 export const pets: CollectionLogData = {
@@ -1886,5 +1888,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: "Rogues' Den",
 		aliases: ['rogues den', 'rd'],
 		items: { 1: rogueOutfit }
+	},
+	{
+		name: 'Kalphite King',
+		aliases: ['kalphite king', 'kk'],
+		items: { 1: allKalphiteKingItems }
 	}
 ];

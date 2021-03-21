@@ -16,7 +16,7 @@ const TanglerootTable = new LootTable()
 	.add(24561)
 	.add(24563);
 
-const GrimyHerbTable = new LootTable()
+export const GrimyHerbTable = new LootTable()
 	.add('Grimy guam leaf', [20, 50])
 	.add('Grimy marrentill', [20, 50])
 	.add('Grimy tarromin', [20, 20])
