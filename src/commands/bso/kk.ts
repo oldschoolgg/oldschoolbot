@@ -138,6 +138,12 @@ export default class extends BotCommand {
 				msgs.push(`-${percent}% penalty for 140 attack crush`);
 			}
 
+			if (!equippedWeapon || !equippedWeapon.equipment || equippedWeapon.equipment.attack_crush < 95) {
+				const percent = 30;
+				effectiveTime = increaseNumByPercent(effectiveTime, percent);
+				msgs.push(`-${percent}% penalty for bad weapon`);
+			}
+
 			if (equippedWeapon?.id === itemID('Drygore mace')) {
 				const percent = 14;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);

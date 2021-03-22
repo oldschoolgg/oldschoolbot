@@ -62,7 +62,7 @@ export function getKalphiteKingGearStats(
 	}
 
 	if (kc < 10) {
-		percentChanceOfDeath = randInt(10, 20);
+		percentChanceOfDeath = randInt(10, 15);
 	} else {
 		percentChanceOfDeath = randInt(1, 4);
 	}
