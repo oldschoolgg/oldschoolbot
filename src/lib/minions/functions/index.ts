@@ -53,7 +53,7 @@ export async function addMonsterXP(
 ) {
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
 	const monster = killableMonsters.find(mon => mon.id === monsterID);
-	let hp = 1;
+	let hp ;
 	let xpMultiplier = 1;
 	if (monster && monster.customMonsterHP) {
 		hp = monster.customMonsterHP;
