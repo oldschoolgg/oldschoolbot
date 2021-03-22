@@ -89,6 +89,8 @@ export interface KillableMonster {
 	pohBoosts?: POHBoosts;
 	defaultAttackStyles?: AttackStyles[];
 	disallowedAttackStyles?: AttackStyles[];
+	customMonsterHP?: number;
+	combatXpMultiplier?: number;
 }
 
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
