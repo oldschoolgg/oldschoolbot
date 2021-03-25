@@ -809,10 +809,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@^26.0.20":
-  version "26.0.20"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.20.tgz#cd2f2702ecf69e86b586e1f5223a60e454056307"
-  integrity sha512-9zi2Y+5USJRxd0FsahERhBwlcvFh6D2GLQnY2FH2BzK8J9s9omvNHIbvABwIluXa0fD8XVKMLTO0aOEuUfACAA==
+"@types/jest@^26.0.21":
+  version "26.0.21"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.21.tgz#3a73c2731e7e4f0fbaea56ce7ff8c79cf812bd24"
+  integrity sha512-ab9TyM/69yg7eew9eOwKMUmvIZAKEGZYlq/dhe5/0IMUd/QLJv5ldRMdddSn+u22N13FP3s5jYyktxuBwY0kDA==
   dependencies:
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
@@ -840,10 +840,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.24.tgz#541c00e4f7c41c8f108bd5b045248b5224c62946"
   integrity sha512-6BAlkS4seVjszhrwN0W1WabqWwuJwcYF36Z1rPPyQm80LGRKsIeUPdzI51TezXenjetFNy1gRTpuDn1NBg33LA==
 
-"@types/node@^14.14.34":
-  version "14.14.34"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.34.tgz#07935194fc049069a1c56c0c274265abeddf88da"
-  integrity sha512-dBPaxocOK6UVyvhbnpFIj2W+S+1cBTkHQbFQfeeJhoKFbzYcVUGHvddeWPSucKATb3F0+pgDq0i6ghEaZjsugA==
+"@types/node@^14.14.35":
+  version "14.14.35"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.35.tgz#42c953a4e2b18ab931f72477e7012172f4ffa313"
+  integrity sha512-Lt+wj8NVPx0zUmUwumiVXapmaLUcAk3yPuHCFVXras9k5VT9TdhJqKqGVUQCD60OTMCl0qxJ57OiTL0Mic3Iag==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -2321,10 +2321,10 @@ fastify-error@^0.3.0:
   resolved "https://registry.yarnpkg.com/fastify-error/-/fastify-error-0.3.0.tgz#08866323d521156375a8be7c7fcaf98df946fafb"
   integrity sha512-Jm2LMTB5rsJqlS1+cmgqqM9tTs0UrlgYR7TvDT3ZgXsUI5ib1NjQlqZHf+tDK5tVPdFGwyq02wAoJtyYIRSiFA==
 
-fastify-helmet@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-5.3.0.tgz#3e022bae382280146ef9879fbec9ac177ca7a1ac"
-  integrity sha512-YE2UBSXA89t4LIgr6cz8wz2zkDs+MtgaJa+NK1Wfyqfiao9SrDc8KqUXlJIMhugXDp1fwHI0CaB7Qdtd6HkoBQ==
+fastify-helmet@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-5.3.1.tgz#ff1d9bcd05bd0518cb57e57e91ccf25f101bddea"
+  integrity sha512-VXxsqfG+ay/zd2it4WKsJYpToAcmGjARdKt7+6OcrTF1C/3Bhx5ReM4BCq2GbQoU/2Mh2l0tF49djNjlUEogQQ==
   dependencies:
     fastify-plugin "^3.0.0"
     helmet "^4.0.0"
@@ -4200,10 +4200,10 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oldschooljs@^1.7.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.7.1.tgz#5409f4fbff09569c5ba029908842d988ddb83f1b"
-  integrity sha512-CLS4AdLvqZXUTff04Q73a/NQjRxhmQN9bXhCS79K+Y1sAPmXjZ0is8ginQ+fyr/egD79kaUePZh+ee8wrwZ8sw==
+oldschooljs@^1.7.3:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.7.3.tgz#3fe48ddee40268cad8de84f61c8e8b8ccf7e0253"
+  integrity sha512-KEKcpFq5jRuYAe4QTW8pH2jCl4DzXUIAuE3CRqVafkxaaDlu7vqhj5xnYh4uf3qKdqVYXFIFykRvLt2k+xWZcw==
   dependencies:
     e "^0.2.0"
     jsdom "^16.0.1"
@@ -5606,10 +5606,10 @@ ts-debounce@^2.3.0:
   resolved "https://registry.yarnpkg.com/ts-debounce/-/ts-debounce-2.3.0.tgz#a360a8bd29402ce0ea9970f7cfc0df44dfae7139"
   integrity sha512-j63IP7/unAzovrhVHE7U+fNkvDKwIaLH11dCO9TcRbYOZw1chPL054poqq3ZloyRJ5KwJMeB8csN/vGPPpQJjw==
 
-ts-jest@^26.5.3:
-  version "26.5.3"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-26.5.3.tgz#a6ee00ba547be3b09877550df40a1465d0295554"
-  integrity sha512-nBiiFGNvtujdLryU7MiMQh1iPmnZ/QvOskBbD2kURiI1MwqvxlxNnaAB/z9TbslMqCsSbu5BXvSSQPc5tvHGeA==
+ts-jest@^26.5.4:
+  version "26.5.4"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-26.5.4.tgz#207f4c114812a9c6d5746dd4d1cdf899eafc9686"
+  integrity sha512-I5Qsddo+VTm94SukBJ4cPimOoFZsYTeElR2xy6H2TOVs+NsvgYglW8KuQgKoApOKuaU/Ix/vrF9ebFZlb5D2Pg==
   dependencies:
     bs-logger "0.x"
     buffer-from "1.x"

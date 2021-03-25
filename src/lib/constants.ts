@@ -182,7 +182,8 @@ export const enum Tasks {
 	NexActivity = 'nexActivity',
 	GnomeRestaurant = 'gnomeRestaurantActivity',
 	SoulWars = 'soulWarsActivity',
-	RoguesDenMaze = 'roguesDenMazeActivity'
+	RoguesDenMaze = 'roguesDenMazeActivity',
+	RabbitCatching = 'rabbitCatchingActivity'
 }
 
 export enum Activity {
@@ -233,7 +234,8 @@ export enum Activity {
 	Nex = 'Nex',
 	GnomeRestaurant = 'GnomeRestaurant',
 	SoulWars = 'SoulWars',
-	RoguesDenMaze = 'RoguesDenMaze'
+	RoguesDenMaze = 'RoguesDenMaze',
+	RabbitCatching = 'RabbitCatching'
 }
 
 export enum ActivityGroup {
