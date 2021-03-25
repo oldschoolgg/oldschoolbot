@@ -16,7 +16,7 @@ export const allKalphiteKingItems = resolveItems([
 	'Offhand drygore longsword',
 	'Offhand drygore mace',
 	'Baby kalphite king',
-	'Perfect chitlin'
+	'Perfect chitin'
 ]);
 
 export const KalphiteKingMonster: KillableMonster = {
@@ -30,7 +30,7 @@ export const KalphiteKingMonster: KillableMonster = {
 			new LootTable()
 				.tertiary(40, 'Clue scroll grandmaster')
 				.tertiary(6000, 'Baby kalphite king')
-				.tertiary(2500, 'Perfect chitlin')
+				.tertiary(2500, 'Perfect chitin')
 				.tertiary(
 					100,
 					new LootTable()
