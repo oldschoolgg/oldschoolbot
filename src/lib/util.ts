@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
-import { randInt, shuffleArr } from 'e';
+import { objectEntries, randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -18,12 +18,15 @@ import {
 	SupportServer,
 	Time
 } from './constants';
-import { rogueOutfit } from './data/collectionLog';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import { GroupMonsterActivityTaskOptions } from './minions/types';
+import killableMonsters from './minions/data/killableMonsters';
+import { GroupMonsterActivityTaskOptions, KillableMonster } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
+import { ArrayItemsResolved, Skills } from './types';
 import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
+import { sendToChannelID } from './util/webhook';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -304,6 +307,14 @@ export function anglerBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
+const rogueOutfit = resolveItems([
+	'Rogue mask',
+	'Rogue top',
+	'Rogue trousers',
+	'Rogue gloves',
+	'Rogue boots'
+]);
+
 export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
@@ -364,14 +375,13 @@ export async function incrementMinionDailyDuration(
 	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
 	const newDuration = currentDuration + duration;
 	if (newDuration > Time.Hour * 18) {
-		const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
 		const user = await client.users.fetch(userID);
-		user.log(log);
 		if (client.production) {
-			const channel = client.channels.get(EChannel.ErrorLogs);
-			if (channelIsSendable(channel)) {
-				channel.send(`${user.sanitizedName} ${log}`);
-			}
+			sendToChannelID(client, EChannel.ErrorLogs, {
+				content: `${user.sanitizedName} Minion has been active for ${formatDuration(
+					newDuration
+				)}.`
+			});
 		}
 	}
 
@@ -428,4 +438,32 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 	}
 
 	return true;
+}
+
+export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
+	for (const [skillName, level] of objectEntries(requirements)) {
+		const xpHas = skills[skillName];
+		const levelHas = convertXPtoLVL(xpHas ?? 1);
+		if (levelHas < level!) return false;
+	}
+	return true;
+}
+
+export default function findMonster(str: string): KillableMonster | undefined {
+	const mon = killableMonsters.find(
+		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
+	);
+	return mon;
+}
+
+export function formatItemReqs(items: ArrayItemsResolved) {
+	const str = [];
+	for (const item of items) {
+		if (Array.isArray(item)) {
+			str.push(item.map(itemNameFromID).join(' OR '));
+		} else {
+			str.push(itemNameFromID(item));
+		}
+	}
+	return str.join(', ');
 }

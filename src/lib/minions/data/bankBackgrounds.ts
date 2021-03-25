@@ -91,7 +91,8 @@ const backgroundImages: BankBackground[] = [
 			'Spectral sigil': 1,
 			'Arcane sigil': 1,
 			'Elysian sigil': 1,
-			'Pet dark core': 1
+			'Pet dark core': 1,
+			'Jar of spirits': 1
 		}),
 		itemCost: resolveNameBank({
 			'Spectral spirit shield': 1,

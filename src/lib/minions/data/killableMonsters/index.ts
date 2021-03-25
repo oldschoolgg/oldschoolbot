@@ -2,6 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import { Time, ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -38,7 +39,8 @@ const killableMonsters: KillableMonster[] = [
 				'Fancy rejuvenation pool': 10,
 				'Ornate rejuvenation pool': 10
 			}
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -135,7 +137,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		qpRequired: 0
+		qpRequired: 0,
+		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.Guard.id,
@@ -194,7 +197,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
 	},
 	{
 		id: Monsters.Lizardman.id,

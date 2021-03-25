@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	AnimatedArmourActivityTaskOptions,
@@ -59,9 +60,20 @@ export default class extends BotCommand {
 		[quantity = null, minigame]: [null | number, 'tokens' | 'cyclops']
 	) {
 		await msg.author.settings.sync(true);
+
+		const atkLvl = msg.author.skillLevel(SkillsEnum.Attack);
+		const strLvl = msg.author.skillLevel(SkillsEnum.Strength);
+		if (atkLvl + strLvl < 130 && atkLvl !== 99 && strLvl !== 99) {
+			return msg.send(
+				`To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either.`
+			);
+		}
+
 		const userBank = new Bank(msg.author.settings.get(UserSettings.Bank));
 
 		if (minigame === 'tokens') {
+			const maxTripLength = msg.author.maxTripLength(Activity.AnimatedArmour);
+
 			const armorSet = Armours.find(set => userBank.has(set.items));
 			if (!armorSet) {
 				return msg.send(
@@ -72,20 +84,18 @@ export default class extends BotCommand {
 			}
 
 			if (quantity === null) {
-				quantity = Math.floor(msg.author.maxTripLength / armorSet.timeToFinish);
+				quantity = Math.floor(maxTripLength / armorSet.timeToFinish);
 			}
 
 			const duration = armorSet.timeToFinish * quantity;
 
-			if (duration > msg.author.maxTripLength) {
+			if (duration > maxTripLength) {
 				return msg.send(
 					`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-						msg.author.maxTripLength
+						maxTripLength
 					)}, try a lower quantity. The highest amount of animated ${
 						armorSet.name
-					} armour you can kill is ${Math.floor(
-						msg.author.maxTripLength / armorSet.timeToFinish
-					)}.`
+					} armour you can kill is ${Math.floor(maxTripLength / armorSet.timeToFinish)}.`
 				);
 			}
 
@@ -106,6 +116,7 @@ export default class extends BotCommand {
 		}
 
 		if (minigame === 'cyclops') {
+			const maxTripLength = msg.author.maxTripLength(Activity.Cyclops);
 			// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 			const amountTokens = userBank.amount('Warrior guild token');
 			if (amountTokens < 100) {
@@ -115,21 +126,19 @@ export default class extends BotCommand {
 			if (quantity === null) {
 				const maxTokensTripLength = Math.floor((amountTokens - 10) / 10) * Time.Minute;
 				quantity = Math.floor(
-					(maxTokensTripLength > msg.author.maxTripLength
-						? msg.author.maxTripLength
-						: maxTokensTripLength) /
+					(maxTokensTripLength > maxTripLength ? maxTripLength : maxTokensTripLength) /
 						(Time.Second * 30)
 				);
 			}
 
 			const duration = Time.Second * 30 * quantity;
 
-			if (duration > msg.author.maxTripLength) {
+			if (duration > maxTripLength) {
 				return msg.send(
 					`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-						msg.author.maxTripLength
+						maxTripLength
 					)}, try a lower quantity. The highest amount of cyclopes that can be killed is ${Math.floor(
-						msg.author.maxTripLength / (Time.Second * 30)
+						maxTripLength / (Time.Second * 30)
 					)}.`
 				);
 			}

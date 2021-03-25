@@ -63,8 +63,10 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 		const inputCost = new Bank(cookable.inputCookables);
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Cooking);
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToCookSingleCookable);
+			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
 			const max = userBank.fits(inputCost);
 			if (max < quantity && max !== 0) quantity = max;
 		}
@@ -77,15 +79,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToCookSingleCookable;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)} minutes, try a lower quantity. The highest amount of ${
 					cookable.name
-				}s you can cook is ${Math.floor(
-					msg.author.maxTripLength / timeToCookSingleCookable
-				)}.`
+				}s you can cook is ${Math.floor(maxTripLength / timeToCookSingleCookable)}.`
 			);
 		}
 

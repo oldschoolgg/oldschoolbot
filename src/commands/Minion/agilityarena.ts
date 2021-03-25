@@ -8,11 +8,16 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityArenaActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, resolveNameBank, stringMatches } from '../../lib/util';
+import {
+	formatDuration,
+	itemID,
+	resolveNameBank,
+	skillsMeetRequirements,
+	stringMatches
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
-import { skillsMeetRequirements } from '../../lib/util/skillsMeetRequirements';
 
 const buyables = [
 	{
@@ -112,7 +117,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
-		const duration = msg.author.maxTripLength;
+		const duration = msg.author.maxTripLength(Activity.AgilityArena);
 
 		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			return msg.send(

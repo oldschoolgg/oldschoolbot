@@ -112,20 +112,22 @@ export default class extends BotCommand {
 			}
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Woodcutting);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timetoChop);
+			quantity = Math.floor(maxTripLength / timetoChop);
 		}
 
 		const duration = quantity * timetoChop;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					log.name
-				} you can chop is ${Math.floor(msg.author.maxTripLength / timetoChop)}.`
+				} you can chop is ${Math.floor(maxTripLength / timetoChop)}.`
 			);
 		}
 

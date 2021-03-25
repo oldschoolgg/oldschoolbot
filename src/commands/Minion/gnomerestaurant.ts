@@ -89,7 +89,9 @@ export default class extends BotCommand {
 			}
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength / deliveryLength);
+		const quantity = Math.floor(
+			msg.author.maxTripLength(Activity.GnomeRestaurant) / deliveryLength
+		);
 		const duration = randomVariation(deliveryLength * quantity, 5);
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) >= 66) {
