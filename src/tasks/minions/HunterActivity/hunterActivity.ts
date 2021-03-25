@@ -157,6 +157,12 @@ export default class extends Task {
 			}
 		}
 
+		const isUsingMasterCape = user.hasItemEquippedAnywhere(itemID('Hunter master cape'));
+
+		if (isUsingMasterCape) {
+			loot.multiply(2);
+		}
+
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
 		await user.addItemsToBank(loot.values(), true);
 		xpStr += await user.addXP(SkillsEnum.Hunter, xpReceived, duration);
@@ -169,8 +175,7 @@ export default class extends Task {
 
 		if (user.usingPet('Sandy')) {
 			if (creature.id === 3251) {
-				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
-					loot.multiply(2);
+				if (isUsingMasterCape) {
 					str += `\nYou received **double** loot because of Sandy, and being a master hunter.`;
 				}
 			} else {
