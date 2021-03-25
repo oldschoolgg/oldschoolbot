@@ -26,30 +26,36 @@ export default class extends Task {
 		let leapingSalmon = 0;
 		let leapingTrout = 0;
 		let agilityXpReceived = 0;
+		let strengthXpReceived = 0;
 		if (fish.name === 'Barbarian fishing') {
 			for (let i = 0; i < quantity; i++) {
 				if (
 					roll(255 / (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 70 &&
-					user.skillLevel(SkillsEnum.Agility) >= 45
+					user.skillLevel(SkillsEnum.Agility) >= 45 &&
+					user.skillLevel(SkillsEnum.Strength) >= 45
 				) {
 					xpReceived += 80;
-					agilityXpReceived += 7;
 					leapingSturgeon += 1;
+					agilityXpReceived += 7;
+					strengthXpReceived += 7;
 				} else if (
 					roll(255 / (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 58 &&
-					user.skillLevel(SkillsEnum.Agility) >= 30
+					user.skillLevel(SkillsEnum.Agility) >= 30 &&
+					user.skillLevel(SkillsEnum.Strength) >= 30
 				) {
 					xpReceived += 70;
 					leapingSalmon += 1;
 					agilityXpReceived += 6;
+					strengthXpReceived += 6;
 				} else if (
 					roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))
 				) {
 					xpReceived += 50;
 					leapingTrout += 1;
 					agilityXpReceived += 5;
+					strengthXpReceived += 5;
 				}
 			}
 		} else {
@@ -78,13 +84,17 @@ export default class extends Task {
 			}
 		}
 
-		const xpRes1 = await user.addXP(SkillsEnum.Fishing, xpReceived, duration);
-		const xpRes2 =
+		let xpRes = await user.addXP(SkillsEnum.Fishing, xpReceived, duration);
+		xpRes +=
 			agilityXpReceived > 0
 				? await user.addXP(SkillsEnum.Agility, agilityXpReceived, duration)
 				: '';
+		xpRes +=
+			strengthXpReceived > 0
+				? await user.addXP(SkillsEnum.Strength, strengthXpReceived, duration)
+				: '';
 
-		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes1} ${xpRes2}`;
+		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
 
 		if (fish.id === itemID('Raw karambwanji')) {
 			quantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);

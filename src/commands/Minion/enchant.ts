@@ -74,8 +74,10 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Enchanting);
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToEnchantTen);
+			quantity = Math.floor(maxTripLength / timeToEnchantTen);
 			const spellRunes = determineRunes(msg.author, enchantable.input.clone());
 			const max = userBank.fits(spellRunes);
 			if (max < quantity && max !== 0) quantity = max;
@@ -83,13 +85,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToEnchantTen;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					enchantable.name
-				}s you can enchant is ${Math.floor(msg.author.maxTripLength / timeToEnchantTen)}.`
+				}s you can enchant is ${Math.floor(maxTripLength / timeToEnchantTen)}.`
 			);
 		}
 

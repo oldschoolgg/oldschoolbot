@@ -164,12 +164,13 @@ export default class extends BotCommand {
 			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm --plants`';
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
 			quantity = Math.min(
 				Math.floor(
-					msg.author.maxTripLength /
-						(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
+					maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
 				),
 				numOfPatches
 			);
@@ -203,13 +204,12 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
 				(Math.floor(
-					msg.author.maxTripLength /
-						(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
+					maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
 				),
 				numOfPatches)
 			}.`;

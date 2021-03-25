@@ -54,6 +54,8 @@ export default class extends BotCommand {
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Firemaking);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			const amountOfLogsOwned = msg.author.settings.get(UserSettings.Bank)[log.inputLogs];
@@ -61,7 +63,7 @@ export default class extends BotCommand {
 				return msg.send(`You have no ${log.name}.`);
 			}
 			quantity = Math.min(
-				Math.floor(msg.author.maxTripLength / timeToLightSingleLog),
+				Math.floor(maxTripLength / timeToLightSingleLog),
 				amountOfLogsOwned
 			);
 		}
@@ -75,13 +77,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToLightSingleLog;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					log.name
-				}s you can light is ${Math.floor(msg.author.maxTripLength / timeToLightSingleLog)}.`
+				}s you can light is ${Math.floor(maxTripLength / timeToLightSingleLog)}.`
 			);
 		}
 

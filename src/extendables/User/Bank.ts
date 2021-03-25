@@ -97,16 +97,23 @@ export default class extends Extendable {
 		return this.queueFn(() => this.settings.update(UserSettings.GP, currentGP + amount));
 	}
 
-	public async addItemsToBank(this: User, inputItems: ItemBank | Bank, collectionLog = false) {
+	public async addItemsToBank(
+		this: User,
+		inputItems: ItemBank | Bank,
+		collectionLog = false
+	): Promise<{ previousCL: ItemBank }> {
 		const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
-
 		await this.settings.sync(true);
+
+		const previousCL = this.settings.get(UserSettings.CollectionLogBank);
 
 		const items = {
 			..._items
 		};
 
-		if (collectionLog) this.addItemsToCollectionLog(items);
+		if (collectionLog) {
+			await this.addItemsToCollectionLog(items);
+		}
 
 		if (items[995]) {
 			await this.addGP(items[995]);
@@ -114,7 +121,7 @@ export default class extends Extendable {
 		}
 
 		this.log(`Had items added to bank - ${JSON.stringify(items)}`);
-		return this.queueFn(() =>
+		await this.queueFn(() =>
 			this.settings.update(
 				UserSettings.Bank,
 				addBanks([
@@ -125,6 +132,10 @@ export default class extends Extendable {
 				])
 			)
 		);
+
+		return {
+			previousCL
+		};
 	}
 
 	public async removeItemFromBank(this: User, itemID: number, amountToRemove = 1) {

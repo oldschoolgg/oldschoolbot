@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
@@ -14,7 +15,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: GroupMonsterActivityTaskOptions) {
-		const { monsterID, channelID, quantity, users, leader } = data;
+		const { monsterID, channelID, quantity, users, leader, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: ItemBank } = {};
@@ -42,6 +43,8 @@ export default class extends Task {
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
+			await addMonsterXP(user, monsterID, Math.ceil(quantity / users.length), duration);
+			totalLoot.add(loot);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori')) {
 				loot = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25)) ?? {}, loot]);

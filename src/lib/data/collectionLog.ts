@@ -32,6 +32,16 @@ const gamblersBag = resolveItems([
 	'Ring of luck'
 ]);
 
+const secondEaster = resolveItems([
+	'Easter basket',
+	'Rubber chicken',
+	'Easter ring',
+	'Chicken head',
+	'Chicken wings',
+	'Chicken legs',
+	'Chicken feet'
+]);
+
 const nightmareLog = resolveItems([
 	"Inquisitor's great helm",
 	"Inquisitor's hauberk",
@@ -283,6 +293,7 @@ export const bosses: CollectionLogData = {
 		'Arcane sigil',
 		'Elysian sigil',
 		'Divine sigil',
+		'Jar of spirits',
 		'Pet dark core'
 	]),
 	Cerberus: resolveItems([
@@ -1369,7 +1380,8 @@ export const holiday: CollectionLogData = {
 		'Christmas cracker',
 		'Santa hat'
 	]),
-	SecondBirthday: monkeyHuntLog
+	SecondBirthday: monkeyHuntLog,
+	SecondEaster: secondEaster
 };
 
 export const diangoCollectionLog: CollectionLogData = {

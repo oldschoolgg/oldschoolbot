@@ -163,19 +163,21 @@ export default class extends BotCommand {
 			}
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Mining);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToMine);
+			quantity = Math.floor(maxTripLength / timeToMine);
 		}
 		const duration = quantity * timeToMine;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					ore.name
-				} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`
+				} you can mine is ${Math.floor(maxTripLength / timeToMine)}.`
 			);
 		}
 

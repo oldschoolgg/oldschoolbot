@@ -79,22 +79,22 @@ export default class extends BotCommand {
 		}
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
+		const maxTripLength = msg.author.maxTripLength(Activity.Fletching);
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToFletchSingleItem);
+			quantity = Math.floor(maxTripLength / timeToFletchSingleItem);
 			const max = userBank.fits(fletchable.inputItems);
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
 		const duration = quantity * timeToFletchSingleItem;
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					fletchable.name
-				}s you can fletch is ${Math.floor(
-					msg.author.maxTripLength / timeToFletchSingleItem
-				)}.`
+				}s you can fletch is ${Math.floor(maxTripLength / timeToFletchSingleItem)}.`
 			);
 		}
 

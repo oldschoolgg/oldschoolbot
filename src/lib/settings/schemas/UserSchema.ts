@@ -35,6 +35,7 @@ Client.defaultUserSchema
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
 	.add('spawned_rmb', 'boolean', { default: false })
+	.add('attack_style', 'string', { array: true, default: [] })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
@@ -79,6 +80,11 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Hunter, 'integer', { default: 0 })
 			.add(SkillsEnum.Construction, 'integer', { default: 0 })
 			.add(SkillsEnum.Magic, 'integer', { default: 0 })
+			.add(SkillsEnum.Ranged, 'integer', { default: 0 })
+			.add(SkillsEnum.Attack, 'integer', { default: 0 })
+			.add(SkillsEnum.Strength, 'integer', { default: 0 })
+			.add(SkillsEnum.Defence, 'integer', { default: 0 })
+			.add(SkillsEnum.Hitpoints, 'integer', { default: 1154 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

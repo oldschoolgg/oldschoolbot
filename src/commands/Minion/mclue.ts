@@ -86,13 +86,15 @@ export default class extends BotCommand {
 
 		let duration = timeToFinish * quantity;
 
-		if (duration > msg.author.maxTripLength) {
+		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
+
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${
 					clueTier.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`
+				} is ${Math.floor(maxTripLength / timeToFinish)}.`
 			);
 		}
 

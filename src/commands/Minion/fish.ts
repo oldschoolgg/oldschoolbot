@@ -63,8 +63,12 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (fish.name === 'Barbarian fishing' && msg.author.skillLevel(SkillsEnum.Agility) < 15) {
-			return msg.send(`You need at least 15 Agility to catch those!`);
+		if (
+			fish.name === 'Barbarian fishing' &&
+			(msg.author.skillLevel(SkillsEnum.Agility) < 15 ||
+				msg.author.skillLevel(SkillsEnum.Strength) < 15)
+		) {
+			return msg.send(`You need at least 15 Agility and Strength to do Barbarian Fishing.`);
 		}
 
 		// If no quantity provided, set it to the max.
@@ -110,19 +114,21 @@ export default class extends BotCommand {
 				break;
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / scaledTimePerFish);
+			quantity = Math.floor(maxTripLength / scaledTimePerFish);
 		}
 
 		let duration = quantity * scaledTimePerFish;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					fish.name
-				} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`
+				} you can fish is ${Math.floor(maxTripLength / scaledTimePerFish)}.`
 			);
 		}
 

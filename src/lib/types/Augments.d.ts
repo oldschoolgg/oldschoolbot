@@ -12,7 +12,7 @@ import { Connection } from 'typeorm';
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
-import { BitField, PerkTier } from '../constants';
+import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
 import {
 	GearSetup,
 	GearSetupType,
@@ -25,6 +25,7 @@ import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
+import { AttackStyles } from '../util';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
@@ -111,7 +112,7 @@ declare module 'discord.js' {
 		addItemsToBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
-		): Promise<SettingsUpdateResult>;
+		): Promise<{ previousCL: ItemBank }>;
 		removeItemsFromBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
@@ -226,6 +227,8 @@ declare module 'discord.js' {
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		getGear(gearType: GearSetupType): GearSetup;
+		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
+		getAttackStyles(): AttackStyles[];
 		owns(bank: ItemBank | Bank): boolean;
 		perkTier: PerkTier;
 		/**
@@ -244,7 +247,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength: number;
+		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
 	}
 
