@@ -4,13 +4,12 @@ import { Activity, Time } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { calcWhatPercent, formatDuration, itemNameFromID } from '../../lib/util';
+import { calcWhatPercent, formatDuration, formatItemReqs, itemNameFromID } from '../../lib/util';
+import { findMonster } from '../../lib/util/findMonster';
 import { formatItemBoosts } from '../../lib/util/formatItemBoosts';
-import { formatItemReqs } from '../../lib/util/formatItemReqs';
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

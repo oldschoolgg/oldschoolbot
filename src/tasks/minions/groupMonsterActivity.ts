@@ -43,7 +43,7 @@ export default class extends Task {
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-			await addMonsterXP(user, monsterID, quantity, duration);
+			await addMonsterXP(user, monsterID, Math.ceil(quantity / users.length), duration);
 			totalLoot.add(loot);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori')) {

@@ -16,11 +16,11 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import findMonster from '../../lib/minions/functions/findMonster';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -33,6 +33,7 @@ import {
 	removeDuplicatesFromArray
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { findMonster } from '../../lib/util/findMonster';
 
 const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
@@ -232,6 +233,23 @@ export default class extends BotCommand {
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
+		}
+
+		if (
+			attackStyles.includes(SkillsEnum.Ranged) &&
+			msg.author.hasItemEquippedAnywhere('Ranged master cape')
+		) {
+			duration *= 0.85;
+			boosts.push(`15% for Ranged master cape`);
+		} else if (
+			attackStyles.includes(SkillsEnum.Magic) &&
+			msg.author.hasItemEquippedAnywhere('Magic master cape')
+		) {
+			duration *= 0.85;
+			boosts.push(`15% for Magic master cape`);
+		} else if (msg.author.hasItemEquippedAnywhere('Attack master cape')) {
+			duration *= 0.85;
+			boosts.push(`15% for Attack master cape`);
 		}
 
 		if (hasBlessing && prayerPotsNeeded) {
