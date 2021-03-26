@@ -374,7 +374,11 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			res = await this.query(
 				`SELECT id,  ${skillsVals.map(s => `"skills.${s.id}"`)}, ${skillsVals
 					.map(s => `"skills.${s.id}"`)
-					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 500;`
+					.join(' + ')} as totalxp
+FROM users
+${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
+ORDER BY totalxp
+DESC LIMIT 500;`
 			);
 			overallUsers = res
 				.map(user => {
