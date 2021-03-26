@@ -364,6 +364,30 @@ const backgroundImages: BankBackground[] = [
 		name: 'Slav',
 		image: null,
 		available: false
+	},
+	{
+		id: 48,
+		name: 'Beans',
+		image: null,
+		available: false
+	},
+	{
+		id: 49,
+		name: 'Iron dev',
+		image: null,
+		available: false
+	},
+	{
+		id: 50,
+		name: 'Dragon sin',
+		image: null,
+		available: false
+	},
+	{
+		id: 51,
+		name: 'Primal predator',
+		image: null,
+		available: false
 	}
 ];
 
