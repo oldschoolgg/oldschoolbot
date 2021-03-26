@@ -2,7 +2,7 @@ import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
-import { BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -59,8 +59,15 @@ export default class extends BotCommand {
 					.map(i => BitFieldData[i])
 					.filter(notEmpty)
 					.map(i => i.name)
-					.join(', ')}.`;
-				return msg.send(`**${input.username}**\nBitfields: ${bitfields}`);
+					.join(', ')}`;
+
+				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
+				return msg.send(
+					`**${input.username}**
+**Bitfields:** ${bitfields}
+**Badges:** ${userBadges}
+`
+				);
 			}
 			case 'patreon': {
 				msg.channel.send('Running patreon task...');
@@ -156,6 +163,49 @@ export default class extends BotCommand {
 					`${action === 'add' ? 'Added' : 'Removed'} '${
 						(BitFieldData as any)[bit].name
 					}' bit to ${input.username}.`
+				);
+			}
+
+			case 'badges': {
+				if (!input || !str) {
+					return msg.send(
+						Object.entries(badges)
+							.map(entry => `**${entry[1]}:** ${entry[0]}`)
+							.join('\n')
+					);
+				}
+
+				const badgesKeys = Object.keys(badges);
+
+				const [action, _badge] = str.split(' ');
+				const badge = Number(_badge);
+
+				if (!badgesKeys.includes(_badge) || (action !== 'add' && action !== 'remove')) {
+					return msg.send(`Invalid badge.`);
+				}
+
+				let newBadges = [...input.settings.get(UserSettings.Badges)];
+
+				if (action === 'add') {
+					if (newBadges.includes(badge)) {
+						return msg.send(`Already has this badge, so can't add.`);
+					}
+					newBadges.push(badge);
+				} else {
+					if (!newBadges.includes(badge)) {
+						return msg.send(`Doesn't have this badge, so can't remove.`);
+					}
+					newBadges = newBadges.filter(i => i !== badge);
+				}
+
+				await input.settings.update(UserSettings.Badges, uniqueArr(newBadges), {
+					arrayAction: 'overwrite'
+				});
+
+				return msg.channel.send(
+					`${action === 'add' ? 'Added' : 'Removed'} ${badges[badge]} badge to ${
+						input.username
+					}.`
 				);
 			}
 
