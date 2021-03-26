@@ -462,9 +462,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		const result = (await this.query(
 			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users ${
+		msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''
+  }
 ) u
-WHERE u."logBankLength" > 300 ORDER BY u."logBankLength" DESC;`
+WHERE u."logBankLength" > 300
+ORDER BY u."logBankLength" DESC;`
 		)) as CLUser[];
 		const users = await Workers.leaderboard({
 			type: 'cl',
