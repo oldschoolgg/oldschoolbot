@@ -24,7 +24,10 @@ const userSettingsGetMe = (server: FastifyServer) =>
 				order: {
 					finishDate: 'DESC'
 				},
-				take: 100
+				take: 100,
+				where: {
+					userID: user.id
+				}
 			});
 
 			reply.send({ bank, skills, lastDailyTimestamp, activities });
