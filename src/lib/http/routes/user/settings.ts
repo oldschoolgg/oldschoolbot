@@ -2,6 +2,7 @@ import { noOp } from 'e';
 
 import { client } from '../../../..';
 import { UserSettings } from '../../../settings/types/UserSettings';
+import { ActivityTable } from '../../../typeorm/ActivityTable.entity';
 import { FastifyServer } from '../../types';
 import { rateLimit } from '../../util';
 
@@ -19,7 +20,14 @@ const userSettingsGetMe = (server: FastifyServer) =>
 			const skills = user.rawSkills;
 			const lastDailyTimestamp = user.settings.get(UserSettings.LastDailyTimestamp);
 
-			reply.send({ bank, skills, lastDailyTimestamp });
+			const activities = await ActivityTable.find({
+				order: {
+					finishDate: 'DESC'
+				},
+				take: 100
+			});
+
+			reply.send({ bank, skills, lastDailyTimestamp, activities });
 		},
 		config: {
 			...rateLimit(3, '20 seconds'),
