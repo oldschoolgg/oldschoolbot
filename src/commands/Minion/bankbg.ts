@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Events, Time } from '../../lib/constants';
+import { BitField, Events, Time } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -36,12 +36,17 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (!selectedImage.available) {
-			return msg.send(`This image is not currently available.`);
-		}
-
 		if (msg.author.settings.get(UserSettings.BankBackground) === selectedImage.id) {
 			return msg.send(`This is already your bank background.`);
+		}
+
+		if (msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator)) {
+			await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
+			return msg.send(`Your bank background is now **${selectedImage.name}**!`);
+		}
+
+		if (!selectedImage.available) {
+			return msg.send(`This image is not currently available.`);
 		}
 
 		if (
