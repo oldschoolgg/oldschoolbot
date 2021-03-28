@@ -1,27 +1,41 @@
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
 
+import { Activity } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { gauntlet } from '../../lib/simulation/gauntlet';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { skillsMeetRequirements } from '../../lib/util';
+import { GauntletOptions } from '../../lib/types/minions';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	skillsMeetRequirements,
+	toTitleCase
+} from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+const baseRequirements = {
+	cooking: 70,
+	farming: 70,
+	fishing: 70,
+	mining: 70,
+	woodcutting: 70,
+	agility: 70,
+	smithing: 70,
+	herblore: 70
+};
 
 const standardRequirements = {
+	...baseRequirements,
 	attack: 80,
 	strength: 80,
 	defence: 80,
 	magic: 80,
 	ranged: 80,
-	prayer: 77,
-	// Skilling
-	cooking: 70,
-	farming: 70,
-	fishing: 70,
-	mining: 70,
-	woodcutting: 70
+	prayer: 77
 };
 
 const corruptedRequirements = {
+	...baseRequirements,
 	attack: 90,
 	strength: 90,
 	defence: 90,
@@ -45,21 +59,76 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [type, qty]: ['corrupted' | 'normal', number | undefined]) {
+	async run(msg: KlasaMessage, [type, quantity]: ['corrupted' | 'normal', number | undefined]) {
 		if (msg.author.settings.get(UserSettings.QP) < 200) {
 			return msg.send(`You need atleast 200 QP to do the Gauntlet.`);
 		}
-
+		const readableName = `${toTitleCase(type)} Gauntlet`;
 		const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
 
-		if (skillsMeetRequirements(msg.author.rawSkills, requiredSkills)) {
-			return msg.send(`You need some stats for this bruv: ${requiredSkills}`);
+		if (!skillsMeetRequirements(msg.author.rawSkills, requiredSkills)) {
+			return msg.send(
+				`You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
+					requiredSkills
+				)}.`
+			);
 		}
 
-		const loot = new Bank();
-		for (let i = 0; i < 10_000; i++) {
-			loot.add(gauntlet({ died: false, type: 'normal' }));
+		const [corruptedKC, normalKC] = await Promise.all([
+			msg.author.getMinigameScore('CorruptedGauntlet'),
+			msg.author.getMinigameScore('Gauntlet')
+		]);
+
+		if (type === 'corrupted' && normalKC < 30) {
+			return msg.send(
+				`You can't attempt the Corrupted Gauntlet, you have less than 30 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!	`
+			);
 		}
-		return msg.channel.sendBankImage({ bank: loot.bank });
+
+		let baseLength = Time.Minute * 5;
+
+		const boosts = [];
+
+		const scoreBoost =
+			Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC, 100)) / 5;
+		if (scoreBoost > 1) {
+			baseLength = reduceNumByPercent(baseLength, scoreBoost);
+			boosts.push(`${scoreBoost}% boost for experience in the minigame`);
+		}
+
+		let gauntletLength = baseLength;
+		if (type === 'corrupted') gauntletLength *= 2;
+
+		const maxTripLength = msg.author.maxTripLength(Activity.Gauntlet);
+
+		if (!quantity) {
+			quantity = Math.floor(maxTripLength / gauntletLength);
+		}
+		const duration = quantity * gauntletLength;
+
+		if (duration > maxTripLength) {
+			return msg.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					maxTripLength
+				)}, try a lower quantity. The highest amount of ${readableName} you can do is ${Math.floor(
+					maxTripLength / gauntletLength
+				)}.`
+			);
+		}
+
+		await addSubTaskToActivityTask<GauntletOptions>(this.client, {
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Gauntlet,
+			corrupted: type === 'corrupted'
+		});
+
+		const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join('\n')}` : '';
+
+		return msg.send(`You doin ${quantity}x ${readableName} now bruv
+${boostsStr}
+`);
 	}
 }
