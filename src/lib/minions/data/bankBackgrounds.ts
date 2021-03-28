@@ -175,6 +175,24 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 16,
+		name: 'Wilderness',
+		image: null,
+		available: false
+	},
+	{
+		id: 17,
+		name: 'Grand Exchange',
+		image: null,
+		available: false
+	},
+	{
+		id: 18,
+		name: 'Falador Park',
+		image: null,
+		available: false
 	}
 ];
 
