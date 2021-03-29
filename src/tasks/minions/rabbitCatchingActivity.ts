@@ -15,7 +15,9 @@ export default class extends Task {
 		const cl = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 		const hasDoneEvent = cl.has('Easter ring');
 
-		if (roll(500)) {
+		const hasGottenHoppy = cl.has('Hoppy');
+
+		if (roll(hasGottenHoppy ? 600 : 200)) {
 			const loot = new Bank().add('Hoppy');
 
 			const str = `${user}, ${user.minionName} finished the Easter Holiday Event! They were helping to catch rabbits, and found a particularly cute rabbit and decided to keep it. You received: **${loot}**.`;
