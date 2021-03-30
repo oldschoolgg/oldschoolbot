@@ -349,7 +349,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 45,
-		name: 'Birdie',
+		name: 'Birdie CustomBG',
 		image: null,
 		available: false
 	},
@@ -416,6 +416,12 @@ const backgroundImages: BankBackground[] = [
 	{
 		id: 56,
 		name: 'Lashiing CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 57,
+		name: 'AXZ4 CustomBG',
 		image: null,
 		available: false
 	}
