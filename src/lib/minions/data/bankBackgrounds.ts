@@ -319,7 +319,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 40,
-		name: 'Turbo',
+		name: 'Turbo CustomBG',
 		image: null,
 		available: false
 	},
@@ -386,6 +386,36 @@ const backgroundImages: BankBackground[] = [
 	{
 		id: 51,
 		name: 'Primal predator',
+		image: null,
+		available: false
+	},
+	{
+		id: 52,
+		name: 'Cyrillax CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 53,
+		name: 'AvariceBruh CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 54,
+		name: 'Casej22 CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 55,
+		name: 'SammyHammy CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 56,
+		name: 'Lashiing CustomBG',
 		image: null,
 		available: false
 	}
