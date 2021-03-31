@@ -29,7 +29,6 @@ export default class extends Task {
 			const died = percentChance(chanceOfDeath);
 			if (died) {
 				deaths++;
-				continue;
 			}
 			loot.add(
 				gauntlet({

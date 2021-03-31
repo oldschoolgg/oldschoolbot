@@ -88,7 +88,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		let baseLength = type === 'corrupted' ? Time.Minute * 10 : Time.Minute * 15;
+		let baseLength = type === 'corrupted' ? Time.Minute * 10 : Time.Minute * 14;
 
 		const boosts = [];
 
