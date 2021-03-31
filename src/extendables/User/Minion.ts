@@ -524,6 +524,10 @@ export default class extends Extendable {
 					data.corrupted ? 'Corrupted' : 'Normal'
 				} Gauntlet. ${formattedDuration}`;
 			}
+
+			case Activity.Sailing: {
+				return `${this.minionName} is currently on a Sailing trip. ${formattedDuration}`;
+			}
 		}
 	}
 
