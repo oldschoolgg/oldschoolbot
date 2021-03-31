@@ -21,7 +21,9 @@ const baseRequirements = {
 	woodcutting: 70,
 	agility: 70,
 	smithing: 70,
-	herblore: 70
+	herblore: 70,
+	construction: 70,
+	hunter: 70
 };
 
 const standardRequirements = {
@@ -82,7 +84,7 @@ export default class extends BotCommand {
 
 		if (type === 'corrupted' && normalKC < 50) {
 			return msg.send(
-				`You can't attempt the Corrupted Gauntlet, you have less than 30 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!	`
+				`You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!`
 			);
 		}
 
