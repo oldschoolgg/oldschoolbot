@@ -50,6 +50,14 @@ const soulwarsLog = resolveItems([
 	'Spoils of war'
 ]);
 
+const gauntletLog = resolveItems([
+	'Youngllef',
+	'Crystal armour seed',
+	'Crystal weapon seed',
+	'Blade of saeldor (inactive)',
+	'Gauntlet cape'
+]);
+
 const wintertodtLog = resolveItems([
 	'Phoenix',
 	'Pyromancer hood',
@@ -1815,5 +1823,10 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: "Rogues' Den",
 		aliases: ['rogues den', 'rd'],
 		items: { 1: rogueOutfit }
+	},
+	{
+		name: 'Gauntlet',
+		aliases: ['gauntlet'],
+		items: { 1: gauntletLog }
 	}
 ];

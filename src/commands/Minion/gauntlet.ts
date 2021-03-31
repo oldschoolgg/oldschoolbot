@@ -55,7 +55,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 3,
 			oneAtTime: true,
-			usage: '<corrupted|normal> [quantity:number]'
+			usage: '<corrupted|normal> [quantity:int{1,100}]',
+			usageDelim: ' '
 		});
 	}
 
@@ -79,13 +80,13 @@ export default class extends BotCommand {
 			msg.author.getMinigameScore('Gauntlet')
 		]);
 
-		if (type === 'corrupted' && normalKC < 30) {
+		if (type === 'corrupted' && normalKC < 50) {
 			return msg.send(
 				`You can't attempt the Corrupted Gauntlet, you have less than 30 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!	`
 			);
 		}
 
-		let baseLength = Time.Minute * 5;
+		let baseLength = type === 'corrupted' ? Time.Minute * 10 : Time.Minute * 15;
 
 		const boosts = [];
 
@@ -127,7 +128,9 @@ export default class extends BotCommand {
 
 		const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join('\n')}` : '';
 
-		return msg.send(`You doin ${quantity}x ${readableName} now bruv
+		return msg.send(`${
+			msg.author.minionName
+		} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(duration)}.
 ${boostsStr}
 `);
 	}

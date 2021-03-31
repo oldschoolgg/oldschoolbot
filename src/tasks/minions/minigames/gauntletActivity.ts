@@ -17,28 +17,38 @@ export default class extends Task {
 		const key: MinigameKey = corrupted ? 'CorruptedGauntlet' : 'Gauntlet';
 
 		incrementMinionDailyDuration(this.client, userID, duration);
-		await incrementMinigameScore(userID, key, quantity);
 		const kc = await user.getMinigameScore(key);
 
 		let chanceOfDeath = corrupted ? 6 : 3;
-		chanceOfDeath += calcWhatPercent(100 - kc, 100) / 2;
+		chanceOfDeath += Math.max(0, calcWhatPercent(100 - kc, 100) / 2);
 
 		const loot = new Bank();
 
+		let deaths = 0;
 		for (let i = 0; i < quantity; i++) {
+			const died = percentChance(chanceOfDeath);
+			if (died) {
+				deaths++;
+			}
 			loot.add(
 				gauntlet({
-					died: percentChance(chanceOfDeath),
+					died,
 					type: corrupted ? 'corrupted' : 'normal'
 				})
 			);
 		}
+		if (corrupted && !user.hasItemEquippedOrInBank('Gauntlet cape')) {
+			loot.add('Gauntlet cape');
+		}
+
+		await incrementMinigameScore(userID, key, quantity - deaths);
 
 		const { previousCL } = await user.addItemsToBank(loot.bank, true);
+		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity}x ${
-			corrupted ? 'Corrupted' : 'Normal'
-		} Gauntlet. **${chanceOfDeath}% chance of death**`;
+		const newKc = await user.getMinigameScore(key);
+
+		let str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.GauntletLoot,
@@ -52,7 +62,7 @@ export default class extends Task {
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
-				`Loot From ${quantity}x Gauntlet`,
+				`Loot From ${quantity}x ${name}`,
 				true,
 				{ showNewCL: 1 },
 				user,
@@ -66,7 +76,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued gauntlet`);
-				return this.client.commands.get('gauntlet')!.run(res, []);
+				return this.client.commands
+					.get('gauntlet')!
+					.run(res, [corrupted ? 'corrupted' : 'normal', quantity]);
 			},
 			image!,
 			data,
