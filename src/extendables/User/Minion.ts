@@ -55,6 +55,7 @@ import {
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
+	GauntletOptions,
 	GloryChargingActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
@@ -515,6 +516,13 @@ export default class extends Extendable {
 				} is doing the Easter Holiday Event! They're currently ${randArrItem(
 					messages
 				)}. ${formattedDuration}`;
+			}
+
+			case Activity.Gauntlet: {
+				const data = currentTask as GauntletOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x ${
+					data.corrupted ? 'Corrupted' : 'Normal'
+				} Gauntlet. ${formattedDuration}`;
 			}
 		}
 	}

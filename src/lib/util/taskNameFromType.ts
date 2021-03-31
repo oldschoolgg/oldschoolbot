@@ -96,5 +96,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.RoguesDenMaze;
 		case Activity.RabbitCatching:
 			return Tasks.RabbitCatching;
+		case Activity.Gauntlet:
+			return Tasks.Gauntlet;
 	}
 }
