@@ -5,6 +5,15 @@ import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } 
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
+const clueHunterLog = resolveItems([
+	'Clue hunter cloak',
+	'Clue hunter boots',
+	'Clue hunter gloves',
+	'Clue hunter trousers',
+	'Clue hunter garb',
+	'Helm of raedwald'
+]);
+
 const monkeyHuntLog = resolveItems([
 	'Cursed banana',
 	'Banana cape',
@@ -62,6 +71,14 @@ const soulwarsLog = resolveItems([
 	'Blue soul cape',
 	'Ectoplasmator',
 	'Spoils of war'
+]);
+
+const gauntletLog = resolveItems([
+	'Youngllef',
+	'Crystal armour seed',
+	'Crystal weapon seed',
+	'Blade of saeldor (inactive)',
+	'Gauntlet cape'
 ]);
 
 const wintertodtLog = resolveItems([
@@ -1656,7 +1673,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
-	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
+	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket'])],
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
 	AgilityArena: agilityArenaLog,
@@ -1682,26 +1699,6 @@ export const skillingLog: CollectionLogData = {
 	RogueOutfit: Object.values(rogueOutfit).flat(Infinity) as number[]
 };
 
-export const allCollectionLogItems = uniqueArr(
-	[
-		...Object.values(bosses),
-		...Object.values(cluesAll),
-		...Object.values(pets),
-		...Object.values(championScrolls),
-		...Object.values(holiday),
-		...Object.values(diangoCollectionLog),
-		...Object.values(capes),
-		...Object.values(quest),
-		...Object.values(skillingLog),
-		...Object.values(coxLog),
-		...Object.values(miscLog),
-		...Object.values(customBossLog),
-		...Object.values(nightmareLog),
-		...Object.values(sepulchreLog),
-		...Object.values(mahoganyHomesLog)
-	].flat(Infinity)
-) as number[];
-
 export type CollectionLogData = Record<string, number[]>;
 
 export interface CollectionLogType {
@@ -1711,11 +1708,6 @@ export interface CollectionLogType {
 }
 
 export const collectionLogTypes: CollectionLogType[] = [
-	{
-		name: 'Overall',
-		aliases: ['all', 'overall'],
-		items: { '': allCollectionLogItems }
-	},
 	{
 		name: 'Boss',
 		aliases: ['bosses', 'boss'],
@@ -1905,5 +1897,24 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Kalphite King',
 		aliases: ['kalphite king', 'kk'],
 		items: { 1: allKalphiteKingItems }
+	},
+	{
+		name: 'Gauntlet',
+		aliases: ['gauntlet'],
+		items: { 1: gauntletLog }
+	},
+	{
+		name: 'Clue Hunter',
+		aliases: ['clue hunter'],
+		items: { 1: clueHunterLog }
 	}
 ];
+export const allCollectionLogItems = uniqueArr(
+	collectionLogTypes.map(i => Object.values(i.items)).flat(Infinity) as number[]
+);
+
+collectionLogTypes.push({
+	name: 'Overall',
+	aliases: ['all', 'overall'],
+	items: { all: allCollectionLogItems }
+});

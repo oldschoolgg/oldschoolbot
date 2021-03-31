@@ -102,5 +102,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.KalphiteKing;
 		case Activity.RabbitCatching:
 			return Tasks.RabbitCatching;
+		case Activity.Gauntlet:
+			return Tasks.Gauntlet;
+		case Activity.Sailing:
+			return Tasks.Sailing;
 	}
 }

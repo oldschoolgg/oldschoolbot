@@ -274,3 +274,8 @@ export interface SoulWarsOptions extends ActivityTaskOptions {
 export interface RoguesDenMazeTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
+
+export interface GauntletOptions extends ActivityTaskOptions {
+	corrupted: boolean;
+	quantity: number;
+}

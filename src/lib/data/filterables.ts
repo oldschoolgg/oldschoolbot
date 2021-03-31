@@ -776,7 +776,15 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Farming',
 		aliases: ['farming', 'farm', 'seeds'],
-		items: seeds
+		items: [
+			...resolveItems([
+				'Compost',
+				'Supercompost',
+				'Ultracompost',
+				'Bottomless compost bucket '
+			]),
+			...seeds
+		]
 	},
 	{
 		name: 'Herblore',

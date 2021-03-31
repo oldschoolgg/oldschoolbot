@@ -1128,6 +1128,7 @@ setCustomItem(
 setCustomItem(47_517, 'Perfect chitin', getOSItem('Magic seed'), {}, 1_000_000);
 setCustomItem(47_518, 'Baby kalphite king', getOSItem('Herbi'), {}, 1_000_000);
 setCustomItem(47_519, 'Hoppy', getOSItem('Herbi'), {}, 20_000_000);
+setCustomItem(47_520, 'Craig', getOSItem('Herbi'), {}, 20_000_000);
 
 /**
  * Misc Items
