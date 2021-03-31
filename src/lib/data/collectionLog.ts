@@ -3,6 +3,15 @@ import { uniqueArr } from 'e';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
+const clueHunterLog = resolveItems([
+	'Clue hunter cloak',
+	'Clue hunter boots',
+	'Clue hunter gloves',
+	'Clue hunter trousers',
+	'Clue hunter garb',
+	'Helm of raedwald'
+]);
+
 const monkeyHuntLog = resolveItems([
 	'Cursed banana',
 	'Banana cape',
@@ -1803,6 +1812,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 	{
 		name: 'Gauntlet',
 		aliases: ['gauntlet'],
+		items: { 1: gauntletLog }
+	},
+	{
+		name: 'Clue Hunter',
+		aliases: ['clue hunter'],
 		items: { 1: gauntletLog }
 	}
 ];
