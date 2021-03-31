@@ -1817,7 +1817,7 @@ export const collectionLogTypes: CollectionLogType[] = [
 	{
 		name: 'Clue Hunter',
 		aliases: ['clue hunter'],
-		items: { 1: gauntletLog }
+		items: { 1: clueHunterLog }
 	}
 ];
 export const allCollectionLogItems = uniqueArr(
