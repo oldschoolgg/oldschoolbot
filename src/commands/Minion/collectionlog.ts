@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
-const slicedCollectionLogTypes = collectionLogTypes.slice(1);
+const slicedCollectionLogTypes = collectionLogTypes.slice(0, collectionLogTypes.length - 1);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

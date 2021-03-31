@@ -29,6 +29,7 @@ export default class extends Task {
 			const died = percentChance(chanceOfDeath);
 			if (died) {
 				deaths++;
+				continue;
 			}
 			loot.add(
 				gauntlet({
@@ -37,7 +38,7 @@ export default class extends Task {
 				})
 			);
 		}
-		if (corrupted && !user.hasItemEquippedOrInBank('Gauntlet cape')) {
+		if (corrupted && !user.hasItemEquippedOrInBank('Gauntlet cape') && deaths < quantity) {
 			loot.add('Gauntlet cape');
 		}
 
@@ -62,7 +63,7 @@ export default class extends Task {
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
-				`Loot From ${quantity}x ${name}`,
+				`Loot From ${quantity - deaths}x ${name}`,
 				true,
 				{ showNewCL: 1 },
 				user,
