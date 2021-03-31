@@ -1600,7 +1600,7 @@ export const skillingLog: CollectionLogData = {
 		'Dark squirrel'
 	]),
 	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
-	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket', 'Tangleroot'])],
+	Farming: [...farmersOutfit, ...resolveItems(['Bottomless compost bucket'])],
 	Zalcano: zalcanoLog,
 	Plunder: resolveItems(["Pharaoh's sceptre (3)", 'Rocky']),
 	AgilityArena: agilityArenaLog,
