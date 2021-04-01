@@ -424,6 +424,12 @@ const backgroundImages: BankBackground[] = [
 		name: 'AXZ4 CustomBG',
 		image: null,
 		available: false
+	},
+	{
+		id: 58,
+		name: 'Doom CustomBG',
+		image: null,
+		available: false
 	}
 ];
 
