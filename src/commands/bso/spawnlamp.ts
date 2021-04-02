@@ -22,6 +22,15 @@ export default class extends BotCommand {
 		if (!msg.guild || msg.guild.id !== '342983479501389826') {
 			return msg.send(`You can only do this in the Oldschool.gg server.`);
 		}
+
+		if (
+			!['732207379818479756', '342983479501389826', '792691343284764693'].includes(
+				msg.channel.id
+			)
+		) {
+			return msg.send(`You can't use spawnlamp in this channel.`);
+		}
+
 		const currentDate = Date.now();
 		const lastDate = msg.author.settings.get(UserSettings.LastSpawnLamp);
 		const difference = currentDate - lastDate;
