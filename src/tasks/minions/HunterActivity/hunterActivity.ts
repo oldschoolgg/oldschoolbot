@@ -177,6 +177,7 @@ export default class extends Task {
 		if (user.usingPet('Sandy')) {
 			if (masterCapeEffect) {
 				str += `\nYou received **double** loot because of Sandy, and being a master hunter.`;
+				loot.multiply(2);
 			} else {
 				str += `\nYou received **triple** loot because of Sandy.`;
 				loot.multiply(3);
