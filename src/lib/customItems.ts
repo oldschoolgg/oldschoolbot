@@ -980,7 +980,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	200_000_000
 );
 setCustomItem(
 	47_512,
@@ -1008,7 +1008,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	100_000_000
 );
 
 setCustomItem(
@@ -1037,7 +1037,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	200_000_000
 );
 setCustomItem(
 	47_514,
@@ -1065,7 +1065,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	100_000_000
 );
 
 setCustomItem(
@@ -1094,7 +1094,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	200_000_000
 );
 setCustomItem(
 	47_516,
@@ -1122,7 +1122,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	100_000_000
 );
 
 setCustomItem(47_517, 'Perfect chitin', getOSItem('Magic seed'), {}, 1_000_000);
