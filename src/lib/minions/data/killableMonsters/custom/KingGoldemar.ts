@@ -5,10 +5,10 @@ import { MysteryBoxes } from '../../../../data/openables';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
 export const KingGoldemarLootTable = new LootTable()
-	.tertiary(2300, 'Broken dwarven warhammer')
+	.tertiary(2900, 'Broken dwarven warhammer')
 	.tertiary(20, 'Clue scroll (master)')
 	.oneIn(
-		30,
+		80,
 		new LootTable()
 			.add('Dwarven crate')
 			.add('Dwarven ore')

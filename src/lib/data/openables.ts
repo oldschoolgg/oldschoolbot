@@ -216,15 +216,15 @@ const PartyhatTable = new LootTable()
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
-	.add('Dwarven stout', 2)
+	.add('Dwarven stout', 2, 2)
 	.add('Dwarven lore', 2)
 	.add('Dwarven rock cake', 2)
-	.add('Dwarven helmet')
-	.add('Hammer')
+	.add('Dwarven helmet', 1, 3)
+	.add('Hammer', 1, 5)
 	.add('Steel pickaxe')
-	.add('Pickaxe handle')
-	.add('Beer')
-	.add('Kebab');
+	.add('Pickaxe handle', 1, 3)
+	.add('Beer', 1, 3)
+	.add('Kebab', 1, 3);
 
 export const SpoilsOfWarBaseTable = new LootTable()
 	.add('Pure essence', [4000, 6000], 6)
