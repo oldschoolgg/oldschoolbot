@@ -279,7 +279,9 @@ const backgroundImages: BankBackground[] = [
 		id: 34,
 		name: 'Dark',
 		image: null,
-		available: true
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 35,
