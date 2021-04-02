@@ -52,6 +52,9 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [str]: [string | undefined]) {
+		if (1 > 0) {
+			return msg.send(`Huh.. you want to *sail*? What's that?`);
+		}
 		const currentLevel = msg.author.skillLevel(SkillsEnum.Sailing);
 		const hasBook = msg.author.bank().has('Sailing book');
 		const hasStarted = currentLevel > 1 || hasBook;

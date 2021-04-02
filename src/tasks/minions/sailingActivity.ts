@@ -24,18 +24,6 @@ export default class extends Task {
 			await user.addItemsToBank(new Bank().add('Craig'), true);
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log(`continued sailing`);
-				return this.client.commands.get('sail')!.run(res, []);
-			},
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, null);
 	}
 }
