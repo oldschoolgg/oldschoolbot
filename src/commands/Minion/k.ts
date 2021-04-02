@@ -161,7 +161,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
-		const hasBlessing = msg.author.hasItemEquippedAnywhere(itemID('Dwarven blessing'));
+		const hasBlessing = msg.author.hasItemEquippedAnywhere('Dwarven blessing');
 		if (hasBlessing) {
 			timeToFinish *= 0.8;
 			boosts.push(`20% for Dwarven blessing`);
