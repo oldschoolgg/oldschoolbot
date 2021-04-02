@@ -1,6 +1,6 @@
 import { KlasaMessage, Task } from 'klasa';
 
-import { Emoji, MAX_HP } from '../../lib/constants';
+import { Emoji, MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
@@ -17,7 +17,7 @@ export default class extends Task {
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
 		let qpRecieved = rand(1, 30);
 
-		const max = user.isIronman ? 100_000 : MAX_HP;
+		const max = user.isIronman ? 100_000 : MAX_QP;
 
 		const newQP = currentQP + qpRecieved;
 

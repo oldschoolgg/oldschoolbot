@@ -72,6 +72,7 @@ export interface Fish {
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Course {

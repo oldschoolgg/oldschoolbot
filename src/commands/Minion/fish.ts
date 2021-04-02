@@ -40,7 +40,10 @@ export default class extends BotCommand {
 		}
 
 		const fish = Fishing.Fishes.find(
-			fish => stringMatches(fish.name, name) || stringMatches(fish.name.split(' ')[0], name)
+			fish =>
+				stringMatches(fish.name, name) ||
+				stringMatches(fish.name.split(' ')[0], name) ||
+				(fish.aliases && fish.aliases.some(alias => stringMatches(alias, name)))
 		);
 
 		if (!fish) {
