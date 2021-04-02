@@ -279,3 +279,9 @@ export interface GauntletOptions extends ActivityTaskOptions {
 	corrupted: boolean;
 	quantity: number;
 }
+
+export interface DungeonOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+}

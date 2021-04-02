@@ -85,7 +85,7 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Strength, 'integer', { default: 0 })
 			.add(SkillsEnum.Defence, 'integer', { default: 0 })
 			.add(SkillsEnum.Hitpoints, 'integer', { default: 1154 })
-			.add(SkillsEnum.Sailing, 'integer', { default: 0 })
+			.add(SkillsEnum.Dungeoneering, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

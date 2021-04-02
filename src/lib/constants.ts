@@ -241,7 +241,7 @@ export enum Activity {
 	KalphiteKing = 'KalphiteKing',
 	RabbitCatching = 'RabbitCatching',
 	Gauntlet = 'Gauntlet',
-	Sailing = 'Sailing'
+	Dungeoneering = 'Dungeoneering'
 }
 
 export enum ActivityGroup {

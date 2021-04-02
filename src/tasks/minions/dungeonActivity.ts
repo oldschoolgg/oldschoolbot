@@ -7,13 +7,13 @@ import { formatDuration, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: ActivityTaskOptions) {
+	async run(data: DungeonOptions) {
 		const { channelID, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
 
-		const xpReceived = user.skillLevel(SkillsEnum.Sailing) * 25 * 30;
+		const xpReceived = user.skillLevel(SkillsEnum.Dungeoneering) * 25 * 30;
 
-		const xpRes = await user.addXP(SkillsEnum.Sailing, xpReceived);
+		const xpRes = await user.addXP(SkillsEnum.Dungeoneering, xpReceived);
 
 		let str = `${user}, ${user.minionName} finished a ${formatDuration(
 			duration
