@@ -637,6 +637,18 @@
   dependencies:
     twemoji-parser "^13.0.0"
 
+"@sapphire/time-utilities@^1.2.11":
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.2.11.tgz#7458b335adcfaece6aa386df23c763eaeaaf03ae"
+  integrity sha512-T83QrsyfVf66xlP5xkKN8zLN0EndhVp4vUcI7j/uq+jGrwTXQvRiYXdB6jbjf4GfeMxdjOWJKWYP6BIwz4whAw==
+  dependencies:
+    "@sapphire/utilities" "^1.4.6"
+
+"@sapphire/utilities@^1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.4.6.tgz#3fbc8b8682cb10c872e3f883864e49dbcf147e9f"
+  integrity sha512-cSpifhuXlmIIEZQCMPU4psDzXE9WumdTGI7JgWmH+FbQkbJ2Hn1pxITMnLwOEPH96ypXFf9V4sOqr9kIxk2V6w==
+
 "@sentry/apm@5.20.1":
   version "5.20.1"
   resolved "https://registry.yarnpkg.com/@sentry/apm/-/apm-5.20.1.tgz#2126407ec8ecc6f78f42a8a8de99b90dec982036"

@@ -1,3 +1,7 @@
+import { TextChannel } from 'discord.js';
+import { noOp, randArrItem } from 'e';
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import {
 	BaseEntity,
@@ -8,6 +12,8 @@ import {
 	PrimaryColumn,
 	PrimaryGeneratedColumn
 } from 'typeorm';
+
+import { client } from '../..';
 
 @Entity({ name: 'giveaway' })
 export class GiveawayTable extends BaseEntity {
@@ -37,10 +43,16 @@ export class GiveawayTable extends BaseEntity {
 	public bank!: ItemBank;
 
 	/**
-	 * The users entered into the giveaway.
+	 * The message from the bot containing the giveaway reactions.
 	 */
-	@Column('varchar', { name: 'users', array: true, nullable: false, length: 48 })
-	public users!: string[];
+	@PrimaryColumn('varchar', { length: 19, name: 'message_id', nullable: false })
+	public messageID!: string;
+
+	/**
+	 * The reaction used for the giveaway
+	 */
+	@PrimaryColumn('varchar', { length: 19, name: 'reaction_id', nullable: false })
+	public reactionID!: string;
 
 	public async complete() {
 		if (this.completed) {
@@ -54,36 +66,44 @@ export class GiveawayTable extends BaseEntity {
 				.set({ completed: true })
 				.where('id = :id', { id: this.id })
 				.execute();
-			// client.oneCommandAtATimeCache.add(this.userID);
+
+			const channel = client.channels.get(this.channelID) as TextChannel | undefined;
+			const message = await channel?.messages.fetch(this.messageID).catch(noOp);
+
+			const reactions = message ? message.reactions.get(this.reactionID) : undefined;
+			const users: KlasaUser[] = (reactions?.users.array() || []).filter(
+				u => !u.isIronman && !u.bot && u.id !== this.userID
+			);
+
+			if (users.length === 0 || !channel || !message) {
+				console.error('Giveaway failed');
+				const creator = await client.users.fetch(this.userID).catch(noOp);
+				if (!creator) return;
+				await creator.addItemsToBank(this.bank);
+
+				if (message && channel) {
+					channel.send(`Nobody entered the giveaway :(`);
+				}
+				return;
+			}
+
+			const winner = randArrItem(users);
+			await winner.addItemsToBank(this.bank);
+
+			const str = `<@${this.userID}> **Giveaway finished:** ${
+				users.length
+			} users joined, the winner is... ||**${winner}**||
 			
+They received these items: ${new Bank(this.bank)}`;
 
-			if (group.length === 0) {
-				return msg.send(`Nobody entered the giveaway :(`);
-			}
-
-			if (!msg.author.bank().fits(bank)) {
-				return msg.send(`You don't own the items you tried to giveaway!`);
-			}
-
-			const winner = randArrItem(group);
-			if (winner !== msg.author) {
-				await winner.addItemsToBank(bank);
-			}
-
-			return msg.send(
-				`**Giveaway finished:** ${group.length} users joined, the winner is... ||**${winner}**||
-			
-They received: ${bank}.`
-
-
+			const resultMsg = await channel.send(str);
+			message.edit(
+				`**Giveaway finished:** https://discord.com/channels/${resultMsg.guild!.id}/${
+					resultMsg.channel.id
+				}/${resultMsg.id}`
+			);
 		} catch (err) {
 			console.error(err);
-		} finally {
-			client.oneCommandAtATimeCache.delete(this.userID);
-			const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
-			for (const user of users) {
-				client.minionActivityCache.delete(user);
-			}
 		}
 	}
 }

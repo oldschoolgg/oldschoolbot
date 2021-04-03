@@ -50,6 +50,7 @@ declare module 'klasa' {
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
+		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
 		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
@@ -96,6 +97,7 @@ declare module 'klasa' {
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
 		makeGroup(this: KlasaMessage, options: UserGroupOptions): Promise<KlasaUser[]>;
+		confirm(this: KlasaMessage, str: string): Promise<void>;
 	}
 
 	interface SettingsFolder {
