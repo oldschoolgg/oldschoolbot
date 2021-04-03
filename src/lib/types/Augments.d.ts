@@ -96,7 +96,6 @@ declare module 'klasa' {
 
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
-		makeGroup(this: KlasaMessage, options: UserGroupOptions): Promise<KlasaUser[]>;
 		confirm(this: KlasaMessage, str: string): Promise<void>;
 	}
 
