@@ -2,7 +2,6 @@ import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import { KlasaUser } from 'klasa';
 import { Db } from 'mongodb';
 import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -10,7 +9,6 @@ import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
-import { UserGroupOptions } from '../../extendables/Message/UserGroup';
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
