@@ -51,7 +51,7 @@ export default class extends BotCommand {
 
 		const duration = new Duration(string);
 		const ms = duration.offset;
-		if (ms > Time.Day * 7 || ms < Time.Second * 5) {
+		if (!ms || ms > Time.Day * 7 || ms < Time.Second * 5) {
 			return msg.send(
 				`Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.`
 			);
