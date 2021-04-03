@@ -9,8 +9,6 @@ import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { formatDuration } from '../../lib/util';
 
 export default class extends BotCommand {
-	public runningUsers = new Set<string>();
-
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
