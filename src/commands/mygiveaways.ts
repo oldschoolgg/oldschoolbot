@@ -7,9 +7,9 @@ import { formatDuration } from '../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows your equipped gear.',
-			examples: ['+gear melee', '+gear misc'],
-			categoryFlags: ['minion', 'skilling']
+			description: 'Shows your currently active giveaways.',
+			examples: ['+mygiveaways'],
+			categoryFlags: ['minion', 'utility']
 		});
 	}
 
