@@ -15,6 +15,7 @@ import {
 	continuationChars,
 	Events,
 	PerkTier,
+	skillEmoji,
 	SupportServer,
 	Time
 } from './constants';
@@ -387,10 +388,6 @@ export async function incrementMinionDailyDuration(
 	return settings.update(UserSettings.Minion.DailyDuration, newDuration);
 }
 
-export function parseUsername(str: string) {
-	return str.slice(0, 32);
-}
-
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
 }
@@ -458,4 +455,14 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 		}
 	}
 	return str.join(', ');
+}
+
+export function formatSkillRequirements(reqs: Record<string, number>) {
+	let arr = [];
+	for (const [name, num] of objectEntries(reqs)) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
+	}
+	return arr.join(', ');
 }
