@@ -24,11 +24,11 @@ export default class extends BotCommand {
 				.setAuthor(username)
 				.setColor(52224)
 				.setThumbnail('https://i.imgur.com/azW3cSB.png');
-
+				
 			for (const tier of Object.keys(clues) as (keyof typeof clues)[]) {
 				embed.addField(
 					toTitleCase(tier),
-					msg.language.get('CLUE_SCORE_FORMAT', clues[tier].rank, clues[tier].score),
+					`**Rank:** ${clues[tier].rank.toLocaleString()}\n**Score:** ${clues[tier].score).toLocaleString()}\n`,
 					true
 				);
 			}

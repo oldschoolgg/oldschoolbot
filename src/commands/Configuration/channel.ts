@@ -27,7 +27,9 @@ export default class extends BotCommand {
 				arrayAction: 'add'
 			});
 
-			return msg.sendLocale('CHANNEL_DISABLED');
+			return msg.send(
+				'Channel disabled. Staff of this server can still use commands in this channel.'
+			);
 		}
 		if (!isDisabled) return msg.send(`This channel is already enabled.`);
 
@@ -35,6 +37,6 @@ export default class extends BotCommand {
 			arrayAction: 'remove'
 		});
 
-		return msg.sendLocale('CHANNEL_ENABLED');
+		return msg.send('Channel enabled. Anyone can use commands in this channel now.');
 	}
 }
