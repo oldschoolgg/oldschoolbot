@@ -432,6 +432,24 @@ const backgroundImages: BankBackground[] = [
 		name: 'Doom CustomBG',
 		image: null,
 		available: false
+	},
+	{
+		id: 59,
+		name: 'Osmosis CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 60,
+		name: 'AnimeLewds CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 61,
+		name: 'Anime CustomBG',
+		image: null,
+		available: false
 	}
 ];
 
