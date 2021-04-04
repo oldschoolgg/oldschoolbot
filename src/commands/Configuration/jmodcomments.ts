@@ -24,21 +24,23 @@ export default class extends BotCommand {
 			return msg.send(TWEETS_RATELIMITING);
 		}
 		if (msg.guild!.settings.get(GuildSettings.JMODComments) === msg.channel.id) {
-			return msg.sendLocale('JMOD_COMMENTS_ALREADY_ENABLED');
+			return msg.send(`JMod Comments are already enabled in this channel.`);
 		}
 		if (msg.guild!.settings.get(GuildSettings.JMODComments) !== null) {
 			await msg.guild!.settings.update(GuildSettings.JMODComments, msg.channel.id);
-			return msg.sendLocale('JMOD_COMMENTS_ENABLED_OTHER');
+			return msg.send(
+				`JMod Comments are already enabled in another channel, but I've switched them to use this channel.`
+			);
 		}
 		await msg.guild!.settings.update(GuildSettings.JMODComments, msg.channel.id);
-		return msg.sendLocale('JMOD_COMMENTS_ENABLED');
+		return msg.send(`Enabled JMod Comments in this channel.`);
 	}
 
 	async off(msg: KlasaMessage) {
 		if (msg.guild!.settings.get(GuildSettings.JMODComments) === null) {
-			return msg.sendLocale('JMOD_COMMENTS_ARENT_ENABLED');
+			return msg.send("JMod Comments aren't enabled, so you can't disable them.");
 		}
 		await msg.guild!.settings.reset(GuildSettings.JMODComments);
-		return msg.sendLocale('JMOD_COMMENTS_DISABLED');
+		return msg.send('Disabled JMod Comments in this channel.');
 	}
 }
