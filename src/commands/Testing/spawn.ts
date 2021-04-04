@@ -1,10 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -25,8 +25,7 @@ export default class extends BotCommand {
 				items[item.id] = qty;
 			}
 			await msg.author.addItemsToBank(items);
-			const itemsString = await createReadableItemListFromBank(this.client, items);
-			return msg.send(`Gave you ${itemsString}.`);
+			return msg.send(`Gave you ${new Bank(items)}.`);
 		}
 
 		const osItem = itemArray[0];

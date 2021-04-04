@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
 import { Time } from '../../lib/constants';
@@ -8,7 +8,6 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { stringMatches } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
@@ -77,18 +76,20 @@ export default class extends BotCommand {
 
 		let outItems: ItemBank = {};
 		let inItems: ItemBank = {};
-		let itemString: string = '';
-		let inItemString: string = '';
+		let itemString: Bank = new Bank();
+		let inItemString: Bank = new Bank();
+		const inItemStr = new Bank(inItems);
+		const outItemStr = new Bank(outItems);
 		if (type === 'buy') {
 			outItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulCost! };
 			inItems = { [shopInventory.inputItem]: quantity };
-			itemString = await createReadableItemListFromBank(this.client, outItems);
-			inItemString = await createReadableItemListFromBank(this.client, inItems);
+			itemString = outItemStr;
+			inItemString = inItemStr;
 		} else {
 			outItems = { [shopInventory.inputItem]: quantity };
 			inItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulReturn };
-			itemString = await createReadableItemListFromBank(this.client, inItems);
-			inItemString = await createReadableItemListFromBank(this.client, outItems);
+			itemString = inItemStr;
+			inItemString = outItemStr;
 		}
 
 		if (!bankHasAllItemsFromBank(userBank, outItems)) {

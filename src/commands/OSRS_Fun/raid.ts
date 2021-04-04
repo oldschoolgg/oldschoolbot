@@ -1,12 +1,11 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { coxLog } from '../../lib/data/collectionLog';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 
 const itemsToShow = Object.values(coxLog).flat(1);
@@ -98,11 +97,9 @@ export default class extends BotCommand {
 			points
 		)} points each...\n`;
 		for (const [memberID, lootBank] of Object.entries(loot)) {
-			const theirLoot = await createReadableItemListFromBank(
-				this.client,
+			result += `**${memberID}** received: ${new Bank(
 				filterBankFromArrayOfItems(itemsToShow, lootBank)
-			);
-			result += `**${memberID}** received: ${theirLoot}\n`;
+			)}\n`;
 		}
 
 		return msg.send(result);

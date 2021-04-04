@@ -1,9 +1,9 @@
 import { KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Events } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
-import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../util/filterBankFromArrayOfItems';
 import { KillableMonster } from '../types';
 
@@ -22,7 +22,7 @@ export default async function announceLoot(
 		loot
 	);
 	if (Object.keys(itemsToAnnounce).length > 0) {
-		const lootStr = await createReadableItemListFromBank(client, itemsToAnnounce);
+		const lootStr = new Bank(itemsToAnnounce).toString();
 
 		let notif = '';
 

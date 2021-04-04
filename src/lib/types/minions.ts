@@ -2,7 +2,6 @@ import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -255,4 +254,9 @@ export interface RoguesDenMazeTaskOptions extends MinigameActivityTaskOptions {
 export interface GauntletOptions extends ActivityTaskOptions {
 	corrupted: boolean;
 	quantity: number;
+}
+
+export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
+	leader: string;
+	users: string[];
 }

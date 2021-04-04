@@ -22,9 +22,10 @@ import {
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import killableMonsters from './minions/data/killableMonsters';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from './minions/types';
+import { KillableMonster } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
 import { ArrayItemsResolved, Skills } from './types';
+import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 import { sendToChannelID } from './util/webhook';

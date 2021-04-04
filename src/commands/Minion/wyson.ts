@@ -5,7 +5,6 @@ import { itemID } from 'oldschooljs/dist/util';
 import { NestBoxes } from '../../lib/data/openables';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 interface MolePartItem {
 	name: string;
@@ -76,10 +75,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(loot.values(), true);
 
-		return msg.send(
-			`You exchanged ${quantity}x ${
-				moleItem.name
-			} and received: ${await createReadableItemListFromBank(this.client, loot.bank)}.`
-		);
+		return msg.send(`You exchanged ${quantity}x ${moleItem.name} and received: ${loot}.`);
 	}
 }

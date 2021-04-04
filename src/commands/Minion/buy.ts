@@ -14,7 +14,6 @@ import {
 	skillsMeetRequirements,
 	stringMatches
 } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -67,8 +66,7 @@ export default class extends BotCommand {
 			!bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))
 		) {
 			return msg.send(
-				`You don't have the required items to purchase this. You need: ${await createReadableItemListFromBank(
-					this.client,
+				`You don't have the required items to purchase this. You need: ${new Bank(
 					multiplyBank(buyable.itemCost, quantity)
 				)}.`
 			);
@@ -82,17 +80,14 @@ export default class extends BotCommand {
 		}
 
 		const outItems = multiplyBank(buyable.outputItems, quantity);
-		const itemString = await createReadableItemListFromBank(this.client, outItems);
+		const itemString = new Bank(outItems).toString();
 
 		// Start building a string to show to the user.
 		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
 
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
-			str += await createReadableItemListFromBank(
-				this.client,
-				multiplyBank(buyable.itemCost, quantity)
-			);
+			str += new Bank(multiplyBank(buyable.itemCost, quantity)).toString();
 			if (buyable.gpCost) {
 				str += `, ${totalGPCost.toLocaleString()} GP.`;
 			}
