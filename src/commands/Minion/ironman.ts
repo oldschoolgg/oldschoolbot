@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 
@@ -23,6 +24,17 @@ export default class extends BotCommand {
 
 		if (msg.author.minionIsBusy) {
 			return msg.send(`Your minion is still on a trip.`);
+		}
+
+		const existingGiveaways = await GiveawayTable.find({
+			userID: msg.author.id,
+			completed: false
+		});
+
+		if (existingGiveaways.length !== 0) {
+			return msg.channel.send(
+				`You can't become an ironman because you have active giveaways.`
+			);
 		}
 
 		await msg.send(
