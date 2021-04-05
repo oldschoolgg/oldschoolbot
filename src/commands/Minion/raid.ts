@@ -1,8 +1,11 @@
+import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
+import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { pernixOutfit, torvaOutfit, virtusOutfit } from '../../lib/nex';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
@@ -271,6 +274,34 @@ const meleeGearBonus = [
 	{
 		itemID: itemID('Brimstone ring'),
 		itemPoint: 4
+	},
+	{
+		itemID: itemID('Drygore rapier'),
+		itemPoint: 15
+	},
+	{
+		itemID: itemID('Offhand drygore rapier'),
+		itemPoint: 10
+	},
+	{
+		itemID: itemID('Torva full helm'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Torva platebody'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Torva platelegs'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Torva boots'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Torva gloves'),
+		itemPoint: 6
 	}
 ];
 
@@ -429,7 +460,7 @@ const rangeGearBonus = [
 	},
 	{
 		itemID: itemID('Twisted bow'),
-		itemPoint: 10
+		itemPoint: 14
 	},
 	{
 		itemID: itemID('Dragon hunter crossbow'),
@@ -510,6 +541,26 @@ const rangeGearBonus = [
 	{
 		itemID: itemID("Zamorak d'hide boots"),
 		itemPoint: 4
+	},
+	{
+		itemID: itemID('Pernix cowl'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Pernix body'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Pernix chaps'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Pernix boots'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Pernix gloves'),
+		itemPoint: 6
 	}
 ];
 
@@ -797,17 +848,46 @@ const mageGearBonus = [
 	{
 		itemID: itemID('Void knight gloves (l)'),
 		itemPoint: 3
+	},
+	{
+		itemID: itemID('Virtus mask '),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Virtus robe top'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Virtus robe legs'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Virtus boots'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Virtus gloves'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Virtus wand'),
+		itemPoint: 6
+	},
+	{
+		itemID: itemID('Virtus book'),
+		itemPoint: 6
 	}
 ];
 // Melee + Ranged + Mage + Special weps
-const MAX_itemPoints = 50 + 50 + 40 + 15;
+const MAX_itemPoints = 192;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
-			oneAtTime: true
+			oneAtTime: true,
+			usage: '[solo]'
 		});
 	}
 
@@ -885,7 +965,7 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [input]: ['solo' | undefined]) {
 		this.checkReqs([msg.author]);
 
 		const partyOptions: MakePartyOptions = {
@@ -905,7 +985,7 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = await msg.makePartyAwaiter(partyOptions);
+		const users = input === 'solo' ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
 
 		// Gives experienced players a small time boost to raid
 		let teamKCBoost = 0;
@@ -928,6 +1008,35 @@ export default class extends BotCommand {
 		}
 		duration *= (100 - teamKCBoost) / 100;
 		this.checkReqs(users);
+
+		const gearSpeedBoosts = [];
+		let gearSpeedBoost = 0;
+
+		for (const u of users) {
+			let uBoost = 0;
+			if (hasArrayOfItemsEquipped(torvaOutfit, u.getGear('melee'))) {
+				uBoost += 2 / users.length;
+			}
+			if (hasArrayOfItemsEquipped(virtusOutfit, u.getGear('mage'))) {
+				uBoost += 2 / users.length;
+			}
+			if (hasArrayOfItemsEquipped(pernixOutfit, u.getGear('range'))) {
+				uBoost += 2 / users.length;
+			}
+			if (u.hasItemEquippedAnywhere('Drygore rapier')) {
+				uBoost += 5 / users.length;
+			}
+			if (u.hasItemEquippedAnywhere('Offhand drygore rapier')) {
+				uBoost += 2 / users.length;
+			}
+			if (u.hasItemEquippedAnywhere('Twisted bow')) {
+				uBoost += 4 / users.length;
+			}
+			gearSpeedBoost += uBoost;
+			gearSpeedBoosts.push(`${uBoost.toFixed(2)}% from ${u.username}`);
+		}
+
+		duration = reduceNumByPercent(duration, gearSpeedBoost);
 
 		const data: RaidsActivityTaskOptions = {
 			duration,
@@ -965,19 +1074,21 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask(this.client, data);
 		for (const user of users) user.incrementMinionDailyDuration(duration);
 
-		return msg.channel.send(
-			`The raid is starting... ${teamKCBoost}% boost for team KC. The total trip will take ${formatDuration(
-				duration
-			)}, leader is ${msg.author.username}, and the party members are: ${users
-				.map(
-					u =>
-						`${u.username}: Gear score: ${
-							this.gearPointCalc(u)[1]
-						} of ${MAX_itemPoints}`
-				)
-				.join(
-					', '
-				)}.\nYour personal points are mainly based off the gear you're wearing. For more information, see <https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Strategies>`
-		);
+		gearSpeedBoosts.push(`${teamKCBoost}% for team KC`);
+
+		let str = `<:Olmlet:324127376873357316> ${msg.author.username}'s raid with ${
+			users.length
+		} minions is starting! <:Olmlet:324127376873357316>
+
+**Team:** ${users
+			.map(u => `${u.username} (${this.gearPointCalc(u)[1]}/${MAX_itemPoints})`)
+			.join(', ')}
+**Boosts:** ${gearSpeedBoosts.join(', ')}.
+
+The total trip will take ${formatDuration(duration)}.
+		
+Your personal points are mainly based off the gear you're wearing. For more information, see <https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Strategies>`;
+
+		return msg.channel.send(str);
 	}
 }

@@ -3,7 +3,7 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, multiplyBank, noOp, roll } from '../../lib/util';
+import { itemID, multiplyBank, noOp, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -31,7 +31,13 @@ const uniques = [
 ];
 
 export default class extends Task {
-	async run({ channelID, team, challengeMode, duration }: RaidsActivityTaskOptions) {
+	async run({
+		channelID,
+		team,
+		challengeMode,
+		duration,
+		partyLeaderID
+	}: RaidsActivityTaskOptions) {
 		const loot = ChambersOfXeric.complete({
 			challengeMode,
 			timeToComplete: duration,
@@ -43,9 +49,7 @@ export default class extends Task {
 			totalPoints += member.personalPoints;
 		}
 
-		let resultMessage = `The Raid has finished in a time of ${formatDuration(
-			duration
-		)} The total amount of points is ${totalPoints}. Here is the loot:`;
+		let resultMessage = `<@${partyLeaderID}> Your raid has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		for (let [userID, userLoot] of Object.entries(loot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			const purple = Object.keys(filterBankFromArrayOfItems(uniques, userLoot)).length > 0;
@@ -73,13 +77,9 @@ export default class extends Task {
 			} ||${await createReadableItemListFromBank(
 				this.client,
 				userLoot
-			)}||, personal points: ${personalPoints}, ${
+			)}|| (${personalPoints?.toLocaleString()} pts, ${
 				Math.round((personalPoints! / totalPoints) * 10000) / 100
-			}% ${
-				user.usingPet('Flappy')
-					? `<:flappy:812280578195456002> Flappy helps ${user.username}, granting them 2x loot.`
-					: ''
-			}`;
+			}%${user.usingPet('Flappy') ? `, <:flappy:812280578195456002> 2x loot` : ''})`;
 			await user.addItemsToBank(userLoot, true);
 		}
 

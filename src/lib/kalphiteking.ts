@@ -32,7 +32,7 @@ export const KalphiteKingMonster: KillableMonster = {
 				.tertiary(6000, 'Baby kalphite king')
 				.tertiary(2500, 'Perfect chitin')
 				.tertiary(
-					100,
+					150,
 					new LootTable()
 						.add('Drygore rapier')
 						.add('Drygore longsword')
