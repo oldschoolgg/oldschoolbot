@@ -21,7 +21,6 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -217,9 +216,8 @@ export default class extends BotCommand {
 			UserSettings.HighGambles,
 			msg.author.settings.get(UserSettings.HighGambles) + 1
 		);
-		const desc = await createReadableItemListFromBank(this.client, loot.bank);
 		return msg.send(
-			`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${desc}.`
+			`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`
 		);
 	}
 

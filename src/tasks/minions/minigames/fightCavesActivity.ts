@@ -14,7 +14,6 @@ import {
 	rand
 } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -118,8 +117,6 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		const lootText = await createReadableItemListFromBank(this.client, loot);
-
 		handleTripFinish(
 			this.client,
 			user,
@@ -132,7 +129,7 @@ export default class extends Task {
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
-				)} time! I am most impressed, I give you... ${lootText}.`,
+				)} time! I am most impressed, I give you... ${new Bank(loot)}.`,
 				head: 'mejJal'
 			}),
 			data,

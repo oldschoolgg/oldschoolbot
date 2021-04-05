@@ -4,10 +4,10 @@ import { createQueryBuilder, MoreThan } from 'typeorm';
 
 import { production } from '../config';
 import { ActivityGroup } from '../lib/constants';
-import { GroupMonsterActivityTaskOptions } from '../lib/minions/types';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { ActivityTable } from '../lib/typeorm/ActivityTable.entity';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable.entity';
+import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 
 export default class extends Task {
