@@ -11,7 +11,6 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, noOp, randomVariation } from '../../../lib/util';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
@@ -83,10 +82,7 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
 				loot
 			)}||\n`;
 

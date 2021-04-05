@@ -8,7 +8,6 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes from '../../lib/skilling/skillcapes';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertXPtoLVL, countSkillsAtleast99, stringMatches, toTitleCase } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 const skillCapeCost = 99_000;
 
@@ -53,7 +52,7 @@ export default class extends BotCommand {
 				? { [capeObject.hood]: 1, [capeObject.trimmed]: 1 }
 				: { [capeObject.hood]: 1, [capeObject.untrimmed]: 1 };
 
-		const itemString = await createReadableItemListFromBank(this.client, itemsToPurchase);
+		const itemString = new Bank(itemsToPurchase).toString();
 
 		const sellMsg = await msg.channel.send(
 			`${
