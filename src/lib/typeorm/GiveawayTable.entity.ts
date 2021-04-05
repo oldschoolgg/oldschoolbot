@@ -80,6 +80,11 @@ export class GiveawayTable extends BaseEntity {
 				const creator = await client.users.fetch(this.userID).catch(noOp);
 				if (!creator) return;
 				await creator.addItemsToBank(this.bank);
+				creator
+					.send(
+						`Your giveaway failed to finish, you were refunded the items: ${this.bank}.`
+					)
+					.catch(noOp);
 
 				if (message && channel) {
 					channel.send(`Nobody entered the giveaway :(`);
