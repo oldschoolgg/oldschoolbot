@@ -31,12 +31,12 @@ describe('decantPotionFromBank', () => {
 			potionsToAdd: new Bank({
 				'Defence potion (2)': 1819,
 				'Defence potion (1)': 1
-			}),
+			}).bank,
 			potionsToRemove: new Bank({
 				'Defence potion (4)': 733,
 				'Defence potion (3)': 233,
 				'Defence potion (1)': 8
-			}),
+			}).bank,
 			sumOfPots: 974,
 			potionName: 'Defence potion',
 			finalUserBank: new Bank({
