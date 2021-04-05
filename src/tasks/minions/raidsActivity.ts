@@ -71,6 +71,9 @@ export default class extends Task {
 			if (roll(140)) {
 				userLoot[itemID('Clue scroll grandmaster')] = 1;
 			}
+			if (roll(2000)) {
+				userLoot[itemID('Steve')] = 1;
+			}
 
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
