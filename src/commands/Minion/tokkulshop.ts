@@ -6,9 +6,7 @@ import { Time } from '../../lib/constants';
 import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
 import { stringMatches } from '../../lib/util';
-import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
 
@@ -74,32 +72,24 @@ export default class extends BotCommand {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
 
-		let outItems: ItemBank = {};
-		let inItems: ItemBank = {};
-		let itemString: Bank = new Bank();
-		let inItemString: Bank = new Bank();
-		const inItemStr = new Bank(inItems);
-		const outItemStr = new Bank(outItems);
+		let outItems = new Bank();
+		let inItems = new Bank();
 		if (type === 'buy') {
-			outItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulCost! };
-			inItems = { [shopInventory.inputItem]: quantity };
-			itemString = outItemStr;
-			inItemString = inItemStr;
+			outItems.add({ Tokkul: quantity * shopInventory.tokkulCost! });
+			inItems.add({ [shopInventory.inputItem]: quantity });
 		} else {
-			outItems = { [shopInventory.inputItem]: quantity };
-			inItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulReturn };
-			itemString = inItemStr;
-			inItemString = outItemStr;
+			outItems.add({ [shopInventory.inputItem]: quantity });
+			inItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
 		}
 
-		if (!bankHasAllItemsFromBank(userBank, outItems)) {
+		if (!bankHasAllItemsFromBank(userBank, outItems.bank)) {
 			if (type === 'buy') {
 				return msg.send(
-					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${itemString}** to buy **${inItemString}**.`
+					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${inItems}** to buy **${outItems}**.`
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${inItemString}** to sell for **${itemString}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${inItems}** to sell for **${outItems}**.`
 			);
 		}
 
@@ -107,7 +97,7 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, JalYt, say \`confirm\` to confirm that you want to ${
 					type === 'buy' ? 'buy' : 'sell'
-				} **${inItemString}** for **${itemString}**.`
+				} **${inItems}** for **${outItems}**.`
 			);
 
 			// Confirm the user wants to buy
@@ -124,18 +114,18 @@ export default class extends BotCommand {
 				);
 			} catch (err) {
 				return sellMsg.edit(
-					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${inItemString}**.`
+					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${outItems}**.`
 				);
 			}
 		}
 
 		await msg.author.settings.update(
 			UserSettings.Bank,
-			addBanks([inItems, removeBankFromBank(userBank, outItems)])
+			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
 
 		return msg.send(
-			`You ${type === 'buy' ? 'bought' : 'sold'} **${inItemString}** for **${itemString}**.`
+			`You ${type === 'buy' ? 'bought' : 'sold'} **${outItems}** for **${inItems}**.`
 		);
 	}
 }
