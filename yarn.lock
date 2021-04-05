@@ -4283,10 +4283,10 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oldschooljs@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.7.3.tgz#3fe48ddee40268cad8de84f61c8e8b8ccf7e0253"
-  integrity sha512-KEKcpFq5jRuYAe4QTW8pH2jCl4DzXUIAuE3CRqVafkxaaDlu7vqhj5xnYh4uf3qKdqVYXFIFykRvLt2k+xWZcw==
+oldschooljs@^1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.7.5.tgz#18e238a6845e5b6c99cda29328176264cbcc9277"
+  integrity sha512-8ZUBqW+tg7NvMA61ZO3LO8XHDo4iRnqEQwSWd+Tbn0s3zxN107w5P6Et6EpP81sSwQ7aFJk7X13E+eipL6OOew==
   dependencies:
     e "^0.2.0"
     jsdom "^16.0.1"
