@@ -86,7 +86,7 @@ export default class extends BotCommand {
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
 		return msg.send(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}** GP (${Util.toKMB(
 				totalPrice
 			)}). Tax: ${tax.toLocaleString()} ${
 				hasSkipper
