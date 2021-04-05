@@ -106,8 +106,6 @@ export default class extends BotCommand {
 			return msg.channel.send(`Let's kill some ogress warriors instead? 🥰 🐳`);
 		}
 
-		if (monster.name === 'Koschei the deathless') return;
-
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
@@ -262,7 +260,19 @@ export default class extends BotCommand {
 			duration = 1;
 			rangeSetup.weapon = null;
 			await msg.author.settings.update(UserSettings.Gear.Range, rangeSetup);
+			if (monster.name === 'Koschei the deathless') {
+				return msg.channel.send(
+					`You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks` +
+						` eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.`
+				);
+			}
 			usedDart = true;
+		}
+
+		if (monster.name === 'Koschei the deathless') {
+			return msg.channel.send(
+				`You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.`
+			);
 		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {

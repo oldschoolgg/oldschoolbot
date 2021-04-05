@@ -1130,6 +1130,14 @@ setCustomItem(47_518, 'Baby kalphite king', getOSItem('Herbi'), {}, 1_000_000);
 setCustomItem(47_519, 'Hoppy', getOSItem('Herbi'), {}, 20_000_000);
 setCustomItem(47_520, 'Craig', getOSItem('Herbi'), {}, 20_000_000);
 
+setCustomItem(47_521, 'Beach mystery box', getOSItem('Mystery box'), {}, 1_000_000);
+setCustomItem(47_522, 'Snappy the Turtle', getOSItem('Herbi'), {}, 1_000_000);
+setCustomItem(47_523, 'Beach ball', getOSItem('Coal'), {}, 100_000);
+setCustomItem(47_524, 'Water balloon', getOSItem('Coal'), {}, 100_000);
+setCustomItem(47_525, 'Ice cream', getOSItem('Coal'), {}, 100_000);
+setCustomItem(47_526, 'Crab hat', getOSItem('Coal'), {}, 100_000);
+setCustomItem(47_527, 'Steve', getOSItem('Herbi'), {}, 1_000_000);
+
 /**
  * Misc Items
  *

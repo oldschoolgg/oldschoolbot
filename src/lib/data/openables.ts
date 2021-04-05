@@ -447,6 +447,18 @@ const Openables: Openable[] = [
 		aliases: ['equippable mystery box', 'emb'],
 		table: randomEquippable,
 		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Beach mystery box',
+		itemID: itemID('Beach mystery box'),
+		aliases: ['Beach mystery box', 'bmb'],
+		table: new LootTable()
+			.add('Snappy the Turtle')
+			.add('Beach ball')
+			.add('Water balloon')
+			.add('Ice cream')
+			.add('Crab hat'),
+		emoji: Emoji.BirthdayPresent
 	}
 ];
 

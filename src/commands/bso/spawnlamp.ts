@@ -3,7 +3,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { convertXPtoLVL } from 'oldschooljs/dist/util';
 
-import { Color, PerkTier } from '../../lib/constants';
+import { BitField, Color, PerkTier } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
@@ -13,20 +13,32 @@ import { LampTable } from '../../lib/xpLamps';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			perkTier: PerkTier.Four,
 			oneAtTime: true
 		});
 	}
 
 	async run(msg: KlasaMessage) {
+		const bf = msg.author.settings.get(UserSettings.BitField);
+
+		const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
+		const hasTier5 = msg.author.perkTier >= PerkTier.Five;
+		const hasTier4 = !hasTier5 && msg.author.perkTier === PerkTier.Four;
+
+		if (!hasPerm && !hasTier5 && !hasTier4) {
+			return;
+		}
+
 		if (!msg.guild || msg.guild.id !== '342983479501389826') {
 			return msg.send(`You can only do this in the Oldschool.gg server.`);
 		}
 
 		if (
-			!['732207379818479756', '342983479501389826', '792691343284764693'].includes(
-				msg.channel.id
-			)
+			![
+				'732207379818479756',
+				'342983479501389826',
+				'792691343284764693',
+				'812289826346762250'
+			].includes(msg.channel.id)
 		) {
 			return msg.send(`You can't use spawnlamp in this channel.`);
 		}
@@ -35,9 +47,13 @@ export default class extends BotCommand {
 		const lastDate = msg.author.settings.get(UserSettings.LastSpawnLamp);
 		const difference = currentDate - lastDate;
 
-		const cooldown = [PerkTier.Six, PerkTier.Five].includes(msg.author.perkTier)
+		let cooldown = [PerkTier.Six, PerkTier.Five].includes(msg.author.perkTier)
 			? Time.Hour * 12
 			: Time.Hour * 24;
+
+		if (!hasTier5 && !hasTier4 && hasPerm) {
+			cooldown = Time.Hour * 48;
+		}
 
 		if (
 			difference < cooldown &&

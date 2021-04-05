@@ -464,7 +464,8 @@ export const pets: CollectionLogData = {
 		'Baby kalphite king',
 		'Sandy',
 		'Brock',
-		'Peky'
+		'Peky',
+		'Steve'
 	]),
 	BSOPetsExclusive: resolveItems(['Cob', 'Smokey', 'Hoppy', 'Craig', 'Flappy'])
 };
