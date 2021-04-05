@@ -75,14 +75,14 @@ export default class extends BotCommand {
 		let outItems = new Bank();
 		let inItems = new Bank();
 		if (type === 'buy') {
-			outItems.add({ Tokkul: quantity * shopInventory.tokkulCost! });
-			inItems.add({ [shopInventory.inputItem]: quantity });
-		} else {
+			inItems.add({ Tokkul: quantity * shopInventory.tokkulCost! });
 			outItems.add({ [shopInventory.inputItem]: quantity });
-			inItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
+		} else {
+			inItems.add({ [shopInventory.inputItem]: quantity });
+			outItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
 		}
 
-		if (!bankHasAllItemsFromBank(userBank, outItems.bank)) {
+		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
 			if (type === 'buy') {
 				return msg.send(
 					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${inItems}** to buy **${outItems}**.`
