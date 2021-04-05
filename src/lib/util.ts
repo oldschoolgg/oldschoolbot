@@ -19,12 +19,13 @@ import {
 	SupportServer,
 	Time
 } from './constants';
+import { filterableTypes } from './data/filterables';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import killableMonsters from './minions/data/killableMonsters';
 import { KillableMonster } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
-import { ArrayItemsResolved, Skills } from './types';
+import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -474,4 +475,59 @@ export function formatSkillRequirements(reqs: Record<string, number>) {
 		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
+}
+
+export function formatItemBoosts(items: ItemBank) {
+	const str = [];
+	for (const [itemID, boostAmount] of Object.entries(items)) {
+		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	}
+	return str.join(', ');
+}
+
+export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
+	const filtered: ItemTuple[] = [];
+
+	for (const item of items) {
+		if (cleanString(Items.get(item[0])!.name).includes(cleanString(query))) {
+			filtered.push(item);
+		}
+	}
+
+	return filtered;
+}
+
+export function filterByCategory(filterQuery: string, items: ItemTuple[]) {
+	const filtered = filterableTypes.find(_filtered =>
+		_filtered.aliases.some(name => stringMatches(name, filterQuery))
+	);
+
+	if (!filtered) {
+		throw `That's not a valid filter type. The valid types are: ${filterableTypes
+			.map(filtered => filtered.name)
+			.join(', ')}.`;
+	}
+
+	return items.filter(item => filtered.items.includes(item[0]));
+}
+
+/**
+ * Given a list of items, and a bank, it will return a new bank with all items not
+ * in the filter removed from the bank.
+ * @param itemFilter The array of item IDs to use as the filter.
+ * @param bank The bank to filter items from.
+ */
+export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
+	const returnBank: ItemBank = {};
+	const bankKeys = Object.keys(bank);
+
+	// If there are no items in the filter or bank, just return an empty bank.
+	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+
+	// For every item in the filter, if its in the bank, add it to the return bank.
+	for (const itemID of itemFilter) {
+		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+	}
+
+	return returnBank;
 }

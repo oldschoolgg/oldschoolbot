@@ -5,8 +5,7 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 
 import { coxLog } from '../../lib/data/collectionLog';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks } from '../../lib/util';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
+import { addBanks, filterBankFromArrayOfItems } from '../../lib/util';
 
 const itemsToShow = Object.values(coxLog).flat(1);
 

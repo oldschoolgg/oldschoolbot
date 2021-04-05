@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
-import filterBankFromArrayOfItems from '../../util/filterBankFromArrayOfItems';
+import { filterBankFromArrayOfItems } from '../../util';
 import { KillableMonster } from '../types';
 
 export default async function announceLoot(
