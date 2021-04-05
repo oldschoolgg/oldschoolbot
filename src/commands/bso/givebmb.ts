@@ -15,7 +15,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
 		if (
-			msg.author.id !== '157797566833098752' ||
+			msg.author.id !== '157797566833098752' &&
 			!msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator)
 		) {
 			return;
