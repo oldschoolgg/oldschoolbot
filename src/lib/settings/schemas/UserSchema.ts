@@ -36,6 +36,7 @@ Client.defaultUserSchema
 	.add('openable_scores', 'any', { default: {} })
 	.add('spawned_rmb', 'boolean', { default: false })
 	.add('attack_style', 'string', { array: true, default: [] })
+	.add('dungeoneering_tokens', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')

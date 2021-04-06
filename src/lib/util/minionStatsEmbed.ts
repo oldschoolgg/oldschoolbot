@@ -65,7 +65,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 				'thieving',
 				'crafting',
 				'fletching',
-				'sailing',
+				'slayer',
 				'hunter'
 			].map(skillCell),
 			true
@@ -80,6 +80,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 				'firemaking',
 				'woodcutting',
 				'farming',
+				'dungeoneering',
 				'overall'
 			].map(skillCell),
 			true

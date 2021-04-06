@@ -560,7 +560,7 @@ export default class extends Extendable {
 				} Gauntlet. ${formattedDuration}`;
 			}
 
-			case Activity.Sailing: {
+			case Activity.Dungeoneering: {
 				return `${this.minionName} is currently on a Sailing trip. ${formattedDuration}`;
 			}
 		}

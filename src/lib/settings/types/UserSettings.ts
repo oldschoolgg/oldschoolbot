@@ -46,6 +46,7 @@ export namespace UserSettings {
 	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
 	export const HasSpawnedRMB = T<boolean>('spawned_rmb');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
+	export const DungeoneeringTokens = T<number>('dungeoneering_tokens');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

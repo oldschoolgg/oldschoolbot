@@ -1,29 +1,39 @@
-import { increaseNumByPercent, randArrItem } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
-import { addArrayOfNumbers } from 'oldschooljs/dist/util';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Emoji, Events, Time } from '../../lib/constants';
-import { maxOtherStats } from '../../lib/gear';
-import { GearSetupTypes } from '../../lib/gear/types';
+import { Activity, Emoji, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { BarbarianAssaultActivityTaskOptions, DungeonOptions } from '../../lib/types/minions';
+import { ActivityTaskOptions } from '../../lib/types/minions';
 import {
-	calcWhatPercent,
 	formatDuration,
-	randomVariation,
-	reduceNumByPercent,
-	round,
-	stringMatches
+	formatSkillRequirements,
+	skillsMeetRequirements,
+	stringMatches,
+	toTitleCase
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+
+export type DungeonSize = 'small' | 'medium' | 'large';
+export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export function isDgSize(str: string): str is DungeonSize {
+	return ['small', 'medium', 'large'].includes(str);
+}
+export function isValidFloor(floor: number): floor is Floor {
+	return [1, 2, 3, 4, 5, 6, 7].includes(floor);
+}
+
+export interface DungeoneeringOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+	floor: number;
+	size: DungeonSize;
+}
 
 const BarbBuyables = [
 	{
@@ -32,24 +42,54 @@ const BarbBuyables = [
 	}
 ];
 
-const levels = [
-	{
-		level: 2,
-		cost: 200 * 4
-	},
-	{
-		level: 3,
-		cost: 300 * 4
-	},
-	{
-		level: 4,
-		cost: 400 * 4
-	},
-	{
-		level: 5,
-		cost: 500 * 4
+// 1-7 floors
+function determineFloor(level: number) {
+	return Math.floor((level + 20) / 20);
+}
+
+function requiredLevel(floor: number) {
+	return floor * 14;
+}
+
+function requiredSkills(floor: number) {
+	const lvl = requiredLevel(floor);
+	const nonCmbLvl = Math.floor(lvl / 1.5);
+	return {
+		attack: lvl,
+		strength: lvl,
+		defence: lvl,
+		hitpoints: lvl,
+		magic: lvl,
+		ranged: lvl,
+		herblore: nonCmbLvl,
+		runecraft: nonCmbLvl,
+		prayer: nonCmbLvl,
+		fletching: nonCmbLvl,
+		fishing: nonCmbLvl,
+		cooking: nonCmbLvl,
+		construction: nonCmbLvl,
+		crafting: nonCmbLvl
+	};
+}
+
+function hasRequiredLevels(user: KlasaUser, floor: number) {
+	return skillsMeetRequirements(user.rawSkills, requiredSkills(floor));
+}
+
+function maxFloorUserCanDo(user: KlasaUser) {
+	return determineFloor(user.skillLevel(SkillsEnum.Dungeoneering));
+}
+
+function sizeTime(size: DungeonSize) {
+	switch (size) {
+		case 'small':
+			return 1;
+		case 'medium':
+			return 1.3;
+		case 'large':
+			return 1.6;
 	}
-];
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -57,28 +97,20 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
-			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
-			examples: ['+barbassault [start]'],
 			subcommands: true,
-			usage: '[start|level|buy|gamble] [buyableOrGamble:...string]',
+			usage: '[start|buy] [floor:number{1,7}] [size:string{}]',
 			usageDelim: ' ',
-			aliases: ['ba']
+			aliases: ['dg']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		return msg.send(
-			`**Honour Points:** ${msg.author.settings.get(
-				UserSettings.HonourPoints
-			)} **Honour Level:** ${msg.author.settings.get(
-				UserSettings.HonourLevel
-			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
-				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need 2+ people to join to start.` +
-				` We have a BA channel in our server for finding teams: (discord.gg/ob). \n` +
-				`Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points.` +
-				`\n\nYou can buy rewards with \`${msg.cmdPrefix}ba buy\`, level up your Honour Level with \`${msg.cmdPrefix}ba level\`.` +
-				` You can gamble using \`${msg.cmdPrefix}ba gamble high/medium/low\`.`
+			`<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${msg.author.settings.get(
+				UserSettings.DungeoneeringTokens
+			)}
+**Max floor:** ${maxFloorUserCanDo(msg.author)}`
 		);
 	}
 
@@ -108,19 +140,65 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage, [input]: [string]) {
+	async start(msg: KlasaMessage, [floor, _size]: [number | undefined, string | undefined]) {
+		const minDgLevel = msg.flagArgs.min || 1;
+		const floorToDo = floor || maxFloorUserCanDo(msg.author);
+		const size = _size || 'medium';
+
+		if (!isDgSize(size) || !isValidFloor(floorToDo)) {
+			return msg.channel.send(`That's an invalid dungeon size, or invalid floor.`);
+		}
+
+		const dungeonLength = Time.Minute * 5 * (floorToDo / 2) * sizeTime(size);
+		const quantity = Math.floor(
+			msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength
+		);
+		const duration = quantity * dungeonLength;
+
+		let message = `${
+			msg.author.username
+		} has created a Dungeoneering party! Anyone can click the ${
+			Emoji.Join
+		} reaction to join, click it again to leave.
+
+**Floor:** ${floorToDo}
+**Size:** ${toTitleCase(size)}
+**Duration:** ${formatDuration(duration)}
+**Quantity:** ${quantity}
+**Required Stats:** ${formatSkillRequirements(requiredSkills(floorToDo))}`;
+
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 1,
-			maxSize: 4,
+			maxSize: 12,
 			ironmanAllowed: true,
-			message: `${msg.author.username} has created a Barbarian Assault party! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. There must be 2+ users in the party.`,
+			message,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
+				}
+				if (user.skillLevel(SkillsEnum.Dungeoneering) < minDgLevel) {
+					return [true, 'your Dungeoneering level is too low for this party.'];
+				}
+
+				const max = maxFloorUserCanDo(user);
+				if (max < floorToDo) {
+					return [
+						true,
+						`this party is doing Floor ${floorToDo}, and your level is unsufficient to do this floor.`
+					];
+				}
+
+				if (!hasRequiredLevels(user, floorToDo)) {
+					return [
+						true,
+						`you don't have the required stats for this floor, you need: ${formatSkillRequirements(
+							requiredSkills(floorToDo)
+						)}`
+					];
 				}
 
 				return [false];
@@ -129,66 +207,28 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		let totalLevel = 0;
-		for (const user of users) {
-			totalLevel += user.settings.get(UserSettings.HonourLevel);
-		}
+		const boosts = [1];
 
-		const boosts = [];
-
-		let waveTime = randomVariation(Time.Minute * 4, 10);
-
-		// Up to 12.5% speed boost for max strength
-		const fighter = randArrItem(users);
-		const gearStats = fighter.setupStats(GearSetupTypes.Melee);
-		const strengthPercent = round(
-			calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8,
-			2
-		);
-		waveTime = reduceNumByPercent(waveTime, strengthPercent);
-		boosts.push(`${strengthPercent}% for ${fighter.username}'s melee gear`);
-
-		// Up to 30% speed boost for team total honour level
-		const totalLevelPercent = round(calcWhatPercent(totalLevel, 5 * users.length) / 3.3, 2);
-		boosts.push(`${totalLevelPercent}% for team honour levels`);
-		waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
-
-		if (users.length === 1) {
-			waveTime = increaseNumByPercent(waveTime, 10);
-			boosts.push(`10% slower for solo`);
-		}
-
-		// Up to 10%, at 200 kc, speed boost for team average kc
-		const averageKC =
-			addArrayOfNumbers(
-				await Promise.all(users.map(u => u.getMinigameScore('BarbarianAssault')))
-			) / users.length;
-		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
-		boosts.push(`${kcPercent}% for average KC`);
-		waveTime = reduceNumByPercent(waveTime, kcPercent);
-
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
-		const duration = quantity * waveTime;
-
-		boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
-
-		let str = `${partyOptions.leader.username}'s party (${users
+		let str = `${partyOptions.leader.username}'s dungeoneering party (${users
 			.map(u => u.username)
-			.join(
-				', '
-			)}) is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
-			waveTime
-		)} - the total trip will take ${formatDuration(duration)}. `;
+			.join(', ')}) is now off to do ${quantity}x dungeons of the ${formatOrdinal(
+			floorToDo
+		)} floor. Each dungeon takes ${formatDuration(
+			dungeonLength
+		)} - the total trip will take ${formatDuration(duration)}.`;
 
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-		await addSubTaskToActivityTask<DungeonOptions>(this.client, {
+
+		await addSubTaskToActivityTask<DungeoneeringOptions>(this.client, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
 			type: Activity.Dungeoneering,
 			leader: msg.author.id,
-			users: users.map(u => u.id)
+			users: users.map(u => u.id),
+			size,
+			floor: floorToDo
 		});
 
 		return msg.channel.send(str, {

@@ -1139,6 +1139,47 @@ setCustomItem(47_526, 'Crab hat', getOSItem('Coal'), {}, 100_000);
 setCustomItem(47_527, 'Steve', getOSItem('Herbi'), {}, 1_000_000);
 
 /**
+ *
+ * Dungeoneering
+ *
+ * 48_000 - 48_500
+ */
+
+setCustomItem(48_000, 'Chaotic rapier', getOSItem('Drygore rapier'), {}, 20_000_000);
+setCustomItem(48_001, 'Chaotic longsword', getOSItem('Drygore longsword'), {}, 20_000_000);
+setCustomItem(48_002, 'Chaotic maul', getOSItem('Drygore mace'), {}, 20_000_000);
+setCustomItem(48_003, 'Chaotic staff', getOSItem("Zuriel's staff"), {}, 20_000_000);
+setCustomItem(48_004, 'Chaotic crossbow', getOSItem('Armadyl crossbow'), {}, 20_000_000);
+
+setCustomItem(
+	48_005,
+	'Offhand Chaotic rapier',
+	getOSItem('Offhand drygore rapier'),
+	{},
+	20_000_000
+);
+setCustomItem(
+	48_006,
+	'Offhand Chaotic longsword',
+	getOSItem('Offhand drygore longsword'),
+	{},
+	20_000_000
+);
+setCustomItem(48_007, 'Offhand Chaotic crossbow', getOSItem('Rune kiteshield'), {}, 20_000_000);
+setCustomItem(48_008, 'Farseer kiteshield', getOSItem('Rune kiteshield'), {}, 20_000_000);
+setCustomItem(48_009, 'Scroll of life', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_010, 'Herbicide', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_011, 'Scroll of efficiency', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_012, 'Scroll of cleansing', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_013, 'Amulet of zealots', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_014, 'Scroll of dexterity', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_015, 'Scroll of quick teleportation', getOSItem('Coal'), {}, 1_000_000);
+
+/**
+ * END DUNGEONEERING
+ */
+
+/**
  * Misc Items
  *
  * 50_000 - 60_000
