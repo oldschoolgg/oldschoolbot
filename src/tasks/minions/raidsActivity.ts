@@ -69,7 +69,7 @@ export default class extends Task {
 				userLoot[itemID('Takon')] = 1;
 			}
 			if (roll(140)) {
-				userLoot[itemID('Clue scroll grandmaster')] = 1;
+				userLoot[itemID('Clue scroll (grandmaster)')] = 1;
 			}
 			if (roll(2000)) {
 				userLoot[itemID('Steve')] = 1;

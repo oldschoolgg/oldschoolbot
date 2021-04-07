@@ -205,7 +205,7 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = await msg.makePartyAwaiter(partyOptions);
+		const users = 1 > 0 ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
 
 		const boosts = [1];
 

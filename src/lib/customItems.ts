@@ -1,11 +1,12 @@
+import { mergeObjects } from '@sapphire/utilities';
 import { Items } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import getOSItem from './util/getOSItem';
 
-function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
+function cleanString(str: string): string {
+	return str.replace(/\s/g, '').toUpperCase();
 }
 export const customPrices: Record<number, number> = [];
 
@@ -26,12 +27,8 @@ function setCustomItem(
 ) {
 	if (hasSet.has(id)) throw new Error(`Tried to add 2 custom items with same id ${id}`);
 	hasSet.add(id);
-	Items.set(id, {
-		...baseItem,
-		...newItemData,
-		name,
-		id
-	});
+	const data = mergeObjects({ ...baseItem }, { ...newItemData, name, id });
+	Items.set(id, data);
 	const cleanName = cleanString(name);
 	itemNameMap.set(cleanName, id);
 	itemNameMap.set(name, id);
@@ -900,6 +897,10 @@ setCustomItem(40_018, 'Strength master cape', getOSItem('Abyssal cape'), {}, 10_
 setCustomItem(40_019, 'Defence master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
 setCustomItem(40_020, 'Hitpoints master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
 setCustomItem(40_021, 'Ranged master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_022, 'Dungeoneering master cape', getOSItem('Abyssal cape'), {}, 10_000_000);
+setCustomItem(40_023, 'Dungeoneering cape', getOSItem('Fire cape'), {}, 20_000);
+setCustomItem(40_024, 'Dungeoneering cape(t)', getOSItem('Fire cape'), {}, 20_000);
+setCustomItem(40_025, 'Dungeoneering hood', getOSItem('Fire cape'), {}, 20_000);
 
 // Pets
 
@@ -1174,6 +1175,12 @@ setCustomItem(48_012, 'Scroll of cleansing', getOSItem('Coal'), {}, 1_000_000);
 setCustomItem(48_013, 'Amulet of zealots', getOSItem('Coal'), {}, 1_000_000);
 setCustomItem(48_014, 'Scroll of dexterity', getOSItem('Coal'), {}, 1_000_000);
 setCustomItem(48_015, 'Scroll of quick teleportation', getOSItem('Coal'), {}, 1_000_000);
+
+setCustomItem(48_016, 'Gorajan trailblazer head', getOSItem('Torva full helm'), {}, 55_000_000);
+setCustomItem(48_017, 'Gorajan trailblazer body', getOSItem('Torva platebody'), {}, 55_000_000);
+setCustomItem(48_018, 'Gorajan trailblazer legs', getOSItem('Torva platelegs'), {}, 55_000_000);
+setCustomItem(48_019, 'Gorajan trailblazer gloves', getOSItem('Torva gloves'), {}, 55_000_000);
+setCustomItem(48_020, 'Gorajan trailblazer boots', getOSItem('Torva boots'), {}, 55_000_000);
 
 /**
  * END DUNGEONEERING
