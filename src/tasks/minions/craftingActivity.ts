@@ -34,7 +34,7 @@ export default class extends Task {
 			loot.add('crushed gem', crushed);
 		}
 
-		const hasScroll = user.hasItem(itemID('Scroll of dexterity'));
+		const hasScroll = await user.hasItem(itemID('Scroll of dexterity'));
 		if (hasScroll) {
 			let _qty = quantity - crushed;
 			_qty = Math.floor(_qty * 1.15);
