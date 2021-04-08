@@ -218,7 +218,7 @@ export default class extends BotCommand {
 
 		let newBank = { ...userBank };
 		let econBank = new Bank();
-		const hasScroll = msg.author.hasItem(itemID('Scroll of life'));
+		const hasScroll = await msg.author.hasItem(itemID('Scroll of life'));
 
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
