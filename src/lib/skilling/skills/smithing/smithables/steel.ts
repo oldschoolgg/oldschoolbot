@@ -65,7 +65,7 @@ const Steel: SmithedItem[] = [
 		id: itemID('Steel nails'),
 		inputBars: { [itemID('Steel bar')]: 1 },
 		timeToUse: Time.Second * 3.4,
-		outputMultiple: 5
+		outputMultiple: 15
 	},
 	{
 		name: 'Steel sword',
