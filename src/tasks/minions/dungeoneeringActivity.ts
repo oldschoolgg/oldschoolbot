@@ -65,6 +65,10 @@ export default class extends Task {
 			const maxFloor = maxFloorUserCanDo(u);
 			xp = reduceNumByPercent(xp, (maxFloor - floor) * 5);
 
+			if (floor === maxFloor) {
+				xp *= 1.5;
+			}
+
 			const tokens = Math.floor(xp * 0.1);
 			const gorajanEquipped = numberOfGorajanOutfitsEquipped(user);
 			let bonusXP = 0;
