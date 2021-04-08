@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
-import { randInt, shuffleArr } from 'e';
+import { objectEntries, randInt, shuffleArr } from 'e';
 import { Gateway, KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -15,15 +15,20 @@ import {
 	continuationChars,
 	Events,
 	PerkTier,
+	skillEmoji,
 	SupportServer,
 	Time
 } from './constants';
-import { rogueOutfit } from './data/collectionLog';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import { GroupMonsterActivityTaskOptions } from './minions/types';
+import killableMonsters from './minions/data/killableMonsters';
+import { KillableMonster } from './minions/types';
 import { UserSettings } from './settings/types/UserSettings';
+import { ArrayItemsResolved, ItemTuple, Skills } from './types';
+import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
+import { sendToChannelID } from './util/webhook';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -304,6 +309,14 @@ export function anglerBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
+const rogueOutfit = resolveItems([
+	'Rogue mask',
+	'Rogue top',
+	'Rogue trousers',
+	'Rogue gloves',
+	'Rogue boots'
+]);
+
 export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
@@ -364,22 +377,17 @@ export async function incrementMinionDailyDuration(
 	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
 	const newDuration = currentDuration + duration;
 	if (newDuration > Time.Hour * 18) {
-		const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
 		const user = await client.users.fetch(userID);
-		user.log(log);
 		if (client.production) {
-			const channel = client.channels.get(EChannel.ErrorLogs);
-			if (channelIsSendable(channel)) {
-				channel.send(`${user.sanitizedName} ${log}`);
-			}
+			sendToChannelID(client, EChannel.ErrorLogs, {
+				content: `${user.sanitizedName} Minion has been active for ${formatDuration(
+					newDuration
+				)}.`
+			});
 		}
 	}
 
 	return settings.update(UserSettings.Minion.DailyDuration, newDuration);
-}
-
-export function parseUsername(str: string) {
-	return str.slice(0, 32);
 }
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
@@ -428,4 +436,83 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 	}
 
 	return true;
+}
+
+export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
+	for (const [skillName, level] of objectEntries(requirements)) {
+		const xpHas = skills[skillName];
+		const levelHas = convertXPtoLVL(xpHas ?? 1);
+		if (levelHas < level!) return false;
+	}
+	return true;
+}
+
+export default function findMonster(str: string): KillableMonster | undefined {
+	const mon = killableMonsters.find(
+		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
+	);
+	return mon;
+}
+
+export function formatItemReqs(items: ArrayItemsResolved) {
+	const str = [];
+	for (const item of items) {
+		if (Array.isArray(item)) {
+			str.push(item.map(itemNameFromID).join(' OR '));
+		} else {
+			str.push(itemNameFromID(item));
+		}
+	}
+	return str.join(', ');
+}
+
+export function formatSkillRequirements(reqs: Record<string, number>) {
+	let arr = [];
+	for (const [name, num] of objectEntries(reqs)) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
+	}
+	return arr.join(', ');
+}
+
+export function formatItemBoosts(items: ItemBank) {
+	const str = [];
+	for (const [itemID, boostAmount] of Object.entries(items)) {
+		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	}
+	return str.join(', ');
+}
+
+export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
+	const filtered: ItemTuple[] = [];
+
+	for (const item of items) {
+		if (cleanString(Items.get(item[0])!.name).includes(cleanString(query))) {
+			filtered.push(item);
+		}
+	}
+
+	return filtered;
+}
+
+/**
+ * Given a list of items, and a bank, it will return a new bank with all items not
+ * in the filter removed from the bank.
+ * @param itemFilter The array of item IDs to use as the filter.
+ * @param bank The bank to filter items from.
+ */
+export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
+	const returnBank: ItemBank = {};
+	const bankKeys = Object.keys(bank);
+
+	// If there are no items in the filter or bank, just return an empty bank.
+	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+
+	// For every item in the filter, if its in the bank, add it to the return bank.
+	for (const itemID of itemFilter) {
+		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+	}
+
+	return returnBank;
 }

@@ -67,8 +67,10 @@ export default class extends BotCommand {
 
 		let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Casting);
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToEnchantTen);
+			quantity = Math.floor(maxTripLength / timeToEnchantTen);
 			const spellRunes = determineRunes(msg.author, spell.input.clone());
 			const max = userBank.fits(spellRunes);
 			if (max < quantity && max !== 0) quantity = max;
@@ -76,13 +78,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToEnchantTen;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					spell.name
-				}s you can cast is ${Math.floor(msg.author.maxTripLength / timeToEnchantTen)}.`
+				}s you can cast is ${Math.floor(maxTripLength / timeToEnchantTen)}.`
 			);
 		}
 		const cost = determineRunes(msg.author, spell.input.clone().multiply(quantity));

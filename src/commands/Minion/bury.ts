@@ -57,14 +57,13 @@ export default class extends BotCommand {
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Burying);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			const amountOfBonesOwned = msg.author.settings.get(UserSettings.Bank)[bone.inputId];
 			if (!amountOfBonesOwned) return msg.send(`You have no ${bone.name}.`);
-			quantity = Math.min(
-				Math.floor(msg.author.maxTripLength / timeToBuryABone),
-				amountOfBonesOwned
-			);
+			quantity = Math.min(Math.floor(maxTripLength / timeToBuryABone), amountOfBonesOwned);
 		}
 
 		const cost = new Bank({ [bone.inputId]: quantity });
@@ -75,13 +74,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToBuryABone;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					bone.name
-				}s you can bury is ${Math.floor(msg.author.maxTripLength / timeToBuryABone)}.`
+				}s you can bury is ${Math.floor(maxTripLength / timeToBuryABone)}.`
 			);
 		}
 

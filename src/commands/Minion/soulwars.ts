@@ -124,7 +124,7 @@ export default class extends BotCommand {
 		}
 
 		const perDuration = randomVariation(Time.Minute * 7, 5);
-		const quantity = Math.floor(msg.author.maxTripLength / perDuration);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.SoulWars) / perDuration);
 		const duration = quantity * perDuration;
 
 		await addSubTaskToActivityTask<SoulWarsOptions>(this.client, {

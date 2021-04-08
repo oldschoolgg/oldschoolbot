@@ -25,21 +25,23 @@ export default class extends BotCommand {
 			return msg.send(TWEETS_RATELIMITING);
 		}
 		if (msg.guild!.settings.get(GuildSettings.HCIMDeaths) === msg.channel.id) {
-			return msg.sendLocale('HCIM_TWEETS_ALREADY_ENABLED');
+			return msg.send(`HCIM Death Tweets are already enabled in this channel.`);
 		}
 		if (msg.guild!.settings.get(GuildSettings.HCIMDeaths)) {
 			await msg.guild!.settings.update(GuildSettings.HCIMDeaths, msg.channel);
-			return msg.sendLocale('HCIM_TWEETS_ENABLED_OTHER');
+			return msg.send(
+				`HCIM Death Tweets are already enabled in another channel, but I've switched them to use this channel.`
+			);
 		}
 		await msg.guild!.settings.update(GuildSettings.HCIMDeaths, msg.channel);
-		return msg.sendLocale('HCIM_TWEETS_ENABLED');
+		return msg.send(`Enabled HCIM Death Tweets in this channel.`);
 	}
 
 	async off(msg: KlasaMessage) {
 		if (!msg.guild!.settings.get(GuildSettings.HCIMDeaths)) {
-			return msg.sendLocale('HCIM_TWEETS_ARENT_ENABLED');
+			return msg.send("HCIM Death Tweets aren't enabled, so you can't disable them.");
 		}
 		await msg.guild!.settings.reset(GuildSettings.HCIMDeaths);
-		return msg.sendLocale('HCIM_TWEETS_DISABLED');
+		return msg.send('Disabled HCIM Death Tweets in this channel.');
 	}
 }

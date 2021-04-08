@@ -78,6 +78,16 @@ export const Minigames: Minigame[] = [
 		name: "Rogues' Den",
 		key: 'RoguesDenMaze',
 		column: 'rogues_den'
+	},
+	{
+		name: 'Gauntlet',
+		key: 'Gauntlet',
+		column: 'gauntlet'
+	},
+	{
+		name: 'Corrupted Gauntlet',
+		key: 'CorruptedGauntlet',
+		column: 'corrupted_gauntlet'
 	}
 ];
 

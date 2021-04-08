@@ -1,39 +1,21 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { chunk, objectKeys, reduceNumByPercent, sleep } from 'e';
+import { chunk, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
-import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import findMonster from '../../lib/minions/functions/findMonster';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	isWeekend,
-	itemNameFromID,
-	randomItemFromArray,
-	randomVariation,
-	removeDuplicatesFromArray
-} from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { randomItemFromArray } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-
-const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are: ${killableMonsters
-		.map(mon => mon.name)
-		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -46,8 +28,6 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
-
-const { floor } = Math;
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
@@ -121,6 +101,17 @@ export default class MinionCommand extends BotCommand {
 			} catch (err) {
 				return msg.channel.send('Cancelled de-ironning.');
 			}
+		}
+
+		const existingGiveaways = await GiveawayTable.find({
+			userID: msg.author.id,
+			completed: false
+		});
+
+		if (existingGiveaways.length !== 0) {
+			return msg.channel.send(
+				`You can't become an ironman because you have active giveaways.`
+			);
 		}
 
 		await msg.send(
@@ -430,123 +421,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	@requiresMinion
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		const boosts = [];
-		let messages: string[] = [];
-
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
-		if (!name) throw invalidMonster(msg.cmdPrefix);
-
-		const monster =
-			name === 'random'
-				? randomItemFromArray(
-						killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0])
-				  )
-				: findMonster(name);
-		if (!monster) throw invalidMonster(msg.cmdPrefix);
-
-		// Check requirements
-		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
-
-		let [timeToFinish, percentReduced] = reducedTimeFromKC(
-			monster,
-			msg.author.getKC(monster.id)
-		);
-
-		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
-
-		if (monster.pohBoosts) {
-			const [boostPercent, messages] = calcPOHBoosts(
-				await msg.author.getPOH(),
-				monster.pohBoosts
-			);
-			if (boostPercent > 0) {
-				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
-				boosts.push(messages.join(' + '));
-			}
-		}
-
-		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
-			}
-		}
-
-		// If no quantity provided, set it to the max.
-		if (quantity === null) {
-			quantity = floor(msg.author.maxTripLength / timeToFinish);
-		}
-
-		// Check food
-		let foodStr: undefined | string = undefined;
-		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-			messages = messages.concat(foodMessages);
-
-			const [result] = await removeFoodFromUser({
-				client: this.client,
-				user: msg.author,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				healPerAction: Math.ceil(healAmountNeeded / quantity),
-				activityName: monster.name,
-				attackStylesUsed: removeDuplicatesFromArray([
-					...objectKeys(monster.minimumGearRequirements ?? {}),
-					monster.attackStyleToUse
-				]),
-				learningPercentage: percentReduced
-			});
-
-			foodStr = result;
-		}
-
-		let duration = timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength) {
-			return msg.send(
-				`${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
-					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`
-			);
-		}
-
-		duration = randomVariation(duration, 10);
-
-		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
-			duration *= 0.9;
-		}
-
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling
-		});
-
-		let response = `${msg.author.minionName} is now killing ${quantity}x ${
-			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
-		if (foodStr) {
-			response += ` Removed ${foodStr}.\n`;
-		}
-
-		if (boosts.length > 0) {
-			response += `\n**Boosts:** ${boosts.join(', ')}.`;
-		}
-
-		if (messages.length > 0) {
-			response += `\n**Messages:** ${messages.join('\n')}.`;
-		}
-
-		return msg.send(response);
+		runCommand(msg, 'k', [quantity, name]);
 	}
 }

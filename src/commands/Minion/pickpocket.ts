@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -20,7 +21,6 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 
 export default class extends BotCommand {
@@ -91,8 +91,7 @@ export default class extends BotCommand {
 			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
 		) {
 			return msg.send(
-				`You need these items to pickpocket this NPC: ${await createReadableItemListFromBank(
-					this.client,
+				`You need these items to pickpocket this NPC: ${new Bank(
 					pickpocketable.itemsRequired
 				)}.`
 			);
@@ -106,20 +105,22 @@ export default class extends BotCommand {
 
 		const timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Pickpocket);
+
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToPickpocket);
+			quantity = Math.floor(maxTripLength / timeToPickpocket);
 		}
 
 		const duration = quantity * timeToPickpocket;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of times you can pickpocket a ${
 					pickpocketable.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToPickpocket)}.`
+				} is ${Math.floor(maxTripLength / timeToPickpocket)}.`
 			);
 		}
 

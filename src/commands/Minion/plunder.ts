@@ -62,7 +62,7 @@ export default class extends BotCommand {
 				plunderTime = reduceNumByPercent(plunderTime, percent);
 			}
 		}
-		const maxQuantity = Math.floor(msg.author.maxTripLength / plunderTime);
+		const maxQuantity = Math.floor(msg.author.maxTripLength(Activity.Plunder) / plunderTime);
 		const tripLength = maxQuantity * plunderTime;
 
 		await addSubTaskToActivityTask<PlunderActivityTaskOptions>(this.client, {

@@ -9,7 +9,6 @@ import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -95,10 +94,7 @@ export default class extends Task {
 		} else {
 			loot.add(ore.id, quantity);
 		}
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			loot.values()
-		)}.`;
+		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
