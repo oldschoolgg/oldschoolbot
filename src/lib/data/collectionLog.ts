@@ -465,7 +465,8 @@ export const pets: CollectionLogData = {
 		'Sandy',
 		'Brock',
 		'Peky',
-		'Steve'
+		'Steve',
+		'Frosty'
 	]),
 	BSOPetsExclusive: resolveItems(['Cob', 'Smokey', 'Hoppy', 'Craig', 'Flappy'])
 };
@@ -1502,6 +1503,7 @@ export const capes: CollectionLogData = {
 		'Defence hood',
 		'Hitpoints hood',
 		'Ranging hood',
+		'Dungeoneering hood',
 		'Quest point hood'
 	]),
 	capes2: resolveItems([
@@ -1515,6 +1517,7 @@ export const capes: CollectionLogData = {
 		'Defence cape',
 		'Hitpoints cape',
 		'Ranging cape',
+		'Dungeoneering cape',
 		'Quest point cape'
 	]),
 	'trimmed capes2': resolveItems([
@@ -1528,6 +1531,7 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
+		'Dungeoneering cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1558,6 +1562,35 @@ export const quest: CollectionLogData = {
 
 export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
+};
+
+export const dungeoneeringLog: CollectionLogData = {
+	Chaotics: resolveItems([
+		'Chaotic rapier',
+		'Chaotic longsword',
+		'Chaotic maul',
+		'Chaotic staff',
+		'Chaotic crossbow',
+		'Offhand Chaotic rapier',
+		'Offhand Chaotic longsword',
+		'Offhand chaotic crossbow'
+	]),
+	Shields: resolveItems(['Farseer kiteshield', 'Amulet of zealots', 'Chaotic remnant']),
+	Scrolls: resolveItems([
+		'Scroll of life',
+		'Scroll of efficiency',
+		'Scroll of cleansing',
+		'Scroll of dexterity',
+		'Scroll of teleportation'
+	]),
+	Armor: resolveItems([
+		'Gorajan trailblazer head',
+		'Gorajan trailblazer body',
+		'Gorajan trailblazer legs',
+		'Gorajan trailblazer gloves',
+		'Gorajan trailblazer boots'
+	]),
+	Other: resolveItems(['Frosty'])
 };
 
 export const coxLog: CollectionLogData = {
@@ -1934,6 +1967,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Clue Hunter',
 		aliases: ['clue hunter'],
 		items: { 1: clueHunterLog }
+	},
+	{
+		name: 'Dungeoneering',
+		aliases: ['dg', 'dung', 'dungeoneering'],
+		items: dungeoneeringLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

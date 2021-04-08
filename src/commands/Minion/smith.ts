@@ -1,3 +1,4 @@
+import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -132,6 +133,8 @@ export default class extends BotCommand {
 			);
 		}
 
+		const hasScroll = msg.author.hasItem(itemID('Scroll of efficiency'));
+
 		// Remove the bars from their bank.
 		let usedbars = 0;
 		let newBank = { ...userBank };
@@ -142,8 +145,11 @@ export default class extends BotCommand {
 				);
 				return;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
-			usedbars = qty * quantity;
+			const numBars = hasScroll
+				? Math.ceil(calcPercentOfNum(85, qty * quantity))
+				: qty * quantity;
+			newBank = removeItemFromBank(newBank, parseInt(barID), numBars);
+			usedbars = numBars;
 		}
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>(this.client, {
@@ -156,14 +162,19 @@ export default class extends BotCommand {
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		return msg.send(
-			`${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
-				smithedItem.name
-			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish. ${
-				msg.author.equippedPet() === itemID('Takon')
-					? `\n\nTakon is Smithing for you, at incredible speeds and skill.`
-					: ''
-			}`
-		);
+		let str = `${msg.author.minionName} is now smithing ${
+			quantity * smithedItem.outputMultiple
+		}x ${smithedItem.name}, using ${usedbars} bars, it'll take around ${formatDuration(
+			duration
+		)} to finish.`;
+
+		if (msg.author.usingPet('Takon')) {
+			str += ` Takon is Smithing for you, at incredible speeds and skill.`;
+		}
+		if (hasScroll) {
+			str += ` Your Scroll of efficiency enables you to save 15% of the bars used.`;
+		}
+
+		return msg.send(str);
 	}
 }

@@ -38,10 +38,16 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Tzhaar-ket-om')]: resolveItems(['Tzhaar-ket-om (t)']),
 	[itemID('Berserker necklace')]: resolveItems(['Berserker necklace (or)']),
 	[itemID('Amulet of fury')]: resolveItems(['Amulet of fury (or)', 'Amulet of blood fury']),
-	[itemID('Amulet of torture')]: resolveItems(['Amulet of torture (or)']),
+	[itemID('Amulet of torture')]: resolveItems([
+		'Amulet of torture (or)',
+		"Brawler's hook necklace"
+	]),
 	[itemID('Tormented bracelet')]: resolveItems(['Tormented bracelet (or)']),
-	[itemID('Necklace of anguish')]: resolveItems(['Necklace of anguish (or)']),
-	[itemID('Occult necklace')]: resolveItems(['Occult necklace (or)']),
+	[itemID('Necklace of anguish')]: resolveItems([
+		'Necklace of anguish (or)',
+		'Farsight snapshot necklace'
+	]),
+	[itemID('Occult necklace')]: resolveItems(['Occult necklace (or)', 'Arcane blast necklace']),
 	// 12797 = Dragon pickaxe (upgraded)
 	[itemID('Dragon pickaxe')]: resolveItems(['Dragon pickaxe(or)', 12797]),
 	// 12795 = Steam battlestaff (or)

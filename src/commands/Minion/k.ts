@@ -160,9 +160,17 @@ export default class extends BotCommand {
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		const hasBlessing = msg.author.hasItemEquippedAnywhere('Dwarven blessing');
-		if (hasBlessing) {
+		const hasZealotsAmulet = msg.author.hasItemEquippedAnywhere('Amulet of zealots');
+		if (hasZealotsAmulet && hasBlessing) {
+			timeToFinish *= 0.75;
+			boosts.push(`25% for Dwarven blessing & Amulet of zealots`);
+		} else if (hasBlessing) {
 			timeToFinish *= 0.8;
 			boosts.push(`20% for Dwarven blessing`);
+		}
+		if (monster.wildy && hasZealotsAmulet) {
+			timeToFinish *= 0.95;
+			boosts.push(`5% for Amulet of zealots`);
 		}
 
 		// If no quantity provided, set it to the max.

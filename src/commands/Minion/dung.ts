@@ -1,3 +1,4 @@
+import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
@@ -16,6 +17,7 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -94,6 +96,14 @@ const dungBuyables = [
 	{
 		item: getOSItem('Amulet of zealots'),
 		cost: 400_000
+	},
+	{
+		item: getOSItem('Frosty'),
+		cost: 2_000_000
+	},
+	{
+		item: getOSItem('Chaotic remnant'),
+		cost: 500_000
 	}
 ];
 
@@ -131,7 +141,7 @@ function hasRequiredLevels(user: KlasaUser, floor: number) {
 	return skillsMeetRequirements(user.rawSkills, requiredSkills(floor));
 }
 
-function maxFloorUserCanDo(user: KlasaUser) {
+export function maxFloorUserCanDo(user: KlasaUser) {
 	return [7, 6, 5, 4, 3, 2, 1].find(floor => hasRequiredLevels(user, floor)) || 1;
 }
 
@@ -160,7 +170,6 @@ export default class extends BotCommand {
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
 		if (typeof input === 'number') input = '';
-		console.log({ input });
 		const buyable = dungBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.send(
@@ -209,7 +218,7 @@ export default class extends BotCommand {
 		const quantity = Math.floor(
 			msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength
 		);
-		const duration = quantity * dungeonLength;
+		let duration = quantity * dungeonLength;
 
 		let message = `${
 			msg.author.username
@@ -240,7 +249,7 @@ export default class extends BotCommand {
 				if (max < floorToDo) {
 					return [
 						true,
-						`this party is doing Floor ${floorToDo}, you can't do this floor because you need level ${requiredLevel(
+						`this party is doing Floor ${floorToDo}, you can't do this floor because you need level ${determineDgLevelForFloor(
 							floorToDo
 						)} Dungeoneering.`
 					];
@@ -267,7 +276,7 @@ export default class extends BotCommand {
 		}
 
 		const users = await msg.makePartyAwaiter(partyOptions);
-
+		const boosts = [];
 		for (const user of users) {
 			const check = partyOptions.customDenier!(user);
 			if (check[0]) {
@@ -275,9 +284,22 @@ export default class extends BotCommand {
 					`You can't start a Dungeoneering party because of ${user.username}: ${check[1]}`
 				);
 			}
-		}
+			if (await user.hasItem(itemID('Scroll of teleportation'))) {
+				let y = 15;
+				if (user.hasItemEquippedOrInBank('Dungeoneering master cape')) {
+					y += 10;
+				} else if (
+					user.hasItemEquippedOrInBank('Dungeoneering cape') ||
+					user.hasItemEquippedOrInBank('Dungeoneering cape(t)')
+				) {
+					y += 5;
+				}
+				let x = y / users.length;
 
-		const boosts = [1];
+				duration = reduceNumByPercent(duration, x);
+				boosts.push(`${x.toFixed(2)}% from ${user.username}`);
+			}
+		}
 
 		let str = `${partyOptions.leader.username}'s dungeoneering party (${users
 			.map(u => u.username)

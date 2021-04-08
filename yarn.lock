@@ -630,24 +630,19 @@
     eslint-plugin-simple-import-sort "^5.0.3"
     prettier "^2.1.2"
 
-"@sapphire/discord-utilities@^2.0.7":
+"@sapphire/discord-utilities@^2.0.6":
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.0.7.tgz#3ecf623a2a401262ece137e9bc3a86c36b79a01d"
   integrity sha512-Os+Yl75lNRo2nyvi2hkfaMC3afFeqmJjK1iPgJeWdxfF2s/F33uOCHwpXF8F0G3laeYE9X3qcMYLggVfbLTHzQ==
   dependencies:
     twemoji-parser "^13.0.0"
 
-"@sapphire/time-utilities@^1.2.12":
+"@sapphire/time-utilities@^1.2.11":
   version "1.2.12"
   resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.2.12.tgz#2672d820048dc8092b5b6a6477ab266e56b2bd3b"
   integrity sha512-siM/UnHQWISl+Eh8qpi4kDkJcmKuXIxnxg/AgpBpgOjmtmlB6fZR88VU1Fg8e1gtt0vVBuBX2/Nhr6ih9gSCnA==
   dependencies:
     "@sapphire/utilities" "^1.4.7"
-
-"@sapphire/utilities@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.4.7.tgz#4668b57918fe773502087e63025f5ec84f670059"
-  integrity sha512-9x7LwCuhJJ+oWPpbQqU7EKUHNwBnB0ew52qKv7Og2ruSqyKrrBRdNZYhXqiXeC2JTlHwhE9v+pcc1YTm0L4oAg==
 
 "@sapphire/utilities@^1.4.7":
   version "1.4.7"
