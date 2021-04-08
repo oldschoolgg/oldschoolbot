@@ -13,6 +13,7 @@ import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import {
 	Activity,
 	Emoji,
@@ -561,7 +562,10 @@ export default class extends Extendable {
 			}
 
 			case Activity.Dungeoneering: {
-				return `${this.minionName} is currently on a Sailing trip. ${formattedDuration}`;
+				const data = currentTask as DungeoneeringOptions;
+				return `${this.minionName} is currently doing Dungeoneering with a team of ${
+					data.users.length
+				} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
 			}
 		}
 	}
