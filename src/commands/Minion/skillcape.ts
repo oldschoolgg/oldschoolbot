@@ -14,7 +14,6 @@ import {
 	stringMatches,
 	toTitleCase
 } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 const skillCapeCost = 99_000;
@@ -114,7 +113,7 @@ export default class extends BotCommand {
 				? { [capeObject.hood]: 1, [capeObject.trimmed]: 1 }
 				: { [capeObject.hood]: 1, [capeObject.untrimmed]: 1 };
 
-		const itemString = await createReadableItemListFromBank(this.client, itemsToPurchase);
+		const itemString = new Bank(itemsToPurchase).toString();
 
 		const sellMsg = await msg.channel.send(
 			`${

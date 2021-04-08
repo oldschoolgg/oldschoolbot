@@ -20,17 +20,17 @@ export default class extends BotCommand {
 
 	async on(msg: KlasaMessage) {
 		if (msg.guild!.settings.get(GuildSettings.PetChannel)) {
-			return msg.sendLocale('PET_MESSAGES_ALREADY_ENABLED');
+			return msg.send(`Pet Messages are already enabled in this guild.`);
 		}
 		await msg.guild!.settings.update(GuildSettings.PetChannel, msg.channel);
-		return msg.sendLocale('PET_MESSAGES_ENABLED');
+		return msg.send(`Enabled Pet Messages in this guild.`);
 	}
 
 	async off(msg: KlasaMessage) {
 		if (msg.guild!.settings.get(GuildSettings.PetChannel) === null) {
-			return msg.sendLocale('PET_MESSAGES_ARENT_ENABLED');
+			return msg.send("Pet Messages aren't enabled, so you can't disable them.");
 		}
 		await msg.guild!.settings.reset(GuildSettings.PetChannel);
-		return msg.sendLocale('PET_MESSAGES_DISABLED');
+		return msg.send('Disabled Pet Messages in this guild.');
 	}
 }

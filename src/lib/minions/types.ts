@@ -11,7 +11,6 @@ import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank } from '../types';
-import { MonsterActivityTaskOptions } from '../types/minions';
 import { AttackStyles } from './functions';
 
 export interface BankBackground {
@@ -89,9 +88,4 @@ export interface KillableMonster {
 	pohBoosts?: POHBoosts;
 	defaultAttackStyles?: AttackStyles[];
 	disallowedAttackStyles?: AttackStyles[];
-}
-
-export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
-	leader: string;
-	users: string[];
 }

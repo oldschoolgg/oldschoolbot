@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
@@ -23,7 +23,6 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
@@ -101,8 +100,7 @@ export default class extends BotCommand {
 		}
 
 		if (!bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), fightCavesSupplies)) {
-			throw `JalYt, you need supplies to have a chance in the caves...come back with ${await createReadableItemListFromBank(
-				this.client,
+			throw `JalYt, you need supplies to have a chance in the caves...come back with ${new Bank(
 				fightCavesSupplies
 			)}.`;
 		}
@@ -187,10 +185,7 @@ ${
 		: ''
 }
 
-**Removed from your bank:** ${await createReadableItemListFromBank(
-				this.client,
-				fightCavesSupplies
-			)}`,
+**Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
 			await chatHeadImage({
 				content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
 				head: 'mejJal'
