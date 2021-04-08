@@ -100,7 +100,7 @@ export default class extends BotCommand {
 
 		let totalPlanksNeeded = planksQtyCost * quantity;
 
-		const hasScroll = msg.author.hasItem(itemID('Scroll of proficiency'));
+		const hasScroll = await msg.author.hasItem(itemID('Scroll of proficiency'));
 		if (hasScroll) {
 			totalPlanksNeeded *= 0.85;
 		}
