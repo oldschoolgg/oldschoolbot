@@ -309,6 +309,9 @@ export default class extends BotCommand {
 			}
 		}
 
+		duration = reduceNumByPercent(duration, 20);
+		boosts.push(`20% release boost`);
+
 		if (users.length === 1) {
 			duration = increaseNumByPercent(duration, 40);
 			boosts.push(`-40% for not having a team`);

@@ -91,6 +91,7 @@ export default class extends Task {
 				str += ` **1x Gorajan shards**`;
 				await u.addItemsToBank(new Bank().add('Gorajan shards'), true);
 			}
+			str += '\n';
 		}
 
 		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, null);
