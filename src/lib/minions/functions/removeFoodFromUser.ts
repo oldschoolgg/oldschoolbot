@@ -1,5 +1,6 @@
 import { objectEntries } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { addBanks, itemID, removeBankFromBank } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../constants';
@@ -9,7 +10,6 @@ import { ClientSettings } from '../../settings/types/ClientSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
 import { reduceNumByPercent } from '../../util';
-import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({
@@ -66,11 +66,6 @@ export default async function removeFoodFromUser({
 
 		let reductionsStr =
 			reductions.length > 0 ? `**Base Food Reductions:** ${reductions.join(', ')}. ` : '';
-		return [
-			`${await createReadableItemListFromBank(client, foodToRemove)} from ${
-				user.username
-			}${reductionsStr}`,
-			foodToRemove
-		];
+		return [`${new Bank(foodToRemove)} from ${user.username}${reductionsStr}`, foodToRemove];
 	}
 }

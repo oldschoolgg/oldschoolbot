@@ -7,10 +7,9 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { ItemBank } from '../../lib/types';
+import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { addBanks, itemID, multiplyBank, noOp, randomItemFromArray, roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -57,10 +56,7 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), monster)
 			);
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
 				loot
 			)}||\n`;
 

@@ -1497,6 +1497,11 @@ export const capes: CollectionLogData = {
 		'Hunter hood',
 		'Construct. hood',
 		'Magic hood',
+		'Attack hood',
+		'Strength hood',
+		'Defence hood',
+		'Hitpoints hood',
+		'Ranging hood',
 		'Quest point hood'
 	]),
 	capes2: resolveItems([
@@ -1505,6 +1510,11 @@ export const capes: CollectionLogData = {
 		'Hunter cape',
 		'Construct. cape',
 		'Magic cape',
+		'Attack cape',
+		'Strength cape',
+		'Defence cape',
+		'Hitpoints cape',
+		'Ranging cape',
 		'Quest point cape'
 	]),
 	'trimmed capes2': resolveItems([
@@ -1513,6 +1523,11 @@ export const capes: CollectionLogData = {
 		'Hunter cape(t)',
 		'Construct. cape(t)',
 		'Magic cape(t)',
+		'Attack cape(t)',
+		'Strength cape(t)',
+		'Defence cape(t)',
+		'Hitpoints cape(t)',
+		'Ranging cape(t)',
 		'Quest point cape (t)'
 	])
 };
