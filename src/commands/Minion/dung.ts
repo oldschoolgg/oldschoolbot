@@ -11,18 +11,14 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	skillsMeetRequirements,
-	stringMatches,
-	toTitleCase
+	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 
-export type DungeonSize = 'small' | 'medium' | 'large';
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export function isDgSize(str: string): str is DungeonSize {
-	return ['small', 'medium', 'large'].includes(str);
-}
+
 export function isValidFloor(floor: number): floor is Floor {
 	return [1, 2, 3, 4, 5, 6, 7].includes(floor);
 }
@@ -32,19 +28,77 @@ export interface DungeoneeringOptions extends ActivityTaskOptions {
 	users: string[];
 	quantity: number;
 	floor: number;
-	size: DungeonSize;
 }
 
-const BarbBuyables = [
+const dungBuyables = [
 	{
-		item: getOSItem('Fighter hat'),
-		cost: 275 * 4
+		item: getOSItem('Chaotic rapier'),
+		cost: 200_000
+	},
+	{
+		item: getOSItem('Chaotic longsword'),
+		cost: 200_000
+	},
+	{
+		item: getOSItem('Chaotic maul'),
+		cost: 200_000
+	},
+	{
+		item: getOSItem('Chaotic staff'),
+		cost: 200_000
+	},
+	{
+		item: getOSItem('Chaotic crossbow'),
+		cost: 200_000
+	},
+	{
+		item: getOSItem('Offhand Chaotic rapier'),
+		cost: 100_000
+	},
+	{
+		item: getOSItem('Offhand Chaotic longsword'),
+		cost: 100_000
+	},
+	{
+		item: getOSItem('Offhand Chaotic crossbow'),
+		cost: 100_000
+	},
+	{
+		item: getOSItem('Farseer kiteshield'),
+		cost: 200_000
+	},
+	{
+		item: getOSItem('Scroll of life'),
+		cost: 400_000
+	},
+	{
+		item: getOSItem('Herbicide'),
+		cost: 400_000
+	},
+	{
+		item: getOSItem('Scroll of efficiency'),
+		cost: 400_000
+	},
+	{
+		item: getOSItem('Scroll of cleansing'),
+		cost: 400_000
+	},
+	{
+		item: getOSItem('Scroll of dexterity'),
+		cost: 400_000
+	},
+	{
+		item: getOSItem('Scroll of teleportation'),
+		cost: 400_000
+	},
+	{
+		item: getOSItem('Amulet of zealots'),
+		cost: 400_000
 	}
 ];
 
-// 1-7 floors
-function determineFloor(level: number) {
-	return Math.floor((level + 20) / 20);
+function determineDgLevelForFloor(floor: number) {
+	return Math.floor(floor * 20 - 20);
 }
 
 function requiredLevel(floor: number) {
@@ -68,7 +122,8 @@ function requiredSkills(floor: number) {
 		fishing: nonCmbLvl,
 		cooking: nonCmbLvl,
 		construction: nonCmbLvl,
-		crafting: nonCmbLvl
+		crafting: nonCmbLvl,
+		dungeoneering: determineDgLevelForFloor(floor)
 	};
 }
 
@@ -77,18 +132,7 @@ function hasRequiredLevels(user: KlasaUser, floor: number) {
 }
 
 function maxFloorUserCanDo(user: KlasaUser) {
-	return determineFloor(user.skillLevel(SkillsEnum.Dungeoneering));
-}
-
-function sizeTime(size: DungeonSize) {
-	switch (size) {
-		case 'small':
-			return 1;
-		case 'medium':
-			return 1.3;
-		case 'large':
-			return 1.6;
-	}
+	return [7, 6, 5, 4, 3, 2, 1].find(floor => hasRequiredLevels(user, floor)) || 1;
 }
 
 export default class extends BotCommand {
@@ -98,7 +142,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			subcommands: true,
-			usage: '[start|buy] [floor:number{1,7}] [size:string{}]',
+			usage: '[start|buy] [floor:number{1,7}|name:...string]',
 			usageDelim: ' ',
 			aliases: ['dg']
 		});
@@ -107,49 +151,61 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		return msg.send(
-			`<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${msg.author.settings.get(
-				UserSettings.DungeoneeringTokens
-			)}
+			`<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${msg.author.settings
+				.get(UserSettings.DungeoneeringTokens)
+				.toLocaleString()}
 **Max floor:** ${maxFloorUserCanDo(msg.author)}`
 		);
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
-		const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
+		if (typeof input === 'number') input = '';
+		console.log({ input });
+		const buyable = dungBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.send(
-				`Here are the items you can buy: \n\n${BarbBuyables.map(
-					i => `**${i.item.name}:** ${i.cost} points`
-				).join('\n')}.`
+				`That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
+					.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
+					.join('\n')}.`
 			);
 		}
 
 		const { item, cost } = buyable;
-		const balance = msg.author.settings.get(UserSettings.HonourPoints);
+		const balance = msg.author.settings.get(UserSettings.DungeoneeringTokens);
 		if (balance < cost) {
 			return msg.send(
-				`You don't have enough Honour Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Dungeoneering tokens to buy the ${
+					item.name
+				}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
+		await msg.author.settings.update(UserSettings.DungeoneeringTokens, balance - cost);
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.send(`Successfully purchased 1x ${item.name} for ${cost} Honour Points.`);
+		return msg.send(
+			`Successfully purchased 1x ${
+				item.name
+			} for ${cost.toLocaleString()} Dungeoneering tokens.`
+		);
 	}
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage, [floor, _size]: [number | undefined, string | undefined]) {
-		const minDgLevel = msg.flagArgs.min || 1;
+	async start(msg: KlasaMessage, [floor]: [number | undefined]) {
 		const floorToDo = floor || maxFloorUserCanDo(msg.author);
-		const size = _size || 'medium';
 
-		if (!isDgSize(size) || !isValidFloor(floorToDo)) {
-			return msg.channel.send(`That's an invalid dungeon size, or invalid floor.`);
+		if (!isValidFloor(floorToDo)) {
+			return msg.channel.send(`That's an invalid floor.`);
 		}
 
-		const dungeonLength = Time.Minute * 5 * (floorToDo / 2) * sizeTime(size);
+		if (determineDgLevelForFloor(floorToDo) > msg.author.skillLevel(SkillsEnum.Dungeoneering)) {
+			return msg.channel.send(
+				`You need level ${determineDgLevelForFloor(floorToDo)} to do Floor ${floorToDo}.`
+			);
+		}
+
+		const dungeonLength = Time.Minute * 5 * (floorToDo / 2) * 1;
 		const quantity = Math.floor(
 			msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength
 		);
@@ -162,7 +218,6 @@ export default class extends BotCommand {
 		} reaction to join, click it again to leave.
 
 **Floor:** ${floorToDo}
-**Size:** ${toTitleCase(size)}
 **Duration:** ${formatDuration(duration)}
 **Quantity:** ${quantity}
 **Required Stats:** ${formatSkillRequirements(requiredSkills(floorToDo))}`;
@@ -180,15 +235,14 @@ export default class extends BotCommand {
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
 				}
-				if (user.skillLevel(SkillsEnum.Dungeoneering) < minDgLevel) {
-					return [true, 'your Dungeoneering level is too low for this party.'];
-				}
 
 				const max = maxFloorUserCanDo(user);
 				if (max < floorToDo) {
 					return [
 						true,
-						`this party is doing Floor ${floorToDo}, and your level is unsufficient to do this floor.`
+						`this party is doing Floor ${floorToDo}, you can't do this floor because you need level ${requiredLevel(
+							floorToDo
+						)} Dungeoneering.`
 					];
 				}
 
@@ -197,7 +251,7 @@ export default class extends BotCommand {
 						true,
 						`you don't have the required stats for this floor, you need: ${formatSkillRequirements(
 							requiredSkills(floorToDo)
-						)}`
+						)}.`
 					];
 				}
 
@@ -205,7 +259,23 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = 1 > 0 ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
+		const leaderCheck = partyOptions.customDenier!(msg.author);
+		if (leaderCheck[0]) {
+			return msg.channel.send(
+				`You can't start a Dungeoneering party for Floor ${floorToDo} because ${leaderCheck[1]}`
+			);
+		}
+
+		const users = await msg.makePartyAwaiter(partyOptions);
+
+		for (const user of users) {
+			const check = partyOptions.customDenier!(user);
+			if (check[0]) {
+				return msg.channel.send(
+					`You can't start a Dungeoneering party because of ${user.username}: ${check[1]}`
+				);
+			}
+		}
 
 		const boosts = [1];
 
@@ -227,7 +297,6 @@ export default class extends BotCommand {
 			type: Activity.Dungeoneering,
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			size,
 			floor: floorToDo
 		});
 

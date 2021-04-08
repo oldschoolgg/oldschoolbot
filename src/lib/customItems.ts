@@ -1172,9 +1172,9 @@ setCustomItem(48_009, 'Scroll of life', getOSItem('Coal'), {}, 1_000_000);
 setCustomItem(48_010, 'Herbicide', getOSItem('Coal'), {}, 1_000_000);
 setCustomItem(48_011, 'Scroll of efficiency', getOSItem('Coal'), {}, 1_000_000);
 setCustomItem(48_012, 'Scroll of cleansing', getOSItem('Coal'), {}, 1_000_000);
-setCustomItem(48_013, 'Amulet of zealots', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_013, 'Amulet of zealots', getOSItem('Amulet of fury'), {}, 1_000_000);
 setCustomItem(48_014, 'Scroll of dexterity', getOSItem('Coal'), {}, 1_000_000);
-setCustomItem(48_015, 'Scroll of quick teleportation', getOSItem('Coal'), {}, 1_000_000);
+setCustomItem(48_015, 'Scroll of teleportation', getOSItem('Coal'), {}, 1_000_000);
 
 setCustomItem(48_016, 'Gorajan trailblazer head', getOSItem('Torva full helm'), {}, 55_000_000);
 setCustomItem(48_017, 'Gorajan trailblazer body', getOSItem('Torva platebody'), {}, 55_000_000);

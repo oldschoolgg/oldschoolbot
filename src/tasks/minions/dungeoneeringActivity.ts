@@ -1,29 +1,18 @@
 import { noOp, Time } from 'e';
 import { Task } from 'klasa';
 
-import { DungeoneeringOptions, DungeonSize } from '../../commands/Minion/dung';
+import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { randomVariation, toKMB } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-function sizeTime(size: DungeonSize) {
-	switch (size) {
-		case 'small':
-			return 1;
-		case 'medium':
-			return 1.5;
-		case 'large':
-			return 2;
-	}
-}
-
 export default class extends Task {
 	async run(data: DungeoneeringOptions) {
-		const { channelID, duration, userID, floor, size, quantity, users } = data;
+		const { channelID, duration, userID, floor, quantity, users } = data;
 		const user = await this.client.users.fetch(userID);
 
-		let baseXp = Math.log(floor * 4 + 1) * quantity * sizeTime(size) * 32_000;
+		let baseXp = ((Math.log(floor * 4 + 1) * quantity * 1) / (36 - floor * 5)) * 73_000;
 		let str = `${user}, your party finished ${quantity}x Floor ${floor} dungeons.\n\n`;
 
 		for (const id of users) {
@@ -39,10 +28,11 @@ export default class extends Task {
 				UserSettings.DungeoneeringTokens,
 				user.settings.get(UserSettings.DungeoneeringTokens) + tokens
 			);
-			str += `${u} received: ${xp.toLocaleString()} XP and <:dungeoneeringToken:829004684685606912> ${tokens} Dungeoneering tokens.\n`;
+			str += `${u} received: ${xp.toLocaleString()} XP and <:dungeoneeringToken:829004684685606912> ${tokens} Dungeoneering tokens.`;
 			let rawXPHr = (xp / (duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(xp / 1000) * 1000;
-			str += `\n\n
+			str += `\n
+
 ${toKMB(rawXPHr)} XP/Hr
 ${toKMB(rawXPHr * 0.1)} Tokens/Hr`;
 		}
