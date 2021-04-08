@@ -62,11 +62,17 @@ export default class extends BotCommand {
 					.map(i => i.name)
 					.join(', ')}`;
 
+				const task = this.client.minionActivityCache.get(input.id);
+				const taskText = task
+					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
+					: 'None';
+
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
 				return msg.send(
 					`**${input.username}**
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
+**Current Task:** ${taskText}
 `
 				);
 			}
