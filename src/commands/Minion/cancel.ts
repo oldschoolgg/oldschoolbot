@@ -33,7 +33,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (currentTask.type === Activity.GroupMonsterKilling) {
+		if (
+			currentTask.type === Activity.GroupMonsterKilling ||
+			currentTask.type === Activity.Dungeoneering
+		) {
 			return msg.send(
 				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
 			);
