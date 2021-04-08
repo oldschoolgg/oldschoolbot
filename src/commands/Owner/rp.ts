@@ -6,6 +6,7 @@ import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/consta
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import { formatDuration } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
@@ -61,11 +62,17 @@ export default class extends BotCommand {
 					.map(i => i.name)
 					.join(', ')}`;
 
+				const task = this.client.minionActivityCache.get(input.id);
+				const taskText = task
+					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
+					: 'None';
+
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
 				return msg.send(
 					`**${input.username}**
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
+**Current Task:** ${taskText}
 `
 				);
 			}
@@ -78,6 +85,15 @@ export default class extends BotCommand {
 				msg.channel.send('Running roles task...');
 				const result = await this.client.tasks.get('roles')?.run();
 				return msg.send(result);
+			}
+			case 'canceltask': {
+				if (!input) return;
+				await (this.client as OldSchoolBotClient).cancelTask(input.id);
+				this.client.oneCommandAtATimeCache.delete(input.id);
+				this.client.secondaryUserBusyCache.delete(input.id);
+				this.client.minionActivityCache.delete(input.id);
+
+				return msg.react(Emoji.Tick);
 			}
 			case 'setgh': {
 				if (!input) return;

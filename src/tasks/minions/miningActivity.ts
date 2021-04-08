@@ -11,7 +11,6 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, multiplyBank, rand } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -139,10 +138,7 @@ export default class extends Task {
 			}
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			loot.values()
-		)}.`;
+		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}

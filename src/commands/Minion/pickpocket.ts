@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -20,7 +21,6 @@ import {
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 
 export default class extends BotCommand {
@@ -92,8 +92,7 @@ export default class extends BotCommand {
 			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
 		) {
 			return msg.send(
-				`You need these items to pickpocket this NPC: ${await createReadableItemListFromBank(
-					this.client,
+				`You need these items to pickpocket this NPC: ${new Bank(
 					pickpocketable.itemsRequired
 				)}.`
 			);

@@ -3,9 +3,8 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, noOp, roll } from '../../lib/util';
+import { filterBankFromArrayOfItems, itemID, multiplyBank, noOp, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 const uniques = [

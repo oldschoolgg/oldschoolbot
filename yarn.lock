@@ -630,24 +630,24 @@
     eslint-plugin-simple-import-sort "^5.0.3"
     prettier "^2.1.2"
 
-"@sapphire/discord-utilities@^2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.0.6.tgz#a0c192ef35d3eaed121764287762809980cc96a1"
-  integrity sha512-hQkp7ZQ0BsUigVd1Ox1vOVKtJ3/U1iAcqe1tjzVOFQwRgolmz8/PIQl0qJ+S8lT51LEgde/129WkXi0bDOSESQ==
+"@sapphire/discord-utilities@^2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.0.7.tgz#3ecf623a2a401262ece137e9bc3a86c36b79a01d"
+  integrity sha512-Os+Yl75lNRo2nyvi2hkfaMC3afFeqmJjK1iPgJeWdxfF2s/F33uOCHwpXF8F0G3laeYE9X3qcMYLggVfbLTHzQ==
   dependencies:
     twemoji-parser "^13.0.0"
 
-"@sapphire/time-utilities@^1.2.11":
-  version "1.2.11"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.2.11.tgz#7458b335adcfaece6aa386df23c763eaeaaf03ae"
-  integrity sha512-T83QrsyfVf66xlP5xkKN8zLN0EndhVp4vUcI7j/uq+jGrwTXQvRiYXdB6jbjf4GfeMxdjOWJKWYP6BIwz4whAw==
+"@sapphire/time-utilities@^1.2.12":
+  version "1.2.12"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.2.12.tgz#2672d820048dc8092b5b6a6477ab266e56b2bd3b"
+  integrity sha512-siM/UnHQWISl+Eh8qpi4kDkJcmKuXIxnxg/AgpBpgOjmtmlB6fZR88VU1Fg8e1gtt0vVBuBX2/Nhr6ih9gSCnA==
   dependencies:
-    "@sapphire/utilities" "^1.4.6"
+    "@sapphire/utilities" "^1.4.7"
 
-"@sapphire/utilities@^1.4.6":
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.4.6.tgz#3fbc8b8682cb10c872e3f883864e49dbcf147e9f"
-  integrity sha512-cSpifhuXlmIIEZQCMPU4psDzXE9WumdTGI7JgWmH+FbQkbJ2Hn1pxITMnLwOEPH96ypXFf9V4sOqr9kIxk2V6w==
+"@sapphire/utilities@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.4.7.tgz#4668b57918fe773502087e63025f5ec84f670059"
+  integrity sha512-9x7LwCuhJJ+oWPpbQqU7EKUHNwBnB0ew52qKv7Og2ruSqyKrrBRdNZYhXqiXeC2JTlHwhE9v+pcc1YTm0L4oAg==
 
 "@sapphire/utilities@^1.4.7":
   version "1.4.7"
@@ -839,10 +839,10 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
 
-"@types/node-fetch@^2.5.8":
-  version "2.5.8"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.8.tgz#e199c835d234c7eb0846f6618012e558544ee2fb"
-  integrity sha512-fbjI6ja0N5ZA8TV53RUqzsKNkl9fv8Oj3T7zxW7FGv1GSH7gwJaNF8dzCjrqKaxKeUpTz4yT1DaJFq/omNpGfw==
+"@types/node-fetch@^2.5.9":
+  version "2.5.9"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.9.tgz#c04a12115aa436f189e39579272b305e477621b4"
+  integrity sha512-6cUyqLK+JBsATAqNQqk10jURoBFrzfRCDh4kaYxg8ivKhRPIpyBgAvuY7zM/3E4AwsYJSh5HCHBCJRM4DsCTaQ==
   dependencies:
     "@types/node" "*"
     form-data "^3.0.0"
@@ -4288,10 +4288,10 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oldschooljs@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.7.3.tgz#3fe48ddee40268cad8de84f61c8e8b8ccf7e0253"
-  integrity sha512-KEKcpFq5jRuYAe4QTW8pH2jCl4DzXUIAuE3CRqVafkxaaDlu7vqhj5xnYh4uf3qKdqVYXFIFykRvLt2k+xWZcw==
+oldschooljs@^1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.7.5.tgz#18e238a6845e5b6c99cda29328176264cbcc9277"
+  integrity sha512-8ZUBqW+tg7NvMA61ZO3LO8XHDo4iRnqEQwSWd+Tbn0s3zxN107w5P6Et6EpP81sSwQ7aFJk7X13E+eipL6OOew==
   dependencies:
     e "^0.2.0"
     jsdom "^16.0.1"
