@@ -911,15 +911,27 @@ setCustomItem(40_030, 'Amulet of zealots', 'Amulet of fury', {}, 1_000_000);
 setCustomItem(40_031, 'Scroll of dexterity', 'Coal', {}, 1_000_000);
 setCustomItem(40_032, 'Scroll of teleportation', 'Coal', {}, 1_000_000);
 
-setCustomItem(40_033, 'Gorajan trailblazer head', 'Torva full helm', {}, 55_000_000);
-setCustomItem(40_034, 'Gorajan trailblazer body', 'Torva platebody', {}, 55_000_000);
-setCustomItem(40_035, 'Gorajan trailblazer legs', 'Torva platelegs', {}, 55_000_000);
-setCustomItem(40_036, 'Gorajan trailblazer gloves', 'Torva gloves', {}, 55_000_000);
-setCustomItem(40_037, 'Gorajan trailblazer boots', 'Torva boots', {}, 55_000_000);
+setCustomItem(40_033, 'Gorajan warrior helmet', 'Torva full helm', {}, 55_000_000);
+setCustomItem(40_034, 'Gorajan warrior top', 'Torva platebody', {}, 55_000_000);
+setCustomItem(40_035, 'Gorajan warrior legs', 'Torva platelegs', {}, 55_000_000);
+setCustomItem(40_036, 'Gorajan warrior gloves', 'Torva gloves', {}, 55_000_000);
+setCustomItem(40_037, 'Gorajan warrior boots', 'Torva boots', {}, 55_000_000);
 
 setCustomItem(40_038, 'Scroll of proficiency', 'Coal', {}, 1_000_000);
 setCustomItem(40_039, 'Frosty', 'Herbi', {}, 20_000_000);
 setCustomItem(40_040, 'Chaotic remnant', 'Coal', {}, 10_000_000);
+
+setCustomItem(40_042, 'Gorajan occult helmet', 'Virtus mask', {}, 55_000_000);
+setCustomItem(40_043, 'Gorajan occult top', 'Virtus robe top', {}, 55_000_000);
+setCustomItem(40_044, 'Gorajan occult legs', 'Virtus robe legs', {}, 55_000_000);
+setCustomItem(40_045, 'Gorajan occult gloves', 'Virtus gloves', {}, 55_000_000);
+setCustomItem(40_046, 'Gorajan occult boots', 'Virtus boots', {}, 55_000_000);
+
+setCustomItem(40_047, 'Gorajan archer helmet', 'Pernix cowl', {}, 55_000_000);
+setCustomItem(40_048, 'Gorajan archer top', 'Pernix body', {}, 55_000_000);
+setCustomItem(40_049, 'Gorajan archer legs', 'Pernix chaps', {}, 55_000_000);
+setCustomItem(40_050, 'Gorajan archer gloves', 'Pernix gloves', {}, 55_000_000);
+setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
 
 // Pets
 
@@ -1267,6 +1279,7 @@ setCustomItem(
 	},
 	20_000_000
 );
+setCustomItem(48_012, 'Gorajan shards', 'Coal', {}, 1_000_000);
 
 /**
  * END DUNGEONEERING

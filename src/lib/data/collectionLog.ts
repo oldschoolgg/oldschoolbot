@@ -1583,14 +1583,34 @@ export const dungeoneeringLog: CollectionLogData = {
 		'Scroll of dexterity',
 		'Scroll of teleportation'
 	]),
-	Armor: resolveItems([
-		'Gorajan trailblazer head',
-		'Gorajan trailblazer body',
-		'Gorajan trailblazer legs',
-		'Gorajan trailblazer gloves',
-		'Gorajan trailblazer boots'
+
+	Other: resolveItems(['Frosty', 'Gorajan shards', 'Amulet of zealots', 'Herbicide']),
+	Warrior: resolveItems([
+		'Gorajan warrior helmet',
+		'Gorajan warrior top',
+		'Gorajan warrior legs',
+		'Gorajan warrior gloves',
+		'Gorajan warrior boots'
 	]),
-	Other: resolveItems(['Frosty'])
+	Archer: resolveItems([
+		'Gorajan archer helmet',
+		'Gorajan archer top',
+		'Gorajan archer legs',
+		'Gorajan archer gloves',
+		'Gorajan archer boots'
+	]),
+	Occult: resolveItems([
+		'Gorajan occult helmet',
+		'Gorajan occult top',
+		'Gorajan occult legs',
+		'Gorajan occult gloves',
+		'Gorajan occult boots'
+	]),
+	Necklaces: resolveItems([
+		'Arcane blast necklace',
+		'Farsight snapshot necklace',
+		"Brawler's hook necklace"
+	])
 };
 
 export const coxLog: CollectionLogData = {

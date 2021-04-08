@@ -240,7 +240,22 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Spiny helmet')]: slayerHelmSimilar,
 	[itemID('Facemask')]: slayerHelmSimilar,
 	[itemID('Reinforced goggles')]: slayerHelmSimilar,
-	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002])
+	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002]),
+	[itemID('Torva full helm')]: resolveItems(['Gorajan warrior helmet']),
+	[itemID('Torva platebody')]: resolveItems(['Gorajan warrior top']),
+	[itemID('Torva platelegs')]: resolveItems(['Gorajan warrior legs']),
+	[itemID('Torva gloves')]: resolveItems(['Gorajan warrior gloves']),
+	[itemID('Torva boots')]: resolveItems(['Gorajan warrior boots']),
+	[itemID('Virtus mask')]: resolveItems(['Gorajan occult helmet']),
+	[itemID('Virtus robe top')]: resolveItems(['Gorajan occult top']),
+	[itemID('Virtus robe legs')]: resolveItems(['Gorajan occult legs']),
+	[itemID('Virtus gloves')]: resolveItems(['Gorajan occult gloves']),
+	[itemID('Virtus boots')]: resolveItems(['Gorajan occult boots']),
+	[itemID('Pernix cowl')]: resolveItems(['Gorajan archer helmet']),
+	[itemID('Pernix body')]: resolveItems(['Gorajan archer top']),
+	[itemID('Pernix chaps')]: resolveItems(['Gorajan archer legs']),
+	[itemID('Pernix gloves')]: resolveItems(['Gorajan archer gloves']),
+	[itemID('Pernix boots')]: resolveItems(['Gorajan archer boots'])
 };
 
 export function getSimilarItems(itemID: number) {

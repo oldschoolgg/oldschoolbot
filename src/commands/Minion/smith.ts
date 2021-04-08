@@ -106,6 +106,10 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 		}
 
+		if (smithedItem.name.includes('Gorajan')) {
+			quantity = 1;
+		}
+
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 

@@ -1,4 +1,4 @@
-import { reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
@@ -18,6 +18,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
+import { numberOfGorajanOutfitsEquipped } from '../../tasks/minions/dungeoneeringActivity';
 
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -294,11 +295,26 @@ export default class extends BotCommand {
 				) {
 					y += 5;
 				}
+
 				let x = y / users.length;
 
 				duration = reduceNumByPercent(duration, x);
 				boosts.push(`${x.toFixed(2)}% from ${user.username}`);
 			}
+			const numGora = numberOfGorajanOutfitsEquipped(user);
+			if (numGora > 0) {
+				let x = (numGora * 6) / users.length;
+				duration = reduceNumByPercent(duration, x);
+				boosts.push(`${x.toFixed(2)}% from ${user.username}'s Gorajan`);
+			}
+		}
+
+		if (users.length === 1) {
+			duration = increaseNumByPercent(duration, 40);
+			boosts.push(`-40% for not having a team`);
+		} else if (users.length === 2) {
+			duration = increaseNumByPercent(duration, 15);
+			boosts.push(`-15% for having a small team`);
 		}
 
 		let str = `${partyOptions.leader.username}'s dungeoneering party (${users
@@ -309,7 +325,9 @@ export default class extends BotCommand {
 			dungeonLength
 		)} - the total trip will take ${formatDuration(duration)}.`;
 
-		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
 
 		await addSubTaskToActivityTask<DungeoneeringOptions>(this.client, {
 			userID: msg.author.id,
