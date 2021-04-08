@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Time } from '../../lib/constants';
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
@@ -6,7 +7,6 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { multiplyBank, stringMatches, toTitleCase } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -41,7 +41,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 
 		const outItems = multiplyBank(buyable.outputItems, quantity);
-		const itemString = await createReadableItemListFromBank(this.client, outItems);
+		const itemString = new Bank(outItems).toString();
 
 		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
 

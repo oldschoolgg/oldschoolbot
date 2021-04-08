@@ -143,6 +143,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Hitpoints hood'),
 		untrimmed: itemID('Hitpoints cape'),
 		trimmed: itemID('Hitpoints cape(t)')
+	},
+	{
+		skill: SkillsEnum.Dungeoneering,
+		hood: itemID('Dungeoneering hood'),
+		untrimmed: itemID('Dungeoneering cape'),
+		trimmed: itemID('Dungeoneering cape(t)')
 	}
 ];
 
@@ -239,6 +245,10 @@ export const MasterSkillcapes: MasterSkillcape[] = [
 	{
 		skill: SkillsEnum.Defence,
 		item: getOSItem('Defence master cape')
+	},
+	{
+		skill: SkillsEnum.Dungeoneering,
+		item: getOSItem('Dungeoneering master cape')
 	}
 ];
 

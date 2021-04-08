@@ -1,3 +1,4 @@
+import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -217,6 +218,8 @@ export default class extends BotCommand {
 
 		let newBank = { ...userBank };
 		let econBank = new Bank();
+		const hasScroll = msg.author.hasItem(itemID('Scroll of life'));
+
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
@@ -226,8 +229,12 @@ export default class extends BotCommand {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}
 			}
-			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
-			econBank.add(parseInt(seedID), qty * quantity);
+			const _qty = hasScroll
+				? Math.floor(calcPercentOfNum(85, qty * quantity))
+				: qty * quantity;
+			newBank = removeItemFromBank(newBank, parseInt(seedID), _qty);
+			econBank.add(parseInt(seedID), _qty);
+			boostStr.push(`15% less seeds used from Scroll of life`);
 		}
 
 		let paymentBank = { ...newBank };

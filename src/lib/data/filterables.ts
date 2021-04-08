@@ -4,6 +4,8 @@ import { allPetIDs } from '../../commands/Minion/equippet';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
+import { ItemTuple } from '../types';
+import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	cluesAll,
@@ -369,14 +371,14 @@ const cluesAndCaskets = resolveItems([
 	'Clue scroll (hard)',
 	'Clue scroll (elite)',
 	'Clue scroll (master)',
-	'Clue scroll grandmaster',
+	'Clue scroll (grandmaster)',
 	'Reward casket (beginner)',
 	'Reward casket (easy)',
 	'Reward casket (medium)',
 	'Reward casket (hard)',
 	'Reward casket (elite)',
 	'Reward casket (master)',
-	'Reward casket grandmaster'
+	'Reward casket (grandmaster)'
 ]);
 
 const godwars = resolveItems([
@@ -901,3 +903,17 @@ export const filterableTypes: Filterable[] = [
 		]
 	}
 ];
+
+export function filterByCategory(filterQuery: string, items: ItemTuple[]) {
+	const filtered = filterableTypes.find(_filtered =>
+		_filtered.aliases.some(name => stringMatches(name, filterQuery))
+	);
+
+	if (!filtered) {
+		throw `That's not a valid filter type. The valid types are: ${filterableTypes
+			.map(filtered => filtered.name)
+			.join(', ')}.`;
+	}
+
+	return items.filter(item => filtered.items.includes(item[0]));
+}

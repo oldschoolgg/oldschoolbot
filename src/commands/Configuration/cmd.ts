@@ -21,22 +21,22 @@ export default class extends BotCommand {
 	// @ts-ignore 2416
 	async enable(msg: KlasaMessage, [command]: [Command]) {
 		if (!msg.guild!.settings.get(GuildSettings.DisabledCommands).includes(command.name)) {
-			return msg.sendLocale('CMD_ISNT_DISABLED');
+			return msg.send("That command isn't disabled.");
 		}
 		await msg.guild!.settings.update('disabledCommands', command.name, {
 			arrayAction: 'remove'
 		});
-		return msg.sendLocale('CMD_ENABLED', [command.name]);
+		return msg.send(`Successfully enabled the \`${command.name}\` command.`);
 	}
 
 	// @ts-ignore 2416
 	async disable(msg: KlasaMessage, [command]: [Command]) {
 		if (msg.guild!.settings.get(GuildSettings.DisabledCommands).includes(command.name)) {
-			return msg.sendLocale('CMD_ALREADY_DISABLED');
+			return msg.send('That command is already disabled.');
 		}
 		await msg.guild!.settings.update(GuildSettings.DisabledCommands, command.name, {
 			arrayAction: 'add'
 		});
-		return msg.sendLocale('CMD_DISABLED', [command.name]);
+		return msg.send(`Successfully disabled the \`${command.name}\` command.`);
 	}
 }

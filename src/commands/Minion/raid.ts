@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { pernixOutfit, torvaOutfit, virtusOutfit } from '../../lib/nex';
@@ -922,7 +923,8 @@ export default class extends BotCommand {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			meleeGearPoints +=
-				meleeGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
+				meleeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))
+					?.itemPoint ?? 0;
 		}
 		// Scores the range gear
 		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
@@ -932,7 +934,8 @@ export default class extends BotCommand {
 			const item = getOSItem(itemSlot.item);
 			if (!item.equipment) continue;
 			rangeGearPoints +=
-				rangeGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
+				rangeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))
+					?.itemPoint ?? 0;
 		}
 		// Scores the mage gear
 		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
@@ -941,7 +944,9 @@ export default class extends BotCommand {
 			if (!itemSlot) continue;
 			const item = getOSItem(itemSlot.item);
 			if (!item.equipment) continue;
-			mageGearPoints += mageGearBonus.find(_item => _item.itemID === item.id)?.itemPoint ?? 0;
+			mageGearPoints +=
+				mageGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))
+					?.itemPoint ?? 0;
 		}
 
 		let totalGearPoints = meleeGearPoints + rangeGearPoints + mageGearPoints;

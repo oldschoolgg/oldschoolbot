@@ -3,9 +3,8 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, noOp, roll } from '../../lib/util';
+import { filterBankFromArrayOfItems, itemID, multiplyBank, noOp, roll } from '../../lib/util';
 import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 const uniques = [
@@ -69,7 +68,7 @@ export default class extends Task {
 				userLoot[itemID('Takon')] = 1;
 			}
 			if (roll(140)) {
-				userLoot[itemID('Clue scroll grandmaster')] = 1;
+				userLoot[itemID('Clue scroll (grandmaster)')] = 1;
 			}
 			if (roll(2000)) {
 				userLoot[itemID('Steve')] = 1;

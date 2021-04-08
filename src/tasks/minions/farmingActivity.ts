@@ -24,7 +24,6 @@ import {
 	roll
 } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
@@ -170,10 +169,7 @@ export default class extends Task {
 			}
 
 			if (Object.keys(loot).length > 0) {
-				str += `\n\nYou received: ${await createReadableItemListFromBank(
-					this.client,
-					loot
-				)}.`;
+				str += `\n\nYou received: ${new Bank(loot)}.`;
 			}
 
 			await this.client.settings.update(
@@ -504,9 +500,7 @@ export default class extends Task {
 			}
 
 			if (Object.keys(loot).length > 0) {
-				infoStr.push(
-					`\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`
-				);
+				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
 			}
 
 			await this.client.settings.update(

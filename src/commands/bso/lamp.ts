@@ -25,6 +25,8 @@ export default class extends BotCommand {
 
 		skillName = skillName.toLowerCase();
 
+		if (skillName === 'dungeoneering') return;
+
 		const isValidSkill = Object.values(Skills).some(skill => skill.id === skillName);
 		if (!isValidSkill) {
 			return msg.send(`That's not a valid skill.`);

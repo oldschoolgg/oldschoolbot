@@ -307,7 +307,7 @@ const baseTGBTable = new LootTable()
 
 const testerGiftTable = new LootTable()
 	.every(baseTGBTable, [3, 7])
-	.every('Clue scroll grandmaster', [1, 3])
+	.every('Clue scroll (grandmaster)', [1, 3])
 	.every(LampTable, [1, 2])
 	.add('Rocktail', [30, 60])
 	.add('Tradeable mystery box', [1, 3])

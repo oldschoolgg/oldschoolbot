@@ -13,7 +13,7 @@ import {
 	TOP_FLOOR_Y
 } from '../lib/poh';
 import { PoHTable } from '../lib/typeorm/PoHTable.entity';
-import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
+import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [

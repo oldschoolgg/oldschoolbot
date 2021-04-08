@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import decantPotionFromBank from '../../lib/minions/functions/decantPotionFromBank';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import createReadableItemListFromTuple from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -29,8 +28,6 @@ export default class extends BotCommand {
 			dose
 		);
 
-		const resultString = await createReadableItemListFromTuple(this.client, potionsToAdd);
-
 		await msg.author.settings.update(UserSettings.Bank, finalUserBank);
 
 		if (
@@ -47,7 +44,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`You decanted **${sumOfPots}x ${potionName}${
 				sumOfPots > 0 ? 's' : ''
-			}** into **${resultString}**.`
+			}** into **${new Bank(potionsToAdd)}**.`
 		);
 	}
 }

@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
 
+// import craft from '../../commands/Minion/craft';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
@@ -16,6 +17,17 @@ export default class extends Task {
 		const xpReceived = quantity * spell.xp;
 		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
 
+		let craftXpReceived = 0;
+		let craftXpRes = ``;
+		if (spell.craftXp) {
+			craftXpReceived = spell.craftXp * quantity;
+
+			craftXpRes = await user.addXP(SkillsEnum.Crafting, craftXpReceived, duration);
+		}
+
+		// let craftXpRes = ``;
+		// const craftXpReceived = await user.addXP(SkillsEnum.Crafting, craftXpReceived, duration);
+
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
 			await user.addItemsToBank(loot.bank, true);
@@ -23,7 +35,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
 			spell.name
-		}, you received ${loot ?? 'no items'}. ${xpRes}`;
+		}, you received ${loot ?? 'no items'}. ${xpRes} ${craftXpRes}`;
 
 		handleTripFinish(
 			this.client,
