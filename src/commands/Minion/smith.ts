@@ -137,7 +137,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const hasScroll = msg.author.hasItem(itemID('Scroll of efficiency'));
+		const hasScroll = await msg.author.hasItem(itemID('Scroll of efficiency'));
 
 		// Remove the bars from their bank.
 		let usedbars = 0;
