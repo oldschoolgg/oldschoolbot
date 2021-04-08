@@ -234,7 +234,9 @@ export default class extends BotCommand {
 				: qty * quantity;
 			newBank = removeItemFromBank(newBank, parseInt(seedID), _qty);
 			econBank.add(parseInt(seedID), _qty);
-			boostStr.push(`15% less seeds used from Scroll of life`);
+			if (hasScroll) {
+				boostStr.push(`15% less seeds used from Scroll of life`);
+			}
 		}
 
 		let paymentBank = { ...newBank };
