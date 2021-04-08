@@ -70,16 +70,16 @@ export default class extends Task {
 			}
 
 			const tokens = Math.floor(xp * 0.1);
-			const gorajanEquipped = numberOfGorajanOutfitsEquipped(user);
+			const gorajanEquipped = numberOfGorajanOutfitsEquipped(u);
 			let bonusXP = 0;
 			if (gorajanEquipped > 0) {
 				bonusXP += Math.floor(xp * (gorajanEquipped / 8));
 				xp += bonusXP;
 			}
-			await user.addXP(SkillsEnum.Dungeoneering, xp / 5, duration);
-			await user.settings.update(
+			await u.addXP(SkillsEnum.Dungeoneering, xp / 5, duration);
+			await u.settings.update(
 				UserSettings.DungeoneeringTokens,
-				user.settings.get(UserSettings.DungeoneeringTokens) + tokens
+				u.settings.get(UserSettings.DungeoneeringTokens) + tokens
 			);
 			let rawXPHr = (xp / (duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(xp / 1000) * 1000;
