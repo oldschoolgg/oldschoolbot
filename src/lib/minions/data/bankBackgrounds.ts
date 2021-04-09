@@ -447,7 +447,19 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 61,
-		name: 'Anime CustomBG',
+		name: 'Felix CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 62,
+		name: 'PlayLazily CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 63,
+		name: 'Slippy CustomBG',
 		image: null,
 		available: false
 	}
