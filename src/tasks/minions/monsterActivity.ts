@@ -9,6 +9,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
+import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -34,7 +35,11 @@ export default class extends Task {
 			abyssalBonus += 0.25;
 		}
 
-		let loot = new Bank((monster as any).table.kill(Math.ceil(quantity * abyssalBonus)));
+		const preExistingLoot = (await ActivityTable.findOne({ id }))?.loot;
+
+		let loot = preExistingLoot
+			? new Bank(preExistingLoot)
+			: new Bank((monster as any).table.kill(Math.ceil(quantity * abyssalBonus)));
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
@@ -43,7 +48,7 @@ export default class extends Task {
 			}
 		}
 
-		if (monster.id === Monsters.Vorkath.id && roll(4000)) {
+		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
 			loot.add(23941);
 		}
 
