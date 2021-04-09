@@ -462,6 +462,12 @@ const backgroundImages: BankBackground[] = [
 		name: 'Slippy CustomBG',
 		image: null,
 		available: false
+	},
+	{
+		id: 64,
+		name: 'BigPoppa CustomBG',
+		image: null,
+		available: false
 	}
 ];
 
