@@ -57,8 +57,8 @@ export async function addMonsterXP(
 	let xpMultiplier = 1;
 	if (monster && monster.customMonsterHP) {
 		hp = monster.customMonsterHP;
-	} else {
-		hp = osjsMon?.data?.hitpoints || 1;
+	} else if (osjsMon?.data?.hitpoints) {
+		hp = osjsMon.data.hitpoints;
 	}
 	if (monster && monster.combatXpMultiplier) {
 		xpMultiplier = monster.combatXpMultiplier;
