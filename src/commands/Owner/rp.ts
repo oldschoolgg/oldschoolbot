@@ -2,10 +2,11 @@ import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
-import { BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import { formatDuration } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
@@ -59,8 +60,21 @@ export default class extends BotCommand {
 					.map(i => BitFieldData[i])
 					.filter(notEmpty)
 					.map(i => i.name)
-					.join(', ')}.`;
-				return msg.send(`**${input.username}**\nBitfields: ${bitfields}`);
+					.join(', ')}`;
+
+				const task = this.client.minionActivityCache.get(input.id);
+				const taskText = task
+					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
+					: 'None';
+
+				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
+				return msg.send(
+					`**${input.username}**
+**Bitfields:** ${bitfields}
+**Badges:** ${userBadges}
+**Current Task:** ${taskText}
+`
+				);
 			}
 			case 'patreon': {
 				msg.channel.send('Running patreon task...');
@@ -71,6 +85,15 @@ export default class extends BotCommand {
 				msg.channel.send('Running roles task...');
 				const result = await this.client.tasks.get('roles')?.run();
 				return msg.send(result);
+			}
+			case 'canceltask': {
+				if (!input) return;
+				await (this.client as OldSchoolBotClient).cancelTask(input.id);
+				this.client.oneCommandAtATimeCache.delete(input.id);
+				this.client.secondaryUserBusyCache.delete(input.id);
+				this.client.minionActivityCache.delete(input.id);
+
+				return msg.react(Emoji.Tick);
 			}
 			case 'setgh': {
 				if (!input) return;
@@ -156,6 +179,49 @@ export default class extends BotCommand {
 					`${action === 'add' ? 'Added' : 'Removed'} '${
 						(BitFieldData as any)[bit].name
 					}' bit to ${input.username}.`
+				);
+			}
+
+			case 'badges': {
+				if (!input || !str) {
+					return msg.send(
+						Object.entries(badges)
+							.map(entry => `**${entry[1]}:** ${entry[0]}`)
+							.join('\n')
+					);
+				}
+
+				const badgesKeys = Object.keys(badges);
+
+				const [action, _badge] = str.split(' ');
+				const badge = Number(_badge);
+
+				if (!badgesKeys.includes(_badge) || (action !== 'add' && action !== 'remove')) {
+					return msg.send(`Invalid badge.`);
+				}
+
+				let newBadges = [...input.settings.get(UserSettings.Badges)];
+
+				if (action === 'add') {
+					if (newBadges.includes(badge)) {
+						return msg.send(`Already has this badge, so can't add.`);
+					}
+					newBadges.push(badge);
+				} else {
+					if (!newBadges.includes(badge)) {
+						return msg.send(`Doesn't have this badge, so can't remove.`);
+					}
+					newBadges = newBadges.filter(i => i !== badge);
+				}
+
+				await input.settings.update(UserSettings.Badges, uniqueArr(newBadges), {
+					arrayAction: 'overwrite'
+				});
+
+				return msg.channel.send(
+					`${action === 'add' ? 'Added' : 'Removed'} ${badges[badge]} badge to ${
+						input.username
+					}.`
 				);
 			}
 

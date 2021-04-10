@@ -1,18 +1,19 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
+import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { badges, Time } from '../../lib/constants';
+import { badges, Emoji, Time } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
+import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import { Workers } from '../../lib/workers';
@@ -128,6 +129,10 @@ export default class extends BotCommand {
 		});
 	}
 
+	async init() {
+		await this.cacheUsernames();
+	}
+
 	getUsername(userID: string) {
 		const username = this.usernameCache.map.get(userID);
 		if (!username) return '(Unknown)';
@@ -135,29 +140,26 @@ export default class extends BotCommand {
 	}
 
 	async cacheUsernames() {
-		const arrayOfUsers: { badges: number[]; id: string }[] = await this.query(
-			`SELECT "badges", "id" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0;`,
+		const allNewUsers = await NewUserTable.find({ username: Not(IsNull()) });
+		for (const user of allNewUsers) {
+			this.usernameCache.map.set(user.id, stripEmojis(user.username!));
+		}
+
+		const arrayOfUsers: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
+			`SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;`,
 			false
 		);
 
-		const usernameEntries: [string, string][] = [];
-
-		for (const user of this.client.users.values()) {
-			if (!user.username) continue;
-			if (user.settings.get(UserSettings.Minion.HasBought)) {
-				usernameEntries.push([user.id, user.username]);
-			}
-
-			this.usernameCache.map.set(user.id, user.username);
-		}
-
 		for (const user of arrayOfUsers) {
-			const rawName = this.client.users.get(user.id)?.username ?? '(Unknown)';
-			const rawBadges = user.badges.map(num => badges[num]).join(' ');
-			this.usernameCache.map.set(user.id, `${rawBadges} ${stripEmojis(rawName)}`);
+			const rawName = this.usernameCache.map.get(user.id) ?? '(Unknown)';
+			const rawBadges = user.badges.map(num => badges[num]);
+			if (user.ironman) {
+				rawBadges.push(Emoji.Ironman);
+			}
+			this.usernameCache.map.set(user.id, `${rawBadges.join(' ')} ${rawName}`);
 		}
 
-		batchSyncNewUserUsernames(usernameEntries);
+		batchSyncNewUserUsernames(this.client);
 	}
 
 	async run(msg: KlasaMessage) {
@@ -197,7 +199,12 @@ export default class extends BotCommand {
 	async sacrifice(msg: KlasaMessage) {
 		const list: { id: string; amount: number }[] = (
 			await this.query(
-				`SELECT "id", "sacrificedValue" FROM users WHERE "sacrificedValue" > 0 ORDER BY "sacrificedValue" DESC LIMIT 2000;`
+				`SELECT "id", "sacrificedValue"
+FROM users
+WHERE "sacrificedValue" > 0
+${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
+ORDER BY "sacrificedValue"
+DESC LIMIT 2000;`
 			)
 		).map((res: any) => ({ ...res, amount: parseInt(res.sacrificedValue) }));
 
@@ -374,7 +381,11 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			res = await this.query(
 				`SELECT id,  ${skillsVals.map(s => `"skills.${s.id}"`)}, ${skillsVals
 					.map(s => `"skills.${s.id}"`)
-					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 500;`
+					.join(' + ')} as totalxp
+FROM users
+${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
+ORDER BY totalxp
+DESC LIMIT 500;`
 			);
 			overallUsers = res
 				.map(user => {
@@ -462,9 +473,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		const result = (await this.query(
 			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users ${
+		msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''
+  }
 ) u
-WHERE u."logBankLength" > 300 ORDER BY u."logBankLength" DESC;`
+WHERE u."logBankLength" > 300
+ORDER BY u."logBankLength" DESC;`
 		)) as CLUser[];
 		const users = await Workers.leaderboard({
 			type: 'cl',

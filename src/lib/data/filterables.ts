@@ -4,6 +4,8 @@ import { allPetIDs } from '../../commands/Minion/equippet';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
+import { ItemTuple } from '../types';
+import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	cluesAll,
@@ -226,7 +228,8 @@ const seeds = resolveItems([
 	'Tomato seed',
 	'Cabbage seed',
 	'Onion seed',
-	'Potato seed'
+	'Potato seed',
+	'Mysterious seed'
 ]);
 
 const herbs = resolveItems([
@@ -776,7 +779,15 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Farming',
 		aliases: ['farming', 'farm', 'seeds'],
-		items: seeds
+		items: [
+			...resolveItems([
+				'Compost',
+				'Supercompost',
+				'Ultracompost',
+				'Bottomless compost bucket '
+			]),
+			...seeds
+		]
 	},
 	{
 		name: 'Herblore',
@@ -892,3 +903,17 @@ export const filterableTypes: Filterable[] = [
 		]
 	}
 ];
+
+export function filterByCategory(filterQuery: string, items: ItemTuple[]) {
+	const filtered = filterableTypes.find(_filtered =>
+		_filtered.aliases.some(name => stringMatches(name, filterQuery))
+	);
+
+	if (!filtered) {
+		throw `That's not a valid filter type. The valid types are: ${filterableTypes
+			.map(filtered => filtered.name)
+			.join(', ')}.`;
+	}
+
+	return items.filter(item => filtered.items.includes(item[0]));
+}

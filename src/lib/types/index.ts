@@ -26,18 +26,6 @@ export interface SettingsEntry {
 	};
 }
 
-export interface Pet {
-	id: number;
-	emoji: string;
-	chance: number;
-	name: string;
-	type: string;
-	altNames: string[];
-	bossKeys?: string[];
-	finish?(): number;
-	formatFinish(num: number): string;
-}
-
 export interface CachedItemPrice {
 	price: number;
 	fetchedAt: number;

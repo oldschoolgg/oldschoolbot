@@ -10,7 +10,6 @@ const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
 	'940563176', // SoupRS
 	'184349515', // MmorpgCP
-	'557647030', // Skiddler
 	'525302599', // Sick_Nerd
 	'3187663593', // WooxSolo
 	'2169865003', // RSAlfierules
@@ -28,7 +27,6 @@ const ALL_TWITTERS = [
 	'803844588100325376', // ZuluOnly
 	'709141790503211008', // LakeOSRS,
 	'868269438394675201', // SettledRS
-	'786858980400390144', // Wolf
 	/* OSRS Jagex Mods */
 	'2726160938', // JagexCurse
 	'3362141061', // JagexKieren
@@ -100,12 +98,10 @@ const JMOD_TWITTERS = [
 ];
 
 const STREAMER_TWITTERS = [
-	'786858980400390144',
 	'3589736181',
 	'1894180640',
 	'184349515',
 	'2307540361',
-	'557647030',
 	'525302599',
 	'3187663593',
 	'2169865003',

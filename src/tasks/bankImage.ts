@@ -9,7 +9,7 @@ import * as path from 'path';
 
 import { bankImageCache, Events } from '../lib/constants';
 import { allCollectionLogItems } from '../lib/data/collectionLog';
-import { filterableTypes } from '../lib/data/filterables';
+import { filterableTypes, filterByCategory } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
@@ -17,6 +17,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
+	filterItemTupleByQuery,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	itemNameFromID,
@@ -26,11 +27,8 @@ import {
 	sha256Hash,
 	stringMatches
 } from '../lib/util';
-import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
-import { fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
-import filterByCategory from '../lib/util/filterByCategory';
-import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });

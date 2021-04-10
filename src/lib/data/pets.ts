@@ -1,10 +1,21 @@
 import { Emoji } from '../constants';
-import { Pet } from '../types';
 import raids from './monsters/raids';
 
 const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;
 const fm = (num: number) => num.toLocaleString();
+
+interface Pet {
+	id: number;
+	emoji: string;
+	chance: number;
+	name: string;
+	type: string;
+	altNames: string[];
+	bossKeys?: string[];
+	finish?(): number;
+	formatFinish(num: number): string;
+}
 
 const pets: Pet[] = [
 	{

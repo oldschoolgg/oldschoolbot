@@ -13,7 +13,6 @@ import {
 	removeBankFromBank,
 	stringMatches
 } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -80,8 +79,8 @@ export default class extends BotCommand {
 		const outItems = multiplyBank(createableItem.outputItems, quantity);
 		const inItems = multiplyBank(createableItem.inputItems, quantity);
 
-		const outputItemsString = await createReadableItemListFromBank(this.client, outItems);
-		const inputItemsString = await createReadableItemListFromBank(this.client, inItems);
+		const outputItemsString = new Bank(outItems).toString();
+		const inputItemsString = new Bank(inItems).toString();
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
@@ -97,15 +96,12 @@ export default class extends BotCommand {
 
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
-			const cantHaveItemsString = await createReadableItemListFromBank(
-				this.client,
-				createableItem.cantHaveItems
-			);
-
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
 				const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
 				if (numOwned >= qty) {
-					throw `You can't create this item, because you have ${cantHaveItemsString} in your bank.`;
+					throw `You can't create this item, because you have ${new Bank(
+						createableItem.cantHaveItems
+					)} in your bank.`;
 				}
 			}
 		}

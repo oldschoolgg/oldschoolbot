@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BadgesEnum } from '../../lib/constants';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
@@ -20,30 +19,32 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const RSN = msg.author.settings.get(UserSettings.RSN);
 		if (!newRSN && RSN) {
-			return msg.sendLocale('RSN_CURRENT', [msg.author.settings.get(UserSettings.RSN)]);
+			return msg.send(
+				`Your current RSN is: \`${msg.author.settings.get(UserSettings.RSN)}\``
+			);
 		}
 
 		if (!newRSN && !RSN) {
-			return msg.sendLocale('RSN_NOT_SET', [
-				msg.guild?.settings.get(GuildSettings.Prefix) ?? '+'
-			]);
+			return msg.send(
+				`You don't have an RSN set. You can set one like this: \`${msg.cmdPrefix}setrsn <username>\``
+			);
 		}
 
 		newRSN = newRSN.toLowerCase();
 		if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
-			return msg.sendLocale('RSN_INVALID');
+			return msg.send('That username is not valid.');
 		}
 
 		if (RSN === newRSN) {
-			return msg.sendLocale('RSN_SET_ALREADY', [RSN]);
+			return msg.send(`Your RSN is already set to \`${RSN}\``);
 		}
 
 		if (RSN !== null) {
 			await msg.author.settings.update(UserSettings.RSN, newRSN);
-			msg.sendLocale('RSN_CHANGED', [RSN, newRSN]);
+			msg.send(`Changed your RSN from \`${RSN}\` to \`${newRSN}\``);
 		} else {
 			await msg.author.settings.update(UserSettings.RSN, newRSN);
-			msg.sendLocale('RSN_SET_TO', [newRSN]);
+			msg.send(`Your RSN has been set to: \`${newRSN}\`.`);
 		}
 
 		// If this user has the booster badge, cache their new username.
