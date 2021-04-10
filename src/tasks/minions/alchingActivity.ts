@@ -37,7 +37,7 @@ export default class extends Task {
 			}
 		}
 
-        if (duration > Time.Minute * 20 && roll(Math.ceil(8000 / (duration / Time.Minute)))) {
+		if (duration > Time.Minute * 20 && roll(Math.ceil(8000 / (duration / Time.Minute)))) {
 			loot.add('Lil lamb');
 		}
 
