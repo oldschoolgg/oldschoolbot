@@ -25,7 +25,12 @@ export default class extends BotCommand {
 
 		skillName = skillName.toLowerCase();
 
-		if (skillName === 'dungeoneering') return;
+		if (
+			skillName === 'dungeoneering' &&
+			(msg.author.skillLevel(SkillsEnum.Dungeoneering) >= 50 || XPLamps.indexOf(lamp) > 1)
+		) {
+			return;
+		}
 
 		const isValidSkill = Object.values(Skills).some(skill => skill.id === skillName);
 		if (!isValidSkill) {
