@@ -40,7 +40,7 @@ export default class extends Task {
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				loot,
+				loot.bank,
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
 				{ showNewCL: 1 },
