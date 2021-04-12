@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -29,6 +30,19 @@ export default class extends Task {
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
+		}
+
+		if (
+			user.hasItemEquippedAnywhere('Iron dagger') &&
+			user.hasItemEquippedAnywhere('Bronze arrow') &&
+			user.hasItemEquippedAnywhere('Iron med helm') &&
+			!user.hasItemEquippedOrInBank('Clue hunter garb')
+		) {
+			await user.addItemsToBank(
+				new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
+				true
+			);
+			str += `\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.`;
 		}
 
 		handleTripFinish(
