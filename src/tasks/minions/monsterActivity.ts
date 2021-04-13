@@ -16,7 +16,7 @@ export default class extends Task {
 		await user.incrementMonsterScore(monsterID, quantity);
 		const loot = new Bank(monster.table.kill(quantity));
 
-		announceLoot(this.client, user, monster, quantity, loot.bank);
+		announceLoot(this.client, user, monster, loot.bank);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
 
