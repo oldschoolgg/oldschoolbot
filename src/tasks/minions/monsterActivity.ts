@@ -90,26 +90,37 @@ export default class extends Task {
 		if (loot) {
 			setActivityLoot(id, loot);
 		}
-		announceLoot(this.client, user, monster as KillableMonster, quantity, loot);
-
-		const { previousCL } = await user.addItemsToBank(loot, true);
+		announceLoot(this.client, user, monster as KillableMonster, loot);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
+
+		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
+			monster.name
+		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
+
+		if (
+			monster.id === Monsters.Unicorn.id &&
+			user.hasItemEquippedAnywhere('Iron dagger') &&
+			!user.hasItemEquippedOrInBank('Clue hunter cloak')
+		) {
+			loot.add('Clue hunter cloak');
+			loot.add('Clue hunter boots');
+
+			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
+		}
+
+		const { previousCL } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				loot,
+				loot.bank,
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
 				{ showNewCL: 1 },
 				user,
 				previousCL
 			);
-
-		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
-			monster.name
-		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
 
 		if (gotBrock) {
 			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
@@ -138,7 +149,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }

@@ -30,6 +30,17 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Bank, finalUserBank);
 
+		if (
+			msg.author.hasItemEquippedAnywhere('Iron dagger') &&
+			msg.author.hasItemEquippedAnywhere('Bronze arrow') &&
+			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
+		) {
+			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
+			msg.send(
+				`\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.`
+			);
+		}
+
 		return msg.send(
 			`You decanted **${sumOfPots}x ${potionName}${
 				sumOfPots > 0 ? 's' : ''

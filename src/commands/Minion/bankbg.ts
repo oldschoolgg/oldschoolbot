@@ -8,8 +8,11 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	addBanks,
 	bankHasAllItemsFromBank,
+	formatSkillRequirements,
 	removeBankFromBank,
-	stringMatches
+	skillsMeetRequirements,
+	stringMatches,
+	toKMB
 } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import BankImageTask from '../../tasks/bankImage';
@@ -43,6 +46,28 @@ export default class extends BotCommand {
 		if (msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator)) {
 			await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
 			return msg.send(`Your bank background is now **${selectedImage.name}**!`);
+		}
+
+		if (selectedImage.sacValueRequired) {
+			const sac = msg.author.settings.get(UserSettings.SacrificedValue);
+			if (sac < selectedImage.sacValueRequired) {
+				return msg.send(
+					`You have to have sacrificed atleast ${toKMB(
+						selectedImage.sacValueRequired
+					)} GP worth of items to use this background.`
+				);
+			}
+		}
+
+		if (selectedImage.skillsNeeded) {
+			const meets = skillsMeetRequirements(msg.author.rawSkills, selectedImage.skillsNeeded);
+			if (!meets) {
+				return msg.send(
+					`You don't meet the skill requirements to use this background, you need: ${formatSkillRequirements(
+						selectedImage.skillsNeeded
+					)}.`
+				);
+			}
 		}
 
 		if (!selectedImage.available) {
