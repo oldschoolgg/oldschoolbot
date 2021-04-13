@@ -95,7 +95,7 @@ export default class extends Task {
 		if (loot) {
 			setActivityLoot(id, loot.bank);
 		}
-		announceLoot(this.client, user, monster as KillableMonster, quantity, loot.bank);
+		announceLoot(this.client, user, monster as KillableMonster, loot.bank);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
 
