@@ -9,7 +9,7 @@ const SigilTable = new LootTable()
 	.add('Divine sigil');
 
 export const CorporealBeastTable = new LootTable()
-
+	.tertiary(1000, 'Jar of spirits')
 	.add('Spirit shield', 1, 8)
 	.add('Holy elixir', 1, 3)
 	.oneIn(512, SigilTable)
