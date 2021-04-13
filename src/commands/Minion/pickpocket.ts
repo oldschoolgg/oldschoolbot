@@ -138,7 +138,8 @@ export default class extends BotCommand {
 			pickpocketable,
 			quantity,
 			msg.author.hasItemEquippedAnywhere(itemID('Thieving cape')) ||
-				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)')),
+				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)')) ||
+				msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape')),
 			msg.author.hasItemEquippedOrInBank("Thieves' armband")
 		);
 

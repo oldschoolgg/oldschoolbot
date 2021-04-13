@@ -53,19 +53,6 @@ export default class extends Task {
 
 		const numberOfMinutes = duration / Time.Minute;
 
-		if (user.equippedPet() === itemID('Doug') && numberOfMinutes >= 7) {
-			for (const randOre of Mining.Ores.sort(() => 0.5 - Math.random()).slice(
-				0,
-				rand(1, Math.floor(numberOfMinutes / 7))
-			)) {
-				const qty = rand(1, numberOfMinutes * 3);
-				const amountToAdd = randOre.xp * qty;
-				xpReceived += amountToAdd;
-				bonusXP += amountToAdd;
-				loot.add(randOre.id, qty);
-			}
-		}
-
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot.bank = multiplyBank(loot.values(), 2);
