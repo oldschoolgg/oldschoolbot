@@ -12,7 +12,7 @@ export const CorporealBeastTable = new LootTable()
 
 	.add('Spirit shield', 1, 8)
 	.add('Holy elixir', 1, 3)
-	.oneIn(585, SigilTable)
+	.oneIn(512, SigilTable)
 
 	/* Uncuts */
 	.add(GemTable, 10, 12)
