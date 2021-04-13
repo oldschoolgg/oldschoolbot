@@ -1833,6 +1833,47 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Clue Hunter',
 		aliases: ['clue hunter'],
 		items: { 1: clueHunterLog }
+	},
+	{
+		name: 'Minigames',
+		aliases: ['minigames', 'minigame'],
+		items: {
+			barb: barbAssaultLog,
+			brim: agilityArenaLog,
+			trawler: anglerOutfit,
+			gnomeres: gnomeRestaurantLog,
+			sepulchre: resolveItems([
+				'Hallowed ring',
+				'Dark dye',
+				'Dark acorn',
+				'Strange old lockpick',
+				'Ring of endurance (uncharged)',
+				'Hallowed mark',
+				'Hallowed token',
+				'Hallowed grapple',
+				'Hallowed focus',
+				'Hallowed symbol',
+				'Hallowed hammer'
+			]),
+			mahog: resolveItems([
+				...carpenterOutfit,
+				"Amy's saw",
+				'Plank sack',
+				'Hosidius blueprints',
+				'Builders supply crate'
+			]),
+			roguesden: rogueOutfit,
+			soulwars: soulwarsLog,
+			tithefarm: resolveItems([
+				"Farmer's strawhat",
+				"Farmer's jacket",
+				"Farmer's boro trousers",
+				"Farmer's boots",
+				'Seed box',
+				"Gricoller's can",
+				'Herb sack'
+			])
+		}
 	}
 ];
 export const allCollectionLogItems = uniqueArr(
