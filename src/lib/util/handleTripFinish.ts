@@ -1,4 +1,5 @@
 import { Message, MessageAttachment, MessageCollector } from 'discord.js';
+import { randInt } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -9,6 +10,7 @@ import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { setActivityLoot } from '../settings/settings';
 import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
+import Mining from '../skilling/skills/mining';
 import { ActivityTaskOptions } from '../types/minions';
 import {
 	channelIsSendable,
@@ -55,10 +57,10 @@ export async function handleTripFinish(
 
 	const minutes = data.duration / Time.Minute;
 	const pet = user.equippedPet();
+	let bonusLoot = new Bank();
 	if (minutes < 5) {
 		// Do nothing
 	} else if (pet === itemID('Peky')) {
-		let bonusLoot = new Bank();
 		for (let i = 0; i < minutes; i++) {
 			if (roll(10)) {
 				bonusLoot.add(SeedTable.roll());
@@ -67,7 +69,6 @@ export async function handleTripFinish(
 		await user.addItemsToBank(bonusLoot, true);
 		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`;
 	} else if (pet === itemID('Obis')) {
-		let bonusLoot = new Bank();
 		let rolls = minutes / 3;
 		for (let i = 0; i < rolls; i++) {
 			bonusLoot.add(RuneTable.roll());
@@ -75,7 +76,6 @@ export async function handleTripFinish(
 		await user.addItemsToBank(bonusLoot.bank, true);
 		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`;
 	} else if (pet === itemID('Brock')) {
-		let bonusLoot = new Bank();
 		let rolls = minutes / 3;
 		for (let i = 0; i < rolls; i++) {
 			bonusLoot.add(WoodTable.roll());
@@ -83,7 +83,6 @@ export async function handleTripFinish(
 		await user.addItemsToBank(bonusLoot.bank, true);
 		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`;
 	} else if (pet === itemID('Wilvus')) {
-		let bonusLoot = new Bank();
 		let rolls = minutes / 6;
 		for (let i = 0; i < rolls; i++) {
 			bonusLoot.add(WilvusTable.roll());
@@ -91,7 +90,6 @@ export async function handleTripFinish(
 		await user.addItemsToBank(bonusLoot.bank, true);
 		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`;
 	} else if (pet === itemID('Smokey')) {
-		let bonusLoot = new Bank();
 		for (let i = 0; i < minutes; i++) {
 			if (roll(450)) {
 				bonusLoot.add(getRandomMysteryBox());
@@ -101,6 +99,16 @@ export async function handleTripFinish(
 			await user.addItemsToBank(bonusLoot.bank, true);
 			message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`;
 		}
+	} else if (pet === itemID('Doug')) {
+		for (const randOre of Mining.Ores.sort(() => 0.5 - Math.random()).slice(
+			0,
+			randInt(1, Math.floor(minutes / 7))
+		)) {
+			const qty = randInt(1, minutes * 3);
+			bonusLoot.add(randOre.id, qty);
+		}
+		await user.addItemsToBank(bonusLoot.bank, true);
+		message += `\nDoug did some mining while you were on your trip and got you: ${bonusLoot}.`;
 	}
 	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
 
