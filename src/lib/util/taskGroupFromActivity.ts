@@ -6,6 +6,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 			return ActivityGroup.Clue;
 		case Activity.GroupMonsterKilling:
 		case Activity.MonsterKilling:
+		case Activity.KalphiteKing:
 			return ActivityGroup.Monster;
 		case Activity.Fishing:
 		case Activity.Agility:
@@ -55,9 +56,10 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.RoguesDenMaze:
 		case Activity.RabbitCatching:
 		case Activity.Gauntlet:
+		case Activity.Dungeoneering:
 			return ActivityGroup.Minigame;
 		default: {
-			throw new Error(`Unrecognized activity: ${type}`);
+			return ActivityGroup.Minigame;
 		}
 	}
 }
