@@ -1,3 +1,4 @@
+import { Permissions } from 'discord.js';
 import { MessageAttachment, MessageEmbed, TextChannel, WebhookClient } from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
@@ -22,6 +23,10 @@ export async function resolveChannel(
 		client.emit('log', `Restoring webhook from DB.`);
 		webhookCache.set(db.channelID, new WebhookClient(db.webhookID, db.webhookToken));
 		return webhookCache.get(db.channelID);
+	}
+
+	if (!channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.MANAGE_WEBHOOKS)) {
+		return channel;
 	}
 
 	try {
