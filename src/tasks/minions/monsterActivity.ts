@@ -119,17 +119,6 @@ export default class extends Task {
 			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
 		}
 
-		if (
-			monster.id === Monsters.Unicorn.id &&
-			user.hasItemEquippedAnywhere('Iron dagger') &&
-			!user.hasItemEquippedOrInBank('Clue hunter cloak')
-		) {
-			loot.add('Clue hunter cloak');
-			loot.add('Clue hunter boots');
-
-			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
-		}
-
 		const { previousCL } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks

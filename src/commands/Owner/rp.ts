@@ -7,6 +7,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
+import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { formatDuration } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
@@ -67,12 +68,21 @@ export default class extends BotCommand {
 					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
 					: 'None';
 
+				const lastTasks = await ActivityTable.find({
+					where: { userID: msg.author.id },
+					take: 10
+				});
+				const lastTasksStr = lastTasks
+					.map(i => (i.completed ? i.type : `*${i.type}*`))
+					.join(', ');
+
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
 				return msg.send(
 					`**${input.username}**
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
 **Current Task:** ${taskText}
+**Previous Tasks:** ${lastTasksStr}.
 `
 				);
 			}
