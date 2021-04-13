@@ -10,12 +10,11 @@ export default async function announceLoot(
 	client: KlasaClient,
 	user: KlasaUser,
 	monster: KillableMonster,
-	quantity: number,
 	loot: ItemBank,
 	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number }
 ) {
 	if (!monster.notifyDrops) return;
-	const kc = (user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity;
+	const kc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
 	const items = new Bank(loot).filter(i => monster.notifyDrops?.includes(i.id) ?? false);
 
 	if (items.length > 0) {
