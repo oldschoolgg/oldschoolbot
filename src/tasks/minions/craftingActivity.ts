@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: CraftingActivityTaskOptions) {
@@ -32,13 +33,25 @@ export default class extends Task {
 			xpReceived -= 0.75 * crushed * item.xp;
 			loot.add('crushed gem', crushed);
 		}
-		loot.add(item.id, quantity - crushed);
+
+		const hasScroll = await user.hasItem(itemID('Scroll of dexterity'));
+		if (hasScroll) {
+			let _qty = quantity - crushed;
+			_qty = Math.floor(_qty * 1.15);
+			loot.add(item.id, _qty);
+		} else {
+			loot.add(item.id, quantity - crushed);
+		}
 
 		const xpRes = await user.addXP(SkillsEnum.Crafting, xpReceived);
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}, ${
 			crushed ? `crushing ${crushed} of them` : ``
 		}. ${xpRes}`;
+
+		if (hasScroll) {
+			str += `\n\nYour Scroll of dexterity allows you to receive 15% extra items.`;
+		}
 
 		await user.addItemsToBank(loot, true);
 

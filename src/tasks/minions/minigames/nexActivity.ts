@@ -6,6 +6,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
+import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
 import { setActivityLoot } from '../../../lib/settings/settings';
@@ -63,7 +64,7 @@ export default class extends Task {
 
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1));
-			if (roll(64 + users.length * 2)) {
+			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(allNexItems), 1);
 			}
 			const winner = teamTable.roll()?.item;
@@ -81,6 +82,9 @@ export default class extends Task {
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
+			if (kcAmounts[user.id]) {
+				await addMonsterXP(user, 46274, Math.ceil(quantity / users.length), duration);
+			}
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
@@ -94,7 +98,7 @@ export default class extends Task {
 				loot
 			)}||\n`;
 
-			announceLoot(this.client, leaderUser, NexMonster, quantity, loot, {
+			announceLoot(this.client, leaderUser, NexMonster, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length

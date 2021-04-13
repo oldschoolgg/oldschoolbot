@@ -13,6 +13,7 @@ import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import {
 	Activity,
 	Emoji,
@@ -534,6 +535,10 @@ export default class extends Extendable {
 				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
 			}
 
+			case Activity.KalphiteKing: {
+				return `${this.minionName} is currently killing the Kalphite King. ${formattedDuration}`;
+			}
+
 			case Activity.RabbitCatching: {
 				let messages = [
 					'chasing a rabbit through the farm',
@@ -554,6 +559,13 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${data.quantity}x ${
 					data.corrupted ? 'Corrupted' : 'Normal'
 				} Gauntlet. ${formattedDuration}`;
+			}
+
+			case Activity.Dungeoneering: {
+				const data = currentTask as DungeoneeringOptions;
+				return `${this.minionName} is currently doing Dungeoneering with a team of ${
+					data.users.length
+				} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
 			}
 		}
 	}

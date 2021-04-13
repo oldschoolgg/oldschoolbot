@@ -1,5 +1,6 @@
 import { uniqueArr } from 'e';
 
+import { allKalphiteKingItems } from '../kalphiteking';
 import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } from '../nex';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
@@ -377,7 +378,8 @@ export const bosses: CollectionLogData = {
 	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
-	Wintertodt: wintertodtLog
+	Wintertodt: wintertodtLog,
+	KK: allKalphiteKingItems
 };
 
 export const pets: CollectionLogData = {
@@ -453,7 +455,20 @@ export const pets: CollectionLogData = {
 		'Hammy',
 		'Skipper'
 	]),
-	BSOPets2: resolveItems(['Ori', 'Cob', 'Takon'])
+	BSOpets2: resolveItems([
+		'Takon',
+		'Ori',
+		'Plopper',
+		'Wilvus',
+		'Ishi',
+		'Baby kalphite king',
+		'Sandy',
+		'Brock',
+		'Peky',
+		'Steve',
+		'Frosty'
+	]),
+	BSOPetsExclusive: resolveItems(['Cob', 'Smokey', 'Hoppy', 'Craig', 'Flappy'])
 };
 
 export const cluesShared: CollectionLogData = {
@@ -1488,6 +1503,7 @@ export const capes: CollectionLogData = {
 		'Defence hood',
 		'Hitpoints hood',
 		'Ranging hood',
+		'Dungeoneering hood',
 		'Quest point hood'
 	]),
 	capes2: resolveItems([
@@ -1501,6 +1517,7 @@ export const capes: CollectionLogData = {
 		'Defence cape',
 		'Hitpoints cape',
 		'Ranging cape',
+		'Dungeoneering cape',
 		'Quest point cape'
 	]),
 	'trimmed capes2': resolveItems([
@@ -1514,6 +1531,7 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
+		'Dungeoneering cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1544,6 +1562,55 @@ export const quest: CollectionLogData = {
 
 export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
+};
+
+export const dungeoneeringLog: CollectionLogData = {
+	Chaotics: resolveItems([
+		'Chaotic rapier',
+		'Chaotic longsword',
+		'Chaotic maul',
+		'Chaotic staff',
+		'Chaotic crossbow',
+		'Offhand Chaotic rapier',
+		'Offhand Chaotic longsword',
+		'Offhand chaotic crossbow'
+	]),
+	Shields: resolveItems(['Farseer kiteshield', 'Amulet of zealots', 'Chaotic remnant']),
+	Scrolls: resolveItems([
+		'Scroll of life',
+		'Scroll of efficiency',
+		'Scroll of cleansing',
+		'Scroll of dexterity',
+		'Scroll of teleportation'
+	]),
+
+	Other: resolveItems(['Frosty', 'Gorajan shards', 'Amulet of zealots', 'Herbicide']),
+	Warrior: resolveItems([
+		'Gorajan warrior helmet',
+		'Gorajan warrior top',
+		'Gorajan warrior legs',
+		'Gorajan warrior gloves',
+		'Gorajan warrior boots'
+	]),
+	Archer: resolveItems([
+		'Gorajan archer helmet',
+		'Gorajan archer top',
+		'Gorajan archer legs',
+		'Gorajan archer gloves',
+		'Gorajan archer boots'
+	]),
+	Occult: resolveItems([
+		'Gorajan occult helmet',
+		'Gorajan occult top',
+		'Gorajan occult legs',
+		'Gorajan occult gloves',
+		'Gorajan occult boots'
+	]),
+	Necklaces: resolveItems([
+		'Arcane blast necklace',
+		'Farsight snapshot necklace',
+		"Brawler's hook necklace"
+	])
 };
 
 export const coxLog: CollectionLogData = {
@@ -1907,6 +1974,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: { 1: rogueOutfit }
 	},
 	{
+		name: 'Kalphite King',
+		aliases: ['kalphite king', 'kk'],
+		items: { 1: allKalphiteKingItems }
+	},
+	{
 		name: 'Gauntlet',
 		aliases: ['gauntlet'],
 		items: { 1: gauntletLog }
@@ -1915,6 +1987,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Clue Hunter',
 		aliases: ['clue hunter'],
 		items: { 1: clueHunterLog }
+	},
+	{
+		name: 'Dungeoneering',
+		aliases: ['dg', 'dung', 'dungeoneering'],
+		items: dungeoneeringLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

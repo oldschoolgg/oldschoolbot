@@ -1,6 +1,6 @@
 import { randArrItem, Time } from 'e';
 import { Task } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -9,6 +9,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
+import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -34,17 +35,21 @@ export default class extends Task {
 			abyssalBonus += 0.25;
 		}
 
-		let loot = (monster as any).table.kill(Math.ceil(quantity * abyssalBonus));
+		const preExistingLoot = (await ActivityTable.findOne({ id }))?.loot;
+
+		let loot = preExistingLoot
+			? new Bank(preExistingLoot)
+			: new Bank((monster as any).table.kill(Math.ceil(quantity * abyssalBonus)));
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
-					loot[randArrItem(allKeyPieces)] = 1;
+					loot.add(randArrItem(allKeyPieces));
 				}
 			}
 		}
 
-		if (monster.id === Monsters.Vorkath.id && roll(4000)) {
-			loot[23941] = 1;
+		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
+			loot.add(23941);
 		}
 
 		let gotKlik = false;
@@ -53,7 +58,7 @@ export default class extends Task {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(7500)) {
 					gotKlik = true;
-					loot[itemID('Klik')] = 1;
+					loot.add('Klik');
 					break;
 				}
 			}
@@ -64,13 +69,13 @@ export default class extends Task {
 			for (let i = 0; i < minutes; i++) {
 				bananas += rand(1, 3);
 			}
-			loot[itemID('Banana')] = bananas;
+			loot.add('Banana', bananas);
 		}
 
 		if (monster.id === 290) {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(6000)) {
-					loot[itemID('Dwarven ore')] = 1;
+					loot.add('Dwarven ore');
 					break;
 				}
 			}
@@ -81,46 +86,22 @@ export default class extends Task {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(5500)) {
 					gotBrock = true;
-					loot[itemID('Brock')] = 1;
+					loot.add('Brock');
 					break;
 				}
 			}
 		}
 
 		if (loot) {
-			setActivityLoot(id, loot);
+			setActivityLoot(id, loot.bank);
 		}
-		announceLoot(this.client, user, monster as KillableMonster, loot);
+		announceLoot(this.client, user, monster as KillableMonster, loot.bank);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
 		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
-
-		if (
-			monster.id === Monsters.Unicorn.id &&
-			user.hasItemEquippedAnywhere('Iron dagger') &&
-			!user.hasItemEquippedOrInBank('Clue hunter cloak')
-		) {
-			loot.add('Clue hunter cloak');
-			loot.add('Clue hunter boots');
-
-			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
-		}
-
-		const { previousCL } = await user.addItemsToBank(loot, true);
-
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
 
 		if (gotBrock) {
 			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
@@ -137,6 +118,19 @@ export default class extends Task {
 		if (abyssalBonus > 1) {
 			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
 		}
+
+		const { previousCL } = await user.addItemsToBank(loot, true);
+
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				loot.bank,
+				`Loot From ${quantity} ${monster.name}:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
 
 		handleTripFinish(
 			this.client,

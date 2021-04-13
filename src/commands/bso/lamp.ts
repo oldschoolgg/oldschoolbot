@@ -24,12 +24,12 @@ export default class extends BotCommand {
 		}
 
 		skillName = skillName.toLowerCase();
-		if (skillName === 'magic' && lamp.itemID !== 6796) {
-			return msg.send('Your lamp seems to not work with this skill for some reason...');
-		}
 
-		if (skillName === 'magic' && msg.author.skillLevel(SkillsEnum.Magic) > 10) {
-			return msg.send('Your lamp seems to not work with this skill for some reason...');
+		if (
+			skillName === 'dungeoneering' &&
+			(msg.author.skillLevel(SkillsEnum.Dungeoneering) >= 50 || XPLamps.indexOf(lamp) > 1)
+		) {
+			return;
 		}
 
 		const isValidSkill = Object.values(Skills).some(skill => skill.id === skillName);

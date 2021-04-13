@@ -43,6 +43,10 @@ export default class extends BotCommand {
 			return msg.send(`You don't own those items.`);
 		}
 
+		if (bank.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
+			return msg.send(`You are trying to sell unsellable items.`);
+		}
+
 		await msg.confirm(
 			`Are you sure you want to do a giveaway with those items? You cannot cancel the giveaway or retrieve the items back afterwards.`
 		);

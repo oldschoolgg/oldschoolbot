@@ -33,6 +33,51 @@ export default class extends BotCommand {
 		poh.pool = 29241;
 		await poh.save();
 		msg.author.addItemsToBank(bank.bank);
+
+		if (msg.flagArgs.gora) {
+			await msg.author.settings.update(UserSettings.Gear.Melee, {
+				'2h': null,
+				ammo: null,
+				body: { item: 40034, quantity: 1 },
+				cape: { item: 40022, quantity: 1 },
+				feet: { item: 40037, quantity: 1 },
+				hands: { item: 40036, quantity: 1 },
+				head: { item: 40033, quantity: 1 },
+				legs: { item: 40035, quantity: 1 },
+				neck: null,
+				ring: null,
+				shield: null,
+				weapon: null
+			});
+			await msg.author.settings.update(UserSettings.Gear.Range, {
+				'2h': null,
+				ammo: null,
+				body: { item: 40048, quantity: 1 },
+				cape: null,
+				feet: { item: 40051, quantity: 1 },
+				hands: { item: 40050, quantity: 1 },
+				head: { item: 40047, quantity: 1 },
+				legs: { item: 40049, quantity: 1 },
+				neck: null,
+				ring: null,
+				shield: null,
+				weapon: null
+			});
+			await msg.author.settings.update(UserSettings.Gear.Mage, {
+				'2h': null,
+				ammo: null,
+				body: { item: 40043, quantity: 1 },
+				cape: null,
+				feet: { item: 40046, quantity: 1 },
+				hands: { item: 40045, quantity: 1 },
+				head: { item: 40042, quantity: 1 },
+				legs: { item: 40044, quantity: 1 },
+				neck: null,
+				ring: null,
+				shield: null,
+				weapon: null
+			});
+		}
 		return msg.send(
 			`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
 		);

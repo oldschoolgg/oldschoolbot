@@ -5,10 +5,10 @@ import { MysteryBoxes } from '../../../../data/openables';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
 export const KingGoldemarLootTable = new LootTable()
-	.tertiary(2300, 'Broken dwarven warhammer')
+	.tertiary(2900, 'Broken dwarven warhammer')
 	.tertiary(20, 'Clue scroll (master)')
 	.oneIn(
-		30,
+		80,
 		new LootTable()
 			.add('Dwarven crate')
 			.add('Dwarven ore')
@@ -38,7 +38,7 @@ export const KingGoldemarLootTable = new LootTable()
 	.add('Skull piece')
 	.add('Dwarven rock cake')
 	.add('Dwarven stout')
-	.tertiary(50, 'Clue scroll grandmaster')
+	.tertiary(50, 'Clue scroll (grandmaster)')
 	.tertiary(20, MysteryBoxes);
 
 setCustomMonster(696969, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {

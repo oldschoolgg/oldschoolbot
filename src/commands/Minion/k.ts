@@ -19,6 +19,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -158,10 +159,18 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
-		const hasBlessing = msg.author.hasItemEquippedAnywhere(itemID('Dwarven blessing'));
-		if (hasBlessing) {
+		const hasBlessing = msg.author.hasItemEquippedAnywhere('Dwarven blessing');
+		const hasZealotsAmulet = msg.author.hasItemEquippedAnywhere('Amulet of zealots');
+		if (hasZealotsAmulet && hasBlessing) {
+			timeToFinish *= 0.75;
+			boosts.push(`25% for Dwarven blessing & Amulet of zealots`);
+		} else if (hasBlessing) {
 			timeToFinish *= 0.8;
 			boosts.push(`20% for Dwarven blessing`);
+		}
+		if (monster.wildy && hasZealotsAmulet) {
+			timeToFinish *= 0.95;
+			boosts.push(`5% for Amulet of zealots`);
 		}
 
 		// If no quantity provided, set it to the max.
@@ -253,6 +262,27 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(itemID('Prayer potion(4)'), prayerPotsNeeded);
 		}
 
+		const rangeSetup = { ...msg.author.getGear('range') };
+		let usedDart = false;
+		if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+			duration = 1;
+			rangeSetup.weapon = null;
+			await msg.author.settings.update(UserSettings.Gear.Range, rangeSetup);
+			if (monster.name === 'Koschei the deathless') {
+				return msg.channel.send(
+					`You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks` +
+						` eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.`
+				);
+			}
+			usedDart = true;
+		}
+
+		if (monster.name === 'Koschei the deathless') {
+			return msg.channel.send(
+				`You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.`
+			);
+		}
+
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,
 			userID: msg.author.id,
@@ -261,6 +291,12 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.MonsterKilling
 		});
+
+		if (usedDart) {
+			return msg.send(
+				`<:deathtouched_dart:822674661967265843> ${msg.author.minionName} used a **Deathtouched dart**.`
+			);
+		}
 
 		let response = `${minionName} is now killing ${quantity}x ${
 			monster.name

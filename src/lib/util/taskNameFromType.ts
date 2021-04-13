@@ -98,9 +98,13 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.SoulWars;
 		case Activity.RoguesDenMaze:
 			return Tasks.RoguesDenMaze;
+		case Activity.KalphiteKing:
+			return Tasks.KalphiteKing;
 		case Activity.RabbitCatching:
 			return Tasks.RabbitCatching;
 		case Activity.Gauntlet:
 			return Tasks.Gauntlet;
+		case Activity.Dungeoneering:
+			return Tasks.Dungeoneering;
 	}
 }
