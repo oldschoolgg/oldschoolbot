@@ -50,7 +50,7 @@ export default class extends Task {
 				loot
 			)}||\n`;
 
-			announceLoot(this.client, leaderUser, monster, quantity, loot, {
+			announceLoot(this.client, leaderUser, monster, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
