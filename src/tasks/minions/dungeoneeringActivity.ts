@@ -1,6 +1,5 @@
 import { noOp, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { Task } from 'klasa';
+import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
