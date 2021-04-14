@@ -548,6 +548,12 @@ const backgroundImages: BankBackground[] = [
 		skillsNeeded: {
 			farming: 99
 		}
+	},
+	{
+		id: 70,
+		name: 'Pride CustomBG',
+		image: null,
+		available: false
 	}
 ];
 
