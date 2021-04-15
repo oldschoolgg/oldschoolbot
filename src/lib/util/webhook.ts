@@ -18,6 +18,11 @@ export async function resolveChannel(
 	channelID: string
 ): Promise<WebhookClient | TextChannel | undefined> {
 	const channel = client.channels.get(channelID);
+
+	if (channel.type === 'dm') {
+		return channel;
+	}
+
 	if (!channelIsSendable(channel)) return undefined;
 
 	const cached = webhookCache.get(channelID);
