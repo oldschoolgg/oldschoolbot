@@ -1,5 +1,10 @@
-import { Permissions } from 'discord.js';
-import { MessageAttachment, MessageEmbed, TextChannel, WebhookClient } from 'discord.js';
+import {
+	MessageAttachment,
+	MessageEmbed,
+	Permissions,
+	TextChannel,
+	WebhookClient
+} from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
