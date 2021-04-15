@@ -15,6 +15,7 @@ export const commandsRoute = (server: FastifyServer) =>
 			);
 			reply.send(
 				commands
+					.filter(c => c.description)
 					.map((cmd: BotCommand) => ({
 						name: cmd.name,
 						desc: cmd.description,
