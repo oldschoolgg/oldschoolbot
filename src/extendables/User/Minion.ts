@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, randArrItem, uniqueArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -501,21 +501,6 @@ export default class extends Extendable {
 
 			case Activity.RoguesDenMaze: {
 				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
-			}
-
-			case Activity.RabbitCatching: {
-				let messages = [
-					'chasing a rabbit through the farm',
-					'having a rest',
-					'eating some carrots',
-					'holding a cute little rabbit',
-					'using the rabbits as a distraction to pickpocket the farmers'
-				];
-				return `${
-					this.minionName
-				} is doing the Easter Holiday Event! They're currently ${randArrItem(
-					messages
-				)}. ${formattedDuration}`;
 			}
 
 			case Activity.Gauntlet: {
