@@ -3,6 +3,65 @@ import { uniqueArr } from 'e';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
+// Castle Wars
+const redDecorative = resolveItems([
+	'Red decorative full helm',
+	'Red decorative helm',
+	'Red decorative body',
+	'Red decorative legs',
+	'Red decorative skirt',
+	'Red decorative boots',
+	'Red decorative shield',
+	'Red decorative sword'
+]);
+const whiteDecorative = resolveItems([
+	'White decorative full helm',
+	'White decorative helm',
+	'White decorative body',
+	'White decorative legs',
+	'White decorative skirt',
+	'White decorative boots',
+	'White decorative shield',
+	'White decorative sword'
+]);
+const goldDecorative = resolveItems([
+	'Gold decorative full helm',
+	'Gold decorative helm',
+	'Gold decorative body',
+	'Gold decorative legs',
+	'Gold decorative skirt',
+	'Gold decorative boots',
+	'Gold decorative shield',
+	'Gold decorative sword'
+]);
+const castleWarsGodItems = resolveItems([
+	'Zamorak castlewars hood',
+	'Zamorak castlewars cloak',
+	'Saradomin castlewars hood',
+	'Saradomin castlewars cloak',
+	'Saradomin banner',
+	'Zamorak banner'
+]);
+const castleWarsOther = resolveItems([
+	'Decorative magic hat',
+	'Decorative magic top',
+	'Decorative magic robe',
+	'Decorative ranged top',
+	'Decorative ranged legs',
+	'Decorative quiver',
+	'Saradomin halo',
+	'Zamorak halo',
+	'Guthix halo'
+]);
+
+export const castleWars: CollectionLogData = {
+	redDecorative,
+	whiteDecorative,
+	goldDecorative,
+	castleWarsGodItems,
+	castleWarsOther
+};
+
 const clueHunterLog = resolveItems([
 	'Clue hunter cloak',
 	'Clue hunter boots',
@@ -1835,6 +1894,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: { 1: clueHunterLog }
 	},
 	{
+		name: 'Castle Wars',
+		aliases: ['cw', 'castle wars'],
+		items: castleWars
+	},
+	{
 		name: 'Minigames',
 		aliases: ['minigames', 'minigame'],
 		items: {
@@ -1872,7 +1936,12 @@ export const collectionLogTypes: CollectionLogType[] = [
 				'Seed box',
 				"Gricoller's can",
 				'Herb sack'
-			])
+			]),
+			redDecorative,
+			whiteDecorative,
+			goldDecorative,
+			castleWarsGodItems,
+			castleWarsOther
 		}
 	}
 ];
