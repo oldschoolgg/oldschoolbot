@@ -88,6 +88,11 @@ export const Minigames: Minigame[] = [
 		name: 'Corrupted Gauntlet',
 		key: 'CorruptedGauntlet',
 		column: 'corrupted_gauntlet'
+	},
+	{
+		name: 'Castle Wars',
+		key: 'CastleWars',
+		column: 'castle_wars'
 	}
 ];
 

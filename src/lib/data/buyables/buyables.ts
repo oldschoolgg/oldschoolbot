@@ -3,6 +3,7 @@ import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { canifisClothes } from './canifisClothes';
+import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 
@@ -649,7 +650,8 @@ const Buyables: Buyable[] = [
 	...noveltyFood,
 	...fremennikClothes,
 	...gnomeClothes,
-	...canifisClothes
+	...canifisClothes,
+	...castleWarsBuyables
 ];
 
 export default Buyables;
