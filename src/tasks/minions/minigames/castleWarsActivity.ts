@@ -9,13 +9,6 @@ import { incrementMinionDailyDuration } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
-let t = 0;
-for (let i = 0; i < 100_000; i++) {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	t += ticketTable.roll().item;
-}
-console.log(t);
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
