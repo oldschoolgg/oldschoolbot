@@ -51,7 +51,6 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.SoulWars:
 		case Activity.GnomeRestaurant:
 		case Activity.RoguesDenMaze:
-		case Activity.RabbitCatching:
 		case Activity.Gauntlet:
 			return ActivityGroup.Minigame;
 		default: {
