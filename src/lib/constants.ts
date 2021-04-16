@@ -355,7 +355,7 @@ export const badges: { [key: number]: string } = {
 	10: Emoji.CollectionLog
 };
 
-export const MAX_QP = 279;
+export const MAX_QP = 280;
 
 export const MIMIC_MONSTER_ID = 23184;
 
