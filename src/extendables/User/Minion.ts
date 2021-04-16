@@ -98,7 +98,11 @@ import {
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
-import { gorajanWarriorOutfit } from '../../tasks/minions/dungeoneeringActivity';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '../../tasks/minions/dungeoneeringActivity';
 import {
 	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -702,12 +706,19 @@ export default class extends Extendable {
 		}
 
 		let gorajanBoost = false;
-
-		if (
+		const gorajanMeleeBoost =
 			multiplier &&
 			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(skillName) &&
-			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'))
-		) {
+			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'));
+		const gorajanRangeBoost =
+			multiplier &&
+			skillName === SkillsEnum.Ranged &&
+			hasArrayOfItemsEquipped(gorajanArcherOutfit, this.getGear('range'));
+		const gorajanMageBoost =
+			multiplier &&
+			skillName === SkillsEnum.Magic &&
+			hasArrayOfItemsEquipped(gorajanOccultOutfit, this.getGear('mage'));
+		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
 			amount *= 2;
 			gorajanBoost = true;
 		}
