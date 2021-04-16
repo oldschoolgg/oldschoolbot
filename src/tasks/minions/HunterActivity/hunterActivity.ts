@@ -165,7 +165,6 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await user.addItemsToBank(loot.values(), true);
 		xpStr += await user.addXP(SkillsEnum.Hunter, xpReceived, duration);
 
 		let str = `${user}, ${user.minionName} finished hunting ${
@@ -183,6 +182,8 @@ export default class extends Task {
 				loot.multiply(3);
 			}
 		}
+
+		await user.addItemsToBank(loot.values(), true);
 
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
