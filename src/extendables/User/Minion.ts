@@ -24,6 +24,7 @@ import {
 	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
+import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -98,6 +99,7 @@ import {
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
+import { gorajanWarriorOutfit } from '../../tasks/minions/dungeoneeringActivity';
 import {
 	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -715,6 +717,17 @@ export default class extends Extendable {
 			amount = increaseNumByPercent(amount, isMatchingCape ? 8 : 3);
 		}
 
+		let gorajanBoost = false;
+
+		if (
+			multiplier &&
+			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(skillName) &&
+			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'))
+		) {
+			amount *= 2;
+			gorajanBoost = true;
+		}
+
 		let firstAgeEquipped = 0;
 		for (const item of resolveItems([
 			'First age tiara',
@@ -800,6 +813,10 @@ export default class extends Extendable {
 			} else {
 				str += ` You received 3% bonus XP for having a ${masterCape.item.name}.`;
 			}
+		}
+
+		if (gorajanBoost) {
+			str += ' 2x boost from Gorajan armor.';
 		}
 
 		if (firstAgeEquipped) {
