@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
+import { table } from 'table';
 
 import { Time } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
@@ -37,10 +38,14 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			return msg.send(
-				`I don't recognize that item, the items you can buy are: ${Buyables.map(
-					item => item.name
-				).join(', ')}.`
+			const normalTable = table([
+				['Name', 'GP Cost', 'Item Cost'],
+				...Buyables.map(i => [i.name, i.gpCost || 0, new Bank(i.itemCost).toString()])
+			]);
+			return msg.channel.sendFile(
+				Buffer.from(normalTable),
+				`Buyables.txt`,
+				`Here is a table of all buyable items.`
 			);
 		}
 

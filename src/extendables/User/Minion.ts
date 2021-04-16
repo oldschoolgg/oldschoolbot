@@ -5,7 +5,6 @@ import {
 	increaseNumByPercent,
 	notEmpty,
 	objectValues,
-	randArrItem,
 	randInt,
 	uniqueArr
 } from 'e';
@@ -539,21 +538,6 @@ export default class extends Extendable {
 
 			case Activity.KalphiteKing: {
 				return `${this.minionName} is currently killing the Kalphite King. ${formattedDuration}`;
-			}
-
-			case Activity.RabbitCatching: {
-				let messages = [
-					'chasing a rabbit through the farm',
-					'having a rest',
-					'eating some carrots',
-					'holding a cute little rabbit',
-					'using the rabbits as a distraction to pickpocket the farmers'
-				];
-				return `${
-					this.minionName
-				} is doing the Easter Holiday Event! They're currently ${randArrItem(
-					messages
-				)}. ${formattedDuration}`;
 			}
 
 			case Activity.Gauntlet: {

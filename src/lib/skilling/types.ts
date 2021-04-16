@@ -27,7 +27,8 @@ export enum SkillsEnum {
 	Defence = 'defence',
 	Ranged = 'ranged',
 	Hitpoints = 'hitpoints',
-	Dungeoneering = 'dungeoneering'
+	Dungeoneering = 'dungeoneering',
+	Slayer = 'slayer'
 }
 
 export interface Ore {
