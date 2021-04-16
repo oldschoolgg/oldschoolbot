@@ -52,6 +52,7 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 
 		let baseXp = ((Math.log(floor * 16 + 1) * quantity * 1) / (36 - floor * 5)) * 59_000;
+		baseXp *= 1.5;
 		let str = `<:dungeoneering:828683755198873623> ${user}, your party finished ${quantity}x Floor ${floor} dungeons.\n\n`;
 		const minutes = duration / Time.Minute;
 
