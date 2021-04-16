@@ -106,7 +106,7 @@ export default class extends Task {
 
 		// Top Collectors
 		const topCollectors = [];
-		for (const clName of ['Pets', 'Skilling', 'Clue all', 'Boss']) {
+		for (const clName of ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames']) {
 			const type = collectionLogTypes.find(t => t.name === clName)!;
 			const result = (await this.client.query(
 				`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (

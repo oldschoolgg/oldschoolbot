@@ -1,6 +1,6 @@
 import { randArrItem, Time } from 'e';
 import { Task } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -9,6 +9,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
+import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -34,17 +35,21 @@ export default class extends Task {
 			abyssalBonus += 0.25;
 		}
 
-		let loot = (monster as any).table.kill(Math.ceil(quantity * abyssalBonus));
+		const preExistingLoot = (await ActivityTable.findOne({ id }))?.loot;
+
+		let loot = preExistingLoot
+			? new Bank(preExistingLoot)
+			: new Bank((monster as any).table.kill(Math.ceil(quantity * abyssalBonus)));
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
-					loot[randArrItem(allKeyPieces)] = 1;
+					loot.add(randArrItem(allKeyPieces));
 				}
 			}
 		}
 
-		if (monster.id === Monsters.Vorkath.id && roll(4000)) {
-			loot[23941] = 1;
+		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
+			loot.add(23941);
 		}
 
 		let gotKlik = false;
@@ -53,7 +58,7 @@ export default class extends Task {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(7500)) {
 					gotKlik = true;
-					loot[itemID('Klik')] = 1;
+					loot.add('Klik');
 					break;
 				}
 			}
@@ -64,13 +69,13 @@ export default class extends Task {
 			for (let i = 0; i < minutes; i++) {
 				bananas += rand(1, 3);
 			}
-			loot[itemID('Banana')] = bananas;
+			loot.add('Banana', bananas);
 		}
 
 		if (monster.id === 290) {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(6000)) {
-					loot[itemID('Dwarven ore')] = 1;
+					loot.add('Dwarven ore');
 					break;
 				}
 			}
@@ -81,31 +86,18 @@ export default class extends Task {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(5500)) {
 					gotBrock = true;
-					loot[itemID('Brock')] = 1;
+					loot.add('Brock');
 					break;
 				}
 			}
 		}
 
 		if (loot) {
-			setActivityLoot(id, loot);
+			setActivityLoot(id, loot.bank);
 		}
-		announceLoot(this.client, user, monster as KillableMonster, quantity, loot);
-
-		const { previousCL } = await user.addItemsToBank(loot, true);
+		announceLoot(this.client, user, monster as KillableMonster, loot.bank);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
-
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
@@ -127,6 +119,19 @@ export default class extends Task {
 			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
 		}
 
+		const { previousCL } = await user.addItemsToBank(loot, true);
+
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				loot.bank,
+				`Loot From ${quantity} ${monster.name}:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
+
 		handleTripFinish(
 			this.client,
 			user,
@@ -138,7 +143,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }

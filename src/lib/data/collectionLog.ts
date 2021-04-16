@@ -1,8 +1,68 @@
 import { uniqueArr } from 'e';
 
+import { allKalphiteKingItems } from '../kalphiteking';
 import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } from '../nex';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
+
+// Castle Wars
+const redDecorative = resolveItems([
+	'Red decorative full helm',
+	'Red decorative helm',
+	'Red decorative body',
+	'Red decorative legs',
+	'Red decorative skirt',
+	'Red decorative boots',
+	'Red decorative shield',
+	'Red decorative sword'
+]);
+const whiteDecorative = resolveItems([
+	'White decorative full helm',
+	'White decorative helm',
+	'White decorative body',
+	'White decorative legs',
+	'White decorative skirt',
+	'White decorative boots',
+	'White decorative shield',
+	'White decorative sword'
+]);
+const goldDecorative = resolveItems([
+	'Gold decorative full helm',
+	'Gold decorative helm',
+	'Gold decorative body',
+	'Gold decorative legs',
+	'Gold decorative skirt',
+	'Gold decorative boots',
+	'Gold decorative shield',
+	'Gold decorative sword'
+]);
+const castleWarsGodItems = resolveItems([
+	'Zamorak castlewars hood',
+	'Zamorak castlewars cloak',
+	'Saradomin castlewars hood',
+	'Saradomin castlewars cloak',
+	'Saradomin banner',
+	'Zamorak banner'
+]);
+const castleWarsOther = resolveItems([
+	'Decorative magic hat',
+	'Decorative magic top',
+	'Decorative magic robe',
+	'Decorative ranged top',
+	'Decorative ranged legs',
+	'Decorative quiver',
+	'Saradomin halo',
+	'Zamorak halo',
+	'Guthix halo'
+]);
+
+export const castleWars: CollectionLogData = {
+	redDecorative,
+	whiteDecorative,
+	goldDecorative,
+	castleWarsGodItems,
+	castleWarsOther
+};
 
 const clueHunterLog = resolveItems([
 	'Clue hunter cloak',
@@ -377,7 +437,8 @@ export const bosses: CollectionLogData = {
 	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
-	Wintertodt: wintertodtLog
+	Wintertodt: wintertodtLog,
+	KK: allKalphiteKingItems
 };
 
 export const pets: CollectionLogData = {
@@ -453,7 +514,20 @@ export const pets: CollectionLogData = {
 		'Hammy',
 		'Skipper'
 	]),
-	BSOPets2: resolveItems(['Ori', 'Cob', 'Takon'])
+	BSOpets2: resolveItems([
+		'Takon',
+		'Ori',
+		'Plopper',
+		'Wilvus',
+		'Ishi',
+		'Baby kalphite king',
+		'Sandy',
+		'Brock',
+		'Peky',
+		'Steve',
+		'Frosty'
+	]),
+	BSOPetsExclusive: resolveItems(['Cob', 'Smokey', 'Hoppy', 'Craig', 'Flappy'])
 };
 
 export const cluesShared: CollectionLogData = {
@@ -1488,6 +1562,7 @@ export const capes: CollectionLogData = {
 		'Defence hood',
 		'Hitpoints hood',
 		'Ranging hood',
+		'Dungeoneering hood',
 		'Quest point hood'
 	]),
 	capes2: resolveItems([
@@ -1501,6 +1576,7 @@ export const capes: CollectionLogData = {
 		'Defence cape',
 		'Hitpoints cape',
 		'Ranging cape',
+		'Dungeoneering cape',
 		'Quest point cape'
 	]),
 	'trimmed capes2': resolveItems([
@@ -1514,6 +1590,7 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
+		'Dungeoneering cape(t)',
 		'Quest point cape (t)'
 	])
 };
@@ -1544,6 +1621,55 @@ export const quest: CollectionLogData = {
 
 export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
+};
+
+export const dungeoneeringLog: CollectionLogData = {
+	Chaotics: resolveItems([
+		'Chaotic rapier',
+		'Chaotic longsword',
+		'Chaotic maul',
+		'Chaotic staff',
+		'Chaotic crossbow',
+		'Offhand Chaotic rapier',
+		'Offhand Chaotic longsword',
+		'Offhand chaotic crossbow'
+	]),
+	Shields: resolveItems(['Farseer kiteshield', 'Amulet of zealots', 'Chaotic remnant']),
+	Scrolls: resolveItems([
+		'Scroll of life',
+		'Scroll of efficiency',
+		'Scroll of cleansing',
+		'Scroll of dexterity',
+		'Scroll of teleportation'
+	]),
+
+	Other: resolveItems(['Frosty', 'Gorajan shards', 'Amulet of zealots', 'Herbicide']),
+	Warrior: resolveItems([
+		'Gorajan warrior helmet',
+		'Gorajan warrior top',
+		'Gorajan warrior legs',
+		'Gorajan warrior gloves',
+		'Gorajan warrior boots'
+	]),
+	Archer: resolveItems([
+		'Gorajan archer helmet',
+		'Gorajan archer top',
+		'Gorajan archer legs',
+		'Gorajan archer gloves',
+		'Gorajan archer boots'
+	]),
+	Occult: resolveItems([
+		'Gorajan occult helmet',
+		'Gorajan occult top',
+		'Gorajan occult legs',
+		'Gorajan occult gloves',
+		'Gorajan occult boots'
+	]),
+	Necklaces: resolveItems([
+		'Arcane blast necklace',
+		'Farsight snapshot necklace',
+		"Brawler's hook necklace"
+	])
 };
 
 export const coxLog: CollectionLogData = {
@@ -1907,6 +2033,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: { 1: rogueOutfit }
 	},
 	{
+		name: 'Kalphite King',
+		aliases: ['kalphite king', 'kk'],
+		items: { 1: allKalphiteKingItems }
+	},
+	{
 		name: 'Gauntlet',
 		aliases: ['gauntlet'],
 		items: { 1: gauntletLog }
@@ -1915,6 +2046,62 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Clue Hunter',
 		aliases: ['clue hunter'],
 		items: { 1: clueHunterLog }
+	},
+	{
+		name: 'Dungeoneering',
+		aliases: ['dg', 'dung', 'dungeoneering'],
+		items: dungeoneeringLog
+	},
+	{
+		name: 'Castle Wars',
+		aliases: ['cw', 'castle wars'],
+		items: castleWars
+	},
+	{
+		name: 'Minigames',
+		aliases: ['minigames', 'minigame'],
+		items: {
+			barb: barbAssaultLog,
+			brim: agilityArenaLog,
+			trawler: anglerOutfit,
+			gnomeres: gnomeRestaurantLog,
+			sepulchre: resolveItems([
+				'Hallowed ring',
+				'Dark dye',
+				'Dark acorn',
+				'Strange old lockpick',
+				'Ring of endurance (uncharged)',
+				'Hallowed mark',
+				'Hallowed token',
+				'Hallowed grapple',
+				'Hallowed focus',
+				'Hallowed symbol',
+				'Hallowed hammer'
+			]),
+			mahog: resolveItems([
+				...carpenterOutfit,
+				"Amy's saw",
+				'Plank sack',
+				'Hosidius blueprints',
+				'Builders supply crate'
+			]),
+			roguesden: rogueOutfit,
+			soulwars: soulwarsLog,
+			tithefarm: resolveItems([
+				"Farmer's strawhat",
+				"Farmer's jacket",
+				"Farmer's boro trousers",
+				"Farmer's boots",
+				'Seed box',
+				"Gricoller's can",
+				'Herb sack'
+			]),
+			redDecorative,
+			whiteDecorative,
+			goldDecorative,
+			castleWarsGodItems,
+			castleWarsOther
+		}
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

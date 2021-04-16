@@ -3,6 +3,7 @@ import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { canifisClothes } from './canifisClothes';
+import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 
@@ -643,7 +644,7 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Potato with cheese')]: 1
 		},
-		gpCost: 400,
+		gpCost: 2500,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65
@@ -656,7 +657,8 @@ const Buyables: Buyable[] = [
 	...noveltyFood,
 	...fremennikClothes,
 	...gnomeClothes,
-	...canifisClothes
+	...canifisClothes,
+	...castleWarsBuyables
 ];
 
 export default Buyables;

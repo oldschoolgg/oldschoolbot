@@ -96,7 +96,7 @@ export default class extends BotCommand {
 			extraClueRolls += roll - 1;
 			loot = addBanks([clueTier.table.open(roll), loot]);
 			if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 10 : 4)) {
-				loot = addItemToBank(loot, itemID('Clue scroll grandmaster'));
+				loot = addItemToBank(loot, itemID('Clue scroll (grandmaster)'));
 			}
 		}
 

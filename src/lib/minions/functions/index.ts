@@ -48,7 +48,8 @@ export function resolveAttackStyles(
 
 const miscHpMap: Record<number, number> = {
 	9415: NIGHTMARES_HP,
-	3127: 250
+	3127: 250,
+	46274: 5000
 };
 
 export async function addMonsterXP(

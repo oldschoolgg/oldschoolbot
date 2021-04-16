@@ -26,7 +26,9 @@ export enum SkillsEnum {
 	Strength = 'strength',
 	Defence = 'defence',
 	Ranged = 'ranged',
-	Hitpoints = 'hitpoints'
+	Hitpoints = 'hitpoints',
+	Dungeoneering = 'dungeoneering',
+	Slayer = 'slayer'
 }
 
 export interface Ore {
@@ -71,6 +73,7 @@ export interface Fish {
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Course {

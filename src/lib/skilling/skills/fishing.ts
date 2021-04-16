@@ -196,6 +196,7 @@ const fishes: Fish[] = [
 		xp: 130,
 		id: itemID('Leaping trout'),
 		name: 'Barbarian fishing',
+		aliases: ['bf'],
 		petChance: 426_954,
 		bait: itemID('Feather'),
 		timePerFish: 3,

@@ -439,7 +439,7 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
 		const xpHas = skills[skillName];
-		const levelHas = convertXPtoLVL(xpHas ?? 1);
+		const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
 		if (levelHas < level!) return false;
 	}
 	return true;

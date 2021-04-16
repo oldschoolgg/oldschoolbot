@@ -5,7 +5,6 @@ import {
 	increaseNumByPercent,
 	notEmpty,
 	objectValues,
-	randArrItem,
 	randInt,
 	uniqueArr
 } from 'e';
@@ -13,6 +12,7 @@ import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import {
 	Activity,
 	Emoji,
@@ -23,6 +23,7 @@ import {
 	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
+import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -97,6 +98,11 @@ import {
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '../../tasks/minions/dungeoneeringActivity';
 import {
 	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -534,19 +540,8 @@ export default class extends Extendable {
 				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
 			}
 
-			case Activity.RabbitCatching: {
-				let messages = [
-					'chasing a rabbit through the farm',
-					'having a rest',
-					'eating some carrots',
-					'holding a cute little rabbit',
-					'using the rabbits as a distraction to pickpocket the farmers'
-				];
-				return `${
-					this.minionName
-				} is doing the Easter Holiday Event! They're currently ${randArrItem(
-					messages
-				)}. ${formattedDuration}`;
+			case Activity.KalphiteKing: {
+				return `${this.minionName} is currently killing the Kalphite King. ${formattedDuration}`;
 			}
 
 			case Activity.Gauntlet: {
@@ -554,6 +549,13 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${data.quantity}x ${
 					data.corrupted ? 'Corrupted' : 'Normal'
 				} Gauntlet. ${formattedDuration}`;
+			}
+
+			case Activity.Dungeoneering: {
+				const data = currentTask as DungeoneeringOptions;
+				return `${this.minionName} is currently doing Dungeoneering with a team of ${
+					data.users.length
+				} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
 			}
 		}
 	}
@@ -703,6 +705,24 @@ export default class extends Extendable {
 			amount = increaseNumByPercent(amount, isMatchingCape ? 8 : 3);
 		}
 
+		let gorajanBoost = false;
+		const gorajanMeleeBoost =
+			multiplier &&
+			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(skillName) &&
+			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'));
+		const gorajanRangeBoost =
+			multiplier &&
+			skillName === SkillsEnum.Ranged &&
+			hasArrayOfItemsEquipped(gorajanArcherOutfit, this.getGear('range'));
+		const gorajanMageBoost =
+			multiplier &&
+			skillName === SkillsEnum.Magic &&
+			hasArrayOfItemsEquipped(gorajanOccultOutfit, this.getGear('mage'));
+		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
+			amount *= 2;
+			gorajanBoost = true;
+		}
+
 		let firstAgeEquipped = 0;
 		for (const item of resolveItems([
 			'First age tiara',
@@ -788,6 +808,10 @@ export default class extends Extendable {
 			} else {
 				str += ` You received 3% bonus XP for having a ${masterCape.item.name}.`;
 			}
+		}
+
+		if (gorajanBoost) {
+			str += ' 2x boost from Gorajan armor.';
 		}
 
 		if (firstAgeEquipped) {

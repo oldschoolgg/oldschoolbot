@@ -16,7 +16,7 @@ const TanglerootTable = new LootTable()
 	.add(24561)
 	.add(24563);
 
-const GrimyHerbTable = new LootTable()
+export const GrimyHerbTable = new LootTable()
 	.add('Grimy guam leaf', [20, 50])
 	.add('Grimy marrentill', [20, 50])
 	.add('Grimy tarromin', [20, 20])
@@ -85,11 +85,11 @@ export const TreebeardLootTable = new LootTable()
 	.tertiary(50, 'Clue scroll (master)')
 	.tertiary(300, DeadLumberjackTable)
 	.tertiary(100, 'Mysterious seed')
-	.every(AllSeedTables, [2, 5])
-	.add(AllSeedTables, [5, 15])
-	.add(CleanHerbTable, [2, 5])
-	.add(HerbSecondaries, [5, 20])
-	.add(GrimyHerbTable, [2, 5])
+	.every(AllSeedTables, [2, 3])
+	.add(AllSeedTables, [5, 10])
+	.add(CleanHerbTable, [2, 3])
+	.add(HerbSecondaries, [5, 10])
+	.add(GrimyHerbTable, [2, 3])
 	.add(LogTable, [10, 20]);
 
 setCustomMonster(932122, 'Treebeard', TreebeardLootTable, Monsters.Hespori, {

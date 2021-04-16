@@ -104,3 +104,42 @@ setItemAlias(3713, ['hmb'], false);
 setItemAlias(6199, ['tmb'], false);
 setItemAlias(19939, ['umb'], false);
 setItemAlias(47509, ['emb'], false);
+// Castle wars
+setItemAlias(25165, 'Red decorative full helm');
+setItemAlias(4071, 'Red decorative helm');
+setItemAlias(4069, 'Red decorative body');
+setItemAlias(4070, 'Red decorative legs');
+setItemAlias(11893, 'Red decorative skirt');
+setItemAlias(25163, 'Red decorative boots');
+setItemAlias(4072, 'Red decorative shield');
+setItemAlias(4068, 'Red decorative sword');
+
+setItemAlias(25169, 'White decorative full helm');
+setItemAlias(4506, 'White decorative helm');
+setItemAlias(4504, 'White decorative body');
+setItemAlias(4505, 'White decorative legs');
+setItemAlias(11894, 'White decorative skirt');
+setItemAlias(25167, 'White decorative boots');
+setItemAlias(4507, 'White decorative shield');
+setItemAlias(4503, 'White decorative sword');
+
+setItemAlias(25174, 'Gold decorative full helm');
+setItemAlias(4511, 'Gold decorative helm');
+setItemAlias(4509, 'Gold decorative body');
+setItemAlias(4510, 'Gold decorative legs');
+setItemAlias(11895, 'Gold decorative skirt');
+setItemAlias(25171, 'Gold decorative boots');
+setItemAlias(4512, 'Gold decorative shield');
+setItemAlias(4508, 'Gold decorative sword');
+
+setItemAlias(4515, 'Zamorak castlewars hood');
+setItemAlias(4516, 'Zamorak castlewars cloak');
+setItemAlias(4513, 'Saradomin castlewars hood');
+setItemAlias(4514, 'Saradomin castlewars cloak');
+
+setItemAlias(11898, 'Decorative magic hat');
+setItemAlias(11896, 'Decorative magic top');
+setItemAlias(11897, 'Decorative magic robe');
+setItemAlias(11899, 'Decorative ranged top');
+setItemAlias(11900, 'Decorative ranged legs');
+setItemAlias(11901, 'Decorative quiver');

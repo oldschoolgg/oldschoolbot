@@ -101,6 +101,7 @@ export const enum Emoji {
 	Attack = '<:attack:630911039969427467>',
 	Defence = '<:defence:630911040393052180>',
 	Ranged = '<:ranged:630911040258834473>',
+	Dungeoneering = '<:dungeoneering:828683755198873623>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -183,8 +184,10 @@ export const enum Tasks {
 	GnomeRestaurant = 'gnomeRestaurantActivity',
 	SoulWars = 'soulWarsActivity',
 	RoguesDenMaze = 'roguesDenMazeActivity',
-	RabbitCatching = 'rabbitCatchingActivity',
-	Gauntlet = 'gauntletActivity'
+	KalphiteKing = 'kalphiteKingActivity',
+	Gauntlet = 'gauntletActivity',
+	Dungeoneering = 'dungeoneeringActivity',
+	CastleWars = 'castleWarsActivity'
 }
 
 export enum Activity {
@@ -236,8 +239,10 @@ export enum Activity {
 	GnomeRestaurant = 'GnomeRestaurant',
 	SoulWars = 'SoulWars',
 	RoguesDenMaze = 'RoguesDenMaze',
-	RabbitCatching = 'RabbitCatching',
-	Gauntlet = 'Gauntlet'
+	KalphiteKing = 'KalphiteKing',
+	Gauntlet = 'Gauntlet',
+	Dungeoneering = 'Dungeoneering',
+	CastleWars = 'CastleWars'
 }
 
 export enum ActivityGroup {
@@ -317,7 +322,8 @@ export const enum BitField {
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
 	HasPermanentTierOne = 12,
-	HasGivenBirthdayPack = 200
+	HasGivenBirthdayPack = 200,
+	HasPermanentSpawnLamp = 201
 }
 
 interface BitFieldData {
@@ -335,7 +341,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' }
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
+	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' }
 } as const;
 
 export const enum PatronTierID {
@@ -412,5 +419,6 @@ export const skillEmoji = {
 	woodcutting: '<:woodcutting:630911040099450892>',
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
-	clock: '<:ehpclock:352323705210142721>'
+	clock: '<:ehpclock:352323705210142721>',
+	dungeoneering: '<:dungeoneering:828683755198873623>'
 };

@@ -33,7 +33,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (currentTask.type === Activity.GroupMonsterKilling) {
+		if (
+			currentTask.type === Activity.GroupMonsterKilling ||
+			currentTask.type === Activity.Dungeoneering
+		) {
 			return msg.send(
 				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
 			);
@@ -61,6 +64,11 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (currentTask.type === Activity.KalphiteKing) {
+			return msg.send(
+				`${msg.author.minionName} is fighting the Kalphite King with a team, they cant leave their team!`
+			);
+		}
 		if (currentTask.type === Activity.BarbarianAssault) {
 			return msg.send(
 				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`

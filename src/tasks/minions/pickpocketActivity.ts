@@ -87,9 +87,13 @@ export default class extends Task {
 		}
 
 		let boosts = [];
+		const bloodshardCount = loot.amount('Blood shard');
 		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push(`3x loot for Thieves armband`);
 			loot.bank = multiplyBankNotClues(loot.bank, 3);
+			if (bloodshardCount) {
+				loot.bank[itemID('Blood shard')] = bloodshardCount;
+			}
 		}
 
 		const minutes = duration / Time.Minute;

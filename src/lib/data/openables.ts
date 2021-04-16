@@ -216,15 +216,15 @@ const PartyhatTable = new LootTable()
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
-	.add('Dwarven stout', 2)
+	.add('Dwarven stout', 2, 2)
 	.add('Dwarven lore', 2)
 	.add('Dwarven rock cake', 2)
-	.add('Dwarven helmet')
-	.add('Hammer')
+	.add('Dwarven helmet', 1, 3)
+	.add('Hammer', 1, 5)
 	.add('Steel pickaxe')
-	.add('Pickaxe handle')
-	.add('Beer')
-	.add('Kebab');
+	.add('Pickaxe handle', 1, 3)
+	.add('Beer', 1, 3)
+	.add('Kebab', 1, 3);
 
 export const SpoilsOfWarBaseTable = new LootTable()
 	.add('Pure essence', [4000, 6000], 6)
@@ -307,7 +307,7 @@ const baseTGBTable = new LootTable()
 
 const testerGiftTable = new LootTable()
 	.every(baseTGBTable, [3, 7])
-	.every('Clue scroll grandmaster', [1, 3])
+	.every('Clue scroll (grandmaster)', [1, 3])
 	.every(LampTable, [1, 2])
 	.add('Rocktail', [30, 60])
 	.add('Tradeable mystery box', [1, 3])
@@ -446,6 +446,18 @@ const Openables: Openable[] = [
 		itemID: itemID('Equippable mystery box'),
 		aliases: ['equippable mystery box', 'emb'],
 		table: randomEquippable,
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Beach mystery box',
+		itemID: itemID('Beach mystery box'),
+		aliases: ['Beach mystery box', 'bmb'],
+		table: new LootTable()
+			.add('Snappy the Turtle')
+			.add('Beach ball')
+			.add('Water balloon')
+			.add('Ice cream')
+			.add('Crab hat'),
 		emoji: Emoji.BirthdayPresent
 	}
 ];
