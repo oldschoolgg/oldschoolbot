@@ -32,7 +32,7 @@
 		"fastify-sensible": "^3.1.1",
 		"he": "^1.2.0",
 		"jwt-simple": "^0.5.6",
-		"klasa": "github:dirigeants/klasa#916/head",
+		"klasa": "github:gc/klasa#settings",
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
 		"numbro": "^2.3.2",
