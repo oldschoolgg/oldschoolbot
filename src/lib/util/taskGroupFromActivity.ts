@@ -53,6 +53,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.RoguesDenMaze:
 		case Activity.Gauntlet:
 		case Activity.CastleWars:
+		case Activity.MageArena:
 			return ActivityGroup.Minigame;
 		default: {
 			throw new Error(`Unrecognized activity: ${type}`);

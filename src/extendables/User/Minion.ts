@@ -515,6 +515,10 @@ export default class extends Extendable {
 				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
 			}
+
+			case Activity.MageArena: {
+				return `${this.minionName} is currently doing the Mage Arena. ${formattedDuration}`;
+			}
 		}
 	}
 
