@@ -65,7 +65,11 @@ export const chaeldarMonsters: KillableMonster[] = [
 		],
 		healAmountNeeded: 30,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		// Even if no multi, can safespot for same effect
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -87,7 +91,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		superior: Monsters.CaveAbomination,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CaveKraken.id,
@@ -238,7 +245,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		],
 		healAmountNeeded: 18,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.IronDragon.id,
@@ -256,7 +266,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 35,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Kraken.id,
@@ -315,7 +328,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 30,
 		healAmountNeeded: 14,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.LizardmanBrute.id,
@@ -330,7 +346,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 30,
 		healAmountNeeded: 16,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
@@ -369,7 +388,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		healAmountNeeded: 20 * 2,
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Porazdir.id,

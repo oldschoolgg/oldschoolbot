@@ -31,6 +31,7 @@ Client.defaultUserSchema
 	.add('openable_scores', 'any', { default: {} })
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
+	.add('combat_options', 'integer', { array: true, default: [] })
 
 	.add('slayer', folder =>
 		folder

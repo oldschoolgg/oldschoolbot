@@ -19,7 +19,10 @@ export const nieveMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.BlackDragon.id,
@@ -35,7 +38,10 @@ export const nieveMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 20 * 2,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,
@@ -77,7 +83,10 @@ export const nieveMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 21,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.ScarabMage.id,
@@ -92,7 +101,10 @@ export const nieveMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 18,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.SteelDragon.id,
@@ -113,7 +125,10 @@ export const nieveMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 45,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Suqah.id,
@@ -127,6 +142,9 @@ export const nieveMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackMagic],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	}
 ];

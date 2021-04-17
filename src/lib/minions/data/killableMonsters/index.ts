@@ -188,7 +188,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true
 	},
 	{
 		id: Monsters.Woman.id,
@@ -202,6 +204,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		qpRequired: 0
 	},
+	/*
 	{
 		id: Monsters.Goblin.id,
 		name: Monsters.Goblin.name,
@@ -251,6 +254,8 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		qpRequired: 0
 	},
+
+
 	{
 		id: Monsters.Skeleton.id,
 		name: Monsters.Skeleton.name,
@@ -286,19 +291,6 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.FireGiant.id,
-		name: Monsters.FireGiant.name,
-		aliases: Monsters.FireGiant.aliases,
-		timeToFinish: Time.Second * 16,
-		table: Monsters.FireGiant,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0
 	},
 	{
@@ -341,6 +333,8 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		qpRequired: 0
 	},
+
+	 */
 	{
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,

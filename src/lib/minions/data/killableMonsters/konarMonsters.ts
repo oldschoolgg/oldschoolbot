@@ -73,7 +73,10 @@ export const konarMonsters: KillableMonster[] = [
 		superior: Monsters.NightBeast,
 		healAmountNeeded: 20 * 3,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Drake.id,
@@ -93,7 +96,10 @@ export const konarMonsters: KillableMonster[] = [
 		superior: Monsters.GuardianDrake,
 		healAmountNeeded: 70,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Hydra.id,
@@ -183,7 +189,10 @@ export const konarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 26,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.RuneDragon.id,
@@ -225,7 +234,10 @@ export const konarMonsters: KillableMonster[] = [
 		],
 		healAmountNeeded: 16,
 		attackStyleToUse: GearSetupTypes.Mage,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true
 	},
 	{
 		id: Monsters.ThermonuclearSmokeDevil.id,
@@ -278,6 +290,9 @@ export const konarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 38,
 		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	}
 ];

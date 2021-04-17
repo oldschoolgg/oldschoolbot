@@ -33,7 +33,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true
 	},
 	{
 		id: Monsters.BearCub.id,
@@ -57,7 +58,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Bird.id,
@@ -81,7 +85,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true
 	},
 	{
 		id: Monsters.BlackGuard.id,
@@ -93,7 +98,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true
 	},
 	{
 		id: Monsters.CaveBug.id,
@@ -135,7 +141,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 8
+		qpRequired: 8,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CaveSlime.id,
@@ -166,7 +175,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Chicken.id,
@@ -198,11 +210,14 @@ export const turaelMonsters: KillableMonster[] = [
 		aliases: Monsters.Cow.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Cow,
-
+		emoji: '🐮',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CowCalf.id,
@@ -296,7 +311,10 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 22
-		}
+		},
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.DesertWolf.id,
@@ -307,7 +325,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Duck.id,
@@ -351,7 +372,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.DwarfGangMember.id,
@@ -374,7 +398,10 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GiantBat.id,
@@ -396,7 +423,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 1
+		qpRequired: 1,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GiantRat.id,
@@ -407,7 +437,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GiantSpider.id,
@@ -418,7 +451,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -429,7 +465,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GrizzlyBear.id,
@@ -440,7 +479,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GrizzlyBearCub.id,
@@ -495,7 +537,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.JungleWolf.id,
@@ -518,7 +563,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.KalphiteSoldier.id,
@@ -530,7 +578,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.KalphiteWorker.id,
@@ -542,7 +593,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.KingScorpion.id,
@@ -595,7 +649,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Monkey.id,
@@ -658,7 +715,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Penguin.id,
@@ -765,7 +825,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Seagull.id,
@@ -807,7 +870,10 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.SkeletonFremennik.id,
@@ -869,7 +935,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.SulphurLizard.id,
@@ -907,7 +976,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.TorturedGorilla.id,
@@ -1017,7 +1089,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.WildDog.id,
@@ -1028,7 +1103,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Wolf.id,
@@ -1039,7 +1117,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Zogre.id,
@@ -1061,7 +1142,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.ZombieRat.id,

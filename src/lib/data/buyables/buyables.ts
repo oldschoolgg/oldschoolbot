@@ -8,6 +8,7 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { slayerBuyables } from './slayerBuyables';
+import {CombatCannonItemBank} from "../../minions/data/combatConstants";
 
 export interface Buyable {
 	name: string;
@@ -661,6 +662,44 @@ const questBuyables: Buyable[] = [
 		},
 		gpCost: 500_000,
 		qpRequired: 60
+	},
+	{
+		name: 'Dwarf multicannon',
+		outputItems: CombatCannonItemBank,
+		gpCost: 10_000_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon barrels',
+		outputItems: {
+			[itemID('Cannon barrels')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon base',
+		outputItems: {
+			[itemID('Cannon base')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon furnace',
+		outputItems: {
+			[itemID('Cannon furnace')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon stand',
+		outputItems: {
+			[itemID('Cannon stand')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
 	}
 ];
 

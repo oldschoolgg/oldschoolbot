@@ -9,6 +9,7 @@ import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { ItemBank } from '../../types';
+import {CombatOptionsEnum} from "../../minions/data/combatConstants";
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -46,6 +47,7 @@ export namespace UserSettings {
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
+	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

@@ -16,6 +16,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 0
 	},
+	/*
 	{
 		id: Monsters.EarthWarrior.id,
 		name: Monsters.EarthWarrior.name,
@@ -63,6 +64,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
+	 */
 	{
 		id: Monsters.Jogre.id,
 		name: Monsters.Jogre.name,
@@ -79,6 +81,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
+	/*
 	{
 		id: Monsters.ChaosDruid.id,
 		name: Monsters.ChaosDruid.name,
@@ -95,6 +98,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
+	 */
 	{
 		id: Monsters.Unicorn.id,
 		name: Monsters.Unicorn.name,

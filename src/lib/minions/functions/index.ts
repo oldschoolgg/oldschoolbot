@@ -6,6 +6,8 @@ import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
+import {xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM} from "../data/combatConstants";
+import {randomVariation} from "../../util";
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 export { default as calculateMonsterFood } from './calculateMonsterFood';
@@ -57,12 +59,22 @@ export async function addMonsterXP(
 	quantity: number,
 	duration: number,
 	isOnTask: boolean,
-	taskQuantity: number | null
+	taskQuantity: number | null,
+	usingCannon?: boolean,
+	cannonMulti?: boolean
 ) {
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
 	const monster = killableMonsters.find(mon => mon.id === monsterID);
 	let hp = miscHpMap[monsterID] ?? 1;
 	let xpMultiplier = 1;
+	const cannonQty = cannonMulti
+		? randomVariation(Math.floor((xpPercentToCannonM / 100) * quantity), xpCannonVaryPercent)
+		: usingCannon
+			? randomVariation(Math.floor((xpPercentToCannon / 100) * quantity), xpCannonVaryPercent)
+			: 0;
+
+	const normalQty = quantity - cannonQty;
+
 	if (monster && monster.customMonsterHP) {
 		hp = monster.customMonsterHP;
 	} else if (osjsMon?.data?.hitpoints) {
@@ -71,7 +83,7 @@ export async function addMonsterXP(
 	if (monster && monster.combatXpMultiplier) {
 		xpMultiplier = monster.combatXpMultiplier;
 	}
-	const totalXP = hp * 4 * quantity * xpMultiplier;
+	const totalXP = hp * 4 * normalQty * xpMultiplier;
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	let res: string[] = [];
@@ -79,6 +91,9 @@ export async function addMonsterXP(
 	for (const style of attackStyles) {
 		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration, true));
 	}
+	// Add cannon xp
+	if (usingCannon)
+		res.push(await user.addXP(SkillsEnum.Ranged, Math.floor(hp * 2 * cannonQty), duration, true));
 
 	if (isOnTask) {
 		let newSlayerXP = 0;

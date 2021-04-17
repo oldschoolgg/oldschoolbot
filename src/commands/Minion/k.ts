@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity, Time } from '../../lib/constants';
@@ -30,6 +30,15 @@ import findMonster, {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import {
+	boostCannon,
+	boostCannonMulti,
+	boostIceBarrage, boostIceBurst, cannonMultiConsumables, cannonSingleConsumables, CombatCannonItemBank,
+	CombatOptionsEnum,
+	iceBarrageConsumables,
+	iceBurstConsumables
+} from "../../lib/minions/data/combatConstants";
+import {Consumable} from "../../lib/minions/types";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -174,6 +183,49 @@ export default class extends BotCommand {
 			boosts.push('15% for Black mask on melee task');
 		}
 
+		// Start of the consumable code. continued later in other costs.
+		const consumableCosts : Consumable[] = [];
+
+		// Calculate Cannon and Barrage boosts + costs:
+		let usingCannon = false;
+		let cannonMulti = false;
+		const hasCannon = msg.author.owns(CombatCannonItemBank);
+		if (msg.flagArgs.cannon && !hasCannon) {
+			return msg.send(`You don't own a Dwarf multicannon, so how could you use one?`);
+		}
+		if (msg.flagArgs.cannon && !monster!.canCannon) {
+			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
+		}
+		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
+			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
+		}
+		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
+			return msg.send(`You can only barrage/burst when you're using magic!`);
+		}
+		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
+		if (attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage && (msg.flagArgs.barrage || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage))) {
+			consumableCosts.push(iceBarrageConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
+			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
+		} else if(attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage && (msg.flagArgs.burst || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst))) {
+			consumableCosts.push(iceBurstConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
+			boosts.push(`${boostIceBurst}% for Ice Burst`);
+		} else if(hasCannon && monster!.cannonMulti && (msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))) {
+			usingCannon = true;
+			cannonMulti = true;
+			consumableCosts.push(cannonMultiConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostCannonMulti);
+			boosts.push(`${boostCannonMulti}% for Cannon in multi`);
+		} else if(hasCannon && monster!.canCannon && (msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))) {
+			usingCannon = true;
+			consumableCosts.push(cannonSingleConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
+			boosts.push(`${boostCannon}% for Cannon in singles`);
+		}
+
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		// If no quantity provided, set it to the max.
@@ -205,15 +257,51 @@ export default class extends BotCommand {
 		}
 
 		quantity = Math.max(1, quantity);
+		let duration = timeToFinish * quantity;
+		if (quantity > 1 && duration > maxTripLength) {
+			return msg.send(
+				`${minionName} can't go on PvM trips longer than ${formatDuration(
+					maxTripLength
+				)}, try a lower quantity. The highest amount you can do for ${
+					monster.name
+				} is ${floor(maxTripLength / timeToFinish)}.`
+			);
+		}
+
+		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
+			// Add a cost of 1 antidote++(4) per 15 minutes
+			const hydraCost : Consumable = {
+				itemCost: new Bank()
+					.add('Antidote++(4)', 1),
+				qtyPerMinute: 0.067
+			}
+			consumableCosts.push(hydraCost);
+		}
+
+		// Check consumables: (hope this forEach is ok :) )
+		const lootToRemove = new Bank();
+		let pvmCost = false;
+		consumableCosts.forEach(cc => {
+			const itemCost = cc!.qtyPerKill
+				? cc!.itemCost.clone().multiply(quantity as number)
+				: cc!.qtyPerMinute
+					? cc!.itemCost.clone().multiply(Math.ceil((duration / Time.Minute) * cc!.qtyPerMinute))
+					: null;
+			if (itemCost)
+			{
+				pvmCost = true;
+				lootToRemove.add(itemCost);
+			}
+		})
+
+		if (msg.author.hasItemEquippedOrInBank('Staff of water')) {
+			lootToRemove.removeItem(itemID('Water rune'), 1_000_000);
+		}
+
 		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
 		if (itemCost) {
-			if (!msg.author.owns(itemCost)) {
-				return msg.channel.send(
-					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${itemCost}.`
-				);
-			}
-			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, itemCost);
-			await msg.author.removeItemsFromBank(itemCost);
+			pvmCost = true;
+			lootToRemove.add(itemCost);
 		}
 
 		// Check food
@@ -238,17 +326,7 @@ export default class extends BotCommand {
 			foodStr = result;
 		}
 
-		let duration = timeToFinish * quantity;
-		if (quantity > 1 && duration > maxTripLength) {
-			return msg.send(
-				`${minionName} can't go on PvM trips longer than ${formatDuration(
-					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${floor(maxTripLength / timeToFinish)}.`
-			);
-		}
-
+		// Boosts that don't affect quantity:
 		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {
@@ -256,17 +334,16 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
-			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
-			// Potions actually last 36+ minutes for a 4-dose, but we want item sink
-			const potsToRemove = Math.ceil(duration / (15 * Time.Minute));
-			if (potsToRemove > potsTotal) {
+		if (pvmCost)
+		{
+			if (!msg.author.owns(lootToRemove)) {
 				return msg.channel.send(
-					`You don't have enough Antidote++(4) to kill ${quantity}x ${monster.name}.`
+					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${lootToRemove}.`
 				);
 			}
-			await msg.author.removeItemFromBank(itemID('Antidote++(4)'), potsToRemove);
 		}
+		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		await msg.author.removeItemsFromBank(lootToRemove);
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,
@@ -274,7 +351,9 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.MonsterKilling
+			type: Activity.MonsterKilling,
+			usingCannon: usingCannon,
+			cannonMulti: cannonMulti
 		});
 
 		let response = `${minionName} is now killing ${quantity}x ${
@@ -283,8 +362,8 @@ export default class extends BotCommand {
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
 
-		if (itemCost) {
-			response += `Removed ${itemCost}.`;
+		if (pvmCost) {
+			response += `Removed ${lootToRemove}.`;
 		}
 
 		if (foodStr) {

@@ -48,7 +48,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.DarkWarrior.id,
@@ -60,7 +63,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.DeadlyRedSpider.id,
@@ -72,7 +78,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.ElderChaosDruid.id,
@@ -84,7 +93,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Ent.id,
@@ -97,7 +109,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Dragon axe', 'Rune axe']),
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GuardBandit.id,
@@ -109,7 +124,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.LavaDragon.id,
@@ -135,7 +153,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems(['Lockpick']),
+		// itemsRequired: resolveItems(['Lockpick']),
 		qpRequired: 0,
 		levelRequirements: {
 			// theiving: 23
@@ -151,7 +169,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Pirate.id,
@@ -163,6 +184,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
+		// itemsRequired: resolveItems(['Lockpick']),
+		levelRequirements: {
+			//thieving: 39
+		},
 		qpRequired: 0
 	},
 	{
