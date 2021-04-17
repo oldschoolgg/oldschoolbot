@@ -140,6 +140,28 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 
 		result += await addRoles(g, topSacrificers, Roles.TopSacrificer, 8);
 
+		// Top minigamers
+		let topMinigamers = [];
+		const minigames = [
+			'barb_assault',
+			'agility_arena',
+			'mahogany_homes',
+			'gnome_restaurant',
+			'soul_wars',
+			'castle_wars'
+		];
+		for (const game of minigames) {
+			const result = (await this.client.query(
+				`SELECT id 
+FROM minigames
+ORDER BY ${game} DESC
+LIMIT 1;`
+			)) as CLUser[];
+			topMinigamers.push(result[0].id);
+		}
+
+		result += await addRoles(g, topMinigamers, Roles.TopMinigamer, 11);
+
 		return result;
 	}
 }
