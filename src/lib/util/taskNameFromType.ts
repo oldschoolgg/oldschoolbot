@@ -98,5 +98,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.Gauntlet;
 		case Activity.CastleWars:
 			return Tasks.CastleWars;
+		case Activity.MageArena:
+			return Tasks.MageArena;
 	}
 }

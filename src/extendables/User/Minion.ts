@@ -59,6 +59,7 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -508,6 +509,11 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${data.quantity}x ${
 					data.corrupted ? 'Corrupted' : 'Normal'
 				} Gauntlet. ${formattedDuration}`;
+			}
+
+			case Activity.CastleWars: {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
 			}
 		}
 	}
