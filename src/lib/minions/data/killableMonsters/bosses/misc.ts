@@ -60,8 +60,15 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Bandos godsword')]: 15,
 				[itemID('Dragon warhammer')]: 15,
-				[itemID('Dragon claws')]: 10,
+				[itemID('Dragon claws')]: 10
+			},
+			{
+				[itemID('Dragon hunter lance')]: 20,
 				[itemID('Dragon hunter crossbow')]: 30
+			},
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
 			}
 		],
 		levelRequirements: {
@@ -165,7 +172,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.0875
+		combatXpMultiplier: 1.05
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -226,13 +233,24 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },
-			{ [itemID('Bandos chestplate')]: 5 },
-			{ [itemID('Bandos tassets')]: 5 }
+			{
+				[itemID('Bandos chestplate')]: 5,
+				[itemID("Inquisitor's hauberk")]: 8
+			},
+			{
+				[itemID('Bandos tassets')]: 5,
+				[itemID("Inquisitor's plateskirt")]: 8
+			},
+			{
+				[itemID('Arclight')]: 15,
+				[itemID("Inquisitor's mace")]: 8
+			}
 		],
 		levelRequirements: {
 			prayer: 43,
 			slayer: 91
 		},
+		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15
 	}

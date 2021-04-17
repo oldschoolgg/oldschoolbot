@@ -2,6 +2,7 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
+import SimilarItems from '../../lib/data/similarItems';
 import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { Gear } from '../../lib/structures/Gear';
@@ -27,9 +28,13 @@ export default class extends Extendable {
 		};
 	}
 
+	/* These changes are necessary so that similar items work while equipped!
+	 * Change _item type defintion of this fn AND in augments.d.ts
+	 * And ofc, hasItemEquippedOrInBank needs SimilarItems[id]
+	 */
 	public hasItemEquippedAnywhere(
 		this: User,
-		_item: number | string | string[],
+		_item: number | string | string[] | number[],
 		every = false
 	): boolean {
 		const items = resolveItems(_item);
@@ -43,7 +48,13 @@ export default class extends Extendable {
 
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
-		return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+		if (SimilarItems[id] === undefined) {
+			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+		}
+		return (
+			this.hasItemEquippedAnywhere(SimilarItems[id], false) ||
+			this.numItemsInBankSync(id, true) > 0
+		);
 	}
 
 	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {

@@ -1,5 +1,6 @@
 import { uniqueArr } from 'e';
 
+/*
 import {
 	beekeeperOutfit,
 	camoOutfit,
@@ -7,6 +8,7 @@ import {
 	mimeOutfit,
 	zombieOutfit
 } from '../randomEvents';
+*/
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
@@ -276,6 +278,7 @@ export const mahoganyHomesLog: CollectionLogData = {
 	Other: resolveItems(["Amy's saw", 'Plank sack', 'Hosidius blueprints', 'Builders supply crate'])
 };
 
+/*
 export const randomEventsLog: CollectionLogData = {
 	BeeKeeper: beekeeperOutfit,
 	Lederhosen: lederhosenOutfit,
@@ -283,6 +286,7 @@ export const randomEventsLog: CollectionLogData = {
 	Mime: mimeOutfit,
 	Camo: camoOutfit
 };
+*/
 
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([
@@ -449,6 +453,49 @@ export const bosses: CollectionLogData = {
 		'Metamorphic dust',
 		'Olmlet',
 		'Twisted ancestral colour kit'
+	]),
+	'Grotesque Guardians': resolveItems([
+		'Black tourmaline core',
+		'Granite hammer',
+		'Granite maul',
+		'Granite ring',
+		'Granite gloves',
+		'Jar of stone',
+		'Noon'
+	]),
+	'Abyssal Sire': resolveItems([
+		'Unsired',
+		'Abyssal whip',
+		'Abyssal dagger',
+		'Bludgeon claw',
+		'Bludgeon spine',
+		'Bludgeon axon',
+		'Jar of miasma',
+		'Abyssal orphan'
+	]),
+	Kraken: resolveItems([
+		'Trident of the seas (full)',
+		'Kraken tentacle',
+		'Jar of dirt',
+		'Pet kraken'
+	]),
+	'Thermonuclear Smoke Devil': resolveItems([
+		'Occult necklace',
+		'Smoke battlestaff',
+		'Dragon chainbody',
+		'Jar of smoke',
+		'Pet smoke devil'
+	]),
+	'Alchemical Hydra': resolveItems([
+		"Hydra's claw",
+		'Hydra leather',
+		"Hydra's eye",
+		"Hydra's fang",
+		"Hydra's heart",
+		'Hydra tail',
+		'Alchemical hydra heads',
+		'Jar of chemicals',
+		'Ikkle hydra'
 	])
 };
 
@@ -1646,7 +1693,65 @@ export const miscLog: CollectionLogData = {
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
 	evilChickenOutfit,
-	other: resolveItems(['Amulet of eternal glory', 'Crystal grail'])
+	other: resolveItems(['Amulet of eternal glory', 'Crystal grail']),
+	Slayer1: resolveItems([
+		'Imbued heart',
+		'Eternal gem',
+		'Mist battlestaff',
+		'Dust battlestaff',
+		"Hydra's eye",
+		"Hydra's fang",
+		"Hydra's heart",
+		'Hydra tail',
+		"Drake's tooth",
+		"Drake's claw",
+		'Dragon harpoon',
+		'Dragon sword'
+	]),
+	Slayer2: resolveItems([
+		'Dragon thrownaxe',
+		'Dragon knife',
+		'Abyssal whip',
+		'Abyssal dagger',
+		'Abyssal head',
+		'Dragon boots',
+		'Granite maul',
+		'Uncharged trident',
+		'Kraken tentacle',
+		'Dark bow',
+		'Death talisman',
+		'Occult necklace'
+	]),
+	'Demonic Gorillas': resolveItems([
+		'Zenyte shard',
+		'Heavy frame',
+		'Light frame',
+		'Monkey tail',
+		'Ballista limbs',
+		'Ballista spring'
+	]),
+	'Mystic Sets': resolveItems([
+		'Mystic hat (light)',
+		'Mystic robe top (light)',
+		'Mystic robe bottom (light)',
+		'Mystic gloves (light)',
+		'Mystic boots (light)',
+		'Mystic hat (dark)',
+		'Mystic robe top (dark)',
+		'Mystic robe bottom (dark)',
+		'Mystic gloves (dark)',
+		'Mystic boots (dark)'
+	]),
+	Konar: resolveItems([
+		'Basilisk jaw',
+		'Mystic hat (dusk)',
+		'Mystic robe top (dusk)',
+		'Mystic robe bottom (dusk)',
+		'Mystic gloves (dusk)',
+		'Mystic boots (dusk)',
+		'Broken dragon hasta',
+		'Brimstone key'
+	])
 };
 
 export const sepulchreLog: CollectionLogData = {
@@ -1986,12 +2091,15 @@ export const collectionLogTypes: CollectionLogType[] = [
 			castleWarsOther,
 			mta: [...wandItems, ...infinityItems]
 		}
-	},
+	}
+	/* ,
 	{
 		name: 'Random Events',
 		aliases: ['random events'],
 		items: randomEventsLog
 	}
+	
+	 */
 ];
 export const allCollectionLogItems = uniqueArr(
 	collectionLogTypes.map(i => Object.values(i.items)).flat(Infinity) as number[]

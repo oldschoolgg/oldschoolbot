@@ -3,11 +3,14 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { getNewUser } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
+import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { formatDuration } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
@@ -27,6 +30,21 @@ export default class extends BotCommand {
 		[cmd, input, str]: [string, KlasaUser | undefined, string | undefined]
 	) {
 		if (msg.guild!.id !== '342983479501389826') return null;
+
+		switch (cmd.toLowerCase()) {
+			case 'resettask': {
+				const { currentTask } = await getUsersCurrentSlayerInfo(msg.author.id);
+				if (!currentTask) return msg.channel.send(`You have no task.`);
+				await currentTask.remove();
+				return msg.channel.send(`Deleted your task.`);
+			}
+			case 'slayerreset': {
+				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
+				await msg.author.settings.reset(UserSettings.Skills.Slayer);
+				return msg.channel.send(`Deleted ALL your task history, your slayer XP`);
+			}
+		}
+
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
 		const isOwner = this.client.owners.has(msg.author);
 		if (!isMod && !isOwner) return null;

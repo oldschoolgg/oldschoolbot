@@ -698,7 +698,8 @@ export default class extends Extendable {
 		this: User,
 		skillName: SkillsEnum,
 		amount: number,
-		duration?: number
+		duration?: number,
+		minimal?: boolean
 	): Promise<string> {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
@@ -771,14 +772,18 @@ export default class extends Extendable {
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
-		let str = `You received ${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]} XP`;
-		if (duration) {
+		let str = minimal
+			? `+${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]}`
+			: `You received ${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]} XP`;
+		if (duration && !minimal) {
 			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
 		if (currentLevel !== newLevel) {
-			str += `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+			str += minimal
+				? `(Levelled up to ${newLevel})`
+				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
 		}
 		return str;
 	}
@@ -932,5 +937,22 @@ export default class extends Extendable {
 			return [false, formatSkillRequirements(reqs)];
 		}
 		return [true, null];
+	}
+
+	// @ts-ignore 2784
+	public get combatLevel(this: User): number {
+		const defence = this.skillLevel(SkillsEnum.Defence);
+		const ranged = this.skillLevel(SkillsEnum.Ranged);
+		const hitpoints = this.skillLevel(SkillsEnum.Hitpoints);
+		const magic = this.skillLevel(SkillsEnum.Magic);
+		const prayer = this.skillLevel(SkillsEnum.Prayer);
+		const attack = this.skillLevel(SkillsEnum.Attack);
+		const strength = this.skillLevel(SkillsEnum.Strength);
+
+		const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+		const melee = 0.325 * (attack + strength);
+		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+		const mage = 0.325 * (Math.floor(magic / 2) + magic);
+		return Math.floor(base + Math.max(melee, range, mage));
 	}
 }

@@ -19,7 +19,7 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = monster.table.kill(1);
+			const loot = monster.table.kill(1, {});
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
@@ -36,7 +36,14 @@ export default class extends Task {
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-			await addMonsterXP(user, monsterID, Math.ceil(quantity / users.length), duration);
+			await addMonsterXP(
+				user,
+				monsterID,
+				Math.ceil(quantity / users.length),
+				duration,
+				false,
+				null
+			);
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];

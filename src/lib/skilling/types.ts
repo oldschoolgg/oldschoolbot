@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 
 export enum SkillsEnum {
@@ -156,6 +157,7 @@ export interface Fletchable {
 	inputItems: Bank;
 	tickRate: number;
 	outputMultiple?: number;
+	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
 export interface Mixable {

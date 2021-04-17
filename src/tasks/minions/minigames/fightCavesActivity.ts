@@ -5,6 +5,8 @@ import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { Emoji, Events } from '../../../lib/constants';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	calcPercentOfNum,
@@ -34,7 +36,21 @@ export default class extends Task {
 
 		const attemptsStr = `You have tried Fight caves ${attempts + 1}x times.`;
 
+		// Add slayer
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.currentTask !== null &&
+			usersTask.currentTask !== undefined &&
+			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+
 		if (preJadDeathTime) {
+			let slayerMsg = '';
+			if (isOnTask) {
+				slayerMsg = ' Task cancelled.';
+				usersTask.currentTask!.quantityRemaining = 0;
+				await usersTask.currentTask!.save();
+			}
 			// Give back supplies based on how far in they died, for example if they
 			// died 80% of the way through, give back approximately 20% of their supplies.
 			const percSuppliesToRefund = 100 - calcWhatPercent(preJadDeathTime, duration);
@@ -61,7 +77,7 @@ export default class extends Task {
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}${slayerMsg}`,
 					head: 'mejJal'
 				}),
 				data,
@@ -70,6 +86,12 @@ export default class extends Task {
 		}
 
 		if (diedToJad) {
+			let slayerMsg = '';
+			if (isOnTask) {
+				slayerMsg = ' Task cancelled.';
+				usersTask.currentTask!.quantityRemaining = 0;
+				await usersTask.currentTask!.save();
+			}
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
 			await user.addItemsToBank(failBank, true);
 
@@ -83,7 +105,7 @@ export default class extends Task {
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.${slayerMsg}`,
 					head: 'mejJal'
 				}),
 				data,
@@ -116,6 +138,24 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
+		let slayerMsg = '';
+		if (isOnTask) {
+			// 25,250 for Jad + 11,760 for waves.
+			const slayerXP = 37_010;
+			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
+			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
+			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+
+			usersTask.currentTask!.quantityRemaining = 0;
+			await usersTask.currentTask!.save();
+			await user.addXP(SkillsEnum.Slayer, slayerXP);
+
+			slayerMsg = ` Jad task completed.`;
+			// End slayer code
+		}
+
 		handleTripFinish(
 			this.client,
 			user,
@@ -128,7 +168,7 @@ export default class extends Task {
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
-				)} time! I am most impressed, I give you... ${loot}.`,
+				)} time! I am most impressed, I give you... ${loot}.${slayerMsg}`,
 				head: 'mejJal'
 			}),
 			data,

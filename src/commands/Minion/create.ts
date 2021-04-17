@@ -6,6 +6,8 @@ import { Time } from '../../lib/constants';
 import Createables from '../../lib/data/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	addBanks,
@@ -81,6 +83,21 @@ export default class extends BotCommand {
 				if (msg.author.skillLevel(skillName as SkillsEnum) < lvl) {
 					throw `You need ${lvl} ${skillName} to create this item.`;
 				}
+			}
+		}
+		if (createableItem.requiredSlayerUnlocks) {
+			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+			let mySlayerUnlocksIter: SlayerTaskUnlocksEnum[] = [];
+
+			mySlayerUnlocks.forEach(msu => {
+				mySlayerUnlocksIter.push(msu as SlayerTaskUnlocksEnum);
+			});
+			const { success, errors } = hasSlayerUnlock(
+				mySlayerUnlocksIter,
+				createableItem.requiredSlayerUnlocks
+			);
+			if (!success) {
+				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
 		}
 

@@ -8,10 +8,24 @@ import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
+import { chaeldarMonsters } from './chaeldarMonsters';
+import { konarMonsters } from './konarMonsters';
+import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
+import { mazchnaMonsters } from './mazchnaMonsters';
+import { nieveMonsters } from './nieveMonsters';
+import { turaelMonsters } from './turaelMonsters';
+import { vannakaMonsters } from './vannakaMonsters';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
+	...chaeldarMonsters,
+	...konarMonsters,
+	...krystiliaMonsters,
+	...mazchnaMonsters,
+	...nieveMonsters,
+	...turaelMonsters,
+	...vannakaMonsters,
 	...low,
 	{
 		id: Monsters.Barrows.id,
@@ -170,7 +184,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Guard.aliases,
 		timeToFinish: Time.Second * 7.4,
 		table: Monsters.Guard,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -194,7 +208,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Goblin.aliases,
 		timeToFinish: Time.Second * 4.7,
 		table: Monsters.Goblin,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -205,7 +219,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.LizardmanShaman.id,
 		name: Monsters.LizardmanShaman.name,
 		aliases: Monsters.LizardmanShaman.aliases,
-		timeToFinish: Time.Minute * 1.1,
+		timeToFinish: Time.Second * 52,
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
@@ -245,7 +259,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.GreaterDemon.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -282,7 +296,6 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Zombie.aliases,
 		timeToFinish: Time.Second * 9,
 		table: Monsters.Zombie,
-		emoji: '',
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -295,7 +308,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Rat.aliases,
 		timeToFinish: Time.Second * 1.5,
 		table: Monsters.Rat,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -307,7 +320,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.FireGiant.aliases,
 		timeToFinish: Time.Second * 16,
 		table: Monsters.FireGiant,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -320,7 +333,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.BlueDragon.aliases,
 		timeToFinish: Time.Second * 40,
 		table: Monsters.BlueDragon,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -336,7 +349,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Ankou.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.Ankou,
-		emoji: '',
+		existsInCatacombs: true,
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -348,7 +361,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Dwarf.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Dwarf,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
