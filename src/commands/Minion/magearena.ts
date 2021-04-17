@@ -41,7 +41,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const [_, foodRemoved] = await removeFoodFromUser({
+		const [, foodRemoved] = await removeFoodFromUser({
 			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: 20 * 23,
