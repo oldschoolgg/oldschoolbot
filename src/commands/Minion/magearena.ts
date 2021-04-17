@@ -5,6 +5,7 @@ import { Activity, Time } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../lib/util';
@@ -26,6 +27,9 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
+		if (msg.author.skillLevel(SkillsEnum.Magic) < 60) {
+			return msg.channel.send(`You need level 60 Magic to do the Mage Arena.`);
+		}
 		const duration = randomVariation(Time.Minute * 10, 5);
 
 		const itemsNeeded = new Bank({
