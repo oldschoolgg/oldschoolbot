@@ -50,6 +50,8 @@ export default class extends BotCommand {
 			attackStylesUsed: [GearSetupTypes.Mage]
 		});
 
+		await msg.author.removeItemsFromBank(itemsNeeded);
+
 		await addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
