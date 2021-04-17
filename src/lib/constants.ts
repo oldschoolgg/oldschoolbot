@@ -33,7 +33,8 @@ export const enum Roles {
 	// Status Roles
 	TopSkiller = '795266465329709076',
 	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192'
+	TopSacrificer = '795933981715464192',
+	TopMinigamer = '832798997033779220'
 }
 
 export const enum Emoji {
@@ -115,7 +116,8 @@ export const enum Emoji {
 	Crab = '<:crab:778418736432021505>',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
-	CollectionLog = '<:collectionLog:802136964027121684>'
+	CollectionLog = '<:collectionLog:802136964027121684>',
+	Minigames = '<:minigameIcon:630400565070921761>'
 }
 
 export const enum ReactionEmoji {
@@ -354,7 +356,8 @@ export const badges: { [key: number]: string } = {
 	7: Emoji.Trophy,
 	8: Emoji.Incinerator,
 	9: Emoji.Skiller,
-	10: Emoji.CollectionLog
+	10: Emoji.CollectionLog,
+	11: Emoji.MinigameIcon
 };
 
 export const MAX_QP = 279;
