@@ -152,12 +152,12 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		];
 		for (const game of minigames) {
 			const result = (await this.client.query(
-				`SELECT id 
+				`SELECT user_id 
 FROM minigames
 ORDER BY ${game} DESC
 LIMIT 1;`
-			)) as CLUser[];
-			topMinigamers.push(result[0].id);
+			)) as any[];
+			topMinigamers.push(result[0].user_id);
 		}
 
 		result += await addRoles(g, topMinigamers, Roles.TopMinigamer, 11);
