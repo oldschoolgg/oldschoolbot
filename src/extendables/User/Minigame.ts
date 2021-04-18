@@ -93,6 +93,16 @@ export const Minigames: Minigame[] = [
 		name: 'Castle Wars',
 		key: 'CastleWars',
 		column: 'castle_wars'
+	},
+	{
+		name: 'Chambers of Xeric',
+		key: 'Raids',
+		column: 'raids'
+	},
+	{
+		name: 'Chambers of Xeric - Challenge Mode',
+		key: 'RaidsChallengeMode',
+		column: 'raids_challenge_mode'
 	}
 ];
 
